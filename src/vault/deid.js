@@ -1079,28 +1079,46 @@ function constrainPatternEntitySpan(rawText, label, start, end) {
 export function addStructuredSafeHarborEntities(rawText, entities = [], currentDate = null) {
   const dateValue = String.raw`(?:\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2},?\s+\d{4})`;
 
+  // LLM-generated H&P notes near-universally bold the field label in
+  // markdown ("**MRN:** 58193427"), which puts "**" directly between the
+  // colon and the value with no whitespace for a plain `\s*` to span, and
+  // sometimes before the label itself ("**Hospital:**"). Unlike PHONE/
+  // EMAIL/ADDRESS/DATE - which all have an independent shape- or chrono-
+  // based detector that catches the value regardless of its label - MRN,
+  // ENCOUNTER ID, and account/policy/insurance-style IDs have no such
+  // fallback: a bare digit string is otherwise indistinguishable from any
+  // other number without its label. When the label regex fails to match at
+  // all here, the identifier isn't just mislabeled - it's never redacted.
+  // mdFiller tolerates markdown emphasis wherever plain whitespace used to
+  // be assumed; mdSep additionally allows the colon/hash itself to repeat
+  // or appear in either order (e.g. "Account #:** ") since some labels have
+  // more than one separator character back to back.
+  const mdFiller = String.raw`[\s*_]*`;
+  const mdSep = String.raw`[\s*]*[:#][\s*]*`;
+  const mdSepOptionalColon = String.raw`[\s*:#]+`;
+
   const capturedPatterns = [
-    { label: "PATIENT NAME", regex: /^\s*(?:Patient(?: Name)?|Pt(?: Name)?|Name)\s*[:#]\s*([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})\s*$/gmi },
-    { label: "DOB", regex: new RegExp(String.raw`^\s*(?:DOB|D\.O\.B\.|Date of birth|Birth date)\s*[:#]\s*(${dateValue})\s*$`, "gmi") },
-    { label: "MRN", regex: /^\s*(?:MRN|Medical Record(?: Number)?)(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$/gmi },
-    { label: "ENCOUNTER ID", regex: /^\s*(?:CSN|FIN|HAR|Encounter(?: ID| Number))(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$/gmi },
-    { label: "ID", regex: /^\s*(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$/gmi },
-    { label: "DATE", regex: new RegExp(String.raw`^\s*(?:Encounter date|Admit(?:ted| date)?|Admission date|Discharge(?:d| date)?|Date of service|DOS|Collected|Collection(?: date| time| date\/time)?|Result(?:ed| date| time| date\/time)?|Received|Drawn|Specimen(?: collected)?|Ordered)\s*[:#]\s*(${dateValue}(?:\s+(?:at\s+)?\d{1,2}:\d{2}(?:\s*[AP]M)?)?)\s*$`, "gmi") },
-    { label: "PHONE", regex: /^\s*(?:Phone|Fax|Pager|Callback|Cell|Mobile|Tel)\s*[:#]\s*((?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4})\s*$/gmi },
-    { label: "EMAIL", regex: /^\s*Email\s*[:#]\s*([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})\s*$/gmi },
-    { label: "ADDRESS", regex: /^\s*Address\s*[:#]\s*(.+)$/gmi },
-    { label: "FACILITY", regex: /^\s*(?:Facility|Campus|Hospital|Clinic|Site|Service location|Lab location|Ordering location)\s*[:#]\s*([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)/gmi },
-    { label: "ROOM", regex: /^\s*(?:Room|Rm|Bed|ICU room|ED room|Unit|Floor|Ward|Pod|Bay|Location)\s*[:#]\s*([A-Z0-9][A-Z0-9 \t-]*\d?[A-Z0-9-]*)\s*$/gmi },
-    { label: "PROVIDER NAME", regex: /^\s*(?:Primary endocrinologist|Provider|Attending|Resident|Fellow|Consultant|Surgeon|PCP|Primary care provider|Referring provider|Ordering provider)\s*[:#]\s*((?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}|[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,2})/gmi },
-    { label: "CONTACT NAME", regex: /^\s*(?:Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian|Caregiver)\s*[:#]\s*([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})/gmi },
-    { label: "ORGANIZATION", regex: /^\s*Preferred pharmacy\s*[:#]\s*([^,\n\r]{2,80})/gmi },
-    { label: "DOB", regex: new RegExp(String.raw`\b(?:DOB|D\.O\.B\.|Date of birth|Birth date)\s*[:#]\s*(${dateValue})`, "gi") },
+    { label: "PATIENT NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Patient(?: Name)?|Pt(?: Name)?|Name)${mdSep}([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})\s*$`, "gmi") },
+    { label: "DOB", regex: new RegExp(String.raw`^${mdFiller}(?:DOB|D\.O\.B\.|Date of birth|Birth date)${mdSep}(${dateValue})\s*$`, "gmi") },
+    { label: "MRN", regex: new RegExp(String.raw`^${mdFiller}(?:MRN|Medical Record(?: Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
+    { label: "ENCOUNTER ID", regex: new RegExp(String.raw`^${mdFiller}(?:CSN|FIN|HAR|Encounter(?: ID| Number))${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
+    { label: "ID", regex: new RegExp(String.raw`^${mdFiller}(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
+    { label: "DATE", regex: new RegExp(String.raw`^${mdFiller}(?:Encounter date|Admit(?:ted| date)?|Admission date|Discharge(?:d| date)?|Date of service|DOS|Collected|Collection(?: date| time| date\/time)?|Result(?:ed| date| time| date\/time)?|Received|Drawn|Specimen(?: collected)?|Ordered)${mdSep}(${dateValue}(?:\s+(?:at\s+)?\d{1,2}:\d{2}(?:\s*[AP]M)?)?)\s*$`, "gmi") },
+    { label: "PHONE", regex: new RegExp(String.raw`^${mdFiller}(?:Phone|Fax|Pager|Callback|Cell|Mobile|Tel)${mdSep}((?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4})\s*$`, "gmi") },
+    { label: "EMAIL", regex: new RegExp(String.raw`^${mdFiller}Email${mdSep}([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})\s*$`, "gmi") },
+    { label: "ADDRESS", regex: new RegExp(String.raw`^${mdFiller}Address${mdSep}(.+)$`, "gmi") },
+    { label: "FACILITY", regex: new RegExp(String.raw`^${mdFiller}(?:Facility|Campus|Hospital|Clinic|Site|Service location|Lab location|Ordering location)${mdSep}([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)`, "gmi") },
+    { label: "ROOM", regex: new RegExp(String.raw`^${mdFiller}(?:Room|Rm|Bed|ICU room|ED room|Unit|Floor|Ward|Pod|Bay|Location)${mdSep}([A-Z0-9][A-Z0-9 \t-]*\d?[A-Z0-9-]*)\s*$`, "gmi") },
+    { label: "PROVIDER NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Primary endocrinologist|Provider|Attending|Resident|Fellow|Consultant|Surgeon|PCP|Primary care provider|Referring provider|Ordering provider)${mdSep}((?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}|[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,2})`, "gmi") },
+    { label: "CONTACT NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian|Caregiver)${mdSep}([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})`, "gmi") },
+    { label: "ORGANIZATION", regex: new RegExp(String.raw`^${mdFiller}Preferred pharmacy${mdSep}([^,\n\r]{2,80})`, "gmi") },
+    { label: "DOB", regex: new RegExp(String.raw`\b(?:DOB|D\.O\.B\.|Date of birth|Birth date)${mdSep}(${dateValue})`, "gi") },
     { label: "PATIENT NAME", regex: /\b(?:Patient(?: Name)?|Pt(?: Name)?)\s+(?!is\b|was\b|reports\b|states\b)([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})(?=\s+(?:MRN|Medical Record(?: Number)?|DOB|Date of birth|Birth date)\b|[,:;\n\r]|$)/gi },
-    { label: "MRN", regex: /\b(?:MRN|Medical Record(?: Number)?)(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})/gi },
-    { label: "ENCOUNTER ID", regex: /\b(?:CSN|FIN|HAR|Encounter(?: ID| Number))(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})/gi },
-    { label: "ID", regex: /\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?)(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})/gi },
-    { label: "FACILITY", regex: /\b(?:Facility|Campus|Hospital|Clinic|Service location|Lab location|Ordering location)\s*[:#]\s*([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)/gi },
-    { label: "ROOM", regex: /\b(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|ICU room|ED room|Location)\s*[:#]\s*([A-Z0-9][A-Z0-9 \t-]{0,30}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|Phone|Email|Address|Primary|Preferred)\s*[:#]|[.,;\n\r]|$)/gi }
+    { label: "MRN", regex: new RegExp(String.raw`\b(?:MRN|Medical Record(?: Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
+    { label: "ENCOUNTER ID", regex: new RegExp(String.raw`\b(?:CSN|FIN|HAR|Encounter(?: ID| Number))${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
+    { label: "ID", regex: new RegExp(String.raw`\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
+    { label: "FACILITY", regex: new RegExp(String.raw`\b(?:Facility|Campus|Hospital|Clinic|Service location|Lab location|Ordering location)${mdSep}([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)`, "gi") },
+    { label: "ROOM", regex: new RegExp(String.raw`\b(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|ICU room|ED room|Location)${mdSep}([A-Z0-9][A-Z0-9 \t-]{0,30}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|Phone|Email|Address|Primary|Preferred)\s*[:#]|[.,;\n\r]|$)`, "gi") }
   ];
 
   capturedPatterns.forEach(({ label, regex }) => {
@@ -2079,6 +2097,13 @@ function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYe
     if (duration) {
       return `[${duration} prior to hospital admission]`;
     }
+    // Without an admission date to measure against, a birth date can't be
+    // turned into an age/duration - and unlike an arbitrary historical lab
+    // or note date, falling back to "[Historical: <year>]" would leak the
+    // patient's literal birth year. Degrade to a plain, generic marker instead.
+    if (entity.label === "DOB") {
+      return "[DOB]";
+    }
     return placement.year ? `[Historical: ${placement.year}]` : "[Historical date]";
   }
   const clockTime = temporal.clockTime || "";
@@ -2087,17 +2112,35 @@ function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYe
     : `[Hospital Day ${placement.hospitalDay}]`;
 }
 
+// A DOB is a date like any other once it's matched - the structured "DOB"
+// label regex and chrono's own date parser both fire on the same birth-date
+// span, and mergeEntities keeps whichever label ranks higher (DOB outranks
+// DATE - see labelPriority/priorities), so the merged entity ends up
+// labeled "DOB" even though it carries chrono's resolved temporal data.
+// Both need to flow through the same age/duration-vs-Hospital-Day
+// placement logic below, not just plain "DATE".
+function isTimelineDateLabel(label) {
+  return label === "DATE" || label === "DOB";
+}
+
 function buildDateTimeline(rawText, entities, currentDate = null, { includeTemporalFallback = true } = {}) {
   const fallbackTemporalEntities = includeTemporalFallback ? collectTemporalEntities(rawText, currentDate) : [];
   const dateEntities = mergeEntities([...entities, ...fallbackTemporalEntities], rawText)
-    .filter((entity) => entity.label === "DATE")
+    .filter((entity) => isTimelineDateLabel(entity.label))
     .map((entity) => {
       const span = rawText.slice(entity.start, entity.end).trim();
       const temporal = entity.temporal || parseTemporalSpan(span, { rawText, start: entity.start, end: entity.end }, currentDate);
       return { entity, span, temporal };
     });
 
-  const currentSourceDate = chooseCurrentSourceDate(dateEntities.map((info) => ({
+  // A birth date must never itself become the inferred "current stay"
+  // anchor when no explicit admission date is given - with no other date
+  // in the note, letting it stand in for "today" makes it its own anchor
+  // (dayDiff 0), rendering as a nonsensical "[Hospital Day 1]" instead of a
+  // birth date. It still gets formatted below against whatever anchor the
+  // *other* dates in the note establish - it just can't supply that anchor.
+  const anchorCandidates = dateEntities.filter((info) => info.entity.label !== "DOB");
+  const currentSourceDate = chooseCurrentSourceDate(anchorCandidates.map((info) => ({
     ...info.entity,
     span: info.span,
     temporal: info.temporal
@@ -2128,7 +2171,7 @@ function resolvedRedactionEntities(rawText, entities, currentDate = null, { incl
   const dateTimeline = buildDateTimeline(rawText, allEntities, currentDate, { includeTemporalFallback });
   return allEntities.map((entity) => ({
     ...entity,
-    renderedPlaceholder: entity.label === "DATE"
+    renderedPlaceholder: isTimelineDateLabel(entity.label)
       ? makeDateTimelinePlaceholder(entity, dateTimeline)
       : entity.placeholder || placeholderForLabel(entity.label)
   }));
