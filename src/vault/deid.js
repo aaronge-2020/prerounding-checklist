@@ -1099,20 +1099,20 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
 
   const capturedPatterns = [
     { label: "PATIENT NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Patient(?: Name)?|Pt(?: Name)?|Name)${mdSep}([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})\s*$`, "gmi") },
-    { label: "DOB", regex: new RegExp(String.raw`^${mdFiller}(?:DOB|D\.O\.B\.|Date of birth|Birth date)${mdSep}(${dateValue})\s*$`, "gmi") },
+    { label: "DOB", regex: new RegExp(String.raw`^${mdFiller}(?:DOB|D\.O\.B\.|Date of birth|Birth date)${mdSepOptionalColon}(${dateValue})\s*$`, "gmi") },
     { label: "MRN", regex: new RegExp(String.raw`^${mdFiller}(?:MRN|Medical Record(?: Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
     { label: "ENCOUNTER ID", regex: new RegExp(String.raw`^${mdFiller}(?:CSN|FIN|HAR|Encounter(?: ID| Number))${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
     { label: "ID", regex: new RegExp(String.raw`^${mdFiller}(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
     { label: "DATE", regex: new RegExp(String.raw`^${mdFiller}(?:Encounter date|Admit(?:ted| date)?|Admission date|Discharge(?:d| date)?|Date of service|DOS|Collected|Collection(?: date| time| date\/time)?|Result(?:ed| date| time| date\/time)?|Received|Drawn|Specimen(?: collected)?|Ordered)${mdSep}(${dateValue}(?:\s+(?:at\s+)?\d{1,2}:\d{2}(?:\s*[AP]M)?)?)\s*$`, "gmi") },
-    { label: "PHONE", regex: new RegExp(String.raw`^${mdFiller}(?:Phone|Fax|Pager|Callback|Cell|Mobile|Tel)${mdSep}((?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4})\s*$`, "gmi") },
-    { label: "EMAIL", regex: new RegExp(String.raw`^${mdFiller}Email${mdSep}([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})\s*$`, "gmi") },
-    { label: "ADDRESS", regex: new RegExp(String.raw`^${mdFiller}Address${mdSep}(.+)$`, "gmi") },
+    { label: "PHONE", regex: new RegExp(String.raw`^${mdFiller}(?:Phone|Fax|Pager|Callback|Cell|Mobile|Tel)${mdSepOptionalColon}((?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4})\s*$`, "gmi") },
+    { label: "EMAIL", regex: new RegExp(String.raw`^${mdFiller}Email${mdSepOptionalColon}([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})\s*$`, "gmi") },
+    { label: "ADDRESS", regex: new RegExp(String.raw`^${mdFiller}Address${mdSepOptionalColon}(.+)$`, "gmi") },
     { label: "FACILITY", regex: new RegExp(String.raw`^${mdFiller}(?:Facility|Campus|Hospital|Clinic|Site|Service location|Lab location|Ordering location)${mdSep}([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)`, "gmi") },
     { label: "ROOM", regex: new RegExp(String.raw`^${mdFiller}(?:Room|Rm|Bed|ICU room|ED room|Unit|Floor|Ward|Pod|Bay|Location)${mdSep}([A-Z0-9][A-Z0-9 \t-]*\d?[A-Z0-9-]*)\s*$`, "gmi") },
-    { label: "PROVIDER NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Primary endocrinologist|Provider|Attending|Resident|Fellow|Consultant|Surgeon|PCP|Primary care provider|Referring provider|Ordering provider)${mdSep}((?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}|[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,2})`, "gmi") },
-    { label: "CONTACT NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian|Caregiver)${mdSep}([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})`, "gmi") },
-    { label: "ORGANIZATION", regex: new RegExp(String.raw`^${mdFiller}Preferred pharmacy${mdSep}([^,\n\r]{2,80})`, "gmi") },
-    { label: "DOB", regex: new RegExp(String.raw`\b(?:DOB|D\.O\.B\.|Date of birth|Birth date)${mdSep}(${dateValue})`, "gi") },
+    { label: "PROVIDER NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Primary endocrinologist|Provider|Attending|Resident|Fellow|Consultant|Surgeon|PCP|Primary care provider|Referring provider|Ordering provider)${mdSepOptionalColon}((?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}|[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,2})`, "gmi") },
+    { label: "CONTACT NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian|Caregiver)${mdSepOptionalColon}([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})`, "gmi") },
+    { label: "ORGANIZATION", regex: new RegExp(String.raw`^${mdFiller}Preferred pharmacy${mdSepOptionalColon}([^,\n\r]{2,80})`, "gmi") },
+    { label: "DOB", regex: new RegExp(String.raw`\b(?:DOB|D\.O\.B\.|Date of birth|Birth date)${mdSepOptionalColon}(${dateValue})`, "gi") },
     { label: "PATIENT NAME", regex: /\b(?:Patient(?: Name)?|Pt(?: Name)?)\s+(?!is\b|was\b|reports\b|states\b)([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})(?=\s+(?:MRN|Medical Record(?: Number)?|DOB|Date of birth|Birth date)\b|[,:;\n\r]|$)/gi },
     { label: "MRN", regex: new RegExp(String.raw`\b(?:MRN|Medical Record(?: Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
     { label: "ENCOUNTER ID", regex: new RegExp(String.raw`\b(?:CSN|FIN|HAR|Encounter(?: ID| Number))${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
@@ -1157,7 +1157,18 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
     { label: "DATE", regex: /\b(?:1st|2nd|3rd|4th)\s+[Qq]uarter\s+\d{2,4}\b/g },
     // "last week", "next month", "previous quarter", "past year"
     { label: "DATE", regex: /\b(?:last|next|this|previous|prior|past|upcoming|following)\s+(?:week|month|quarter|year|semester|trimester|decade|century)\b/gi },
-    { label: "ADDRESS", regex: /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b(?:,?[ \t]+[A-Za-z .-]+)?(?:,?[ \t]+[A-Z]{2})?(?:[ \t]+\d{5}(?:-\d{4})?)?/gi, skip: isLikelyAddressFalsePositive },
+    // The optional city-name group's charset includes plain space (so a
+    // multi-word city matches at all), which makes it greedily swallow the
+    // separating space the zip group further down also needs - and since
+    // that zip group is itself optional, dropping it entirely is a valid
+    // match, so the engine has no reason to backtrack and give the space
+    // back. That silently truncates every address written without a comma
+    // before the zip ("...Springfield Oregon 97477" - the ordinary shape a
+    // spelled-out state name produces), leaving the zip for something else
+    // downstream to mislabel on its own. Letting the zip group's own leading
+    // separator be optional (zero-or-more, not one-or-more) means it still
+    // matches even when the city group already ate the only space there.
+    { label: "ADDRESS", regex: /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b(?:,?[ \t]+[A-Za-z .-]+)?(?:,?[ \t]+[A-Z]{2})?(?:[ \t]*\d{5}(?:-\d{4})?)?/gi, skip: isLikelyAddressFalsePositive },
     { label: "ROOM", regex: /\b(?:Room|Rm|Bed|ICU room|ED room)\b(?!\s*[:#])\s+[A-Z0-9-]*\d[A-Z0-9-]*\b/gi },
     { label: "LOCATION", regex: /\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/g },
     { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+[A-Z][A-Za-z&.'-]+){0,4}[ \t]+Laboratory,\s+(?:University|College|Institute) of [A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,4},\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+)*,\s+[A-Z]{2}\b/g },
@@ -1852,7 +1863,19 @@ export function collectTemporalEntities(rawText, referenceDate = null) {
     if (isLikelyDurationSinceEventPhrase(text, start, end)) {
       return;
     }
-    if (isLikelyDateFalsePositive(text, start, end) && !isCourseDateLabel(text, start, end) && !hasClinicalTemporalContext(text, start, end)) {
+    // A bare casual reference ("yesterday", "tonight", "tomorrow", "last
+    // night") has no digit and no month name, so it always trips the
+    // false-positive gate's very first rule - and ordinary HPI narrative
+    // ("He fell yesterday.", "She hiked in the woods yesterday.") routinely
+    // has no other clinical keyword nearby for hasClinicalTemporalContext to
+    // latch onto, unlike "today"/"current" which the gate already
+    // self-matches. But chrono only ever tags this parser onto the exact
+    // closed set now/today/tonight/tomorrow/overmorrow/tmr/tmrw/yesterday/
+    // "last night" (see ENCasualDateParser's PATTERN) - there's no realistic
+    // clinical-note sentence where one of those words appears and doesn't
+    // mean the relative day it names, so this class of match is trusted
+    // outright instead of needing a nearby keyword to vouch for it.
+    if (!isCasualChronoReference(result) && isLikelyDateFalsePositive(text, start, end) && !isCourseDateLabel(text, start, end) && !hasClinicalTemporalContext(text, start, end)) {
       return;
     }
     const temporal = chronoResultToTemporal(result);
