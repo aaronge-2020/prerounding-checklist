@@ -35,6 +35,14 @@ assert.match(guide, /Guided demo/);
 assert.match(guide, /Answer a checklist question/);
 assert.match(guide, /real checklist/);
 assert.doesNotMatch(guide, /demo-answer|demo-generate-prompt|static/i);
+const handoffGuide = presentation.renderGuide({
+  session: { stage: "context-review" },
+  currentView: "daily",
+  reviewAction: "continue-section-review",
+  nextSectionLabel: "Medications"
+});
+assert.match(handoffGuide, /Continue to next field/);
+assert.match(handoffGuide, /Medications/);
 
 const complete = presentation.renderGuide({ session: { stage: "done" }, currentView: "prompts" });
 assert.match(complete, /Demo complete/);

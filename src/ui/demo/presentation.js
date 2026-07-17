@@ -17,15 +17,18 @@ export function demoStage(stageId) {
 }
 
 export function createDemoPresentation({ escapeHtml }) {
-  function renderGuide({ session, currentView }) {
+  function renderGuide({ session, currentView, reviewAction = "", nextSectionLabel = "" }) {
     const stage = demoStage(session.stage);
     const stageIds = Object.keys(DEMO_GUIDE_STAGES);
     const step = Math.max(1, stageIds.indexOf(session.stage) + 1);
     const isComplete = session.stage === "done";
     const routeMismatch = !isComplete && currentView !== stage.view;
+    const reviewHandoff = reviewAction === "continue-section-review"
+      ? `The previous field is complete. Click Continue to next field to review ${nextSectionLabel || "the next field"}.`
+      : "";
     const instruction = routeMismatch
       ? `Open ${stage.view === "workups" ? "Workups" : stage.view === "prompts" ? "OpenEvidence Prompts" : stage.view} with the highlighted sidebar control to continue.`
-      : stage.instruction;
+      : reviewHandoff || stage.instruction;
     return `
       <section class="guided-demo-bar" data-demo-guide role="status" aria-live="polite">
         <div class="guided-demo-step">Guided demo · ${isComplete ? "Complete" : `Step ${step} of ${stageIds.length - 1}`}</div>

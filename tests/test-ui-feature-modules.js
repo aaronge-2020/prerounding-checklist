@@ -68,6 +68,21 @@ const confirmedMarkup = redactionView.renderRedactionDocument("[NAME]", {
 });
 assert.doesNotMatch(confirmedMarkup, /Jane/);
 assert.match(confirmedMarkup, /Accepted redaction/);
+const quietReviewMarkup = redactionView.renderSectionSurface({
+  section: { id: "admission", label: "Admission context" },
+  scope: "context",
+  review: { inspectedRedactionIndex: -1, redactions: [] },
+  editing: false,
+  draftText: "No identifiers remain in this field.",
+  sections: [
+    { id: "admission", label: "Admission context" },
+    { id: "medications", label: "Medications" }
+  ],
+  reviewFor: (sectionId) => sectionId === "medications" ? { redactions: [] } : null
+});
+assert.match(quietReviewMarkup, /Field complete/);
+assert.match(quietReviewMarkup, /Next: review Medications/);
+assert.match(quietReviewMarkup, /data-action="continue-section-review"/);
 
 class FakeFile {
   constructor(parts, name, options) {

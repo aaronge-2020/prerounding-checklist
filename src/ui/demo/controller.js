@@ -4,6 +4,25 @@ import { DEMO_WORKUP_ID } from "./session.js?v=20260717-guided-demo-ux";
 export function createDemoController({ byId, escapeHtml, getSession, getView }) {
   const presentation = createDemoPresentation({ escapeHtml });
 
+  function activeReviewAction(content) {
+    return content?.querySelector(
+      '.section-editor.is-expanded [data-action="confirm-all-section-redactions"], ' +
+      '.section-editor.is-expanded [data-action="keep-reviewed-redaction"], ' +
+      '.section-editor.is-expanded [data-action="continue-section-review"]'
+    ) || null;
+  }
+
+  function targetForStage(stage, stageId, view, content) {
+    if ((stageId === "context-review" || stageId === "daily-review") && view === stage.view) {
+      return activeReviewAction(content) || content.querySelector(stage.targetSelector);
+    }
+    return stage.navTarget
+      ? document.querySelector(`button[data-view-target="${CSS.escape(stage.navTarget)}"]`)
+      : view === stage.view
+        ? content.querySelector(stage.targetSelector)
+        : document.querySelector(`button[data-view-target="${CSS.escape(stage.view)}"]`);
+  }
+
   function clearTargetDecorations() {
     document.querySelectorAll(".demo-next-action").forEach((element) => element.classList.remove("demo-next-action"));
     document.querySelectorAll("[data-demo-target]").forEach((element) => element.removeAttribute("data-demo-target"));
@@ -17,14 +36,15 @@ export function createDemoController({ byId, escapeHtml, getSession, getView }) 
     const view = getView();
     const content = byId(`${view}Content`);
     if (!content) return;
-    content.insertAdjacentHTML("afterbegin", presentation.renderGuide({ session, currentView: view }));
     const stageId = session.stage;
     const stage = presentation.stageFor(stageId);
-    const target = stage.navTarget
-      ? document.querySelector(`button[data-view-target="${CSS.escape(stage.navTarget)}"]`)
-      : view === stage.view
-        ? content.querySelector(stage.targetSelector)
-        : document.querySelector(`button[data-view-target="${CSS.escape(stage.view)}"]`);
+    const target = targetForStage(stage, stageId, view, content);
+    content.insertAdjacentHTML("afterbegin", presentation.renderGuide({
+      session,
+      currentView: view,
+      reviewAction: target?.dataset.action || "",
+      nextSectionLabel: target?.closest(".review-next-step")?.querySelector("strong")?.textContent?.replace(/^Next: review\s*/i, "") || ""
+    }));
     if (!target) return;
     target.classList.add("demo-next-action");
     target.dataset.demoTarget = "true";
@@ -34,9 +54,7 @@ export function createDemoController({ byId, escapeHtml, getSession, getView }) 
     });
     setTimeout(() => {
       if (getSession()?.stage !== stageId) return;
-      const currentTarget = stage.navTarget
-        ? document.querySelector(`button[data-view-target="${CSS.escape(stage.navTarget)}"]`)
-        : view === stage.view ? content.querySelector(stage.targetSelector) : document.querySelector(`button[data-view-target="${CSS.escape(stage.view)}"]`);
+      const currentTarget = targetForStage(stage, stageId, view, content);
       currentTarget?.classList.add("demo-next-action");
       if (currentTarget) currentTarget.dataset.demoTarget = "true";
     }, 250);
@@ -46,7 +64,7 @@ export function createDemoController({ byId, escapeHtml, getSession, getView }) 
     const session = getSession();
     if (!session) return;
     if (action === "save-context") session.stage = document.querySelector('[data-action="keep-reviewed-redaction"]') ? "context-review" : "save-day";
-    if ((action === "keep-reviewed-redaction" || action === "confirm-all-section-redactions") && !document.querySelector('[data-action="keep-reviewed-redaction"], [data-action="confirm-all-section-redactions"]')) session.stage = session.stage === "daily-review" ? "open-workups" : "save-day";
+    if ((action === "keep-reviewed-redaction" || action === "confirm-all-section-redactions" || action === "continue-section-review") && !activeReviewAction(document.querySelector("#dailyContent"))) session.stage = session.stage === "daily-review" ? "open-workups" : "save-day";
     if (action === "save-day") session.stage = document.querySelector('[data-action="keep-reviewed-redaction"]') ? "daily-review" : "open-workups";
     if (action === "build-checklist") session.stage = "answer-checklist";
     if (action === "copy-prompt") session.stage = "done";

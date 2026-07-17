@@ -4238,6 +4238,31 @@ p {
   gap: 2px;
 }
 
+.review-next-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid #b9cfd2;
+  border-radius: 6px;
+  background: #f7fbfb;
+  padding: 10px 12px;
+}
+
+.review-next-step > div {
+  display: grid;
+  gap: 2px;
+}
+
+.review-next-step .muted { font-size: 11px; }
+
+@media (max-width: 680px) {
+  .review-next-step {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
 .redaction-review .muted,
 .redaction-inspector span,
 .redaction-inspector small { font-size: 11px; }

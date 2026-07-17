@@ -31,6 +31,11 @@ export function warningSnippet(warning) {
 // and returns markup only, keeping the sensitive review interactions at the UI
 // edge that owns the active-tab session.
 export function createRedactionPresentation({ escapeHtml, icon }) {
+  function nextReviewSection(sections = [], sectionId, reviewFor) {
+    const currentIndex = sections.findIndex((section) => section.id === sectionId);
+    return currentIndex < 0 ? null : sections.slice(currentIndex + 1).find((section) => reviewFor(section.id)) || null;
+  }
+
   function renderRedactionDocument(text, review, { id = "", scope = "", sectionId = "", action = "inspect-redaction", label = "De-identified text review" } = {}) {
     const output = String(text || "");
     const attributes = [
@@ -67,17 +72,18 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
     return `<div${id ? ` id="${escapeHtml(id)}"` : ""} class="redaction-document" data-redaction-document role="textbox" aria-readonly="true" aria-multiline="true" tabindex="0" aria-label="${escapeHtml(label)}">${markup}</div>`;
   }
 
-  function renderSectionReview({ section, scope, review }) {
+  function renderSectionReview({ section, scope, review, nextSectionLabel = "" }) {
     if (!review) return "";
     const inspected = review.redactions[review.inspectedRedactionIndex] || null;
     const inspectedIsConfirmed = inspected?.state === "confirmed";
     const pending = review.redactions.filter((redaction) => redaction.state === "pending").length;
+    const hasNextSection = Boolean(nextSectionLabel);
     return `
       <div class="redaction-review" data-redaction-review data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">
         <div class="redaction-review-heading">
           <div>
-            <strong>${pending ? `${pending} change${pending === 1 ? "" : "s"} to review` : "Review complete"}</strong>
-            <span class="muted">Click a crossed-out value in the document below. The original stays only in this tab.</span>
+            <strong>${pending ? `${pending} change${pending === 1 ? "" : "s"} to review` : hasNextSection ? "Field complete" : "Review complete"}</strong>
+            <span class="muted">${pending ? "Click a crossed-out value in the document below. The original stays only in this tab." : hasNextSection ? "There are no more redactions to decide in this field." : "Click a crossed-out value in the document below. The original stays only in this tab."}</span>
           </div>
           ${pending ? `<button class="button--quiet" type="button" data-action="confirm-all-section-redactions" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Confirm rest (${pending})</button><button class="button--quiet" type="button" data-action="reject-all-section-redactions" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Reject rest (${pending})</button>` : ""}
         </div>
@@ -93,12 +99,21 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
             </div>
             <small>${inspectedIsConfirmed ? "Undo only if this value isn't identifying — it will be restored in the de-identified text for the next save." : "Reject only if this value isn't identifying — the original will be restored in the de-identified text for the next save."}</small>
           </div>` : ""}
+        ${!pending && hasNextSection ? `
+          <div class="review-next-step" data-review-next-step>
+            <div>
+              <strong>Next: review ${escapeHtml(nextSectionLabel)}</strong>
+              <span class="muted">This field is complete. Continue to the next saved field.</span>
+            </div>
+            <button class="button--secondary" type="button" data-action="continue-section-review" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Continue to next field</button>
+          </div>` : ""}
       </div>
     `;
   }
 
-  function renderSectionSurface({ section, scope, review, editing, draftText }) {
+  function renderSectionSurface({ section, scope, review, editing, draftText, sections = [], reviewFor = () => null }) {
     const documentId = `sectionRedactionDocument-${section.id}`;
+    const nextSectionLabel = nextReviewSection(sections, section.id, reviewFor)?.label || "";
     return `
       <div class="section-review-surface" data-section-review-surface>
         ${review && !editing
@@ -109,14 +124,15 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
           <button class="button--quiet" type="button" data-action="manual-redact-selection" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">${icon("wand")} Redact selected text</button>
           <span class="muted">${review && !editing ? "Review changes here, or edit the text without leaving Hospital Stay." : "Edit this de-identified field, then save to re-run the local review."}</span>
         </div>
-        ${review && !editing ? renderSectionReview({ section: { ...section, deidentifiedText: draftText }, scope, review }) : ""}
+        ${review && !editing ? renderSectionReview({ section: { ...section, deidentifiedText: draftText }, scope, review, nextSectionLabel }) : ""}
       </div>
     `;
   }
 
-  function renderSectionEditor({ section, scope, editing, pendingFocus, review, draftText }) {
+  function renderSectionEditor({ section, scope, editing, pendingFocus, review, draftText, sections = [], reviewFor = () => null }) {
     const characterCount = draftText?.length || 0;
     const draftMarker = draftText !== section.deidentifiedText ? " · draft" : "";
+    const nextSectionLabel = nextReviewSection(sections, section.id, reviewFor)?.label || "";
     const isInitialReviewTarget = pendingFocus?.scope === scope && pendingFocus.sectionId === section.id;
     const isExpanded = editing || isInitialReviewTarget;
     return `
@@ -132,7 +148,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
             <button class="icon-button" type="button" data-action="remove-section" data-scope="${scope}" data-section-id="${escapeHtml(section.id)}" title="Remove">${icon("trash")}</button>
           </div>
         </div>
-        ${renderSectionSurface({ section, scope, review, editing, draftText })}
+        ${renderSectionSurface({ section, scope, review, editing, draftText, nextSectionLabel })}
       </article>
     `;
   }

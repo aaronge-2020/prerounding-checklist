@@ -972,7 +972,7 @@ function renderSectionSurface(section, scope) {
   const editing = review && isSectionTextEditing(scope, section.id);
   const draftText = sectionDraftText(scope, section.id, section.deidentifiedText);
   synchronizeReviewPlaceholders(review, draftText);
-  return redactionPresentation.renderSectionSurface({ section, scope, review, editing, draftText });
+  return redactionPresentation.renderSectionSurface({ section, scope, review, editing, draftText, sections: reviewSectionsForScope(scope), reviewFor: (id) => sectionReviewFor(scope, id) });
 }
 
 function renderSectionEditor(section, scope) {
@@ -980,14 +980,7 @@ function renderSectionEditor(section, scope) {
   const editing = isSectionTextEditing(scope, section.id);
   const draftText = sectionDraftText(scope, section.id, section.deidentifiedText);
   synchronizeReviewPlaceholders(review, draftText);
-  return redactionPresentation.renderSectionEditor({
-    section,
-    scope,
-    editing,
-    pendingFocus: app.pendingSectionReviewFocus,
-    review,
-    draftText
-  });
+  return redactionPresentation.renderSectionEditor({ section, scope, editing, pendingFocus: app.pendingSectionReviewFocus, review, draftText, sections: reviewSectionsForScope(scope), reviewFor: (id) => sectionReviewFor(scope, id) });
 }
 
 function renderWarnings(sections, scope) {
@@ -1568,6 +1561,7 @@ async function handleClick(event) {
     if (action === "inspect-redaction") inspectRedaction(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex));
     if (action === "keep-reviewed-redaction") keepReviewedRedaction(target.dataset.scope, target.dataset.sectionId);
     if (action === "confirm-all-section-redactions") confirmAllSectionRedactions(target.dataset.scope, target.dataset.sectionId);
+    if (action === "continue-section-review") advanceSectionReview(target.dataset.scope, target.dataset.sectionId, -1);
     if (action === "reject-all-section-redactions") rejectAllSectionRedactions(target.dataset.scope, target.dataset.sectionId);
     if (action === "allow-reviewed-non-phi") allowReviewedNonPhi(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex));
     if (action === "save-context") await saveContext();
@@ -1915,7 +1909,11 @@ function moveToSectionReviewTarget(scope, originSectionId, target) {
 
   const destination = expandSectionEditor(scope, activeTarget.sectionId);
   if (origin) refreshSectionReviewInEditor(origin, scope, originSectionId);
-  if (destination && destination !== origin) refreshSectionReviewInEditor(destination, scope, activeTarget.sectionId);
+  if (destination && destination !== origin) {
+    refreshSectionReviewInEditor(destination, scope, activeTarget.sectionId);
+    origin?.classList.remove("is-expanded");
+    origin?.querySelector('[data-action="toggle-section-editor"]')?.setAttribute("aria-expanded", "false");
+  }
 
   requestAnimationFrame(() => {
     const destinationDocument = destination?.querySelector("[data-redaction-document]");
@@ -2037,8 +2035,6 @@ function confirmAllSectionRedactions(scope, sectionId) {
   pending.forEach((redaction) => { redaction.state = "confirmed"; });
   review.inspectedRedactionIndex = -1;
   const next = pending.length ? advanceSectionReview(scope, sectionId, review.redactions.indexOf(pending[pending.length - 1])) : null;
-  const editor = expandSectionEditor(scope, sectionId);
-  refreshSectionReviewAtCurrentPosition(editor, scope, sectionId);
   setStatus(next ? "Redactions accepted. Reviewing the next field." : pending.length ? `${pending.length} redaction${pending.length === 1 ? "" : "s"} accepted. Click any highlighted replacement to undo it.` : "All redactions were already accepted.");
 }
 
