@@ -52,9 +52,9 @@ import { createSettingsPresentation } from "./settings/presentation.js?v=2026071
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260717-guided-demo-ux";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
-import { createDemoController } from "./demo/controller.js?v=20260717-guided-demo-ux-3";
-import { createDemoPatient } from "./demo/session.js?v=20260717-guided-demo-ux";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20260717-guided-demo-ux";
+import { createDemoController } from "./demo/controller.js?v=20260717-guided-demo-ux-4";
+import { createDemoPatient } from "./demo/session.js?v=20260717-guided-demo-ux-4";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20260717-guided-demo-ux-4";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
   vault: null,
@@ -1525,6 +1525,7 @@ async function handleClick(event) {
     }
     if (action === "unlock-vault") await unlockVault();
     if (action === "start-guided-demo" || action === "restart-guided-demo") demoSessionController.start();
+    if (action === "exit-guided-demo") demoSessionController.exit();
     if (action === "toggle-vault-passphrase") toggleVaultPassphraseVisibility();
     if (action === "lock-vault") lockVault();
     if (action === "request-delete-vault") requestVaultDeletion();

@@ -1,5 +1,5 @@
-import { createDemoPresentation } from "./presentation.js?v=20260717-guided-demo-ux";
-import { DEMO_WORKUP_ID } from "./session.js?v=20260717-guided-demo-ux";
+import { createDemoPresentation } from "./presentation.js?v=20260717-guided-demo-ux-4";
+import { DEMO_WORKUP_ID } from "./session.js?v=20260717-guided-demo-ux-4";
 
 export function createDemoController({ byId, escapeHtml, getSession, getView }) {
   const presentation = createDemoPresentation({ escapeHtml });

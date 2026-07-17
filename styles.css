@@ -3919,27 +3919,42 @@ p {
   top: 0;
   z-index: 5;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 12px;
-  margin: 0 0 14px;
-  padding: 10px 12px;
+  gap: 14px;
+  margin: 0 0 12px;
+  padding: 8px 12px;
   border: 1px solid #b9cfd2;
   border-left: 4px solid var(--accent);
   border-radius: var(--radius-md);
   background: #f7fbfb;
 }
 
-.guided-demo-step {
+.guided-demo-heading {
+  display: grid;
+  gap: 2px;
+  min-width: max-content;
+}
+
+.guided-demo-kicker {
   color: var(--accent);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.guided-demo-step {
+  color: var(--muted);
+  font-size: 12px;
   white-space: nowrap;
 }
 
 .guided-demo-copy {
-  display: grid;
-  gap: 2px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
   min-width: 0;
 }
 
@@ -3953,12 +3968,28 @@ p {
   font-size: 13px;
 }
 
+.guided-demo-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: max-content;
+}
+
 .guided-demo-badge {
   white-space: nowrap;
 }
 
-.guided-demo-bar .button--quiet {
+.guided-demo-exit {
+  border-color: var(--border);
+  color: var(--ink);
   white-space: nowrap;
+}
+
+.guided-demo-exit:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--surface);
+  color: var(--ink);
 }
 
 @media (max-width: 680px) {
@@ -3968,19 +3999,19 @@ p {
     gap: 8px 12px;
   }
 
+  .guided-demo-heading {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .guided-demo-actions {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
   .guided-demo-copy {
     grid-column: 1 / -1;
     grid-row: 2;
-  }
-
-  .guided-demo-badge {
-    grid-column: 1;
-    grid-row: 3;
-  }
-
-  .guided-demo-bar .button--quiet {
-    grid-column: 2;
-    grid-row: 3;
   }
 }
 
@@ -6340,27 +6371,28 @@ body.vault-locked .vault-access {
 
 /* Guided-demo targets need to be unmistakable without relying on motion. */
 .guided-demo-instructions {
-  display: grid;
-  gap: 3px;
-  margin-top: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  margin-top: 0;
   color: var(--text);
   font-size: 13px;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
-.guided-demo-instructions b {
-  color: var(--accent);
-  font-weight: 700;
-}
-
-.guided-demo-next {
+.guided-demo-action {
   color: var(--ink);
   font-weight: 600;
 }
 
+.guided-demo-note {
+  color: var(--muted);
+}
+
 .guided-demo-bar {
-  border-width: 2px;
-  border-left-width: 6px;
+  border-width: 1px;
+  border-left-width: 4px;
 }
 
 .demo-next-action {

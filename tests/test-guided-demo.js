@@ -31,17 +31,17 @@ assert.equal(demoStage("context-review").targetSelector, '[data-action="confirm-
 assert.equal(demoStage("daily-review").targetSelector, '[data-action="confirm-all-section-redactions"]');
 assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 11);
 Object.values(DEMO_GUIDE_STAGES).forEach((stage) => {
-  assert.ok(stage.what, `${stage.title} should explain what the user is doing`);
-  assert.ok(stage.why, `${stage.title} should explain why the step exists`);
+  assert.ok(stage.instruction, `${stage.title} should tell the user what to do`);
 });
 const guide = presentation.renderGuide({ session: { stage: "answer-checklist" }, currentView: "checklist" });
 assert.match(guide, /Guided demo/);
 assert.match(guide, /Answer a checklist question/);
 assert.match(guide, /guided-demo-instructions/);
-assert.match(guide, /What:/);
-assert.match(guide, /Why:/);
-assert.match(guide, /Next:/);
-assert.match(guide, /real checklist/);
+assert.match(guide, /Choose an answer for the highlighted question/);
+assert.match(guide, /Your answer helps shape the evidence prompt/);
+assert.match(guide, /data-action="exit-guided-demo"/);
+assert.match(guide, />Exit demo</);
+assert.doesNotMatch(guide, /Restart demo/);
 assert.doesNotMatch(guide, /demo-answer|demo-generate-prompt|static/i);
 const handoffGuide = presentation.renderGuide({
   session: { stage: "context-review" },
@@ -51,10 +51,11 @@ const handoffGuide = presentation.renderGuide({
 });
 assert.match(handoffGuide, /Continue to next field/);
 assert.match(handoffGuide, /Medications/);
-assert.match(handoffGuide, /person must verify the draft/);
+assert.match(handoffGuide, /You check the app's suggestions before moving on/);
 
 const complete = presentation.renderGuide({ session: { stage: "done" }, currentView: "prompts" });
 assert.match(complete, /Demo complete/);
 assert.match(complete, /nothing from this demo was written to your vault/i);
+assert.match(complete, /data-action="exit-guided-demo"/);
 
 console.log("Guided demo session tests passed");

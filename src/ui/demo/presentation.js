@@ -2,89 +2,78 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   "save-context": {
     view: "daily",
     targetSelector: '[data-action="save-context"]',
-    title: "Save the synthetic admission packet",
-    what: "Save the preloaded synthetic admission packet.",
-    why: "This runs the same local de-identification path used for a note, without using real patient data.",
-    instruction: "Click Save admission packet. The app will create a local review draft."
+    title: "Start with the sample case",
+    instruction: "Click Save admission packet.",
+    helper: "This is a safe sample—no real patient data is used."
   },
   "context-review": {
     view: "daily",
     targetSelector: '[data-action="confirm-all-section-redactions"]',
-    title: "Review the admission redactions",
-    what: "Review the highlighted replacements one field at a time. Confirm safe replacements, reject incorrect ones, and continue through quiet fields.",
-    why: "The model only drafts redactions; a person must verify the draft before text can be copied to an external evidence tool.",
-    instruction: "Use Confirm rest for the current field, then Continue to next field when that field is complete."
+    title: "Check the highlighted changes",
+    instruction: "Review the highlighted changes, then click Confirm rest.",
+    helper: "You check the app's suggestions before moving on."
   },
   "save-day": {
     view: "daily",
     targetSelector: '[data-action="save-day"]',
-    title: "Save the hospital-day update",
-    what: "Save the preloaded HD1 hospital-day update.",
-    why: "Admission context and daily updates are separate packets, so each update can be reviewed without changing the saved timeline.",
-    instruction: "Click Save hospital day to run local de-identification on the HD1 update."
+    title: "Add the day-one update",
+    instruction: "Click Save hospital day.",
+    helper: "This adds the next part of the sample case."
   },
   "daily-review": {
     view: "daily",
     targetSelector: '[data-action="confirm-all-section-redactions"]',
-    title: "Review the hospital-day redactions",
-    what: "Review the detected date and identifier replacements in the HD1 update.",
-    why: "Every saved packet gets its own human review; earlier decisions are not silently applied to later notes.",
-    instruction: "Use Confirm rest for the current field, then continue until the daily update is complete."
+    title: "Check the day-one changes",
+    instruction: "Review the highlighted changes, then continue through the fields.",
+    helper: "Each part of the case gets its own quick review."
   },
   "open-workups": {
     view: "workups",
     navTarget: "workups",
-    title: "Open Workups",
-    what: "Open Workups from the sidebar.",
-    why: "A workup turns a clinical concern into explicit history and physical-exam questions; nothing is added automatically.",
-    instruction: "Click the highlighted Workups control."
+    title: "Choose checklist questions",
+    instruction: "Click Workups in the sidebar.",
+    helper: "Next, you'll choose questions for the checklist."
   },
   "select-workup": {
     view: "workups",
     targetSelector: '.workup-checkbox[value="general-admission"]',
-    title: "Choose a workup",
-    what: "Select General admission from the real workup catalog.",
-    why: "Checklist content is chosen explicitly, so the learner can see exactly which questions will be included.",
-    instruction: "Select the highlighted General admission option."
+    title: "Choose a question set",
+    instruction: "Select General admission.",
+    helper: "This chooses the questions for the checklist."
   },
   "build-checklist": {
     view: "workups",
     targetSelector: '.workup-editor-header-actions [data-action="build-checklist"]',
     title: "Build the checklist",
-    what: "Build a checklist from the selected workup.",
-    why: "Selecting a workup does not change the checklist by itself; building it is an explicit step the learner controls.",
-    instruction: "Click Build checklist after selecting the workup."
+    instruction: "Click Build checklist.",
+    helper: "This turns your selected questions into a checklist."
   },
   "answer-checklist": {
     view: "checklist",
     targetSelector: '#checklistSections > .checklist-section:first-child .checklist-item:first-child .checklist-answer',
     title: "Answer a checklist question",
-    what: "Choose an answer in the real checklist.",
-    why: "The checklist captures the learner's current assessment before an evidence question is drafted.",
-    instruction: "Choose any answer in the highlighted checklist item. The demo will then point you to the evidence prompt."
+    instruction: "Choose an answer for the highlighted question.",
+    helper: "Your answer helps shape the evidence prompt."
   },
   "open-prompts": {
     view: "prompts",
     navTarget: "prompts",
-    title: "Open OpenEvidence Prompts",
-    what: "Open the prompt builder from the sidebar.",
-    why: "The prompt is built from the reviewed, de-identified workflow rather than from raw patient text.",
-    instruction: "Click the highlighted OpenEvidence Prompts control."
+    title: "Open the prompt builder",
+    instruction: "Click OpenEvidence Prompts in the sidebar.",
+    helper: "The prompt is built from the case you reviewed."
   },
   "copy-prompt": {
     view: "prompts",
     targetSelector: '[data-action="copy-prompt"]',
-    title: "Copy the de-identified prompt",
-    what: "Copy the generated de-identified evidence prompt.",
-    why: "Only the reviewed prompt is copied; the demo never sends raw note text to an external service.",
-    instruction: "Click Copy prompt."
+    title: "Copy the prompt",
+    instruction: "Click Copy prompt.",
+    helper: "Only the reviewed prompt is copied."
   },
   done: {
     view: "prompts",
     title: "Demo complete",
-    what: "You followed the real path from a synthetic note to a reviewed checklist and evidence prompt.",
-    why: "This demonstrates the intended boundary: local processing and human review before external evidence lookup.",
-    instruction: "Nothing from this demo was written to your vault."
+    instruction: "You followed the full sample workflow.",
+    helper: "Nothing from this demo was written to your vault."
   }
 });
 
@@ -107,17 +96,21 @@ export function createDemoPresentation({ escapeHtml }) {
       : reviewHandoff || stage.instruction;
     return `
       <section class="guided-demo-bar" data-demo-guide role="status" aria-live="polite">
-        <div class="guided-demo-step">Guided demo · ${isComplete ? "Complete" : `Step ${step} of ${stageIds.length - 1}`}</div>
+        <div class="guided-demo-heading">
+          <span class="guided-demo-kicker">Guided demo</span>
+          <span class="guided-demo-step">${isComplete ? "Complete" : `Step ${step} of ${stageIds.length - 1}`}</span>
+        </div>
         <div class="guided-demo-copy">
           <strong>${escapeHtml(stage.title)}</strong>
           <div class="guided-demo-instructions">
-            <span><b>What:</b> ${escapeHtml(stage.what || stage.instruction)}</span>
-            <span><b>Why:</b> ${escapeHtml(stage.why || "This keeps the demo on the same path as the real app.")}</span>
-            <span class="guided-demo-next"><b>Next:</b> ${escapeHtml(nextInstruction)}</span>
+            <span class="guided-demo-action">${escapeHtml(nextInstruction)}</span>
+            ${!routeMismatch && stage.helper ? `<span class="guided-demo-note">${escapeHtml(stage.helper)}</span>` : ""}
           </div>
         </div>
-        <span class="guided-demo-badge">Synthetic only</span>
-        <button class="button--quiet" type="button" data-action="restart-guided-demo">Restart demo</button>
+        <div class="guided-demo-actions">
+          <span class="guided-demo-badge">Synthetic sample</span>
+          <button class="button--quiet guided-demo-exit" type="button" data-action="exit-guided-demo">Exit demo</button>
+        </div>
       </section>
     `;
   }
