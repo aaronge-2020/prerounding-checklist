@@ -147,8 +147,10 @@ try {
   await page.click('[data-view-target="prompts"]');
   await page.locator("#promptPreview").fill("@discharge");
   await page.waitForSelector("#smartVariableMenu.open");
-  assert.equal(await page.locator('#smartVariableMenu button[data-token="@discharge-summary-guidelines"]').isVisible(), true);
-  await page.locator('#smartVariableMenu button[data-token="@discharge-summary-guidelines"]').click();
+  const dischargeVariable = page.locator('#smartVariableMenu button.smart-variable-insert[data-token="@discharge-summary-guidelines"]');
+  assert.equal(await dischargeVariable.count(), 1);
+  assert.equal(await dischargeVariable.isVisible(), true);
+  await dischargeVariable.click();
   await page.waitForFunction(() => /Summarize the admission, hospital course, and discharge plan\./.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   // Restore the default template - this test overwrote the draft for
   // "Initial admission rounds" above, and later assertions in this file
@@ -183,6 +185,7 @@ try {
   await page.locator("#contextSections .section-editor").nth(2).locator(".section-text").fill("Creatinine 1.4 today.");
   await page.locator("#contextSections .section-editor").nth(3).locator('[data-action="toggle-section-editor"]').click();
   await page.locator("#contextSections .section-editor").nth(3).locator(".section-text").fill("AM Labs reviewed with the team.");
+  await page.fill("#dailyAdmissionDateInput", "2026-07-17");
   await page.click('[data-action="save-context"]');
   await page.waitForFunction(() => document.querySelector("#contextSections")?.textContent.includes("[MRN]"));
   await page.waitForSelector("#contextSections .redaction-review");
@@ -399,7 +402,7 @@ try {
   await page.waitForSelector("#smartVariableMenu.open");
   assert.equal(await page.locator("#smartVariableMenu").filter({ hasText: "@admission-context" }).count(), 1);
   assert.equal(await page.locator("#smartVariableMenu").filter({ hasText: "@admission-guidelines" }).count(), 1);
-  await page.locator('#smartVariableMenu button[data-token="@admission-guidelines"]').click();
+  await page.locator('#smartVariableMenu button.smart-variable-insert[data-token="@admission-guidelines"]').click();
   assert.equal(await page.locator("#promptPreview").inputValue(), "@admission-guidelines");
 
   // Regression test: the dropdown must actually narrow as the user keeps

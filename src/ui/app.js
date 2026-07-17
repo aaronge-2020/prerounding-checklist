@@ -2198,24 +2198,31 @@ function centerTextSnippetInDocument(documentElement, snippet) {
 
 function renderQuickReviewAtCurrentPosition(focusRedactionIndex = inspectedRedactionIndex(app.quickDeid.review)) {
   // `.view` owns route scrolling in this app. `window.scrollY` stays zero,
-  // which is why replacing this panel previously jumped a clinician to the
-  // top of the actual Quick De-ID scroll container.
+  // which is why replacing this panel can jump a clinician to the top of the
+  // actual Quick De-ID scroll container. The annotated document is a second
+  // scroll owner, so capture both layers before replacing its DOM node.
   const scrollOwner = byId("quickDeidView");
-  const pageTop = scrollOwner?.scrollTop ?? window.scrollY;
+  const priorDocument = byId("quickDeidReviewDocument");
+  const scrollSnapshot = captureScrollChain(priorDocument || scrollOwner);
+  const documentTop = priorDocument?.scrollTop ?? 0;
   renderQuickDeid();
-  // Rendering replaces the document node. Restore the route's scroll owner
-  // before centering the inner document so a click never teleports the user
-  // to the top of the Quick De-ID view.
-  if (scrollOwner) scrollOwner.scrollTop = pageTop;
+  // Rendering replaces the document node. Restore the route and inner
+  // document scroll owners before centering the next decision.
+  restoreScrollChain(scrollSnapshot);
   const documentElement = byId("quickDeidReviewDocument");
-  const focusIndex = Number.isFinite(focusRedactionIndex) && focusRedactionIndex >= 0
+  if (documentElement) documentElement.scrollTop = documentTop;
+  // An explicit -1 means "preserve the current position". This is used by
+  // manual redaction because the user's selection—not the next pending model
+  // change—is the location they need to keep in view.
+  const focusIndex = Number.isFinite(focusRedactionIndex)
     ? focusRedactionIndex
     : quickSelectedRedactionIndex(app.quickDeid.review);
   centerRedactionDocument(documentElement, focusIndex, () => {
-    // Replacing the review panel must never move the clinician to the top of
-    // the page. Restore the outer position after the focused span is laid out.
-    if (scrollOwner) scrollOwner.scrollTop = pageTop;
-    else window.scrollTo({ top: pageTop, behavior: "auto" });
+    // Replacing the review panel must never move the clinician away from the
+    // current position. Restore both owners after the focused span is laid
+    // out, especially for manual redaction where no focus target is centered.
+    restoreScrollChain(scrollSnapshot);
+    if (documentElement && focusIndex < 0) documentElement.scrollTop = documentTop;
   });
 }
 
@@ -2341,7 +2348,7 @@ function redactSelectedQuickText({ renderAfter = true } = {}) {
   const { start, end } = selectedOutputRangeFromDocument(byId("quickDeidReviewDocument"), app.quickDeid.output);
   app.quickDeid.output = insertManualRedaction(app.quickDeid.output, review, start, end);
   setStatus("Selected text manually redacted for this Quick De-ID session.");
-  if (renderAfter) renderQuickReviewAtCurrentPosition();
+  if (renderAfter) renderQuickReviewAtCurrentPosition(-1);
 }
 
 function dismissQuickWarning(warningIndex) {
