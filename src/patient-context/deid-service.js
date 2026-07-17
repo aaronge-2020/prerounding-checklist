@@ -1,7 +1,7 @@
 import {
   createDeidentifier,
   deidentifyTextStructuredOnly
-} from "../vault/deid.js?v=20260716-auto-coi-reload";
+} from "../vault/deid.js?v=20260716-redaction-fixes";
 import {
   DEFAULT_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,

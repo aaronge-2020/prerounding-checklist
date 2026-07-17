@@ -238,6 +238,25 @@ function isLikelyDurationOfConditionPhrase(rawText, start, end) {
   return /^\s+of\b/i.test(after);
 }
 
+// chrono's "<duration> after/later" parser resolves a bare relative offset
+// ("48 hours after", "2 days later") against the document's reference date
+// whenever nothing else in the match resolves to an actual date for "after"
+// to attach to - a real date following "after" gets absorbed into the same
+// match by chrono's own merge-after-date refiner, so if we're here, "after"
+// wasn't modifying a date at all. The same grammar is exactly how clinical
+// duration-since-event narration reads ("swelling for 48 hours after a
+// flight", "pain for 2 days after standing all shift") - not a date
+// reference, since the flight/shift isn't a known anchor. What's unique to
+// that reading is the governing "for" immediately before the match; genuine
+// relative-offset mentions ("will follow up 48 hours after this visit")
+// stand on their own and are never preceded by "for". Checked
+// unconditionally for the same reason as isLikelyDurationOfConditionPhrase
+// above - clinical-keyword-heavy lines are exactly where this shows up.
+function isLikelyDurationSinceEventPhrase(rawText, start, end) {
+  const before = rawText.slice(Math.max(0, start - 8), start);
+  return /\bfor\s*$/i.test(before);
+}
+
 function isLikelyMedicationWord(word) {
   return medicationNameWords.has(word) || medicationClassOrStemPattern.test(word);
 }
@@ -758,9 +777,35 @@ function refineNameLabel(label, rawText, start, end) {
   return normalized;
 }
 
+function isWordChar(ch) {
+  return typeof ch === "string" && ch !== "" && /[A-Za-z0-9]/.test(ch);
+}
+
+// AI model entity spans are produced over the model's own tokenization,
+// which routinely splits a long alphanumeric run (an MRN, account number,
+// phone digit block, ...) into several tokens - e.g. "58193427" as wordpiece
+// chunks "58" / "193427". When only the leading chunk scores above the
+// model's detection threshold, the entity comes back covering just that
+// chunk, and everything after it is left as plaintext even though it's the
+// same identifier. A redaction boundary should never fall strictly inside a
+// contiguous run of letters/digits - that's never a real word boundary in
+// English clinical text - so any entity (from any source, not just the
+// model) that stops mid-run gets its boundary pushed out to the edge of the
+// run before anything else runs on it.
+function expandEntityToTokenBoundary(rawText, start, end) {
+  let nextStart = start;
+  let nextEnd = end;
+  while (nextStart > 0 && isWordChar(rawText[nextStart - 1]) && isWordChar(rawText[nextStart])) {
+    nextStart -= 1;
+  }
+  while (nextEnd < rawText.length && isWordChar(rawText[nextEnd - 1]) && isWordChar(rawText[nextEnd])) {
+    nextEnd += 1;
+  }
+  return { start: nextStart, end: nextEnd };
+}
+
 function normalizePhiEntity(rawText, entity) {
-  const start = Number(entity.start);
-  const end = Number(entity.end);
+  const { start, end } = expandEntityToTokenBoundary(rawText, Number(entity.start), Number(entity.end));
   const label = refineNameLabel(entity.label, rawText, start, end);
   return {
     start,
@@ -966,8 +1011,16 @@ function addCapturedEntity(rawText, entities, label, regex, source = "structured
     if (valueOffset < 0) {
       continue;
     }
-    const leadingTrim = value.match(/^\s*/)[0].length;
-    const trailingTrim = value.match(/\s*$/)[0].length;
+    // Captured-value regexes use a permissive charset (anything but a
+    // newline/comma) so real facility/organization names with punctuation
+    // still match in full. In these LLM-generated notes the label itself is
+    // routinely markdown-bolded ("**Hospital:** North Valley Medical
+    // Center") - the closing "**" sits directly against the value with no
+    // separating whitespace for a plain `\s*` trim to catch, so it gets
+    // captured as if it were part of the name. Strip stray leading/trailing
+    // emphasis markers the same way whitespace is stripped.
+    const leadingTrim = value.match(/^[\s*]*/)[0].length;
+    const trailingTrim = value.match(/[\s*]*$/)[0].length;
     const start = match.index + valueOffset + leadingTrim;
     const end = match.index + valueOffset + value.length - trailingTrim;
     pushPatternEntity(entities, rawText, label, start, end, source, context || match[0].split(/[:#]/)[0].trim());
@@ -1776,6 +1829,9 @@ export function collectTemporalEntities(rawText, referenceDate = null) {
       return;
     }
     if (isLikelyDurationOfConditionPhrase(text, start, end)) {
+      return;
+    }
+    if (isLikelyDurationSinceEventPhrase(text, start, end)) {
       return;
     }
     if (isLikelyDateFalsePositive(text, start, end) && !isCourseDateLabel(text, start, end) && !hasClinicalTemporalContext(text, start, end)) {

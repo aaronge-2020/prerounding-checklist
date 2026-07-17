@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20260716-auto-coi-reload";
+} from "./deid-service.js?v=20260716-redaction-fixes";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });
