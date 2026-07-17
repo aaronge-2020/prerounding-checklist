@@ -540,6 +540,12 @@ try {
   await page.waitForFunction(() => document.querySelector("#archiveConfirmDialog")?.open === true);
   await page.click('[data-action="confirm-archive-patient"]');
   await page.waitForFunction(() => /No patients yet/.test(document.querySelector("#vaultContent")?.textContent || ""));
+  await page.click('[data-view-target="daily"]');
+  assert.match(await page.locator("#dailyContent").innerText(), /unlock the vault and add a patient/i, "Hospital Stay must clear when the roster is empty");
+  await page.click('[data-view-target="workups"]');
+  assert.match(await page.locator("#workupsContent").innerText(), /unlock the vault and add a patient/i, "Workups must clear when the roster is empty");
+  await page.click('[data-view-target="checklist"]');
+  assert.match(await page.locator("#checklistContent").innerText(), /unlock the vault and add a patient/i, "Checklist must clear when the roster is empty");
 
   await page.click('[data-action="lock-vault"]');
   await page.waitForFunction(() => /Vault locked/.test(document.querySelector("#statusLine")?.textContent || ""));

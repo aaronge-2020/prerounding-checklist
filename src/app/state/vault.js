@@ -136,10 +136,15 @@ export function normalizePatient(patient, index = 0, { now = timestampNow } = {}
 
 export function migrateVaultState(value, { now = timestampNow } = {}) {
   const base = value && typeof value === "object" ? value : {};
-  const patients = Array.isArray(base.patients) ? base.patients.map((patient, index) => normalizePatient(patient, index, { now })) : [];
+  // Archiving is a destructive removal in the current contract. Older vault
+  // records used an archivedAt marker instead, so discard those records while
+  // normalizing rather than allowing them to remain readable through an
+  // activePatientId left behind by the older build.
+  const patients = (Array.isArray(base.patients) ? base.patients.map((patient, index) => normalizePatient(patient, index, { now })) : [])
+    .filter((patient) => !patient.archivedAt);
   const activePatientId = patients.some((patient) => patient.id === base.activePatientId)
     ? String(base.activePatientId)
-    : patients.find((patient) => !patient.archivedAt)?.id || patients[0]?.id || "";
+    : patients[0]?.id || "";
   return {
     schemaVersion: VAULT_SCHEMA_VERSION,
     activePatientId,
@@ -153,7 +158,7 @@ export function migrateVaultState(value, { now = timestampNow } = {}) {
 }
 
 export function activePatient(vault) {
-  return (vault?.patients || []).find((patient) => patient.id === vault.activePatientId) || null;
+  return (vault?.patients || []).find((patient) => patient.id === vault.activePatientId && !patient.archivedAt) || null;
 }
 
 export function upsertPatient(vault, nextPatient, { activate = true, now = timestampNow } = {}) {

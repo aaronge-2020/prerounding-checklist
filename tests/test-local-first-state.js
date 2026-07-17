@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createDailyRecord, localCalendarDate, removeDay, upsertDay } from "../src/daily-updates/days.js";
-import { createEmptyVaultState, createPatientRecord, migrateVaultState, updateActivePatient } from "../src/app/state/vault.js";
+import { activePatient, createEmptyVaultState, createPatientRecord, migrateVaultState, updateActivePatient } from "../src/app/state/vault.js";
 import { deleteEncryptedVaultRecord, loadOrCreateVault, saveEncryptedVault, readEncryptedVaultRecord } from "../src/app/state/persistence.js";
 import { createEphemeralRedactionReview, sanitizeResidualWarningMetadata } from "../src/patient-context/review.js";
 
@@ -24,6 +24,25 @@ const patient = createPatientRecord("Room 12", {
   id: "patient_test",
   now: () => "2026-07-09T12:01:00.000Z"
 });
+
+const migratedArchivedPatient = migrateVaultState({
+  activePatientId: patient.id,
+  patients: [{ ...patient, archivedAt: "2026-07-09T12:03:00.000Z" }]
+});
+assert.deepEqual(migratedArchivedPatient.patients, [], "legacy archived patients must be removed from runtime vault state");
+assert.equal(migratedArchivedPatient.activePatientId, "", "a vault with only archived patients must have no active patient");
+assert.equal(activePatient({ activePatientId: patient.id, patients: [{ ...patient, archivedAt: "2026-07-09T12:03:00.000Z" }] }), null, "active patient lookup must fail closed for archived records");
+const remainingPatient = createPatientRecord("Room 13", {
+  id: "patient_remaining",
+  now: () => "2026-07-09T12:04:00.000Z"
+});
+const migratedMixedPatients = migrateVaultState({
+  activePatientId: patient.id,
+  patients: [{ ...patient, archivedAt: "2026-07-09T12:03:00.000Z" }, remainingPatient]
+});
+assert.deepEqual(migratedMixedPatients.patients.map((entry) => entry.id), [remainingPatient.id], "legacy archived records must not remain beside active patients");
+assert.equal(migratedMixedPatients.activePatientId, remainingPatient.id, "a stale archived selection must move to the remaining active patient");
+
 let nextVault = {
   ...vault,
   activePatientId: patient.id,

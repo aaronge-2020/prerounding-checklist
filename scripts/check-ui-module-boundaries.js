@@ -23,6 +23,8 @@ for (const path of [
   "../src/ui/redaction/presentation.js",
   "../src/ui/workups/presentation.js",
   "../src/ui/prompts/presentation.js",
+  "../src/ui/demo/presentation.js",
+  "../src/ui/demo/session.js",
   "../src/ui/settings/presentation.js",
   "../src/ui/settings/guidelines-presentation.js"
 ]) {

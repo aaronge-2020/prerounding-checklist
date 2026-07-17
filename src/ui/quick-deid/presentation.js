@@ -23,7 +23,7 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
     } else if (option && isInstallable && !state?.ready) {
       const actionName = state?.state === "installed" ? "verify-model-pack" : "download-model-pack";
       const label = state?.state === "installed" ? "Verify model" : "Download and verify";
-      action = `<div class="button-row"><button type="button" data-action="${actionName}" data-model-key="${escapeHtml(option.key)}" ${modelPackBusyKey ? "disabled" : ""}>${icon(state?.state === "installed" ? "shield" : "download")} ${label}</button><button class="button--quiet" type="button" data-action="import-model-pack" data-model-key="${escapeHtml(option.key)}" ${modelPackBusyKey ? "disabled" : ""}>Import folder</button>${busy ? `<button class="button--quiet" type="button" data-action="cancel-model-download" data-model-key="${escapeHtml(option.key)}">Cancel</button>` : ""}</div>`;
+      action = `<div class="button-row"><button type="button" data-action="${actionName}" data-model-key="${escapeHtml(option.key)}" ${modelPackBusyKey ? "disabled" : ""}>${icon(state?.state === "installed" ? "shield" : "download")} ${label}</button><button class="button--transfer" type="button" data-action="import-model-pack" data-model-key="${escapeHtml(option.key)}" ${modelPackBusyKey ? "disabled" : ""}>${icon("upload")} Import folder</button>${busy ? `<button class="button--quiet" type="button" data-action="cancel-model-download" data-model-key="${escapeHtml(option.key)}">Cancel</button>` : ""}</div>`;
     } else if (option) {
       action = `<span class="model-selection-message model-selection-message--ready">${icon("shield")} Verified and ready locally.</span>`;
     } else {

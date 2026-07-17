@@ -43,8 +43,8 @@ export function createVaultPresentation({ escapeHtml, icon }) {
                 <h2 id="vault-heading">Unlock local vault</h2>
                 <p class="muted">Your passphrase decrypts patient, workup, checklist, and prompt data stored on this device. Nothing loads until you unlock it.</p>
               </div>
-              <div class="button-row">
-                <button class="button--secondary" type="button" data-action="restore-vault">${icon("upload")} Restore vault</button>
+              <div class="transfer-actions">
+                <button class="button--secondary button--transfer" type="button" data-action="restore-vault">${icon("upload")} Restore vault</button>
                 <input id="restoreVaultInput" type="file" accept="application/json" hidden>
               </div>
             </div>
@@ -75,9 +75,9 @@ export function createVaultPresentation({ escapeHtml, icon }) {
               <h2>Patient vault</h2>
               <p class="muted">Encrypted on this device. No automatic network requests or cloud storage.</p>
             </div>
-            <div class="button-row">
-              <button class="button--secondary" type="button" data-action="export-vault" ${record ? "" : "disabled"}>${icon("download")} Export</button>
-              <button class="button--secondary" type="button" data-action="restore-vault">${icon("upload")} Restore</button>
+            <div class="transfer-actions">
+              <button class="button--secondary button--transfer" type="button" data-action="export-vault" ${record ? "" : "disabled"}>${icon("download")} Export</button>
+              <button class="button--secondary button--transfer" type="button" data-action="restore-vault">${icon("upload")} Restore</button>
               <input id="restoreVaultInput" type="file" accept="application/json" hidden>
             </div>
           </div>
@@ -86,7 +86,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
               <strong>Vault unlocked</strong>
               <span>Patient data is available only in this browser session.</span>
             </div>
-            <button class="button--quiet" type="button" data-action="lock-vault">Lock vault</button>
+            <button class="button--secondary vault-lock-button" type="button" data-action="lock-vault">${icon("lock")}<span>Lock vault</span></button>
           </div>
           ${
             record && !vault
@@ -129,7 +129,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
       <div class="empty-state next-step">
         <strong>Next step: unlock the vault and add a patient.</strong>
         <span>Use a de-identified room label to begin a new hospital stay.</span>
-        ${allowPhoneBundleImport ? `<div class="button-row"><button class="button--secondary" type="button" data-action="choose-phone-bundle-file">${icon("upload")} Open shared checklist file</button><input id="phoneBundleFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden></div>` : ""}
+        ${allowPhoneBundleImport ? `<div class="transfer-actions"><button class="button--secondary button--transfer" type="button" data-action="choose-phone-bundle-file">${icon("upload")} Open shared checklist file</button><input id="phoneBundleFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden></div>` : ""}
       </div>
     `;
   }

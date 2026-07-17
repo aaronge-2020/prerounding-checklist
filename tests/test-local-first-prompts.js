@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { createDailyRecord, upsertDay } from "../src/daily-updates/days.js";
 import { createPatientRecord } from "../src/app/state/vault.js";
 import { buildOpenEvidencePrompt, openEvidenceTasks } from "../src/prompts/open-evidence.js";
-import { buildCustomOpenEvidencePrompt, promptVariablesForPatient } from "../src/prompts/custom-templates.js";
+import { buildCustomOpenEvidencePrompt, DEFAULT_PROMPT_TEMPLATES, promptVariablesForPatient } from "../src/prompts/custom-templates.js";
 import { createGuidelineSet } from "../src/prompts/guideline-sets.js";
 
 const guidelines = {
@@ -80,6 +80,21 @@ for (const prompt of [admission, progress, teaching, medicationOrganizer, medica
 }
 
 assert.throws(() => buildOpenEvidencePrompt("daily_progress_note", { patient, guidelines: "" }), /task-specific documentation standard/);
+
+assert.equal(openEvidenceTasks.consulting?.label, "Consulting");
+const consultingGuidelines = createGuidelineSet("Consulting", readFileSync("prompts/Consulting.md", "utf8"));
+const consulting = buildCustomOpenEvidencePrompt({
+  taskId: "consulting",
+  template: DEFAULT_PROMPT_TEMPLATES.consulting,
+  patient,
+  selectedDayId: day.id,
+  guidelineSets: [consultingGuidelines]
+});
+assert.match(consulting, /consult question/i);
+assert.match(consulting, /V\/S/);
+assert.match(consulting, /routine, about 24 hours, urgent, or emergent/i);
+assert.match(consulting, /consulting-guidelines|Consulting/);
+assert.doesNotMatch(consulting, /@consulting-guidelines/);
 
 const checklistAnswersPrompt = buildCustomOpenEvidencePrompt({
   taskId: "checklist_workup_refinement",

@@ -129,3 +129,23 @@ export async function ensureAdditionalGuidelineSets(sets, storage = localStorage
   saveGuidelineSets(next, storage);
   return next;
 }
+
+export const GUIDELINE_SET_SEED_V3_KEY = "prerounding_guideline_sets_seed_v3";
+
+// Independent one-time seed for the Consulting standard. Keeping this separate
+// from the earlier seed lets existing installs receive the new standard while
+// preserving the rule that a user who has deleted a set does not get it silently
+// reintroduced on a later startup.
+export async function ensureConsultingGuidelineSet(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_SEED_V3_KEY) !== null) return sets;
+  let next = sets;
+  try {
+    const response = await fetch("./prompts/Consulting.md", { cache: "no-store" });
+    if (response.ok) next = addGuidelineSet(next, "Consulting", await response.text());
+  } catch {
+    // No network/file access - leave it for the user to add manually later.
+  }
+  storage.setItem(GUIDELINE_SET_SEED_V3_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
+}

@@ -8,10 +8,10 @@ import { crossOriginIsolationBlocker, deidentifyText, getAdvancedDeidStatus, get
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
 import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
-import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260714-hue-picker";
-import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260711-functional-remediation-15";
+import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260717-consulting-prompt";
+import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260717-consulting-prompt";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
-import { ensureAdditionalGuidelineSets, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260714-preround-discharge-tasks";
+import { ensureAdditionalGuidelineSets, ensureConsultingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260717-consulting-prompt";
 import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260711-functional-remediation-15";
 import { bundledWorkupById, effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260715-workup-delete";
 import { mergeWorkupLibraryIntoOverrides, parseWorkupLibraryJson, workupLibraryFromOverrides } from "../workups/library.js?v=20260711-functional-remediation-15";
@@ -37,7 +37,7 @@ import {
 } from "../checklist/state.js?v=20260711-functional-remediation-19";
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
-import { createChecklistPresentation } from "./checklist/presentation.js?v=20260714-deid-ux-polish";
+import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
@@ -50,8 +50,11 @@ import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-adm
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260714-hue-picker";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260713-guideline-sets";
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260715-reject-rest";
-import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260715-reject-rest";
-import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260715-workup-delete";
+import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
+import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
+import { createDemoController } from "./demo/controller.js?v=20260717-full-demo-case";
+import { createDemoPatient } from "./demo/session.js?v=20260717-full-demo-case";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20260717-full-demo-case";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 
 const app = {
@@ -116,9 +119,9 @@ const app = {
   pendingArchivePatientId: "",
   pendingRemoveDayId: "",
   pendingDeleteWorkupId: "",
+  demoSession: null,
   admissionDate: "" // session-only Hospital Day anchor; never persisted
 };
-
 const viewIds = ["vault", "daily", "workups", "checklist", "prompts", "quickDeid", "settings"];
 const viewTitles = {
   vault: "Vault / Roster",
@@ -129,7 +132,6 @@ const viewTitles = {
   quickDeid: "Quick De-ID Tool",
   settings: "Settings"
 };
-
 let draggedWorkupRow = null;
 let workupDragSaved = false;
 let draggedSectionRow = null;
@@ -140,7 +142,6 @@ let workupAutosaveChain = Promise.resolve();
 function byId(id) {
   return document.getElementById(id);
 }
-
 function escapeHtml(value = "") {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -148,13 +149,14 @@ function escapeHtml(value = "") {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
-
 const checklistPresentation = createChecklistPresentation({ escapeHtml, icon });
 const redactionPresentation = createRedactionPresentation({ escapeHtml, icon });
 const quickDeidPresentation = createQuickDeidPresentation({ escapeHtml, icon });
 const workupPresentation = createWorkupPresentation({ escapeHtml, icon });
 const promptsPresentation = createPromptsPresentation({ escapeHtml });
 const settingsPresentation = createSettingsPresentation({ escapeHtml });
+const demoController = createDemoController({ byId, escapeHtml, getSession: () => app.demoSession, getView: () => app.view });
+const demoSessionController = createDemoSessionController({ app, createDemoPatient, structuredDeidMode: STRUCTURED_DEID_MODE, clearPhiReviews, clearQuickDeidSession, render, setStatus });
 const checklistSearch = createChecklistSearchController({ Fuse, normalizeQuery: normalizeWorkupCatalogQuery, byId });
 const phoneAutosave = createPhoneAutosave(localStorage);
 const phoneSession = createPhoneSessionController({ phoneAutosave, state: app, active, selectedChecklistDay, persistVault, renderPhoneChecklist, renderChecklist });
@@ -171,11 +173,9 @@ const tokenColorPicker = createTokenColorPickerController({
   // full re-render here would lose the menu's docked position/filter/focus.
   onApplied: () => { if (app.view === "prompts") refreshPromptPreview(); }
 });
-
 function selectedDeidOption() {
   return app.deidMode === STRUCTURED_DEID_MODE ? null : deidModelOptionByKey(app.deidMode);
 }
-
 function selectedDeidStatus() {
   return app.deidMode === STRUCTURED_DEID_MODE
     ? {
@@ -186,7 +186,6 @@ function selectedDeidStatus() {
       }
     : getSelectedDeidModelStatus(app.deidMode);
 }
-
 function modelPackStateFor(option) {
   if (!option) return { state: "unavailable", ready: false, message: "Unknown model." };
   if (!option.browserRunnable) {
@@ -196,7 +195,6 @@ function modelPackStateFor(option) {
     ? { state: "checking", ready: false, message: "Checking local model-pack storage..." }
     : { state: "bundled", ready: true, message: "Bundled with this static app." });
 }
-
 function deidModelDisabledReason(option) {
   if (!option.browserRunnable) return option.disabledReason || "This model is not available in this browser build.";
   if (option.requiresWebGpu && !app.webGpuAvailable) return "This model needs graphics acceleration that isn't available in this browser.";
@@ -204,7 +202,6 @@ function deidModelDisabledReason(option) {
   if (isInstallableModel(option) && !pack.ready) return pack.message;
   return "";
 }
-
 function deidModelSelectOptions() {
   const modelOptions = DEID_MODEL_OPTIONS.map((option) => {
     const unavailable = !option.browserRunnable || (option.requiresWebGpu && !app.webGpuAvailable);
@@ -314,18 +311,15 @@ async function ensureSelectedDeidReady() {
   if (finalReadiness.ready) return finalReadiness;
   throw new Error((option && app.modelPackErrors?.[option.key]) || caughtMessage || finalReadiness.message);
 }
-
 function deidLoadButtonDisabled() {
   if (app.deidMode === STRUCTURED_DEID_MODE) return true;
   if (app.loadingDeidModelKey === app.deidMode) return true;
   const option = selectedDeidOption();
   return option ? Boolean(deidModelDisabledReason(option)) : true;
 }
-
 function deidLoadButtonLabel() {
   return app.loadingDeidModelKey === app.deidMode ? '<span class="spinner" aria-hidden="true"></span> Loading model...' : `${icon("shield")} Load selected model`;
 }
-
 function renderDeidLoadButton() {
   const option = selectedDeidOption();
   if (!option) return `<span class="model-selection-message model-selection-message--ready">${icon("shield")} Ready locally</span>`;
@@ -348,7 +342,6 @@ function renderDeidLoadButton() {
   }
   return `<button type="button" data-action="load-advanced-deid" ${deidLoadButtonDisabled() ? "disabled" : ""}>${deidLoadButtonLabel()}</button>`;
 }
-
 async function selectedModelLoadBlocker(option) {
   if (!option) return "Structured-only de-identification selected.";
   if (!option.browserRunnable) return option.disabledReason || "This model is not available in this browser build.";
@@ -492,7 +485,7 @@ function renderModelPackCard(option) {
           ? `<div class="button-row">
               <button type="button" data-action="${primaryAction}" data-model-key="${escapeHtml(option.key)}" ${canAutomaticallyDownload ? actionDisabled : "disabled"}>${icon("download")} ${escapeHtml(modelPackActionLabel(option))}</button>
               ${app.modelPackBusyKey === option.key ? `<button type="button" data-action="cancel-model-download" data-model-key="${escapeHtml(option.key)}">Cancel</button>` : ""}
-              <button type="button" data-action="import-model-pack" data-model-key="${escapeHtml(option.key)}" ${actionDisabled}>${icon("upload")} Import folder</button>
+              <button class="button--transfer" type="button" data-action="import-model-pack" data-model-key="${escapeHtml(option.key)}" ${actionDisabled}>${icon("upload")} Import folder</button>
               ${canRemove ? `<button type="button" data-action="remove-model-pack" data-model-key="${escapeHtml(option.key)}" ${app.modelPackBusyKey ? "disabled" : ""}>${icon("trash")} Remove local pack</button>` : ""}
             </div>`
           : option.browserRunnable
@@ -553,6 +546,10 @@ const phoneTransfer = createPhoneTransferController({
 
 async function persistVault(message = "Saved.") {
   if (!app.vault || !app.passphrase) return;
+  if (app.demoSession) {
+    setStatus(`${message} Demo only — nothing is written to your vault.`);
+    return;
+  }
   await saveEncryptedVault(app.vault, app.passphrase);
   setStatus(message);
 }
@@ -567,7 +564,7 @@ function patientRequiredMessage({ allowPhoneBundleImport = false } = {}) {
     <div class="empty-state next-step">
       <strong>Next step: unlock the vault and add a patient.</strong>
       <span>Use a de-identified room label to begin a new hospital stay.</span>
-      ${allowPhoneBundleImport ? `<div class="button-row"><button class="button--secondary" type="button" data-action="choose-phone-bundle-file">${icon("upload")} Open shared checklist file</button><input id="phoneBundleFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden></div>` : ""}
+      ${allowPhoneBundleImport ? `<div class="transfer-actions"><button class="button--secondary button--transfer" type="button" data-action="choose-phone-bundle-file">${icon("upload")} Open shared checklist file</button><input id="phoneBundleFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden></div>` : ""}
     </div>
   `;
 }
@@ -598,10 +595,14 @@ function clearProtectedViewContent() {
 }
 
 function clearSensitiveSession() {
+  if (app.demoSession) demoSessionController.exit({ renderAfter: false });
   app.vault = null;
   app.passphrase = "";
   app.vaultUnlockError = "";
   app.selectedDayId = "";
+  app.sectionDrafts.clear();
+  app.sectionEditingKeys.clear();
+  app.pendingSectionReviewFocus = null;
   app.draftWorkup = null;
   app.phoneBundle = null;
   app.phoneAnswers = {};
@@ -667,6 +668,7 @@ function render() {
       setStatus(error instanceof Error ? error.message : "Unable to render this view.");
     }
   }
+  demoController.render();
   renderStatusBar();
   if (app.view === "daily" && app.pendingSectionReviewFocus) requestAnimationFrame(focusPendingSectionReview);
 }
@@ -752,8 +754,8 @@ function renderVault() {
               <h2 id="vault-heading">Unlock local vault</h2>
               <p class="muted">Your passphrase decrypts patient, workup, checklist, and prompt data stored on this device. Nothing loads until you unlock it.</p>
             </div>
-            <div class="button-row">
-              <button class="button--secondary" type="button" data-action="restore-vault">${icon("upload")} Restore from file</button>
+            <div class="transfer-actions">
+              <button class="button--secondary button--transfer" type="button" data-action="restore-vault">${icon("upload")} Restore from file</button>
               <input id="restoreVaultInput" type="file" accept="application/json" hidden>
             </div>
           </div>
@@ -784,9 +786,9 @@ function renderVault() {
             <h2>Patient vault</h2>
             <p class="muted">Encrypted on this device. No automatic network requests or cloud storage.</p>
           </div>
-          <div class="button-row">
-            <button class="button--secondary" type="button" data-action="export-vault" ${record ? "" : "disabled"}>${icon("download")} Export</button>
-            <button class="button--secondary" type="button" data-action="restore-vault">${icon("upload")} Restore from file</button>
+          <div class="transfer-actions">
+            <button class="button--secondary button--transfer" type="button" data-action="export-vault" ${record ? "" : "disabled"}>${icon("download")} Export</button>
+            <button class="button--secondary button--transfer" type="button" data-action="restore-vault">${icon("upload")} Restore from file</button>
             <input id="restoreVaultInput" type="file" accept="application/json" hidden>
           </div>
         </div>
@@ -795,7 +797,7 @@ function renderVault() {
             <strong>Vault unlocked</strong>
             <span>Patient data is available only in this browser session.</span>
           </div>
-          <button class="button--quiet" type="button" data-action="lock-vault">Lock vault</button>
+          <button class="button--secondary vault-lock-button" type="button" data-action="lock-vault">${icon("lock")}<span>Lock vault</span></button>
         </div>
         ${
           record && !app.vault
@@ -1530,6 +1532,7 @@ async function handleClick(event) {
       throw new Error("Unlock the local vault before using workspace tools.");
     }
     if (action === "unlock-vault") await unlockVault();
+    if (action === "start-guided-demo" || action === "restart-guided-demo") demoSessionController.start();
     if (action === "toggle-vault-passphrase") toggleVaultPassphraseVisibility();
     if (action === "lock-vault") lockVault();
     if (action === "request-delete-vault") requestVaultDeletion();
@@ -1657,7 +1660,7 @@ async function handleClick(event) {
     if (action === "request-remove-guideline-set") guidelineSetsController.requestRemove(target.dataset.guidelineSetId);
     if (action === "confirm-remove-guideline-set") guidelineSetsController.confirmRemovePending();
     if (action === "insert-prompt-variable") insertPromptVariable(target.dataset.token);
-    if (action === "copy-prompt") await copyText(currentPromptText());
+    if (action === "copy-prompt") { if (app.demoSession) demoController.observeAction(action); await copyText(currentPromptText()); }
     if (action === "open-open-evidence") window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
     if (action === "reset-variable-colors") { app.tokenColorOverrides = {}; saveTokenColorOverrides(app.tokenColorOverrides); renderPrompts(); }
     if (action === "open-token-color-picker") tokenColorPicker.open(target.dataset.token, target, event);
@@ -1679,9 +1682,10 @@ async function handleClick(event) {
     if (action === "manual-redact-quick-selection") redactSelectedQuickText();
     if (action === "redact-quick-warning") redactQuickWarning(Number(target.dataset.warningIndex));
     if (action === "dismiss-quick-warning") dismissQuickWarning(Number(target.dataset.warningIndex));
+    demoController.observeAction(action);
   } catch (error) {
     app.workupImportError = action.includes("workup") ? error.message : app.workupImportError;
-    setStatus(error instanceof Error ? error.message : "Something went wrong. Try again.");
+    setStatus(app.demoSession && action === "copy-prompt" ? "Prompt ready. Clipboard access may be blocked in this preview; the de-identified prompt remains visible." : error instanceof Error ? error.message : "Something went wrong. Try again.");
     render();
   }
 }
@@ -1765,8 +1769,15 @@ async function archiveSelectedPatient(patientId) {
   if (!patientId) return;
   app.vault = archivePatient(app.vault, patientId);
   app.pendingArchivePatientId = "";
+  app.selectedDayId = "";
+  app.sectionDrafts.clear();
+  app.sectionEditingKeys.clear();
+  app.pendingSectionReviewFocus = null;
+  clearPhiReviews();
+  clearQuickDeidSession();
   byId("archiveConfirmDialog")?.close();
   await persistVault("Patient archived.");
+  if (!active()) app.view = "vault";
   render();
 }
 
@@ -2829,6 +2840,7 @@ async function disconnectWorkupWorkspace() {
 
 async function persistWorkupChanges(message) {
   await persistVault(message);
+  if (app.demoSession) return;
   const result = await syncWorkupWorkspace();
   if (result?.status === "ready") setStatus(`${message} ${result.message}`);
 }
@@ -3212,6 +3224,7 @@ async function importWorkupLibraryFile(file) {
 
 async function buildChecklist() {
   const patient = active();
+  if (!patient || !app.vault) throw new Error("Select a patient first.");
   const catalog = effectiveWorkupCatalog(app.vault.workupOverrides, app.vault.hiddenWorkupIds);
   const workups = findWorkupsById(catalog, app.vault.selectedWorkupIds);
   if (!workups.length) throw new Error("Select at least one workup.");
@@ -3422,6 +3435,7 @@ function handleChange(event) {
     void importSelectedModelPack(app.pendingModelPackKey, modelFilesFromInput(event.target.files));
     event.target.value = "";
   }
+  demoController.observeChange(event.target);
 }
 
 async function updateChecklistAnswer(input) {
@@ -3594,9 +3608,11 @@ function bindEvents() {
         render();
         return;
       }
+      if (app.demoSession && !["daily", "workups", "checklist", "prompts"].includes(button.dataset.viewTarget)) demoSessionController.exit({ renderAfter: false });
       app.view = button.dataset.viewTarget;
       app.smartMenuOpen = false;
       render();
+      demoController.observeNavigation(app.view);
     });
   });
 }
@@ -3678,5 +3694,6 @@ async function refreshWebGpuAvailability({ renderAfter = true } = {}) {
 async function refreshGuidelines() {
   app.guidelineSets = await loadOrMigrateGuidelineSets();
   app.guidelineSets = await ensureAdditionalGuidelineSets(app.guidelineSets);
+  app.guidelineSets = await ensureConsultingGuidelineSet(app.guidelineSets);
   renderPrompts();
 }

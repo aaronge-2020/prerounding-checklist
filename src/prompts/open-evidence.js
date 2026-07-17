@@ -44,6 +44,11 @@ export const OPEN_EVIDENCE_TASKS = [
     id: "discharge_instructions",
     label: "Discharge instructions",
     requiresGuidelines: true
+  },
+  {
+    id: "consulting",
+    label: "Consulting",
+    requiresGuidelines: true
   }
 ];
 

@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import {
   addGuidelineSet,
   createGuidelineSet,
+  ensureConsultingGuidelineSet,
   GUIDELINE_SET_STORAGE_KEY,
+  GUIDELINE_SET_SEED_V3_KEY,
   loadGuidelineSets,
   loadOrMigrateGuidelineSets,
   removeGuidelineSet,
@@ -92,6 +94,30 @@ function fakeStorage(initial = {}) {
     const storage = fakeStorage();
     const seeded = await loadOrMigrateGuidelineSets(storage);
     assert.deepEqual(seeded, []);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+}
+
+// The Consulting standard is seeded independently so existing installs receive
+// it once, while a user who later deletes it does not get it reintroduced.
+{
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => ({
+    ok: true,
+    text: async () => (url.includes("Consulting") ? "Consulting standard text." : "Unexpected file.")
+  });
+  try {
+    const storage = fakeStorage();
+    const seeded = await ensureConsultingGuidelineSet([], storage);
+    assert.equal(seeded.length, 1);
+    assert.equal(seeded[0].token, "@consulting-guidelines");
+    assert.equal(seeded[0].text, "Consulting standard text.");
+    assert.equal(storage.getItem(GUIDELINE_SET_SEED_V3_KEY), "1");
+
+    saveGuidelineSets([], storage);
+    const afterUserDeleted = await ensureConsultingGuidelineSet([], storage);
+    assert.deepEqual(afterUserDeleted, [], "must not re-seed Consulting after the user deletes it");
   } finally {
     globalThis.fetch = originalFetch;
   }

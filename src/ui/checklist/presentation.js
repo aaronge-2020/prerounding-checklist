@@ -102,11 +102,12 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
   // in app.js) so typing doesn't force a full re-render of the checklist.
   function renderChecklistSearch(searchQuery = "") {
     return `
-      <label class="checklist-search-field">Search questions
+      <label class="checklist-search-field">
+        <span>Search questions</span>
         <input id="checklistSearchInput" type="search" value="${escapeHtml(searchQuery)}" placeholder="e.g. chest pain, murmur, home meds" autocomplete="off">
       </label>
-      <span class="muted" data-checklist-search-count></span>
-      <button class="button--quiet" type="button" data-action="clear-checklist-search" ${searchQuery ? "" : "hidden"}>Clear</button>
+      <span class="muted checklist-search-count" data-checklist-search-count></span>
+      <button class="button--quiet checklist-search-clear" type="button" data-action="clear-checklist-search" ${searchQuery ? "" : "hidden"}>Clear</button>
     `;
   }
 
@@ -179,8 +180,12 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
     return `
       <details class="utility-panel openevidence-import" ${error || busy || deidConfirmed || deidStatus || input ? "open" : ""}>
         <summary>
-          <strong>Physical exam: fill by hand, or paste an OpenEvidence note</strong>
-          <span class="muted">Capture the exam yourself in the checklist below, or paste a note transcribed live by OpenEvidence and de-identify it here.</span>
+          <span class="checklist-import-summary-marker" aria-hidden="true">${icon("chevron")}</span>
+          <span class="checklist-import-summary-copy">
+            <strong>Physical exam capture</strong>
+            <span class="muted">Fill findings by hand or de-identify a transcribed OpenEvidence note locally.</span>
+          </span>
+          <span class="checklist-import-summary-action">Open options</span>
         </summary>
         <div class="workup-import-body oe-import">
           ${error ? `<div class="warning-box">${escapeHtml(error)}</div>` : ""}
@@ -256,14 +261,14 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
         <div class="button-row">
           <button class="button--primary" type="button" data-action="share-phone-bundle">${icon("share")} Share link</button>
           <button class="button--secondary" type="button" data-action="copy-phone-bundle" data-bundle="${escapeHtml(phoneLink)}">${icon("copy")} Copy link</button>
-          <button class="button--secondary" type="button" data-action="download-phone-bundle">${icon("download")} Download file</button>
+          <button class="button--secondary button--transfer" type="button" data-action="download-phone-bundle">${icon("download")} Download file</button>
         </div>
         <label>Returned phone answers
           <textarea id="phoneReturnText" rows="5" placeholder="Paste the returned code, or an AirDropped .bundle.json file's contents"></textarea>
         </label>
         <div class="button-row">
           <button class="button--secondary" type="button" data-action="import-phone-return">Import pasted answers</button>
-          <button class="button--secondary" type="button" data-action="choose-phone-return-file">${icon("upload")} Import file</button>
+          <button class="button--secondary button--transfer" type="button" data-action="choose-phone-return-file">${icon("upload")} Import file</button>
           <input id="phoneReturnFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden>
         </div>
         <p class="muted">Tip: on the phone, tap "Copy return code" instead of sharing a file. If the phone and this computer use the same Apple ID with Handoff on, the code appears on this computer's clipboard within a minute or two — just paste it above, right in this tab.</p>
@@ -277,18 +282,18 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
     return `
       <div class="checklist-shell">
         <section class="panel checklist-panel">
-          <div class="section-heading">
+          <div class="section-heading checklist-heading">
             <div>
               <h2>Checklist</h2>
               <p class="muted">${snapshot ? `${escapeHtml(day.label)} · ${completedItems} / ${totalItems} completed · ${escapeHtml(snapshot.workupTitles.join(", "))}` : "Build a checklist from the Workups page."}</p>
             </div>
-            <div class="button-row">
+            <div class="button-row checklist-heading-actions">
               <button class="button--secondary" type="button" data-action="go-workups">Build from workups</button>
-              <button class="button--secondary" type="button" data-action="choose-phone-bundle-file">${icon("upload")} Open shared file</button>
+              <button class="button--secondary button--transfer" type="button" data-action="choose-phone-bundle-file">${icon("upload")} Open shared file</button>
               <input id="phoneBundleFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden>
             </div>
           </div>
-          ${snapshot ? `<p class="muted">Two ways to capture the physical exam: fill in the checklist items below yourself, or paste an OpenEvidence-transcribed exam note from your live encounter into "Physical exam: fill by hand, or paste an OpenEvidence note" below and save it directly.</p>` : ""}
+          ${snapshot ? `<p class="muted checklist-guidance">Record findings directly below, or use the capture options to de-identify a transcribed exam note locally.</p>` : ""}
           ${snapshot ? renderOpenEvidenceImportPanel(openEvidenceImport || {}) : ""}
           ${
             snapshot

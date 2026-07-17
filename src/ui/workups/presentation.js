@@ -22,7 +22,7 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
           </span>
         </label>
         <div class="workup-row-actions">
-          <button class="button--quiet" type="button" data-action="edit-workup" data-workup-id="${escapeHtml(workup.id)}">${icon("edit")} Edit</button>
+          <button class="icon-button button--quiet workup-edit-button" type="button" data-action="edit-workup" data-workup-id="${escapeHtml(workup.id)}" title="Edit workup" aria-label="Edit ${escapeHtml(workup.title)}">${icon("edit")}</button>
           <button class="icon-button danger-subtle" type="button" data-action="delete-workup" data-workup-id="${escapeHtml(workup.id)}" title="Delete workup" aria-label="Delete ${escapeHtml(workup.title)}">${icon("trash")}</button>
         </div>
       </div>
@@ -47,21 +47,39 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
   }
 
   function renderWorkupItemEditor(item, kind, index = 0) {
+    const promptLabel = kind === "exam" ? "Exam item" : "History question";
     return `
       <article class="workup-editor-card" data-workup-item-row data-kind="${kind}">
-        <span class="icon-button workup-drag-handle" draggable="true" title="Drag to reorder ${kind} items" aria-label="Drag to reorder ${kind} item" role="img">${icon("grip")}</span>
-        <span class="workup-row-number" aria-hidden="true">${index + 1}</span>
-        <textarea data-field="item-text" rows="2" aria-label="${kind} item text">${escapeHtml(item.text)}</textarea>
-        <input data-field="item-choices" value="${escapeHtml(choicesToText(item.choices))}" placeholder="Baseline answer, then positive or abnormal" aria-label="${kind} answer choices, baseline first">
-        <select data-field="item-select" aria-label="${kind} select mode">
-          <option value="one" ${item.select !== "many" ? "selected" : ""}>One</option>
-          <option value="many" ${item.select === "many" ? "selected" : ""}>Many</option>
-        </select>
-        <div class="button-row">
-          <button class="icon-button" type="button" data-action="move-workup-item" data-direction="up" title="Move up" aria-label="Move ${kind} item up">${icon("moveUp")}</button>
-          <button class="icon-button" type="button" data-action="move-workup-item" data-direction="down" title="Move down" aria-label="Move ${kind} item down">${icon("moveDown")}</button>
-          <button class="icon-button" type="button" data-action="duplicate-workup-item" title="Duplicate">${icon("copy")}</button>
-          <button class="icon-button" type="button" data-action="remove-workup-item" title="Remove">${icon("trash")}</button>
+        <div class="workup-item-main">
+          <div class="workup-item-rail">
+            <span class="icon-button workup-drag-handle" draggable="true" title="Drag to reorder ${kind} items" aria-label="Drag to reorder ${kind} item" role="img">${icon("grip")}</span>
+            <span class="workup-row-number" aria-hidden="true">${index + 1}</span>
+          </div>
+          <label class="workup-item-question">
+            <span class="workup-field-label">${promptLabel}</span>
+            <textarea data-field="item-text" rows="2" aria-label="${kind} item text">${escapeHtml(item.text)}</textarea>
+          </label>
+        </div>
+        <div class="workup-item-options">
+          <label class="workup-item-choices">
+            <span class="workup-field-label">Answer choices <span class="muted">baseline first</span></span>
+            <input data-field="item-choices" value="${escapeHtml(choicesToText(item.choices))}" placeholder="Normal, then positive or abnormal" aria-label="${kind} answer choices, baseline first">
+          </label>
+          <label class="workup-item-select">
+            <span class="workup-field-label">Answer mode</span>
+            <select data-field="item-select" aria-label="${kind} select mode">
+              <option value="one" ${item.select !== "many" ? "selected" : ""}>One</option>
+              <option value="many" ${item.select === "many" ? "selected" : ""}>Many</option>
+            </select>
+          </label>
+          <div class="workup-item-actions" aria-label="${promptLabel} actions">
+            <div class="button-row">
+              <button class="icon-button" type="button" data-action="move-workup-item" data-direction="up" title="Move up" aria-label="Move ${kind} item up">${icon("moveUp")}</button>
+              <button class="icon-button" type="button" data-action="move-workup-item" data-direction="down" title="Move down" aria-label="Move ${kind} item down">${icon("moveDown")}</button>
+              <button class="icon-button" type="button" data-action="duplicate-workup-item" title="Duplicate item" aria-label="Duplicate ${kind} item">${icon("copy")}</button>
+              <button class="icon-button" type="button" data-action="remove-workup-item" title="Remove item" aria-label="Remove ${kind} item">${icon("trash")}</button>
+            </div>
+          </div>
         </div>
         <details class="workup-item-details">
           <summary>Item details</summary>
@@ -195,57 +213,65 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
           ${renderWorkupColumn("exam", "Physical exam items", grouped.exam)}
         </div>
         <div class="workup-footer-actions">
-          <button class="button--secondary" type="button" data-action="copy-open-evidence-workup-prompt">OpenEvidence draft</button>
-          <button class="button--secondary" type="button" data-action="copy-json-formatter-prompt">Copy ChatGPT formatter prompt</button>
-          <button class="button--secondary" type="button" data-action="export-workup-json">${icon("download")} Download workup</button>
-          <button class="button--secondary" type="button" data-action="export-workup-library">${icon("download")} Download local library</button>
-          <button class="button--secondary" type="button" data-action="choose-workup-library-file">${icon("upload")} Import library</button>
-          <input id="workupLibraryFileInput" type="file" accept="application/json" hidden>
-          <button class="button--secondary" type="button" data-action="save-workup-ui">Save to catalog</button>
+          <div class="workup-action-group workup-prompt-actions">
+            <button class="button--secondary" type="button" data-action="copy-open-evidence-workup-prompt">OpenEvidence draft</button>
+            <button class="button--secondary" type="button" data-action="copy-json-formatter-prompt">Copy ChatGPT formatter prompt</button>
+          </div>
+          <div class="workup-action-group workup-file-actions">
+            <button class="button--secondary button--transfer" type="button" data-action="export-workup-json">${icon("download")} Download workup</button>
+            <button class="button--secondary button--transfer" type="button" data-action="export-workup-library">${icon("download")} Download local library</button>
+            <button class="button--secondary button--transfer" type="button" data-action="choose-workup-library-file">${icon("upload")} Import library</button>
+            <input id="workupLibraryFileInput" type="file" accept="application/json" hidden>
+          </div>
+          <button class="button--primary workup-save-button" type="button" data-action="save-workup-ui">Save to catalog</button>
         </div>
-        <p class="muted">Library files contain workups only — no patient data — and never build a checklist automatically.</p>
+        <p class="muted workup-library-note">Workup libraries contain no patient data. Building a checklist is always explicit.</p>
         <section class="workup-workspace-mirror" aria-live="polite">
-          <div>
+          <div class="workup-workspace-copy">
             <strong>Workspace mirror</strong>
             <p class="muted">${workspaceReady ? `Mirrors ${overrideCount} local workup${overrideCount === 1 ? "" : "s"} to <code>workups/local/</code>. Browser saves remain encrypted and canonical.` : escapeHtml(workspace.message || "Choose a workspace folder to mirror local workups.")}</p>
+            <small>Writes only workup JSON and a mirror manifest — never patient data, and never stages, commits, or deletes files in your workspace.</small>
           </div>
-          <div class="button-row">
+          <div class="workup-workspace-actions button-row">
             ${workspaceReady ? `<button class="button--secondary" type="button" data-action="sync-workup-workspace" ${workspaceBusy ? "disabled" : ""}>${workspaceBusy ? "Syncing…" : "Sync now"}</button><button class="button--quiet" type="button" data-action="choose-workup-workspace" ${workspaceBusy ? "disabled" : ""}>Change folder</button><button class="button--quiet" type="button" data-action="disconnect-workup-workspace" ${workspaceBusy ? "disabled" : ""}>Disconnect</button>` : `<button class="button--secondary" type="button" data-action="choose-workup-workspace" ${workspaceBusy || workspace.status === "unsupported" ? "disabled" : ""}>Choose workspace folder</button>`}
           </div>
-          <small>Writes only workup JSON and a mirror manifest — never patient data, and never stages, commits, or deletes files in your workspace.</small>
         </section>
         <details class="utility-panel workup-import" ${workupImportError || workupApiBusy || workupApiDeidConfirmed || workupImportPanelOpen ? "open" : ""}>
           <summary>
-            <strong>Format or import a workup</strong>
-            <span class="muted">Paste a de-identified OpenEvidence draft to format it automatically, or paste finished JSON to import directly.</span>
+            <span class="workup-import-summary-marker" aria-hidden="true">${icon("chevron")}</span>
+            <span class="workup-import-summary-copy">
+              <strong>Format or import a workup</strong>
+              <span class="muted">Paste a de-identified OpenEvidence draft to format it automatically, or paste finished JSON to import directly.</span>
+            </span>
+            <span class="workup-import-summary-action">Open options</span>
           </summary>
           <div class="workup-import-body">
-            <div class="section-heading tight">
+            <div class="section-heading tight workup-import-heading">
               <div>
                 <h3>Format into editable workup rows</h3>
                 <p class="muted">Automatic formatting uses only the pasted draft. You can also paste finished JSON to parse it directly.</p>
               </div>
               <div class="button-row">
                 <button type="button" data-action="parse-workup-json">Parse & save</button>
-                <button type="button" data-action="choose-workup-file">${icon("upload")} Import file</button>
+                <button class="button--transfer" type="button" data-action="choose-workup-file">${icon("upload")} Import file</button>
                 <input id="workupJsonFileInput" type="file" accept="application/json" hidden>
               </div>
             </div>
             <textarea id="workupJsonImport" class="json-import" spellcheck="false" placeholder="Paste a reviewed, de-identified OpenEvidence workup draft or prerounding_workup_v1 JSON here.">${escapeHtml(workupImportDraft)}</textarea>
             ${hasSavedOpenAiKey ? `<div class="workup-api-formatting">
-              <label class="check-row">
+              <label class="check-row workup-deid-confirmation">
                 <input id="workupApiDeidConfirmed" type="checkbox" ${workupApiDeidConfirmed ? "checked" : ""}>
                 <span>I've reviewed this draft and confirm it's de-identified.</span>
               </label>
-              <div class="button-row">
+              <div class="button-row workup-api-action">
                 <button type="button" data-action="format-workup-json-api" ${workupApiDeidConfirmed && !workupApiBusy ? "" : "disabled"}>${workupApiBusy ? '<span class="spinner" aria-hidden="true"></span> Formatting...' : "Format & load with saved API key"}</button>
                 <span class="muted">Ready to use ${escapeHtml(openAiModelLabel)} after you confirm the draft is de-identified.</span>
               </div>
             </div>` : `<div class="notice workup-api-guidance"><span>To format a de-identified draft automatically, save an OpenAI API key in Settings.</span><button class="button--quiet" type="button" data-action="go-settings">Open Settings</button></div>`}
-            ${workupImportError ? `<div class="warning-box">${escapeHtml(workupImportError)}</div>` : `<div class="notice">JSON import is parsed into editable rows — there's no raw JSON editor in this view.</div>`}
+            ${workupImportError ? `<div class="warning-box workup-json-note">${escapeHtml(workupImportError)}</div>` : `<div class="notice workup-json-note">JSON import is parsed into editable rows — there's no raw JSON editor in this view.</div>`}
           </div>
         </details>
-        <button type="button" class="text-button" data-action="reset-workup-json">Remove local override</button>
+        <button type="button" class="text-button workup-reset-override" data-action="reset-workup-json">Remove local override</button>
       </section>
     `;
   }
