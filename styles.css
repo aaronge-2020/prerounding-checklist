@@ -2700,11 +2700,15 @@ p {
 /* Quick De-ID reference screen is a compact four-step utility surface. */
 .quick-deid-panel {
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
   gap: 10px;
   height: 100%;
   min-height: 0;
   overflow: auto;
+}
+
+.quick-deid-panel > * {
+  min-width: 0;
 }
 
 .quick-deid-heading {
@@ -5127,6 +5131,7 @@ body.vault-locked .vault-access {
 .quick-review-workspace {
   display: grid;
   gap: 12px;
+  min-height: 0;
 }
 
 .quick-deid-start textarea {
