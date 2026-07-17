@@ -576,7 +576,10 @@ function isLikelyNonNamePhrase(rawText, start, end) {
   }
 
   const words = clinicalWordsFromNormalized(normalized);
-  return words.length >= 2 && words.length <= 5 && words.every((word) => nonNameClinicalWords.has(word));
+  return words.length >= 2 && words.length <= 5 && words.every((word) => (
+    nonNameClinicalWords.has(word) ||
+    COMMON_ENGLISH_PROSE_WORD_PATTERN.test(word)
+  ));
 }
 
 function isLikelyDateFalsePositive(rawText, start, end) {
@@ -1035,6 +1038,10 @@ function constrainPatternEntitySpan(rawText, label, start, end) {
     return { start: constrainedStart, end: constrainedEnd };
   }
 
+  const valueStart = stripLeadingNameFieldLabel(rawText, constrainedStart, constrainedEnd);
+  constrainedStart = valueStart.start;
+  constrainedEnd = valueStart.end;
+
   let span = rawText.slice(constrainedStart, constrainedEnd);
   const sentenceBreak = sentenceBreakIndexForName(span);
   if (sentenceBreak > 0) {
@@ -1248,6 +1255,15 @@ export function mergeEntities(entities, rawText) {
       }
 
       if (rangesOverlap(last, entity) && !isModelEntity(last) && !isModelEntity(entity) && entity.start >= last.start && entity.end <= last.end) {
+        if (isStructuredEntity(entity) && !isStructuredEntity(last)) {
+          merged[merged.length - 1] = {
+            ...entity,
+            source: mergeSourceLabel(entity.source, last.source),
+            context: [entity.context, last.context].filter(Boolean).join("; "),
+            temporal: entity.temporal || last.temporal || null
+          };
+          return;
+        }
         last.source = mergeSourceLabel(last.source, entity.source);
         last.context = [last.context, entity.context].filter(Boolean).join("; ");
         last.temporal = last.temporal || entity.temporal || null;
@@ -2206,9 +2222,12 @@ function resolvedRedactionEntities(rawText, entities, currentDate = null, { incl
 const TIMELINE_DATE_LABEL_SOURCE = String.raw`Encounter date|Admit(?:ted)?(?: date)?|Admission date|Discharge(?:d)?(?: date)?|Date of service|DOS|Collected|Collection(?: date| time| date\/time)?|Result(?:ed)?(?: date| time| date\/time)?|Received|Drawn|Specimen(?: collected)?|Ordered|Date`;
 
 function renameTimelineFieldLabels(text) {
+  const timelinePlaceholder = String.raw`(?=\[(?:Hospital Day|Historical|[^\]]+\bprior to hospital admission)\b)`;
   return String(text || "")
-    .replace(new RegExp(String.raw`^(\s*(?:[-*]\s*)?)(?:${TIMELINE_DATE_LABEL_SOURCE})(\s*:\s*)(?=\[(?:Hospital Day|Historical))`, "gim"), "$1Timeline$2")
-    .replace(/^(\s*(?:[-*]\s*)?)Time(\s*:\s*)(?=\[(?:Hospital Day|Historical))/gim, "$1Elapsed Time$2");
+    .replace(new RegExp(String.raw`^(\s*(?:[-*]\s*)?)(?:${TIMELINE_DATE_LABEL_SOURCE})(\s*:\s*)${timelinePlaceholder}`, "gim"), "$1Timeline$2")
+    .replace(new RegExp(String.raw`^(\s*(?:[-*]\s*)?)(?:${TIMELINE_DATE_LABEL_SOURCE})(\s+)${timelinePlaceholder}`, "gim"), "$1Timeline$2")
+    .replace(new RegExp(String.raw`^(\s*(?:[-*]\s*)?)Time(\s*:\s*)${timelinePlaceholder}`, "gim"), "$1Elapsed Time$2")
+    .replace(new RegExp(String.raw`^(\s*(?:[-*]\s*)?)Time(\s+)${timelinePlaceholder}`, "gim"), "$1Elapsed Time$2")
 }
 
 // Numbers repeated same-label lab results in chronological (document) order
@@ -2411,6 +2430,25 @@ function cleanNameText(value) {
     .split(/\s*,\s*/)[0]
     .replace(/\s+/g, " ")
     .trim();
+}
+
+// Residual full-name promotion can begin at a chart field label when the
+// label is written without punctuation (for example, "Provider Dr Smith").
+// Keep the field label in the output and constrain the entity to the actual
+// person value before it reaches refinement and overlap merging.
+const NAME_FIELD_LABEL_PREFIX_PATTERN = /^(?:primary endocrinologist|primary care provider|referring provider|ordering provider|emergency contact|past medical history|history of present illness|physical exam(?:ination)?|chief complaint|assessment(?: and plan| & plan|\/plan)?|patient(?:\s+name)?|pt(?:\s+name)?|provider|attending|resident|fellow|consultant|surgeon|pcp|subjective|objective|plan|name|doctor|physician|nurse|signed|prepared|dictated|entered|verified|read|interpreted|performed|completed|cosigned)\s*(?::|#|-)?\s+/i;
+
+function stripLeadingNameFieldLabel(rawText, start, end) {
+  const span = rawText.slice(start, end);
+  const prefix = span.match(NAME_FIELD_LABEL_PREFIX_PATTERN);
+  if (!prefix) {
+    return { start, end };
+  }
+
+  const valueStart = start + prefix[0].length;
+  return parsePersonName(rawText.slice(valueStart, end))
+    ? { start: valueStart, end }
+    : { start, end };
 }
 
 function stripHonorific(value) {
@@ -2649,8 +2687,12 @@ function addAliasRepeatEntities(rawText, entities, aliases) {
 function hasStrongNameContext(rawText, start, end) {
   const span = rawText.slice(start, end);
   const sameLine = sameLineContext(rawText, start, end);
+  const lineEndIndex = rawText.indexOf("\n", end);
+  const afterName = rawText.slice(end, lineEndIndex === -1 ? rawText.length : lineEndIndex);
+  const nameFollowedByPersonVerb = /^\s*(?:has|had|is|was|are|were|became|developed|started|continued|remains|remained|took|received)\b/i.test(afterName);
   return /^(?:dr|doctor|mr|mrs|ms|miss)\.?\s+/i.test(span) ||
     /\b(?:one-line summary|overall assessment|patient name|pt name|patient|provider|doctor|physician|attending|resident|fellow|consultant|surgeon|pcp|endocrinologist|referring provider|ordering provider|emergency contact|mother|father|spouse|daughter|son|guardian|caregiver|follow-up with|follow up with|spoke with|call|called|contact|can bring|confirm|before leaving|prescriptions to|admitted|discharge|scheduling|appointment|reports|reported|states|stated|says|said|endorses|denies|feels|complains|presents|presented|at bedside)\b/.test(sameLine) ||
+    nameFollowedByPersonVerb ||
     /\b(?:\d{1,3}\s*(?:y\.?o\.?|yo)|\d{1,3}[- ]year[- ]old|female|male|woman|man|adult)\b/.test(sameLine);
 }
 
@@ -2847,7 +2889,10 @@ function promoteResidualNameEntities(rawText, entities, graph) {
         continue;
       }
 
-      const alias = findAliasForCandidate(candidate, graph.aliases);
+      const fieldPrefix = candidate.match(NAME_FIELD_LABEL_PREFIX_PATTERN);
+      const fieldValue = fieldPrefix ? candidate.slice(fieldPrefix[0].length) : "";
+      const alias = findAliasForCandidate(candidate, graph.aliases) ||
+        (fieldValue ? findAliasForCandidate(fieldValue, graph.aliases) : null);
       const fuzzyIdentity = alias ? null : findFuzzyIdentityForCandidate(candidate, graph);
       const standalonePersonName = !alias && !fuzzyIdentity && shouldAutoPromoteStandalonePersonName(candidate);
       const parsedCandidate = parsePersonName(candidate);
@@ -2880,7 +2925,9 @@ function promoteResidualNameEntities(rawText, entities, graph) {
         : alias?.label || fuzzyIdentity?.label || refineNameLabel("NAME", rawText, start, end);
       const source = alias ? "alias repeat" : fuzzyIdentity ? "fuzzy alias" : "residual auto-fix";
       const context = alias ? "known identity alias" : fuzzyIdentity ? `near ${fuzzyIdentity.surname}` : standalonePersonName ? "standalone person name pattern" : proseNameSignal ? "prose name signal" : "strong name context";
-      let entityStart = start;
+      let entityStart = alias && fieldPrefix && fieldValue
+        ? start + fieldPrefix[0].length
+        : start;
       if (parsedCandidate && parsedCandidate.original !== candidate) {
         const cleanedOffset = candidate.indexOf(parsedCandidate.original);
         if (cleanedOffset > 0) {

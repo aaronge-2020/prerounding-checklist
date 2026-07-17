@@ -76,6 +76,68 @@ const inlinePatientHeaderResult = deidentifyTextStructuredOnly("Patient Jane Smi
 assert.ok(!inlinePatientHeaderResult.text.includes("Jane Smith"), "inline patient header names should be redacted");
 assert.ok(!inlinePatientHeaderResult.text.includes("123456"), "inline patient header MRNs should be redacted");
 
+const userReportedBatchCases = [
+  {
+    id: "user-reported-alice-note",
+    text: `Patient Name Alice Smith
+Date of Birth January 4 1980
+Date of Service June 10 2026
+Medical Record Number 10485739
+Address 742 Evergreen Terrace Springfield Oregon 97477
+Phone 541 555 0192
+Provider Dr Robert Chang
+Chief Complaint Headache
+History of Present Illness Alice reports a severe headache. The pain began on June 8 2026. She took acetaminophen. The medicine reduced the pain.
+Past Medical History Alice has asthma.
+Physical Exam I examined the patient. Her vital signs show normal limits.
+Assessment Alice has a tension headache. I prescribed rest.`,
+    expected: `Patient Name [PATIENT NAME]
+Date of Birth [46 years, 6 months, and 12 days prior to hospital admission]
+Timeline [1 month and 6 days prior to hospital admission]
+Medical Record Number [MRN]
+Address [ADDRESS]
+Phone [PHONE]
+Provider [PROVIDER NAME]
+Chief Complaint Headache
+History of Present Illness [PATIENT NAME] reports a severe headache. The pain began on [1 month and 8 days prior to hospital admission]. She took acetaminophen. The medicine reduced the pain.
+Past Medical History [PATIENT NAME] has asthma.
+Physical Exam I examined the patient. Her vital signs show normal limits.
+Assessment [PATIENT NAME] has a tension headache. I prescribed rest.`
+  },
+  {
+    id: "user-reported-brian-note",
+    text: `Patient Name Brian Johnson
+Date of Birth March 15 1965
+Date of Service July 2 2026
+Medical Record Number 83920485
+Address 101 Maple Street Austin Texas 78701
+Phone 512 555 3847
+Provider Dr Sarah Miller
+Chief Complaint Knee pain
+History of Present Illness Brian presents with right knee pain. He fell on July 1 2026. He rates the pain high.
+Past Medical History Brian has hypertension.
+Physical Exam I observed swelling on the right knee.
+Assessment Brian has a knee sprain. I ordered an x ray.`,
+    expected: `Patient Name [PATIENT NAME]
+Date of Birth [61 years, 4 months, and 1 day prior to hospital admission]
+Timeline [14 days prior to hospital admission]
+Medical Record Number [MRN]
+Address [ADDRESS]
+Phone [PHONE]
+Provider [PROVIDER NAME]
+Chief Complaint Knee pain
+History of Present Illness [PATIENT NAME] presents with right knee pain. He fell on [15 days prior to hospital admission]. He rates the pain high.
+Past Medical History [PATIENT NAME] has hypertension.
+Physical Exam I observed swelling on the right knee.
+Assessment [PATIENT NAME] has a knee sprain. I ordered an x ray.`
+  }
+];
+for (const caseItem of userReportedBatchCases) {
+  const result = deidentifyTextStructuredOnly(caseItem.text, new Date("2026-07-16T00:00:00Z"));
+  assert.equal(result.text, caseItem.expected, `${caseItem.id} should redact the complete note without changing clinical prose`);
+  assert.deepEqual(result.residualWarnings, [], `${caseItem.id} should not leave residual PHI warnings`);
+}
+
 const cases = makeSyntheticCases(250);
 for (const caseItem of cases) {
   assertCaseClean(caseItem);

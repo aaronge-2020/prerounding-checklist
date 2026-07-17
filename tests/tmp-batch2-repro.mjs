@@ -1,3 +1,5 @@
+/* global console */
+
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
 const notes = [
