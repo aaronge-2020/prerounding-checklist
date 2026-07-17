@@ -206,7 +206,7 @@ export const nonNameClinicalWords = new Set([
   "labs", "lactate",
   "lactic", "last", "level", "line", "lipase", "liver", "low", "lumbar", "lung", "lungs", "lymphocytes",
   "magnesium", "management", "maximum", "mean", "medical", "medication", "medications", "medicine", "meds",
-  "mental", "microbiology", "minimum", "monocytes", "morphology", "motor", "musculoskeletal",
+  "mental", "microbiology", "minimum", "monocytes", "morphology", "motor", "myocardial", "musculoskeletal",
   "nausea", "nephrology", "nerve", "neuro", "neurologic", "neurology", "neurosurgery", "neutrophils",
   "nightly", "normal",
   "note", "objective", "obstetrics", "oncology", "operative", "orthopedics", "outpatient", "output",

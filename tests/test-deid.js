@@ -138,6 +138,53 @@ for (const caseItem of userReportedBatchCases) {
   assert.deepEqual(result.residualWarnings, [], `${caseItem.id} should not leave residual PHI warnings`);
 }
 
+const familyHistoryClinicalPhraseText = `Family History
+Father died from myocardial infarction at age 59.
+Mother alive with diabetes and CKD.`;
+const familyHistoryClinicalPhraseResult = deidentifyTextStructuredOnly(familyHistoryClinicalPhraseText);
+assert.equal(
+  familyHistoryClinicalPhraseResult.text,
+  familyHistoryClinicalPhraseText,
+  "family-history prose should not be captured as a contact name"
+);
+assert.deepEqual(
+  familyHistoryClinicalPhraseResult.residualWarnings,
+  [],
+  "family-history clinical prose should not leave residual PHI warnings"
+);
+assert.deepEqual(
+  familyHistoryClinicalPhraseResult.entities,
+  [],
+  "family-history clinical prose should not create structured name entities"
+);
+
+const familyHistoryContactNamesText = `Family History
+Father: Robert Johnson
+Mother Susan Johnson
+Emergency contact: Laura Johnson`;
+const familyHistoryContactNamesResult = deidentifyTextStructuredOnly(familyHistoryContactNamesText);
+assert.equal(
+  familyHistoryContactNamesResult.text,
+  `Family History
+Father: [CONTACT NAME]
+Mother [CONTACT NAME]
+Emergency contact: [CONTACT NAME]`,
+  "actual family and emergency contact names should remain redacted"
+);
+
+const familyHistoryModelPhraseStart = familyHistoryClinicalPhraseText.indexOf("myocardial infarction");
+const familyHistoryModelEntities = modelPredictionsToEntities(familyHistoryClinicalPhraseText, [{
+  entity_group: "CONTACT",
+  start: familyHistoryModelPhraseStart,
+  end: familyHistoryModelPhraseStart + "myocardial infarction".length,
+  score: 0.99
+}]);
+assert.deepEqual(
+  familyHistoryModelEntities,
+  [],
+  "clinical diagnoses must suppress model contact-name false positives"
+);
+
 const cases = makeSyntheticCases(250);
 for (const caseItem of cases) {
   assertCaseClean(caseItem);

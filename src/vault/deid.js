@@ -1026,6 +1026,21 @@ function addCapturedEntity(rawText, entities, label, regex, source = "structured
     const trailingTrim = value.match(/[\s*]*$/)[0].length;
     const start = match.index + valueOffset + leadingTrim;
     const end = match.index + valueOffset + value.length - trailingTrim;
+    if (nameEntityLabels.has(normalizePhiLabel(label))) {
+      const capturePrefix = match[0].slice(0, valueOffset);
+      const explicitNameField = /[:#]/.test(capturePrefix);
+      // Relationship labels also occur as ordinary prose headings (for
+      // example, "Father died from myocardial infarction"). The permissive
+      // label regex is allowed to match both forms, but a whitespace-only
+      // separator is only a name field when its value begins like a real
+      // title-cased person name. Colon/hash fields remain compatible with
+      // lowercased imported names, while the clinical/prose guard handles
+      // all-caps and title-cased clinical clauses.
+      if ((!explicitNameField && !/^[A-Z]/.test(value.trim())) ||
+          isLikelyNonNamePhrase(rawText, start, end)) {
+        continue;
+      }
+    }
     pushPatternEntity(entities, rawText, label, start, end, source, context || match[0].split(/[:#]/)[0].trim());
   }
 }
@@ -2847,7 +2862,7 @@ function findFuzzyIdentityForCandidate(candidate, graph) {
 // which occasionally do (Foley, Grant, Young...), so this set is safe to
 // treat as an absolute "not a name" signal rather than just supporting
 // context, wherever a single such token shows up as a whole entity span.
-const COMMON_ENGLISH_PROSE_WORD_PATTERN = /^(?:was|were|is|are|has|had|have|came|went|arrived|left|departed|presented|reported|stated|said|told|spoke|called|denied|endorsed|complained|asked|requested|received|underwent|developed|began|started|stopped|continued|remained|became|felt|noted|showed|demonstrated|required|needed|wanted|tried|failed|agreed|refused|decided|planned|expected|hoped|thought|believed|knew|found|gave|took|made|got|put|went|followed|walked|ran|sat|stood|lay|slept|ate|drank|used|tolerated|a|an|the|in|on|at|to|for|with|from|by|about|after|before|during|and|or|but|not|also|now|then|today|yesterday|will|would|should|could|can|may|might|who|that|which|this|these|those|his|her|their|our|my|your|its|no|yes|very|just|quite|rather|still|yet|already|soon|currently|initially|subsequently|eventually|finally|been|being|be|do|does|did|done|shall|must|it|he|she|they|we|i|you)$/i;
+const COMMON_ENGLISH_PROSE_WORD_PATTERN = /^(?:was|were|is|are|has|had|have|came|went|arrived|left|departed|died|dies|dying|alive|dead|deceased|lives|living|presented|reported|stated|said|told|spoke|called|denied|endorsed|complained|asked|requested|received|underwent|developed|began|started|stopped|continued|remained|became|felt|noted|showed|demonstrated|required|needed|wanted|tried|failed|agreed|refused|decided|planned|expected|hoped|thought|believed|knew|found|gave|took|made|got|put|went|followed|walked|ran|sat|stood|lay|slept|ate|drank|used|tolerated|a|an|the|in|on|at|to|for|with|from|by|about|after|before|during|and|or|but|not|also|now|then|today|yesterday|will|would|should|could|can|may|might|who|that|which|this|these|those|his|her|their|our|my|your|its|no|yes|very|just|quite|rather|still|yet|already|soon|currently|initially|subsequently|eventually|finally|been|being|be|do|does|did|done|shall|must|it|he|she|they|we|i|you)$/i;
 
 function hasProseContinuationAfterName(rawText, end) {
   const after = rawText.slice(end, Math.min(rawText.length, end + 80));
