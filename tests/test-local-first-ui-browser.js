@@ -79,8 +79,17 @@ try {
   assert.equal(await page.locator(".side-nav").isHidden(), true);
   assert.equal(await page.locator(".top-bar").isHidden(), true);
   assert.equal(await page.locator("#dailyContent").innerHTML(), "");
+  assert.equal(await page.locator("#vaultPassphrase").getAttribute("minlength"), "12");
+  assert.match(await page.locator(".vault-no-recovery-warning").innerText(), /no server, no reset button, and no recovery/i);
+  assert.match(await page.locator("#vaultPassphraseStrength").innerText(), /two or more words/i);
+
+  await page.fill("#vaultPassphrase", "shortcode");
+  await page.click('[data-action="unlock-vault"]');
+  await page.waitForFunction(() => /at least 12 characters/.test(document.querySelector("#vaultPassphraseError")?.textContent || ""));
+  assert.equal(await page.locator("#vaultPassphraseStrength").evaluate((node) => node.classList.contains("is-weak")), true);
 
   await page.fill("#vaultPassphrase", "test passphrase");
+  assert.equal(await page.locator("#vaultPassphraseStrength").evaluate((node) => node.classList.contains("is-strong")), true);
   await page.click('[data-action="unlock-vault"]');
   await page.waitForFunction(() => /Vault unlocked/.test(document.querySelector("#statusLine")?.textContent || ""));
   assert.equal(await page.locator("body").evaluate((node) => node.classList.contains("vault-locked")), false);
@@ -97,7 +106,7 @@ try {
   assert.equal(await page.locator("#vaultPassphrase").inputValue(), "wrong passphrase");
   await page.click('[data-action="toggle-vault-passphrase"]');
   assert.equal(await page.locator("#vaultPassphrase").getAttribute("type"), "text");
-  assert.equal(await page.locator('[data-action="toggle-vault-passphrase"]').innerText(), "Hide passphrase");
+  assert.equal(await page.locator('[data-action="toggle-vault-passphrase"]').getAttribute("aria-label"), "Hide passphrase");
   await page.click('[data-action="toggle-vault-passphrase"]');
   assert.equal(await page.locator("#vaultPassphrase").getAttribute("type"), "password");
   await page.fill("#vaultPassphrase", "test passphrase");
@@ -114,6 +123,7 @@ try {
 
   await page.click('[data-view-target="settings"]');
   await page.waitForSelector("#settingsMedicalService");
+  assert.equal(await page.locator('[data-action="export-vault"]').filter({ hasText: "Export Vault Backup" }).count(), 1);
   await page.selectOption("#settingsMedicalService", "consult");
   await page.fill("#settingsServiceFocus", "Focus on the consulted rhythm question.");
   await page.selectOption("#settingsPresentationDetail", "detailed");

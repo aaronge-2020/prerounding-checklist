@@ -1,13 +1,16 @@
 export function createVaultPresentation({ escapeHtml, icon }) {
   function vaultPassphraseField(record, vaultUnlockError) {
     const hasUnlockError = Boolean(vaultUnlockError);
+    const creatingVault = !record;
     return `
       <div class="vault-passphrase-field">
         <label for="vaultPassphrase">Vault passphrase</label>
         <div class="vault-passphrase-input">
-          <input id="vaultPassphrase" type="password" autocomplete="current-password" placeholder="${record ? "Unlock existing vault" : "Create local vault"}"${hasUnlockError ? ' aria-describedby="vaultPassphraseError" aria-invalid="true"' : ""}>
-          <button id="vaultPassphraseVisibility" class="button--quiet vault-passphrase-visibility" type="button" data-action="toggle-vault-passphrase" aria-controls="vaultPassphrase" aria-pressed="false">Show passphrase</button>
+          <input id="vaultPassphrase" type="password" autocomplete="${record ? "current-password" : "new-password"}" placeholder="${record ? "Unlock existing vault" : "Create local vault — use multiple words"}"${creatingVault ? ' minlength="12"' : ""}${hasUnlockError ? ' aria-describedby="vaultPassphraseError" aria-invalid="true"' : ""}>
+          <button id="vaultPassphraseVisibility" class="button--quiet vault-passphrase-visibility" type="button" data-action="toggle-vault-passphrase" aria-controls="vaultPassphrase" aria-pressed="false" aria-label="Show passphrase" title="Show passphrase">${icon("eye")}</button>
         </div>
+        ${creatingVault ? `<div id="vaultPassphraseStrength" class="vault-passphrase-strength is-empty" aria-live="polite"><div class="vault-passphrase-meter" aria-hidden="true"><span></span></div><span class="vault-passphrase-strength-label">Use at least 12 characters and two or more words.</span></div>
+        <div class="vault-no-recovery-warning" role="note"><strong>No recovery</strong><span>This app runs 100% on your device. There is no server, no reset button, and no recovery. If you forget this passphrase, your data is gone forever.</span></div>` : ""}
         <p id="vaultPassphraseError" class="vault-unlock-error" role="alert"${hasUnlockError ? "" : " hidden"}>${escapeHtml(vaultUnlockError)}</p>
       </div>
     `;
@@ -33,7 +36,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function renderVault({ record, unlocked, vault, vaultUnlockError }) {
+  function renderVault({ record, unlocked, vault, patients, vaultUnlockError }) {
     if (!unlocked) {
       return `
         <div class="locked-vault-shell">
@@ -48,7 +51,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
                 <input id="restoreVaultInput" type="file" accept="application/json" hidden>
               </div>
             </div>
-            <div class="vault-access-controls">
+            <div class="vault-access-controls ${record ? "" : "vault-setup-controls"}">
               ${vaultPassphraseField(record, vaultUnlockError)}
               <button class="button--primary" type="button" data-action="unlock-vault">${record ? "Unlock vault" : "Create vault"}</button>
             </div>
@@ -59,14 +62,14 @@ export function createVaultPresentation({ escapeHtml, icon }) {
                     <span>It can't be recovered — delete this vault to start over.</span>
                     <button class="button--quiet" type="button" data-action="request-delete-vault">Delete vault and start over</button>
                   </div>`
-                : `<div class="next-step compact-next-step"><strong>Next step: create a passphrase.</strong><span>This creates an encrypted local vault on this device.</span></div>`
+                : ""
             }
           </section>
         </div>
       `;
     }
 
-    const patients = vault?.patients || [];
+    const visiblePatients = patients || vault?.patients || [];
     return `
       <div class="vault-screen">
         <section class="vault-access surface-panel">
@@ -116,7 +119,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
           </div>
           <div class="roster-column-head" aria-hidden="true"><span>Patient</span><span>Status</span><span>Hospital days</span><span></span></div>
           <div class="patient-list">
-            ${patients.length ? patients.map(p => renderPatientRow(p, vault?.activePatientId)).join("") : `<div class="empty-state">No patients yet. Add one above to get started.</div>`}
+            ${visiblePatients.length ? visiblePatients.map(p => renderPatientRow(p, vault?.activePatientId)).join("") : `<div class="empty-state">No patients yet. Add one above to get started.</div>`}
           </div>
           <div class="local-vault-note"><strong>Local encryption</strong><span>This vault lives only in this browser. Export it to create a portable encrypted backup.</span></div>
         </section>

@@ -66,6 +66,7 @@ const medicationOrganizer = buildOpenEvidencePrompt("medication_explainer_by_pro
 assert.match(medicationOrganizer, /disease, condition, symptom, or clinical purpose/);
 assert.match(medicationOrganizer, /brief explanation of what it does/);
 assert.match(medicationOrganizer, /confirmed from context, inferred, or uncertain/);
+assert.doesNotMatch(medicationOrganizer, /Write for the Primary team/);
 
 const medicationSafety = buildOpenEvidencePrompt("medication_safety_audit", { patient });
 assert.match(medicationSafety, /indication/i);
@@ -195,9 +196,28 @@ const directGuidelines = buildCustomOpenEvidencePrompt({
 assert.match(directGuidelines, /Concise H&P Presentation/);
 assert.doesNotMatch(directGuidelines, /@admission-guidelines/);
 
+const medicationTeachingPrompt = buildCustomOpenEvidencePrompt({
+  taskId: "medication_explainer_by_problem",
+  template: `${DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem}\n\n@team-preferences`,
+  patient,
+  selectedDayId: day.id,
+  teamPreferences: { medicalService: "primary", presentationDetail: "standard" }
+});
+assert.match(medicationTeachingPrompt, /Write for the Primary team/);
+assert.match(medicationTeachingPrompt, /Organize the medications by treated disease/);
+
+const medicationDefaultPrompt = buildCustomOpenEvidencePrompt({
+  taskId: "medication_explainer_by_problem",
+  template: DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem,
+  patient,
+  selectedDayId: day.id,
+  teamPreferences: { medicalService: "primary", presentationDetail: "standard" }
+});
+assert.doesNotMatch(medicationDefaultPrompt, /Write for the Primary team/);
+
 const consultPrompt = buildCustomOpenEvidencePrompt({
   taskId: "teaching_case_trajectory",
-  template: "Use @admission-context only.",
+  template: "@team-preferences\n\nUse @admission-context only.",
   patient,
   selectedDayId: day.id,
   teamPreferences: {

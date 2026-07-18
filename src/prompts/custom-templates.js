@@ -5,24 +5,26 @@ import { buildTeamPreferencesPromptBlock } from "../app/preferences.js";
 import { naturalLanguagePrompt } from "./natural-language.js";
 
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";
+export const TEAM_PREFERENCES_PROMPT_TOKEN = "@team-preferences";
 
 // These reference the tokens the migration in guideline-sets.js assigns to
 // the two seeded "Admission"/"Progress" sets. If a user deletes one of those
 // sets the token below simply won't resolve (same graceful degradation as
 // referencing any other deleted variable).
 export const DEFAULT_PROMPT_TEMPLATES = {
-  initial_admission_rounds: `@admission-guidelines\n\nCreate an initial admission rounds note from the admission packet below.\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
-  daily_progress_note: `@progress-guidelines\n\nCreate a daily progress note for @selected-day.\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  initial_admission_rounds: `@team-preferences\n\n@admission-guidelines\n\nCreate an initial admission rounds note from the admission packet below.\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  daily_progress_note: `@team-preferences\n\n@progress-guidelines\n\nCreate a daily progress note for @selected-day.\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
   teaching_case_trajectory: `Teach the full case trajectory using the admission packet and selected hospital day below. Explain the clinical reasoning, uncertainty, and major management decisions.\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   medication_explainer_by_problem: `Organize the medications by treated disease, condition, symptom, or indication. Explain what each medication does and mark uncertain indications clearly.\n\n@medications\n\n@selected-day`,
   medication_safety_audit: `Check each medication for indication, dose, route, frequency, duplication, interactions, contraindications, and missing context. Say "insufficient information" rather than guessing.\n\n@medications\n\n@labs\n\n@selected-day`,
   checklist_workup_refinement: `Review this checklist against the admission packet and selected hospital day. Suggest only history questions and physical exam items, organized by system when useful.\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
-  preround_bedside_exam: `@pre-round-checklist-guidelines\n\nGenerate a focused bedside pre-rounding checklist for @selected-day.\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
-  discharge_instructions: `@discharge-instructions-guidelines\n\nWrite discharge instructions for this patient.\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
-  consulting: `@consulting-guidelines\n\nPrepare a concise, clinically grounded consult request and consult-call checklist from the de-identified information below. Do not invent identifiers, findings, trends, diagnoses, tests, or recommendations. If information is missing, say that it is not provided and list exactly what should be obtained before calling.\n\nReturn the consult question first, followed by: consult type (further workup, management, procedure, or combination); relevant body part, organ, or system and specialty; patient readiness (stable, consentable, able to participate in an interview, or needs stabilization first); urgency (routine, about 24 hours, urgent, or emergent); one-sentence patient summary; one-sentence hospital course; why the consultant is being called now; and a concise call script beginning with \"I’m calling for a consult regarding ...\". End with the information to have ready: V/S, relevant labs, imaging, and stability or consentability if a procedure may be needed. Use identifiers only when they are present in the provided information.\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`
+  preround_bedside_exam: `@team-preferences\n\n@pre-round-checklist-guidelines\n\nGenerate a focused bedside pre-rounding checklist for @selected-day.\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  discharge_instructions: `@team-preferences\n\n@discharge-instructions-guidelines\n\nWrite discharge instructions for this patient.\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  consulting: `@team-preferences\n\n@consulting-guidelines\n\nPrepare a concise, clinically grounded consult request and consult-call checklist from the de-identified information below. Do not invent identifiers, findings, trends, diagnoses, tests, or recommendations. If information is missing, say that it is not provided and list exactly what should be obtained before calling.\n\nReturn the consult question first, followed by: consult type (further workup, management, procedure, or combination); relevant body part, organ, or system and specialty; patient readiness (stable, consentable, able to participate in an interview, or needs stabilization first); urgency (routine, about 24 hours, urgent, or emergent); one-sentence patient summary; one-sentence hospital course; why the consultant is being called now; and a concise call script beginning with \"I’m calling for a consult regarding ...\". End with the information to have ready: V/S, relevant labs, imaging, and stability or consentability if a procedure may be needed. Use identifiers only when they are present in the provided information.\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`
 };
 
 export const SMART_PROMPT_VARIABLES = [
+  { token: TEAM_PREFERENCES_PROMPT_TOKEN, label: "General instructions (smart)", description: "Your saved service, presentation, focus, and attending preferences." },
   { token: "@admission-packet", label: "Admission packet", description: "All saved admission fields, labeled." },
   { token: "@selected-day", label: "Selected hospital day", description: "The chosen hospital-day packet; defaults to the latest saved day." },
   { token: "@checklist-answers", label: "Checklist answers", description: "History and physical exam answers." },
@@ -116,7 +118,7 @@ export function promptTemplateForTask(taskId, overrides = {}) {
   return saved && saved !== "@default-prompt" ? saved : String(DEFAULT_PROMPT_TEMPLATES[taskId] || "");
 }
 
-export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets = [] }) {
+export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets = [], teamPreferences = {} }) {
   const usingAdmission = selectedDayId === ADMISSION_PSEUDO_DAY_ID;
   const selectedDay = selectedPromptDay(patient, selectedDayId);
   const snapshot = selectedDay?.checklistSnapshot || null;
@@ -148,6 +150,7 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
     ...sectionValues,
     ...selectedDayValues,
     ...guidelineValues,
+    [TEAM_PREFERENCES_PROMPT_TOKEN]: buildTeamPreferencesPromptBlock(teamPreferences),
     "@admission-packet": sectionsToPromptBlock(patient?.contextSections || [], "Admission packet"),
     "@medications": medicationSection?.deidentifiedText || "No saved medication text.",
     "@labs": labSection?.deidentifiedText || "No saved lab text.",
@@ -171,9 +174,9 @@ export function interpolatePromptTemplate(template, variables) {
 }
 
 export function buildCustomOpenEvidencePrompt({ taskId, template, patient, selectedDayId, guidelineSets = [], teamPreferences }) {
-  const variables = buildPromptVariableMap({ taskId, patient, selectedDayId, guidelineSets });
+  const variables = buildPromptVariableMap({ taskId, patient, selectedDayId, guidelineSets, teamPreferences });
   const interpolated = interpolatePromptTemplate(template, variables);
-  return naturalLanguagePrompt(`${buildTeamPreferencesPromptBlock(teamPreferences)}\n\n${interpolated}`);
+  return naturalLanguagePrompt(interpolated);
 }
 
 function hashToken(token) {

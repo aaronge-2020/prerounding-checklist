@@ -73,6 +73,22 @@ export function createSettingsPresentation({ escapeHtml }) {
           <p class="muted settings-helper">Without a saved key, the Workups and Checklist pages fall back to the copy-and-paste ChatGPT formatter prompt.</p>
         </section>
 
+        <section class="panel settings-panel">
+          <div class="section-heading">
+            <div>
+              <h2>Encrypted vault backup</h2>
+              <p class="muted">Download the encrypted vault record to move your settings and de-identified roster to another device.</p>
+            </div>
+          </div>
+          <div class="notice settings-backup-note">
+            <strong>Your backup remains encrypted.</strong>
+            <span>It can only be opened with this vault's passphrase. Store the file somewhere you trust.</span>
+          </div>
+          <div class="button-row">
+            <button class="button--primary" type="button" data-action="export-vault">Export Vault Backup</button>
+          </div>
+        </section>
+
         ${renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides })}
       </div>
     `;

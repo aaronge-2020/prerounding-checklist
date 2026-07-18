@@ -1,7 +1,6 @@
 import { checklistAnswersSummary } from "../checklist/state.js";
 import { buildTrajectoryBlock } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js";
-import { buildTeamPreferencesPromptBlock } from "../app/preferences.js";
 import { naturalLanguagePrompt } from "./natural-language.js";
 
 export const OPEN_EVIDENCE_TASKS = [
@@ -169,5 +168,5 @@ export function buildOpenEvidencePrompt(taskId, options = {}) {
   };
   const builder = builders[taskId];
   if (!builder) throw new Error(`Unknown OpenEvidence prompt task: ${taskId}`);
-  return naturalLanguagePrompt(`${buildTeamPreferencesPromptBlock(options.teamPreferences)}\n\n${builder(options)}`);
+  return naturalLanguagePrompt(builder(options));
 }

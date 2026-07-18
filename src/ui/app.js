@@ -8,8 +8,8 @@ import { crossOriginIsolationBlocker, deidentifyText, getAdvancedDeidStatus, get
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
 import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
-import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260717-consulting-prompt";
-import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260717-consulting-prompt";
+import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260718-smart-team-preferences";
+import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260718-smart-team-preferences";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import { ensureAdditionalGuidelineSets, ensureConsultingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260717-consulting-prompt";
 import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260711-functional-remediation-15";
@@ -49,6 +49,7 @@ import { createGuidelineSetsController } from "./settings/guidelines-controller.
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260714-hue-picker";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260713-guideline-sets";
+import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260717-guided-demo-ux";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
@@ -137,6 +138,8 @@ let draggedSectionRow = null;
 let sectionDragSaved = false;
 let workupAutosaveTimer = null;
 let workupAutosaveChain = Promise.resolve();
+let vaultInactivityTimer = null;
+const VAULT_INACTIVITY_MS = 15 * 60 * 1000;
 
 function byId(id) {
   return document.getElementById(id);
@@ -154,6 +157,7 @@ const quickDeidPresentation = createQuickDeidPresentation({ escapeHtml, icon });
 const workupPresentation = createWorkupPresentation({ escapeHtml, icon });
 const promptsPresentation = createPromptsPresentation({ escapeHtml });
 const settingsPresentation = createSettingsPresentation({ escapeHtml });
+const vaultPresentation = createVaultPresentation({ escapeHtml, icon });
 const demoController = createDemoController({ byId, escapeHtml, getSession: () => app.demoSession, getView: () => app.view });
 const demoSessionController = createDemoSessionController({ app, createDemoPatient, structuredDeidMode: STRUCTURED_DEID_MODE, clearPhiReviews, clearQuickDeidSession, render, setStatus });
 const checklistSearch = createChecklistSearchController({ Fuse, normalizeQuery: normalizeWorkupCatalogQuery, byId });
@@ -583,6 +587,21 @@ function vaultIsUnlocked() {
   return Boolean(app.vault && app.passphrase);
 }
 
+function resetVaultInactivityTimer() {
+  if (vaultInactivityTimer) clearTimeout(vaultInactivityTimer);
+  if (!vaultIsUnlocked()) {
+    vaultInactivityTimer = null;
+    return;
+  }
+  vaultInactivityTimer = setTimeout(() => {
+    if (vaultIsUnlocked()) lockVault("Vault locked after 15 minutes of inactivity.");
+  }, VAULT_INACTIVITY_MS);
+}
+
+function recordVaultActivity() {
+  if (vaultIsUnlocked()) resetVaultInactivityTimer();
+}
+
 function clearProtectedViewContent() {
   ["dailyContent", "workupsContent", "checklistContent", "promptsContent", "quickDeidContent", "settingsContent"].forEach((id) => {
     const container = byId(id);
@@ -594,6 +613,10 @@ function clearProtectedViewContent() {
 }
 
 function clearSensitiveSession() {
+  if (vaultInactivityTimer) {
+    clearTimeout(vaultInactivityTimer);
+    vaultInactivityTimer = null;
+  }
   if (app.demoSession) demoSessionController.exit({ renderAfter: false });
   app.vault = null;
   app.passphrase = "";
@@ -691,20 +714,6 @@ function renderStatusBar() {
     : `<option>No patient selected</option>`;
 }
 
-function vaultPassphraseField(record) {
-  const hasUnlockError = Boolean(app.vaultUnlockError);
-  return `
-    <div class="vault-passphrase-field">
-      <label for="vaultPassphrase">Vault passphrase</label>
-      <div class="vault-passphrase-input">
-        <input id="vaultPassphrase" type="password" autocomplete="current-password" placeholder="${record ? "Unlock existing vault" : "Create local vault"}"${hasUnlockError ? ' aria-describedby="vaultPassphraseError" aria-invalid="true"' : ""}>
-        <button id="vaultPassphraseVisibility" class="button--quiet vault-passphrase-visibility" type="button" data-action="toggle-vault-passphrase" aria-controls="vaultPassphrase" aria-pressed="false">Show passphrase</button>
-      </div>
-      <p id="vaultPassphraseError" class="vault-unlock-error" role="alert"${hasUnlockError ? "" : " hidden"}>${escapeHtml(app.vaultUnlockError)}</p>
-    </div>
-  `;
-}
-
 function showVaultUnlockError(message) {
   app.vaultUnlockError = message;
   const input = byId("vaultPassphrase");
@@ -738,119 +747,41 @@ function toggleVaultPassphraseVisibility() {
   if (!input || !button) return;
   const isMasked = input.type === "password";
   input.type = isMasked ? "text" : "password";
-  button.textContent = isMasked ? "Hide passphrase" : "Show passphrase";
+  button.setAttribute("aria-label", isMasked ? "Hide passphrase" : "Show passphrase");
+  button.title = isMasked ? "Hide passphrase" : "Show passphrase";
   button.setAttribute("aria-pressed", String(isMasked));
+}
+
+function updateVaultPassphraseStrength(value) {
+  const strength = byId("vaultPassphraseStrength");
+  if (!strength) return;
+  const length = value.length;
+  const words = value.trim() ? value.trim().split(/\s+/).length : 0;
+  let state = "is-empty";
+  let label = "Use at least 12 characters and two or more words.";
+  if (length > 0 && length < 12) {
+    state = "is-weak";
+    label = `${length}/12 characters — add more words, not a short code.`;
+  } else if (length >= 12 && words < 2) {
+    state = "is-fair";
+    label = "Long enough, but use two or more words for a stronger passphrase.";
+  } else if (length >= 12) {
+    state = "is-strong";
+    label = "Strong passphrase — multiple words make it easier to remember.";
+  }
+  strength.className = `vault-passphrase-strength ${state}`;
+  strength.querySelector(".vault-passphrase-strength-label").textContent = label;
 }
 
 function renderVault() {
   const record = readEncryptedVaultRecord();
-  if (!vaultIsUnlocked()) {
-    byId("vaultContent").innerHTML = `
-      <div class="locked-vault-shell">
-        <section class="vault-access surface-panel">
-          <div class="section-heading vault-access-heading">
-            <div>
-              <h2 id="vault-heading">Unlock local vault</h2>
-              <p class="muted">Your passphrase decrypts patient, workup, checklist, and prompt data stored on this device. Nothing loads until you unlock it.</p>
-            </div>
-            <div class="transfer-actions">
-              <button class="button--secondary button--transfer" type="button" data-action="restore-vault">${icon("upload")} Restore from file</button>
-              <input id="restoreVaultInput" type="file" accept="application/json" hidden>
-            </div>
-          </div>
-          <div class="vault-access-controls">
-            ${vaultPassphraseField(record)}
-            <button class="button--primary" type="button" data-action="unlock-vault">${record ? "Unlock vault" : "Create vault"}</button>
-          </div>
-          ${
-            record
-              ? `<div class="vault-recovery">
-                  <strong>Forgot the passphrase?</strong>
-                  <span>It can't be recovered — delete this vault to start over.</span>
-                  <button class="button--quiet" type="button" data-action="request-delete-vault">Delete vault and start over</button>
-                </div>`
-              : `<div class="next-step compact-next-step"><strong>Next step: create a passphrase.</strong><span>This creates an encrypted local vault on this device.</span></div>`
-          }
-        </section>
-      </div>
-    `;
-    return;
-  }
-  const patients = visiblePatients(app.vault);
-  byId("vaultContent").innerHTML = `
-    <div class="vault-screen">
-      <section class="vault-access surface-panel">
-        <div class="section-heading vault-access-heading">
-          <div>
-            <h2>Patient vault</h2>
-            <p class="muted">Encrypted on this device. No automatic network requests or cloud storage.</p>
-          </div>
-          <div class="transfer-actions">
-            <button class="button--secondary button--transfer" type="button" data-action="export-vault" ${record ? "" : "disabled"}>${icon("download")} Export</button>
-            <button class="button--secondary button--transfer" type="button" data-action="restore-vault">${icon("upload")} Restore from file</button>
-            <input id="restoreVaultInput" type="file" accept="application/json" hidden>
-          </div>
-        </div>
-        <div class="vault-session-state" role="status">
-          <div>
-            <strong>Vault unlocked</strong>
-            <span>Patient data is available only in this browser session.</span>
-          </div>
-          <button class="button--secondary vault-lock-button" type="button" data-action="lock-vault">${icon("lock")}<span>Lock vault</span></button>
-        </div>
-        ${
-          record && !app.vault
-            ? `<div class="vault-recovery">
-                <strong>Forgot the passphrase?</strong>
-                <span>It cannot be recovered. You can permanently remove this encrypted vault and create a new one.</span>
-                <button class="button--quiet" type="button" data-action="request-delete-vault">Delete vault and start over</button>
-              </div>`
-            : !record
-              ? `<div class="next-step compact-next-step"><strong>Next step: create a passphrase.</strong><span>Then add your first de-identified room label to begin.</span></div>`
-              : ""
-        }
-      </section>
-
-      <section class="roster-surface surface-panel">
-        <div class="section-heading roster-heading">
-          <div>
-            <h2>Roster</h2>
-            <p class="muted">Use de-identified room labels only.</p>
-          </div>
-          <div class="roster-add-patient">
-            <label>Local display label
-              <input id="newPatientLabel" placeholder="Room A - General Admission">
-            </label>
-            <button class="button--primary" type="button" data-action="admit-patient" ${app.vault ? "" : "disabled"}>${icon("plus")} Add patient</button>
-          </div>
-        </div>
-        <div class="roster-column-head" aria-hidden="true"><span>Patient</span><span>Status</span><span>Hospital days</span><span></span></div>
-        <div class="patient-list">
-          ${patients.length ? patients.map(renderPatientRow).join("") : `<div class="empty-state">No patients yet. Add one above to get started.</div>`}
-        </div>
-        <div class="local-vault-note"><strong>Local encryption</strong><span>This vault lives only in this browser. Export it to create a portable encrypted backup.</span></div>
-      </section>
-    </div>
-  `;
-}
-
-function renderPatientRow(patient) {
-  const selected = patient.id === app.vault?.activePatientId;
-  const dayCount = patient.days?.length || 0;
-  return `
-    <div class="list-row roster-row ${selected ? "selected" : ""}">
-      <div class="roster-patient-name">
-        <strong>${escapeHtml(patient.displayLabel)}</strong>
-        <span class="muted">Active · HD${Math.max(dayCount, 1)}</span>
-      </div>
-      <span class="roster-status">Active stay</span>
-      <span class="muted roster-day-count">HD${Math.max(dayCount, 1)}</span>
-      <div class="button-row roster-actions">
-        <button class="button--secondary" type="button" data-action="select-patient" data-patient-id="${escapeHtml(patient.id)}">Select</button>
-        <button class="button--quiet" type="button" data-action="archive-patient" data-patient-id="${escapeHtml(patient.id)}">${icon("archive")} Archive</button>
-      </div>
-    </div>
-  `;
+  byId("vaultContent").innerHTML = vaultPresentation.renderVault({
+    record,
+    unlocked: vaultIsUnlocked(),
+    vault: app.vault,
+    patients: visiblePatients(app.vault),
+    vaultUnlockError: app.vaultUnlockError
+  });
 }
 
 function renderDeidStrip() {
@@ -1244,7 +1175,7 @@ function renderPrompts() {
   let promptError = "";
   let previewSegments = [{ type: "text", value: "" }];
   try {
-    const variableMap = buildPromptVariableMap({ patient, selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets });
+    const variableMap = buildPromptVariableMap({ patient, selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets, teamPreferences: app.vault.preferences });
     previewSegments = buildPromptPreviewSegments(template, variableMap);
   } catch (error) {
     promptError = error instanceof Error ? error.message : "Unable to build prompt.";
@@ -1344,7 +1275,7 @@ function refreshPromptPreview() {
   if (!patient || !highlighted) return;
   const template = app.promptDrafts[app.selectedPromptTask] ?? promptTemplateForTask(app.selectedPromptTask, app.promptTemplates);
   try {
-    const variableMap = buildPromptVariableMap({ patient, selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets });
+    const variableMap = buildPromptVariableMap({ patient, selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets, teamPreferences: app.vault.preferences });
     highlighted.innerHTML = renderHighlightedSegments(buildPromptPreviewSegments(template, variableMap), escapeHtml, app.tokenColorOverrides);
     const templateBackdrop = byId("promptTemplateHighlight");
     if (templateBackdrop) {
@@ -1690,12 +1621,17 @@ async function unlockVault() {
     showVaultUnlockError("Enter the vault passphrase to continue.");
     return;
   }
+  if (!readEncryptedVaultRecord() && passphrase.length < 12) {
+    showVaultUnlockError("Use a passphrase with at least 12 characters to create this vault.");
+    return;
+  }
   try {
     const vault = await loadOrCreateVault(passphrase);
     app.vault = vault;
     app.passphrase = passphrase;
     app.vaultUnlockError = "";
     app.view = active() ? "daily" : "vault";
+    resetVaultInactivityTimer();
     setStatus("Vault unlocked.");
     render();
   } catch {
@@ -1703,10 +1639,10 @@ async function unlockVault() {
   }
 }
 
-function lockVault() {
+function lockVault(message = "Vault locked.") {
   clearSensitiveSession();
   app.view = "vault";
-  setStatus("Vault locked.");
+  setStatus(message);
   render();
 }
 
@@ -3496,6 +3432,7 @@ function clearChecklistSearch() {
 function handleInput(event) {
   if (event.target.id === "vaultPassphrase") {
     clearVaultUnlockError();
+    updateVaultPassphraseStrength(event.target.value);
     return;
   }
   if (event.target.id === "deleteVaultConfirmation") {
@@ -3589,6 +3526,9 @@ function bindEvents() {
   document.addEventListener("change", handleChange);
   document.addEventListener("input", handleInput);
   document.addEventListener("toggle", handleToggle, true);
+  ["pointerdown", "keydown", "touchstart"].forEach((eventName) => {
+    document.addEventListener(eventName, recordVaultActivity, { passive: true });
+  });
   // Enter submits a quick note without needing the on-screen keyboard's
   // return key to double as a form submit.
   document.addEventListener("keydown", (event) => {

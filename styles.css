@@ -2882,11 +2882,24 @@ p {
   align-items: end;
 }
 
+.vault-access-controls.vault-setup-controls {
+  grid-template-columns: minmax(0, 640px);
+  gap: 14px;
+  align-items: start;
+}
+
+.vault-setup-controls .button--primary {
+  justify-self: start;
+  min-width: 154px;
+}
+
 .vault-passphrase-field {
   display: grid;
   gap: 6px;
   min-width: 0;
 }
+
+.vault-setup-controls .vault-passphrase-field { gap: 10px; }
 
 .vault-passphrase-input {
   display: grid;
@@ -2895,9 +2908,75 @@ p {
 }
 
 .vault-passphrase-visibility {
-  color: var(--ink);
-  padding-inline: 8px;
-  white-space: nowrap;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  display: inline-flex;
+  height: 44px;
+  justify-content: center;
+  padding: 0;
+  width: 44px;
+}
+
+.vault-passphrase-visibility:hover,
+.vault-passphrase-visibility:focus-visible {
+  border-color: var(--accent);
+  color: var(--primary);
+}
+
+.vault-passphrase-visibility .icon {
+  height: 18px;
+  width: 18px;
+}
+
+.vault-passphrase-strength {
+  color: var(--muted);
+  display: grid;
+  font-size: 12px;
+  gap: 6px;
+  line-height: 1.35;
+}
+
+.vault-passphrase-meter {
+  background: var(--border);
+  border-radius: 999px;
+  height: 4px;
+  overflow: hidden;
+}
+
+.vault-passphrase-meter span {
+  background: var(--muted);
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+  transition: background-color 160ms ease, width 160ms ease;
+  width: 0;
+}
+
+.vault-passphrase-strength.is-weak { color: var(--danger); }
+.vault-passphrase-strength.is-weak .vault-passphrase-meter span { background: var(--danger); width: 33%; }
+.vault-passphrase-strength.is-fair { color: #9a6200; }
+.vault-passphrase-strength.is-fair .vault-passphrase-meter span { background: #d18c00; width: 66%; }
+.vault-passphrase-strength.is-strong { color: #16734a; }
+.vault-passphrase-strength.is-strong .vault-passphrase-meter span { background: #218455; width: 100%; }
+
+.vault-no-recovery-warning {
+  background: #fffaf1;
+  border: 1px solid #efd7ad;
+  border-left: 3px solid #cf810d;
+  border-radius: 6px;
+  color: #68430a;
+  display: grid;
+  font-size: 12px;
+  gap: 4px;
+  line-height: 1.45;
+  padding: 11px 13px;
+}
+
+.vault-no-recovery-warning strong {
+  color: #704606;
+  font-size: 13px;
 }
 
 .vault-unlock-error {
