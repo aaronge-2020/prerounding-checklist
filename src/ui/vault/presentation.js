@@ -6,7 +6,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
       <div class="vault-passphrase-field">
         <label for="vaultPassphrase">Vault passphrase</label>
         <div class="vault-passphrase-input">
-          <input id="vaultPassphrase" type="password" autocomplete="${record ? "current-password" : "new-password"}" placeholder="${record ? "Unlock existing vault" : "Create local vault — use multiple words"}"${creatingVault ? ' minlength="12"' : ""}${hasUnlockError ? ' aria-describedby="vaultPassphraseError" aria-invalid="true"' : ""}>
+          <input id="vaultPassphrase" type="password" autocomplete="${record ? "current-password" : "new-password"}" placeholder="${record ? "Unlock existing vault" : "Create local vault"}"${creatingVault ? ' minlength="12"' : ""}${hasUnlockError ? ' aria-describedby="vaultPassphraseError" aria-invalid="true"' : ""}>
           <button id="vaultPassphraseVisibility" class="button--quiet vault-passphrase-visibility" type="button" data-action="toggle-vault-passphrase" aria-controls="vaultPassphrase" aria-pressed="false" aria-label="Show passphrase" title="Show passphrase">${icon("eye")}</button>
         </div>
         ${creatingVault ? `<div id="vaultPassphraseStrength" class="vault-passphrase-strength is-empty" aria-live="polite"><div class="vault-passphrase-meter" aria-hidden="true"><span></span></div><span class="vault-passphrase-strength-label">Use at least 12 characters and two or more words.</span></div>
