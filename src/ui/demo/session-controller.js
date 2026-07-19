@@ -1,4 +1,4 @@
-import { DEMO_ADMISSION_DATE, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS, DEMO_DAY_ID, DEMO_PATIENT_ID, DEMO_WORKUP_ID } from "./session.js?v=20260717-guided-demo-ux-4";
+import { DEMO_ADMISSION_DATE, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS, DEMO_DAY_ID, DEMO_PATIENT_ID, DEMO_WORKUP_ID } from "./session.js?v=20260717-guided-demo-ux-5";
 import { reviewKey } from "../../patient-context/review.js";
 
 export function createDemoSessionController({ app, createDemoPatient, structuredDeidMode, clearPhiReviews, clearQuickDeidSession, render, setStatus }) {
@@ -37,6 +37,7 @@ export function createDemoSessionController({ app, createDemoPatient, structured
     app.selectedDayId = DEMO_DAY_ID;
     app.admissionDate = DEMO_ADMISSION_DATE;
     app.deidMode = structuredDeidMode;
+    app.selectedPromptTask = "teaching_case_trajectory";
     app.selectedWorkupEditorId = DEMO_WORKUP_ID;
     app.draftWorkup = null;
     app.checklistSearchQuery = "";

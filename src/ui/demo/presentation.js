@@ -1,3 +1,5 @@
+import { DEMO_WORKUP_ID } from "./session.js?v=20260717-guided-demo-ux-5";
+
 export const DEMO_GUIDE_STAGES = Object.freeze({
   "save-context": {
     view: "daily",
@@ -36,9 +38,9 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   },
   "select-workup": {
     view: "workups",
-    targetSelector: '.workup-checkbox[value="general-admission"]',
+    targetSelector: `.workup-checkbox[value="${DEMO_WORKUP_ID}"]`,
     title: "Choose a question set",
-    instruction: "Select General admission.",
+    instruction: "Select Chest pain.",
     helper: "This chooses the questions for the checklist."
   },
   "build-checklist": {
@@ -51,9 +53,9 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   "answer-checklist": {
     view: "checklist",
     targetSelector: '#checklistSections > .checklist-section:first-child .checklist-item:first-child .checklist-answer',
-    title: "Answer a checklist question",
-    instruction: "Choose an answer for the highlighted question.",
-    helper: "Your answer helps shape the evidence prompt."
+    title: "Review synthesized answers",
+    instruction: "Review the highlighted chart-based suggestion and change it if needed.",
+    helper: "The remaining blank items still need your bedside assessment."
   },
   "open-prompts": {
     view: "prompts",

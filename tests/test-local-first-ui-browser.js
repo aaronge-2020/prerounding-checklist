@@ -114,6 +114,14 @@ try {
   assert.equal(await page.locator("#vaultPassphraseError").isHidden(), true);
   await page.click('[data-action="unlock-vault"]');
   await page.waitForFunction(() => /Vault unlocked/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.click('[data-action="start-guided-demo"]');
+  await page.waitForSelector('[data-demo-guide]');
+  assert.match(await page.locator('[data-demo-guide]').innerText(), /high-risk chest-pain case/i);
+  await page.click('[data-action="save-context"]');
+  await page.waitForSelector('#contextSections .redaction-review');
+  assert.match(await page.locator('[data-demo-guide]').innerText(), /privacy decisions/i);
+  await page.click('[data-action="exit-guided-demo"]');
+  await page.waitForFunction(() => /Guided demo closed/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.fill("#newPatientLabel", "Room 12");
   await page.click('[data-action="admit-patient"]');
   await page.waitForSelector("#contextSections");

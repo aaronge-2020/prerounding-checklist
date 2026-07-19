@@ -117,7 +117,13 @@ ${compactText(blocks.checklist, 10000)}
 
 export function buildTeachingTrajectoryPrompt({ patient, selectedDayId }) {
   const blocks = patientBlocks(patient, selectedDayId);
-  return `Teach this patient's full case and hospital course to a clinician in training. Start with a one-sentence illness script, then explain the course, key pathophysiology, clinical reasoning, uncertainty, and why the major decisions or pending questions matter. Tie teaching points directly to this patient. Do not write a clinical note or claim a trend that the provided information does not state.
+  return `Teach this patient's full case and hospital course to a third-year medical student. Do not write a clinical note. Use short, clearly labeled teaching sections tied directly to this patient. Start with a one-sentence illness script and concise problem representation. Explain the leading diagnosis and important alternatives using the chart's supporting and refuting findings. Identify immediately dangerous diagnoses that must be considered and explain how the history, examination, laboratory data, imaging, ECG or other tests change their likelihood. Separate charted facts from reasonable but unconfirmed inferences, and do not claim a trend that the provided information does not state.
+
+Explain the relevant pathophysiology from symptom to bedside finding to management decision. Walk through the hospital course in time order: what the team was trying to determine or prevent, why each major test or monitoring strategy matters, what result would change management, and what remains uncertain or pending.
+
+Include a medication teaching section. For each medication mentioned, give the drug class, patient-specific indication, plain-language mechanism, why it is appropriate now or why it was held, key adverse effects or contraindications, and the monitoring or transition issue a student should know. Distinguish acute stabilization from long-term secondary prevention or chronic management.
+
+Finish with practical pre-rounding takeaways: high-yield questions and examination findings to reassess, active risks or complications to watch for, signs of worsening, and key questions for the senior resident or attending. State when the chart provides insufficient information rather than guessing.
 
 ${compactText(blocks.patientContext, 22000)}
 

@@ -2,8 +2,9 @@ import assert from "node:assert/strict";
 import { createChecklistReturnBundle, createChecklistReturnTransferFile, createPhoneChecklistTransferFile, decodeChecklistReturnBundle, decodeChecklistReturnInput, decodeChecklistReturnTransferFile, decodePhoneChecklistBundle, decodePhoneChecklistTransferFile, encodeChecklistReturnBundle, encodePhoneChecklistBundle, fillNegativeChecklistAnswers, mergeQuickNotes, mergeReturnedAnswers, setChecklistChoice } from "../src/checklist/state.js";
 import { BUNDLED_WORKUPS } from "../src/workups/catalog.js";
 import { createChecklistSnapshot } from "../src/workups/checklist-conversion.js";
-import { buildWorkupAuthoringPrompt, effectiveWorkupCatalog, normalizeWorkup, parseWorkupJson, validateWorkup } from "../src/workups/schema.js";
+import { buildWorkupAuthoringPrompt, bundledWorkupById, effectiveWorkupCatalog, normalizeWorkup, parseWorkupJson, validateWorkup } from "../src/workups/schema.js";
 import { buildJsonFormatterPrompt, buildOpenEvidenceWorkupDraftPrompt } from "../src/workups/editor.js";
+import { createDemoChecklistAnswers } from "../src/ui/demo/session.js";
 
 const workup = normalizeWorkup(BUNDLED_WORKUPS[0]);
 assert.equal(workup.schema, "prerounding_workup_v1");
@@ -22,6 +23,17 @@ assert.throws(
 
 const parsed = parseWorkupJson(JSON.stringify(workup));
 assert.equal(parsed.id, workup.id);
+
+const chestPainWorkup = bundledWorkupById("chest-pain");
+assert.equal(chestPainWorkup.items.length, 30);
+assert.equal(chestPainWorkup.items.filter((item) => item.kind === "history").length, 18);
+assert.equal(chestPainWorkup.items.filter((item) => item.kind === "exam").length, 12);
+assert.equal(new Set(BUNDLED_WORKUPS.map((entry) => entry.id)).size, BUNDLED_WORKUPS.length, "bundled workup IDs must not shadow one another");
+const demoAnswers = createDemoChecklistAnswers(createChecklistSnapshot([chestPainWorkup]));
+assert.deepEqual(demoAnswers["chest-pain:history-01"].selected, ["Pressure, heaviness, or squeezing"]);
+assert.deepEqual(demoAnswers["chest-pain:history-02"], { selected: ["Radiates to the left or either arm"], note: "Also radiates to the neck and jaw." });
+assert.deepEqual(demoAnswers["chest-pain:history-05"].selected, ["Not worse with breathing or cough"]);
+assert.deepEqual(demoAnswers["chest-pain:history-13"].selected, ["Hypertension", "Diabetes mellitus", "Hyperlipidemia", "Current or prior tobacco use", "First-degree family history of premature coronary disease"]);
 
 const catalog = effectiveWorkupCatalog({
   [workup.id]: {

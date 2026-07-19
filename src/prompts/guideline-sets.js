@@ -149,3 +149,43 @@ export async function ensureConsultingGuidelineSet(sets, storage = localStorage)
   saveGuidelineSets(next, storage);
   return next;
 }
+
+// These are reusable instruction blocks, rather than patient data. Keeping
+// them as Settings-managed guideline sets makes every built-in task's
+// instructions editable and lets clinicians compose them into any template.
+export const BUILT_IN_PROMPT_INSTRUCTION_SEEDS = Object.freeze([
+  {
+    label: "Teaching case trajectory",
+    text: "Teach this case to a third-year medical student. Do not write a clinical note. Use short, clearly labeled teaching sections that tie every point to this patient. Start with a one-sentence illness script and a concise problem representation. Then explain the leading diagnosis and the most important alternatives, using the specific supporting and refuting findings from the chart. Identify immediately dangerous diagnoses that must be considered, explain how the available history, exam, laboratory data, imaging, and ECG or other tests change their likelihood, and separate charted facts from reasonable but unconfirmed inferences.\n\nExplain the relevant pathophysiology from symptom to bedside finding to management decision. Walk through the hospital course in time order: what the team was trying to determine or prevent at each stage, why each major test or monitoring strategy matters, what result would change management, and what remains uncertain or pending.\n\nInclude a medication teaching section. For every medication mentioned, give the drug class, its patient-specific indication, its mechanism in plain language, why it is appropriate now or why it was held, key adverse effects or contraindications to watch for, and the monitoring or transition issue a student should know. Distinguish medications used for acute stabilization from long-term secondary prevention or chronic disease management.\n\nFinish with practical takeaways for pre-rounds: the highest-yield questions and exam findings to reassess, active risks or complications to watch for, how to recognize clinical worsening, and the key questions to ask the senior resident or attending. State when the chart provides insufficient information rather than guessing."
+  },
+  {
+    label: "Medication organization",
+    text: "Organize the medications by treated disease, condition, symptom, or indication. Explain what each medication does and mark uncertain indications clearly."
+  },
+  {
+    label: "Medication safety",
+    text: "Check each medication for indication, dose, route, frequency, duplication, interactions, contraindications, and missing context. Say insufficient information rather than guessing."
+  },
+  {
+    label: "Checklist workup refinement",
+    text: "Review this checklist against the admission packet and selected hospital day. Suggest only history questions and physical exam items, organized by system when useful."
+  }
+]);
+
+export const GUIDELINE_SET_SEED_V4_KEY = "prerounding_guideline_sets_seed_v4";
+
+// Seed these newer built-in instructions exactly once for existing installs.
+// A matching token is respected as an intentional user-owned replacement;
+// after this flag is written, deleted sets are never silently recreated.
+export function ensureBuiltInPromptInstructionSets(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_SEED_V4_KEY) !== null) return sets;
+  let next = sets;
+  for (const seed of BUILT_IN_PROMPT_INSTRUCTION_SEEDS) {
+    const token = guidelineToken(seed.label);
+    if (next.some((set) => set.token === token)) continue;
+    next = addGuidelineSet(next, seed.label, seed.text);
+  }
+  storage.setItem(GUIDELINE_SET_SEED_V4_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
+}

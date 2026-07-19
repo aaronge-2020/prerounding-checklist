@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import {
   addGuidelineSet,
   createGuidelineSet,
+  ensureBuiltInPromptInstructionSets,
   ensureConsultingGuidelineSet,
+  GUIDELINE_SET_SEED_V4_KEY,
   GUIDELINE_SET_STORAGE_KEY,
   GUIDELINE_SET_SEED_V3_KEY,
   loadGuidelineSets,
@@ -19,6 +21,20 @@ function fakeStorage(initial = {}) {
     setItem: (key, value) => { store[key] = String(value); },
     removeItem: (key) => { delete store[key]; }
   };
+}
+
+// Built-in task instructions are Settings-managed variables, seeded once, and
+// never recreated after a clinician removes them.
+{
+  const storage = fakeStorage();
+  const seeded = ensureBuiltInPromptInstructionSets([], storage);
+  assert.deepEqual(
+    seeded.map((set) => set.token),
+    ["@teaching-case-trajectory-guidelines", "@medication-organization-guidelines", "@medication-safety-guidelines", "@checklist-workup-refinement-guidelines"]
+  );
+  assert.equal(storage.getItem(GUIDELINE_SET_SEED_V4_KEY), "1");
+  saveGuidelineSets([], storage);
+  assert.deepEqual(ensureBuiltInPromptInstructionSets([], storage), [], "must not recreate a user-deleted built-in instruction set");
 }
 
 // A label slugs into a stable token, unique against collisions.

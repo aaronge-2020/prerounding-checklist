@@ -51,38 +51,6 @@ const FOUNDATION_WORKUPS = [
   },
   {
     schema: "prerounding_workup_v1",
-    id: "chest-pain",
-    title: "Chest pain",
-    aliases: ["acs", "troponin", "angina"],
-    items: [
-      {
-        id: "pain_character",
-        kind: "history",
-        system: "cardiovascular",
-        text: "Characterize chest pain using onset, provocation, quality, radiation, severity, timing, and exertional relationship.",
-        choices: ["Absent", "Typical", "Atypical", "Unclear"],
-        select: "one"
-      },
-      {
-        id: "associated_symptoms",
-        kind: "history",
-        system: "cardiovascular",
-        text: "Ask about dyspnea, diaphoresis, nausea, syncope, palpitations, pleuritic features, and infectious symptoms.",
-        choices: ["None", "Present", "Mixed", "Unclear"],
-        select: "one"
-      },
-      {
-        id: "cardiopulmonary_exam",
-        kind: "exam",
-        system: "cardiovascular",
-        text: "Assess cardiopulmonary exam including murmurs, volume status, lung findings, pulses, and chest wall tenderness.",
-        choices: ["Reassuring", "Abnormal", "Not assessed"],
-        select: "one"
-      }
-    ]
-  },
-  {
-    schema: "prerounding_workup_v1",
     id: "infection-sepsis",
     title: "Infection / sepsis",
     aliases: ["fever", "sepsis", "bacteremia"],

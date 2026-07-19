@@ -8,10 +8,10 @@ import { crossOriginIsolationBlocker, deidentifyText, getAdvancedDeidStatus, get
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
 import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
-import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260718-smart-team-preferences";
-import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260718-smart-team-preferences";
+import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260719-configurable-prompt-instructions";
+import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260719-teaching-demo";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
-import { ensureAdditionalGuidelineSets, ensureConsultingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260717-consulting-prompt";
+import { ensureAdditionalGuidelineSets, ensureBuiltInPromptInstructionSets, ensureConsultingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260719-configurable-prompt-instructions";
 import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260711-functional-remediation-15";
 import { bundledWorkupById, effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260715-workup-delete";
 import { mergeWorkupLibraryIntoOverrides, parseWorkupLibraryJson, workupLibraryFromOverrides } from "../workups/library.js?v=20260711-functional-remediation-15";
@@ -48,14 +48,14 @@ import { createPromptTaskController, filterSmartVariableMenu, positionSmartVaria
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260713-guideline-sets";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260714-hue-picker";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260713-guideline-sets";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260719-configurable-prompt-instructions";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260717-guided-demo-ux";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
-import { createDemoController } from "./demo/controller.js?v=20260717-guided-demo-ux-4";
-import { createDemoPatient } from "./demo/session.js?v=20260717-guided-demo-ux-4";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20260717-guided-demo-ux-4";
+import { createDemoController } from "./demo/controller.js?v=20260717-guided-demo-ux-5";
+import { createDemoChecklistAnswers, createDemoPatient } from "./demo/session.js?v=20260717-guided-demo-ux-5";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20260717-guided-demo-ux-5";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
   vault: null,
@@ -3166,7 +3166,7 @@ async function buildChecklist() {
   const nextDay = {
     ...day,
     checklistSnapshot: snapshot,
-    answers: emptyChecklistAnswers(snapshot),
+    answers: app.demoSession ? createDemoChecklistAnswers(snapshot) : emptyChecklistAnswers(snapshot),
     quickNotes: day.quickNotes || emptyQuickNotes(),
     updatedAt: new Date().toISOString()
   };
@@ -3632,5 +3632,6 @@ async function refreshGuidelines() {
   app.guidelineSets = await loadOrMigrateGuidelineSets();
   app.guidelineSets = await ensureAdditionalGuidelineSets(app.guidelineSets);
   app.guidelineSets = await ensureConsultingGuidelineSet(app.guidelineSets);
+  app.guidelineSets = ensureBuiltInPromptInstructionSets(app.guidelineSets);
   renderPrompts();
 }

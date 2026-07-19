@@ -4,12 +4,13 @@ import { createDailyRecord, upsertDay } from "../src/daily-updates/days.js";
 import { createPatientRecord } from "../src/app/state/vault.js";
 import { buildOpenEvidencePrompt, openEvidenceTasks } from "../src/prompts/open-evidence.js";
 import { buildCustomOpenEvidencePrompt, DEFAULT_PROMPT_TEMPLATES, promptVariablesForPatient } from "../src/prompts/custom-templates.js";
-import { createGuidelineSet } from "../src/prompts/guideline-sets.js";
+import { BUILT_IN_PROMPT_INSTRUCTION_SEEDS, createGuidelineSet } from "../src/prompts/guideline-sets.js";
 
 const guidelines = {
   admission: readFileSync("prompts/Guidelines-admission.md", "utf8"),
   progress: readFileSync("prompts/Guidelines-progress.md", "utf8")
 };
+const builtInInstructionSets = BUILT_IN_PROMPT_INSTRUCTION_SEEDS.map((seed, index) => createGuidelineSet(seed.label, seed.text, { id: `built_in_${index}` }));
 let patient = createPatientRecord("Room 7", { id: "patient_prompt" });
 patient = {
   ...patient,
@@ -60,7 +61,22 @@ assert.match(progress, /Feels less short of breath/);
 
 const teaching = buildOpenEvidencePrompt("teaching_case_trajectory", { patient, selectedDayId: day.id });
 assert.match(teaching, /full case and hospital course/i);
-assert.match(teaching, /Do not write a clinical note or claim a trend/i);
+assert.match(teaching, /third-year medical student/i);
+assert.match(teaching, /medication teaching section/i);
+assert.match(teaching, /practical pre-rounding takeaways/i);
+assert.match(teaching, /do not claim a trend/i);
+
+const defaultTeachingPrompt = buildCustomOpenEvidencePrompt({
+  taskId: "teaching_case_trajectory",
+  template: DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory,
+  patient,
+  selectedDayId: day.id,
+  guidelineSets: builtInInstructionSets
+});
+assert.match(defaultTeachingPrompt, /third-year medical student/i);
+assert.match(defaultTeachingPrompt, /leading diagnosis and the most important alternatives/i);
+assert.match(defaultTeachingPrompt, /medication teaching section/i);
+assert.match(defaultTeachingPrompt, /key questions to ask the senior resident or attending/i);
 
 const medicationOrganizer = buildOpenEvidencePrompt("medication_explainer_by_problem", { patient });
 assert.match(medicationOrganizer, /disease, condition, symptom, or clinical purpose/);
@@ -201,6 +217,7 @@ const medicationTeachingPrompt = buildCustomOpenEvidencePrompt({
   template: `${DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem}\n\n@team-preferences`,
   patient,
   selectedDayId: day.id,
+  guidelineSets: builtInInstructionSets,
   teamPreferences: { medicalService: "primary", presentationDetail: "standard" }
 });
 assert.match(medicationTeachingPrompt, /Write for the Primary team/);
@@ -211,6 +228,7 @@ const medicationDefaultPrompt = buildCustomOpenEvidencePrompt({
   template: DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem,
   patient,
   selectedDayId: day.id,
+  guidelineSets: builtInInstructionSets,
   teamPreferences: { medicalService: "primary", presentationDetail: "standard" }
 });
 assert.doesNotMatch(medicationDefaultPrompt, /Write for the Primary team/);

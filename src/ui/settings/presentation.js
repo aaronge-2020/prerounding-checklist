@@ -1,4 +1,4 @@
-import { renderGuidelineSets } from "./guidelines-presentation.js";
+import { renderGuidelineSets } from "./guidelines-presentation.js?v=20260719-configurable-prompt-instructions";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({

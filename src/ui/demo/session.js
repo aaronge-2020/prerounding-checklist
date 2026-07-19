@@ -2,8 +2,50 @@ import { DEFAULT_CONTEXT_SECTION_LABELS, DEFAULT_DAILY_SECTION_LABELS, createPat
 
 export const DEMO_PATIENT_ID = "demo_patient_guided_case";
 export const DEMO_DAY_ID = "demo_day_guided_case";
-export const DEMO_WORKUP_ID = "general-admission";
+export const DEMO_WORKUP_ID = "chest-pain";
 export const DEMO_ADMISSION_DATE = "2026-07-17";
+
+const DEMO_CHECKLIST_ANSWERS = Object.freeze({
+  "chest-pain:history-01": { selected: ["Pressure, heaviness, or squeezing"] },
+  "chest-pain:history-02": { selected: ["Radiates to the left or either arm"], note: "Also radiates to the neck and jaw." },
+  "chest-pain:history-04": { selected: ["Occurs with exertion and improves with rest"] },
+  "chest-pain:history-05": { selected: ["Not worse with breathing or cough"] },
+  "chest-pain:history-08": { selected: ["Shortness of breath only with exertion"] },
+  "chest-pain:history-09": { selected: ["Diaphoresis with the discomfort"] },
+  "chest-pain:history-10": { selected: ["Nausea without vomiting"] },
+  "chest-pain:history-11": { selected: ["No syncope or near-syncope"] },
+  "chest-pain:history-12": { selected: ["Prior myocardial infarction, PCI, or CABG"] },
+  "chest-pain:history-13": {
+    selected: [
+      "Hypertension",
+      "Diabetes mellitus",
+      "Hyperlipidemia",
+      "Current or prior tobacco use",
+      "First-degree family history of premature coronary disease"
+    ]
+  },
+  "chest-pain:history-14": { selected: ["No known risk factors"] },
+  "chest-pain:history-15": { selected: ["No known risk factors"] },
+  "chest-pain:history-17": { selected: ["No recent viral illness"] },
+  "chest-pain:history-18": { selected: ["No stimulant use within 24 hours"] },
+  "chest-pain:exam-03": { selected: ["No diastolic murmur"] },
+  "chest-pain:exam-04": { selected: ["No friction rub"] },
+  "chest-pain:exam-06": { selected: ["Breath sounds symmetric"] },
+  "chest-pain:exam-07": { selected: ["No focal crackles"] },
+  "chest-pain:exam-11": { selected: ["Alert and oriented"] }
+});
+
+// Suggestions are derived only from the synthetic chart and remain ordinary,
+// editable checklist answers. Limit the seed to choices explicitly supported
+// by that chart so the clinician can still complete the bedside assessment.
+export function createDemoChecklistAnswers(snapshot) {
+  const availableChoices = new Map((snapshot?.items || []).map((item) => [item.id, new Set(item.choices || [])]));
+  return Object.fromEntries(
+    Object.entries(DEMO_CHECKLIST_ANSWERS)
+      .filter(([itemId, answer]) => answer.selected.every((choice) => availableChoices.get(itemId)?.has(choice)))
+      .map(([itemId, answer]) => [itemId, { selected: [...answer.selected], note: answer.note || "" }])
+  );
+}
 
 export const DEMO_CONTEXT_TEXTS = [
   `Patient Information
