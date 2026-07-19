@@ -1,4 +1,4 @@
-import { normalizeUserPreferences } from "../preferences.js";
+import { normalizeUserPreferences } from "../preferences.js?v=20260719-first-visit-demo";
 
 export const VAULT_SCHEMA_VERSION = 2;
 

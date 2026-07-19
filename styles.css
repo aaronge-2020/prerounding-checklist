@@ -6590,15 +6590,44 @@ body.vault-locked .vault-access {
 .demo-next-action {
   position: relative;
   z-index: 2;
-  border-color: var(--accent) !important;
-  outline: 3px solid var(--warning);
-  outline-offset: 4px;
-  box-shadow: 0 0 0 7px var(--surface);
+  border-color: #b45309 !important;
+  outline: 5px solid #fbbf24;
+  outline-offset: 6px;
+  box-shadow: 0 0 0 11px rgba(251, 191, 36, 0.28), 0 8px 18px rgba(146, 64, 14, 0.22);
   scroll-margin-block: 160px;
 }
 
 .demo-next-action[data-demo-target="true"]:not(.primary-button):not(.button--primary) {
-  background-color: #fffdf2;
+  background-color: #fff7d6;
+}
+
+button.demo-next-action[data-demo-target="true"]::after,
+label.demo-next-action[data-demo-target="true"]::after {
+  content: attr(data-demo-target-label);
+  position: absolute;
+  z-index: 4;
+  right: 0;
+  bottom: calc(100% + 12px);
+  max-width: min(260px, 80vw);
+  padding: 7px 10px;
+  border: 2px solid #78350f;
+  border-radius: 999px;
+  background: #92400e;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  box-shadow: 0 3px 0 #fbbf24;
+  pointer-events: none;
+}
+
+/* Sidebar actions already have a concise instruction in the sticky guide.
+   A second floating label can escape the narrow navigation rail, so keep the
+   high-contrast target ring there without adding overflow-prone text. */
+.primary-nav button.demo-next-action[data-demo-target="true"]::after {
+  display: none;
 }
 
 @media (max-width: 680px) {
@@ -6607,8 +6636,14 @@ body.vault-locked .vault-access {
   }
 
   .demo-next-action {
-    outline-width: 2px;
-    outline-offset: 3px;
-    box-shadow: 0 0 0 5px var(--surface);
+    outline-width: 4px;
+    outline-offset: 4px;
+    box-shadow: 0 0 0 8px rgba(251, 191, 36, 0.28), 0 6px 14px rgba(146, 64, 14, 0.22);
+  }
+
+  button.demo-next-action[data-demo-target="true"]::after,
+  label.demo-next-action[data-demo-target="true"]::after {
+    font-size: 11px;
+    white-space: normal;
   }
 }

@@ -36,7 +36,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function renderVault({ record, unlocked, vault, patients, vaultUnlockError }) {
+  function renderVault({ record, unlocked, vault, patients, vaultUnlockError, demoPatientLabel = "", demoPatientMode = false }) {
     if (!unlocked) {
       return `
         <div class="locked-vault-shell">
@@ -112,9 +112,9 @@ export function createVaultPresentation({ escapeHtml, icon }) {
             </div>
             <div class="roster-add-patient">
               <label>Local display label
-                <input id="newPatientLabel" placeholder="Room A - General Admission">
+                <input id="newPatientLabel" value="${escapeHtml(demoPatientLabel)}" placeholder="Room A - General Admission">
               </label>
-              <button class="button--primary" type="button" data-action="admit-patient" ${vault ? "" : "disabled"}>${icon("plus")} Add patient</button>
+              <button class="button--primary" type="button" data-action="${demoPatientMode ? "add-demo-patient" : "admit-patient"}" ${vault ? "" : "disabled"}>${icon("plus")} Add patient</button>
             </div>
           </div>
           <div class="roster-column-head" aria-hidden="true"><span>Patient</span><span>Status</span><span>Hospital days</span><span></span></div>

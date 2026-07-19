@@ -1,5 +1,5 @@
-import { createDemoPresentation } from "./presentation.js?v=20260717-guided-demo-ux-5";
-import { DEMO_WORKUP_ID } from "./session.js?v=20260717-guided-demo-ux-5";
+import { createDemoPresentation } from "./presentation.js?v=20260719-first-visit-demo";
+import { DEMO_WORKUP_ID } from "./session.js?v=20260719-first-visit-demo";
 
 export function createDemoController({ byId, escapeHtml, getSession, getView }) {
   const presentation = createDemoPresentation({ escapeHtml });
@@ -25,7 +25,10 @@ export function createDemoController({ byId, escapeHtml, getSession, getView }) 
 
   function clearTargetDecorations() {
     document.querySelectorAll(".demo-next-action").forEach((element) => element.classList.remove("demo-next-action"));
-    document.querySelectorAll("[data-demo-target]").forEach((element) => element.removeAttribute("data-demo-target"));
+    document.querySelectorAll("[data-demo-target]").forEach((element) => {
+      element.removeAttribute("data-demo-target");
+      element.removeAttribute("data-demo-target-label");
+    });
   }
 
   function render() {
@@ -48,6 +51,7 @@ export function createDemoController({ byId, escapeHtml, getSession, getView }) 
     if (!target) return;
     target.classList.add("demo-next-action");
     target.dataset.demoTarget = "true";
+    target.dataset.demoTargetLabel = stage.targetLabel || "Click here";
     requestAnimationFrame(() => {
       target.focus({ preventScroll: true });
       if (!stage.navTarget && view === stage.view) target.scrollIntoView({ block: "center", behavior: "smooth" });
@@ -56,13 +60,17 @@ export function createDemoController({ byId, escapeHtml, getSession, getView }) 
       if (getSession()?.stage !== stageId) return;
       const currentTarget = targetForStage(stage, stageId, view, content);
       currentTarget?.classList.add("demo-next-action");
-      if (currentTarget) currentTarget.dataset.demoTarget = "true";
+      if (currentTarget) {
+        currentTarget.dataset.demoTarget = "true";
+        currentTarget.dataset.demoTargetLabel = stage.targetLabel || "Click here";
+      }
     }, 250);
   }
 
   function observeAction(action) {
     const session = getSession();
     if (!session) return;
+    if (action === "add-demo-patient" && session.stage === "add-patient") session.stage = "save-context";
     if (action === "save-context") session.stage = document.querySelector('[data-action="keep-reviewed-redaction"]') ? "context-review" : "save-day";
     if ((action === "keep-reviewed-redaction" || action === "confirm-all-section-redactions" || action === "continue-section-review") && !activeReviewAction(document.querySelector("#dailyContent"))) session.stage = session.stage === "daily-review" ? "open-workups" : "save-day";
     if (action === "save-day") session.stage = document.querySelector('[data-action="keep-reviewed-redaction"]') ? "daily-review" : "open-workups";

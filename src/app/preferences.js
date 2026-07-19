@@ -92,7 +92,8 @@ export const DEFAULT_USER_PREFERENCES = Object.freeze({
   customServiceName: "",
   serviceFocus: "",
   presentationDetail: "standard",
-  attendingPreferences: ""
+  attendingPreferences: "",
+  hasStartedGuidedDemo: false
 });
 
 function optionFor(options, value, fallback) {
@@ -113,7 +114,8 @@ export function normalizeUserPreferences(value = {}) {
     customServiceName: trimmed(value?.customServiceName, 160),
     serviceFocus: trimmed(value?.serviceFocus),
     presentationDetail,
-    attendingPreferences: trimmed(value?.attendingPreferences)
+    attendingPreferences: trimmed(value?.attendingPreferences),
+    hasStartedGuidedDemo: Boolean(value?.hasStartedGuidedDemo)
   };
 }
 

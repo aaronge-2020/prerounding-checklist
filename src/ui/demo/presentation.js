@@ -1,10 +1,19 @@
-import { DEMO_WORKUP_ID } from "./session.js?v=20260717-guided-demo-ux-5";
+import { DEMO_WORKUP_ID } from "./session.js?v=20260719-first-visit-demo";
 
 export const DEMO_GUIDE_STAGES = Object.freeze({
+  "add-patient": {
+    view: "vault",
+    targetSelector: '[data-action="add-demo-patient"]',
+    title: "Add a patient",
+    targetLabel: "Click Add patient",
+    instruction: "Review the de-identified label, then click Add patient.",
+    helper: "You can edit this local-only label; the demo uses a synthetic case."
+  },
   "save-context": {
     view: "daily",
     targetSelector: '[data-action="save-context"]',
     title: "Start with the sample case",
+    targetLabel: "Click Save admission packet",
     instruction: "Click Save admission packet.",
     helper: "This is a safe sample—no real patient data is used."
   },
@@ -12,6 +21,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "daily",
     targetSelector: '[data-action="confirm-all-section-redactions"]',
     title: "Check the highlighted changes",
+    targetLabel: "Click Confirm rest",
     instruction: "Review the highlighted changes, then click Confirm rest.",
     helper: "You check the app's suggestions before moving on."
   },
@@ -19,6 +29,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "daily",
     targetSelector: '[data-action="save-day"]',
     title: "Add the day-one update",
+    targetLabel: "Click Save hospital day",
     instruction: "Click Save hospital day.",
     helper: "This adds the next part of the sample case."
   },
@@ -26,6 +37,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "daily",
     targetSelector: '[data-action="confirm-all-section-redactions"]',
     title: "Check the day-one changes",
+    targetLabel: "Continue the review",
     instruction: "Review the highlighted changes, then continue through the fields.",
     helper: "Each part of the case gets its own quick review."
   },
@@ -33,6 +45,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "workups",
     navTarget: "workups",
     title: "Choose checklist questions",
+    targetLabel: "Click Workups",
     instruction: "Click Workups in the sidebar.",
     helper: "Next, you'll choose questions for the checklist."
   },
@@ -40,6 +53,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "workups",
     targetSelector: `.workup-checkbox[value="${DEMO_WORKUP_ID}"]`,
     title: "Choose a question set",
+    targetLabel: "Select Chest pain",
     instruction: "Select Chest pain.",
     helper: "This chooses the questions for the checklist."
   },
@@ -47,6 +61,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "workups",
     targetSelector: '.workup-editor-header-actions [data-action="build-checklist"]',
     title: "Build the checklist",
+    targetLabel: "Click Build checklist",
     instruction: "Click Build checklist.",
     helper: "This turns your selected questions into a checklist."
   },
@@ -54,6 +69,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "checklist",
     targetSelector: '#checklistSections > .checklist-section:first-child .checklist-item:first-child .checklist-answer',
     title: "Review synthesized answers",
+    targetLabel: "Review this answer",
     instruction: "Review the highlighted chart-based suggestion and change it if needed.",
     helper: "The remaining blank items still need your bedside assessment."
   },
@@ -61,6 +77,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "prompts",
     navTarget: "prompts",
     title: "Open the prompt builder",
+    targetLabel: "Click OpenEvidence Prompts",
     instruction: "Click OpenEvidence Prompts in the sidebar.",
     helper: "The prompt is built from the case you reviewed."
   },
@@ -68,6 +85,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "prompts",
     targetSelector: '[data-action="copy-prompt"]',
     title: "Copy the prompt",
+    targetLabel: "Click Copy prompt",
     instruction: "Click Copy prompt.",
     helper: "Only the reviewed prompt is copied."
   },
@@ -75,7 +93,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "prompts",
     title: "Demo complete",
     instruction: "You followed the full sample workflow.",
-    helper: "Nothing from this demo was written to your vault."
+    helper: "Nothing from this demo was written to your vault. To repeat it anytime, click Guided demo in the sidebar."
   }
 });
 

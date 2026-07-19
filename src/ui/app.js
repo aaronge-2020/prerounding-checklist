@@ -12,7 +12,7 @@ import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPrev
 import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260719-teaching-demo";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import { ensureAdditionalGuidelineSets, ensureBuiltInPromptInstructionSets, ensureConsultingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260719-configurable-prompt-instructions";
-import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260711-functional-remediation-15";
+import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260719-first-visit-demo";
 import { bundledWorkupById, effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260715-workup-delete";
 import { mergeWorkupLibraryIntoOverrides, parseWorkupLibraryJson, workupLibraryFromOverrides } from "../workups/library.js?v=20260711-functional-remediation-15";
 import { createBlankWorkup, createBlankWorkupItem, collectWorkupDraftFromDocument, workupFromEditorDraft, workupThoroughnessOption } from "../workups/editor.js?v=20260711-functional-remediation-15";
@@ -49,13 +49,14 @@ import { createGuidelineSetsController } from "./settings/guidelines-controller.
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260714-hue-picker";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260719-configurable-prompt-instructions";
-import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
+import { createVaultPresentation } from "./vault/presentation.js?v=20260719-first-visit-demo-fix";
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260717-guided-demo-ux";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
-import { createDemoController } from "./demo/controller.js?v=20260717-guided-demo-ux-5";
-import { createDemoChecklistAnswers, createDemoPatient } from "./demo/session.js?v=20260717-guided-demo-ux-5";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20260717-guided-demo-ux-5";
+import { createDemoController } from "./demo/controller.js?v=20260719-first-visit-demo";
+import { createDemoChecklistAnswers, createDemoPatient } from "./demo/session.js?v=20260719-first-visit-demo";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20260719-first-visit-demo";
+import { shouldStartGuidedDemo } from "./demo/onboarding.js?v=20260719-first-visit-demo";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
   vault: null,
@@ -780,7 +781,9 @@ function renderVault() {
     unlocked: vaultIsUnlocked(),
     vault: app.vault,
     patients: visiblePatients(app.vault),
-    vaultUnlockError: app.vaultUnlockError
+    vaultUnlockError: app.vaultUnlockError,
+    demoPatientLabel: app.demoSession?.stage === "add-patient" ? "Room 301 - Synthetic demo" : "",
+    demoPatientMode: app.demoSession?.stage === "add-patient"
   });
 }
 
@@ -1462,6 +1465,19 @@ async function handleClick(event) {
     if (action === "request-delete-vault") requestVaultDeletion();
     if (action === "confirm-delete-vault") deleteVaultAndStartOver();
     if (action === "admit-patient") await admitPatient();
+    if (action === "add-demo-patient") {
+      const label = byId("newPatientLabel")?.value.trim() || "";
+      if (!demoSessionController.addPatient(label)) {
+        throw new Error("The guided demo is no longer active. Start it again from the sidebar.");
+      }
+      // The demo swaps its temporary roster for the synthetic patient. Render
+      // the destination immediately; otherwise the first click changes only
+      // in-memory state and leaves the old roster on screen until a second
+      // interaction happens to re-render it.
+      demoController.observeAction(action);
+      render();
+      return;
+    }
     if (action === "select-patient") selectPatient(target.dataset.patientId);
     if (action === "archive-patient") requestArchivePatient(target.dataset.patientId);
     if (action === "confirm-archive-patient") await archiveSelectedPatient(app.pendingArchivePatientId);
@@ -1626,12 +1642,19 @@ async function unlockVault() {
     return;
   }
   try {
+    const isNewVault = !readEncryptedVaultRecord();
     const vault = await loadOrCreateVault(passphrase);
     app.vault = vault;
     app.passphrase = passphrase;
     app.vaultUnlockError = "";
     app.view = active() ? "daily" : "vault";
     resetVaultInactivityTimer();
+    if (shouldStartGuidedDemo({ isNewVault, hasStartedGuidedDemo: currentPreferences().hasStartedGuidedDemo })) {
+      setVaultPreferences({ ...currentPreferences(), hasStartedGuidedDemo: true });
+      await persistVault();
+      demoSessionController.start();
+      return;
+    }
     setStatus("Vault unlocked.");
     render();
   } catch {

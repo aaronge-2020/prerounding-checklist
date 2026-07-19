@@ -1,4 +1,4 @@
-import { DEMO_ADMISSION_DATE, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS, DEMO_DAY_ID, DEMO_PATIENT_ID, DEMO_WORKUP_ID } from "./session.js?v=20260717-guided-demo-ux-5";
+import { DEMO_ADMISSION_DATE, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS, DEMO_DAY_ID, DEMO_PATIENT_ID, DEMO_WORKUP_ID } from "./session.js?v=20260719-first-visit-demo";
 import { reviewKey } from "../../patient-context/review.js";
 
 export function createDemoSessionController({ app, createDemoPatient, structuredDeidMode, clearPhiReviews, clearQuickDeidSession, render, setStatus }) {
@@ -12,7 +12,7 @@ export function createDemoSessionController({ app, createDemoPatient, structured
     if (!app.vault || !app.passphrase) throw new Error("Unlock the local vault before starting the guided demo.");
     if (app.demoSession) exit({ renderAfter: false });
     app.demoSession = {
-      stage: "save-context",
+      stage: "add-patient",
       restoreVault: app.vault,
       restoreView: app.view,
       restoreSelectedDayId: app.selectedDayId,
@@ -27,15 +27,9 @@ export function createDemoSessionController({ app, createDemoPatient, structured
       restoreWorkupCatalogQuery: app.workupCatalogQuery,
       restoreWorkupCatalogOpen: app.workupCatalogOpen
     };
-    const sourcePatient = createDemoPatient();
-    const patient = {
-      ...sourcePatient,
-      contextSections: sourcePatient.contextSections.map((section) => ({ ...section, deidentifiedText: "" })),
-      days: sourcePatient.days.map((day) => ({ ...day, sections: day.sections.map((section) => ({ ...section, deidentifiedText: "" })) }))
-    };
-    app.vault = { ...app.vault, activePatientId: DEMO_PATIENT_ID, patients: [patient], selectedWorkupIds: [], updatedAt: new Date().toISOString() };
-    app.selectedDayId = DEMO_DAY_ID;
-    app.admissionDate = DEMO_ADMISSION_DATE;
+    app.vault = { ...app.vault, activePatientId: "", patients: [], selectedWorkupIds: [], updatedAt: new Date().toISOString() };
+    app.selectedDayId = "";
+    app.admissionDate = "";
     app.deidMode = structuredDeidMode;
     app.selectedPromptTask = "teaching_case_trajectory";
     app.selectedWorkupEditorId = DEMO_WORKUP_ID;
@@ -45,10 +39,27 @@ export function createDemoSessionController({ app, createDemoPatient, structured
     app.workupCatalogOpen = true;
     clearPhiReviews();
     clearQuickDeidSession();
-    seedDraftText(patient);
-    app.view = "daily";
+    app.view = "vault";
     setStatus("Guided demo started. Synthetic data only — nothing is written to your vault.");
     render();
+  }
+
+  function addPatient(label) {
+    if (app.demoSession?.stage !== "add-patient") return false;
+    const sourcePatient = createDemoPatient();
+    const patient = {
+      ...sourcePatient,
+      displayLabel: String(label || sourcePatient.displayLabel).trim() || sourcePatient.displayLabel,
+      contextSections: sourcePatient.contextSections.map((section) => ({ ...section, deidentifiedText: "" })),
+      days: sourcePatient.days.map((day) => ({ ...day, sections: day.sections.map((section) => ({ ...section, deidentifiedText: "" })) }))
+    };
+    app.vault = { ...app.vault, activePatientId: DEMO_PATIENT_ID, patients: [patient], selectedWorkupIds: [], updatedAt: new Date().toISOString() };
+    app.selectedDayId = DEMO_DAY_ID;
+    app.admissionDate = DEMO_ADMISSION_DATE;
+    seedDraftText(patient);
+    app.view = "daily";
+    setStatus("Synthetic patient added. Nothing from this demo is written to your vault.");
+    return true;
   }
 
   function exit({ renderAfter = true } = {}) {
@@ -74,5 +85,5 @@ export function createDemoSessionController({ app, createDemoPatient, structured
     if (renderAfter) render();
   }
 
-  return { exit, start };
+  return { addPatient, exit, start };
 }
