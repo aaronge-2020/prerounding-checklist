@@ -1,6 +1,18 @@
 # Daily Progress Note Instructions
 
-Write a decision-focused daily progress note in **strict SOAP format with strict separation between sections** for a busy attending. Lead with what changed, what matters today, and what decision or action follows. Include background only when it changes interpretation, management, or disposition.
+Write a concise, decision-focused daily progress note in **strict SOAP format with strict separation between sections** for the primary team. Use the selected hospital day as the primary source of truth. Lead with what changed, what matters for that hospital day, and what decision or action follows.
+
+Use the admission packet only to identify relevant baseline conditions, the reason for admission, recent procedures, and unresolved active problems. Do not summarize the full hospital course, reproduce prior notes, or include resolved problems unless they affect the selected hospital day’s decisions.
+
+Target a brief attending presentation. If the note would become long, shorten stable, chronic, resolved, or background problems first. Never truncate the note.
+
+Use this compression hierarchy:
+
+* One-liner: one sentence, approximately 25–35 words.
+* Subjective: only major interval events and management-relevant symptoms.
+* Objective: only decision-changing trends, findings, and diagnostics.
+* Assessment: one global trajectory statement plus one concise sentence per active problem.
+* Plan: only actions required for the selected hospital day.
 
 ## Section Ownership Rules (No Cross-Section Repetition)
 
@@ -29,6 +41,8 @@ Do not include physical-exam findings or examination qualifiers in Subjective. P
 
 Keep this section brief. Include only new or clinically meaningful reported information that changes diagnosis, management, risk assessment, symptom trajectory, or disposition. Remove routine functional details, repeated symptoms, unchanged review-of-systems details, and negative symptoms that do not narrow the differential, change management, or establish clinical stability.
 
+Do not reproduce a long review of systems. Combine related negative symptoms into a concise statement and omit routine appetite, sleep, voiding, or functional details unless they affect management or disposition.
+
 ---
 
 ## Objective
@@ -45,6 +59,8 @@ Report findings objectively without interpretation. Exclude patient statements, 
 
 Do not place medication lists, line ages, routine device details, or predictable normal findings in Objective unless they directly affect a decision for the selected hospital day.
 
+Do not reproduce historical vital-sign tables, complete laboratory panels, old microbiology reports, or prior normal examinations. Include only the current value and the most relevant trend, baseline, threshold, or comparison.
+
 ---
 
 ## **Assessment** *(Highest Yield for Rounds)*
@@ -56,6 +72,8 @@ Do not place medication lists, line ages, routine device details, or predictable
   * Why it matters for the selected hospital day
 
 Refer to supporting evidence in aggregate rather than repeating exact symptoms, laboratory values, medications, or prior events. Include only the leading diagnosis and alternatives that change the next action. Do not include speculative mechanisms, remote possibilities, or management decisions.
+
+Use only diagnoses, interpretations, recommendations, thresholds, consultant plans, and medication decisions supported by the provided chart context. Do not independently introduce guideline names, literature-based recommendations, treatment thresholds, differential diagnoses, or management changes. Do not describe a medication as appropriate or indicated unless that conclusion is explicitly supported by the source.
 
 ---
 
@@ -75,6 +93,8 @@ Organize the Plan by active clinical problem, ordered from highest to lowest pri
 * **Discharge Needs:** Problem-specific discharge readiness, medication decisions, follow-up, services, or barriers when relevant.
 
 Do not repeat history, examination findings, labs, or clinical reasoning. The Plan is an action list, not a narrative: use one concise bullet per distinct action, combine actions serving the same objective, and do not generate a fixed number of bullets or explanations for every problem. Do not create a separate problem when its actions are already covered under another problem; combine problems that share the same decision, medication change, monitoring strategy, or contingency. Use no more than one or two bullets per applicable subheading. Include contingencies only when a foreseeable change would alter management. Include a differential or rationale only when it changes the next action. Do not cite guidelines or explain standard-of-care rationale unless specifically requested or unless the recommendation is controversial, high-risk, or directly relevant to a management decision.
+
+Every Plan bullet must state one action, monitoring task, decision, consultation, or contingency. Do not include explanatory paragraphs, guideline citations, or repeated rationale. Do not repeat the same medication change or contingency under multiple problems. Do not populate every category for every problem. Stable or resolved problems should receive one brief line or be omitted if they require no action.
 
 ### Chronic Problems
 
@@ -105,6 +125,8 @@ Before finalizing, verify that:
 * No sentence or bullet can be removed without losing a clinically meaningful decision.
 * Every section, bullet, and sentence is complete; do not end mid-sentence or mid-bullet.
 * The note includes a complete Disposition statement.
+* The selected hospital day, rather than the full historical packet, drives the note.
+* No unsupported guideline, threshold, diagnosis, or management recommendation was added.
 
 ---
 

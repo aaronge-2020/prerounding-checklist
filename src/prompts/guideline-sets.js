@@ -233,3 +233,21 @@ export async function ensureRevisedProgressGuidelineSet(sets, storage = localSto
   saveGuidelineSets(next, storage);
   return next;
 }
+
+export const GUIDELINE_SET_SEED_V8_KEY = "prerounding_guideline_sets_seed_v8";
+
+// Deliver the focused progress-note standard to existing installs without
+// overwriting any prior user-managed guideline set.
+export async function ensureFocusedProgressGuidelineSet(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_SEED_V8_KEY) !== null) return sets;
+  let next = sets;
+  try {
+    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
+    if (response.ok) next = addGuidelineSet(next, "Progress Focused", await response.text());
+  } catch {
+    // No network/file access - leave existing user-managed sets intact.
+  }
+  storage.setItem(GUIDELINE_SET_SEED_V8_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
+}

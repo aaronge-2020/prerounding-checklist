@@ -8,10 +8,10 @@ import { crossOriginIsolationBlocker, deidentifyText, getAdvancedDeidStatus, get
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
 import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
-import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260720-progress-revision-1";
-import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260720-progress-revision-1";
+import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260720-progress-focused-1";
+import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260720-progress-focused-1";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
-import { ensureAdditionalGuidelineSets, ensureConsultingGuidelineSet, ensureCurrentGuidelineSets, ensureCurrentProgressGuidelineSet, ensureLatestProgressGuidelineSet, ensureRevisedProgressGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260720-progress-revision-1";
+import { ensureAdditionalGuidelineSets, ensureConsultingGuidelineSet, ensureCurrentGuidelineSets, ensureCurrentProgressGuidelineSet, ensureFocusedProgressGuidelineSet, ensureLatestProgressGuidelineSet, ensureRevisedProgressGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260720-progress-focused-1";
 import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260711-functional-remediation-15";
 import { bundledWorkupById, effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260715-workup-delete";
 import { mergeWorkupLibraryIntoOverrides, parseWorkupLibraryJson, workupLibraryFromOverrides } from "../workups/library.js?v=20260711-functional-remediation-15";
@@ -3636,5 +3636,6 @@ async function refreshGuidelines() {
   app.guidelineSets = await ensureCurrentGuidelineSets(app.guidelineSets);
   app.guidelineSets = await ensureLatestProgressGuidelineSet(app.guidelineSets);
   app.guidelineSets = await ensureRevisedProgressGuidelineSet(app.guidelineSets);
+  app.guidelineSets = await ensureFocusedProgressGuidelineSet(app.guidelineSets);
   renderPrompts();
 }
