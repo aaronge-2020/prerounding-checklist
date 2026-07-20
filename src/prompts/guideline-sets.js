@@ -149,3 +149,23 @@ export async function ensureConsultingGuidelineSet(sets, storage = localStorage)
   saveGuidelineSets(next, storage);
   return next;
 }
+
+export const GUIDELINE_SET_SEED_V4_KEY = "prerounding_guideline_sets_seed_v4";
+
+// Existing users may have an older persisted @progress-guidelines set. Keep
+// that user-managed set intact and add the current shipped standard under a
+// new token so the default progress prompt can adopt it without overwriting
+// saved preferences.
+export async function ensureCurrentProgressGuidelineSet(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_SEED_V4_KEY) !== null) return sets;
+  let next = sets;
+  try {
+    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
+    if (response.ok) next = addGuidelineSet(next, "Progress Updated", await response.text());
+  } catch {
+    // No network/file access - leave existing user-managed sets intact.
+  }
+  storage.setItem(GUIDELINE_SET_SEED_V4_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
+}

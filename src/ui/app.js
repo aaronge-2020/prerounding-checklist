@@ -11,7 +11,7 @@ import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownlo
 import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260720-token-only-defaults";
 import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260718-smart-team-preferences";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
-import { ensureAdditionalGuidelineSets, ensureConsultingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260717-consulting-prompt";
+import { ensureAdditionalGuidelineSets, ensureConsultingGuidelineSet, ensureCurrentProgressGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260720-progress-guideline-migration";
 import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260711-functional-remediation-15";
 import { bundledWorkupById, effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260715-workup-delete";
 import { mergeWorkupLibraryIntoOverrides, parseWorkupLibraryJson, workupLibraryFromOverrides } from "../workups/library.js?v=20260711-functional-remediation-15";
@@ -3632,5 +3632,6 @@ async function refreshGuidelines() {
   app.guidelineSets = await loadOrMigrateGuidelineSets();
   app.guidelineSets = await ensureAdditionalGuidelineSets(app.guidelineSets);
   app.guidelineSets = await ensureConsultingGuidelineSet(app.guidelineSets);
+  app.guidelineSets = await ensureCurrentProgressGuidelineSet(app.guidelineSets);
   renderPrompts();
 }

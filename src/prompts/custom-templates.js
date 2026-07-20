@@ -13,7 +13,7 @@ export const TEAM_PREFERENCES_PROMPT_TOKEN = "@team-preferences";
 // referencing any other deleted variable).
 export const DEFAULT_PROMPT_TEMPLATES = {
   initial_admission_rounds: `@team-preferences\n\n@admission-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
-  daily_progress_note: `@team-preferences\n\n@progress-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  daily_progress_note: `@team-preferences\n\n@progress-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
   teaching_case_trajectory: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   medication_explainer_by_problem: `@medications\n\n@selected-day`,
   medication_safety_audit: `@medications\n\n@labs\n\n@selected-day`,

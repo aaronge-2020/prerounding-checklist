@@ -3,8 +3,10 @@ import {
   addGuidelineSet,
   createGuidelineSet,
   ensureConsultingGuidelineSet,
+  ensureCurrentProgressGuidelineSet,
   GUIDELINE_SET_STORAGE_KEY,
   GUIDELINE_SET_SEED_V3_KEY,
+  GUIDELINE_SET_SEED_V4_KEY,
   loadGuidelineSets,
   loadOrMigrateGuidelineSets,
   removeGuidelineSet,
@@ -19,6 +21,24 @@ function fakeStorage(initial = {}) {
     setItem: (key, value) => { store[key] = String(value); },
     removeItem: (key) => { delete store[key]; }
   };
+}
+
+// The current progress standard is added under a new token so an existing
+// user-edited Progress set is preserved while the default can update.
+{
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: true, text: async () => "Current progress standard." });
+  try {
+    const storage = fakeStorage();
+    const existing = [createGuidelineSet("Progress", "User-edited progress standard.")];
+    const seeded = await ensureCurrentProgressGuidelineSet(existing, storage);
+    assert.equal(seeded.length, 2);
+    assert.equal(seeded.find((set) => set.token === "@progress-updated-guidelines")?.text, "Current progress standard.");
+    assert.equal(seeded.find((set) => set.token === "@progress-guidelines")?.text, "User-edited progress standard.");
+    assert.equal(storage.getItem(GUIDELINE_SET_SEED_V4_KEY), "1");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 }
 
 // A label slugs into a stable token, unique against collisions.
