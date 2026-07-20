@@ -92,7 +92,8 @@ export const DEFAULT_USER_PREFERENCES = Object.freeze({
   customServiceName: "",
   serviceFocus: "",
   presentationDetail: "standard",
-  attendingPreferences: ""
+  attendingPreferences: "",
+  teamInstructions: ""
 });
 
 function optionFor(options, value, fallback) {
@@ -113,7 +114,8 @@ export function normalizeUserPreferences(value = {}) {
     customServiceName: trimmed(value?.customServiceName, 160),
     serviceFocus: trimmed(value?.serviceFocus),
     presentationDetail,
-    attendingPreferences: trimmed(value?.attendingPreferences)
+    attendingPreferences: trimmed(value?.attendingPreferences),
+    teamInstructions: trimmed(value?.teamInstructions)
   };
 }
 
@@ -131,6 +133,7 @@ export function openAiWorkupModelOption(value) {
 
 export function buildTeamPreferencesPromptBlock(preferences = {}) {
   const normalized = normalizeUserPreferences(preferences);
+  if (normalized.teamInstructions) return naturalLanguagePrompt(normalized.teamInstructions);
   const service = medicalServiceOption(normalized.medicalService);
   const detail = presentationDetailOption(normalized.presentationDetail);
   const serviceName = normalized.medicalService === "other" && normalized.customServiceName

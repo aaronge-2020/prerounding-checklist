@@ -12,7 +12,7 @@ import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPrev
 import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260720-progress-focused-1";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import { ensureAdditionalGuidelineSets, ensureConsultingGuidelineSet, ensureCurrentGuidelineSets, ensureCurrentProgressGuidelineSet, ensureFocusedProgressGuidelineSet, ensureLatestProgressGuidelineSet, ensureRevisedProgressGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260720-progress-focused-1";
-import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260711-functional-remediation-15";
+import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, buildTeamPreferencesPromptBlock, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260720-team-preferences-editable";
 import { bundledWorkupById, effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260715-workup-delete";
 import { mergeWorkupLibraryIntoOverrides, parseWorkupLibraryJson, workupLibraryFromOverrides } from "../workups/library.js?v=20260711-functional-remediation-15";
 import { createBlankWorkup, createBlankWorkupItem, collectWorkupDraftFromDocument, workupFromEditorDraft, workupThoroughnessOption } from "../workups/editor.js?v=20260711-functional-remediation-15";
@@ -1222,6 +1222,7 @@ function renderSettings() {
     MEDICAL_SERVICE_OPTIONS,
     PRESENTATION_DETAIL_OPTIONS,
     OPENAI_WORKUP_MODEL_OPTIONS,
+    teamPreferencesPrompt: buildTeamPreferencesPromptBlock({ ...preferences, teamInstructions: "" }),
     colorOverrides: app.tokenColorOverrides
   });
 }
@@ -1236,13 +1237,17 @@ function setVaultPreferences(nextPreferences) {
 
 async function saveTeamPreferences() {
   const preferences = currentPreferences();
+  const structuredPreferences = { ...preferences, teamInstructions: "" };
+  const generatedTeamPrompt = buildTeamPreferencesPromptBlock(structuredPreferences);
+  const enteredTeamPrompt = String(byId("settingsTeamInstructions")?.value || "").trim();
   setVaultPreferences({
     ...preferences,
     medicalService: byId("settingsMedicalService")?.value,
     customServiceName: byId("settingsCustomServiceName")?.value,
     serviceFocus: byId("settingsServiceFocus")?.value,
     presentationDetail: byId("settingsPresentationDetail")?.value,
-    attendingPreferences: byId("settingsAttendingPreferences")?.value
+    attendingPreferences: byId("settingsAttendingPreferences")?.value,
+    teamInstructions: enteredTeamPrompt === generatedTeamPrompt ? "" : enteredTeamPrompt
   });
   await persistVault("Team preferences saved in the encrypted vault.");
   render();

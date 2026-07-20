@@ -5,6 +5,7 @@ import { createPatientRecord } from "../src/app/state/vault.js";
 import { buildOpenEvidencePrompt, openEvidenceTasks } from "../src/prompts/open-evidence.js";
 import { buildCustomOpenEvidencePrompt, DEFAULT_PROMPT_TEMPLATES, promptVariablesForPatient } from "../src/prompts/custom-templates.js";
 import { createGuidelineSet } from "../src/prompts/guideline-sets.js";
+import { buildTeamPreferencesPromptBlock, normalizeUserPreferences } from "../src/app/preferences.js";
 
 const guidelines = {
   admission: readFileSync("prompts/Guidelines-admission.md", "utf8"),
@@ -15,6 +16,9 @@ for (const template of Object.values(DEFAULT_PROMPT_TEMPLATES)) {
   assert.match(template, /^(?:\s*@[-a-z]+)+\s*$/, "default prompt templates must contain smart variables only");
 }
 assert.equal((DEFAULT_PROMPT_TEMPLATES.daily_progress_note.match(/@selected-day/g) || []).length, 1, "daily progress template must include selected day once");
+const customTeamInstructions = "Write only the highest-yield active problems and keep the plan action-focused.";
+assert.equal(buildTeamPreferencesPromptBlock({ teamInstructions: customTeamInstructions }), customTeamInstructions);
+assert.equal(normalizeUserPreferences({ teamInstructions: customTeamInstructions }).teamInstructions, customTeamInstructions);
 let patient = createPatientRecord("Room 7", { id: "patient_prompt" });
 patient = {
   ...patient,
