@@ -1222,7 +1222,6 @@ function renderSettings() {
     MEDICAL_SERVICE_OPTIONS,
     PRESENTATION_DETAIL_OPTIONS,
     OPENAI_WORKUP_MODEL_OPTIONS,
-    teamPreferencesPrompt: buildTeamPreferencesPromptBlock({ ...preferences, teamInstructions: "" }),
     colorOverrides: app.tokenColorOverrides
   });
 }

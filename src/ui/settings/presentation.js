@@ -8,7 +8,6 @@ export function createSettingsPresentation({ escapeHtml }) {
     MEDICAL_SERVICE_OPTIONS,
     PRESENTATION_DETAIL_OPTIONS,
     OPENAI_WORKUP_MODEL_OPTIONS,
-    teamPreferencesPrompt = "",
     colorOverrides = {}
   }) {
     return `
@@ -40,9 +39,9 @@ export function createSettingsPresentation({ escapeHtml }) {
             <label class="settings-field-wide">Attending preferences
               <textarea id="settingsAttendingPreferences" rows="4" placeholder="e.g., Start with a one-liner, then problem-based assessment and plan. Include overnight events and pertinent negatives.">${escapeHtml(preferences.attendingPreferences)}</textarea>
             </label>
-            <label class="settings-field-wide">General instructions (<code>@team-preferences</code>)
-              <textarea id="settingsTeamInstructions" rows="6" placeholder="Leave blank to use the service, focus, detail, and attending preferences above.">${escapeHtml(preferences.teamInstructions || teamPreferencesPrompt)}</textarea>
-              <span class="muted">This is the complete editable text inserted by the <code>@team-preferences</code> smart variable. Clear it to return to the structured preferences above.</span>
+            <label class="settings-field-wide">Custom team instructions <span class="muted">(optional override for @team-preferences)</span>
+              <textarea id="settingsTeamInstructions" rows="6" placeholder="Leave blank to use the service, focus, detail, and attending preferences above.">${escapeHtml(preferences.teamInstructions)}</textarea>
+              <span class="muted">Enter the complete text you want inserted by the @team-preferences smart variable. Leave blank to use the structured preferences above.</span>
             </label>
           </div>
           <div class="button-row">
