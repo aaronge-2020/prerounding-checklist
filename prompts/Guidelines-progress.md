@@ -13,7 +13,7 @@ Use this compression hierarchy:
 * One-liner: one sentence, approximately 20–30 words.
 * Subjective: only major interval events and management-relevant symptoms.
 * Objective: only decision-changing trends, findings, and diagnostics.
-* Assessment: one global trajectory statement plus one concise sentence per active problem.
+* Assessment: one global trajectory statement plus detailed reasoning for the dominant problem and concise reasoning for secondary problems.
 * Plan: only actions required for the selected hospital day.
 
 Output only these sections, in this order: One-Liner, Subjective, Objective, Assessment, Plan, and Disposition. Do not generate a discharge-medications section unless the task explicitly requests discharge medication reconciliation.
@@ -75,15 +75,13 @@ Do not include General, Cardiac, Respiratory, Neurologic, Lines, or normal extre
 
 ## **Assessment** *(Highest Yield for Rounds)*
 
-* Begin with one brief global trajectory statement. Then provide a concise problem-based assessment only for active problems, with space proportional to their impact on the selected hospital day’s decisions. For each problem, state:
+Assessment is the clinical reasoning section—not a problem list or action list. Begin with one brief global trajectory statement, then provide problem-based reasoning only for active problems. Give the dominant acute problem the most detail: use 2–3 sentences to explain what is happening, current severity and trajectory, the leading diagnosis or interpretation, the most relevant competing explanation if it would change management, and why the issue matters for the selected hospital day. Use 1–2 sentences for lower-priority active problems and one sentence for stable or resolved problems only when they affect today’s care.
 
-  * Current status or trajectory
-  * Leading diagnosis or clinical interpretation
-  * Why it matters for the selected hospital day
+Explain the clinical meaning of the data rather than reciting it. Include the one or two most important supporting data points needed to justify the interpretation, but do not repeat the entire Objective section. Distinguish current physiologic stability from absence of disease activity; for example, ongoing bleeding may remain clinically significant without hypotension or tachycardia. Explicitly identify management tensions—such as bleeding risk versus thrombosis risk—when they affect the day’s decisions.
 
-Assessment should explain the clinical meaning of the data, not repeat the data. Use one concise sentence per active problem. Refer to supporting evidence in aggregate rather than repeating exact symptoms, laboratory values, medication doses, prior procedures, or historical narrative already documented elsewhere. Include only the leading diagnosis and alternatives that change the next action. Do not include speculative mechanisms, remote possibilities, or management decisions.
+Include only the leading diagnosis and alternatives that change the next action. Do not include speculative mechanisms, remote possibilities, or unsupported causal claims. Use only diagnoses and interpretations supported by the provided chart context. Do not independently introduce guideline names, literature-based recommendations, treatment thresholds, differential diagnoses, or management changes. If the chart does not specify a threshold, use qualitative language rather than inventing a number.
 
-Use only diagnoses, interpretations, recommendations, thresholds, consultant plans, and medication decisions supported by the provided chart context. Do not independently introduce guideline names, literature-based recommendations, treatment thresholds, differential diagnoses, or management changes. Do not describe a medication as appropriate or indicated unless that conclusion is explicitly supported by the source. If the chart does not specify a threshold, use qualitative language rather than inventing a number.
+Keep interpretation separate from action. Assessment may explain why an issue matters, but do not place orders, medication changes, monitoring instructions, consultation requests, escalation thresholds, or if/then contingencies in Assessment. Put those items only in Plan.
 
 ---
 

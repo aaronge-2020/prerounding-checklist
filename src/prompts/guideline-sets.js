@@ -269,3 +269,21 @@ export async function ensureAttendingProgressGuidelineSet(sets, storage = localS
   saveGuidelineSets(next, storage);
   return next;
 }
+
+export const GUIDELINE_SET_SEED_V10_KEY = "prerounding_guideline_sets_seed_v10";
+
+// Deliver the reasoning-focused Assessment standard without overwriting any
+// prior user-managed progress guideline set.
+export async function ensureReasoningProgressGuidelineSet(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_SEED_V10_KEY) !== null) return sets;
+  let next = sets;
+  try {
+    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
+    if (response.ok) next = addGuidelineSet(next, "Progress Reasoning", await response.text());
+  } catch {
+    // No network/file access - leave existing user-managed sets intact.
+  }
+  storage.setItem(GUIDELINE_SET_SEED_V10_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
+}
