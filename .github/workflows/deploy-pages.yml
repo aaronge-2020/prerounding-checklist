@@ -12,7 +12,6 @@ on:
       - ".gitattributes"
       - "assets/**"
       - "data/**"
-      - "models/**"
       - "prompts/**"
       - "src/**"
       - "vendor/**"
@@ -38,7 +37,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          lfs: true
+          # Large model packs are downloaded into browser-owned storage by
+          # the app. Pages only needs the static shell and source files.
+          lfs: false
 
       - name: Build static artifact
         shell: bash
@@ -46,11 +47,9 @@ jobs:
           set -euo pipefail
           rm -rf _site
           mkdir -p _site
-          mkdir -p _site/models
           touch _site/.nojekyll
           cp index.html styles.css favicon.ico service-worker.js _site/
           cp -R assets data prompts src vendor workups _site/
-          cp -R models/onnx-community models/rtrigoso _site/models/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

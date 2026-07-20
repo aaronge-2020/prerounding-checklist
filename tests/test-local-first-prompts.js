@@ -88,7 +88,7 @@ for (const prompt of [admission, progress, teaching, medicationOrganizer, medica
 assert.throws(() => buildOpenEvidencePrompt("daily_progress_note", { patient, guidelines: "" }), /task-specific documentation standard/);
 
 assert.equal(openEvidenceTasks.consulting?.label, "Consulting");
-const consultingGuidelines = createGuidelineSet("Consulting", readFileSync("prompts/Consulting.md", "utf8"));
+const consultingGuidelines = createGuidelineSet("Consulting Updated", readFileSync("prompts/Consulting.md", "utf8"));
 const consulting = buildCustomOpenEvidencePrompt({
   taskId: "consulting",
   template: DEFAULT_PROMPT_TEMPLATES.consulting,

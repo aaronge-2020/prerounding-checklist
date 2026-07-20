@@ -169,3 +169,30 @@ export async function ensureCurrentProgressGuidelineSet(sets, storage = localSto
   saveGuidelineSets(next, storage);
   return next;
 }
+
+export const GUIDELINE_SET_SEED_V5_KEY = "prerounding_guideline_sets_seed_v5";
+
+// Version the remaining shipped standards as new smart variables. This keeps
+// prior user-edited sets available while allowing the defaults to use the
+// latest static files without fetching or persisting patient data remotely.
+export async function ensureCurrentGuidelineSets(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_SEED_V5_KEY) !== null) return sets;
+  let next = sets;
+  const sources = [
+    ["Admission Updated", "./prompts/Guidelines-admission.md"],
+    ["Pre-round Checklist Updated", "./prompts/Pre-round_checklist.md"],
+    ["Discharge Instructions Updated", "./prompts/Discharge_Instructions.md"],
+    ["Consulting Updated", "./prompts/Consulting.md"]
+  ];
+  try {
+    const responses = await Promise.all(sources.map(async ([label, path]) => ({ label, response: await fetch(path, { cache: "no-store" }) })));
+    for (const { label, response } of responses) {
+      if (response.ok) next = addGuidelineSet(next, label, await response.text());
+    }
+  } catch {
+    // No network/file access - leave existing user-managed sets intact.
+  }
+  storage.setItem(GUIDELINE_SET_SEED_V5_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
+}

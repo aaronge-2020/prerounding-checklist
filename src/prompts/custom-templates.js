@@ -12,15 +12,15 @@ export const TEAM_PREFERENCES_PROMPT_TOKEN = "@team-preferences";
 // sets the token below simply won't resolve (same graceful degradation as
 // referencing any other deleted variable).
 export const DEFAULT_PROMPT_TEMPLATES = {
-  initial_admission_rounds: `@team-preferences\n\n@admission-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  initial_admission_rounds: `@team-preferences\n\n@admission-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
   daily_progress_note: `@team-preferences\n\n@progress-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
   teaching_case_trajectory: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   medication_explainer_by_problem: `@medications\n\n@selected-day`,
   medication_safety_audit: `@medications\n\n@labs\n\n@selected-day`,
   checklist_workup_refinement: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
-  preround_bedside_exam: `@team-preferences\n\n@pre-round-checklist-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
-  discharge_instructions: `@team-preferences\n\n@discharge-instructions-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
-  consulting: `@team-preferences\n\n@consulting-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`
+  preround_bedside_exam: `@team-preferences\n\n@pre-round-checklist-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  discharge_instructions: `@team-preferences\n\n@discharge-instructions-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  consulting: `@team-preferences\n\n@consulting-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`
 };
 
 export const SMART_PROMPT_VARIABLES = [

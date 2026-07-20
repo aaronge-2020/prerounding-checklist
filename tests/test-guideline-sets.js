@@ -3,10 +3,12 @@ import {
   addGuidelineSet,
   createGuidelineSet,
   ensureConsultingGuidelineSet,
+  ensureCurrentGuidelineSets,
   ensureCurrentProgressGuidelineSet,
   GUIDELINE_SET_STORAGE_KEY,
   GUIDELINE_SET_SEED_V3_KEY,
   GUIDELINE_SET_SEED_V4_KEY,
+  GUIDELINE_SET_SEED_V5_KEY,
   loadGuidelineSets,
   loadOrMigrateGuidelineSets,
   removeGuidelineSet,
@@ -21,6 +23,25 @@ function fakeStorage(initial = {}) {
     setItem: (key, value) => { store[key] = String(value); },
     removeItem: (key) => { delete store[key]; }
   };
+}
+
+// Current shipped standards receive new tokens while older user-managed
+// standards remain available and untouched.
+{
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => ({ ok: true, text: async () => `Latest ${url}` });
+  try {
+    const storage = fakeStorage();
+    const seeded = await ensureCurrentGuidelineSets([], storage);
+    assert.equal(seeded.length, 4);
+    assert.equal(seeded.find((set) => set.token === "@admission-updated-guidelines")?.label, "Admission Updated");
+    assert.equal(seeded.find((set) => set.token === "@pre-round-checklist-updated-guidelines")?.label, "Pre-round Checklist Updated");
+    assert.equal(seeded.find((set) => set.token === "@discharge-instructions-updated-guidelines")?.label, "Discharge Instructions Updated");
+    assert.equal(seeded.find((set) => set.token === "@consulting-updated-guidelines")?.label, "Consulting Updated");
+    assert.equal(storage.getItem(GUIDELINE_SET_SEED_V5_KEY), "1");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 }
 
 // The current progress standard is added under a new token so an existing
