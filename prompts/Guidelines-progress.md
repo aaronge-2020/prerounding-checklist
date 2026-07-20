@@ -15,6 +15,8 @@ Each fact belongs in exactly **one** section:
 
 When multiple active problems relate to the same organ system or share management (e.g., several cardiac issues, several medications for the same problem), **group them under one problem heading** in the Plan rather than listing them as separate problems — organize the Plan by clinical category, not by isolated diagnosis line-items.
 
+Before Subjective, begin with one concise one-liner: age, sex, key PMH, hospital day, and reason for admission. Do not repeat this one-liner elsewhere in the note.
+
 ## **Subjective** *(High Yield for Rounds)*
 
 Organize Subjective in this order:
@@ -45,7 +47,6 @@ Report findings objectively without interpretation. Exclude patient statements, 
 
 ## **Assessment** *(Highest Yield for Rounds)*
 
-* **Begin with a one-line summary:** age, sex, relevant PMH, and reason for admission.
 * **In 1–2 sentences, summarize:**
 
   * Current clinical trajectory (improving, worsening, unchanged)
