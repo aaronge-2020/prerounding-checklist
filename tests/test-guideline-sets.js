@@ -6,11 +6,13 @@ import {
   ensureCurrentGuidelineSets,
   ensureCurrentProgressGuidelineSet,
   ensureLatestProgressGuidelineSet,
+  ensureRevisedProgressGuidelineSet,
   GUIDELINE_SET_STORAGE_KEY,
   GUIDELINE_SET_SEED_V3_KEY,
   GUIDELINE_SET_SEED_V4_KEY,
   GUIDELINE_SET_SEED_V5_KEY,
   GUIDELINE_SET_SEED_V6_KEY,
+  GUIDELINE_SET_SEED_V7_KEY,
   loadGuidelineSets,
   loadOrMigrateGuidelineSets,
   removeGuidelineSet,
@@ -25,6 +27,24 @@ function fakeStorage(initial = {}) {
     setItem: (key, value) => { store[key] = String(value); },
     removeItem: (key) => { delete store[key]; }
   };
+}
+
+// The revised progress standard is delivered under a new token to existing
+// installs without overwriting prior user-managed content.
+{
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: true, text: async () => "Revised progress standard." });
+  try {
+    const storage = fakeStorage();
+    const existing = [createGuidelineSet("Progress Current", "Previously current standard.")];
+    const seeded = await ensureRevisedProgressGuidelineSet(existing, storage);
+    assert.equal(seeded.length, 2);
+    assert.equal(seeded.find((set) => set.token === "@progress-revised-guidelines")?.text, "Revised progress standard.");
+    assert.equal(seeded.find((set) => set.token === "@progress-current-guidelines")?.text, "Previously current standard.");
+    assert.equal(storage.getItem(GUIDELINE_SET_SEED_V7_KEY), "1");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 }
 
 // A later shipped refresh gets a new token while preserving every prior

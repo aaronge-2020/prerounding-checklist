@@ -215,3 +215,21 @@ export async function ensureLatestProgressGuidelineSet(sets, storage = localStor
   saveGuidelineSets(next, storage);
   return next;
 }
+
+export const GUIDELINE_SET_SEED_V7_KEY = "prerounding_guideline_sets_seed_v7";
+
+// Refresh the current progress standard after a prompt-quality revision while
+// preserving all earlier user-managed sets and tokens.
+export async function ensureRevisedProgressGuidelineSet(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_SEED_V7_KEY) !== null) return sets;
+  let next = sets;
+  try {
+    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
+    if (response.ok) next = addGuidelineSet(next, "Progress Revised", await response.text());
+  } catch {
+    // No network/file access - leave existing user-managed sets intact.
+  }
+  storage.setItem(GUIDELINE_SET_SEED_V7_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
+}
