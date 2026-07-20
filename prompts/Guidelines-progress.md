@@ -13,7 +13,7 @@ Use this compression hierarchy:
 * One-liner: one sentence, approximately 20–30 words.
 * Subjective: only major interval events and management-relevant symptoms.
 * Objective: only decision-changing trends, findings, and diagnostics.
-* Assessment: one global trajectory statement plus detailed reasoning for the dominant problem and concise reasoning for secondary problems.
+* Assessment: one brief global trajectory statement only.
 * Plan: only actions required for the selected hospital day.
 
 Output only these sections, in this order: One-Liner, Subjective, Objective, Assessment, Plan, and Disposition. Do not generate a discharge-medications section unless the task explicitly requests discharge medication reconciliation.
@@ -28,7 +28,8 @@ Assign every fact to exactly **one** section. Classify information by how it was
 |---|---|---|
 | Patient/nursing-reported symptoms, status, and significant overnight/interval events | Subjective | Objective, Assessment |
 | Clinician-observed, measured, laboratory, imaging, or monitor data | Objective | Subjective, Assessment |
-| Clinical reasoning / trajectory | Assessment | Subjective, Objective, Plan |
+| Global clinical trajectory | Assessment | Subjective, Objective |
+| Problem-specific clinical reasoning | Plan (under that problem) | Subjective, Objective, top-level Assessment |
 | Orders, medications, actions | Plan | Assessment |
 
 If a patient reports discomfort only when an examiner presses, moves, or otherwise examines an area, document it as an objective examination finding—not a subjective symptom. When multiple active problems share management, group them under one problem heading in the Plan.
@@ -73,15 +74,9 @@ Do not include General, Cardiac, Respiratory, Neurologic, Lines, or normal extre
 
 ---
 
-## **Assessment** *(Highest Yield for Rounds)*
+## **Assessment** *(Global Trajectory Only)*
 
-Assessment is the clinical reasoning section—not a problem list or action list. Begin with one brief global trajectory statement, then provide problem-based reasoning only for active problems. Give the dominant acute problem the most detail: use 2–3 sentences to explain what is happening, current severity and trajectory, the leading diagnosis or interpretation, the most relevant competing explanation if it would change management, and why the issue matters for the selected hospital day. Use 1–2 sentences for lower-priority active problems and one sentence for stable or resolved problems only when they affect today’s care.
-
-Explain the clinical meaning of the data rather than reciting it. Include the one or two most important supporting data points needed to justify the interpretation, but do not repeat the entire Objective section. Distinguish current physiologic stability from absence of disease activity; for example, ongoing bleeding may remain clinically significant without hypotension or tachycardia. Explicitly identify management tensions—such as bleeding risk versus thrombosis risk—when they affect the day’s decisions.
-
-Include only the leading diagnosis and alternatives that change the next action. Do not include speculative mechanisms, remote possibilities, or unsupported causal claims. Use only diagnoses and interpretations supported by the provided chart context. Do not independently introduce guideline names, literature-based recommendations, treatment thresholds, differential diagnoses, or management changes. If the chart does not specify a threshold, use qualitative language rather than inventing a number.
-
-Keep interpretation separate from action. Assessment may explain why an issue matters, but do not place orders, medication changes, monitoring instructions, consultation requests, escalation thresholds, or if/then contingencies in Assessment. Put those items only in Plan.
+Use this section only for a brief global synthesis of the patient’s overall trajectory on the selected hospital day. State whether the patient is improving, worsening, or unchanged and identify the dominant active issue driving care. Do not provide separate problem-by-problem assessments here; those belong under the corresponding problem in Plan.
 
 ---
 
@@ -91,7 +86,13 @@ Prioritize problems from most to least important.
 
 ### Acute Problems
 
-Organize the Plan by active clinical problem, ordered from highest to lowest priority. Give the most detail to the problem driving the selected hospital day’s decisions; summarize stable, chronic, or resolved problems in one concise line unless they require a new action. Use one heading per problem. Under each heading, state the primary action or decision first. Use only the applicable subheadings below, in this exact order. Omit any subheading with no specific action items, and keep every bullet brief and actionable:
+Organize the Plan by active clinical problem, ordered from highest to lowest priority. Give the most detail to the problem driving the selected hospital day’s decisions; summarize stable, chronic, or resolved problems in one concise line unless they require a new action. Use one heading per problem. Under each heading, first provide a problem-specific **Assessment** and then the applicable action categories below.
+
+For the problem-specific Assessment, explain the clinical reasoning—not just the diagnosis. For the dominant problem, use 2–3 sentences describing what is happening, severity and trajectory, leading diagnosis or interpretation, the most relevant competing explanation if it would change management, the key supporting evidence, and why it matters today. Use 1–2 sentences for lower-priority active problems and one sentence for stable or resolved problems only when they affect care. Distinguish physiologic stability from absence of disease activity and identify management tensions when relevant. Do not repeat the entire Objective section or include unsupported causal claims.
+
+Keep the problem-specific Assessment separate from action. Do not place orders, medication changes, monitoring instructions, consultation requests, escalation thresholds, or if/then contingencies in the problem-specific Assessment. Use only diagnoses and interpretations supported by the provided chart context. Do not independently introduce guideline names, literature-based recommendations, treatment thresholds, differential diagnoses, or management changes. If the chart does not specify a threshold, use qualitative language rather than inventing a number.
+
+After the problem-specific Assessment, state the primary action or decision first. Use only the applicable action categories below, in this exact order. Omit any category with no specific action items, and keep every bullet brief and actionable:
 
 * **Treatment/Medications:** Medications organized under the disease they treat, with dose, route, frequency, and indication; and relevant supportive care.
 * **Diagnostics:** Daily or follow-up laboratory studies, imaging, microbiology, or other diagnostic studies.
@@ -131,6 +132,7 @@ Before finalizing, verify that:
 * Every Plan bullet describes an action, monitoring task, decision, or clinically necessary contingency.
 * No fact is repeated across sections.
 * No sentence or bullet can be removed without losing a clinically meaningful decision.
+* The top-level Assessment contains only global trajectory; each individual problem’s reasoning appears under that problem in Plan.
 * Every section, bullet, and sentence is complete; do not end mid-sentence or mid-bullet.
 * The note includes a complete Disposition statement.
 * The selected hospital day, rather than the full historical packet, drives the note.

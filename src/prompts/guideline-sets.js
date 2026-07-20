@@ -287,3 +287,21 @@ export async function ensureReasoningProgressGuidelineSet(sets, storage = localS
   saveGuidelineSets(next, storage);
   return next;
 }
+
+export const GUIDELINE_SET_SEED_V11_KEY = "prerounding_guideline_sets_seed_v11";
+
+// Deliver the problem-oriented Assessment-in-Plan structure without
+// overwriting prior user-managed progress guideline sets.
+export async function ensureProblemAssessmentProgressGuidelineSet(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_SEED_V11_KEY) !== null) return sets;
+  let next = sets;
+  try {
+    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
+    if (response.ok) next = addGuidelineSet(next, "Progress Problem Assessment", await response.text());
+  } catch {
+    // No network/file access - leave existing user-managed sets intact.
+  }
+  storage.setItem(GUIDELINE_SET_SEED_V11_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
+}
