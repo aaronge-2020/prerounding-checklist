@@ -102,7 +102,7 @@ ${compactText(blocks.checklist, 10000)}
 
 export function buildDailyProgressPrompt({ patient, selectedDayId, guidelines }) {
   const blocks = patientBlocks(patient, selectedDayId);
-  return `Write a concise daily progress note for the selected hospital day from this de-identified information. Include differentials for acute problems when the available information supports them.
+  return `Write a concise daily progress note for the selected hospital day from this de-identified information. Include a differential only when diagnostic uncertainty changes management; do not list low-probability alternatives for completeness.
 
 ${documentationInstructionForTask("daily_progress_note", guidelines)}
 
