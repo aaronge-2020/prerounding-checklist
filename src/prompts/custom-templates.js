@@ -6,41 +6,25 @@ import { naturalLanguagePrompt } from "./natural-language.js";
 
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";
 export const TEAM_PREFERENCES_PROMPT_TOKEN = "@team-preferences";
-export const TASK_INSTRUCTIONS_PROMPT_TOKEN = "@task-instructions";
-
-// Task directions are resolved through a smart variable so default templates
-// contain only explicit variable selections and no hidden literal prose.
-export const TASK_INSTRUCTIONS = {
-  initial_admission_rounds: "Create a concise initial admission H&P from the provided context.",
-  daily_progress_note: "Create a concise daily progress note for the selected hospital day.",
-  teaching_case_trajectory: "Teach the full case trajectory using the provided information. Explain clinical reasoning, uncertainty, and major management decisions. Do not write a clinical note or claim a trend the provided information does not state.",
-  medication_explainer_by_problem: "Organize medications by the disease, condition, symptom, or indication they treat. Explain what each medication does and mark uncertain indications clearly.",
-  medication_safety_audit: "Check each medication for indication, dose, route, frequency, duplication, interactions, contraindications, and missing context. Say insufficient information rather than guessing.",
-  checklist_workup_refinement: "Review the checklist against the available context. Suggest only history questions and physical-exam items, organized by system when useful.",
-  preround_bedside_exam: "Generate a focused bedside pre-rounding checklist for the selected hospital day.",
-  discharge_instructions: "Write discharge instructions from the provided context.",
-  consulting: "Prepare a concise, clinically grounded consult request and consult-call checklist from the provided information."
-};
 
 // These reference the tokens the migration in guideline-sets.js assigns to
 // the two seeded "Admission"/"Progress" sets. If a user deletes one of those
 // sets the token below simply won't resolve (same graceful degradation as
 // referencing any other deleted variable).
 export const DEFAULT_PROMPT_TEMPLATES = {
-  initial_admission_rounds: `@team-preferences\n\n@task-instructions\n\n@admission-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
-  daily_progress_note: `@team-preferences\n\n@task-instructions\n\n@progress-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
-  teaching_case_trajectory: `@task-instructions\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
-  medication_explainer_by_problem: `@task-instructions\n\n@medications\n\n@selected-day`,
-  medication_safety_audit: `@task-instructions\n\n@medications\n\n@labs\n\n@selected-day`,
-  checklist_workup_refinement: `@task-instructions\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
-  preround_bedside_exam: `@team-preferences\n\n@task-instructions\n\n@pre-round-checklist-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
-  discharge_instructions: `@team-preferences\n\n@task-instructions\n\n@discharge-instructions-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
-  consulting: `@team-preferences\n\n@task-instructions\n\n@consulting-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`
+  initial_admission_rounds: `@team-preferences\n\n@admission-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  daily_progress_note: `@team-preferences\n\n@progress-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  teaching_case_trajectory: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
+  medication_explainer_by_problem: `@medications\n\n@selected-day`,
+  medication_safety_audit: `@medications\n\n@labs\n\n@selected-day`,
+  checklist_workup_refinement: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
+  preround_bedside_exam: `@team-preferences\n\n@pre-round-checklist-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  discharge_instructions: `@team-preferences\n\n@discharge-instructions-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  consulting: `@team-preferences\n\n@consulting-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`
 };
 
 export const SMART_PROMPT_VARIABLES = [
   { token: TEAM_PREFERENCES_PROMPT_TOKEN, label: "General instructions (smart)", description: "Your saved service, presentation, focus, and attending preferences." },
-  { token: TASK_INSTRUCTIONS_PROMPT_TOKEN, label: "Task instructions (smart)", description: "The default directions for the selected prompt task." },
   { token: "@admission-packet", label: "Admission packet", description: "All saved admission fields, labeled." },
   { token: "@selected-day", label: "Selected hospital day", description: "The chosen hospital-day packet; defaults to the latest saved day." },
   { token: "@checklist-answers", label: "Checklist answers", description: "History and physical exam answers." },
@@ -134,7 +118,7 @@ export function promptTemplateForTask(taskId, overrides = {}) {
   return saved && saved !== "@default-prompt" ? saved : String(DEFAULT_PROMPT_TEMPLATES[taskId] || "");
 }
 
-export function buildPromptVariableMap({ taskId, patient, selectedDayId, guidelineSets = [], teamPreferences = {} }) {
+export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets = [], teamPreferences = {} }) {
   const usingAdmission = selectedDayId === ADMISSION_PSEUDO_DAY_ID;
   const selectedDay = selectedPromptDay(patient, selectedDayId);
   const snapshot = selectedDay?.checklistSnapshot || null;
@@ -167,7 +151,6 @@ export function buildPromptVariableMap({ taskId, patient, selectedDayId, guideli
     ...selectedDayValues,
     ...guidelineValues,
     [TEAM_PREFERENCES_PROMPT_TOKEN]: buildTeamPreferencesPromptBlock(teamPreferences),
-    [TASK_INSTRUCTIONS_PROMPT_TOKEN]: TASK_INSTRUCTIONS[taskId] || "No default task instructions are configured.",
     "@admission-packet": sectionsToPromptBlock(patient?.contextSections || [], "Admission packet"),
     "@medications": medicationSection?.deidentifiedText || "No saved medication text.",
     "@labs": labSection?.deidentifiedText || "No saved lab text.",
@@ -190,8 +173,8 @@ export function interpolatePromptTemplate(template, variables) {
   );
 }
 
-export function buildCustomOpenEvidencePrompt({ taskId, template, patient, selectedDayId, guidelineSets = [], teamPreferences }) {
-  const variables = buildPromptVariableMap({ taskId, patient, selectedDayId, guidelineSets, teamPreferences });
+export function buildCustomOpenEvidencePrompt({ template, patient, selectedDayId, guidelineSets = [], teamPreferences }) {
+  const variables = buildPromptVariableMap({ patient, selectedDayId, guidelineSets, teamPreferences });
   const interpolated = interpolatePromptTemplate(template, variables);
   return naturalLanguagePrompt(interpolated);
 }

@@ -209,7 +209,7 @@ const medicationTeachingPrompt = buildCustomOpenEvidencePrompt({
   teamPreferences: { medicalService: "primary", presentationDetail: "standard" }
 });
 assert.match(medicationTeachingPrompt, /Write for the Primary team/);
-assert.match(medicationTeachingPrompt, /Organize medications by the disease/);
+assert.doesNotMatch(medicationTeachingPrompt, /Organize medications by the disease/, "task prose is not embedded in the default template");
 
 const medicationDefaultPrompt = buildCustomOpenEvidencePrompt({
   taskId: "medication_explainer_by_problem",
