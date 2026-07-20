@@ -1,19 +1,19 @@
 # Daily Progress Note Instructions
 
-Write the note in **SOAP** format with **strict separation** between sections. Avoid repeating information across sections. Write concisely—the note should support a **2–3 minute attending presentation**.
+Write a decision-focused daily progress note in **strict SOAP format with strict separation between sections** for a busy attending. Lead with what changed, what matters today, and what decision or action follows. Include background only when it changes interpretation, management, or disposition.
 
 ## Section Ownership Rules (No Cross-Section Repetition)
 
-Each fact belongs in exactly **one** section:
+Assign every fact to exactly **one** section. Classify information by how it was obtained:
 
 | Information | Owned by | Do NOT repeat in |
 |---|---|---|
-| Patient-reported symptoms/status and significant overnight/interval events | Subjective | Objective, Assessment |
-| Vitals, exam, labs, imaging | Objective | Subjective, Assessment |
+| Patient/nursing-reported symptoms, status, and significant overnight/interval events | Subjective | Objective, Assessment |
+| Clinician-observed, measured, laboratory, imaging, or monitor data | Objective | Subjective, Assessment |
 | Clinical reasoning / trajectory | Assessment | Subjective, Objective, Plan |
 | Orders, medications, actions | Plan | Assessment |
 
-When multiple active problems relate to the same organ system or share management (e.g., several cardiac issues, several medications for the same problem), **group them under one problem heading** in the Plan rather than listing them as separate problems — organize the Plan by clinical category, not by isolated diagnosis line-items.
+If a patient reports discomfort only when an examiner presses, moves, or otherwise examines an area, document it as an objective examination finding—not a subjective symptom. When multiple active problems share management, group them under one problem heading in the Plan.
 
 Before Subjective, begin with one concise one-liner: age, sex, key PMH, hospital day, and reason for admission. Do not repeat this one-liner elsewhere in the note.
 
@@ -21,13 +21,13 @@ Before Subjective, begin with one concise one-liner: age, sex, key PMH, hospital
 
 Organize Subjective in this order:
 
-* **Overnight/Interval Events:** Important events reported by the patient, nursing, or cross-cover, including major clinical events and completed interventions that occurred overnight. State the event concisely; place supporting objective values and data in Objective.
-* **Patient Self-Report:** How the patient feels on the selected hospital day and meaningful changes since the prior hospital day.
+* **Overnight/Interval Events:** Important events reported by the patient, nursing, or cross-cover, including major clinical events and completed interventions. State each event once and concisely; place supporting objective values and data in Objective.
+* **Patient Self-Report:** How the patient feels and meaningful changes since the prior hospital day.
 * **Pertinent Subjective Positives/Negatives:** Only spontaneous, patient-experienced symptoms or history items that affect the selected hospital day's assessment or plan.
 
 Do not include physical-exam findings in Subjective. Findings elicited by examination—such as tenderness to palpation, guarding, edema, breath sounds, pulses, strength, or range of motion—belong only in Objective, even when the patient reports discomfort during the examination. Do not include vital signs, laboratory values, imaging, provider interpretation, consultant recommendations, or treatment plans.
 
-Keep this section brief. Only include information that changes management or reflects clinical improvement or deterioration.
+Keep this section brief. Include only new or clinically meaningful reported information. Remove repeated symptoms, unchanged review-of-systems details, and negative symptoms that do not narrow the differential, change management, or establish clinical stability.
 
 ---
 
@@ -39,7 +39,7 @@ Organize Objective in this order:
 * **Focused Exam:** Include only new, changed, abnormal, or management-relevant observed findings.
 * **Key Labs/Diagnostics:** Include only laboratory values, imaging, microbiology, or diagnostics whose current value, trend, or comparison with baseline changes or supports the selected hospital day's diagnosis, assessment, or management.
 
-Include objective data only when it materially changes, clarifies, or supports the selected hospital day's diagnosis, assessment, prognosis, or management. Omit findings that are expected for the patient's known condition or planned treatment and do not alter a clinical decision. When a comparison is clinically relevant, give the current value, direction of change, and baseline or prior value.
+Include objective data only when it changes, confirms, refutes, or meaningfully contextualizes a current clinical decision. Do not include a value merely because it is abnormal. Omit predictable chronic abnormalities and expected treatment-related findings unless they alter diagnosis, risk, treatment, monitoring, or disposition. When a comparison is clinically relevant, give the current value, direction of change, or relevant baseline/prior value.
 
 Report findings objectively without interpretation. Exclude patient statements, assessment, and treatment plans.
 
@@ -47,13 +47,13 @@ Report findings objectively without interpretation. Exclude patient statements, 
 
 ## **Assessment** *(Highest Yield for Rounds)*
 
-* **In 1–2 sentences, summarize:**
+* Begin with one brief global trajectory statement. Then provide a concise problem-based assessment only for active problems. For each problem, state:
 
-  * Current clinical trajectory (improving, worsening, unchanged)
-  * Updated clinical reasoning based on new objective data
-  * Most likely diagnosis if it has changed
+  * Current status or trajectory
+  * Leading diagnosis or clinical interpretation
+  * Why it matters for the selected hospital day
 
-Do not repeat subjective or objective findings. Do not include management decisions.
+Include a differential only when diagnostic uncertainty changes management. Do not list low-probability alternatives for completeness. Do not repeat subjective or objective findings or include management decisions.
 
 ---
 
@@ -63,24 +63,16 @@ Prioritize problems from most to least important.
 
 ### Acute Problems
 
-For each acute problem:
+Organize the Plan by active clinical problem, ordered from highest to lowest priority. Use one heading per problem. Under each heading, state the primary action or decision first. Use only the applicable subheadings below, in this exact order. Omit any subheading with no specific action items, and keep every bullet brief and actionable:
 
-**Differential:** Diagnosis 1 (most likely) vs Diagnosis 2 vs Diagnosis 3 vs Diagnosis 4
-
-**Assessment:** One brief paragraph explaining why the leading diagnosis is most likely.
-
-**Plan:**
-
-Use these subheadings in this exact order when applicable. Omit any subheading with no action items, and keep all bullets brief and actionable:
-
-* **Treatment/Medications:** Medications organized under the disease they treat, with dose, route, frequency, and indication; supportive care; and relevant guideline support (e.g., ACC/AHA, IDSA/ATS, KDIGO, ACG, CHEST, Surviving Sepsis Campaign).
+* **Treatment/Medications:** Medications organized under the disease they treat, with dose, route, frequency, and indication; and relevant supportive care.
 * **Diagnostics:** Daily or follow-up laboratory studies, imaging, microbiology, or other diagnostic studies.
 * **Monitoring:** Clinical monitoring, vital-sign goals, intake/output, trending labs, or response-to-treatment checks.
 * **Consults/Procedures:** Consultant recommendations, requested consultations, and planned procedures.
 * **Contingencies:** If/then escalation or de-escalation plans when appropriate.
 * **Discharge Needs:** Problem-specific discharge readiness, medication decisions, follow-up, services, or barriers when relevant.
 
-Do **not** repeat history, labs, or clinical reasoning.
+Do not repeat history, examination findings, labs, or clinical reasoning. The Plan is an action list, not a narrative: use one concise bullet per distinct action, combine actions serving the same objective, and do not generate a fixed number of bullets or explanations for every problem. Include contingencies only when a foreseeable change would alter management. Include a differential or rationale only when it changes the next action. Do not cite guidelines or explain standard-of-care rationale unless specifically requested or unless the recommendation is controversial, high-risk, or directly relevant to a management decision.
 
 ### Chronic Problems
 
@@ -95,6 +87,20 @@ Include only if relevant:
 * GI prophylaxis
 * Code status
 * Other inpatient preventive measures
+
+---
+
+## Final Quality Check
+
+Before finalizing, verify that:
+
+* The one-liner appears only once before Subjective.
+* Subjective contains only reported events and spontaneous symptoms.
+* Examination findings, measurements, and test results appear only in Objective.
+* Every included objective datum affects interpretation or management.
+* Every Plan bullet describes an action, monitoring task, decision, or clinically necessary contingency.
+* No fact is repeated across sections.
+* No sentence or bullet can be removed without losing a clinically meaningful decision.
 
 ---
 
