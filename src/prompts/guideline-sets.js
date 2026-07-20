@@ -305,3 +305,33 @@ export async function ensureProblemAssessmentProgressGuidelineSet(sets, storage 
   saveGuidelineSets(next, storage);
   return next;
 }
+
+export const GUIDELINE_SET_PROGRESS_CANONICAL_KEY = "prerounding_guideline_sets_progress_canonical_v1";
+
+const LEGACY_PROGRESS_TOKENS = new Set([
+  "@progress-guidelines",
+  "@progress-updated-guidelines",
+  "@progress-current-guidelines",
+  "@progress-revised-guidelines",
+  "@progress-focused-guidelines",
+  "@progress-attending-guidelines",
+  "@progress-reasoning-guidelines",
+  "@progress-problem-assessment-guidelines"
+]);
+
+// Consolidate every prior progress-standard migration into one current,
+// stable, editable Progress guideline set. This is intentionally a one-time
+// cleanup because the user explicitly wants one canonical progress standard.
+export async function ensureCanonicalProgressGuidelineSet(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_PROGRESS_CANONICAL_KEY) !== null) return sets;
+  let next = sets.filter((set) => !LEGACY_PROGRESS_TOKENS.has(set.token) && !/^Progress(?: |$)/i.test(set.label || ""));
+  try {
+    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
+    if (response.ok) next = addGuidelineSet(next, "Progress", await response.text());
+  } catch {
+    // No network/file access - leave non-progress guideline sets intact.
+  }
+  storage.setItem(GUIDELINE_SET_PROGRESS_CANONICAL_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
+}

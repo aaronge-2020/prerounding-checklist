@@ -11,6 +11,7 @@ import {
   ensureAttendingProgressGuidelineSet,
   ensureReasoningProgressGuidelineSet,
   ensureProblemAssessmentProgressGuidelineSet,
+  ensureCanonicalProgressGuidelineSet,
   GUIDELINE_SET_STORAGE_KEY,
   GUIDELINE_SET_SEED_V3_KEY,
   GUIDELINE_SET_SEED_V4_KEY,
@@ -21,6 +22,7 @@ import {
   GUIDELINE_SET_SEED_V9_KEY,
   GUIDELINE_SET_SEED_V10_KEY,
   GUIDELINE_SET_SEED_V11_KEY,
+  GUIDELINE_SET_PROGRESS_CANONICAL_KEY,
   loadGuidelineSets,
   loadOrMigrateGuidelineSets,
   removeGuidelineSet,
@@ -35,6 +37,28 @@ function fakeStorage(initial = {}) {
     setItem: (key, value) => { store[key] = String(value); },
     removeItem: (key) => { delete store[key]; }
   };
+}
+
+// All historical progress migrations collapse into one current canonical set;
+// unrelated guideline sets remain intact.
+{
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: true, text: async () => "Latest canonical progress standard." });
+  try {
+    const storage = fakeStorage();
+    const existing = [
+      createGuidelineSet("Progress", "Old progress."),
+      createGuidelineSet("Progress Focused", "Older progress."),
+      createGuidelineSet("Admission", "Keep admission.")
+    ];
+    const seeded = await ensureCanonicalProgressGuidelineSet(existing, storage);
+    assert.equal(seeded.filter((set) => /^Progress(?: |$)/i.test(set.label || "")).length, 1);
+    assert.equal(seeded.find((set) => set.token === "@progress-guidelines")?.text, "Latest canonical progress standard.");
+    assert.equal(seeded.find((set) => set.label === "Admission")?.text, "Keep admission.");
+    assert.equal(storage.getItem(GUIDELINE_SET_PROGRESS_CANONICAL_KEY), "1");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 }
 
 // The problem-oriented Assessment-in-Plan standard reaches existing installs
