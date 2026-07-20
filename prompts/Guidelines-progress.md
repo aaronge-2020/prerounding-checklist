@@ -8,7 +8,7 @@ Each fact belongs in exactly **one** section:
 
 | Information | Owned by | Do NOT repeat in |
 |---|---|---|
-| Patient-reported symptoms/status | Subjective | Objective, Assessment |
+| Patient-reported symptoms/status and significant overnight/interval events | Subjective | Objective, Assessment |
 | Vitals, exam, labs, imaging | Objective | Subjective, Assessment |
 | Clinical reasoning / trajectory | Assessment | Subjective, Objective, Plan |
 | Orders, medications, actions | Plan | Assessment |
@@ -17,19 +17,13 @@ When multiple active problems relate to the same organ system or share managemen
 
 ## **Subjective** *(High Yield for Rounds)*
 
-* **Begin with a one-line summary:** age, sex, 3–4 most relevant PMH, and reason for admission.
-* **Summarize how the patient is doing today** using the patient's own report when possible.
-* Include only:
+Organize Subjective in this order:
 
-  * Significant interval events since yesterday
-  * Important overnight events from nursing or cross-cover
-  * Pertinent positives and key negatives that affect today's management
-* Exclude:
+* **Overnight/Interval Events:** Important events reported by the patient, nursing, or cross-cover, including major clinical events and completed interventions that occurred overnight. State the event concisely; place supporting objective values and data in Objective.
+* **Patient Self-Report:** How the patient feels today and meaningful changes since yesterday.
+* **Pertinent Subjective Positives/Negatives:** Only patient-reported symptoms or history items that affect today's assessment or plan.
 
-  * Vital signs
-  * Physical exam findings
-  * Provider plans
-  * Consultant recommendations
+Do not include vital signs, physical-exam findings, laboratory values, imaging, provider interpretation, consultant recommendations, or treatment plans.
 
 Keep this section brief. Only include information that changes management or reflects clinical improvement or deterioration.
 
@@ -37,15 +31,15 @@ Keep this section brief. Only include information that changes management or ref
 
 ## Objective
 
-* Current vital signs
-* Pertinent physical exam changes only
-* New or clinically significant labs and trends from prior days, imaging, microbiology, and other diagnostic studies
-* Report findings objectively without interpretation.
-* Exclude:
+Organize Objective in this order:
 
-  * Patient statements
-  * Assessment
-  * Treatment plans
+* **Vitals/Clinical Support:** Include clinically relevant vital signs, oxygen requirement, or other support needs. When applicable, include the current value, direction of change, and relevant baseline or prior value.
+* **Focused Exam:** Include only new, changed, abnormal, or management-relevant observed findings.
+* **Key Labs/Diagnostics:** Include only laboratory values, imaging, microbiology, or diagnostics whose current value, trend, or comparison with baseline changes or supports today's diagnosis, assessment, or management.
+
+Include objective data only when it materially changes, clarifies, or supports today's diagnosis, assessment, prognosis, or management. Omit findings that are expected for the patient's known condition or planned treatment and do not alter a clinical decision. When a comparison is clinically relevant, give the current value, direction of change, and baseline or prior value.
+
+Report findings objectively without interpretation. Exclude patient statements, assessment, and treatment plans.
 
 ---
 
@@ -76,13 +70,14 @@ For each acute problem:
 
 **Plan:**
 
-* Medications (**organized under the disease they treat**) with dose, route, and frequency
-* Daily diagnostics
-* Monitoring
-* Procedures
-* Consultant recommendations
-* If/Then contingency plans when appropriate
-* Cite major supporting guidelines (e.g., ACC/AHA, IDSA/ATS, KDIGO, ACG, CHEST, Surviving Sepsis Campaign)
+Use these subheadings in this exact order when applicable. Omit any subheading with no action items, and keep all bullets brief and actionable:
+
+* **Treatment/Medications:** Medications organized under the disease they treat, with dose, route, frequency, and indication; supportive care; and relevant guideline support (e.g., ACC/AHA, IDSA/ATS, KDIGO, ACG, CHEST, Surviving Sepsis Campaign).
+* **Diagnostics:** Daily or follow-up laboratory studies, imaging, microbiology, or other diagnostic studies.
+* **Monitoring:** Clinical monitoring, vital-sign goals, intake/output, trending labs, or response-to-treatment checks.
+* **Consults/Procedures:** Consultant recommendations, requested consultations, and planned procedures.
+* **Contingencies:** If/then escalation or de-escalation plans when appropriate.
+* **Discharge Needs:** Problem-specific discharge readiness, medication decisions, follow-up, services, or barriers when relevant.
 
 Do **not** repeat history, labs, or clinical reasoning.
 

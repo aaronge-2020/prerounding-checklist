@@ -36,10 +36,9 @@ Each fact belongs in exactly **one** section — the section that "owns" that ty
   * 3–4 most relevant PMH
   * Reason for admission
 * Present the illness chronologically.
-* Present subjective findings I took when I interviewed him preround, leaving out objective findings, lab results, or physical exam. 
-* Include only pertinent positives and key negatives.
+* Include only patient-reported history and symptoms, pertinent positives and negatives, relevant baseline function, and ED events that affect inpatient care.
 * Summarize relevant ED course if it impacts inpatient management.
-* Exclude unnecessary ROS, labs, imaging details, or physical exam findings.
+* Exclude unnecessary ROS, vital signs, physical-exam findings, laboratory values, imaging details, clinician interpretation, consultant recommendations, and treatment plans.
 
 ---
 
@@ -125,13 +124,14 @@ One concise sentence including only:
 
 # Objective
 
-## Vitals
+## Vitals/Clinical Support
 
-* Admission vital signs only.
+* Include clinically relevant admission vital signs, oxygen requirement, or other support needs.
+* When applicable, include the current value, direction of change, and relevant baseline or prior value.
 
-## Physical Exam
+## Focused Physical Exam
 
-Report only pertinent findings organized by system:
+Report only new, abnormal, or management-relevant findings organized by system:
 
 * General
 * Cardiovascular
@@ -143,40 +143,19 @@ Report only pertinent findings organized by system:
 
 Do not document a completely normal exam unless clinically relevant.
 
-## Labs
+## Key Labs/Diagnostics
 
-Organize by category:
+Include only laboratory values, ECG, imaging, microbiology, or other diagnostics whose current value, trend, or comparison with baseline changes or supports the admission diagnosis, assessment, or management.
 
-* CBC
-* BMP/CMP
-* LFTs
-* Cardiac
-* Coagulation
-* Microbiology
-* Other pertinent labs
+When a comparison is clinically relevant, give the current value, direction of change, and baseline or prior value. Omit findings that are expected for the patient's known condition or planned treatment and do not alter a clinical decision.
 
-Include only abnormal or clinically important values.
-
-## Imaging/Diagnostics
-
-* ECG
-* Imaging
-* Other diagnostics
-
-One line each.
+Report findings objectively without interpretation. Do not include patient statements, assessment, or treatment plans.
 
 ---
 
 # Assessment
 
-Begin with a one-line summary:
-
-* Age
-* Sex
-* 3–4 major PMH
-* Reason for admission
-
-Then provide **1–3 concise sentences** summarizing:
+Provide **1–3 concise sentences** summarizing:
 
 * Most likely diagnosis along with 2-3 differentials
 * Explain why the most likely diagnosis is most likely or what workup we need to do to confirm what is most likely
@@ -203,14 +182,14 @@ For **each acute problem** use the following structure:
 
 **Plan:**
 
-* Medication(s) with dose, route, frequency, and indication
-* Diagnostics
-* Monitoring
-* Consults
-* Procedures
-* Supportive care
-* If/Then contingency plans
-* Cite major guideline(s) supporting management (e.g., ACC/AHA, IDSA/ATS, KDIGO, ACG, CHEST, Surviving Sepsis Campaign)
+Use these subheadings in this exact order when applicable. Omit any subheading with no action items, and keep all bullets brief and actionable:
+
+* **Treatment/Medications:** Medications organized under the disease they treat, with dose, route, frequency, and indication; supportive care; and relevant guideline support (e.g., ACC/AHA, IDSA/ATS, KDIGO, ACG, CHEST, Surviving Sepsis Campaign).
+* **Diagnostics:** Initial or follow-up laboratory studies, imaging, microbiology, or other diagnostic studies.
+* **Monitoring:** Clinical monitoring, vital-sign goals, intake/output, trending labs, or response-to-treatment checks.
+* **Consults/Procedures:** Consultant recommendations, requested consultations, and planned procedures.
+* **Contingencies:** If/then escalation or de-escalation plans when appropriate.
+* **Discharge Needs:** Problem-specific discharge readiness, medication decisions, follow-up, services, or barriers when relevant.
 
 Keep bullets short and actionable.
 
