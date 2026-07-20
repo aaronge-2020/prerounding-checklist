@@ -10,6 +10,11 @@ const guidelines = {
   admission: readFileSync("prompts/Guidelines-admission.md", "utf8"),
   progress: readFileSync("prompts/Guidelines-progress.md", "utf8")
 };
+
+for (const template of Object.values(DEFAULT_PROMPT_TEMPLATES)) {
+  assert.match(template, /^(?:\s*@[-a-z]+)+\s*$/, "default prompt templates must contain smart variables only");
+}
+assert.equal((DEFAULT_PROMPT_TEMPLATES.daily_progress_note.match(/@selected-day/g) || []).length, 1, "daily progress template must include selected day once");
 let patient = createPatientRecord("Room 7", { id: "patient_prompt" });
 patient = {
   ...patient,
@@ -93,7 +98,7 @@ const consulting = buildCustomOpenEvidencePrompt({
 });
 assert.match(consulting, /consult question/i);
 assert.match(consulting, /V\/S/);
-assert.match(consulting, /routine, about 24 hours, urgent, or emergent/i);
+assert.match(consulting, /routine, about 24 hours; urgent; or emergent/i);
 assert.match(consulting, /consulting-guidelines|Consulting/);
 assert.doesNotMatch(consulting, /@consulting-guidelines/);
 
@@ -204,7 +209,7 @@ const medicationTeachingPrompt = buildCustomOpenEvidencePrompt({
   teamPreferences: { medicalService: "primary", presentationDetail: "standard" }
 });
 assert.match(medicationTeachingPrompt, /Write for the Primary team/);
-assert.match(medicationTeachingPrompt, /Organize the medications by treated disease/);
+assert.match(medicationTeachingPrompt, /Organize medications by the disease/);
 
 const medicationDefaultPrompt = buildCustomOpenEvidencePrompt({
   taskId: "medication_explainer_by_problem",

@@ -20,8 +20,8 @@ When multiple active problems relate to the same organ system or share managemen
 Organize Subjective in this order:
 
 * **Overnight/Interval Events:** Important events reported by the patient, nursing, or cross-cover, including major clinical events and completed interventions that occurred overnight. State the event concisely; place supporting objective values and data in Objective.
-* **Patient Self-Report:** How the patient feels today and meaningful changes since yesterday.
-* **Pertinent Subjective Positives/Negatives:** Only patient-reported symptoms or history items that affect today's assessment or plan.
+* **Patient Self-Report:** How the patient feels on the selected hospital day and meaningful changes since the prior hospital day.
+* **Pertinent Subjective Positives/Negatives:** Only patient-reported symptoms or history items that affect the selected hospital day's assessment or plan.
 
 Do not include vital signs, physical-exam findings, laboratory values, imaging, provider interpretation, consultant recommendations, or treatment plans.
 
@@ -35,9 +35,9 @@ Organize Objective in this order:
 
 * **Vitals/Clinical Support:** Include clinically relevant vital signs, oxygen requirement, or other support needs. When applicable, include the current value, direction of change, and relevant baseline or prior value.
 * **Focused Exam:** Include only new, changed, abnormal, or management-relevant observed findings.
-* **Key Labs/Diagnostics:** Include only laboratory values, imaging, microbiology, or diagnostics whose current value, trend, or comparison with baseline changes or supports today's diagnosis, assessment, or management.
+* **Key Labs/Diagnostics:** Include only laboratory values, imaging, microbiology, or diagnostics whose current value, trend, or comparison with baseline changes or supports the selected hospital day's diagnosis, assessment, or management.
 
-Include objective data only when it materially changes, clarifies, or supports today's diagnosis, assessment, prognosis, or management. Omit findings that are expected for the patient's known condition or planned treatment and do not alter a clinical decision. When a comparison is clinically relevant, give the current value, direction of change, and baseline or prior value.
+Include objective data only when it materially changes, clarifies, or supports the selected hospital day's diagnosis, assessment, prognosis, or management. Omit findings that are expected for the patient's known condition or planned treatment and do not alter a clinical decision. When a comparison is clinically relevant, give the current value, direction of change, and baseline or prior value.
 
 Report findings objectively without interpretation. Exclude patient statements, assessment, and treatment plans.
 
@@ -129,7 +129,7 @@ Keep this section brief and focused on medications that require action at discha
 * **Major overnight events**
 * **Assessment**
 * **Acute problem list**
-* **Major changes to today's plan**
+* **Major changes to the selected hospital day's plan**
 * **Disposition**
 
 ### Keep Primarily for Documentation
