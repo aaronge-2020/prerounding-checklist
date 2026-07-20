@@ -5610,6 +5610,48 @@ body.vault-locked .vault-access {
   .prompt-day-select { flex-direction: column; align-items: stretch; }
 }
 
+/* The sidebar and view padding leave the prompt builder substantially less
+   room than the viewport width suggests.  Stack its two working surfaces
+   before either panel reaches its minimum usable width, then let the header
+   controls wrap instead of forcing the task and hospital-day selects into a
+   single crowded row. */
+@media (max-width: 1300px) {
+  .prompt-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    height: auto;
+    overflow: visible;
+  }
+
+  .prompt-layout .prompt-panel.prompt-template-panel,
+  .prompt-layout .prompt-panel.prompt-output-panel {
+    grid-column: auto;
+    grid-row: auto;
+    overflow: visible;
+  }
+
+  .prompt-template-panel .prompt-preview,
+  .prompt-output-panel .prompt-output-highlighted {
+    height: 360px;
+  }
+}
+
+@media (max-width: 900px) {
+  .prompt-panel-header {
+    flex-wrap: wrap;
+  }
+
+  .prompt-panel-header > div:first-child {
+    flex-basis: 100%;
+  }
+
+  .prompt-panel-header > select,
+  .prompt-panel-header > .prompt-day-select {
+    flex: 1 1 260px;
+    max-width: none;
+  }
+}
+
 @media (max-width: 880px) {
   .settings-layout {
     grid-template-columns: 1fr;
