@@ -8,6 +8,7 @@ import {
   ensureLatestProgressGuidelineSet,
   ensureRevisedProgressGuidelineSet,
   ensureFocusedProgressGuidelineSet,
+  ensureAttendingProgressGuidelineSet,
   GUIDELINE_SET_STORAGE_KEY,
   GUIDELINE_SET_SEED_V3_KEY,
   GUIDELINE_SET_SEED_V4_KEY,
@@ -15,6 +16,7 @@ import {
   GUIDELINE_SET_SEED_V6_KEY,
   GUIDELINE_SET_SEED_V7_KEY,
   GUIDELINE_SET_SEED_V8_KEY,
+  GUIDELINE_SET_SEED_V9_KEY,
   loadGuidelineSets,
   loadOrMigrateGuidelineSets,
   removeGuidelineSet,
@@ -29,6 +31,24 @@ function fakeStorage(initial = {}) {
     setItem: (key, value) => { store[key] = String(value); },
     removeItem: (key) => { delete store[key]; }
   };
+}
+
+// The attending-format progress standard reaches existing installs under a
+// new token without overwriting earlier user-managed content.
+{
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: true, text: async () => "Attending progress standard." });
+  try {
+    const storage = fakeStorage();
+    const existing = [createGuidelineSet("Progress Focused", "Previously focused standard.")];
+    const seeded = await ensureAttendingProgressGuidelineSet(existing, storage);
+    assert.equal(seeded.length, 2);
+    assert.equal(seeded.find((set) => set.token === "@progress-attending-guidelines")?.text, "Attending progress standard.");
+    assert.equal(seeded.find((set) => set.token === "@progress-focused-guidelines")?.text, "Previously focused standard.");
+    assert.equal(storage.getItem(GUIDELINE_SET_SEED_V9_KEY), "1");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 }
 
 // The focused progress standard reaches existing installs under a new token

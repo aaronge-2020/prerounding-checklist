@@ -6,13 +6,19 @@ Use the admission packet only to identify relevant baseline conditions, the reas
 
 Target a brief attending presentation. If the note would become long, shorten stable, chronic, resolved, or background problems first. Never truncate the note.
 
+Complete every required section before adding detail. If space is limited, omit or compress lower-priority problems rather than beginning a bullet or section that cannot be completed. The output must end with a complete Plan and one-sentence Disposition.
+
 Use this compression hierarchy:
 
-* One-liner: one sentence, approximately 25–35 words.
+* One-liner: one sentence, approximately 20–30 words.
 * Subjective: only major interval events and management-relevant symptoms.
 * Objective: only decision-changing trends, findings, and diagnostics.
 * Assessment: one global trajectory statement plus one concise sentence per active problem.
 * Plan: only actions required for the selected hospital day.
+
+Output only these sections, in this order: One-Liner, Subjective, Objective, Assessment, Plan, and Disposition. Do not generate a discharge-medications section unless the task explicitly requests discharge medication reconciliation.
+
+Use only information present in this prompt. If required information is absent, omit it or state that it is not documented. Never reconstruct missing clinical data from prior examples, memory, or general medical knowledge.
 
 ## Section Ownership Rules (No Cross-Section Repetition)
 
@@ -27,7 +33,7 @@ Assign every fact to exactly **one** section. Classify information by how it was
 
 If a patient reports discomfort only when an examiner presses, moves, or otherwise examines an area, document it as an objective examination finding—not a subjective symptom. When multiple active problems share management, group them under one problem heading in the Plan.
 
-Before Subjective, begin with one sentence of approximately 25–35 words containing age, sex, only the comorbidities or recent interventions relevant to the selected hospital day’s active problems, hospital day, and reason for admission. Do not repeat it elsewhere.
+Before Subjective, begin with one sentence of approximately 20–30 words containing age, sex, hospital day, reason for admission, and only 2–4 comorbidities or recent interventions relevant to the selected hospital day’s active problems. Do not include medication doses, complete antithrombotic regimens, prior test results, or resolved diagnoses. Do not repeat it elsewhere.
 
 ## **Subjective** *(High Yield for Rounds)*
 
@@ -38,6 +44,8 @@ Organize Subjective in this order:
 * **Pertinent Subjective Positives/Negatives:** Only spontaneous, patient-experienced symptoms or history items that affect the selected hospital day's assessment or plan.
 
 Do not include physical-exam findings or examination qualifiers in Subjective. Phrases such as “on exam,” “with palpation,” “with movement,” or “per examination” belong only in Objective. Findings elicited by examination—such as tenderness to palpation, guarding, edema, breath sounds, pulses, strength, or range of motion—remain objective even when the patient reports discomfort during the examination. Do not include vital signs, laboratory values, imaging, provider interpretation, consultant recommendations, or treatment plans.
+
+If a symptom is absent at rest but reproduced during examination, document only the spontaneous symptom in Subjective and omit the examination-provoked symptom from Subjective. Never use examination terms—including tenderness, palpation, edema, pulses, guarding, range of motion, strength, or movement—in Subjective, including in parentheses.
 
 Keep this section brief. Include only new or clinically meaningful reported information that changes diagnosis, management, risk assessment, symptom trajectory, or disposition. Remove routine functional details, repeated symptoms, unchanged review-of-systems details, and negative symptoms that do not narrow the differential, change management, or establish clinical stability.
 
@@ -50,7 +58,7 @@ Do not reproduce a long review of systems. Combine related negative symptoms int
 Organize Objective in this order:
 
 * **Vitals/Clinical Support:** Include clinically relevant vital signs, oxygen requirement, or other support needs. When applicable, include the current value, direction of change, and relevant baseline or prior value.
-* **Focused Exam:** Include only new, changed, abnormal, or management-relevant observed findings. Omit normal findings unless they rule out an important competing concern.
+* **Focused Exam:** Include only new, changed, abnormal, or management-relevant observed findings. Do not include a complete system-by-system examination. Omit normal findings unless they rule out an important competing concern.
 * **Key Labs/Diagnostics:** Include only laboratory values, imaging, microbiology, or diagnostics whose current value, trend, or comparison with baseline changes or supports the selected hospital day's diagnosis, assessment, or management.
 
 Include objective data only when it changes, confirms, refutes, or meaningfully contextualizes a current clinical decision. Do not include a value merely because it is abnormal. Omit predictable chronic abnormalities and expected treatment-related findings unless they alter diagnosis, risk, treatment, monitoring, or disposition. When a comparison is clinically relevant, give the current value, direction of change, or relevant baseline/prior value.
@@ -60,6 +68,8 @@ Report findings objectively without interpretation. Exclude patient statements, 
 Do not place medication lists, line ages, routine device details, or predictable normal findings in Objective unless they directly affect a decision for the selected hospital day.
 
 Do not reproduce historical vital-sign tables, complete laboratory panels, old microbiology reports, or prior normal examinations. Include only the current value and the most relevant trend, baseline, threshold, or comparison.
+
+Do not include General, Cardiac, Respiratory, Neurologic, Lines, or normal extremity findings unless abnormal or directly relevant to an active decision. Do not include line age, catheter age, type-and-screen expiration, crossmatch status, or routine normal findings unless they change management.
 
 ---
 
@@ -71,9 +81,9 @@ Do not reproduce historical vital-sign tables, complete laboratory panels, old m
   * Leading diagnosis or clinical interpretation
   * Why it matters for the selected hospital day
 
-Refer to supporting evidence in aggregate rather than repeating exact symptoms, laboratory values, medications, or prior events. Include only the leading diagnosis and alternatives that change the next action. Do not include speculative mechanisms, remote possibilities, or management decisions.
+Assessment should explain the clinical meaning of the data, not repeat the data. Use one concise sentence per active problem. Refer to supporting evidence in aggregate rather than repeating exact symptoms, laboratory values, medication doses, prior procedures, or historical narrative already documented elsewhere. Include only the leading diagnosis and alternatives that change the next action. Do not include speculative mechanisms, remote possibilities, or management decisions.
 
-Use only diagnoses, interpretations, recommendations, thresholds, consultant plans, and medication decisions supported by the provided chart context. Do not independently introduce guideline names, literature-based recommendations, treatment thresholds, differential diagnoses, or management changes. Do not describe a medication as appropriate or indicated unless that conclusion is explicitly supported by the source.
+Use only diagnoses, interpretations, recommendations, thresholds, consultant plans, and medication decisions supported by the provided chart context. Do not independently introduce guideline names, literature-based recommendations, treatment thresholds, differential diagnoses, or management changes. Do not describe a medication as appropriate or indicated unless that conclusion is explicitly supported by the source. If the chart does not specify a threshold, use qualitative language rather than inventing a number.
 
 ---
 
@@ -94,7 +104,7 @@ Organize the Plan by active clinical problem, ordered from highest to lowest pri
 
 Do not repeat history, examination findings, labs, or clinical reasoning. The Plan is an action list, not a narrative: use one concise bullet per distinct action, combine actions serving the same objective, and do not generate a fixed number of bullets or explanations for every problem. Do not create a separate problem when its actions are already covered under another problem; combine problems that share the same decision, medication change, monitoring strategy, or contingency. Use no more than one or two bullets per applicable subheading. Include contingencies only when a foreseeable change would alter management. Include a differential or rationale only when it changes the next action. Do not cite guidelines or explain standard-of-care rationale unless specifically requested or unless the recommendation is controversial, high-risk, or directly relevant to a management decision.
 
-Every Plan bullet must state one action, monitoring task, decision, consultation, or contingency. Do not include explanatory paragraphs, guideline citations, or repeated rationale. Do not repeat the same medication change or contingency under multiple problems. Do not populate every category for every problem. Stable or resolved problems should receive one brief line or be omitted if they require no action.
+Every Plan bullet must state one action, monitoring task, decision, consultation, or contingency. Do not include explanatory paragraphs, guideline citations, or repeated rationale. Place each medication change, consultation, and escalation decision under one primary problem only; under related problems, document only the consequence or monitoring implication. Do not populate every category for every problem. Prefer one combined action bullet over multiple related bullets. Stable or resolved problems should receive one brief line or be omitted if they require no action.
 
 ### Chronic Problems
 
@@ -127,6 +137,7 @@ Before finalizing, verify that:
 * The note includes a complete Disposition statement.
 * The selected hospital day, rather than the full historical packet, drives the note.
 * No unsupported guideline, threshold, diagnosis, or management recommendation was added.
+* The output contains only the required sections and does not include discharge medication reconciliation unless requested.
 
 ---
 
@@ -137,7 +148,7 @@ One sentence describing the anticipated discharge plan and barrier(s) to dischar
 ---
 
 
-## Discharge Medications *(If Discharge Is Expected Within 24–48 Hours)*
+## Discharge Medications *(Only if explicitly requested; otherwise do not generate)*
 
 List only medications requiring a discharge decision. Do **not** recreate the full medication reconciliation.
 
@@ -154,7 +165,7 @@ Keep this section brief and focused on medications that require action at discha
 
 ---
 
-# Presentation Priorities
+# Presentation Priorities *(Internal guidance; do not output as a separate section)*
 
 ### **Bold (Speak During Rounds)**
 

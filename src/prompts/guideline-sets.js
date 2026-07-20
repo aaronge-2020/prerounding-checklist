@@ -251,3 +251,21 @@ export async function ensureFocusedProgressGuidelineSet(sets, storage = localSto
   saveGuidelineSets(next, storage);
   return next;
 }
+
+export const GUIDELINE_SET_SEED_V9_KEY = "prerounding_guideline_sets_seed_v9";
+
+// Deliver the stricter attending-format progress standard without overwriting
+// any prior user-managed guideline set.
+export async function ensureAttendingProgressGuidelineSet(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_SEED_V9_KEY) !== null) return sets;
+  let next = sets;
+  try {
+    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
+    if (response.ok) next = addGuidelineSet(next, "Progress Attending", await response.text());
+  } catch {
+    // No network/file access - leave existing user-managed sets intact.
+  }
+  storage.setItem(GUIDELINE_SET_SEED_V9_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
+}
