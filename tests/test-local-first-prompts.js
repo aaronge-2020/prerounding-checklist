@@ -59,6 +59,7 @@ assert.match(admission, /Patient mentioned new hip pain unrelated to admission\.
 const progress = buildOpenEvidencePrompt("daily_progress_note", { patient, selectedDayId: day.id, guidelines });
 assert.match(progress, /daily progress note/i);
 assert.match(progress, /Vitals\/Clinical Support/);
+assert.match(progress, /tenderness to palpation/);
 assert.match(progress, /strict separation/);
 assert.match(progress, /Patient mentioned new hip pain unrelated to admission\./);
 assert.match(progress, /Feels less short of breath/);

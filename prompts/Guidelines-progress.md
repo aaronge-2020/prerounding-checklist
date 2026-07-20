@@ -23,9 +23,9 @@ Organize Subjective in this order:
 
 * **Overnight/Interval Events:** Important events reported by the patient, nursing, or cross-cover, including major clinical events and completed interventions that occurred overnight. State the event concisely; place supporting objective values and data in Objective.
 * **Patient Self-Report:** How the patient feels on the selected hospital day and meaningful changes since the prior hospital day.
-* **Pertinent Subjective Positives/Negatives:** Only patient-reported symptoms or history items that affect the selected hospital day's assessment or plan.
+* **Pertinent Subjective Positives/Negatives:** Only spontaneous, patient-experienced symptoms or history items that affect the selected hospital day's assessment or plan.
 
-Do not include vital signs, physical-exam findings, laboratory values, imaging, provider interpretation, consultant recommendations, or treatment plans.
+Do not include physical-exam findings in Subjective. Findings elicited by examination—such as tenderness to palpation, guarding, edema, breath sounds, pulses, strength, or range of motion—belong only in Objective, even when the patient reports discomfort during the examination. Do not include vital signs, laboratory values, imaging, provider interpretation, consultant recommendations, or treatment plans.
 
 Keep this section brief. Only include information that changes management or reflects clinical improvement or deterioration.
 
