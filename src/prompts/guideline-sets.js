@@ -335,3 +335,22 @@ export async function ensureCanonicalProgressGuidelineSet(sets, storage = localS
   saveGuidelineSets(next, storage);
   return next;
 }
+
+export const GUIDELINE_SET_PROGRESS_CANONICAL_V2_KEY = "prerounding_guideline_sets_progress_canonical_v2";
+
+// Refresh the single canonical Progress set after a prompt revision. Older
+// Progress variants are removed so the public Settings surface has one
+// current progress instruction rather than a version stack.
+export async function ensureCanonicalProgressGuidelineSetV2(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_PROGRESS_CANONICAL_V2_KEY) !== null) return sets;
+  let next = sets.filter((set) => !LEGACY_PROGRESS_TOKENS.has(set.token) && !/^Progress(?: |$)/i.test(set.label || ""));
+  try {
+    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
+    if (response.ok) next = addGuidelineSet(next, "Progress", await response.text());
+  } catch {
+    // No network/file access - leave non-progress guideline sets intact.
+  }
+  storage.setItem(GUIDELINE_SET_PROGRESS_CANONICAL_V2_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
+}

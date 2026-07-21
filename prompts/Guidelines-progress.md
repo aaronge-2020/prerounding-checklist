@@ -16,7 +16,39 @@ Use this compression hierarchy:
 * Assessment: one brief global trajectory statement only.
 * Plan: only actions required for the selected hospital day.
 
-Output only these sections, in this order: One-Liner, Subjective, Objective, Assessment, Plan, and Disposition. Do not generate a discharge-medications section unless the task explicitly requests discharge medication reconciliation.
+Use exactly this output structure and do not add other top-level sections:
+
+**One-Liner:** one sentence only, before Subjective.
+
+**Subjective**
+
+**Overnight/Interval Events:**
+**Patient Self-Report:**
+**Pertinent Subjective Symptoms:**
+
+**Objective**
+
+**Vitals/Clinical Support:**
+**Focused Exam:**
+**Key Labs/Diagnostics:**
+
+**Assessment**
+
+**Global Trajectory:** one brief synthesis only.
+
+**Plan**
+
+**Problem 1: [highest-priority problem]**
+**Assessment:** problem-specific clinical interpretation and reasoning.
+**Actions:** only the essential actions.
+
+**Problem 2: [next active problem]**
+**Assessment:** problem-specific clinical interpretation and reasoning.
+**Actions:** only the essential actions.
+
+**Disposition:** one sentence.
+
+The One-Liner must appear before the Subjective heading. Do not place it inside Subjective. Do not add Acute Problems, Preventive, Discharge Medications, or other extra top-level sections unless explicitly requested.
 
 Use only information present in this prompt. If required information is absent, omit it or state that it is not documented. Never reconstruct missing clinical data from prior examples, memory, or general medical knowledge.
 
@@ -50,7 +82,7 @@ If a symptom is absent at rest but reproduced during examination, document only 
 
 Keep this section brief. Include only new or clinically meaningful reported information that changes diagnosis, management, risk assessment, symptom trajectory, or disposition. Remove routine functional details, repeated symptoms, unchanged review-of-systems details, and negative symptoms that do not narrow the differential, change management, or establish clinical stability.
 
-Do not reproduce a long review of systems. Combine related negative symptoms into a concise statement and omit routine appetite, sleep, voiding, or functional details unless they affect management or disposition.
+Do not reproduce a long review of systems. Combine related negative symptoms into a concise statement and omit routine appetite, sleep, voiding, or functional details unless they affect management or disposition. Do not include care-dependence, staff-assistance requirements, or functional observations in Subjective unless directly reported by the patient and relevant to disposition or immediate management; place nursing observations in Overnight/Interval Events or Objective.
 
 ---
 
@@ -86,13 +118,13 @@ Prioritize problems from most to least important.
 
 ### Acute Problems
 
-Organize the Plan by active clinical problem, ordered from highest to lowest priority. Give the most detail to the problem driving the selected hospital day’s decisions; summarize stable, chronic, or resolved problems in one concise line unless they require a new action. Use one heading per problem. Under each heading, first provide a problem-specific **Assessment** and then the applicable action categories below.
+Organize the Plan by active clinical problem, ordered from highest to lowest priority. Give the most detail to the problem driving the selected hospital day’s decisions; summarize stable, chronic, or resolved problems in one concise line unless they require a new action. Use one heading per problem. Under each heading, first provide a problem-specific **Assessment** and then only the essential **Actions**.
 
 For the problem-specific Assessment, explain the clinical reasoning—not just the diagnosis. For the dominant problem, use 2–3 sentences describing what is happening, severity and trajectory, leading diagnosis or interpretation, the most relevant competing explanation if it would change management, the key supporting evidence, and why it matters today. Use 1–2 sentences for lower-priority active problems and one sentence for stable or resolved problems only when they affect care. Distinguish physiologic stability from absence of disease activity and identify management tensions when relevant. Do not repeat the entire Objective section or include unsupported causal claims.
 
 Keep the problem-specific Assessment separate from action. Do not place orders, medication changes, monitoring instructions, consultation requests, escalation thresholds, or if/then contingencies in the problem-specific Assessment. Use only diagnoses and interpretations supported by the provided chart context. Do not independently introduce guideline names, literature-based recommendations, treatment thresholds, differential diagnoses, or management changes. If the chart does not specify a threshold, use qualitative language rather than inventing a number.
 
-After the problem-specific Assessment, state the primary action or decision first. Use only the applicable action categories below, in this exact order. Omit any category with no specific action items, and keep every bullet brief and actionable:
+After the problem-specific Assessment, state the primary action or decision first. Use only action categories containing a necessary action; do not force every category. For the highest-priority problem, include no more than three action bullets. For other active problems, include no more than one or two action bullets. Keep every bullet brief and actionable:
 
 * **Treatment/Medications:** Medications organized under the disease they treat, with dose, route, frequency, and indication; and relevant supportive care.
 * **Diagnostics:** Daily or follow-up laboratory studies, imaging, microbiology, or other diagnostic studies.
@@ -103,14 +135,16 @@ After the problem-specific Assessment, state the primary action or decision firs
 
 Do not repeat history, examination findings, labs, or clinical reasoning. The Plan is an action list, not a narrative: use one concise bullet per distinct action, combine actions serving the same objective, and do not generate a fixed number of bullets or explanations for every problem. Do not create a separate problem when its actions are already covered under another problem; combine problems that share the same decision, medication change, monitoring strategy, or contingency. Use no more than one or two bullets per applicable subheading. Include contingencies only when a foreseeable change would alter management. Include a differential or rationale only when it changes the next action. Do not cite guidelines or explain standard-of-care rationale unless specifically requested or unless the recommendation is controversial, high-risk, or directly relevant to a management decision.
 
-Every Plan bullet must state one action, monitoring task, decision, consultation, or contingency. Do not include explanatory paragraphs, guideline citations, or repeated rationale. Place each medication change, consultation, and escalation decision under one primary problem only; under related problems, document only the consequence or monitoring implication. Do not populate every category for every problem. Prefer one combined action bullet over multiple related bullets. Stable or resolved problems should receive one brief line or be omitted if they require no action.
+Every Plan bullet must state one source-supported action, monitoring task, decision, consultation, or contingency. Do not include explanatory paragraphs, guideline citations, or repeated rationale. Place each medication change, consultation, and escalation decision under one primary problem only; under related problems, document only the consequence or monitoring implication. Prefer one combined action bullet over multiple related bullets. Stable or resolved problems should receive one brief line or be omitted if they require no action. Do not begin another problem or subsection unless the entire note can be completed; compress lower-priority problems first if space is limited.
+
+Do not create new orders, tests, consultations, transfusion targets, blood-pressure thresholds, monitoring frequencies, treatment changes, or escalation criteria from general medical knowledge. Include them only if explicitly documented in the provided source. If the chart does not specify the next action, state the uncertainty rather than inventing a plan.
 
 ### Chronic Problems
 
 * Summarize stable chronic conditions in one concise line when they require no new action.
 * Include only active inpatient management or medication adjustments.
 
-### Preventive Care
+### Preventive Care *(Only if explicitly requested; otherwise do not output as a separate section)*
 
 Include only if relevant:
 
@@ -138,6 +172,10 @@ Before finalizing, verify that:
 * The selected hospital day, rather than the full historical packet, drives the note.
 * No unsupported guideline, threshold, diagnosis, or management recommendation was added.
 * The output contains only the required sections and does not include discharge medication reconciliation unless requested.
+* One-Liner appears before Subjective, with no content between the title and One-Liner.
+* No Acute Problems, Preventive, or other unrequested top-level section is present.
+* Every problem has its Assessment before its Actions.
+* Every Plan action is supported by the provided source.
 
 ---
 
