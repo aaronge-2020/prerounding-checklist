@@ -1,6 +1,10 @@
 # Concise H&P Presentation Instructions (3–5 Minutes)
 
-Using the provided information, generate an H&P that is organized for rapid inpatient presentation. Every section should be concise, clinically relevant, and **free of any repetition**. The entire presentation should be deliverable in **3–5 minutes**. Prioritize information that changes diagnosis, management, or disposition.
+Using only the provided information, generate a concise, decision-focused admission H&P for rapid inpatient presentation. Keep the H&P format; do not convert it to SOAP. Every section should be clinically relevant and free of repetition. The entire presentation should be deliverable in **3–5 minutes**. Prioritize information that changes diagnosis, management, or disposition.
+
+Use the admission history and ED course as the primary source for HPI, and use objective data only in Objective. Do not reproduce prior notes or the full chart. If information is absent, omit it or state that it is not documented; never reconstruct missing clinical data from memory or general medical knowledge.
+
+Complete every required section before adding detail. If space is limited, compress stable, chronic, resolved, or background information first. Never end mid-sentence or mid-bullet.
 
 ---
 
@@ -14,10 +18,33 @@ Each fact belongs in exactly **one** section — the section that "owns" that ty
 | Drug name, dose, route, frequency, indication | Medications | PMH, PSH, HPI |
 | Procedure/operation name and date | Past Surgical History | PMH, Medications |
 | Social/functional factors (tobacco, alcohol, drugs, living situation, function) | Social History | HPI, PMH, Assessment |
-| Clinical reasoning / differential | Assessment | HPI, Plan |
+| Global illness severity and trajectory | Assessment | HPI, Objective, Plan |
+| Problem-specific clinical reasoning / differential | Plan (under that problem) | HPI, Objective, global Assessment |
 | Actions/orders | Plan | Assessment, HPI |
 
 **Rule of thumb:** PMH states *what* the patient has; Medications states *how* it's being treated. Never mention a drug in PMH (e.g., don't write "prostate cancer on leuprolide" in PMH — write "prostate cancer" in PMH and put leuprolide under an "Oncologic" heading in Medications). Never restate a diagnosis's full treatment history outside Medications, and never restate a surgery outside PSH.
+
+---
+
+# Required H&P Structure
+
+Use exactly these sections, in this order, and do not add SOAP headings or unrequested top-level sections:
+
+1. Chief Complaint
+2. HPI
+3. Past Medical History
+4. Past Surgical History
+5. Medications
+6. Allergies
+7. Family History
+8. Social History
+9. Review of Systems
+10. Objective
+11. Assessment
+12. Plan
+13. Disposition
+
+Discharge Medications and Preventive Care should be included only when explicitly requested or when they contain an admission decision that cannot be placed in the relevant Plan problem.
 
 ---
 
@@ -29,16 +56,18 @@ Each fact belongs in exactly **one** section — the section that "owns" that ty
 
 # HPI
 
-* Begin with a one-line summary:
+* Begin with one concise 20–30-word summary containing:
 
   * Age
   * Sex
-  * 3–4 most relevant PMH
+  * 2–4 most relevant PMH or recent procedures
   * Reason for admission
-* Present the illness chronologically.
+* Present the illness chronologically, emphasizing the change that prompted admission and the decisions needed now.
 * Include only patient-reported history and symptoms, pertinent positives and negatives, relevant baseline function, and ED events that affect inpatient care.
 * Summarize relevant ED course if it impacts inpatient management.
 * Exclude unnecessary ROS, vital signs, physical-exam findings, laboratory values, imaging details, clinician interpretation, consultant recommendations, and treatment plans.
+
+Do not include medication doses, prior test results, or resolved diagnoses in the HPI unless they are necessary to understand the presenting illness.
 
 ---
 
@@ -120,6 +149,8 @@ One concise sentence including only:
 * Only pertinent positives and major negatives.
 * Avoid exhaustive review.
 
+Do not include examination findings, vital signs, laboratory values, imaging, clinician interpretation, or treatment plans in Review of Systems. Do not include routine appetite, sleep, voiding, or functional details unless they affect admission decisions.
+
 ---
 
 # Objective
@@ -151,18 +182,13 @@ When a comparison is clinically relevant, give the current value, direction of c
 
 Report findings objectively without interpretation. Do not include patient statements, assessment, or treatment plans.
 
+Do not include a complete system-by-system examination, historical vital-sign tables, full laboratory panels, old microbiology reports, line age, catheter age, type-and-screen expiration, or routine normal findings unless they change admission management. Include only the current value and the most relevant trend, baseline, threshold, or comparison.
+
 ---
 
 # Assessment
 
-Provide **1–3 concise sentences** summarizing:
-
-* Most likely diagnosis along with 2-3 differentials
-* Explain why the most likely diagnosis is most likely or what workup we need to do to confirm what is most likely
-* Overall illness severity
-* Clinical trajectory
-
-Do not repeat history or objective findings.
+Use this section only for a brief global admission synthesis. State the patient’s overall illness severity, current trajectory, and the dominant problem driving admission. Do not provide separate problem-by-problem assessments here; put each problem’s clinical reasoning under that problem in Plan. Do not place orders, medication changes, monitoring instructions, consultation requests, thresholds, or contingencies in Assessment.
 
 ---
 
@@ -176,22 +202,22 @@ For **each acute problem** use the following structure:
 
 ### Problem Name
 
-**Differential:** Diagnosis 1 vs Diagnosis 2 vs Diagnosis 3
+**Assessment:** Explain what is happening, current severity and trajectory, the leading diagnosis or interpretation, the most relevant competing explanation if it would change management, the key supporting evidence, and why it matters for admission. Use 2–3 sentences for the dominant problem, 1–2 sentences for other active problems, and one sentence for stable problems only when they affect care. Do not repeat the entire HPI or Objective section and do not make unsupported causal claims.
 
-**Assessment:** One brief paragraph (2-3 sentences) explaining the leading diagnosis and why.
+**Actions:**
 
-**Plan:**
+After the problem-specific Assessment, state the primary action or decision first. Use only action subheadings containing a necessary action; do not force every category. For the highest-priority problem, include no more than three action bullets. For other active problems, include no more than one or two action bullets:
 
-Use these subheadings in this exact order when applicable. Omit any subheading with no action items, and keep all bullets brief and actionable:
-
-* **Treatment/Medications:** Medications organized under the disease they treat, with dose, route, frequency, and indication; supportive care; and relevant guideline support (e.g., ACC/AHA, IDSA/ATS, KDIGO, ACG, CHEST, Surviving Sepsis Campaign).
+* **Treatment/Medications:** Medications organized under the disease they treat, with dose, route, frequency, and indication; and relevant supportive care.
 * **Diagnostics:** Initial or follow-up laboratory studies, imaging, microbiology, or other diagnostic studies.
 * **Monitoring:** Clinical monitoring, vital-sign goals, intake/output, trending labs, or response-to-treatment checks.
 * **Consults/Procedures:** Consultant recommendations, requested consultations, and planned procedures.
 * **Contingencies:** If/then escalation or de-escalation plans when appropriate.
 * **Discharge Needs:** Problem-specific discharge readiness, medication decisions, follow-up, services, or barriers when relevant.
 
-Keep bullets short and actionable.
+Keep bullets short and actionable. Place each medication change, consultation, and escalation decision under one primary problem only. Do not repeat the same action under multiple problems. If the chart does not specify the next action, state the uncertainty rather than inventing a plan.
+
+Do not create new orders, tests, consultations, transfusion targets, blood-pressure thresholds, monitoring frequencies, treatment changes, or escalation criteria from general medical knowledge. Include them only if explicitly documented in the provided source. Do not cite guidelines unless specifically requested.
 
 ---
 
@@ -199,15 +225,15 @@ Keep bullets short and actionable.
 
 For each condition:
 
-* Current status
-* Inpatient medication(s) (organized under that disease)
-* Any necessary adjustments
+* One concise interpretation of current status if it affects admission care
+* Inpatient medication(s) only when active management or adjustment is needed
+* Any necessary adjustment
 
-No extensive discussion if stable.
+Do not provide extensive discussion if stable; summarize stable conditions in one line or omit them.
 
 ---
 
-## Preventive Care
+## Preventive Care *(Only if explicitly requested or admission-relevant; otherwise do not output as a separate section)*
 
 Include only if applicable:
 
@@ -229,7 +255,7 @@ Provide one concise sentence explaining anticipated discharge based on:
 * Social support, living situation, and transport situation
 * Whether the patient's care can be safely managed outside the hospital
 
-## Discharge Medications *(If Discharge Is Expected Within 24–48 Hours)*
+## Discharge Medications *(Only if explicitly requested; otherwise do not generate)*
 
 List only medications requiring a discharge decision. Do **not** recreate the full medication reconciliation.
 
@@ -243,6 +269,22 @@ Organize into four categories:
 Finally, note any required outpatient medication monitoring (e.g., CBC, BMP, INR, blood pressure, glucose) or patient counseling (e.g., complete antibiotics, avoid NSAIDs).
 
 Keep this section brief and focused on medications that require action at discharge.
+
+---
+
+# Final H&P Quality Check *(Internal guidance; do not output as a separate section)*
+
+Before finalizing, verify that:
+
+* All required H&P sections are present and in the specified order.
+* The HPI contains history and symptoms only; objective findings appear only in Objective.
+* PMH, PSH, medications, allergies, family history, and social history are not duplicated in HPI or Assessment.
+* The top-level Assessment contains only global illness synthesis.
+* Each active problem has its own clinical Assessment before its Actions in Plan.
+* Every Plan action is supported by the provided source.
+* No unsupported guideline, threshold, diagnosis, order, or management recommendation was added.
+* Preventive Care and Discharge Medications are omitted unless explicitly requested or admission-relevant.
+* The H&P ends with a complete Disposition sentence and does not end mid-sentence or mid-bullet.
 
 
 ---

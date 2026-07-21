@@ -13,6 +13,7 @@ import {
   ensureProblemAssessmentProgressGuidelineSet,
   ensureCanonicalProgressGuidelineSet,
   ensureCanonicalProgressGuidelineSetV2,
+  ensureCurrentAdmissionGuidelineSet,
   GUIDELINE_SET_STORAGE_KEY,
   GUIDELINE_SET_SEED_V3_KEY,
   GUIDELINE_SET_SEED_V4_KEY,
@@ -25,6 +26,7 @@ import {
   GUIDELINE_SET_SEED_V11_KEY,
   GUIDELINE_SET_PROGRESS_CANONICAL_KEY,
   GUIDELINE_SET_PROGRESS_CANONICAL_V2_KEY,
+  GUIDELINE_SET_ADMISSION_CURRENT_KEY,
   loadGuidelineSets,
   loadOrMigrateGuidelineSets,
   removeGuidelineSet,
@@ -39,6 +41,24 @@ function fakeStorage(initial = {}) {
     setItem: (key, value) => { store[key] = String(value); },
     removeItem: (key) => { delete store[key]; }
   };
+}
+
+// Existing installs receive the expanded H&P standard under one current
+// admission token while the prior user-managed Admission set remains intact.
+{
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: true, text: async () => "Current H&P standard." });
+  try {
+    const storage = fakeStorage();
+    const existing = [createGuidelineSet("Admission", "User-edited admission standard.")];
+    const seeded = await ensureCurrentAdmissionGuidelineSet(existing, storage);
+    assert.equal(seeded.length, 2);
+    assert.equal(seeded.find((set) => set.token === "@admission-current-guidelines")?.text, "Current H&P standard.");
+    assert.equal(seeded.find((set) => set.token === "@admission-guidelines")?.text, "User-edited admission standard.");
+    assert.equal(storage.getItem(GUIDELINE_SET_ADMISSION_CURRENT_KEY), "1");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 }
 
 // The latest progress revision still leaves exactly one canonical Progress

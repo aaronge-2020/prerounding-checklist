@@ -354,3 +354,21 @@ export async function ensureCanonicalProgressGuidelineSetV2(sets, storage = loca
   saveGuidelineSets(next, storage);
   return next;
 }
+
+export const GUIDELINE_SET_ADMISSION_CURRENT_KEY = "prerounding_guideline_sets_admission_current_v1";
+
+// Deliver the current expanded H&P standard to existing installs without
+// overwriting the prior user-managed Admission guideline set.
+export async function ensureCurrentAdmissionGuidelineSet(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_ADMISSION_CURRENT_KEY) !== null) return sets;
+  let next = sets;
+  try {
+    const response = await fetch("./prompts/Guidelines-admission.md", { cache: "no-store" });
+    if (response.ok) next = addGuidelineSet(next, "Admission Current", await response.text());
+  } catch {
+    // No network/file access - leave existing user-managed sets intact.
+  }
+  storage.setItem(GUIDELINE_SET_ADMISSION_CURRENT_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
+}
