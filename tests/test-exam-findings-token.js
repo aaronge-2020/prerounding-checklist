@@ -56,6 +56,18 @@ function patientWithDay({ answers = {}, quickNotes = [], openEvidenceExamNote = 
   assert.equal(variables["@openevidence-exam-note"], "No saved OpenEvidence exam note.");
 }
 
+// Prompt variables are derived from the supplied patient record, never from
+// another patient's saved checklist or OpenEvidence exam note.
+{
+  const firstPatient = patientWithDay({ openEvidenceExamNote: { text: "First patient: clear lungs.", residualWarnings: [], savedAt: "2026-07-13T10:00:00.000Z" } });
+  const secondPatient = patientWithDay({ openEvidenceExamNote: { text: "Second patient: wheezing.", residualWarnings: [], savedAt: "2026-07-13T11:00:00.000Z" } });
+  const firstVariables = buildPromptVariableMap({ patient: firstPatient, selectedDayId: "day1" });
+  const secondVariables = buildPromptVariableMap({ patient: secondPatient, selectedDayId: "day1" });
+  assert.equal(firstVariables["@exam-findings"], "First patient: clear lungs.");
+  assert.equal(secondVariables["@exam-findings"], "Second patient: wheezing.");
+  assert.doesNotMatch(secondVariables["@exam-findings"], /First patient/);
+}
+
 // The default daily-progress and admission templates use the smart token, not the raw checklist token.
 {
   const { DEFAULT_PROMPT_TEMPLATES } = await import("../src/prompts/custom-templates.js");

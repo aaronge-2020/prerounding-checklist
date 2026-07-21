@@ -612,6 +612,25 @@ function clearProtectedViewContent() {
   byId("deleteWorkupConfirmDialog")?.close();
 }
 
+function clearPatientScopedSession() {
+  // These values are drafts/review state for the currently active patient.
+  // They must never survive a patient switch: in particular, the OpenEvidence
+  // paste panel can contain de-identified clinical text that has not yet been
+  // explicitly saved to that patient's hospital day.
+  app.selectedDayId = "";
+  app.promptDayId = "";
+  app.promptDayFollowsChecklist = true;
+  app.promptDrafts = {};
+  app.sectionDrafts.clear();
+  app.sectionEditingKeys.clear();
+  app.pendingSectionReviewFocus = null;
+  clearPhiReviews();
+  app.checklistSearchQuery = "";
+  app.checklistOpenNoteIds = new Set();
+  app.openEvidenceImport = { input: "", busy: false, deidBusy: false, error: "", deidConfirmed: false, deidStatus: "", deidResidualWarnings: [] };
+  app.admissionDate = "";
+}
+
 function clearSensitiveSession() {
   if (vaultInactivityTimer) {
     clearTimeout(vaultInactivityTimer);
@@ -621,26 +640,18 @@ function clearSensitiveSession() {
   app.vault = null;
   app.passphrase = "";
   app.vaultUnlockError = "";
-  app.selectedDayId = "";
-  app.sectionDrafts.clear();
-  app.sectionEditingKeys.clear();
-  app.pendingSectionReviewFocus = null;
+  clearPatientScopedSession();
   app.draftWorkup = null;
   app.phoneBundle = null;
   app.phoneAnswers = {};
   app.phoneQuickNotes = [];
   app.phoneResumeOffer = null;
   app.phoneReturnReady = false;
-  app.checklistSearchQuery = "";
-  app.checklistOpenNoteIds = new Set();
   app.workupImportError = "";
   app.workupImportDraft = "";
   app.workupApiBusy = false;
   app.workupApiDeidConfirmed = false;
   app.workupImportPanelOpen = false;
-  app.promptDrafts = {};
-  app.promptDayId = "";
-  clearPhiReviews();
   clearQuickDeidSession();
 }
 
@@ -1692,6 +1703,8 @@ function updateOrInitializeVault(patient) {
 }
 
 function selectPatient(patientId) {
+  if (patientId === active()?.id) return;
+  clearPatientScopedSession();
   app.vault = setActivePatient(app.vault, patientId);
   app.view = "daily";
   app.selectedDayId = selectedChecklistDay(active())?.id || "";
@@ -1703,11 +1716,7 @@ async function archiveSelectedPatient(patientId) {
   if (!patientId) return;
   app.vault = archivePatient(app.vault, patientId);
   app.pendingArchivePatientId = "";
-  app.selectedDayId = "";
-  app.sectionDrafts.clear();
-  app.sectionEditingKeys.clear();
-  app.pendingSectionReviewFocus = null;
-  clearPhiReviews();
+  clearPatientScopedSession();
   clearQuickDeidSession();
   byId("archiveConfirmDialog")?.close();
   await persistVault("Patient archived.");
