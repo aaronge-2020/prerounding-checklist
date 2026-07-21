@@ -14,6 +14,8 @@ import {
   ensureCanonicalProgressGuidelineSet,
   ensureCanonicalProgressGuidelineSetV2,
   ensureCurrentAdmissionGuidelineSet,
+  ensureCanonicalProgressGuidelineSetV3,
+  ensureCurrentAdmissionGuidelineSetV2,
   GUIDELINE_SET_STORAGE_KEY,
   GUIDELINE_SET_SEED_V3_KEY,
   GUIDELINE_SET_SEED_V4_KEY,
@@ -27,6 +29,8 @@ import {
   GUIDELINE_SET_PROGRESS_CANONICAL_KEY,
   GUIDELINE_SET_PROGRESS_CANONICAL_V2_KEY,
   GUIDELINE_SET_ADMISSION_CURRENT_KEY,
+  GUIDELINE_SET_PROGRESS_CANONICAL_V3_KEY,
+  GUIDELINE_SET_ADMISSION_CURRENT_V2_KEY,
   loadGuidelineSets,
   loadOrMigrateGuidelineSets,
   removeGuidelineSet,
@@ -41,6 +45,30 @@ function fakeStorage(initial = {}) {
     setItem: (key, value) => { store[key] = String(value); },
     removeItem: (key) => { delete store[key]; }
   };
+}
+
+// Action-gate revisions refresh the current prompt sources while preserving
+// one canonical Progress set and the prior user-managed Admission set.
+{
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: true, text: async () => "Action-gated standard." });
+  try {
+    const storage = fakeStorage();
+    const progress = await ensureCanonicalProgressGuidelineSetV3([
+      createGuidelineSet("Progress", "Old progress."),
+      createGuidelineSet("Admission", "Keep admission.")
+    ], storage);
+    assert.equal(progress.filter((set) => /^Progress(?: |$)/i.test(set.label || "")).length, 1);
+    assert.equal(progress.find((set) => set.token === "@progress-guidelines")?.text, "Action-gated standard.");
+    const admission = await ensureCurrentAdmissionGuidelineSetV2([
+      createGuidelineSet("Admission", "User-edited admission.")
+    ], storage);
+    assert.equal(admission.find((set) => set.token === "@admission-current-2-guidelines")?.text, "Action-gated standard.");
+    assert.equal(storage.getItem(GUIDELINE_SET_PROGRESS_CANONICAL_V3_KEY), "1");
+    assert.equal(storage.getItem(GUIDELINE_SET_ADMISSION_CURRENT_V2_KEY), "1");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 }
 
 // Existing installs receive the expanded H&P standard under one current

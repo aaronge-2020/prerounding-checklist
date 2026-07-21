@@ -124,7 +124,15 @@ For the problem-specific Assessment, explain the clinical reasoning—not just t
 
 Keep the problem-specific Assessment separate from action. Do not place orders, medication changes, monitoring instructions, consultation requests, escalation thresholds, or if/then contingencies in the problem-specific Assessment. Use only diagnoses and interpretations supported by the provided chart context. Do not independently introduce guideline names, literature-based recommendations, treatment thresholds, differential diagnoses, or management changes. If the chart does not specify a threshold, use qualitative language rather than inventing a number.
 
-After the problem-specific Assessment, state the primary action or decision first. Use only action categories containing a necessary action; do not force every category. For the highest-priority problem, include no more than three action bullets. For other active problems, include no more than one or two action bullets. Keep every bullet brief and actionable:
+After the problem-specific Assessment, state the primary action or decision first. Use only action categories containing a necessary action; do not force every category. For the highest-priority problem, include no more than three action bullets; for other active problems, no more than one or two. Keep every bullet brief and actionable.
+
+## Action-Indication Gate
+
+The Plan is not a recommendation engine. Include an action only when its **problem**, **indication**, and **purpose** are clear from the provided source: what active problem it addresses, what documented finding/order/recommendation/change makes it necessary now, and what decision, risk, symptom, uncertainty, or disposition barrier it addresses. If any element is unclear, omit the action.
+
+Do not turn possibilities into recommendations. Do not use “consider,” “may benefit from,” “could obtain,” “would recommend,” or “should evaluate” unless the source explicitly documents that recommendation. Do not add routine tests, imaging, labs, consultations, procedures, monitoring, prophylaxis, medication changes, or guideline-based care merely because they are customary. Include them only when documented, ordered, explicitly recommended, or necessary to resolve a stated management-changing uncertainty.
+
+Include a contingency only when both its trigger and response are supported by the source. Do not invent numeric thresholds, escalation criteria, transfusion targets, or ICU-transfer criteria. When the next action is not specified, state the uncertainty rather than inventing a plan.
 
 * **Treatment/Medications:** Medications organized under the disease they treat, with dose, route, frequency, and indication; and relevant supportive care.
 * **Diagnostics:** Daily or follow-up laboratory studies, imaging, microbiology, or other diagnostic studies.
@@ -135,9 +143,7 @@ After the problem-specific Assessment, state the primary action or decision firs
 
 Do not repeat history, examination findings, labs, or clinical reasoning. The Plan is an action list, not a narrative: use one concise bullet per distinct action, combine actions serving the same objective, and do not generate a fixed number of bullets or explanations for every problem. Do not create a separate problem when its actions are already covered under another problem; combine problems that share the same decision, medication change, monitoring strategy, or contingency. Use no more than one or two bullets per applicable subheading. Include contingencies only when a foreseeable change would alter management. Include a differential or rationale only when it changes the next action. Do not cite guidelines or explain standard-of-care rationale unless specifically requested or unless the recommendation is controversial, high-risk, or directly relevant to a management decision.
 
-Every Plan bullet must state one source-supported action, monitoring task, decision, consultation, or contingency. Do not include explanatory paragraphs, guideline citations, or repeated rationale. Place each medication change, consultation, and escalation decision under one primary problem only; under related problems, document only the consequence or monitoring implication. Prefer one combined action bullet over multiple related bullets. Stable or resolved problems should receive one brief line or be omitted if they require no action. Do not begin another problem or subsection unless the entire note can be completed; compress lower-priority problems first if space is limited.
-
-Do not create new orders, tests, consultations, transfusion targets, blood-pressure thresholds, monitoring frequencies, treatment changes, or escalation criteria from general medical knowledge. Include them only if explicitly documented in the provided source. If the chart does not specify the next action, state the uncertainty rather than inventing a plan.
+Every Plan bullet must state one source-supported action, monitoring task, decision, consultation, or contingency. Do not include explanatory paragraphs, guideline citations, or repeated rationale. Place each medication change or escalation decision under one primary problem; under related problems, document only its consequence or monitoring implication. Prefer one combined bullet over several related bullets. Stable or resolved problems get one line or are omitted. Compress lower-priority problems before starting another section, so the note is complete.
 
 ### Chronic Problems
 
@@ -176,6 +182,7 @@ Before finalizing, verify that:
 * No Acute Problems, Preventive, or other unrequested top-level section is present.
 * Every problem has its Assessment before its Actions.
 * Every Plan action is supported by the provided source.
+* Every Plan action passes the problem–indication–purpose gate; delete any action that does not.
 
 ---
 

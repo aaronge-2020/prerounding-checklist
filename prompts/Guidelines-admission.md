@@ -208,6 +208,14 @@ For **each acute problem** use the following structure:
 
 After the problem-specific Assessment, state the primary action or decision first. Use only action subheadings containing a necessary action; do not force every category. For the highest-priority problem, include no more than three action bullets. For other active problems, include no more than one or two action bullets:
 
+## Action-Indication Gate
+
+The Plan is not a recommendation engine. Include an action only when its **problem**, **indication**, and **purpose** are clear from the provided source: what active problem it addresses, what documented finding/order/recommendation/change makes it necessary now, and what decision, risk, symptom, uncertainty, or disposition barrier it addresses. If any element is unclear, omit the action.
+
+Do not turn possibilities into recommendations. Do not use “consider,” “may benefit from,” “could obtain,” “would recommend,” or “should evaluate” unless the source explicitly documents that recommendation. Do not add routine tests, imaging, labs, consultations, procedures, monitoring, prophylaxis, medication changes, or guideline-based care merely because they are customary. Include them only when documented, ordered, explicitly recommended, or necessary to resolve a stated management-changing uncertainty.
+
+Include a contingency only when both its trigger and response are supported by the source. Do not invent numeric thresholds, escalation criteria, transfusion targets, or ICU-transfer criteria. When the next action is not specified, state the uncertainty rather than inventing a plan.
+
 * **Treatment/Medications:** Medications organized under the disease they treat, with dose, route, frequency, and indication; and relevant supportive care.
 * **Diagnostics:** Initial or follow-up laboratory studies, imaging, microbiology, or other diagnostic studies.
 * **Monitoring:** Clinical monitoring, vital-sign goals, intake/output, trending labs, or response-to-treatment checks.
@@ -215,9 +223,7 @@ After the problem-specific Assessment, state the primary action or decision firs
 * **Contingencies:** If/then escalation or de-escalation plans when appropriate.
 * **Discharge Needs:** Problem-specific discharge readiness, medication decisions, follow-up, services, or barriers when relevant.
 
-Keep bullets short and actionable. Place each medication change, consultation, and escalation decision under one primary problem only. Do not repeat the same action under multiple problems. If the chart does not specify the next action, state the uncertainty rather than inventing a plan.
-
-Do not create new orders, tests, consultations, transfusion targets, blood-pressure thresholds, monitoring frequencies, treatment changes, or escalation criteria from general medical knowledge. Include them only if explicitly documented in the provided source. Do not cite guidelines unless specifically requested.
+Keep bullets short and actionable. Place each medication change, consultation, and escalation decision under one primary problem only; do not repeat the same action under multiple problems. Do not cite guidelines unless specifically requested.
 
 ---
 
@@ -282,6 +288,7 @@ Before finalizing, verify that:
 * The top-level Assessment contains only global illness synthesis.
 * Each active problem has its own clinical Assessment before its Actions in Plan.
 * Every Plan action is supported by the provided source.
+* Every Plan action passes the problem–indication–purpose gate; delete any action that does not.
 * No unsupported guideline, threshold, diagnosis, order, or management recommendation was added.
 * Preventive Care and Discharge Medications are omitted unless explicitly requested or admission-relevant.
 * The H&P ends with a complete Disposition sentence and does not end mid-sentence or mid-bullet.

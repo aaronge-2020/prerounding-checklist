@@ -355,6 +355,23 @@ export async function ensureCanonicalProgressGuidelineSetV2(sets, storage = loca
   return next;
 }
 
+export const GUIDELINE_SET_PROGRESS_CANONICAL_V3_KEY = "prerounding_guideline_sets_progress_canonical_v3";
+
+// Refresh the one canonical Progress set after the action-indication revision.
+export async function ensureCanonicalProgressGuidelineSetV3(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_PROGRESS_CANONICAL_V3_KEY) !== null) return sets;
+  let next = sets.filter((set) => !LEGACY_PROGRESS_TOKENS.has(set.token) && !/^Progress(?: |$)/i.test(set.label || ""));
+  try {
+    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
+    if (response.ok) next = addGuidelineSet(next, "Progress", await response.text());
+  } catch {
+    // No network/file access - leave non-progress guideline sets intact.
+  }
+  storage.setItem(GUIDELINE_SET_PROGRESS_CANONICAL_V3_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
+}
+
 export const GUIDELINE_SET_ADMISSION_CURRENT_KEY = "prerounding_guideline_sets_admission_current_v1";
 
 // Deliver the current expanded H&P standard to existing installs without
@@ -369,6 +386,24 @@ export async function ensureCurrentAdmissionGuidelineSet(sets, storage = localSt
     // No network/file access - leave existing user-managed sets intact.
   }
   storage.setItem(GUIDELINE_SET_ADMISSION_CURRENT_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
+}
+
+export const GUIDELINE_SET_ADMISSION_CURRENT_V2_KEY = "prerounding_guideline_sets_admission_current_v2";
+
+// Refresh the current H&P standard while preserving the prior user-managed
+// Admission set.
+export async function ensureCurrentAdmissionGuidelineSetV2(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_ADMISSION_CURRENT_V2_KEY) !== null) return sets;
+  let next = sets;
+  try {
+    const response = await fetch("./prompts/Guidelines-admission.md", { cache: "no-store" });
+    if (response.ok) next = addGuidelineSet(next, "Admission Current 2", await response.text());
+  } catch {
+    // No network/file access - leave existing user-managed sets intact.
+  }
+  storage.setItem(GUIDELINE_SET_ADMISSION_CURRENT_V2_KEY, "1");
   saveGuidelineSets(next, storage);
   return next;
 }
