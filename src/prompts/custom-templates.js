@@ -1,7 +1,7 @@
 import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
 import { buildTrajectoryBlock, sortDays } from "../daily-updates/days.js";
-import { sectionsToPromptBlock } from "../patient-context/sections.js";
-import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js";
+import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260722-unified-stay-v2";
+import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260722-unified-stay-v2";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js?v=20260722-guideline-library";
 import { naturalLanguagePrompt } from "./natural-language.js";
 import { buildProgressNotePacket } from "./progress-note-packet.js";

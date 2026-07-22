@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { planSectionRedaction, replaceSectionsFromFormAsync } from "../src/patient-context/sections.js";
 import { createEphemeralRedactionReview } from "../src/patient-context/review.js";
 import { redactionPosition } from "../src/ui/redaction/presentation.js";
+import { replaceSourceCapturesFromFormAsync } from "../src/patient-context/source-captures.js";
 
 // --- planSectionRedaction ---
 assert.deepEqual(planSectionRedaction("Same text.", "Same text."), { mode: "unchanged" });
@@ -37,6 +38,23 @@ assert.deepEqual(
   assert.deepEqual(calls, [], "an unchanged field must not be sent through de-identification again");
   assert.equal(section.deidentifiedText, "Stable prior text.");
   assert.deepEqual(section.residualWarnings, [{ severity: "review", type: "residual", reason: "flagged" }]);
+}
+
+// UI save paths request a full pass for any edited note so every save after a
+// clinician change creates a fresh whole-note de-identification review.
+{
+  const calls = [];
+  const deidentify = async (text) => {
+    calls.push(text);
+    return { text: `REDACTED(${text})`, residualWarnings: [] };
+  };
+  const priorText = "Stable prior text.";
+  const rows = [{ id: "s1", label: "Admission source", text: `${priorText} Added detail.`, createdAt: "2026-01-01T00:00:00.000Z" }];
+  await replaceSectionsFromFormAsync(rows, deidentify, {
+    priorSections: [{ id: "s1", deidentifiedText: priorText, residualWarnings: [] }],
+    reprocessEditedText: true
+  });
+  assert.deepEqual(calls, [`${priorText} Added detail.`]);
 }
 
 // --- replaceSectionsFromFormAsync: appended text only redacts the new suffix ---
@@ -93,6 +111,23 @@ assert.deepEqual(
   const [section] = await replaceSectionsFromFormAsync(rows, deidentify, { priorSections });
   assert.deepEqual(calls, ["Edited from the start."], "an edit that isn't a pure append must re-redact the whole field");
   assert.equal(section.deidentifiedText, "REDACTED(Edited from the start.)");
+}
+
+// --- createEphemeralRedactionReview: occurrence offset for suffix-only reviews ---
+{
+  const calls = [];
+  const deidentify = async (text) => {
+    calls.push(text);
+    return { text: `REDACTED(${text})`, residualWarnings: [] };
+  };
+  const priorText = "Earlier hospital-day note.";
+  await replaceSourceCapturesFromFormAsync([
+    { id: "capture1", sourceKind: "primary_note", text: `${priorText} New interval event.`, createdAt: "2026-01-01T00:00:00.000Z" }
+  ], deidentify, {
+    priorCaptures: [{ id: "capture1", sourceKind: "primary_note", deidentifiedText: priorText, residualWarnings: [] }],
+    reprocessEditedText: true
+  });
+  assert.deepEqual(calls, [`${priorText} New interval event.`], "an edited hospital-day note is reprocessed in full on save");
 }
 
 // --- createEphemeralRedactionReview: occurrence offset for suffix-only reviews ---

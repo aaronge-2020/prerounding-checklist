@@ -73,11 +73,13 @@ export function planSectionRedaction(priorText, currentText) {
   return { mode: "full" };
 }
 
-export async function replaceSectionsFromFormAsync(rows, deidentify, { onResult, onProgress, priorSections = [], scope = "context" } = {}) {
+export async function replaceSectionsFromFormAsync(rows, deidentify, { onResult, onProgress, priorSections = [], reprocessEditedText = false, scope = "context" } = {}) {
   const priorById = new Map((priorSections || []).map((section) => [section.id, section]));
   const plans = rows.map((row) => {
     const prior = priorById.get(row.id) || null;
-    return { row, prior, plan: planSectionRedaction(prior?.deidentifiedText, row.text) };
+    const planned = planSectionRedaction(prior?.deidentifiedText, row.text);
+    const plan = reprocessEditedText && planned.mode !== "unchanged" ? { mode: "full" } : planned;
+    return { row, prior, plan };
   });
   let completed = 0;
   const total = rows.length;

@@ -1,4 +1,4 @@
-import { sectionWarningSummary } from "../../patient-context/sections.js?v=20260711-functional-remediation-19";
+import { sectionWarningSummary } from "../../patient-context/sections.js?v=20260722-unified-stay-v2";
 
 export function redactionPosition(text, redaction) {
   const source = String(text || "");
@@ -190,6 +190,35 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
     `;
   }
 
+  function renderAdmissionSourceEditor({ section, roleOptions = [], editing, pendingFocus, review, draftText, sections = [], reviewFor = () => null }) {
+    const characterCount = draftText?.length || 0;
+    const draftMarker = draftText !== section.deidentifiedText ? " · draft" : "";
+    const isInitialReviewTarget = pendingFocus?.scope === "context" && pendingFocus.sectionId === section.id;
+    const isExpanded = editing || isInitialReviewTarget;
+    const selectedRole = roleOptions.find((option) => option.id === section.role);
+    return `
+      <article class="section-editor source-capture-editor ${isExpanded ? "is-expanded" : ""}" data-section-id="${escapeHtml(section.id)}" data-section-scope="context" data-created-at="${escapeHtml(section.createdAt)}">
+        <input class="section-label" type="hidden" value="${escapeHtml(section.label)}">
+        <div class="section-toolbar source-capture-toolbar">
+          <div class="source-capture-identity">
+            <strong>${escapeHtml(selectedRole?.label || section.label || "Admission source")}</strong>
+            <span class="section-meta">${characterCount.toLocaleString()} chars${draftMarker}</span>
+          </div>
+          <div class="button-row">
+            <button class="button--quiet" type="button" data-action="toggle-section-editor" aria-label="${isExpanded ? "Collapse source" : "Edit source"}" aria-expanded="${String(isExpanded)}">${isExpanded ? "Done" : "Edit"}</button>
+            <button class="button--quiet danger-subtle" type="button" data-action="remove-section" data-scope="context" data-section-id="${escapeHtml(section.id)}">Remove</button>
+          </div>
+        </div>
+        <label class="source-kind-control">Admission source type
+          <select class="section-role" aria-label="Admission source type">
+            ${roleOptions.map((option) => `<option value="${escapeHtml(option.id)}" ${option.id === section.role ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
+          </select>
+        </label>
+        ${renderSectionSurface({ section, scope: "context", review, editing, draftText, sections, reviewFor })}
+      </article>
+    `;
+  }
+
   function renderWarnings({ sections, scope, reviewFor }) {
     const reviewedSections = (sections || [])
       .map((section) => ({ section, review: reviewFor(scope, section.id) }))
@@ -245,5 +274,5 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  return Object.freeze({ renderRedactionDocument, renderSectionEditor, renderSourceCaptureEditor, renderSectionSurface, renderWarnings });
+  return Object.freeze({ renderAdmissionSourceEditor, renderRedactionDocument, renderSectionEditor, renderSourceCaptureEditor, renderSectionSurface, renderWarnings });
 }

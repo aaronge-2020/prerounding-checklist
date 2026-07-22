@@ -97,11 +97,13 @@ export function migrateLegacyDailySections(sections = [], { now = () => new Date
     });
 }
 
-export async function replaceSourceCapturesFromFormAsync(rows, deidentify, { onResult, onProgress, priorCaptures = [], now = () => new Date().toISOString() } = {}) {
+export async function replaceSourceCapturesFromFormAsync(rows, deidentify, { onResult, onProgress, priorCaptures = [], reprocessEditedText = false, now = () => new Date().toISOString() } = {}) {
   const priorById = new Map((priorCaptures || []).map((capture) => [capture.id, capture]));
   const plans = rows.map((row) => {
     const prior = priorById.get(row.id) || null;
-    return { row, prior, plan: planCaptureRedaction(prior?.deidentifiedText, row.text) };
+    const planned = planCaptureRedaction(prior?.deidentifiedText, row.text);
+    const plan = reprocessEditedText && planned.mode !== "unchanged" ? { mode: "full" } : planned;
+    return { row, prior, plan };
   });
   let completed = 0;
   const total = rows.length;

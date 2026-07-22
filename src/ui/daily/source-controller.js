@@ -1,7 +1,7 @@
-import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260722-source-capture-v1";
-import { updateActivePatient } from "../../app/state/vault.js?v=20260722-source-capture-v1";
+import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260722-unified-stay-v2";
+import { updateActivePatient } from "../../app/state/vault.js?v=20260722-unified-stay-v2";
 import { createEphemeralRedactionReview, reviewKey, synchronizeReviewPlaceholders } from "../../patient-context/review.js?v=20260715-reject-rest";
-import { createSourceCapture, dailySourceKindOptions, replaceSourceCapturesFromFormAsync, sourceCapturePacketCheck } from "../../patient-context/source-captures.js?v=20260722-source-capture-v1";
+import { createSourceCapture, dailySourceKindOptions, replaceSourceCapturesFromFormAsync, sourceCapturePacketCheck } from "../../patient-context/source-captures.js?v=20260722-unified-stay-v2";
 
 export function createDailySourceController(deps) {
   const captureRows = () => [...document.querySelectorAll("#dailySources .source-capture-editor")].map((row) => ({
@@ -35,10 +35,17 @@ export function createDailySourceController(deps) {
     const days = sortDays(patient?.days || []);
     const selected = days.find((day) => day.id === deps.app.selectedDayId) || days.at(-1) || null;
     if (selected && selected.id !== deps.app.selectedDayId) deps.app.selectedDayId = selected.id;
+    const selectedPacketId = deps.app.selectedStayPacketId === "admission"
+      ? "admission"
+      : days.some((day) => day.id === deps.app.selectedStayPacketId)
+        ? deps.app.selectedStayPacketId
+        : selected?.id || "admission";
+    deps.app.selectedStayPacketId = selectedPacketId;
     deps.byId("dailyContent").innerHTML = deps.dailyPresentation.renderDaily({
       patient,
       days,
       selectedDayId: deps.app.selectedDayId,
+      selectedPacketId,
       localCalendarDate: deps.localCalendarDate(),
       patientRequiredMessage: deps.patientRequiredMessage(),
       renderDeidStrip: deps.renderDeidStrip(),
@@ -91,6 +98,7 @@ export function createDailySourceController(deps) {
       for (const key of deps.app.phiReviews.keys()) if (key.startsWith("daily:") && !retainedIds.has(key.slice(6))) deps.app.phiReviews.delete(key);
       const captures = await replaceSourceCapturesFromFormAsync(rows, (text) => deps.deidentify(text, { referenceDate: day.date }), {
         priorCaptures: day.sourceCaptures || [],
+        reprocessEditedText: true,
         onResult: ({ row, result, prior, plan }) => {
           const key = reviewKey("daily", row.id);
           if (deps.app.phiReviews.get(key)?.approvedRedactionIndexes?.size || plan.mode === "unchanged") return;
@@ -114,5 +122,13 @@ export function createDailySourceController(deps) {
     }
   }
 
-  return Object.freeze({ addSource, renderDaily, saveSources });
+  function selectPacket(packetId) {
+    deps.app.selectedStayPacketId = packetId || "admission";
+    if (packetId && packetId !== "admission") deps.app.selectedDayId = packetId;
+    deps.app.dailySourceDraft = "";
+    deps.app.dailySourceKind = "primary_note";
+    deps.render();
+  }
+
+  return Object.freeze({ addSource, renderDaily, saveSources, selectPacket });
 }

@@ -1,17 +1,17 @@
-import { createDailyRecord, latestDay, localCalendarDate, removeDay, sortDays, upsertDay } from "../daily-updates/days.js?v=20260722-source-capture-v1";
-import { activePatient, archivePatient, createPatientRecord, removeWorkupOverride, setActivePatient, setSelectedWorkups, setWorkupOverride, setWorkupOverrides, updateActivePatient } from "../app/state/vault.js?v=20260722-source-capture-v1";
+import { createDailyRecord, latestDay, localCalendarDate, removeDay, sortDays, upsertDay } from "../daily-updates/days.js?v=20260722-unified-stay-v2";
+import { activePatient, archivePatient, createPatientRecord, removeWorkupOverride, setActivePatient, setSelectedWorkups, setWorkupOverride, setWorkupOverrides, updateActivePatient } from "../app/state/vault.js?v=20260722-unified-stay-v2";
 import { deleteEncryptedVaultRecord, downloadJson, loadOrCreateVault, readEncryptedVaultRecord, saveEncryptedVault, writeEncryptedVaultRecord } from "../app/state/persistence.js?v=20260711-functional-remediation-15";
 import { authorizeWorkupWorkspaceMirror, disconnectWorkupWorkspaceMirror, getWorkupWorkspaceMirrorState, mirrorWorkupOverridesToWorkspace } from "../app/state/workspace-mirror.js?v=20260711-functional-remediation-15";
-import { addSection, removeSection, reorderSections, reorderSectionsById, replaceSectionsFromFormAsync } from "../patient-context/sections.js?v=20260711-functional-remediation-15";
+import { addSection, removeSection, reorderSections, reorderSectionsById, replaceSectionsFromFormAsync } from "../patient-context/sections.js?v=20260722-unified-stay-v2";
 import { createEphemeralRedactionReview, inspectedRedactionIndex, nextPendingRedactionIndex, nextPendingReviewTarget, pendingReviewTargets, quickRedactionIndex, quickSelectedRedactionIndex, quickWarningIndex, reviewKey, synchronizeReviewPlaceholders } from "../patient-context/review.js?v=20260715-reject-rest";
 import { crossOriginIsolationBlocker, deidentifyText, getAdvancedDeidStatus, getSelectedDeidModelStatus, preloadAdvancedDeidModel, resetAdvancedDeidWorker, verifyAdvancedDeidModel } from "../patient-context/deid-client.js?v=20260717-guided-demo-ux";
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
 import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
-import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260722-source-capture-v1";
+import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260722-unified-stay-v2";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
-import { DEFAULT_DAILY_SOURCE_KIND, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260722-source-capture-v1";
-import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260722-source-capture-v1";
+import { DEFAULT_DAILY_SOURCE_KIND, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260722-unified-stay-v2";
+import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260722-unified-stay-v2";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import { ensureAdditionalGuidelineSets, ensureAttendingProgressGuidelineSet, ensureCanonicalProgressGuidelineSet, ensureCanonicalProgressGuidelineSetV2, ensureCanonicalProgressGuidelineSetV3, ensureConsultingGuidelineSet, ensureCurrentAdmissionGuidelineSet, ensureCurrentAdmissionGuidelineSetV2, ensureCurrentGuidelineSets, ensureCurrentProgressGuidelineSet, ensureFocusedProgressGuidelineSet, ensureLatestProgressGuidelineSet, ensureProblemAssessmentProgressGuidelineSet, ensureReasoningProgressGuidelineSet, ensureRevisedProgressGuidelineSet, ensureTeamPreferencesGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260722-guideline-concept-v2";
 import { OPENAI_WORKUP_MODEL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260722-guideline-library";
@@ -41,8 +41,8 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260722-source-capture-v1";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260722-source-capture-v1";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260722-unified-stay-v2";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260722-unified-stay-v2";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
@@ -57,7 +57,7 @@ import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260722-guideline-concept-v2";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260722-guideline-concept-v2";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
-import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260722-source-capture-v1";
+import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260722-unified-stay-v2";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
 import { createDemoController } from "./demo/controller.js?v=20260717-guided-demo-ux-4";
@@ -69,6 +69,7 @@ const app = {
   passphrase: "",
   view: "vault",
   selectedDayId: "",
+  selectedStayPacketId: "admission",
   selectedPromptTask: "initial_admission_rounds",
   promptDayId: "",
   promptDayFollowsChecklist: true,
@@ -641,6 +642,7 @@ function clearPatientScopedSession() {
   // paste panel can contain de-identified clinical text that has not yet been
   // explicitly saved to that patient's hospital day.
   app.selectedDayId = "";
+  app.selectedStayPacketId = "admission";
   app.promptDayId = "";
   app.promptDayFollowsChecklist = true;
   app.promptDrafts = {};
@@ -947,6 +949,7 @@ function renderSectionEditor(section, scope) {
   const editing = isSectionTextEditing(scope, section.id);
   const draftText = sectionDraftText(scope, section.id, section.deidentifiedText);
   synchronizeReviewPlaceholders(review, draftText);
+  if (scope === "context") return redactionPresentation.renderAdmissionSourceEditor({ section, roleOptions: packetRoleOptions(scope), editing, pendingFocus: app.pendingSectionReviewFocus, review, draftText, sections: reviewSectionsForScope(scope), reviewFor: (id) => sectionReviewFor(scope, id) });
   return redactionPresentation.renderSectionEditor({ section, scope, roleOptions: packetRoleOptions(scope), editing, pendingFocus: app.pendingSectionReviewFocus, review, draftText, sections: reviewSectionsForScope(scope), reviewFor: (id) => sectionReviewFor(scope, id) });
 }
 
@@ -1353,7 +1356,7 @@ function refreshDeidControlsInActiveView() {
     const saveContextButton = document.querySelector('[data-action="save-context"]');
     if (saveContextButton) {
       saveContextButton.disabled = busy;
-      saveContextButton.textContent = busy ? "De-identifying…" : "Save admission packet";
+      saveContextButton.textContent = busy ? "De-identifying…" : "Save admission sources";
     }
     const saveDayButton = document.querySelector('[data-action="save-day"]');
     if (saveDayButton) {
@@ -1454,12 +1457,7 @@ async function handleClick(event) {
     if (action === "save-context") await saveContext();
     if (action === "add-day") await addDay();
     if (action === "add-daily-source") await dailySourceController.addSource();
-    if (action === "select-day") {
-      app.selectedDayId = target.dataset.dayId;
-      app.dailySourceDraft = "";
-      app.dailySourceKind = DEFAULT_DAILY_SOURCE_KIND;
-      render();
-    }
+    if (action === "select-day" || action === "select-admission") dailySourceController.selectPacket(action === "select-admission" ? "admission" : target.dataset.dayId);
     if (action === "save-day") await dailySourceController.saveSources();
     if (action === "open-progress-note") {
       app.selectedPromptTask = "daily_progress_note";
@@ -1703,6 +1701,7 @@ async function removeSelectedDay(dayId) {
   if (!patient || !dayId) return;
   const remainingDays = removeDay(patient.days, dayId);
   app.selectedDayId = latestDay(remainingDays)?.id || "";
+  app.selectedStayPacketId = app.selectedDayId || "admission";
   app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: remainingDays }));
   app.pendingRemoveDayId = "";
   byId("removeDayConfirmDialog")?.close();
@@ -2416,6 +2415,7 @@ async function deidentifySectionRows(scope, containerId, priorSections = [], ref
   }
   const sections = await replaceSectionsFromFormAsync(rows, (text) => deidentify(text, { referenceDate }), {
     priorSections,
+    reprocessEditedText: true,
     scope,
     onResult: ({ row, result, prior, plan }) => {
       const key = reviewKey(scope, row.id);
@@ -2464,6 +2464,7 @@ async function addDay() {
   const label = byId("newDayLabel").value || `HD${patient.days.length + 1}`;
   const day = createDailyRecord({ date, label });
   app.selectedDayId = day.id;
+  app.selectedStayPacketId = day.id;
   app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, day) }));
   await persistVault("Hospital day added.");
   render();

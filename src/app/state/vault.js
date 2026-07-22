@@ -1,7 +1,7 @@
 import { normalizeUserPreferences } from "../preferences.js";
 import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js";
 import { CONTEXT_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRoleLabel } from "../../patient-context/packet-roles.js";
-import { migrateLegacyDailySections, normalizeSourceCapture } from "../../patient-context/source-captures.js";
+import { migrateLegacyDailySections, normalizeSourceCapture } from "../../patient-context/source-captures.js?v=20260722-unified-stay-v2";
 
 export const VAULT_SCHEMA_VERSION = 3;
 

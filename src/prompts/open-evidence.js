@@ -1,9 +1,9 @@
 import { checklistAnswersSummary } from "../checklist/state.js";
 import { buildTrajectoryBlock } from "../daily-updates/days.js";
-import { sectionsToPromptBlock } from "../patient-context/sections.js";
+import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260722-unified-stay-v2";
 import { naturalLanguagePrompt } from "./natural-language.js";
 import { buildProgressNotePacket } from "./progress-note-packet.js";
-import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js";
+import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260722-unified-stay-v2";
 
 export const OPEN_EVIDENCE_TASKS = [
   {

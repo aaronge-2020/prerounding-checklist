@@ -455,7 +455,7 @@ try {
   await page.waitForSelector("#promptOutputHighlighted");
   {
     const copied = await copiedPromptText();
-    assert.match(copied, /Concise H&P Presentation/);
+    assert.match(copied, /Admission H&P Instructions/);
     assert.doesNotMatch(copied, /Privacy rules:/);
   }
   await page.locator("#promptPreview").fill("@");

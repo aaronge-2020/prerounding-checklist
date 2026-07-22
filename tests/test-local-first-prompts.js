@@ -57,7 +57,7 @@ patient = {
 assert.equal(openEvidenceTasks[["final", "rounds", "update"].join("_")], undefined);
 
 const admission = buildOpenEvidencePrompt("initial_admission_rounds", { patient, guidelines });
-assert.match(admission, /Concise H&P Presentation/);
+assert.match(admission, /Admission H&P Instructions/);
 assert.match(admission, /Past Surgical History/);
 assert.match(admission, /Admission context/);
 assert.match(admission, /Chest pain\?/);
@@ -204,7 +204,7 @@ const directAdmission = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelineSets
 });
-assert.doesNotMatch(directAdmission, /Concise H&P Presentation/, "guidelines are only included where a template references their token - never force-injected");
+assert.doesNotMatch(directAdmission, /Admission H&P Instructions/, "guidelines are only included where a template references their token - never force-injected");
 assert.doesNotMatch(directAdmission, /Privacy rules:/);
 
 const directGuidelines = buildCustomOpenEvidencePrompt({
@@ -214,7 +214,7 @@ const directGuidelines = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelineSets
 });
-assert.match(directGuidelines, /Concise H&P Presentation/);
+assert.match(directGuidelines, /Admission H&P Instructions/);
 assert.doesNotMatch(directGuidelines, /@admission-guidelines/);
 
 const medicationTeachingPrompt = buildCustomOpenEvidencePrompt({

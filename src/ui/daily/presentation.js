@@ -49,6 +49,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     patient,
     days,
     selectedDayId,
+    selectedPacketId,
     localCalendarDate,
     patientRequiredMessage,
     renderDeidStrip,
@@ -63,14 +64,26 @@ export function createDailyPresentation({ escapeHtml, icon }) {
   }) {
     if (!patient) return patientRequiredMessage;
     const selected = days.find((day) => day.id === selectedDayId) || days.at(-1) || null;
+    const admissionSelected = selectedPacketId === "admission";
+    const visibleContextSections = patient.contextSections.filter((section) => String(section.deidentifiedText || "").trim() || (section.residualWarnings || []).length);
+    const admissionSections = patient.contextSections.filter((section, index) => (
+      index === 0
+      || String(section.deidentifiedText || "").trim()
+      || (section.residualWarnings || []).length
+      || section.label === "Additional admission source"
+    ));
     const selectedSource = sourceOptions.find((option) => option.id === selectedSourceKind) || sourceOptions[0];
 
     return `
       <div class="stay-layout source-first-stay">
         <aside class="panel stay-rail">
-          <div class="section-heading tight"><div><h2>Hospital day</h2><p class="muted">Choose the day once. Every source pasted below belongs to that date.</p></div></div>
+          <div class="section-heading tight"><div><h2>Hospital stay</h2><p class="muted">Admission and each hospital day use one chronological workspace.</p></div></div>
           <div class="timeline-rail">
-            ${days.length ? days.map((day, index) => renderDayRow(day, selected?.id, index)).join("") : `<div class="empty-state">No hospital days saved.</div>`}
+            <button type="button" class="day-row admission-day-row ${admissionSelected ? "selected" : ""}" data-action="select-admission" aria-current="${admissionSelected ? "page" : "false"}">
+              <span><strong>Admission</strong><span class="muted">Initial presentation and admission sources</span></span>
+              <span class="muted">${visibleContextSections.length} source${visibleContextSections.length === 1 ? "" : "s"}</span>
+            </button>
+            ${days.length ? days.map((day, index) => renderDayRow(day, admissionSelected ? "" : selectedPacketId, index)).join("") : `<div class="empty-state compact">No later hospital days saved.</div>`}
           </div>
           <details class="new-day-control" ${days.length ? "" : "open"}>
             <summary>${icon("plus")} Add hospital day</summary>
@@ -86,25 +99,19 @@ export function createDailyPresentation({ escapeHtml, icon }) {
           </details>
         </aside>
         <div class="stay-content">
-          <section class="panel admission-packet packet-surface">
-            <details class="admission-packet-details" ${days.length ? "" : "open"}>
-              <summary>
-                <span><strong>Admission packet</strong><span class="muted">Durable de-identified background for this stay</span></span>
-                <span class="muted">${patient.contextSections.length} fields</span>
-              </summary>
+          ${admissionSelected ? `<section class="panel admission-packet packet-surface hospital-day-packet">
               <div class="admission-packet-body">
                 <div class="section-heading">
-                  <div><h2>Admission packet</h2><p class="muted">Keep only background that still matters across hospital days.</p></div>
-                  <button class="button--secondary" type="button" data-action="add-context-section">${icon("plus")} Add field</button>
+                  <div><h2>Admission</h2><p class="muted">Paste and edit admission source notes here. Save always runs local de-identification before the encrypted vault is updated.</p></div>
+                  <button class="button--secondary" type="button" data-action="add-context-section">${icon("plus")} Add admission source</button>
                 </div>
-                ${selected ? "" : renderDeidStrip}
-                <div id="contextSections" class="section-list">${patient.contextSections.map((section) => renderSectionEditor(section, "context")).join("")}</div>
-                ${renderWarnings(patient.contextSections, "context")}
-                <div class="packet-action-footer"><button class="button--primary" type="button" data-action="save-context" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save admission packet"}</button></div>
+                ${renderDeidStrip}
+                <div id="contextSections" class="section-list">${admissionSections.map((section) => renderSectionEditor(section, "context")).join("")}</div>
+                ${renderWarnings(admissionSections, "context")}
+                <div class="packet-action-footer"><button class="button--primary" type="button" data-action="save-context" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save admission sources"}</button></div>
               </div>
-            </details>
-          </section>
-          <section class="panel hospital-day-packet packet-surface source-capture-workspace">
+          </section>` : ""}
+          ${!admissionSelected ? `<section class="panel hospital-day-packet packet-surface source-capture-workspace">
             ${selected ? `
               <div class="section-heading source-day-heading">
                 <div><h2>${escapeHtml(selected.label)}</h2><p class="muted">${escapeHtml(selected.date)} · Paste broad Epic blocks. The app preserves their source and includes every saved capture.</p></div>
@@ -134,7 +141,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
               </section>
               ${renderPacketCheck(packetCheck)}
             ` : `<div class="empty-state">Add a hospital day to begin capturing selected-day sources.</div>`}
-          </section>
+          </section>` : ""}
         </div>
       </div>
     `;

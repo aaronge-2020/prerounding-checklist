@@ -3186,6 +3186,21 @@ button.var-fill:focus-visible {
 
 .day-row > span:first-child strong { color: var(--ink); }
 
+.admission-day-row {
+  min-height: 66px;
+  border-top: 1px solid var(--border);
+}
+
+.admission-day-row > span:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.admission-day-row > span:first-child .muted {
+  line-height: 1.3;
+  white-space: normal;
+}
+
 .new-day-control { margin-top: 14px; }
 
 .new-day-control summary {

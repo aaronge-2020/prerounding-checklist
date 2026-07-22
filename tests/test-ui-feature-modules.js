@@ -3,6 +3,7 @@ import { createChecklistPresentation } from "../src/ui/checklist/presentation.js
 import { checklistPhoneUrl, createPhoneTransferController } from "../src/ui/checklist/transfer.js";
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "../src/ui/redaction/presentation.js";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "../src/ui/workups/presentation.js";
+import { createDailyPresentation } from "../src/ui/daily/presentation.js";
 
 const escapeHtml = (value = "") => String(value)
   .replace(/&/g, "&amp;")
@@ -10,6 +11,28 @@ const escapeHtml = (value = "") => String(value)
   .replace(/>/g, "&gt;")
   .replace(/"/g, "&quot;");
 const icon = (name) => `<svg data-icon="${name}"></svg>`;
+
+const dailyView = createDailyPresentation({ escapeHtml, icon });
+const dailyMarkup = dailyView.renderDaily({
+  patient: { contextSections: [{ id: "admission", label: "Admission context", deidentifiedText: "", residualWarnings: [], createdAt: "2026-01-01" }] },
+  days: [{ id: "day1", label: "HD1", date: "2026-01-02", sourceCaptures: [] }],
+  selectedDayId: "day1",
+  selectedPacketId: "admission",
+  localCalendarDate: "2026-01-02",
+  patientRequiredMessage: "",
+  renderDeidStrip: "<div>De-ID</div>",
+  renderSectionEditor: () => "<article>Admission editor</article>",
+  renderSourceCaptureEditor: () => "",
+  renderWarnings: () => "",
+  sourceOptions: [{ id: "primary_note", label: "Primary team note", description: "Note" }],
+  selectedSourceKind: "primary_note",
+  sourceDraft: "",
+  packetCheck: { included: [], notSupplied: [], needsConfirmation: [] },
+  deidBusy: false
+});
+assert.match(dailyMarkup, /data-action="select-admission"/);
+assert.match(dailyMarkup, /Admission editor/);
+assert.doesNotMatch(dailyMarkup, /source-capture-composer/);
 
 const snapshot = {
   id: "checklist_test",
