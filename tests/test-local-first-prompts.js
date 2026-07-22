@@ -17,6 +17,9 @@ for (const template of Object.values(DEFAULT_PROMPT_TEMPLATES)) {
 }
 assert.equal((DEFAULT_PROMPT_TEMPLATES.daily_progress_note.match(/@selected-day/g) || []).length, 1, "daily progress template must include selected day once");
 const customTeamInstructions = "Write only the highest-yield active problems and keep the plan action-focused.";
+assert.equal(buildTeamPreferencesPromptBlock(), "", "team preferences must be blank by default");
+assert.equal(buildTeamPreferencesPromptBlock({ medicalService: "", presentationDetail: "" }), "", "blank settings must stay blank");
+assert.equal(buildTeamPreferencesPromptBlock({ medicalService: "primary", presentationDetail: "standard" }), "", "legacy untouched defaults must migrate to blank");
 assert.equal(buildTeamPreferencesPromptBlock({ teamInstructions: customTeamInstructions }), customTeamInstructions);
 assert.equal(normalizeUserPreferences({ teamInstructions: customTeamInstructions }).teamInstructions, customTeamInstructions);
 let patient = createPatientRecord("Room 7", { id: "patient_prompt" });
@@ -128,6 +131,12 @@ const guidelineSets = [
 const fieldVariablesWithGuidelines = promptVariablesForPatient(patient, { guidelineSets });
 assert.equal(fieldVariablesWithGuidelines.find((variable) => variable.token === "@admission-guidelines")?.label, "Admission");
 assert.equal(fieldVariablesWithGuidelines.find((variable) => variable.token === "@progress-guidelines")?.label, "Progress");
+const teamGuideline = createGuidelineSet("Team preferences", "Use concise language.", { existingTokens: ["@team-preferences"] });
+teamGuideline.token = "@team-preferences";
+const teamVariables = promptVariablesForPatient(patient, { guidelineSets: [teamGuideline] });
+assert.equal(teamVariables.filter((variable) => variable.token === "@team-preferences").length, 1);
+const teamGuidelinePrompt = buildCustomOpenEvidencePrompt({ template: "Use @team-preferences only.", patient, guidelineSets: [teamGuideline] });
+assert.match(teamGuidelinePrompt, /Use concise language/);
 
 const dayVariables = promptVariablesForPatient(patient, { selectedDayId: day.id });
 const firstDayVariable = dayVariables.find((variable) => variable.daySectionId === day.sections[0].id);
@@ -211,9 +220,9 @@ const medicationTeachingPrompt = buildCustomOpenEvidencePrompt({
   template: `${DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem}\n\n@team-preferences`,
   patient,
   selectedDayId: day.id,
-  teamPreferences: { medicalService: "primary", presentationDetail: "standard" }
+  teamPreferences: { teamInstructions: "Medication-focused review." }
 });
-assert.match(medicationTeachingPrompt, /Write for the Primary team/);
+assert.match(medicationTeachingPrompt, /Medication-focused review/);
 assert.doesNotMatch(medicationTeachingPrompt, /Organize medications by the disease/, "task prose is not embedded in the default template");
 
 const medicationDefaultPrompt = buildCustomOpenEvidencePrompt({
@@ -221,7 +230,7 @@ const medicationDefaultPrompt = buildCustomOpenEvidencePrompt({
   template: DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem,
   patient,
   selectedDayId: day.id,
-  teamPreferences: { medicalService: "primary", presentationDetail: "standard" }
+  teamPreferences: { teamInstructions: "Medication-focused review." }
 });
 assert.doesNotMatch(medicationDefaultPrompt, /Write for the Primary team/);
 
@@ -230,15 +239,8 @@ const consultPrompt = buildCustomOpenEvidencePrompt({
   template: "@team-preferences\n\nUse @admission-context only.",
   patient,
   selectedDayId: day.id,
-  teamPreferences: {
-    medicalService: "consult",
-    serviceFocus: "Focus on the consulted arrhythmia question.",
-    presentationDetail: "detailed",
-    attendingPreferences: "Start with the one-liner."
-  }
+  teamPreferences: { teamInstructions: "Focus on the consulted arrhythmia question. Start with the one-liner." }
 });
-assert.match(consultPrompt, /Consult service/);
-assert.match(consultPrompt, /consulted clinical question/i);
 assert.match(consultPrompt, /arrhythmia question/);
 assert.match(consultPrompt, /Start with the one-liner/);
 assert.doesNotMatch(consultPrompt, /[\[\]{}<>()`]/);

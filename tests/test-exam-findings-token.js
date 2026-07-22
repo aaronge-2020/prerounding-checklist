@@ -23,7 +23,8 @@ function patientWithDay({ answers = {}, quickNotes = [], openEvidenceExamNote = 
 {
   const patient = patientWithDay({ openEvidenceExamNote: { text: "Exam: lungs clear, heart RRR.", residualWarnings: [], savedAt: "2026-07-13T10:00:00.000Z" } });
   const variables = buildPromptVariableMap({ taskId: "daily_progress_note", patient, selectedDayId: "day1" });
-  assert.equal(variables["@exam-findings"], "Exam: lungs clear, heart RRR.");
+  assert.match(variables["@exam-findings"], /Exam findings — HD1 \(2026-07-13\):[\s\S]*Exam: lungs clear, heart RRR\./);
+  assert.equal(variables["@selected-day-exam-findings"], "Exam: lungs clear, heart RRR.");
   assert.equal(variables["@openevidence-exam-note"], "Exam: lungs clear, heart RRR.");
 }
 
@@ -63,9 +64,22 @@ function patientWithDay({ answers = {}, quickNotes = [], openEvidenceExamNote = 
   const secondPatient = patientWithDay({ openEvidenceExamNote: { text: "Second patient: wheezing.", residualWarnings: [], savedAt: "2026-07-13T11:00:00.000Z" } });
   const firstVariables = buildPromptVariableMap({ patient: firstPatient, selectedDayId: "day1" });
   const secondVariables = buildPromptVariableMap({ patient: secondPatient, selectedDayId: "day1" });
-  assert.equal(firstVariables["@exam-findings"], "First patient: clear lungs.");
-  assert.equal(secondVariables["@exam-findings"], "Second patient: wheezing.");
+  assert.match(firstVariables["@exam-findings"], /First patient: clear lungs\./);
+  assert.match(secondVariables["@exam-findings"], /Second patient: wheezing\./);
   assert.doesNotMatch(secondVariables["@exam-findings"], /First patient/);
+}
+
+// The all-days token keeps each finding attached to its hospital day, while
+// the selected-day token remains focused for a current-day note.
+{
+  const patient = patientWithDay({ openEvidenceExamNote: { text: "HD1: lungs clear.", residualWarnings: [], savedAt: "2026-07-13T10:00:00.000Z" } });
+  patient.days.push({
+    id: "day2", date: "2026-07-14", label: "HD2", checklistSnapshot: snapshot, answers: {}, quickNotes: [], sections: [],
+    openEvidenceExamNote: { text: "HD2: faint wheeze.", residualWarnings: [], savedAt: "2026-07-14T10:00:00.000Z" }
+  });
+  const variables = buildPromptVariableMap({ patient, selectedDayId: "day2" });
+  assert.match(variables["@exam-findings"], /HD1 \(2026-07-13\)[\s\S]*HD1: lungs clear\.[\s\S]*HD2 \(2026-07-14\)[\s\S]*HD2: faint wheeze\./);
+  assert.equal(variables["@selected-day-exam-findings"], "HD2: faint wheeze.");
 }
 
 // The default daily-progress and admission templates use the smart token, not the raw checklist token.

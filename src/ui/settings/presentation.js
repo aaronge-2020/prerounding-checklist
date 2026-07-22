@@ -1,55 +1,23 @@
-import { renderGuidelineSets } from "./guidelines-presentation.js";
+import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({
     preferences,
     apiKeySaved,
     guidelineSets,
-    MEDICAL_SERVICE_OPTIONS,
-    PRESENTATION_DETAIL_OPTIONS,
+    guidelineSearchQuery = "",
+    guidelineSelectedIds = new Set(),
+    guidelineOpenId = "",
+    guidelineCreateDraft = null,
     OPENAI_WORKUP_MODEL_OPTIONS,
     colorOverrides = {}
   }) {
     return `
-      <div class="settings-layout">
-        <section class="panel settings-panel">
-          <div class="section-heading">
-            <div>
-              <h2 id="settings-heading">Team and presentation preferences</h2>
-              <p class="muted">These are added to every OpenEvidence prompt and workup-draft request.</p>
-            </div>
-          </div>
-          <div class="settings-fields">
-            <label>Medical service
-              <select id="settingsMedicalService">
-                ${MEDICAL_SERVICE_OPTIONS.map((option) => `<option value="${escapeHtml(option.value)}" ${preferences.medicalService === option.value ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
-              </select>
-            </label>
-            <label id="settingsCustomServiceWrap" ${preferences.medicalService === "other" ? "" : "hidden"}>Service name
-              <input id="settingsCustomServiceName" value="${escapeHtml(preferences.customServiceName)}" placeholder="e.g., Cardiology consults">
-            </label>
-            <label class="settings-field-wide">Service focus
-              <textarea id="settingsServiceFocus" rows="3" placeholder="e.g., Evaluate new atrial fibrillation and rate-control strategy; omit unrelated chronic issues unless they affect this question.">${escapeHtml(preferences.serviceFocus)}</textarea>
-            </label>
-            <label>Presentation detail
-              <select id="settingsPresentationDetail">
-                ${PRESENTATION_DETAIL_OPTIONS.map((option) => `<option value="${escapeHtml(option.value)}" ${preferences.presentationDetail === option.value ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
-              </select>
-            </label>
-            <label class="settings-field-wide">Attending preferences
-              <textarea id="settingsAttendingPreferences" rows="4" placeholder="e.g., Start with a one-liner, then problem-based assessment and plan. Include overnight events and pertinent negatives.">${escapeHtml(preferences.attendingPreferences)}</textarea>
-            </label>
-            <label class="settings-field-wide">Custom team instructions <span class="muted">(optional override for @team-preferences)</span>
-              <textarea id="settingsTeamInstructions" rows="6" placeholder="Leave blank to use the service, focus, detail, and attending preferences above.">${escapeHtml(preferences.teamInstructions)}</textarea>
-              <span class="muted">Enter the complete text you want inserted by the @team-preferences smart variable. Leave blank to use the structured preferences above.</span>
-            </label>
-          </div>
-          <div class="button-row">
-            <button class="button--primary" type="button" data-action="save-team-preferences">Save team preferences</button>
-          </div>
-        </section>
-
-        <section class="panel settings-panel">
+      <div class="settings-page ${guidelineOpenId || guidelineCreateDraft ? "has-guideline-editor" : ""}">
+        <div class="settings-main">
+          <div class="settings-page-heading"><h1>Settings</h1></div>
+          <div class="settings-top-grid">
+          <section class="panel settings-panel settings-panel--byok">
           <div class="section-heading">
             <div>
               <h2>Bring your own OpenAI key</h2>
@@ -75,9 +43,9 @@ export function createSettingsPresentation({ escapeHtml }) {
             <button class="button--quiet" type="button" data-action="clear-openai-byok" ${apiKeySaved ? "" : "disabled"}>Remove saved key</button>
           </div>
           <p class="muted settings-helper">Without a saved key, the Workups and Checklist pages fall back to the copy-and-paste ChatGPT formatter prompt.</p>
-        </section>
+          </section>
 
-        <section class="panel settings-panel">
+          <section class="panel settings-panel settings-panel--backup">
           <div class="section-heading">
             <div>
               <h2>Encrypted vault backup</h2>
@@ -91,9 +59,12 @@ export function createSettingsPresentation({ escapeHtml }) {
           <div class="button-row">
             <button class="button--primary" type="button" data-action="export-vault">Export Vault Backup</button>
           </div>
-        </section>
+          </section>
+          </div>
 
-        ${renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides })}
+          ${renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides, searchQuery: guidelineSearchQuery, selectedIds: guidelineSelectedIds, openId: guidelineOpenId })}
+        </div>
+        ${renderGuidelineEditor({ guidelineSets, escapeHtml, openId: guidelineOpenId, createDraft: guidelineCreateDraft })}
       </div>
     `;
   }

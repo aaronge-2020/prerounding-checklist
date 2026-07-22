@@ -106,8 +106,7 @@ assert.match(buildWorkupAuthoringPrompt(workup), /first choice must always be th
 assert.match(buildOpenEvidenceWorkupDraftPrompt(), /Put the negative, normal, absent, reassuring, or other baseline answer first/i);
 assert.match(buildOpenEvidenceWorkupDraftPrompt({ thoroughness: "focused" }), /focused fast-rounds scope/i);
 assert.match(buildOpenEvidenceWorkupDraftPrompt({ thoroughness: "thorough" }), /thorough teaching-level scope/i);
-assert.match(buildOpenEvidenceWorkupDraftPrompt({ teamPreferences: { medicalService: "consult", serviceFocus: "Focus on infection source control." } }), /consulted clinical question/i);
-assert.match(buildOpenEvidenceWorkupDraftPrompt({ teamPreferences: { medicalService: "consult", serviceFocus: "Focus on infection source control." } }), /infection source control/);
+assert.match(buildOpenEvidenceWorkupDraftPrompt({ teamPreferences: { teamInstructions: "Focus on infection source control." } }), /infection source control/);
 assert.doesNotMatch(buildOpenEvidenceWorkupDraftPrompt(), /[\[\]{}<>()`]/);
 assert.doesNotMatch(buildOpenEvidenceWorkupDraftPrompt(), /^\s*(?:#|[-*]|\d+[.)])\s/m);
 assert.doesNotMatch(buildOpenEvidenceWorkupDraftPrompt({ patientContext: "[De-identified] context", dailyTrajectory: "<Daily update>" }), /[\[\]{}<>()`]/, "workup prompts must remove bracketed patient-context syntax");

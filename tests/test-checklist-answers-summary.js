@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { checklistAnswersSummary, hasAssessedChecklistContent } from "../src/checklist/state.js";
+import { checklistAnswersSummary, checklistExamFindingsSummary, hasAssessedChecklistContent } from "../src/checklist/state.js";
 
 const snapshot = {
   items: [
@@ -54,6 +54,13 @@ const snapshot = {
 }
 
 assert.equal(checklistAnswersSummary(null, {}, []), "No checklist has been built.");
+
+const examSummary = checklistExamFindingsSummary(snapshot, {
+  gen_appearance: { selected: ["Normal"], note: "" },
+  chest_pain: { selected: ["Yes"], note: "" }
+});
+assert.match(examSummary, /General appearance[\s\S]*Answer: Normal/);
+assert.doesNotMatch(examSummary, /Chest pain today/, "saving physical exam findings must not copy history answers into the admission field");
 
 // hasAssessedChecklistContent - same "meaningful answer" rule, boolean form.
 assert.equal(hasAssessedChecklistContent(snapshot, {}, []), false, "no answers and no quick notes means nothing assessed");

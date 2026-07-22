@@ -122,14 +122,32 @@ try {
   assert.equal(await page.locator('[data-action="save-context"]').isEnabled(), true);
 
   await page.click('[data-view-target="settings"]');
-  await page.waitForSelector("#settingsMedicalService");
+  await page.waitForSelector("#guidelineSearchInput");
   assert.equal(await page.locator('[data-action="export-vault"]').filter({ hasText: "Export Vault Backup" }).count(), 1);
-  await page.selectOption("#settingsMedicalService", "consult");
-  await page.fill("#settingsServiceFocus", "Focus on the consulted rhythm question.");
-  await page.selectOption("#settingsPresentationDetail", "detailed");
-  await page.fill("#settingsAttendingPreferences", "Start with a one-liner, then give pertinent negatives.");
-  await page.click('[data-action="save-team-preferences"]');
-  await page.waitForFunction(() => /Team preferences saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  assert.equal(await page.locator('.guideline-row', { hasText: "Team preferences" }).count(), 1);
+  const guidelineRowsFit = await page.locator(".guideline-row").evaluateAll((rows) => rows.every((row) => {
+    const cardBounds = row.getBoundingClientRect();
+    const headerBounds = row.getBoundingClientRect();
+    const toggleBounds = row.querySelector(".guideline-row-open")?.getBoundingClientRect();
+    return Boolean(headerBounds && toggleBounds)
+      && headerBounds.left >= cardBounds.left
+      && headerBounds.right <= cardBounds.right
+      && toggleBounds.left >= cardBounds.left
+      && toggleBounds.right <= cardBounds.right;
+  }));
+  assert.equal(guidelineRowsFit, true, "each guideline row must keep its controls inside the card");
+  await page.locator(".guideline-row .token-color-swatch").first().click();
+  assert.equal(await page.locator('#tokenColorPicker input[type="color"]').count(), 1);
+  assert.equal(await page.locator("#tokenColorPicker").isVisible(), true);
+  await page.locator('[data-action="cancel-token-color"]').click();
+  assert.equal(await page.locator("#newGuidelineSetNameInput").count(), 0, "the toolbar must not contain a name field");
+  await page.fill("#guidelineSearchInput", "admission");
+  const admissionLabels = await page.locator(".guideline-row strong").allTextContents();
+  assert.ok(admissionLabels.length > 0, "search should return named admission guidelines");
+  assert.equal(admissionLabels.every((label) => label.toLowerCase().includes("admission")), true, "search should exclude rows that only mention admission in their body text");
+  await page.fill("#guidelineSearchInput", "team preferences");
+  await page.waitForFunction(() => document.querySelectorAll(".guideline-row").length === 1);
+  await page.fill("#guidelineSearchInput", "");
   await page.fill("#openAiApiKeyInput", "test-local-openai-key");
   assert.equal(await page.locator("#openAiModelInput").evaluate((node) => node.tagName), "SELECT");
   assert.equal(await page.locator("#openAiModelInput option").count(), 6);
@@ -142,17 +160,27 @@ try {
   // Documentation guidelines must be user-manageable per note type (not one
   // shared @guidelines token for both H&P and SOAP), and any new set created
   // here must show up as its own smart variable on the Prompts page.
-  await page.waitForSelector("#newGuidelineSetNameInput");
-  assert.equal(await page.locator(".guideline-set-card code", { hasText: "@admission-guidelines" }).count(), 1);
-  assert.equal(await page.locator(".guideline-set-card code", { hasText: "@progress-guidelines" }).count(), 1);
-  await page.fill("#newGuidelineSetNameInput", "Discharge summary");
+  assert.equal(await page.locator(".guideline-row code", { hasText: "@admission-guidelines" }).count(), 1);
+  assert.equal(await page.locator(".guideline-row code", { hasText: "@progress-guidelines" }).count(), 1);
   await page.click('[data-action="create-guideline-set"]');
+  await page.waitForSelector("#guidelineCreateLabel");
+  assert.equal(await page.locator(".guideline-editor h2").innerText(), "New guideline");
+  await page.fill("#guidelineCreateLabel", "Discharge summary");
+  await page.fill("#guidelineCreateText", "Summarize the admission, hospital course, and discharge plan.");
+  await page.click('[data-action="save-new-guideline-set"]');
   await page.waitForFunction(() => /Discharge summary/.test(document.querySelector("#statusLine")?.textContent || ""));
-  const dischargeCard = page.locator(".guideline-set-card", { hasText: "Discharge summary" });
-  await dischargeCard.locator("summary").click();
-  await dischargeCard.locator("textarea").fill("Summarize the admission, hospital course, and discharge plan.");
-  await dischargeCard.locator('[data-action="save-guideline-set"]').click();
-  await page.waitForFunction(() => /Guidelines saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+
+  await page.click('[data-action="create-guideline-set"]');
+  await page.fill("#guidelineCreateLabel", "Temporary bulk delete");
+  await page.click('[data-action="save-new-guideline-set"]');
+  await page.waitForFunction(() => /Temporary bulk delete/.test(document.body.textContent || ""));
+  const temporaryGuideline = page.locator('.guideline-row', { hasText: "Temporary bulk delete" });
+  await temporaryGuideline.locator(".guideline-select").check();
+  await page.click('[data-action="delete-selected-guidelines"]');
+  await page.waitForFunction(() => document.querySelector("#removeGuidelineSetConfirmDialog")?.open === true);
+  await page.click('[data-action="confirm-remove-guideline-set"]');
+  await page.waitForFunction(() => !document.querySelector('.guideline-row')?.textContent?.includes("Temporary bulk delete"));
+  assert.match(await page.locator("#statusLine").innerText(), /Deleted \d+ guidelines?/);
 
   await page.click('[data-view-target="prompts"]');
   await page.locator("#promptPreview").fill("@discharge");
@@ -169,21 +197,20 @@ try {
   await page.waitForFunction(() => /Prompt template reset/.test(document.querySelector("#statusLine")?.textContent || ""));
 
   await page.click('[data-view-target="settings"]');
-  await page.waitForSelector("#newGuidelineSetNameInput");
-  const dischargeCardAgain = page.locator(".guideline-set-card", { hasText: "Discharge summary" });
-  await dischargeCardAgain.locator("summary").click();
-  await dischargeCardAgain.locator('[data-action="request-remove-guideline-set"]').click();
+  const dischargeCardAgain = page.locator(".guideline-row", { hasText: "Discharge summary" });
+  const dischargeIdAgain = await dischargeCardAgain.getAttribute("data-guideline-id");
+  await dischargeCardAgain.locator('.guideline-row-open').click();
+  await page.click(`[data-action="request-remove-guideline-set"][data-guideline-set-id="${dischargeIdAgain}"]`);
   await page.waitForFunction(() => document.querySelector("#removeGuidelineSetConfirmDialog")?.open === true);
   await page.click('[data-action="confirm-remove-guideline-set"]');
   await page.waitForFunction(() => /Guideline set deleted/.test(document.querySelector("#statusLine")?.textContent || ""));
-  assert.equal(await page.locator(".guideline-set-card", { hasText: "Discharge summary" }).count(), 0);
+  assert.equal(await page.locator(".guideline-row", { hasText: "Discharge summary" }).count(), 0);
 
   await page.click('[data-view-target="prompts"]');
   await page.waitForSelector("#promptOutputHighlighted");
   {
     const copied = await copiedPromptText();
-    assert.match(copied, /Consult service/);
-    assert.match(copied, /consulted rhythm question/);
+    assert.doesNotMatch(copied, /Write for the Primary team|Consult service|consulted rhythm question/);
   }
   await page.click('[data-view-target="daily"]');
 
@@ -412,6 +439,7 @@ try {
   await page.waitForSelector("#smartVariableMenu.open");
   assert.equal(await page.locator("#smartVariableMenu").filter({ hasText: "@admission-context" }).count(), 1);
   assert.equal(await page.locator("#smartVariableMenu").filter({ hasText: "@admission-guidelines" }).count(), 1);
+  assert.equal(await page.locator("#smartVariableMenu").filter({ hasText: "@team-preferences" }).count(), 1);
   await page.locator('#smartVariableMenu button.smart-variable-insert[data-token="@admission-guidelines"]').click();
   assert.equal(await page.locator("#promptPreview").inputValue(), "@admission-guidelines");
 
@@ -425,6 +453,14 @@ try {
   });
   assert.equal(await page.locator('#smartVariableMenu button[data-token="@admission-context"]').isVisible(), true);
   assert.equal(await page.locator('#smartVariableMenu button[data-token="@admission-guidelines"]').isVisible(), false);
+
+  // Regression: a caret at index 0 is valid. Removing a leading variable must
+  // inspect only the text before that caret, rather than finding a later token
+  // and incorrectly keeping the menu open.
+  await page.locator("#promptPreview").fill("@exam-findings\\nUse @admission-context");
+  await page.locator("#promptPreview").press("Control+Home");
+  await page.locator("#promptPreview").press("Delete");
+  assert.equal(await page.locator("#smartVariableMenu").isVisible(), false);
 
   await page.locator("#promptPreview").fill("Use @admission-context");
   await page.waitForFunction(() => /PATIENT NAME/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));

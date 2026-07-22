@@ -1,7 +1,7 @@
 // Captures the real hospital admission date once per session via the native
-// <dialog id="admissionDateDialog">. The value is kept only on the in-memory
-// app state (never persisted) and used solely to anchor de-identified dates
-// to Hospital Day numbers.
+// <dialog id="admissionDateDialog">. The value is kept in the in-memory app
+// state and copied into the encrypted active-patient metadata when a save
+// completes. It anchors de-identified dates to Hospital Day numbers.
 export function createAdmissionDateGate({ app, byId }) {
   function requestAdmissionDateFromUser() {
     return new Promise((resolve, reject) => {

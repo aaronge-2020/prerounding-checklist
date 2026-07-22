@@ -9,6 +9,7 @@ import { createLocalId } from "../app/state/vault.js";
 // module replaces that with a user-editable, named list - each set gets its
 // own stable token, persisted the same way custom prompt tasks are.
 export const GUIDELINE_SET_STORAGE_KEY = "prerounding_guideline_sets_v1";
+export const GUIDELINE_SET_SEED_TEAM_PREFERENCES_KEY = "prerounding_guideline_sets_seed_team_preferences_v1";
 
 function slugStem(label) {
   return String(label || "")
@@ -59,6 +60,36 @@ export function saveGuidelineSets(sets, storage = localStorage) {
 export function addGuidelineSet(sets, label, text = "") {
   const created = createGuidelineSet(label, text, { existingTokens: sets.map((set) => set.token) });
   return [...sets, created];
+}
+
+// Search the guideline identity, not its instruction body. Common clinical
+// words in the body would otherwise make unrelated rows appear as matches.
+export function guidelineSetMatchesQuery(set, query) {
+  const terms = String(query || "").trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if (!terms.length) return true;
+  const identity = `${set?.label || ""} ${set?.token || ""}`.toLowerCase().replace(/[^a-z0-9]+/g, " ");
+  return terms.every((term) => identity.includes(term.replace(/[^a-z0-9]+/g, " ").trim()));
+}
+
+// Team preferences are a normal user-managed guideline set. Seed it once so
+// existing installs get the same @team-preferences variable as every other
+// guideline, while preserving any legacy free-text value from the vault.
+export function ensureTeamPreferencesGuidelineSet(sets, legacyText = "", storage = localStorage) {
+  const existing = sets.find((set) => set.token === "@team-preferences");
+  if (existing) {
+    if (legacyText.trim() && !existing.text.trim()) {
+      const next = updateGuidelineSet(sets, existing.id, { text: legacyText });
+      saveGuidelineSets(next, storage);
+      return next;
+    }
+    return sets;
+  }
+  if (storage.getItem(GUIDELINE_SET_SEED_TEAM_PREFERENCES_KEY) !== null) return sets;
+  const created = createGuidelineSet("Team preferences", legacyText, { existingTokens: sets.map((set) => set.token) });
+  const next = [...sets, { ...created, token: "@team-preferences" }];
+  storage.setItem(GUIDELINE_SET_SEED_TEAM_PREFERENCES_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
 }
 
 export function updateGuidelineSet(sets, id, { label, text } = {}) {
@@ -355,9 +386,13 @@ export async function ensureCanonicalProgressGuidelineSetV2(sets, storage = loca
   return next;
 }
 
-export const GUIDELINE_SET_PROGRESS_CANONICAL_V3_KEY = "prerounding_guideline_sets_progress_canonical_v3";
+// Keep the exported name for compatibility with existing imports, but advance
+// the storage revision so every install receives the current canonical prompt
+// exactly once. A user who has already received the prior v3 migration will
+// therefore receive this new prompt revision without another app-level call.
+export const GUIDELINE_SET_PROGRESS_CANONICAL_V3_KEY = "prerounding_guideline_sets_progress_canonical_v4";
 
-// Refresh the one canonical Progress set after the action-indication revision.
+// Refresh the one canonical Progress set after the full attending-note revision.
 export async function ensureCanonicalProgressGuidelineSetV3(sets, storage = localStorage) {
   if (storage.getItem(GUIDELINE_SET_PROGRESS_CANONICAL_V3_KEY) !== null) return sets;
   let next = sets.filter((set) => !LEGACY_PROGRESS_TOKENS.has(set.token) && !/^Progress(?: |$)/i.test(set.label || ""));

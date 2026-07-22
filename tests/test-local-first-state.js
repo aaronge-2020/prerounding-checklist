@@ -16,7 +16,7 @@ function memoryStorage() {
 const vault = createEmptyVaultState({ now: () => "2026-07-09T12:00:00.000Z" });
 assert.equal(vault.schemaVersion, 2);
 assert.deepEqual(vault.patients, []);
-assert.equal(vault.preferences.medicalService, "primary");
+assert.equal(vault.preferences.medicalService, "");
 assert.equal(vault.preferences.openAiApiKey, "");
 assert.equal(vault.preferences.openAiModel, "gpt-5.6");
 
@@ -123,6 +123,7 @@ assert.deepEqual(replacementVault.patients, []);
 
 const warningMetadata = sanitizeResidualWarningMetadata([{ severity: "high", type: "MRN", snippet: "123456", start: 0, end: 6, reason: "direct identifier" }]);
 assert.deepEqual(warningMetadata, [{ severity: "high", type: "MRN", reason: "direct identifier" }]);
+assert.deepEqual(sanitizeResidualWarningMetadata([{ severity: "medium", type: "possible full name", snippet: "Clinical Phrase" }]), [], "low-confidence possible-name warnings should not persist");
 const ephemeralReview = createEphemeralRedactionReview("Jane Patient met Jane Patient at MRN 123456", {
   entities: [
     { start: 0, end: 12, label: "PATIENT NAME", placeholder: "[PATIENT NAME]", source: "structured identifier" },

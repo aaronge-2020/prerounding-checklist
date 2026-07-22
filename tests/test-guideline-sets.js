@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {
   addGuidelineSet,
   createGuidelineSet,
+  guidelineSetMatchesQuery,
   ensureConsultingGuidelineSet,
   ensureCurrentGuidelineSets,
   ensureCurrentProgressGuidelineSet,
@@ -16,7 +17,9 @@ import {
   ensureCurrentAdmissionGuidelineSet,
   ensureCanonicalProgressGuidelineSetV3,
   ensureCurrentAdmissionGuidelineSetV2,
+  ensureTeamPreferencesGuidelineSet,
   GUIDELINE_SET_STORAGE_KEY,
+  GUIDELINE_SET_SEED_TEAM_PREFERENCES_KEY,
   GUIDELINE_SET_SEED_V3_KEY,
   GUIDELINE_SET_SEED_V4_KEY,
   GUIDELINE_SET_SEED_V5_KEY,
@@ -45,6 +48,15 @@ function fakeStorage(initial = {}) {
     setItem: (key, value) => { store[key] = String(value); },
     removeItem: (key) => { delete store[key]; }
   };
+}
+
+{
+  const storage = fakeStorage();
+  const seeded = ensureTeamPreferencesGuidelineSet([], "Use concise language.", storage);
+  assert.equal(seeded.find((set) => set.token === "@team-preferences")?.text, "Use concise language.");
+  assert.equal(storage.getItem(GUIDELINE_SET_SEED_TEAM_PREFERENCES_KEY), "1");
+  const preserved = ensureTeamPreferencesGuidelineSet(seeded, "A different legacy value.", storage);
+  assert.equal(preserved.find((set) => set.token === "@team-preferences")?.text, "Use concise language.");
 }
 
 // Action-gate revisions refresh the current prompt sources while preserving
@@ -312,6 +324,10 @@ function fakeStorage(initial = {}) {
   sets = removeGuidelineSet(sets, sets[0].id);
   assert.equal(sets.length, 0);
 }
+
+// Search matches the guideline identity, not incidental words in its body.
+assert.equal(guidelineSetMatchesQuery({ label: "Admission", token: "@admission-guidelines", text: "Mention the admission." }, "admission"), true);
+assert.equal(guidelineSetMatchesQuery({ label: "Progress", token: "@progress-guidelines", text: "Mention the admission." }, "admission"), false);
 
 // Corrupt JSON degrades to an empty list rather than throwing.
 {

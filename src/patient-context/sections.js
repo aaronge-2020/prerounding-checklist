@@ -1,5 +1,5 @@
 import { createTextSection, normalizeSection } from "../app/state/vault.js";
-import { sanitizeResidualWarningMetadata } from "./review.js";
+import { isActionableResidualWarning, sanitizeResidualWarningMetadata } from "./review.js";
 import { naturalLanguagePrompt } from "../prompts/natural-language.js";
 
 export function reorderSections(sections, sectionId, direction) {
@@ -135,7 +135,7 @@ export function sectionsToPromptBlock(sections = [], title = "Patient context") 
 
 export function sectionWarningSummary(sections = []) {
   return sections.flatMap((section) =>
-    (section.residualWarnings || []).map((warning, warningIndex) => ({
+    (section.residualWarnings || []).map((warning, warningIndex) => ({ warning, warningIndex })).filter(({ warning }) => isActionableResidualWarning(warning)).map(({ warning, warningIndex }) => ({
       sectionLabel: section.label,
       sectionId: section.id,
       warningIndex,

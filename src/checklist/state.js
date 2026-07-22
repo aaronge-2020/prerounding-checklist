@@ -137,6 +137,12 @@ export function checklistAnswersSummary(snapshot, answers = {}, quickNotes = [])
   return `${body}\n\nAdditional notes (not tied to a specific checklist item):\n${quickNoteLines}`;
 }
 
+export function checklistExamFindingsSummary(snapshot, answers = {}) {
+  const examItems = (snapshot?.items || []).filter((item) => item.kind === "exam");
+  if (!examItems.length) return "No physical exam items are included in this checklist.";
+  return checklistAnswersSummary({ ...snapshot, items: examItems }, answers, []);
+}
+
 export function createPhoneChecklistBundle(patient, snapshot, answers = {}, quickNotes = []) {
   return {
     schema: "prerounding_phone_checklist_bundle_v1",

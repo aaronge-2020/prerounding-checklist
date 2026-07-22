@@ -219,10 +219,10 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
             </label>
             <div class="oe-destination-grid">
               <div class="oe-destination-card">
-                <h4>Save as this day's exam note</h4>
-                <p class="muted">Skips the checklist entirely. Available later as @exam-findings or @openevidence-exam-note.</p>
+                <h4>Save to latest hospital day</h4>
+                <p class="muted">Stores this de-identified exam text on the latest hospital day. With no hospital day yet, it saves to Admission.</p>
                 <div class="button-row">
-                  <button type="button" data-action="save-openevidence-exam-note" ${canSaveExamNote ? "" : "disabled"}>Save as exam note</button>
+                  <button type="button" data-action="save-openevidence-exam-note" ${canSaveExamNote ? "" : "disabled"}>Save findings</button>
                 </div>
                 ${savedExamNote ? `<p class="muted oe-saved-line">Saved ${escapeHtml(formatSavedTime(savedExamNote.savedAt))}${savedExamNote.residualWarnings.length ? ` · ${savedExamNote.residualWarnings.length} residual flag${savedExamNote.residualWarnings.length === 1 ? "" : "s"}` : ""} <button class="button--quiet" type="button" data-action="clear-openevidence-exam-note">Clear</button></p>` : ""}
               </div>
@@ -276,7 +276,7 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function renderDesktopChecklist({ day, snapshot, answers, quickNotes = [], openNoteIds = new Set(), searchQuery = "", phoneLink, openEvidenceImport }) {
+  function renderDesktopChecklist({ day, snapshot, answers, quickNotes = [], openNoteIds = new Set(), searchQuery = "", phoneLink, openEvidenceImport, canSaveChecklistExamFindings = false, dayOptionsHtml = "" }) {
     const totalItems = snapshot?.items.length || 0;
     const completedItems = completedCount(snapshot?.items || [], answers);
     return `
@@ -287,8 +287,10 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
               <h2>Checklist</h2>
               <p class="muted">${snapshot ? `${escapeHtml(day.label)} · ${completedItems} / ${totalItems} completed · ${escapeHtml(snapshot.workupTitles.join(", "))}` : "Build a checklist from the Workups page."}</p>
             </div>
+            ${dayOptionsHtml ? `<label class="checklist-day-picker">Checklist day<select id="checklistDaySelect" aria-label="Checklist hospital day">${dayOptionsHtml}</select></label>` : ""}
             <div class="button-row checklist-heading-actions">
               <button class="button--secondary" type="button" data-action="go-workups">Build from workups</button>
+              ${canSaveChecklistExamFindings ? `<button class="button--primary" type="button" data-action="save-checklist-exam-findings">Save exam findings to Admission context</button>` : ""}
               <button class="button--secondary button--transfer" type="button" data-action="choose-phone-bundle-file">${icon("upload")} Open shared file</button>
               <input id="phoneBundleFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden>
             </div>

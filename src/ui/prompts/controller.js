@@ -146,3 +146,17 @@ export function positionSmartVariableMenu(menu, textarea) {
   menu.style.top = `${viewportTop - wrapBox.top}px`;
   menu.style.left = `${viewportLeft - wrapBox.left}px`;
 }
+
+// The generated prompt is its own scroll surface. Scroll that surface after
+// insertion rather than the page, so the newly inserted variable's filled
+// content is immediately visible on the right-hand preview.
+export function scrollPromptOutputToVariable(output, token) {
+  if (!output || !token) return false;
+  const target = [...output.querySelectorAll('.var-fill[title]')]
+    .find((element) => element.getAttribute("title") === token);
+  if (!target) return false;
+  const targetTop = target.offsetTop - output.offsetTop;
+  const centeredTop = targetTop - Math.max(0, (output.clientHeight - target.offsetHeight) / 3);
+  output.scrollTo({ top: Math.max(0, centeredTop), behavior: "smooth" });
+  return true;
+}

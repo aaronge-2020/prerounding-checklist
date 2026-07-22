@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#f7f6f2">
     <title>Pre-Rounding Checklist Builder</title>
     <link rel="icon" href="./favicon.ico">
-    <link rel="stylesheet" href="./styles.css?v=20260717-guided-demo-ux-4">
+    <link rel="stylesheet" href="./styles.css?v=20260722-guideline-concept-v2">
   </head>
   <body class="vault-locked">
     <div class="app-shell">
@@ -90,7 +90,7 @@
     <dialog id="admissionDateDialog" class="confirm-dialog" aria-labelledby="admissionDateTitle">
       <form method="dialog">
         <h2 id="admissionDateTitle">Admission date</h2>
-        <p>Enter the real hospital admission date. It anchors every other date and time in this note to a Hospital Day number, then is discarded — it is never saved or shown again.</p>
+        <p>Enter the real hospital admission date. It anchors relative dates to Hospital Day numbers and is saved in this browser's encrypted patient record so you do not have to enter it again.</p>
         <label>Admission date
           <input type="date" id="admissionDateInput" required>
         </label>
@@ -171,9 +171,8 @@
     </dialog>
 
     <div id="tokenColorPicker" class="token-color-picker" hidden>
-      <div class="token-color-picker-track" data-role="hue-track">
-        <div class="token-color-picker-thumb" data-role="hue-thumb"></div>
-      </div>
+      <label class="token-color-picker-field">Guideline color <input type="color" data-role="color-input" value="#0f766e"></label>
+      <output class="token-color-picker-value" data-role="color-value">#0F766E</output>
       <div class="token-color-picker-actions">
         <button type="button" class="icon-button token-color-picker-cancel" data-action="cancel-token-color" aria-label="Cancel" title="Cancel"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
         <button type="button" class="icon-button token-color-picker-accept" data-action="accept-token-color" aria-label="Apply color" title="Apply"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg></button>
@@ -181,6 +180,6 @@
     </div>
 
     <input id="modelPackFolderInput" type="file" webkitdirectory multiple hidden>
-    <script type="module" src="./src/ui/app.js?v=20260721-action-gate-1"></script>
+    <script type="module" src="./src/ui/app.js?v=20260722-guideline-concept-v2"></script>
   </body>
 </html>

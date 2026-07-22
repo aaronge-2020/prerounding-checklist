@@ -188,6 +188,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
     if (reviewedSections.length) return "";
     const warnings = sectionWarningSummary(sections);
     if (!warnings.length) return `<div id="residualWarnings-${escapeHtml(scope)}" class="notice">No residual PHI warnings from the last save.</div>`;
+    const warningSections = [...new Map(warnings.map((warning) => [warning.sectionId, warning.sectionLabel])).entries()];
     return `
       <div id="residualWarnings-${escapeHtml(scope)}" class="warning-box residual-review">
         <strong>Residual PHI review needed</strong>
@@ -198,6 +199,9 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
               <strong>${escapeHtml(warningDescription(warning.warning))}</strong>
             </button>
           `).join("")}
+        </div>
+        <div class="button-row residual-warning-bulk-actions">
+          ${warningSections.map(([sectionId, sectionLabel]) => `<button class="button--quiet" type="button" data-action="dismiss-all-section-warnings" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(sectionId)}">Dismiss all warnings for ${escapeHtml(sectionLabel)} as not PHI</button>`).join("")}
         </div>
         <span class="muted">Detailed warning text isn’t kept after this tab’s review session.</span>
       </div>

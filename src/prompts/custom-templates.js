@@ -1,7 +1,7 @@
 import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
-import { buildTrajectoryBlock } from "../daily-updates/days.js";
+import { buildTrajectoryBlock, sortDays } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js";
-import { buildTeamPreferencesPromptBlock } from "../app/preferences.js";
+import { buildTeamPreferencesPromptBlock } from "../app/preferences.js?v=20260722-guideline-library";
 import { naturalLanguagePrompt } from "./natural-language.js";
 
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";
@@ -24,11 +24,12 @@ export const DEFAULT_PROMPT_TEMPLATES = {
 };
 
 export const SMART_PROMPT_VARIABLES = [
-  { token: TEAM_PREFERENCES_PROMPT_TOKEN, label: "General instructions (smart)", description: "Your saved service, presentation, focus, and attending preferences." },
+  { token: TEAM_PREFERENCES_PROMPT_TOKEN, label: "Team preferences", description: "The exact text in your Team preferences guideline, if any." },
   { token: "@admission-packet", label: "Admission packet", description: "All saved admission fields, labeled." },
   { token: "@selected-day", label: "Selected hospital day", description: "The chosen hospital-day packet; defaults to the latest saved day." },
   { token: "@checklist-answers", label: "Checklist answers", description: "History and physical exam answers." },
-  { token: "@exam-findings", label: "Exam findings (smart)", description: "Checklist answers/quick notes if any exist, else the saved OpenEvidence exam note, else a note that nothing is recorded." },
+  { token: "@exam-findings", label: "Exam findings across hospital days", description: "A dated timeline of saved exam findings for every hospital day." },
+  { token: "@selected-day-exam-findings", label: "Selected-day exam findings", description: "Exam findings saved for the selected hospital day only." },
   { token: "@openevidence-exam-note", label: "OpenEvidence exam note", description: "The saved de-identified OpenEvidence exam note for the selected hospital day, if any." }
 ];
 
@@ -60,7 +61,7 @@ function selectedPromptDay(patient, selectedDayId = "") {
 }
 
 function guidelineSetVariables(guidelineSets = []) {
-  return guidelineSets.map((set) => ({
+  return guidelineSets.filter((set) => set.token !== TEAM_PREFERENCES_PROMPT_TOKEN).map((set) => ({
     token: set.token,
     label: set.label,
     description: "Documentation guidelines you saved in Settings.",
@@ -98,6 +99,31 @@ function examFindingsSummary(snapshot, answers, quickNotes, examNoteText) {
   if (hasAssessedChecklistContent(snapshot, answers, quickNotes)) return checklistAnswersSummary(snapshot, answers, quickNotes);
   const note = String(examNoteText || "").trim();
   return note || "No exam findings recorded.";
+}
+
+function examFindingsForDay(day) {
+  const sectionText = (day?.sections || []).find((section) => section.label === "Physical exam findings")?.deidentifiedText;
+  return examFindingsSummary(
+    day?.checklistSnapshot || null,
+    day?.answers || {},
+    day?.quickNotes || [],
+    sectionText || day?.openEvidenceExamNote?.text
+  );
+}
+
+function savedExamNoteText(day) {
+  return (day?.sections || []).find((section) => section.label === "Physical exam findings")?.deidentifiedText?.trim()
+    || day?.openEvidenceExamNote?.text?.trim()
+    || "";
+}
+
+export function buildExamFindingsTimeline(patient) {
+  const days = sortDays(patient?.days || []);
+  const entries = days
+    .map((day) => ({ day, text: examFindingsForDay(day) }))
+    .filter(({ text }) => text !== "No exam findings recorded." && text !== "No checklist items have been assessed yet." && text !== "No physical exam items are included in this checklist.");
+  if (!entries.length) return "No exam findings recorded.";
+  return entries.map(({ day, text }) => `Exam findings — ${day.label || "Hospital day"} (${day.date}):\n${text}`).join("\n\n");
 }
 
 export function loadPromptTemplateOverrides(storage = localStorage) {
@@ -150,7 +176,8 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
     ...sectionValues,
     ...selectedDayValues,
     ...guidelineValues,
-    [TEAM_PREFERENCES_PROMPT_TOKEN]: buildTeamPreferencesPromptBlock(teamPreferences),
+    [TEAM_PREFERENCES_PROMPT_TOKEN]: guidelineSets.find((set) => set.token === TEAM_PREFERENCES_PROMPT_TOKEN)?.text?.trim()
+      || buildTeamPreferencesPromptBlock(teamPreferences),
     "@admission-packet": sectionsToPromptBlock(patient?.contextSections || [], "Admission packet"),
     "@medications": medicationSection?.deidentifiedText || "No saved medication text.",
     "@labs": labSection?.deidentifiedText || "No saved lab text.",
@@ -161,8 +188,9 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
       ? sectionsToPromptBlock(patient?.contextSections || [], "Admission")
       : (selectedDay ? sectionsToPromptBlock(selectedDay.sections || [], `Selected day: ${selectedDay.date} - ${selectedDay.label}`) : "No saved hospital day."),
     "@checklist-answers": checklistAnswersSummary(snapshot, answers, quickNotes),
-    "@openevidence-exam-note": selectedDay?.openEvidenceExamNote?.text?.trim() || "No saved OpenEvidence exam note.",
-    "@exam-findings": examFindingsSummary(snapshot, answers, quickNotes, selectedDay?.openEvidenceExamNote?.text)
+    "@openevidence-exam-note": savedExamNoteText(selectedDay) || "No saved OpenEvidence exam note.",
+    "@exam-findings": buildExamFindingsTimeline(patient),
+    "@selected-day-exam-findings": examFindingsSummary(snapshot, answers, quickNotes, savedExamNoteText(selectedDay))
   };
 }
 
@@ -201,7 +229,10 @@ export function saveTokenColorOverrides(overrides, storage = localStorage) {
 }
 
 export function setTokenColorOverride(overrides, token, hue) {
-  return { ...(overrides || {}), [token]: ((Math.round(hue) % 360) + 360) % 360 };
+  const value = typeof hue === "number"
+    ? hueToHex(((Math.round(hue) % 360) + 360) % 360)
+    : normalizeHexColor(hue) || hueToHex(0);
+  return { ...(overrides || {}), [token]: value };
 }
 
 export function clearTokenColorOverride(overrides, token) {
@@ -217,12 +248,18 @@ export function clearTokenColorOverride(overrides, token) {
 // hues without having to hand-manage every token's color.
 export function tokenAccentHue(token, overrides = {}) {
   const stored = overrides?.[String(token || "")];
-  return Number.isFinite(stored) ? stored : hashToken(String(token || "")) % 360;
+  return typeof stored === "string" ? hexToHue(stored) : Number.isFinite(stored) ? stored : hashToken(String(token || "")) % 360;
 }
 
 export function tokenAccentColor(token, { dot = false, overrides = {} } = {}) {
+  const custom = normalizeHexColor(overrides?.[String(token || "")]);
+  if (custom) return dot ? custom : `color-mix(in srgb, ${custom} 18%, white)`;
   const hue = tokenAccentHue(token, overrides);
   return dot ? `hsl(${hue}, 62%, 45%)` : `hsl(${hue}, 70%, 90%)`;
+}
+
+export function tokenAccentHex(token, overrides = {}) {
+  return normalizeHexColor(overrides?.[String(token || "")]) || hueToHex(tokenAccentHue(token, overrides));
 }
 
 // For the <input type="color"> swatch, which only speaks hex - shows/edits
@@ -254,6 +291,11 @@ export function hexToHue(hex) {
   else hue = (r - g) / delta + 4;
   hue *= 60;
   return Math.round((hue + 360) % 360);
+}
+
+function normalizeHexColor(value) {
+  const match = /^#?([0-9a-f]{6})$/i.exec(String(value || "").trim());
+  return match ? `#${match[1].toLowerCase()}` : "";
 }
 
 function escapeRegExpLiteral(value) {

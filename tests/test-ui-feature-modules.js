@@ -62,6 +62,13 @@ assert.equal(redactionPosition("Keep [NAME] safe", { placeholder: "[NAME]", occu
 assert.equal(warningDescription({ type: "Name", snippet: "Jane" }), "Name: Jane");
 assert.equal(warningSnippet({ snippet: " Jane " }), "Jane");
 const redactionView = createRedactionPresentation({ escapeHtml, icon });
+const warningMarkup = redactionView.renderWarnings({
+  scope: "context",
+  sections: [{ id: "admission", label: "Admission context", residualWarnings: [{ type: "MRN", reason: "direct identifier" }] }],
+  reviewFor: () => null
+});
+assert.match(warningMarkup, /data-action="dismiss-all-section-warnings"/);
+assert.match(warningMarkup, /Dismiss all warnings for Admission context as not PHI/);
 const confirmedMarkup = redactionView.renderRedactionDocument("[NAME]", {
   inspectedRedactionIndex: 0,
   redactions: [{ placeholder: "[NAME]", original: "Jane", occurrence: 0, state: "confirmed" }]

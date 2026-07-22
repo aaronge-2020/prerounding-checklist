@@ -8,11 +8,11 @@ import { crossOriginIsolationBlocker, deidentifyText, getAdvancedDeidStatus, get
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
 import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
-import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260721-action-gate-1";
+import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260722-guideline-concept-v2";
 import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260721-action-gate-1";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
-import { ensureAdditionalGuidelineSets, ensureAttendingProgressGuidelineSet, ensureCanonicalProgressGuidelineSet, ensureCanonicalProgressGuidelineSetV2, ensureCanonicalProgressGuidelineSetV3, ensureConsultingGuidelineSet, ensureCurrentAdmissionGuidelineSet, ensureCurrentAdmissionGuidelineSetV2, ensureCurrentGuidelineSets, ensureCurrentProgressGuidelineSet, ensureFocusedProgressGuidelineSet, ensureLatestProgressGuidelineSet, ensureProblemAssessmentProgressGuidelineSet, ensureReasoningProgressGuidelineSet, ensureRevisedProgressGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260721-action-gate-1";
-import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, buildTeamPreferencesPromptBlock, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260720-team-preferences-editable";
+import { ensureAdditionalGuidelineSets, ensureAttendingProgressGuidelineSet, ensureCanonicalProgressGuidelineSet, ensureCanonicalProgressGuidelineSetV2, ensureCanonicalProgressGuidelineSetV3, ensureConsultingGuidelineSet, ensureCurrentAdmissionGuidelineSet, ensureCurrentAdmissionGuidelineSetV2, ensureCurrentGuidelineSets, ensureCurrentProgressGuidelineSet, ensureFocusedProgressGuidelineSet, ensureLatestProgressGuidelineSet, ensureProblemAssessmentProgressGuidelineSet, ensureReasoningProgressGuidelineSet, ensureRevisedProgressGuidelineSet, ensureTeamPreferencesGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260722-guideline-concept-v2";
+import { OPENAI_WORKUP_MODEL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260722-guideline-library";
 import { bundledWorkupById, effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260715-workup-delete";
 import { mergeWorkupLibraryIntoOverrides, parseWorkupLibraryJson, workupLibraryFromOverrides } from "../workups/library.js?v=20260711-functional-remediation-15";
 import { createBlankWorkup, createBlankWorkupItem, collectWorkupDraftFromDocument, workupFromEditorDraft, workupThoroughnessOption } from "../workups/editor.js?v=20260711-functional-remediation-15";
@@ -32,6 +32,7 @@ import {
   fillNegativeChecklistAnswers,
   mergeQuickNotes,
   mergeReturnedAnswers,
+  checklistExamFindingsSummary,
   setChecklistChoice,
   setChecklistNote
 } from "../checklist/state.js?v=20260711-functional-remediation-19";
@@ -43,12 +44,14 @@ import { createChecklistSearchController, toggleItemNote } from "./checklist/sea
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260714-deid-ux-polish";
+import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260721-admission-context";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260714-token-color-fixed-popover";
-import { createPromptTaskController, filterSmartVariableMenu, positionSmartVariableMenu } from "./prompts/controller.js?v=20260714-color-menu-reposition";
-import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260713-guideline-sets";
+import { createPromptTaskController, filterSmartVariableMenu, positionSmartVariableMenu, scrollPromptOutputToVariable } from "./prompts/controller.js?v=20260714-color-menu-reposition";
+import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260722-guideline-concept-v2";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20260714-hue-picker";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260713-guideline-sets";
+import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721-persisted-anchor";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20260722-guideline-concept-v2";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260722-guideline-concept-v2";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260717-guided-demo-ux";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
@@ -70,7 +73,11 @@ const app = {
   selectedWorkupEditorId: "general-admission",
   draftWorkup: null,
   guidelineSets: [],
+  guidelineSearchQuery: "",
+  guidelineSelectedIds: new Set(),
+  guidelineOpenId: "", guidelineCreateDraft: null,
   pendingRemoveGuidelineSetId: "",
+  pendingRemoveGuidelineSetIds: [],
   phoneBundle: null,
   phoneAnswers: {},
   phoneQuickNotes: [],
@@ -120,7 +127,7 @@ const app = {
   pendingRemoveDayId: "",
   pendingDeleteWorkupId: "",
   demoSession: null,
-  admissionDate: "" // session-only Hospital Day anchor; never persisted
+  admissionDate: "" // in-memory copy of the encrypted patient's admission-date anchor
 };
 const viewIds = ["vault", "daily", "workups", "checklist", "prompts", "quickDeid", "settings"];
 const viewTitles = {
@@ -163,7 +170,9 @@ const demoSessionController = createDemoSessionController({ app, createDemoPatie
 const checklistSearch = createChecklistSearchController({ Fuse, normalizeQuery: normalizeWorkupCatalogQuery, byId });
 const phoneAutosave = createPhoneAutosave(localStorage);
 const phoneSession = createPhoneSessionController({ phoneAutosave, state: app, active, selectedChecklistDay, persistVault, renderPhoneChecklist, renderChecklist });
-const openEvidenceImport = createOpenEvidenceImportController({ state: app, active, selectedChecklistDay, persistVault, renderChecklist, byId, copyText, setStatus, currentPreferences, deidentify, ensureDeidReady: ensureSelectedDeidReady, formatChecklistAnswersWithOpenAi });
+const examFindingsController = createExamFindingsController({ state: app, active, persistVault, setStatus });
+const admissionDateAnchor = createAdmissionDateAnchor({ state: app, active, sortDays });
+const openEvidenceImport = createOpenEvidenceImportController({ state: app, active, selectedChecklistDay, persistVault, renderChecklist, byId, copyText, setStatus, currentPreferences, deidentify, ensureDeidReady: ensureSelectedDeidReady, formatChecklistAnswersWithOpenAi, saveExamFindings: examFindingsController.saveExamFindings, clearExamFindings: examFindingsController.clearExamFindings });
 const workupOpenAiImport = createWorkupOpenAiImportController({ state: app, active, byId, copyText, setStatus, currentPreferences, renderWorkups, parseAndSaveWorkupJson });
 const workupDeleteController = createWorkupDeleteController({ state: app, renderWorkups, persistWorkupChanges, byId });
 const promptTaskController = createPromptTaskController({ state: app, setStatus, renderPrompts, byId });
@@ -535,6 +544,16 @@ function setStatus(message, { icon: iconName } = {}) {
   if (!status) return;
   if (iconName) status.innerHTML = `${icon(iconName)}${escapeHtml(message)}`;
   else status.textContent = message;
+}
+
+function actionFeedback(target, action) {
+  const label = String(target.getAttribute("aria-label") || target.textContent || "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const fallback = String(action || "Action")
+    .replace(/[-_]+/g, " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+  setStatus(`${label || fallback}...`);
 }
 
 const phoneTransfer = createPhoneTransferController({
@@ -958,8 +977,9 @@ function renderDaily() {
         <details class="new-day-control" ${days.length ? "" : "open"}>
           <summary>${icon("plus")} Add hospital day</summary>
           <div class="form-grid compact">
-            <label>Date
+            <label>Hospital day date
               <input id="newDayDate" type="date" value="${localCalendarDate()}">
+              <span class="field-help">The day this packet describes. Relative words like “today” use this date.</span>
             </label>
             <label>Label
               <input id="newDayLabel" placeholder="HD2 - Today">
@@ -1003,7 +1023,7 @@ function renderDaily() {
                 <div class="section-heading">
                   <div>
                     <h2>${escapeHtml(selected.label)}</h2>
-                    <p class="muted">${escapeHtml(selected.date)} · No automatic trend detection — you write and label each day's findings yourself.</p>
+                    <p class="muted">${escapeHtml(selected.date)} · Relative dates in this packet use ${escapeHtml(selected.date)} as “today.” You write and label each day's findings yourself.</p>
                   </div>
                   <div class="button-row">
                     <button class="button--secondary" type="button" data-action="add-daily-section">${icon("plus")} Add field</button>
@@ -1127,7 +1147,10 @@ function renderChecklist() {
   const day = selectedChecklistDay(patient);
   const snapshot = day?.checklistSnapshot || null;
   const answers = day?.answers || {};
+  const latestExamDay = latestDay(patient.days || []);
   const preferences = currentPreferences();
+  const examFindingsText = checklistExamFindingsSummary(snapshot, answers);
+  const dayOptionsHtml = sortDays(patient.days || []).map((entry, index) => `<option value="${escapeHtml(entry.id)}" ${entry.id === day?.id ? "selected" : ""}>HD${index + 1} · ${escapeHtml(entry.label)} · ${escapeHtml(entry.date)}${entry.checklistSnapshot ? "" : " · no checklist yet"}</option>`).join("");
   checklistSearch.buildIndex(snapshot);
   byId("checklistContent").innerHTML = checklistPresentation.renderDesktopChecklist({
     day,
@@ -1142,11 +1165,22 @@ function renderChecklist() {
       ...selectedDeidReadinessAsPanelProps(),
       hasSavedOpenAiKey: Boolean(preferences.openAiApiKey),
       openAiModelLabel: openAiWorkupModelOption(preferences.openAiModel).label,
-      canSaveExamNote: Boolean(day && app.openEvidenceImport.input.trim() && app.openEvidenceImport.deidConfirmed),
-      savedExamNote: day?.openEvidenceExamNote || null
-    }
+      canSaveExamNote: Boolean(patient && app.openEvidenceImport.input.trim() && app.openEvidenceImport.deidConfirmed),
+      savedExamNote: latestExamDay?.openEvidenceExamNote || null
+    },
+    canSaveChecklistExamFindings: Boolean(day && snapshot && examFindingsText !== "No checklist items have been assessed yet." && examFindingsText !== "No physical exam items are included in this checklist."),
+    dayOptionsHtml
   });
   checklistSearch.updateFilter(app.checklistSearchQuery);
+}
+
+async function saveChecklistExamFindings() {
+  const patient = active();
+  const day = selectedChecklistDay(patient);
+  if (!day?.checklistSnapshot) throw new Error("Build a checklist before saving physical exam findings.");
+  const text = checklistExamFindingsSummary(day.checklistSnapshot, day.answers || {});
+  if (text === "No checklist items have been assessed yet.") throw new Error("Fill at least one physical exam item before saving findings.");
+  await examFindingsController.saveExamFindings({ text, source: "Checklist" });
 }
 
 function currentPhoneChecklistBundle() {
@@ -1230,8 +1264,9 @@ function renderSettings() {
     preferences,
     apiKeySaved: Boolean(preferences.openAiApiKey),
     guidelineSets: app.guidelineSets,
-    MEDICAL_SERVICE_OPTIONS,
-    PRESENTATION_DETAIL_OPTIONS,
+    guidelineSearchQuery: app.guidelineSearchQuery,
+    guidelineSelectedIds: app.guidelineSelectedIds,
+    guidelineOpenId: app.guidelineOpenId, guidelineCreateDraft: app.guidelineCreateDraft,
     OPENAI_WORKUP_MODEL_OPTIONS,
     colorOverrides: app.tokenColorOverrides
   });
@@ -1243,24 +1278,6 @@ function setVaultPreferences(nextPreferences) {
     preferences: normalizeUserPreferences(nextPreferences),
     updatedAt: new Date().toISOString()
   };
-}
-
-async function saveTeamPreferences() {
-  const preferences = currentPreferences();
-  const structuredPreferences = { ...preferences, teamInstructions: "" };
-  const generatedTeamPrompt = buildTeamPreferencesPromptBlock(structuredPreferences);
-  const enteredTeamPrompt = String(byId("settingsTeamInstructions")?.value || "").trim();
-  setVaultPreferences({
-    ...preferences,
-    medicalService: byId("settingsMedicalService")?.value,
-    customServiceName: byId("settingsCustomServiceName")?.value,
-    serviceFocus: byId("settingsServiceFocus")?.value,
-    presentationDetail: byId("settingsPresentationDetail")?.value,
-    attendingPreferences: byId("settingsAttendingPreferences")?.value,
-    teamInstructions: enteredTeamPrompt === generatedTeamPrompt ? "" : enteredTeamPrompt
-  });
-  await persistVault("Team preferences saved in the encrypted vault.");
-  render();
 }
 
 async function saveOpenAiByok() {
@@ -1443,13 +1460,16 @@ function refreshDeidControlsInActiveView() {
   renderStatusBar();
 }
 
-async function deidentify(rawText) {
+async function deidentify(rawText, { referenceDate = app.admissionDate } = {}) {
+  admissionDateAnchor.restore();
   if (!app.admissionDate) {
     await admissionDateGate.requestAdmissionDateFromUser();
+    admissionDateAnchor.remember();
   }
   return deidentifyText(rawText, {
     mode: app.deidMode,
     admissionDate: app.admissionDate,
+    relativeDate: referenceDate || app.admissionDate,
     onStatus: updateDeidStatus,
     onProgress: (progress) => {
       if (progress?.message) {
@@ -1465,6 +1485,7 @@ async function handleClick(event) {
   if (target && target.dataset.action === "import-phone-return") console.log("TEXTAREA VALUE IN HANDLER:", document.getElementById("phoneReturnText")?.value.length, document.getElementById("phoneReturnText")?.value.substring(0, 50));
   if (!target) return;
   const action = target.dataset.action;
+  actionFeedback(target, action);
   try {
     if (!app.phoneBundle && !vaultIsUnlocked() && !["unlock-vault", "toggle-vault-passphrase", "restore-vault", "request-delete-vault", "confirm-delete-vault"].includes(action)) {
       throw new Error("Unlock the local vault before using workspace tools.");
@@ -1501,7 +1522,8 @@ async function handleClick(event) {
     if (action === "remove-section") await mutateSections(target.dataset.scope, (sections) => removeSection(sections, target.dataset.sectionId));
     if (action === "review-section-warning") reviewSectionWarning(target.dataset);
     if (action === "redact-section-warning") redactSectionWarning(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.warningIndex));
-    if (action === "dismiss-section-warning") dismissSectionWarning(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.warningIndex));
+    if (action === "dismiss-section-warning") await dismissSectionWarning(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.warningIndex));
+    if (action === "dismiss-all-section-warnings") await dismissAllSectionWarnings(target.dataset.scope, target.dataset.sectionId);
     if (action === "manual-redact-selection") redactSelectedSectionText(target.dataset.scope, target.dataset.sectionId);
     if (action === "edit-section-text") editSectionText(target.dataset.scope, target.dataset.sectionId);
     if (action === "resume-section-review") resumeSectionReview(target.dataset.scope, target.dataset.sectionId);
@@ -1562,6 +1584,7 @@ async function handleClick(event) {
     if (action === "parse-checklist-answers-json") await openEvidenceImport.parseAndApply(byId("openEvidenceImportInput")?.value || "");
     if (action === "copy-checklist-answers-formatter-prompt") await openEvidenceImport.copyFormatterPrompt();
     if (action === "save-openevidence-exam-note") await openEvidenceImport.saveExamNote();
+    if (action === "save-checklist-exam-findings") await saveChecklistExamFindings();
     if (action === "clear-openevidence-exam-note") await openEvidenceImport.clearExamNote();
     if (action === "go-workups") {
       app.view = "workups";
@@ -1595,16 +1618,15 @@ async function handleClick(event) {
     if (action === "create-prompt-task") promptTaskController.createTaskFromInput();
     if (action === "request-remove-prompt-task") promptTaskController.requestRemove(target.dataset.taskId);
     if (action === "confirm-remove-prompt-task") promptTaskController.confirmRemovePending();
-    if (action === "create-guideline-set") guidelineSetsController.createFromInput();
-    if (action === "save-guideline-set") guidelineSetsController.saveEdit(target.dataset.guidelineSetId);
-    if (action === "request-remove-guideline-set") guidelineSetsController.requestRemove(target.dataset.guidelineSetId);
-    if (action === "confirm-remove-guideline-set") guidelineSetsController.confirmRemovePending();
+    if (action === "create-guideline-set") guidelineSetsController.openCreate(); if (action === "save-new-guideline-set") guidelineSetsController.saveCreate(); if (action === "cancel-new-guideline") guidelineSetsController.cancelCreate(); if (action === "toggle-guideline-set") guidelineSetsController.toggleOpen(target.dataset.guidelineSetId);
+    if (action === "save-guideline-set") guidelineSetsController.saveEdit(target.dataset.guidelineSetId); if (action === "request-remove-guideline-set") guidelineSetsController.requestRemove(target.dataset.guidelineSetId);
+    if (action === "confirm-remove-guideline-set") guidelineSetsController.confirmRemovePending(); if (action === "delete-selected-guidelines") guidelineSetsController.deleteSelected();
+    if (action === "clear-guideline-selection") guidelineSetsController.clearSelection();
     if (action === "insert-prompt-variable") insertPromptVariable(target.dataset.token);
     if (action === "copy-prompt") { if (app.demoSession) demoController.observeAction(action); await copyText(currentPromptText()); }
     if (action === "open-open-evidence") window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
     if (action === "reset-variable-colors") { app.tokenColorOverrides = {}; saveTokenColorOverrides(app.tokenColorOverrides); renderPrompts(); }
     if (action === "open-token-color-picker") tokenColorPicker.open(target.dataset.token, target, event);
-    if (action === "save-team-preferences") await saveTeamPreferences();
     if (action === "save-openai-byok") await saveOpenAiByok();
     if (action === "clear-openai-byok") await clearOpenAiByok();
     if (action === "run-quick-deid") await runQuickDeid();
@@ -1644,6 +1666,8 @@ async function unlockVault() {
     const vault = await loadOrCreateVault(passphrase);
     app.vault = vault;
     app.passphrase = passphrase;
+    await refreshGuidelines();
+    admissionDateAnchor.restore();
     app.vaultUnlockError = "";
     app.view = active() ? "daily" : "vault";
     resetVaultInactivityTimer();
@@ -1707,6 +1731,7 @@ function selectPatient(patientId) {
   clearPatientScopedSession();
   app.vault = setActivePatient(app.vault, patientId);
   app.view = "daily";
+  admissionDateAnchor.restore();
   app.selectedDayId = selectedChecklistDay(active())?.id || "";
   render();
   void persistVault("Patient selected.");
@@ -2038,14 +2063,64 @@ function refreshResidualWarningSummary(scope) {
   current.outerHTML = renderWarnings(reviewSectionsForScope(scope), scope);
 }
 
-function dismissSectionWarning(scope, sectionId, warningIndex) {
+async function dismissSectionWarning(scope, sectionId, warningIndex) {
   const review = sectionReviewFor(scope, sectionId);
-  if (!review?.warnings[warningIndex]) return;
-  review.dismissedWarningIndexes.add(warningIndex);
-  setStatus("Warning dismissed for this review only. The decision is not stored.");
+  if (review?.warnings[warningIndex]) {
+    review.dismissedWarningIndexes.add(warningIndex);
+    setStatus("Warning dismissed for this review only. The decision is not stored.");
+  } else {
+    const patient = active();
+    const sections = scope === "daily" ? selectedChecklistDay(patient)?.sections : patient?.contextSections;
+    const section = (sections || []).find((entry) => entry.id === sectionId);
+    if (!section?.residualWarnings?.[warningIndex]) return;
+    app.vault = updateActivePatient(app.vault, (current) => {
+      if (scope === "daily") {
+        const day = selectedChecklistDay(current);
+        if (!day) return current;
+        const nextDay = { ...day, sections: day.sections.map((entry) => entry.id === sectionId
+          ? { ...entry, residualWarnings: entry.residualWarnings.filter((_, index) => index !== warningIndex), updatedAt: new Date().toISOString() }
+          : entry) };
+        return { ...current, days: upsertDay(current.days, nextDay) };
+      }
+      return { ...current, contextSections: current.contextSections.map((entry) => entry.id === sectionId
+        ? { ...entry, residualWarnings: entry.residualWarnings.filter((_, index) => index !== warningIndex), updatedAt: new Date().toISOString() }
+        : entry) };
+    });
+    await persistVault("Dismissed the residual warning as not PHI.");
+    setStatus("Warning dismissed and saved as not PHI.");
+  }
   const editor = expandSectionEditor(scope, sectionId);
   refreshSectionReviewAtCurrentPosition(editor, scope, sectionId);
   refreshResidualWarningSummary(scope);
+}
+
+async function dismissAllSectionWarnings(scope, sectionId) {
+  const patient = active();
+  const sections = scope === "daily" ? selectedChecklistDay(patient)?.sections : patient?.contextSections;
+  if (!(sections || []).some((section) => section.id === sectionId && section.residualWarnings?.length)) return;
+  const review = sectionReviewFor(scope, sectionId);
+  if (review) {
+    review.warnings.forEach((_, index) => review.dismissedWarningIndexes.add(index));
+  } else {
+    app.vault = updateActivePatient(app.vault, (current) => {
+      if (scope === "daily") {
+        const day = selectedChecklistDay(current);
+        if (!day) return current;
+        const nextDay = { ...day, sections: day.sections.map((entry) => entry.id === sectionId
+          ? { ...entry, residualWarnings: [], updatedAt: new Date().toISOString() }
+          : entry) };
+        return { ...current, days: upsertDay(current.days, nextDay) };
+      }
+      return { ...current, contextSections: current.contextSections.map((entry) => entry.id === sectionId
+        ? { ...entry, residualWarnings: [], updatedAt: new Date().toISOString() }
+        : entry) };
+    });
+    await persistVault("Dismissed all residual warnings for this field as not PHI.");
+  }
+  const editor = expandSectionEditor(scope, sectionId);
+  refreshSectionReviewAtCurrentPosition(editor, scope, sectionId);
+  refreshResidualWarningSummary(scope);
+  setStatus("All warnings for this field were dismissed as not PHI.");
 }
 
 function redactSectionWarning(scope, sectionId, warningIndex) {
@@ -2400,13 +2475,13 @@ function applyApprovedRedactions(scope, sections) {
   });
 }
 
-async function deidentifySectionRows(scope, containerId, priorSections = []) {
+async function deidentifySectionRows(scope, containerId, priorSections = [], referenceDate = app.admissionDate) {
   const rows = collectSectionRows(containerId);
   const retainedIds = new Set(rows.map((row) => row.id));
   for (const key of [...app.phiReviews.keys()]) {
     if (key.startsWith(`${scope}:`) && !retainedIds.has(key.slice(scope.length + 1))) app.phiReviews.delete(key);
   }
-  const sections = await replaceSectionsFromFormAsync(rows, deidentify, {
+  const sections = await replaceSectionsFromFormAsync(rows, (text) => deidentify(text, { referenceDate }), {
     priorSections,
     onResult: ({ row, result, prior, plan }) => {
       const key = reviewKey(scope, row.id);
@@ -2435,7 +2510,8 @@ async function saveContext() {
   updateDeidOperation({ active: true, message: "Preparing admission fields for local de-identification…", value: 0, total: 1 });
   try {
     await ensureSelectedDeidReady();
-    const sections = await deidentifySectionRows("context", "contextSections", active()?.contextSections || []);
+    const sections = await deidentifySectionRows("context", "contextSections", active()?.contextSections || [], app.admissionDate);
+    admissionDateAnchor.remember();
     app.vault = updateActivePatient(app.vault, (patient) => ({ ...patient, contextSections: sections }));
     beginSectionReview("context");
     await persistVault("Context saved as de-identified local text.");
@@ -2466,7 +2542,8 @@ async function saveDay() {
   updateDeidOperation({ active: true, message: "Preparing daily fields for local de-identification…", value: 0, total: 1 });
   try {
     await ensureSelectedDeidReady();
-    const sections = await deidentifySectionRows("daily", "dailySections", day.sections || []);
+    const sections = await deidentifySectionRows("daily", "dailySections", day.sections || [], day.date);
+    admissionDateAnchor.remember();
     const nextDay = { ...day, sections, updatedAt: new Date().toISOString() };
     app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
     beginSectionReview("daily");
@@ -3244,15 +3321,21 @@ function resetPromptTemplate() {
 function insertPromptVariable(token) {
   const editor = byId("promptPreview");
   if (!editor) return;
-  const start = editor.selectionStart || editor.value.length;
-  const end = editor.selectionEnd || start;
+  const start = editor.selectionStart ?? editor.value.length;
+  const end = editor.selectionEnd ?? start;
   const prefix = editor.value.slice(0, start).replace(/@[^@\s]*$/, "");
   const suffix = editor.value.slice(end);
   editor.value = `${prefix}${token}${suffix}`;
   app.promptDrafts[app.selectedPromptTask] = editor.value;
   app.smartMenuOpen = false;
+  // Close the existing overlay before replacing the prompt DOM. This keeps a
+  // stale open menu from intercepting the next control click during the
+  // re-render, especially when the inserted token is at the start of the
+  // textarea.
+  byId("smartVariableMenu")?.classList.remove("open");
   editor.focus();
   renderPrompts();
+  requestAnimationFrame(() => scrollPromptOutputToVariable(byId("promptOutputHighlighted"), token));
 }
 
 async function runQuickDeid() {
@@ -3292,6 +3375,15 @@ async function runQuickDeid() {
 }
 
 function handleChange(event) {
+  if (event.target.matches?.(".guideline-select")) {
+    guidelineSetsController.toggleSelection(event.target.dataset.guidelineId, event.target.checked);
+    return;
+  }
+  if (event.target.matches?.('[data-action="select-all-guidelines"]')) {
+    if (event.target.checked) guidelineSetsController.selectAllVisible();
+    else guidelineSetsController.clearSelection();
+    return;
+  }
   if (event.target.matches(".workup-checkbox")) {
     const checkedIds = [...document.querySelectorAll(".workup-checkbox:checked")].map((input) => input.value);
     app.vault = setSelectedWorkups(app.vault, checkedIds);
@@ -3311,6 +3403,11 @@ function handleChange(event) {
     app.promptDayFollowsChecklist = event.target.value === app.selectedDayId;
     app.smartMenuOpen = false;
     renderPrompts();
+  }
+  if (event.target.id === "checklistDaySelect") {
+    app.selectedDayId = event.target.value;
+    app.checklistOpenNoteIds.clear();
+    renderChecklist();
   }
   if (event.target.id === "workupEditorSelect") {
     app.draftWorkup = null;
@@ -3332,10 +3429,6 @@ function handleChange(event) {
     renderChecklist();
   }
   if (isWorkupEditorControl(event.target)) queueWorkupAutosave();
-  if (event.target.id === "settingsMedicalService") {
-    const customServiceWrap = byId("settingsCustomServiceWrap");
-    if (customServiceWrap) customServiceWrap.hidden = event.target.value !== "other";
-  }
   if (event.target.id === "deidModeSelect" || event.target.id === "quickDeidMode") {
     app.deidMode = event.target.value;
     app.quickDeid.status = "";
@@ -3443,6 +3536,10 @@ function clearChecklistSearch() {
 }
 
 function handleInput(event) {
+  if (event.target.id === "guidelineSearchInput") {
+    guidelineSetsController.setSearchQuery(event.target.value);
+    return;
+  }
   if (event.target.id === "vaultPassphrase") {
     clearVaultUnlockError();
     updateVaultPassphraseStrength(event.target.value);
@@ -3474,7 +3571,8 @@ function handleInput(event) {
     return;
   }
   if (event.target.id === "promptPreview") {
-    const beforeCursor = event.target.value.slice(0, event.target.selectionStart || event.target.value.length);
+    const cursor = event.target.selectionStart ?? event.target.value.length;
+    const beforeCursor = event.target.value.slice(0, cursor);
     const tokenMatch = beforeCursor.match(/(^|\s)@([\w-]*)$/);
     app.smartMenuOpen = Boolean(tokenMatch);
     app.promptDrafts[app.selectedPromptTask] = event.target.value;
@@ -3643,6 +3741,15 @@ async function refreshWebGpuAvailability({ renderAfter = true } = {}) {
 }
 async function refreshGuidelines() {
   app.guidelineSets = await loadOrMigrateGuidelineSets();
+  const legacyTeamPreferences = app.vault?.preferences?.teamInstructions || "";
+  app.guidelineSets = ensureTeamPreferencesGuidelineSet(app.guidelineSets, legacyTeamPreferences);
+  if (legacyTeamPreferences.trim() && app.vault?.preferences) {
+    app.vault = {
+      ...app.vault,
+      preferences: normalizeUserPreferences({ ...app.vault.preferences, teamInstructions: "" })
+    };
+    await saveEncryptedVault(app.vault, app.passphrase);
+  }
   app.guidelineSets = await ensureAdditionalGuidelineSets(app.guidelineSets);
   app.guidelineSets = await ensureConsultingGuidelineSet(app.guidelineSets);
   app.guidelineSets = await ensureCurrentProgressGuidelineSet(app.guidelineSets);

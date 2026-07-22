@@ -344,10 +344,10 @@ export async function verifyAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_KE
   }
 }
 
-export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, assetSource = "auto", admissionDate = null, onStatus, onProgress } = {}) {
+export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, assetSource = "auto", admissionDate = null, relativeDate = null, onStatus, onProgress } = {}) {
   const anchor = admissionDate ? new Date(admissionDate) : null;
   if (mode === STRUCTURED_DEID_MODE) {
-    return deidentifyTextStructuredOnly(rawText, anchor);
+    return deidentifyTextStructuredOnly(rawText, anchor, { relativeDate: relativeDate ? new Date(relativeDate) : anchor });
   }
   const option = deidModelOptionByKey(mode === "advanced" ? DEFAULT_DEID_MODEL_KEY : mode);
   try {
@@ -358,6 +358,7 @@ export async function deidentifyText(rawText, { mode = "advanced", allowStructur
     const result = await deidentifier.deidentifyText(rawText, {
       mode: "hybrid",
       admissionDate: anchor,
+      relativeDate: relativeDate ? new Date(relativeDate) : anchor,
       onProgress
     });
     if (!result.modelId || result.modelChunkFailures) {
@@ -390,6 +391,6 @@ export async function deidentifyText(rawText, { mode = "advanced", allowStructur
     if (!allowStructuredFallback) {
       throw new Error(message);
     }
-    return deidentifyTextStructuredOnly(rawText, anchor);
+    return deidentifyTextStructuredOnly(rawText, anchor, { relativeDate: relativeDate ? new Date(relativeDate) : anchor });
   }
 }

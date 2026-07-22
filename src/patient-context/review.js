@@ -73,7 +73,7 @@ function uniqueReviewEntities(source, entities = [], output = "") {
 }
 
 export function sanitizeResidualWarningMetadata(warnings = []) {
-  return (warnings || []).map((warning) => {
+  return (warnings || []).filter(isActionableResidualWarning).map((warning) => {
     if (!warning || typeof warning !== "object") {
       return {
         severity: "review",
@@ -87,6 +87,14 @@ export function sanitizeResidualWarningMetadata(warnings = []) {
       reason: String(warning.reason || "Reprocess the source text in this tab to inspect the flagged value.")
     };
   });
+}
+
+// The broad name-like fallback is intentionally not a user-facing residual
+// warning. It produces many clinical-phrase false positives after structured
+// redaction and gives the user no reliable action to take. Higher-confidence
+// identifier warnings remain visible and reviewable.
+export function isActionableResidualWarning(warning) {
+  return String(warning?.type || "").trim().toLowerCase() !== "possible full name";
 }
 
 // Counts non-overlapping occurrences of a literal placeholder token. Used to

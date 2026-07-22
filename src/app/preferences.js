@@ -88,10 +88,10 @@ export const DEFAULT_OPENAI_WORKUP_MODEL = "gpt-5.6";
 export const DEFAULT_USER_PREFERENCES = Object.freeze({
   openAiApiKey: "",
   openAiModel: DEFAULT_OPENAI_WORKUP_MODEL,
-  medicalService: "primary",
+  medicalService: "",
   customServiceName: "",
   serviceFocus: "",
-  presentationDetail: "standard",
+  presentationDetail: "",
   attendingPreferences: "",
   teamInstructions: ""
 });
@@ -105,17 +105,33 @@ function trimmed(value, limit = 4000) {
 }
 
 export function normalizeUserPreferences(value = {}) {
-  const medicalService = optionFor(MEDICAL_SERVICE_OPTIONS, value?.medicalService, DEFAULT_USER_PREFERENCES.medicalService).value;
-  const presentationDetail = optionFor(PRESENTATION_DETAIL_OPTIONS, value?.presentationDetail, DEFAULT_USER_PREFERENCES.presentationDetail).value;
+  let medicalService = value?.medicalService
+    ? optionFor(MEDICAL_SERVICE_OPTIONS, value.medicalService, DEFAULT_USER_PREFERENCES.medicalService).value
+    : "";
+  let presentationDetail = value?.presentationDetail
+    ? optionFor(PRESENTATION_DETAIL_OPTIONS, value.presentationDetail, DEFAULT_USER_PREFERENCES.presentationDetail).value
+    : "";
+  const customServiceName = trimmed(value?.customServiceName, 160);
+  const serviceFocus = trimmed(value?.serviceFocus);
+  const attendingPreferences = trimmed(value?.attendingPreferences);
+  const teamInstructions = trimmed(value?.teamInstructions);
+  // Older vaults stored the former implicit primary/standard defaults. Treat
+  // that untouched pair as empty so existing users are migrated to the new
+  // opt-in behavior instead of seeing legacy guidance in every prompt.
+  if (medicalService === "primary" && presentationDetail === "standard"
+    && !customServiceName && !serviceFocus && !attendingPreferences && !teamInstructions) {
+    medicalService = "";
+    presentationDetail = "";
+  }
   return {
     openAiApiKey: trimmed(value?.openAiApiKey, 1000),
     openAiModel: openAiWorkupModelOption(value?.openAiModel).value,
     medicalService,
-    customServiceName: trimmed(value?.customServiceName, 160),
-    serviceFocus: trimmed(value?.serviceFocus),
+    customServiceName,
+    serviceFocus,
     presentationDetail,
-    attendingPreferences: trimmed(value?.attendingPreferences),
-    teamInstructions: trimmed(value?.teamInstructions)
+    attendingPreferences,
+    teamInstructions
   };
 }
 
@@ -133,13 +149,5 @@ export function openAiWorkupModelOption(value) {
 
 export function buildTeamPreferencesPromptBlock(preferences = {}) {
   const normalized = normalizeUserPreferences(preferences);
-  if (normalized.teamInstructions) return naturalLanguagePrompt(normalized.teamInstructions);
-  const service = medicalServiceOption(normalized.medicalService);
-  const detail = presentationDetailOption(normalized.presentationDetail);
-  const serviceName = normalized.medicalService === "other" && normalized.customServiceName
-    ? normalized.customServiceName
-    : service.label;
-  const focus = normalized.serviceFocus ? `Use this clinical focus: ${normalized.serviceFocus}` : "";
-  const attending = normalized.attendingPreferences ? `Also follow this attending preference: ${normalized.attendingPreferences}` : "";
-  return naturalLanguagePrompt(`Write for the ${serviceName}. ${service.prompt} ${detail.prompt} ${focus} ${attending} Do not invent requirements that are not stated here.`);
+  return normalized.teamInstructions ? naturalLanguagePrompt(normalized.teamInstructions) : "";
 }

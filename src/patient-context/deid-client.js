@@ -117,12 +117,12 @@ export function resetAdvancedDeidWorker() {
   statuses.clear();
 }
 
-export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, admissionDate = null, onStatus, onProgress } = {}) {
+export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, admissionDate = null, relativeDate = null, onStatus, onProgress } = {}) {
   const modelKey = mode === "advanced" ? DEFAULT_DEID_MODEL_KEY : mode;
   if (mode !== "structured") activeModelKey = deidModelOptionByKey(modelKey).key;
   return request(
     "deidentify",
-    { rawText: String(rawText || ""), options: { mode, allowStructuredFallback, admissionDate } },
+    { rawText: String(rawText || ""), options: { mode, allowStructuredFallback, admissionDate, relativeDate } },
     { onStatus, onProgress }
   );
 }

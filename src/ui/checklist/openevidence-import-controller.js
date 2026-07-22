@@ -1,6 +1,4 @@
 import { applyChecklistAnswerImport, buildChecklistAnswerImportPrompt } from "../../checklist/openevidence-import.js";
-import { updateActivePatient } from "../../app/state/vault.js";
-import { upsertDay, saveOpenEvidenceExamNote, clearOpenEvidenceExamNote } from "../../daily-updates/days.js";
 
 // Coordinates "paste an OpenEvidence note, de-identify it locally, then let
 // ChatGPT fill in checklist answers" - kept out of app.js to respect the
@@ -19,7 +17,9 @@ export function createOpenEvidenceImportController({
   currentPreferences,
   deidentify,
   ensureDeidReady,
-  formatChecklistAnswersWithOpenAi
+  formatChecklistAnswersWithOpenAi,
+  saveExamFindings,
+  clearExamFindings
 }) {
   function currentSnapshot() {
     return selectedChecklistDay(active())?.checklistSnapshot || null;
@@ -139,24 +139,20 @@ export function createOpenEvidenceImportController({
   }
 
   async function saveExamNote() {
-    const day = selectedChecklistDay(active());
     const text = currentInput();
-    if (!day) throw new Error("Add a hospital day before saving an exam note.");
-    if (!text.trim()) throw new Error("De-identify the OpenEvidence note before saving it as this day's exam note.");
+    if (!text.trim()) throw new Error("De-identify the OpenEvidence note before saving it as the latest hospital-day note.");
     if (!state.openEvidenceImport.deidConfirmed) throw new Error("Confirm that the pasted note is de-identified before saving it.");
-    const nextDay = saveOpenEvidenceExamNote(day, { text, residualWarnings: state.openEvidenceImport.deidResidualWarnings || [] });
-    state.vault = updateActivePatient(state.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
-    await persistVault("Saved the de-identified OpenEvidence note as this day's exam note.");
-    state.openEvidenceImport.deidConfirmed = false;
+    await saveExamFindings({
+      text,
+      source: "OpenEvidence",
+      residualWarnings: state.openEvidenceImport.deidResidualWarnings || []
+    });
+    resetPanel();
     renderChecklist();
   }
 
   async function clearExamNote() {
-    const day = selectedChecklistDay(active());
-    if (!day) return;
-    const nextDay = clearOpenEvidenceExamNote(day);
-    state.vault = updateActivePatient(state.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
-    await persistVault("Cleared the saved OpenEvidence exam note.");
+    await clearExamFindings();
     renderChecklist();
   }
 

@@ -1,4 +1,5 @@
 import { normalizeUserPreferences } from "../preferences.js";
+import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js";
 
 export const VAULT_SCHEMA_VERSION = 2;
 
@@ -78,7 +79,7 @@ export function normalizeSection(section, fallbackLabel = "Section", { now = tim
     id: String(section?.id || createLocalId("section")),
     label: String(section?.label || fallbackLabel).trim() || fallbackLabel,
     deidentifiedText: String(section?.deidentifiedText || ""),
-    residualWarnings: Array.isArray(section?.residualWarnings) ? section.residualWarnings : [],
+    residualWarnings: sanitizeResidualWarningMetadata(Array.isArray(section?.residualWarnings) ? section.residualWarnings : []),
     createdAt: String(section?.createdAt || timestamp),
     updatedAt: String(section?.updatedAt || section?.createdAt || timestamp)
   };
@@ -107,7 +108,7 @@ export function normalizeDay(day, index = 0, { now = timestampNow } = {}) {
     openEvidenceExamNote: day?.openEvidenceExamNote && typeof day.openEvidenceExamNote === "object"
       ? {
           text: String(day.openEvidenceExamNote.text || ""),
-          residualWarnings: Array.isArray(day.openEvidenceExamNote.residualWarnings) ? day.openEvidenceExamNote.residualWarnings : [],
+          residualWarnings: sanitizeResidualWarningMetadata(Array.isArray(day.openEvidenceExamNote.residualWarnings) ? day.openEvidenceExamNote.residualWarnings : []),
           savedAt: String(day.openEvidenceExamNote.savedAt || "")
         }
       : null,

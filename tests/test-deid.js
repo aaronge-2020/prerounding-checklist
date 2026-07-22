@@ -466,6 +466,38 @@ const chgModelDeidentifier = createDeidentifier({
 const chgModelResult = await chgModelDeidentifier.deidentifyText(chgModelText);
 assert.equal(chgModelResult.text, chgModelText, "model location false positive must not redact CHG Bath");
 
+const susceptibilityText = [
+  "Susceptibility",
+  "  Escherichia coli",
+  "  LAB METHOD: PHOENIX BROTH MICRODILUTION",
+  "  Amikacin <=8  Sensitive",
+  "  Ampicillin + Sulbactam >16/8  Resistant",
+  "  Piperacillin + Tazobactam 4/4  Sensitive"
+].join("\n");
+const susceptibilityResult = deidentifyTextStructuredOnly(susceptibilityText, new Date("2026-07-21"));
+assert.equal(susceptibilityResult.text, susceptibilityText, "susceptibility assay names and dilution ratios must remain clinical text");
+
+const susceptibilityModelDeidentifier = createDeidentifier({
+  pipelineFactory: async () => async (input) => {
+    const predictions = [];
+    for (const token of ["PHOENIX", "BROTH", "MICRODILUTION"]) {
+      const start = input.indexOf(token);
+      if (start >= 0) predictions.push({ entity_group: "ORGANIZATION", start, end: start + token.length, score: 0.99 });
+    }
+    return predictions;
+  },
+  modelCandidates: [{ modelId: "mock-susceptibility-model", options: {} }]
+});
+const susceptibilityModelResult = await susceptibilityModelDeidentifier.deidentifyText(susceptibilityText);
+assert.equal(susceptibilityModelResult.text, susceptibilityText, "model organization findings inside susceptibility assay context must be rejected centrally");
+
+const alreadyRedactedTimeline = "Timeline: [Hospital Day 27] and [3 months and 17 days prior to hospital admission].";
+assert.equal(
+  deidentifyTextStructuredOnly(alreadyRedactedTimeline, new Date("2026-07-21")).text,
+  alreadyRedactedTimeline,
+  "generated timeline placeholders must be stable under repeated de-identification"
+);
+
 const longChunkText = `${"word ".repeat(220)}Ms. Lita Merrill-Stevenson is here. ${"word ".repeat(220)}`;
 const retryModelDeidentifier = createDeidentifier({
   pipelineFactory: async () => async (input) => {
@@ -507,6 +539,18 @@ assert.ok(timelineDateResult.text.includes("[Hospital Day 8 at 04:54]: Morning l
 assert.deepEqual(timelineDateResult.residualWarnings, [], "timeline placeholders should not create PHI warnings");
 assert.ok(!timelineDateResult.text.includes("2026-05-01"), "exact ISO date should not leak");
 assert.ok(!timelineDateResult.text.includes("2026-04-"), "the real admission date must never be reconstructible from the output");
+
+const hospitalDayRelativeResult = deidentifyTextStructuredOnly(
+  "Symptoms are better today and worsened yesterday; plan tomorrow.",
+  new Date("2026-07-01"),
+  { relativeDate: new Date("2026-07-15") }
+);
+assert.ok(!hospitalDayRelativeResult.text.includes("2026-07-15"), "relative-day output should not expose the packet calendar date");
+assert.equal(
+  hospitalDayRelativeResult.text,
+  "Symptoms are better [Hospital Day 15] and worsened [Hospital Day 14]; plan [Hospital Day 16].",
+  "relative words in a hospital-day packet should resolve against that packet's date while Hospital Day numbering stays anchored to admission"
+);
 
 const legacyDateReview = createEphemeralRedactionReview("EKG (07/09/2026): Sinus rhythm", deidentifyTextStructuredOnly("EKG (07/09/2026): Sinus rhythm", new Date("2026-07-11T12:00:00Z")));
 legacyDateReview.redactions[0].placeholder = "[DATE]";

@@ -48,6 +48,7 @@ import {
   isLikelyMedicationContext
 } from "./deid/lexicons.js";
 import { buildZoneMap, zoneTypeForSpan, isProtectedZoneType } from "./deid/zones.js";
+import { isActionableResidualWarning } from "../patient-context/review.js";
 import { collectDictionaryNameCandidates } from "./deid/name-recall.js";
 // Free-text date/time detection and parsing runs entirely through chrono-node
 // (https://github.com/wanasit/chrono, vendored English-only build) rather
@@ -186,8 +187,33 @@ function isLikelyClinicalResultLine(line) {
   return labelLooksClinical || valueLooksResult;
 }
 
+// Microbiology susceptibility reports use slash-separated dilution values
+// ("16/8", "4/4") and assay names that generic date/PII detectors commonly
+// misread. Keep this classification at the row boundary so every detector
+// consults the same clinical context instead of accumulating token exceptions.
+function isLikelyMicrobiologyResultContext(rawText, start, end) {
+  const line = lineAroundSpan(rawText, start, end).replace(/\s+/g, " ").trim();
+  const nearby = rawText
+    .slice(Math.max(0, rawText.lastIndexOf("\n", Math.max(0, start - 1)) - 220), end + 220)
+    .toLowerCase();
+  const assayMethodLine = /^lab method\s*:/i.test(line) &&
+    /\b(?:phoenix|broth|microdilution|vitek|microscan|sensititre|maldi(?:-tof)?)\b/i.test(line);
+  const susceptibilityRow = /^\s*[A-Za-z][A-Za-z0-9+/'() .-]{1,90}\s+[<>]?\d+(?:\.\d+)?(?:\s*\/\s*[<>]?\d+(?:\.\d+)?)?\s+(?:sensitive|resistant|intermediate)\b/i.test(line);
+  const hasSusceptibilitySection = /\bsusceptibility\b/.test(nearby);
+  return assayMethodLine || (hasSusceptibilitySection && susceptibilityRow);
+}
+
+function isLikelySusceptibilityDilutionValue(rawText, start, end) {
+  const span = rawText.slice(start, end).trim();
+  return /^\d+(?:\.\d+)?\s*\/\s*\d+(?:\.\d+)?$/.test(span) &&
+    isLikelyMicrobiologyResultContext(rawText, start, end);
+}
+
 function isLikelyClinicalSlashValue(rawText, start, end) {
   const span = rawText.slice(start, end);
+  if (isLikelySusceptibilityDilutionValue(rawText, start, end)) {
+    return true;
+  }
   // "2/2" is standard clinical shorthand for "secondary to" ("AKI 2/2
   // dehydration") - a fixed idiom, unlike the score patterns below whose
   // numerator/denominator vary, so it's excluded outright rather than
@@ -211,6 +237,9 @@ function isLikelyClinicalSlashValue(rawText, start, end) {
 
 function isLikelyNonDateSlashMeasurement(rawText, start, end) {
   const span = rawText.slice(start, end).trim();
+  if (isLikelySusceptibilityDilutionValue(rawText, start, end)) {
+    return true;
+  }
   if (!/^\d{1,2}[/-]\d{1,2}$/.test(span)) {
     return false;
   }
@@ -478,6 +507,9 @@ function isProtectedClinicalEntityFalsePositive(rawText, entity) {
 
   const span = rawText.slice(entity.start, entity.end).replace(/\s+/g, " ").trim();
   const normalized = normalizePhrase(span);
+  if (isLikelyMicrobiologyResultContext(rawText, entity.start, entity.end)) {
+    return true;
+  }
   if ((label === "LOCATION" || label === "FACILITY" || label === "ORGANIZATION") && broadNonPhiLocationWords.has(normalized)) {
     return true;
   }
@@ -729,6 +761,7 @@ function isLikelyOrganizationFalsePositive(rawText, start, end) {
   const normalized = normalizePhrase(span);
   const line = lineAroundSpan(rawText, start, end);
   return broadNonPhiLocationWords.has(normalized) ||
+    isLikelyMicrobiologyResultContext(rawText, start, end) ||
     nonNameClinicalPhrases.has(normalized) ||
     isLikelyClinicalHeadingPhrase(rawText, start, end) ||
     /\b(?:xr|xray|ct|cta|mr|mri|fl|ir|us|vas|echo|ekg|eeg|pocus)\b/i.test(line) && /\b(?:rpt|report|views?|con|w\/o|with|without|image|screening|clearance)\b/i.test(line) ||
@@ -1146,7 +1179,7 @@ function constrainPatternEntitySpan(rawText, label, start, end) {
   return { start: constrainedStart, end: constrainedEnd };
 }
 
-export function addStructuredSafeHarborEntities(rawText, entities = [], currentDate = null) {
+export function addStructuredSafeHarborEntities(rawText, entities = [], currentDate = null, { relativeDate = currentDate } = {}) {
   const dateValue = String.raw`(?:\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2},?\s+\d{4})`;
 
   // LLM-generated H&P notes near-universally bold the field label in
@@ -1264,7 +1297,7 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
     addRegexEntities(rawText, entities, label, regex, "structured identifier", skip);
   });
 
-  addTemporalPatternEntities(rawText, entities, currentDate);
+  addTemporalPatternEntities(rawText, entities, relativeDate);
 
   return entities;
 }
@@ -1942,6 +1975,12 @@ export function collectTemporalEntities(rawText, referenceDate = null) {
 
   results.forEach(({ result, start }) => {
     const end = start + result.text.length;
+    // Generated placeholders are already de-identified output, never source
+    // dates. This makes the transformation idempotent across review rerenders,
+    // section recomputation, and repeated user-triggered runs.
+    if (isInsideBracketPlaceholder(text, start, end)) {
+      return;
+    }
     if (isLikelyNonDateSlashMeasurement(text, start, end)) {
       return;
     }
@@ -2234,13 +2273,13 @@ function isTimelineDateLabel(label) {
   return label === "DATE" || label === "DOB";
 }
 
-function buildDateTimeline(rawText, entities, currentDate = null, { includeTemporalFallback = true } = {}) {
-  const fallbackTemporalEntities = includeTemporalFallback ? collectTemporalEntities(rawText, currentDate) : [];
+function buildDateTimeline(rawText, entities, currentDate = null, { includeTemporalFallback = true, relativeDate = currentDate } = {}) {
+  const fallbackTemporalEntities = includeTemporalFallback ? collectTemporalEntities(rawText, relativeDate) : [];
   const dateEntities = mergeEntities([...entities, ...fallbackTemporalEntities], rawText)
     .filter((entity) => isTimelineDateLabel(entity.label))
     .map((entity) => {
       const span = rawText.slice(entity.start, entity.end).trim();
-      const temporal = entity.temporal || parseTemporalSpan(span, { rawText, start: entity.start, end: entity.end }, currentDate);
+      const temporal = entity.temporal || parseTemporalSpan(span, { rawText, start: entity.start, end: entity.end }, relativeDate);
       return { entity, span, temporal };
     });
 
@@ -2276,10 +2315,10 @@ function makeDateTimelinePlaceholder(entity, dateTimeline) {
   return dateTimeline.get(`${entity.start}:${entity.end}`) || "[DATE]";
 }
 
-function resolvedRedactionEntities(rawText, entities, currentDate = null, { includeTemporalFallback = true } = {}) {
-  const temporalEntities = includeTemporalFallback ? collectTemporalEntities(rawText, currentDate) : [];
+function resolvedRedactionEntities(rawText, entities, currentDate = null, { includeTemporalFallback = true, relativeDate = currentDate } = {}) {
+  const temporalEntities = includeTemporalFallback ? collectTemporalEntities(rawText, relativeDate) : [];
   const allEntities = mergeEntities([...entities, ...temporalEntities], rawText);
-  const dateTimeline = buildDateTimeline(rawText, allEntities, currentDate, { includeTemporalFallback });
+  const dateTimeline = buildDateTimeline(rawText, allEntities, currentDate, { includeTemporalFallback, relativeDate });
   return allEntities.map((entity) => ({
     ...entity,
     renderedPlaceholder: isTimelineDateLabel(entity.label)
@@ -3138,7 +3177,7 @@ function deidentifyFromEntities(rawText, entities, modelResult = { modelId: null
   const renderedEntities = resolvedRedactionEntities(rawText, entities, currentDate, options);
   const text = redactResolvedEntities(rawText, renderedEntities);
   const counts = summarizeEntities(renderedEntities);
-  const residualWarnings = scanResidualPhi(text);
+  const residualWarnings = scanResidualPhi(text).filter(isActionableResidualWarning);
   const residualFlags = residualWarnings.slice(0, 12).map(formatPhiWarning);
   const modelFlag = modelResult.modelStatus === "Model unavailable; structured redaction only." || modelResult.modelStatus === "structured only"
     ? [modelResult.modelStatus === "structured only" ? "Structured-only de-identification." : "Model unavailable; structured redaction only."]
@@ -3161,10 +3200,10 @@ function formatPhiWarning(warning) {
   return `${label}: ${warning.type} - ${warning.snippet}`;
 }
 
-export function deidentifyTextStructuredOnly(rawText, currentDate = null) {
+export function deidentifyTextStructuredOnly(rawText, currentDate = null, options = {}) {
   const bracketEntities = collectBracketedPlaceholderEntities(rawText);
-  const { entities } = expandIdentityGraphEntities(rawText, addStructuredSafeHarborEntities(rawText, bracketEntities, currentDate));
-  return deidentifyFromEntities(rawText, entities, { modelId: null, modelStatus: "structured only" }, currentDate);
+  const { entities } = expandIdentityGraphEntities(rawText, addStructuredSafeHarborEntities(rawText, bracketEntities, currentDate, options));
+  return deidentifyFromEntities(rawText, entities, { modelId: null, modelStatus: "structured only" }, currentDate, options);
 }
 
 const BRACKET_LABEL_MAP = {
@@ -3408,13 +3447,14 @@ export function createDeidentifier(options = {}) {
     const mode = runOptions.mode || options.mode || "hybrid";
     const onProgress = runOptions.onProgress;
     const admissionDate = runOptions.admissionDate || null;
+    const relativeDate = runOptions.relativeDate || admissionDate;
     reportProgress(onProgress, { stage: "starting", message: "Starting local de-identification...", percent: 0.02 });
 
     const bracketEntities = collectBracketedPlaceholderEntities(rawText);
 
     if (mode === "structured-only") {
       reportProgress(onProgress, { stage: "structured", message: "Running structured redaction...", percent: 0.25 });
-      return deidentifyTextStructuredOnly(rawText, admissionDate);
+      return deidentifyTextStructuredOnly(rawText, admissionDate, { relativeDate });
     }
 
     const modelResult = await detectModelEntities(rawText, { onProgress });
@@ -3424,17 +3464,18 @@ export function createDeidentifier(options = {}) {
     if (mode === "model-only") {
       reportProgress(onProgress, { stage: "redacting", message: "Creating redacted preview...", percent: 0.9 });
       return deidentifyFromEntities(rawText, modelEntities, modelResult, admissionDate, {
-        includeTemporalFallback: runOptions.includeTemporalFallback !== false
+        includeTemporalFallback: runOptions.includeTemporalFallback !== false,
+        relativeDate
       });
     }
 
     reportProgress(onProgress, { stage: "structured", message: "Running structured redaction and date conversion...", percent: 0.76 });
-    let structuredEntities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addStructuredSafeHarborEntities(rawText, bracketEntities, admissionDate), rawText));
+    let structuredEntities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addStructuredSafeHarborEntities(rawText, bracketEntities, admissionDate, { relativeDate }), rawText));
     modelEntities = modelEntities.filter((entity) => !overlapsAny(entity, structuredEntities));
     reportProgress(onProgress, { stage: "aliases", message: "Checking repeated names and aliases...", percent: 0.84 });
     const { entities } = expandIdentityGraphEntities(rawText, [...structuredEntities, ...modelEntities]);
     reportProgress(onProgress, { stage: "redacting", message: "Creating redacted preview...", percent: 0.92 });
-    const result = deidentifyFromEntities(rawText, entities, modelResult, admissionDate);
+    const result = deidentifyFromEntities(rawText, entities, modelResult, admissionDate, { relativeDate });
     reportProgress(onProgress, { stage: "complete", message: "De-identified preview ready.", percent: 1 });
     return result;
   }
