@@ -3,6 +3,7 @@ import { buildTrajectoryBlock, sortDays } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js?v=20260722-guideline-library";
 import { naturalLanguagePrompt } from "./natural-language.js";
+import { buildProgressNotePacket } from "./progress-note-packet.js";
 
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";
 export const TEAM_PREFERENCES_PROMPT_TOKEN = "@team-preferences";
@@ -13,7 +14,7 @@ export const TEAM_PREFERENCES_PROMPT_TOKEN = "@team-preferences";
 // referencing any other deleted variable).
 export const DEFAULT_PROMPT_TEMPLATES = {
   initial_admission_rounds: `@team-preferences\n\n@admission-current-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
-  daily_progress_note: `@team-preferences\n\n@progress-guidelines\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  daily_progress_note: `@team-preferences\n\n@progress-guidelines\n\n@progress-note-packet`,
   teaching_case_trajectory: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   medication_explainer_by_problem: `@medications\n\n@selected-day`,
   medication_safety_audit: `@medications\n\n@labs\n\n@selected-day`,
@@ -27,6 +28,7 @@ export const SMART_PROMPT_VARIABLES = [
   { token: TEAM_PREFERENCES_PROMPT_TOKEN, label: "Team preferences", description: "The exact text in your Team preferences guideline, if any." },
   { token: "@admission-packet", label: "Admission packet", description: "All saved admission fields, labeled." },
   { token: "@selected-day", label: "Selected hospital day", description: "The chosen hospital-day packet; defaults to the latest saved day." },
+  { token: "@progress-note-packet", label: "Progress-note packet", description: "Curated carry-forward context plus the selected day, in clinical order." },
   { token: "@checklist-answers", label: "Checklist answers", description: "History and physical exam answers." },
   { token: "@exam-findings", label: "Exam findings across hospital days", description: "A dated timeline of saved exam findings for every hospital day." },
   { token: "@selected-day-exam-findings", label: "Selected-day exam findings", description: "Exam findings saved for the selected hospital day only." },
@@ -187,6 +189,7 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
     "@selected-day": usingAdmission
       ? sectionsToPromptBlock(patient?.contextSections || [], "Admission")
       : (selectedDay ? sectionsToPromptBlock(selectedDay.sections || [], `Selected day: ${selectedDay.date} - ${selectedDay.label}`) : "No saved hospital day."),
+    "@progress-note-packet": buildProgressNotePacket({ patient, selectedDay }),
     "@checklist-answers": checklistAnswersSummary(snapshot, answers, quickNotes),
     "@openevidence-exam-note": savedExamNoteText(selectedDay) || "No saved OpenEvidence exam note.",
     "@exam-findings": buildExamFindingsTimeline(patient),

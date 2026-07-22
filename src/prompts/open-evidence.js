@@ -2,6 +2,7 @@ import { checklistAnswersSummary } from "../checklist/state.js";
 import { buildTrajectoryBlock } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js";
 import { naturalLanguagePrompt } from "./natural-language.js";
+import { buildProgressNotePacket } from "./progress-note-packet.js";
 
 export const OPEN_EVIDENCE_TASKS = [
   {
@@ -101,17 +102,14 @@ ${compactText(blocks.checklist, 10000)}
 }
 
 export function buildDailyProgressPrompt({ patient, selectedDayId, guidelines }) {
-  const blocks = patientBlocks(patient, selectedDayId);
+  const selectedDay = [...(patient?.days || [])]
+    .sort((left, right) => `${left.date || ""} ${left.createdAt || ""}`.localeCompare(`${right.date || ""} ${right.createdAt || ""}`))
+    .find((day) => day.id === selectedDayId) || [...(patient?.days || [])].at(-1) || null;
   return `Write a concise, decision-focused daily progress note for the selected hospital day from this de-identified information. Use the selected hospital day as the primary source of truth; use the admission packet only for relevant baseline conditions, reason for admission, recent procedures, and unresolved active problems. Do not reproduce prior notes or the full hospital course. Prioritize the problem driving the selected hospital day’s decisions, compress stable or resolved problems, and output only One-Liner, Subjective, Objective, Assessment, Plan, and Disposition. Complete every required section before adding detail; never end mid-sentence or mid-bullet. Use only information present in this prompt and only recommendations or interpretations supported by the chart; if information is absent, omit it or state that it is not documented. Do not add guideline names, literature-based recommendations, treatment thresholds, or management changes from general medical knowledge. Include a differential only when diagnostic uncertainty changes management; do not list low-probability alternatives for completeness.
 
 ${documentationInstructionForTask("daily_progress_note", guidelines)}
 
-${compactText(blocks.patientContext, 18000)}
-
-${compactText(blocks.trajectory, 24000)}
-
-Here are the checklist answers from today's rounds.
-${compactText(blocks.checklist, 10000)}
+${compactText(buildProgressNotePacket({ patient, selectedDay }), 28000)}
 `;
 }
 

@@ -1,5 +1,13 @@
 import assert from "node:assert/strict";
 import { buildPromptPreviewSegments, tokenAccentColor } from "../src/prompts/custom-templates.js";
+import { promptVariableTokenAtCaret, scrollPromptOutputToVariable } from "../src/ui/prompts/controller.js";
+import { renderHighlightedSegments } from "../src/ui/prompts/presentation.js";
+
+const escapeHtml = (value) => String(value)
+  .replaceAll("&", "&amp;")
+  .replaceAll("<", "&lt;")
+  .replaceAll(">", "&gt;")
+  .replaceAll('"', "&quot;");
 
 // Same token -> same color everywhere (menu swatch and highlighted output
 // must visually agree), and it must not depend on call order/position.
@@ -37,6 +45,36 @@ import { buildPromptPreviewSegments, tokenAccentColor } from "../src/prompts/cus
 {
   const segments = buildPromptPreviewSegments("Plain text with @nothing-registered.", {});
   assert.deepEqual(segments, [{ type: "text", value: "Plain text with @nothing-registered." }]);
+}
+
+// The editable template keeps visual spans in its backdrop so the textarea
+// itself remains the sole editable click surface.
+{
+  const segments = buildPromptPreviewSegments("Use @selected-day now.", { "@selected-day": "@selected-day" });
+  const backdrop = renderHighlightedSegments(segments, escapeHtml, {}, { interactive: false });
+  assert.match(backdrop, /<span class="var-fill"/);
+}
+
+// The caret fallback still resolves a token when a user clicks ordinary text
+// in the transparent editor surface.
+{
+  assert.equal(promptVariableTokenAtCaret("Use @selected-day now.", 7), "@selected-day");
+  assert.equal(promptVariableTokenAtCaret("Use @selected-day now.", 16), "@selected-day");
+  assert.equal(promptVariableTokenAtCaret("Use @selected-day now.", 0), "");
+}
+
+// Preview buttons identify their variable with data-token, independent of the
+// user-facing tooltip text used for accessibility.
+{
+  const output = {
+    offsetTop: 0,
+    clientHeight: 300,
+    lastScroll: null,
+    querySelectorAll: () => [{ dataset: { token: "@selected-day" }, offsetTop: 450, offsetHeight: 30 }],
+    scrollTo: (options) => { output.lastScroll = options; }
+  };
+  assert.equal(scrollPromptOutputToVariable(output, "@selected-day"), true);
+  assert.deepEqual(output.lastScroll, { top: 360, behavior: "smooth" });
 }
 
 console.log("Prompt preview segment/color tests passed");

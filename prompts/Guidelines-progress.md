@@ -1,129 +1,113 @@
 # Daily Progress Note Instructions
 
-Write a concise, decision-focused daily progress note for the primary team in strict SOAP format with strict separation between sections. Use the selected hospital day as the primary source of truth. Lead with what changed, why it matters today, and what documented decision or action follows.
+Write a concise, decision-focused daily progress note for the primary inpatient team. Use strict SOAP organization and emphasize what changed on the selected hospital day, why it matters, what remains uncertain, what the team has actually decided to do, and what prevents discharge.
 
-## Source Priority And Conflicts
+Before writing, silently classify every supplied statement as selected-day evidence, carry-forward background, a documented completed action, a current order, a medication administration, a medication hold or discontinuation, a planned action, a consultant recommendation, a pending decision, a question for the team, conflicting information, or information whose timing cannot be established. Do not output this classification.
 
-Give greatest weight to timestamped information from the selected hospital day, including medication administration records, current orders, laboratory results, vital signs, bedside findings, and consultant recommendations. Use earlier progress notes and the admission packet only for relevant background, the reason for admission, recent procedures, and unresolved active problems.
+Do not convert background information, a planned discussion, a team question, or customary medical practice into a current recommendation. Do not infer that an action was completed merely because it was planned. Use consulted, consultation requested, team plans to consult, consultant recommended, and procedure completed only when the supplied source supports that exact status.
 
-Do not allow an older plan to override newer medication administration, order, laboratory, or bedside information.
+## Silent chronology and consistency check
 
-When sources conflict, do not silently reconcile them. Briefly identify the discrepancy and state what requires confirmation. Distinguish a medication that was administered and subsequently held from one that was held throughout the day. Do not assume that different anticoagulants listed in different parts of the chart were given together or are interchangeable.
+First establish the selected calendar date and hospital day. Treat those explicit anchors as authoritative. If another source incorrectly labels the encounter as hospital day one, one day before admission, yesterday, or another incompatible time, do not copy or silently repair that relative label. Use the explicit date or hospital day when possible; otherwise state that the timing is unclear.
 
-Use only information contained in the supplied material. Do not reconstruct missing facts from medical knowledge, prior examples, or customary practice.
+Create a silent event timeline for the dominant problem. Keep selected-day events separate from earlier events. Do not create a sequence from laboratory values merely because they appear in a particular order in the source.
 
-## Length And Priorities
+For every transfusion mentioned, identify the documented administration time, the nearest pre-transfusion value, and the nearest post-transfusion value. If the number or timing of units is incomplete, report the known values and say that the chronology is insufficient to assess the response. Do not call anemia transfusion refractory, an inappropriate response, or failure to respond unless clearly timed evidence supports that conclusion. Prefer continued transfusion requirement when repeated transfusions are documented but their response cannot be reliably calculated.
 
-Target a brief attending-level presentation. Give the most space to the problem driving today’s decisions. Compress or omit stable chronic, resolved, historical, and background problems first. Include no more than three major active problem groups unless an additional problem requires a distinct action today.
+Create a separate silent medication ledger for each anticoagulant and antiplatelet medication. Track the drug name, indication when supplied, route, whether it was administered, held, stopped, or merely proposed, and the relevant time. Do not treat Eliquis, rivaroxaban, systemic heparin, prophylactic heparin, and hemodialysis catheter-lock heparin as interchangeable. When plans conflict, state the reconciliation problem rather than selecting a regimen.
 
-Never end with an incomplete sentence, problem, or section. The note must end with a complete Plan and a one-sentence Disposition.
+## Source priority
 
-Use exactly these top-level sections, in this order:
+Treat the explicitly identified selected hospital day as the current encounter. Give greatest weight to clearly timed selected-day medication administrations, active orders, vital signs, laboratory results, bedside findings, and consultant decisions. Use carry-forward information only to establish the original reason for admission, relevant baseline conditions, important procedures or devices, medication indications, and the baseline state of unresolved problems.
 
-One-Liner
+Do not allow an older assessment or plan to override newer selected-day evidence. Do not describe an older oxygen requirement, vital sign, examination, medication regimen, or diagnostic result as current. When only the latest known value is available, identify it as the latest documented value and do not imply that it is current.
 
-Subjective
+When selected-day sources conflict, do not silently reconcile them. Briefly state clinically important discrepancies and what requires confirmation. Distinguish a medication administered and later held from one held throughout the day. Distinguish a current order from an administration record and from a narrative plan.
 
-Objective
+Use only supplied information. Do not introduce diagnoses, causal claims, thresholds, tests, treatments, consultant recommendations, procedures, escalation criteria, medication restart timing, or contingencies from general medical knowledge. Temporal association alone does not establish causation. For example, do not attribute hypotension to bleeding, a laboratory change to dialysis, or respiratory failure to medication nonadherence unless that relationship is documented or explicitly presented as uncertain.
 
-Assessment
+## Output and length
 
-Plan
+Return only the completed note. Use exactly these top-level headings in this order: One-Liner, Subjective, Objective, Assessment, Plan, and Disposition.
 
-Disposition
+Target a brief attending-level note. Include no more than three major active problem groups unless another problem has a separate selected-day decision or action. Compress stable, chronic, resolved, and historical material before shortening the dominant active problem. Complete every section and sentence.
 
 ## One-Liner
 
-Write one sentence of approximately twenty to thirty words containing the patient’s age, sex, hospital day, reason for admission, and the dominant active problem. Include only two to four comorbidities or recent interventions that directly affect today’s decisions.
-
-Do not include medication doses, a complete antithrombotic regimen, old test results, or resolved diagnoses. Do not repeat the full one-liner elsewhere.
+Write one sentence of approximately twenty to thirty words containing age, sex, hospital day, original reason for admission, and the dominant active problem driving care today. Include only comorbidities or recent interventions that directly alter today’s decisions. Do not include medication doses, old test results, a complete antithrombotic regimen, or an unlocalized suspected diagnosis stated as established.
 
 ## Subjective
 
-Organize Subjective using the labels Overnight and Interval Events, Patient Self-Report, and Pertinent Symptoms.
+Use the labels Overnight and Interval Events, Patient Self-Report, and Pertinent Symptoms.
 
-Overnight and Interval Events should contain important events reported by the patient, nursing, or cross-cover, including completed interventions. State each event once. Place associated measurements, laboratory values, and imaging findings in Objective.
+Overnight and Interval Events should contain important patient, nursing, or cross-cover reports and completed interventions. Do not place vital-sign measurements, laboratory values, imaging interpretations, consultant recommendations, or future plans in this subsection. A reported transfusion or bloody bowel movement may appear here; its measured consequences belong in Objective or Assessment.
 
-Patient Self-Report should state how the patient feels and any meaningful change from the prior day.
+Patient Self-Report should state how the patient feels compared with the prior day and include relevant goals or concerns.
 
-Pertinent Symptoms should contain only spontaneous patient-experienced symptoms or negatives that affect today’s diagnosis, risk assessment, management, or disposition.
+Pertinent Symptoms should include only spontaneous symptoms and meaningful negatives that change diagnosis, risk, management, or disposition. Do not reproduce a complete review of systems.
 
-Do not include physical examination findings, vital signs, laboratory values, imaging results, provider interpretation, consultant recommendations, or treatment plans in Subjective.
-
-A finding elicited by palpation, movement, strength testing, range-of-motion testing, or another examination maneuver belongs in Objective, even when the patient reports discomfort during the maneuver. Do not describe tenderness to palpation, guarding, edema, breath sounds, pulses, strength, or range of motion as subjective symptoms.
-
-Do not reproduce a complete review of systems. Omit unchanged symptoms and routine functional details unless they affect immediate management or disposition.
+Findings elicited by palpation, movement, range-of-motion testing, strength testing, or another examination maneuver belong in Objective rather than Subjective.
 
 ## Objective
 
-Organize Objective using the labels Vitals/Clinical Support, Focused Examination, and Key Labs/Diagnostics.
+Use the labels Vitals and Clinical Support, Focused Examination, and Key Labs and Diagnostics.
 
-Vitals and Clinical Support should contain only clinically relevant vital signs, oxygen or ventilatory support, and other support needs. When relevant, provide the value, direction of change, and meaningful baseline. Time-qualify the information. Do not describe an overnight value as the current condition. If current vital signs were not obtained or are unavailable, say so.
+Vitals and Clinical Support should include only decision-relevant vital signs, oxygen or ventilatory support, dialysis or circulatory support, and meaningful changes from baseline. Time-qualify every status. Do not describe an overnight measurement or an older narrative statement as current. If current vital signs, oxygen support, or other clinically important status is unavailable, say so directly.
 
-Focused Examination should contain only new, abnormal, changed, or decision-relevant findings. Omit a routine system-by-system examination and predictable normal findings unless they help evaluate an important competing concern.
+Focused Examination should contain only selected-day findings that are new, abnormal, changed, or necessary to evaluate an important competing concern. Do not generate a routine system-by-system examination. Do not include generic normal findings solely to make the note appear complete.
 
-Key Results should contain only laboratory, imaging, microbiology, or diagnostic findings that change, support, or challenge today’s interpretation or management. Use the current value and the shortest meaningful trend. Do not reproduce complete panels, old microbiology reports, or full imaging narratives.
+Key Labs and Diagnostics should include only findings that support, challenge, or change today’s interpretation or management. Give the shortest meaningful trend with enough timing to prevent a false sequence. Do not judge a transfusion response unless the transfusion and follow-up measurement are clearly timed. If the source reports a total number of units without complete timing, preserve that limitation.
 
-Present Objective findings without clinical interpretation or treatment recommendations.
+Do not reproduce complete panels, chronic expected abnormalities, or imaging narratives. Do not include unrelated incidental imaging findings. Report objective findings without causal or management interpretation. Statements such as likely after dialysis, consistent with continued bleeding, excludes hemolysis, or appropriate response belong in Assessment and require adequate evidence.
 
 ## Assessment
 
-Write one brief global synthesis of the patient’s trajectory and dominant active issue. Do not repeat the entire Subjective or Objective sections.
+Write one or two sentences describing the overall trajectory, dominant active issue, and principal management-changing uncertainty. Use improving, worsening, unchanged, stable, or tenuous only when current evidence supports the term. Distinguish persistence of disease activity from physiologic stability.
 
-Use improving, worsening, or unchanged only when the supplied data support that conclusion. When the current trajectory cannot be established because vital signs are missing or the source is internally inconsistent, describe the specific concern and uncertainty instead of forcing a trajectory label.
+Do not call the patient hemodynamically stable when current vital signs are unavailable or when selected-day sources materially disagree. Do not label hypotension as hemorrhagic or bleeding-associated unless the source establishes that relationship. Do not call a suspected bleeding source established when endoscopy or imaging has not localized it.
 
-Do not place orders or new management recommendations in Assessment.
+Do not place orders or problem-by-problem plans in the overall Assessment.
 
 ## Plan
 
-Organize the Plan by active clinical problem, ordered from highest to lowest priority. Combine related conditions when they drive the same decision. For example, active gastrointestinal bleeding, acute blood-loss anemia, and bleeding-associated hypotension may be one problem group when they share the same evaluation and management.
+Organize the Plan by active clinical problem from highest to lowest priority. Combine related diagnoses when they produce the same decisions. Suspected gastrointestinal bleeding, acute blood-loss anemia, transfusion requirement, and possible bleeding-related hypotension may be one problem group when their evaluation and management are inseparable, but do not assert a causal connection that the source has not established.
 
 Under each problem, write Assessment followed by Actions.
 
-The problem-specific Assessment should explain what is happening, its current severity and trajectory, the leading chart-supported interpretation, the most important uncertainty or competing explanation when it changes management, and why the problem matters today.
+The problem-specific Assessment should contain reasoning rather than merely restating the diagnosis. For the dominant problem, use two or three concise sentences describing current severity and trajectory, the leading chart-supported interpretation, the most important management-changing uncertainty or competing explanation, the minimum supporting evidence, and why the problem matters today. Use one sentence for lower-priority problems.
 
-Use two or three concise sentences for the dominant problem and one sentence for lower-priority problems. Do not merely restate the diagnosis. Do not reproduce the complete Objective section, but briefly reference the essential evidence needed to support the interpretation.
+When a chart-supported diagnosis remains suspected rather than established, use language such as suspected, possible, or not localized. Do not claim that hemolysis, a consumptive process, infection, treatment failure, or another competing explanation has been definitively excluded unless the complete supplied evidence supports that conclusion.
 
-Use precise language. Do not call anemia transfusion refractory when the record only establishes an ongoing transfusion requirement or suspected continued blood loss. Do not call the patient hemodynamically stable when current vital signs are unavailable. Do not assign a cause to hypotension unless the supplied chart supports that conclusion.
+Actions should contain only actions documented for the selected day as ordered, continued, held, stopped, requested, planned, recommended, or necessary to resolve an explicitly documented management-changing uncertainty.
 
-Actions should contain only source-supported actions for the selected hospital day. Put the primary decision or action first. Use no more than three concise actions for the dominant problem and one or two for other problems.
+Every action must have a clear problem, source-supported indication, and purpose. Put the primary decision first. Use no more than three concise actions for the dominant problem and one or two for lower-priority problems.
 
-An action is eligible for inclusion only when the supplied source documents it as ordered, planned, requested, recommended, continued, held, or necessary to resolve an explicitly documented management-changing uncertainty.
+Preserve action status precisely. If the team plans to involve a consultant but placement of the consultation is not documented, say that the team plans to involve the consultant and that consultation status or recommendations are pending. Do not say consultation requested or await recommendations unless the source establishes that stage.
 
-Do not add routine tests, fluid treatment, transfusion thresholds, imaging choices, consultations, procedures, monitoring frequencies, prophylaxis, medication changes, escalation criteria, or restart timing merely because they would be customary.
+Do not add routine laboratory studies, imaging, fluids, transfusions, consultations, procedures, monitoring frequencies, prophylaxis, medication changes, restart timing, escalation criteria, or discharge follow-up merely because they would be customary. Do not invent numeric thresholds.
 
-Do not convert a question for the team into a recommendation. Do not turn a planned specialist evaluation into a specific procedure unless that procedure was documented. If the next step has not been determined, state the unresolved decision or pending consultant recommendation rather than inventing an answer.
+Do not turn a question for the team into a recommendation. When a decision is pending, identify the pending decision or consultant recommendation rather than supplying an answer. Include a contingency only when both its trigger and response are documented.
 
-Include contingencies only when both the trigger and the response are documented. Never invent a numeric threshold.
+## Medication accuracy
 
-## Medication Accuracy
+Place medication decisions under the problem they address. State medication status precisely, including when a medication was administered and subsequently held on the selected day. Distinguish a scheduled medication, an active order, and documented administration.
 
-Describe medication status precisely. State when a drug was given and later held if both events occurred. When the chart alternates among different anticoagulants or contains incompatible plans, identify the reconciliation issue rather than presenting one regimen as established fact.
+When the chart contains incompatible anticoagulant, antiplatelet, or other medication plans, identify the exact reconciliation issue instead of choosing a regimen. Do not interpret a dialysis-catheter heparin dose as systemic anticoagulation.
 
-Place medication changes under the problem they address. Do not create a separate medication-list problem. Do not state that all antithrombotic agents were held before an event when the medication record shows that one or more agents were administered that day.
+Include dose, route, and frequency when they affect today’s decision or are necessary to communicate a documented action. Do not reproduce the complete medication administration record.
 
-## Stable And Chronic Problems
+## Stable and chronic problems
 
-Omit stable chronic and resolved problems when they require no decision or change today. When a chronic condition has an active inpatient action, combine it with related conditions and summarize it in one concise line.
+Omit stable or resolved problems requiring no current decision. Combine chronic conditions into one concise line only when they have active inpatient management relevant today. Do not create separate problems solely to repeat routine medications, completed antibiotic courses, unchanged devices, or expected chronic laboratory abnormalities.
 
-Do not create separate problems for routine hypothyroidism treatment, completed antibiotic courses, chronic laboratory abnormalities, or unchanged devices unless they affect a decision on the selected hospital day.
+Do not state that a resolved infection has no evidence of recurrence unless selected-day evidence addresses recurrence. Do not make an upcoming procedure a bleeding-related or discharge-related issue unless the chart explicitly connects it to today’s decisions. If an upcoming procedure could affect current management but its status is unclear, identify it as a coordination question rather than inventing a plan.
 
 ## Disposition
 
-End with one sentence stating the anticipated destination and the specific medical, functional, or social barriers that still prevent discharge. Do not invent a destination that is not present in the supplied information.
+End with one sentence stating the documented anticipated destination and the specific medical, functional, or social barriers preventing discharge. Do not invent a destination. Do not convert every unresolved problem into a discharge barrier. Include only barriers documented in the source or directly established by the selected-day facts.
 
-## Final Verification
+## Final verification
 
-Before finalizing, confirm that the one-liner appears before Subjective and only once.
+Before returning the note, confirm that the explicit selected date and hospital day drive the presentation; corrupted relative-day labels were not propagated; current and historical information are not conflated; the transfusion chronology supports any statement about response; medication events reflect their timestamps and routes; catheter heparin was not mistaken for systemic anticoagulation; consultant actions are described at their documented stage; questions remain questions; every Plan action is source-supported; no threshold, procedure, contingency, causal claim, consultant recommendation, or medication restart timing was invented; and every included sentence changes the assessment, today’s decision, risk, or disposition.
 
-Confirm that patient and nursing reports are in Subjective, measured and examined findings are in Objective, global synthesis is in Assessment, and problem-specific reasoning and documented actions are in Plan.
-
-Confirm that every medication status reflects the available timestamps and that conflicting medication information is identified rather than silently resolved.
-
-Confirm that no procedure, threshold, treatment, diagnosis, causal claim, consultant recommendation, or medication restart plan was invented.
-
-Confirm that essential evidence may be briefly referenced in the corresponding problem assessment, but no section repeats long passages from another section.
-
-Confirm that every included problem requires a decision or action today and that deleting any sentence would remove clinically meaningful information.
-
-Return only the completed note.
+If the supplied information is inadequate to determine a management-changing fact, say that it is unavailable, unclear, conflicting, or requires confirmation. Do not fill the gap with customary care.

@@ -9,6 +9,7 @@ import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidM
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
 import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
 import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260722-guideline-concept-v2";
+import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260721-action-gate-1";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import { ensureAdditionalGuidelineSets, ensureAttendingProgressGuidelineSet, ensureCanonicalProgressGuidelineSet, ensureCanonicalProgressGuidelineSetV2, ensureCanonicalProgressGuidelineSetV3, ensureConsultingGuidelineSet, ensureCurrentAdmissionGuidelineSet, ensureCurrentAdmissionGuidelineSetV2, ensureCurrentGuidelineSets, ensureCurrentProgressGuidelineSet, ensureFocusedProgressGuidelineSet, ensureLatestProgressGuidelineSet, ensureProblemAssessmentProgressGuidelineSet, ensureReasoningProgressGuidelineSet, ensureRevisedProgressGuidelineSet, ensureTeamPreferencesGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260722-guideline-concept-v2";
@@ -45,8 +46,8 @@ import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-fu
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260714-deid-ux-polish";
 import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260721-admission-context";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260714-token-color-fixed-popover";
-import { createPromptTaskController, filterSmartVariableMenu, positionSmartVariableMenu, scrollPromptOutputToVariable } from "./prompts/controller.js?v=20260714-color-menu-reposition";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260722-prompt-click-repair";
+import { createPromptTaskController, filterSmartVariableMenu, positionSmartVariableMenu, promptVariableTokenAtCaret, scrollPromptOutputToVariable } from "./prompts/controller.js?v=20260722-prompt-click-repair";
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260722-guideline-concept-v2";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721-persisted-anchor";
@@ -941,7 +942,7 @@ function renderSectionEditor(section, scope) {
   const editing = isSectionTextEditing(scope, section.id);
   const draftText = sectionDraftText(scope, section.id, section.deidentifiedText);
   synchronizeReviewPlaceholders(review, draftText);
-  return redactionPresentation.renderSectionEditor({ section, scope, editing, pendingFocus: app.pendingSectionReviewFocus, review, draftText, sections: reviewSectionsForScope(scope), reviewFor: (id) => sectionReviewFor(scope, id) });
+  return redactionPresentation.renderSectionEditor({ section, scope, roleOptions: packetRoleOptions(scope), editing, pendingFocus: app.pendingSectionReviewFocus, review, draftText, sections: reviewSectionsForScope(scope), reviewFor: (id) => sectionReviewFor(scope, id) });
 }
 
 function renderWarnings(sections, scope) {
@@ -999,7 +1000,7 @@ function renderDaily() {
               <div class="section-heading">
                 <div>
                   <h2>Admission packet</h2>
-                  <p class="muted">De-identified background information used throughout this hospital stay.</p>
+                  <p class="muted">Keep durable background here. Use each field’s purpose so daily prompts receive only the context that still matters.</p>
                 </div>
                 <div class="button-row">
                   <button class="button--secondary" type="button" data-action="add-context-section">${icon("plus")} Add field</button>
@@ -1313,7 +1314,8 @@ function refreshPromptPreview() {
     if (templateBackdrop) {
       const variables = promptVariablesForPatient(patient, { selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets });
       const identityMap = Object.fromEntries(variables.map((entry) => [entry.token, entry.token]));
-      templateBackdrop.innerHTML = renderHighlightedSegments(buildPromptPreviewSegments(template, identityMap), escapeHtml, app.tokenColorOverrides);
+      const templateSegments = buildPromptPreviewSegments(template, identityMap);
+      templateBackdrop.innerHTML = renderHighlightedSegments(templateSegments, escapeHtml, app.tokenColorOverrides, { interactive: false });
     }
   } catch (error) {
     highlighted.textContent = error instanceof Error ? error.message : "Unable to build prompt.";
@@ -1435,6 +1437,7 @@ function collectSectionRows(containerId) {
     id: row.dataset.sectionId,
     createdAt: row.dataset.createdAt,
     label: row.querySelector(".section-label")?.value || "",
+    role: row.querySelector(".section-role")?.value || "",
     text: row.querySelector(".section-text")?.value || ""
   }));
 }
@@ -1461,7 +1464,7 @@ function refreshDeidControlsInActiveView() {
 }
 
 async function deidentify(rawText, { referenceDate = app.admissionDate } = {}) {
-  admissionDateAnchor.restore();
+  if (!app.admissionDate) admissionDateAnchor.restore();
   if (!app.admissionDate) {
     await admissionDateGate.requestAdmissionDateFromUser();
     admissionDateAnchor.remember();
@@ -1481,6 +1484,11 @@ async function deidentify(rawText, { referenceDate = app.admissionDate } = {}) {
 }
 
 async function handleClick(event) {
+  if (event.target.id === "promptPreview") {
+    const token = promptVariableTokenAtCaret(event.target.value, event.target.selectionStart);
+    if (token) requestAnimationFrame(() => scrollPromptOutputToVariable(byId("promptOutputHighlighted"), token));
+    return;
+  }
   const target = event.target.closest("[data-action]");
   if (target && target.dataset.action === "import-phone-return") console.log("TEXTAREA VALUE IN HANDLER:", document.getElementById("phoneReturnText")?.value.length, document.getElementById("phoneReturnText")?.value.substring(0, 50));
   if (!target) return;
@@ -1515,8 +1523,8 @@ async function handleClick(event) {
         if (isExpanded) requestAnimationFrame(() => (editor.querySelector("[data-redaction-document]") || editor.querySelector(".section-text"))?.focus());
       }
     }
-    if (action === "add-context-section") await mutateSections("context", (sections) => addSection(sections, "Other"));
-    if (action === "add-daily-section") await mutateSections("daily", (sections) => addSection(sections, "Other"));
+    if (action === "add-context-section") await mutateSections("context", (sections) => addSection(sections, "Additional admission source", { role: defaultPacketRole("context", Number.MAX_SAFE_INTEGER), scope: "context" }));
+    if (action === "add-daily-section") await mutateSections("daily", (sections) => addSection(sections, "Additional daily source", { role: defaultPacketRole("daily", Number.MAX_SAFE_INTEGER), scope: "daily" }));
     if (action === "move-section-up") await mutateSections(target.dataset.scope, (sections) => reorderSections(sections, target.dataset.sectionId, "up"));
     if (action === "move-section-down") await mutateSections(target.dataset.scope, (sections) => reorderSections(sections, target.dataset.sectionId, "down"));
     if (action === "remove-section") await mutateSections(target.dataset.scope, (sections) => removeSection(sections, target.dataset.sectionId));
@@ -1623,6 +1631,10 @@ async function handleClick(event) {
     if (action === "confirm-remove-guideline-set") guidelineSetsController.confirmRemovePending(); if (action === "delete-selected-guidelines") guidelineSetsController.deleteSelected();
     if (action === "clear-guideline-selection") guidelineSetsController.clearSelection();
     if (action === "insert-prompt-variable") insertPromptVariable(target.dataset.token);
+    if (action === "jump-to-prompt-variable") {
+      event.preventDefault();
+      scrollPromptOutputToVariable(byId("promptOutputHighlighted"), target.dataset.token);
+    }
     if (action === "copy-prompt") { if (app.demoSession) demoController.observeAction(action); await copyText(currentPromptText()); }
     if (action === "open-open-evidence") window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
     if (action === "reset-variable-colors") { app.tokenColorOverrides = {}; saveTokenColorOverrides(app.tokenColorOverrides); renderPrompts(); }
@@ -2483,6 +2495,7 @@ async function deidentifySectionRows(scope, containerId, priorSections = [], ref
   }
   const sections = await replaceSectionsFromFormAsync(rows, (text) => deidentify(text, { referenceDate }), {
     priorSections,
+    scope,
     onResult: ({ row, result, prior, plan }) => {
       const key = reviewKey(scope, row.id);
       const existing = app.phiReviews.get(key);
@@ -3543,6 +3556,12 @@ function handleInput(event) {
   if (event.target.id === "vaultPassphrase") {
     clearVaultUnlockError();
     updateVaultPassphraseStrength(event.target.value);
+    return;
+  }
+  if (event.target.id === "quickDeidAdmissionDateInput" || event.target.id === "dailyAdmissionDateInput") {
+    app.admissionDate = event.target.value;
+    if (app.view === "daily") refreshDeidControlsInActiveView();
+    if (app.view === "quickDeid") renderQuickDeid();
     return;
   }
   if (event.target.id === "deleteVaultConfirmation") {

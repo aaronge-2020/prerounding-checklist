@@ -1,16 +1,11 @@
 import { normalizeUserPreferences } from "../preferences.js";
 import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js";
+import { CONTEXT_PACKET_ROLES, DAILY_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRoleLabel } from "../../patient-context/packet-roles.js";
 
 export const VAULT_SCHEMA_VERSION = 2;
 
-export const DEFAULT_CONTEXT_SECTION_LABELS = ["Admission context", "Medications", "Labs", "Other"];
-export const DEFAULT_DAILY_SECTION_LABELS = [
-  "Interval events",
-  "New labs/results",
-  "Medication changes",
-  "Patient-reported symptoms",
-  "Other"
-];
+export const DEFAULT_CONTEXT_SECTION_LABELS = CONTEXT_PACKET_ROLES.map(({ label }) => label);
+export const DEFAULT_DAILY_SECTION_LABELS = DAILY_PACKET_ROLES.map(({ label }) => label);
 
 export function createLocalId(prefix = "id") {
   const random = Math.random().toString(36).slice(2, 10);
@@ -34,11 +29,12 @@ export function createEmptyVaultState({ now = timestampNow } = {}) {
   };
 }
 
-export function createTextSection(label, { id = createLocalId("section"), text = "", now = timestampNow } = {}) {
+export function createTextSection(label, { id = createLocalId("section"), text = "", role = "", scope = "context", now = timestampNow } = {}) {
   const timestamp = now();
   return {
     id,
     label: String(label || "Section").trim() || "Section",
+    role: normalizePacketRole(scope, role, label),
     deidentifiedText: String(text || ""),
     residualWarnings: [],
     createdAt: timestamp,
@@ -47,7 +43,8 @@ export function createTextSection(label, { id = createLocalId("section"), text =
 }
 
 export function createDefaultSections(labels, options = {}) {
-  return labels.map((label) => createTextSection(label, options));
+  const scope = options.scope || "context";
+  return labels.map((label, index) => createTextSection(label, { ...options, scope, role: defaultPacketRole(scope, index) }));
 }
 
 export function createPatientRecord(
@@ -55,7 +52,7 @@ export function createPatientRecord(
   {
     id = createLocalId("patient"),
     metadata = {},
-    contextSections = createDefaultSections(DEFAULT_CONTEXT_SECTION_LABELS),
+    contextSections = createDefaultSections(DEFAULT_CONTEXT_SECTION_LABELS, { scope: "context" }),
     days = [],
     now = timestampNow
   } = {}
@@ -73,11 +70,12 @@ export function createPatientRecord(
   };
 }
 
-export function normalizeSection(section, fallbackLabel = "Section", { now = timestampNow } = {}) {
+export function normalizeSection(section, fallbackLabel = "Section", { now = timestampNow, scope = "context", index = 0 } = {}) {
   const timestamp = now();
   return {
     id: String(section?.id || createLocalId("section")),
     label: String(section?.label || fallbackLabel).trim() || fallbackLabel,
+    role: normalizePacketRole(scope, section?.role, section?.label || fallbackLabel, index),
     deidentifiedText: String(section?.deidentifiedText || ""),
     residualWarnings: sanitizeResidualWarningMetadata(Array.isArray(section?.residualWarnings) ? section.residualWarnings : []),
     createdAt: String(section?.createdAt || timestamp),
@@ -90,8 +88,8 @@ export function normalizeDay(day, index = 0, { now = timestampNow } = {}) {
   const fallbackDate = new Date(Date.now() + index * 86400000).toISOString().slice(0, 10);
   const labels = DEFAULT_DAILY_SECTION_LABELS;
   const sections = Array.isArray(day?.sections) && day.sections.length
-    ? day.sections.map((section, sectionIndex) => normalizeSection(section, labels[sectionIndex] || "Daily update", { now }))
-    : createDefaultSections(labels, { now });
+    ? day.sections.map((section, sectionIndex) => normalizeSection(section, labels[sectionIndex] || packetRoleLabel("daily", defaultPacketRole("daily", sectionIndex), "Daily update"), { now, scope: "daily", index: sectionIndex }))
+    : createDefaultSections(labels, { now, scope: "daily" });
   return {
     id: String(day?.id || createLocalId("day")),
     date: String(day?.date || fallbackDate),
@@ -121,8 +119,8 @@ export function normalizePatient(patient, index = 0, { now = timestampNow } = {}
   const timestamp = now();
   const labels = DEFAULT_CONTEXT_SECTION_LABELS;
   const contextSections = Array.isArray(patient?.contextSections) && patient.contextSections.length
-    ? patient.contextSections.map((section, sectionIndex) => normalizeSection(section, labels[sectionIndex] || "Context", { now }))
-    : createDefaultSections(labels, { now });
+    ? patient.contextSections.map((section, sectionIndex) => normalizeSection(section, labels[sectionIndex] || packetRoleLabel("context", defaultPacketRole("context", sectionIndex), "Context"), { now, scope: "context", index: sectionIndex }))
+    : createDefaultSections(labels, { now, scope: "context" });
   return {
     id: String(patient?.id || createLocalId("patient")),
     displayLabel: String(patient?.displayLabel || patient?.label || `Patient ${index + 1}`).trim() || `Patient ${index + 1}`,

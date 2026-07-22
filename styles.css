@@ -692,6 +692,10 @@ p {
   padding: 3px 0;
 }
 
+.section-editor:not(.is-expanded) .section-role-control {
+  display: none;
+}
+
 .section-editor:not(.is-expanded) .section-text {
   display: none;
 }
@@ -706,6 +710,26 @@ p {
 
 .section-editor.is-expanded .section-text {
   min-height: 118px;
+}
+
+.section-role-control {
+  display: grid;
+  grid-template-columns: minmax(190px, 320px) 1fr;
+  gap: 4px 10px;
+  align-items: center;
+  margin: 0 0 8px 24px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.section-role-control select {
+  grid-column: 1;
+  min-width: 0;
+}
+
+.section-role-control .muted {
+  grid-column: 2;
+  grid-row: 1 / span 2;
 }
 
 .notice,
@@ -1602,9 +1626,22 @@ p {
   line-height: 1.5;
 }
 
+button.var-fill {
+  appearance: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+}
+
 .var-fill {
   border-radius: 3px;
   padding: 0 1px;
+}
+
+button.var-fill:hover,
+button.var-fill:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 1px;
 }
 
 .prompt-output-plain {
@@ -2407,7 +2444,7 @@ p {
 }
 
 .prompt-template-wrap {
-  min-height: 0;
+  min-height: 280px;
 }
 
 .prompt-template-panel .prompt-preview {
@@ -6070,6 +6107,10 @@ body.vault-locked .vault-access {
   .prompt-template-panel .prompt-preview,
   .prompt-output-panel .prompt-output-highlighted {
     height: 360px;
+  }
+
+  .prompt-template-wrap {
+    min-height: 360px;
   }
 }
 

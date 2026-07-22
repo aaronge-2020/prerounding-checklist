@@ -1,10 +1,15 @@
 import { ADMISSION_PSEUDO_DAY_ID, tokenAccentColor } from "../../prompts/custom-templates.js";
 import { tokenColorSwatchButton } from "../token-color-picker.js";
 
-export function renderHighlightedSegments(segments, escapeHtml, colorOverrides = {}) {
-  return segments.map((segment) => segment.type === "token"
-    ? `<span class="var-fill" style="background:${tokenAccentColor(segment.token, { overrides: colorOverrides })}" title="${escapeHtml(segment.token)}">${escapeHtml(segment.value)}</span>`
-    : escapeHtml(segment.value)).join("");
+export function renderHighlightedSegments(segments, escapeHtml, colorOverrides = {}, { interactive = true } = {}) {
+  return segments.map((segment) => {
+    const rendered = segment.type === "token"
+      ? (interactive
+        ? `<button type="button" class="var-fill" data-action="jump-to-prompt-variable" data-token="${escapeHtml(segment.token)}" style="background:${tokenAccentColor(segment.token, { overrides: colorOverrides })}" title="Jump to ${escapeHtml(segment.token)} in the generated prompt" aria-label="Jump to ${escapeHtml(segment.token)} in the generated prompt">${escapeHtml(segment.value)}</button>`
+        : `<span class="var-fill" data-token="${escapeHtml(segment.token)}" style="background:${tokenAccentColor(segment.token, { overrides: colorOverrides })}" title="${escapeHtml(segment.token)}">${escapeHtml(segment.value)}</span>`)
+      : escapeHtml(segment.value);
+    return rendered;
+  }).join("");
 }
 
 export function createPromptsPresentation({ escapeHtml }) {
@@ -48,7 +53,7 @@ export function createPromptsPresentation({ escapeHtml }) {
             <button class="button--secondary" type="button" data-action="create-prompt-task">Create prompt</button>
           </div>
           <div class="prompt-template-wrap">
-            <div id="promptTemplateHighlight" class="prompt-preview prompt-template-backdrop" aria-hidden="true">${renderHighlightedSegments(templateHighlightSegments, escapeHtml, colorOverrides)}</div>
+            <div id="promptTemplateHighlight" class="prompt-preview prompt-template-backdrop" aria-hidden="true">${renderHighlightedSegments(templateHighlightSegments, escapeHtml, colorOverrides, { interactive: false })}</div>
             <textarea id="promptPreview" class="prompt-preview" rows="22" spellcheck="false">${escapeHtml(template)}</textarea>
             <div id="smartVariableMenu" class="smart-variable-menu ${smartMenuOpen ? "open" : ""}">
               ${variables.map((variable) => `

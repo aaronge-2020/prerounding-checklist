@@ -15,7 +15,7 @@ export function createDailyRecord({ date = localCalendarDate(), label = "", now 
       id: createLocalId("day"),
       date,
       label: label || `Hospital day ${date}`,
-      sections: createDefaultSections(DEFAULT_DAILY_SECTION_LABELS, { now }),
+      sections: createDefaultSections(DEFAULT_DAILY_SECTION_LABELS, { now, scope: "daily" }),
       answers: {},
       openEvidenceOutputs: {},
       openEvidenceExamNote: null

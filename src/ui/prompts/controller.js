@@ -152,11 +152,26 @@ export function positionSmartVariableMenu(menu, textarea) {
 // content is immediately visible on the right-hand preview.
 export function scrollPromptOutputToVariable(output, token) {
   if (!output || !token) return false;
-  const target = [...output.querySelectorAll('.var-fill[title]')]
-    .find((element) => element.getAttribute("title") === token);
+  const target = [...output.querySelectorAll(".var-fill[data-token]")]
+    .find((element) => element.dataset.token === token);
   if (!target) return false;
   const targetTop = target.offsetTop - output.offsetTop;
   const centeredTop = targetTop - Math.max(0, (output.clientHeight - target.offsetHeight) / 3);
   output.scrollTo({ top: Math.max(0, centeredTop), behavior: "smooth" });
   return true;
+}
+
+// Finds the smart-variable token under the caret in the transparent editor.
+// The editor sits above the highlighted backdrop, so this lets a click on a
+// colored token behave like a click on the corresponding preview highlight.
+export function promptVariableTokenAtCaret(value, caret) {
+  const text = String(value || "");
+  const position = Number.isFinite(caret) ? caret : text.length;
+  const matches = text.matchAll(/@[a-z][\w-]*/gi);
+  for (const match of matches) {
+    const start = match.index ?? 0;
+    const end = start + match[0].length;
+    if (position >= start && position <= end) return match[0];
+  }
+  return "";
 }

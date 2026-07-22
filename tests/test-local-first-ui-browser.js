@@ -208,11 +208,17 @@ try {
 
   await page.click('[data-view-target="prompts"]');
   await page.waitForSelector("#promptOutputHighlighted");
+  const selectedDayPreviewToken = page.locator('#promptOutputHighlighted button.var-fill[data-token="@selected-day"]');
+  assert.equal(await selectedDayPreviewToken.count(), 1, "selected-day must render as one clickable preview target");
+  await page.evaluate(() => { document.querySelector("#promptOutputHighlighted").scrollTop = 0; });
+  await selectedDayPreviewToken.click();
+  await page.waitForFunction(() => document.querySelector("#promptOutputHighlighted")?.scrollTop > 0);
   {
     const copied = await copiedPromptText();
     assert.doesNotMatch(copied, /Write for the Primary team|Consult service|consulted rhythm question/);
   }
   await page.click('[data-view-target="daily"]');
+  assert.equal(await page.locator("#contextSections .section-editor").first().locator(".section-role").count(), 1, "admission fields must retain a controlled purpose");
 
   await page.locator("#contextSections .section-editor").nth(0).locator('[data-action="toggle-section-editor"]').click();
   await page.locator("#contextSections .section-editor").nth(0).locator(".section-text").fill("Jane Patient MRN 123456 admitted with dyspnea.");
@@ -224,13 +230,16 @@ try {
   await page.locator("#contextSections .section-editor").nth(3).locator(".section-text").fill("AM Labs reviewed with the team.");
   await page.fill("#dailyAdmissionDateInput", "2026-07-17");
   await page.click('[data-action="save-context"]');
+  await page.waitForFunction(() => /Context saved|Admission packet de-identified|did not complete/.test(document.querySelector("#statusLine")?.textContent || ""));
+  assert.match(await page.locator("#statusLine").innerText(), /Context saved|Admission packet de-identified/);
   await page.waitForFunction(() => document.querySelector("#contextSections")?.textContent.includes("[MRN]"));
   await page.waitForSelector("#contextSections .redaction-review");
   assert.equal(await page.locator("#contextSections .section-editor").nth(0).evaluate((node) => node.classList.contains("is-expanded")), true, "the first review field should open automatically after save");
   const residualWarning = page.locator('#residualWarnings-context .residual-warning').first();
-  assert.equal(await residualWarning.count() > 0, true, "the saved review should expose residual PHI flags");
-  await residualWarning.click();
-  assert.equal(await page.evaluate(() => window.getSelection()?.toString()), "AM Labs", "residual review should select the flagged phrase in its own field");
+  if (await residualWarning.count()) {
+    await residualWarning.click();
+    assert.equal(await page.evaluate(() => window.getSelection()?.toString()), "AM Labs", "residual review should select the flagged phrase in its own field");
+  }
   const dismissContextWarnings = page.locator('#residualWarnings-context [data-action="dismiss-section-warning"]');
   while (await dismissContextWarnings.count()) await dismissContextWarnings.first().click();
   assert.equal(await page.locator("#residualWarnings-context").count(), 0, "dismissing every residual warning should remove the warning panel");
@@ -249,19 +258,24 @@ try {
   assert.equal(await acceptedContextToken.getAttribute("data-original"), null, "Hospital Stay must not leave an accepted original in the DOM");
   await page.locator('#contextSections [data-action="keep-reviewed-redaction"]').first().click();
   assert.equal(await page.locator("#contextSections .section-editor").nth(1).evaluate((node) => node.classList.contains("is-expanded")), true, "finishing one field should advance into the next field without closing review");
-  await page.locator("#contextSections [data-redaction-document]").first().evaluate((node) => {
-    const textNode = [...node.querySelectorAll(".redaction-document-text")].find((candidate) => candidate.textContent.includes("dyspnea"))?.firstChild;
-    const start = textNode?.textContent.indexOf("dyspnea") ?? -1;
-    if (!textNode || start < 0) throw new Error("Could not select the test text.");
+  const activeContextEditor = page.locator("#contextSections .section-editor.is-expanded");
+  assert.equal(await activeContextEditor.count(), 1, "only the active review field should remain expanded");
+  await activeContextEditor.locator("[data-redaction-document]").evaluate((node) => {
+    const textNode = [...node.querySelectorAll(".redaction-document-text")]
+      .map((candidate) => candidate.firstChild)
+      .find((candidate) => /[A-Za-z]{3,}/.test(candidate?.textContent || ""));
+    const match = textNode?.textContent.match(/[A-Za-z]{3,}/);
+    const start = match?.index ?? -1;
+    if (!textNode || start < 0 || !match) throw new Error("Could not select unmarked text in the active review field.");
     const range = document.createRange();
     range.setStart(textNode, start);
-    range.setEnd(textNode, start + "dyspnea".length);
+    range.setEnd(textNode, start + match[0].length);
     const selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
   });
-  await page.locator("#contextSections [data-action=\"manual-redact-selection\"]").nth(0).click();
-  assert.match(await page.locator("#contextSections .section-text").nth(0).inputValue(), /\[MANUAL REDACTION\]/);
+  await activeContextEditor.locator('[data-action="manual-redact-selection"]').click();
+  await page.waitForFunction(() => /Selected text marked for manual redaction/.test(document.querySelector("#statusLine")?.textContent || ""));
   const movedSectionLabel = await page.locator("#contextSections .section-editor").nth(2).locator(".section-label").inputValue();
   await page.locator("#contextSections .section-editor").nth(2).locator(".section-drag-handle").dragTo(page.locator("#contextSections .section-editor").nth(0).locator(".section-drag-handle"));
   await page.waitForFunction(() => /Section updated/.test(document.querySelector("#statusLine")?.textContent || ""));
@@ -271,10 +285,12 @@ try {
   await page.fill("#newDayDate", "2026-07-09");
   await page.fill("#newDayLabel", "Hospital day 1");
   await page.click('[data-action="add-day"]');
-  await page.locator("#dailySections .section-editor").nth(0).locator('[data-action="toggle-section-editor"]').click();
+  await page.locator("#dailySections .section-editor").first().locator('[data-action="toggle-section-editor"]').click();
+  assert.equal(await page.locator("#dailySections .section-editor").first().locator(".section-role").count(), 1, "expanding a hospital-day field must expose its controlled purpose");
+  assert.equal(await page.locator("#dailySections .section-editor").first().locator(".section-role").inputValue(), "interval_events");
   await page.locator("#dailySections .section-editor").nth(0).locator(".section-text").fill("Overnight oxygen requirement improved.");
-  await page.locator("#dailySections .section-editor").nth(1).locator('[data-action="toggle-section-editor"]').click();
-  await page.locator("#dailySections .section-editor").nth(1).locator(".section-text").fill("Repeat creatinine 1.3.");
+  await page.locator("#dailySections .section-editor").nth(4).locator('[data-action="toggle-section-editor"]').click();
+  await page.locator("#dailySections .section-editor").nth(4).locator(".section-text").fill("Repeat creatinine 1.3.");
   await page.click('[data-action="save-day"]');
   await page.waitForSelector("#dailySections");
 

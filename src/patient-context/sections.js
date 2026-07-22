@@ -23,23 +23,25 @@ export function removeSection(sections, sectionId) {
   return sections.filter((section) => section.id !== sectionId);
 }
 
-export function addSection(sections, label = "Other") {
-  return [...sections, createTextSection(label)];
+export function addSection(sections, label = "Other", options = {}) {
+  return [...sections, createTextSection(label, options)];
 }
 
-export function replaceSectionsFromForm(rows, deidentify) {
+export function replaceSectionsFromForm(rows, deidentify, { scope = "context" } = {}) {
   return rows.map((row, index) => {
     const result = deidentify(String(row.text || ""));
     return normalizeSection(
       {
         id: row.id,
         label: row.label || `Section ${index + 1}`,
+        role: row.role,
         deidentifiedText: result.text || "",
         residualWarnings: sanitizeResidualWarningMetadata(result.residualWarnings || result.flags || []),
         createdAt: row.createdAt,
         updatedAt: new Date().toISOString()
       },
-      `Section ${index + 1}`
+      `Section ${index + 1}`,
+      { scope, index }
     );
   });
 }
@@ -71,7 +73,7 @@ export function planSectionRedaction(priorText, currentText) {
   return { mode: "full" };
 }
 
-export async function replaceSectionsFromFormAsync(rows, deidentify, { onResult, onProgress, priorSections = [] } = {}) {
+export async function replaceSectionsFromFormAsync(rows, deidentify, { onResult, onProgress, priorSections = [], scope = "context" } = {}) {
   const priorById = new Map((priorSections || []).map((section) => [section.id, section]));
   const plans = rows.map((row) => {
     const prior = priorById.get(row.id) || null;
@@ -113,6 +115,7 @@ export async function replaceSectionsFromFormAsync(rows, deidentify, { onResult,
       {
         id: row.id,
         label: row.label || `Section ${index + 1}`,
+        role: row.role,
         deidentifiedText: result.text || "",
         // Warning snippets can themselves contain residual PHI. Persist only
         // the metadata; detailed review remains in the active browser tab.
@@ -120,7 +123,8 @@ export async function replaceSectionsFromFormAsync(rows, deidentify, { onResult,
         createdAt: row.createdAt,
         updatedAt: new Date().toISOString()
       },
-      `Section ${index + 1}`
+      `Section ${index + 1}`,
+      { scope, index }
     );
   });
 }

@@ -129,7 +129,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function renderSectionEditor({ section, scope, editing, pendingFocus, review, draftText, sections = [], reviewFor = () => null }) {
+  function renderSectionEditor({ section, scope, roleOptions = [], editing, pendingFocus, review, draftText, sections = [], reviewFor = () => null }) {
     const characterCount = draftText?.length || 0;
     const draftMarker = draftText !== section.deidentifiedText ? " · draft" : "";
     const nextSectionLabel = nextReviewSection(sections, section.id, reviewFor)?.label || "";
@@ -142,12 +142,18 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
           <input class="section-label" value="${escapeHtml(section.label)}" aria-label="Section label">
           <span class="section-meta">${characterCount ? `${characterCount.toLocaleString()} chars${draftMarker}` : "Empty"}</span>
           <div class="button-row">
-            <button class="icon-button" type="button" data-action="toggle-section-editor" title="Edit section" aria-label="Edit section" aria-expanded="false">${icon("edit")}</button>
+            <button class="icon-button" type="button" data-action="toggle-section-editor" title="${isExpanded ? "Collapse section" : "Edit section"}" aria-label="${isExpanded ? "Collapse section" : "Edit section"}" aria-expanded="${String(isExpanded)}">${icon("edit")}</button>
             <button class="icon-button" type="button" data-action="move-section-up" data-scope="${scope}" data-section-id="${escapeHtml(section.id)}" title="Move up">↑</button>
             <button class="icon-button" type="button" data-action="move-section-down" data-scope="${scope}" data-section-id="${escapeHtml(section.id)}" title="Move down">↓</button>
             <button class="icon-button" type="button" data-action="remove-section" data-scope="${scope}" data-section-id="${escapeHtml(section.id)}" title="Remove">${icon("trash")}</button>
           </div>
         </div>
+        <label class="section-role-control">Field purpose
+          <select class="section-role" aria-label="Field purpose">
+            ${roleOptions.map((option) => `<option value="${escapeHtml(option.id)}" ${option.id === section.role ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
+          </select>
+          <span class="muted">${escapeHtml(roleOptions.find((option) => option.id === section.role)?.description || "Choose how this field should be used in generated prompts.")}</span>
+        </label>
         ${renderSectionSurface({ section, scope, review, editing, draftText, nextSectionLabel })}
       </article>
     `;

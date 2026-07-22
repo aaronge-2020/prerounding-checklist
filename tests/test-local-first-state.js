@@ -61,8 +61,10 @@ nextVault = updateActivePatient(nextVault, (current) => ({
 
 const normalized = migrateVaultState(nextVault);
 assert.equal(normalized.activePatientId, "patient_test");
-assert.equal(normalized.patients[0].contextSections.length, 4);
-assert.equal(normalized.patients[0].days[0].sections.length, 5);
+assert.equal(normalized.patients[0].contextSections.length, 7);
+assert.equal(normalized.patients[0].days[0].sections.length, 10);
+assert.equal(normalized.patients[0].contextSections[0].role, "admission_reason");
+assert.equal(normalized.patients[0].days[0].sections[0].role, "interval_events");
 assert.equal(normalized.patients[0].days[0].label, "Hospital day 1");
 assert.equal(localCalendarDate(new Date(2026, 6, 9, 23, 45)), "2026-07-09");
 assert.deepEqual(removeDay([day], day.id), []);

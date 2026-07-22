@@ -1,4 +1,5 @@
-import { DEFAULT_CONTEXT_SECTION_LABELS, DEFAULT_DAILY_SECTION_LABELS, createPatientRecord, createTextSection, normalizeDay } from "../../app/state/vault.js";
+import { createPatientRecord, createTextSection, normalizeDay } from "../../app/state/vault.js";
+import { packetRoleLabel } from "../../patient-context/packet-roles.js";
 
 export const DEMO_PATIENT_ID = "demo_patient_guided_case";
 export const DEMO_DAY_ID = "demo_day_guided_case";
@@ -196,8 +197,8 @@ The patient reported improved chest discomfort, decreasing from 8/10 at presenta
 The patient remained NPO after midnight in preparation for coronary angiography. Fall precautions and continuous telemetry were maintained. Nursing staff provided education regarding acute coronary syndrome, medication adherence, smoking cessation reinforcement, and expected inpatient treatment course.`
 ];
 
-function sections(labels, texts, prefix) {
-  return labels.map((label, index) => createTextSection(label, { id: `demo_${prefix}_${index}`, text: texts[index] || "" }));
+function sections(roleIds, texts, prefix, scope) {
+  return roleIds.map((role, index) => createTextSection(packetRoleLabel(scope, role), { id: `demo_${prefix}_${index}`, text: texts[index] || "", role, scope }));
 }
 
 export function createDemoPatient() {
@@ -205,7 +206,7 @@ export function createDemoPatient() {
     id: DEMO_DAY_ID,
     date: DEMO_ADMISSION_DATE,
     label: "HD1 - NSTEMI admission",
-    sections: sections(DEFAULT_DAILY_SECTION_LABELS, DEMO_DAILY_TEXTS, "daily"),
+    sections: sections(["interval_events", "key_results", "medication_order_events", "patient_report", "disposition_questions"], DEMO_DAILY_TEXTS, "daily", "daily"),
     checklistSnapshot: null,
     answers: {},
     quickNotes: []
@@ -213,7 +214,7 @@ export function createDemoPatient() {
   return createPatientRecord("Demo patient · Synthetic NSTEMI case", {
     id: DEMO_PATIENT_ID,
     metadata: { demo: true, synthetic: true },
-    contextSections: sections(DEFAULT_CONTEXT_SECTION_LABELS, DEMO_CONTEXT_TEXTS, "context"),
+    contextSections: sections(["admission_reason", "procedures_devices", "admission_results", "additional_admission_source"], DEMO_CONTEXT_TEXTS, "context", "context"),
     days: [day]
   });
 }

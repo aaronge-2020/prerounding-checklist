@@ -15,7 +15,8 @@ const guidelines = {
 for (const template of Object.values(DEFAULT_PROMPT_TEMPLATES)) {
   assert.match(template, /^(?:\s*@[-a-z]+)+\s*$/, "default prompt templates must contain smart variables only");
 }
-assert.equal((DEFAULT_PROMPT_TEMPLATES.daily_progress_note.match(/@selected-day/g) || []).length, 1, "daily progress template must include selected day once");
+assert.match(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@progress-note-packet/, "daily progress template must use the compiled selected-day packet");
+assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@exam-findings/, "daily progress template must not append an all-days examination timeline");
 const customTeamInstructions = "Write only the highest-yield active problems and keep the plan action-focused.";
 assert.equal(buildTeamPreferencesPromptBlock(), "", "team preferences must be blank by default");
 assert.equal(buildTeamPreferencesPromptBlock({ medicalService: "", presentationDetail: "" }), "", "blank settings must stay blank");
@@ -70,6 +71,7 @@ assert.match(progress, /tenderness to palpation/);
 assert.match(progress, /strict separation/);
 assert.match(progress, /Patient mentioned new hip pain unrelated to admission\./);
 assert.match(progress, /Feels less short of breath/);
+assert.match(progress, /Selected hospital day/, "daily progress prompt must identify the selected day explicitly");
 
 const teaching = buildOpenEvidencePrompt("teaching_case_trajectory", { patient, selectedDayId: day.id });
 assert.match(teaching, /full case and hospital course/i);
