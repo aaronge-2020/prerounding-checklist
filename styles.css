@@ -5265,6 +5265,11 @@ body.vault-locked .vault-access {
   padding-top: 10px;
 }
 
+.quick-copy-footer {
+  padding-inline: 14px;
+  padding-bottom: 14px;
+}
+
 .quick-copy-footer .muted { font-size: 12px; }
 
 .redaction-document {

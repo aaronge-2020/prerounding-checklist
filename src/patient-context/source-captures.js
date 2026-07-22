@@ -6,6 +6,7 @@ const sourceKinds = [
   ["results", "Results", "Selected-day laboratory, imaging, microbiology, and diagnostic results."],
   ["medication_activity", "Medication activity", "Medication administrations, holds, starts, stops, and active orders."],
   ["consult_note", "Consult note", "A consultant note, recommendation, or procedure update."],
+  ["physical_exam", "Physical exam findings", "A de-identified physical examination or SOAP-note examination section."],
   ["bedside_update", "Bedside update", "What the patient, nursing team, or clinician learned at the bedside."],
   ["other_chart_text", "Other chart text", "Other selected-day chart text that should remain in the packet." ]
 ];

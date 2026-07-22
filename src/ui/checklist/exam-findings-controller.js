@@ -1,5 +1,6 @@
 import { createTextSection, updateActivePatient } from "../../app/state/vault.js";
 import { clearOpenEvidenceExamNote, latestDay, saveOpenEvidenceExamNote, upsertDay } from "../../daily-updates/days.js";
+import { createSourceCapture } from "../../patient-context/source-captures.js";
 import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js";
 
 export function createExamFindingsController({ state, active, persistVault, setStatus }) {
@@ -16,7 +17,16 @@ export function createExamFindingsController({ state, active, persistVault, setS
               ...current,
               days: upsertDay(current.days, {
                 ...saveOpenEvidenceExamNote(currentDay, { text, residualWarnings }),
-                sections: upsertExamFindingsSection(currentDay.sections, text, residualWarnings, now)
+                sourceCaptures: [
+                  ...(currentDay.sourceCaptures || []),
+                  createSourceCapture({
+                    sourceKind: "physical_exam",
+                    label: "Physical exam findings",
+                    text,
+                    residualWarnings,
+                    now: () => now
+                  })
+                ]
               }),
               contextSections: (current.contextSections || []).filter((section) => !/^Physical exam findings -/.test(section.label || ""))
             }
@@ -53,7 +63,7 @@ export function createExamFindingsController({ state, active, persistVault, setS
         return currentDay
           ? { ...current, days: upsertDay(current.days, {
               ...clearOpenEvidenceExamNote(currentDay),
-              sections: (currentDay.sections || []).filter((section) => section.label !== "Physical exam findings")
+              sourceCaptures: (currentDay.sourceCaptures || []).filter((capture) => capture.sourceKind !== "physical_exam")
             }) }
           : current;
       }
@@ -63,18 +73,4 @@ export function createExamFindingsController({ state, active, persistVault, setS
   }
 
   return Object.freeze({ saveExamFindings, clearExamFindings });
-}
-
-function upsertExamFindingsSection(sections = [], text, residualWarnings, updatedAt) {
-  const existing = sections.find((section) => section.label === "Physical exam findings");
-  const next = {
-    ...(existing || createTextSection("Physical exam findings")),
-    label: "Physical exam findings",
-    deidentifiedText: String(text || ""),
-    residualWarnings: sanitizeResidualWarningMetadata(residualWarnings),
-    updatedAt
-  };
-  return existing
-    ? sections.map((section) => section.id === existing.id ? next : section)
-    : [...sections, next];
 }
