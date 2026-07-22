@@ -1,5 +1,5 @@
-import { createDailyRecord, latestDay, localCalendarDate, removeDay, sortDays, upsertDay } from "../daily-updates/days.js?v=20260711-functional-remediation-15";
-import { activePatient, archivePatient, createPatientRecord, removeWorkupOverride, setActivePatient, setSelectedWorkups, setWorkupOverride, setWorkupOverrides, updateActivePatient } from "../app/state/vault.js?v=20260715-workup-delete";
+import { createDailyRecord, latestDay, localCalendarDate, removeDay, sortDays, upsertDay } from "../daily-updates/days.js?v=20260722-source-capture-v1";
+import { activePatient, archivePatient, createPatientRecord, removeWorkupOverride, setActivePatient, setSelectedWorkups, setWorkupOverride, setWorkupOverrides, updateActivePatient } from "../app/state/vault.js?v=20260722-source-capture-v1";
 import { deleteEncryptedVaultRecord, downloadJson, loadOrCreateVault, readEncryptedVaultRecord, saveEncryptedVault, writeEncryptedVaultRecord } from "../app/state/persistence.js?v=20260711-functional-remediation-15";
 import { authorizeWorkupWorkspaceMirror, disconnectWorkupWorkspaceMirror, getWorkupWorkspaceMirrorState, mirrorWorkupOverridesToWorkspace } from "../app/state/workspace-mirror.js?v=20260711-functional-remediation-15";
 import { addSection, removeSection, reorderSections, reorderSectionsById, replaceSectionsFromFormAsync } from "../patient-context/sections.js?v=20260711-functional-remediation-15";
@@ -8,9 +8,10 @@ import { crossOriginIsolationBlocker, deidentifyText, getAdvancedDeidStatus, get
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
 import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
-import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260722-guideline-concept-v2";
+import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260722-source-capture-v1";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
-import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260721-action-gate-1";
+import { DEFAULT_DAILY_SOURCE_KIND, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260722-source-capture-v1";
+import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260722-source-capture-v1";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import { ensureAdditionalGuidelineSets, ensureAttendingProgressGuidelineSet, ensureCanonicalProgressGuidelineSet, ensureCanonicalProgressGuidelineSetV2, ensureCanonicalProgressGuidelineSetV3, ensureConsultingGuidelineSet, ensureCurrentAdmissionGuidelineSet, ensureCurrentAdmissionGuidelineSetV2, ensureCurrentGuidelineSets, ensureCurrentProgressGuidelineSet, ensureFocusedProgressGuidelineSet, ensureLatestProgressGuidelineSet, ensureProblemAssessmentProgressGuidelineSet, ensureReasoningProgressGuidelineSet, ensureRevisedProgressGuidelineSet, ensureTeamPreferencesGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260722-guideline-concept-v2";
 import { OPENAI_WORKUP_MODEL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260722-guideline-library";
@@ -40,6 +41,8 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260722-source-capture-v1";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260722-source-capture-v1";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
@@ -54,7 +57,7 @@ import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260722-guideline-concept-v2";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260722-guideline-concept-v2";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
-import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260717-guided-demo-ux";
+import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260722-source-capture-v1";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
 import { createDemoController } from "./demo/controller.js?v=20260717-guided-demo-ux-4";
@@ -109,6 +112,8 @@ const app = {
   sectionDrafts: new Map(),
   sectionEditingKeys: new Set(),
   pendingSectionReviewFocus: null,
+  dailySourceKind: DEFAULT_DAILY_SOURCE_KIND,
+  dailySourceDraft: "",
   workupThoroughness: "standard",
   workupImportDraft: "",
   workupApiBusy: false,
@@ -160,6 +165,7 @@ function escapeHtml(value = "") {
     .replace(/"/g, "&quot;");
 }
 const checklistPresentation = createChecklistPresentation({ escapeHtml, icon });
+const dailyPresentation = createDailyPresentation({ escapeHtml, icon });
 const redactionPresentation = createRedactionPresentation({ escapeHtml, icon });
 const quickDeidPresentation = createQuickDeidPresentation({ escapeHtml, icon });
 const workupPresentation = createWorkupPresentation({ escapeHtml, icon });
@@ -179,6 +185,7 @@ const workupDeleteController = createWorkupDeleteController({ state: app, render
 const promptTaskController = createPromptTaskController({ state: app, setStatus, renderPrompts, byId });
 const guidelineSetsController = createGuidelineSetsController({ state: app, setStatus, renderSettings, byId });
 const admissionDateGate = createAdmissionDateGate({ app, byId });
+const dailySourceController = createDailySourceController({ app, active, selectedChecklistDay, byId, localCalendarDate, patientRequiredMessage, renderDeidStrip, renderSectionEditor, renderWarnings, dailyPresentation, redactionPresentation, isSectionTextEditing, sectionReviewFor, sectionDraftText, reviewSectionsForScope, ensureSelectedDeidReady, deidentify, updateDeidOperation, setSectionDraftText, admissionDateAnchor, beginSectionReview, persistVault, render, applyApprovedRedactions });
 const tokenColorPicker = createTokenColorPickerController({
   byId, getOverrides: () => app.tokenColorOverrides,
   saveOverrides: (overrides) => { app.tokenColorOverrides = overrides; saveTokenColorOverrides(overrides); },
@@ -188,8 +195,7 @@ const tokenColorPicker = createTokenColorPickerController({
 });
 function selectedDeidOption() {
   return app.deidMode === STRUCTURED_DEID_MODE ? null : deidModelOptionByKey(app.deidMode);
-}
-function selectedDeidStatus() {
+} function selectedDeidStatus() {
   return app.deidMode === STRUCTURED_DEID_MODE
     ? {
         message: "Structured-only de-identification selected.",
@@ -198,8 +204,7 @@ function selectedDeidStatus() {
         label: "Structured only"
       }
     : getSelectedDeidModelStatus(app.deidMode);
-}
-function modelPackStateFor(option) {
+} function modelPackStateFor(option) {
   if (!option) return { state: "unavailable", ready: false, message: "Unknown model." };
   if (!option.browserRunnable) {
     return { state: "unavailable", ready: false, message: option.disabledReason || "This model is not available in the browser." };
@@ -207,15 +212,13 @@ function modelPackStateFor(option) {
   return app.modelPacks[option.key] || (isInstallableModel(option)
     ? { state: "checking", ready: false, message: "Checking local model-pack storage..." }
     : { state: "bundled", ready: true, message: "Bundled with this static app." });
-}
-function deidModelDisabledReason(option) {
+} function deidModelDisabledReason(option) {
   if (!option.browserRunnable) return option.disabledReason || "This model is not available in this browser build.";
   if (option.requiresWebGpu && !app.webGpuAvailable) return "This model needs graphics acceleration that isn't available in this browser.";
   const pack = modelPackStateFor(option);
   if (isInstallableModel(option) && !pack.ready) return pack.message;
   return "";
-}
-function deidModelSelectOptions() {
+} function deidModelSelectOptions() {
   const modelOptions = DEID_MODEL_OPTIONS.map((option) => {
     const unavailable = !option.browserRunnable || (option.requiresWebGpu && !app.webGpuAvailable);
     const disabled = unavailable ? "disabled" : "";
@@ -644,6 +647,8 @@ function clearPatientScopedSession() {
   app.sectionDrafts.clear();
   app.sectionEditingKeys.clear();
   app.pendingSectionReviewFocus = null;
+  app.dailySourceKind = DEFAULT_DAILY_SOURCE_KIND;
+  app.dailySourceDraft = "";
   clearPhiReviews();
   app.checklistSearchQuery = "";
   app.checklistOpenNoteIds = new Set();
@@ -855,7 +860,7 @@ function setSectionDraftText(scope, sectionId, value) {
 }
 
 function sectionListId(scope) {
-  return scope === "daily" ? "dailySections" : "contextSections";
+  return scope === "daily" ? "dailySources" : "contextSections";
 }
 
 function isSectionTextEditing(scope, sectionId) {
@@ -866,7 +871,7 @@ function reviewSectionsForScope(scope) {
   const patient = active();
   if (!patient) return [];
   return scope === "daily"
-    ? selectedChecklistDay(patient)?.sections || []
+    ? selectedChecklistDay(patient)?.sourceCaptures || []
     : patient.contextSections || [];
 }
 
@@ -949,103 +954,7 @@ function renderWarnings(sections, scope) {
   return redactionPresentation.renderWarnings({ sections, scope, reviewFor: sectionReviewFor });
 }
 
-function renderDaily() {
-  const patient = active();
-  if (!patient) {
-    byId("dailyContent").innerHTML = patientRequiredMessage();
-    return;
-  }
-  const days = sortDays(patient.days);
-  const selected = days.find((day) => day.id === app.selectedDayId) || days.at(-1) || null;
-  const deidBusy = app.deidOperation.active;
-  if (selected && selected.id !== app.selectedDayId) app.selectedDayId = selected.id;
-  byId("dailyContent").innerHTML = `
-    <div class="stay-layout">
-      <aside class="panel stay-rail">
-        <div class="section-heading tight">
-          <div>
-            <h2>Hospital day</h2>
-            <p class="muted">You choose the label for each day.</p>
-          </div>
-        </div>
-        <div class="next-step compact-next-step">
-          <strong>${days.length ? "Next: keep this stay current." : "Next: add the first hospital day."}</strong>
-          <span>${days.length ? "Select a day, add de-identified updates, then save changes." : "Add a hospital day before building a workup."}</span>
-        </div>
-        <div class="timeline-rail">
-          ${days.length ? days.map((day, index) => renderDayRow(day, selected?.id, index)).join("") : `<div class="empty-state">No hospital days saved.</div>`}
-        </div>
-        <details class="new-day-control" ${days.length ? "" : "open"}>
-          <summary>${icon("plus")} Add hospital day</summary>
-          <div class="form-grid compact">
-            <label>Hospital day date
-              <input id="newDayDate" type="date" value="${localCalendarDate()}">
-              <span class="field-help">The day this packet describes. Relative words like “today” use this date.</span>
-            </label>
-            <label>Label
-              <input id="newDayLabel" placeholder="HD2 - Today">
-            </label>
-            <button class="button--secondary" type="button" data-action="add-day">Add day</button>
-          </div>
-        </details>
-      </aside>
-      <div class="stay-content">
-        <section class="panel admission-packet packet-surface">
-          <details class="admission-packet-details" open>
-            <summary>
-              <span><strong>Admission packet</strong><span class="muted">De-identified background for this stay</span></span>
-              <span class="muted">${patient.contextSections.length} fields</span>
-            </summary>
-            <div class="admission-packet-body">
-              <div class="section-heading">
-                <div>
-                  <h2>Admission packet</h2>
-                  <p class="muted">Keep durable background here. Use each field’s purpose so daily prompts receive only the context that still matters.</p>
-                </div>
-                <div class="button-row">
-                  <button class="button--secondary" type="button" data-action="add-context-section">${icon("plus")} Add field</button>
-                </div>
-              </div>
-              ${renderDeidStrip()}
-              <div id="contextSections" class="section-list">
-                ${patient.contextSections.map((section) => renderSectionEditor(section, "context")).join("")}
-              </div>
-              ${renderWarnings(patient.contextSections, "context")}
-              <div class="packet-action-footer">
-                <button class="button--primary" type="button" data-action="save-context" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save admission packet"}</button>
-              </div>
-            </div>
-          </details>
-        </section>
-        <section class="panel hospital-day-packet packet-surface">
-          ${
-            selected
-              ? `
-                <div class="section-heading">
-                  <div>
-                    <h2>${escapeHtml(selected.label)}</h2>
-                    <p class="muted">${escapeHtml(selected.date)} · Relative dates in this packet use ${escapeHtml(selected.date)} as “today.” You write and label each day's findings yourself.</p>
-                  </div>
-                  <div class="button-row">
-                    <button class="button--secondary" type="button" data-action="add-daily-section">${icon("plus")} Add field</button>
-                    <button class="button--primary" type="button" data-action="save-day" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save hospital day"}</button>
-                    <button type="button" class="button--quiet danger-subtle" data-action="remove-day">${icon("trash")} Remove</button>
-                  </div>
-                </div>
-                <div id="dailySections" class="section-list">
-                  ${selected.sections.map((section) => renderSectionEditor(section, "daily")).join("")}
-                </div>
-                ${renderWarnings(selected.sections, "daily")}
-              `
-              : `<div class="empty-state">Add a hospital day to start tracking updates.</div>`
-          }
-        </section>
-      </div>
-    </div>
-  `;
-  bindSectionReordering();
-}
-
+function renderDaily() { dailySourceController.renderDaily(); bindSectionReordering(); }
 function workupCatalogQueryValue(query) {
   return normalizeWorkupCatalogQuery(query);
 }
@@ -1073,19 +982,6 @@ function updateWorkupCatalogFilter() {
   if (empty) empty.hidden = visible.length > 0;
   const clear = document.querySelector('[data-action="clear-workup-search"]');
   if (clear) clear.hidden = !matchingIds;
-}
-
-function renderDayRow(day, selectedDayId, index) {
-  const userLabel = String(day.label || "").replace(/^\s*hd\s*\d+\s*[-:|]?\s*/i, "").trim() || `Hospital day ${index + 1}`;
-  return `
-    <button type="button" class="day-row ${day.id === selectedDayId ? "selected" : ""}" data-action="select-day" data-day-id="${escapeHtml(day.id)}">
-      <span>
-        <strong>HD${index + 1}</strong>
-        <span class="muted">${escapeHtml(userLabel)} - ${escapeHtml(day.date)}</span>
-      </span>
-      <span class="muted">${day.sections.length} sections</span>
-    </button>
-  `;
 }
 
 function renderWorkups() {
@@ -1454,10 +1350,21 @@ function refreshDeidControlsInActiveView() {
     const strip = document.querySelector("#dailyContent .deid-strip");
     if (strip) strip.outerHTML = renderDeidStrip();
     const busy = app.deidOperation.active;
-    document.querySelectorAll('[data-action="save-context"], [data-action="save-day"]').forEach((button) => {
-      button.disabled = busy;
-      button.textContent = busy ? "De-identifying…" : "Save changes";
-    });
+    const saveContextButton = document.querySelector('[data-action="save-context"]');
+    if (saveContextButton) {
+      saveContextButton.disabled = busy;
+      saveContextButton.textContent = busy ? "De-identifying…" : "Save admission packet";
+    }
+    const saveDayButton = document.querySelector('[data-action="save-day"]');
+    if (saveDayButton) {
+      saveDayButton.disabled = busy || !selectedChecklistDay(active())?.sourceCaptures?.length;
+      saveDayButton.textContent = busy ? "De-identifying…" : "Save source edits";
+    }
+    const addSourceButton = document.querySelector('[data-action="add-daily-source"]');
+    if (addSourceButton) {
+      addSourceButton.disabled = busy || !app.dailySourceDraft.trim();
+      addSourceButton.textContent = busy ? "De-identifying…" : "De-identify and add source";
+    }
   }
   if (app.view === "quickDeid") renderQuickDeid();
   renderStatusBar();
@@ -1524,7 +1431,10 @@ async function handleClick(event) {
       }
     }
     if (action === "add-context-section") await mutateSections("context", (sections) => addSection(sections, "Additional admission source", { role: defaultPacketRole("context", Number.MAX_SAFE_INTEGER), scope: "context" }));
-    if (action === "add-daily-section") await mutateSections("daily", (sections) => addSection(sections, "Additional daily source", { role: defaultPacketRole("daily", Number.MAX_SAFE_INTEGER), scope: "daily" }));
+    if (action === "select-daily-source-kind") {
+      app.dailySourceKind = target.dataset.sourceKind || DEFAULT_DAILY_SOURCE_KIND;
+      renderDaily();
+    }
     if (action === "move-section-up") await mutateSections(target.dataset.scope, (sections) => reorderSections(sections, target.dataset.sectionId, "up"));
     if (action === "move-section-down") await mutateSections(target.dataset.scope, (sections) => reorderSections(sections, target.dataset.sectionId, "down"));
     if (action === "remove-section") await mutateSections(target.dataset.scope, (sections) => removeSection(sections, target.dataset.sectionId));
@@ -1543,11 +1453,22 @@ async function handleClick(event) {
     if (action === "allow-reviewed-non-phi") allowReviewedNonPhi(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex));
     if (action === "save-context") await saveContext();
     if (action === "add-day") await addDay();
+    if (action === "add-daily-source") await dailySourceController.addSource();
     if (action === "select-day") {
       app.selectedDayId = target.dataset.dayId;
+      app.dailySourceDraft = "";
+      app.dailySourceKind = DEFAULT_DAILY_SOURCE_KIND;
       render();
     }
-    if (action === "save-day") await saveDay();
+    if (action === "save-day") await dailySourceController.saveSources();
+    if (action === "open-progress-note") {
+      app.selectedPromptTask = "daily_progress_note";
+      app.promptDayId = app.selectedDayId;
+      app.promptDayFollowsChecklist = true;
+      app.smartMenuOpen = false;
+      app.view = "prompts";
+      render();
+    }
     if (action === "load-advanced-deid") await loadAdvancedModel();
     if (action === "select-deid-model") selectDeidModel(target.dataset.modelKey);
     if (action === "download-model-pack") await downloadSelectedModelPack(target.dataset.modelKey);
@@ -2082,14 +2003,14 @@ async function dismissSectionWarning(scope, sectionId, warningIndex) {
     setStatus("Warning dismissed for this review only. The decision is not stored.");
   } else {
     const patient = active();
-    const sections = scope === "daily" ? selectedChecklistDay(patient)?.sections : patient?.contextSections;
+    const sections = scope === "daily" ? selectedChecklistDay(patient)?.sourceCaptures : patient?.contextSections;
     const section = (sections || []).find((entry) => entry.id === sectionId);
     if (!section?.residualWarnings?.[warningIndex]) return;
     app.vault = updateActivePatient(app.vault, (current) => {
       if (scope === "daily") {
         const day = selectedChecklistDay(current);
         if (!day) return current;
-        const nextDay = { ...day, sections: day.sections.map((entry) => entry.id === sectionId
+        const nextDay = { ...day, sourceCaptures: day.sourceCaptures.map((entry) => entry.id === sectionId
           ? { ...entry, residualWarnings: entry.residualWarnings.filter((_, index) => index !== warningIndex), updatedAt: new Date().toISOString() }
           : entry) };
         return { ...current, days: upsertDay(current.days, nextDay) };
@@ -2108,7 +2029,7 @@ async function dismissSectionWarning(scope, sectionId, warningIndex) {
 
 async function dismissAllSectionWarnings(scope, sectionId) {
   const patient = active();
-  const sections = scope === "daily" ? selectedChecklistDay(patient)?.sections : patient?.contextSections;
+  const sections = scope === "daily" ? selectedChecklistDay(patient)?.sourceCaptures : patient?.contextSections;
   if (!(sections || []).some((section) => section.id === sectionId && section.residualWarnings?.length)) return;
   const review = sectionReviewFor(scope, sectionId);
   if (review) {
@@ -2118,7 +2039,7 @@ async function dismissAllSectionWarnings(scope, sectionId) {
       if (scope === "daily") {
         const day = selectedChecklistDay(current);
         if (!day) return current;
-        const nextDay = { ...day, sections: day.sections.map((entry) => entry.id === sectionId
+        const nextDay = { ...day, sourceCaptures: day.sourceCaptures.map((entry) => entry.id === sectionId
           ? { ...entry, residualWarnings: [], updatedAt: new Date().toISOString() }
           : entry) };
         return { ...current, days: upsertDay(current.days, nextDay) };
@@ -2154,7 +2075,7 @@ function redactSectionWarning(scope, sectionId, warningIndex) {
 
 function reviewSectionWarning({ scope, sectionId, warningIndex }) {
   const patient = active();
-  const sections = scope === "daily" ? selectedChecklistDay(patient)?.sections : patient?.contextSections;
+  const sections = scope === "daily" ? selectedChecklistDay(patient)?.sourceCaptures : patient?.contextSections;
   const section = (sections || []).find((entry) => entry.id === sectionId);
   const review = sectionReviewFor(scope, sectionId);
   const warning = review?.warnings?.[Number(warningIndex)] || section?.residualWarnings?.[Number(warningIndex)];
@@ -2452,10 +2373,10 @@ async function mutateSections(scope, updater) {
   } else {
     const day = selectedChecklistDay(patient);
     if (!day) throw new Error("Add a hospital day first.");
-    const nextDay = { ...day, sections: updater(day.sections), updatedAt: new Date().toISOString() };
+    const nextDay = { ...day, sourceCaptures: updater(day.sourceCaptures), updatedAt: new Date().toISOString() };
     app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
   }
-  await persistVault("Section updated.");
+  await persistVault(scope === "daily" ? "Source updated." : "Section updated.");
   render();
 }
 
@@ -2546,27 +2467,6 @@ async function addDay() {
   app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, day) }));
   await persistVault("Hospital day added.");
   render();
-}
-
-async function saveDay() {
-  const patient = active();
-  const day = selectedChecklistDay(patient);
-  if (!day) throw new Error("Add a hospital day first.");
-  updateDeidOperation({ active: true, message: "Preparing daily fields for local de-identification…", value: 0, total: 1 });
-  try {
-    await ensureSelectedDeidReady();
-    const sections = await deidentifySectionRows("daily", "dailySections", day.sections || [], day.date);
-    admissionDateAnchor.remember();
-    const nextDay = { ...day, sections, updatedAt: new Date().toISOString() };
-    app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
-    beginSectionReview("daily");
-    await persistVault("Daily update saved as de-identified local text.");
-    updateDeidOperation({ active: false, message: "Hospital day de-identified and saved locally." });
-    render();
-  } catch (error) {
-    updateDeidOperation({ active: false, message: error instanceof Error ? error.message : "De-identification did not complete." });
-    throw error;
-  }
 }
 
 async function loadAdvancedModel() {
@@ -2987,8 +2887,8 @@ function sectionDropTarget(list, pointerY) {
 
 function reorderSectionRowAtPointer(row, clientX, clientY) {
   const target = document.elementFromPoint(clientX, clientY);
-  const list = target?.closest("#contextSections, #dailySections");
-  const sourceList = row.closest("#contextSections, #dailySections");
+  const list = target?.closest("#contextSections");
+  const sourceList = row.closest("#contextSections");
   if (!list || list !== sourceList) return false;
   const dropTarget = sectionDropTarget(list, clientY);
   if (dropTarget) list.insertBefore(row, dropTarget);
@@ -2997,7 +2897,7 @@ function reorderSectionRowAtPointer(row, clientX, clientY) {
 }
 
 async function saveSectionOrderFromDocument(scope) {
-  const containerId = scope === "daily" ? "dailySections" : "contextSections";
+  const containerId = "contextSections";
   const orderedIds = [...document.querySelectorAll(`#${containerId} .section-editor`)].map((row) => row.dataset.sectionId).filter(Boolean);
   await mutateSections(scope, (sections) => reorderSectionsById(sections, orderedIds));
 }
@@ -3033,7 +2933,7 @@ function startPointerSectionReorder(event, handle, lists) {
 }
 
 function bindSectionReordering() {
-  const lists = [...document.querySelectorAll("#contextSections, #dailySections")];
+  const lists = [...document.querySelectorAll("#contextSections")];
   document.querySelectorAll(".section-drag-handle").forEach((handle) => {
     handle.addEventListener("mousedown", (event) => startPointerSectionReorder(event, handle, lists));
     handle.addEventListener("dragstart", (event) => {
@@ -3059,7 +2959,7 @@ function bindSectionReordering() {
   });
   lists.forEach((list) => {
     list.addEventListener("dragover", (event) => {
-      if (!draggedSectionRow || list !== draggedSectionRow.closest("#contextSections, #dailySections")) return;
+      if (!draggedSectionRow || list !== draggedSectionRow.closest("#contextSections")) return;
       event.preventDefault();
       list.classList.add("is-drop-target");
       reorderSectionRowAtPointer(draggedSectionRow, event.clientX, event.clientY);
@@ -3549,6 +3449,15 @@ function clearChecklistSearch() {
 }
 
 function handleInput(event) {
+  if (event.target.id === "dailySourceDraft") {
+    app.dailySourceDraft = event.target.value;
+    const count = document.querySelector("[data-source-draft-count]");
+    const source = dailySourceKindOptions().find((option) => option.id === app.dailySourceKind);
+    if (count) count.textContent = `${app.dailySourceDraft.length.toLocaleString()} characters · ${source?.description || "Selected-day chart source."}`;
+    const addButton = document.querySelector('[data-action="add-daily-source"]');
+    if (addButton) addButton.disabled = app.deidOperation.active || !app.dailySourceDraft.trim();
+    return;
+  }
   if (event.target.id === "guidelineSearchInput") {
     guidelineSetsController.setSearchQuery(event.target.value);
     return;

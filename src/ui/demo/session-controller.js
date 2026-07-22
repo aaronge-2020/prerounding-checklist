@@ -5,7 +5,7 @@ export function createDemoSessionController({ app, createDemoPatient, structured
   function seedDraftText(patient) {
     patient.contextSections.forEach((section, index) => app.sectionDrafts.set(reviewKey("context", section.id), DEMO_CONTEXT_TEXTS[index] || ""));
     const day = patient.days.find((entry) => entry.id === DEMO_DAY_ID);
-    day?.sections.forEach((section, index) => app.sectionDrafts.set(reviewKey("daily", section.id), DEMO_DAILY_TEXTS[index] || ""));
+    day?.sourceCaptures.forEach((capture, index) => app.sectionDrafts.set(reviewKey("daily", capture.id), DEMO_DAILY_TEXTS[index] || ""));
   }
 
   function start() {
@@ -31,7 +31,7 @@ export function createDemoSessionController({ app, createDemoPatient, structured
     const patient = {
       ...sourcePatient,
       contextSections: sourcePatient.contextSections.map((section) => ({ ...section, deidentifiedText: "" })),
-      days: sourcePatient.days.map((day) => ({ ...day, sections: day.sections.map((section) => ({ ...section, deidentifiedText: "" })) }))
+      days: sourcePatient.days.map((day) => ({ ...day, sourceCaptures: day.sourceCaptures.map((capture) => ({ ...capture, deidentifiedText: "" })) }))
     };
     app.vault = { ...app.vault, activePatientId: DEMO_PATIENT_ID, patients: [patient], selectedWorkupIds: [], updatedAt: new Date().toISOString() };
     app.selectedDayId = DEMO_DAY_ID;

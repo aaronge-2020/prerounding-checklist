@@ -1,6 +1,7 @@
 import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
 import { buildTrajectoryBlock, sortDays } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js";
+import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js?v=20260722-guideline-library";
 import { naturalLanguagePrompt } from "./natural-language.js";
 import { buildProgressNotePacket } from "./progress-note-packet.js";
@@ -80,13 +81,13 @@ export function promptVariablesForPatient(patient, { selectedDayId = "", guideli
     sectionId: section.id
   }));
   const day = selectedPromptDay(patient, selectedDayId);
-  const daySectionVariables = (day?.sections || []).map((section, index) => ({
-    token: promptToken(`day-${section.label}`, index, used),
-    label: `${day.label || "Selected day"}: ${section.label || `Field ${index + 1}`}`,
-    description: "This selected hospital-day field.",
-    daySectionId: section.id
+  const daySourceVariables = (day?.sourceCaptures || []).map((capture, index) => ({
+    token: promptToken(`day-${capture.label || dailySourceKindLabel(capture.sourceKind)}`, index, used),
+    label: `${day.label || "Selected day"}: ${capture.label || dailySourceKindLabel(capture.sourceKind)}`,
+    description: "This selected hospital-day source.",
+    daySourceId: capture.id
   }));
-  return [...sectionVariables, ...daySectionVariables, ...guidelineSetVariables(guidelineSets), ...SMART_PROMPT_VARIABLES];
+  return [...sectionVariables, ...daySourceVariables, ...guidelineSetVariables(guidelineSets), ...SMART_PROMPT_VARIABLES];
 }
 
 function sectionByLabel(sections = [], pattern) {
@@ -104,19 +105,16 @@ function examFindingsSummary(snapshot, answers, quickNotes, examNoteText) {
 }
 
 function examFindingsForDay(day) {
-  const sectionText = (day?.sections || []).find((section) => section.label === "Physical exam findings")?.deidentifiedText;
   return examFindingsSummary(
     day?.checklistSnapshot || null,
     day?.answers || {},
     day?.quickNotes || [],
-    sectionText || day?.openEvidenceExamNote?.text
+    day?.openEvidenceExamNote?.text
   );
 }
 
 function savedExamNoteText(day) {
-  return (day?.sections || []).find((section) => section.label === "Physical exam findings")?.deidentifiedText?.trim()
-    || day?.openEvidenceExamNote?.text?.trim()
-    || "";
+  return day?.openEvidenceExamNote?.text?.trim() || "";
 }
 
 export function buildExamFindingsTimeline(patient) {
@@ -154,6 +152,8 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
   const quickNotes = selectedDay?.quickNotes || [];
   const medicationSection = sectionByLabel(patient?.contextSections || [], /medication/i);
   const labSection = sectionByLabel(patient?.contextSections || [], /lab|result/i);
+  const selectedMedicationSources = (selectedDay?.sourceCaptures || []).filter((capture) => capture.sourceKind === "medication_activity");
+  const selectedResultSources = (selectedDay?.sourceCaptures || []).filter((capture) => capture.sourceKind === "results");
   const allVariables = promptVariablesForPatient(patient, { selectedDayId, guidelineSets });
   const sectionValues = Object.fromEntries(
     allVariables
@@ -165,10 +165,10 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
   );
   const selectedDayValues = Object.fromEntries(
     allVariables
-      .filter((variable) => variable.daySectionId)
+      .filter((variable) => variable.daySourceId)
       .map((variable) => {
-        const section = (selectedDay?.sections || []).find((entry) => entry.id === variable.daySectionId);
-        return [variable.token, section?.deidentifiedText?.trim() || `No saved ${variable.label.toLowerCase()} text.`];
+        const capture = (selectedDay?.sourceCaptures || []).find((entry) => entry.id === variable.daySourceId);
+        return [variable.token, capture?.deidentifiedText?.trim() || `No saved ${variable.label.toLowerCase()} text.`];
       })
   );
   const guidelineValues = Object.fromEntries(
@@ -181,14 +181,18 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
     [TEAM_PREFERENCES_PROMPT_TOKEN]: guidelineSets.find((set) => set.token === TEAM_PREFERENCES_PROMPT_TOKEN)?.text?.trim()
       || buildTeamPreferencesPromptBlock(teamPreferences),
     "@admission-packet": sectionsToPromptBlock(patient?.contextSections || [], "Admission packet"),
-    "@medications": medicationSection?.deidentifiedText || "No saved medication text.",
-    "@labs": labSection?.deidentifiedText || "No saved lab text.",
+    "@medications": selectedMedicationSources.length
+      ? sourceCapturesToPromptBlock(selectedMedicationSources, "Selected-day medication activity")
+      : medicationSection?.deidentifiedText || "No saved medication text.",
+    "@labs": selectedResultSources.length
+      ? sourceCapturesToPromptBlock(selectedResultSources, "Selected-day results")
+      : labSection?.deidentifiedText || "No saved lab text.",
     // Compatibility alias for a previously saved template. New templates use
     // only @selected-day so there is one clear choice of hospital-day scope.
     "@hospital-stay": buildTrajectoryBlock(patient, { selectedDayId: selectedDay?.id, includeAllDays: false }),
     "@selected-day": usingAdmission
       ? sectionsToPromptBlock(patient?.contextSections || [], "Admission")
-      : (selectedDay ? sectionsToPromptBlock(selectedDay.sections || [], `Selected day: ${selectedDay.date} - ${selectedDay.label}`) : "No saved hospital day."),
+      : (selectedDay ? sourceCapturesToPromptBlock(selectedDay.sourceCaptures || [], `Selected day: ${selectedDay.date} - ${selectedDay.label}`) : "No saved hospital day."),
     "@progress-note-packet": buildProgressNotePacket({ patient, selectedDay }),
     "@checklist-answers": checklistAnswersSummary(snapshot, answers, quickNotes),
     "@openevidence-exam-note": savedExamNoteText(selectedDay) || "No saved OpenEvidence exam note.",

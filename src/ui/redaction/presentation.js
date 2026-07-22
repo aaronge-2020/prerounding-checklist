@@ -159,6 +159,37 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
     `;
   }
 
+  function renderSourceCaptureEditor({ capture, sourceOptions = [], editing, pendingFocus, review, draftText, captures = [], reviewFor = () => null }) {
+    const characterCount = draftText?.length || 0;
+    const draftMarker = draftText !== capture.deidentifiedText ? " · draft" : "";
+    const isInitialReviewTarget = pendingFocus?.scope === "daily" && pendingFocus.sectionId === capture.id;
+    const isExpanded = editing || isInitialReviewTarget;
+    const capturedAt = capture.capturedAt ? new Date(capture.capturedAt) : null;
+    const capturedLabel = capturedAt && !Number.isNaN(capturedAt.getTime())
+      ? capturedAt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
+      : "Saved source";
+    return `
+      <article class="section-editor source-capture-editor ${isExpanded ? "is-expanded" : ""}" data-section-id="${escapeHtml(capture.id)}" data-section-scope="daily" data-created-at="${escapeHtml(capture.createdAt)}" data-captured-at="${escapeHtml(capture.capturedAt || capture.createdAt)}">
+        <div class="section-toolbar source-capture-toolbar">
+          <div class="source-capture-identity">
+            <strong>${escapeHtml(sourceOptions.find((option) => option.id === capture.sourceKind)?.label || capture.label || "Other chart text")}</strong>
+            <span class="section-meta">${capturedLabel} · ${characterCount.toLocaleString()} chars${draftMarker}</span>
+          </div>
+          <div class="button-row">
+            <button class="button--quiet" type="button" data-action="toggle-section-editor" aria-label="${isExpanded ? "Collapse source" : "Edit source"}" aria-expanded="${String(isExpanded)}">${isExpanded ? "Done" : "Edit"}</button>
+            <button class="button--quiet danger-subtle" type="button" data-action="remove-section" data-scope="daily" data-section-id="${escapeHtml(capture.id)}">Remove</button>
+          </div>
+        </div>
+        <label class="source-kind-control">Epic source
+          <select class="source-kind" aria-label="Epic source">
+            ${sourceOptions.map((option) => `<option value="${escapeHtml(option.id)}" ${option.id === capture.sourceKind ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
+          </select>
+        </label>
+        ${renderSectionSurface({ section: capture, scope: "daily", review, editing, draftText, sections: captures, reviewFor })}
+      </article>
+    `;
+  }
+
   function renderWarnings({ sections, scope, reviewFor }) {
     const reviewedSections = (sections || [])
       .map((section) => ({ section, review: reviewFor(scope, section.id) }))
@@ -214,5 +245,5 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  return Object.freeze({ renderRedactionDocument, renderSectionEditor, renderSectionSurface, renderWarnings });
+  return Object.freeze({ renderRedactionDocument, renderSectionEditor, renderSourceCaptureEditor, renderSectionSurface, renderWarnings });
 }

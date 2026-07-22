@@ -6,6 +6,7 @@ import { buildOpenEvidencePrompt, openEvidenceTasks } from "../src/prompts/open-
 import { buildCustomOpenEvidencePrompt, DEFAULT_PROMPT_TEMPLATES, promptVariablesForPatient } from "../src/prompts/custom-templates.js";
 import { createGuidelineSet } from "../src/prompts/guideline-sets.js";
 import { buildTeamPreferencesPromptBlock, normalizeUserPreferences } from "../src/app/preferences.js";
+import { createSourceCapture } from "../src/patient-context/source-captures.js";
 
 const guidelines = {
   admission: readFileSync("prompts/Guidelines-admission.md", "utf8"),
@@ -33,6 +34,7 @@ patient = {
   ]
 };
 const day = createDailyRecord({ date: "2026-07-09", label: "Hospital day 2" });
+const primaryDaySource = { ...createSourceCapture({ sourceKind: "primary_note", text: "Feels less short of breath after diuresis." }), id: "day_source_primary" };
 const checklistSnapshot = {
   schema: "prerounding_checklist_v1",
   id: "checklist_prompt_test",
@@ -45,9 +47,7 @@ patient = {
   ...patient,
   days: upsertDay(patient.days, {
     ...day,
-    sections: day.sections.map((section, index) =>
-      index === 0 ? { ...section, deidentifiedText: "Feels less short of breath after diuresis." } : section
-    ),
+    sourceCaptures: [primaryDaySource],
     checklistSnapshot,
     answers: { item_1: { selected: ["No"], note: "" } },
     quickNotes: [{ id: "note_1", text: "Patient mentioned new hip pain unrelated to admission.", createdAt: "2026-07-09T12:05:00.000Z" }]
@@ -66,9 +66,9 @@ assert.match(admission, /Patient mentioned new hip pain unrelated to admission\.
 
 const progress = buildOpenEvidencePrompt("daily_progress_note", { patient, selectedDayId: day.id, guidelines });
 assert.match(progress, /daily progress note/i);
-assert.match(progress, /Vitals\/Clinical Support/);
-assert.match(progress, /tenderness to palpation/);
-assert.match(progress, /strict separation/);
+assert.match(progress, /Vitals and Clinical Support/);
+assert.match(progress, /Findings elicited by palpation/);
+assert.match(progress, /When selected-day sources conflict/);
 assert.match(progress, /Patient mentioned new hip pain unrelated to admission\./);
 assert.match(progress, /Feels less short of breath/);
 assert.match(progress, /Selected hospital day/, "daily progress prompt must identify the selected day explicitly");
@@ -141,8 +141,8 @@ const teamGuidelinePrompt = buildCustomOpenEvidencePrompt({ template: "Use @team
 assert.match(teamGuidelinePrompt, /Use concise language/);
 
 const dayVariables = promptVariablesForPatient(patient, { selectedDayId: day.id });
-const firstDayVariable = dayVariables.find((variable) => variable.daySectionId === day.sections[0].id);
-assert.ok(firstDayVariable, "saved hospital-day fields should become dynamic prompt variables");
+const firstDayVariable = dayVariables.find((variable) => variable.daySourceId === primaryDaySource.id);
+assert.ok(firstDayVariable, "saved hospital-day sources should become dynamic prompt variables");
 const directDayFieldPrompt = buildCustomOpenEvidencePrompt({
   taskId: "teaching_case_trajectory",
   template: `Use ${firstDayVariable.token} only.`,
@@ -174,10 +174,10 @@ const patientWithTwoDays = {
   ...patient,
   days: upsertDay(upsertDay([], {
     ...olderDay,
-    sections: olderDay.sections.map((section, index) => index === 0 ? { ...section, deidentifiedText: "Older day finding." } : section)
+    sourceCaptures: [{ ...createSourceCapture({ sourceKind: "primary_note", text: "Older day finding." }), id: "older_day_source" }]
   }), {
     ...day,
-    sections: day.sections.map((section, index) => index === 0 ? { ...section, deidentifiedText: "Latest day finding." } : section)
+    sourceCaptures: [{ ...createSourceCapture({ sourceKind: "primary_note", text: "Latest day finding." }), id: "latest_day_source" }]
   })
 };
 const selectedDayOnly = buildCustomOpenEvidencePrompt({

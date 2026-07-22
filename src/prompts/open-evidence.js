@@ -3,6 +3,7 @@ import { buildTrajectoryBlock } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js";
 import { naturalLanguagePrompt } from "./natural-language.js";
 import { buildProgressNotePacket } from "./progress-note-packet.js";
+import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js";
 
 export const OPEN_EVIDENCE_TASKS = [
   {
@@ -83,7 +84,7 @@ function patientBlocks(patient, selectedDayId = "") {
   return {
     patientContext: sectionsToPromptBlock(patient?.contextSections || [], "Saved patient context"),
     trajectory: buildTrajectoryBlock(patient, { selectedDayId: currentDay?.id, includeAllDays: false }),
-    selectedDay: currentDay ? sectionsToPromptBlock(currentDay.sections || [], `Latest day: ${currentDay.date} - ${currentDay.label}`) : "",
+    selectedDay: currentDay ? sourceCapturesToPromptBlock(currentDay.sourceCaptures || [], `Latest day: ${currentDay.date} - ${currentDay.label}`) : "",
     checklist: checklistAnswersSummary(snapshot, answers, quickNotes)
   };
 }

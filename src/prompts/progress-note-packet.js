@@ -1,5 +1,6 @@
 import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
 import { isCarryForwardContextRole, packetRoleFor, packetRoleLabel, packetRolesForScope } from "../patient-context/packet-roles.js";
+import { dailySourceKindLabel, sourceCapturePacketCheck } from "../patient-context/source-captures.js";
 import { naturalLanguagePrompt } from "./natural-language.js";
 
 function compactText(value) {
@@ -23,26 +24,34 @@ function sortedFields(scope, sections, include) {
 }
 
 function selectedDayExam(day) {
-  const focusedExam = (day?.sections || []).find((section) => section.role === "focused_exam")?.deidentifiedText;
-  if (compactText(focusedExam)) return compactText(focusedExam);
   if (hasAssessedChecklistContent(day?.checklistSnapshot || null, day?.answers || {}, day?.quickNotes || [])) {
     return checklistAnswersSummary(day.checklistSnapshot, day.answers || {}, day.quickNotes || []);
   }
   return compactText(day?.openEvidenceExamNote?.text);
 }
 
+function selectedDaySources(captures = []) {
+  return (captures || [])
+    .filter((capture) => compactText(capture?.deidentifiedText))
+    .map((capture) => `${dailySourceKindLabel(capture.sourceKind)}. ${compactText(capture.deidentifiedText)}`);
+}
+
 export function buildProgressNotePacket({ patient, selectedDay } = {}) {
   const dayLabel = compactText(selectedDay?.label) || "Selected hospital day";
   const dayDate = compactText(selectedDay?.date) || "not documented";
   const admission = sortedFields("context", patient?.contextSections || [], (section) => isCarryForwardContextRole(section.role));
-  const dayFields = sortedFields("daily", selectedDay?.sections || [], (section) => section.role !== "focused_exam" && section.role !== "additional_daily_source");
+  const daySources = selectedDaySources(selectedDay?.sourceCaptures || []);
+  const packetCheck = sourceCapturePacketCheck(selectedDay?.sourceCaptures || []);
   const exam = selectedDayExam(selectedDay);
 
   const parts = [
     `Selected hospital day. ${dayLabel}. Date: ${dayDate}.`,
     `Carry-forward admission context. ${admission.length ? admission.join("\n\n") : "No carry-forward admission context saved."}`,
-    `Selected-day information. ${dayFields.length ? dayFields.join("\n\n") : "No selected-day information saved."}`,
-    exam ? `Selected-day examination. ${exam}` : "Selected-day examination. No focused examination findings saved."
+    `Selected-day source record. ${daySources.length ? daySources.join("\n\n") : "No selected-day sources saved."}`,
+    exam ? `Separate selected-day examination. ${exam}` : "Separate selected-day examination. No checklist or examination note saved outside the source record.",
+    packetCheck.notSupplied.length
+      ? `Packet limitations. The following source types were not supplied: ${packetCheck.notSupplied.join(", ")}. Do not infer their contents from another source.`
+      : "Packet limitations. The expected primary note, results, medication activity, and bedside update source types were supplied. This does not establish that the chart is complete or internally consistent."
   ];
   return naturalLanguagePrompt(parts.filter(Boolean).join("\n\n"));
 }

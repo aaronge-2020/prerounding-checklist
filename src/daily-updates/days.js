@@ -1,5 +1,5 @@
-import { DEFAULT_DAILY_SECTION_LABELS, createDefaultSections, createLocalId, normalizeDay, timestampNow } from "../app/state/vault.js";
-import { sectionsToPromptBlock } from "../patient-context/sections.js";
+import { createLocalId, normalizeDay, timestampNow } from "../app/state/vault.js";
+import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js";
 
 export function localCalendarDate(value = new Date()) {
   const date = value instanceof Date ? value : new Date(value);
@@ -15,7 +15,7 @@ export function createDailyRecord({ date = localCalendarDate(), label = "", now 
       id: createLocalId("day"),
       date,
       label: label || `Hospital day ${date}`,
-      sections: createDefaultSections(DEFAULT_DAILY_SECTION_LABELS, { now, scope: "daily" }),
+      sourceCaptures: [],
       answers: {},
       openEvidenceOutputs: {},
       openEvidenceExamNote: null
@@ -52,7 +52,7 @@ export function buildTrajectoryBlock(patient, { selectedDayId = "", includeAllDa
   const includedDays = includeAllDays ? days : selected;
   if (!includedDays.length) return "Hospital trajectory. No saved daily updates.";
   const rendered = includedDays.map((day) => {
-    const body = sectionsToPromptBlock(day.sections, `${day.date} - ${day.label}`);
+    const body = sourceCapturesToPromptBlock(day.sourceCaptures, `${day.date} - ${day.label}`);
     return body;
   });
   return `Hospital trajectory.\n\n${rendered.join("\n\n")}`;

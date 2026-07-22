@@ -6985,6 +6985,165 @@ body.vault-locked .vault-access {
   }
 }
 
+/* Source-first Hospital Stay capture */
+.source-first-stay .stay-content { background: #f8faf9; }
+
+.source-first-stay .hospital-day-packet {
+  display: grid;
+  gap: 18px;
+  background: var(--surface);
+}
+
+.source-day-heading {
+  align-items: start;
+  margin: 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.source-day-heading h2 { margin-bottom: 3px; }
+
+.source-capture-composer {
+  display: grid;
+  gap: 12px;
+  border: 1px solid #cbdedf;
+  border-radius: 7px;
+  background: #fbfdfd;
+  padding: 16px;
+}
+
+.source-capture-composer .section-heading,
+.saved-source-list .section-heading,
+.packet-check .section-heading { margin: 0; }
+
+.source-kind-picker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.source-kind-button {
+  min-height: 42px;
+  border: 0;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: var(--surface);
+  color: var(--muted);
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 650;
+  text-align: left;
+}
+
+.source-kind-button:nth-child(3n) { border-right: 0; }
+.source-kind-button:nth-last-child(-n + 3) { border-bottom: 0; }
+.source-kind-button:hover { background: #f1f7f6; color: var(--ink); }
+
+.source-kind-button.selected {
+  background: #e8f4f2;
+  color: #075f64;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.source-draft-label {
+  display: grid;
+  gap: 6px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.source-draft-label textarea {
+  min-height: 188px;
+  resize: vertical;
+  background: var(--surface);
+  font: inherit;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.source-draft-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.source-draft-footer .muted { max-width: 64ch; font-size: 11px; }
+
+.saved-source-list { display: grid; gap: 10px; }
+.source-capture-list { display: grid; gap: 0; }
+
+.source-capture-editor {
+  min-height: 58px;
+  padding: 10px 8px;
+}
+
+.source-capture-editor .source-capture-toolbar {
+  display: flex;
+  grid-template-columns: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.source-capture-identity { display: grid; min-width: 0; gap: 2px; }
+.source-capture-identity strong { color: var(--ink); font-size: 13px; }
+.source-capture-editor:not(.is-expanded) .source-kind-control { display: none; }
+
+.source-kind-control {
+  display: grid;
+  grid-template-columns: auto minmax(180px, 280px);
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.packet-check {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+.packet-check-list { display: grid; margin: 0; border-block: 1px solid var(--border); }
+
+.packet-check-list > div {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 14px;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--border);
+}
+
+.packet-check-list > div:last-child { border-bottom: 0; }
+.packet-check-list dt { color: var(--ink); font-size: 12px; font-weight: 700; }
+.packet-check-list dd { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.packet-check-missing dt { color: #8a5a12; }
+.packet-check-review dt { color: #8b3d3d; }
+
+@media (max-width: 680px) {
+  .hospital-day-packet { padding: 14px; }
+  .source-day-heading { gap: 10px; }
+  .source-day-heading,
+  .source-draft-footer { align-items: stretch; flex-direction: column; }
+  .source-day-heading .button-row,
+  .source-draft-footer .button--primary { width: 100%; }
+  .source-kind-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .source-kind-button:nth-child(3n) { border-right: 1px solid var(--border); }
+  .source-kind-button:nth-child(2n) { border-right: 0; }
+  .source-kind-button:nth-last-child(-n + 3) { border-bottom: 1px solid var(--border); }
+  .source-kind-button:nth-last-child(-n + 2) { border-bottom: 0; }
+  .source-capture-editor .source-capture-toolbar { align-items: flex-start; }
+  .source-capture-editor .button-row { flex: none; }
+  .packet-check-list > div { grid-template-columns: 1fr; gap: 3px; }
+}
+
 /* Guided-demo targets need to be unmistakable without relying on motion. */
 .guided-demo-instructions {
   display: flex;

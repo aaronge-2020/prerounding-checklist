@@ -285,14 +285,20 @@ try {
   await page.fill("#newDayDate", "2026-07-09");
   await page.fill("#newDayLabel", "Hospital day 1");
   await page.click('[data-action="add-day"]');
-  await page.locator("#dailySections .section-editor").first().locator('[data-action="toggle-section-editor"]').click();
-  assert.equal(await page.locator("#dailySections .section-editor").first().locator(".section-role").count(), 1, "expanding a hospital-day field must expose its controlled purpose");
-  assert.equal(await page.locator("#dailySections .section-editor").first().locator(".section-role").inputValue(), "interval_events");
-  await page.locator("#dailySections .section-editor").nth(0).locator(".section-text").fill("Overnight oxygen requirement improved.");
-  await page.locator("#dailySections .section-editor").nth(4).locator('[data-action="toggle-section-editor"]').click();
-  await page.locator("#dailySections .section-editor").nth(4).locator(".section-text").fill("Repeat creatinine 1.3.");
-  await page.click('[data-action="save-day"]');
-  await page.waitForSelector("#dailySections");
+  await page.waitForSelector('[data-action="select-daily-source-kind"]');
+  assert.equal(await page.locator('[data-action="select-daily-source-kind"]').count(), 6, "Hospital Stay should ask where a broad Epic paste came from, not require note-section copy editing");
+  await page.fill("#dailySourceDraft", "Overnight oxygen requirement improved.");
+  await page.click('[data-action="add-daily-source"]');
+  await page.waitForSelector("#dailySources .source-capture-editor");
+  assert.match(await page.locator("#dailySources .source-capture-editor").first().innerText(), /Primary team note/);
+  await page.click('[data-action="select-daily-source-kind"][data-source-kind="results"]');
+  await page.fill("#dailySourceDraft", "Repeat creatinine 1.3.");
+  await page.click('[data-action="add-daily-source"]');
+  await page.waitForFunction(() => document.querySelectorAll("#dailySources .source-capture-editor").length === 2);
+  assert.match(await page.locator("#dailySources .source-capture-editor").nth(1).innerText(), /Results/);
+  assert.match(await page.locator(".packet-check").innerText(), /Included[\s\S]*Primary team note, Results/);
+  assert.match(await page.locator(".packet-check").innerText(), /Not supplied[\s\S]*Medication activity, Bedside update/);
+  assert.equal(await page.locator('[data-action="open-progress-note"]').isEnabled(), true);
 
   await page.click('[data-view-target="workups"]');
   await page.selectOption("#workupEditorSelect", { label: "Acute kidney injury" });
@@ -346,7 +352,8 @@ try {
   await page.click('[data-action="copy-open-evidence-workup-prompt"]');
   const copiedWorkupPrompt = await page.evaluate(() => navigator.clipboard.readText());
   assert.match(copiedWorkupPrompt, /focused fast-rounds scope/i);
-  assert.match(copiedWorkupPrompt, /consulted rhythm question/);
+  assert.match(copiedWorkupPrompt, /Primary team note\. Overnight oxygen requirement improved/);
+  assert.match(copiedWorkupPrompt, /Results\. Repeat creatinine 1\.3/);
   // A successful "Parse & save" auto-collapses the import panel (its job is
   // done) - reopen it to paste a fresh draft for the OpenAI-formatting flow
   // below, same as a real user would.

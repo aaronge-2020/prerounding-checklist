@@ -14,7 +14,7 @@ function memoryStorage() {
 }
 
 const vault = createEmptyVaultState({ now: () => "2026-07-09T12:00:00.000Z" });
-assert.equal(vault.schemaVersion, 2);
+assert.equal(vault.schemaVersion, 3);
 assert.deepEqual(vault.patients, []);
 assert.equal(vault.preferences.medicalService, "");
 assert.equal(vault.preferences.openAiApiKey, "");
@@ -62,12 +62,31 @@ nextVault = updateActivePatient(nextVault, (current) => ({
 const normalized = migrateVaultState(nextVault);
 assert.equal(normalized.activePatientId, "patient_test");
 assert.equal(normalized.patients[0].contextSections.length, 7);
-assert.equal(normalized.patients[0].days[0].sections.length, 10);
+assert.equal(normalized.patients[0].days[0].sourceCaptures.length, 0);
 assert.equal(normalized.patients[0].contextSections[0].role, "admission_reason");
-assert.equal(normalized.patients[0].days[0].sections[0].role, "interval_events");
 assert.equal(normalized.patients[0].days[0].label, "Hospital day 1");
 assert.equal(localCalendarDate(new Date(2026, 6, 9, 23, 45)), "2026-07-09");
 assert.deepEqual(removeDay([day], day.id), []);
+
+const migratedLegacyDailyPacket = migrateVaultState({
+  activePatientId: patient.id,
+  patients: [{
+    ...patient,
+    days: [{
+      id: "legacy_day",
+      date: "2026-07-08",
+      label: "Hospital day 1",
+      sections: [
+        { id: "legacy_interval", role: "interval_events", label: "Interval events", deidentifiedText: "Oxygen requirement improved.", residualWarnings: [] },
+        { id: "legacy_medications", role: "medication_order_events", label: "Medication changes", deidentifiedText: "Diuretic dose changed.", residualWarnings: [] },
+        { id: "legacy_empty", role: "key_results", label: "Results", deidentifiedText: "", residualWarnings: [] }
+      ]
+    }]
+  }]
+});
+assert.deepEqual(migratedLegacyDailyPacket.patients[0].days[0].sourceCaptures.map((capture) => capture.sourceKind), ["primary_note", "medication_activity"]);
+assert.equal(migratedLegacyDailyPacket.patients[0].days[0].sourceCaptures[0].deidentifiedText, "Oxygen requirement improved.");
+assert.equal("sections" in migratedLegacyDailyPacket.patients[0].days[0], false, "legacy daily role fields must migrate to the canonical source-capture contract");
 
 const storage = memoryStorage();
 const vaultWithDeidentifiedContext = updateActivePatient(normalized, (current) => ({

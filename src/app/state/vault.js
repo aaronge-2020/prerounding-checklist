@@ -1,11 +1,11 @@
 import { normalizeUserPreferences } from "../preferences.js";
 import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js";
-import { CONTEXT_PACKET_ROLES, DAILY_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRoleLabel } from "../../patient-context/packet-roles.js";
+import { CONTEXT_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRoleLabel } from "../../patient-context/packet-roles.js";
+import { migrateLegacyDailySections, normalizeSourceCapture } from "../../patient-context/source-captures.js";
 
-export const VAULT_SCHEMA_VERSION = 2;
+export const VAULT_SCHEMA_VERSION = 3;
 
 export const DEFAULT_CONTEXT_SECTION_LABELS = CONTEXT_PACKET_ROLES.map(({ label }) => label);
-export const DEFAULT_DAILY_SECTION_LABELS = DAILY_PACKET_ROLES.map(({ label }) => label);
 
 export function createLocalId(prefix = "id") {
   const random = Math.random().toString(36).slice(2, 10);
@@ -86,15 +86,14 @@ export function normalizeSection(section, fallbackLabel = "Section", { now = tim
 export function normalizeDay(day, index = 0, { now = timestampNow } = {}) {
   const timestamp = now();
   const fallbackDate = new Date(Date.now() + index * 86400000).toISOString().slice(0, 10);
-  const labels = DEFAULT_DAILY_SECTION_LABELS;
-  const sections = Array.isArray(day?.sections) && day.sections.length
-    ? day.sections.map((section, sectionIndex) => normalizeSection(section, labels[sectionIndex] || packetRoleLabel("daily", defaultPacketRole("daily", sectionIndex), "Daily update"), { now, scope: "daily", index: sectionIndex }))
-    : createDefaultSections(labels, { now, scope: "daily" });
+  const sourceCaptures = Array.isArray(day?.sourceCaptures)
+    ? day.sourceCaptures.map((capture) => normalizeSourceCapture(capture, { now }))
+    : migrateLegacyDailySections(day?.sections || [], { now });
   return {
     id: String(day?.id || createLocalId("day")),
     date: String(day?.date || fallbackDate),
     label: String(day?.label || `Hospital day ${index + 1}`).trim() || `Hospital day ${index + 1}`,
-    sections,
+    sourceCaptures,
     checklistSnapshot: day?.checklistSnapshot || null,
     answers: day?.answers && typeof day.answers === "object" ? day.answers : {},
     quickNotes: Array.isArray(day?.quickNotes) ? day.quickNotes : [],
