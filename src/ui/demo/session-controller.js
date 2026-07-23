@@ -1,9 +1,26 @@
-import { DEMO_ADMISSION_DATE, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS, DEMO_DAY_ID, DEMO_PATIENT_ID, DEMO_WORKUP_ID } from "./session.js?v=20260717-guided-demo-ux-4";
+import {
+  DEMO_ADMISSION_DATE,
+  DEMO_CONTEXT_TEXTS,
+  DEMO_DAILY_TEXTS,
+  DEMO_DAY_ID,
+  DEMO_PATIENT_ID,
+  DEMO_WORKUP_ID
+} from "./session.js?v=20260717-guided-demo-ux-4";
 import { reviewKey } from "../../patient-context/review.js";
 
-export function createDemoSessionController({ app, createDemoPatient, structuredDeidMode, clearPhiReviews, clearQuickDeidSession, render, setStatus }) {
+export function createDemoSessionController({
+  app,
+  createDemoPatient,
+  structuredDeidMode,
+  clearPhiReviews,
+  clearQuickDeidSession,
+  render,
+  setStatus
+}) {
   function seedDraftText(patient) {
-    patient.contextSections.forEach((section, index) => app.sectionDrafts.set(reviewKey("context", section.id), DEMO_CONTEXT_TEXTS[index] || ""));
+    patient.contextSections.forEach((section, index) =>
+      app.sectionDrafts.set(reviewKey("context", section.id), DEMO_CONTEXT_TEXTS[index] || "")
+    );
     const day = patient.days.find((entry) => entry.id === DEMO_DAY_ID);
     day?.sourceCaptures.forEach((capture, index) => app.sectionDrafts.set(reviewKey("daily", capture.id), DEMO_DAILY_TEXTS[index] || ""));
   }
@@ -16,6 +33,7 @@ export function createDemoSessionController({ app, createDemoPatient, structured
       restoreVault: app.vault,
       restoreView: app.view,
       restoreSelectedDayId: app.selectedDayId,
+      restoreSelectedStayPacketId: app.selectedStayPacketId,
       restoreDeidMode: app.deidMode,
       restoreAdmissionDate: app.admissionDate,
       restoreSelectedWorkupEditorId: app.selectedWorkupEditorId,
@@ -31,10 +49,20 @@ export function createDemoSessionController({ app, createDemoPatient, structured
     const patient = {
       ...sourcePatient,
       contextSections: sourcePatient.contextSections.map((section) => ({ ...section, deidentifiedText: "" })),
-      days: sourcePatient.days.map((day) => ({ ...day, sourceCaptures: day.sourceCaptures.map((capture) => ({ ...capture, deidentifiedText: "" })) }))
+      days: sourcePatient.days.map((day) => ({
+        ...day,
+        sourceCaptures: day.sourceCaptures.map((capture) => ({ ...capture, deidentifiedText: "" }))
+      }))
     };
-    app.vault = { ...app.vault, activePatientId: DEMO_PATIENT_ID, patients: [patient], selectedWorkupIds: [], updatedAt: new Date().toISOString() };
+    app.vault = {
+      ...app.vault,
+      activePatientId: DEMO_PATIENT_ID,
+      patients: [patient],
+      selectedWorkupIds: [],
+      updatedAt: new Date().toISOString()
+    };
     app.selectedDayId = DEMO_DAY_ID;
+    app.selectedStayPacketId = "admission";
     app.admissionDate = DEMO_ADMISSION_DATE;
     app.deidMode = structuredDeidMode;
     app.selectedWorkupEditorId = DEMO_WORKUP_ID;
@@ -56,6 +84,7 @@ export function createDemoSessionController({ app, createDemoPatient, structured
     app.vault = session.restoreVault;
     app.view = session.restoreView;
     app.selectedDayId = session.restoreSelectedDayId;
+    app.selectedStayPacketId = session.restoreSelectedStayPacketId;
     app.deidMode = session.restoreDeidMode;
     app.admissionDate = session.restoreAdmissionDate;
     app.selectedWorkupEditorId = session.restoreSelectedWorkupEditorId;

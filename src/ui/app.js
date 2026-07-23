@@ -1,23 +1,147 @@
-import { createDailyRecord, latestDay, localCalendarDate, removeDay, sortDays, upsertDay } from "../daily-updates/days.js?v=20260722-unified-stay-v2";
-import { activePatient, archivePatient, createPatientRecord, removeWorkupOverride, setActivePatient, setSelectedWorkups, setWorkupOverride, setWorkupOverrides, updateActivePatient } from "../app/state/vault.js?v=20260722-unified-stay-v2";
-import { deleteEncryptedVaultRecord, downloadJson, loadOrCreateVault, readEncryptedVaultRecord, saveEncryptedVault, writeEncryptedVaultRecord } from "../app/state/persistence.js?v=20260711-functional-remediation-15";
-import { authorizeWorkupWorkspaceMirror, disconnectWorkupWorkspaceMirror, getWorkupWorkspaceMirrorState, mirrorWorkupOverridesToWorkspace } from "../app/state/workspace-mirror.js?v=20260711-functional-remediation-15";
-import { addSection, removeSection, reorderSections, reorderSectionsById, replaceSectionsFromFormAsync } from "../patient-context/sections.js?v=20260722-unified-stay-v2";
-import { createEphemeralRedactionReview, inspectedRedactionIndex, nextPendingRedactionIndex, nextPendingReviewTarget, pendingReviewTargets, quickRedactionIndex, quickSelectedRedactionIndex, quickWarningIndex, reviewKey, synchronizeReviewPlaceholders } from "../patient-context/review.js?v=20260715-reject-rest";
-import { crossOriginIsolationBlocker, deidentifyText, getAdvancedDeidStatus, getSelectedDeidModelStatus, preloadAdvancedDeidModel, resetAdvancedDeidWorker, verifyAdvancedDeidModel } from "../patient-context/deid-client.js?v=20260717-guided-demo-ux";
-import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
-import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
-import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
-import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260722-unified-stay-v2";
+import {
+  createDailyRecord,
+  latestDay,
+  localCalendarDate,
+  removeDay,
+  sortDays,
+  upsertDay
+} from "../daily-updates/days.js?v=20260722-unified-stay-v2";
+import {
+  activePatient,
+  archivePatient,
+  createPatientRecord,
+  removeWorkupOverride,
+  setActivePatient,
+  setSelectedWorkups,
+  setWorkupOverride,
+  setWorkupOverrides,
+  updateActivePatient
+} from "../app/state/vault.js?v=20260722-unified-stay-v2";
+import {
+  deleteEncryptedVaultRecord,
+  downloadJson,
+  loadOrCreateVault,
+  readEncryptedVaultRecord,
+  saveEncryptedVault,
+  writeEncryptedVaultRecord
+} from "../app/state/persistence.js?v=20260711-functional-remediation-15";
+import {
+  authorizeWorkupWorkspaceMirror,
+  disconnectWorkupWorkspaceMirror,
+  getWorkupWorkspaceMirrorState,
+  mirrorWorkupOverridesToWorkspace
+} from "../app/state/workspace-mirror.js?v=20260711-functional-remediation-15";
+import {
+  addSection,
+  removeSection,
+  reorderSections,
+  reorderSectionsById,
+  replaceSectionsFromFormAsync
+} from "../patient-context/sections.js?v=20260722-unified-stay-v2";
+import {
+  createEphemeralRedactionReview,
+  inspectedRedactionIndex,
+  nextPendingRedactionIndex,
+  nextPendingReviewTarget,
+  pendingReviewTargets,
+  quickRedactionIndex,
+  quickSelectedRedactionIndex,
+  quickWarningIndex,
+  reviewKey,
+  synchronizeReviewPlaceholders
+} from "../patient-context/review.js?v=20260715-reject-rest";
+import {
+  crossOriginIsolationBlocker,
+  deidentifyText,
+  getAdvancedDeidStatus,
+  getSelectedDeidModelStatus,
+  preloadAdvancedDeidModel,
+  resetAdvancedDeidWorker,
+  verifyAdvancedDeidModel
+} from "../patient-context/deid-client.js?v=20260717-guided-demo-ux";
+import {
+  DEFAULT_DEID_MODEL_KEY,
+  DEID_MODEL_OPTIONS,
+  STRUCTURED_DEID_MODE,
+  deidModelOptionByKey
+} from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
+import {
+  canAutomaticallyInstallModel,
+  ensureModelPackServiceWorker,
+  getModelPackState,
+  importModelPack,
+  installModelPack,
+  markModelPackVerified,
+  modelFilesFromDirectoryHandle,
+  modelFilesFromInput,
+  removeModelPack,
+  requestPersistentModelStorage
+} from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
+import {
+  formatBytes,
+  hasAutomaticModelDownload,
+  isInstallableModel,
+  modelDownloadBytes
+} from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
+import {
+  ADMISSION_PSEUDO_DAY_ID,
+  buildCustomOpenEvidencePrompt,
+  buildPromptPreviewSegments,
+  buildPromptVariableMap,
+  loadPromptTemplateOverrides,
+  loadTokenColorOverrides,
+  promptTemplateForTask,
+  promptVariablesForPatient,
+  savePromptTemplateOverrides,
+  saveTokenColorOverrides
+} from "../prompts/custom-templates.js?v=20260722-unified-stay-v2";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import { DEFAULT_DAILY_SOURCE_KIND, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260722-unified-stay-v2";
 import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260722-unified-stay-v2";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
-import { ensureAdditionalGuidelineSets, ensureAttendingProgressGuidelineSet, ensureCanonicalProgressGuidelineSet, ensureCanonicalProgressGuidelineSetV2, ensureCanonicalProgressGuidelineSetV3, ensureConsultingGuidelineSet, ensureCurrentAdmissionGuidelineSet, ensureCurrentAdmissionGuidelineSetV2, ensureCurrentGuidelineSets, ensureCurrentProgressGuidelineSet, ensureFocusedProgressGuidelineSet, ensureLatestProgressGuidelineSet, ensureProblemAssessmentProgressGuidelineSet, ensureReasoningProgressGuidelineSet, ensureRevisedProgressGuidelineSet, ensureTeamPreferencesGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260722-guideline-concept-v2";
-import { OPENAI_WORKUP_MODEL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260722-guideline-library";
-import { bundledWorkupById, effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260715-workup-delete";
-import { mergeWorkupLibraryIntoOverrides, parseWorkupLibraryJson, workupLibraryFromOverrides } from "../workups/library.js?v=20260711-functional-remediation-15";
-import { createBlankWorkup, createBlankWorkupItem, collectWorkupDraftFromDocument, workupFromEditorDraft, workupThoroughnessOption } from "../workups/editor.js?v=20260711-functional-remediation-15";
+import {
+  ensureAdditionalGuidelineSets,
+  ensureAttendingProgressGuidelineSet,
+  ensureCanonicalProgressGuidelineSet,
+  ensureCanonicalProgressGuidelineSetV2,
+  ensureCanonicalProgressGuidelineSetV3,
+  ensureConsultingGuidelineSet,
+  ensureCurrentAdmissionGuidelineSet,
+  ensureCurrentAdmissionGuidelineSetV2,
+  ensureCurrentGuidelineSets,
+  ensureCurrentProgressGuidelineSet,
+  ensureFocusedProgressGuidelineSet,
+  ensureLatestProgressGuidelineSet,
+  ensureProblemAssessmentProgressGuidelineSet,
+  ensureReasoningProgressGuidelineSet,
+  ensureRevisedProgressGuidelineSet,
+  ensureTeamPreferencesGuidelineSet,
+  loadOrMigrateGuidelineSets
+} from "../prompts/guideline-sets.js?v=20260722-guideline-concept-v2";
+import {
+  OPENAI_WORKUP_MODEL_OPTIONS,
+  normalizeUserPreferences,
+  openAiWorkupModelOption
+} from "../app/preferences.js?v=20260722-guideline-library";
+import {
+  bundledWorkupById,
+  effectiveWorkupCatalog,
+  findWorkupsById,
+  normalizeWorkup,
+  parseWorkupJson
+} from "../workups/schema.js?v=20260715-workup-delete";
+import {
+  mergeWorkupLibraryIntoOverrides,
+  parseWorkupLibraryJson,
+  workupLibraryFromOverrides
+} from "../workups/library.js?v=20260711-functional-remediation-15";
+import {
+  createBlankWorkup,
+  createBlankWorkupItem,
+  collectWorkupDraftFromDocument,
+  workupFromEditorDraft,
+  workupThoroughnessOption
+} from "../workups/editor.js?v=20260711-functional-remediation-15";
 import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260714-deid-ux-polish";
 import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260715-workup-delete";
 import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260712-openevidence-import";
@@ -50,14 +174,25 @@ import { createPhoneSessionController } from "./checklist/phone-session.js?v=202
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260714-deid-ux-polish";
 import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260721-admission-context";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260722-prompt-click-repair";
-import { createPromptTaskController, filterSmartVariableMenu, positionSmartVariableMenu, promptVariableTokenAtCaret, scrollPromptOutputToVariable } from "./prompts/controller.js?v=20260722-prompt-click-repair";
+import {
+  createPromptTaskController,
+  filterSmartVariableMenu,
+  positionSmartVariableMenu,
+  promptVariableTokenAtCaret,
+  scrollPromptOutputToVariable
+} from "./prompts/controller.js?v=20260722-prompt-click-repair";
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260722-guideline-concept-v2";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721-persisted-anchor";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260722-guideline-concept-v2";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260722-guideline-concept-v2";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
-import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260722-unified-stay-v2";
+import {
+  createRedactionPresentation,
+  redactionPosition,
+  warningDescription,
+  warningSnippet
+} from "./redaction/presentation.js?v=20260722-unified-stay-v2";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
 import { createDemoController } from "./demo/controller.js?v=20260717-guided-demo-ux-4";
@@ -80,7 +215,8 @@ const app = {
   guidelineSets: [],
   guidelineSearchQuery: "",
   guidelineSelectedIds: new Set(),
-  guidelineOpenId: "", guidelineCreateDraft: null,
+  guidelineOpenId: "",
+  guidelineCreateDraft: null,
   pendingRemoveGuidelineSetId: "",
   pendingRemoveGuidelineSetIds: [],
   phoneBundle: null,
@@ -123,7 +259,15 @@ const app = {
   phoneReturnReady: false,
   checklistSearchQuery: "",
   checklistOpenNoteIds: new Set(),
-  openEvidenceImport: { input: "", busy: false, deidBusy: false, error: "", deidConfirmed: false, deidStatus: "", deidResidualWarnings: [] },
+  openEvidenceImport: {
+    input: "",
+    busy: false,
+    deidBusy: false,
+    error: "",
+    deidConfirmed: false,
+    deidStatus: "",
+    deidResidualWarnings: []
+  },
   workupImportError: "",
   workupCatalogOpen: false,
   workupCatalogQuery: "",
@@ -159,11 +303,7 @@ function byId(id) {
   return document.getElementById(id);
 }
 function escapeHtml(value = "") {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+  return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 const checklistPresentation = createChecklistPresentation({ escapeHtml, icon });
 const dailyPresentation = createDailyPresentation({ escapeHtml, icon });
@@ -173,30 +313,110 @@ const workupPresentation = createWorkupPresentation({ escapeHtml, icon });
 const promptsPresentation = createPromptsPresentation({ escapeHtml });
 const settingsPresentation = createSettingsPresentation({ escapeHtml });
 const vaultPresentation = createVaultPresentation({ escapeHtml, icon });
-const demoController = createDemoController({ byId, escapeHtml, getSession: () => app.demoSession, getView: () => app.view });
-const demoSessionController = createDemoSessionController({ app, createDemoPatient, structuredDeidMode: STRUCTURED_DEID_MODE, clearPhiReviews, clearQuickDeidSession, render, setStatus });
+const demoController = createDemoController({
+  app,
+  byId,
+  escapeHtml,
+  getSession: () => app.demoSession,
+  getView: () => app.view,
+  render,
+  selectDemoPacket: () => dailySourceController.selectPacket("demo_day_guided_case")
+});
+const demoSessionController = createDemoSessionController({
+  app,
+  createDemoPatient,
+  structuredDeidMode: STRUCTURED_DEID_MODE,
+  clearPhiReviews,
+  clearQuickDeidSession,
+  render,
+  setStatus
+});
 const checklistSearch = createChecklistSearchController({ Fuse, normalizeQuery: normalizeWorkupCatalogQuery, byId });
 const phoneAutosave = createPhoneAutosave(localStorage);
-const phoneSession = createPhoneSessionController({ phoneAutosave, state: app, active, selectedChecklistDay, persistVault, renderPhoneChecklist, renderChecklist });
+const phoneSession = createPhoneSessionController({
+  phoneAutosave,
+  state: app,
+  active,
+  selectedChecklistDay,
+  persistVault,
+  renderPhoneChecklist,
+  renderChecklist
+});
 const examFindingsController = createExamFindingsController({ state: app, active, persistVault, setStatus });
 const admissionDateAnchor = createAdmissionDateAnchor({ state: app, active, sortDays });
-const openEvidenceImport = createOpenEvidenceImportController({ state: app, active, selectedChecklistDay, persistVault, renderChecklist, byId, copyText, setStatus, currentPreferences, deidentify, ensureDeidReady: ensureSelectedDeidReady, formatChecklistAnswersWithOpenAi, saveExamFindings: examFindingsController.saveExamFindings, clearExamFindings: examFindingsController.clearExamFindings });
-const workupOpenAiImport = createWorkupOpenAiImportController({ state: app, active, byId, copyText, setStatus, currentPreferences, renderWorkups, parseAndSaveWorkupJson });
+const openEvidenceImport = createOpenEvidenceImportController({
+  state: app,
+  active,
+  selectedChecklistDay,
+  persistVault,
+  renderChecklist,
+  byId,
+  copyText,
+  setStatus,
+  currentPreferences,
+  deidentify,
+  ensureDeidReady: ensureSelectedDeidReady,
+  formatChecklistAnswersWithOpenAi,
+  saveExamFindings: examFindingsController.saveExamFindings,
+  clearExamFindings: examFindingsController.clearExamFindings
+});
+const workupOpenAiImport = createWorkupOpenAiImportController({
+  state: app,
+  active,
+  byId,
+  copyText,
+  setStatus,
+  currentPreferences,
+  renderWorkups,
+  parseAndSaveWorkupJson
+});
 const workupDeleteController = createWorkupDeleteController({ state: app, renderWorkups, persistWorkupChanges, byId });
 const promptTaskController = createPromptTaskController({ state: app, setStatus, renderPrompts, byId });
 const guidelineSetsController = createGuidelineSetsController({ state: app, setStatus, renderSettings, byId });
 const admissionDateGate = createAdmissionDateGate({ app, byId });
-const dailySourceController = createDailySourceController({ app, active, selectedChecklistDay, byId, localCalendarDate, patientRequiredMessage, renderDeidStrip, renderSectionEditor, renderWarnings, dailyPresentation, redactionPresentation, isSectionTextEditing, sectionReviewFor, sectionDraftText, reviewSectionsForScope, ensureSelectedDeidReady, deidentify, updateDeidOperation, setSectionDraftText, admissionDateAnchor, beginSectionReview, persistVault, render, applyApprovedRedactions });
+const dailySourceController = createDailySourceController({
+  app,
+  active,
+  selectedChecklistDay,
+  byId,
+  localCalendarDate,
+  patientRequiredMessage,
+  renderDeidStrip,
+  renderSectionEditor,
+  renderWarnings,
+  dailyPresentation,
+  redactionPresentation,
+  isSectionTextEditing,
+  sectionReviewFor,
+  sectionDraftText,
+  reviewSectionsForScope,
+  ensureSelectedDeidReady,
+  deidentify,
+  updateDeidOperation,
+  setSectionDraftText,
+  admissionDateAnchor,
+  beginSectionReview,
+  persistVault,
+  render,
+  applyApprovedRedactions
+});
 const tokenColorPicker = createTokenColorPickerController({
-  byId, getOverrides: () => app.tokenColorOverrides,
-  saveOverrides: (overrides) => { app.tokenColorOverrides = overrides; saveTokenColorOverrides(overrides); },
+  byId,
+  getOverrides: () => app.tokenColorOverrides,
+  saveOverrides: (overrides) => {
+    app.tokenColorOverrides = overrides;
+    saveTokenColorOverrides(overrides);
+  },
   // Not a renderPrompts(): commit() already repaints its own swatch, and a
   // full re-render here would lose the menu's docked position/filter/focus.
-  onApplied: () => { if (app.view === "prompts") refreshPromptPreview(); }
+  onApplied: () => {
+    if (app.view === "prompts") refreshPromptPreview();
+  }
 });
 function selectedDeidOption() {
   return app.deidMode === STRUCTURED_DEID_MODE ? null : deidModelOptionByKey(app.deidMode);
-} function selectedDeidStatus() {
+}
+function selectedDeidStatus() {
   return app.deidMode === STRUCTURED_DEID_MODE
     ? {
         message: "Structured-only de-identification selected.",
@@ -205,28 +425,37 @@ function selectedDeidOption() {
         label: "Structured only"
       }
     : getSelectedDeidModelStatus(app.deidMode);
-} function modelPackStateFor(option) {
+}
+function modelPackStateFor(option) {
   if (!option) return { state: "unavailable", ready: false, message: "Unknown model." };
   if (!option.browserRunnable) {
     return { state: "unavailable", ready: false, message: option.disabledReason || "This model is not available in the browser." };
   }
-  return app.modelPacks[option.key] || (isInstallableModel(option)
-    ? { state: "checking", ready: false, message: "Checking local model-pack storage..." }
-    : { state: "bundled", ready: true, message: "Bundled with this static app." });
-} function deidModelDisabledReason(option) {
+  return (
+    app.modelPacks[option.key] ||
+    (isInstallableModel(option)
+      ? { state: "checking", ready: false, message: "Checking local model-pack storage..." }
+      : { state: "bundled", ready: true, message: "Bundled with this static app." })
+  );
+}
+function deidModelDisabledReason(option) {
   if (!option.browserRunnable) return option.disabledReason || "This model is not available in this browser build.";
   if (option.requiresWebGpu && !app.webGpuAvailable) return "This model needs graphics acceleration that isn't available in this browser.";
   const pack = modelPackStateFor(option);
   if (isInstallableModel(option) && !pack.ready) return pack.message;
   return "";
-} function deidModelSelectOptions() {
+}
+function deidModelSelectOptions() {
   const modelOptions = DEID_MODEL_OPTIONS.map((option) => {
     const unavailable = !option.browserRunnable || (option.requiresWebGpu && !app.webGpuAvailable);
     const disabled = unavailable ? "disabled" : "";
     const state = modelPackStateFor(option);
-    const installState = isInstallableModel(option) && !state.ready
-      ? state.state === "installed" ? " - downloaded; verify to use" : " - download required"
-      : "";
+    const installState =
+      isInstallableModel(option) && !state.ready
+        ? state.state === "installed"
+          ? " - downloaded; verify to use"
+          : " - download required"
+        : "";
     const suffix = unavailable ? ` - ${deidModelDisabledReason(option)}` : installState;
     return `<option value="${escapeHtml(option.key)}" ${app.deidMode === option.key ? "selected" : ""} ${disabled}>${escapeHtml(option.label)}${escapeHtml(suffix)}</option>`;
   }).join("");
@@ -266,7 +495,10 @@ function selectedDeidReadiness() {
   const status = selectedDeidStatus();
   return status.ready
     ? { ready: true, message: `${deidModelLabel(app.deidMode)} is verified and ready locally.` }
-    : { ready: false, message: `${deidModelLabel(app.deidMode)} hasn't loaded yet - it loads and verifies automatically the first time you use it (may take a moment).` };
+    : {
+        ready: false,
+        message: `${deidModelLabel(app.deidMode)} hasn't loaded yet - it loads and verifies automatically the first time you use it (may take a moment).`
+      };
 }
 
 function selectedDeidReadinessAsPanelProps() {
@@ -335,7 +567,9 @@ function deidLoadButtonDisabled() {
   return option ? Boolean(deidModelDisabledReason(option)) : true;
 }
 function deidLoadButtonLabel() {
-  return app.loadingDeidModelKey === app.deidMode ? '<span class="spinner" aria-hidden="true"></span> Loading model...' : `${icon("shield")} Load selected model`;
+  return app.loadingDeidModelKey === app.deidMode
+    ? '<span class="spinner" aria-hidden="true"></span> Loading model...'
+    : `${icon("shield")} Load selected model`;
 }
 function renderDeidLoadButton() {
   const option = selectedDeidOption();
@@ -346,12 +580,12 @@ function renderDeidLoadButton() {
     return `<button type="button" data-action="verify-model-pack" data-model-key="${escapeHtml(option.key)}" ${app.modelPackBusyKey ? "disabled" : ""}>${verifying ? '<span class="spinner" aria-hidden="true"></span> Verifying...' : `${icon("shield")} Verify ${escapeHtml(option.shortLabel || option.label)}`}</button>`;
   }
   const canInstallSelected = Boolean(
-    option
-    && isInstallableModel(option)
-    && !pack?.ready
-    && hasAutomaticModelDownload(option)
-    && canAutomaticallyInstallModel(option)
-    && (!option.requiresWebGpu || app.webGpuAvailable)
+    option &&
+    isInstallableModel(option) &&
+    !pack?.ready &&
+    hasAutomaticModelDownload(option) &&
+    canAutomaticallyInstallModel(option) &&
+    (!option.requiresWebGpu || app.webGpuAvailable)
   );
   if (canInstallSelected) {
     const downloading = app.modelPackBusyKey === option.key;
@@ -472,7 +706,8 @@ function renderModelPackCard(option) {
   const state = modelPackStateFor(option);
   const installable = isInstallableModel(option);
   const automaticDownload = hasAutomaticModelDownload(option);
-  const canAutomaticallyDownload = automaticDownload && canAutomaticallyInstallModel(option) && (!option.requiresWebGpu || app.webGpuAvailable);
+  const canAutomaticallyDownload =
+    automaticDownload && canAutomaticallyInstallModel(option) && (!option.requiresWebGpu || app.webGpuAvailable);
   const hardware = !option.browserRunnable
     ? option.disabledReason || "This model is not available in the browser."
     : option.requiresWebGpu && !app.webGpuAvailable
@@ -654,7 +889,15 @@ function clearPatientScopedSession() {
   clearPhiReviews();
   app.checklistSearchQuery = "";
   app.checklistOpenNoteIds = new Set();
-  app.openEvidenceImport = { input: "", busy: false, deidBusy: false, error: "", deidConfirmed: false, deidStatus: "", deidResidualWarnings: [] };
+  app.openEvidenceImport = {
+    input: "",
+    busy: false,
+    deidBusy: false,
+    error: "",
+    deidConfirmed: false,
+    deidStatus: "",
+    deidResidualWarnings: []
+  };
   app.admissionDate = "";
 }
 
@@ -740,14 +983,18 @@ function renderStatusBar() {
   byId("vaultStateLabel").textContent = app.vault ? "Vault unlocked" : record ? "Vault locked" : "No vault on this device";
   const deidStatus = selectedDeidStatus();
   byId("deidStateLabel").textContent = `Redaction model: ${deidModelLabel(app.deidMode)} — ${deidStatus.ready ? "ready" : "not loaded"}`;
-  byId("statusLine").textContent = app.status || "All data is encrypted and stays on this device. Nothing leaves without your explicit action.";
+  byId("statusLine").textContent =
+    app.status || "All data is encrypted and stays on this device. Nothing leaves without your explicit action.";
   const switcher = byId("patientSwitcher");
   if (!switcher) return;
   const patients = visiblePatients(app.vault);
   switcher.disabled = !app.vault || !patients.length;
   switcher.innerHTML = patients.length
     ? patients
-        .map((entry) => `<option value="${escapeHtml(entry.id)}" ${entry.id === patient?.id ? "selected" : ""}>${escapeHtml(entry.displayLabel)}</option>`)
+        .map(
+          (entry) =>
+            `<option value="${escapeHtml(entry.id)}" ${entry.id === patient?.id ? "selected" : ""}>${escapeHtml(entry.displayLabel)}</option>`
+        )
         .join("")
     : `<option>No patient selected</option>`;
 }
@@ -872,9 +1119,7 @@ function isSectionTextEditing(scope, sectionId) {
 function reviewSectionsForScope(scope) {
   const patient = active();
   if (!patient) return [];
-  return scope === "daily"
-    ? selectedChecklistDay(patient)?.sourceCaptures || []
-    : patient.contextSections || [];
+  return scope === "daily" ? selectedChecklistDay(patient)?.sourceCaptures || [] : patient.contextSections || [];
 }
 
 function pendingSectionReviewTargets(scope) {
@@ -931,7 +1176,11 @@ function clearQuickDeidSession() {
 // deliberately a read-only review field: it shows the active-tab original
 // crossed out beside the safe replacement, while the canonical copy/save text
 // remains the de-identified string in state.
-function renderRedactionDocument(text, review, { id = "", scope = "", sectionId = "", action = "inspect-redaction", label = "De-identified text review" } = {}) {
+function renderRedactionDocument(
+  text,
+  review,
+  { id = "", scope = "", sectionId = "", action = "inspect-redaction", label = "De-identified text review" } = {}
+) {
   synchronizeReviewPlaceholders(review, text);
   return redactionPresentation.renderRedactionDocument(text, review, { id, scope, sectionId, action, label });
 }
@@ -941,7 +1190,15 @@ function renderSectionSurface(section, scope) {
   const editing = review && isSectionTextEditing(scope, section.id);
   const draftText = sectionDraftText(scope, section.id, section.deidentifiedText);
   synchronizeReviewPlaceholders(review, draftText);
-  return redactionPresentation.renderSectionSurface({ section, scope, review, editing, draftText, sections: reviewSectionsForScope(scope), reviewFor: (id) => sectionReviewFor(scope, id) });
+  return redactionPresentation.renderSectionSurface({
+    section,
+    scope,
+    review,
+    editing,
+    draftText,
+    sections: reviewSectionsForScope(scope),
+    reviewFor: (id) => sectionReviewFor(scope, id)
+  });
 }
 
 function renderSectionEditor(section, scope) {
@@ -949,15 +1206,38 @@ function renderSectionEditor(section, scope) {
   const editing = isSectionTextEditing(scope, section.id);
   const draftText = sectionDraftText(scope, section.id, section.deidentifiedText);
   synchronizeReviewPlaceholders(review, draftText);
-  if (scope === "context") return redactionPresentation.renderAdmissionSourceEditor({ section, roleOptions: packetRoleOptions(scope), editing, pendingFocus: app.pendingSectionReviewFocus, review, draftText, sections: reviewSectionsForScope(scope), reviewFor: (id) => sectionReviewFor(scope, id) });
-  return redactionPresentation.renderSectionEditor({ section, scope, roleOptions: packetRoleOptions(scope), editing, pendingFocus: app.pendingSectionReviewFocus, review, draftText, sections: reviewSectionsForScope(scope), reviewFor: (id) => sectionReviewFor(scope, id) });
+  if (scope === "context")
+    return redactionPresentation.renderAdmissionSourceEditor({
+      section,
+      roleOptions: packetRoleOptions(scope),
+      editing,
+      pendingFocus: app.pendingSectionReviewFocus,
+      review,
+      draftText,
+      sections: reviewSectionsForScope(scope),
+      reviewFor: (id) => sectionReviewFor(scope, id)
+    });
+  return redactionPresentation.renderSectionEditor({
+    section,
+    scope,
+    roleOptions: packetRoleOptions(scope),
+    editing,
+    pendingFocus: app.pendingSectionReviewFocus,
+    review,
+    draftText,
+    sections: reviewSectionsForScope(scope),
+    reviewFor: (id) => sectionReviewFor(scope, id)
+  });
 }
 
 function renderWarnings(sections, scope) {
   return redactionPresentation.renderWarnings({ sections, scope, reviewFor: sectionReviewFor });
 }
 
-function renderDaily() { dailySourceController.renderDaily(); bindSectionReordering(); }
+function renderDaily() {
+  dailySourceController.renderDaily();
+  bindSectionReordering();
+}
 function workupCatalogQueryValue(query) {
   return normalizeWorkupCatalogQuery(query);
 }
@@ -1007,7 +1287,8 @@ function renderWorkups() {
     threshold: 0.35
   });
   const matchingWorkupIds = workupCatalogMatchIds(app.workupCatalogQuery);
-  const editorWorkup = app.draftWorkup || catalog.find((workup) => workup.id === app.selectedWorkupEditorId) || catalog[0] || createBlankWorkup();
+  const editorWorkup =
+    app.draftWorkup || catalog.find((workup) => workup.id === app.selectedWorkupEditorId) || catalog[0] || createBlankWorkup();
   app.selectedWorkupEditorId = editorWorkup.id;
   const preferences = currentPreferences();
   byId("workupsContent").innerHTML = workupPresentation.renderWorkups({
@@ -1035,7 +1316,9 @@ function renderWorkups() {
 
 function selectedChecklistDay(patient) {
   const days = sortDays(patient?.days || []);
-  return days.find((day) => day.id === app.selectedDayId) || [...days].reverse().find((day) => day.checklistSnapshot) || days.at(-1) || null;
+  return (
+    days.find((day) => day.id === app.selectedDayId) || [...days].reverse().find((day) => day.checklistSnapshot) || days.at(-1) || null
+  );
 }
 
 function renderChecklist() {
@@ -1050,7 +1333,12 @@ function renderChecklist() {
   const latestExamDay = latestDay(patient.days || []);
   const preferences = currentPreferences();
   const examFindingsText = checklistExamFindingsSummary(snapshot, answers);
-  const dayOptionsHtml = sortDays(patient.days || []).map((entry, index) => `<option value="${escapeHtml(entry.id)}" ${entry.id === day?.id ? "selected" : ""}>HD${index + 1} · ${escapeHtml(entry.label)} · ${escapeHtml(entry.date)}${entry.checklistSnapshot ? "" : " · no checklist yet"}</option>`).join("");
+  const dayOptionsHtml = sortDays(patient.days || [])
+    .map(
+      (entry, index) =>
+        `<option value="${escapeHtml(entry.id)}" ${entry.id === day?.id ? "selected" : ""}>HD${index + 1} · ${escapeHtml(entry.label)} · ${escapeHtml(entry.date)}${entry.checklistSnapshot ? "" : " · no checklist yet"}</option>`
+    )
+    .join("");
   checklistSearch.buildIndex(snapshot);
   byId("checklistContent").innerHTML = checklistPresentation.renderDesktopChecklist({
     day,
@@ -1068,7 +1356,12 @@ function renderChecklist() {
       canSaveExamNote: Boolean(patient && app.openEvidenceImport.input.trim() && app.openEvidenceImport.deidConfirmed),
       savedExamNote: latestExamDay?.openEvidenceExamNote || null
     },
-    canSaveChecklistExamFindings: Boolean(day && snapshot && examFindingsText !== "No checklist items have been assessed yet." && examFindingsText !== "No physical exam items are included in this checklist."),
+    canSaveChecklistExamFindings: Boolean(
+      day &&
+      snapshot &&
+      examFindingsText !== "No checklist items have been assessed yet." &&
+      examFindingsText !== "No physical exam items are included in this checklist."
+    ),
     dayOptionsHtml
   });
   checklistSearch.updateFilter(app.checklistSearchQuery);
@@ -1079,7 +1372,8 @@ async function saveChecklistExamFindings() {
   const day = selectedChecklistDay(patient);
   if (!day?.checklistSnapshot) throw new Error("Build a checklist before saving physical exam findings.");
   const text = checklistExamFindingsSummary(day.checklistSnapshot, day.answers || {});
-  if (text === "No checklist items have been assessed yet.") throw new Error("Fill at least one physical exam item before saving findings.");
+  if (text === "No checklist items have been assessed yet.")
+    throw new Error("Fill at least one physical exam item before saving findings.");
   await examFindingsController.saveExamFindings({ text, source: "Checklist" });
 }
 
@@ -1110,23 +1404,32 @@ function renderPrompts() {
   if (app.promptDayFollowsChecklist && app.promptDayId !== app.selectedDayId) app.promptDayId = app.selectedDayId;
   const isAdmissionSelected = app.promptDayId === ADMISSION_PSEUDO_DAY_ID;
   if (!isAdmissionSelected) {
-    const selectedPromptDay = promptDays.find((day) => day.id === app.promptDayId)
-      || promptDays.find((day) => day.id === app.selectedDayId)
-      || promptDays.at(-1)
-      || null;
+    const selectedPromptDay =
+      promptDays.find((day) => day.id === app.promptDayId) ||
+      promptDays.find((day) => day.id === app.selectedDayId) ||
+      promptDays.at(-1) ||
+      null;
     app.promptDayId = selectedPromptDay ? selectedPromptDay.id : ADMISSION_PSEUDO_DAY_ID;
   }
   const template = app.promptDrafts[task.id] ?? promptTemplateForTask(task.id, app.promptTemplates);
   let promptError = "";
   let previewSegments = [{ type: "text", value: "" }];
   try {
-    const variableMap = buildPromptVariableMap({ patient, selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets, teamPreferences: app.vault.preferences });
+    const variableMap = buildPromptVariableMap({
+      patient,
+      selectedDayId: app.promptDayId,
+      guidelineSets: app.guidelineSets,
+      teamPreferences: app.vault.preferences
+    });
     previewSegments = buildPromptPreviewSegments(template, variableMap);
   } catch (error) {
     promptError = error instanceof Error ? error.message : "Unable to build prompt.";
   }
   const variables = promptVariablesForPatient(patient, { selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets });
-  const templateHighlightSegments = buildPromptPreviewSegments(template, Object.fromEntries(variables.map((entry) => [entry.token, entry.token])));
+  const templateHighlightSegments = buildPromptPreviewSegments(
+    template,
+    Object.fromEntries(variables.map((entry) => [entry.token, entry.token]))
+  );
   byId("promptsContent").innerHTML = promptsPresentation.renderPrompts({
     patient,
     patientRequiredMessage: patientRequiredMessage(),
@@ -1166,7 +1469,8 @@ function renderSettings() {
     guidelineSets: app.guidelineSets,
     guidelineSearchQuery: app.guidelineSearchQuery,
     guidelineSelectedIds: app.guidelineSelectedIds,
-    guidelineOpenId: app.guidelineOpenId, guidelineCreateDraft: app.guidelineCreateDraft,
+    guidelineOpenId: app.guidelineOpenId,
+    guidelineCreateDraft: app.guidelineCreateDraft,
     OPENAI_WORKUP_MODEL_OPTIONS,
     colorOverrides: app.tokenColorOverrides
   });
@@ -1207,8 +1511,17 @@ function refreshPromptPreview() {
   if (!patient || !highlighted) return;
   const template = app.promptDrafts[app.selectedPromptTask] ?? promptTemplateForTask(app.selectedPromptTask, app.promptTemplates);
   try {
-    const variableMap = buildPromptVariableMap({ patient, selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets, teamPreferences: app.vault.preferences });
-    highlighted.innerHTML = renderHighlightedSegments(buildPromptPreviewSegments(template, variableMap), escapeHtml, app.tokenColorOverrides);
+    const variableMap = buildPromptVariableMap({
+      patient,
+      selectedDayId: app.promptDayId,
+      guidelineSets: app.guidelineSets,
+      teamPreferences: app.vault.preferences
+    });
+    highlighted.innerHTML = renderHighlightedSegments(
+      buildPromptPreviewSegments(template, variableMap),
+      escapeHtml,
+      app.tokenColorOverrides
+    );
     const templateBackdrop = byId("promptTemplateHighlight");
     if (templateBackdrop) {
       const variables = promptVariablesForPatient(patient, { selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets });
@@ -1255,10 +1568,10 @@ function renderQuickDeidReview() {
   const queueStatus = activeRedactionIsConfirmed
     ? "Accepted redaction"
     : activeRedaction
-    ? `Redaction ${review.redactions.filter((redaction) => redaction.state !== "restored").findIndex((redaction) => redaction === activeRedaction) + 1} of ${review.redactions.filter((redaction) => redaction.state !== "restored").length}`
-    : activeWarning
-      ? `Flag ${activeWarnings.findIndex(({ index }) => index === activeWarningIndex) + 1} of ${activeWarnings.length}`
-      : "Review complete";
+      ? `Redaction ${review.redactions.filter((redaction) => redaction.state !== "restored").findIndex((redaction) => redaction === activeRedaction) + 1} of ${review.redactions.filter((redaction) => redaction.state !== "restored").length}`
+      : activeWarning
+        ? `Flag ${activeWarnings.findIndex(({ index }) => index === activeWarningIndex) + 1} of ${activeWarnings.length}`
+        : "Review complete";
   return quickDeidPresentation.renderQuickDeidReview({
     review,
     activeWarnings,
@@ -1269,7 +1582,11 @@ function renderQuickDeidReview() {
     activeWarningIndex,
     activeWarning,
     queueStatus,
-    renderRedactionDocumentHtml: renderRedactionDocument(app.quickDeid.output, review, { id: "quickDeidReviewDocument", action: "inspect-quick-redaction", label: "Annotated de-identified text" }),
+    renderRedactionDocumentHtml: renderRedactionDocument(app.quickDeid.output, review, {
+      id: "quickDeidReviewDocument",
+      action: "inspect-quick-redaction",
+      label: "Annotated de-identified text"
+    }),
     warningDescriptionText: activeWarning ? warningDescription(activeWarning) : ""
   });
 }
@@ -1400,12 +1717,21 @@ async function handleClick(event) {
     return;
   }
   const target = event.target.closest("[data-action]");
-  if (target && target.dataset.action === "import-phone-return") console.log("TEXTAREA VALUE IN HANDLER:", document.getElementById("phoneReturnText")?.value.length, document.getElementById("phoneReturnText")?.value.substring(0, 50));
+  if (target && target.dataset.action === "import-phone-return")
+    console.log(
+      "TEXTAREA VALUE IN HANDLER:",
+      document.getElementById("phoneReturnText")?.value.length,
+      document.getElementById("phoneReturnText")?.value.substring(0, 50)
+    );
   if (!target) return;
   const action = target.dataset.action;
   actionFeedback(target, action);
   try {
-    if (!app.phoneBundle && !vaultIsUnlocked() && !["unlock-vault", "toggle-vault-passphrase", "restore-vault", "request-delete-vault", "confirm-delete-vault"].includes(action)) {
+    if (
+      !app.phoneBundle &&
+      !vaultIsUnlocked() &&
+      !["unlock-vault", "toggle-vault-passphrase", "restore-vault", "request-delete-vault", "confirm-delete-vault"].includes(action)
+    ) {
       throw new Error("Unlock the local vault before using workspace tools.");
     }
     if (action === "unlock-vault") await unlockVault();
@@ -1430,34 +1756,51 @@ async function handleClick(event) {
         target.setAttribute("aria-expanded", String(isExpanded));
         target.setAttribute("title", isExpanded ? "Collapse section" : "Edit section");
         target.setAttribute("aria-label", isExpanded ? "Collapse section" : "Edit section");
-        if (isExpanded) requestAnimationFrame(() => (editor.querySelector("[data-redaction-document]") || editor.querySelector(".section-text"))?.focus());
+        if (isExpanded)
+          requestAnimationFrame(() =>
+            (editor.querySelector("[data-redaction-document]") || editor.querySelector(".section-text"))?.focus()
+          );
       }
     }
-    if (action === "add-context-section") await mutateSections("context", (sections) => addSection(sections, "Additional admission source", { role: defaultPacketRole("context", Number.MAX_SAFE_INTEGER), scope: "context" }));
+    if (action === "add-context-section")
+      await mutateSections("context", (sections) =>
+        addSection(sections, "Additional admission source", {
+          role: defaultPacketRole("context", Number.MAX_SAFE_INTEGER),
+          scope: "context"
+        })
+      );
     if (action === "select-daily-source-kind") {
       app.dailySourceKind = target.dataset.sourceKind || DEFAULT_DAILY_SOURCE_KIND;
       renderDaily();
     }
-    if (action === "move-section-up") await mutateSections(target.dataset.scope, (sections) => reorderSections(sections, target.dataset.sectionId, "up"));
-    if (action === "move-section-down") await mutateSections(target.dataset.scope, (sections) => reorderSections(sections, target.dataset.sectionId, "down"));
-    if (action === "remove-section") await mutateSections(target.dataset.scope, (sections) => removeSection(sections, target.dataset.sectionId));
+    if (action === "move-section-up")
+      await mutateSections(target.dataset.scope, (sections) => reorderSections(sections, target.dataset.sectionId, "up"));
+    if (action === "move-section-down")
+      await mutateSections(target.dataset.scope, (sections) => reorderSections(sections, target.dataset.sectionId, "down"));
+    if (action === "remove-section")
+      await mutateSections(target.dataset.scope, (sections) => removeSection(sections, target.dataset.sectionId));
     if (action === "review-section-warning") reviewSectionWarning(target.dataset);
-    if (action === "redact-section-warning") redactSectionWarning(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.warningIndex));
-    if (action === "dismiss-section-warning") await dismissSectionWarning(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.warningIndex));
+    if (action === "redact-section-warning")
+      redactSectionWarning(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.warningIndex));
+    if (action === "dismiss-section-warning")
+      await dismissSectionWarning(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.warningIndex));
     if (action === "dismiss-all-section-warnings") await dismissAllSectionWarnings(target.dataset.scope, target.dataset.sectionId);
     if (action === "manual-redact-selection") redactSelectedSectionText(target.dataset.scope, target.dataset.sectionId);
     if (action === "edit-section-text") editSectionText(target.dataset.scope, target.dataset.sectionId);
     if (action === "resume-section-review") resumeSectionReview(target.dataset.scope, target.dataset.sectionId);
-    if (action === "inspect-redaction") inspectRedaction(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex));
+    if (action === "inspect-redaction")
+      inspectRedaction(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex));
     if (action === "keep-reviewed-redaction") keepReviewedRedaction(target.dataset.scope, target.dataset.sectionId);
     if (action === "confirm-all-section-redactions") confirmAllSectionRedactions(target.dataset.scope, target.dataset.sectionId);
     if (action === "continue-section-review") advanceSectionReview(target.dataset.scope, target.dataset.sectionId, -1);
     if (action === "reject-all-section-redactions") rejectAllSectionRedactions(target.dataset.scope, target.dataset.sectionId);
-    if (action === "allow-reviewed-non-phi") allowReviewedNonPhi(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex));
+    if (action === "allow-reviewed-non-phi")
+      allowReviewedNonPhi(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex));
     if (action === "save-context") await saveContext();
     if (action === "add-day") await addDay();
     if (action === "add-daily-source") await dailySourceController.addSource();
-    if (action === "select-day" || action === "select-admission") dailySourceController.selectPacket(action === "select-admission" ? "admission" : target.dataset.dayId);
+    if (action === "select-day" || action === "select-admission")
+      dailySourceController.selectPacket(action === "select-admission" ? "admission" : target.dataset.dayId);
     if (action === "save-day") await dailySourceController.saveSources();
     if (action === "open-progress-note") {
       app.selectedPromptTask = "daily_progress_note";
@@ -1545,18 +1888,30 @@ async function handleClick(event) {
     if (action === "create-prompt-task") promptTaskController.createTaskFromInput();
     if (action === "request-remove-prompt-task") promptTaskController.requestRemove(target.dataset.taskId);
     if (action === "confirm-remove-prompt-task") promptTaskController.confirmRemovePending();
-    if (action === "create-guideline-set") guidelineSetsController.openCreate(); if (action === "save-new-guideline-set") guidelineSetsController.saveCreate(); if (action === "cancel-new-guideline") guidelineSetsController.cancelCreate(); if (action === "toggle-guideline-set") guidelineSetsController.toggleOpen(target.dataset.guidelineSetId);
-    if (action === "save-guideline-set") guidelineSetsController.saveEdit(target.dataset.guidelineSetId); if (action === "request-remove-guideline-set") guidelineSetsController.requestRemove(target.dataset.guidelineSetId);
-    if (action === "confirm-remove-guideline-set") guidelineSetsController.confirmRemovePending(); if (action === "delete-selected-guidelines") guidelineSetsController.deleteSelected();
+    if (action === "create-guideline-set") guidelineSetsController.openCreate();
+    if (action === "save-new-guideline-set") guidelineSetsController.saveCreate();
+    if (action === "cancel-new-guideline") guidelineSetsController.cancelCreate();
+    if (action === "toggle-guideline-set") guidelineSetsController.toggleOpen(target.dataset.guidelineSetId);
+    if (action === "save-guideline-set") guidelineSetsController.saveEdit(target.dataset.guidelineSetId);
+    if (action === "request-remove-guideline-set") guidelineSetsController.requestRemove(target.dataset.guidelineSetId);
+    if (action === "confirm-remove-guideline-set") guidelineSetsController.confirmRemovePending();
+    if (action === "delete-selected-guidelines") guidelineSetsController.deleteSelected();
     if (action === "clear-guideline-selection") guidelineSetsController.clearSelection();
     if (action === "insert-prompt-variable") insertPromptVariable(target.dataset.token);
     if (action === "jump-to-prompt-variable") {
       event.preventDefault();
       scrollPromptOutputToVariable(byId("promptOutputHighlighted"), target.dataset.token);
     }
-    if (action === "copy-prompt") { if (app.demoSession) demoController.observeAction(action); await copyText(currentPromptText()); }
+    if (action === "copy-prompt") {
+      if (app.demoSession) demoController.observeAction(action);
+      await copyText(currentPromptText());
+    }
     if (action === "open-open-evidence") window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
-    if (action === "reset-variable-colors") { app.tokenColorOverrides = {}; saveTokenColorOverrides(app.tokenColorOverrides); renderPrompts(); }
+    if (action === "reset-variable-colors") {
+      app.tokenColorOverrides = {};
+      saveTokenColorOverrides(app.tokenColorOverrides);
+      renderPrompts();
+    }
     if (action === "open-token-color-picker") tokenColorPicker.open(target.dataset.token, target, event);
     if (action === "save-openai-byok") await saveOpenAiByok();
     if (action === "clear-openai-byok") await clearOpenAiByok();
@@ -1578,7 +1933,13 @@ async function handleClick(event) {
     demoController.observeAction(action);
   } catch (error) {
     app.workupImportError = action.includes("workup") ? error.message : app.workupImportError;
-    setStatus(app.demoSession && action === "copy-prompt" ? "Prompt ready. Clipboard access may be blocked in this preview; the de-identified prompt remains visible." : error instanceof Error ? error.message : "Something went wrong. Try again.");
+    setStatus(
+      app.demoSession && action === "copy-prompt"
+        ? "Prompt ready. Clipboard access may be blocked in this preview; the de-identified prompt remains visible."
+        : error instanceof Error
+          ? error.message
+          : "Something went wrong. Try again."
+    );
     render();
   }
 }
@@ -1627,7 +1988,7 @@ function requestVaultDeletion() {
 
 function deleteVaultAndStartOver() {
   if (byId("deleteVaultConfirmation")?.value.trim() !== "DELETE") {
-    throw new Error('Type DELETE to permanently remove this local vault.');
+    throw new Error("Type DELETE to permanently remove this local vault.");
   }
   deleteEncryptedVaultRecord();
   clearSensitiveSession();
@@ -1684,7 +2045,8 @@ function requestArchivePatient(patientId) {
   const patient = app.vault?.patients?.find((entry) => entry.id === patientId);
   if (!patient) return;
   app.pendingArchivePatientId = patientId;
-  byId("archiveConfirmText").textContent = `This permanently removes ${patient.displayLabel} and their saved data from this device. This can't be undone.`;
+  byId("archiveConfirmText").textContent =
+    `This permanently removes ${patient.displayLabel} and their saved data from this device. This can't be undone.`;
   byId("archiveConfirmDialog")?.showModal();
 }
 
@@ -1692,7 +2054,8 @@ function requestRemoveDay(dayId) {
   const day = active()?.days?.find((entry) => entry.id === dayId);
   if (!day) return;
   app.pendingRemoveDayId = dayId;
-  byId("removeDayConfirmText").textContent = `This permanently removes ${day.label} (${day.date}) and its saved checklist answers from this patient.`;
+  byId("removeDayConfirmText").textContent =
+    `This permanently removes ${day.label} (${day.date}) and its saved checklist answers from this patient.`;
   byId("removeDayConfirmDialog")?.showModal();
 }
 
@@ -1746,7 +2109,8 @@ function scrollableAncestors(node) {
     if (/(auto|scroll|overlay)/.test(overflowY) && current.scrollHeight > current.clientHeight) owners.push(current);
   }
   const documentOwner = document.scrollingElement;
-  if (documentOwner && documentOwner.scrollHeight > documentOwner.clientHeight && !owners.includes(documentOwner)) owners.push(documentOwner);
+  if (documentOwner && documentOwner.scrollHeight > documentOwner.clientHeight && !owners.includes(documentOwner))
+    owners.push(documentOwner);
   return owners;
 }
 
@@ -1767,7 +2131,10 @@ function centerElementInNearestScrollOwner(element) {
   if (!element || !owner) return;
   const ownerRect = owner.getBoundingClientRect();
   const elementRect = element.getBoundingClientRect();
-  owner.scrollTop = Math.max(0, owner.scrollTop + elementRect.top - ownerRect.top - (owner.clientHeight / 2) + (Math.min(elementRect.height, owner.clientHeight) / 2));
+  owner.scrollTop = Math.max(
+    0,
+    owner.scrollTop + elementRect.top - ownerRect.top - owner.clientHeight / 2 + Math.min(elementRect.height, owner.clientHeight) / 2
+  );
 }
 
 function refreshSectionReviewInEditor(editor, scope, sectionId) {
@@ -1837,9 +2204,9 @@ function advanceSectionReview(scope, sectionId, redactionIndex) {
   const current = reviewTargetAt(scope, sectionId, redactionIndex);
   if (!current) return null;
   const pending = pendingSectionReviewTargets(scope);
-  const nextPendingInCurrent = pending.find((target) => (
-    target.sectionIndex === current.sectionIndex && target.redactionIndex > current.redactionIndex
-  ));
+  const nextPendingInCurrent = pending.find(
+    (target) => target.sectionIndex === current.sectionIndex && target.redactionIndex > current.redactionIndex
+  );
   if (nextPendingInCurrent) return moveToSectionReviewTarget(scope, sectionId, nextPendingInCurrent);
 
   // When the final change in one field is accepted/rejected, move into the
@@ -1932,17 +2299,29 @@ function keepReviewedRedaction(scope, sectionId) {
   if (!review || reviewedIndex < 0 || !review.redactions[reviewedIndex]) return;
   review.redactions[reviewedIndex].state = "confirmed";
   const next = advanceSectionReview(scope, sectionId, reviewedIndex);
-  setStatus(next ? `Redaction accepted. Reviewing the next change in ${reviewSectionsForScope(scope).find((section) => section.id === next.sectionId)?.label || "the next field"}.` : "All redactions accepted. You can click any highlighted replacement to undo it.");
+  setStatus(
+    next
+      ? `Redaction accepted. Reviewing the next change in ${reviewSectionsForScope(scope).find((section) => section.id === next.sectionId)?.label || "the next field"}.`
+      : "All redactions accepted. You can click any highlighted replacement to undo it."
+  );
 }
 
 function confirmAllSectionRedactions(scope, sectionId) {
   const review = sectionReviewFor(scope, sectionId);
   if (!review) return;
   const pending = review.redactions.filter((redaction) => redaction.state === "pending");
-  pending.forEach((redaction) => { redaction.state = "confirmed"; });
+  pending.forEach((redaction) => {
+    redaction.state = "confirmed";
+  });
   review.inspectedRedactionIndex = -1;
   const next = pending.length ? advanceSectionReview(scope, sectionId, review.redactions.indexOf(pending[pending.length - 1])) : null;
-  setStatus(next ? "Redactions accepted. Reviewing the next field." : pending.length ? `${pending.length} redaction${pending.length === 1 ? "" : "s"} accepted. Click any highlighted replacement to undo it.` : "All redactions were already accepted.");
+  setStatus(
+    next
+      ? "Redactions accepted. Reviewing the next field."
+      : pending.length
+        ? `${pending.length} redaction${pending.length === 1 ? "" : "s"} accepted. Click any highlighted replacement to undo it.`
+        : "All redactions were already accepted."
+  );
 }
 
 function allowReviewedNonPhi(scope, sectionId, redactionIndex) {
@@ -1962,11 +2341,16 @@ function allowReviewedNonPhi(scope, sectionId, redactionIndex) {
   review.approvedRedactionIndexes.add(redactionIndex);
   redaction.state = "restored";
   review.redactions.forEach((entry, index) => {
-    if (index !== redactionIndex && entry.placeholder === redaction.placeholder && entry.occurrence > redaction.occurrence) entry.occurrence -= 1;
+    if (index !== redactionIndex && entry.placeholder === redaction.placeholder && entry.occurrence > redaction.occurrence)
+      entry.occurrence -= 1;
   });
   review.inspectedRedactionIndex = -1;
   const next = advanceSectionReview(scope, sectionId, redactionIndex);
-  setStatus(next ? "Marked as non-PHI. Reviewing the next remaining change." : "Marked as non-PHI for the next save. Confirm it is not identifying before saving.");
+  setStatus(
+    next
+      ? "Marked as non-PHI. Reviewing the next remaining change."
+      : "Marked as non-PHI for the next save. Confirm it is not identifying before saving."
+  );
 }
 
 // Repeatedly applies the single-item restore so every pending redaction gets
@@ -1984,9 +2368,11 @@ function rejectAllSectionRedactions(scope, sectionId) {
     .filter((index) => index >= 0)
     .reverse();
   pendingIndexes.forEach((index) => allowReviewedNonPhi(scope, sectionId, index));
-  setStatus(pendingIndexes.length
-    ? `${pendingIndexes.length} redaction${pendingIndexes.length === 1 ? "" : "s"} marked as non-PHI. Confirm this before saving.`
-    : "All redactions are already decided.");
+  setStatus(
+    pendingIndexes.length
+      ? `${pendingIndexes.length} redaction${pendingIndexes.length === 1 ? "" : "s"} marked as non-PHI. Confirm this before saving.`
+      : "All redactions are already decided."
+  );
 }
 
 function refreshResidualWarningSummary(scope) {
@@ -2009,14 +2395,32 @@ async function dismissSectionWarning(scope, sectionId, warningIndex) {
       if (scope === "daily") {
         const day = selectedChecklistDay(current);
         if (!day) return current;
-        const nextDay = { ...day, sourceCaptures: day.sourceCaptures.map((entry) => entry.id === sectionId
-          ? { ...entry, residualWarnings: entry.residualWarnings.filter((_, index) => index !== warningIndex), updatedAt: new Date().toISOString() }
-          : entry) };
+        const nextDay = {
+          ...day,
+          sourceCaptures: day.sourceCaptures.map((entry) =>
+            entry.id === sectionId
+              ? {
+                  ...entry,
+                  residualWarnings: entry.residualWarnings.filter((_, index) => index !== warningIndex),
+                  updatedAt: new Date().toISOString()
+                }
+              : entry
+          )
+        };
         return { ...current, days: upsertDay(current.days, nextDay) };
       }
-      return { ...current, contextSections: current.contextSections.map((entry) => entry.id === sectionId
-        ? { ...entry, residualWarnings: entry.residualWarnings.filter((_, index) => index !== warningIndex), updatedAt: new Date().toISOString() }
-        : entry) };
+      return {
+        ...current,
+        contextSections: current.contextSections.map((entry) =>
+          entry.id === sectionId
+            ? {
+                ...entry,
+                residualWarnings: entry.residualWarnings.filter((_, index) => index !== warningIndex),
+                updatedAt: new Date().toISOString()
+              }
+            : entry
+        )
+      };
     });
     await persistVault("Dismissed the residual warning as not PHI.");
     setStatus("Warning dismissed and saved as not PHI.");
@@ -2038,14 +2442,20 @@ async function dismissAllSectionWarnings(scope, sectionId) {
       if (scope === "daily") {
         const day = selectedChecklistDay(current);
         if (!day) return current;
-        const nextDay = { ...day, sourceCaptures: day.sourceCaptures.map((entry) => entry.id === sectionId
-          ? { ...entry, residualWarnings: [], updatedAt: new Date().toISOString() }
-          : entry) };
+        const nextDay = {
+          ...day,
+          sourceCaptures: day.sourceCaptures.map((entry) =>
+            entry.id === sectionId ? { ...entry, residualWarnings: [], updatedAt: new Date().toISOString() } : entry
+          )
+        };
         return { ...current, days: upsertDay(current.days, nextDay) };
       }
-      return { ...current, contextSections: current.contextSections.map((entry) => entry.id === sectionId
-        ? { ...entry, residualWarnings: [], updatedAt: new Date().toISOString() }
-        : entry) };
+      return {
+        ...current,
+        contextSections: current.contextSections.map((entry) =>
+          entry.id === sectionId ? { ...entry, residualWarnings: [], updatedAt: new Date().toISOString() } : entry
+        )
+      };
     });
     await persistVault("Dismissed all residual warnings for this field as not PHI.");
   }
@@ -2063,7 +2473,8 @@ function redactSectionWarning(scope, sectionId, warningIndex) {
   const field = editor.querySelector(".section-text");
   const snippet = warningSnippet(warning);
   const position = field?.value?.indexOf(snippet);
-  if (!field || !snippet || position < 0) throw new Error("The flagged text is no longer present. Highlight the remaining identifier in the document and redact it manually.");
+  if (!field || !snippet || position < 0)
+    throw new Error("The flagged text is no longer present. Highlight the remaining identifier in the document and redact it manually.");
   const nextText = insertManualRedaction(field.value, review, position, position + snippet.length, "residual PHI review");
   field.value = nextText;
   setSectionDraftText(scope, sectionId, nextText);
@@ -2081,9 +2492,9 @@ function reviewSectionWarning({ scope, sectionId, warningIndex }) {
   const editor = expandSectionEditor(scope, sectionId);
   if (!section || !editor) return;
   const snippet = warningSnippet(warning);
-  const matchingRedactionIndex = (review?.redactions || []).findIndex((redaction) => (
-    redaction.state !== "restored" && snippet && String(redaction.original || "").includes(snippet)
-  ));
+  const matchingRedactionIndex = (review?.redactions || []).findIndex(
+    (redaction) => redaction.state !== "restored" && snippet && String(redaction.original || "").includes(snippet)
+  );
   if (matchingRedactionIndex >= 0) {
     moveToSectionReviewTarget(scope, sectionId, reviewTargetAt(scope, sectionId, matchingRedactionIndex));
     setStatus("Opened the flagged redaction in context.");
@@ -2100,7 +2511,11 @@ function reviewSectionWarning({ scope, sectionId, warningIndex }) {
   if (review) editSectionText(scope, sectionId);
   const didSelect = focusWarningText(editor.querySelector(".section-text"), warning);
   centerElementInNearestScrollOwner(editor);
-  setStatus(didSelect ? "Flagged text selected for manual review." : "Opened the flagged field. The detailed flag is no longer available in this review session.");
+  setStatus(
+    didSelect
+      ? "Flagged text selected for manual review."
+      : "Opened the flagged field. The detailed flag is no longer available in this review session."
+  );
 }
 
 function reviewQuickWarning(warningIndex) {
@@ -2109,7 +2524,11 @@ function reviewQuickWarning(warningIndex) {
   const snippet = warningSnippet(warning);
   const documentElement = byId("quickDeidReviewDocument");
   const centered = centerTextSnippetInDocument(documentElement, snippet);
-  setStatus(centered ? "Flagged text centered for manual review." : "The flagged text is not currently visible. Highlight any remaining identifier in the document to redact it.");
+  setStatus(
+    centered
+      ? "Flagged text centered for manual review."
+      : "The flagged text is not currently visible. Highlight any remaining identifier in the document to redact it."
+  );
 }
 
 function centerRedactionDocument(documentElement, redactionIndex, afterCenter) {
@@ -2128,7 +2547,8 @@ function centerRedactionDocument(documentElement, redactionIndex, afterCenter) {
     }
     const documentRect = documentElement.getBoundingClientRect();
     const changeRect = change.getBoundingClientRect();
-    const target = documentElement.scrollTop + (changeRect.top - documentRect.top) - (documentElement.clientHeight / 2) + (changeRect.height / 2);
+    const target =
+      documentElement.scrollTop + (changeRect.top - documentRect.top) - documentElement.clientHeight / 2 + changeRect.height / 2;
     documentElement.scrollTop = Math.max(0, target);
     finish();
   });
@@ -2148,7 +2568,10 @@ function centerTextSnippetInDocument(documentElement, snippet) {
         range.setEnd(node, index + needle.length);
         const rect = range.getBoundingClientRect();
         const documentRect = documentElement.getBoundingClientRect();
-        documentElement.scrollTop = Math.max(0, documentElement.scrollTop + rect.top - documentRect.top - (documentElement.clientHeight / 2) + (rect.height / 2));
+        documentElement.scrollTop = Math.max(
+          0,
+          documentElement.scrollTop + rect.top - documentRect.top - documentElement.clientHeight / 2 + rect.height / 2
+        );
         const selection = window.getSelection();
         selection?.removeAllRanges();
         selection?.addRange(range);
@@ -2178,9 +2601,7 @@ function renderQuickReviewAtCurrentPosition(focusRedactionIndex = inspectedRedac
   // An explicit -1 means "preserve the current position". This is used by
   // manual redaction because the user's selection—not the next pending model
   // change—is the location they need to keep in view.
-  const focusIndex = Number.isFinite(focusRedactionIndex)
-    ? focusRedactionIndex
-    : quickSelectedRedactionIndex(app.quickDeid.review);
+  const focusIndex = Number.isFinite(focusRedactionIndex) ? focusRedactionIndex : quickSelectedRedactionIndex(app.quickDeid.review);
   centerRedactionDocument(documentElement, focusIndex, () => {
     // Replacing the review panel must never move the clinician away from the
     // current position. Restore both owners after the focused span is laid
@@ -2192,7 +2613,14 @@ function renderQuickReviewAtCurrentPosition(focusRedactionIndex = inspectedRedac
 
 function selectedOutputRangeFromDocument(documentElement, output) {
   const selection = window.getSelection();
-  if (!documentElement || !selection || selection.rangeCount === 0 || selection.isCollapsed || !documentElement.contains(selection.anchorNode) || !documentElement.contains(selection.focusNode)) {
+  if (
+    !documentElement ||
+    !selection ||
+    selection.rangeCount === 0 ||
+    selection.isCollapsed ||
+    !documentElement.contains(selection.anchorNode) ||
+    !documentElement.contains(selection.focusNode)
+  ) {
     throw new Error("Highlight a remaining identifier in the annotated document before redacting it.");
   }
   const range = selection.getRangeAt(0);
@@ -2250,9 +2678,11 @@ function confirmQuickRedaction() {
   const redaction = review.redactions[reviewedIndex];
   if (redaction) redaction.state = "confirmed";
   review.inspectedRedactionIndex = quickRedactionIndex(review, reviewedIndex);
-  setStatus(review.inspectedRedactionIndex >= 0
-    ? "Redaction confirmed. Moved to the next unconfirmed item."
-    : "All redactions confirmed. Review any remaining residual flags.");
+  setStatus(
+    review.inspectedRedactionIndex >= 0
+      ? "Redaction confirmed. Moved to the next unconfirmed item."
+      : "All redactions confirmed. Review any remaining residual flags."
+  );
   renderQuickReviewAtCurrentPosition();
 }
 
@@ -2260,11 +2690,15 @@ function confirmAllQuickRedactions() {
   const review = app.quickDeid.review;
   if (!review) return;
   const confirmed = review.redactions.filter((redaction) => redaction.state === "pending");
-  confirmed.forEach((redaction) => { redaction.state = "confirmed"; });
+  confirmed.forEach((redaction) => {
+    redaction.state = "confirmed";
+  });
   review.inspectedRedactionIndex = -1;
-  setStatus(confirmed.length
-    ? `${confirmed.length} redaction${confirmed.length === 1 ? "" : "s"} confirmed. Review any remaining residual flags.`
-    : "All redactions are already confirmed.");
+  setStatus(
+    confirmed.length
+      ? `${confirmed.length} redaction${confirmed.length === 1 ? "" : "s"} confirmed. Review any remaining residual flags.`
+      : "All redactions are already confirmed."
+  );
   renderQuickReviewAtCurrentPosition();
 }
 
@@ -2277,12 +2711,15 @@ function restoreQuickNonPhi(redactionIndex) {
   app.quickDeid.output = `${app.quickDeid.output.slice(0, position)}${redaction.original}${app.quickDeid.output.slice(position + redaction.placeholder.length)}`;
   redaction.state = "restored";
   review.redactions.forEach((entry, index) => {
-    if (index !== redactionIndex && entry.placeholder === redaction.placeholder && entry.occurrence > redaction.occurrence) entry.occurrence -= 1;
+    if (index !== redactionIndex && entry.placeholder === redaction.placeholder && entry.occurrence > redaction.occurrence)
+      entry.occurrence -= 1;
   });
   review.inspectedRedactionIndex = quickRedactionIndex(review, redactionIndex);
-  setStatus(review.inspectedRedactionIndex >= 0
-    ? "Restored as non-PHI. Moved to the next unconfirmed item."
-    : "Restored as non-PHI. Review any remaining residual flags.");
+  setStatus(
+    review.inspectedRedactionIndex >= 0
+      ? "Restored as non-PHI. Moved to the next unconfirmed item."
+      : "Restored as non-PHI. Review any remaining residual flags."
+  );
   renderQuickReviewAtCurrentPosition();
 }
 
@@ -2301,9 +2738,11 @@ function rejectAllQuickRedactions() {
     .filter((index) => index >= 0)
     .reverse();
   pendingIndexes.forEach((index) => restoreQuickNonPhi(index));
-  setStatus(pendingIndexes.length
-    ? `${pendingIndexes.length} redaction${pendingIndexes.length === 1 ? "" : "s"} marked as non-PHI. Confirm this before saving.`
-    : "All redactions are already decided.");
+  setStatus(
+    pendingIndexes.length
+      ? `${pendingIndexes.length} redaction${pendingIndexes.length === 1 ? "" : "s"} marked as non-PHI. Confirm this before saving.`
+      : "All redactions are already decided."
+  );
 }
 
 function redactSelectedQuickText({ renderAfter = true } = {}) {
@@ -2323,9 +2762,11 @@ function dismissQuickWarning(warningIndex) {
     .map((warning, index) => ({ warning, index }))
     .filter(({ index }) => !review.dismissedWarningIndexes.has(index));
   review.activeWarningIndex = quickWarningIndex(review, activeWarnings, warningIndex);
-  setStatus(review.activeWarningIndex >= 0
-    ? "Flag marked not PHI. Moved to the next remaining flag."
-    : "Residual PHI review complete for this Quick De-ID session.");
+  setStatus(
+    review.activeWarningIndex >= 0
+      ? "Flag marked not PHI. Moved to the next remaining flag."
+      : "Residual PHI review complete for this Quick De-ID session."
+  );
   renderQuickReviewAtCurrentPosition();
 }
 
@@ -2335,16 +2776,17 @@ function redactQuickWarning(warningIndex) {
   if (!review || !warning) return;
   const snippet = warningSnippet(warning);
   const position = app.quickDeid.output.indexOf(snippet);
-  if (position < 0 || !snippet) throw new Error("The flagged text is no longer present. Highlight the remaining identifier in the document and redact it manually.");
+  if (position < 0 || !snippet)
+    throw new Error("The flagged text is no longer present. Highlight the remaining identifier in the document and redact it manually.");
   app.quickDeid.output = insertManualRedaction(app.quickDeid.output, review, position, position + snippet.length, "residual PHI review");
   review.dismissedWarningIndexes.add(warningIndex);
   const activeWarnings = review.warnings
     .map((entry, index) => ({ warning: entry, index }))
     .filter(({ index }) => !review.dismissedWarningIndexes.has(index));
   review.activeWarningIndex = quickWarningIndex(review, activeWarnings, warningIndex);
-  setStatus(review.activeWarningIndex >= 0
-    ? "Flag redacted. Moved to the next remaining flag."
-    : "Flag redacted. Residual PHI review is complete.");
+  setStatus(
+    review.activeWarningIndex >= 0 ? "Flag redacted. Moved to the next remaining flag." : "Flag redacted. Residual PHI review is complete."
+  );
   renderQuickReviewAtCurrentPosition();
 }
 
@@ -2425,17 +2867,23 @@ async function deidentifySectionRows(scope, containerId, priorSections = [], ref
       // of one) already existed for them alone rather than resetting it.
       if (plan.mode === "unchanged") return;
       if (plan.mode === "append") {
-        app.phiReviews.set(key, createEphemeralRedactionReview(plan.suffix, result.suffixResult || {}, { priorOutputText: prior?.deidentifiedText || "" }));
+        app.phiReviews.set(
+          key,
+          createEphemeralRedactionReview(plan.suffix, result.suffixResult || {}, { priorOutputText: prior?.deidentifiedText || "" })
+        );
       } else {
         app.phiReviews.set(key, createEphemeralRedactionReview(row.text, result));
       }
     },
-    onProgress: ({ completed, total }) => updateDeidOperation({
-      active: true,
-      value: completed,
-      total,
-      message: completed ? `De-identified ${completed} of ${total} fields locally.` : `Preparing ${total} field${total === 1 ? "" : "s"} for local de-identification…`
-    })
+    onProgress: ({ completed, total }) =>
+      updateDeidOperation({
+        active: true,
+        value: completed,
+        total,
+        message: completed
+          ? `De-identified ${completed} of ${total} fields locally.`
+          : `Preparing ${total} field${total === 1 ? "" : "s"} for local de-identification…`
+      })
   });
   return applyApprovedRedactions(scope, sections);
 }
@@ -2530,7 +2978,8 @@ async function importSelectedModelPack(modelKey, entries) {
     app.modelPackService = service;
     await requestPersistentModelStorage();
     const imported = await importModelPack(option, entries, {
-      onProgress: ({ completedBytes, totalBytes, file }) => setStatus(`Importing ${option.label}: ${file} (${formatBytes(completedBytes)} of ${formatBytes(totalBytes)})...`)
+      onProgress: ({ completedBytes, totalBytes, file }) =>
+        setStatus(`Importing ${option.label}: ${file} (${formatBytes(completedBytes)} of ${formatBytes(totalBytes)})...`)
     });
     if (imported.source === "imported" && !service.ready) throw new Error(service.message);
     resetAdvancedDeidWorker();
@@ -2584,7 +3033,7 @@ function updateModelPackDownloadProgress(option, progress) {
 async function downloadSelectedModelPack(modelKey) {
   const option = deidModelOptionByKey(modelKey);
   if (!isInstallableModel(option) || !hasAutomaticModelDownload(option)) return;
-  const blocker = crossOriginIsolationBlocker() || await webGpuRuntimeBlocker(option);
+  const blocker = crossOriginIsolationBlocker() || (await webGpuRuntimeBlocker(option));
   if (blocker) {
     app.quickDeid.status = blocker;
     setStatus(blocker);
@@ -2607,7 +3056,8 @@ async function downloadSelectedModelPack(modelKey) {
       if (!service.ready) throw new Error(service.message);
     }
     const persistent = await requestPersistentModelStorage();
-    if (!persistent) setStatus("The browser did not grant persistent storage. The model remains local, but the browser may evict it when space is low.");
+    if (!persistent)
+      setStatus("The browser did not grant persistent storage. The model remains local, but the browser may evict it when space is low.");
     const installed = await installModelPack(option, {
       signal: app.modelPackAbortController.signal,
       onProgress: (progress) => updateModelPackDownloadProgress(option, progress)
@@ -2631,9 +3081,7 @@ async function downloadSelectedModelPack(modelKey) {
     setStatus(`${option.label} is ready for local de-identification.`);
   } catch (error) {
     const cancelled = error instanceof DOMException && error.name === "AbortError";
-    const message = cancelled
-      ? `${option.label} download paused. Resume whenever you are ready.`
-      : modelPackFailureMessage(option, error);
+    const message = cancelled ? `${option.label} download paused. Resume whenever you are ready.` : modelPackFailureMessage(option, error);
     app.quickDeid.status = message;
     app.modelPackErrors = {
       ...app.modelPackErrors,
@@ -2669,7 +3117,7 @@ async function chooseModelPack(modelKey) {
 async function verifyInstalledModelPack(modelKey) {
   const option = deidModelOptionByKey(modelKey);
   if (!isInstallableModel(option)) return;
-  const blocker = crossOriginIsolationBlocker() || await webGpuRuntimeBlocker(option);
+  const blocker = crossOriginIsolationBlocker() || (await webGpuRuntimeBlocker(option));
   if (blocker) {
     app.quickDeid.status = blocker;
     setStatus(blocker);
@@ -2788,7 +3236,12 @@ async function commitWorkupOverride(workup, message) {
 }
 
 function isWorkupEditorControl(target) {
-  return Boolean(target?.closest?.("#workupsContent") && target.matches?.("#workupTitleInput, #workupAliasesInput, [data-workup-item-row] input, [data-workup-item-row] textarea, [data-workup-item-row] select"));
+  return Boolean(
+    target?.closest?.("#workupsContent") &&
+    target.matches?.(
+      "#workupTitleInput, #workupAliasesInput, [data-workup-item-row] input, [data-workup-item-row] textarea, [data-workup-item-row] select"
+    )
+  );
 }
 
 function queueWorkupAutosave() {
@@ -3127,7 +3580,8 @@ function exportWorkupLibrary() {
 
 async function parseAndSaveWorkupJson(text) {
   const imported = parseWorkupJson(text);
-  const current = app.draftWorkup || effectiveWorkupCatalog(app.vault.workupOverrides).find((workup) => workup.id === app.selectedWorkupEditorId);
+  const current =
+    app.draftWorkup || effectiveWorkupCatalog(app.vault.workupOverrides).find((workup) => workup.id === app.selectedWorkupEditorId);
   // Importing from an open editor means "replace this workup". Incoming IDs
   // are useful for a new workup, but must not create a duplicate copy of the
   // catalog entry the user is actively editing.
@@ -3394,7 +3848,12 @@ function handleChange(event) {
 async function updateChecklistAnswer(input) {
   if (app.phoneBundle) {
     const item = app.phoneBundle.checklist.items.find((entry) => entry.id === input.name);
-    app.phoneAnswers = setChecklistChoice(app.phoneAnswers, item, input.value, input.tagName === "SELECT" ? Boolean(input.value) : input.checked);
+    app.phoneAnswers = setChecklistChoice(
+      app.phoneAnswers,
+      item,
+      input.value,
+      input.tagName === "SELECT" ? Boolean(input.value) : input.checked
+    );
     phoneSession.saveAutosave();
     renderPhoneChecklist();
     return;
@@ -3403,7 +3862,12 @@ async function updateChecklistAnswer(input) {
   const day = selectedChecklistDay(patient);
   const item = day?.checklistSnapshot?.items.find((entry) => entry.id === input.name);
   if (!item) return;
-  const answers = setChecklistChoice(day.answers || {}, item, input.value, input.tagName === "SELECT" ? Boolean(input.value) : input.checked);
+  const answers = setChecklistChoice(
+    day.answers || {},
+    item,
+    input.value,
+    input.tagName === "SELECT" ? Boolean(input.value) : input.checked
+  );
   const nextDay = { ...day, answers, updatedAt: new Date().toISOString() };
   app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
   await persistVault("Checklist answer saved.");
@@ -3413,7 +3877,9 @@ async function updateChecklistAnswer(input) {
 async function fillChecklistNegatives({ kind = "", system = "" } = {}) {
   const snapshot = app.phoneBundle ? app.phoneBundle.checklist : selectedChecklistDay(active())?.checklistSnapshot;
   const allItems = snapshot?.items || [];
-  const scopedItems = allItems.filter((item) => (!kind || item.kind === kind) && (!system || groupChecklistItemsBySystem([item])[0]?.system === system));
+  const scopedItems = allItems.filter(
+    (item) => (!kind || item.kind === kind) && (!system || groupChecklistItemsBySystem([item])[0]?.system === system)
+  );
   const currentAnswers = app.phoneBundle ? app.phoneAnswers : selectedChecklistDay(active())?.answers || {};
   const result = fillNegativeChecklistAnswers(currentAnswers, scopedItems);
   if (!result.changed) {
@@ -3454,7 +3920,8 @@ function handleInput(event) {
     app.dailySourceDraft = event.target.value;
     const count = document.querySelector("[data-source-draft-count]");
     const source = dailySourceKindOptions().find((option) => option.id === app.dailySourceKind);
-    if (count) count.textContent = `${app.dailySourceDraft.length.toLocaleString()} characters · ${source?.description || "Selected-day chart source."}`;
+    if (count)
+      count.textContent = `${app.dailySourceDraft.length.toLocaleString()} characters · ${source?.description || "Selected-day chart source."}`;
     const addButton = document.querySelector('[data-action="add-daily-source"]');
     if (addButton) addButton.disabled = app.deidOperation.active || !app.dailySourceDraft.trim();
     return;
@@ -3585,7 +4052,8 @@ function bindEvents() {
         render();
         return;
       }
-      if (app.demoSession && !["daily", "workups", "checklist", "prompts"].includes(button.dataset.viewTarget)) demoSessionController.exit({ renderAfter: false });
+      if (app.demoSession && !["daily", "workups", "checklist", "prompts"].includes(button.dataset.viewTarget))
+        demoSessionController.exit({ renderAfter: false });
       app.view = button.dataset.viewTarget;
       app.smartMenuOpen = false;
       render();
@@ -3632,12 +4100,14 @@ async function init() {
   render();
   void refreshWebGpuAvailability();
   void refreshGuidelines();
-  void ensureModelPackServiceWorker().then((service) => {
-    app.modelPackService = service;
-    if (app.view === "quickDeid") renderQuickDeid();
-  }).catch((error) => {
-    app.modelPackService = { ready: false, message: error instanceof Error ? error.message : "Local model installer unavailable." };
-  });
+  void ensureModelPackServiceWorker()
+    .then((service) => {
+      app.modelPackService = service;
+      if (app.view === "quickDeid") renderQuickDeid();
+    })
+    .catch((error) => {
+      app.modelPackService = { ready: false, message: error instanceof Error ? error.message : "Local model installer unavailable." };
+    });
   void refreshModelPackStates();
   void refreshWorkupWorkspace({ renderAfter: true });
 }
@@ -3654,10 +4124,7 @@ async function refreshWebGpuAvailability({ renderAfter = true } = {}) {
     return app.webGpuAvailable;
   }
   try {
-    const adapter = await Promise.race([
-      navigator.gpu.requestAdapter(),
-      new Promise((resolve) => setTimeout(() => resolve(null), 2500))
-    ]);
+    const adapter = await Promise.race([navigator.gpu.requestAdapter(), new Promise((resolve) => setTimeout(() => resolve(null), 2500))]);
     app.webGpuAvailable = Boolean(adapter);
   } catch {
     app.webGpuAvailable = false;
