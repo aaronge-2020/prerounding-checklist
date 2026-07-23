@@ -9,6 +9,7 @@ import {
 import {
   activePatient,
   archivePatient,
+  createTextSection,
   createPatientRecord,
   removeWorkupOverride,
   setActivePatient,
@@ -40,6 +41,8 @@ import {
 } from "../patient-context/sections.js?v=20260722-unified-stay-v2";
 import {
   createEphemeralRedactionReview,
+  refreshEphemeralRedactionReview,
+  sanitizeResidualWarningMetadata,
   inspectedRedactionIndex,
   nextPendingRedactionIndex,
   nextPendingReviewTarget,
@@ -49,7 +52,7 @@ import {
   quickWarningIndex,
   reviewKey,
   synchronizeReviewPlaceholders
-} from "../patient-context/review.js?v=20260715-reject-rest";
+} from "../patient-context/review.js?v=20260723-review-refresh";
 import {
   crossOriginIsolationBlocker,
   deidentifyText,
@@ -96,7 +99,7 @@ import {
   saveTokenColorOverrides
 } from "../prompts/custom-templates.js?v=20260722-unified-stay-v2";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
-import { DEFAULT_DAILY_SOURCE_KIND, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260722-unified-stay-v2";
+import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260723-edit-save";
 import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260722-unified-stay-v2";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import {
@@ -166,7 +169,7 @@ import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
 import { createDailyPresentation } from "./daily/presentation.js?v=20260722-unified-stay-v2";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260722-unified-stay-v2";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260723-edit-save";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
@@ -192,7 +195,7 @@ import {
   redactionPosition,
   warningDescription,
   warningSnippet
-} from "./redaction/presentation.js?v=20260722-unified-stay-v2";
+} from "./redaction/presentation.js?v=20260723-always-save";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
 import { createDemoController } from "./demo/controller.js?v=20260717-guided-demo-ux-4";
@@ -251,6 +254,8 @@ const app = {
   pendingSectionReviewFocus: null,
   dailySourceKind: DEFAULT_DAILY_SOURCE_KIND,
   dailySourceDraft: "",
+  admissionSourceKind: DEFAULT_DAILY_SOURCE_KIND,
+  admissionSourceDraft: "",
   workupThoroughness: "standard",
   workupImportDraft: "",
   workupApiBusy: false,
@@ -531,6 +536,16 @@ function updateDeidOperation({ active = false, message = "", value, total } = {}
       button.disabled = active;
       button.textContent = active ? "De-identifying…" : "Save changes";
     });
+    const dailyAddButton = document.querySelector('[data-action="add-daily-source"]');
+    if (dailyAddButton) {
+      dailyAddButton.disabled = active || !app.dailySourceDraft.trim();
+      dailyAddButton.textContent = active ? "De-identifying…" : "De-identify and add source";
+    }
+    const admissionAddButton = document.querySelector('[data-action="add-admission-source"]');
+    if (admissionAddButton) {
+      admissionAddButton.disabled = active || !app.admissionSourceDraft.trim();
+      admissionAddButton.textContent = active ? "De-identifying…" : "De-identify and add source";
+    }
   }
 }
 
@@ -886,6 +901,8 @@ function clearPatientScopedSession() {
   app.pendingSectionReviewFocus = null;
   app.dailySourceKind = DEFAULT_DAILY_SOURCE_KIND;
   app.dailySourceDraft = "";
+  app.admissionSourceKind = DEFAULT_DAILY_SOURCE_KIND;
+  app.admissionSourceDraft = "";
   clearPhiReviews();
   app.checklistSearchQuery = "";
   app.checklistOpenNoteIds = new Set();
@@ -1075,16 +1092,13 @@ function renderDeidStrip() {
   const progress = option ? app.modelPackProgress[option.key] : null;
   return `
     <div class="deid-strip deid-strip-compact">
-      <div class="deid-inline-status">
-        <strong>Advanced De-identification</strong>
-        <span class="muted" data-deid-selected-state>Selected: ${escapeHtml(deidModelLabel(app.deidMode))} | ${escapeHtml(selectedDeidStateText())}</span>
-      </div>
       <div class="button-row">
         <select id="deidModeSelect" aria-label="De-identification mode">
           ${deidModelSelectOptions()}
         </select>
         ${renderDeidLoadButton()}
       </div>
+      <span class="muted deid-inline-status" data-deid-selected-state>Selected: ${escapeHtml(deidModelLabel(app.deidMode))} | ${escapeHtml(selectedDeidStateText())}</span>
       <label class="deid-admission-date-inline">Admission date
         <input type="date" id="dailyAdmissionDateInput" value="${escapeHtml(app.admissionDate || "")}">
       </label>
@@ -1207,14 +1221,15 @@ function renderSectionEditor(section, scope) {
   const draftText = sectionDraftText(scope, section.id, section.deidentifiedText);
   synchronizeReviewPlaceholders(review, draftText);
   if (scope === "context")
-    return redactionPresentation.renderAdmissionSourceEditor({
-      section,
-      roleOptions: packetRoleOptions(scope),
+    return redactionPresentation.renderSourceCaptureEditor({
+      capture: section,
+      scope,
+      sourceOptions: admissionSourceKindOptions(),
       editing,
       pendingFocus: app.pendingSectionReviewFocus,
       review,
       draftText,
-      sections: reviewSectionsForScope(scope),
+      captures: reviewSectionsForScope(scope),
       reviewFor: (id) => sectionReviewFor(scope, id)
     });
   return redactionPresentation.renderSectionEditor({
@@ -1654,6 +1669,7 @@ function collectSectionRows(containerId) {
     createdAt: row.dataset.createdAt,
     label: row.querySelector(".section-label")?.value || "",
     role: row.querySelector(".section-role")?.value || "",
+    sourceKind: row.querySelector(".source-kind")?.value || "other_chart_text",
     text: row.querySelector(".section-text")?.value || ""
   }));
 }
@@ -1684,6 +1700,11 @@ function refreshDeidControlsInActiveView() {
     if (addSourceButton) {
       addSourceButton.disabled = busy || !app.dailySourceDraft.trim();
       addSourceButton.textContent = busy ? "De-identifying…" : "De-identify and add source";
+    }
+    const addAdmissionSourceButton = document.querySelector('[data-action="add-admission-source"]');
+    if (addAdmissionSourceButton) {
+      addAdmissionSourceButton.disabled = busy || !app.admissionSourceDraft.trim();
+      addAdmissionSourceButton.textContent = busy ? "De-identifying…" : "De-identify and add source";
     }
   }
   if (app.view === "quickDeid") renderQuickDeid();
@@ -1762,15 +1783,12 @@ async function handleClick(event) {
           );
       }
     }
-    if (action === "add-context-section")
-      await mutateSections("context", (sections) =>
-        addSection(sections, "Additional admission source", {
-          role: defaultPacketRole("context", Number.MAX_SAFE_INTEGER),
-          scope: "context"
-        })
-      );
     if (action === "select-daily-source-kind") {
       app.dailySourceKind = target.dataset.sourceKind || DEFAULT_DAILY_SOURCE_KIND;
+      renderDaily();
+    }
+    if (action === "select-admission-source-kind") {
+      app.admissionSourceKind = target.dataset.sourceKind || DEFAULT_DAILY_SOURCE_KIND;
       renderDaily();
     }
     if (action === "move-section-up")
@@ -1787,7 +1805,7 @@ async function handleClick(event) {
     if (action === "dismiss-all-section-warnings") await dismissAllSectionWarnings(target.dataset.scope, target.dataset.sectionId);
     if (action === "manual-redact-selection") redactSelectedSectionText(target.dataset.scope, target.dataset.sectionId);
     if (action === "edit-section-text") editSectionText(target.dataset.scope, target.dataset.sectionId);
-    if (action === "resume-section-review") resumeSectionReview(target.dataset.scope, target.dataset.sectionId);
+    if (action === "resume-section-review") await resumeSectionReview(target.dataset.scope, target.dataset.sectionId);
     if (action === "inspect-redaction")
       inspectRedaction(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex));
     if (action === "keep-reviewed-redaction") keepReviewedRedaction(target.dataset.scope, target.dataset.sectionId);
@@ -1799,6 +1817,7 @@ async function handleClick(event) {
     if (action === "save-context") await saveContext();
     if (action === "add-day") await addDay();
     if (action === "add-daily-source") await dailySourceController.addSource();
+    if (action === "add-admission-source") await addAdmissionSource();
     if (action === "select-day" || action === "select-admission")
       dailySourceController.selectPacket(action === "select-admission" ? "admission" : target.dataset.dayId);
     if (action === "save-day") await dailySourceController.saveSources();
@@ -1806,6 +1825,14 @@ async function handleClick(event) {
       app.selectedPromptTask = "daily_progress_note";
       app.promptDayId = app.selectedDayId;
       app.promptDayFollowsChecklist = true;
+      app.smartMenuOpen = false;
+      app.view = "prompts";
+      render();
+    }
+    if (action === "open-admission-note") {
+      app.selectedPromptTask = "initial_admission_rounds";
+      app.promptDayId = "";
+      app.promptDayFollowsChecklist = false;
       app.smartMenuOpen = false;
       app.view = "prompts";
       render();
@@ -2137,10 +2164,10 @@ function centerElementInNearestScrollOwner(element) {
   );
 }
 
-function refreshSectionReviewInEditor(editor, scope, sectionId) {
+function refreshSectionReviewInEditor(editor, scope, sectionId, { text: replacementText } = {}) {
   if (!editor) return;
   const field = editor.querySelector(".section-text");
-  const text = field ? field.value : sectionDraftText(scope, sectionId);
+  const text = replacementText === undefined ? (field ? field.value : sectionDraftText(scope, sectionId)) : String(replacementText || "");
   setSectionDraftText(scope, sectionId, text);
   const label = editor.querySelector(".section-label")?.value || "Section";
   const surface = editor.querySelector("[data-section-review-surface]");
@@ -2149,11 +2176,11 @@ function refreshSectionReviewInEditor(editor, scope, sectionId) {
   else editor.insertAdjacentHTML("beforeend", replacement);
 }
 
-function refreshSectionReviewAtCurrentPosition(editor, scope, sectionId, focusRedactionIndex = -1) {
+function refreshSectionReviewAtCurrentPosition(editor, scope, sectionId, focusRedactionIndex = -1, replacementText) {
   const scrollSnapshot = captureScrollChain(editor);
   const priorDocument = editor?.querySelector("[data-redaction-document]");
   const documentTop = priorDocument?.scrollTop ?? 0;
-  refreshSectionReviewInEditor(editor, scope, sectionId);
+  refreshSectionReviewInEditor(editor, scope, sectionId, { text: replacementText });
   restoreScrollChain(scrollSnapshot);
   const nextDocument = editor?.querySelector("[data-redaction-document]");
   const finish = () => {
@@ -2256,13 +2283,65 @@ function editSectionText(scope, sectionId) {
   });
 }
 
-function resumeSectionReview(scope, sectionId) {
+async function persistReprocessedSection(scope, sectionId, deidentifiedText, warnings = []) {
+  const safeText = String(deidentifiedText || "");
+  const residualWarnings = sanitizeResidualWarningMetadata(warnings);
+  app.vault = updateActivePatient(app.vault, (current) => {
+    if (scope === "daily") {
+      const day = selectedChecklistDay(current);
+      if (!day) return current;
+      const nextDay = {
+        ...day,
+        sourceCaptures: day.sourceCaptures.map((section) =>
+          section.id === sectionId
+            ? { ...section, deidentifiedText: safeText, residualWarnings, updatedAt: new Date().toISOString() }
+            : section
+        ),
+        updatedAt: new Date().toISOString()
+      };
+      return { ...current, days: upsertDay(current.days, nextDay) };
+    }
+    return {
+      ...current,
+      contextSections: current.contextSections.map((section) =>
+        section.id === sectionId
+          ? { ...section, deidentifiedText: safeText, residualWarnings, updatedAt: new Date().toISOString() }
+          : section
+      )
+    };
+  });
+  await persistVault("De-identified source edits saved locally.");
+}
+
+async function resumeSectionReview(scope, sectionId) {
   const editor = expandSectionEditor(scope, sectionId);
-  if (!editor || !sectionReviewFor(scope, sectionId)) return;
-  app.sectionEditingKeys.delete(reviewKey(scope, sectionId));
-  const review = sectionReviewFor(scope, sectionId);
-  if (inspectedRedactionIndex(review) < 0) review.inspectedRedactionIndex = nextPendingRedactionIndex(review);
-  refreshSectionReviewAtCurrentPosition(editor, scope, sectionId, review.inspectedRedactionIndex);
+  const field = editor?.querySelector(".section-text");
+  if (!editor || !field) return;
+  const rawText = field.value;
+  const referenceDate = scope === "daily" ? selectedChecklistDay(active())?.date : app.admissionDate;
+  updateDeidOperation({ active: true, message: "Re-running local de-identification review…", value: 0, total: 1 });
+  try {
+    await ensureSelectedDeidReady();
+    const result = await deidentify(rawText, { referenceDate });
+    const review = refreshEphemeralRedactionReview(sectionReviewFor(scope, sectionId), rawText, result);
+    app.phiReviews.set(reviewKey(scope, sectionId), review);
+    setSectionDraftText(scope, sectionId, result.text || "");
+    app.sectionEditingKeys.delete(reviewKey(scope, sectionId));
+    review.inspectedRedactionIndex = nextPendingRedactionIndex(review);
+    await persistReprocessedSection(scope, sectionId, result.text || "", result.residualWarnings || result.flags || []);
+    updateDeidOperation({ active: false, message: "Local redaction review refreshed." });
+    const pendingCount = review.redactions.filter((redaction) => redaction.state === "pending").length;
+    // Keep this source expanded so the clinician can decide the fresh queue.
+    refreshSectionReviewAtCurrentPosition(editor, scope, sectionId, review.inspectedRedactionIndex, result.text || "");
+    setStatus(
+      pendingCount
+        ? `${pendingCount} newly detected redaction${pendingCount === 1 ? "" : "s"} ready for review.`
+        : "Local redaction review completed; no newly detected identifiers."
+    );
+  } catch (error) {
+    updateDeidOperation({ active: false, message: error instanceof Error ? error.message : "De-identification did not complete." });
+    throw error;
+  }
 }
 
 function redactSelectedSectionText(scope, sectionId) {
@@ -2898,6 +2977,48 @@ async function saveContext() {
     beginSectionReview("context");
     await persistVault("Context saved as de-identified local text.");
     updateDeidOperation({ active: false, message: "Admission packet de-identified and saved locally." });
+    render();
+  } catch (error) {
+    updateDeidOperation({ active: false, message: error instanceof Error ? error.message : "De-identification did not complete." });
+    throw error;
+  }
+}
+
+function admissionRoleForSourceKind(sourceKind) {
+  return ({
+    primary_note: "admission_reason",
+    results: "admission_results",
+    medication_activity: "procedures_devices",
+    consult_note: "procedures_devices",
+    physical_exam: "admission_history",
+    bedside_update: "admission_history"
+  })[sourceKind] || "additional_admission_source";
+}
+
+async function addAdmissionSource() {
+  const patient = active();
+  const rawText = app.admissionSourceDraft.trim();
+  if (!patient) throw new Error("Select a patient first.");
+  if (!rawText) throw new Error("Paste a chart source before adding it.");
+  updateDeidOperation({ active: true, message: "De-identifying this admission source locally…", value: 0, total: 1 });
+  try {
+    await ensureSelectedDeidReady();
+    const result = await deidentify(rawText, { referenceDate: app.admissionDate });
+    const source = admissionSourceKindOptions().find((option) => option.id === app.admissionSourceKind);
+    const section = createTextSection(source?.label || "Other chart text", {
+      scope: "context",
+      role: admissionRoleForSourceKind(app.admissionSourceKind),
+      sourceKind: app.admissionSourceKind,
+      text: result.text || ""
+    });
+    app.phiReviews.set(reviewKey("context", section.id), createEphemeralRedactionReview(rawText, result));
+    setSectionDraftText("context", section.id, section.deidentifiedText);
+    app.vault = updateActivePatient(app.vault, (current) => ({ ...current, contextSections: [...(current.contextSections || []), section] }));
+    app.admissionSourceDraft = "";
+    admissionDateAnchor.remember();
+    beginSectionReview("context");
+    await persistVault("Source de-identified and added to Admission.");
+    updateDeidOperation({ active: false, message: "Admission source de-identified and saved locally." });
     render();
   } catch (error) {
     updateDeidOperation({ active: false, message: error instanceof Error ? error.message : "De-identification did not complete." });
@@ -3924,6 +4045,16 @@ function handleInput(event) {
       count.textContent = `${app.dailySourceDraft.length.toLocaleString()} characters · ${source?.description || "Selected-day chart source."}`;
     const addButton = document.querySelector('[data-action="add-daily-source"]');
     if (addButton) addButton.disabled = app.deidOperation.active || !app.dailySourceDraft.trim();
+    return;
+  }
+  if (event.target.id === "admissionSourceDraft") {
+    app.admissionSourceDraft = event.target.value;
+    const count = document.querySelector("[data-admission-source-draft-count]");
+    const source = admissionSourceKindOptions().find((option) => option.id === app.admissionSourceKind);
+    if (count)
+      count.textContent = `${app.admissionSourceDraft.length.toLocaleString()} characters · ${source?.description || "Admission chart source."}`;
+    const addButton = document.querySelector('[data-action="add-admission-source"]');
+    if (addButton) addButton.disabled = app.deidOperation.active || !app.admissionSourceDraft.trim();
     return;
   }
   if (event.target.id === "guidelineSearchInput") {

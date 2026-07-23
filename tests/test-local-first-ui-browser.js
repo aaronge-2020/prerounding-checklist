@@ -480,7 +480,7 @@ try {
   // Regression: a caret at index 0 is valid. Removing a leading variable must
   // inspect only the text before that caret, rather than finding a later token
   // and incorrectly keeping the menu open.
-  await page.locator("#promptPreview").fill("@exam-findings\\nUse @admission-context");
+  await page.locator("#promptPreview").fill("@selected-day-exam-findings\\nUse @admission-context");
   await page.locator("#promptPreview").press("Control+Home");
   await page.locator("#promptPreview").press("Delete");
   assert.equal(await page.locator("#smartVariableMenu").isVisible(), false);

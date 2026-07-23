@@ -31,8 +31,8 @@ const dailyMarkup = dailyView.renderDaily({
   deidBusy: false
 });
 assert.match(dailyMarkup, /data-action="select-admission"/);
-assert.match(dailyMarkup, /Admission editor/);
-assert.doesNotMatch(dailyMarkup, /source-capture-composer/);
+assert.match(dailyMarkup, /data-action="add-admission-source"/);
+assert.match(dailyMarkup, /source-capture-composer/);
 
 const snapshot = {
   id: "checklist_test",
@@ -113,6 +113,15 @@ const quietReviewMarkup = redactionView.renderSectionSurface({
 assert.match(quietReviewMarkup, /Field complete/);
 assert.match(quietReviewMarkup, /Next: review Medications/);
 assert.match(quietReviewMarkup, /data-action="continue-section-review"/);
+const editableWithoutReviewMarkup = redactionView.renderSectionSurface({
+  section: { id: "physical-exam", label: "Physical exam" },
+  scope: "daily",
+  review: null,
+  editing: false,
+  draftText: "Edited de-identified text."
+});
+assert.match(editableWithoutReviewMarkup, /data-action="resume-section-review"/);
+assert.match(editableWithoutReviewMarkup, /Save and re-run redaction review/);
 
 class FakeFile {
   constructor(parts, name, options) {

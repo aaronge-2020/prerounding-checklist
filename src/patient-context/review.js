@@ -154,6 +154,86 @@ export function createEphemeralRedactionReview(rawText, result = {}, { priorOutp
   return synchronizeReviewPlaceholders(review, result.text || "");
 }
 
+function occurrencePosition(text, token, occurrence) {
+  const source = String(text || "");
+  const needle = String(token || "");
+  if (!needle || occurrence < 0) return -1;
+  let cursor = 0;
+  for (let index = 0; index <= occurrence; index += 1) {
+    const position = source.indexOf(needle, cursor);
+    if (position < 0) return -1;
+    if (index === occurrence) return position;
+    cursor = position + needle.length;
+  }
+  return -1;
+}
+
+function decisionKey(redaction) {
+  return `${String(redaction?.original || "")}\u0000${String(redaction?.placeholder || "")}`;
+}
+
+// A clinician edits the safe, currently displayed text. Re-running the model
+// must therefore retain decisions already represented in that text while
+// adding only fresh detections to the pending queue. This stays entirely in
+// the active-tab review object; neither originals nor decisions are persisted.
+export function refreshEphemeralRedactionReview(previousReview, rawText, result = {}) {
+  const refreshed = createEphemeralRedactionReview(rawText, result);
+  const priorRedactions = Array.isArray(previousReview?.redactions) ? previousReview.redactions : [];
+  const decisions = new Map();
+  priorRedactions
+    .filter((redaction) => redaction?.state === "confirmed" || redaction?.state === "restored")
+    .forEach((redaction) => {
+      const key = decisionKey(redaction);
+      const queue = decisions.get(key) || [];
+      queue.push(redaction.state);
+      decisions.set(key, queue);
+    });
+
+  // If an edited field contains an earlier raw value again, carry its prior
+  // decision forward one occurrence at a time. A newly added duplicate beyond
+  // the original count remains pending and still requires review.
+  refreshed.redactions.forEach((redaction) => {
+    const queue = decisions.get(decisionKey(redaction));
+    const state = queue?.shift();
+    if (state) redaction.state = state;
+  });
+
+  const safeText = String(rawText || "");
+  const carriedConfirmed = priorRedactions.flatMap((redaction, priorIndex) => {
+    if (redaction?.state !== "confirmed") return [];
+    const placeholder = String(redaction.placeholder || "");
+    const position = occurrencePosition(safeText, placeholder, Number(redaction.occurrence));
+    if (position < 0) return [];
+
+    // A detector must never turn an existing safe placeholder into a fresh
+    // pending decision. Remove that synthetic overlap and retain the accepted
+    // entry, which keeps its original available only for Undo in this tab.
+    refreshed.redactions = refreshed.redactions.filter(
+      (entry) => !(entry.start >= position && entry.end <= position + placeholder.length)
+    );
+    const insertedEarlier = refreshed.redactions.filter(
+      (entry) => entry.state === "pending" && entry.placeholder === placeholder && entry.start < position
+    ).length;
+    return [{
+      ...redaction,
+      id: `preserved_${priorIndex}`,
+      start: null,
+      end: null,
+      occurrence: Number(redaction.occurrence) + insertedEarlier,
+      state: "confirmed"
+    }];
+  });
+
+  refreshed.redactions.push(...carriedConfirmed);
+  refreshed.approvedRedactionIndexes = new Set(
+    refreshed.redactions
+      .map((redaction, index) => (redaction.state === "restored" ? index : -1))
+      .filter((index) => index >= 0)
+  );
+  refreshed.inspectedRedactionIndex = nextPendingRedactionIndex(refreshed);
+  return refreshed;
+}
+
 // Older active-tab reviews may have recorded a generic [DATE] token while the
 // final output already contains a relative date such as "2 days ago at 05:30".
 // Align untouched source fragments with the de-identified result to recover the

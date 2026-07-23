@@ -212,66 +212,68 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
           ${renderWorkupColumn("history", "History questions", grouped.history)}
           ${renderWorkupColumn("exam", "Physical exam items", grouped.exam)}
         </div>
-        <div class="workup-footer-actions">
-          <div class="workup-action-group workup-prompt-actions">
-            <button class="button--secondary" type="button" data-action="copy-open-evidence-workup-prompt">OpenEvidence draft</button>
-            <button class="button--secondary" type="button" data-action="copy-json-formatter-prompt">Copy ChatGPT formatter prompt</button>
-          </div>
-          <div class="workup-action-group workup-file-actions">
-            <button class="button--secondary button--transfer" type="button" data-action="export-workup-json">${icon("download")} Download workup</button>
-            <button class="button--secondary button--transfer" type="button" data-action="export-workup-library">${icon("download")} Download local library</button>
-            <button class="button--secondary button--transfer" type="button" data-action="choose-workup-library-file">${icon("upload")} Import library</button>
-            <input id="workupLibraryFileInput" type="file" accept="application/json" hidden>
-          </div>
-          <button class="button--primary workup-save-button" type="button" data-action="save-workup-ui">Save to catalog</button>
-        </div>
-        <p class="muted workup-library-note">Workup libraries contain no patient data. Building a checklist is always explicit.</p>
-        <section class="workup-workspace-mirror" aria-live="polite">
-          <div class="workup-workspace-copy">
-            <strong>Workspace mirror</strong>
-            <p class="muted">${workspaceReady ? `Mirrors ${overrideCount} local workup${overrideCount === 1 ? "" : "s"} to <code>workups/local/</code>. Browser saves remain encrypted and canonical.` : escapeHtml(workspace.message || "Choose a workspace folder to mirror local workups.")}</p>
-            <small>Writes only workup JSON and a mirror manifest — never patient data, and never stages, commits, or deletes files in your workspace.</small>
-          </div>
-          <div class="workup-workspace-actions button-row">
-            ${workspaceReady ? `<button class="button--secondary" type="button" data-action="sync-workup-workspace" ${workspaceBusy ? "disabled" : ""}>${workspaceBusy ? "Syncing…" : "Sync now"}</button><button class="button--quiet" type="button" data-action="choose-workup-workspace" ${workspaceBusy ? "disabled" : ""}>Change folder</button><button class="button--quiet" type="button" data-action="disconnect-workup-workspace" ${workspaceBusy ? "disabled" : ""}>Disconnect</button>` : `<button class="button--secondary" type="button" data-action="choose-workup-workspace" ${workspaceBusy || workspace.status === "unsupported" ? "disabled" : ""}>Choose workspace folder</button>`}
-          </div>
-        </section>
-        <details class="utility-panel workup-import" ${workupImportError || workupApiBusy || workupApiDeidConfirmed || workupImportPanelOpen ? "open" : ""}>
-          <summary>
-            <span class="workup-import-summary-marker" aria-hidden="true">${icon("chevron")}</span>
-            <span class="workup-import-summary-copy">
-              <strong>Format or import a workup</strong>
-              <span class="muted">Paste a de-identified OpenEvidence draft to format it automatically, or paste finished JSON to import directly.</span>
-            </span>
-            <span class="workup-import-summary-action">Open options</span>
-          </summary>
-          <div class="workup-import-body">
-            <div class="section-heading tight workup-import-heading">
-              <div>
-                <h3>Format into editable workup rows</h3>
-                <p class="muted">Automatic formatting uses only the pasted draft. You can also paste finished JSON to parse it directly.</p>
-              </div>
-              <div class="button-row">
-                <button type="button" data-action="parse-workup-json">Parse & save</button>
-                <button class="button--transfer" type="button" data-action="choose-workup-file">${icon("upload")} Import file</button>
-                <input id="workupJsonFileInput" type="file" accept="application/json" hidden>
-              </div>
+        <div class="workup-utilities">
+          <div class="workup-footer-actions">
+            <div class="workup-action-group workup-prompt-actions">
+              <button class="button--secondary" type="button" data-action="copy-open-evidence-workup-prompt">OpenEvidence draft</button>
+              <button class="button--secondary" type="button" data-action="copy-json-formatter-prompt">Copy ChatGPT formatter prompt</button>
             </div>
-            <textarea id="workupJsonImport" class="json-import" spellcheck="false" placeholder="Paste a reviewed, de-identified OpenEvidence workup draft or prerounding_workup_v1 JSON here.">${escapeHtml(workupImportDraft)}</textarea>
-            ${hasSavedOpenAiKey ? `<div class="workup-api-formatting">
-              <label class="check-row workup-deid-confirmation">
-                <input id="workupApiDeidConfirmed" type="checkbox" ${workupApiDeidConfirmed ? "checked" : ""}>
-                <span>I've reviewed this draft and confirm it's de-identified.</span>
-              </label>
-              <div class="button-row workup-api-action">
-                <button type="button" data-action="format-workup-json-api" ${workupApiDeidConfirmed && !workupApiBusy ? "" : "disabled"}>${workupApiBusy ? '<span class="spinner" aria-hidden="true"></span> Formatting...' : "Format & load with saved API key"}</button>
-                <span class="muted">Ready to use ${escapeHtml(openAiModelLabel)} after you confirm the draft is de-identified.</span>
-              </div>
-            </div>` : `<div class="notice workup-api-guidance"><span>To format a de-identified draft automatically, save an OpenAI API key in Settings.</span><button class="button--quiet" type="button" data-action="go-settings">Open Settings</button></div>`}
-            ${workupImportError ? `<div class="warning-box workup-json-note">${escapeHtml(workupImportError)}</div>` : `<div class="notice workup-json-note">JSON import is parsed into editable rows — there's no raw JSON editor in this view.</div>`}
+            <div class="workup-action-group workup-file-actions">
+              <button class="button--secondary button--transfer" type="button" data-action="export-workup-json">${icon("download")} Download workup</button>
+              <button class="button--secondary button--transfer" type="button" data-action="export-workup-library">${icon("download")} Download local library</button>
+              <button class="button--secondary button--transfer" type="button" data-action="choose-workup-library-file">${icon("upload")} Import library</button>
+              <input id="workupLibraryFileInput" type="file" accept="application/json" hidden>
+            </div>
+            <button class="button--primary workup-save-button" type="button" data-action="save-workup-ui">Save to catalog</button>
           </div>
-        </details>
-        <button type="button" class="text-button workup-reset-override" data-action="reset-workup-json">Remove local override</button>
+          <section class="workup-workspace-mirror" aria-live="polite">
+            <span class="workup-utility-icon" aria-hidden="true">${icon("folder")}</span>
+            <div class="workup-workspace-copy">
+              <strong>Workspace mirror</strong>
+              <p class="muted">${workspaceReady ? `Mirrors ${overrideCount} local workup${overrideCount === 1 ? "" : "s"} to <code>workups/local/</code>. Browser saves remain encrypted and canonical.` : escapeHtml(workspace.message || "Choose a workspace folder to mirror local workups.")}</p>
+              <small>Writes only workup JSON and a mirror manifest — never patient data, and never stages, commits, or deletes files in your workspace.</small>
+            </div>
+            <div class="workup-workspace-actions button-row">
+              ${workspaceReady ? `<button class="button--secondary" type="button" data-action="sync-workup-workspace" ${workspaceBusy ? "disabled" : ""}>${workspaceBusy ? "Syncing…" : "Sync now"}</button><button class="button--quiet" type="button" data-action="choose-workup-workspace" ${workspaceBusy ? "disabled" : ""}>Change folder</button><button class="button--quiet" type="button" data-action="disconnect-workup-workspace" ${workspaceBusy ? "disabled" : ""}>Disconnect</button>` : `<button class="button--secondary" type="button" data-action="choose-workup-workspace" ${workspaceBusy || workspace.status === "unsupported" ? "disabled" : ""}>Choose workspace folder</button>`}
+            </div>
+          </section>
+          <details class="utility-panel workup-import" ${workupImportError || workupApiBusy || workupApiDeidConfirmed || workupImportPanelOpen ? "open" : ""}>
+            <summary>
+              <span class="workup-utility-icon workup-import-summary-marker" aria-hidden="true">${icon("workup")}</span>
+              <span class="workup-import-summary-copy">
+                <strong>Format or import a workup</strong>
+                <span class="muted">Paste a de-identified OpenEvidence draft to format it automatically, or paste finished JSON to import directly.</span>
+              </span>
+              <span class="workup-import-summary-action">Open options ${icon("chevron")}</span>
+            </summary>
+            <div class="workup-import-body">
+              <div class="section-heading tight workup-import-heading">
+                <div>
+                  <h3>Format into editable workup rows</h3>
+                  <p class="muted">Automatic formatting uses only the pasted draft. You can also paste finished JSON to parse it directly.</p>
+                </div>
+                <div class="button-row">
+                  <button type="button" data-action="parse-workup-json">Parse & save</button>
+                  <button class="button--transfer" type="button" data-action="choose-workup-file">${icon("upload")} Import file</button>
+                  <input id="workupJsonFileInput" type="file" accept="application/json" hidden>
+                </div>
+              </div>
+              <textarea id="workupJsonImport" class="json-import" spellcheck="false" placeholder="Paste a reviewed, de-identified OpenEvidence workup draft or prerounding_workup_v1 JSON here.">${escapeHtml(workupImportDraft)}</textarea>
+              ${hasSavedOpenAiKey ? `<div class="workup-api-formatting">
+                <label class="check-row workup-deid-confirmation">
+                  <input id="workupApiDeidConfirmed" type="checkbox" ${workupApiDeidConfirmed ? "checked" : ""}>
+                  <span>I've reviewed this draft and confirm it's de-identified.</span>
+                </label>
+                <div class="button-row workup-api-action">
+                  <button type="button" data-action="format-workup-json-api" ${workupApiDeidConfirmed && !workupApiBusy ? "" : "disabled"}>${workupApiBusy ? '<span class="spinner" aria-hidden="true"></span> Formatting...' : "Format & load with saved API key"}</button>
+                  <span class="muted">Ready to use ${escapeHtml(openAiModelLabel)} after you confirm the draft is de-identified.</span>
+                </div>
+              </div>` : `<div class="notice workup-api-guidance"><span>To format a de-identified draft automatically, save an OpenAI API key in Settings.</span><button class="button--quiet" type="button" data-action="go-settings">Open Settings</button></div>`}
+              ${workupImportError ? `<div class="warning-box workup-json-note">${escapeHtml(workupImportError)}</div>` : `<div class="notice workup-json-note">JSON import is parsed into editable rows — there's no raw JSON editor in this view.</div>`}
+            </div>
+          </details>
+          <button type="button" class="text-button workup-reset-override" data-action="reset-workup-json">${icon("trash")} Remove local override</button>
+        </div>
       </section>
     `;
   }

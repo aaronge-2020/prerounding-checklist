@@ -276,16 +276,35 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
     `;
   }
 
+  function renderChecklistStartState() {
+    return `
+      <section class="panel checklist-start-state" aria-labelledby="checklistStartTitle">
+        <div class="checklist-start-icon" aria-hidden="true">${icon("checklist")}</div>
+        <div class="checklist-start-copy">
+          <h2 id="checklistStartTitle">Build a checklist from Workups</h2>
+          <p>Choose one or more workups, then select <strong>Build checklist</strong> to bring their history and exam items here.</p>
+        </div>
+        <div class="checklist-start-steps" aria-label="Checklist setup steps">
+          <span><b>1</b> Choose workups</span>
+          <span><b>2</b> Build checklist</span>
+          <span><b>3</b> Record findings</span>
+        </div>
+        <button class="button--primary checklist-start-action" type="button" data-action="go-workups">${icon("workup")} Go to Workups</button>
+      </section>
+    `;
+  }
+
   function renderDesktopChecklist({ day, snapshot, answers, quickNotes = [], openNoteIds = new Set(), searchQuery = "", phoneLink, openEvidenceImport, canSaveChecklistExamFindings = false, dayOptionsHtml = "" }) {
     const totalItems = snapshot?.items.length || 0;
     const completedItems = completedCount(snapshot?.items || [], answers);
+    if (!snapshot) return renderChecklistStartState();
     return `
       <div class="checklist-shell">
         <section class="panel checklist-panel">
           <div class="section-heading checklist-heading">
             <div>
               <h2>Checklist</h2>
-              <p class="muted">${snapshot ? `${escapeHtml(day.label)} · ${completedItems} / ${totalItems} completed · ${escapeHtml(snapshot.workupTitles.join(", "))}` : "Build a checklist from the Workups page."}</p>
+              <p class="muted">${escapeHtml(day.label)} · ${completedItems} / ${totalItems} completed · ${escapeHtml(snapshot.workupTitles.join(", "))}</p>
             </div>
             ${dayOptionsHtml ? `<label class="checklist-day-picker">Checklist day<select id="checklistDaySelect" aria-label="Checklist hospital day">${dayOptionsHtml}</select></label>` : ""}
             <div class="button-row checklist-heading-actions">
@@ -295,26 +314,16 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
               <input id="phoneBundleFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden>
             </div>
           </div>
-          ${snapshot ? `<p class="muted checklist-guidance">Record findings directly below, or use the capture options to de-identify a transcribed exam note locally.</p>` : ""}
-          ${snapshot ? renderOpenEvidenceImportPanel(openEvidenceImport || {}) : ""}
-          ${
-            snapshot
-              ? `<div class="checklist-toolbar-row">${renderChecklistSearch(searchQuery)}</div>`
-              : ""
-          }
-          ${
-            snapshot
-              ? `
-                  <div id="checklistSections" class="checklist-scroll">
-                    ${renderChecklistSection("History", groupChecklistItems(snapshot).history, answers, { openNoteIds })}
-                    ${renderChecklistSection("Physical Exam", groupChecklistItems(snapshot).exam, answers, { openNoteIds })}
-                  </div>
-                  ${renderQuickNotes(quickNotes)}
-                `
-              : `<div class="empty-state next-step"><strong>Next step: build a checklist.</strong><span>Select one or more workups, then return here to record history and exam findings.</span></div>`
-          }
+          <p class="muted checklist-guidance">Record findings directly below, or use the capture options to de-identify a transcribed exam note locally.</p>
+          ${renderOpenEvidenceImportPanel(openEvidenceImport || {})}
+          <div class="checklist-toolbar-row">${renderChecklistSearch(searchQuery)}</div>
+          <div id="checklistSections" class="checklist-scroll">
+            ${renderChecklistSection("History", groupChecklistItems(snapshot).history, answers, { openNoteIds })}
+            ${renderChecklistSection("Physical Exam", groupChecklistItems(snapshot).exam, answers, { openNoteIds })}
+          </div>
+          ${renderQuickNotes(quickNotes)}
         </section>
-        ${snapshot ? renderPhoneTransfer(phoneLink) : `<section class="panel"><h3>Send to phone</h3><p class="muted">Build a checklist first.</p></section>`}
+        ${renderPhoneTransfer(phoneLink)}
       </div>
     `;
   }

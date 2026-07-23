@@ -114,13 +114,15 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
   function renderSectionSurface({ section, scope, review, editing, draftText, sections = [], reviewFor = () => null }) {
     const documentId = `sectionRedactionDocument-${section.id}`;
     const nextSectionLabel = nextReviewSection(sections, section.id, reviewFor)?.label || "";
+    const isTextEditable = !review || editing;
     return `
       <div class="section-review-surface" data-section-review-surface>
         ${review && !editing
           ? `<input class="section-text" type="hidden" value="${escapeHtml(draftText)}">${renderRedactionDocument(draftText, review, { id: documentId, scope, sectionId: section.id, label: `${section.label} redaction review` })}`
           : `<textarea class="section-text" rows="5" spellcheck="false">${escapeHtml(draftText)}</textarea>`}
         <div class="section-review-tools">
-          ${review ? `<button class="button--quiet" type="button" data-action="${editing ? "resume-section-review" : "edit-section-text"}" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">${editing ? "Return to redaction review" : "Edit field text"}</button>` : ""}
+          ${review && !editing ? `<button class="button--quiet" type="button" data-action="edit-section-text" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Edit field text</button>` : ""}
+          ${isTextEditable ? `<button class="button--secondary" type="button" data-action="resume-section-review" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Save and re-run redaction review</button>` : ""}
           <button class="button--quiet" type="button" data-action="manual-redact-selection" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">${icon("wand")} Redact selected text</button>
           <span class="muted">${review && !editing ? "Review changes here, or edit the text without leaving Hospital Stay." : "Edit this de-identified field, then save to re-run the local review."}</span>
         </div>
@@ -159,17 +161,18 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function renderSourceCaptureEditor({ capture, sourceOptions = [], editing, pendingFocus, review, draftText, captures = [], reviewFor = () => null }) {
+  function renderSourceCaptureEditor({ capture, scope = "daily", sourceOptions = [], editing, pendingFocus, review, draftText, captures = [], reviewFor = () => null }) {
     const characterCount = draftText?.length || 0;
     const draftMarker = draftText !== capture.deidentifiedText ? " · draft" : "";
-    const isInitialReviewTarget = pendingFocus?.scope === "daily" && pendingFocus.sectionId === capture.id;
+    const isInitialReviewTarget = pendingFocus?.scope === scope && pendingFocus.sectionId === capture.id;
     const isExpanded = editing || isInitialReviewTarget;
     const capturedAt = capture.capturedAt ? new Date(capture.capturedAt) : null;
     const capturedLabel = capturedAt && !Number.isNaN(capturedAt.getTime())
       ? capturedAt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
       : "Saved source";
     return `
-      <article class="section-editor source-capture-editor ${isExpanded ? "is-expanded" : ""}" data-section-id="${escapeHtml(capture.id)}" data-section-scope="daily" data-created-at="${escapeHtml(capture.createdAt)}" data-captured-at="${escapeHtml(capture.capturedAt || capture.createdAt)}">
+      <article class="section-editor source-capture-editor ${isExpanded ? "is-expanded" : ""}" data-section-id="${escapeHtml(capture.id)}" data-section-scope="${escapeHtml(scope)}" data-created-at="${escapeHtml(capture.createdAt)}" ${scope === "daily" ? `data-captured-at="${escapeHtml(capture.capturedAt || capture.createdAt)}"` : ""}>
+        ${scope === "context" ? `<input class="section-label" type="hidden" value="${escapeHtml(capture.label)}"><input class="section-role" type="hidden" value="${escapeHtml(capture.role)}">` : ""}
         <div class="section-toolbar source-capture-toolbar">
           <div class="source-capture-identity">
             <strong>${escapeHtml(sourceOptions.find((option) => option.id === capture.sourceKind)?.label || capture.label || "Other chart text")}</strong>
@@ -177,7 +180,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
           </div>
           <div class="button-row">
             <button class="button--quiet" type="button" data-action="toggle-section-editor" aria-label="${isExpanded ? "Collapse source" : "Edit source"}" aria-expanded="${String(isExpanded)}">${isExpanded ? "Done" : "Edit"}</button>
-            <button class="button--quiet danger-subtle" type="button" data-action="remove-section" data-scope="daily" data-section-id="${escapeHtml(capture.id)}">Remove</button>
+            <button class="button--quiet danger-subtle" type="button" data-action="remove-section" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(capture.id)}">Remove</button>
           </div>
         </div>
         <label class="source-kind-control">Epic source
@@ -185,7 +188,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
             ${sourceOptions.map((option) => `<option value="${escapeHtml(option.id)}" ${option.id === capture.sourceKind ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
           </select>
         </label>
-        ${renderSectionSurface({ section: capture, scope: "daily", review, editing, draftText, sections: captures, reviewFor })}
+        ${renderSectionSurface({ section: capture, scope, review, editing, draftText, sections: captures, reviewFor })}
       </article>
     `;
   }

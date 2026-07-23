@@ -21,7 +21,7 @@ export function createExamFindingsController({ state, active, persistVault, setS
                   ...(currentDay.sourceCaptures || []),
                   createSourceCapture({
                     sourceKind: "physical_exam",
-                    label: "Physical exam findings",
+                    label: "Physical exam (today)",
                     text,
                     residualWarnings,
                     now: () => now
@@ -63,7 +63,7 @@ export function createExamFindingsController({ state, active, persistVault, setS
         return currentDay
           ? { ...current, days: upsertDay(current.days, {
               ...clearOpenEvidenceExamNote(currentDay),
-              sourceCaptures: (currentDay.sourceCaptures || []).filter((capture) => capture.sourceKind !== "physical_exam")
+              sourceCaptures: (currentDay.sourceCaptures || []).filter((capture) => !["physical_exam", "pre_round_physical_exam"].includes(capture.sourceKind))
             }) }
           : current;
       }

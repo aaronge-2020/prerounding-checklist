@@ -29,12 +29,13 @@ export function createEmptyVaultState({ now = timestampNow } = {}) {
   };
 }
 
-export function createTextSection(label, { id = createLocalId("section"), text = "", role = "", scope = "context", now = timestampNow } = {}) {
+export function createTextSection(label, { id = createLocalId("section"), text = "", role = "", scope = "context", sourceKind = "other_chart_text", now = timestampNow } = {}) {
   const timestamp = now();
   return {
     id,
     label: String(label || "Section").trim() || "Section",
     role: normalizePacketRole(scope, role, label),
+    sourceKind: String(sourceKind || "other_chart_text"),
     deidentifiedText: String(text || ""),
     residualWarnings: [],
     createdAt: timestamp,
@@ -76,6 +77,7 @@ export function normalizeSection(section, fallbackLabel = "Section", { now = tim
     id: String(section?.id || createLocalId("section")),
     label: String(section?.label || fallbackLabel).trim() || fallbackLabel,
     role: normalizePacketRole(scope, section?.role, section?.label || fallbackLabel, index),
+    sourceKind: String(section?.sourceKind || "other_chart_text"),
     deidentifiedText: String(section?.deidentifiedText || ""),
     residualWarnings: sanitizeResidualWarningMetadata(Array.isArray(section?.residualWarnings) ? section.residualWarnings : []),
     createdAt: String(section?.createdAt || timestamp),

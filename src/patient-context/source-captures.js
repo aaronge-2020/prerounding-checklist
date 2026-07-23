@@ -6,7 +6,9 @@ const sourceKinds = [
   ["results", "Results", "Selected-day laboratory, imaging, microbiology, and diagnostic results."],
   ["medication_activity", "Medication activity", "Medication administrations, holds, starts, stops, and active orders."],
   ["consult_note", "Consult note", "A consultant note, recommendation, or procedure update."],
-  ["physical_exam", "Physical exam findings", "A de-identified physical examination or SOAP-note examination section."],
+  ["prior_physical_exam", "Physical exam (prior)", "A physical examination documented by another clinician before the current pre-round visit."],
+  ["pre_round_physical_exam", "Physical exam (today)", "The physical examination you performed during the current pre-round visit."],
+  ["physical_exam", "Physical exam (today)", "The physical examination you found yourself during today’s pre-round visit."],
   ["bedside_update", "Bedside update", "What the patient, nursing team, or clinician learned at the bedside."],
   ["other_chart_text", "Other chart text", "Other selected-day chart text that should remain in the packet." ]
 ];
@@ -55,7 +57,15 @@ export function dailySourceKindLabel(kind) {
 }
 
 export function dailySourceKindOptions() {
-  return DAILY_SOURCE_KINDS.map(({ id, label, description }) => ({ id, label, description }));
+  return DAILY_SOURCE_KINDS
+    .filter(({ id }) => id !== "pre_round_physical_exam")
+    .map(({ id, label, description }) => ({ id, label, description }));
+}
+
+export function admissionSourceKindOptions() {
+  return DAILY_SOURCE_KINDS
+    .filter(({ id }) => id !== "pre_round_physical_exam")
+    .map(({ id, label, description }) => ({ id, label, description }));
 }
 
 export function normalizeSourceCapture(capture, { now = () => new Date().toISOString() } = {}) {

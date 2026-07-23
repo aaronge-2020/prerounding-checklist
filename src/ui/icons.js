@@ -11,6 +11,7 @@ const iconPaths = {
   settings: '<path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="M3 12h2M19 12h2M12 3v2M12 19v2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   archive: '<path d="M4 7h16l-1 13H5L4 7z"/><path d="M3 4h18v3H3zM9 11h6"/>',
+  folder: '<path d="M3 6h7l2 2h9v11H3z"/><path d="M3 9h18"/>',
   download: '<path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M4 20h16"/>',
   upload: '<path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M4 20h16"/>',
   share: '<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.3 10.8 7.4-4.5M8.3 13.2l7.4 4.5"/>',

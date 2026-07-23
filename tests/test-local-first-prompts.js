@@ -17,7 +17,7 @@ for (const template of Object.values(DEFAULT_PROMPT_TEMPLATES)) {
   assert.match(template, /^(?:\s*@[-a-z]+)+\s*$/, "default prompt templates must contain smart variables only");
 }
 assert.match(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@progress-note-packet/, "daily progress template must use the compiled selected-day packet");
-assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@exam-findings/, "daily progress template must not append an all-days examination timeline");
+assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@exam-findings/, "daily progress template must not use the removed all-days examination variable");
 const customTeamInstructions = "Write only the highest-yield active problems and keep the plan action-focused.";
 assert.equal(buildTeamPreferencesPromptBlock(), "", "team preferences must be blank by default");
 assert.equal(buildTeamPreferencesPromptBlock({ medicalService: "", presentationDetail: "" }), "", "blank settings must stay blank");

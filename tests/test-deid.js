@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createDeidentifier, deidentifyTextStructuredOnly, modelPredictionsToEntities, normalizeResidualTemporalPhi, scanResidualPhi } from "../src/vault/deid.js";
-import { createEphemeralRedactionReview, synchronizeReviewPlaceholders } from "../src/patient-context/review.js";
+import { createEphemeralRedactionReview, refreshEphemeralRedactionReview, synchronizeReviewPlaceholders } from "../src/patient-context/review.js";
 import { DEMO_ADMISSION_DATE, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS } from "../src/ui/demo/session.js";
 import { assertDeidCase } from "../scripts/deid-adversarial.js";
 import { clinicalGuardTerms, makeAdversarialCases, makeDemoLikeCase, makeSyntheticCases } from "../scripts/deid-fixtures.js";
@@ -556,6 +556,19 @@ const legacyDateReview = createEphemeralRedactionReview("EKG (07/09/2026): Sinus
 legacyDateReview.redactions[0].placeholder = "[DATE]";
 synchronizeReviewPlaceholders(legacyDateReview, "EKG (2 days ago): Sinus rhythm");
 assert.equal(legacyDateReview.redactions[0].placeholder, "2 days ago", "an active review created before relative-date rendering must recover the visible replacement for inline centering");
+
+const acceptedNameReview = createEphemeralRedactionReview("Jane Roe was admitted.", {
+  text: "[NAME] was admitted.",
+  entities: [{ start: 0, end: 8, label: "NAME", placeholder: "[NAME]", source: "local model" }]
+});
+acceptedNameReview.redactions[0].state = "confirmed";
+const editedSafeText = "[NAME] was admitted. Mary Poe arrived.";
+const refreshedNameReview = refreshEphemeralRedactionReview(acceptedNameReview, editedSafeText, {
+  text: "[NAME] was admitted. [NAME] arrived.",
+  entities: [{ start: editedSafeText.indexOf("Mary Poe"), end: editedSafeText.indexOf("Mary Poe") + "Mary Poe".length, label: "NAME", placeholder: "[NAME]", source: "local model" }]
+});
+assert.equal(refreshedNameReview.redactions.filter((redaction) => redaction.state === "confirmed").length, 1, "an accepted replacement must stay accepted when the field is re-scanned");
+assert.equal(refreshedNameReview.redactions.filter((redaction) => redaction.state === "pending").length, 1, "only the newly introduced identifier should enter the pending review queue");
 
 const duplicateSpanReview = createEphemeralRedactionReview("Ortiz returned on 07/09/2026.", {
   text: "[PATIENT NAME] returned on 2 days ago.",

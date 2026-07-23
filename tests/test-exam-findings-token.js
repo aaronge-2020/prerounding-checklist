@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { buildPromptVariableMap } from "../src/prompts/custom-templates.js";
+import { buildPromptVariableMap, DEFAULT_PROMPT_TEMPLATES, SMART_PROMPT_VARIABLES } from "../src/prompts/custom-templates.js";
 
 const snapshot = {
   items: [
@@ -7,88 +7,72 @@ const snapshot = {
   ]
 };
 
-function patientWithDay({ answers = {}, quickNotes = [], openEvidenceExamNote = null } = {}) {
-  const day = { id: "day1", date: "2026-07-13", label: "HD1", checklistSnapshot: snapshot, answers, quickNotes, sections: [], openEvidenceExamNote };
-  return { days: [day], contextSections: [] };
+function patientWithDay({ contextSections = [], sourceCaptures = [], answers = {}, quickNotes = [], openEvidenceExamNote = null } = {}) {
+  const day = { id: "day1", date: "2026-07-13", label: "HD1", checklistSnapshot: snapshot, answers, quickNotes, sections: [], sourceCaptures, openEvidenceExamNote };
+  return { days: [day], contextSections };
 }
 
-// Checklist empty, no exam note -> neutral fallback.
+assert.equal(SMART_PROMPT_VARIABLES.some(({ token }) => token === "@exam-findings"), false);
+assert.equal(SMART_PROMPT_VARIABLES.some(({ token }) => token === "@admissions-exam-findings"), true);
+assert.equal(SMART_PROMPT_VARIABLES.some(({ token }) => token === "@selected-day-exam-findings"), true);
+
+// Admission physical exam text comes from the admission packet.
 {
-  const variables = buildPromptVariableMap({ taskId: "daily_progress_note", patient: patientWithDay(), selectedDayId: "day1" });
-  assert.equal(variables["@exam-findings"], "No exam findings recorded.");
-  assert.equal(variables["@openevidence-exam-note"], "No saved OpenEvidence exam note.");
+  const variables = buildPromptVariableMap({
+    patient: patientWithDay({
+      contextSections: [{ label: "Physical exam findings - Admission", deidentifiedText: "Admission: lungs clear bilaterally." }]
+    }),
+    selectedDayId: "day1"
+  });
+  assert.match(variables["@admissions-exam-findings"], /Prior clinician physical exam findings[\s\S]*Admission: lungs clear bilaterally\./);
+  assert.equal(variables["@selected-day-exam-findings"], "No exam findings recorded.");
 }
 
-// Checklist empty, exam note saved -> exam note wins.
+// Hospital Stay physical-exam source text comes from the selected day packet.
 {
-  const patient = patientWithDay({ openEvidenceExamNote: { text: "Exam: lungs clear, heart RRR.", residualWarnings: [], savedAt: "2026-07-13T10:00:00.000Z" } });
-  const variables = buildPromptVariableMap({ taskId: "daily_progress_note", patient, selectedDayId: "day1" });
-  assert.match(variables["@exam-findings"], /Exam findings — HD1 \(2026-07-13\):[\s\S]*Exam: lungs clear, heart RRR\./);
-  assert.equal(variables["@selected-day-exam-findings"], "Exam: lungs clear, heart RRR.");
-  assert.equal(variables["@openevidence-exam-note"], "Exam: lungs clear, heart RRR.");
+  const variables = buildPromptVariableMap({
+    patient: patientWithDay({
+      sourceCaptures: [{ sourceKind: "physical_exam", label: "Physical exam findings", deidentifiedText: "HD1: faint wheeze." }]
+    }),
+    selectedDayId: "day1"
+  });
+  assert.match(variables["@selected-day-exam-findings"], /HD1: faint wheeze\./);
+  assert.doesNotMatch(variables["@selected-day-exam-findings"], /No exam findings recorded/);
 }
 
-// Checklist has a real answer -> checklist wins even if an exam note also exists.
+// Prior exams remain in the admission packet, while today's exam is excluded
+// from both generic packets and appears only in its dedicated smart variable.
 {
   const patient = patientWithDay({
-    answers: { gen_appearance: { selected: ["Normal"], note: "" } },
-    openEvidenceExamNote: { text: "Exam: lungs clear.", residualWarnings: [], savedAt: "2026-07-13T10:00:00.000Z" }
+    contextSections: [
+      { id: "admission-exam", label: "Physical exam findings - Admission", deidentifiedText: "Prior lungs clear." },
+      { id: "admission-reason", label: "Admission context", deidentifiedText: "Admitted for dyspnea." }
+    ],
+    sourceCaptures: [
+      { sourceKind: "physical_exam", label: "Physical exam findings", deidentifiedText: "Current lungs clear." },
+      { sourceKind: "primary_note", label: "Primary team note", deidentifiedText: "Breathing improved." }
+    ]
   });
-  const variables = buildPromptVariableMap({ taskId: "daily_progress_note", patient, selectedDayId: "day1" });
-  assert.match(variables["@exam-findings"], /General appearance[\s\S]*Answer: Normal/);
-  assert.doesNotMatch(variables["@exam-findings"], /Exam: lungs clear\./);
+  const variables = buildPromptVariableMap({ patient, selectedDayId: "day1" });
+  assert.match(variables["@admission-packet"], /Prior lungs clear/);
+  assert.match(variables["@admissions-exam-findings"], /Prior lungs clear/);
+  assert.doesNotMatch(variables["@admission-packet"], /Current lungs clear/);
+  assert.doesNotMatch(variables["@selected-day"], /Current lungs clear/);
+  assert.doesNotMatch(variables["@selected-day"], /Prior lungs clear/);
+  assert.match(variables["@selected-day-exam-findings"], /Current lungs clear/);
 }
 
-// Quick notes alone (no assessed items) also count as checklist content, taking priority over the exam note.
+// Legacy checklist-only records still resolve until their packet is edited.
 {
-  const patient = patientWithDay({
-    quickNotes: [{ id: "n1", text: "Patient reports mild nausea.", createdAt: "2026-01-01T00:00:00.000Z" }],
-    openEvidenceExamNote: { text: "Exam: lungs clear.", residualWarnings: [], savedAt: "2026-07-13T10:00:00.000Z" }
+  const variables = buildPromptVariableMap({
+    patient: patientWithDay({ answers: { gen_appearance: { selected: ["Normal"], note: "" } } }),
+    selectedDayId: "day1"
   });
-  const variables = buildPromptVariableMap({ taskId: "daily_progress_note", patient, selectedDayId: "day1" });
-  assert.match(variables["@exam-findings"], /Patient reports mild nausea\./);
-  assert.doesNotMatch(variables["@exam-findings"], /Exam: lungs clear\./);
+  assert.match(variables["@selected-day-exam-findings"], /General appearance[\s\S]*Answer: Normal/);
 }
 
-// No selected day at all -> both tokens degrade gracefully, no crash.
-{
-  const variables = buildPromptVariableMap({ taskId: "daily_progress_note", patient: { days: [], contextSections: [] }, selectedDayId: "" });
-  assert.equal(variables["@exam-findings"], "No exam findings recorded.");
-  assert.equal(variables["@openevidence-exam-note"], "No saved OpenEvidence exam note.");
-}
-
-// Prompt variables are derived from the supplied patient record, never from
-// another patient's saved checklist or OpenEvidence exam note.
-{
-  const firstPatient = patientWithDay({ openEvidenceExamNote: { text: "First patient: clear lungs.", residualWarnings: [], savedAt: "2026-07-13T10:00:00.000Z" } });
-  const secondPatient = patientWithDay({ openEvidenceExamNote: { text: "Second patient: wheezing.", residualWarnings: [], savedAt: "2026-07-13T11:00:00.000Z" } });
-  const firstVariables = buildPromptVariableMap({ patient: firstPatient, selectedDayId: "day1" });
-  const secondVariables = buildPromptVariableMap({ patient: secondPatient, selectedDayId: "day1" });
-  assert.match(firstVariables["@exam-findings"], /First patient: clear lungs\./);
-  assert.match(secondVariables["@exam-findings"], /Second patient: wheezing\./);
-  assert.doesNotMatch(secondVariables["@exam-findings"], /First patient/);
-}
-
-// The all-days token keeps each finding attached to its hospital day, while
-// the selected-day token remains focused for a current-day note.
-{
-  const patient = patientWithDay({ openEvidenceExamNote: { text: "HD1: lungs clear.", residualWarnings: [], savedAt: "2026-07-13T10:00:00.000Z" } });
-  patient.days.push({
-    id: "day2", date: "2026-07-14", label: "HD2", checklistSnapshot: snapshot, answers: {}, quickNotes: [], sections: [],
-    openEvidenceExamNote: { text: "HD2: faint wheeze.", residualWarnings: [], savedAt: "2026-07-14T10:00:00.000Z" }
-  });
-  const variables = buildPromptVariableMap({ patient, selectedDayId: "day2" });
-  assert.match(variables["@exam-findings"], /HD1 \(2026-07-13\)[\s\S]*HD1: lungs clear\.[\s\S]*HD2 \(2026-07-14\)[\s\S]*HD2: faint wheeze\./);
-  assert.equal(variables["@selected-day-exam-findings"], "HD2: faint wheeze.");
-}
-
-// The default daily-progress and admission templates use the smart token, not the raw checklist token.
-{
-  const { DEFAULT_PROMPT_TEMPLATES } = await import("../src/prompts/custom-templates.js");
-  assert.match(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@exam-findings/);
-  assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@checklist-answers/);
-  assert.match(DEFAULT_PROMPT_TEMPLATES.initial_admission_rounds, /@exam-findings/);
-  assert.match(DEFAULT_PROMPT_TEMPLATES.checklist_workup_refinement, /@checklist-answers/, "the checklist-refinement template still targets the checklist explicitly");
-}
+assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.initial_admission_rounds, /@admissions-exam-findings/);
+assert.match(DEFAULT_PROMPT_TEMPLATES.consulting, /@selected-day-exam-findings/);
+for (const template of Object.values(DEFAULT_PROMPT_TEMPLATES)) assert.doesNotMatch(template, /@exam-findings/);
 
 console.log("Exam-findings prompt token tests passed");

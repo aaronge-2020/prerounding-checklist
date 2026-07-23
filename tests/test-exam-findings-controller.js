@@ -21,7 +21,7 @@ const savedDay = savedPatient.days[1];
 assert.equal(savedDay.openEvidenceExamNote.text, "Lungs clear bilaterally.");
 assert.equal(savedDay.sourceCaptures.length, 1);
 assert.equal(savedDay.sourceCaptures[0].sourceKind, "physical_exam");
-assert.equal(savedDay.sourceCaptures[0].label, "Physical exam findings");
+assert.equal(savedDay.sourceCaptures[0].label, "Physical exam (today)");
 assert.equal(savedDay.sourceCaptures[0].deidentifiedText, "Lungs clear bilaterally.");
 assert.equal(savedPatient.days[0].sourceCaptures.length, 0, "the exam must target the latest hospital day");
 assert.equal(savedPatient.contextSections.filter((section) => /Physical exam findings/.test(section.label)).length, 0);

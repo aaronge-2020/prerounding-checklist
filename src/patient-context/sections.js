@@ -35,6 +35,7 @@ export function replaceSectionsFromForm(rows, deidentify, { scope = "context" } 
         id: row.id,
         label: row.label || `Section ${index + 1}`,
         role: row.role,
+        sourceKind: row.sourceKind,
         deidentifiedText: result.text || "",
         residualWarnings: sanitizeResidualWarningMetadata(result.residualWarnings || result.flags || []),
         createdAt: row.createdAt,
@@ -118,6 +119,7 @@ export async function replaceSectionsFromFormAsync(rows, deidentify, { onResult,
         id: row.id,
         label: row.label || `Section ${index + 1}`,
         role: row.role,
+        sourceKind: row.sourceKind,
         deidentifiedText: result.text || "",
         // Warning snippets can themselves contain residual PHI. Persist only
         // the metadata; detailed review remains in the active browser tab.

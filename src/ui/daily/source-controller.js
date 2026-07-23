@@ -1,7 +1,7 @@
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260722-unified-stay-v2";
 import { updateActivePatient } from "../../app/state/vault.js?v=20260722-unified-stay-v2";
 import { createEphemeralRedactionReview, reviewKey, synchronizeReviewPlaceholders } from "../../patient-context/review.js?v=20260715-reject-rest";
-import { createSourceCapture, dailySourceKindOptions, replaceSourceCapturesFromFormAsync, sourceCapturePacketCheck } from "../../patient-context/source-captures.js?v=20260722-unified-stay-v2";
+import { admissionSourceKindOptions, createSourceCapture, dailySourceKindOptions, replaceSourceCapturesFromFormAsync, sourceCapturePacketCheck } from "../../patient-context/source-captures.js?v=20260723-edit-save";
 
 export function createDailySourceController(deps) {
   const captureRows = () => [...document.querySelectorAll("#dailySources .source-capture-editor")].map((row) => ({
@@ -21,6 +21,7 @@ export function createDailySourceController(deps) {
     return deps.redactionPresentation.renderSourceCaptureEditor({
       capture,
       sourceOptions: dailySourceKindOptions(),
+      admissionSourceOptions: admissionSourceKindOptions(),
       editing,
       pendingFocus: deps.app.pendingSectionReviewFocus,
       review,
@@ -53,9 +54,13 @@ export function createDailySourceController(deps) {
       renderSourceCaptureEditor,
       renderWarnings: deps.renderWarnings,
       sourceOptions: dailySourceKindOptions(),
+      admissionSourceOptions: admissionSourceKindOptions(),
       selectedSourceKind: deps.app.dailySourceKind,
       sourceDraft: deps.app.dailySourceDraft,
+      admissionSourceKind: deps.app.admissionSourceKind,
+      admissionSourceDraft: deps.app.admissionSourceDraft,
       packetCheck: sourceCapturePacketCheck(selected?.sourceCaptures || []),
+      admissionPacketCheck: sourceCapturePacketCheck((patient?.contextSections || []).filter((section) => String(section.deidentifiedText || "").trim() || (section.residualWarnings || []).length)),
       deidBusy: deps.app.deidOperation.active
     });
   }

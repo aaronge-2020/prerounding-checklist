@@ -809,13 +809,19 @@ p {
 }
 
 .deid-strip-compact {
-  padding: 7px 9px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  min-height: 0;
+  padding: 7px 10px;
 }
 
 .deid-inline-status {
-  display: grid;
-  gap: 2px;
   min-width: 0;
+  align-self: center;
+  font-size: 12px;
 }
 
 .deid-inline-status .muted {
@@ -829,8 +835,9 @@ p {
 }
 
 .deid-strip-compact .button-row {
-  flex: 0 1 420px;
-  justify-content: flex-end;
+  display: flex;
+  min-width: 0;
+  justify-content: flex-start;
 }
 
 .deid-admission-date-inline {
@@ -3258,6 +3265,7 @@ button.var-fill:focus-visible {
   padding: 8px 10px;
 }
 
+.deid-strip-compact { min-height: 0; }
 .deid-strip-compact select { min-height: 34px; }
 
 .deid-operation {
@@ -7204,6 +7212,228 @@ body.vault-locked .vault-access {
   background-color: #fffdf2;
 }
 
+/* Final workup utility layout.  The editor reserves row 5 for the two
+   independently scrollable item columns; the utility surface must begin only
+   after that row.  Older direct-child grid assignments remain elsewhere in
+   this stylesheet, so reset them inside the new wrapper explicitly. */
+.workup-editor-surface > .workup-utilities {
+  grid-column: 1 / -1;
+  grid-row: 6 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: auto;
+  gap: 10px;
+  align-content: start;
+  margin: 0 20px 16px;
+  min-width: 0;
+}
+
+.workup-editor-surface > .workup-catalog-menu {
+  grid-row: 1 / 6;
+}
+
+.workup-utilities > .workup-footer-actions,
+.workup-utilities > .workup-library-note,
+.workup-utilities > .workup-workspace-mirror,
+.workup-utilities > .workup-import,
+.workup-utilities > .workup-reset-override {
+  grid-column: auto;
+  grid-row: auto;
+}
+
+.workup-utilities > .workup-footer-actions {
+  position: static;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 3px 12px rgb(27 55 75 / 4%);
+  padding: 9px 10px;
+}
+
+.workup-utilities > .workup-footer-actions .workup-action-group {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.workup-utilities > .workup-footer-actions .workup-prompt-actions {
+  border: 0;
+  border-right: 1px solid var(--border);
+  padding: 0 12px 0 0;
+}
+
+.workup-utilities > .workup-footer-actions .workup-file-actions {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  border: 0;
+  padding: 0;
+}
+
+.workup-utilities > .workup-footer-actions button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.workup-utilities > .workup-footer-actions .workup-save-button {
+  width: auto;
+  justify-self: auto;
+}
+
+.workup-utilities > .workup-library-note {
+  width: auto;
+  margin: 0;
+  font-size: 11px;
+}
+
+.workup-utilities > .workup-workspace-mirror {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 11px 14px;
+}
+
+.workup-utilities > .workup-workspace-mirror small {
+  grid-column: auto;
+}
+
+.workup-utility-icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  color: var(--accent);
+}
+
+.workup-utility-icon .icon {
+  width: 24px;
+  height: 24px;
+}
+
+.workup-utilities > .workup-import {
+  width: 100%;
+  margin: 0;
+}
+
+.workup-utilities > .workup-reset-override {
+  display: flex;
+  width: 100%;
+  min-height: 48px;
+  align-items: center;
+  justify-self: stretch;
+  gap: 10px;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 10px 14px;
+}
+
+.workup-utilities > .workup-reset-override .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.workup-utilities > .workup-import {
+  border-radius: 10px;
+  padding: 0;
+}
+
+.workup-utilities > .workup-import > summary {
+  min-height: 54px;
+  padding: 9px 14px;
+}
+
+.workup-utilities .workup-import-summary-marker .icon {
+  width: 23px;
+  height: 23px;
+  transform: none;
+}
+
+.workup-utilities .workup-import-summary-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.workup-utilities .workup-import-summary-action .icon {
+  width: 15px;
+  height: 15px;
+  transition: transform 140ms ease;
+}
+
+.workup-utilities .workup-import[open] .workup-import-summary-action .icon {
+  transform: rotate(90deg);
+}
+
+@media (max-width: 1100px) {
+  .workup-utilities > .workup-footer-actions {
+    flex-wrap: wrap;
+  }
+
+  .workup-utilities > .workup-footer-actions .workup-file-actions {
+    flex: 1 1 100%;
+    justify-content: flex-start;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+  }
+}
+
+@media (max-width: 1040px) {
+  .workup-editor-surface > .workup-utilities {
+    grid-column: 1;
+    grid-row: auto;
+    margin-inline: 14px;
+  }
+}
+
+@media (max-width: 680px) {
+  .workup-utilities > .workup-footer-actions,
+  .workup-utilities > .workup-footer-actions .workup-file-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .workup-utilities > .workup-footer-actions .workup-action-group {
+    width: 100%;
+    flex: 1 1 auto;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .workup-utilities > .workup-footer-actions .workup-prompt-actions {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 0 0 10px;
+  }
+
+  .workup-utilities > .workup-footer-actions button {
+    width: 100%;
+  }
+
+  .workup-utilities > .workup-workspace-mirror {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .workup-utilities > .workup-workspace-mirror > .workup-utility-icon {
+    display: none;
+  }
+}
+
 @media (max-width: 680px) {
   .guided-demo-instructions {
     font-size: 12px;
@@ -7213,5 +7443,117 @@ body.vault-locked .vault-access {
     outline-width: 2px;
     outline-offset: 3px;
     box-shadow: 0 0 0 5px var(--surface);
+  }
+}
+
+/* Checklist start state: this route has one clear next step until a workup
+   has been selected and explicitly built into a checklist. */
+.checklist-start-state {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 14px;
+  row-gap: 18px;
+  width: min(100%, 860px);
+  min-height: 260px;
+  margin: 28px auto;
+  border-color: var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 28px 30px;
+}
+
+.checklist-start-icon {
+  display: grid;
+  grid-column: 1;
+  grid-row: 1;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--surface-tint);
+  color: var(--accent);
+}
+
+.checklist-start-icon .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.checklist-start-copy {
+  grid-column: 2;
+}
+
+.checklist-start-copy h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 20px;
+}
+
+.checklist-start-copy p {
+  max-width: 560px;
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.checklist-start-action {
+  grid-column: 3;
+  grid-row: 1;
+  white-space: nowrap;
+}
+
+.checklist-start-steps {
+  display: flex;
+  grid-column: 2 / -1;
+  align-items: center;
+  gap: 0;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  padding-top: 16px;
+}
+
+.checklist-start-steps span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 18px;
+  border-right: 1px solid var(--border);
+}
+
+.checklist-start-steps span:first-child { padding-left: 0; }
+.checklist-start-steps span:last-child { border-right: 0; }
+
+.checklist-start-steps b {
+  color: var(--accent);
+  font-size: 11px;
+}
+
+@media (max-width: 680px) {
+  .checklist-start-state {
+    grid-template-columns: 44px minmax(0, 1fr);
+    margin: 14px 0;
+    padding: 22px 18px;
+  }
+
+  .checklist-start-action {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+  }
+
+  .checklist-start-steps {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .checklist-start-steps span {
+    padding: 0;
+    border-right: 0;
   }
 }

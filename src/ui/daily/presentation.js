@@ -12,15 +12,58 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function renderSourcePicker(sourceOptions, selectedSourceKind) {
+  function renderSourcePicker(sourceOptions, selectedSourceKind, scope = "daily") {
     return `
       <div class="source-kind-picker" role="group" aria-label="Epic source for the next paste">
         ${sourceOptions.map((option) => `
-          <button type="button" class="source-kind-button ${option.id === selectedSourceKind ? "selected" : ""}" data-action="select-daily-source-kind" data-source-kind="${escapeHtml(option.id)}" aria-pressed="${String(option.id === selectedSourceKind)}">
+          <button type="button" class="source-kind-button ${option.id === selectedSourceKind ? "selected" : ""}" data-action="select-${escapeHtml(scope)}-source-kind" data-source-kind="${escapeHtml(option.id)}" aria-pressed="${String(option.id === selectedSourceKind)}">
             ${escapeHtml(option.label)}
           </button>
         `).join("")}
       </div>
+    `;
+  }
+
+  function renderSourceWorkspace({
+    scope,
+    sources,
+    sourceOptions,
+    selectedSourceKind,
+    sourceDraft,
+    renderSourceCaptureEditor,
+    renderWarnings,
+    packetCheck,
+    deidBusy,
+    renderDeidStrip,
+    generateAction,
+    generateLabel
+  }) {
+    const selectedSource = sourceOptions.find((option) => option.id === selectedSourceKind) || sourceOptions[0];
+    const prefix = scope === "admission" ? "admission" : "daily";
+    const addAction = scope === "admission" ? "add-admission-source" : "add-daily-source";
+    const draftId = `${prefix}SourceDraft`;
+    const sourceTitle = scope === "admission" ? "Admission sources" : "Saved sources";
+    return `
+      ${renderDeidStrip}
+      <section class="source-capture-composer" aria-labelledby="addFromEpicTitle">
+        <div class="section-heading tight"><div><h3 id="addFromEpicTitle">Add from Epic</h3><p class="muted">Choose where the text came from, then paste the whole relevant block without reorganizing it.</p></div></div>
+        ${renderSourcePicker(sourceOptions, selectedSourceKind, scope)}
+        <label class="source-draft-label" for="${draftId}">Paste the full copied block
+          <textarea id="${draftId}" rows="8" placeholder="Paste the full copied text from ${escapeHtml(selectedSource.label)} here">${escapeHtml(sourceDraft)}</textarea>
+        </label>
+        <div class="source-draft-footer">
+          <span class="muted" data-${prefix}-source-draft-count>${sourceDraft.length.toLocaleString()} characters · ${escapeHtml(selectedSource.description)}</span>
+          <button class="button--primary" type="button" data-action="${addAction}" ${deidBusy || !sourceDraft.trim() ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "De-identify and add source"}</button>
+        </div>
+      </section>
+      <section class="saved-source-list" aria-labelledby="savedSourcesTitle">
+        <div class="section-heading tight"><div><h3 id="savedSourcesTitle">${sourceTitle}</h3><p class="muted">${sources.length} source${sources.length === 1 ? "" : "s"} · all included by default</p></div><button class="button--primary" type="button" data-action="${generateAction}" ${sources.length ? "" : "disabled"}>${generateLabel}</button></div>
+        <div id="${scope === "admission" ? "contextSections" : "dailySources"}" class="source-capture-list">
+          ${sources.length ? sources.map(renderSourceCaptureEditor).join("") : `<div class="empty-state">No sources saved yet. Start with the primary team note, Results, or Medication Activity.</div>`}
+        </div>
+        ${renderWarnings(sources, scope === "admission" ? "context" : "daily")}
+      </section>
+      ${renderPacketCheck(packetCheck)}
     `;
   }
 
@@ -57,22 +100,20 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     renderSourceCaptureEditor,
     renderWarnings,
     sourceOptions,
+    admissionSourceOptions = sourceOptions,
     selectedSourceKind,
-    sourceDraft,
+    sourceDraft = "",
+    admissionSourceKind = "primary_note",
+    admissionSourceDraft = "",
     packetCheck,
+    admissionPacketCheck = { included: [], notSupplied: [], needsConfirmation: [] },
     deidBusy
   }) {
     if (!patient) return patientRequiredMessage;
     const selected = days.find((day) => day.id === selectedDayId) || days.at(-1) || null;
     const admissionSelected = selectedPacketId === "admission";
     const visibleContextSections = patient.contextSections.filter((section) => String(section.deidentifiedText || "").trim() || (section.residualWarnings || []).length);
-    const admissionSections = patient.contextSections.filter((section, index) => (
-      index === 0
-      || String(section.deidentifiedText || "").trim()
-      || (section.residualWarnings || []).length
-      || section.label === "Additional admission source"
-    ));
-    const selectedSource = sourceOptions.find((option) => option.id === selectedSourceKind) || sourceOptions[0];
+    const admissionSections = patient.contextSections.filter((section) => String(section.deidentifiedText || "").trim() || (section.residualWarnings || []).length);
 
     return `
       <div class="stay-layout source-first-stay">
@@ -101,14 +142,8 @@ export function createDailyPresentation({ escapeHtml, icon }) {
         <div class="stay-content">
           ${admissionSelected ? `<section class="panel admission-packet packet-surface hospital-day-packet">
               <div class="admission-packet-body">
-                <div class="section-heading">
-                  <div><h2>Admission</h2><p class="muted">Paste and edit admission source notes here. Save always runs local de-identification before the encrypted vault is updated.</p></div>
-                  <button class="button--secondary" type="button" data-action="add-context-section">${icon("plus")} Add admission source</button>
-                </div>
-                ${renderDeidStrip}
-                <div id="contextSections" class="section-list">${admissionSections.map((section) => renderSectionEditor(section, "context")).join("")}</div>
-                ${renderWarnings(admissionSections, "context")}
-                <div class="packet-action-footer"><button class="button--primary" type="button" data-action="save-context" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save admission sources"}</button></div>
+                <div class="section-heading source-day-heading"><div><h2>Admission</h2><p class="muted">Paste broad Epic blocks. The app preserves the source and includes every saved capture.</p></div></div>
+                ${renderSourceWorkspace({ scope: "admission", sources: admissionSections, sourceOptions: admissionSourceOptions, selectedSourceKind: admissionSourceKind, sourceDraft: admissionSourceDraft, renderSourceCaptureEditor: (section) => renderSectionEditor(section, "context"), renderWarnings, packetCheck: admissionPacketCheck, deidBusy, renderDeidStrip, generateAction: "open-admission-note", generateLabel: "Generate admission H&P" })}
               </div>
           </section>` : ""}
           ${!admissionSelected ? `<section class="panel hospital-day-packet packet-surface source-capture-workspace">
@@ -120,26 +155,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
                   <button class="button--secondary" type="button" data-action="save-day" ${deidBusy || !selected.sourceCaptures.length ? "disabled" : ""}>Save source edits</button>
                 </div>
               </div>
-              ${renderDeidStrip}
-              <section class="source-capture-composer" aria-labelledby="addFromEpicTitle">
-                <div class="section-heading tight"><div><h3 id="addFromEpicTitle">Add from Epic</h3><p class="muted">Choose where the text came from, then paste the whole relevant block without reorganizing it.</p></div></div>
-                ${renderSourcePicker(sourceOptions, selectedSourceKind)}
-                <label class="source-draft-label" for="dailySourceDraft">Paste the full copied block
-                  <textarea id="dailySourceDraft" rows="8" placeholder="Paste the full copied text from ${escapeHtml(selectedSource.label)} here">${escapeHtml(sourceDraft)}</textarea>
-                </label>
-                <div class="source-draft-footer">
-                  <span class="muted" data-source-draft-count>${sourceDraft.length.toLocaleString()} characters · ${escapeHtml(selectedSource.description)}</span>
-                  <button class="button--primary" type="button" data-action="add-daily-source" ${deidBusy || !sourceDraft.trim() ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "De-identify and add source"}</button>
-                </div>
-              </section>
-              <section class="saved-source-list" aria-labelledby="savedSourcesTitle">
-                <div class="section-heading tight"><div><h3 id="savedSourcesTitle">Saved sources</h3><p class="muted">${selected.sourceCaptures.length} source${selected.sourceCaptures.length === 1 ? "" : "s"} · all included by default</p></div><button class="button--primary" type="button" data-action="open-progress-note" ${selected.sourceCaptures.length ? "" : "disabled"}>Generate progress note</button></div>
-                <div id="dailySources" class="source-capture-list">
-                  ${selected.sourceCaptures.length ? selected.sourceCaptures.map((capture) => renderSourceCaptureEditor(capture)).join("") : `<div class="empty-state">No sources saved for this day. Start with the primary team note, Results, or Medication Activity.</div>`}
-                </div>
-                ${renderWarnings(selected.sourceCaptures, "daily")}
-              </section>
-              ${renderPacketCheck(packetCheck)}
+              ${renderSourceWorkspace({ scope: "daily", sources: selected.sourceCaptures, sourceOptions, selectedSourceKind, sourceDraft, renderSourceCaptureEditor, renderWarnings, packetCheck, deidBusy, renderDeidStrip, generateAction: "open-progress-note", generateLabel: "Generate progress note" })}
             ` : `<div class="empty-state">Add a hospital day to begin capturing selected-day sources.</div>`}
           </section>` : ""}
         </div>
