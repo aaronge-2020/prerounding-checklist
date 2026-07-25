@@ -2,6 +2,8 @@
 
 Write a concise, decision-focused daily progress note for the primary inpatient team. Use strict SOAP organization and emphasize what changed on the selected hospital day, why it matters, what remains uncertain, what the team has actually decided to do, and what prevents discharge.
 
+Scale the note's detail to the complexity of the case. A straightforward case with a clear diagnosis and uncomplicated management should be very brief; reserve additional history, findings, trends, and discussion for cases with meaningful diagnostic uncertainty, competing explanations, severity, risk, or management decisions. Exclude any fact that does not change today's differential, management, plan, risk, or disposition.
+
 Before writing, silently classify every supplied statement as selected-day evidence, carry-forward background, a documented completed action, a current order, a medication administration, a medication hold or discontinuation, a planned action, a consultant recommendation, a pending decision, a question for the team, conflicting information, or information whose timing cannot be established. Do not output this classification.
 
 Do not convert background information, a planned discussion, a team question, or customary medical practice into a current recommendation. Do not infer that an action was completed merely because it was planned. Use consulted, consultation requested, team plans to consult, consultant recommended, and procedure completed only when the supplied source supports that exact status.
@@ -30,7 +32,7 @@ Use only supplied information. Do not introduce diagnoses, causal claims, thresh
 
 Return only the completed note. Use exactly these top-level headings in this order: One-Liner, Subjective, Objective, Assessment, Plan, and Disposition.
 
-Target a brief attending-level note. Include no more than three major active problem groups unless another problem has a separate selected-day decision or action. Compress stable, chronic, resolved, and historical material before shortening the dominant active problem. Complete every section and sentence.
+Target a brief attending-level note whose length is proportional to case complexity. Include no more than three major active problem groups unless another problem has a separate selected-day decision or action. Compress stable, chronic, resolved, and historical material before shortening the dominant active problem. Complete every section and sentence.
 
 ## One-Liner
 
@@ -40,9 +42,9 @@ Write one sentence of approximately twenty to thirty words containing age, sex, 
 
 Use the labels Overnight and Interval Events, Patient Self-Report, and Pertinent Symptoms.
 
-Overnight and Interval Events should contain important patient, nursing, or cross-cover reports and completed interventions. Do not place vital-sign measurements, laboratory values, imaging interpretations, consultant recommendations, or future plans in this subsection. A reported transfusion or bloody bowel movement may appear here; its measured consequences belong in Objective or Assessment.
+Overnight and Interval Events should contain only patient, nursing, or cross-cover reports and completed interventions that change today's differential, management, plan, risk, or disposition. Omit routine interventions and other events that do not affect today's decisions. Do not place vital-sign measurements, laboratory values, imaging interpretations, consultant recommendations, or future plans in this subsection. A reported transfusion or bloody bowel movement may appear here when decision-relevant; its measured consequences belong in Objective or the applicable Plan problem.
 
-Patient Self-Report should state how the patient feels compared with the prior day and include relevant goals or concerns.
+Patient Self-Report should state how the patient feels compared with the prior day and include goals or concerns only when they change today's differential, management, plan, risk, or disposition. Otherwise keep it to the shortest accurate statement.
 
 Pertinent Symptoms should include only spontaneous symptoms and meaningful negatives that change diagnosis, risk, management, or disposition. Do not reproduce a complete review of systems.
 
@@ -52,9 +54,9 @@ Findings elicited by palpation, movement, range-of-motion testing, strength test
 
 Use the labels Vitals and Clinical Support, Focused Examination, and Key Labs and Diagnostics.
 
-Vitals and Clinical Support should include only decision-relevant vital signs, oxygen or ventilatory support, dialysis or circulatory support, and meaningful changes from baseline. Time-qualify every status. Do not describe an overnight measurement or an older narrative statement as current. If current vital signs, oxygen support, or other clinically important status is unavailable, say so directly.
+Vitals and Clinical Support should include only vital signs, oxygen or ventilatory support, dialysis or circulatory support, and changes from baseline that change today's differential, management, plan, risk, or disposition. Omit abnormal values that do not affect today's decisions. Time-qualify every included status. Do not describe an overnight measurement or an older narrative statement as current. If a clinically important current status is necessary for a decision but unavailable, say so directly.
 
-Focused Examination should contain only selected-day findings that are new, abnormal, changed, or necessary to evaluate an important competing concern. Do not generate a routine system-by-system examination. Do not include generic normal findings solely to make the note appear complete.
+Focused Examination should contain only selected-day findings that change today's differential, management, plan, risk, or disposition. A finding being new, abnormal, or changed is not sufficient by itself. Do not generate a routine system-by-system examination. Do not include generic normal findings solely to make the note appear complete.
 
 Key Labs and Diagnostics should include only findings that support, challenge, or change today’s interpretation or management. Give the shortest meaningful trend with enough timing to prevent a false sequence. Do not judge a transfusion response unless the transfusion and follow-up measurement are clearly timed. If the source reports a total number of units without complete timing, preserve that limitation.
 
@@ -62,7 +64,7 @@ Do not reproduce complete panels, chronic expected abnormalities, or imaging nar
 
 ## Assessment
 
-Write one or two sentences describing the overall trajectory, dominant active issue, and principal management-changing uncertainty. Use improving, worsening, unchanged, stable, or tenuous only when current evidence supports the term. Distinguish persistence of disease activity from physiologic stability.
+Use no more than two sentences to state why the patient was admitted, include the one or two past medical-history conditions most pertinent to this admission, and summarize the overall trajectory and dominant active issue. Do not include clinical reasoning, supporting evidence, differential diagnoses, uncertainties, or problem-by-problem discussion here; place all of that under the applicable problem in Plan. Use improving, worsening, unchanged, stable, or tenuous only when current evidence supports the term. Distinguish persistence of disease activity from physiologic stability.
 
 Do not call the patient hemodynamically stable when current vital signs are unavailable or when selected-day sources materially disagree. Do not label hypotension as hemorrhagic or bleeding-associated unless the source establishes that relationship. Do not call a suspected bleeding source established when endoscopy or imaging has not localized it.
 
@@ -74,7 +76,7 @@ Organize the Plan by active clinical problem from highest to lowest priority. Co
 
 Under each problem, write Assessment followed by Actions.
 
-The problem-specific Assessment should contain reasoning rather than merely restating the diagnosis. For the dominant problem, use two or three concise sentences describing current severity and trajectory, the leading chart-supported interpretation, the most important management-changing uncertainty or competing explanation, the minimum supporting evidence, and why the problem matters today. Use one sentence for lower-priority problems.
+The problem-specific Assessment should contain reasoning rather than merely restating the diagnosis. For every problem, use no more than two sentences describing current severity and trajectory, the leading chart-supported interpretation, the most important management-changing uncertainty or competing explanation, the minimum supporting evidence, and why the problem matters today. Use one sentence when that is sufficient.
 
 When a chart-supported diagnosis remains suspected rather than established, use language such as suspected, possible, or not localized. Do not claim that hemolysis, a consumptive process, infection, treatment failure, or another competing explanation has been definitively excluded unless the complete supplied evidence supports that conclusion.
 

@@ -73,9 +73,11 @@ function fakeStorage(initial = {}) {
     assert.equal(progress.filter((set) => /^Progress(?: |$)/i.test(set.label || "")).length, 1);
     assert.equal(progress.find((set) => set.token === "@progress-guidelines")?.text, "Action-gated standard.");
     const admission = await ensureCurrentAdmissionGuidelineSetV2([
-      createGuidelineSet("Admission", "User-edited admission.")
+      createGuidelineSet("Admission", "User-edited admission."),
+      createGuidelineSet("Admission Current", "Old current admission.")
     ], storage);
-    assert.equal(admission.find((set) => set.token === "@admission-current-2-guidelines")?.text, "Action-gated standard.");
+    assert.equal(admission.find((set) => set.token === "@admission-current-guidelines")?.text, "Action-gated standard.");
+    assert.equal(admission.find((set) => set.token === "@admission-guidelines")?.text, "User-edited admission.");
     assert.equal(storage.getItem(GUIDELINE_SET_PROGRESS_CANONICAL_V3_KEY), "1");
     assert.equal(storage.getItem(GUIDELINE_SET_ADMISSION_CURRENT_V2_KEY), "1");
   } finally {

@@ -58,6 +58,16 @@ assert.equal(openEvidenceTasks[["final", "rounds", "update"].join("_")], undefin
 
 const admission = buildOpenEvidencePrompt("initial_admission_rounds", { patient, guidelines });
 assert.match(admission, /Admission H&P Instructions/);
+assert.match(admission, /Limit the overall Assessment to two sentences/);
+assert.match(admission, /Scale detail to case complexity and make a straightforward case very brief/);
+assert.match(admission, /Omit every subjective, objective, and historical detail that does not change the current differential, management, plan, risk, or disposition/);
+assert.match(admission, /why the patient was admitted plus the one or two past medical-history conditions most pertinent/);
+assert.match(admission, /differential diagnoses under the applicable problem in Plan/);
+assert.match(guidelines.admission, /Use no more than two sentences to state why the patient was admitted/);
+assert.match(guidelines.admission, /one or two past medical-history conditions most pertinent/);
+assert.match(guidelines.admission, /A straightforward presentation with a clear diagnosis and uncomplicated management should be very brief/);
+assert.match(guidelines.admission, /completed prehospital or ED treatment only when it changes the current differential, management, plan, risk, or disposition/);
+assert.match(guidelines.admission, /For every problem|No more than two sentences of chart-supported reasoning/);
 assert.match(admission, /Past Surgical History/);
 assert.match(admission, /Admission context/);
 assert.match(admission, /Chest pain\?/);
@@ -66,6 +76,16 @@ assert.match(admission, /Patient mentioned new hip pain unrelated to admission\.
 
 const progress = buildOpenEvidencePrompt("daily_progress_note", { patient, selectedDayId: day.id, guidelines });
 assert.match(progress, /daily progress note/i);
+assert.match(progress, /Limit the overall Assessment to two sentences/);
+assert.match(progress, /Scale detail to case complexity and make a straightforward case very brief/);
+assert.match(progress, /Omit every subjective, objective, and historical detail that does not change today's differential, management, plan, risk, or disposition/);
+assert.match(progress, /why the patient was admitted plus the one or two past medical-history conditions most pertinent/);
+assert.match(progress, /differential diagnoses under the applicable problem in Plan/);
+assert.match(guidelines.progress, /Use no more than two sentences to state why the patient was admitted/);
+assert.match(guidelines.progress, /one or two past medical-history conditions most pertinent/);
+assert.match(guidelines.progress, /A straightforward case with a clear diagnosis and uncomplicated management should be very brief/);
+assert.match(guidelines.progress, /A finding being new, abnormal, or changed is not sufficient by itself/);
+assert.match(guidelines.progress, /For every problem, use no more than two sentences/);
 assert.match(progress, /Vitals and Clinical Support/);
 assert.match(progress, /Findings elicited by palpation/);
 assert.match(progress, /When selected-day sources conflict/);

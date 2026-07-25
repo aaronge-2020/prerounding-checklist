@@ -6,6 +6,8 @@ Write a concise, decision-focused admission H&P for an attending physician. The 
 
 The HPI tells the patient's story. Objective reports measured evidence. Assessment interprets that evidence. Plan states only documented decisions and actions. Put each fact in its owning section and do not repeat it elsewhere unless a brief reference is essential to the reasoning.
 
+Scale the note's detail to the complexity of the case. A straightforward presentation with a clear diagnosis and uncomplicated management should be very brief; reserve additional history, findings, trends, and discussion for cases with meaningful diagnostic uncertainty, competing explanations, severity, risk, or management decisions. Exclude any fact that does not change the current differential, management, plan, risk, or disposition.
+
 Before writing, silently establish:
 
 1. the explicit admission date and the sequence before arrival, in the ED, and after admission;
@@ -35,7 +37,7 @@ Use exactly these top-level headings, in this order:
 12. Plan
 13. Disposition
 
-Target a 3–5 minute spoken presentation. Finish every section, but omit irrelevant detail and empty boilerplate.
+Target a 3–5 minute spoken presentation only when the case complexity warrants it; a straightforward case should be substantially shorter. Finish every section, but omit irrelevant detail and empty boilerplate.
 
 ## Chief Complaint
 
@@ -50,12 +52,12 @@ Then tell one chronological story in short paragraphs:
 - baseline state and relevant context;
 - symptom onset and evolution before arrival;
 - the change or concern that prompted presentation;
-- completed prehospital or ED treatment stated without measurements or test results;
+- completed prehospital or ED treatment only when it changes the current differential, management, plan, risk, or disposition, stated without measurements or test results;
 - the patient's current symptom report, goals, or concerns when documented and relevant.
 
 Use calendar dates or clear encounter phases when relative day labels could be confusing. Do not jump forward to the current inpatient state and then backward to symptom onset.
 
-The HPI may contain only history, symptoms, meaningful negatives, relevant baseline function, and a brief statement of completed prehospital or ED actions. It must not contain:
+The HPI may contain only history, symptoms, meaningful negatives, relevant baseline function, and completed prehospital or ED actions that change the current differential, management, plan, risk, or disposition. Omit routine interventions and other events that do not affect current decisions. It must not contain:
 
 - vital-sign values or claims derived from them;
 - physical-examination findings;
@@ -81,7 +83,7 @@ Keep each concise. Do not infer missing reactions, substance use, family conditi
 
 ## Review of Systems
 
-Include only patient-reported positives and meaningful negatives not already stated in the HPI. Do not repeat the HPI wholesale. Never place examination findings, vital signs, diagnostics, interpretation, or plans here.
+Include only patient-reported positives and meaningful negatives not already stated in the HPI that change the current differential, management, plan, risk, or disposition. Omit all other subjective detail. Do not repeat the HPI wholesale. Never place examination findings, vital signs, diagnostics, interpretation, or plans here.
 
 ## Objective
 
@@ -89,11 +91,11 @@ Use these subheadings:
 
 ### Vitals and Clinical Support
 
-Summarize only decision-relevant admission and latest documented values. Prefer a compact sentence or the shortest meaningful trend; do not paste flowsheet tables. Time-qualify older values and do not call them current.
+Summarize only admission and latest documented values that change the current differential, management, plan, risk, or disposition. Prefer a compact sentence or the shortest meaningful trend; do not paste flowsheet tables. Time-qualify older values and do not call them current.
 
 ### Focused Physical Examination
 
-Report only abnormal, changed, or management-relevant findings. Examination maneuvers—including tenderness, strength, range of motion, and bedside observations—belong here, not in HPI or Review of Systems.
+Report only findings that change the current differential, management, plan, risk, or disposition. Abnormal or changed findings that do not affect current decisions should still be omitted. Examination maneuvers—including tenderness, strength, range of motion, and bedside observations—belong here, not in HPI or Review of Systems.
 
 ### Key Labs and Diagnostics
 
@@ -101,7 +103,7 @@ Report only results that support or challenge the admission diagnosis, establish
 
 ## Assessment
 
-In one or two sentences, synthesize the dominant reason for admission, current severity or trajectory when supported, and the principal management-changing uncertainty. Do not repeat the one-liner, list every diagnosis, or include orders.
+Use no more than two sentences to state why the patient was admitted, include the one or two past medical-history conditions most pertinent to this admission, and summarize the patient's overall current status. Do not include clinical reasoning, supporting evidence, differential diagnoses, uncertainties, or problem-by-problem discussion here; place all of that under the applicable problem in Plan. Do not repeat the one-liner, list every diagnosis, or include orders.
 
 ## Plan
 
@@ -111,7 +113,7 @@ For each problem, use:
 
 ### Problem name
 
-**Assessment:** One to three sentences of chart-supported reasoning: current severity, leading interpretation, minimum supporting evidence, and the most important uncertainty. Label suspected diagnoses as suspected. Do not invent causation.
+**Assessment:** No more than two sentences of chart-supported reasoning: current severity, leading interpretation, minimum supporting evidence, the most important uncertainty, and any management-relevant differential. Label suspected diagnoses as suspected. Do not invent causation.
 
 **Actions:** A short bullet list containing only actions explicitly documented as completed, ordered, continued, held, stopped, requested, recommended, planned, or pending. Preserve that status exactly. Do not turn a question into a recommendation or a usual practice into an order. Do not invent contingencies or numeric thresholds.
 

@@ -390,7 +390,7 @@ export async function ensureCanonicalProgressGuidelineSetV2(sets, storage = loca
 // the storage revision so every install receives the current canonical prompt
 // exactly once. A user who has already received the prior v3 migration will
 // therefore receive this new prompt revision without another app-level call.
-export const GUIDELINE_SET_PROGRESS_CANONICAL_V3_KEY = "prerounding_guideline_sets_progress_canonical_v4";
+export const GUIDELINE_SET_PROGRESS_CANONICAL_V3_KEY = "prerounding_guideline_sets_progress_canonical_v5";
 
 // Refresh the one canonical Progress set after the full attending-note revision.
 export async function ensureCanonicalProgressGuidelineSetV3(sets, storage = localStorage) {
@@ -425,16 +425,22 @@ export async function ensureCurrentAdmissionGuidelineSet(sets, storage = localSt
   return next;
 }
 
-export const GUIDELINE_SET_ADMISSION_CURRENT_V2_KEY = "prerounding_guideline_sets_admission_current_v2";
+export const GUIDELINE_SET_ADMISSION_CURRENT_V2_KEY = "prerounding_guideline_sets_admission_current_v3";
 
-// Refresh the current H&P standard while preserving the prior user-managed
-// Admission set.
+// Refresh the canonical H&P standard used by the default admission template
+// while preserving any other user-managed Admission sets.
 export async function ensureCurrentAdmissionGuidelineSetV2(sets, storage = localStorage) {
   if (storage.getItem(GUIDELINE_SET_ADMISSION_CURRENT_V2_KEY) !== null) return sets;
   let next = sets;
   try {
     const response = await fetch("./prompts/Guidelines-admission.md", { cache: "no-store" });
-    if (response.ok) next = addGuidelineSet(next, "Admission Current 2", await response.text());
+    if (response.ok) {
+      const text = await response.text();
+      const canonical = next.find((set) => set.token === "@admission-current-guidelines");
+      next = canonical
+        ? updateGuidelineSet(next, canonical.id, { text })
+        : addGuidelineSet(next, "Admission Current", text);
+    }
   } catch {
     // No network/file access - leave existing user-managed sets intact.
   }
