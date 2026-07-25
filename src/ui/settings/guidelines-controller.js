@@ -4,7 +4,14 @@ import { addGuidelineSet, guidelineSetMatchesQuery, removeGuidelineSet, saveGuid
 // respect the coordinator-file size boundary (scripts/check-ui-module-boundaries.js).
 // `state` is the shared app state object, mutated directly the same way the
 // other controllers in src/ui/ already do.
-export function createGuidelineSetsController({ state, setStatus, renderSettings, byId }) {
+export function createGuidelineSetsController({ state, setStatus, renderSettings, renderPrompts, byId }) {
+  function renderGuidelineChanges() {
+    renderSettings();
+    // Keep the prompt builder's already-rendered smart-variable menu in sync
+    // when a guideline is changed from Settings before the user returns to it.
+    renderPrompts?.();
+  }
+
   function openCreate() {
     state.guidelineCreateDraft = { id: "new-guideline", label: "", token: "", text: "" };
     state.guidelineOpenId = "";
@@ -27,7 +34,7 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
     state.guidelineOpenId = created.id;
     saveGuidelineSets(nextSets);
     setStatus(`Added "${label}" guidelines.`);
-    renderSettings();
+    renderGuidelineChanges();
   }
 
   function cancelCreate() {
@@ -42,7 +49,7 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
     state.guidelineOpenId = id;
     saveGuidelineSets(state.guidelineSets);
     setStatus("Guidelines saved.");
-    renderSettings();
+    renderGuidelineChanges();
   }
 
   function toggleOpen(id) {
@@ -67,7 +74,7 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
       state.guidelineSelectedIds.clear();
       byId("removeGuidelineSetConfirmDialog")?.close();
       setStatus(`Deleted ${ids.length} guideline${ids.length === 1 ? "" : "s"}.`);
-      renderSettings();
+      renderGuidelineChanges();
       return;
     }
     const id = state.pendingRemoveGuidelineSetId;
@@ -79,7 +86,7 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
     state.pendingRemoveGuidelineSetIds = [];
     byId("removeGuidelineSetConfirmDialog")?.close();
     setStatus("Guideline set deleted.");
-    renderSettings();
+    renderGuidelineChanges();
   }
 
   function setSearchQuery(value) {

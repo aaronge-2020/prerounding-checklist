@@ -377,7 +377,7 @@ const workupOpenAiImport = createWorkupOpenAiImportController({
 });
 const workupDeleteController = createWorkupDeleteController({ state: app, renderWorkups, persistWorkupChanges, byId });
 const promptTaskController = createPromptTaskController({ state: app, setStatus, renderPrompts, byId });
-const guidelineSetsController = createGuidelineSetsController({ state: app, setStatus, renderSettings, byId });
+const guidelineSetsController = createGuidelineSetsController({ state: app, setStatus, renderSettings, renderPrompts, byId });
 const admissionDateGate = createAdmissionDateGate({ app, byId });
 const dailySourceController = createDailySourceController({
   app,
