@@ -5,8 +5,7 @@ import {
   DEMO_DAY_ID,
   DEMO_PATIENT_ID,
   DEMO_WORKUP_ID
-} from "./session.js?v=20260717-guided-demo-ux-4";
-import { reviewKey } from "../../patient-context/review.js";
+} from "./session.js?v=20260726-demo-teaching-2";
 
 export function createDemoSessionController({
   app,
@@ -17,14 +16,6 @@ export function createDemoSessionController({
   render,
   setStatus
 }) {
-  function seedDraftText(patient) {
-    patient.contextSections.forEach((section, index) =>
-      app.sectionDrafts.set(reviewKey("context", section.id), DEMO_CONTEXT_TEXTS[index] || "")
-    );
-    const day = patient.days.find((entry) => entry.id === DEMO_DAY_ID);
-    day?.sourceCaptures.forEach((capture, index) => app.sectionDrafts.set(reviewKey("daily", capture.id), DEMO_DAILY_TEXTS[index] || ""));
-  }
-
   function start() {
     if (!app.vault || !app.passphrase) throw new Error("Unlock the local vault before starting the guided demo.");
     if (app.demoSession) exit({ renderAfter: false });
@@ -43,7 +34,11 @@ export function createDemoSessionController({
       restoreDraftWorkup: app.draftWorkup,
       restoreChecklistSearchQuery: app.checklistSearchQuery,
       restoreWorkupCatalogQuery: app.workupCatalogQuery,
-      restoreWorkupCatalogOpen: app.workupCatalogOpen
+      restoreWorkupCatalogOpen: app.workupCatalogOpen,
+      restoreAdmissionSourceDraft: app.admissionSourceDraft,
+      restoreAdmissionSourceKind: app.admissionSourceKind,
+      restoreDailySourceDraft: app.dailySourceDraft,
+      restoreDailySourceKind: app.dailySourceKind
     };
     const sourcePatient = createDemoPatient();
     const patient = {
@@ -70,9 +65,12 @@ export function createDemoSessionController({
     app.checklistSearchQuery = "";
     app.workupCatalogQuery = "";
     app.workupCatalogOpen = true;
+    app.admissionSourceKind = "primary_note";
+    app.admissionSourceDraft = DEMO_CONTEXT_TEXTS.join("\n\n");
+    app.dailySourceKind = "primary_note";
+    app.dailySourceDraft = DEMO_DAILY_TEXTS.join("\n\n");
     clearPhiReviews();
     clearQuickDeidSession();
-    seedDraftText(patient);
     app.view = "daily";
     setStatus("Guided demo started. Synthetic data only — nothing is written to your vault.");
     render();
@@ -95,6 +93,10 @@ export function createDemoSessionController({
     app.checklistSearchQuery = session.restoreChecklistSearchQuery;
     app.workupCatalogQuery = session.restoreWorkupCatalogQuery;
     app.workupCatalogOpen = session.restoreWorkupCatalogOpen;
+    app.admissionSourceDraft = session.restoreAdmissionSourceDraft;
+    app.admissionSourceKind = session.restoreAdmissionSourceKind;
+    app.dailySourceDraft = session.restoreDailySourceDraft;
+    app.dailySourceKind = session.restoreDailySourceKind;
     app.demoSession = null;
     clearPhiReviews();
     clearQuickDeidSession();

@@ -9,6 +9,19 @@ import { buildProgressNotePacket } from "./progress-note-packet.js";
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";
 export const TEAM_PREFERENCES_PROMPT_TOKEN = "@team-preferences";
 
+const PRESENTATION_EDITOR_INSTRUCTIONS = `You are the final editor for a de-identified inpatient H&P or daily progress presentation. The next block is the presentation to revise; the following two blocks are admission and selected-day context. Return only the fully revised presentation—no preface, critique, checklist, citations, or explanation. Preserve the intended note type and its required headings.
+
+Silently verify every requirement before returning the revision:
+- The One-Liner gives the big picture: age, sex, hospital day when applicable, original reason for admission, one or two management-changing comorbidities or recent interventions, dominant active problem, and current trajectory or consequence.
+- The first Assessment sentence repeats that complete big-picture synthesis in natural language; it is not a partial restatement.
+- Subjective contains only consequential overnight events, patient-reported change, and symptoms that affect today’s assessment, plan, immediate risk, procedural readiness, or disposition. Do not put imaging or laboratory results, routine medication administration, routine dialysis, routine bowel preparation, or a complete review of systems here.
+- Objective contains only decision-relevant vital/support data, focused examination findings, and the shortest useful laboratory or diagnostic evidence. Do not put treatments, procedure scheduling, bowel preparation, recommendations, or plans in Objective. Omit stale values and details that would leave the Assessment, Plan, risk, readiness, and disposition unchanged if removed.
+- Assessment interprets the evidence rather than restating it: severity, trajectory, diagnostic uncertainty, competing risk, and the central decision for today. Do not duplicate detailed findings from Objective.
+- Plan is prioritized by active decision, avoids duplicate problem groups, and gives concise, specific actions. When proposing a new action, use clear recommendation language such as “Recommend,” “Confirm,” “Clarify,” or “Reconcile”; never present a new recommendation as an existing order or consultant decision.
+- Disposition names only actual remaining barriers.
+
+Remove repetition and filler across all sections. Use the context only to correct material inaccuracies, resolve contradictions, and retain essential context. Do not invent patient facts, results, orders, consultant recommendations, medication administrations, completed procedures, or unstated clinical status. Keep the result concise, clinically coherent, and ready to present to an attending.`;
+
 // These reference the tokens the migration in guideline-sets.js assigns to
 // the two seeded "Admission"/"Progress" sets. If a user deletes one of those
 // sets the token below simply won't resolve (same graceful degradation as
@@ -16,6 +29,7 @@ export const TEAM_PREFERENCES_PROMPT_TOKEN = "@team-preferences";
 export const DEFAULT_PROMPT_TEMPLATES = {
   initial_admission_rounds: `@team-preferences\n\n@admission-current-guidelines\n\n@admission-packet`,
   daily_progress_note: `@team-preferences\n\n@progress-guidelines\n\n@progress-note-packet`,
+  presentation_quality_editor: `@presentation-editor-instructions\n\n@presentation-to-edit\n\n@admission-packet\n\n@progress-note-packet`,
   teaching_case_trajectory: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   medication_explainer_by_problem: `@medications\n\n@selected-day`,
   medication_safety_audit: `@medications\n\n@labs\n\n@selected-day`,
@@ -30,6 +44,8 @@ export const SMART_PROMPT_VARIABLES = [
   { token: "@admission-packet", label: "Admission packet", description: "All saved admission fields, labeled." },
   { token: "@selected-day", label: "Selected hospital day", description: "The chosen hospital-day packet; defaults to the latest saved day." },
   { token: "@progress-note-packet", label: "Progress-note packet", description: "Curated carry-forward context plus the selected day, in clinical order." },
+  { token: "@presentation-editor-instructions", label: "Presentation editor instructions", description: "The built-in editing and verification standard for a presentation." },
+  { token: "@presentation-to-edit", label: "Presentation to edit", description: "The de-identified presentation pasted into the editor; held only in this tab." },
   { token: "@checklist-answers", label: "Checklist answers", description: "History and physical exam answers." },
   { token: "@admissions-exam-findings", label: "Prior clinician exam findings", description: "Physical exam findings documented by another clinician in the admission packet." },
   { token: "@selected-day-exam-findings", label: "Current pre-round exam findings", description: "The physical exam documented during the current pre-round visit for the selected day." },
@@ -168,7 +184,7 @@ export function promptTemplateForTask(taskId, overrides = {}) {
   return saved && saved !== "@default-prompt" ? saved : String(DEFAULT_PROMPT_TEMPLATES[taskId] || "");
 }
 
-export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets = [], teamPreferences = {} }) {
+export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets = [], teamPreferences = {}, presentationToEdit = "" }) {
   const usingAdmission = selectedDayId === ADMISSION_PSEUDO_DAY_ID;
   const selectedDay = selectedPromptDay(patient, selectedDayId);
   const snapshot = selectedDay?.checklistSnapshot || null;
@@ -218,6 +234,8 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
       ? sectionsToPromptBlock(admissionSectionsWithoutTodayExam(patient), "Admission")
       : (selectedDay ? sourceCapturesToPromptBlock(selectedDayCapturesWithoutExam(selectedDay), `Selected day: ${selectedDay.date} - ${selectedDay.label}`) : "No saved hospital day."),
     "@progress-note-packet": buildProgressNotePacket({ patient, selectedDay }),
+    "@presentation-editor-instructions": PRESENTATION_EDITOR_INSTRUCTIONS,
+    "@presentation-to-edit": String(presentationToEdit || "").trim() || "No presentation was pasted. Ask the user to paste the de-identified presentation to edit.",
     "@checklist-answers": checklistAnswersSummary(snapshot, answers, quickNotes),
     "@openevidence-exam-note": savedExamNoteText(selectedDay) || "No saved OpenEvidence exam note.",
     "@admissions-exam-findings": admissionExamFindings(patient),
@@ -232,8 +250,8 @@ export function interpolatePromptTemplate(template, variables) {
   );
 }
 
-export function buildCustomOpenEvidencePrompt({ template, patient, selectedDayId, guidelineSets = [], teamPreferences }) {
-  const variables = buildPromptVariableMap({ patient, selectedDayId, guidelineSets, teamPreferences });
+export function buildCustomOpenEvidencePrompt({ template, patient, selectedDayId, guidelineSets = [], teamPreferences, presentationToEdit = "" }) {
+  const variables = buildPromptVariableMap({ patient, selectedDayId, guidelineSets, teamPreferences, presentationToEdit });
   const interpolated = interpolatePromptTemplate(template, variables);
   return naturalLanguagePrompt(interpolated);
 }

@@ -4,6 +4,8 @@ import { checklistPhoneUrl, createPhoneTransferController } from "../src/ui/chec
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "../src/ui/redaction/presentation.js";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "../src/ui/workups/presentation.js";
 import { createDailyPresentation } from "../src/ui/daily/presentation.js";
+import { createDemoPresentation, demoStage } from "../src/ui/demo/presentation.js";
+import { createDemoPatient } from "../src/ui/demo/session.js";
 
 const escapeHtml = (value = "") => String(value)
   .replace(/&/g, "&amp;")
@@ -13,6 +15,12 @@ const escapeHtml = (value = "") => String(value)
 const icon = (name) => `<svg data-icon="${name}"></svg>`;
 
 const dailyView = createDailyPresentation({ escapeHtml, icon });
+const demoView = createDemoPresentation({ escapeHtml });
+const demoPatient = createDemoPatient();
+assert.equal(demoPatient.contextSections.length, 0, "the guided demo must begin with an empty admission source list");
+assert.equal(demoPatient.days[0].sourceCaptures.length, 0, "the guided demo must add the selected-day source through the normal workflow");
+assert.equal(demoStage("teaching-showcase").title, "See the case teaching explanation");
+assert.match(demoView.renderGuide({ session: { stage: "teaching-showcase" }, currentView: "prompts" }), /case-based explanation for a clinician in training/);
 const dailyMarkup = dailyView.renderDaily({
   patient: { contextSections: [{ id: "admission", label: "Admission context", deidentifiedText: "", residualWarnings: [], createdAt: "2026-01-01" }] },
   days: [{ id: "day1", label: "HD1", date: "2026-01-02", sourceCaptures: [] }],

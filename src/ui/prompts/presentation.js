@@ -24,6 +24,8 @@ export function createPromptsPresentation({ escapeHtml }) {
     previewSegments,
     templateHighlightSegments,
     promptError,
+    presentationToEdit,
+    requiresPresentationToEdit,
     variables,
     smartMenuOpen,
     colorOverrides = {}
@@ -52,6 +54,16 @@ export function createPromptsPresentation({ escapeHtml }) {
             <input id="newPromptTaskNameInput" type="text" placeholder="New prompt name" autocomplete="off">
             <button class="button--secondary" type="button" data-action="create-prompt-task">Create prompt</button>
           </div>
+          ${requiresPresentationToEdit ? `
+            <section class="presentation-editor-input" aria-labelledby="presentationEditorInputTitle">
+              <div>
+                <h3 id="presentationEditorInputTitle">Presentation to edit</h3>
+                <p>Paste a de-identified H&amp;P or progress presentation. This text stays only in the current browser tab and is used to build the editor prompt.</p>
+              </div>
+              <textarea id="presentationToEdit" rows="12" spellcheck="true" placeholder="Paste the de-identified presentation here...">${escapeHtml(presentationToEdit)}</textarea>
+              <p class="warning-box presentation-editor-required" data-presentation-editor-required ${presentationToEdit.trim() ? "hidden" : ""}>Paste a de-identified presentation to build the editor prompt.</p>
+            </section>
+          ` : ""}
           <div class="prompt-template-wrap">
             <div id="promptTemplateHighlight" class="prompt-preview prompt-template-backdrop" aria-hidden="true">${renderHighlightedSegments(templateHighlightSegments, escapeHtml, colorOverrides, { interactive: false })}</div>
             <textarea id="promptPreview" class="prompt-preview" rows="22" spellcheck="false">${escapeHtml(template)}</textarea>
@@ -83,9 +95,9 @@ export function createPromptsPresentation({ escapeHtml }) {
               <p class="muted">De-identified context only. Colors match each smart variable to the text it filled in.</p>
             </div>
           </div>
-          <div id="promptOutputHighlighted" class="prompt-output-highlighted" aria-label="Generated prompt with variables highlighted">${renderHighlightedSegments(previewSegments, escapeHtml, colorOverrides)}</div>
+          <div id="promptOutputHighlighted" class="prompt-output-highlighted" tabindex="-1" aria-label="Generated prompt with variables highlighted">${renderHighlightedSegments(previewSegments, escapeHtml, colorOverrides)}</div>
           <div class="button-row">
-            <button class="button--primary" type="button" data-action="copy-prompt">Copy prompt</button>
+            <button class="button--primary" type="button" data-action="copy-prompt" ${promptError || (requiresPresentationToEdit && !presentationToEdit.trim()) ? "disabled" : ""}>Copy prompt</button>
             <button class="button--secondary" type="button" data-action="open-open-evidence">Open OpenEvidence</button>
             <button class="button--quiet" type="button" data-action="reset-variable-colors">Reset colors</button>
           </div>

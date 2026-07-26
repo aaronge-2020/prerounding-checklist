@@ -7193,6 +7193,36 @@ body.vault-locked .vault-access {
   color: var(--muted);
 }
 
+.guided-demo-explainer {
+  display: grid;
+  gap: 3px;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.guided-demo-explainer strong { font-size: 12px; }
+.guided-demo-explainer span { color: var(--muted); }
+
+.presentation-editor-input {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.presentation-editor-input h3 { margin: 0; font-size: 14px; }
+.presentation-editor-input p { margin: 3px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.presentation-editor-input textarea { min-height: 190px; resize: vertical; }
+
 .guided-demo-bar {
   border-width: 1px;
   border-left-width: 4px;

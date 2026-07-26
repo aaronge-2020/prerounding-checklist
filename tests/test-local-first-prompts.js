@@ -57,21 +57,19 @@ patient = {
 assert.equal(openEvidenceTasks[["final", "rounds", "update"].join("_")], undefined);
 
 const admission = buildOpenEvidencePrompt("initial_admission_rounds", { patient, guidelines });
-assert.match(admission, /Admission H&P Instructions/);
+assert.match(admission, /Attending-Facing H&P Instructions/);
 assert.match(admission, /Limit the overall Assessment to two sentences/);
 assert.match(admission, /Scale detail to case complexity and make a straightforward case very brief/);
 assert.match(admission, /Omit every subjective, objective, and historical detail that does not change the current differential, management, plan, risk, or disposition/);
 assert.match(admission, /why the patient was admitted plus the one or two past medical-history conditions most pertinent/);
 assert.match(admission, /differential diagnoses under the applicable problem in Plan/);
-assert.match(guidelines.admission, /Use no more than two sentences to state why the patient was admitted/);
-assert.match(guidelines.admission, /one or two past medical-history conditions most pertinent/);
-assert.match(guidelines.admission, /A straightforward presentation with a clear diagnosis and uncomplicated management should be very brief/);
-assert.match(guidelines.admission, /completed prehospital or ED treatment only when it changes the current differential, management, plan, risk, or disposition/);
-assert.match(guidelines.admission, /For every problem|No more than two sentences of chart-supported reasoning/);
-assert.match(admission, /Past Surgical History/);
+assert.match(guidelines.admission, /Begin with age, sex or gender as documented/);
+assert.match(guidelines.admission, /conditions or procedures that modify diagnosis or treatment/);
+assert.match(guidelines.admission, /Use the straightforward-case format unless there is meaningful diagnostic uncertainty/);
+assert.match(guidelines.admission, /material treatment already received when it affects current care/);
+assert.match(guidelines.admission, /clearly distinguish your recommendations from documented treatment/);
 assert.match(admission, /Admission context/);
 assert.match(admission, /Chest pain\?/);
-assert.match(admission, /Additional notes not tied to a specific checklist item/);
 assert.match(admission, /Patient mentioned new hip pain unrelated to admission\./);
 
 const progress = buildOpenEvidencePrompt("daily_progress_note", { patient, selectedDayId: day.id, guidelines });
@@ -81,14 +79,14 @@ assert.match(progress, /Scale detail to case complexity and make a straightforwa
 assert.match(progress, /Omit every subjective, objective, and historical detail that does not change today's differential, management, plan, risk, or disposition/);
 assert.match(progress, /why the patient was admitted plus the one or two past medical-history conditions most pertinent/);
 assert.match(progress, /differential diagnoses under the applicable problem in Plan/);
-assert.match(guidelines.progress, /Use no more than two sentences to state why the patient was admitted/);
-assert.match(guidelines.progress, /one or two past medical-history conditions most pertinent/);
-assert.match(guidelines.progress, /A straightforward case with a clear diagnosis and uncomplicated management should be very brief/);
-assert.match(guidelines.progress, /A finding being new, abnormal, or changed is not sufficient by itself/);
-assert.match(guidelines.progress, /For every problem, use no more than two sentences/);
+assert.match(guidelines.progress, /The first sentence must restate the overall One-Liner synthesis/);
+assert.match(guidelines.progress, /One or two comorbidities or recent interventions most relevant to today’s decisions/);
+assert.match(guidelines.progress, /Target 350–500 words for a complex patient and fewer for a straightforward patient/);
+assert.match(guidelines.progress, /If removing this fact would not change today’s clinical interpretation/);
+assert.match(guidelines.progress, /Use one to three active problem groups/);
 assert.match(progress, /Vitals and Clinical Support/);
-assert.match(progress, /Findings elicited by palpation/);
-assert.match(progress, /When selected-day sources conflict/);
+assert.match(progress, /Focused Examination/);
+assert.match(progress, /Current vital signs and oxygen requirement are not available/);
 assert.match(progress, /Patient mentioned new hip pain unrelated to admission\./);
 assert.match(progress, /Feels less short of breath/);
 assert.match(progress, /Selected hospital day/, "daily progress prompt must identify the selected day explicitly");
@@ -118,6 +116,17 @@ for (const prompt of [admission, progress, teaching, medicationOrganizer, medica
 assert.throws(() => buildOpenEvidencePrompt("daily_progress_note", { patient, guidelines: "" }), /task-specific documentation standard/);
 
 assert.equal(openEvidenceTasks.consulting?.label, "Consulting");
+assert.equal(openEvidenceTasks.presentation_quality_editor?.label, "Edit and verify presentation");
+const presentationEditorPrompt = buildCustomOpenEvidencePrompt({
+  taskId: "presentation_quality_editor",
+  template: DEFAULT_PROMPT_TEMPLATES.presentation_quality_editor,
+  patient,
+  selectedDayId: day.id,
+  presentationToEdit: "One-Liner\nA de-identified sample presentation.\n\nAssessment\nA concise assessment."
+});
+assert.match(presentationEditorPrompt, /Return only the fully revised presentation/);
+assert.match(presentationEditorPrompt, /A de-identified sample presentation/);
+assert.doesNotMatch(presentationEditorPrompt, /@presentation-to-edit/);
 const consultingGuidelines = createGuidelineSet("Consulting Updated", readFileSync("prompts/Consulting.md", "utf8"));
 const consulting = buildCustomOpenEvidencePrompt({
   taskId: "consulting",
@@ -224,7 +233,7 @@ const directAdmission = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelineSets
 });
-assert.doesNotMatch(directAdmission, /Admission H&P Instructions/, "guidelines are only included where a template references their token - never force-injected");
+assert.doesNotMatch(directAdmission, /Attending-Facing H&P Instructions/, "guidelines are only included where a template references their token - never force-injected");
 assert.doesNotMatch(directAdmission, /Privacy rules:/);
 
 const directGuidelines = buildCustomOpenEvidencePrompt({
@@ -234,7 +243,7 @@ const directGuidelines = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelineSets
 });
-assert.match(directGuidelines, /Admission H&P Instructions/);
+assert.match(directGuidelines, /Attending-Facing H&P Instructions/);
 assert.doesNotMatch(directGuidelines, /@admission-guidelines/);
 
 const medicationTeachingPrompt = buildCustomOpenEvidencePrompt({

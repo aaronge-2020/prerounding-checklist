@@ -1,79 +1,101 @@
 export const DEMO_GUIDE_STAGES = Object.freeze({
   "save-context": {
     view: "daily",
-    targetSelector: '[data-action="save-context"]',
+    targetSelector: '[data-action="add-admission-source"]',
     title: "Start with the sample case",
-    instruction: "Click Save admission packet.",
-    helper: "This is a safe sample—no real patient data is used."
+    instruction: "Click De-identify and add source.",
+    explanationTitle: "Why you start here",
+    explanation: "This synthetic packet lets you practice the workflow without changing your own vault. In normal use, you paste one source at a time and review de-identification before saving it."
   },
   "context-review": {
     view: "daily",
     targetSelector: '[data-action="confirm-all-section-redactions"]',
     title: "Check the highlighted changes",
     instruction: "Review the highlighted changes, then click Confirm rest.",
-    helper: "You check the app's suggestions before moving on."
+    explanationTitle: "What this review does",
+    explanation: "The app marks possible identifiers for your decision. Confirming a change saves only the de-identified replacement; the original text stays in this active review only."
   },
   "save-day": {
     view: "daily",
-    targetSelector: '[data-action="save-day"]',
+    targetSelector: '[data-action="add-daily-source"]',
     title: "Add the day-one update",
-    instruction: "Click Save hospital day.",
-    helper: "This adds the next part of the sample case."
+    instruction: "Click De-identify and add source.",
+    explanation: "Adding the day-one source keeps today’s evidence separate from admission context, so the prompt can distinguish current findings from the original presentation."
   },
   "daily-review": {
     view: "daily",
     targetSelector: '[data-action="confirm-all-section-redactions"]',
     title: "Check the day-one changes",
     instruction: "Review the highlighted changes, then continue through the fields.",
-    helper: "Each part of the case gets its own quick review."
+    explanationTitle: "Why the day is reviewed separately",
+    explanation: "Selected-day information is reviewed on its own so the prompt can distinguish current findings from admission history."
   },
   "open-workups": {
     view: "workups",
     navTarget: "workups",
     title: "Choose checklist questions",
     instruction: "Click Workups in the sidebar.",
-    helper: "Next, you'll choose questions for the checklist."
+    helper: ""
   },
   "select-workup": {
     view: "workups",
     targetSelector: '.workup-checkbox[value="general-admission"]',
     title: "Choose a question set",
     instruction: "Select General admission.",
-    helper: "This chooses the questions for the checklist."
+    explanationTitle: "What a workup does",
+    explanation: "A workup is a reusable set of history and physical-exam questions. Selecting it does not make a checklist until you explicitly build one."
   },
   "build-checklist": {
     view: "workups",
     targetSelector: '.workup-editor-header-actions [data-action="build-checklist"]',
     title: "Build the checklist",
     instruction: "Click Build checklist.",
-    helper: "This turns your selected questions into a checklist."
+    helper: ""
   },
   "answer-checklist": {
     view: "checklist",
     targetSelector: '#checklistSections > .checklist-section:first-child .checklist-item:first-child .checklist-answer',
     title: "Answer a checklist question",
     instruction: "Choose an answer for the highlighted question.",
-    helper: "Your answer helps shape the evidence prompt."
+    explanationTitle: "Why answer the checklist",
+    explanation: "Your documented history and examination findings become concise, selected-day evidence for the next prompt."
   },
   "open-prompts": {
     view: "prompts",
     navTarget: "prompts",
     title: "Open the prompt builder",
     instruction: "Click OpenEvidence Prompts in the sidebar.",
-    helper: "The prompt is built from the case you reviewed."
+    helper: ""
   },
   "copy-prompt": {
     view: "prompts",
     targetSelector: '[data-action="copy-prompt"]',
     title: "Copy the prompt",
     instruction: "Click Copy prompt.",
-    helper: "Only the reviewed prompt is copied."
+    explanationTitle: "What you are copying",
+    explanation: "The app assembles de-identified, labeled context into a prompt. You can edit the template before copying it; it does not generate or store an external result."
+  },
+  "open-teaching": {
+    view: "prompts",
+    targetSelector: "#promptTaskSelect",
+    title: "Open the teaching showcase",
+    instruction: "Choose Teaching: full case trajectory from the prompt list.",
+    helper: ""
+  },
+  "teaching-showcase": {
+    view: "prompts",
+    targetSelector: "#promptOutputHighlighted",
+    title: "See the case teaching explanation",
+    instruction: "Review the teaching prompt, then click Copy prompt to finish the demo.",
+    explanationTitle: "How the teaching prompt is different",
+    explanation: "This prompt turns the reviewed admission context, hospital-day update, and checklist findings into a case-based explanation for a clinician in training. It emphasizes clinical reasoning and the meaning of key decisions."
   },
   done: {
     view: "prompts",
     title: "Demo complete",
     instruction: "You followed the full sample workflow.",
-    helper: "Nothing from this demo was written to your vault."
+    explanationTitle: "You completed the workflow",
+    explanation: "You reviewed de-identification, built a checklist, created a progress-note prompt, and previewed the teaching-case prompt. Nothing from the synthetic case was written to your vault."
   }
 });
 
@@ -106,6 +128,7 @@ export function createDemoPresentation({ escapeHtml }) {
             <span class="guided-demo-action">${escapeHtml(nextInstruction)}</span>
             ${!routeMismatch && stage.helper ? `<span class="guided-demo-note">${escapeHtml(stage.helper)}</span>` : ""}
           </div>
+          ${!routeMismatch && stage.explanation ? `<aside class="guided-demo-explainer"><strong>${escapeHtml(stage.explanationTitle || "What this step does")}</strong><span>${escapeHtml(stage.explanation)}</span></aside>` : ""}
         </div>
         <div class="guided-demo-actions">
           <span class="guided-demo-badge">Synthetic sample</span>

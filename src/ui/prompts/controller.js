@@ -6,7 +6,7 @@ import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js";
 // coordinator-file size boundary (scripts/check-ui-module-boundaries.js).
 // `state` is the shared app state object, mutated directly the same way
 // the other controllers in src/ui/checklist/ already do.
-export function createPromptTaskController({ state, setStatus, renderPrompts, byId }) {
+export function createPromptTaskController({ state, setStatus, renderPrompts, refreshPromptPreview, byId }) {
   function createTaskFromInput() {
     const input = byId("newPromptTaskNameInput");
     const label = String(input?.value || "").trim();
@@ -41,7 +41,16 @@ export function createPromptTaskController({ state, setStatus, renderPrompts, by
     renderPrompts();
   }
 
-  return Object.freeze({ createTaskFromInput, requestRemove, confirmRemovePending });
+  function updatePresentationToEdit(value) {
+    state.presentationToEdit = value;
+    const requiredMessage = document.querySelector("[data-presentation-editor-required]");
+    if (requiredMessage) requiredMessage.hidden = Boolean(state.presentationToEdit.trim());
+    const copyButton = document.querySelector('[data-action="copy-prompt"]');
+    if (copyButton && state.selectedPromptTask === "presentation_quality_editor") copyButton.disabled = !state.presentationToEdit.trim();
+    refreshPromptPreview();
+  }
+
+  return Object.freeze({ createTaskFromInput, requestRemove, confirmRemovePending, updatePresentationToEdit });
 }
 
 // Filters the already-rendered variable buttons in place (same

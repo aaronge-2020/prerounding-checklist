@@ -17,6 +17,11 @@ export const OPEN_EVIDENCE_TASKS = [
     requiresGuidelines: true
   },
   {
+    id: "presentation_quality_editor",
+    label: "Edit and verify presentation",
+    requiresGuidelines: false
+  },
+  {
     id: "teaching_case_trajectory",
     label: "Teaching: full case trajectory",
     requiresGuidelines: false

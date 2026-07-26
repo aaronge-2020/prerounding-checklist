@@ -97,10 +97,10 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260722-unified-stay-v2";
+} from "../prompts/custom-templates.js?v=20260726-presentation-editor";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260723-edit-save";
-import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260722-unified-stay-v2";
+import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260726-presentation-editor";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import {
   ensureAdditionalGuidelineSets,
@@ -176,14 +176,14 @@ import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-fu
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260714-deid-ux-polish";
 import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260721-admission-context";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260722-prompt-click-repair";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260726-presentation-editor";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260722-prompt-click-repair";
+} from "./prompts/controller.js?v=20260726-presentation-editor";
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260722-guideline-concept-v2";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721-persisted-anchor";
@@ -198,9 +198,9 @@ import {
 } from "./redaction/presentation.js?v=20260723-always-save";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
-import { createDemoController } from "./demo/controller.js?v=20260717-guided-demo-ux-4";
-import { createDemoPatient } from "./demo/session.js?v=20260717-guided-demo-ux-4";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20260717-guided-demo-ux-4";
+import { createDemoController } from "./demo/controller.js?v=20260726-demo-teaching-2";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260726-demo-teaching-2";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20260726-demo-teaching-2";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
   vault: null,
@@ -242,6 +242,7 @@ const app = {
   webGpuAvailable: typeof navigator !== "undefined" && Boolean(navigator.gpu),
   promptTemplates: loadPromptTemplateOverrides(),
   promptDrafts: {},
+  presentationToEdit: "",
   tokenColorOverrides: loadTokenColorOverrides(),
   smartMenuOpen: false,
   quickDeid: { input: "", output: "", warnings: [], status: "", review: null },
@@ -325,7 +326,10 @@ const demoController = createDemoController({
   getSession: () => app.demoSession,
   getView: () => app.view,
   render,
-  selectDemoPacket: () => dailySourceController.selectPacket("demo_day_guided_case")
+  selectDemoPacket: () => {
+    dailySourceController.selectPacket("demo_day_guided_case");
+    app.dailySourceDraft = DEMO_DAILY_TEXTS.join("\n\n");
+  }
 });
 const demoSessionController = createDemoSessionController({
   app,
@@ -376,7 +380,7 @@ const workupOpenAiImport = createWorkupOpenAiImportController({
   parseAndSaveWorkupJson
 });
 const workupDeleteController = createWorkupDeleteController({ state: app, renderWorkups, persistWorkupChanges, byId });
-const promptTaskController = createPromptTaskController({ state: app, setStatus, renderPrompts, byId });
+const promptTaskController = createPromptTaskController({ state: app, setStatus, renderPrompts, refreshPromptPreview, byId });
 const guidelineSetsController = createGuidelineSetsController({ state: app, setStatus, renderSettings, renderPrompts, byId });
 const admissionDateGate = createAdmissionDateGate({ app, byId });
 const dailySourceController = createDailySourceController({
@@ -896,6 +900,7 @@ function clearPatientScopedSession() {
   app.promptDayId = "";
   app.promptDayFollowsChecklist = true;
   app.promptDrafts = {};
+  app.presentationToEdit = "";
   app.sectionDrafts.clear();
   app.sectionEditingKeys.clear();
   app.pendingSectionReviewFocus = null;
@@ -1434,7 +1439,8 @@ function renderPrompts() {
       patient,
       selectedDayId: app.promptDayId,
       guidelineSets: app.guidelineSets,
-      teamPreferences: app.vault.preferences
+      teamPreferences: app.vault.preferences,
+      presentationToEdit: app.presentationToEdit
     });
     previewSegments = buildPromptPreviewSegments(template, variableMap);
   } catch (error) {
@@ -1456,6 +1462,8 @@ function renderPrompts() {
     previewSegments,
     templateHighlightSegments,
     promptError,
+    presentationToEdit: app.presentationToEdit,
+    requiresPresentationToEdit: task.id === "presentation_quality_editor",
     variables,
     smartMenuOpen: app.smartMenuOpen,
     colorOverrides: app.tokenColorOverrides
@@ -1530,7 +1538,8 @@ function refreshPromptPreview() {
       patient,
       selectedDayId: app.promptDayId,
       guidelineSets: app.guidelineSets,
-      teamPreferences: app.vault.preferences
+      teamPreferences: app.vault.preferences,
+      presentationToEdit: app.presentationToEdit
     });
     highlighted.innerHTML = renderHighlightedSegments(
       buildPromptPreviewSegments(template, variableMap),
@@ -1560,7 +1569,8 @@ function currentPromptText() {
       patient,
       selectedDayId: app.promptDayId,
       guidelineSets: app.guidelineSets,
-      teamPreferences: app.vault.preferences
+      teamPreferences: app.vault.preferences,
+      presentationToEdit: app.presentationToEdit
     });
   } catch {
     return "";
@@ -1930,7 +1940,6 @@ async function handleClick(event) {
       scrollPromptOutputToVariable(byId("promptOutputHighlighted"), target.dataset.token);
     }
     if (action === "copy-prompt") {
-      if (app.demoSession) demoController.observeAction(action);
       await copyText(currentPromptText());
     }
     if (action === "open-open-evidence") window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
@@ -4108,6 +4117,10 @@ function handleInput(event) {
     filterSmartVariableMenu(menu, tokenMatch ? tokenMatch[2] : "");
     if (app.smartMenuOpen) positionSmartVariableMenu(menu, event.target);
     refreshPromptPreview();
+    return;
+  }
+  if (event.target.id === "presentationToEdit") {
+    promptTaskController.updatePresentationToEdit(event.target.value);
     return;
   }
   if (event.target.id === "quickDeidInput") {
