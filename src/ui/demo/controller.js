@@ -1,8 +1,10 @@
-import { createDemoPresentation } from "./presentation.js?v=20260726-demo-teaching-4";
-import { DEMO_DAY_ID, DEMO_WORKUP_ID } from "./session.js?v=20260726-demo-teaching-4";
+import { createDemoPresentation } from "./presentation.js?v=20260726-guided-overlay-1";
+import { DEMO_DAY_ID, DEMO_WORKUP_ID } from "./session.js?v=20260726-guided-overlay-1";
 
 export function createDemoController({ app, byId, escapeHtml, getSession, getView, render: renderApp, selectDemoPacket }) {
   const presentation = createDemoPresentation({ escapeHtml });
+  let activeCalloutTarget = null;
+  let calloutFrame = 0;
 
   function visibleTarget(container, selector) {
     return [...(container?.querySelectorAll(selector) || [])].find((element) => element.getClientRects().length > 0) || null;
@@ -32,19 +34,56 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     document.querySelectorAll(".demo-next-action").forEach((element) => element.classList.remove("demo-next-action"));
     document.querySelectorAll("[data-demo-target]").forEach((element) => element.removeAttribute("data-demo-target"));
     document.querySelectorAll("[data-demo-callout]").forEach((element) => element.remove());
+    activeCalloutTarget = null;
+    if (calloutFrame) cancelAnimationFrame(calloutFrame);
+    calloutFrame = 0;
   }
 
-  function calloutHost(target) {
-    return target.closest(
-      ".redaction-review-heading, .source-draft-footer, .workup-editor-header-actions, " +
-      ".checklist-item, .prompt-panel-header, .button-row"
-    ) || target;
+  function positionCallout() {
+    const target = activeCalloutTarget;
+    const callout = document.querySelector("[data-demo-callout]");
+    if (!target?.isConnected || !callout) return;
+    const rect = target.getBoundingClientRect();
+    const margin = 16;
+    const gap = 16;
+    const width = callout.offsetWidth;
+    const height = callout.offsetHeight;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const fitsRight = rect.right + gap + width <= viewportWidth - margin;
+    const fitsLeft = rect.left - gap - width >= margin;
+    const fitsBelow = rect.bottom + gap + height <= viewportHeight - margin;
+    const placement = fitsRight ? "right" : fitsLeft ? "left" : fitsBelow ? "bottom" : "top";
+    const left = placement === "right"
+      ? rect.right + gap
+      : placement === "left"
+        ? rect.left - width - gap
+        : Math.min(Math.max(margin, rect.left + rect.width / 2 - width / 2), viewportWidth - width - margin);
+    const top = placement === "bottom"
+      ? rect.bottom + gap
+      : placement === "top"
+        ? Math.max(margin, rect.top - height - gap)
+        : Math.min(Math.max(margin, rect.top + rect.height / 2 - height / 2), viewportHeight - height - margin);
+    callout.dataset.placement = placement;
+    callout.style.left = `${Math.round(left)}px`;
+    callout.style.top = `${Math.round(top)}px`;
   }
 
   function mountCallout(target, stage) {
     if (!target || !stage.callout) return;
-    calloutHost(target).insertAdjacentHTML("afterend", presentation.renderCallout({ stage }));
+    document.body.insertAdjacentHTML("beforeend", presentation.renderCallout({ stage }));
+    activeCalloutTarget = target;
+    calloutFrame = requestAnimationFrame(positionCallout);
   }
+
+  function scheduleCalloutPosition() {
+    if (!activeCalloutTarget) return;
+    if (calloutFrame) cancelAnimationFrame(calloutFrame);
+    calloutFrame = requestAnimationFrame(positionCallout);
+  }
+
+  document.addEventListener("scroll", scheduleCalloutPosition, true);
+  window.addEventListener("resize", scheduleCalloutPosition);
 
   function render() {
     document.querySelectorAll("[data-demo-guide]").forEach((element) => element.remove());
@@ -78,6 +117,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     requestAnimationFrame(() => {
       target.focus({ preventScroll: true });
       if (!stage.navTarget && view === stage.view) target.scrollIntoView({ block: "center", behavior: "smooth" });
+      scheduleCalloutPosition();
     });
     setTimeout(() => {
       if (getSession()?.stage !== stageId) return;

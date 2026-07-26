@@ -11,71 +11,89 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "daily",
     targetSelector: '[data-action="confirm-all-section-redactions"]',
     title: "Check the highlighted changes",
-    instruction: "Review the highlighted changes, then click Confirm rest."
+    instruction: "Review the highlighted changes, then click Confirm rest.",
+    calloutTitle: "What you are reviewing",
+    callout: "Crossed-out text is a possible identifier. The label beside it is the replacement. Confirm rest accepts every remaining suggestion; select an individual value only when you want to make a different choice."
   },
   "save-day": {
     view: "daily",
     targetSelector: '[data-action="add-daily-source"]',
     title: "Add the day-one update",
-    instruction: "Click De-identify and add source."
+    instruction: "Click De-identify and add source.",
+    calloutTitle: "Add today’s update",
+    callout: "This second note contains Daniel’s hospital-day update. Add it separately so later prompts can distinguish what brought him in from what changed today."
   },
   "daily-review": {
     view: "daily",
     targetSelector: '[data-action="confirm-all-section-redactions"]',
     title: "Check the day-one changes",
-    instruction: "Review the highlighted changes, then continue through the fields."
+    instruction: "Review the highlighted changes, then continue through the fields.",
+    calloutTitle: "Review this update separately",
+    callout: "The same review process applies to each hospital day. Keeping this update separate lets a progress-note prompt focus on today’s clinical decisions."
   },
   "open-workups": {
     view: "workups",
     navTarget: "workups",
     title: "Choose checklist questions",
     instruction: "Click Workups in the sidebar.",
-    helper: ""
+    calloutTitle: "Next: build a focused checklist",
+    callout: "Workups are reusable sets of history and examination questions. You will select one, then turn it into a checklist for this case."
   },
   "select-workup": {
     view: "workups",
     targetSelector: '.workup-checkbox[value="general-admission"]',
     title: "Choose a question set",
-    instruction: "Select General admission."
+    instruction: "Select General admission.",
+    calloutTitle: "Select a workup",
+    callout: "This selection does not add anything to Daniel’s record. It simply chooses the questions that will appear in the next checklist."
   },
   "build-checklist": {
     view: "workups",
     targetSelector: '.workup-editor-header-actions [data-action="build-checklist"]',
     title: "Build the checklist",
     instruction: "Click Build checklist.",
-    helper: ""
+    calloutTitle: "Create the checklist",
+    callout: "Build checklist turns the selected question set into an editable bedside checklist for this hospital day."
   },
   "answer-checklist": {
     view: "checklist",
     targetSelector: '#checklistSections > .checklist-section:first-child .checklist-item:first-child .checklist-answer',
     title: "Answer a checklist question",
-    instruction: "Choose an answer for the highlighted question."
+    instruction: "Choose an answer for the highlighted question.",
+    calloutTitle: "Record one finding",
+    callout: "Checklist answers become concise, de-identified clinical context for the next prompt. Choose the answer that fits this sample case."
   },
   "open-prompts": {
     view: "prompts",
     navTarget: "prompts",
     title: "Open the prompt builder",
     instruction: "Click OpenEvidence Prompts in the sidebar.",
-    helper: ""
+    calloutTitle: "Create a prompt from reviewed information",
+    callout: "The prompt builder combines the sources and checklist answers you reviewed. It uses de-identified text only."
   },
   "copy-prompt": {
     view: "prompts",
     targetSelector: '[data-action="copy-prompt"]',
     title: "Copy the prompt",
-    instruction: "Click Copy prompt."
+    instruction: "Click Copy prompt.",
+    calloutTitle: "Copy the prepared prompt",
+    callout: "The prompt is ready to paste into your preferred clinical reasoning tool. The app does not send the prompt or save an external response."
   },
   "open-teaching": {
     view: "prompts",
     targetSelector: "#promptTaskSelect",
     title: "Open the teaching showcase",
     instruction: "Choose Teaching: full case trajectory from the prompt list.",
-    helper: ""
+    calloutTitle: "Switch to the teaching prompt",
+    callout: "This version uses the same reviewed case information, but asks for an explanation of the clinical reasoning for a learner."
   },
   "teaching-showcase": {
     view: "prompts",
     targetSelector: "#promptOutputHighlighted",
     title: "See the case teaching explanation",
-    instruction: "Review the teaching prompt, then click Copy prompt to finish the demo."
+    instruction: "Review the teaching prompt, then click Copy prompt to finish the demo.",
+    calloutTitle: "What this prompt teaches",
+    callout: "It asks the receiving tool to explain Daniel’s presentation, key decisions, and hospital course in a way a clinician in training can follow."
   },
   done: {
     view: "prompts",
