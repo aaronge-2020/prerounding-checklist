@@ -60,7 +60,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
       if (redaction.state === "confirmed") {
         markup += `<button type="button" class="redaction-change redaction-change--confirmed ${inspected}" data-action="${escapeHtml(action)}" ${attributes} data-redaction-index="${index}" title="Accepted redaction. Click to review or undo it." aria-label="Review accepted redaction ${escapeHtml(redaction.placeholder)}"><mark>${escapeHtml(redaction.placeholder)}</mark></button>`;
       } else {
-        markup += `<button type="button" class="redaction-change ${inspected}" data-action="${escapeHtml(action)}" ${attributes} data-redaction-index="${index}" data-original="${escapeHtml(redaction.original)}" title="Original in this active tab: ${escapeHtml(redaction.original)}" aria-label="Review replacement ${escapeHtml(redaction.placeholder)}"><del>${escapeHtml(redaction.original)}</del><span class="redaction-change-arrow" aria-hidden="true">→</span><ins>${escapeHtml(redaction.placeholder)}</ins></button>`;
+        markup += `<button type="button" class="redaction-change ${inspected}" data-action="${escapeHtml(action)}" ${attributes} data-redaction-index="${index}" data-original="${escapeHtml(redaction.original)}" title="Review this suggested replacement" aria-label="Review replacement ${escapeHtml(redaction.placeholder)}"><del>${escapeHtml(redaction.original)}</del><span class="redaction-change-arrow" aria-hidden="true">→</span><ins>${escapeHtml(redaction.placeholder)}</ins></button>`;
       }
       cursor = replacementEnd;
     }
@@ -83,7 +83,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
         <div class="redaction-review-heading">
           <div>
             <strong>${pending ? `${pending} change${pending === 1 ? "" : "s"} to review` : hasNextSection ? "Field complete" : "Review complete"}</strong>
-            <span class="muted">${pending ? "Click a crossed-out value in the document below. The original stays only in this tab." : hasNextSection ? "There are no more redactions to decide in this field." : "Click a crossed-out value in the document below. The original stays only in this tab."}</span>
+            <span class="muted">${pending ? "Click a crossed-out value to review a suggested replacement. Your original note is not saved with the de-identified version." : hasNextSection ? "There are no more redactions to decide in this field." : "Click a crossed-out value to review a suggested replacement. Your original note is not saved with the de-identified version."}</span>
           </div>
           ${pending ? `<button class="button--quiet" type="button" data-action="confirm-all-section-redactions" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Confirm rest (${pending})</button><button class="button--quiet" type="button" data-action="reject-all-section-redactions" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Reject rest (${pending})</button>` : ""}
         </div>
@@ -91,7 +91,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
           <div class="redaction-inspector redaction-inline-actions">
             <div>
               <strong>${inspectedIsConfirmed ? "Accepted redaction" : `Review ${escapeHtml(inspected.placeholder)}`}</strong>
-              <span>${inspectedIsConfirmed ? "The document shows only the safe replacement. Undo brings back the original in this tab." : "Choose whether to keep the replacement or restore the original in this tab."}</span>
+              <span>${inspectedIsConfirmed ? "The de-identified version keeps only the replacement. Undo restores the original text before you save." : "Keep the replacement to remove this identifier, or restore the text if it is not identifying."}</span>
             </div>
             <div class="button-row">
               ${inspectedIsConfirmed ? "" : `<button class="button--secondary" type="button" data-action="keep-reviewed-redaction" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Accept redaction</button>`}
