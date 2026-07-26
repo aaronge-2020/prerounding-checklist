@@ -11,25 +11,19 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "daily",
     targetSelector: '[data-action="confirm-all-section-redactions"]',
     title: "Check the highlighted changes",
-    instruction: "Review the highlighted changes, then click Confirm rest.",
-    calloutTitle: "Review proposed replacements",
-    callout: "The model flags possible names, dates, account numbers, and contact details. Confirming the remaining changes saves only the de-identified text. The original source is available only in this current review."
+    instruction: "Review the highlighted changes, then click Confirm rest."
   },
   "save-day": {
     view: "daily",
     targetSelector: '[data-action="add-daily-source"]',
     title: "Add the day-one update",
-    instruction: "Click De-identify and add source.",
-    calloutTitle: "Add today’s update",
-    callout: "This second synthetic source contains Daniel’s day-one findings and treatment updates. Saving it separately lets later prompts distinguish the admission story from what changed today."
+    instruction: "Click De-identify and add source."
   },
   "daily-review": {
     view: "daily",
     targetSelector: '[data-action="confirm-all-section-redactions"]',
     title: "Check the day-one changes",
-    instruction: "Review the highlighted changes, then continue through the fields.",
-    calloutTitle: "Review the day-one source",
-    callout: "Confirm the proposed replacements for this update. The app keeps each hospital day separate so your progress-note prompt can focus on today’s decisions."
+    instruction: "Review the highlighted changes, then continue through the fields."
   },
   "open-workups": {
     view: "workups",
@@ -42,9 +36,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "workups",
     targetSelector: '.workup-checkbox[value="general-admission"]',
     title: "Choose a question set",
-    instruction: "Select General admission.",
-    calloutTitle: "Choose a workup",
-    callout: "A workup is a reusable set of focused history and examination questions. Select it first, then explicitly build the checklist you want to use."
+    instruction: "Select General admission."
   },
   "build-checklist": {
     view: "workups",
@@ -57,9 +49,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "checklist",
     targetSelector: '#checklistSections > .checklist-section:first-child .checklist-item:first-child .checklist-answer',
     title: "Answer a checklist question",
-    instruction: "Choose an answer for the highlighted question.",
-    calloutTitle: "Capture one clinical finding",
-    callout: "Checklist answers become concise evidence for the next prompt. Choose the answer that fits the sample case to see how the workflow carries it forward."
+    instruction: "Choose an answer for the highlighted question."
   },
   "open-prompts": {
     view: "prompts",
@@ -72,9 +62,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "prompts",
     targetSelector: '[data-action="copy-prompt"]',
     title: "Copy the prompt",
-    instruction: "Click Copy prompt.",
-    calloutTitle: "Preview the assembled prompt",
-    callout: "The app combines the reviewed admission source, today’s update, and checklist answer into labeled, de-identified context. You can adjust the template before copying it."
+    instruction: "Click Copy prompt."
   },
   "open-teaching": {
     view: "prompts",
@@ -87,9 +75,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "prompts",
     targetSelector: "#promptOutputHighlighted",
     title: "See the case teaching explanation",
-    instruction: "Review the teaching prompt, then click Copy prompt to finish the demo.",
-    calloutTitle: "See the teaching version",
-    callout: "This prompt asks for a case-based explanation for a clinician in training. It uses the same reviewed sources but emphasizes the clinical reasoning behind Daniel’s evaluation and treatment decisions."
+    instruction: "Review the teaching prompt, then click Copy prompt to finish the demo."
   },
   done: {
     view: "prompts",

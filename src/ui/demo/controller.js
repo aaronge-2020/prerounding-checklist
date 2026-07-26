@@ -1,5 +1,5 @@
-import { createDemoPresentation } from "./presentation.js?v=20260726-demo-teaching-3";
-import { DEMO_DAY_ID, DEMO_WORKUP_ID } from "./session.js?v=20260726-demo-teaching-3";
+import { createDemoPresentation } from "./presentation.js?v=20260726-demo-teaching-4";
+import { DEMO_DAY_ID, DEMO_WORKUP_ID } from "./session.js?v=20260726-demo-teaching-4";
 
 export function createDemoController({ app, byId, escapeHtml, getSession, getView, render: renderApp, selectDemoPacket }) {
   const presentation = createDemoPresentation({ escapeHtml });
@@ -34,17 +34,16 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     document.querySelectorAll("[data-demo-callout]").forEach((element) => element.remove());
   }
 
-  function positionCallout(target, callout) {
-    if (!target || !callout) return;
-    const rect = target.getBoundingClientRect();
-    const gap = 14;
-    const width = Math.min(330, window.innerWidth - 32);
-    const left = rect.right + gap + width <= window.innerWidth
-      ? rect.right + gap
-      : Math.max(16, rect.left - width - gap);
-    const top = Math.max(window.scrollY + 12, window.scrollY + rect.top - 8);
-    callout.style.left = `${Math.round(window.scrollX + left)}px`;
-    callout.style.top = `${Math.round(top)}px`;
+  function calloutHost(target) {
+    return target.closest(
+      ".redaction-review-heading, .source-draft-footer, .workup-editor-header-actions, " +
+      ".checklist-item, .prompt-panel-header, .button-row"
+    ) || target;
+  }
+
+  function mountCallout(target, stage) {
+    if (!target || !stage.callout) return;
+    calloutHost(target).insertAdjacentHTML("afterend", presentation.renderCallout({ stage }));
   }
 
   function render() {
@@ -75,10 +74,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     if (!target) return;
     target.classList.add("demo-next-action");
     target.dataset.demoTarget = "true";
-    if (!routeMismatch && stage.callout) {
-      document.body.insertAdjacentHTML("beforeend", presentation.renderCallout({ stage }));
-      positionCallout(target, document.querySelector("[data-demo-callout]"));
-    }
+    if (!routeMismatch) mountCallout(target, stage);
     requestAnimationFrame(() => {
       target.focus({ preventScroll: true });
       if (!stage.navTarget && view === stage.view) target.scrollIntoView({ block: "center", behavior: "smooth" });
@@ -90,10 +86,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       currentTarget?.classList.add("demo-next-action");
       if (currentTarget) {
         currentTarget.dataset.demoTarget = "true";
-        if (!routeMismatch && stage.callout) {
-          document.body.insertAdjacentHTML("beforeend", presentation.renderCallout({ stage }));
-          positionCallout(currentTarget, document.querySelector("[data-demo-callout]"));
-        }
+        if (!routeMismatch) mountCallout(currentTarget, stage);
       }
     }, 250);
   }

@@ -7195,23 +7195,24 @@ body.vault-locked .vault-access {
 }
 
 .guided-demo-callout {
-  position: absolute;
-  z-index: 30;
-  width: min(330px, calc(100vw - 32px));
+  width: min(540px, 100%);
   display: grid;
   gap: 6px;
-  padding: 13px 14px;
-  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
-  border-radius: 10px;
-  background: var(--surface);
-  box-shadow: 0 12px 30px rgb(27 50 68 / 18%);
+  margin: 10px 0;
+  padding: 11px 13px;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent) 5%, var(--surface));
   color: var(--ink);
-  font-size: 13px;
-  line-height: 1.45;
+  font-size: 12px;
+  line-height: 1.42;
 }
 
 .guided-demo-callout strong { font-size: 13px; }
 .guided-demo-callout p { margin: 0; color: var(--muted); }
+
+.source-draft-footer + .guided-demo-callout { margin-left: auto; }
 
 .presentation-editor-input {
   display: grid;

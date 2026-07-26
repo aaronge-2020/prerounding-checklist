@@ -5,7 +5,7 @@ import {
   DEMO_DAY_ID,
   DEMO_PATIENT_ID,
   DEMO_WORKUP_ID
-} from "./session.js?v=20260726-demo-teaching-3";
+} from "./session.js?v=20260726-demo-teaching-4";
 
 export function createDemoSessionController({
   app,
