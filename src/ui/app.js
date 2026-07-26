@@ -198,9 +198,9 @@ import {
 } from "./redaction/presentation.js?v=20260723-always-save";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
-import { createDemoController } from "./demo/controller.js?v=20260726-demo-teaching-2";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260726-demo-teaching-2";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20260726-demo-teaching-2";
+import { createDemoController } from "./demo/controller.js?v=20260726-demo-teaching-3";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260726-demo-teaching-3";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20260726-demo-teaching-3";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
   vault: null,

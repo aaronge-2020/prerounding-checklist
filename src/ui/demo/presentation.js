@@ -4,31 +4,32 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     targetSelector: '[data-action="add-admission-source"]',
     title: "Start with the sample case",
     instruction: "Click De-identify and add source.",
-    explanationTitle: "Why you start here",
-    explanation: "This synthetic packet lets you practice the workflow without changing your own vault. In normal use, you paste one source at a time and review de-identification before saving it."
+    calloutTitle: "Meet the sample patient",
+    callout: "Daniel Morgan is a synthetic 61-year-old man with coronary artery disease, admitted with worsening chest pain and shortness of breath concerning for NSTEMI. The note includes realistic sample identifiers. The selected local model scans this source in your browser, proposes replacements, and asks for your review before saving."
   },
   "context-review": {
     view: "daily",
     targetSelector: '[data-action="confirm-all-section-redactions"]',
     title: "Check the highlighted changes",
     instruction: "Review the highlighted changes, then click Confirm rest.",
-    explanationTitle: "What this review does",
-    explanation: "The app marks possible identifiers for your decision. Confirming a change saves only the de-identified replacement; the original text stays in this active review only."
+    calloutTitle: "Review proposed replacements",
+    callout: "The model flags possible names, dates, account numbers, and contact details. Confirming the remaining changes saves only the de-identified text. The original source is available only in this current review."
   },
   "save-day": {
     view: "daily",
     targetSelector: '[data-action="add-daily-source"]',
     title: "Add the day-one update",
     instruction: "Click De-identify and add source.",
-    explanation: "Adding the day-one source keeps today’s evidence separate from admission context, so the prompt can distinguish current findings from the original presentation."
+    calloutTitle: "Add today’s update",
+    callout: "This second synthetic source contains Daniel’s day-one findings and treatment updates. Saving it separately lets later prompts distinguish the admission story from what changed today."
   },
   "daily-review": {
     view: "daily",
     targetSelector: '[data-action="confirm-all-section-redactions"]',
     title: "Check the day-one changes",
     instruction: "Review the highlighted changes, then continue through the fields.",
-    explanationTitle: "Why the day is reviewed separately",
-    explanation: "Selected-day information is reviewed on its own so the prompt can distinguish current findings from admission history."
+    calloutTitle: "Review the day-one source",
+    callout: "Confirm the proposed replacements for this update. The app keeps each hospital day separate so your progress-note prompt can focus on today’s decisions."
   },
   "open-workups": {
     view: "workups",
@@ -42,8 +43,8 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     targetSelector: '.workup-checkbox[value="general-admission"]',
     title: "Choose a question set",
     instruction: "Select General admission.",
-    explanationTitle: "What a workup does",
-    explanation: "A workup is a reusable set of history and physical-exam questions. Selecting it does not make a checklist until you explicitly build one."
+    calloutTitle: "Choose a workup",
+    callout: "A workup is a reusable set of focused history and examination questions. Select it first, then explicitly build the checklist you want to use."
   },
   "build-checklist": {
     view: "workups",
@@ -57,8 +58,8 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     targetSelector: '#checklistSections > .checklist-section:first-child .checklist-item:first-child .checklist-answer',
     title: "Answer a checklist question",
     instruction: "Choose an answer for the highlighted question.",
-    explanationTitle: "Why answer the checklist",
-    explanation: "Your documented history and examination findings become concise, selected-day evidence for the next prompt."
+    calloutTitle: "Capture one clinical finding",
+    callout: "Checklist answers become concise evidence for the next prompt. Choose the answer that fits the sample case to see how the workflow carries it forward."
   },
   "open-prompts": {
     view: "prompts",
@@ -72,8 +73,8 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     targetSelector: '[data-action="copy-prompt"]',
     title: "Copy the prompt",
     instruction: "Click Copy prompt.",
-    explanationTitle: "What you are copying",
-    explanation: "The app assembles de-identified, labeled context into a prompt. You can edit the template before copying it; it does not generate or store an external result."
+    calloutTitle: "Preview the assembled prompt",
+    callout: "The app combines the reviewed admission source, today’s update, and checklist answer into labeled, de-identified context. You can adjust the template before copying it."
   },
   "open-teaching": {
     view: "prompts",
@@ -87,15 +88,14 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     targetSelector: "#promptOutputHighlighted",
     title: "See the case teaching explanation",
     instruction: "Review the teaching prompt, then click Copy prompt to finish the demo.",
-    explanationTitle: "How the teaching prompt is different",
-    explanation: "This prompt turns the reviewed admission context, hospital-day update, and checklist findings into a case-based explanation for a clinician in training. It emphasizes clinical reasoning and the meaning of key decisions."
+    calloutTitle: "See the teaching version",
+    callout: "This prompt asks for a case-based explanation for a clinician in training. It uses the same reviewed sources but emphasizes the clinical reasoning behind Daniel’s evaluation and treatment decisions."
   },
   done: {
     view: "prompts",
     title: "Demo complete",
     instruction: "You followed the full sample workflow.",
-    explanationTitle: "You completed the workflow",
-    explanation: "You reviewed de-identification, built a checklist, created a progress-note prompt, and previewed the teaching-case prompt. Nothing from the synthetic case was written to your vault."
+    helper: "You reviewed the sample case, created a prompt, and reached the teaching showcase."
   }
 });
 
@@ -128,7 +128,6 @@ export function createDemoPresentation({ escapeHtml }) {
             <span class="guided-demo-action">${escapeHtml(nextInstruction)}</span>
             ${!routeMismatch && stage.helper ? `<span class="guided-demo-note">${escapeHtml(stage.helper)}</span>` : ""}
           </div>
-          ${!routeMismatch && stage.explanation ? `<aside class="guided-demo-explainer"><strong>${escapeHtml(stage.explanationTitle || "What this step does")}</strong><span>${escapeHtml(stage.explanation)}</span></aside>` : ""}
         </div>
         <div class="guided-demo-actions">
           <span class="guided-demo-badge">Synthetic sample</span>
@@ -138,5 +137,15 @@ export function createDemoPresentation({ escapeHtml }) {
     `;
   }
 
-  return { renderGuide, stageFor: demoStage };
+  function renderCallout({ stage }) {
+    if (!stage.callout) return "";
+    return `
+      <aside class="guided-demo-callout" data-demo-callout role="note">
+        <strong>${escapeHtml(stage.calloutTitle || "About this step")}</strong>
+        <p>${escapeHtml(stage.callout)}</p>
+      </aside>
+    `;
+  }
+
+  return { renderGuide, renderCallout, stageFor: demoStage };
 }

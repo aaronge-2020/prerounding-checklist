@@ -20,7 +20,8 @@ const demoPatient = createDemoPatient();
 assert.equal(demoPatient.contextSections.length, 0, "the guided demo must begin with an empty admission source list");
 assert.equal(demoPatient.days[0].sourceCaptures.length, 0, "the guided demo must add the selected-day source through the normal workflow");
 assert.equal(demoStage("teaching-showcase").title, "See the case teaching explanation");
-assert.match(demoView.renderGuide({ session: { stage: "teaching-showcase" }, currentView: "prompts" }), /case-based explanation for a clinician in training/);
+assert.doesNotMatch(demoView.renderGuide({ session: { stage: "teaching-showcase" }, currentView: "prompts" }), /case-based explanation for a clinician in training/);
+assert.match(demoView.renderCallout({ stage: demoStage("teaching-showcase") }), /case-based explanation for a clinician in training/);
 const dailyMarkup = dailyView.renderDaily({
   patient: { contextSections: [{ id: "admission", label: "Admission context", deidentifiedText: "", residualWarnings: [], createdAt: "2026-01-01" }] },
   days: [{ id: "day1", label: "HD1", date: "2026-01-02", sourceCaptures: [] }],
