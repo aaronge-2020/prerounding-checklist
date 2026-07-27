@@ -322,23 +322,13 @@ Do not repeat:
 
 ### Differential for new findings or symptoms
 
-For every new symptom or finding whose cause remains unresolved and changes today’s evaluation or management, include a Differential block directly below the related problem heading and before the actions.
+For every new symptom or finding whose cause remains unresolved and changes today’s evaluation or management, include one concise differential paragraph directly below the related problem heading and before the actions.
 
-Use this exact order:
+Use this exact format:
 
-Differential for [new symptom or finding]
+[most likely diagnosis] vs [plausible alternative 1] vs [plausible alternative 2] vs [plausible alternative 3] vs [plausible alternative 4]. [Most likely diagnosis] is most likely because [one or two sentences comparing chart-supported evidence for the leading diagnosis with the alternatives].
 
-Most likely diagnosis: [leading diagnosis]
-
-Diagnosis 1: [plausible alternative]
-
-Diagnosis 2: [plausible alternative]
-
-Diagnosis 3: [plausible alternative]
-
-Diagnosis 4: [plausible alternative]
-
-Why most likely: [one or two sentences comparing the chart-supported evidence for the leading diagnosis with the four alternatives.]
+Do not use a separate differential heading, numbered diagnosis labels, or bullets.
 
 Every listed diagnosis must be plausible and management-relevant. Do not invent diagnoses, findings, or supporting evidence. Do not add a differential for an established diagnosis or a clinically irrelevant finding.
 

@@ -419,23 +419,13 @@ Avoid:
 
 - “The central question today is whether she achieves sustained defervescence and clinical improvement sufficient to transition to oral antibiotics and discharge, and what oral agent is appropriate given pending culture data.”
 
-For every new symptom or finding whose cause is not established and whose differential changes evaluation or management, include a formal Differential block under the related Plan problem, before the action bullets.
+For every new symptom or finding whose cause is not established and whose differential changes evaluation or management, include one concise differential paragraph under the related Plan problem, before the action bullets.
 
-Use this exact order:
+Use this exact format:
 
-Differential for [new symptom or finding]
+[most likely diagnosis] vs [plausible alternative 1] vs [plausible alternative 2] vs [plausible alternative 3] vs [plausible alternative 4]. [Most likely diagnosis] is most likely because [one or two sentences comparing chart-supported evidence for the leading diagnosis with the alternatives].
 
-Most likely diagnosis: [leading diagnosis]
-
-Diagnosis 1: [plausible alternative]
-
-Diagnosis 2: [plausible alternative]
-
-Diagnosis 3: [plausible alternative]
-
-Diagnosis 4: [plausible alternative]
-
-Why most likely: [one or two sentences comparing the chart-supported evidence for the leading diagnosis with the four alternatives.]
+Do not use a separate differential heading, numbered diagnosis labels, or bullets.
 
 Every listed diagnosis must be plausible and management-relevant. Do not invent diagnoses, findings, or supporting evidence. Do not add a differential for an established diagnosis or a clinically irrelevant finding.
 

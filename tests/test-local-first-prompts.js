@@ -63,7 +63,7 @@ assert.match(admission, /Scale detail to case complexity and make a straightforw
 assert.match(admission, /Omit every subjective, objective, and historical detail that does not change the current differential, management, plan, risk, or disposition/);
 assert.match(admission, /why the patient was admitted plus the one or two past medical-history conditions most pertinent/);
 assert.match(admission, /differential diagnoses under the applicable problem in Plan/);
-assert.match(admission, /Most likely diagnosis, Diagnosis 1, Diagnosis 2, Diagnosis 3, Diagnosis 4/);
+assert.match(admission, /most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4/);
 assert.match(guidelines.admission, /Begin with age, sex or gender as documented/);
 assert.match(guidelines.admission, /conditions or procedures that modify diagnosis or treatment/);
 assert.match(guidelines.admission, /Use the straightforward-case format unless there is meaningful diagnostic uncertainty/);
@@ -80,7 +80,7 @@ assert.match(progress, /Scale detail to case complexity and make a straightforwa
 assert.match(progress, /Omit every subjective, objective, and historical detail that does not change today's differential, management, plan, risk, or disposition/);
 assert.match(progress, /why the patient was admitted plus the one or two past medical-history conditions most pertinent/);
 assert.match(progress, /differential diagnoses under the applicable problem in Plan/);
-assert.match(progress, /Most likely diagnosis, Diagnosis 1, Diagnosis 2, Diagnosis 3, Diagnosis 4/);
+assert.match(progress, /most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4/);
 assert.match(guidelines.progress, /The first sentence must restate the overall One-Liner synthesis/);
 assert.match(guidelines.progress, /One or two comorbidities or recent interventions most relevant to today’s decisions/);
 assert.match(guidelines.progress, /Target 350–500 words for a complex patient and fewer for a straightforward patient/);
@@ -236,7 +236,7 @@ const directAdmission = buildCustomOpenEvidencePrompt({
   guidelineSets
 });
 assert.doesNotMatch(directAdmission, /Attending-Facing H&P Instructions/, "guidelines are only included where a template references their token - never force-injected");
-assert.match(directAdmission, /Most likely diagnosis; Diagnosis 1; Diagnosis 2; Diagnosis 3; Diagnosis 4; Why most likely/);
+assert.match(directAdmission, /most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4/);
 assert.doesNotMatch(directAdmission, /Privacy rules:/);
 
 const directProgress = buildCustomOpenEvidencePrompt({
@@ -246,7 +246,7 @@ const directProgress = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelineSets
 });
-assert.match(directProgress, /Most likely diagnosis; Diagnosis 1; Diagnosis 2; Diagnosis 3; Diagnosis 4; Why most likely/);
+assert.match(directProgress, /most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4/);
 
 const directGuidelines = buildCustomOpenEvidencePrompt({
   taskId: "initial_admission_rounds",
