@@ -43,10 +43,6 @@ export function createPromptTaskController({ state, setStatus, renderPrompts, re
 
   function updatePresentationToEdit(value) {
     state.presentationToEdit = value;
-    const requiredMessage = document.querySelector("[data-presentation-editor-required]");
-    if (requiredMessage) requiredMessage.hidden = Boolean(state.presentationToEdit.trim());
-    const copyButton = document.querySelector('[data-action="copy-prompt"]');
-    if (copyButton && state.selectedPromptTask === "presentation_quality_editor") copyButton.disabled = !state.presentationToEdit.trim();
     refreshPromptPreview();
   }
 

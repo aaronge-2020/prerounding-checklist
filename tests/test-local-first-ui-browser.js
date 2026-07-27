@@ -501,6 +501,26 @@ try {
   await page.selectOption("#promptTaskSelect", "medication_safety_audit");
   await page.waitForFunction(() => /insufficient information/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
 
+  // The presentation editor is an optional insertion surface: its own grid
+  // row must stay clear of the template editor, and clinicians may copy the
+  // instructions when they plan to supply their presentation directly in the
+  // destination chat.
+  await page.selectOption("#promptTaskSelect", "presentation_quality_editor");
+  await page.waitForSelector("#presentationToEdit");
+  assert.equal(await page.locator('[data-action="copy-prompt"]').isEnabled(), true);
+  assert.equal(await page.locator("#presentationToEdit").evaluate((node) => {
+    const presentation = node.getBoundingClientRect();
+    const template = document.querySelector("#promptPreview")?.getBoundingClientRect();
+    return Boolean(template) && presentation.bottom <= template.top;
+  }), true);
+  {
+    const copied = await copiedPromptText();
+    assert.match(copied, /Return only the fully revised presentation/);
+    assert.doesNotMatch(copied, /No presentation was pasted/);
+  }
+  await page.locator("#presentationToEdit").fill("One-Liner\nDe-identified presentation supplied in the editor.");
+  await page.waitForFunction(() => /De-identified presentation supplied in the editor/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
+
   await page.click('[data-view-target="quickDeid"]');
   await page.waitForSelector("#quickDeidMode");
   await page.waitForSelector(".quick-model-control");

@@ -36,7 +36,7 @@ export function createPromptsPresentation({ escapeHtml }) {
 
     return `
       <div class="prompt-layout">
-        <section class="prompt-panel prompt-template-panel">
+        <section class="prompt-panel prompt-template-panel ${requiresPresentationToEdit ? "prompt-template-panel--presentation-editor" : ""}">
           <div class="prompt-panel-header">
             <div>
               <h2>Prompt template (editable)</h2>
@@ -56,12 +56,11 @@ export function createPromptsPresentation({ escapeHtml }) {
           </div>
           ${requiresPresentationToEdit ? `
             <section class="presentation-editor-input" aria-labelledby="presentationEditorInputTitle">
-              <div>
-                <h3 id="presentationEditorInputTitle">Presentation to edit</h3>
-                <p>Paste a de-identified H&amp;P or progress presentation. This text stays only in the current browser tab and is used to build the editor prompt.</p>
+              <div class="presentation-editor-input__heading">
+                <h3 id="presentationEditorInputTitle">Presentation to edit <span class="presentation-editor-input__optional">Optional</span></h3>
+                <p>Paste a de-identified H&amp;P or progress presentation to insert it in the prompt. Leave this blank when you will provide the presentation in the chat instead. This text stays only in the current browser tab.</p>
               </div>
               <textarea id="presentationToEdit" rows="12" spellcheck="true" placeholder="Paste the de-identified presentation here...">${escapeHtml(presentationToEdit)}</textarea>
-              <p class="warning-box presentation-editor-required" data-presentation-editor-required ${presentationToEdit.trim() ? "hidden" : ""}>Paste a de-identified presentation to build the editor prompt.</p>
             </section>
           ` : ""}
           <div class="prompt-template-wrap">
@@ -97,7 +96,7 @@ export function createPromptsPresentation({ escapeHtml }) {
           </div>
           <div id="promptOutputHighlighted" class="prompt-output-highlighted" tabindex="-1" aria-label="Generated prompt with variables highlighted">${renderHighlightedSegments(previewSegments, escapeHtml, colorOverrides)}</div>
           <div class="button-row">
-            <button class="button--primary" type="button" data-action="copy-prompt" ${promptError || (requiresPresentationToEdit && !presentationToEdit.trim()) ? "disabled" : ""}>Copy prompt</button>
+            <button class="button--primary" type="button" data-action="copy-prompt" ${promptError ? "disabled" : ""}>Copy prompt</button>
             <button class="button--secondary" type="button" data-action="open-open-evidence">Open OpenEvidence</button>
             <button class="button--quiet" type="button" data-action="reset-variable-colors">Reset colors</button>
           </div>

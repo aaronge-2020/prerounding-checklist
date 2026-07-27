@@ -129,6 +129,14 @@ const presentationEditorPrompt = buildCustomOpenEvidencePrompt({
 assert.match(presentationEditorPrompt, /Return only the fully revised presentation/);
 assert.match(presentationEditorPrompt, /A de-identified sample presentation/);
 assert.doesNotMatch(presentationEditorPrompt, /@presentation-to-edit/);
+const presentationEditorWithoutPastedText = buildCustomOpenEvidencePrompt({
+  taskId: "presentation_quality_editor",
+  template: DEFAULT_PROMPT_TEMPLATES.presentation_quality_editor,
+  patient,
+  selectedDayId: day.id
+});
+assert.match(presentationEditorWithoutPastedText, /Return only the fully revised presentation/);
+assert.doesNotMatch(presentationEditorWithoutPastedText, /No presentation was pasted/);
 const consultingGuidelines = createGuidelineSet("Consulting Updated", readFileSync("prompts/Consulting.md", "utf8"));
 const consulting = buildCustomOpenEvidencePrompt({
   taskId: "consulting",

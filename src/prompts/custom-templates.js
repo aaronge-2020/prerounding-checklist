@@ -240,7 +240,10 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
     "@progress-note-packet": buildProgressNotePacket({ patient, selectedDay }),
     "@clinical-differential-instructions": CLINICAL_DIFFERENTIAL_INSTRUCTIONS,
     "@presentation-editor-instructions": PRESENTATION_EDITOR_INSTRUCTIONS,
-    "@presentation-to-edit": String(presentationToEdit || "").trim() || "No presentation was pasted. Ask the user to paste the de-identified presentation to edit.",
+    // A presentation can be supplied directly in the destination chat. Keep
+    // this optional token empty rather than inserting an instruction that
+    // would make a copied editor prompt unusable in that workflow.
+    "@presentation-to-edit": String(presentationToEdit || "").trim(),
     "@checklist-answers": checklistAnswersSummary(snapshot, answers, quickNotes),
     "@openevidence-exam-note": savedExamNoteText(selectedDay) || "No saved OpenEvidence exam note.",
     "@admissions-exam-findings": admissionExamFindings(patient),

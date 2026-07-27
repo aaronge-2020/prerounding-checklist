@@ -2642,6 +2642,13 @@ button.var-fill:focus-visible {
   grid-template-rows: auto auto minmax(0, 1fr) auto;
 }
 
+/* The presentation editor adds a dedicated panel above the template. Give it
+   a named grid row so the template never falls into an implicit row and
+   stretches underneath the pasted presentation. */
+.prompt-layout .prompt-panel.prompt-template-panel--presentation-editor {
+  grid-template-rows: auto auto auto minmax(280px, 1fr) auto;
+}
+
 .prompt-layout .prompt-panel.prompt-output-panel {
   display: grid;
   grid-column: 2;
@@ -7276,16 +7283,28 @@ body.vault-locked .vault-access {
 .presentation-editor-input {
   display: grid;
   gap: 8px;
-  margin: 14px 0;
-  padding: 12px;
+  margin: 0;
+  padding: 14px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background: var(--surface);
+  background: var(--surface-muted);
 }
 
 .presentation-editor-input h3 { margin: 0; font-size: 14px; }
 .presentation-editor-input p { margin: 3px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
-.presentation-editor-input textarea { min-height: 190px; resize: vertical; }
+.presentation-editor-input textarea { min-height: 150px; max-height: 320px; resize: vertical; background: var(--surface); }
+.presentation-editor-input__heading { display: grid; gap: 2px; }
+.presentation-editor-input__optional {
+  display: inline-flex;
+  margin-left: 6px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  vertical-align: 1px;
+}
 
 .guided-demo-bar {
   border-width: 1px;
