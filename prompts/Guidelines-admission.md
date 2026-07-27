@@ -419,13 +419,25 @@ Avoid:
 
 - “The central question today is whether she achieves sustained defervescence and clinical improvement sufficient to transition to oral antibiotics and discharge, and what oral agent is appropriate given pending culture data.”
 
-Include a formal differential only when genuine uncertainty could change evaluation or management.
+For every new symptom or finding whose cause is not established and whose differential changes evaluation or management, include a formal Differential block under the related Plan problem, before the action bullets.
 
-When warranted, use:
+Use this exact order:
 
-Differential: Leading diagnosis; alternative 1; alternative 2.
+Differential for [new symptom or finding]
 
-Every alternative must be plausible and management-relevant.
+Most likely diagnosis: [leading diagnosis]
+
+Diagnosis 1: [plausible alternative]
+
+Diagnosis 2: [plausible alternative]
+
+Diagnosis 3: [plausible alternative]
+
+Diagnosis 4: [plausible alternative]
+
+Why most likely: [one or two sentences comparing the chart-supported evidence for the leading diagnosis with the four alternatives.]
+
+Every listed diagnosis must be plausible and management-relevant. Do not invent diagnoses, findings, or supporting evidence. Do not add a differential for an established diagnosis or a clinically irrelevant finding.
 
 ## Plan
 

@@ -97,10 +97,10 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260726-presentation-editor";
+} from "../prompts/custom-templates.js?v=20260727-differential-format-1";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260723-edit-save";
-import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260726-presentation-editor";
+import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260727-differential-format-1";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import {
   ensureAdditionalGuidelineSets,

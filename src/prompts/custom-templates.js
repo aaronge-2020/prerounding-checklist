@@ -17,18 +17,21 @@ Silently verify every requirement before returning the revision:
 - Subjective contains only consequential overnight events, patient-reported change, and symptoms that affect today’s assessment, plan, immediate risk, procedural readiness, or disposition. Do not put imaging or laboratory results, routine medication administration, routine dialysis, routine bowel preparation, or a complete review of systems here.
 - Objective contains only decision-relevant vital/support data, focused examination findings, and the shortest useful laboratory or diagnostic evidence. Do not put treatments, procedure scheduling, bowel preparation, recommendations, or plans in Objective. Omit stale values and details that would leave the Assessment, Plan, risk, readiness, and disposition unchanged if removed.
 - Assessment interprets the evidence rather than restating it: severity, trajectory, diagnostic uncertainty, competing risk, and the central decision for today. Do not duplicate detailed findings from Objective.
+- For every new symptom or finding with an unresolved, management-relevant cause, retain a Differential block under the related Plan problem: Most likely diagnosis followed by Diagnosis 1 through Diagnosis 4, then one or two sentences explaining why the leading diagnosis is favored over those alternatives. Do not invent alternatives or supporting facts.
 - Plan is prioritized by active decision, avoids duplicate problem groups, and gives concise, specific actions. When proposing a new action, use clear recommendation language such as “Recommend,” “Confirm,” “Clarify,” or “Reconcile”; never present a new recommendation as an existing order or consultant decision.
 - Disposition names only actual remaining barriers.
 
 Remove repetition and filler across all sections. Use the context only to correct material inaccuracies, resolve contradictions, and retain essential context. Do not invent patient facts, results, orders, consultant recommendations, medication administrations, completed procedures, or unstated clinical status. Keep the result concise, clinically coherent, and ready to present to an attending.`;
+
+const CLINICAL_DIFFERENTIAL_INSTRUCTIONS = `For every new symptom or finding whose cause remains diagnostically unresolved and changes management, include a concise Differential block under the related Plan problem. Use this exact order: Most likely diagnosis; Diagnosis 1; Diagnosis 2; Diagnosis 3; Diagnosis 4; Why most likely. The Why most likely line must be one or two sentences explaining why the leading diagnosis is favored over the four alternatives using only chart-supported findings. Keep every alternative plausible and management-relevant. Do not invent diagnoses, facts, or a differential for an already established or clinically irrelevant finding.`;
 
 // These reference the tokens the migration in guideline-sets.js assigns to
 // the two seeded "Admission"/"Progress" sets. If a user deletes one of those
 // sets the token below simply won't resolve (same graceful degradation as
 // referencing any other deleted variable).
 export const DEFAULT_PROMPT_TEMPLATES = {
-  initial_admission_rounds: `@team-preferences\n\n@admission-current-guidelines\n\n@admission-packet`,
-  daily_progress_note: `@team-preferences\n\n@progress-guidelines\n\n@progress-note-packet`,
+  initial_admission_rounds: `@team-preferences\n\n@clinical-differential-instructions\n\n@admission-current-guidelines\n\n@admission-packet`,
+  daily_progress_note: `@team-preferences\n\n@clinical-differential-instructions\n\n@progress-guidelines\n\n@progress-note-packet`,
   presentation_quality_editor: `@presentation-editor-instructions\n\n@presentation-to-edit\n\n@admission-packet\n\n@progress-note-packet`,
   teaching_case_trajectory: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   medication_explainer_by_problem: `@medications\n\n@selected-day`,
@@ -44,6 +47,7 @@ export const SMART_PROMPT_VARIABLES = [
   { token: "@admission-packet", label: "Admission packet", description: "All saved admission fields, labeled." },
   { token: "@selected-day", label: "Selected hospital day", description: "The chosen hospital-day packet; defaults to the latest saved day." },
   { token: "@progress-note-packet", label: "Progress-note packet", description: "Curated carry-forward context plus the selected day, in clinical order." },
+  { token: "@clinical-differential-instructions", label: "Clinical differential instructions", description: "Required format for a new, management-relevant symptom or finding with diagnostic uncertainty." },
   { token: "@presentation-editor-instructions", label: "Presentation editor instructions", description: "The built-in editing and verification standard for a presentation." },
   { token: "@presentation-to-edit", label: "Presentation to edit", description: "The de-identified presentation pasted into the editor; held only in this tab." },
   { token: "@checklist-answers", label: "Checklist answers", description: "History and physical exam answers." },
@@ -234,6 +238,7 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
       ? sectionsToPromptBlock(admissionSectionsWithoutTodayExam(patient), "Admission")
       : (selectedDay ? sourceCapturesToPromptBlock(selectedDayCapturesWithoutExam(selectedDay), `Selected day: ${selectedDay.date} - ${selectedDay.label}`) : "No saved hospital day."),
     "@progress-note-packet": buildProgressNotePacket({ patient, selectedDay }),
+    "@clinical-differential-instructions": CLINICAL_DIFFERENTIAL_INSTRUCTIONS,
     "@presentation-editor-instructions": PRESENTATION_EDITOR_INSTRUCTIONS,
     "@presentation-to-edit": String(presentationToEdit || "").trim() || "No presentation was pasted. Ask the user to paste the de-identified presentation to edit.",
     "@checklist-answers": checklistAnswersSummary(snapshot, answers, quickNotes),
@@ -250,10 +255,14 @@ export function interpolatePromptTemplate(template, variables) {
   );
 }
 
-export function buildCustomOpenEvidencePrompt({ template, patient, selectedDayId, guidelineSets = [], teamPreferences, presentationToEdit = "" }) {
+export function buildCustomOpenEvidencePrompt({ taskId, template, patient, selectedDayId, guidelineSets = [], teamPreferences, presentationToEdit = "" }) {
   const variables = buildPromptVariableMap({ patient, selectedDayId, guidelineSets, teamPreferences, presentationToEdit });
   const interpolated = interpolatePromptTemplate(template, variables);
-  return naturalLanguagePrompt(interpolated);
+  const noteTask = ["initial_admission_rounds", "daily_progress_note"].includes(taskId);
+  const includesDifferentialInstructions = String(template || "").includes("@clinical-differential-instructions");
+  return naturalLanguagePrompt(noteTask && !includesDifferentialInstructions
+    ? `${CLINICAL_DIFFERENTIAL_INSTRUCTIONS}\n\n${interpolated}`
+    : interpolated);
 }
 
 function hashToken(token) {

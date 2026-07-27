@@ -320,6 +320,28 @@ Do not repeat:
 - The complete medication list
 - The full prior procedure history
 
+### Differential for new findings or symptoms
+
+For every new symptom or finding whose cause remains unresolved and changes today’s evaluation or management, include a Differential block directly below the related problem heading and before the actions.
+
+Use this exact order:
+
+Differential for [new symptom or finding]
+
+Most likely diagnosis: [leading diagnosis]
+
+Diagnosis 1: [plausible alternative]
+
+Diagnosis 2: [plausible alternative]
+
+Diagnosis 3: [plausible alternative]
+
+Diagnosis 4: [plausible alternative]
+
+Why most likely: [one or two sentences comparing the chart-supported evidence for the leading diagnosis with the four alternatives.]
+
+Every listed diagnosis must be plausible and management-relevant. Do not invent diagnoses, findings, or supporting evidence. Do not add a differential for an established diagnosis or a clinically irrelevant finding.
+
 ### Actions
 
 Use no more than three actions for the dominant problem and one or two for another problem.
