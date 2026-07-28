@@ -92,6 +92,16 @@ assert.match(progress, /Current vital signs and oxygen requirement are not avail
 assert.match(progress, /Patient mentioned new hip pain unrelated to admission\./);
 assert.match(progress, /Feels less short of breath/);
 assert.match(progress, /Selected hospital day/, "daily progress prompt must identify the selected day explicitly");
+assert.doesNotMatch(progress, /2026-07-09/, "OpenEvidence progress prompts must not expose the selected packet's calendar date");
+
+const selectedDayOnlyPrompt = buildCustomOpenEvidencePrompt({
+  taskId: "custom-selected-day-date-guard",
+  template: "@selected-day",
+  patient,
+  selectedDayId: day.id
+});
+assert.match(selectedDayOnlyPrompt, /Selected hospital-day source record/);
+assert.doesNotMatch(selectedDayOnlyPrompt, /2026-07-09/, "the selected-day prompt variable must never expose its stored calendar date");
 
 const teaching = buildOpenEvidencePrompt("teaching_case_trajectory", { patient, selectedDayId: day.id });
 assert.match(teaching, /full case and hospital course/i);

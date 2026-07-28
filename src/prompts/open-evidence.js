@@ -89,7 +89,7 @@ function patientBlocks(patient, selectedDayId = "") {
   return {
     patientContext: sectionsToPromptBlock(patient?.contextSections || [], "Saved patient context"),
     trajectory: buildTrajectoryBlock(patient, { selectedDayId: currentDay?.id, includeAllDays: false }),
-    selectedDay: currentDay ? sourceCapturesToPromptBlock(currentDay.sourceCaptures || [], `Latest day: ${currentDay.date} - ${currentDay.label}`) : "",
+    selectedDay: currentDay ? sourceCapturesToPromptBlock(currentDay.sourceCaptures || [], "Selected hospital-day source record") : "",
     checklist: checklistAnswersSummary(snapshot, answers, quickNotes)
   };
 }

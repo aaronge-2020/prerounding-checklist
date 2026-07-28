@@ -37,15 +37,16 @@ function selectedDaySources(captures = []) {
 }
 
 export function buildProgressNotePacket({ patient, selectedDay } = {}) {
-  const dayLabel = compactText(selectedDay?.label) || "Selected hospital day";
-  const dayDate = compactText(selectedDay?.date) || "not documented";
   const admission = sortedFields("context", patient?.contextSections || [], (section) => isCarryForwardContextRole(section.role));
   const daySources = selectedDaySources(selectedDay?.sourceCaptures || []);
   const packetCheck = sourceCapturePacketCheck(selectedDay?.sourceCaptures || []);
   const exam = selectedDayExam(selectedDay);
 
   const parts = [
-    `Selected hospital day. ${dayLabel}. Date: ${dayDate}.`,
+    // A packet's stored calendar day is an internal redaction anchor, never
+    // OpenEvidence context. The source text already carries only relative
+    // timeline placeholders, and this heading must preserve that boundary.
+    "Selected hospital day.",
     `Carry-forward admission context. ${admission.length ? admission.join("\n\n") : "No carry-forward admission context saved."}`,
     `Selected-day source record. ${daySources.length ? daySources.join("\n\n") : "No selected-day sources saved."}`,
     exam ? `Separate selected-day examination. ${exam}` : "Separate selected-day examination. No checklist or examination note saved outside the source record.",

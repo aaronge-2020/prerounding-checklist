@@ -34,7 +34,8 @@ const selectedDay = {
 };
 
 const packet = buildProgressNotePacket({ patient: { ...patient, contextSections, days: [olderDay, selectedDay] }, selectedDay });
-assert.match(packet, /Selected hospital day\. Hospital day 2\. Date: 2026-07-09\./);
+assert.match(packet, /Selected hospital day\./);
+assert.doesNotMatch(packet, /2026-07-09/, "OpenEvidence packets must not expose a selected day's calendar date");
 assert.match(packet, /Admission reason and initial severity: Admitted for dyspnea/);
 assert.match(packet, /Relevant baseline and active problem context: HFpEF and ESRD/);
 assert.doesNotMatch(packet, /Admission BNP/, "admission-only objective data must stay out of the progress packet");

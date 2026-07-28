@@ -236,7 +236,7 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
     "@hospital-stay": buildTrajectoryBlock(patient, { selectedDayId: selectedDay?.id, includeAllDays: false }),
     "@selected-day": usingAdmission
       ? sectionsToPromptBlock(admissionSectionsWithoutTodayExam(patient), "Admission")
-      : (selectedDay ? sourceCapturesToPromptBlock(selectedDayCapturesWithoutExam(selectedDay), `Selected day: ${selectedDay.date} - ${selectedDay.label}`) : "No saved hospital day."),
+      : (selectedDay ? sourceCapturesToPromptBlock(selectedDayCapturesWithoutExam(selectedDay), "Selected hospital-day source record") : "No saved hospital day."),
     "@progress-note-packet": buildProgressNotePacket({ patient, selectedDay }),
     "@clinical-differential-instructions": CLINICAL_DIFFERENTIAL_INSTRUCTIONS,
     "@presentation-editor-instructions": PRESENTATION_EDITOR_INSTRUCTIONS,

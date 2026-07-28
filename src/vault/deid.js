@@ -569,6 +569,33 @@ const CLINICAL_HEADING_WORDS = new Set([
   "physical", "examination", "imaging", "assessment", "differential", "diagnosis"
 ]);
 
+// These are table and navigation labels found in exported chart views. They
+// look title-cased enough for a general NER model to mistake them for people,
+// but their exact role is structural rather than identifying. Keep this
+// narrow and explicit so actual provider values following these labels remain
+// eligible for redaction.
+const CHART_STRUCTURAL_LABELS = new Set([
+  "recent encounters",
+  "start date",
+  "end date",
+  "authorizing provider"
+]);
+
+function isChartStructuralLabel(span) {
+  return CHART_STRUCTURAL_LABELS.has(normalizePhrase(span));
+}
+
+function isChartTableHeadingFragment(rawText, start, end) {
+  const line = lineAroundSpan(rawText, start, end);
+  if (!/\bmedication\s+sig\b/i.test(line)) {
+    return false;
+  }
+  const words = vocabularyWords(rawText.slice(start, end));
+  return words.length > 0 && words.every((word) => (
+    ["medication", "sig", "start", "end", "date", "taking", "authorizing", "provider"].includes(word)
+  ));
+}
+
 function isLikelyClinicalHeadingPhrase(rawText, start, end) {
   const lineStart = rawText.lastIndexOf("\n", Math.max(0, start - 1)) + 1;
   if (rawText.slice(lineStart, start).trim()) {
@@ -597,6 +624,14 @@ function isLikelyNonNamePhrase(rawText, start, end) {
   }
 
   if (isLikelyClinicalHeadingPhrase(rawText, start, end)) {
+    return true;
+  }
+
+  if (isChartStructuralLabel(span)) {
+    return true;
+  }
+
+  if (isChartTableHeadingFragment(rawText, start, end)) {
     return true;
   }
 

@@ -52,7 +52,10 @@ export function buildTrajectoryBlock(patient, { selectedDayId = "", includeAllDa
   const includedDays = includeAllDays ? days : selected;
   if (!includedDays.length) return "Hospital trajectory. No saved daily updates.";
   const rendered = includedDays.map((day) => {
-    const body = sourceCapturesToPromptBlock(day.sourceCaptures, `${day.date} - ${day.label}`);
+    // Calendar dates are used only to order local packets. They must not be
+    // copied into an external prompt; each capture was already de-identified
+    // against this packet's date when it was saved.
+    const body = sourceCapturesToPromptBlock(day.sourceCaptures, "Hospital-day source record");
     return body;
   });
   return `Hospital trajectory.\n\n${rendered.join("\n\n")}`;
