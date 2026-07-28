@@ -18,6 +18,11 @@ for (const template of Object.values(DEFAULT_PROMPT_TEMPLATES)) {
 }
 assert.match(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@progress-note-packet/, "daily progress template must use the compiled selected-day packet");
 assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@exam-findings/, "daily progress template must not use the removed all-days examination variable");
+assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /@teaching-case-instructions/, "case teaching defaults must include their reusable instructions");
+assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /@medication-explainer-instructions/, "medication teaching defaults must include their reusable instructions");
+assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /@medication-safety-instructions/, "medication safety defaults must include their reusable instructions");
+assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /@admission-packet/, "medication teaching defaults need patient context to establish indication");
+assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /@admission-packet/, "medication safety defaults need patient context for contraindications and verification");
 const customTeamInstructions = "Write only the highest-yield active problems and keep the plan action-focused.";
 assert.equal(buildTeamPreferencesPromptBlock(), "", "team preferences must be blank by default");
 assert.equal(buildTeamPreferencesPromptBlock({ medicalService: "", presentationDetail: "" }), "", "blank settings must stay blank");
@@ -106,6 +111,15 @@ assert.doesNotMatch(selectedDayOnlyPrompt, /2026-07-09/, "the selected-day promp
 const teaching = buildOpenEvidencePrompt("teaching_case_trajectory", { patient, selectedDayId: day.id });
 assert.match(teaching, /full case and hospital course/i);
 assert.match(teaching, /Do not write a clinical note or claim a trend/i);
+
+const defaultTeachingPrompt = buildCustomOpenEvidencePrompt({
+  taskId: "teaching_case_trajectory",
+  template: DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory,
+  patient,
+  selectedDayId: day.id
+});
+assert.match(defaultTeachingPrompt, /two progressively challenging, case-specific active-recall questions/i);
+assert.match(defaultTeachingPrompt, /withhold their answers until the student asks/i);
 
 const medicationOrganizer = buildOpenEvidencePrompt("medication_explainer_by_problem", { patient });
 assert.match(medicationOrganizer, /disease, condition, symptom, or clinical purpose/);
@@ -294,6 +308,18 @@ const medicationDefaultPrompt = buildCustomOpenEvidencePrompt({
   teamPreferences: { teamInstructions: "Medication-focused review." }
 });
 assert.doesNotMatch(medicationDefaultPrompt, /Write for the Primary team/);
+assert.match(medicationDefaultPrompt, /one patient-relevant monitoring or counseling pearl/i);
+assert.match(medicationDefaultPrompt, /case-specific active-recall questions/i);
+
+const medicationSafetyDefaultPrompt = buildCustomOpenEvidencePrompt({
+  taskId: "medication_safety_audit",
+  template: DEFAULT_PROMPT_TEMPLATES.medication_safety_audit,
+  patient,
+  selectedDayId: day.id
+});
+assert.match(medicationSafetyDefaultPrompt, /Rank only credible, clinically important concerns by urgency/i);
+assert.match(medicationSafetyDefaultPrompt, /case-specific pause-and-check questions/i);
+assert.match(medicationSafetyDefaultPrompt, /Missing data alone are not a safety concern/i);
 
 const consultPrompt = buildCustomOpenEvidencePrompt({
   taskId: "teaching_case_trajectory",

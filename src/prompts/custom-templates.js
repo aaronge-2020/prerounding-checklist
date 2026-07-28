@@ -25,6 +25,12 @@ Remove repetition and filler across all sections. Use the context only to correc
 
 const CLINICAL_DIFFERENTIAL_INSTRUCTIONS = `For every new symptom or finding whose cause remains diagnostically unresolved and changes management, include one concise differential paragraph under the related Plan problem. Use this exact format: [most likely diagnosis] vs [plausible alternative 1] vs [plausible alternative 2] vs [plausible alternative 3] vs [plausible alternative 4]. [Most likely diagnosis] is most likely because [one or two sentences comparing chart-supported evidence for the leading diagnosis with the alternatives]. Do not use a separate differential heading, numbered diagnosis labels, or bullets. Keep every alternative plausible and management-relevant. Do not invent diagnoses, facts, or a differential for an already established or clinically irrelevant finding.`;
 
+const TEACHING_CASE_INSTRUCTIONS = `Act as a clinical teacher. Give a one-sentence illness script, then a concise, evidence-tethered chronological synthesis of the case. Teach the pathophysiology, diagnostic reasoning, uncertainty, and why the major decisions or pending questions matter using only details relevant to this patient. Clearly distinguish chart-supported facts from general teaching. End with two progressively challenging, case-specific active-recall questions; withhold their answers until the student asks. Do not write a clinical note, invent facts, or claim an unstated trend.`;
+
+const MEDICATION_EXPLAINER_INSTRUCTIONS = `Teach this medication list by organizing medicines around their apparent condition, symptom, or clinical purpose. For each clinically relevant medicine, give the generic name when available, dose, route, frequency, intended purpose, a one-phrase mechanism or clinical role, and one patient-relevant monitoring or counseling pearl. Mark each intended purpose as confirmed from context, inferred, or uncertain; when uncertain, state the missing information without guessing. Avoid generic monographs and repetition. Use only the supplied medication list and context. End with two progressively challenging, case-specific active-recall questions; withhold their answers until the student asks.`;
+
+const MEDICATION_SAFETY_INSTRUCTIONS = `Run a focused, supervised medication-safety teaching exercise. Rank only credible, clinically important concerns by urgency. For each concern, name the medicine or combination, why it matters for this patient, the chart evidence supporting it, and the exact monitoring, verification step, or question to raise with the supervising clinician. Consider indication, dose, route, frequency, duplication, interaction, contraindication, and renal or hepatic adjustment only when the needed context is available. Missing data alone are not a safety concern: use the exact phrase insufficient information and do not guess. End with two progressively challenging, case-specific pause-and-check questions; withhold their answers until the student asks.`;
+
 // These reference the tokens the migration in guideline-sets.js assigns to
 // the two seeded "Admission"/"Progress" sets. If a user deletes one of those
 // sets the token below simply won't resolve (same graceful degradation as
@@ -33,9 +39,9 @@ export const DEFAULT_PROMPT_TEMPLATES = {
   initial_admission_rounds: `@team-preferences\n\n@clinical-differential-instructions\n\n@admission-current-guidelines\n\n@admission-packet`,
   daily_progress_note: `@team-preferences\n\n@clinical-differential-instructions\n\n@progress-guidelines\n\n@progress-note-packet`,
   presentation_quality_editor: `@presentation-editor-instructions\n\n@presentation-to-edit\n\n@admission-packet\n\n@progress-note-packet`,
-  teaching_case_trajectory: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
-  medication_explainer_by_problem: `@medications\n\n@selected-day`,
-  medication_safety_audit: `@medications\n\n@labs\n\n@selected-day`,
+  teaching_case_trajectory: `@teaching-case-instructions\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
+  medication_explainer_by_problem: `@medication-explainer-instructions\n\n@admission-packet\n\n@medications\n\n@selected-day`,
+  medication_safety_audit: `@medication-safety-instructions\n\n@admission-packet\n\n@medications\n\n@labs\n\n@selected-day`,
   checklist_workup_refinement: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   preround_bedside_exam: `@team-preferences\n\n@pre-round-checklist-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`,
   discharge_instructions: `@team-preferences\n\n@discharge-instructions-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`,
@@ -49,6 +55,9 @@ export const SMART_PROMPT_VARIABLES = [
   { token: "@progress-note-packet", label: "Progress-note packet", description: "Curated carry-forward context plus the selected day, in clinical order." },
   { token: "@clinical-differential-instructions", label: "Clinical differential instructions", description: "Required format for a new, management-relevant symptom or finding with diagnostic uncertainty." },
   { token: "@presentation-editor-instructions", label: "Presentation editor instructions", description: "The built-in editing and verification standard for a presentation." },
+  { token: "@teaching-case-instructions", label: "Teaching case instructions", description: "A concise, patient-specific case-teaching flow with active recall." },
+  { token: "@medication-explainer-instructions", label: "Medication teaching instructions", description: "A patient-specific medication explanation flow with active recall." },
+  { token: "@medication-safety-instructions", label: "Medication safety instructions", description: "A prioritized medication-safety teaching flow with active recall." },
   { token: "@presentation-to-edit", label: "Presentation to edit", description: "The de-identified presentation pasted into the editor; held only in this tab." },
   { token: "@checklist-answers", label: "Checklist answers", description: "History and physical exam answers." },
   { token: "@admissions-exam-findings", label: "Prior clinician exam findings", description: "Physical exam findings documented by another clinician in the admission packet." },
@@ -240,6 +249,9 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
     "@progress-note-packet": buildProgressNotePacket({ patient, selectedDay }),
     "@clinical-differential-instructions": CLINICAL_DIFFERENTIAL_INSTRUCTIONS,
     "@presentation-editor-instructions": PRESENTATION_EDITOR_INSTRUCTIONS,
+    "@teaching-case-instructions": TEACHING_CASE_INSTRUCTIONS,
+    "@medication-explainer-instructions": MEDICATION_EXPLAINER_INSTRUCTIONS,
+    "@medication-safety-instructions": MEDICATION_SAFETY_INSTRUCTIONS,
     // A presentation can be supplied directly in the destination chat. Keep
     // this optional token empty rather than inserting an instruction that
     // would make a copied editor prompt unusable in that workflow.
