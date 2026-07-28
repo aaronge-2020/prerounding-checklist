@@ -552,6 +552,19 @@ assert.equal(
   "relative words in a hospital-day packet should resolve against that packet's date while Hospital Day numbering stays anchored to admission"
 );
 
+const admissionDateFormatText = `EGD/colo (7/9) for melena and +FOBT in ICU, remarkable for non-erosive gastritis for which she has been managed with daily PPI as well as diverticulosis in the sigmoid and descending colon without evidence of active bleeding. She was taken to the OR on 7/15 for left femoral endarterectomy and bilateral iliac covered stent placement. She was started on Xarelto 2.5mg BID as well as DAPT on 07/16/26, now held for bleeding. GI was reengaged on Jul 19, 2026 for reports of blood bowel movements by nursing team. She had multiple CTAs performed, last one 2026-07-23 with questionable active bleeding within the cecum just inferior to the ileocecal valve versus normal mural vasculature in this region. Repeat cscope 7/24.`;
+const admissionDateFormatResult = deidentifyTextStructuredOnly(
+  admissionDateFormatText,
+  new Date("2026-07-05"),
+  { relativeDate: new Date("2026-07-28") }
+);
+assert.equal(
+  admissionDateFormatResult.text,
+  "EGD/colo ([Hospital Day 5]) for melena and +FOBT in ICU, remarkable for non-erosive gastritis for which she has been managed with daily PPI as well as diverticulosis in the sigmoid and descending colon without evidence of active bleeding. She was taken to the OR on [Hospital Day 11] for left femoral endarterectomy and bilateral iliac covered stent placement. She was started on Xarelto 2.5mg BID as well as DAPT on [Hospital Day 12], [Hospital Day 24] held for bleeding. GI was reengaged on [Hospital Day 15] for reports of blood bowel movements by nursing team. She had multiple CTAs performed, last one [Hospital Day 19] with questionable active bleeding within the cecum just inferior to the ileocecal valve versus normal mural vasculature in this region. Repeat cscope [Hospital Day 20].",
+  "all date spellings in an admission narrative must use the admission anchor; bare now must use the packet source date"
+);
+assert.deepEqual(admissionDateFormatResult.residualWarnings, [], "converted admission-narrative dates must not leave exact-date residual warnings");
+
 const legacyDateReview = createEphemeralRedactionReview("EKG (07/09/2026): Sinus rhythm", deidentifyTextStructuredOnly("EKG (07/09/2026): Sinus rhythm", new Date("2026-07-11T12:00:00Z")));
 legacyDateReview.redactions[0].placeholder = "[DATE]";
 synchronizeReviewPlaceholders(legacyDateReview, "EKG (2 days ago): Sinus rhythm");
