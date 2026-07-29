@@ -61,7 +61,7 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../patient-context/deid-client.js?v=20260717-guided-demo-ux";
+} from "../patient-context/deid-client.js?v=20260729-temporal-ranges-1";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,

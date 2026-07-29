@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { createDeidentifier, deidentifyTextStructuredOnly, modelPredictionsToEntities, normalizeResidualTemporalPhi, scanResidualPhi } from "../src/vault/deid.js";
+import { collectTemporalEntities, createDeidentifier, deidentifyTextStructuredOnly, modelPredictionsToEntities, normalizeResidualTemporalPhi, scanResidualPhi } from "../src/vault/deid.js";
 import { createEphemeralRedactionReview, refreshEphemeralRedactionReview, synchronizeReviewPlaceholders } from "../src/patient-context/review.js";
 import { DEMO_ADMISSION_DATE, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS } from "../src/ui/demo/session.js";
 import { assertDeidCase } from "../scripts/deid-adversarial.js";
@@ -563,6 +563,13 @@ assert.equal(
   "all date spellings in an admission narrative, including now, must use the admission date"
 );
 assert.deepEqual(admissionDateFormatResult.residualWarnings, [], "converted admission-narrative dates must not leave exact-date residual warnings");
+
+const bareMonthDayEntities = collectTemporalEntities("Repeat cscope 7/24.", new Date("2026-07-05T00:00:00Z"));
+assert.deepEqual(
+  bareMonthDayEntities.map(({ temporal }) => ({ kind: temporal.kind, month: temporal.month, day: temporal.day, hasExplicitYear: temporal.hasExplicitYear })),
+  [{ kind: "day", month: 7, day: 24, hasExplicitYear: false }],
+  "bare slash month/day values must remain day-precise dates, never month/year values"
+);
 
 const hospitalDayNowResult = deidentifyTextStructuredOnly(
   "The patient is now hemodynamically stable.",

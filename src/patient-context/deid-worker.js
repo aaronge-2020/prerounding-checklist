@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20260717-guided-demo-ux";
+} from "./deid-service.js?v=20260729-temporal-ranges-1";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });
