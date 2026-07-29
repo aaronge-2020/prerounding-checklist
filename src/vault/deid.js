@@ -1241,7 +1241,7 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
     { label: "DOB", regex: new RegExp(String.raw`^${mdFiller}(?:DOB|D\.O\.B\.|Date of birth|Birth date)${mdSepOptionalColon}(${dateValue})\s*$`, "gmi") },
     { label: "MRN", regex: new RegExp(String.raw`^${mdFiller}(?:MRN|Medical Record(?: Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
     { label: "ENCOUNTER ID", regex: new RegExp(String.raw`^${mdFiller}(?:CSN|FIN|HAR|Encounter(?: ID| Number))${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
-    { label: "ID", regex: new RegExp(String.raw`^${mdFiller}(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Group(?: Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
+    { label: "ID", regex: new RegExp(String.raw`^${mdFiller}(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Group(?: Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
     { label: "TIME", regex: new RegExp(String.raw`^${mdFiller}(?:Admission Time|Admit Time|Time of Admission)${mdSepOptionalColon}(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4})\s*$`, "gmi") },
     { label: "DATE", regex: new RegExp(String.raw`^${mdFiller}(?:Encounter date|Admit(?:ted| date)?|Admission date|Discharge(?:d| date)?|Date of service|DOS|Collected|Collection(?: date| time| date\/time)?|Result(?:ed| date| time| date\/time)?|Received|Drawn|Specimen(?: collected)?|Ordered)${mdSep}(${dateValue}(?:\s+(?:at\s+)?\d{1,2}:\d{2}(?:\s*[AP]M)?)?)\s*$`, "gmi") },
     { label: "PHONE", regex: new RegExp(String.raw`^${mdFiller}(?:Phone|Fax|Pager|Callback|Cell|Mobile|Tel)${mdSepOptionalColon}((?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4})\s*$`, "gmi") },
@@ -1260,7 +1260,7 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
     { label: "PATIENT NAME", regex: new RegExp(String.raw`\bPreferred Name${mdSepOptionalColon}([A-Z][A-Za-z.'-]+)`, "gi") },
     { label: "MRN", regex: new RegExp(String.raw`\b(?:MRN|Medical Record(?: Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
     { label: "ENCOUNTER ID", regex: new RegExp(String.raw`\b(?:CSN|FIN|HAR|Encounter(?: ID| Number))${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
-    { label: "ID", regex: new RegExp(String.raw`\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Group(?: Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
+    { label: "ID", regex: new RegExp(String.raw`\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Group(?: Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
     { label: "FACILITY", regex: new RegExp(String.raw`\b(?:Facility|Campus|Hospital|Clinic|Service location|Lab location|Ordering location)${mdSep}([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)`, "gi") },
     { label: "ROOM", regex: new RegExp(String.raw`\b(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|ICU room|ED room|Location)${mdSep}([A-Z0-9][A-Z0-9 \t-]{0,30}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|Phone|Email|Address|Primary|Preferred)\s*[:#]|[.,;\n\r]|$)`, "gi") },
     { label: "ORGANIZATION", regex: new RegExp(String.raw`\bInsurance${mdSepOptionalColon}([^,\n\r]+?)(?=\s+(?:PPO|HMO|EPO|POS|HDHP)\b(?:\s|$)|[\n\r]|$)`, "gi") },
@@ -1966,6 +1966,36 @@ function dropAbsorbedLeadingValue(text, result, referenceDate) {
   return { result, start: result.index };
 }
 
+// Chrono's slash-date parser can join the beginning of a compact date range
+// ("11/23/2024-11/27/2024") into one malformed result. Its parsed temporal
+// value describes only the first endpoint while its source span consumes both,
+// which silently loses the discharge/end date. Identify explicit intervals
+// before accepting chrono output, emit each endpoint separately, and reject
+// any overlapping malformed aggregate result. This applies to all supported
+// numeric and month-name full-date spellings rather than a single report form.
+const EXPLICIT_DATE_RANGE_VALUE = String.raw`(?:\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2},?\s+\d{4})`;
+const EXPLICIT_DATE_RANGE_PATTERN = new RegExp(String.raw`(?<![\w/])(${EXPLICIT_DATE_RANGE_VALUE})\s*(?:-|–|—|\bto\b)\s*(${EXPLICIT_DATE_RANGE_VALUE})(?![\w/])`, "gi");
+
+function collectExplicitDateRangeEntities(text, entities) {
+  const ranges = [];
+  for (const match of text.matchAll(EXPLICIT_DATE_RANGE_PATTERN)) {
+    const rangeStart = match.index;
+    const rangeEnd = rangeStart + match[0].length;
+    ranges.push({ start: rangeStart, end: rangeEnd });
+    let cursor = rangeStart;
+    for (const endpoint of [match[1], match[2]]) {
+      const start = text.indexOf(endpoint, cursor);
+      const end = start + endpoint.length;
+      const temporal = parseTemporalSpan(endpoint);
+      if (temporal) {
+        pushTemporalEntity(text, entities, start, end, "temporal date-range endpoint", "", temporal);
+      }
+      cursor = end;
+    }
+  }
+  return ranges;
+}
+
 // Chrono's year/month/day separator grammar (e.g. ENYearMonthDayParser)
 // treats *any* whitespace the same as a literal "-"/"/" between date
 // components, since it's built for prose ("2024 07 15") where that's
@@ -2006,10 +2036,14 @@ export function collectTemporalEntities(rawText, referenceDate = null) {
   const text = String(rawText || "");
   const ref = chronoReferenceDate(referenceDate);
   const entities = [];
+  const explicitDateRanges = collectExplicitDateRangeEntities(text, entities);
   const results = collectChronoResultsBySegment(text, ref);
 
   results.forEach(({ result, start }) => {
     const end = start + result.text.length;
+    if (explicitDateRanges.some((range) => start < range.end && end > range.start)) {
+      return;
+    }
     // Generated placeholders are already de-identified output, never source
     // dates. This makes the transformation idempotent across review rerenders,
     // section recomputation, and repeated user-triggered runs.
@@ -3124,7 +3158,7 @@ export function scanResidualPhi(text) {
   addResidualMatches(warnings, sourceText, "high", "exact date", /\b\d{4}-\d{1,2}-\d{1,2}\b/g, "exact calendar date");
   addResidualMatches(warnings, sourceText, "high", "exact date", /\b(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?\b/g, "exact calendar date", isLikelyDateFalsePositive);
   addResidualMatches(warnings, sourceText, "high", "exact date", /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:,?\s+\d{4})?\b/gi, "exact calendar date");
-  addResidualMatches(warnings, sourceText, "high", "identifier", /\b(?:MRN|Medical Record Number|Medical Record(?! Number)|CSN|FIN|HAR|Encounter(?: ID| Number)|Account Number|Acct|Policy Number|Policy(?! Number)|Member(?: ID| Number)|Member(?! ID| Number)|Insurance(?: ID| Number)|Insurance(?! ID| Number)|Subscriber(?: ID| Number)|Subscriber(?! ID| Number)|Accession Number|Accession(?! Number)|Order(?: ID| Number)|Order(?! ID| Number)|Specimen(?: ID| Number)|Specimen(?! ID| Number)|Chart(?: ID| Number)|Chart(?! ID| Number)|Case(?: ID| Number)|Case(?! ID| Number)|Visit(?: ID| Number)|Visit(?! ID| Number)|License Number|License(?! Number)|Certificate Number|Certificate(?! Number)|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)\b(?:\s*[:#]\s*|\s+)(?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,}\b/gi, "record, insurance, device, or other unique code");
+  addResidualMatches(warnings, sourceText, "high", "identifier", /\b(?:MRN|Medical Record Number|Medical Record(?! Number)|CSN|FIN|HAR|Encounter(?: ID| Number)|Account Number|Acct|Policy Number|Policy(?! Number)|Member(?: ID| Number)|Member(?! ID| Number)|Insurance(?: ID| Number)|Insurance(?! ID| Number)|Subscriber(?: ID| Number)|Subscriber(?! ID| Number)|Accession Number|Accession(?! Number)|Order(?: ID| Number)|Order(?! ID| Number)|Specimen(?: ID| Number)|Specimen(?! ID| Number)|Chart(?: ID| Number)|Chart(?! ID| Number)|Case(?: ID| Number)|Case(?! ID| Number)|Visit(?: ID| Number)|License Number|License(?! Number)|Certificate Number|Certificate(?! Number)|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)\b(?:\s*[:#]\s*|\s+)(?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,}\b/gi, "record, insurance, device, or other unique code");
   addResidualMatches(warnings, sourceText, "high", "street address", /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b/gi, "street address", isLikelyAddressFalsePositive);
   addResidualMatches(warnings, sourceText, "medium", "ZIP or postal code", /\b(?:ZIP|Zip code|Postal code)\s*[:#]?\s*\d{5}(?:-\d{4})?\b/gi, "geographic detail smaller than state");
   addResidualMatches(warnings, sourceText, "medium", "unit or room", /\b(?:Room|Rm|Bed|ICU room|ED room)\b\s*[:#]?\s*[A-Z0-9-]*\d[A-Z0-9-]*\b/gi, "care location detail");

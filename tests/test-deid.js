@@ -621,6 +621,13 @@ assert.ok(!timelineDateResult.text.includes("5/6"), "course shorthand date shoul
 assert.ok(!timelineDateResult.text.includes("0454"), "date-attached exact time should not leak");
 assert.ok(!timelineDateResult.text.includes("03/14/1998"), "DOB exact date should not leak");
 
+const compactDateRangeAndVisitText = "Prior admission 11/23/2024-11/27/2024: Patient was admitted for suicidal ideation and discharged with mirtazapine.\nED visit 12/3/2024: Follow-up was arranged.\nVisit ID: A12345";
+const compactDateRangeAndVisitResult = deidentifyTextStructuredOnly(compactDateRangeAndVisitText, new Date("2026-07-28T00:00:00Z"));
+assert.match(compactDateRangeAndVisitResult.text, /Prior admission \[1 year, 8 months, and 5 days prior to hospital admission\]-\[1 year, 8 months, and 1 day prior to hospital admission\]/, "compact date ranges must retain and independently normalize both endpoints");
+assert.match(compactDateRangeAndVisitResult.text, /ED visit \[1 year, 7 months, and 25 days prior to hospital admission\]/, "visit prose followed by a date must remain a date, not an identifier");
+assert.match(compactDateRangeAndVisitResult.text, /Visit ID: \[ID\]/, "explicit Visit ID fields must remain protected");
+assert.doesNotMatch(compactDateRangeAndVisitResult.text, /\[ID\]: Follow-up/, "ordinary visit prose must never be classified as an identifier field");
+
 const crossYearTimelineText = `Hospital Course by Date
 12/31: Admitted overnight
 1/1: Creatinine improving
