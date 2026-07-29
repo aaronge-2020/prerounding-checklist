@@ -566,8 +566,20 @@ function isLikelyChartHeadingPhrase(rawText, start, end) {
 const CLINICAL_HEADING_WORDS = new Set([
   "new", "initial", "hospital", "plan", "background", "information", "de-identified",
   "labs", "results", "events", "medication", "changes", "patient-reported", "symptoms",
-  "physical", "examination", "imaging", "assessment", "differential", "diagnosis"
+  "physical", "examination", "imaging", "assessment", "differential", "diagnosis",
+  "overnight", "interval", "history", "pain", "functional", "status", "questions",
+  "goals", "discharge", "readiness", "review", "systems", "personal", "reminders"
 ]);
+
+// Care-team labels are clinical roles, not people. General NER models often
+// tag a short specialty acronym plus "service" or "team" as a person name;
+// rejecting the role phrase at the shared model-filter boundary prevents it
+// from later being promoted into an alias and redacted everywhere in a note.
+const CLINICAL_SERVICE_LABEL_PATTERN = /^(?:GI|gastroenterology|cardiology|pulmonology|nephrology|neurology|hematology|oncology|infectious disease|psychiatry|surgery|medicine|hospital medicine|critical care|palliative care)\s+(?:service|team|consult(?: service)?)$/i;
+
+function isClinicalServiceLabel(span) {
+  return CLINICAL_SERVICE_LABEL_PATTERN.test(String(span || "").replace(/\s+/g, " ").trim());
+}
 
 // These are table and navigation labels found in exported chart views. They
 // look title-cased enough for a general NER model to mistake them for people,
@@ -624,6 +636,10 @@ function isLikelyNonNamePhrase(rawText, start, end) {
   }
 
   if (isLikelyClinicalHeadingPhrase(rawText, start, end)) {
+    return true;
+  }
+
+  if (isClinicalServiceLabel(span) || isClinicalServiceLabel(span.replace(/^(?:the|a|an)\s+/i, ""))) {
     return true;
   }
 
@@ -847,6 +863,14 @@ function refineNameLabel(label, rawText, start, end) {
 
   const span = rawText.slice(start, end).trim().toLowerCase();
   const spanOriginal = rawText.slice(start, end).trim();
+
+  // A specialty service/team ends in a facility-like word, but it is a
+  // clinical role rather than an organization identifier. Keep the original
+  // name-class label here so the shared clinical-service guard can reject the
+  // model finding instead of relabeling and redacting it as an organization.
+  if (isClinicalServiceLabel(spanOriginal) || isClinicalServiceLabel(spanOriginal.replace(/^(?:the|a|an)\s+/i, ""))) {
+    return normalized;
+  }
 
   // Facility suffix: if phrase ends with a facility word, it's an organization
   if (isLikelyFacilityPhrase(normalizePhrase(spanOriginal))) {
@@ -2344,9 +2368,17 @@ function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYe
     return placement.year ? `[Historical: ${placement.year}]` : "[Historical date]";
   }
   const clockTime = temporal.clockTime || "";
-  return clockTime
-    ? `[Hospital Day ${placement.hospitalDay} at ${clockTime}]`
-    : `[Hospital Day ${placement.hospitalDay}]`;
+  // "Yesterday morning" and similar relative phrases identify a calendar
+  // day, but the time-of-day wording is clinically meaningful and not an
+  // exact timestamp. Preserve that qualifier after replacing the calendar
+  // reference so the redaction never changes a morning observation into an
+  // all-day one.
+  const dayPart = !clockTime && /\b(?:morning|afternoon|evening|overnight|night)\b/i.exec(span)?.[0].toLowerCase();
+  const hospitalDay = `[Hospital Day ${placement.hospitalDay}${clockTime ? ` at ${clockTime}` : ""}]`;
+  if (dayPart) {
+    return `${hospitalDay} ${dayPart}`;
+  }
+  return hospitalDay;
 }
 
 // A DOB is a date like any other once it's matched - the structured "DOB"

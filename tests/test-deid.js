@@ -578,6 +578,31 @@ const hospitalDayNowResult = deidentifyTextStructuredOnly(
 );
 assert.equal(hospitalDayNowResult.text, "The patient is [Hospital Day 24] hemodynamically stable.", "now in a hospital-day packet must use that packet's date");
 
+const progressNoteFalsePositiveText = `Overnight Events
+No events of concern occurred overnight.
+
+Interval History
+Yesterday morning stool was lighter. The GI service is reviewing capsule study data.
+
+Personal Reminders
+Follow up on GI service recommendations.`;
+const progressNoteFalsePositiveDeidentifier = createDeidentifier({
+  pipelineFactory: async () => async (input) => ["Overnight Events", "GI service", "Personal Reminders", "GI service"]
+    .map((word, index) => {
+      const start = index === 3 ? input.lastIndexOf(word) : input.indexOf(word);
+      return { entity_group: "PERSON", start, end: start + word.length, score: 0.99 };
+    }),
+  modelCandidates: [{ modelId: "mock-progress-note-model", options: {} }]
+});
+const progressNoteFalsePositiveResult = await progressNoteFalsePositiveDeidentifier.deidentifyText(progressNoteFalsePositiveText, {
+  admissionDate: new Date("2026-07-04"),
+  relativeDate: new Date("2026-07-28")
+});
+assert.match(progressNoteFalsePositiveResult.text, /^Overnight Events$/m, "clinical section headings must not be redacted as names");
+assert.match(progressNoteFalsePositiveResult.text, /^Personal Reminders$/m, "personal reminder headings must not seed false name aliases");
+assert.equal((progressNoteFalsePositiveResult.text.match(/GI service/g) || []).length, 2, "clinical specialty services must never be redacted as names");
+assert.match(progressNoteFalsePositiveResult.text, /\[Hospital Day 24\] morning stool/, "relative dates with a day-part must preserve the clinically meaningful day-part");
+
 const chartColumnModelResult = await createDeidentifier({
   pipelineFactory: async () => async (input) => ["Recent Encounters", "End Date", "Authorizing Provider"]
     .map((label) => ({ label, start: input.indexOf(label) }))
