@@ -88,7 +88,6 @@ import {
 } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
 import {
   ADMISSION_PSEUDO_DAY_ID,
-  buildCustomOpenEvidencePrompt,
   buildPromptPreviewSegments,
   buildPromptVariableMap,
   loadPromptTemplateOverrides,
@@ -1561,17 +1560,23 @@ function refreshPromptPreview() {
 function currentPromptText() {
   const patient = active();
   if (!patient) return "";
-  const template = app.promptDrafts[app.selectedPromptTask] ?? promptTemplateForTask(app.selectedPromptTask, app.promptTemplates);
+  // Read the editor first so the clipboard always reflects its current text,
+  // including an edit made immediately before Copy is clicked. The output
+  // preview uses these same resolved segments.
+  const template = byId("promptPreview")?.value
+    ?? app.promptDrafts[app.selectedPromptTask]
+    ?? promptTemplateForTask(app.selectedPromptTask, app.promptTemplates);
   try {
-    return buildCustomOpenEvidencePrompt({
-      taskId: app.selectedPromptTask,
-      template,
+    const variableMap = buildPromptVariableMap({
       patient,
       selectedDayId: app.promptDayId,
       guidelineSets: app.guidelineSets,
       teamPreferences: app.vault.preferences,
       presentationToEdit: app.presentationToEdit
     });
+    return buildPromptPreviewSegments(template, variableMap)
+      .map((segment) => segment.value)
+      .join("");
   } catch {
     return "";
   }

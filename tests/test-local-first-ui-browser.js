@@ -488,9 +488,10 @@ try {
   await page.locator("#promptPreview").fill("Use @admission-context");
   await page.waitForFunction(() => /PATIENT NAME/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   {
+    const preview = await page.locator("#promptOutputHighlighted").textContent();
     const copied = await copiedPromptText();
+    assert.equal(copied, preview, "Copy prompt must use the exact text shown in the generated prompt preview");
     assert.match(copied, /PATIENT NAME/);
-    assert.doesNotMatch(copied, /[\[\]{}<>()`]/);
   }
   await page.selectOption("#promptTaskSelect", "daily_progress_note");
   await page.waitForFunction(() => /Daily Progress Note Instructions/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
