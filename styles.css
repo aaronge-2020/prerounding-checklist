@@ -2901,6 +2901,74 @@ button.var-fill:focus-visible {
 
 .vault-access-heading { margin: 0; align-items: center; }
 
+.vault-onboarding-kicker {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.vault-onboarding-kicker span {
+  color: var(--muted);
+  padding: 0 3px;
+}
+
+.vault-onboarding-steps {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.vault-onboarding-steps li {
+  align-items: center;
+  color: var(--muted);
+  display: flex;
+  gap: 10px;
+  padding: 3px 0;
+}
+
+.vault-onboarding-steps li.is-current { color: var(--ink); }
+
+.vault-step-number {
+  align-items: center;
+  background: var(--surface-tint);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--muted);
+  display: inline-flex;
+  flex: 0 0 25px;
+  font-size: 12px;
+  font-weight: 800;
+  height: 25px;
+  justify-content: center;
+  width: 25px;
+}
+
+.is-current .vault-step-number {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.vault-onboarding-steps li > span:last-child {
+  display: grid;
+  gap: 1px;
+}
+
+.vault-onboarding-steps small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.vault-primary-action {
+  box-shadow: 0 5px 14px rgb(16 105 109 / 16%);
+  font-weight: 800;
+}
+
 .vault-access-heading .transfer-actions {
   justify-content: flex-end;
 }
@@ -2943,7 +3011,7 @@ button.var-fill:focus-visible {
 
 .vault-setup-controls .button--primary {
   justify-self: start;
-  min-width: 154px;
+  min-width: 210px;
 }
 
 .vault-passphrase-field {

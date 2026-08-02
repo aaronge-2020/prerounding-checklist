@@ -4,9 +4,9 @@ export function createVaultPresentation({ escapeHtml, icon }) {
     const creatingVault = !record;
     return `
       <div class="vault-passphrase-field">
-        <label for="vaultPassphrase">Vault passphrase</label>
+        <label for="vaultPassphrase">${creatingVault ? "Choose a vault passphrase" : "Vault passphrase"}</label>
         <div class="vault-passphrase-input">
-          <input id="vaultPassphrase" type="password" autocomplete="${record ? "current-password" : "new-password"}" placeholder="${record ? "Unlock existing vault" : "Create local vault"}"${creatingVault ? ' minlength="12"' : ""}${hasUnlockError ? ' aria-describedby="vaultPassphraseError" aria-invalid="true"' : ""}>
+          <input id="vaultPassphrase" type="password" autocomplete="${record ? "current-password" : "new-password"}" placeholder="${record ? "Unlock existing vault" : "At least 12 characters"}"${creatingVault ? ' minlength="12" autofocus' : ""}${hasUnlockError ? ' aria-describedby="vaultPassphraseError" aria-invalid="true"' : ""}>
           <button id="vaultPassphraseVisibility" class="button--quiet vault-passphrase-visibility" type="button" data-action="toggle-vault-passphrase" aria-controls="vaultPassphrase" aria-pressed="false" aria-label="Show passphrase" title="Show passphrase">${icon("eye")}</button>
         </div>
         ${creatingVault ? `<div id="vaultPassphraseStrength" class="vault-passphrase-strength is-empty" aria-live="polite"><div class="vault-passphrase-meter" aria-hidden="true"><span></span></div><span class="vault-passphrase-strength-label">Use at least 12 characters and two or more words.</span></div>
@@ -38,22 +38,28 @@ export function createVaultPresentation({ escapeHtml, icon }) {
 
   function renderVault({ record, unlocked, vault, patients, vaultUnlockError }) {
     if (!unlocked) {
+      const creatingVault = !record;
       return `
         <div class="locked-vault-shell">
           <section class="vault-access surface-panel">
             <div class="section-heading vault-access-heading">
               <div>
-                <h2 id="vault-heading">Unlock local vault</h2>
-                <p class="muted">Your passphrase decrypts patient, workup, checklist, and prompt data stored on this device. Nothing loads until you unlock it.</p>
+                ${creatingVault ? '<div class="vault-onboarding-kicker">Start here <span>·</span> Step 1 of 2</div>' : ""}
+                <h2 id="vault-heading">${creatingVault ? "Create your local vault" : "Unlock your local vault"}</h2>
+                <p class="muted">${creatingVault ? "Choose one passphrase to protect this browser's data. After this, you'll add a de-identified room label to start the demo." : "Your passphrase decrypts patient, workup, checklist, and prompt data stored on this device. Nothing loads until you unlock it."}</p>
               </div>
               <div class="transfer-actions">
                 <button class="button--secondary button--transfer" type="button" data-action="restore-vault">${icon("upload")} Restore vault</button>
                 <input id="restoreVaultInput" type="file" accept="application/json" hidden>
               </div>
             </div>
+            ${creatingVault ? `<ol class="vault-onboarding-steps" aria-label="Getting started">
+              <li class="is-current"><span class="vault-step-number">1</span><span><strong>Create your vault</strong><small>Choose a passphrase you will remember.</small></span></li>
+              <li><span class="vault-step-number">2</span><span><strong>Add a patient</strong><small>Use a de-identified room label, such as Room A.</small></span></li>
+            </ol>` : ""}
             <div class="vault-access-controls ${record ? "" : "vault-setup-controls"}">
               ${vaultPassphraseField(record, vaultUnlockError)}
-              <button class="button--primary" type="button" data-action="unlock-vault">${record ? "Unlock vault" : "Create vault"}</button>
+              <button class="button--primary vault-primary-action" type="button" data-action="unlock-vault">${record ? "Unlock vault" : "Create vault and continue"}</button>
             </div>
             ${
               record
@@ -70,6 +76,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
     }
 
     const visiblePatients = patients || vault?.patients || [];
+    const needsFirstPatient = !visiblePatients.length;
     return `
       <div class="vault-screen">
         <section class="vault-access surface-panel">
@@ -107,14 +114,15 @@ export function createVaultPresentation({ escapeHtml, icon }) {
         <section class="roster-surface surface-panel">
           <div class="section-heading roster-heading">
             <div>
-              <h2>Roster</h2>
-              <p class="muted">Use de-identified room labels only.</p>
+              ${needsFirstPatient ? '<div class="vault-onboarding-kicker">Next step <span>·</span> Step 2 of 2</div>' : ""}
+              <h2>${needsFirstPatient ? "Add your first patient" : "Roster"}</h2>
+              <p class="muted">${needsFirstPatient ? "Enter a de-identified room label to begin the hospital stay demo." : "Use de-identified room labels only."}</p>
             </div>
             <div class="roster-add-patient">
-              <label>Local display label
-                <input id="newPatientLabel" placeholder="Room A - General Admission">
+              <label>${needsFirstPatient ? "De-identified room label" : "Local display label"}
+                <input id="newPatientLabel" placeholder="Room A - General Admission"${needsFirstPatient ? " autofocus" : ""}>
               </label>
-              <button class="button--primary" type="button" data-action="admit-patient" ${vault ? "" : "disabled"}>${icon("plus")} Add patient</button>
+              <button class="button--primary ${needsFirstPatient ? "vault-primary-action" : ""}" type="button" data-action="admit-patient" ${vault ? "" : "disabled"}>${icon("plus")} ${needsFirstPatient ? "Add patient and continue" : "Add patient"}</button>
             </div>
           </div>
           <div class="roster-column-head" aria-hidden="true"><span>Patient</span><span>Status</span><span>Hospital days</span><span></span></div>
