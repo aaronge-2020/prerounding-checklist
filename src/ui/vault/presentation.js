@@ -46,7 +46,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
               <div>
                 ${creatingVault ? '<div class="vault-onboarding-kicker">Start here <span>·</span> Step 1 of 2</div>' : ""}
                 <h2 id="vault-heading">${creatingVault ? "Create your local vault" : "Unlock your local vault"}</h2>
-                <p class="muted">${creatingVault ? "Choose one passphrase to protect this browser's data. After this, you'll add a de-identified room label to start the demo." : "Your passphrase decrypts patient, workup, checklist, and prompt data stored on this device. Nothing loads until you unlock it."}</p>
+                <p class="muted">${creatingVault ? "Choose one passphrase to protect this browser's data. After this, click Guided demo in the left sidebar to start the synthetic walkthrough." : "Your passphrase decrypts patient, workup, checklist, and prompt data stored on this device. Nothing loads until you unlock it."}</p>
               </div>
               <div class="transfer-actions">
                 <button class="button--secondary button--transfer" type="button" data-action="restore-vault">${icon("upload")} Restore vault</button>
