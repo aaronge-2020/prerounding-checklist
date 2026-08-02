@@ -3163,6 +3163,18 @@ button.var-fill:focus-visible {
   align-items: end;
 }
 
+.vault-optional-patient {
+  display: grid;
+  gap: 2px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  margin: 2px 0 12px;
+  padding-top: 12px;
+}
+
+.vault-optional-patient strong { color: var(--ink); }
+
 .roster-column-head,
 .roster-row {
   display: grid;

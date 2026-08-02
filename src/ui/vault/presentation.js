@@ -55,7 +55,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
             </div>
             ${creatingVault ? `<ol class="vault-onboarding-steps" aria-label="Getting started">
               <li class="is-current"><span class="vault-step-number">1</span><span><strong>Create your vault</strong><small>Choose a passphrase you will remember.</small></span></li>
-              <li><span class="vault-step-number">2</span><span><strong>Add a patient</strong><small>Use a de-identified room label, such as Room A.</small></span></li>
+              <li><span class="vault-step-number">2</span><span><strong>Click Guided demo</strong><small>See the synthetic walkthrough without adding patient data.</small></span></li>
             </ol>` : ""}
             <div class="vault-access-controls ${record ? "" : "vault-setup-controls"}">
               ${vaultPassphraseField(record, vaultUnlockError)}
@@ -115,19 +115,30 @@ export function createVaultPresentation({ escapeHtml, icon }) {
           <div class="section-heading roster-heading">
             <div>
               ${needsFirstPatient ? '<div class="vault-onboarding-kicker">Next step <span>·</span> Step 2 of 2</div>' : ""}
-              <h2>${needsFirstPatient ? "Add your first patient" : "Roster"}</h2>
-              <p class="muted">${needsFirstPatient ? "Enter a de-identified room label to begin the hospital stay demo." : "Use de-identified room labels only."}</p>
+              <h2>${needsFirstPatient ? "Start the guided demo" : "Roster"}</h2>
+              <p class="muted">${needsFirstPatient ? "Click Guided demo in the left sidebar to launch the synthetic walkthrough. No patient or chart text is required." : "Use de-identified room labels only."}</p>
+            </div>
+            ${needsFirstPatient ? `<button class="button--primary vault-primary-action" type="button" data-action="start-guided-demo">${icon("play")} Start guided demo</button>` : ""}
+          </div>
+          ${needsFirstPatient ? `<div class="vault-optional-patient">
+            <strong>Optional: add a patient manually</strong>
+            <span>Use this only when you want to explore the real patient workflow with de-identified data.</span>
+          </div>` : ""}
+          <div class="section-heading roster-heading${needsFirstPatient ? " roster-heading-secondary" : ""}">
+            <div>
+              ${needsFirstPatient ? "" : ""}
+              <h2 class="${needsFirstPatient ? "sr-only" : ""}">${needsFirstPatient ? "Patient roster" : ""}</h2>
             </div>
             <div class="roster-add-patient">
               <label>${needsFirstPatient ? "De-identified room label" : "Local display label"}
-                <input id="newPatientLabel" placeholder="Room A - General Admission"${needsFirstPatient ? " autofocus" : ""}>
+                <input id="newPatientLabel" placeholder="Room A - General Admission">
               </label>
-              <button class="button--primary ${needsFirstPatient ? "vault-primary-action" : ""}" type="button" data-action="admit-patient" ${vault ? "" : "disabled"}>${icon("plus")} ${needsFirstPatient ? "Add patient and continue" : "Add patient"}</button>
+              <button class="button--primary" type="button" data-action="admit-patient" ${vault ? "" : "disabled"}>${icon("plus")} Add patient</button>
             </div>
           </div>
           <div class="roster-column-head" aria-hidden="true"><span>Patient</span><span>Status</span><span>Hospital days</span><span></span></div>
           <div class="patient-list">
-            ${visiblePatients.length ? visiblePatients.map(p => renderPatientRow(p, vault?.activePatientId)).join("") : `<div class="empty-state">No patients yet. Add one above to get started.</div>`}
+            ${visiblePatients.length ? visiblePatients.map(p => renderPatientRow(p, vault?.activePatientId)).join("") : `<div class="empty-state">${needsFirstPatient ? "No patient added. The guided demo uses synthetic data." : "No patients yet. Add one above to get started."}</div>`}
           </div>
           <div class="local-vault-note"><strong>Local encryption</strong><span>This vault lives only in this browser. Export it to create a portable encrypted backup.</span></div>
         </section>
