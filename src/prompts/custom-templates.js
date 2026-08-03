@@ -36,7 +36,7 @@ const MEDICATION_SAFETY_INSTRUCTIONS = `Run a focused, supervised medication-saf
 // sets the token below simply won't resolve (same graceful degradation as
 // referencing any other deleted variable).
 export const DEFAULT_PROMPT_TEMPLATES = {
-  initial_admission_rounds: `@team-preferences\n\n@clinical-differential-instructions\n\n@admission-current-guidelines\n\n@admission-packet`,
+  initial_admission_rounds: `@team-preferences\n\n@clinical-differential-instructions\n\n@admission-guidelines\n\n@admission-packet`,
   daily_progress_note: `@team-preferences\n\n@clinical-differential-instructions\n\n@progress-guidelines\n\n@progress-note-packet`,
   presentation_quality_editor: `@presentation-editor-instructions\n\n@presentation-to-edit\n\n@admission-packet\n\n@progress-note-packet`,
   teaching_case_trajectory: `@teaching-case-instructions\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
@@ -45,7 +45,7 @@ export const DEFAULT_PROMPT_TEMPLATES = {
   checklist_workup_refinement: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   preround_bedside_exam: `@team-preferences\n\n@pre-round-checklist-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`,
   discharge_instructions: `@team-preferences\n\n@discharge-instructions-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`,
-  consulting: `@team-preferences\n\n@consulting-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`
+  consulting: `@team-preferences\n\n@consulting-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`
 };
 
 export const SMART_PROMPT_VARIABLES = [
@@ -93,7 +93,12 @@ function selectedPromptDay(patient, selectedDayId = "") {
 }
 
 function guidelineSetVariables(guidelineSets = []) {
-  return guidelineSets.filter((set) => set.token !== TEAM_PREFERENCES_PROMPT_TOKEN).map((set) => ({
+  const seen = new Set([TEAM_PREFERENCES_PROMPT_TOKEN]);
+  return guidelineSets.filter((set) => {
+    if (!set?.token || seen.has(set.token)) return false;
+    seen.add(set.token);
+    return true;
+  }).map((set) => ({
     token: set.token,
     label: set.label,
     description: "Documentation guidelines you saved in Settings.",
@@ -102,7 +107,11 @@ function guidelineSetVariables(guidelineSets = []) {
 }
 
 export function promptVariablesForPatient(patient, { selectedDayId = "", guidelineSets = [] } = {}) {
-  const used = new Set(SMART_PROMPT_VARIABLES.map((variable) => variable.token));
+  const guidelineVariables = guidelineSetVariables(guidelineSets);
+  const used = new Set([
+    ...SMART_PROMPT_VARIABLES.map((variable) => variable.token),
+    ...guidelineVariables.map((variable) => variable.token)
+  ]);
   const sectionVariables = (patient?.contextSections || []).map((section, index) => ({
     token: promptToken(section.label, index, used),
     label: section.label || `Admission field ${index + 1}`,
@@ -116,7 +125,7 @@ export function promptVariablesForPatient(patient, { selectedDayId = "", guideli
     description: "This selected hospital-day source.",
     daySourceId: capture.id
   }));
-  return [...sectionVariables, ...daySourceVariables, ...guidelineSetVariables(guidelineSets), ...SMART_PROMPT_VARIABLES];
+  return [...guidelineVariables, ...sectionVariables, ...daySourceVariables, ...SMART_PROMPT_VARIABLES];
 }
 
 function sectionByLabel(sections = [], pattern) {
@@ -264,7 +273,11 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
 }
 
 export function interpolatePromptTemplate(template, variables) {
-  return Object.entries(variables).reduce(
+  // Replace longer tokens first. Tokens such as @selected-day and
+  // @selected-day-exam-findings intentionally share a prefix; replacing the
+  // short token first corrupts the longer token and leaks "-exam-findings"
+  // into the generated prompt.
+  return Object.entries(variables).sort(([left], [right]) => right.length - left.length).reduce(
     (text, [token, value]) => text.split(token).join(String(value || "")),
     String(template || "")
   );

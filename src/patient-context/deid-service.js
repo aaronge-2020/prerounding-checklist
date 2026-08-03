@@ -7,9 +7,9 @@ import {
   STRUCTURED_DEID_MODE,
   deidModelCandidates,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20260711-functional-remediation-15";
-import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260711-functional-remediation-15";
-import { importedModelBaseUrl } from "./model-packs.js?v=20260711-functional-remediation-15";
+} from "./deid-model-options.js?v=20260803-workplace-models";
+import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260803-workplace-models";
+import { importedModelBaseUrl } from "./model-packs.js?v=20260803-workplace-models";
 
 const deidentifierPromises = new Map();
 let activeModelKey = DEFAULT_DEID_MODEL_KEY;

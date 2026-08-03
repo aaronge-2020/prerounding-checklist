@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { statSync } from "node:fs";
 import { deidModelOptionByKey } from "../src/patient-context/deid-model-options.js";
 import {
   LOCAL_MODEL_RUNTIME_VERSION,
@@ -25,11 +26,19 @@ assert.equal(isInstallableModel(openmedSmall), true);
 assert.equal(isInstallableModel(gliner), true);
 assert.equal(isInstallableModel(stanford), false);
 assert.equal(hasAutomaticModelDownload(openmedSmall), true);
+assert.equal(openmedSmall.allowSelfHosted, true, "OpenMed Small must prefer packaged same-origin files on managed devices");
 assert.equal(hasAutomaticModelDownload(gliner), true);
 assert.deepEqual(requiredModelPackFiles(openmedSmall), ["config.json", "special_tokens_map.json", "tokenizer.json", "tokenizer_config.json", "onnx/model_int8.onnx"]);
 assert.equal(modelDownloadPlan(openmedSmall).at(-1).sourcePath, "small/model_int8.onnx");
 assert.equal(modelDownloadPlan(openmedSmall).at(-1).etag, "cf6756eacfd73377130e1203b7e14ddd357a5b1f7f88c54d6428cdb677e7a5a0");
 assert.equal(modelDownloadBytes(openmedSmall), 180408473);
+for (const asset of modelDownloadPlan(openmedSmall)) {
+  assert.equal(
+    statSync(`models/${openmedSmall.modelId}/${asset.path}`).size,
+    asset.bytes,
+    `${asset.path} must be packaged at the exact pinned size`
+  );
+}
 assert.match(modelDownloadUrl(openmedSmall, modelDownloadPlan(openmedSmall).at(-1)), /Wismut\/openmed-onnx\/resolve\/763dff8d32cc23ff045dd396221f8be62cb1ca03\/small\/model_int8\.onnx$/);
 assert.equal(modelDownloadBytes(gliner), 369760835);
 

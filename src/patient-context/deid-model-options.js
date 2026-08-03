@@ -13,7 +13,7 @@ export const STRUCTURED_DEID_MODE = "structured";
 // offered in the clinician UI. Large WebGPU packs that repeatedly failed their
 // own self-test are deliberately not selectable; a model is useful only when
 // this app can verify a real local inference session.
-export const DEFAULT_DEID_MODEL_KEY = "openmed-superclinical-small";
+export const DEFAULT_DEID_MODEL_KEY = "stanford-clinical";
 
 const ALL_DEID_MODEL_OPTIONS = [
   {
@@ -126,6 +126,7 @@ const ALL_DEID_MODEL_OPTIONS = [
     // explicit; Small is the low-resource CPU/WASM option.
     wasmRuntime: "standard",
     localOnly: true,
+    allowSelfHosted: true,
     description: "Smallest OpenMed SuperClinical model. Runs on the regular processor — no graphics acceleration needed, so it works on older devices or browsers without WebGPU support.",
     candidates: [
       {

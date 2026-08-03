@@ -161,7 +161,7 @@ const presentationEditorWithoutPastedText = buildCustomOpenEvidencePrompt({
 });
 assert.match(presentationEditorWithoutPastedText, /Return only the fully revised presentation/);
 assert.doesNotMatch(presentationEditorWithoutPastedText, /No presentation was pasted/);
-const consultingGuidelines = createGuidelineSet("Consulting Updated", readFileSync("prompts/Consulting.md", "utf8"));
+const consultingGuidelines = createGuidelineSet("Consulting", readFileSync("prompts/Consulting.md", "utf8"));
 const consulting = buildCustomOpenEvidencePrompt({
   taskId: "consulting",
   template: DEFAULT_PROMPT_TEMPLATES.consulting,
@@ -174,6 +174,7 @@ assert.match(consulting, /V\/S/);
 assert.match(consulting, /routine, about 24 hours; urgent; or emergent/i);
 assert.match(consulting, /consulting-guidelines|Consulting/);
 assert.doesNotMatch(consulting, /@consulting-guidelines/);
+assert.doesNotMatch(consulting, /-exam-findings/, "a shorter token must not corrupt a longer token with the same prefix");
 
 const checklistAnswersPrompt = buildCustomOpenEvidencePrompt({
   taskId: "checklist_workup_refinement",

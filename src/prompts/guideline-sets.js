@@ -1,15 +1,26 @@
 import { createLocalId } from "../app/state/vault.js";
 
-// Documentation-standard text (H&P, SOAP, or any other note type the user
-// wants a standard for) used to live as exactly two hardcoded files,
-// Guidelines-admission.md and Guidelines-progress.md, injected through a
-// single @guidelines token whose meaning silently changed based on which
-// task was selected. That made it impossible to reference both in one
-// template and impossible to add a standard for any other note type. This
-// module replaces that with a user-editable, named list - each set gets its
-// own stable token, persisted the same way custom prompt tasks are.
 export const GUIDELINE_SET_STORAGE_KEY = "prerounding_guideline_sets_v1";
-export const GUIDELINE_SET_SEED_TEAM_PREFERENCES_KEY = "prerounding_guideline_sets_seed_team_preferences_v1";
+export const GUIDELINE_SET_CANONICAL_DEFAULTS_KEY = "prerounding_guideline_sets_canonical_defaults_v1";
+
+export const DEFAULT_GUIDELINE_SET_SOURCES = Object.freeze([
+  { label: "Admission", token: "@admission-guidelines", path: "./prompts/Guidelines-admission.md" },
+  { label: "Pre-round checklist", token: "@pre-round-checklist-guidelines", path: "./prompts/Pre-round_checklist.md" },
+  { label: "Discharge instructions", token: "@discharge-instructions-guidelines", path: "./prompts/Discharge_Instructions.md" },
+  { label: "Consulting", token: "@consulting-guidelines", path: "./prompts/Consulting.md" },
+  { label: "Pre-round Checklist Updated", token: "@pre-round-checklist-updated-guidelines", path: "./prompts/Pre-round_checklist.md" },
+  { label: "Discharge Instructions Updated", token: "@discharge-instructions-updated-guidelines", path: "./prompts/Discharge_Instructions.md" },
+  { label: "Team preferences", token: "@team-preferences", path: "" },
+  { label: "Progress", token: "@progress-guidelines", path: "./prompts/Guidelines-progress.md" }
+]);
+
+const DEFAULT_TOKENS = new Set(DEFAULT_GUIDELINE_SET_SOURCES.map((source) => source.token));
+
+// These names were created by the former chained migration system. They are
+// app-managed revisions, not user-created guideline identities. One canonical
+// migration removes them so the prompt menu and Settings have the same source
+// of truth.
+const LEGACY_DEFAULT_TOKEN = /^@(?:admissions?|progress|pre-round-checklist|discharge-instructions|consulting)[a-z0-9-]*guidelines[a-z0-9-]*$/;
 
 function slugStem(label) {
   return String(label || "")
@@ -29,15 +40,12 @@ function guidelineToken(label, usedTokens = []) {
   return token;
 }
 
-// The token is assigned once, from the label at creation time, and never
-// changes again even if the set is later renamed - so a default template
-// that references @admission-guidelines keeps working after a rename.
-export function createGuidelineSet(label, text = "", { id, existingTokens = [] } = {}) {
+export function createGuidelineSet(label, text = "", { id, existingTokens = [], token } = {}) {
   const now = new Date().toISOString();
   return {
     id: id || createLocalId("guideline_set"),
     label: String(label || "").trim() || "Untitled guidelines",
-    token: guidelineToken(label, existingTokens),
+    token: token || guidelineToken(label, existingTokens),
     text: String(text || ""),
     createdAt: now,
     updatedAt: now
@@ -62,8 +70,19 @@ export function addGuidelineSet(sets, label, text = "") {
   return [...sets, created];
 }
 
-// Search the guideline identity, not its instruction body. Common clinical
-// words in the body would otherwise make unrelated rows appear as matches.
+export function updateGuidelineSet(sets, id, { label, text } = {}) {
+  return sets.map((set) => set.id === id ? {
+    ...set,
+    ...(label === undefined ? {} : { label: String(label || "").trim() || set.label }),
+    ...(text === undefined ? {} : { text: String(text || "") }),
+    updatedAt: new Date().toISOString()
+  } : set);
+}
+
+export function removeGuidelineSet(sets, id) {
+  return sets.filter((set) => set.id !== id);
+}
+
 export function guidelineSetMatchesQuery(set, query) {
   const terms = String(query || "").trim().toLowerCase().split(/\s+/).filter(Boolean);
   if (!terms.length) return true;
@@ -71,380 +90,74 @@ export function guidelineSetMatchesQuery(set, query) {
   return terms.every((term) => identity.includes(term.replace(/[^a-z0-9]+/g, " ").trim()));
 }
 
-// Team preferences are a normal user-managed guideline set. Seed it once so
-// existing installs get the same @team-preferences variable as every other
-// guideline, while preserving any legacy free-text value from the vault.
-export function ensureTeamPreferencesGuidelineSet(sets, legacyText = "", storage = localStorage) {
-  const existing = sets.find((set) => set.token === "@team-preferences");
-  if (existing) {
-    if (legacyText.trim() && !existing.text.trim()) {
-      const next = updateGuidelineSet(sets, existing.id, { text: legacyText });
-      saveGuidelineSets(next, storage);
-      return next;
-    }
-    return sets;
+async function fetchGuidelineText(path) {
+  if (!path) return "";
+  try {
+    const response = await fetch(path, { cache: "no-store" });
+    return response.ok ? await response.text() : "";
+  } catch {
+    return "";
   }
-  if (storage.getItem(GUIDELINE_SET_SEED_TEAM_PREFERENCES_KEY) !== null) return sets;
-  const created = createGuidelineSet("Team preferences", legacyText, { existingTokens: sets.map((set) => set.token) });
-  const next = [...sets, { ...created, token: "@team-preferences" }];
-  storage.setItem(GUIDELINE_SET_SEED_TEAM_PREFERENCES_KEY, "1");
-  saveGuidelineSets(next, storage);
-  return next;
 }
 
-export function updateGuidelineSet(sets, id, { label, text } = {}) {
-  return sets.map((set) => {
-    if (set.id !== id) return set;
-    return {
-      ...set,
-      ...(label === undefined ? {} : { label: String(label || "").trim() || set.label }),
-      ...(text === undefined ? {} : { text: String(text || "") }),
-      updatedAt: new Date().toISOString()
-    };
-  });
+async function seedDefaultGuidelineSets({ legacyTeamPreferences = "" } = {}) {
+  const sets = [];
+  for (const source of DEFAULT_GUIDELINE_SET_SOURCES) {
+    const text = source.token === "@team-preferences"
+      ? String(legacyTeamPreferences || "")
+      : await fetchGuidelineText(source.path);
+    sets.push(createGuidelineSet(source.label, text, {
+      token: source.token,
+      existingTokens: sets.map((set) => set.token)
+    }));
+  }
+  return sets;
 }
 
-export function removeGuidelineSet(sets, id) {
-  return sets.filter((set) => set.id !== id);
-}
-
-// One-time migration so content already saved in the old two-file system
-// isn't lost: seeds "Admission" and "Progress" guideline sets from those
-// files the first time this ever runs (storage key literally absent), then
-// never touches them again - all further edits happen through this module.
+// First install and existing-install cleanup share this exact default list.
+// The storage marker is written even when a user later deletes a default, so
+// deletion remains authoritative and startup never silently restores it.
 export async function loadOrMigrateGuidelineSets(storage = localStorage) {
   if (storage.getItem(GUIDELINE_SET_STORAGE_KEY) !== null) return loadGuidelineSets(storage);
-  const seeded = [];
-  try {
-    const [admissionResponse, progressResponse] = await Promise.all([
-      fetch("./prompts/Guidelines-admission.md", { cache: "no-store" }),
-      fetch("./prompts/Guidelines-progress.md", { cache: "no-store" })
-    ]);
-    if (admissionResponse.ok) {
-      seeded.push(createGuidelineSet("Admission", await admissionResponse.text(), { existingTokens: seeded.map((set) => set.token) }));
-    }
-    if (progressResponse.ok) {
-      seeded.push(createGuidelineSet("Progress", await progressResponse.text(), { existingTokens: seeded.map((set) => set.token) }));
-    }
-  } catch {
-    // No network/file access (e.g. a fresh install without those files) -
-    // just start with an empty, fully user-managed list.
-  }
+  const seeded = await seedDefaultGuidelineSets();
   saveGuidelineSets(seeded, storage);
+  storage.setItem(GUIDELINE_SET_CANONICAL_DEFAULTS_KEY, "1");
   return seeded;
 }
 
-export const GUIDELINE_SET_SEED_V2_KEY = "prerounding_guideline_sets_seed_v2";
+export async function ensureCanonicalDefaultGuidelineSets(sets, { legacyTeamPreferences = "", storage = localStorage } = {}) {
+  if (storage.getItem(GUIDELINE_SET_CANONICAL_DEFAULTS_KEY) !== null) return sets;
 
-// A second, independent one-time seed - same never-re-seed-once-the-flag-is-
-// set guarantee as loadOrMigrateGuidelineSets above, kept as its own flag so
-// it doesn't disturb that already-shipped, already-tested migration. This
-// covers guideline files added after that original migration (bedside
-// pre-round checklist, discharge instructions), so a user who migrated
-// before these existed still gets them offered exactly once, without ever
-// reintroducing one they've since deleted.
-export async function ensureAdditionalGuidelineSets(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_SEED_V2_KEY) !== null) return sets;
-  let next = sets;
-  try {
-    const [checklistResponse, dischargeResponse] = await Promise.all([
-      fetch("./prompts/Pre-round_checklist.md", { cache: "no-store" }),
-      fetch("./prompts/Discharge_Instructions.md", { cache: "no-store" })
-    ]);
-    if (checklistResponse.ok) next = addGuidelineSet(next, "Pre-round checklist", await checklistResponse.text());
-    if (dischargeResponse.ok) next = addGuidelineSet(next, "Discharge instructions", await dischargeResponse.text());
-  } catch {
-    // No network/file access - leave it for the user to add manually later.
+  const firstByToken = new Map();
+  for (const set of sets || []) {
+    if (!firstByToken.has(set.token)) firstByToken.set(set.token, set);
   }
-  storage.setItem(GUIDELINE_SET_SEED_V2_KEY, "1");
-  saveGuidelineSets(next, storage);
-  return next;
-}
 
-export const GUIDELINE_SET_SEED_V3_KEY = "prerounding_guideline_sets_seed_v3";
-
-// Independent one-time seed for the Consulting standard. Keeping this separate
-// from the earlier seed lets existing installs receive the new standard while
-// preserving the rule that a user who has deleted a set does not get it silently
-// reintroduced on a later startup.
-export async function ensureConsultingGuidelineSet(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_SEED_V3_KEY) !== null) return sets;
-  let next = sets;
-  try {
-    const response = await fetch("./prompts/Consulting.md", { cache: "no-store" });
-    if (response.ok) next = addGuidelineSet(next, "Consulting", await response.text());
-  } catch {
-    // No network/file access - leave it for the user to add manually later.
-  }
-  storage.setItem(GUIDELINE_SET_SEED_V3_KEY, "1");
-  saveGuidelineSets(next, storage);
-  return next;
-}
-
-export const GUIDELINE_SET_SEED_V4_KEY = "prerounding_guideline_sets_seed_v4";
-
-// Existing users may have an older persisted @progress-guidelines set. Keep
-// that user-managed set intact and add the current shipped standard under a
-// new token so the default progress prompt can adopt it without overwriting
-// saved preferences.
-export async function ensureCurrentProgressGuidelineSet(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_SEED_V4_KEY) !== null) return sets;
-  let next = sets;
-  try {
-    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
-    if (response.ok) next = addGuidelineSet(next, "Progress Updated", await response.text());
-  } catch {
-    // No network/file access - leave existing user-managed sets intact.
-  }
-  storage.setItem(GUIDELINE_SET_SEED_V4_KEY, "1");
-  saveGuidelineSets(next, storage);
-  return next;
-}
-
-export const GUIDELINE_SET_SEED_V5_KEY = "prerounding_guideline_sets_seed_v5";
-
-// Version the remaining shipped standards as new smart variables. This keeps
-// prior user-edited sets available while allowing the defaults to use the
-// latest static files without fetching or persisting patient data remotely.
-export async function ensureCurrentGuidelineSets(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_SEED_V5_KEY) !== null) return sets;
-  let next = sets;
-  const sources = [
-    ["Admission Updated", "./prompts/Guidelines-admission.md"],
-    ["Pre-round Checklist Updated", "./prompts/Pre-round_checklist.md"],
-    ["Discharge Instructions Updated", "./prompts/Discharge_Instructions.md"],
-    ["Consulting Updated", "./prompts/Consulting.md"]
-  ];
-  try {
-    const responses = await Promise.all(sources.map(async ([label, path]) => ({ label, response: await fetch(path, { cache: "no-store" }) })));
-    for (const { label, response } of responses) {
-      if (response.ok) next = addGuidelineSet(next, label, await response.text());
+  const canonical = [];
+  for (const source of DEFAULT_GUIDELINE_SET_SOURCES) {
+    const existing = firstByToken.get(source.token);
+    if (existing) {
+      const teamText = source.token === "@team-preferences" && !String(existing.text || "").trim()
+        ? String(legacyTeamPreferences || "")
+        : existing.text;
+      canonical.push({ ...existing, label: source.label, token: source.token, text: teamText });
+      continue;
     }
-  } catch {
-    // No network/file access - leave existing user-managed sets intact.
+    const text = source.token === "@team-preferences"
+      ? String(legacyTeamPreferences || "")
+      : await fetchGuidelineText(source.path);
+    canonical.push(createGuidelineSet(source.label, text, {
+      token: source.token,
+      existingTokens: canonical.map((set) => set.token)
+    }));
   }
-  storage.setItem(GUIDELINE_SET_SEED_V5_KEY, "1");
+
+  const custom = (sets || []).filter((set) =>
+    !DEFAULT_TOKENS.has(set.token)
+      && !LEGACY_DEFAULT_TOKEN.test(String(set.token || ""))
+  );
+  const next = [...canonical, ...custom];
   saveGuidelineSets(next, storage);
-  return next;
-}
-
-export const GUIDELINE_SET_SEED_V6_KEY = "prerounding_guideline_sets_seed_v6";
-
-// Refresh the shipped progress standard under a new stable token. The prior
-// Progress Updated set remains available because it may have been edited by
-// the user; the default progress template uses this current set instead.
-export async function ensureLatestProgressGuidelineSet(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_SEED_V6_KEY) !== null) return sets;
-  let next = sets;
-  try {
-    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
-    if (response.ok) next = addGuidelineSet(next, "Progress Current", await response.text());
-  } catch {
-    // No network/file access - leave existing user-managed sets intact.
-  }
-  storage.setItem(GUIDELINE_SET_SEED_V6_KEY, "1");
-  saveGuidelineSets(next, storage);
-  return next;
-}
-
-export const GUIDELINE_SET_SEED_V7_KEY = "prerounding_guideline_sets_seed_v7";
-
-// Refresh the current progress standard after a prompt-quality revision while
-// preserving all earlier user-managed sets and tokens.
-export async function ensureRevisedProgressGuidelineSet(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_SEED_V7_KEY) !== null) return sets;
-  let next = sets;
-  try {
-    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
-    if (response.ok) next = addGuidelineSet(next, "Progress Revised", await response.text());
-  } catch {
-    // No network/file access - leave existing user-managed sets intact.
-  }
-  storage.setItem(GUIDELINE_SET_SEED_V7_KEY, "1");
-  saveGuidelineSets(next, storage);
-  return next;
-}
-
-export const GUIDELINE_SET_SEED_V8_KEY = "prerounding_guideline_sets_seed_v8";
-
-// Deliver the focused progress-note standard to existing installs without
-// overwriting any prior user-managed guideline set.
-export async function ensureFocusedProgressGuidelineSet(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_SEED_V8_KEY) !== null) return sets;
-  let next = sets;
-  try {
-    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
-    if (response.ok) next = addGuidelineSet(next, "Progress Focused", await response.text());
-  } catch {
-    // No network/file access - leave existing user-managed sets intact.
-  }
-  storage.setItem(GUIDELINE_SET_SEED_V8_KEY, "1");
-  saveGuidelineSets(next, storage);
-  return next;
-}
-
-export const GUIDELINE_SET_SEED_V9_KEY = "prerounding_guideline_sets_seed_v9";
-
-// Deliver the stricter attending-format progress standard without overwriting
-// any prior user-managed guideline set.
-export async function ensureAttendingProgressGuidelineSet(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_SEED_V9_KEY) !== null) return sets;
-  let next = sets;
-  try {
-    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
-    if (response.ok) next = addGuidelineSet(next, "Progress Attending", await response.text());
-  } catch {
-    // No network/file access - leave existing user-managed sets intact.
-  }
-  storage.setItem(GUIDELINE_SET_SEED_V9_KEY, "1");
-  saveGuidelineSets(next, storage);
-  return next;
-}
-
-export const GUIDELINE_SET_SEED_V10_KEY = "prerounding_guideline_sets_seed_v10";
-
-// Deliver the reasoning-focused Assessment standard without overwriting any
-// prior user-managed progress guideline set.
-export async function ensureReasoningProgressGuidelineSet(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_SEED_V10_KEY) !== null) return sets;
-  let next = sets;
-  try {
-    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
-    if (response.ok) next = addGuidelineSet(next, "Progress Reasoning", await response.text());
-  } catch {
-    // No network/file access - leave existing user-managed sets intact.
-  }
-  storage.setItem(GUIDELINE_SET_SEED_V10_KEY, "1");
-  saveGuidelineSets(next, storage);
-  return next;
-}
-
-export const GUIDELINE_SET_SEED_V11_KEY = "prerounding_guideline_sets_seed_v11";
-
-// Deliver the problem-oriented Assessment-in-Plan structure without
-// overwriting prior user-managed progress guideline sets.
-export async function ensureProblemAssessmentProgressGuidelineSet(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_SEED_V11_KEY) !== null) return sets;
-  let next = sets;
-  try {
-    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
-    if (response.ok) next = addGuidelineSet(next, "Progress Problem Assessment", await response.text());
-  } catch {
-    // No network/file access - leave existing user-managed sets intact.
-  }
-  storage.setItem(GUIDELINE_SET_SEED_V11_KEY, "1");
-  saveGuidelineSets(next, storage);
-  return next;
-}
-
-export const GUIDELINE_SET_PROGRESS_CANONICAL_KEY = "prerounding_guideline_sets_progress_canonical_v1";
-
-const LEGACY_PROGRESS_TOKENS = new Set([
-  "@progress-guidelines",
-  "@progress-updated-guidelines",
-  "@progress-current-guidelines",
-  "@progress-revised-guidelines",
-  "@progress-focused-guidelines",
-  "@progress-attending-guidelines",
-  "@progress-reasoning-guidelines",
-  "@progress-problem-assessment-guidelines"
-]);
-
-// Consolidate every prior progress-standard migration into one current,
-// stable, editable Progress guideline set. This is intentionally a one-time
-// cleanup because the user explicitly wants one canonical progress standard.
-export async function ensureCanonicalProgressGuidelineSet(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_PROGRESS_CANONICAL_KEY) !== null) return sets;
-  let next = sets.filter((set) => !LEGACY_PROGRESS_TOKENS.has(set.token) && !/^Progress(?: |$)/i.test(set.label || ""));
-  try {
-    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
-    if (response.ok) next = addGuidelineSet(next, "Progress", await response.text());
-  } catch {
-    // No network/file access - leave non-progress guideline sets intact.
-  }
-  storage.setItem(GUIDELINE_SET_PROGRESS_CANONICAL_KEY, "1");
-  saveGuidelineSets(next, storage);
-  return next;
-}
-
-export const GUIDELINE_SET_PROGRESS_CANONICAL_V2_KEY = "prerounding_guideline_sets_progress_canonical_v2";
-
-// Refresh the single canonical Progress set after a prompt revision. Older
-// Progress variants are removed so the public Settings surface has one
-// current progress instruction rather than a version stack.
-export async function ensureCanonicalProgressGuidelineSetV2(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_PROGRESS_CANONICAL_V2_KEY) !== null) return sets;
-  let next = sets.filter((set) => !LEGACY_PROGRESS_TOKENS.has(set.token) && !/^Progress(?: |$)/i.test(set.label || ""));
-  try {
-    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
-    if (response.ok) next = addGuidelineSet(next, "Progress", await response.text());
-  } catch {
-    // No network/file access - leave non-progress guideline sets intact.
-  }
-  storage.setItem(GUIDELINE_SET_PROGRESS_CANONICAL_V2_KEY, "1");
-  saveGuidelineSets(next, storage);
-  return next;
-}
-
-// Keep the exported name for compatibility with existing imports, but advance
-// the storage revision so every install receives the current canonical prompt
-// exactly once. A user who has already received the prior v3 migration will
-// therefore receive this new prompt revision without another app-level call.
-export const GUIDELINE_SET_PROGRESS_CANONICAL_V3_KEY = "prerounding_guideline_sets_progress_canonical_v5";
-
-// Refresh the one canonical Progress set after the full attending-note revision.
-export async function ensureCanonicalProgressGuidelineSetV3(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_PROGRESS_CANONICAL_V3_KEY) !== null) return sets;
-  let next = sets.filter((set) => !LEGACY_PROGRESS_TOKENS.has(set.token) && !/^Progress(?: |$)/i.test(set.label || ""));
-  try {
-    const response = await fetch("./prompts/Guidelines-progress.md", { cache: "no-store" });
-    if (response.ok) next = addGuidelineSet(next, "Progress", await response.text());
-  } catch {
-    // No network/file access - leave non-progress guideline sets intact.
-  }
-  storage.setItem(GUIDELINE_SET_PROGRESS_CANONICAL_V3_KEY, "1");
-  saveGuidelineSets(next, storage);
-  return next;
-}
-
-export const GUIDELINE_SET_ADMISSION_CURRENT_KEY = "prerounding_guideline_sets_admission_current_v1";
-
-// Deliver the current expanded H&P standard to existing installs without
-// overwriting the prior user-managed Admission guideline set.
-export async function ensureCurrentAdmissionGuidelineSet(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_ADMISSION_CURRENT_KEY) !== null) return sets;
-  let next = sets;
-  try {
-    const response = await fetch("./prompts/Guidelines-admission.md", { cache: "no-store" });
-    if (response.ok) next = addGuidelineSet(next, "Admission Current", await response.text());
-  } catch {
-    // No network/file access - leave existing user-managed sets intact.
-  }
-  storage.setItem(GUIDELINE_SET_ADMISSION_CURRENT_KEY, "1");
-  saveGuidelineSets(next, storage);
-  return next;
-}
-
-export const GUIDELINE_SET_ADMISSION_CURRENT_V2_KEY = "prerounding_guideline_sets_admission_current_v3";
-
-// Refresh the canonical H&P standard used by the default admission template
-// while preserving any other user-managed Admission sets.
-export async function ensureCurrentAdmissionGuidelineSetV2(sets, storage = localStorage) {
-  if (storage.getItem(GUIDELINE_SET_ADMISSION_CURRENT_V2_KEY) !== null) return sets;
-  let next = sets;
-  try {
-    const response = await fetch("./prompts/Guidelines-admission.md", { cache: "no-store" });
-    if (response.ok) {
-      const text = await response.text();
-      const canonical = next.find((set) => set.token === "@admission-current-guidelines");
-      next = canonical
-        ? updateGuidelineSet(next, canonical.id, { text })
-        : addGuidelineSet(next, "Admission Current", text);
-    }
-  } catch {
-    // No network/file access - leave existing user-managed sets intact.
-  }
-  storage.setItem(GUIDELINE_SET_ADMISSION_CURRENT_V2_KEY, "1");
-  saveGuidelineSets(next, storage);
+  storage.setItem(GUIDELINE_SET_CANONICAL_DEFAULTS_KEY, "1");
   return next;
 }

@@ -61,13 +61,13 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../patient-context/deid-client.js?v=20260729-clinical-false-positives-1";
+} from "../patient-context/deid-client.js?v=20260803-workplace-models";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
+} from "../patient-context/deid-model-options.js?v=20260803-workplace-models";
 import {
   canAutomaticallyInstallModel,
   ensureModelPackServiceWorker,
@@ -79,13 +79,13 @@ import {
   modelFilesFromInput,
   removeModelPack,
   requestPersistentModelStorage
-} from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
+} from "../patient-context/model-pack-storage.js?v=20260803-workplace-models";
 import {
   formatBytes,
   hasAutomaticModelDownload,
   isInstallableModel,
   modelDownloadBytes
-} from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
+} from "../patient-context/model-packs.js?v=20260803-workplace-models";
 import {
   ADMISSION_PSEUDO_DAY_ID,
   buildPromptPreviewSegments,
@@ -102,24 +102,9 @@ import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindO
 import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260727-differential-format-2";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import {
-  ensureAdditionalGuidelineSets,
-  ensureAttendingProgressGuidelineSet,
-  ensureCanonicalProgressGuidelineSet,
-  ensureCanonicalProgressGuidelineSetV2,
-  ensureCanonicalProgressGuidelineSetV3,
-  ensureConsultingGuidelineSet,
-  ensureCurrentAdmissionGuidelineSet,
-  ensureCurrentAdmissionGuidelineSetV2,
-  ensureCurrentGuidelineSets,
-  ensureCurrentProgressGuidelineSet,
-  ensureFocusedProgressGuidelineSet,
-  ensureLatestProgressGuidelineSet,
-  ensureProblemAssessmentProgressGuidelineSet,
-  ensureReasoningProgressGuidelineSet,
-  ensureRevisedProgressGuidelineSet,
-  ensureTeamPreferencesGuidelineSet,
+  ensureCanonicalDefaultGuidelineSets,
   loadOrMigrateGuidelineSets
-} from "../prompts/guideline-sets.js?v=20260722-guideline-concept-v2";
+} from "../prompts/guideline-sets.js?v=20260803-canonical-defaults";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences,
@@ -4287,7 +4272,7 @@ async function refreshWebGpuAvailability({ renderAfter = true } = {}) {
 async function refreshGuidelines() {
   app.guidelineSets = await loadOrMigrateGuidelineSets();
   const legacyTeamPreferences = app.vault?.preferences?.teamInstructions || "";
-  app.guidelineSets = ensureTeamPreferencesGuidelineSet(app.guidelineSets, legacyTeamPreferences);
+  app.guidelineSets = await ensureCanonicalDefaultGuidelineSets(app.guidelineSets, { legacyTeamPreferences });
   if (legacyTeamPreferences.trim() && app.vault?.preferences) {
     app.vault = {
       ...app.vault,
@@ -4295,20 +4280,5 @@ async function refreshGuidelines() {
     };
     await saveEncryptedVault(app.vault, app.passphrase);
   }
-  app.guidelineSets = await ensureAdditionalGuidelineSets(app.guidelineSets);
-  app.guidelineSets = await ensureConsultingGuidelineSet(app.guidelineSets);
-  app.guidelineSets = await ensureCurrentProgressGuidelineSet(app.guidelineSets);
-  app.guidelineSets = await ensureCurrentGuidelineSets(app.guidelineSets);
-  app.guidelineSets = await ensureLatestProgressGuidelineSet(app.guidelineSets);
-  app.guidelineSets = await ensureRevisedProgressGuidelineSet(app.guidelineSets);
-  app.guidelineSets = await ensureFocusedProgressGuidelineSet(app.guidelineSets);
-  app.guidelineSets = await ensureAttendingProgressGuidelineSet(app.guidelineSets);
-  app.guidelineSets = await ensureReasoningProgressGuidelineSet(app.guidelineSets);
-  app.guidelineSets = await ensureProblemAssessmentProgressGuidelineSet(app.guidelineSets);
-  app.guidelineSets = await ensureCanonicalProgressGuidelineSet(app.guidelineSets);
-  app.guidelineSets = await ensureCanonicalProgressGuidelineSetV2(app.guidelineSets);
-  app.guidelineSets = await ensureCanonicalProgressGuidelineSetV3(app.guidelineSets);
-  app.guidelineSets = await ensureCurrentAdmissionGuidelineSet(app.guidelineSets);
-  app.guidelineSets = await ensureCurrentAdmissionGuidelineSetV2(app.guidelineSets);
   renderPrompts();
 }
