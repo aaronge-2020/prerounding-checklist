@@ -3,8 +3,15 @@ import { readFileSync } from "node:fs";
 import { createDailyRecord, upsertDay } from "../src/daily-updates/days.js";
 import { createPatientRecord } from "../src/app/state/vault.js";
 import { buildOpenEvidencePrompt, openEvidenceTasks } from "../src/prompts/open-evidence.js";
-import { buildCustomOpenEvidencePrompt, DEFAULT_PROMPT_TEMPLATES, promptVariablesForPatient } from "../src/prompts/custom-templates.js";
-import { createGuidelineSet } from "../src/prompts/guideline-sets.js";
+import {
+  buildCustomOpenEvidencePrompt,
+  DEFAULT_PROMPT_TEMPLATES,
+  loadPromptTemplateOverrides,
+  PROMPT_TEMPLATE_STORAGE_KEY,
+  promptVariablesForPatient,
+  SMART_PROMPT_VARIABLES
+} from "../src/prompts/custom-templates.js";
+import { createGuidelineSet, DEFAULT_GUIDELINE_SET_SOURCES } from "../src/prompts/guideline-sets.js";
 import { buildTeamPreferencesPromptBlock, normalizeUserPreferences } from "../src/app/preferences.js";
 import { createSourceCapture } from "../src/patient-context/source-captures.js";
 
@@ -14,13 +21,24 @@ const guidelines = {
 };
 
 for (const template of Object.values(DEFAULT_PROMPT_TEMPLATES)) {
-  assert.match(template, /^(?:\s*@[-a-z]+)+\s*$/, "default prompt templates must contain smart variables only");
+  const hiddenInstructionTokens = template.match(/@[a-z0-9-]+/g)?.filter((token) => token.endsWith("-instructions")) || [];
+  assert.deepEqual(hiddenInstructionTokens, [], "instruction prose must be visible in the editable template or come from a Settings guideline");
+}
+const canonicalGuidelineTokens = new Set(DEFAULT_GUIDELINE_SET_SOURCES.map((source) => source.token));
+const instructionSmartVariables = SMART_PROMPT_VARIABLES.filter((variable) => /(?:guidelines|preferences|instructions)$/.test(variable.token));
+assert.deepEqual(
+  instructionSmartVariables.map((variable) => variable.token),
+  ["@team-preferences"],
+  "the built-in smart-variable registry must not contain hidden instruction variables"
+);
+for (const variable of instructionSmartVariables) {
+  assert.ok(canonicalGuidelineTokens.has(variable.token), `${variable.token} must map one-to-one to an editable Settings guideline`);
 }
 assert.match(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@progress-note-packet/, "daily progress template must use the compiled selected-day packet");
 assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@exam-findings/, "daily progress template must not use the removed all-days examination variable");
-assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /@teaching-case-instructions/, "case teaching defaults must include their reusable instructions");
-assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /@medication-explainer-instructions/, "medication teaching defaults must include their reusable instructions");
-assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /@medication-safety-instructions/, "medication safety defaults must include their reusable instructions");
+assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /Act as a clinical teacher/, "case teaching instructions must be visible in the editable template");
+assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /Teach this medication list/, "medication teaching instructions must be visible in the editable template");
+assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /Run a focused, supervised medication-safety teaching exercise/, "medication safety instructions must be visible in the editable template");
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /@admission-packet/, "medication teaching defaults need patient context to establish indication");
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /@admission-packet/, "medication safety defaults need patient context for contraindications and verification");
 const customTeamInstructions = "Write only the highest-yield active problems and keep the plan action-focused.";
@@ -269,7 +287,7 @@ const directAdmission = buildCustomOpenEvidencePrompt({
   guidelineSets
 });
 assert.doesNotMatch(directAdmission, /Attending-Facing H&P Instructions/, "guidelines are only included where a template references their token - never force-injected");
-assert.match(directAdmission, /most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4/);
+assert.doesNotMatch(directAdmission, /most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4/, "differential instructions must not be silently injected outside the editable Admission guideline");
 assert.doesNotMatch(directAdmission, /Privacy rules:/);
 
 const directProgress = buildCustomOpenEvidencePrompt({
@@ -279,7 +297,7 @@ const directProgress = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelineSets
 });
-assert.match(directProgress, /most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4/);
+assert.doesNotMatch(directProgress, /most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4/, "differential instructions must not be silently injected outside the editable Progress guideline");
 
 const directGuidelines = buildCustomOpenEvidencePrompt({
   taskId: "initial_admission_rounds",
@@ -289,7 +307,41 @@ const directGuidelines = buildCustomOpenEvidencePrompt({
   guidelineSets
 });
 assert.match(directGuidelines, /Attending-Facing H&P Instructions/);
+assert.match(directGuidelines, /most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4/);
 assert.doesNotMatch(directGuidelines, /@admission-guidelines/);
+
+const differentialFormat = "most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4";
+const defaultAdmissionPrompt = buildCustomOpenEvidencePrompt({
+  template: DEFAULT_PROMPT_TEMPLATES.initial_admission_rounds,
+  patient,
+  selectedDayId: day.id,
+  guidelineSets
+});
+const defaultProgressPrompt = buildCustomOpenEvidencePrompt({
+  template: DEFAULT_PROMPT_TEMPLATES.daily_progress_note,
+  patient,
+  selectedDayId: day.id,
+  guidelineSets
+});
+assert.equal(defaultAdmissionPrompt.split(differentialFormat).length - 1, 1, "Admission must receive the differential format exactly once from its editable guideline");
+assert.equal(defaultProgressPrompt.split(differentialFormat).length - 1, 1, "Progress must receive the differential format exactly once from its editable guideline");
+
+const migratedStorageValues = new Map([[
+  PROMPT_TEMPLATE_STORAGE_KEY,
+  JSON.stringify({
+    initial_admission_rounds: "@team-preferences\n\n@clinical-differential-instructions\n\n@admission-guidelines\n\n@admission-packet",
+    teaching_case_trajectory: "@teaching-case-instructions\n\n@admission-packet"
+  })
+]]);
+const migratedStorage = {
+  getItem: (key) => migratedStorageValues.get(key) ?? null,
+  setItem: (key, value) => migratedStorageValues.set(key, value)
+};
+const migratedTemplates = loadPromptTemplateOverrides(migratedStorage);
+assert.equal(migratedTemplates.initial_admission_rounds, "@team-preferences\n\n@admission-guidelines\n\n@admission-packet");
+assert.match(migratedTemplates.teaching_case_trajectory, /Act as a clinical teacher/);
+assert.deepEqual(JSON.stringify(migratedTemplates).match(/@[a-z0-9-]+/g)?.filter((token) => token.endsWith("-instructions")) || [], []);
+assert.equal(JSON.parse(migratedStorageValues.get(PROMPT_TEMPLATE_STORAGE_KEY)).initial_admission_rounds, migratedTemplates.initial_admission_rounds, "legacy saved prompts must be rewritten once without hidden instruction tokens");
 
 const medicationTeachingPrompt = buildCustomOpenEvidencePrompt({
   taskId: "medication_explainer_by_problem",
@@ -299,7 +351,7 @@ const medicationTeachingPrompt = buildCustomOpenEvidencePrompt({
   teamPreferences: { teamInstructions: "Medication-focused review." }
 });
 assert.match(medicationTeachingPrompt, /Medication-focused review/);
-assert.doesNotMatch(medicationTeachingPrompt, /Organize medications by the disease/, "task prose is not embedded in the default template");
+assert.match(medicationTeachingPrompt, /Teach this medication list/, "task instructions must remain visible in the editable default template");
 
 const medicationDefaultPrompt = buildCustomOpenEvidencePrompt({
   taskId: "medication_explainer_by_problem",

@@ -96,7 +96,7 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260727-differential-format-2";
+} from "../prompts/custom-templates.js?v=20260803-guideline-variable-contract";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260723-edit-save";
 import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260727-differential-format-2";

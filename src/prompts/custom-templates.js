@@ -1,5 +1,5 @@
 import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
-import { buildTrajectoryBlock, sortDays } from "../daily-updates/days.js";
+import { buildTrajectoryBlock } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260722-unified-stay-v2";
 import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260722-unified-stay-v2";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js?v=20260722-guideline-library";
@@ -23,8 +23,6 @@ Silently verify every requirement before returning the revision:
 
 Remove repetition and filler across all sections. Use the context only to correct material inaccuracies, resolve contradictions, and retain essential context. Do not invent patient facts, results, orders, consultant recommendations, medication administrations, completed procedures, or unstated clinical status. Keep the result concise, clinically coherent, and ready to present to an attending.`;
 
-const CLINICAL_DIFFERENTIAL_INSTRUCTIONS = `For every new symptom or finding whose cause remains diagnostically unresolved and changes management, include one concise differential paragraph under the related Plan problem. Use this exact format: [most likely diagnosis] vs [plausible alternative 1] vs [plausible alternative 2] vs [plausible alternative 3] vs [plausible alternative 4]. [Most likely diagnosis] is most likely because [one or two sentences comparing chart-supported evidence for the leading diagnosis with the alternatives]. Do not use a separate differential heading, numbered diagnosis labels, or bullets. Keep every alternative plausible and management-relevant. Do not invent diagnoses, facts, or a differential for an already established or clinically irrelevant finding.`;
-
 const TEACHING_CASE_INSTRUCTIONS = `Act as a clinical teacher. Give a one-sentence illness script, then a concise, evidence-tethered chronological synthesis of the case. Teach the pathophysiology, diagnostic reasoning, uncertainty, and why the major decisions or pending questions matter using only details relevant to this patient. Clearly distinguish chart-supported facts from general teaching. End with two progressively challenging, case-specific active-recall questions; withhold their answers until the student asks. Do not write a clinical note, invent facts, or claim an unstated trend.`;
 
 const MEDICATION_EXPLAINER_INSTRUCTIONS = `Teach this medication list by organizing medicines around their apparent condition, symptom, or clinical purpose. For each clinically relevant medicine, give the generic name when available, dose, route, frequency, intended purpose, a one-phrase mechanism or clinical role, and one patient-relevant monitoring or counseling pearl. Mark each intended purpose as confirmed from context, inferred, or uncertain; when uncertain, state the missing information without guessing. Avoid generic monographs and repetition. Use only the supplied medication list and context. End with two progressively challenging, case-specific active-recall questions; withhold their answers until the student asks.`;
@@ -36,12 +34,12 @@ const MEDICATION_SAFETY_INSTRUCTIONS = `Run a focused, supervised medication-saf
 // sets the token below simply won't resolve (same graceful degradation as
 // referencing any other deleted variable).
 export const DEFAULT_PROMPT_TEMPLATES = {
-  initial_admission_rounds: `@team-preferences\n\n@clinical-differential-instructions\n\n@admission-guidelines\n\n@admission-packet`,
-  daily_progress_note: `@team-preferences\n\n@clinical-differential-instructions\n\n@progress-guidelines\n\n@progress-note-packet`,
-  presentation_quality_editor: `@presentation-editor-instructions\n\n@presentation-to-edit\n\n@admission-packet\n\n@progress-note-packet`,
-  teaching_case_trajectory: `@teaching-case-instructions\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
-  medication_explainer_by_problem: `@medication-explainer-instructions\n\n@admission-packet\n\n@medications\n\n@selected-day`,
-  medication_safety_audit: `@medication-safety-instructions\n\n@admission-packet\n\n@medications\n\n@labs\n\n@selected-day`,
+  initial_admission_rounds: `@team-preferences\n\n@admission-guidelines\n\n@admission-packet`,
+  daily_progress_note: `@team-preferences\n\n@progress-guidelines\n\n@progress-note-packet`,
+  presentation_quality_editor: `${PRESENTATION_EDITOR_INSTRUCTIONS}\n\n@presentation-to-edit\n\n@admission-packet\n\n@progress-note-packet`,
+  teaching_case_trajectory: `${TEACHING_CASE_INSTRUCTIONS}\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
+  medication_explainer_by_problem: `${MEDICATION_EXPLAINER_INSTRUCTIONS}\n\n@admission-packet\n\n@medications\n\n@selected-day`,
+  medication_safety_audit: `${MEDICATION_SAFETY_INSTRUCTIONS}\n\n@admission-packet\n\n@medications\n\n@labs\n\n@selected-day`,
   checklist_workup_refinement: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   preround_bedside_exam: `@team-preferences\n\n@pre-round-checklist-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`,
   discharge_instructions: `@team-preferences\n\n@discharge-instructions-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`,
@@ -53,11 +51,6 @@ export const SMART_PROMPT_VARIABLES = [
   { token: "@admission-packet", label: "Admission packet", description: "All saved admission fields, labeled." },
   { token: "@selected-day", label: "Selected hospital day", description: "The chosen hospital-day packet; defaults to the latest saved day." },
   { token: "@progress-note-packet", label: "Progress-note packet", description: "Curated carry-forward context plus the selected day, in clinical order." },
-  { token: "@clinical-differential-instructions", label: "Clinical differential instructions", description: "Required format for a new, management-relevant symptom or finding with diagnostic uncertainty." },
-  { token: "@presentation-editor-instructions", label: "Presentation editor instructions", description: "The built-in editing and verification standard for a presentation." },
-  { token: "@teaching-case-instructions", label: "Teaching case instructions", description: "A concise, patient-specific case-teaching flow with active recall." },
-  { token: "@medication-explainer-instructions", label: "Medication teaching instructions", description: "A patient-specific medication explanation flow with active recall." },
-  { token: "@medication-safety-instructions", label: "Medication safety instructions", description: "A prioritized medication-safety teaching flow with active recall." },
   { token: "@presentation-to-edit", label: "Presentation to edit", description: "The de-identified presentation pasted into the editor; held only in this tab." },
   { token: "@checklist-answers", label: "Checklist answers", description: "History and physical exam answers." },
   { token: "@admissions-exam-findings", label: "Prior clinician exam findings", description: "Physical exam findings documented by another clinician in the admission packet." },
@@ -191,7 +184,20 @@ function selectedDayExamFindings(day) {
 export function loadPromptTemplateOverrides(storage = localStorage) {
   try {
     const parsed = JSON.parse(storage.getItem(PROMPT_TEMPLATE_STORAGE_KEY) || "{}");
-    return parsed && typeof parsed === "object" ? parsed : {};
+    if (!parsed || typeof parsed !== "object") return {};
+    const replacements = {
+      "@clinical-differential-instructions": "",
+      "@presentation-editor-instructions": PRESENTATION_EDITOR_INSTRUCTIONS,
+      "@teaching-case-instructions": TEACHING_CASE_INSTRUCTIONS,
+      "@medication-explainer-instructions": MEDICATION_EXPLAINER_INSTRUCTIONS,
+      "@medication-safety-instructions": MEDICATION_SAFETY_INSTRUCTIONS
+    };
+    const migrated = Object.fromEntries(Object.entries(parsed).map(([taskId, template]) => [
+      taskId,
+      interpolatePromptTemplate(String(template || ""), replacements).replace(/\n{3,}/g, "\n\n").trim()
+    ]));
+    if (JSON.stringify(migrated) !== JSON.stringify(parsed)) savePromptTemplateOverrides(migrated, storage);
+    return migrated;
   } catch {
     return {};
   }
@@ -256,11 +262,6 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
       ? sectionsToPromptBlock(admissionSectionsWithoutTodayExam(patient), "Admission")
       : (selectedDay ? sourceCapturesToPromptBlock(selectedDayCapturesWithoutExam(selectedDay), "Selected hospital-day source record") : "No saved hospital day."),
     "@progress-note-packet": buildProgressNotePacket({ patient, selectedDay }),
-    "@clinical-differential-instructions": CLINICAL_DIFFERENTIAL_INSTRUCTIONS,
-    "@presentation-editor-instructions": PRESENTATION_EDITOR_INSTRUCTIONS,
-    "@teaching-case-instructions": TEACHING_CASE_INSTRUCTIONS,
-    "@medication-explainer-instructions": MEDICATION_EXPLAINER_INSTRUCTIONS,
-    "@medication-safety-instructions": MEDICATION_SAFETY_INSTRUCTIONS,
     // A presentation can be supplied directly in the destination chat. Keep
     // this optional token empty rather than inserting an instruction that
     // would make a copied editor prompt unusable in that workflow.
@@ -283,14 +284,10 @@ export function interpolatePromptTemplate(template, variables) {
   );
 }
 
-export function buildCustomOpenEvidencePrompt({ taskId, template, patient, selectedDayId, guidelineSets = [], teamPreferences, presentationToEdit = "" }) {
+export function buildCustomOpenEvidencePrompt({ template, patient, selectedDayId, guidelineSets = [], teamPreferences, presentationToEdit = "" }) {
   const variables = buildPromptVariableMap({ patient, selectedDayId, guidelineSets, teamPreferences, presentationToEdit });
   const interpolated = interpolatePromptTemplate(template, variables);
-  const noteTask = ["initial_admission_rounds", "daily_progress_note"].includes(taskId);
-  const includesDifferentialInstructions = String(template || "").includes("@clinical-differential-instructions");
-  return naturalLanguagePrompt(noteTask && !includesDifferentialInstructions
-    ? `${CLINICAL_DIFFERENTIAL_INSTRUCTIONS}\n\n${interpolated}`
-    : interpolated);
+  return naturalLanguagePrompt(interpolated);
 }
 
 function hashToken(token) {
