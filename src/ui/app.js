@@ -96,7 +96,7 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260803-guideline-variable-contract";
+} from "../prompts/custom-templates.js?v=20260804-clean-guideline-variables";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260723-edit-save";
 import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260727-differential-format-2";
@@ -104,7 +104,7 @@ import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.j
 import {
   ensureCanonicalDefaultGuidelineSets,
   loadOrMigrateGuidelineSets
-} from "../prompts/guideline-sets.js?v=20260803-canonical-defaults";
+} from "../prompts/guideline-sets.js?v=20260804-clean-guideline-variables";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences,

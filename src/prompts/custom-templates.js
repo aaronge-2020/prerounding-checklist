@@ -41,8 +41,8 @@ export const DEFAULT_PROMPT_TEMPLATES = {
   medication_explainer_by_problem: `${MEDICATION_EXPLAINER_INSTRUCTIONS}\n\n@admission-packet\n\n@medications\n\n@selected-day`,
   medication_safety_audit: `${MEDICATION_SAFETY_INSTRUCTIONS}\n\n@admission-packet\n\n@medications\n\n@labs\n\n@selected-day`,
   checklist_workup_refinement: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
-  preround_bedside_exam: `@team-preferences\n\n@pre-round-checklist-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`,
-  discharge_instructions: `@team-preferences\n\n@discharge-instructions-updated-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`,
+  preround_bedside_exam: `@team-preferences\n\n@pre-round-checklist-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`,
+  discharge_instructions: `@team-preferences\n\n@discharge-instructions-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`,
   consulting: `@team-preferences\n\n@consulting-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`
 };
 

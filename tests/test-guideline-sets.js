@@ -13,6 +13,7 @@ import {
   saveGuidelineSets,
   updateGuidelineSet
 } from "../src/prompts/guideline-sets.js";
+import { DEFAULT_PROMPT_TEMPLATES } from "../src/prompts/custom-templates.js";
 
 function fakeStorage(initial = {}) {
   const store = { ...initial };
@@ -28,14 +29,15 @@ const expectedTokens = [
   "@pre-round-checklist-guidelines",
   "@discharge-instructions-guidelines",
   "@consulting-guidelines",
-  "@pre-round-checklist-updated-guidelines",
-  "@discharge-instructions-updated-guidelines",
   "@team-preferences",
   "@progress-guidelines"
 ];
 
 assert.deepEqual(DEFAULT_GUIDELINE_SET_SOURCES.map((source) => source.token), expectedTokens);
 assert.equal(new Set(expectedTokens).size, expectedTokens.length, "default guideline tokens must be unique");
+assert.match(DEFAULT_PROMPT_TEMPLATES.preround_bedside_exam, /@pre-round-checklist-guidelines/);
+assert.match(DEFAULT_PROMPT_TEMPLATES.discharge_instructions, /@discharge-instructions-guidelines/);
+assert.doesNotMatch(Object.values(DEFAULT_PROMPT_TEMPLATES).join("\n"), /updated-guidelines/);
 
 // New installs receive exactly the canonical defaults, in the requested order.
 {
@@ -74,7 +76,7 @@ assert.equal(new Set(expectedTokens).size, expectedTokens.length, "default guide
       legacyTeamPreferences: "Rounds at 7.",
       storage
     });
-    assert.deepEqual(canonical.slice(0, 8).map((set) => set.token), expectedTokens);
+    assert.deepEqual(canonical.slice(0, 6).map((set) => set.token), expectedTokens);
     assert.equal(canonical.find((set) => set.token === "@admission-guidelines")?.text, "My edited admission text.");
     assert.equal(canonical.find((set) => set.token === "@team-preferences")?.text, "Rounds at 7.");
     assert.equal(canonical.find((set) => set.token === custom.token)?.text, custom.text);
@@ -89,6 +91,29 @@ assert.equal(new Set(expectedTokens).size, expectedTokens.length, "default guide
       afterDeletion,
       "canonical defaults must not be restored after the one-time cleanup"
     );
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+}
+
+// Former "Updated" defaults are folded into their single clean identities
+// without losing locally edited text when the canonical identity is absent.
+{
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: true, text: async () => "Canonical text." });
+  try {
+    const storage = fakeStorage({ [GUIDELINE_SET_STORAGE_KEY]: "[]" });
+    const canonical = await ensureCanonicalDefaultGuidelineSets([
+      createGuidelineSet("Pre-round Checklist Updated", "My edited checklist text.", {
+        token: "@pre-round-checklist-updated-guidelines"
+      }),
+      createGuidelineSet("Discharge Instructions Updated", "My edited discharge text.", {
+        token: "@discharge-instructions-updated-guidelines"
+      })
+    ], { storage });
+    assert.equal(canonical.find((set) => set.token === "@pre-round-checklist-guidelines")?.text, "My edited checklist text.");
+    assert.equal(canonical.find((set) => set.token === "@discharge-instructions-guidelines")?.text, "My edited discharge text.");
+    assert.equal(canonical.some((set) => set.token.includes("updated-guidelines")), false);
   } finally {
     globalThis.fetch = originalFetch;
   }

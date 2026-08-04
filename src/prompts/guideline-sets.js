@@ -1,20 +1,22 @@
 import { createLocalId } from "../app/state/vault.js";
 
 export const GUIDELINE_SET_STORAGE_KEY = "prerounding_guideline_sets_v1";
-export const GUIDELINE_SET_CANONICAL_DEFAULTS_KEY = "prerounding_guideline_sets_canonical_defaults_v1";
+export const GUIDELINE_SET_CANONICAL_DEFAULTS_KEY = "prerounding_guideline_sets_canonical_defaults_v2";
 
 export const DEFAULT_GUIDELINE_SET_SOURCES = Object.freeze([
   { label: "Admission", token: "@admission-guidelines", path: "./prompts/Guidelines-admission.md" },
   { label: "Pre-round checklist", token: "@pre-round-checklist-guidelines", path: "./prompts/Pre-round_checklist.md" },
   { label: "Discharge instructions", token: "@discharge-instructions-guidelines", path: "./prompts/Discharge_Instructions.md" },
   { label: "Consulting", token: "@consulting-guidelines", path: "./prompts/Consulting.md" },
-  { label: "Pre-round Checklist Updated", token: "@pre-round-checklist-updated-guidelines", path: "./prompts/Pre-round_checklist.md" },
-  { label: "Discharge Instructions Updated", token: "@discharge-instructions-updated-guidelines", path: "./prompts/Discharge_Instructions.md" },
   { label: "Team preferences", token: "@team-preferences", path: "" },
-  { label: "Progress", token: "@progress-guidelines", path: "./prompts/Guidelines-progress.md" }
+  { label: "Progress notes", token: "@progress-guidelines", path: "./prompts/Guidelines-progress.md" }
 ]);
 
 const DEFAULT_TOKENS = new Set(DEFAULT_GUIDELINE_SET_SOURCES.map((source) => source.token));
+const LEGACY_DEFAULT_ALIASES = new Map([
+  ["@pre-round-checklist-guidelines", ["@pre-round-checklist-updated-guidelines"]],
+  ["@discharge-instructions-guidelines", ["@discharge-instructions-updated-guidelines"]]
+]);
 
 // These names were created by the former chained migration system. They are
 // app-managed revisions, not user-created guideline identities. One canonical
@@ -135,7 +137,9 @@ export async function ensureCanonicalDefaultGuidelineSets(sets, { legacyTeamPref
 
   const canonical = [];
   for (const source of DEFAULT_GUIDELINE_SET_SOURCES) {
-    const existing = firstByToken.get(source.token);
+    const aliases = LEGACY_DEFAULT_ALIASES.get(source.token) || [];
+    const existing = firstByToken.get(source.token)
+      || aliases.map((token) => firstByToken.get(token)).find(Boolean);
     if (existing) {
       const teamText = source.token === "@team-preferences" && !String(existing.text || "").trim()
         ? String(legacyTeamPreferences || "")

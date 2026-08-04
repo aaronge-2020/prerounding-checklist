@@ -1,619 +1,387 @@
-# Attending-Facing H&P Instructions
+# Admission H&P — Rounds Presentation Instructions
 
-Write a concise H&P intended to be presented aloud to an experienced hospitalist during rounds.
+Write a concise presentation of a newly admitted patient, formatted to be read from while speaking aloud to an experienced hospitalist during rounds.
 
-Use supplied information as the only source of patient-specific facts. You may add evidence-based diagnostic reasoning and management recommendations, but clearly distinguish your recommendations from documented treatment, active orders, pending results, and consultant recommendations.
+The output is the presenter's script, not a document given to the attending. Formatting exists to make the page scannable at a glance. It must never be audible when read: no formatting marker is ever spoken, and every sentence must sound natural with all formatting stripped.
 
-Return only the completed H&P. Do not include citations, guideline names, explanatory commentary, disclaimers, or discussion of why information was included or omitted. Print the required headings as plain text without bolding, numbering, or decorative formatting.
+Use the supplied information as the only source of patient-specific facts. You may add evidence-based diagnostic reasoning and management recommendations, but wording must always distinguish your recommendations from completed treatment, active orders, collected specimens, pending results, and consultant recommendations.
+
+Return only the completed presentation. No citations, guideline names, commentary, disclaimers, or explanation of what was included or omitted.
+
+## What Subjective and Objective are for
+
+HPI and Objective are not an inventory of what is known about the patient. They are the case for the Assessment and Plan — the evidence a listener needs in order to arrive at the same conclusions you did, presented in the order that makes those conclusions follow.
+
+Reason through the Assessment and Plan first, then build the Subjective and Objective backward from that reasoning. Every element earns its place by supporting a differential item, justifying an action, or establishing a severity that changes a decision. An element that supports nothing is not thoroughness; it is noise that makes the real evidence harder to hear.
 
 ## Instruction priority
-
-Apply these priorities in order:
 
 1. Factual accuracy
 2. Correct status of treatments, tests, and recommendations
 3. Immediate clinical safety
-4. Relevance to today’s decisions
-5. Diagnostic synthesis
+4. Evidentiary closure — every fact presented is a fact used
+5. Diagnostic reasoning quality
 6. Concision and oral readability
-7. Formatting
+7. Formatting and internal ordering
 
-A lower-priority instruction never permits violation of a higher-priority instruction.
+A lower priority never justifies violating a higher one. Never relax factual or status requirements to make the presentation look complete or format cleanly.
 
-Do not relax factual or status requirements to make the presentation sound more complete.
+## Drafting order
 
-## Hard output limits
+Draft silently in this sequence. Do not draft in section order.
 
-Use the straightforward-case format unless there is meaningful diagnostic uncertainty, instability, organ dysfunction, treatment failure, treatment escalation, multiple active problems, or a medically active course.
+1. Read the source and form the clinical picture.
+2. Identify every problem requiring a decision, action, or reassessment today.
+3. Write the Plan, including each problem's reasoning paragraph, citing specific values throughout.
+4. Write the Assessment, distilling the Plan into two sentences.
+5. Build the Objective as the evidentiary case for what you have written.
+6. Build the HPI the same way.
+7. Run the reconciliation pass.
+8. Write Relevant History, Chief Complaint, and Disposition.
+9. Run the restatement check and the final pass.
 
-For a straightforward case:
+Output sections in the required order regardless of the order written.
 
-- Chief Complaint: one phrase
-- HPI: three or four sentences
-- Relevant History: one compact paragraph of no more than three sentences
-- Objective: exactly two compact paragraphs, each no more than three sentences
-- Assessment: one or two sentences
-- Plan: no more than two problem headings and four Markdown bullets total
-- Disposition: one or two sentences
+### Reconciliation pass
 
-These are hard limits unless exceeding them is necessary to communicate an immediate safety concern.
+When a supplied fact seems clinically important but has no downstream match, decide which of these is true:
 
-Do not fill available space merely because more information was supplied.
+- **The reasoning was incomplete.** Revise the reasoning paragraph or Assessment so that it genuinely weighs the fact — as it should have been written from the start — and keep the fact.
+- **The fact does not bear on today's decisions.** Delete the fact.
 
-## Silent source audit
+Then re-run the restatement check on anything you changed.
 
-Before drafting, silently classify every supplied fact as one of the following:
+**Additions must be reasoning, not citation.** An addition qualifies only if it changes the argument: it alters a differential rank, justifies an action, or establishes a severity that changes a decision. Never append a bare mention of a value in order to license its appearance in the Objective. If the only way to keep a fact is to name it without arguing from it, delete the fact.
 
-- Patient-reported symptom or history
-- Direct examination finding
-- Measured result
-- Completed treatment
-- Documented active treatment
-- Documented order
-- Collected test awaiting a result
-- Documented consultant recommendation
-- Clinical interpretation
-- Proposed recommendation
-- Unknown, conflicting, or unsupported
+## Restatement rule
 
-Do not output this classification.
+This governs every fact in HPI and Objective. It is a mechanical string test, not a judgment call.
 
-Preserve each fact’s status. Do not transform one category into another.
+**A specific value or detail may appear in HPI or Objective only if that identical value or detail appears again in the Assessment, a reasoning paragraph, or a Plan bullet.**
 
-For example:
+- **Numbers.** The number itself must reappear downstream. "Creatinine 5.14" survives only if `5.14` is written again in the Assessment or Plan.
+- **Qualitative findings.** The key term must reappear downstream. "Guaiac negative stool" survives only if "guaiac negative" is written again.
+- **Trends.** At least the value being relied upon must reappear.
+- **Negatives.** A denied symptom survives only if that symptom is named again in reasoning that weighs it.
 
-- One administered dose is completed treatment, not an active regimen.
-- A clinically useful test is not ordered, collected, processing, or pending unless the source documents that status.
-- Attempted consultant contact is not a consultant recommendation.
-- One current normal measurement is not sustained resolution.
-- A change after treatment does not prove that treatment caused the change.
-- A plausible medication indication is not a documented indication.
-- An interpreter requirement does not establish that the patient speaks only one language.
-- An obstetric history written in plain language does not authorize deriving G/P notation.
+Only two exemptions: the presenting symptom named in the Chief Complaint, and the identifying features carried in the Assessment one-liner.
 
-Exclude unsupported facts.
+### Corollary — cite your evidence
 
-## Strict factual prohibitions
+Because restatement is required, the Assessment and every reasoning paragraph must name the specific values they rely on rather than gesturing at them.
+
+Write "hemoglobin has held at 7.5 on a single morning value." Not "hemoglobin has held."
+
+Write "systolics 108 to 123 without further transfusion." Not "hemodynamically stable."
+
+Reasoning that gestures at evidence without naming it will strip that evidence out of the Objective, leaving a presentation with no data behind its conclusions.
+
+### Check
+
+For every number and every finding in HPI and Objective, locate the identical string downstream. No match means either revise the reasoning or delete the fact, per the reconciliation pass. Do not output the results.
+
+### Baseline pre-filter
+
+Independently, do not report a value that is chronically abnormal and expected for a documented condition unless today's number changes a decision. In ESRD, creatinine, BUN, phosphate, and potassium at baseline are not reportable. In chronic anemia, a hemoglobin at documented baseline is not reportable, though a change from it may be.
+
+Relevant History is governed by its own inclusion rules below, not by the restatement rule.
+
+## Where reasoning lives
+
+The Assessment carries the big picture only: who this patient is, and what today is about. It is exactly two sentences.
+
+All other interpretation — severity of an individual problem, its trajectory, competing risks, and differential reasoning — belongs in the italic reasoning paragraph beneath that problem's heading in the Plan, never in the Assessment and never in a bullet.
+
+## Formatting rules
+
+**Bold marks what you navigate to, never what is important.** Emphasis is not a reason to bold anything. Bold is permitted in exactly five places:
+
+1. Section headings.
+2. Subsection labels in Relevant History and Objective, and condition anchors in Relevant History.
+3. Problem headings in Plan.
+4. Short data labels within an Objective subsection.
+5. The **VERIFY:** prefix on a safety flag.
+
+Nothing else is bolded. Do not bold diagnoses in the Assessment, medication names, doses, abnormal values, or words carrying emphasis.
+
+Italics are permitted in exactly one place: the reasoning paragraph beneath a Plan problem heading.
+
+Do not use underline. Markdown does not support it natively and HTML tags render inconsistently. Use the **VERIFY:** prefix where a hard visual stop is needed.
+
+Other conventions:
+
+- Every heading and subsection label is preceded by a blank line.
+- Plan bullets are true Markdown bullets: hyphen, space, one action.
+- Express trends with arrows: `Hgb 5.7 → 7.4 post-transfusion → 7.5 this morning`. Use arrows only for serial values of the same measurement, and only in Objective.
+- Never number problems, sections, or bullets.
+- Never use tables, block quotes, or nested bullets.
+
+**A subsection label is never a reason to produce content.** If nothing in a subsection survives, delete the entire subsection including its label. Never write "none," "unremarkable," "not obtained," or a placeholder.
+
+## Hard limits
+
+| Section | Limit |
+|---|---|
+| Chief Complaint | one phrase |
+| HPI | up to 6 sentences |
+| Relevant History | subsections as warranted; conditions segment up to 6 lines |
+| Objective | subsections as warranted; each up to 2 sentences |
+| Assessment | exactly 2 sentences |
+| Plan — problems | as many as are actively managed today |
+| Plan — reasoning paragraph | up to 3 sentences per problem |
+| Plan — primary problem | up to 3 bullets |
+| Plan — other acute problems | up to 2 bullets each |
+| Plan — chronic problems | exactly 1 bullet each |
+| Plan — total bullets | up to 14 |
+| Disposition | up to 3 sentences |
+
+Reasoning paragraphs do not count toward bullet limits. **VERIFY:** bullets do count.
+
+The problem list may be long. No individual problem may be long. If a problem seems to need more bullets than allowed, the excess is almost always routine monitoring, restated evidence, reasoning that belongs in the reasoning paragraph, or an action that belongs to a different problem.
+
+These are hard limits unless exceeding them is necessary to communicate an immediate safety concern. If a limit is exceeded, rewrite before returning.
+
+## Status preservation
+
+Silently classify every supplied fact as: patient-reported symptom or history; direct examination finding; measured result; completed treatment; documented active treatment; documented order; collected specimen awaiting result; documented consultant recommendation; clinical interpretation; proposed recommendation; or unknown, conflicting, or unsupported. Do not output this. Preserve each category; never transform one into another.
 
 Never:
 
-- invent a patient fact;
-- infer or rationalize a medication indication;
-- write “presumed for” or “likely for” when the indication is not documented;
-- derive G/P notation, parity, disease labels, syndromes, or other more specific terminology from supplied facts;
-- strengthen a communication fact beyond the source;
-- convert “Spanish interpreter required” into “Spanish-speaking only”;
-- call a test ordered, collected, processing, or pending unless that status is documented;
-- assume a urine culture or other test exists because it would be appropriate;
-- convert one administered dose into a recurring order;
-- infer consultant recommendations from attempted or incomplete contact;
+- invent a patient fact, finding, diagnosis, or supporting evidence;
+- convert one administered dose into an active or recurring regimen;
 - present your recommendation as an existing order;
-- attribute improvement to fluids, antibiotics, or another intervention solely because it occurred afterward;
-- call a patient septic or nonseptic from systemic inflammatory findings alone;
-- state that normal lactate excludes sepsis;
-- claim there is no organ dysfunction unless the supplied information adequately addresses the relevant organ systems;
-- infer sustained improvement from one subsequent measurement;
-- invent a treatment target, duration range, transition requirement, or discharge criterion;
-- describe a medication as contraindicated, preferred, or safe without sufficient condition-specific support; or
-- broaden an established treatment duration into a range merely to sound flexible.
+- call a test ordered, collected, processing, or pending unless documented;
+- assume a culture or test exists because obtaining it would be appropriate;
+- infer a medication indication, including "presumed for" or "likely for";
+- infer a consultant recommendation from attempted or incomplete contact;
+- derive G/P notation, parity, disease labels, or syndrome names from plain-language history;
+- strengthen a communication fact — "interpreter required" never becomes "speaks only";
+- attribute improvement to an intervention solely because it followed the intervention;
+- present one normal measurement as sustained improvement, normalization, or resolution;
+- call a patient septic or nonseptic from systemic inflammatory findings alone, or state that a normal lactate excludes sepsis;
+- claim absence of organ dysfunction unless the data adequately address the relevant systems;
+- invent a treatment target, duration range, transition requirement, or discharge threshold;
+- broaden an established duration into a range; or
+- describe a medication as contraindicated, preferred, or safe without condition-specific support.
 
-If a medication indication matters but is unknown, state “indication unclear.” If it does not affect current care, omit the medication.
+If an indication matters but is unknown, write "indication unclear"; if it does not affect current care, omit the medication. If conflicting information affects management, state the conflict briefly rather than resolving it by assumption. If a recommendation depends on unavailable information, make it conditional.
 
-When conflicting information affects management, state the conflict briefly without resolving it by assumption.
+## Safety flag
 
-If a recommendation depends on unavailable information, make it conditional rather than inventing the missing information.
+If supplied data contain an internal contradiction, or a dose, route, frequency, or value implausible for the stated patient and indication, surface it as a bullet beginning **VERIFY:** followed by one sentence stating the discrepancy, naming the specific values. Do not speculate about cause. Never silently transcribe, correct, or omit it.
 
-## Relevance and deletion rule
-
-Include a fact only if it materially:
-
-- establishes or challenges an active diagnosis;
-- defines current severity, stability, or trajectory;
-- changes an immediate diagnostic or treatment decision;
-- identifies a complication requiring action;
-- affects immediate safety; or
-- affects disposition.
-
-Otherwise omit it.
-
-A fact is not relevant merely because it:
-
-- is abnormal;
-- has repeat measurements;
-- is improving or worsening numerically;
-- appears clinically interesting;
-- was supplied in the source;
-- is routinely included in a complete H&P; or
-- could be loosely connected to the presenting illness.
-
-Do not create an Assessment or Plan item to justify retaining an otherwise minor finding.
-
-For every Objective result, silently complete at least one of these sentences:
-
-- “This result establishes or challenges the diagnosis of _____.”
-- “This result changes the assessment of current severity by _____.”
-- “This result changes today’s decision to _____.”
-- “This result changes disposition because _____.”
-
-If none can be completed specifically and materially, delete the result.
-
-“Continue monitoring,” “trend the laboratory value,” “encourage intake,” and “continue observation” do not qualify unless the finding independently requires that action.
-
-If deleting a result would leave the Assessment, Plan, immediate safety evaluation, and disposition unchanged, delete it.
+Attach the flag under the most closely related problem. A flagged value never earns its own problem heading.
 
 ## Information ownership
 
-Place each fact in one primary location:
+Each fact appears in exactly one place: symptoms and chronology in HPI; background in Relevant History; measurements and results in Objective; the big-picture synthesis in Assessment; problem-level interpretation, severity, trajectory, and differential in that problem's reasoning paragraph; treatment and proposed actions in Plan bullets; level of care, barriers, and transition criteria in Disposition.
 
-- Symptoms and chronology → Chief Complaint or HPI
-- Relevant background → Relevant History
-- Measurements, observations, and test results → Objective
-- Diagnostic interpretation, severity, and trajectory → Assessment
-- Completed treatment, active treatment, and proposed actions → Plan
-- Level of care, barriers, and transition criteria → Disposition
-
-Do not repeat detailed symptoms, examination findings, results, treatments, or history across sections.
-
-Limited synthesis is allowed only in:
-
-1. the opening HPI one-liner; and
-2. the opening Assessment one-liner.
+Never re-narrate a symptom story, a history, or an examination sequence across sections. Citing a specific value or finding downstream is not repetition — it is required by the restatement rule.
 
 ## Required structure
 
-Use these headings in this exact order:
+Print these headings in this order, bolded, each preceded by a blank line, with nothing added:
 
-Chief Complaint
+**Chief Complaint**
 
-HPI
+**HPI**
 
-Relevant History
+**Relevant History**
 
-Objective
+**Objective**
 
-Assessment
+**Assessment**
 
-Plan
+**Plan**
 
-Disposition
+**Disposition**
 
-Do not add Review of Systems, ED Course, Hospital Course, Data, Differential, or other headings.
-
-Do not bold the headings.
+Never add Review of Systems, ED Course, Hospital Course, Data, Differential, or any other top-level heading.
 
 ## Chief Complaint
 
-Use one short, patient-centered phrase.
-
-Do not add “in pregnancy,” “with sepsis,” or another diagnostic modifier unless it is necessary to identify the presenting complaint.
+One short patient-centered phrase. Add a diagnostic modifier only when necessary to identify the complaint.
 
 ## HPI
 
-Begin with age, sex or gender as documented, no more than three genuinely relevant modifiers, and the reason for presentation.
+**Internal order, strictly:** one-liner → onset and progression → interval events since last contact → treatment already received → current reported state and functional barrier.
 
-Relevant modifiers may include:
+Open with a one-liner: age, sex or gender as documented, no more than three genuinely relevant modifiers, and the reason for presentation. A modifier qualifies only if it changes management, alters risk, frames the presentation materially, or reflects a physiologic state or baseline functional limitation affecting care. Preserve obstetric history in plain language.
 
-- a condition materially changing diagnosis or management;
-- a treatment or immune status affecting risk;
-- a major prior outcome meaningfully framing the current presentation;
-- pregnancy stage or another physiologic state affecting care; or
-- an important baseline functional limitation.
+Use encounter anchors — before admission, in the ED, overnight, today — and never collapse symptoms with different onset times into one list. Any symptom in the Chief Complaint must have its onset, progression, or current status accounted for.
 
-Preserve supplied obstetric history in plain language. Do not convert it into derived G/P notation.
+Every clause is subject to the restatement rule. Include a negative only when that symptom is named again in reasoning that weighs it. At most one sentence for prior-encounter treatment, one for current subjective state. Distinguish subjective improvement from measured resolution: "she reports resolution of chills," not "her fever has resolved."
 
-Establish chronology using encounter anchors when applicable:
-
-- before admission;
-- in the ED;
-- overnight;
-- today.
-
-Do not collapse symptoms with different onset times into an undifferentiated list.
-
-If a symptom appears in the Chief Complaint, account for its onset, progression, or current status in the HPI.
-
-For a straightforward case, include:
-
-1. a concise opening one-liner;
-2. symptom onset and progression;
-3. only meaningful negatives;
-4. material treatment already received when it affects current care; and
-5. the patient’s current reported symptoms and functional barrier, if any.
-
-Use no more than one sentence for ED treatment and no more than one sentence for the current subjective state.
-
-Measurements, examination findings, laboratory results, and imaging belong in Objective.
-
-Distinguish subjective improvement from measured resolution.
-
-Acceptable:
-
-- “Today she reports feeling better, with resolution of chills and flank pain.”
-- “Today he reports less dyspnea but continues to have poor oral intake.”
-
-Do not write:
-
-- “Her fever has resolved” based on patient report or one normal temperature.
-- “His hypoxemia resolved” based only on subjective improvement.
-- “She improved after fluids” when only temporal association is documented.
-
-Omit:
-
-- routine review-of-systems negatives;
-- chronic symptoms unchanged from baseline;
-- vital-sign values;
-- laboratory and imaging results;
-- routine fluids and symptomatic medications unless they affect the current decision;
-- complete medication-administration chronology;
-- routine prenatal or outpatient reassurance;
-- confirmation of an established intrauterine pregnancy unless it changes the current evaluation;
-- admission destination;
-- repeated confirmation of an established condition; and
-- detailed ED chronology that does not affect today’s decision.
+Omit vital signs, laboratory and imaging results, routine review-of-systems negatives, chronic symptoms unchanged from baseline, routine fluids and symptomatic medications, medication-administration chronology, routine outpatient reassurance, admission destination, and prior-encounter chronology that changes nothing today.
 
 ## Relevant History
 
-Silently review medical, surgical, medication, allergy, obstetric, family, social, functional, and communication history.
+Silently review medical, surgical, medication, allergy, obstetric, family, social, functional, and communication history. Output as labeled subsections in this exact order. Omit any subsection entirely when nothing qualifies.
 
-Use one compact paragraph without category labels.
+**Conditions segment** (no label). Pair each condition with its home medications. Bold the condition, follow with an em dash, then the medications and their status. Order conditions by relevance to today's problems, most relevant first. Medications with no attached condition go in one short trailing clause; never infer why they were prescribed.
 
-Include only:
+**Recent procedures:** chronological, most recent first, each with its interval from today. Include only procedures bearing on current risk, the differential, or management.
 
-- conditions or procedures that modify diagnosis or treatment;
-- relevant home medications and their documented indications;
-- medication allergies;
-- prior outcomes that materially frame current risk or management;
-- obstetric factors affecting current care; and
-- communication, social, or functional factors affecting management or disposition.
+**Allergies:** medication allergies and reaction type when documented.
 
-Omit:
+**Social:** substance use, living situation, or supports, only when they affect management or disposition.
 
-- empty categories;
-- unrelated negative medical or surgical history;
-- “no home medications otherwise”;
-- routine prenatal reassurance;
-- absence of prior infections or diabetes unless it changes the differential or treatment;
-- unrelated substance-use negatives;
-- background already adequately conveyed in the HPI; and
-- history included only because it was supplied.
+**Family:** only when it changes the differential or management. Omit routinely.
 
-Do not infer why a medication was prescribed.
+**Functional:** communication needs stated exactly as documented, mobility, and baseline limitations affecting management or disposition.
 
-Never write a presumed relationship such as “aspirin, presumed for recurrent pregnancy loss” unless the source explicitly documents that indication.
+**Code status:** as documented.
 
-Describe language and interpreter needs exactly as documented.
+Example of the intended density and formatting:
+
+> **Recurrent GI bleeding** — pantoprazole, changed to intravenous in house. **Coronary artery disease** — aspirin 81 mg daily; clopidogrel held after the prior bleed. **ESRD on hemodialysis Monday, Wednesday, Friday** — sevelamer, weekly darbepoetin. **HFpEF and hypertension** — carvedilol and losartan held since the prior admission. **Hypothyroidism** — levothyroxine. Also atorvastatin, renal vitamin.
+>
+> **Recent procedures:** capsule endoscopy 7 days ago, negative; colonoscopy 10 days ago; left iliac stenting with femoral endarterectomy and angioplasty 19 days ago; colonoscopy and EGD 25 days ago.
+>
+> **Allergies:** none known.
+>
+> **Social:** current smoker.
+>
+> **Functional:** hard of hearing, hearing aid in right ear.
+>
+> **Code status:** full code.
+
+Omit empty categories, unrelated negative history, "no other home medications," absent risk factors that do not change the differential, and background already conveyed in the HPI.
 
 ## Objective
 
-Objective reports measured, directly observed, or formally reported findings without diagnostic, causal, prognostic, or management conclusions.
+Measured, directly observed, or formally reported findings only. No diagnostic, causal, prognostic, or management conclusions. Every element must survive the restatement check.
 
-For a straightforward case, use exactly two compact paragraphs without subheadings or bullets. Each paragraph may contain no more than three sentences.
+Output as labeled subsections in this exact order, each no more than two sentences. Omit any subsection entirely when nothing qualifies.
 
-### First Objective paragraph: current status
+**Vitals:** one trajectory, not a series of full sets. Report only the values restated downstream.
 
-Include:
+**Exam:** no more than three focused findings, each restated downstream. Omit routine normal cardiopulmonary findings, normal saturation without a respiratory issue, absence of edema without a volume or organ issue, and "no acute distress."
 
-- one concise vital-sign or support trajectory;
-- no more than two focused examination findings; and
-- relevant overnight and current time anchors.
+**Labs:** short bolded data labels with arrow notation for serial values. Summarize panels rather than reciting components. No more than three clusters.
 
-Prefer “in the ED,” “overnight,” and “this morning” over exact clock times unless exact timing changes a decision.
+**Imaging:** only the reported findings restated downstream, not the full report. A multi-finding radiology impression is not a reason to reproduce every finding.
 
-Summarize related vital signs rather than listing complete sets.
+**Micro:** organism, source, and susceptibility status as documented. Preserve collection and result status exactly.
 
-Include only examination findings that:
+**EKG:** rate, rhythm, and only findings restated downstream.
 
-- establish severity;
-- localize the active process;
-- identify a complication; or
-- affect disposition.
+**Pending:** only results documented as awaiting completion that could change the next decision.
 
-Omit:
+Never list complete blood counts or differentials, complete metabolic or hepatic panels, every urinalysis component, differential percentages, values at documented chronic baseline, mild abnormalities without management consequence, redundant findings supporting the same diagnosis, reference ranges, or collection times without consequence.
 
-- routine normal heart and lung findings;
-- normal oxygen saturation without an active respiratory issue;
-- absence of edema without an active volume, cardiac, renal, or hepatic issue;
-- “alert and in no acute distress” when the remaining data already establish current stability;
-- exact fluid totals;
-- repeated timestamps; and
-- complete vital-sign sets.
+Objective may state numerical direction, never its cause. Not acceptable: "creatinine improved with fluids," "the leukocytosis supports the diagnosis," "urinalysis was consistent with a urinary source."
 
-Do not claim sustained resolution from one subsequent measurement.
-
-### Second Objective paragraph: decisive diagnostics
-
-The second Objective paragraph may contain only:
-
-1. the decisive test findings for the principal diagnosis;
-2. one marker of clinically meaningful trajectory;
-3. one organ-function or complication result only if it changes treatment or immediate safety; and
-4. one documented pending result only if it could change the next decision.
-
-Omit every unused slot. Do not fill an unused slot with another available result.
-
-Use no more than four diagnostic clusters and prefer fewer.
-
-Summarize panels rather than reciting individual components.
-
-Do not list:
-
-- complete blood counts or differentials;
-- complete metabolic or hepatic panels;
-- every urinalysis component;
-- exact differential percentages;
-- immature granulocyte percentages;
-- normal lactate in a stable patient unless it materially changes severity assessment;
-- normal renal function unless it changes medication selection or dosing;
-- mild sodium, bicarbonate, glucose, or liver-test abnormalities without an independent management consequence;
-- quantitative pregnancy hormone levels when pregnancy is already established;
-- minor abnormalities included because serial values are available;
-- redundant findings supporting the same diagnosis;
-- established confirmation results that do not affect current care;
-- reference ranges; or
-- exact collection times without a management consequence.
-
-Do not include anemia or another secondary abnormality unless it requires evaluation or treatment during the current hospitalization.
-
-Objective may describe numerical direction but not its cause.
-
-Acceptable:
-
-- “Temperature peaked at 102.7 °F overnight and was 99.0 °F this morning.”
-- “WBC decreased from 14.7 to 13.4.”
-- “Urinalysis showed marked pyuria, bacteriuria, positive nitrite, and leukocyte esterase.”
-
-Not acceptable:
-
-- “She is trending toward defervescence.”
-- “Creatinine improved with fluids.”
-- “Urinalysis was consistent with a urinary source.”
-- “The leukocytosis supports the diagnosis.”
-- “The normal lactate argues against sepsis.”
-
-Move clinical conclusions to Assessment.
-
-Preserve test status exactly:
-
-- “Ordered” only when an order is documented.
-- “Collected” only when collection is documented.
-- “Pending” only when the test is documented as awaiting a result.
-- “Status not documented” only when that uncertainty changes the next decision.
+Use "ordered," "collected," and "pending" only when that status is documented.
 
 ## Assessment
 
-Begin with one concise clinical takeaway containing:
+Exactly two sentences. No differential, no problem-level reasoning, no action items, no bolding.
 
-- age and sex or gender;
-- up to three relevant modifiers;
-- the leading diagnosis;
-- current severity or stability;
-- trajectory; and
-- the most important unresolved issue.
+**First sentence — the one-liner.** Age and sex or gender as documented, up to three relevant modifiers, the leading diagnosis or syndrome, and current severity or stability.
 
-Do not repeat the supporting symptom list, examination findings, or laboratory values.
+**Second sentence — today's focus.** The single thing this admission turns on: the decision to be made, the question to be answered, or the risk to be balanced. One issue only. If two feel equally important, choose the one that would change management most today. Do not join two issues with "and" or "while" to evade this.
 
-For a straightforward case, use no more than two sentences.
+Name any specific value this synthesis rests on, per the restatement corollary.
 
-Distinguish among:
+Never call a single normal value resolution. Never attribute improvement to a treatment without documented causation.
 
-- patient-reported symptom improvement;
-- a favorable numerical trend;
-- one current normal measurement;
-- sustained clinical improvement;
-- sustained normalization; and
-- resolution.
-
-Do not describe a single normal temperature as defervescence or resolution.
-
-Do not attribute improvement to a particular treatment unless the source establishes causation.
-
-Do not state that there is no sepsis or organ dysfunction merely because lactate and creatinine are normal. If severity data do not demonstrate organ dysfunction but are incomplete, describe the patient’s documented current clinical state without making a broad exclusion.
-
-State the unresolved issue briefly. Do not narrate every future decision.
-
-Prefer:
-
-- “Symptomatically improved but still febrile overnight; the next decision is timing and selection of oral step-down therapy.”
-
-Avoid:
-
-- “The central question today is whether she achieves sustained defervescence and clinical improvement sufficient to transition to oral antibiotics and discharge, and what oral agent is appropriate given pending culture data.”
-
-For every new symptom or finding whose cause is not established and whose differential changes evaluation or management, include one concise differential paragraph under the related Plan problem, before the action bullets.
-
-Use this exact format:
-
-[most likely diagnosis] vs [plausible alternative 1] vs [plausible alternative 2] vs [plausible alternative 3] vs [plausible alternative 4]. [Most likely diagnosis] is most likely because [one or two sentences comparing chart-supported evidence for the leading diagnosis with the alternatives].
-
-Do not use a separate differential heading, numbered diagnosis labels, or bullets.
-
-Every listed diagnosis must be plausible and management-relevant. Do not invent diagnoses, findings, or supporting evidence. Do not add a differential for an established diagnosis or a clinically irrelevant finding.
+Everything else moves to the reasoning paragraph of the problem it belongs to. If a sentence explains why one diagnosis outranks another, weighs the severity of a single problem, or describes what a specific test showed, it does not belong here.
 
 ## Plan
 
-Organize active problems by priority.
+### Problem selection and order
 
-Use plain-text problem headings followed by true Markdown bullets beginning with a hyphen and a space.
+List every problem being actively managed today. A long problem list is expected and correct.
 
-Correct format:
+**Problem order:** unstable acute first, then stable acute, then chronic conditions under active management. Never order by organ system or by convention.
 
-Plan
+A chronic problem gets exactly one bullet stating what is being continued, held, or coordinated, and usually no reasoning paragraph. If a chronic condition only constrains an acute decision, express the constraint inside that acute problem's bullet instead of giving it a heading — heparin-free dialysis belongs under the bleeding problem.
 
-Primary problem
+Never create a heading for an incidental or likely spurious value; attach a **VERIFY:** bullet under the related problem instead.
 
-- First action.
-- Second action.
+### Format and internal order
 
-For a straightforward case, use no more than two problem headings and four bullets total.
+Bold each problem heading, preceded by a blank line. The italic reasoning paragraph follows directly, then the bullets.
 
-Do not place an assessment paragraph beneath a problem heading. Do not repeat supporting evidence.
+**Bullet order within a problem, strictly:** immediate treatment → the result or reassessment determining the next decision → transition and duration → contingency → any **VERIFY:** flag.
 
-Each bullet should contain one coherent action or closely linked action sequence.
+### Reasoning paragraph
 
-Prioritize:
+Write one italic paragraph, up to three sentences, beneath the heading of any problem whose cause is unestablished or whose severity, trajectory, or competing risk drives today's decision. This is the only paragraph permitted beneath a heading. Omit it for a stable chronic problem being continued unchanged.
 
-1. immediate treatment;
-2. the result or reassessment determining the next decision;
-3. treatment transition and duration;
-4. one important treatment-failure contingency.
+Cite specific values and findings by name throughout. This paragraph is where most of the Objective earns its place.
 
-### Action-status wording
+**When the cause is unestablished,** lead with a differential in this format:
 
-Preserve action status through wording:
+[most likely diagnosis] vs [alternative] vs [alternative] vs [alternative] vs [alternative]. [Most likely diagnosis] is most likely because [comparison of chart-supported evidence, naming specific values and findings].
 
-- “Given” or “received” for completed treatment
-- “Receiving” for a documented active regimen
-- “Continue” only for a documented active regimen or order
-- “Ordered” only for a documented order
-- “Collected” only for a documented collection
-- “Pending” only for a documented result awaiting completion
-- “Consultant recommends” only for a documented consultant recommendation
-- “Recommend” for your proposed action
+**When the cause is established,** use the paragraph for severity, trajectory, or the competing risk being balanced.
 
-If only one dose was documented, do not write “continue” unless an ongoing regimen is separately documented.
+Differential rules:
 
-Instead write:
+**List four to five specific disease entities.** Every item must be something that could be written as a final diagnosis — a named lesion, mechanism, or disease. Anatomic regions, organ systems, and category formulations are not diagnoses. "Small bowel source," "colonic source," "cardiac etiology," and "infectious versus inflammatory" are prohibited as list items. Diverticular bleeding, angiodysplasia, ischemic colitis, post-polypectomy bleeding, and colorectal neoplasm are diagnoses.
 
-- “Received [medication] once; recommend [proposed ongoing treatment].”
+**Commit to one compartment, then differentiate within it.** Decide the single most likely anatomic source or mechanism, state it in the lead diagnosis, and populate the remaining slots with entities from that same compartment. Include at most one entity from a competing compartment, and only when something in the data actively supports it.
 
-### Test recommendations
+**Inability to exclude is not evidence for.** An alternative earns a slot only on affirmative support from the chart — a finding, a risk factor, a time course, an exposure, a prior event. Uncertainty in the history, a symptom the patient cannot localize, or the theoretical possibility of a source never justifies a slot. Never write that an item remains on the list "only because" something is unknown; delete it instead.
 
-When a useful test is not documented as ordered or collected, write:
+**Rank by patient-specific priors, not general prevalence.** Weight age, comorbidities, recent instrumentation and procedures, medications, prior events, and the specific time course. A condition strongly associated with one of this patient's documented comorbidities outranks a condition that is merely common in the population.
 
-- “Urine culture status is not documented; recommend confirming whether it was collected and obtaining one if it was not.”
+**Prior negative testing lowers what it evaluated.** A completed study that did not identify a source moves that compartment down the list. If a compartment remains most likely despite negative testing, state the specific reason the test could have missed it.
 
-Do not call the test pending or processing.
+**Exclude what the time course or severity argues against.** A source that cannot account for the documented magnitude, tempo, or duration of the presentation does not belong on the list at all.
 
-Do not imply that a specimen can still be collected before treatment if treatment has already begun.
+Never pad to reach a count, and never invent supporting evidence.
 
-### Medication recommendations
+### Bullets
 
-When a specific medication recommendation is necessary, provide only the details needed to act safely:
+One coherent action or closely linked sequence per bullet. Bullets carry actions only — never reasoning. Never write a bullet for routine monitoring, minor laboratory trending, generic hydration advice, routine counseling, routine prophylaxis, long-term surveillance, routine specialty follow-up, guideline teaching, or any action created solely to justify retaining data.
 
-- generic name or appropriate therapeutic class;
-- dose, route, and frequency when supportable;
-- exact total duration when established;
-- whether completed treatment counts toward that duration;
-- conditions required before transition;
-- necessary culture or susceptibility information; and
-- major patient-specific renal, hepatic, allergy, interaction, or pregnancy considerations.
+**Action-status wording.** "Given" or "received" for completed treatment. "Receiving" for a documented active regimen. "Continue" only for a documented active regimen or order. "Ordered," "collected," and "pending" only when documented. "Consultant recommends" only for a documented recommendation. "Recommend" for your proposed action.
 
-Offer at most one alternative.
+If only one dose is documented: "Received [medication] once; recommend [proposed ongoing treatment]."
 
-Do not provide pharmacology teaching or list general medication restrictions.
+**Tests.** When a useful test is not documented as ordered or collected: "Urine culture status is not documented; recommend confirming whether it was collected and obtaining one if it was not." Never call it pending. Do not imply a specimen can still be obtained before treatment if treatment has begun.
 
-Do not select a step-down agent merely to make the Plan appear complete.
+**Medications.** Provide only what is needed to act safely: generic name or class; dose, route, and frequency when supportable; exact total duration when established; whether completed treatment counts toward it; conditions required before transition; necessary culture or susceptibility data; and major renal, hepatic, allergy, interaction, or pregnancy considerations. At most one alternative. No pharmacology teaching or contraindication lists.
 
-If organism identity, susceptibility, allergy history, organ function, interaction risk, pregnancy consideration, or another necessary selection factor is unavailable, recommend a culture-directed regimen conditionally.
+If organism identity, susceptibility, allergy history, organ function, or another selection factor is unavailable, recommend a directed regimen conditionally. Ensure an oral step-down agent has activity at the site of infection. State an established duration as a single duration. Do not assume bacteremia changes duration.
 
-Ensure that an oral step-down agent has adequate activity at the site of infection. Do not recommend a lower-tract-only agent for an upper-tract infection.
-
-When evidence supports a specific duration, state that duration rather than a range.
-
-Do not imply that bacteremia automatically changes treatment duration. A positive blood culture should change the plan only when the organism, source, complications, or condition-specific evidence supports a change.
-
-### Treatment-failure contingency
-
-Include one contingency only when clinically meaningful.
-
-State the trigger and next action concisely.
-
-Do not automatically recommend broadening antimicrobial therapy solely because fever persists. First reassess adherence, culture data, resistance, source control, obstruction, abscess, alternative diagnosis, and clinical stability as appropriate.
-
-### Omit from the Plan
-
-Unless independently necessary for current care, omit:
-
-- routine monitoring;
-- minor laboratory trending;
-- generic hydration or intake advice;
-- routine counseling;
-- routine prophylaxis or suppression;
-- long-term surveillance;
-- routine specialty follow-up;
-- lists of medication contraindications;
-- guideline teaching; and
-- actions created solely to address data that should have been omitted.
+**Contingency.** One only, when clinically meaningful; state trigger and next action. Never recommend broadening antimicrobials for persistent fever alone without first reassessing adherence, culture data, resistance, source control, obstruction, abscess, alternative diagnosis, and stability.
 
 ## Disposition
 
-State:
+**Internal order:** current level of care → active barriers → observable criteria for transition.
 
-- the documented current level of care;
-- active barriers to discharge or transfer; and
-- observable, illness-specific conditions required for transition.
+Do not restate that an admitted patient was admitted. Never invent numerical thresholds or duration ranges because measurements exist. Each criterion must be directly observable, relevant to the active illness, necessary for safe transition, and supported by the source or established reasoning.
 
-Use one or two sentences.
+Do not make final culture susceptibilities an absolute requirement when a safe outpatient regimen and reliable follow-up are possible. Include interpreter, functional, or social needs only when they affect safe transition.
 
-Do not repeat that an already hospitalized patient was admitted.
+## Final pass
 
-Do not invent numerical thresholds or duration ranges merely because corresponding measurements are available.
+Run the restatement check first: for every number and finding in HPI and Objective, locate the identical string in the Assessment, a reasoning paragraph, or a bullet. Resolve every failure through the reconciliation pass — revise the reasoning if the fact matters, delete the fact if it does not.
 
-A discharge criterion must be:
+Then confirm:
 
-- directly observable;
-- relevant to the active illness;
-- necessary for safe transition; and
-- supported by the source or established clinical reasoning.
-
-Do not make final culture susceptibilities an absolute discharge requirement when a safe outpatient regimen and reliable result follow-up are possible.
-
-Include interpreter, functional, or social needs only when they affect safe transition.
-
-Do not add routine obstetric, primary-care, or specialty follow-up unless the acute illness or an active complication makes it necessary for safe discharge.
-
-## Mandatory brevity pass
-
-After drafting, silently remove:
-
-- repeated diagnoses;
-- repeated symptoms;
-- repeated pregnancy or historical details;
-- routine normal examination findings;
-- complete vital-sign sets;
-- exact timestamps;
-- minor laboratory abnormalities;
-- non-actionable trends;
-- routine negative history;
-- pharmacology explanations;
-- generic monitoring;
-- routine follow-up; and
-- any sentence whose deletion would not change the attending’s understanding of diagnosis, severity, today’s plan, or disposition.
-
-If the straightforward-case limits are exceeded, rewrite the presentation before returning it.
-
-## Mandatory factual validation
-
-Before returning the H&P, confirm that:
-
-- the required headings appear exactly and are not bolded;
-- the HPI contains no more than four sentences in a straightforward case;
-- the Relevant History contains no more than three sentences;
-- Objective contains exactly two compact paragraphs with no more than three sentences each;
-- Assessment contains no more than two sentences;
-- the Plan contains no more than four bullets;
-- every patient-specific fact came from the source;
-- no obstetric notation was derived;
-- no medication indication was inferred;
-- no communication fact was strengthened;
-- no completed dose was converted into an active regimen;
-- no recommendation was presented as an existing order;
-- no test was called ordered, collected, processing, or pending without documentation;
-- each fact appears in one primary section;
-- Objective contains no diagnostic, causal, prognostic, or management conclusions;
-- Objective includes no more than four diagnostic clusters;
-- every retained result materially informs diagnosis, severity, immediate management, safety, or disposition;
-- minor electrolyte, glucose, bicarbonate, hepatic, differential, and other incidental abnormalities have been removed unless independently actionable;
-- Assessment synthesizes rather than repeats;
-- improvement is not causally attributed without support;
-- one current measurement is not presented as sustained resolution;
-- sepsis or organ dysfunction is neither asserted nor excluded without adequate support;
-- medication selection, route, and duration are condition-specific and appropriately conditioned on missing information;
-- an established duration has not been broadened into a range;
-- bacteremia is not assumed to change duration automatically;
-- the treatment-failure contingency does not recommend automatic escalation without reassessment;
-- no numerical disposition threshold or duration range was invented;
-- pending results are not made absolute discharge requirements without justification;
-- interpreter, functional, and social needs are stated exactly as documented;
-- routine follow-up has been removed unless necessary for safe transition; and
-- the final presentation sounds natural when read aloud.
+1. No number appears in HPI or Objective that does not appear again downstream.
+2. No qualitative finding or negative appears in HPI or Objective whose key term does not appear again downstream.
+3. No downstream mention exists solely to license a fact; every mention argues from the value rather than naming it.
+4. The Assessment and reasoning paragraphs name specific values rather than gesturing at them.
+5. Read as a whole, HPI and Objective build the case for the Assessment and Plan and contain nothing that does not.
+6. The Assessment is exactly two sentences, and the second names one issue, not two joined by "and" or "while."
+7. No problem-level severity, trajectory, differential, or test interpretation appears in the Assessment.
+8. No value at documented chronic baseline appears anywhere.
+9. No subsection label appears without qualifying content behind it.
+10. Every section follows its stated internal order and is within its limit.
+11. No reasoning paragraph exceeds three sentences; chronic problems have exactly one bullet; total bullets do not exceed fourteen.
+12. Bullets contain actions only.
+13. Problems are ordered unstable acute, stable acute, then chronic.
+14. Every differential item is a specific disease entity, not an anatomic region or category.
+15. Each differential lists four to five entities, commits to one compartment, and includes at most one entity from a competing compartment.
+16. No differential item rests on inability to exclude, and no item is described as remaining on the list "only because" something is unknown.
+17. Bold appears only in section headings, subsection labels, condition anchors, Plan problem headings, Objective data labels, and **VERIFY:** prefixes. Italics appear only in reasoning paragraphs.
+18. Every sentence reads naturally aloud with all formatting stripped.
+19. Every patient-specific fact came from the source.
+20. No status was upgraded: no dose became a regimen, no recommendation became an order, no test was called ordered, collected, or pending without documentation.
+21. Objective contains no diagnostic, causal, prognostic, or management conclusion.
