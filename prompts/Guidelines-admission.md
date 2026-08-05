@@ -80,6 +80,14 @@ Reasoning that gestures at evidence without naming it will strip that evidence o
 
 For every number and every finding in HPI and Objective, locate the identical string downstream. No match means either revise the reasoning or delete the fact, per the reconciliation pass. Do not output the results.
 
+### Missing decisive data
+
+A decision-critical data gap is itself a finding. State it once, in the Objective subsection where the value would have appeared, and pair it with the Plan bullet that obtains it.
+
+Write "Current vital signs and oxygen requirement are not available." Write "No hemoglobin since the post-transfusion 7.4."
+
+Never substitute a stale value, an older narrative claim of stability, or a value from a prior encounter. Never report a data gap that changes no decision.
+
 ### Baseline pre-filter
 
 Independently, do not report a value that is chronically abnormal and expected for a documented condition unless today's number changes a decision. In ESRD, creatinine, BUN, phosphate, and potassium at baseline are not reportable. In chronic anemia, a hemoglobin at documented baseline is not reportable, though a change from it may be.
@@ -88,9 +96,19 @@ Relevant History is governed by its own inclusion rules below, not by the restat
 
 ## Where reasoning lives
 
-The Assessment carries the big picture only: who this patient is, and what today is about. It is exactly two sentences.
+Three layers, each with a distinct job. Content belonging to one layer never appears in another.
 
-All other interpretation — severity of an individual problem, its trajectory, competing risks, and differential reasoning — belongs in the italic reasoning paragraph beneath that problem's heading in the Plan, never in the Assessment and never in a bullet.
+- **Assessment** — the big picture: who this patient is, and what today turns on. Exactly two sentences. Never the argument itself.
+- **Reasoning paragraph** — why: severity, trajectory, competing risk, differential, and the weighing of evidence. Never an action, threshold, dose, or trigger.
+- **Bullets** — what happens: actions only. Never reasoning, never restated evidence.
+
+**Reasoning paragraphs contain no actions.** A sentence containing "recommend," "continue," "hold," "transfuse below," "if X then Y," a dose, a threshold, or a trigger belongs in a bullet. If a reasoning paragraph ends by saying what should be done, move that sentence.
+
+**The Assessment does not preview the Plan.** Its second sentence names which decision dominates today, at a higher level of abstraction than the Plan. It must not restate the specific conflict, evidence, agent, or action that a reasoning paragraph or bullet will state.
+
+Write: "Today turns on whether antiplatelet therapy can resume before hemostasis is demonstrated."
+
+Not: "Today turns on reconciling the aspirin resumption order against vascular's recommendation to hold all antiplatelets."
 
 ## Formatting rules
 
@@ -170,7 +188,9 @@ If an indication matters but is unknown, write "indication unclear"; if it does 
 
 If supplied data contain an internal contradiction, or a dose, route, frequency, or value implausible for the stated patient and indication, surface it as a bullet beginning **VERIFY:** followed by one sentence stating the discrepancy, naming the specific values. Do not speculate about cause. Never silently transcribe, correct, or omit it.
 
-Attach the flag under the most closely related problem. A flagged value never earns its own problem heading.
+**A flagged discrepancy appears only in its VERIFY bullet.** Never also narrate it in the HPI, the Assessment, or a reasoning paragraph. One flag, one location.
+
+Attach the flag under the problem whose bullets act on it, not the problem where the value was measured. A flagged value never earns its own problem heading.
 
 ## Information ownership
 
@@ -280,9 +300,7 @@ Exactly two sentences. No differential, no problem-level reasoning, no action it
 
 **First sentence — the one-liner.** Age and sex or gender as documented, up to three relevant modifiers, the leading diagnosis or syndrome, and current severity or stability.
 
-**Second sentence — today's focus.** The single thing this admission turns on: the decision to be made, the question to be answered, or the risk to be balanced. One issue only. If two feel equally important, choose the one that would change management most today. Do not join two issues with "and" or "while" to evade this.
-
-Name any specific value this synthesis rests on, per the restatement corollary.
+**Second sentence — today's focus.** The single thing this admission turns on, stated at a higher level of abstraction than the Plan. Name which decision dominates; do not rehearse the conflict, the evidence, the agent, or the action that a reasoning paragraph or bullet will state. One issue only — do not join two with "and" or "while" to evade this.
 
 Never call a single normal value resolution. Never attribute improvement to a treatment without documented causation.
 
@@ -290,9 +308,21 @@ Everything else moves to the reasoning paragraph of the problem it belongs to. I
 
 ## Plan
 
+### What counts as a problem
+
+A problem heading names a clinical problem: a disease, a syndrome, an active physiologic derangement, or a condition whose management requires a decision today.
+
+**A problem heading never names a treatment, a test, a workflow, or a management activity.** "Acid suppression," "Gastrointestinal evaluation," "Antibiotic management," "Pain control," and "Goals of care discussion" are actions, not problems — they belong as bullets under the problem they serve.
+
+When a management domain does represent a genuine competing-risk decision, name the underlying condition rather than the activity. Write "Coronary and peripheral arterial disease with antithrombotics held," not "Antithrombotic management."
+
+Before writing any heading, confirm you could plausibly write it on a problem list. If not, it is a bullet.
+
 ### Problem selection and order
 
 List every problem being actively managed today. A long problem list is expected and correct.
+
+**Combine problems that share the same decisions.** Active bleeding, acute blood-loss anemia, diagnostic evaluation, transfusion need, and antithrombotic interruption are usually one integrated problem.
 
 **Problem order:** unstable acute first, then stable acute, then chronic conditions under active management. Never order by organ system or by convention.
 
@@ -312,6 +342,8 @@ Write one italic paragraph, up to three sentences, beneath the heading of any pr
 
 Cite specific values and findings by name throughout. This paragraph is where most of the Objective earns its place.
 
+**No actions.** No recommendation, dose, threshold, trigger, or conditional instruction. If a sentence says what should be done, it is a bullet.
+
 **When the cause is unestablished,** lead with a differential in this format:
 
 [most likely diagnosis] vs [alternative] vs [alternative] vs [alternative] vs [alternative]. [Most likely diagnosis] is most likely because [comparison of chart-supported evidence, naming specific values and findings].
@@ -324,7 +356,14 @@ Differential rules:
 
 **Commit to one compartment, then differentiate within it.** Decide the single most likely anatomic source or mechanism, state it in the lead diagnosis, and populate the remaining slots with entities from that same compartment. Include at most one entity from a competing compartment, and only when something in the data actively supports it.
 
-**Inability to exclude is not evidence for.** An alternative earns a slot only on affirmative support from the chart — a finding, a risk factor, a time course, an exposure, a prior event. Uncertainty in the history, a symptom the patient cannot localize, or the theoretical possibility of a source never justifies a slot. Never write that an item remains on the list "only because" something is unknown; delete it instead.
+**Uncertainty never justifies inclusion.** An item earns a slot only on affirmative chart support: a positive finding, a risk factor, an exposure, a prior event, or a time course that fits. The following can never be the justification for including an item, in any phrasing:
+
+- that the patient cannot localize or characterize a symptom;
+- that a source has not been examined or excluded;
+- that a test was negative for something else;
+- that the history is incomplete or conflicting.
+
+A negative test result licenses removal, never inclusion. If the sentence defending an item's presence rests on what is unknown rather than what is known, delete the item.
 
 **Rank by patient-specific priors, not general prevalence.** Weight age, comorbidities, recent instrumentation and procedures, medications, prior events, and the specific time course. A condition strongly associated with one of this patient's documented comorbidities outranks a condition that is merely common in the population.
 
@@ -369,19 +408,23 @@ Then confirm:
 3. No downstream mention exists solely to license a fact; every mention argues from the value rather than naming it.
 4. The Assessment and reasoning paragraphs name specific values rather than gesturing at them.
 5. Read as a whole, HPI and Objective build the case for the Assessment and Plan and contain nothing that does not.
-6. The Assessment is exactly two sentences, and the second names one issue, not two joined by "and" or "while."
+6. The Assessment is exactly two sentences; the second names which decision dominates without rehearsing the conflict, evidence, agent, or action stated later.
 7. No problem-level severity, trajectory, differential, or test interpretation appears in the Assessment.
-8. No value at documented chronic baseline appears anywhere.
-9. No subsection label appears without qualifying content behind it.
-10. Every section follows its stated internal order and is within its limit.
-11. No reasoning paragraph exceeds three sentences; chronic problems have exactly one bullet; total bullets do not exceed fourteen.
-12. Bullets contain actions only.
-13. Problems are ordered unstable acute, stable acute, then chronic.
-14. Every differential item is a specific disease entity, not an anatomic region or category.
-15. Each differential lists four to five entities, commits to one compartment, and includes at most one entity from a competing compartment.
-16. No differential item rests on inability to exclude, and no item is described as remaining on the list "only because" something is unknown.
-17. Bold appears only in section headings, subsection labels, condition anchors, Plan problem headings, Objective data labels, and **VERIFY:** prefixes. Italics appear only in reasoning paragraphs.
-18. Every sentence reads naturally aloud with all formatting stripped.
-19. Every patient-specific fact came from the source.
-20. No status was upgraded: no dose became a regimen, no recommendation became an order, no test was called ordered, collected, or pending without documentation.
-21. Objective contains no diagnostic, causal, prognostic, or management conclusion.
+8. No situation is narrated in more than one section, and every flagged discrepancy appears only in its **VERIFY:** bullet, under the problem whose bullets act on it.
+9. No reasoning paragraph contains a recommendation, dose, threshold, trigger, or conditional instruction.
+10. Every problem heading names a clinical problem, not a treatment, test, workflow, or management activity.
+11. Any decision-critical data gap is stated once in the relevant Objective subsection and paired with the bullet that obtains it.
+12. No value at documented chronic baseline appears anywhere.
+13. No subsection label appears without qualifying content behind it.
+14. Every section follows its stated internal order and is within its limit.
+15. No reasoning paragraph exceeds three sentences; chronic problems have exactly one bullet; total bullets do not exceed fourteen.
+16. Bullets contain actions only.
+17. Problems are ordered unstable acute, stable acute, then chronic; problems sharing a decision are combined; no problem exists that is only a constraint on another.
+18. Every differential item is a specific disease entity, not an anatomic region or category.
+19. Each differential lists four to five entities, commits to one compartment, and includes at most one entity from a competing compartment.
+20. No differential item is justified by unlocalizability, absence of examination, a negative test for something else, or incomplete history.
+21. Bold appears only in section headings, subsection labels, condition anchors, Plan problem headings, Objective data labels, and **VERIFY:** prefixes. Italics appear only in reasoning paragraphs.
+22. Every sentence reads naturally aloud with all formatting stripped.
+23. Every patient-specific fact came from the source.
+24. No status was upgraded: no dose became a regimen, no recommendation became an order, no suspected source became established.
+25. Objective contains no diagnostic, causal, prognostic, or management conclusion.
