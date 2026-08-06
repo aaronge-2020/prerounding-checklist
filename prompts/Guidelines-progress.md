@@ -146,7 +146,7 @@ Other conventions:
 - Plan bullets are true Markdown bullets: hyphen, space, one action.
 - Express trends with arrows: `Hgb 6.8 → 7.4 post-transfusion → 7.5 this morning`. Use arrows only for serial values of the same measurement, and only in Objective.
 - Never number problems, sections, or bullets.
-- Never use tables, block quotes, or nested bullets.
+- Never use tables, block quotes, or nested bullets, except in the Medication Regimens appendix, where tables are required.
 
 **A subsection label is never a reason to produce content.** If nothing in a subsection passes both gates, delete the entire subsection including its label. Never write "none," "unremarkable," "no new symptoms," "review of systems otherwise negative," or any placeholder.
 
@@ -159,11 +159,11 @@ Other conventions:
 | Objective | subsections as warranted; up to 5 sentences total |
 | Assessment | exactly 2 sentences |
 | Plan — problems | as many as require a decision today |
-| Plan — reasoning paragraph | up to 3 sentences per problem |
-| Plan — dominant problem | up to 3 bullets |
-| Plan — other acute problems | up to 2 bullets each |
-| Plan — chronic problems | exactly 1 bullet each |
-| Plan — total bullets | up to 10 |
+| Plan — reasoning paragraph | up to 3 sentences, tier one only |
+| Plan — tier one problems | up to 3 bullets each |
+| Plan — tier two problems | up to 2 bullets each |
+| Plan — tier three problems | exactly 1 bullet each |
+| Plan — total bullets | up to 14 |
 | Disposition | one or two sentences |
 
 Reasoning paragraphs do not count toward bullet limits. **VERIFY:** bullets do count.
@@ -263,6 +263,8 @@ Print these headings in this order, bolded, each preceded by a blank line, with 
 
 **Disposition**
 
+**Medication Regimens**
+
 Never add Review of Systems, Hospital Course, Data, Differential, or any other top-level heading.
 
 ## One-Liner
@@ -343,15 +345,29 @@ Before writing any heading, confirm you could plausibly write it on a problem li
 
 List every problem requiring a decision, action, or reassessment today.
 
-**Combine problems that share the same decisions.** Active bleeding, acute blood-loss anemia, diagnostic evaluation, transfusion need, and antithrombotic interruption are usually one integrated problem.
+**Be comprehensive. Never omit an active problem.** If it is on the problem list, it appears here, even when nothing is being decided about it today. The attending is checking that you know the whole patient.
+
+**Merge only a manifestation with its cause.** Two entries may be combined when one is a complication, consequence, or laboratory expression of the other *and* they share a single decision — active bleeding, acute blood-loss anemia, and transfusion need are one problem.
+
+Never merge two distinct diseases because one constrains the other. Gastrointestinal bleeding and coronary disease with antithrombotics held are two problems: each has its own differential, its own competing risk, and its own decision. When in doubt, keep them separate.
 
 Never create a separate problem for a condition that matters only as a constraint on another problem's decision. Express the constraint inside that problem's bullet instead — heparin-free dialysis belongs under the bleeding problem, not under a dialysis heading. This applies to vascular disease that matters only because antithrombotics are held, ESRD that matters only for procedure timing, and held antihypertensives without an independent blood-pressure decision.
 
-Omit problems with no interval change and no decision today. A chronic problem under active management gets exactly one bullet and usually no reasoning paragraph.
+Never omit a problem for lack of interval change. A problem with nothing new is a tier three problem, not an absent one.
 
 Never create a heading for an incidental or likely spurious value; attach a **VERIFY:** bullet under the related problem instead.
 
-**Problem order:** unstable acute first, then stable acute, then chronic conditions under active management. Never order by organ system or by convention.
+### Sorting by decisional weight
+
+Sort by how much rounds time the problem deserves, not by organ system, not by convention, and not by acuity alone. Three tiers, in this order:
+
+**Tier one — a decision is required today.** The problem is unstable, its cause is unresolved, its trajectory is changing, or a management choice is genuinely open. Gets a reasoning paragraph and up to three bullets.
+
+**Tier two — active but on an established course.** Treatment is running and working; today's action is to continue and to name what would change it. Up to two bullets, no reasoning paragraph unless a differential is genuinely still open.
+
+**Tier three — stable, scheduled, and requiring nothing.** Exactly one bullet stating what continues. Write it so it reads in about fifteen seconds. A patient on unchanged Monday-Wednesday-Friday hemodialysis who is dialyzing today belongs here: named so the attending knows it is accounted for, not discussed.
+
+The test for tier three is whether anyone on the team would act differently based on what is said. If not, one line.
 
 ### Format and internal order
 
@@ -442,6 +458,61 @@ One or two sentences: anticipated destination when known, and no more than three
 
 Use clinical endpoints rather than overstated procedural outcomes — completion of the inpatient evaluation, cessation of clinically significant bleeding, hemoglobin stability without further transfusion, a safe antithrombotic plan. Do not require definitive source identification unless it is truly necessary for discharge. Never invent numerical thresholds or duration ranges because measurements exist.
 
+## Medication Regimens
+
+A reference appendix placed last, after Disposition. It is not read aloud during the presentation — it exists so that any question about a drug, dose, frequency, or course can be answered instantly without searching.
+
+**This section is exempt from the restatement rule and from the concision limits.** Completeness is the point. A medication appears here whether or not it is mentioned anywhere else in the presentation.
+
+**Tables are permitted here and only here.**
+
+### Structure
+
+A bold heading for each problem that has an associated medication, in the same order as the Plan. Beneath each heading, one table:
+
+**COPD exacerbation**
+
+| Drug | Regimen | Course | Indication |
+|---|---|---|---|
+| Prednisone | 40 mg PO daily | Day 3 of 5 | Reduces airway inflammation and bronchospasm |
+| Ceftriaxone | 1 g IV q24h | Day 3 of 5 | Covers typical bacterial pathogens in exacerbation |
+| Azithromycin | 500 mg PO daily | Day 3 of 5 | Atypical coverage plus anti-inflammatory effect |
+
+### What to include
+
+Every medication the patient is actively receiving in hospital, plus any home medication that has been held, stopped, or changed this admission. A medication with no bearing on any active problem may be grouped under a final heading of **Other home medications continued**.
+
+A medication that treats more than one problem appears under the problem it is primarily being given for, not in both tables.
+
+### Column requirements
+
+**Drug** — generic name. Use a brand name only when the source supplies one that cannot be safely resolved.
+
+**Regimen** — dose, route, and frequency exactly as documented: "40 mg PO daily," "1 g IV q24h," "5,000 units SC q8h." If any component is not documented, write what is known and mark the rest, as in "40 mg PO, frequency not documented." Never supply a customary dose, route, or frequency that the source does not state.
+
+**Course** — where the patient is in the regimen. Use whichever applies:
+
+- "Day 3 of 5" only when both the start date and the intended total duration are documented.
+- "Day 3, total duration not established" when the start is documented but the endpoint is not.
+- "Completed 5 of 5 on [date]" for a finished course.
+- "Started [date], start date documented, day count not computable" when dates conflict.
+- "Start date not documented" when it cannot be determined.
+- "Indefinite" for a chronic maintenance medication.
+- "Held since [date]" or "Held, date not documented," with the reason, for a held medication.
+- "One dose given [date]" when only a single administration is documented.
+
+**Never compute a day count from an assumed start date.** An invented "day 3 of 5" is worse than an honest "start date not documented," because it will be quoted back as fact. If the arithmetic depends on a date the source does not state, say so.
+
+**Indication** — one clause or short sentence naming the mechanism or purpose as it applies to this patient's problem. Not a pharmacology lesson, not a class description, not a list of alternatives. If the indication is not documented and cannot be inferred from the problem it sits under, write "indication unclear."
+
+### Accuracy rules
+
+Reconcile each anticoagulant and antiplatelet separately. Never treat anticoagulants, antiplatelet agents, systemic heparin, prophylactic heparin, and dialysis catheter-lock heparin as interchangeable — each gets its own row.
+
+Preserve status exactly. A single documented dose is never written as an ongoing regimen. A held medication is never written as active. A recommendation of yours never appears in this table; only documented medications do.
+
+If the source contains a dose, route, or frequency that is implausible for this patient and indication, enter it as documented and raise it as a **VERIFY:** bullet in the Plan.
+
 ## Final pass
 
 Run the two-gate check first: for every number and finding in Subjective and Objective, confirm it is new, changed, or newly decisive, and locate the identical string in the Assessment, a reasoning paragraph, or a bullet. Resolve every failure through the reconciliation pass — revise the reasoning if the fact matters, delete the fact if it does not.
@@ -466,7 +537,7 @@ Then confirm:
 16. Objective contains no plan, recommendation, scheduling, bowel preparation, or medication administration, and no causal or interpretive conclusion.
 17. No value at documented chronic baseline appears anywhere.
 18. No subsection label appears without qualifying content behind it.
-19. Every section is within its limit; total bullets do not exceed ten; no reasoning paragraph exceeds three sentences.
+19. Every section is within its limit; total bullets do not exceed 14; no reasoning paragraph exceeds three sentences.
 20. Problems sharing the same decision are combined; no problem exists that is only a constraint on another problem.
 21. Every differential item is a specific disease entity, lists four to five entities, commits to one compartment, and rests on affirmative chart support.
 22. Transfusion chronology supports every statement about response, and no response is characterized without a correctly timed post-transfusion value.
@@ -476,3 +547,12 @@ Then confirm:
 26. No status was upgraded: no dose became a regimen, no recommendation became an order, no suspected source became established.
 27. Bold appears only in section headings, subsection labels, Plan problem headings, Objective data labels, and **VERIFY:** prefixes. Italics appear only in reasoning paragraphs.
 28. Every sentence reads naturally aloud with all formatting stripped.
+29. Every active problem appears; none was omitted for lack of a decision or lack of interval change.
+30. No two distinct diseases were merged because one constrains the other; only a manifestation was merged with its cause.
+31. Problems are sorted by decisional weight into tier one, tier two, and tier three, and every tier three problem is a single line readable in about fifteen seconds.
+32. Every medication actively given, and every home medication held, stopped, or changed, appears in the Medication Regimens appendix.
+33. Every appendix row states dose, route, and frequency as documented, with any missing component marked rather than supplied.
+34. No day count was computed from an undocumented start date.
+35. Each anticoagulant, antiplatelet, and form of heparin occupies its own row and none were conflated.
+36. No proposed medication of yours appears in the appendix; only documented medications do.
+37. Every appendix indication is one clause tied to this patient's problem, not a class description.
