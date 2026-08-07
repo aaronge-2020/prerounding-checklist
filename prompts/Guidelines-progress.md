@@ -85,7 +85,7 @@ This is a mechanical string test, not a judgment call.
 - **Trends.** At least the value being relied upon must reappear.
 - **Negatives.** A denied symptom survives only if that symptom is named again in reasoning that weighs it.
 
-The only exemption is the identifying content of the One-Liner.
+Two exemptions only: the identifying content of the One-Liner, and the Consultants roster.
 
 ### Corollary — cite your evidence
 
@@ -237,6 +237,8 @@ Never narrate chart review. Do not write "the supplied sources show," "one note 
 | Laboratory, imaging, or diagnostic result | Objective |
 | Interval synthesis and today's focus | Assessment |
 | Problem-level severity, trajectory, differential | Reasoning paragraph |
+| Consultant service and status | Objective |
+| Consultant recommendation content | Plan bullet |
 | Documented or proposed action | Plan bullet |
 
 Never re-narrate a symptom story, an event, or a result across sections. Citing a specific value downstream is not repetition — it is required by gate two.
@@ -304,6 +306,15 @@ Up to five sentences total across all subsections, in this order. Omit any subse
 **EKG:** rate, rhythm, and only findings restated downstream.
 
 **Pending:** only results documented as awaiting completion that could change the next decision.
+
+**Consultants:** a roster only. Name each service currently involved and its status — nothing else.
+
+Write: "Gastroenterology, recommendations received. Vascular surgery, recommendations received. Nephrology, consulted this morning, awaiting recommendations."
+
+**Never state what a consultant recommended here.** This subsection exists so the team can see at a glance who is on the case and who is still owed a response. The content of every recommendation belongs in a Plan bullet under the problem it bears on.
+
+This subsection is exempt from the restatement rule: a service awaiting recommendations will have no downstream match, and that is the point. Include a service only while it is actively involved; drop it once it has signed off and its recommendations are incorporated.
+
 
 Objective may state numerical direction, never its cause. Not acceptable: "creatinine improved with dialysis," "the leukocytosis supports the diagnosis."
 
@@ -411,6 +422,16 @@ A negative test result licenses removal, never inclusion. If the sentence defend
 **Exclude what the time course or severity argues against.** A source that cannot account for the documented magnitude, tempo, or duration does not belong on the list at all.
 
 Never pad to reach a count, and never invent supporting evidence. Do not write a differential for an established diagnosis.
+
+### Consultant recommendations
+
+A consultant's recommendations appear only in Plan bullets, never in Subjective, Objective, or the Assessment.
+
+**One bullet per consultant per problem.** Consolidate everything that service advised about that problem into a single bullet. If a service's recommendations bear on two genuinely separate problems, it may have one bullet under each, but never two bullets under the same problem.
+
+Attribute precisely. Write "Consultant recommends" only for a documented recommendation. Attempted contact, a pending callback, or a note that a service was consulted is not a recommendation. When your own proposal differs from or extends a consultant's, say both in the one bullet: "Gastroenterology recommends EGD if bleeding persists; recommend clarifying today whether repeat lower endoscopy is higher yield given the sigmoid findings."
+
+Consultant bullets count toward the problem's bullet allowance and the total.
 
 ### Bullets
 
@@ -556,3 +577,7 @@ Then confirm:
 35. Each anticoagulant, antiplatelet, and form of heparin occupies its own row and none were conflated.
 36. No proposed medication of yours appears in the appendix; only documented medications do.
 37. Every appendix indication is one clause tied to this patient's problem, not a class description.
+38. The Consultants subsection lists services and status only, with no recommendation content.
+39. Every consultant recommendation appears in a Plan bullet and nowhere else.
+40. No problem carries more than one bullet from the same consultant.
+41. No service is described as recommending anything on the basis of attempted contact or a pending callback.

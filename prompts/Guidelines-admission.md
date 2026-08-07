@@ -64,7 +64,7 @@ This governs every fact in HPI and Objective. It is a mechanical string test, no
 - **Trends.** At least the value being relied upon must reappear.
 - **Negatives.** A denied symptom survives only if that symptom is named again in reasoning that weighs it.
 
-Only two exemptions: the presenting symptom named in the Chief Complaint, and the identifying features carried in the Assessment one-liner.
+Three exemptions only: the presenting symptom named in the Chief Complaint, the identifying features carried in the Assessment one-liner, and the Consultants roster.
 
 ### Corollary — cite your evidence
 
@@ -290,6 +290,15 @@ Output as labeled subsections in this exact order, each no more than two sentenc
 
 **Pending:** only results documented as awaiting completion that could change the next decision.
 
+**Consultants:** a roster only. Name each service currently involved and its status — nothing else.
+
+Write: "Gastroenterology, recommendations received. Vascular surgery, recommendations received. Nephrology, consulted this morning, awaiting recommendations."
+
+**Never state what a consultant recommended here.** This subsection exists so the team can see at a glance who is on the case and who is still owed a response. The content of every recommendation belongs in a Plan bullet under the problem it bears on.
+
+This subsection is exempt from the restatement rule: a service awaiting recommendations will have no downstream match, and that is the point. Include a service only while it is actively involved; drop it once it has signed off and its recommendations are incorporated.
+
+
 Never list complete blood counts or differentials, complete metabolic or hepatic panels, every urinalysis component, differential percentages, values at documented chronic baseline, mild abnormalities without management consequence, redundant findings supporting the same diagnosis, reference ranges, or collection times without consequence.
 
 Objective may state numerical direction, never its cause. Not acceptable: "creatinine improved with fluids," "the leukocytosis supports the diagnosis," "urinalysis was consistent with a urinary source."
@@ -388,6 +397,16 @@ A negative test result licenses removal, never inclusion. If the sentence defend
 **Exclude what the time course or severity argues against.** A source that cannot account for the documented magnitude, tempo, or duration of the presentation does not belong on the list at all.
 
 Never pad to reach a count, and never invent supporting evidence.
+
+### Consultant recommendations
+
+A consultant's recommendations appear only in Plan bullets, never in Subjective, Objective, or the Assessment.
+
+**One bullet per consultant per problem.** Consolidate everything that service advised about that problem into a single bullet. If a service's recommendations bear on two genuinely separate problems, it may have one bullet under each, but never two bullets under the same problem.
+
+Attribute precisely. Write "Consultant recommends" only for a documented recommendation. Attempted contact, a pending callback, or a note that a service was consulted is not a recommendation. When your own proposal differs from or extends a consultant's, say both in the one bullet: "Gastroenterology recommends EGD if bleeding persists; recommend clarifying today whether repeat lower endoscopy is higher yield given the sigmoid findings."
+
+Consultant bullets count toward the problem's bullet allowance and the total.
 
 ### Bullets
 
@@ -508,3 +527,7 @@ Then confirm:
 32. Each anticoagulant, antiplatelet, and form of heparin occupies its own row and none were conflated.
 33. No proposed medication of yours appears in the appendix; only documented medications do.
 34. Every appendix indication is one clause tied to this patient's problem, not a class description.
+35. The Consultants subsection lists services and status only, with no recommendation content.
+36. Every consultant recommendation appears in a Plan bullet and nowhere else.
+37. No problem carries more than one bullet from the same consultant.
+38. No service is described as recommending anything on the basis of attempted contact or a pending callback.
