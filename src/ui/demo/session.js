@@ -2,7 +2,8 @@ import { createPatientRecord, normalizeDay } from "../../app/state/vault.js";
 
 export const DEMO_PATIENT_ID = "demo_patient_guided_case";
 export const DEMO_DAY_ID = "demo_day_guided_case";
-export const DEMO_WORKUP_ID = "general-admission";
+export const DEMO_WORKUP_ID = "nstemi-prerounds";
+export const DEMO_REQUIRED_ANSWER_ITEM_ID = `${DEMO_WORKUP_ID}:chest-pain-now`;
 export const DEMO_ADMISSION_DATE = "2026-07-17";
 
 export const DEMO_CONTEXT_TEXTS = [
@@ -10,7 +11,7 @@ export const DEMO_CONTEXT_TEXTS = [
 
 Patient Name: Daniel Christopher Morgan
 Preferred Name: Dan
-DOB: 11/22/1964
+DOB year: 1964
 Age: 61 years
 Sex: Male
 Gender Identity: Male
@@ -45,11 +46,11 @@ History of Present Illness
 
 Daniel Morgan is a 61-year-old male with coronary artery disease status post drug-eluting stent placement to the proximal LAD in 2022, hypertension, hyperlipidemia, type 2 diabetes mellitus, obesity with BMI 34.1 kg/m2, gastroesophageal reflux disease, and obstructive sleep apnea treated with CPAP.
 
-He presents to the emergency department after approximately six hours of progressively worsening substernal chest pressure. Symptoms began while loading heavy equipment into his pickup truck around 6:30 AM. Initially he attributed the discomfort to muscle strain, but the pain became increasingly severe over the next several hours.
+He presents to the emergency department after approximately six hours of progressively worsening substernal chest pressure. Symptoms began during physical exertion that morning. Initially he attributed the discomfort to muscle strain, but the pain became increasingly severe over the next several hours.
 
 The discomfort is crushing substernal pressure rated 8/10 with radiation into the left shoulder, medial left arm, neck, and jaw. It is associated with diaphoresis, nausea, generalized fatigue, and mild shortness of breath. Symptoms partially improved with rest but recurred with minimal exertion.
 
-He reports several brief episodes of exertional chest discomfort over the preceding two weeks while climbing stairs at work, each resolving after several minutes of rest. He did not seek medical attention.
+He reports several brief episodes of exertional chest discomfort over the preceding two weeks, each resolving after several minutes of rest. He did not seek medical attention.
 
 He denies fever, chills, productive cough, pleuritic chest pain, hemoptysis, recent immobilization, calf pain, syncope, abdominal pain, or recent illness. EMS administered aspirin 324 mg and one sublingual nitroglycerin en route with partial improvement.`,
   `Past Medical History
@@ -212,4 +213,43 @@ export function createDemoPatient() {
     contextSections: [],
     days: [day]
   });
+}
+
+const DEMO_PREFILLED_ANSWERS = Object.freeze({
+  "nitroglycerin-response": "Relieved promptly",
+  "heart-failure-symptoms": "None",
+  "rhythm-low-output-symptoms": "None",
+  "bleeding-symptoms": "No bleeding symptoms",
+  "ischemic-equivalents": "Mild fatigue only",
+  "medication-history": "Taken consistently without adverse effects",
+  "procedure-readiness": "NPO, understands, no prior reaction",
+  "glycemic-symptoms": "No hypo- or hyperglycemic symptoms",
+  "overall-appearance": "Comfortable, alert, no diaphoresis or respiratory distress",
+  hemodynamics: "Hemodynamically stable without new oxygen need",
+  "jugular-venous-pressure": "JVP not elevated",
+  "cardiac-auscultation": "Regular rhythm, no new murmur, gallop, or rub",
+  "lung-exam": "Clear throughout including bases",
+  "perfusion-pulses": "Warm, well perfused, symmetric palpable pulses",
+  edema: "No peripheral or sacral edema",
+  "chest-wall": "No reproducible chest-wall tenderness",
+  "calf-exam": "No calf asymmetry, warmth, or tenderness",
+  "abdominal-aortic-exam": "Soft, nontender, no concerning pulsatile mass",
+  "focused-neurologic-exam": "Alert with clear speech and no focal deficit",
+  "bleeding-skin-exam": "No active bleeding or significant bruising"
+});
+
+export function prefillDemoChecklist(patient) {
+  return {
+    ...patient,
+    days: (patient?.days || []).map((day) => {
+      if (day.id !== DEMO_DAY_ID || !day.checklistSnapshot) return day;
+      const answers = { ...(day.answers || {}) };
+      for (const item of day.checklistSnapshot.items || []) {
+        if (item.id === DEMO_REQUIRED_ANSWER_ITEM_ID) continue;
+        const selected = DEMO_PREFILLED_ANSWERS[item.itemId];
+        if (selected && item.choices.includes(selected)) answers[item.id] = { selected: [selected], note: "" };
+      }
+      return { ...day, answers };
+    })
+  };
 }

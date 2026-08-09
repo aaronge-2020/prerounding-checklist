@@ -41,11 +41,11 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   },
   "select-workup": {
     view: "workups",
-    targetSelector: '.workup-checkbox[value="general-admission"]',
+    targetSelector: '.workup-checkbox[value="nstemi-prerounds"]',
     title: "Choose a question set",
-    instruction: "Select General admission.",
+    instruction: "Select NSTEMI pre-rounds.",
     calloutTitle: "Select a workup",
-    callout: "This selection does not add anything to Daniel’s record. It simply chooses the questions that will appear in the next checklist."
+    callout: "This focused workup pairs ACS-specific history questions with bedside maneuvers for recurrent ischemia, heart failure, arrhythmia, bleeding, perfusion, important alternatives, and readiness for angiography."
   },
   "build-checklist": {
     view: "workups",
@@ -57,11 +57,12 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   },
   "answer-checklist": {
     view: "checklist",
-    targetSelector: '#checklistSections > .checklist-section:first-child .checklist-item:first-child .checklist-answer',
-    title: "Answer a checklist question",
-    instruction: "Choose an answer for the highlighted question.",
-    calloutTitle: "Record one finding",
-    callout: "Checklist answers become concise, de-identified clinical context for the next prompt. Choose the answer that fits this sample case."
+    targetSelector: '.checklist-answer[name="nstemi-prerounds:chest-pain-now"]',
+    title: "Ask one bedside question",
+    instruction: "Record that Daniel has no chest discomfort now.",
+    helper: "All other history and examination findings are pre-filled for this sample case.",
+    calloutTitle: "Complete the one open finding",
+    callout: "The other history and examination findings are pre-filled to keep the walkthrough focused. Confirming whether chest pain is present now is the remaining high-priority question, and your answer will flow into the OpenEvidence prompt."
   },
   "open-prompts": {
     view: "prompts",
@@ -99,7 +100,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "prompts",
     title: "Demo complete",
     instruction: "You followed the full sample workflow.",
-    helper: "You reviewed the sample case, created a prompt, and reached the teaching showcase."
+    helper: "You reviewed the sample case, created a prompt, and reached the teaching showcase. Nothing from this demo was written to your vault."
   }
 });
 
@@ -115,7 +116,7 @@ export function createDemoPresentation({ escapeHtml }) {
     const isComplete = session.stage === "done";
     const routeMismatch = !isComplete && currentView !== stage.view;
     const reviewHandoff = reviewAction === "continue-section-review"
-      ? `The previous field is complete. Click Continue to next field to review ${nextSectionLabel || "the next field"}.`
+      ? `The previous field is complete. Click Continue to next field to review ${nextSectionLabel || "the next field"}. You check the app's suggestions before moving on.`
       : "";
     const nextInstruction = routeMismatch
       ? `Open ${stage.view === "workups" ? "Workups" : stage.view === "prompts" ? "OpenEvidence Prompts" : stage.view} with the highlighted sidebar control to continue.`

@@ -5,7 +5,7 @@ import {
   DEMO_DAY_ID,
   DEMO_PATIENT_ID,
   DEMO_WORKUP_ID
-} from "./session.js?v=20260726-guided-overlay-1";
+} from "./session.js?v=20260809-demo-nstemi-workup-1";
 
 export function createDemoSessionController({
   app,

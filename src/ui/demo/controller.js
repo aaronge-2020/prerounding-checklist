@@ -1,5 +1,5 @@
-import { createDemoPresentation } from "./presentation.js?v=20260726-guided-overlay-1";
-import { DEMO_DAY_ID, DEMO_WORKUP_ID } from "./session.js?v=20260726-guided-overlay-1";
+import { createDemoPresentation } from "./presentation.js?v=20260809-demo-nstemi-workup-1";
+import { DEMO_DAY_ID, DEMO_REQUIRED_ANSWER_ITEM_ID, DEMO_WORKUP_ID, prefillDemoChecklist } from "./session.js?v=20260809-demo-nstemi-workup-1";
 
 export function createDemoController({ app, byId, escapeHtml, getSession, getView, render: renderApp, selectDemoPacket }) {
   const presentation = createDemoPresentation({ escapeHtml });
@@ -155,7 +155,13 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     }
     if (action === "add-daily-source")
       session.stage = document.querySelector('[data-action="keep-reviewed-redaction"]') ? "daily-review" : "open-workups";
-    if (action === "build-checklist") session.stage = "answer-checklist";
+    if (action === "build-checklist") {
+      app.vault = {
+        ...app.vault,
+        patients: (app.vault?.patients || []).map((patient) => patient.id === app.vault.activePatientId ? prefillDemoChecklist(patient) : patient)
+      };
+      session.stage = "answer-checklist";
+    }
     if (action === "copy-prompt") session.stage = session.stage === "copy-prompt" ? "open-teaching" : "done";
     renderApp();
   }
@@ -165,7 +171,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     if (!session) return;
     if (session.stage === "select-workup" && target.matches?.(`.workup-checkbox[value="${DEMO_WORKUP_ID}"]`) && target.checked)
       session.stage = "build-checklist";
-    if (session.stage === "answer-checklist" && target.matches?.(".checklist-answer") && (target.value || target.checked))
+    if (session.stage === "answer-checklist" && target.matches?.(`.checklist-answer[name="${DEMO_REQUIRED_ANSWER_ITEM_ID}"]`) && (target.value || target.checked))
       session.stage = "open-prompts";
     if (session.stage === "open-teaching" && target.id === "promptTaskSelect" && target.value === "teaching_case_trajectory")
       session.stage = "teaching-showcase";
