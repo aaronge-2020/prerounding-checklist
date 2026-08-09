@@ -12,7 +12,7 @@ import {
   modelPackManifestIsValid,
   modelPackVerifiedForCurrentRuntime,
   validateModelPackEntries
-} from "./model-packs.js?v=20260803-workplace-models";
+} from "./model-packs.js?v=20260809-restricted-network-chunks";
 
 const MODEL_PACK_DATABASE = "prerounding-local-model-pack-handles-v1";
 const MODEL_PACK_STORE = "packs";

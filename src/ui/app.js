@@ -61,13 +61,13 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../patient-context/deid-client.js?v=20260803-workplace-models";
+} from "../patient-context/deid-client.js?v=20260809-restricted-network-chunks";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../patient-context/deid-model-options.js?v=20260803-workplace-models";
+} from "../patient-context/deid-model-options.js?v=20260809-restricted-network-chunks";
 import {
   canAutomaticallyInstallModel,
   ensureModelPackServiceWorker,
@@ -79,13 +79,13 @@ import {
   modelFilesFromInput,
   removeModelPack,
   requestPersistentModelStorage
-} from "../patient-context/model-pack-storage.js?v=20260803-workplace-models";
+} from "../patient-context/model-pack-storage.js?v=20260809-restricted-network-chunks";
 import {
   formatBytes,
   hasAutomaticModelDownload,
   isInstallableModel,
   modelDownloadBytes
-} from "../patient-context/model-packs.js?v=20260803-workplace-models";
+} from "../patient-context/model-packs.js?v=20260809-restricted-network-chunks";
 import {
   ADMISSION_PSEUDO_DAY_ID,
   buildPromptPreviewSegments,
@@ -1873,7 +1873,7 @@ async function handleClick(event) {
       }
       updateWorkupCatalogFilter();
     }
-    if (action === "copy-open-evidence-workup-prompt") await workupOpenAiImport.copyOpenEvidenceWorkupPrompt();
+    if (action === "copy-open-evidence-workup-prompt") await workupOpenAiImport.copyOpenEvidenceWorkupPrompt(target.dataset.destination);
     if (action === "copy-json-formatter-prompt") await workupOpenAiImport.copyJsonFormatterPrompt();
     if (action === "build-checklist") await buildChecklist();
     if (action === "run-openevidence-note-deid") await openEvidenceImport.runLocalDeid();
@@ -1932,7 +1932,7 @@ async function handleClick(event) {
     if (action === "copy-prompt") {
       await copyText(currentPromptText());
     }
-    if (action === "open-open-evidence") window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
+    if (action === "open-open-evidence") window.open(target.dataset.destination === "doximity" ? "https://www.doximity.com/" : "https://www.openevidence.com/", "_blank", "noopener,noreferrer");
     if (action === "reset-variable-colors") {
       app.tokenColorOverrides = {};
       saveTokenColorOverrides(app.tokenColorOverrides);

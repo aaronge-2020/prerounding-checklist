@@ -4,7 +4,7 @@ export const MODEL_PACK_ROUTE = "__prerounding-models";
 // must succeed against the currently shipped local runtime. Bump this value
 // whenever model-loader behavior changes so stale "verified" badges cannot
 // survive a runtime upgrade.
-export const LOCAL_MODEL_RUNTIME_VERSION = "20260711-openmed-standard-wasm-v1";
+export const LOCAL_MODEL_RUNTIME_VERSION = "20260809-restricted-network-chunks-v1";
 
 function normalizedPath(value) {
   return String(value || "")

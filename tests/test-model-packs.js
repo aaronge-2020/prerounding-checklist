@@ -25,6 +25,11 @@ const stanford = deidModelOptionByKey("stanford-clinical");
 assert.equal(isInstallableModel(openmedSmall), true);
 assert.equal(isInstallableModel(gliner), true);
 assert.equal(isInstallableModel(stanford), false);
+assert.deepEqual(stanford.bundledChunks["onnx/model_quantized.onnx"], {
+  directory: "onnx/model_quantized.chunks",
+  count: 14,
+  bytes: 109651017
+});
 assert.equal(hasAutomaticModelDownload(openmedSmall), true);
 assert.equal(openmedSmall.allowSelfHosted, true, "OpenMed Small must prefer packaged same-origin files on managed devices");
 assert.equal(hasAutomaticModelDownload(gliner), true);

@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20260729-clinical-false-positives-1";
+} from "./deid-service.js?v=20260809-restricted-network-chunks";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });

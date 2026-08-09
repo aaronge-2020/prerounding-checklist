@@ -98,6 +98,7 @@ export function createPromptsPresentation({ escapeHtml }) {
           <div class="button-row">
             <button class="button--primary" type="button" data-action="copy-prompt" ${promptError ? "disabled" : ""}>Copy prompt</button>
             <button class="button--secondary" type="button" data-action="open-open-evidence">Open OpenEvidence</button>
+            <button class="button--secondary" type="button" data-action="open-open-evidence" data-destination="doximity">Open in Doximity</button>
             <button class="button--quiet" type="button" data-action="reset-variable-colors">Reset colors</button>
           </div>
         </section>

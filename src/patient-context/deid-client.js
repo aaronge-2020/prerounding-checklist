@@ -1,7 +1,7 @@
 import {
   DEFAULT_DEID_MODEL_KEY,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20260803-workplace-models";
+} from "./deid-model-options.js?v=20260809-restricted-network-chunks";
 
 const statuses = new Map();
 const requests = new Map();
@@ -39,7 +39,7 @@ function rejectAll(error) {
 
 function getWorker() {
   if (worker) return worker;
-  worker = new Worker(new URL("./deid-worker.js?v=20260729-clinical-false-positives-1", import.meta.url), { type: "module" });
+  worker = new Worker(new URL("./deid-worker.js?v=20260809-restricted-network-chunks", import.meta.url), { type: "module" });
   worker.addEventListener("message", (event) => {
     const { type, id, value } = event.data || {};
     const request = requests.get(id);

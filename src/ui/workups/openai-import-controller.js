@@ -9,7 +9,10 @@ import { formatWorkupDraftWithOpenAi } from "../openai-workup-api.js";
 // state object, mutated directly the same way the rest of app.js's
 // coordinators do.
 export function createWorkupOpenAiImportController({ state, active, byId, copyText, setStatus, currentPreferences, renderWorkups, parseAndSaveWorkupJson }) {
-  async function copyOpenEvidenceWorkupPrompt() {
+  async function copyOpenEvidenceWorkupPrompt(destination = "openevidence") {
+    const useDoximity = destination === "doximity";
+    const serviceLabel = useDoximity ? "Doximity" : "OpenEvidence";
+    const serviceUrl = useDoximity ? "https://www.doximity.com/" : "https://www.openevidence.com/";
     const patient = active();
     const guidelinesText = (state.guidelineSets || [])
       .find((set) => set.label.trim().toLowerCase() === "pre-round checklist")
@@ -23,8 +26,8 @@ export function createWorkupOpenAiImportController({ state, active, byId, copyTe
       guidelinesText
     });
     await copyText(prompt);
-    setStatus("Copied prompt. Opening OpenEvidence...", { icon: "externalLink" });
-    window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
+    setStatus(`Copied prompt. Opening ${serviceLabel}...`, { icon: "externalLink" });
+    window.open(serviceUrl, "_blank", "noopener,noreferrer");
   }
 
   async function copyJsonFormatterPrompt() {

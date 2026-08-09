@@ -7,9 +7,9 @@ import {
   STRUCTURED_DEID_MODE,
   deidModelCandidates,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20260803-workplace-models";
-import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260803-workplace-models";
-import { importedModelBaseUrl } from "./model-packs.js?v=20260803-workplace-models";
+} from "./deid-model-options.js?v=20260809-restricted-network-chunks";
+import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260809-restricted-network-chunks";
+import { importedModelBaseUrl } from "./model-packs.js?v=20260809-restricted-network-chunks";
 
 const deidentifierPromises = new Map();
 let activeModelKey = DEFAULT_DEID_MODEL_KEY;
@@ -146,6 +146,37 @@ function localOnlyModelFetch(modelRoot, assetSource, modelId) {
   };
 }
 
+async function fetchBundledModelChunks(option, requested, nativeFetch, init) {
+  const root = new URL(modelBaseUrl("bundled"));
+  if (requested.origin !== root.origin || !requested.href.startsWith(root.href)) return null;
+  const prefix = `${option.modelId}/`;
+  const relative = decodeURIComponent(requested.pathname.slice(root.pathname.length));
+  if (!relative.startsWith(prefix)) return null;
+  const fileName = relative.slice(prefix.length);
+  const chunkSet = option.bundledChunks?.[fileName];
+  if (!chunkSet) return null;
+  const directory = String(chunkSet.directory || "").replace(/^\/+|\/+$/g, "");
+  const count = Number(chunkSet.count || 0);
+  if (!directory || !Number.isInteger(count) || count <= 0) return null;
+  const responses = await Promise.all(Array.from({ length: count }, (_, index) => {
+    const chunkName = String(index).padStart(3, "0");
+    return nativeFetch(new URL(`${option.modelId}/${directory}/${chunkName}`, root), init);
+  }));
+  const failedIndex = responses.findIndex((response) => !response.ok);
+  if (failedIndex >= 0) {
+    throw new Error(`Bundled model piece ${failedIndex + 1} of ${count} could not be loaded (${responses[failedIndex].status}).`);
+  }
+  const parts = await Promise.all(responses.map((response) => response.arrayBuffer()));
+  const totalBytes = parts.reduce((sum, part) => sum + part.byteLength, 0);
+  if (Number(chunkSet.bytes || 0) && totalBytes !== Number(chunkSet.bytes)) {
+    throw new Error(`Bundled model is incomplete (${totalBytes} of ${chunkSet.bytes} bytes).`);
+  }
+  return new Response(new Blob(parts, { type: "application/octet-stream" }), {
+    status: 200,
+    headers: { "Content-Type": "application/octet-stream", "Content-Length": String(totalBytes) }
+  });
+}
+
 async function resolveAssetSource(option, requestedSource = "auto") {
   if (["imported", "handles", "opfs", "bundled"].includes(requestedSource)) return requestedSource;
   if (option.assetMode !== "installable") return "bundled";
@@ -160,7 +191,16 @@ async function loadTransformersRuntime(option, assetSource) {
   // Every Hugging Face request is remapped to the selected same-origin pack.
   runtime.env.allowRemoteModels = true;
   runtime.env.localModelPath = modelBaseUrl(assetSource);
-  runtime.env.fetch = localOnlyModelFetch(runtime.env.localModelPath, assetSource, option.modelId);
+  const localFetch = localOnlyModelFetch(runtime.env.localModelPath, assetSource, option.modelId);
+  const nativeFetch = fetch.bind(globalThis);
+  runtime.env.fetch = async (input, init) => {
+    const requested = new URL(typeof input === "string" ? input : input.url, runtime.env.localModelPath);
+    if (assetSource === "bundled") {
+      const chunkedResponse = await fetchBundledModelChunks(option, requested, nativeFetch, init);
+      if (chunkedResponse) return chunkedResponse;
+    }
+    return localFetch(input, init);
+  };
   runtime.env.useBrowserCache = true;
   if (runtime.env.backends?.onnx?.wasm) {
     runtime.env.backends.onnx.wasm.wasmPaths = wasmRuntimePaths(option);

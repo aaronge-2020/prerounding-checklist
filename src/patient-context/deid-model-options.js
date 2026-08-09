@@ -160,7 +160,14 @@ const ALL_DEID_MODEL_OPTIONS = [
     assetMode: "bundled",
     sizeLabel: "110 MB bundled",
     localOnly: true,
-    description: "Bundled clinical de-identification model retained for offline compatibility.",
+    description: "Bundled clinical de-identification model delivered in small same-site pieces for compatibility with restricted workplace networks.",
+    bundledChunks: {
+      "onnx/model_quantized.onnx": {
+        directory: "onnx/model_quantized.chunks",
+        count: 14,
+        bytes: 109651017
+      }
+    },
     candidates: [
       { modelId: DEFAULT_PRIMARY_MODEL_ID, options: { dtype: DEFAULT_DTYPE, local_files_only: true }, inferenceOptions: { aggregation_strategy: "simple" } }
     ]

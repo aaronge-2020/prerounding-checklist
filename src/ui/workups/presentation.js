@@ -216,6 +216,7 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
           <div class="workup-footer-actions">
             <div class="workup-action-group workup-prompt-actions">
               <button class="button--secondary" type="button" data-action="copy-open-evidence-workup-prompt">OpenEvidence draft</button>
+              <button class="button--secondary" type="button" data-action="copy-open-evidence-workup-prompt" data-destination="doximity">Open in Doximity</button>
               <button class="button--secondary" type="button" data-action="copy-json-formatter-prompt">Copy ChatGPT formatter prompt</button>
             </div>
             <div class="workup-action-group workup-file-actions">
