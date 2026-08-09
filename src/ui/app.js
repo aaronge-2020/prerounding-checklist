@@ -61,13 +61,13 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../patient-context/deid-client.js?v=20260809-restricted-network-chunks";
+} from "../patient-context/deid-client.js?v=20260809-restricted-network-chunks-2";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../patient-context/deid-model-options.js?v=20260809-restricted-network-chunks";
+} from "../patient-context/deid-model-options.js?v=20260809-restricted-network-chunks-2";
 import {
   canAutomaticallyInstallModel,
   ensureModelPackServiceWorker,
@@ -79,13 +79,13 @@ import {
   modelFilesFromInput,
   removeModelPack,
   requestPersistentModelStorage
-} from "../patient-context/model-pack-storage.js?v=20260809-restricted-network-chunks";
+} from "../patient-context/model-pack-storage.js?v=20260809-restricted-network-chunks-2";
 import {
   formatBytes,
   hasAutomaticModelDownload,
   isInstallableModel,
   modelDownloadBytes
-} from "../patient-context/model-packs.js?v=20260809-restricted-network-chunks";
+} from "../patient-context/model-packs.js?v=20260809-restricted-network-chunks-2";
 import {
   ADMISSION_PSEUDO_DAY_ID,
   buildPromptPreviewSegments,

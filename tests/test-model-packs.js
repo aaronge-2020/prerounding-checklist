@@ -32,6 +32,11 @@ assert.deepEqual(stanford.bundledChunks["onnx/model_quantized.onnx"], {
 });
 assert.equal(hasAutomaticModelDownload(openmedSmall), true);
 assert.equal(openmedSmall.allowSelfHosted, true, "OpenMed Small must prefer packaged same-origin files on managed devices");
+assert.deepEqual(openmedSmall.bundledChunks["onnx/model_int8.onnx"], {
+  directory: "onnx/model_int8.chunks",
+  count: 21,
+  bytes: 171750792
+});
 assert.equal(hasAutomaticModelDownload(gliner), true);
 assert.deepEqual(requiredModelPackFiles(openmedSmall), ["config.json", "special_tokens_map.json", "tokenizer.json", "tokenizer_config.json", "onnx/model_int8.onnx"]);
 assert.equal(modelDownloadPlan(openmedSmall).at(-1).sourcePath, "small/model_int8.onnx");

@@ -12,7 +12,7 @@ import {
   modelPackManifestIsValid,
   modelPackVerifiedForCurrentRuntime,
   validateModelPackEntries
-} from "./model-packs.js?v=20260809-restricted-network-chunks";
+} from "./model-packs.js?v=20260809-restricted-network-chunks-2";
 
 const MODEL_PACK_DATABASE = "prerounding-local-model-pack-handles-v1";
 const MODEL_PACK_STORE = "packs";
@@ -165,9 +165,19 @@ function selfHostedModelFileUrl(option, fileName) {
 
 async function hasSelfHostedModelPack(option) {
   try {
-    const responses = await Promise.all(option.requiredFiles.map((fileName) =>
-      fetch(selfHostedModelFileUrl(option, fileName), { method: "HEAD", cache: "no-store" })
-    ));
+    const files = option.requiredFiles.flatMap((fileName) => {
+      const chunkSet = option.bundledChunks?.[fileName];
+      if (!chunkSet) return [fileName];
+      const directory = String(chunkSet.directory || "").replace(/^\/+|\/+$/g, "");
+      const count = Number(chunkSet.count || 0);
+      return Array.from({ length: count }, (_, index) => `${directory}/${String(index).padStart(3, "0")}`);
+    });
+    const responses = [];
+    for (let start = 0; start < files.length; start += 4) {
+      responses.push(...await Promise.all(files.slice(start, start + 4).map((fileName) =>
+        fetch(selfHostedModelFileUrl(option, fileName), { method: "HEAD", cache: "no-store" })
+      )));
+    }
     return responses.every((response) => response.ok);
   } catch {
     return false;

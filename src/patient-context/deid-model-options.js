@@ -127,7 +127,14 @@ const ALL_DEID_MODEL_OPTIONS = [
     wasmRuntime: "standard",
     localOnly: true,
     allowSelfHosted: true,
-    description: "Smallest OpenMed SuperClinical model. Runs on the regular processor — no graphics acceleration needed, so it works on older devices or browsers without WebGPU support.",
+    description: "Smallest OpenMed SuperClinical model. Its packaged weights are delivered in small same-site pieces for restricted workplace networks, then run on the regular processor without WebGPU.",
+    bundledChunks: {
+      "onnx/model_int8.onnx": {
+        directory: "onnx/model_int8.chunks",
+        count: 21,
+        bytes: 171750792
+      }
+    },
     candidates: [
       {
         modelId: OPENMED_SMALL_MODEL_ID,

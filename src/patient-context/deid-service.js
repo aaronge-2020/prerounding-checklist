@@ -7,9 +7,9 @@ import {
   STRUCTURED_DEID_MODE,
   deidModelCandidates,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20260809-restricted-network-chunks";
-import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260809-restricted-network-chunks";
-import { importedModelBaseUrl } from "./model-packs.js?v=20260809-restricted-network-chunks";
+} from "./deid-model-options.js?v=20260809-restricted-network-chunks-2";
+import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260809-restricted-network-chunks-2";
+import { importedModelBaseUrl } from "./model-packs.js?v=20260809-restricted-network-chunks-2";
 
 const deidentifierPromises = new Map();
 let activeModelKey = DEFAULT_DEID_MODEL_KEY;
@@ -158,10 +158,15 @@ async function fetchBundledModelChunks(option, requested, nativeFetch, init) {
   const directory = String(chunkSet.directory || "").replace(/^\/+|\/+$/g, "");
   const count = Number(chunkSet.count || 0);
   if (!directory || !Number.isInteger(count) || count <= 0) return null;
-  const responses = await Promise.all(Array.from({ length: count }, (_, index) => {
-    const chunkName = String(index).padStart(3, "0");
-    return nativeFetch(new URL(`${option.modelId}/${directory}/${chunkName}`, root), init);
-  }));
+  const responses = [];
+  const chunkIndexes = Array.from({ length: count }, (_, index) => index);
+  for (let start = 0; start < chunkIndexes.length; start += 4) {
+    const batch = chunkIndexes.slice(start, start + 4);
+    responses.push(...await Promise.all(batch.map((index) => {
+      const chunkName = String(index).padStart(3, "0");
+      return nativeFetch(new URL(`${option.modelId}/${directory}/${chunkName}`, root), init);
+    })));
+  }
   const failedIndex = responses.findIndex((response) => !response.ok);
   if (failedIndex >= 0) {
     throw new Error(`Bundled model piece ${failedIndex + 1} of ${count} could not be loaded (${responses[failedIndex].status}).`);
