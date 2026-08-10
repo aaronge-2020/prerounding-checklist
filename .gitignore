@@ -14,6 +14,7 @@ models/knowledgator/
 data/name-sources/
 
 # Generated/local outputs
+artifacts/
 benchmark-results/
 qa-screenshots/
 reports/*.json

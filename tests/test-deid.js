@@ -62,7 +62,7 @@ const guidedDemoResults = [...DEMO_CONTEXT_TEXTS, ...DEMO_DAILY_TEXTS]
   .map((text) => deidentifyTextStructuredOnly(text, DEMO_ADMISSION_DATE));
 const guidedDemoContext = guidedDemoResults[0].text;
 assert.match(guidedDemoContext, /Preferred Name: \[PATIENT NAME\]/, "preferred-name aliases must use the patient-name placeholder");
-assert.match(guidedDemoContext, /DOB: \[61 years, 7 months, and 25 days prior to hospital admission\]/, "DOB should become an age-relative phrase");
+assert.match(guidedDemoContext, /DOB year: 1964/, "a source containing only a birth year should preserve the year");
 assert.doesNotMatch(guidedDemoContext, /\[Lab \d+\/\d+\] Timeline:/, "timeline metadata must not be ordinalized as a lab result");
 assert.match(guidedDemoContext, /Admission Time: \[TIME\]/, "explicit admission times must not survive redaction");
 assert.match(guidedDemoContext, /Insurance: \[ORGANIZATION\] PPO/, "insurance plan names must redact only the organization and preserve the plan type");

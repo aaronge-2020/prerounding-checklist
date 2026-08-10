@@ -37,6 +37,7 @@
     "build:clinical-guard-full": "npm run build:mesh-vocabulary && npm run build:clinical-guard-vocabulary && npm run apply:clinical-guard-vocabulary",
     "test:local-ui": "node tests/test-local-first-ui-browser.js",
     "test:deid": "node tests/test-deid.js",
+    "test:structured-deid-corpus": "node tests/test-structured-deid-complex-corpus.js && node tests/test-structured-redaction-grader.js && node tests/test-structured-redaction-corpus.js",
     "test:clinical-guard-vocabulary": "node tests/test-clinical-guard-vocabulary.js",
     "test:syntax": "node scripts/check-syntax.js",
     "test:ui-boundaries": "node scripts/check-ui-module-boundaries.js"

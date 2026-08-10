@@ -475,7 +475,7 @@ const facilitySuffixWords = new Set([
   "services", "service", "foundation", "network", "system", "systems",
   "laboratory", "laboratories", "lab", "labs", "pharmacy", "pharmacies",
   "imaging", "radiology", "diagnostics", "rehabilitation", "rehab",
-  "nursing", "hospice", "facility", "facilities", "unit", "units",
+  "nursing", "hospice", "facility", "facilities", "pavilion", "pavilions", "unit", "units",
   "department", "departments", "division", "office", "offices",
   "specialists", "specialist", "physicians", "physician", "surgeons",
   "consultants", "cardiology", "cardiovascular", "dermatology",
@@ -527,7 +527,8 @@ function isProtectedClinicalEntityFalsePositive(rawText, entity) {
     return false;
   }
 
-  if (nameEntityLabels.has(label) && hasExplicitIdentifierContext(rawText, entity.start, entity.end) && parsePersonName(span)) {
+  if (label === "PATIENT NAME" &&
+      (hasExplicitIdentifierContext(rawText, entity.start, entity.end) || /\b(?:OCR HEADER|ALIAS|known explicit patient identity)\b/i.test(entity.context || ""))) {
     return false;
   }
 
@@ -625,6 +626,15 @@ function isLikelyNonNamePhrase(rawText, start, end) {
   const span = rawText.slice(start, end).replace(/\s+/g, " ").trim();
   const normalized = normalizePhrase(span);
   if (!normalized) {
+    return true;
+  }
+
+  // Capitalized eponyms and named teaching signs can parse exactly like a
+  // two-part person name. Their immediately following clinical noun is the
+  // disambiguating boundary; keep this generic rather than enumerating
+  // individual surnames such as Rogers, Parkinson, or Addison.
+  const afterCandidate = rawText.slice(end, Math.min(rawText.length, end + 40));
+  if (/^\s+(?:phenomenon|syndrome|disease|sign|test|criteria|fracture|reflex|maneuver|method|score|classification)\b/i.test(afterCandidate)) {
     return true;
   }
 
@@ -726,6 +736,21 @@ function isLikelyDateFalsePositive(rawText, start, end) {
   const after = rawText.slice(end, Math.min(rawText.length, end + 40)).toLowerCase();
 
   if (!/\d|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec/i.test(span)) {
+    return true;
+  }
+
+  // Chrono recognizes every standalone month word. In clinical prose, May
+  // is often a modal verb and month names can modify a diagnosis or finding
+  // ("March fracture") without denoting a date. A bare month is only useful
+  // temporal evidence when its local grammar actually treats it as one.
+  if (/^(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?$/i.test(span) &&
+      !/(?:\b(?:in|during|since|through|from|until|before|after|by|on|of)\s*)$/i.test(before) &&
+      !/^\s*(?:\d{1,2}\b|\d{4}\b)/.test(after)) {
+    return true;
+  }
+
+  if (/^\d{1,3}\s*:\s*(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?$/i.test(span) &&
+      /^\s+[A-Za-z]/.test(after)) {
     return true;
   }
 
@@ -1119,7 +1144,8 @@ function pushPatternEntity(entities, rawText, label, start, end, source = "struc
     start,
     end,
     label: normalizedLabel,
-    source
+    source,
+    context
   })) {
     return;
   }
@@ -1168,7 +1194,7 @@ function addCapturedEntity(rawText, entities, label, regex, source = "structured
     const end = match.index + valueOffset + value.length - trailingTrim;
     if (nameEntityLabels.has(normalizePhiLabel(label))) {
       const capturePrefix = match[0].slice(0, valueOffset);
-      const explicitNameField = /[:#]/.test(capturePrefix);
+      const explicitNameField = /[:#]/.test(capturePrefix) || /\b(?:OCR HEADER|ALIAS)\b/i.test(capturePrefix);
       // Relationship labels also occur as ordinary prose headings (for
       // example, "Father died from myocardial infarction"). The permissive
       // label regex is allowed to match both forms, but a whitespace-only
@@ -1176,8 +1202,9 @@ function addCapturedEntity(rawText, entities, label, regex, source = "structured
       // title-cased person name. Colon/hash fields remain compatible with
       // lowercased imported names, while the clinical/prose guard handles
       // all-caps and title-cased clinical clauses.
+      const explicitPatientField = explicitNameField && normalizePhiLabel(label) === "PATIENT NAME";
       if ((!explicitNameField && !/^[A-Z]/.test(value.trim())) ||
-          isLikelyNonNamePhrase(rawText, start, end)) {
+          (!explicitPatientField && isLikelyNonNamePhrase(rawText, start, end))) {
         continue;
       }
     }
@@ -1239,7 +1266,7 @@ function constrainPatternEntitySpan(rawText, label, start, end) {
 }
 
 export function addStructuredSafeHarborEntities(rawText, entities = [], currentDate = null, { relativeDate = currentDate } = {}) {
-  const dateValue = String.raw`(?:\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2},?\s+\d{4})`;
+  const dateValue = String.raw`(?:\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9](?!\d)|[12]\d|3[01])(?:[/-](?:\d{4}(?!\d)|\d{2}(?!\d)))?(?![/-]\d)|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2},?\s+\d{4})`;
 
   // LLM-generated H&P notes near-universally bold the field label in
   // markdown ("**MRN:** 58193427"), which puts "**" directly between the
@@ -1262,7 +1289,10 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
   const capturedPatterns = [
     { label: "PATIENT NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Patient(?: Name)?|Pt(?: Name)?|Name)${mdSep}([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})\s*$`, "gmi") },
     { label: "PATIENT NAME", regex: new RegExp(String.raw`^${mdFiller}Preferred Name${mdSepOptionalColon}([A-Z][A-Za-z.'-]+)\s*$`, "gmi") },
+    { label: "PATIENT NAME", regex: new RegExp(String.raw`\bALIAS${mdSep}([^|\n\r;]{2,80})`, "gi") },
+    { label: "PATIENT NAME", regex: /\bOCR HEADER\s*>{2,}\s*([A-Z][A-Z'-]+,\s+[A-Z][A-Z'-]+)(?=\s+(?:D0B|DOB|MRN)\b)/g },
     { label: "DOB", regex: new RegExp(String.raw`^${mdFiller}(?:DOB|D\.O\.B\.|Date of birth|Birth date)${mdSepOptionalColon}(${dateValue})\s*$`, "gmi") },
+    { label: "DOB", regex: new RegExp(String.raw`\bD0B\s*=\s*(${dateValue})`, "gi") },
     { label: "MRN", regex: new RegExp(String.raw`^${mdFiller}(?:MRN|Medical Record(?: Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
     { label: "ENCOUNTER ID", regex: new RegExp(String.raw`^${mdFiller}(?:CSN|FIN|HAR|Encounter(?: ID| Number))${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
     { label: "ID", regex: new RegExp(String.raw`^${mdFiller}(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Group(?: Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
@@ -1274,22 +1304,28 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
     { label: "FACILITY", regex: new RegExp(String.raw`^${mdFiller}(?:Facility|Campus|Hospital|Clinic|Site|Service location|Lab location|Ordering location)${mdSep}([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)`, "gmi") },
     { label: "ROOM", regex: new RegExp(String.raw`^${mdFiller}(?:Room|Rm|Bed|ICU room|ED room|Unit|Floor|Ward|Pod|Bay|Location)${mdSep}([A-Z0-9][A-Z0-9 \t-]*\d?[A-Z0-9-]*)\s*$`, "gmi") },
     { label: "PROVIDER NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Primary endocrinologist|Provider|Attending|Resident|Fellow|Consultant|Surgeon|PCP|Primary care provider|Referring provider|Ordering provider)${mdSepOptionalColon}((?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}|[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,2})`, "gmi") },
+    { label: "PROVIDER NAME", regex: new RegExp(String.raw`\bProvider${mdSep}((?:Dr|Doctor)\.?\s+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+(?:[ \t]+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+){1,2})`, "gi") },
     { label: "CONTACT NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian|Caregiver)${mdSepOptionalColon}([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})`, "gmi") },
+    { label: "CONTACT NAME", regex: new RegExp(String.raw`\b(?:contact${mdSep}|Emergency contact\s+)((?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+(?:[ \t]+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+){1,3})`, "gi") },
     { label: "ORGANIZATION", regex: new RegExp(String.raw`^${mdFiller}Insurance${mdSepOptionalColon}([^,\n\r]+?)(?=\s+(?:PPO|HMO|EPO|POS|HDHP)\b\s*$|$)`, "gmi") },
     { label: "ORGANIZATION", regex: new RegExp(String.raw`^${mdFiller}Employer${mdSepOptionalColon}([^\n\r]+?)\s*$`, "gmi") },
     { label: "OCCUPATION", regex: new RegExp(String.raw`^${mdFiller}(?:Occupation|Profession|Job title)${mdSepOptionalColon}([^\n\r]+?)\s*$`, "gmi") },
     { label: "ORGANIZATION", regex: new RegExp(String.raw`^${mdFiller}Preferred pharmacy${mdSepOptionalColon}([^,\n\r]{2,80})`, "gmi") },
     { label: "DOB", regex: new RegExp(String.raw`\b(?:DOB|D\.O\.B\.|Date of birth|Birth date)${mdSepOptionalColon}(${dateValue})`, "gi") },
     { label: "PATIENT NAME", regex: /\b(?:Patient(?: Name)?|Pt(?: Name)?)\s+(?!is\b|was\b|reports\b|states\b)([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})(?=\s+(?:MRN|Medical Record(?: Number)?|DOB|Date of birth|Birth date)\b|[,:;\n\r]|$)/gi },
+    { label: "PATIENT NAME", regex: /\bPATIENT\s*:\s*([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})(?=\s*\|)/gi },
     { label: "PATIENT NAME", regex: new RegExp(String.raw`\bPreferred Name${mdSepOptionalColon}([A-Z][A-Za-z.'-]+)`, "gi") },
     { label: "MRN", regex: new RegExp(String.raw`\b(?:MRN|Medical Record(?: Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
+    { label: "MRN", regex: /\bMRN\s*=\s*((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})/gi },
     { label: "ENCOUNTER ID", regex: new RegExp(String.raw`\b(?:CSN|FIN|HAR|Encounter(?: ID| Number))${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
     { label: "ID", regex: new RegExp(String.raw`\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Group(?: Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
     { label: "FACILITY", regex: new RegExp(String.raw`\b(?:Facility|Campus|Hospital|Clinic|Service location|Lab location|Ordering location)${mdSep}([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)`, "gi") },
+    { label: "PATIENT NAME", regex: /\balso documented as\s+([^,;\n\r]{2,80})/gi },
+    { label: "PROVIDER NAME", regex: /\bseen by\s+((?:Dr|Doctor)\.?\s+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+(?:[ \t]+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+){1,2})/gi },
     { label: "ROOM", regex: new RegExp(String.raw`\b(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|ICU room|ED room|Location)${mdSep}([A-Z0-9][A-Z0-9 \t-]{0,30}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|Phone|Email|Address|Primary|Preferred)\s*[:#]|[.,;\n\r]|$)`, "gi") },
     { label: "ORGANIZATION", regex: new RegExp(String.raw`\bInsurance${mdSepOptionalColon}([^,\n\r]+?)(?=\s+(?:PPO|HMO|EPO|POS|HDHP)\b(?:\s|$)|[\n\r]|$)`, "gi") },
     { label: "ORGANIZATION", regex: new RegExp(String.raw`\bEmployer${mdSepOptionalColon}([^,\n\r]+)`, "gi") },
-    { label: "OCCUPATION", regex: new RegExp(String.raw`\b(?:Occupation|Profession|Job title)${mdSepOptionalColon}([^,\n\r]+)`, "gi") }
+    { label: "OCCUPATION", regex: new RegExp(String.raw`\b(?:Occupation|Profession|Job title)${mdSep}([^,\n\r]+)`, "gi") }
   ];
 
   capturedPatterns.forEach(({ label, regex }) => {
@@ -1298,9 +1334,11 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
 
   const directPatterns = [
     { label: "EMAIL", regex: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi },
-    { label: "URL", regex: /\b(?:https?:\/\/|www\.)[^\s<>()]+/gi },
+    { label: "URL", regex: /\b(?:https?:\/\/|www\.)[^\s<>()|,;]+/gi },
     { label: "IP", regex: /\b(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}\b/g },
     { label: "IP", regex: /\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b/g },
+    { label: "ID", regex: /\bDEV(?:ICE)?[:#=](?=[A-Z0-9:._\/-]*\d)[A-Z0-9][A-Z0-9:._\/-]{2,}\b/g },
+    { label: "DATE", regex: /\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?(?:Z|[+-]\d{2}:\d{2})\b/g },
     { label: "ID", regex: /\b\d{3}-\d{2}-\d{4}\b/g },
     // Presidio SSN patterns: broader than \d{3}-\d{2}-\d{4}
     { label: "ID", regex: /\b(\d{3})[- .](\d{2})[- .](\d{4})\b/g },
@@ -1345,9 +1383,11 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
     { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+[A-Z][A-Za-z&.'-]+){0,4}[ \t]+Laboratory,\s+(?:University|College|Institute) of [A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,4},\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+)*,\s+[A-Z]{2}\b/g },
     { label: "ORGANIZATION", regex: /\b(?:University|College|Institute) of [A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,4}\b/g },
     { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Pharmacy|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g, skip: isLikelyOrganizationFalsePositive },
-    { label: "PROVIDER NAME", regex: /\b(?:Dr|Doctor)\.?\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}\b/g },
+    { label: "FACILITY", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){1,5}[ \t]+Pavilion(?:[ \t]+[A-Z0-9-]{1,12})?\b/g, skip: isLikelyOrganizationFalsePositive },
+    { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){1,5}[ \t]+Cooperative(?:[ \t]+[A-Z0-9-]{1,12})?\b/g, skip: isLikelyOrganizationFalsePositive },
+    { label: "PROVIDER NAME", regex: /\b(?:Dr|Doctor)\.?\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}\b(?![A-Za-z0-9.'-])/g },
     { label: "NAME", regex: /\b[A-Z][a-z]{2,}[ \t]+[A-Z]\.[ \t]+[A-Z][A-Za-z'-]{5,}\b/g, skip: isLikelyNonNamePhrase },
-    { label: "ID", regex: /\b(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)+\b/g, skip: isLikelyIdentifierFalsePositive },
+    { label: "ID", regex: /\b(?!\d{4}-\d{2}-\d{2}T)(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)+\b/g, skip: isLikelyIdentifierFalsePositive },
     { label: "ID", regex: /\b[A-F0-9]{12,}\b/g },
     { label: "ID", regex: /\b[A-HJ-NPR-Z0-9]{17}\b/g }
   ];
@@ -1469,7 +1509,7 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
         "center", "hospital", "clinic", "institute", "associates", "association",
         "group", "practice", "healthcare", "medical", "pharmacy", "lab", "labs",
         "services", "foundation", "network", "system", "facility", "department",
-        "medicine", "surgery", "care", "partners", "physicians", "specialists",
+        "medicine", "surgery", "care", "partners", "physicians", "specialists", "pavilion",
       ]);
       const words = normalized.split(" ").filter(Boolean);
       if (words.length >= 3 && facilitySuffixes.has(words[words.length - 1])) {
@@ -1488,7 +1528,10 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
       return false;
     }
 
-    if (nameEntityLabels.has(entity.label) && isLikelyNonNamePhrase(rawText, entity.start, entity.end)) {
+    const explicitStructuredPatientName = normalizePhiLabel(entity.label) === "PATIENT NAME" &&
+      !/model/.test(entity.source || "") &&
+      (hasExplicitIdentifierContext(rawText, entity.start, entity.end) || /\b(?:OCR HEADER|ALIAS|known explicit patient identity)\b/i.test(entity.context || ""));
+    if (nameEntityLabels.has(entity.label) && !explicitStructuredPatientName && isLikelyNonNamePhrase(rawText, entity.start, entity.end)) {
       return false;
     }
 
@@ -1555,6 +1598,9 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
     // like "NL63" or "COVID-19" inside "(Not related to COVID-19)" on a
     // micro-panel result line) never got this same check at all.
     if (entity.label === "ID") {
+      if (/^DEV(?:ICE)?[:#=](?=[A-Z0-9:._\/-]*\d)[A-Z0-9][A-Z0-9:._\/-]{2,}$/i.test(rawText.slice(entity.start, entity.end))) {
+        return true;
+      }
       return !isLikelyIdentifierFalsePositive(rawText, entity.start, entity.end);
     }
 
@@ -2081,6 +2127,14 @@ export function collectTemporalEntities(rawText, referenceDate = null) {
       return;
     }
     if (isLikelyDurationSinceEventPhrase(text, start, end)) {
+      return;
+    }
+    const bareMonth = /^(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?$/i.test(result.text.trim());
+    if (bareMonth && isLikelyDateFalsePositive(text, start, end)) {
+      return;
+    }
+    const sectionOrdinalMonth = /^\d{1,3}\s*:\s*(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?$/i.test(result.text.trim());
+    if (sectionOrdinalMonth && isLikelyDateFalsePositive(text, start, end)) {
       return;
     }
     // A bare casual reference ("yesterday", "tonight", "tomorrow", "last
@@ -2905,10 +2959,18 @@ function addAliasRepeatEntities(rawText, entities, aliases) {
       const end = start + match[2].length;
       const coveringEntity = entities.find((entity) => start >= entity.start && end <= entity.end);
       if (coveringEntity && !/model/.test(coveringEntity.source || "")) {
+        if (labelPriority(alias.label) < labelPriority(coveringEntity.label)) {
+          coveringEntity.label = alias.label;
+          coveringEntity.placeholder = placeholderForLabel(alias.label);
+          coveringEntity.source = mergeSourceLabel(coveringEntity.source, alias.source || "alias repeat");
+        }
         continue;
       }
       if (alias.requiresStrongContext && !hasStrongNameContext(rawText, start, end)) {
-        continue;
+        const exactMultiwordPatientIdentity = alias.label === "PATIENT NAME" && alias.text.trim().split(/\s+/).length >= 2;
+        if (!exactMultiwordPatientIdentity) {
+          continue;
+        }
       }
       pushPatternEntity(entities, rawText, alias.label, start, end, alias.source || "alias repeat", `known alias: ${alias.text}`);
     }
@@ -3273,8 +3335,26 @@ function entitySignature(entities) {
     .join("|");
 }
 
+function addExactStructuredPatientNameRepeats(rawText, entities) {
+  const explicitValues = new Set(entities
+    .filter((entity) => normalizePhiLabel(entity.label) === "PATIENT NAME" &&
+      /structured identifier/.test(entity.source || "") &&
+      hasExplicitIdentifierContext(rawText, entity.start, entity.end))
+    .map((entity) => rawText.slice(entity.start, entity.end).trim())
+    .filter((value) => value.split(/\s+/).length >= 2));
+
+  explicitValues.forEach((value) => {
+    const regex = new RegExp(`(^|[^A-Za-z])(${escapeRegExp(value)})(?=$|[^A-Za-z])`, "g");
+    for (const match of rawText.matchAll(regex)) {
+      const start = match.index + match[1].length;
+      pushPatternEntity(entities, rawText, "PATIENT NAME", start, start + value.length, "identity exact repeat", "known explicit patient identity");
+    }
+  });
+  return entities;
+}
+
 function expandIdentityGraphEntities(rawText, seedEntities, maxPasses = 3) {
-  let entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addDictionaryNameEntities(rawText, seedEntities), rawText));
+  let entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addExactStructuredPatientNameRepeats(rawText, addDictionaryNameEntities(rawText, seedEntities)), rawText));
   let graph = buildIdentityGraph(rawText, entities);
   for (let pass = 0; pass < maxPasses; pass += 1) {
     const before = entitySignature(entities);
