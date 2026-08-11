@@ -103,8 +103,9 @@ import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260727-diff
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import {
   ensureCanonicalDefaultGuidelineSets,
+  ensureTeachingGuidelineSet,
   loadOrMigrateGuidelineSets
-} from "../prompts/guideline-sets.js?v=20260804-clean-guideline-variables";
+} from "../prompts/guideline-sets.js?v=20260810-teaching-guidelines";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences,
@@ -4273,6 +4274,7 @@ async function refreshGuidelines() {
   app.guidelineSets = await loadOrMigrateGuidelineSets();
   const legacyTeamPreferences = app.vault?.preferences?.teamInstructions || "";
   app.guidelineSets = await ensureCanonicalDefaultGuidelineSets(app.guidelineSets, { legacyTeamPreferences });
+  app.guidelineSets = await ensureTeachingGuidelineSet(app.guidelineSets);
   if (legacyTeamPreferences.trim() && app.vault?.preferences) {
     app.vault = {
       ...app.vault,

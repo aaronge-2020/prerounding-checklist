@@ -2,6 +2,7 @@ import { createLocalId } from "../app/state/vault.js";
 
 export const GUIDELINE_SET_STORAGE_KEY = "prerounding_guideline_sets_v1";
 export const GUIDELINE_SET_CANONICAL_DEFAULTS_KEY = "prerounding_guideline_sets_canonical_defaults_v2";
+export const TEACHING_GUIDELINE_SET_SEED_KEY = "prerounding_teaching_guideline_set_seed_v1";
 
 export const DEFAULT_GUIDELINE_SET_SOURCES = Object.freeze([
   { label: "Admission", token: "@admission-guidelines", path: "./prompts/Guidelines-admission.md" },
@@ -9,7 +10,8 @@ export const DEFAULT_GUIDELINE_SET_SOURCES = Object.freeze([
   { label: "Discharge instructions", token: "@discharge-instructions-guidelines", path: "./prompts/Discharge_Instructions.md" },
   { label: "Consulting", token: "@consulting-guidelines", path: "./prompts/Consulting.md" },
   { label: "Team preferences", token: "@team-preferences", path: "" },
-  { label: "Progress notes", token: "@progress-guidelines", path: "./prompts/Guidelines-progress.md" }
+  { label: "Progress notes", token: "@progress-guidelines", path: "./prompts/Guidelines-progress.md" },
+  { label: "Teaching", token: "@teaching-guidelines", path: "./prompts/teaching.md" }
 ]);
 
 const DEFAULT_TOKENS = new Set(DEFAULT_GUIDELINE_SET_SOURCES.map((source) => source.token));
@@ -124,7 +126,28 @@ export async function loadOrMigrateGuidelineSets(storage = localStorage) {
   const seeded = await seedDefaultGuidelineSets();
   saveGuidelineSets(seeded, storage);
   storage.setItem(GUIDELINE_SET_CANONICAL_DEFAULTS_KEY, "1");
+  storage.setItem(TEACHING_GUIDELINE_SET_SEED_KEY, "1");
   return seeded;
+}
+
+// Adds the Teaching guideline exactly once to installs that were already
+// seeded before teaching.md became a Settings-backed smart variable. A
+// dedicated marker preserves deletion of every other default and ensures a
+// user who later deletes Teaching does not have it silently restored.
+export async function ensureTeachingGuidelineSet(sets, { storage = localStorage } = {}) {
+  if (storage.getItem(TEACHING_GUIDELINE_SET_SEED_KEY) !== null) return sets;
+  const source = DEFAULT_GUIDELINE_SET_SOURCES.find(({ token }) => token === "@teaching-guidelines");
+  const hasTeaching = (sets || []).some(({ token }) => token === source.token);
+  const next = hasTeaching ? sets : [
+    ...(sets || []),
+    createGuidelineSet(source.label, await fetchGuidelineText(source.path), {
+      token: source.token,
+      existingTokens: (sets || []).map((set) => set.token)
+    })
+  ];
+  if (!hasTeaching) saveGuidelineSets(next, storage);
+  storage.setItem(TEACHING_GUIDELINE_SET_SEED_KEY, "1");
+  return next;
 }
 
 export async function ensureCanonicalDefaultGuidelineSets(sets, { legacyTeamPreferences = "", storage = localStorage } = {}) {

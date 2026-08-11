@@ -3,9 +3,11 @@ import {
   DEFAULT_GUIDELINE_SET_SOURCES,
   GUIDELINE_SET_CANONICAL_DEFAULTS_KEY,
   GUIDELINE_SET_STORAGE_KEY,
+  TEACHING_GUIDELINE_SET_SEED_KEY,
   addGuidelineSet,
   createGuidelineSet,
   ensureCanonicalDefaultGuidelineSets,
+  ensureTeachingGuidelineSet,
   guidelineSetMatchesQuery,
   loadGuidelineSets,
   loadOrMigrateGuidelineSets,
@@ -30,13 +32,15 @@ const expectedTokens = [
   "@discharge-instructions-guidelines",
   "@consulting-guidelines",
   "@team-preferences",
-  "@progress-guidelines"
+  "@progress-guidelines",
+  "@teaching-guidelines"
 ];
 
 assert.deepEqual(DEFAULT_GUIDELINE_SET_SOURCES.map((source) => source.token), expectedTokens);
 assert.equal(new Set(expectedTokens).size, expectedTokens.length, "default guideline tokens must be unique");
 assert.match(DEFAULT_PROMPT_TEMPLATES.preround_bedside_exam, /@pre-round-checklist-guidelines/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.discharge_instructions, /@discharge-instructions-guidelines/);
+assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /^@teaching-guidelines\b/);
 assert.doesNotMatch(Object.values(DEFAULT_PROMPT_TEMPLATES).join("\n"), /updated-guidelines/);
 
 // New installs receive exactly the canonical defaults, in the requested order.
@@ -48,6 +52,7 @@ assert.doesNotMatch(Object.values(DEFAULT_PROMPT_TEMPLATES).join("\n"), /updated
     const seeded = await loadOrMigrateGuidelineSets(storage);
     assert.deepEqual(seeded.map((set) => set.token), expectedTokens);
     assert.equal(storage.getItem(GUIDELINE_SET_CANONICAL_DEFAULTS_KEY), "1");
+    assert.equal(storage.getItem(TEACHING_GUIDELINE_SET_SEED_KEY), "1");
 
     saveGuidelineSets([], storage);
     assert.deepEqual(await loadOrMigrateGuidelineSets(storage), [], "deleted defaults must stay deleted");
@@ -76,7 +81,7 @@ assert.doesNotMatch(Object.values(DEFAULT_PROMPT_TEMPLATES).join("\n"), /updated
       legacyTeamPreferences: "Rounds at 7.",
       storage
     });
-    assert.deepEqual(canonical.slice(0, 6).map((set) => set.token), expectedTokens);
+    assert.deepEqual(canonical.slice(0, 7).map((set) => set.token), expectedTokens);
     assert.equal(canonical.find((set) => set.token === "@admission-guidelines")?.text, "My edited admission text.");
     assert.equal(canonical.find((set) => set.token === "@team-preferences")?.text, "Rounds at 7.");
     assert.equal(canonical.find((set) => set.token === custom.token)?.text, custom.text);
@@ -91,6 +96,30 @@ assert.doesNotMatch(Object.values(DEFAULT_PROMPT_TEMPLATES).join("\n"), /updated
       afterDeletion,
       "canonical defaults must not be restored after the one-time cleanup"
     );
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+}
+
+// Existing installs receive Teaching once without re-seeding defaults the user
+// previously deleted. Teaching itself also remains deleted after that seed.
+{
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => ({ ok: true, text: async () => `Teaching from ${url}` });
+  try {
+    const storage = fakeStorage({
+      [GUIDELINE_SET_STORAGE_KEY]: "[]",
+      [GUIDELINE_SET_CANONICAL_DEFAULTS_KEY]: "1"
+    });
+    const existing = [createGuidelineSet("Admission", "Keep me.", { token: "@admission-guidelines" })];
+    const seeded = await ensureTeachingGuidelineSet(existing, { storage });
+    assert.deepEqual(seeded.map(({ token }) => token), ["@admission-guidelines", "@teaching-guidelines"]);
+    assert.equal(seeded[1].text, "Teaching from ./prompts/teaching.md");
+    assert.equal(storage.getItem(TEACHING_GUIDELINE_SET_SEED_KEY), "1");
+
+    const afterDeletion = seeded.filter(({ token }) => token !== "@teaching-guidelines");
+    saveGuidelineSets(afterDeletion, storage);
+    assert.deepEqual(await ensureTeachingGuidelineSet(afterDeletion, { storage }), afterDeletion);
   } finally {
     globalThis.fetch = originalFetch;
   }

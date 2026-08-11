@@ -23,8 +23,6 @@ Silently verify every requirement before returning the revision:
 
 Remove repetition and filler across all sections. Use the context only to correct material inaccuracies, resolve contradictions, and retain essential context. Do not invent patient facts, results, orders, consultant recommendations, medication administrations, completed procedures, or unstated clinical status. Keep the result concise, clinically coherent, and ready to present to an attending.`;
 
-const TEACHING_CASE_INSTRUCTIONS = `Act as a clinical teacher. Give a one-sentence illness script, then a concise, evidence-tethered chronological synthesis of the case. Teach the pathophysiology, diagnostic reasoning, uncertainty, and why the major decisions or pending questions matter using only details relevant to this patient. Clearly distinguish chart-supported facts from general teaching. End with two progressively challenging, case-specific active-recall questions; withhold their answers until the student asks. Do not write a clinical note, invent facts, or claim an unstated trend.`;
-
 const MEDICATION_EXPLAINER_INSTRUCTIONS = `Teach this medication list by organizing medicines around their apparent condition, symptom, or clinical purpose. For each clinically relevant medicine, give the generic name when available, dose, route, frequency, intended purpose, a one-phrase mechanism or clinical role, and one patient-relevant monitoring or counseling pearl. Mark each intended purpose as confirmed from context, inferred, or uncertain; when uncertain, state the missing information without guessing. Avoid generic monographs and repetition. Use only the supplied medication list and context. End with two progressively challenging, case-specific active-recall questions; withhold their answers until the student asks.`;
 
 const MEDICATION_SAFETY_INSTRUCTIONS = `Run a focused, supervised medication-safety teaching exercise. Rank only credible, clinically important concerns by urgency. For each concern, name the medicine or combination, why it matters for this patient, the chart evidence supporting it, and the exact monitoring, verification step, or question to raise with the supervising clinician. Consider indication, dose, route, frequency, duplication, interaction, contraindication, and renal or hepatic adjustment only when the needed context is available. Missing data alone are not a safety concern: use the exact phrase insufficient information and do not guess. End with two progressively challenging, case-specific pause-and-check questions; withhold their answers until the student asks.`;
@@ -37,7 +35,7 @@ export const DEFAULT_PROMPT_TEMPLATES = {
   initial_admission_rounds: `@team-preferences\n\n@admission-guidelines\n\n@admission-packet`,
   daily_progress_note: `@team-preferences\n\n@progress-guidelines\n\n@progress-note-packet`,
   presentation_quality_editor: `${PRESENTATION_EDITOR_INSTRUCTIONS}\n\n@presentation-to-edit\n\n@admission-packet\n\n@progress-note-packet`,
-  teaching_case_trajectory: `${TEACHING_CASE_INSTRUCTIONS}\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
+  teaching_case_trajectory: `@teaching-guidelines\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   medication_explainer_by_problem: `${MEDICATION_EXPLAINER_INSTRUCTIONS}\n\n@admission-packet\n\n@medications\n\n@selected-day`,
   medication_safety_audit: `${MEDICATION_SAFETY_INSTRUCTIONS}\n\n@admission-packet\n\n@medications\n\n@labs\n\n@selected-day`,
   checklist_workup_refinement: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
@@ -188,7 +186,7 @@ export function loadPromptTemplateOverrides(storage = localStorage) {
     const replacements = {
       "@clinical-differential-instructions": "",
       "@presentation-editor-instructions": PRESENTATION_EDITOR_INSTRUCTIONS,
-      "@teaching-case-instructions": TEACHING_CASE_INSTRUCTIONS,
+      "@teaching-case-instructions": "@teaching-guidelines",
       "@medication-explainer-instructions": MEDICATION_EXPLAINER_INSTRUCTIONS,
       "@medication-safety-instructions": MEDICATION_SAFETY_INSTRUCTIONS
     };

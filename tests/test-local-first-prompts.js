@@ -17,7 +17,8 @@ import { createSourceCapture } from "../src/patient-context/source-captures.js";
 
 const guidelines = {
   admission: readFileSync("prompts/Guidelines-admission.md", "utf8"),
-  progress: readFileSync("prompts/Guidelines-progress.md", "utf8")
+  progress: readFileSync("prompts/Guidelines-progress.md", "utf8"),
+  teaching: readFileSync("prompts/teaching.md", "utf8")
 };
 
 for (const template of Object.values(DEFAULT_PROMPT_TEMPLATES)) {
@@ -36,7 +37,7 @@ for (const variable of instructionSmartVariables) {
 }
 assert.match(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@progress-note-packet/, "daily progress template must use the compiled selected-day packet");
 assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@exam-findings/, "daily progress template must not use the removed all-days examination variable");
-assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /Act as a clinical teacher/, "case teaching instructions must be visible in the editable template");
+assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /^@teaching-guidelines\b/, "case teaching instructions must come from the editable Settings guideline");
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /Teach this medication list/, "medication teaching instructions must be visible in the editable template");
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /Run a focused, supervised medication-safety teaching exercise/, "medication safety instructions must be visible in the editable template");
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /@admission-packet/, "medication teaching defaults need patient context to establish indication");
@@ -134,10 +135,11 @@ const defaultTeachingPrompt = buildCustomOpenEvidencePrompt({
   taskId: "teaching_case_trajectory",
   template: DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory,
   patient,
-  selectedDayId: day.id
+  selectedDayId: day.id,
+  guidelineSets: [createGuidelineSet("Teaching", guidelines.teaching, { token: "@teaching-guidelines" })]
 });
-assert.match(defaultTeachingPrompt, /two progressively challenging, case-specific active-recall questions/i);
-assert.match(defaultTeachingPrompt, /withhold their answers until the student asks/i);
+assert.match(defaultTeachingPrompt, /Write exactly three table rows/i);
+assert.match(defaultTeachingPrompt, /Ask exactly two questions and end immediately after Q2/i);
 
 const medicationOrganizer = buildOpenEvidencePrompt("medication_explainer_by_problem", { patient });
 assert.match(medicationOrganizer, /disease, condition, symptom, or clinical purpose/);
@@ -339,7 +341,7 @@ const migratedStorage = {
 };
 const migratedTemplates = loadPromptTemplateOverrides(migratedStorage);
 assert.equal(migratedTemplates.initial_admission_rounds, "@team-preferences\n\n@admission-guidelines\n\n@admission-packet");
-assert.match(migratedTemplates.teaching_case_trajectory, /Act as a clinical teacher/);
+assert.equal(migratedTemplates.teaching_case_trajectory, "@teaching-guidelines\n\n@admission-packet");
 assert.deepEqual(JSON.stringify(migratedTemplates).match(/@[a-z0-9-]+/g)?.filter((token) => token.endsWith("-instructions")) || [], []);
 assert.equal(JSON.parse(migratedStorageValues.get(PROMPT_TEMPLATE_STORAGE_KEY)).initial_admission_rounds, migratedTemplates.initial_admission_rounds, "legacy saved prompts must be rewritten once without hidden instruction tokens");
 
