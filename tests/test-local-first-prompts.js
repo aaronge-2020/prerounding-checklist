@@ -2,7 +2,16 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createDailyRecord, upsertDay } from "../src/daily-updates/days.js";
 import { createPatientRecord } from "../src/app/state/vault.js";
-import { buildOpenEvidencePrompt, openEvidenceTasks } from "../src/prompts/open-evidence.js";
+import {
+  buildChecklistRefinementPrompt,
+  buildDailyProgressPrompt,
+  buildInitialAdmissionPrompt,
+  buildMedicationExplainerPrompt,
+  buildMedicationSafetyPrompt,
+  buildOpenEvidencePrompt,
+  buildTeachingTrajectoryPrompt,
+  openEvidenceTasks
+} from "../src/prompts/open-evidence.js";
 import {
   buildCustomOpenEvidencePrompt,
   DEFAULT_PROMPT_TEMPLATES,
@@ -14,6 +23,7 @@ import {
 import { createGuidelineSet, DEFAULT_GUIDELINE_SET_SOURCES } from "../src/prompts/guideline-sets.js";
 import { buildTeamPreferencesPromptBlock, normalizeUserPreferences } from "../src/app/preferences.js";
 import { createSourceCapture } from "../src/patient-context/source-captures.js";
+import { ATTENDING_HOSPITALIST_PERSONA } from "../src/prompts/natural-language.js";
 
 const guidelines = {
   admission: readFileSync("prompts/Guidelines-admission.md", "utf8"),
@@ -84,7 +94,7 @@ const admission = buildOpenEvidencePrompt("initial_admission_rounds", { patient,
 assert.match(admission, /Admission H&P — Rounds Presentation Instructions/);
 assert.match(admission, /Limit the overall Assessment to two sentences/);
 assert.match(admission, /Scale detail to case complexity and make a straightforward case very brief/);
-assert.match(admission, /Omit every subjective, objective, and historical detail that does not change the current differential, management, plan, risk, or disposition/);
+assert.match(admission, /durable problem-defining context required to understand the Assessment and Plan alone/);
 assert.match(admission, /why the patient was admitted plus the one or two past medical-history conditions most pertinent/);
 assert.match(admission, /differential diagnoses under the applicable problem in Plan/);
 assert.match(admission, /most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4/);
@@ -109,6 +119,13 @@ assert.match(guidelines.admission, /Use an if\/then sentence that names the disc
 assert.match(guidelines.admission, /preferred to the closest reasonable first-line alternative/);
 assert.match(guidelines.admission, /decision, risk, or barrier the action resolves/);
 assert.match(guidelines.admission, /make the recommendation conditional on verifying that factor rather than inventing a rationale/);
+assert.match(guidelines.admission, /Under every problem heading, print .*Key context/i);
+assert.match(guidelines.admission, /Treat the Assessment and Plan as a self-contained clinical note/i);
+assert.match(guidelines.admission, /read-alone audit/i);
+assert.match(guidelines.admission, /retain yesterday's CT showing pancreatic calcifications/i);
+assert.match(guidelines.admission, /omit a normal amylase from two days ago/i);
+assert.match(guidelines.admission, /timing is not documented rather than inventing it/i);
+assert.doesNotMatch(guidelines.admission, /Plan — total bullets|total bullets do not exceed/i);
 assert.doesNotMatch(guidelines.admission, /Bullets carry actions only|Never append a because|bullets contain actions only/i);
 assert.match(admission, /Admission context/);
 assert.match(admission, /Chest pain\?/);
@@ -118,7 +135,7 @@ const progress = buildOpenEvidencePrompt("daily_progress_note", { patient, selec
 assert.match(progress, /daily progress note/i);
 assert.match(progress, /Limit the overall Assessment to two sentences/);
 assert.match(progress, /Scale detail to case complexity and make a straightforward case very brief/);
-assert.match(progress, /Omit every subjective, objective, and historical detail that does not change today's differential, management, plan, risk, or disposition/);
+assert.match(progress, /durable problem-defining context required to understand the Assessment and Plan alone/);
 assert.match(progress, /why the patient was admitted plus the one or two past medical-history conditions most pertinent/);
 assert.match(progress, /differential diagnoses under the applicable problem in Plan/);
 assert.match(progress, /most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4/);
@@ -144,6 +161,16 @@ assert.match(guidelines.progress, /preferred to the closest reasonable first-lin
 assert.match(guidelines.progress, /decision, risk, or barrier the action resolves/);
 assert.match(guidelines.progress, /make the recommendation conditional on verifying that factor rather than inventing a rationale/);
 assert.match(guidelines.progress, /Every Plan bullet contains one action plus a concise justification/);
+assert.match(guidelines.progress, /Under every problem heading, print .*Key context/i);
+assert.match(guidelines.progress, /Treat the Assessment and Plan as a self-contained clinical note/i);
+assert.match(guidelines.progress, /interval gate does not apply to Key context/i);
+assert.match(guidelines.progress, /read-alone audit/i);
+assert.match(guidelines.progress, /retain yesterday's CT showing pancreatic calcifications/i);
+assert.match(guidelines.progress, /omit a normal amylase from two days ago/i);
+assert.match(guidelines.progress, /timing is not documented rather than inventing it/i);
+assert.match(guidelines.progress, /A problem is active when it is being treated, reassessed, monitored/i);
+assert.match(guidelines.progress, /Exclude dormant past medical history/i);
+assert.doesNotMatch(guidelines.progress, /Plan — total bullets|total bullets do not exceed/i);
 assert.doesNotMatch(guidelines.progress, /Bullets carry actions only|Never append a because|bullets contain actions only/i);
 assert.match(progress, /Patient mentioned new hip pain unrelated to admission\./);
 assert.match(progress, /Feels less short of breath/);
@@ -187,8 +214,20 @@ assert.match(medicationSafety, /frequency/i);
 assert.match(medicationSafety, /insufficient information/);
 
 for (const prompt of [admission, progress, teaching, medicationOrganizer, medicationSafety, buildOpenEvidencePrompt("checklist_workup_refinement", { patient })]) {
+  assert.match(prompt, new RegExp(ATTENDING_HOSPITALIST_PERSONA.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"), "every generated prompt must carry the attending-hospitalist persona");
   assert.doesNotMatch(prompt, /[\[\]{}<>()`]/, "OpenEvidence prompts must stay in natural language without brackets or code syntax");
   assert.doesNotMatch(prompt, /^\s*(?:#|[-*]|\d+[.)])\s/m, "OpenEvidence prompts must not use Markdown or numbered-list syntax");
+}
+
+for (const directPrompt of [
+  buildInitialAdmissionPrompt({ patient, guidelines }),
+  buildDailyProgressPrompt({ patient, selectedDayId: day.id, guidelines }),
+  buildTeachingTrajectoryPrompt({ patient, selectedDayId: day.id }),
+  buildMedicationExplainerPrompt({ patient, selectedDayId: day.id }),
+  buildMedicationSafetyPrompt({ patient, selectedDayId: day.id }),
+  buildChecklistRefinementPrompt({ patient, selectedDayId: day.id })
+]) {
+  assert.equal(directPrompt.match(/Act as an attending hospitalist with over 30 years of inpatient experience/gi)?.length, 1, "every exported prompt builder must enforce the persona exactly once");
 }
 
 assert.throws(() => buildOpenEvidencePrompt("daily_progress_note", { patient, guidelines: "" }), /task-specific documentation standard/);
@@ -203,6 +242,8 @@ const presentationEditorPrompt = buildCustomOpenEvidencePrompt({
   presentationToEdit: "One-Liner\nA de-identified sample presentation.\n\nAssessment\nA concise assessment."
 });
 assert.match(presentationEditorPrompt, /Return only the fully revised presentation/);
+assert.match(presentationEditorPrompt, /Treat Assessment and Plan as a self-contained note/i);
+assert.match(presentationEditorPrompt, /Key context synopsis/i);
 assert.match(presentationEditorPrompt, /A de-identified sample presentation/);
 assert.doesNotMatch(presentationEditorPrompt, /@presentation-to-edit/);
 const presentationEditorWithoutPastedText = buildCustomOpenEvidencePrompt({
@@ -361,6 +402,17 @@ const defaultProgressPrompt = buildCustomOpenEvidencePrompt({
 });
 assert.equal(defaultAdmissionPrompt.split(admissionGuidelineMarker).length - 1, 1, "Admission must receive its editable guideline exactly once");
 assert.equal(defaultProgressPrompt.split(progressGuidelineMarker).length - 1, 1, "Progress must receive its editable guideline exactly once");
+for (const [taskId, template] of Object.entries(DEFAULT_PROMPT_TEMPLATES)) {
+  const assembled = buildCustomOpenEvidencePrompt({
+    taskId,
+    template,
+    patient,
+    selectedDayId: day.id,
+    guidelineSets
+  });
+  assert.match(assembled, /Act as an attending hospitalist with over 30 years of inpatient experience/i, `${taskId} must carry the shared attending persona`);
+  assert.equal(assembled.match(/Act as an attending hospitalist with over 30 years of inpatient experience/gi)?.length, 1, `${taskId} must carry the persona exactly once`);
+}
 
 const migratedStorageValues = new Map([[
   PROMPT_TEMPLATE_STORAGE_KEY,

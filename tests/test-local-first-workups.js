@@ -102,6 +102,7 @@ assert.equal(bulkResult.answers["free-text"], undefined);
 assert.deepEqual(bulkResult.answers.answered, { selected: ["Abnormal"], note: "Existing finding" });
 
 assert.match(buildWorkupAuthoringPrompt(workup), /Return only valid JSON/);
+assert.match(buildWorkupAuthoringPrompt(workup), /attending hospitalist with over 30 years/i);
 assert.match(buildWorkupAuthoringPrompt(workup), /history questions and physical exam items/);
 assert.match(buildWorkupAuthoringPrompt(workup), /first choice must always be the negative, normal, absent, reassuring, or baseline finding/i);
 assert.match(buildOpenEvidenceWorkupDraftPrompt(), /Put the negative, normal, absent, reassuring, or other baseline answer first/i);
@@ -118,9 +119,10 @@ assert.doesNotMatch(buildOpenEvidenceWorkupDraftPrompt(), /[\[\]{}<>()`]/);
 assert.doesNotMatch(buildOpenEvidenceWorkupDraftPrompt(), /^\s*(?:#|[-*]|\d+[.)])\s/m);
 assert.doesNotMatch(buildOpenEvidenceWorkupDraftPrompt({ patientContext: "[De-identified] context", dailyTrajectory: "<Daily update>" }), /[\[\]{}<>()`]/, "workup prompts must remove bracketed patient-context syntax");
 assert.match(buildJsonFormatterPrompt(), /first choice for every item must be the negative, normal, absent, reassuring, or baseline finding/i);
+assert.match(buildJsonFormatterPrompt(), /attending hospitalist with over 30 years/i);
 
 const checklistGuidelines = readFileSync("prompts/Pre-round_checklist.md", "utf8");
-assert.match(checklistGuidelines, /attending hospitalist with 30 years/i);
+assert.match(checklistGuidelines, /attending hospitalist with over 30 years/i);
 assert.match(checklistGuidelines, /no required, minimum, or maximum number of items/i);
 assert.match(checklistGuidelines, /What documented problem, treatment, procedure, uncertainty, or decision makes this item relevant/);
 assert.match(checklistGuidelines, /What important clinical possibilities would the answer or finding help distinguish/);
@@ -134,7 +136,7 @@ const connectedChecklistPrompt = buildOpenEvidenceWorkupDraftPrompt({
   patientContext: "New oxygen requirement after diuresis.",
   thoroughness: "standard"
 });
-assert.match(connectedChecklistPrompt, /attending hospitalist with 30 years/i);
+assert.match(connectedChecklistPrompt, /attending hospitalist with over 30 years/i);
 assert.match(connectedChecklistPrompt, /number 1 is the highest priority/i);
 assert.match(connectedChecklistPrompt, /bedside questions[\s\S]*focused physical exam/i);
 assert.match(connectedChecklistPrompt, /retain the chart-supported problem or decision label/i);

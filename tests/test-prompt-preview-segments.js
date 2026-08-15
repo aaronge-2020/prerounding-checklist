@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { buildPromptPreviewSegments, tokenAccentColor } from "../src/prompts/custom-templates.js";
 import { promptVariableTokenAtCaret, scrollPromptOutputToVariable } from "../src/ui/prompts/controller.js";
 import { renderHighlightedSegments } from "../src/ui/prompts/presentation.js";
+import { ATTENDING_HOSPITALIST_PERSONA } from "../src/prompts/natural-language.js";
 
 const escapeHtml = (value) => String(value)
   .replaceAll("&", "&amp;")
@@ -17,6 +18,15 @@ const escapeHtml = (value) => String(value)
   assert.equal(first, second);
   assert.notEqual(first, tokenAccentColor("@selected-day"));
   assert.notEqual(tokenAccentColor("@admission-packet"), tokenAccentColor("@admission-packet", { dot: true }));
+}
+
+// Final preview/copy assembly enforces the persona for saved overrides and
+// user-created prompts without altering the editable template backdrop.
+{
+  const finalSegments = buildPromptPreviewSegments("Use @selected-day now.", { "@selected-day": "Current findings." }, { ensurePersona: true });
+  assert.equal(finalSegments.map((segment) => segment.value).join("").startsWith(ATTENDING_HOSPITALIST_PERSONA), true);
+  const alreadyPresent = buildPromptPreviewSegments(`${ATTENDING_HOSPITALIST_PERSONA}\n\nUse @selected-day.`, { "@selected-day": "Current findings." }, { ensurePersona: true });
+  assert.equal(alreadyPresent.map((segment) => segment.value).join("").match(/Act as an attending hospitalist with over 30 years of inpatient experience/g)?.length, 1);
 }
 
 // Literal text around a variable stays literal; the variable becomes its own segment.

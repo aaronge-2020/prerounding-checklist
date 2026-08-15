@@ -1,5 +1,6 @@
 import { BUNDLED_WORKUPS } from "./catalog.js";
 import { isWorkupSystem, workupSystemPromptList } from "./systems.js";
+import { attendingHospitalistPrompt } from "../prompts/natural-language.js?v=20260815-standalone-ap";
 
 const VALID_ITEM_KINDS = new Set(["history", "exam"]);
 const VALID_SELECT_MODES = new Set(["one", "many"]);
@@ -88,7 +89,7 @@ export function findWorkupsById(workups, ids = []) {
 
 export function buildWorkupAuthoringPrompt(workup = null) {
   const existing = workup ? `\n\nExisting workup JSON to revise:\n\`\`\`json\n${JSON.stringify(workup, null, 2)}\n\`\`\`` : "";
-  return `Create or revise a local prerounding workup JSON object.
+  return attendingHospitalistPrompt(`Create or revise a local prerounding workup JSON object.
 
 Return only valid JSON matching this schema:
 {
@@ -116,5 +117,5 @@ Rules:
 - Each item needs patient-facing answer choices.
 - The first choice must always be the negative, normal, absent, reassuring, or baseline finding. Positive, abnormal, present, or concerning choices come after it.
 - Use "history" or "exam" only for kind.
-- Use "one" unless multiple selections are genuinely needed.${existing}`;
+- Use "one" unless multiple selections are genuinely needed.${existing}`);
 }

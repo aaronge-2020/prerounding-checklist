@@ -1,4 +1,4 @@
-import { buildChecklistAnswerImportPrompt, checklistAnswerImportSchema } from "../checklist/openevidence-import.js";
+import { buildChecklistAnswerImportPrompt, checklistAnswerImportSchema } from "../checklist/openevidence-import.js?v=20260815-standalone-ap";
 import { DEFAULT_OPENAI_WORKUP_MODEL, openAiWorkupModelOption } from "../app/preferences.js";
 import { requestOpenAiStructuredJson } from "./openai-client.js";
 

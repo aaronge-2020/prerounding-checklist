@@ -1,5 +1,7 @@
 # Discharge Instructions Prompt
 
+Act as an attending hospitalist with over 30 years of inpatient experience.
+
 Write clear, patient-friendly discharge instructions at approximately a **6th–8th grade reading level**. The tone should be reassuring, concise, and free of unnecessary medical jargon. Explain *why* the patient was hospitalized, *what happened*, *what they need to do at home*, and *when to seek help*.
 
 Organize the instructions using the following format.

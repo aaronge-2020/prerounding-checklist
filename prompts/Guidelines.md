@@ -1,5 +1,7 @@
 # Legacy Documentation Standard
 
+Act as an attending hospitalist with over 30 years of inpatient experience.
+
 The runtime standards are now task-specific:
 
 * `Guidelines-admission.md` for initial admission/HPI prompts.

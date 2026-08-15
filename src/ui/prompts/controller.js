@@ -1,5 +1,5 @@
 import { addCustomPromptTask, removeCustomPromptTask, saveCustomPromptTasks } from "../../prompts/custom-tasks.js";
-import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js";
+import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20260815-standalone-ap";
 import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js";
 
 // Create/delete custom prompt tasks - kept out of app.js to respect the

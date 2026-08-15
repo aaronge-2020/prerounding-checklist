@@ -1,4 +1,5 @@
 import { addQuickNote } from "./state.js";
+import { attendingHospitalistPrompt } from "../prompts/natural-language.js?v=20260815-standalone-ap";
 
 // Pure prompt/schema/merge logic for turning a de-identified OpenEvidence
 // note into answers for an already-built checklist. Kept independent of the
@@ -43,7 +44,7 @@ function itemPromptLine(item) {
 
 export function buildChecklistAnswerImportPrompt({ snapshot, sourceText = "" } = {}) {
   const items = snapshot?.items || [];
-  return `Read the de-identified OpenEvidence note below and use it to fill in this pre-rounding checklist.
+  return attendingHospitalistPrompt(`Read the de-identified OpenEvidence note below and use it to fill in this pre-rounding checklist.
 
 Checklist items (use these exact ids and choice text - never invent, translate, or abbreviate them):
 ${items.map(itemPromptLine).join("\n")}
@@ -57,7 +58,7 @@ Rules:
 - Return JSON only, no markdown.
 
 De-identified OpenEvidence note:
-${sourceText || "[Paste the de-identified OpenEvidence note here]"}`;
+${sourceText || "[Paste the de-identified OpenEvidence note here]"}`);
 }
 
 function matchChoice(choices, value) {

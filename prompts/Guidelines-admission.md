@@ -1,5 +1,7 @@
 **# Admission H&P — Rounds Presentation Instructions**
 
+Act as an attending hospitalist with over 30 years of inpatient experience.
+
 Write a concise presentation of a newly admitted patient, formatted to be read from while speaking aloud to an experienced hospitalist during rounds.
 
 The output is the presenter's script, not a document given to the attending. Formatting exists to make the page scannable at a glance. It must never be audible when read: no formatting marker is ever spoken, and every sentence must sound natural with all formatting stripped.
@@ -19,11 +21,12 @@ Reason through the Assessment and Plan first, then build the Subjective and Obje
 1\. Factual accuracy
 2\. Correct status of treatments, tests, and recommendations
 3\. Immediate clinical safety
-4\. Evidentiary closure — every fact presented is a fact used
-5\. Five-item new-problem differentials
-6\. Diagnostic reasoning quality
-7\. Concision and oral readability
-8\. Formatting and internal ordering
+4\. Standalone Assessment and Plan — a clinician can understand the patient without reading earlier sections
+5\. Evidentiary closure — every fact presented is a fact used
+6\. Five-item new-problem differentials
+7\. Diagnostic reasoning quality
+8\. Concision and oral readability
+9\. Formatting and internal ordering
 
 A lower priority never justifies violating a higher one. Never relax factual or status requirements to make the presentation look complete or format cleanly.
 
@@ -32,10 +35,10 @@ A lower priority never justifies violating a higher one. Never relax factual or 
 Draft silently in this sequence. Do not draft in section order.
 
 1\. Read the source and form the clinical picture.
-2\. Build a silent Problem Ledger with one row for every problem that must appear in the Plan: the clinical problem name, whether the cause or mechanism is established, today's decision, its tier, the HPI facts that support it, and the Objective facts that support it.
+2\. Build a silent Problem Ledger with one row for every problem that must appear in the Plan: the clinical problem name, what it is being treated as, current status or trajectory, the few durable facts a future clinician must know, management-changing procedures or studies and when they occurred, current treatment, whether the cause or mechanism is established, today's decision, its tier, the HPI facts that support it, and the Objective facts that support it.
 3\. For every unestablished problem, build a silent Differential Ledger with exactly five chart-supported specific diagnoses, ordered by likelihood or immediate danger. For each diagnosis, write the affirmative patient-specific facts that support it and the patient-specific facts that make it less likely than the diagnosis above it.
 4\. Build a silent Missing-Discriminator Ledger for every decisive but absent datum that must be collected to rank, narrow, or rule out the listed differentials.
-5\. Write the Plan from the ledgers. Every unestablished problem gets one differential sentence followed by a five-row differential table.
+5\. Write the Plan from the ledgers. Every problem gets a concise Key context synopsis before its reasoning and actions; every unestablished problem also gets one differential sentence followed by a five-row differential table.
 6\. Write the Assessment, distilling the Plan into two sentences without importing problem-level reasoning.
 7\. Build the Objective as the evidentiary case for the Problem Ledger, Differential Ledger, and Missing-Discriminator Ledger.
 8\. Build the HPI the same way.
@@ -50,17 +53,17 @@ Output sections in the required order regardless of the order written.
 When a supplied fact seems clinically important but has no downstream match, decide which of these is true:
 
 \- **\*\*The reasoning was incomplete.\*\*** Revise the differential table, reasoning paragraph, or Assessment so that it genuinely weighs the fact — as it should have been written from the start — and keep the fact.
-\- **\*\*The fact does not bear on today's decisions.\*\*** Delete the fact.
+\- **\*\*The fact does not bear on today's decisions or on the durable context needed to understand an active problem.\*\*** Delete the fact.
 
 Then re-run the restatement check on anything you changed.
 
-**\*\*Additions must be reasoning, not citation.\*\*** An addition qualifies only if it changes the argument: it alters a differential rank, justifies an action, or establishes a severity that changes a decision. Never append a bare mention of a value in order to license its appearance in the Objective. If the only way to keep a fact is to name it without arguing from it, delete the fact.
+**\*\*Additions must serve reasoning or standalone handoff context, not citation.\*\*** An addition qualifies only if it changes the argument — alters a differential rank, justifies an action, or establishes a severity that changes a decision — or if it is a distilled, source-supported problem-defining fact required in Key context. Never append a bare mention of a value merely to license its appearance in Objective. If a fact does neither job, delete it.
 
 **## Restatement rule**
 
 This governs every fact in HPI and Objective. It is a mechanical string test, not a judgment call.
 
-**\*\*A specific value or detail may appear in HPI or Objective only if that identical value or detail appears again in the Assessment, a differential table, a reasoning paragraph, or a Plan bullet.\*\***
+**\*\*A specific value or detail may appear in HPI or Objective only if that identical value or detail appears again in the Assessment, the applicable Key context synopsis, a differential table, a reasoning paragraph, or a Plan bullet.\*\***
 
 \- **\*\*Numbers.\*\*** The number itself must reappear downstream. "Creatinine 5.14" survives only if \`5.14\` is written again in the Assessment or Plan.
 \- **\*\*Qualitative findings.\*\*** The key term must reappear downstream. "Guaiac negative stool" survives only if "guaiac negative" is written again.
@@ -77,7 +80,7 @@ Before final output, build a hidden Closure Table with one row for every upstrea
 
 \| Upstream quote | Downstream exact quote | Function |
 \|---|---|---|
-\| exact value or phrase | exact value or phrase in the Assessment, reasoning, or Plan | differential rank, severity, trajectory, action, contingency, or decision-critical missing data |
+\| exact value or phrase | exact value or phrase in the Assessment, Key context, reasoning, or Plan | standalone problem definition, differential rank, severity, trajectory, action, contingency, or decision-critical missing data |
 
 Delete every HPI or Objective fact whose row lacks an exact downstream quote and one of those functions. This includes onset and duration tokens, pain radiation, observer identity, adjectives such as "foul-smelling," response-to-treatment values, and negative exam or imaging clauses.
 
@@ -117,9 +120,10 @@ Relevant History is governed by its own inclusion rules below, not by the restat
 
 **## Where reasoning lives**
 
-Three layers, each with a distinct job. Content belonging to one layer never appears in another.
+Four layers, each with a distinct job. The Assessment and every problem's Key context must remain understandable when read without HPI or Objective.
 
 \- **\*\*Assessment\*\*** — the big picture: who this patient is, and what today turns on. Exactly two sentences. Never the argument itself.
+\- **\*\*Key context\*\*** — the compact, durable synopsis under every Plan problem: what the problem is being treated as, where it stands, and the few prior findings, procedures, treatments, complications, implemented consultant-led events, or durable outcomes a future clinician must know. Recommendation content still belongs only in its Plan bullet. Never an inventory.
 \- **\*\*Differential block or reasoning paragraph\*\*** — why: differential rank, severity, trajectory, competing risk, and the weighing of evidence. Never an action, threshold, dose, or trigger.
 \- **\*\*Bullets\*\*** — what happens and why: the action plus a concise patient-specific justification and the finding or comparison that makes it the right next step.
 
@@ -136,7 +140,7 @@ Not: "Today turns on reconciling the aspirin resumption order against vascular's
 **\*\*Bold marks what you navigate to, never what is important.\*\*** Emphasis is not a reason to bold anything. Bold is permitted in exactly five places:
 
 1\. Section headings.
-2\. Subsection labels in Relevant History and Objective, and condition anchors in Relevant History.
+2\. Subsection labels in Relevant History and Objective, the **\*\*Key context:\*\*** label under each Plan problem, and condition anchors in Relevant History.
 3\. Problem headings in Plan.
 4\. Short data labels within an Objective subsection.
 5\. The **\*\*VERIFY:\*\*** prefix on a safety flag.
@@ -167,15 +171,15 @@ Other conventions:
 \| Objective | subsections as warranted; each up to 2 sentences |
 \| Assessment | exactly 2 sentences |
 \| Plan — problems | as many as are actively managed today |
+\| Plan — Key context | every problem: 1–3 concise sentences; tier three usually 1 sentence |
 \| Plan — differential block | unestablished problems: 1 lead sentence and a 5-row table |
 \| Plan — reasoning paragraph | established tier one problems only: up to 3 sentences |
 \| Plan — tier one problems | up to 3 bullets each |
 \| Plan — tier two problems | up to 2 bullets each |
 \| Plan — tier three problems | exactly 1 bullet each |
-\| Plan — total bullets | up to 18 |
 \| Disposition | up to 3 sentences |
 
-Reasoning sentences, differential tables, and reasoning paragraphs do not count toward bullet limits. **\*\*VERIFY:\*\*** bullets do count.
+Reasoning sentences, differential tables, and reasoning paragraphs do not count toward per-problem bullet limits. **\*\*VERIFY:\*\*** bullets do count. There is no fixed total bullet cap: include every active problem, then enforce the tier-specific limit within each problem.
 
 The problem list may be long. No individual problem may be long. If a problem seems to need more bullets than allowed, the excess is almost always routine monitoring, restated evidence, reasoning that belongs in the reasoning paragraph, or an action that belongs to a different problem.
 
@@ -218,9 +222,9 @@ Attach the flag under the problem whose bullets act on it, not the problem where
 
 **## Information ownership**
 
-Each fact appears in exactly one place: symptoms and chronology in HPI; background in Relevant History; measurements and results in Objective; the big-picture synthesis in Assessment; problem-level interpretation, severity, trajectory, and differential in that problem's differential block or reasoning paragraph; treatment and proposed actions in Plan bullets; level of care, barriers, and transition criteria in Disposition.
+Each fact has one primary home: symptoms and chronology in HPI; background in Relevant History; measurements and results in Objective; the big-picture synthesis in Assessment; each problem's durable synopsis in Key context; problem-level interpretation, severity, trajectory, and differential in that problem's differential block or reasoning paragraph; treatment and proposed actions in Plan bullets; level of care, barriers, and transition criteria in Disposition. Selective restatement of a decisive fact in Key context is required when the Assessment and Plan would otherwise depend on another section to be understood.
 
-Never re-narrate a symptom story, a history, or an examination sequence across sections. Citing a specific value or finding downstream is not repetition — it is required by the restatement rule.
+Never re-narrate a symptom story, history, examination sequence, full report, or serial laboratory list across sections. Citing a specific value or finding downstream is not repetition when it establishes the problem, records a durable event, or explains today's decision.
 
 **## Required structure**
 
@@ -349,6 +353,23 @@ Everything else moves to the differential block or reasoning paragraph of the pr
 
 **## Plan**
 
+**### Standalone Assessment and Plan contract**
+
+Treat the Assessment and Plan as a self-contained clinical note. A covering or future clinician who reads only these two sections must understand why the patient is hospitalized, what every active problem is being treated as, the current state of each problem, the few prior events that define it, the core treatment, and today's decision or contingency. Never make the reader search HPI, Relevant History, Objective, Disposition, or the Medication Regimens appendix to understand a Plan problem.
+
+Under every problem heading, print **\*\*Key context:\*\*** followed by one to three concise sentences before any differential sentence, reasoning paragraph, or bullet. Tier three and uncomplicated chronic problems usually need one sentence. This is a durable problem synopsis, not a second Objective section or a miniature hospital course.
+
+Include only the highest-value source-supported facts needed to hand off that problem safely:
+
+\- what the patient is being treated for and the problem's current severity, trajectory, or degree of control;
+\- the decisive evidence establishing, localizing, or materially narrowing it;
+\- any major surgery, procedure, imaging study, pathology, or microbiology result that still defines diagnosis or management, with its documented date, hospital day, or relative timing and its important result or complication;
+\- the core active treatment or course, including exact dose, route, frequency, and course when documented and needed to understand current care; a consequential treatment response; and any clinically important held therapy, contraindication, complication, completed or implemented consultant-led event, durable outcome, or unresolved question that changes present care. Keep unimplemented consultant recommendation content only in its Plan bullet.
+
+Use the source's timing exactly. If a procedure or study matters but its date is not supplied, say the timing is not documented rather than inventing it.
+
+Apply a strict future-clinician value test. Keep a fact only if removing it would materially impair understanding of the diagnosis, severity, trajectory, prior intervention, current treatment, major risk, or next decision. Omit routine normal results, stale minor abnormalities, every test in sequence, full reports, redundant negative studies, and facts that do not change understanding or future care. For pancreatitis, retain yesterday's CT showing pancreatic calcifications when it establishes chronic pancreatic disease; omit a normal amylase from two days ago when it changes no diagnosis or decision.
+
 **### What counts as a problem**
 
 A problem heading names a clinical problem: a disease, a syndrome, an active physiologic derangement, or a condition whose management requires a decision today.
@@ -363,7 +384,7 @@ Before writing any heading, confirm you could plausibly write it on a problem li
 
 **### Problem selection and order**
 
-List every problem being actively managed today. A long problem list is expected and correct.
+List every active problem. A problem is active when it is being treated, reassessed, monitored for a meaningful complication, recovering from a procedure, causing a clinically consequential medication hold, or affecting current safety or disposition. Exclude dormant past medical history that does none of these. A long active problem list is expected and correct.
 
 A **\*\*new unresolved problem\*\*** is a clinical problem whose cause, source, trigger, organism, bleeding lesion, injury mechanism, or dominant physiology is not established by the supplied record. A known disease with a new decompensation is unresolved when the trigger or mechanism of decompensation is still being worked up.
 
@@ -371,7 +392,7 @@ Every new unresolved problem must have a five-item differential block, even when
 
 Do not write a differential for a stable chronic diagnosis, an already proven diagnosis, or a manifestation merged into its proven cause. Use the reasoning paragraph for severity, trajectory, and competing risk instead.
 
-**\*\*Be comprehensive. Never omit an active problem.\*\*** If it is on the problem list, it appears here, even when nothing is being decided about it today. The attending is checking that you know the whole patient.
+**\*\*Be comprehensive. Never omit an active problem.\*\*** If it meets the active definition above, it appears here even when nothing is being decided about it today. Dormant past medical history remains in Relevant History and does not become a Plan problem. The attending is checking that you know the whole active patient.
 
 **\*\*Merge only a manifestation with its cause.\*\*** Two entries may be combined when one is a complication, consequence, or laboratory expression of the other *\*and\** they share a single decision — active bleeding, acute blood-loss anemia, and transfusion need are one problem.
 
@@ -385,23 +406,23 @@ Sort by how much rounds time the problem deserves, not by organ system, not by c
 
 **\*\*Tier two — active but on an established course.\*\*** Treatment is running and working; today's action is to continue and to name what would change it. Up to two bullets, no reasoning paragraph unless a differential is genuinely still open.
 
-**\*\*Tier three — stable, scheduled, and requiring nothing.\*\*** Exactly one bullet stating what continues and one brief patient-specific reason no change is needed. Write it so it reads in about fifteen seconds. A patient on unchanged Monday-Wednesday-Friday hemodialysis who is dialyzing today belongs here: accounted for with a concise stability rationale, not a full discussion.
+**\*\*Tier three — stable, scheduled, and requiring nothing.\*\*** One Key context sentence plus exactly one bullet stating what continues and one brief patient-specific reason no change is needed. Write the whole problem so it reads in about fifteen seconds. A patient on unchanged Monday-Wednesday-Friday hemodialysis who is dialyzing today belongs here: accounted for with a concise stability rationale, not a full discussion.
 
-The test for tier three is whether anyone on the team would act differently based on what is said. If not, one line.
+The test for tier three is whether anyone on the team would act differently based on what is said. If not, use only the compact Key context plus one-bullet unit.
 
-A chronic problem gets exactly one bullet stating what is being continued, held, or coordinated and the concise patient-specific reason for that action, and usually no reasoning paragraph. If a chronic condition only constrains an acute decision, express the constraint inside that acute problem's bullet instead of giving it a heading — heparin-free dialysis belongs under the bleeding problem.
+A chronic problem gets one Key context sentence and exactly one bullet stating what is being continued, held, or coordinated and the concise patient-specific reason for that action, and usually no reasoning paragraph. If a chronic condition only constrains an acute decision, express the constraint inside that acute problem's Key context or bullet instead of giving it a heading — heparin-free dialysis belongs under the bleeding problem.
 
 Never create a heading for an incidental or likely spurious value; attach a **\*\*VERIFY:\*\*** bullet under the related problem instead.
 
 **### Format and internal order**
 
-Bold each problem heading, preceded by a blank line. If the cause is unestablished, place one italic differential sentence directly under the heading, then the differential table, then the bullets. If the cause is established, place the italic reasoning paragraph directly under the heading, then the bullets.
+Bold each problem heading, preceded by a blank line. Immediately beneath it place the **\*\*Key context:\*\*** synopsis. If the cause is unestablished, follow with one italic differential sentence, the differential table, then the bullets. If the cause is established, follow with the italic reasoning paragraph when warranted, then the bullets.
 
 **\*\*Bullet order within a problem, strictly:\*\*** immediate treatment → the result or reassessment determining the next decision → transition and duration → contingency → any **\*\*VERIFY:\*\*** flag.
 
 **### Differential block and reasoning paragraph**
 
-For an unestablished problem, write one italic differential sentence followed by one Markdown table with exactly five body rows. For any other tier one problem whose severity, trajectory, or competing risk drives today's decision, write one italic reasoning paragraph up to three sentences. Omit both for a stable chronic problem being continued unchanged.
+After Key context, for an unestablished problem write one italic differential sentence followed by one Markdown table with exactly five body rows. For any other tier one problem whose severity, trajectory, or competing risk drives today's decision, write one italic reasoning paragraph up to three sentences. Omit both for a stable chronic problem being continued unchanged.
 
 Cite specific values and findings by name throughout. These blocks are where most of the Objective earns its place.
 
@@ -557,7 +578,7 @@ If the source contains a dose, route, or frequency that is implausible for this 
 
 **## Final pass**
 
-Run the restatement check first: for every number and finding in HPI and Objective, locate the identical string in the Assessment, a differential sentence, a differential table, a reasoning paragraph, or a bullet. Resolve every failure through the reconciliation pass — revise the reasoning if the fact matters, delete the fact if it does not.
+Run the restatement check first: for every number and finding in HPI and Objective, locate the identical string in the Assessment, the applicable Key context synopsis, a differential sentence, a differential table, a reasoning paragraph, or a bullet. Resolve every failure through the reconciliation pass — revise the reasoning or Key context if the fact matters, delete the fact if it does not.
 
 Then confirm:
 
@@ -568,14 +589,14 @@ Then confirm:
 5\. Read as a whole, HPI and Objective build the case for the Assessment and Plan and contain nothing that does not.
 6\. The Assessment is exactly two sentences; the second names which decision dominates without rehearsing the conflict, evidence, agent, or action stated later.
 7\. No problem-level severity, trajectory, differential, or test interpretation appears in the Assessment.
-8\. No situation is narrated in more than one section, and every flagged discrepancy appears only in its **\*\*VERIFY:\*\*** bullet, under the problem whose bullets act on it.
+8\. No full situation, story, sequence, or report is re-narrated in more than one section; a distilled decisive fact may be selectively restated in Key context when required for read-alone understanding. Every flagged discrepancy appears only in its **\*\*VERIFY:\*\*** bullet, under the problem whose bullets act on it.
 9\. No differential table or reasoning paragraph contains a recommendation, dose, threshold, trigger, or conditional instruction.
 10\. Every problem heading names a clinical problem, not a treatment, test, workflow, or management activity.
 11\. Any decision-critical data gap is stated once in the relevant Objective subsection and paired with the bullet that obtains it.
 12\. No value at documented chronic baseline appears anywhere.
 13\. No subsection label appears without qualifying content behind it.
 14\. Every section follows its stated internal order and is within its limit.
-15\. Every unestablished problem has one differential sentence and one five-row differential table; no established-problem reasoning paragraph exceeds three sentences; chronic problems have exactly one bullet; total bullets do not exceed 18.
+15\. Every unestablished problem has one differential sentence and one five-row differential table; no established-problem reasoning paragraph exceeds three sentences; chronic problems have exactly one bullet; every active problem appears within its tier-specific bullet limit.
 16\. Every Plan bullet contains one action plus a concise justification; diagnostic actions use an if/then finding-to-management statement, and treatment actions explain the patient-specific choice over the closest reasonable first-line alternative.
 17\. Problems are ordered unstable acute, stable acute, then chronic; problems sharing a decision are combined; no problem exists that is only a constraint on another.
 18\. Every differential item is a specific disease entity, not an anatomic region or category.
@@ -585,14 +606,14 @@ Then confirm:
 22\. Every HPI and Objective fact maps to a named Plan problem and to one of these functions: differential rank, severity, trajectory, action, contingency, or decision-critical missing data.
 23\. No downstream mention merely repeats a value to satisfy the string test.
 24\. No differential item is justified by unlocalizability, absence of examination, a negative test for something else, or incomplete history.
-25\. Bold appears only in section headings, subsection labels, condition anchors, Plan problem headings, Objective data labels, and **\*\*VERIFY:\*\*** prefixes. Italics appear only in the reasoning or differential sentence directly under a Plan heading.
+25\. Bold appears only in section headings, subsection labels including **\*\*Key context:\*\***, condition anchors, Plan problem headings, Objective data labels, and **\*\*VERIFY:\*\*** prefixes. Italics appear only in the reasoning or differential sentence beneath Key context under a Plan heading.
 26\. Every sentence reads naturally aloud with all formatting stripped.
 27\. Every patient-specific fact came from the source.
 28\. No status was upgraded: no dose became a regimen, no recommendation became an order, no suspected source became established.
 29\. Objective contains no diagnostic, causal, prognostic, or management conclusion.
 30\. Every active problem appears; none was omitted for lack of a decision or lack of interval change.
 31\. No two distinct diseases were merged because one constrains the other; only a manifestation was merged with its cause.
-32\. Problems are sorted by decisional weight into tier one, tier two, and tier three, and every tier three problem is a single line readable in about fifteen seconds.
+32\. Problems are sorted by decisional weight into tier one, tier two, and tier three, and every tier three problem is a compact Key context plus one-bullet unit readable in about fifteen seconds.
 33\. Every medication administered or actively ordered in hospital and every documented home medication appears in the Medication Regimens appendix with explicit origin and hospital status.
 34\. Every appendix row states dose, route, and frequency as documented, with any missing component marked rather than supplied.
 35\. No day count was computed from an undocumented start date.
@@ -603,3 +624,8 @@ Then confirm:
 40\. Every consultant recommendation appears in a Plan bullet and nowhere else.
 41\. No problem carries more than one bullet from the same consultant.
 42\. No service is described as recommending anything on the basis of attempted contact or a pending callback.
+43\. Every Plan problem has a **\*\*Key context:\*\*** synopsis stating what it is being treated as, its current state, and the few durable diagnostic, procedural, treatment, complication, implemented consultant-led event, or durable outcome facts needed to understand it; unimplemented consultant recommendation content remains only in a Plan bullet.
+44\. The Assessment and Plan pass the read-alone audit: with every other section hidden, they still explain why the patient is hospitalized, every active problem's defining context and current treatment, today's justified actions, and any consequential contingency or unresolved decision.
+45\. Key context contains no routine normal result, stale minor abnormality, redundant study, full report, or historical detail whose removal would leave diagnosis, severity, trajectory, present treatment, major risk, and the next decision unchanged.
+46\. Every procedure, surgery, or study in Key context uses the documented date, hospital day, or relative timing; missing or conflicting timing is identified rather than invented.
+47\. Whenever a problem's current treatment includes a clinically important documented regimen, Key context states its exact dose, route, frequency, and course or endpoint when available so the Assessment and Plan do not depend on the Medication Regimens appendix.

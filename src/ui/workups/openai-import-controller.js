@@ -1,4 +1,4 @@
-import { buildJsonFormatterPrompt, buildOpenEvidenceWorkupDraftPrompt } from "../../workups/editor.js";
+import { buildJsonFormatterPrompt, buildOpenEvidenceWorkupDraftPrompt } from "../../workups/editor.js?v=20260815-standalone-ap";
 import { sectionsToPromptBlock } from "../../patient-context/sections.js";
 import { buildTrajectoryBlock, latestDay } from "../../daily-updates/days.js";
 import { formatWorkupDraftWithOpenAi } from "../openai-workup-api.js";

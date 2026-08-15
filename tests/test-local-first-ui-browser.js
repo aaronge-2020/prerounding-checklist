@@ -544,9 +544,21 @@ try {
   {
     const preview = await page.locator("#promptOutputHighlighted").textContent();
     const copied = await copiedPromptText();
-    assert.equal(copied, preview, "Copy prompt must use the exact text shown in the generated prompt preview");
+    assert.equal(copied.replace(/\r\n/g, "\n"), preview.replace(/\r\n/g, "\n"), "Copy prompt must use the exact text shown in the generated prompt preview");
     assert.match(copied, /PATIENT NAME/);
+    assert.equal(copied.match(/Act as an attending hospitalist with over 30 years of inpatient experience/g)?.length, 1, "an unsaved live edit must retain the shared persona exactly once");
   }
+  await page.click('[data-action="save-prompt-template"]');
+  await page.waitForFunction(() => /Prompt saved locally/.test(document.querySelector("#statusLine")?.textContent || ""));
+  assert.equal((await copiedPromptText()).match(/Act as an attending hospitalist with over 30 years of inpatient experience/g)?.length, 1, "a saved override must retain the shared persona exactly once");
+
+  await page.fill("#newPromptTaskNameInput", "Covering clinician summary");
+  await page.click('[data-action="create-prompt-task"]');
+  await page.waitForFunction(() => document.querySelector("#promptTaskSelect")?.selectedOptions?.[0]?.textContent === "Covering clinician summary");
+  await page.locator("#promptPreview").fill("Summarize @selected-day for the covering clinician.");
+  await page.waitForFunction(() => /Summarize/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
+  assert.equal((await copiedPromptText()).match(/Act as an attending hospitalist with over 30 years of inpatient experience/g)?.length, 1, "a user-created prompt must retain the shared persona exactly once");
+
   await page.selectOption("#promptTaskSelect", "daily_progress_note");
   await page.waitForFunction(() => /Daily Progress Note [^\r\n]*Instructions/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   await page.selectOption("#promptTaskSelect", "teaching_case_trajectory");

@@ -1,4 +1,4 @@
-import { buildJsonFormatterPrompt } from "../workups/editor.js";
+import { buildJsonFormatterPrompt } from "../workups/editor.js?v=20260815-standalone-ap";
 import { WORKUP_SYSTEM_IDS } from "../workups/systems.js";
 import { DEFAULT_OPENAI_WORKUP_MODEL, openAiWorkupModelOption } from "../app/preferences.js";
 import { requestOpenAiStructuredJson } from "./openai-client.js";

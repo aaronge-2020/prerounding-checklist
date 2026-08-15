@@ -3,7 +3,7 @@ import { buildTrajectoryBlock } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260722-unified-stay-v2";
 import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js?v=20260722-guideline-library";
-import { naturalLanguagePrompt } from "./natural-language.js";
+import { ATTENDING_HOSPITALIST_PERSONA, attendingHospitalistPrompt } from "./natural-language.js?v=20260815-standalone-ap";
 import { buildProgressNotePacket } from "./progress-note-packet.js";
 
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";
@@ -17,6 +17,7 @@ Silently verify every requirement before returning the revision:
 - Subjective contains only consequential overnight events, patient-reported change, and symptoms that affect today’s assessment, plan, immediate risk, procedural readiness, or disposition. Do not put imaging or laboratory results, routine medication administration, routine dialysis, routine bowel preparation, or a complete review of systems here.
 - Objective contains only decision-relevant vital/support data, focused examination findings, and the shortest useful laboratory or diagnostic evidence. Do not put treatments, procedure scheduling, bowel preparation, recommendations, or plans in Objective. Omit stale values and details that would leave the Assessment, Plan, risk, readiness, and disposition unchanged if removed.
 - Assessment interprets the evidence rather than restating it: severity, trajectory, diagnostic uncertainty, competing risk, and the central decision for today. Do not duplicate detailed findings from Objective.
+- Treat Assessment and Plan as a self-contained note. Under every Plan problem, include a concise Key context synopsis stating what the problem is being treated as, current status, the few decisive prior tests or procedures with documented timing and important result, core treatment, and any major complication or unresolved decision. Carry forward unchanged problem-defining facts when needed, but omit routine normal results, stale minor abnormalities, redundant studies, and details that do not change a future clinician's understanding or care.
 - For every new symptom or finding with an unresolved, management-relevant cause, retain one concise differential paragraph under the related Plan problem: [most likely diagnosis] vs [alternative 1] vs [alternative 2] vs [alternative 3] vs [alternative 4]. Then give one or two sentences explaining why the leading diagnosis is favored. Do not use a separate differential heading, numbered labels, bullets, invented alternatives, or unsupported facts.
 - Plan is prioritized by active decision, avoids duplicate problem groups, and gives concise, specific actions. When proposing a new action, use clear recommendation language such as “Recommend,” “Confirm,” “Clarify,” or “Reconcile”; never present a new recommendation as an existing order or consultant decision.
 - Disposition names only actual remaining barriers.
@@ -26,6 +27,8 @@ Remove repetition and filler across all sections. Use the context only to correc
 const MEDICATION_EXPLAINER_INSTRUCTIONS = `Teach this medication list by organizing medicines around their apparent condition, symptom, or clinical purpose. For each clinically relevant medicine, give the generic name when available, dose, route, frequency, intended purpose, a one-phrase mechanism or clinical role, and one patient-relevant monitoring or counseling pearl. Mark each intended purpose as confirmed from context, inferred, or uncertain; when uncertain, state the missing information without guessing. Avoid generic monographs and repetition. Use only the supplied medication list and context. End with two progressively challenging, case-specific active-recall questions; withhold their answers until the student asks.`;
 
 const MEDICATION_SAFETY_INSTRUCTIONS = `Run a focused, supervised medication-safety teaching exercise. Rank only credible, clinically important concerns by urgency. For each concern, name the medicine or combination, why it matters for this patient, the chart evidence supporting it, and the exact monitoring, verification step, or question to raise with the supervising clinician. Consider indication, dose, route, frequency, duplication, interaction, contraindication, and renal or hepatic adjustment only when the needed context is available. Missing data alone are not a safety concern: use the exact phrase insufficient information and do not guess. End with two progressively challenging, case-specific pause-and-check questions; withhold their answers until the student asks.`;
+
+const CHECKLIST_REFINEMENT_INSTRUCTIONS = `Review this workup-derived checklist against the de-identified patient context. Suggest only history questions or physical exam maneuvers that could change assessment, treatment, monitoring, readiness, or disposition today. Rank them from highest to lowest clinical priority, identify existing items that are redundant, vague, or not relevant, and give short answer choices for each suggested item. Do not suggest orders, laboratory tests, imaging, treatments, diagnoses, citations, code, or structured data.`;
 
 // These reference the tokens the migration in guideline-sets.js assigns to
 // the two seeded "Admission"/"Progress" sets. If a user deletes one of those
@@ -38,7 +41,7 @@ export const DEFAULT_PROMPT_TEMPLATES = {
   teaching_case_trajectory: `@teaching-guidelines\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   medication_explainer_by_problem: `${MEDICATION_EXPLAINER_INSTRUCTIONS}\n\n@admission-packet\n\n@medications\n\n@selected-day`,
   medication_safety_audit: `${MEDICATION_SAFETY_INSTRUCTIONS}\n\n@admission-packet\n\n@medications\n\n@labs\n\n@selected-day`,
-  checklist_workup_refinement: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
+  checklist_workup_refinement: `${CHECKLIST_REFINEMENT_INSTRUCTIONS}\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   preround_bedside_exam: `@team-preferences\n\n@pre-round-checklist-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-physical-exam`,
   discharge_instructions: `@team-preferences\n\n@discharge-instructions-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-physical-exam`,
   consulting: `@team-preferences\n\n@consulting-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-physical-exam`
@@ -288,7 +291,7 @@ export function interpolatePromptTemplate(template, variables) {
 export function buildCustomOpenEvidencePrompt({ template, patient, selectedDayId, guidelineSets = [], teamPreferences, presentationToEdit = "" }) {
   const variables = buildPromptVariableMap({ patient, selectedDayId, guidelineSets, teamPreferences, presentationToEdit });
   const interpolated = interpolatePromptTemplate(template, variables);
-  return naturalLanguagePrompt(interpolated);
+  return attendingHospitalistPrompt(interpolated);
 }
 
 function hashToken(token) {
@@ -391,10 +394,13 @@ function escapeRegExpLiteral(value) {
 // "@admission-context") for the color-highlighted preview only - the plain
 // copy/OpenEvidence-ready text still comes from interpolatePromptTemplate
 // above, untouched by this.
-export function buildPromptPreviewSegments(template, variables) {
+export function buildPromptPreviewSegments(template, variables, { ensurePersona = false } = {}) {
   const text = String(template || "");
   const tokens = Object.keys(variables || {}).sort((left, right) => right.length - left.length);
-  if (!tokens.length) return [{ type: "text", value: text }];
+  if (!tokens.length) {
+    const promptText = ensurePersona ? attendingHospitalistPrompt(text) : text;
+    return [{ type: "text", value: promptText }];
+  }
   const pattern = new RegExp(tokens.map(escapeRegExpLiteral).join("|"), "g");
   const segments = [];
   let lastIndex = 0;
@@ -406,5 +412,9 @@ export function buildPromptPreviewSegments(template, variables) {
     match = pattern.exec(text);
   }
   if (lastIndex < text.length) segments.push({ type: "text", value: text.slice(lastIndex) });
+  const resolved = segments.map((segment) => segment.value).join("");
+  if (ensurePersona && !resolved.toLowerCase().includes(ATTENDING_HOSPITALIST_PERSONA.toLowerCase())) {
+    segments.unshift({ type: "text", value: `${ATTENDING_HOSPITALIST_PERSONA}\n\n` });
+  }
   return segments;
 }

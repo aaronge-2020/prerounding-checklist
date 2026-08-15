@@ -1,7 +1,7 @@
 import { normalizeWorkup } from "./schema.js";
 import { isWorkupSystem, workupSystemPromptList } from "./systems.js";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js";
-import { naturalLanguagePrompt } from "../prompts/natural-language.js";
+import { attendingHospitalistPrompt } from "../prompts/natural-language.js?v=20260815-standalone-ap";
 
 export const WORKUP_ITEM_KINDS = ["history", "exam"];
 
@@ -134,7 +134,7 @@ export function buildOpenEvidenceWorkupDraftPrompt({ patientContext = "", dailyT
   const intro = guidelinesText
     ? `Follow the guidelines above for ${workupTitle || "this patient"}.`
     : `Review this de-identified information and suggest a practical bedside checklist for ${workupTitle || "this patient"}.`;
-  return naturalLanguagePrompt(`${guidelinesText ? `${guidelinesText}\n\n` : ""}${intro} ${buildTeamPreferencesPromptBlock(teamPreferences)} Put the negative, normal, absent, reassuring, or other baseline answer first, followed by positive or concerning findings, and never lead with not assessed or unable to assess. Use short, phone-tappable answer choices. ${scope.prompt} Exclude labs, imaging, orders, standalone diagnosis lists, diagnostic conclusions, treatment plans, citations, and assessment prose. Retain the chart-supported problem or decision label attached to each history or exam item. Use only the de-identified information provided here.
+  return attendingHospitalistPrompt(`${guidelinesText ? `${guidelinesText}\n\n` : ""}${intro} ${buildTeamPreferencesPromptBlock(teamPreferences)} Put the negative, normal, absent, reassuring, or other baseline answer first, followed by positive or concerning findings, and never lead with not assessed or unable to assess. Use short, phone-tappable answer choices. ${scope.prompt} Exclude labs, imaging, orders, standalone diagnosis lists, diagnostic conclusions, treatment plans, citations, and assessment prose. Retain the chart-supported problem or decision label attached to each history or exam item. Use only the de-identified information provided here.
 
 Patient context. ${patientContext || "No saved patient context."}
 
@@ -142,7 +142,7 @@ Daily trajectory. ${dailyTrajectory || "No daily updates selected."}`);
 }
 
 export function buildJsonFormatterPrompt({ sourceText = "", workupTitle = "" } = {}) {
-  return `Convert the workup draft below into one valid JSON object matching this exact schema:
+  return attendingHospitalistPrompt(`Convert the workup draft below into one valid JSON object matching this exact schema:
 
 {
   "schema": "prerounding_workup_v1",
@@ -170,5 +170,5 @@ ${workupSystemPromptList()}
 - Return JSON only, no markdown.
 
 Draft to convert:
-${sourceText || "[Paste the OpenEvidence workup draft here]"}`;
+${sourceText || "[Paste the OpenEvidence workup draft here]"}`);
 }

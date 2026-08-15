@@ -96,10 +96,10 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260815-smart-variable-fields";
+} from "../prompts/custom-templates.js?v=20260815-standalone-ap";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
-import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260727-differential-format-2";
+import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260815-standalone-ap";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import {
   ensureCanonicalDefaultGuidelineSets,
@@ -117,7 +117,7 @@ import {
   findWorkupsById,
   normalizeWorkup,
   parseWorkupJson
-} from "../workups/schema.js?v=20260715-workup-delete";
+} from "../workups/schema.js?v=20260815-standalone-ap";
 import {
   mergeWorkupLibraryIntoOverrides,
   parseWorkupLibraryJson,
@@ -129,10 +129,10 @@ import {
   collectWorkupDraftFromDocument,
   workupFromEditorDraft,
   workupThoroughnessOption
-} from "../workups/editor.js?v=20260711-functional-remediation-15";
-import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260714-deid-ux-polish";
-import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260715-workup-delete";
-import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260712-openevidence-import";
+} from "../workups/editor.js?v=20260815-standalone-ap";
+import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260815-standalone-ap";
+import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260815-standalone-ap";
+import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260815-standalone-ap";
 import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20260711-functional-remediation-15";
 import {
   createChecklistReturnBundle,
@@ -159,16 +159,16 @@ import { createPhoneTransferController } from "./checklist/transfer.js?v=2026071
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
-import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260714-deid-ux-polish";
+import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
 import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260815-smart-variable-fields";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260815-smart-variable-fields";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260815-standalone-ap";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260726-presentation-editor";
+} from "./prompts/controller.js?v=20260815-standalone-ap";
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260815-prompt-refresh";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721-persisted-anchor";
@@ -1427,7 +1427,7 @@ function renderPrompts() {
       teamPreferences: app.vault.preferences,
       presentationToEdit: app.presentationToEdit
     });
-    previewSegments = buildPromptPreviewSegments(template, variableMap);
+    previewSegments = buildPromptPreviewSegments(template, variableMap, { ensurePersona: true });
   } catch (error) {
     promptError = error instanceof Error ? error.message : "Unable to build prompt.";
   }
@@ -1527,7 +1527,7 @@ function refreshPromptPreview() {
       presentationToEdit: app.presentationToEdit
     });
     highlighted.innerHTML = renderHighlightedSegments(
-      buildPromptPreviewSegments(template, variableMap),
+      buildPromptPreviewSegments(template, variableMap, { ensurePersona: true }),
       escapeHtml,
       app.tokenColorOverrides
     );
@@ -1560,7 +1560,7 @@ function currentPromptText() {
       teamPreferences: app.vault.preferences,
       presentationToEdit: app.presentationToEdit
     });
-    return buildPromptPreviewSegments(template, variableMap)
+    return buildPromptPreviewSegments(template, variableMap, { ensurePersona: true })
       .map((segment) => segment.value)
       .join("");
   } catch {

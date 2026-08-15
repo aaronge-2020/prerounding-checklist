@@ -1,4 +1,4 @@
-import { effectiveWorkupCatalog, isBundledWorkupId } from "../../workups/schema.js";
+import { effectiveWorkupCatalog, isBundledWorkupId } from "../../workups/schema.js?v=20260815-standalone-ap";
 import { hideWorkupId, removeWorkupOverride, setSelectedWorkups, unhideWorkupId } from "../../app/state/vault.js";
 
 // Workup delete/restore CRUD, kept out of app.js to respect the

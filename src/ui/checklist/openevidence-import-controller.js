@@ -1,4 +1,4 @@
-import { applyChecklistAnswerImport, buildChecklistAnswerImportPrompt } from "../../checklist/openevidence-import.js";
+import { applyChecklistAnswerImport, buildChecklistAnswerImportPrompt } from "../../checklist/openevidence-import.js?v=20260815-standalone-ap";
 
 // Coordinates "paste an OpenEvidence note, de-identify it locally, then let
 // ChatGPT fill in checklist answers" - kept out of app.js to respect the

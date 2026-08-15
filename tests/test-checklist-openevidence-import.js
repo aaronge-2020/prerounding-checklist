@@ -30,6 +30,7 @@ assert.deepEqual(emptySchema.properties.answers.items.properties.id.enum, [""]);
 
 // --- prompt content ---
 const prompt = buildChecklistAnswerImportPrompt({ snapshot, sourceText: "Lungs clear bilaterally. Patient also mentioned new hearing loss in the left ear." });
+assert.match(prompt, /attending hospitalist with over 30 years/i);
 assert.match(prompt, /id: lung_auscultation/);
 assert.match(prompt, /choices: Clear, Crackles, Wheezes, Diminished/);
 assert.match(prompt, /id: cardiac_auscultation/);

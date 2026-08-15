@@ -10,3 +10,12 @@ export function naturalLanguagePrompt(value) {
     .replace(/[ \t]{2,}/g, " ")
     .trim();
 }
+
+export const ATTENDING_HOSPITALIST_PERSONA = "Act as an attending hospitalist with over 30 years of inpatient experience.";
+
+export function attendingHospitalistPrompt(value) {
+  const prompt = naturalLanguagePrompt(value);
+  if (!prompt) return ATTENDING_HOSPITALIST_PERSONA;
+  if (prompt.toLowerCase().includes(ATTENDING_HOSPITALIST_PERSONA.toLowerCase())) return prompt;
+  return `${ATTENDING_HOSPITALIST_PERSONA}\n\n${prompt}`;
+}

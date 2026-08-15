@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   DEFAULT_GUIDELINE_SET_SOURCES,
   GUIDELINE_SET_CANONICAL_DEFAULTS_KEY,
@@ -43,6 +44,10 @@ assert.match(DEFAULT_PROMPT_TEMPLATES.preround_bedside_exam, /@pre-round-checkli
 assert.match(DEFAULT_PROMPT_TEMPLATES.discharge_instructions, /@discharge-instructions-guidelines/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /^@teaching-guidelines\b/);
 assert.doesNotMatch(Object.values(DEFAULT_PROMPT_TEMPLATES).join("\n"), /updated-guidelines/);
+for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter((entry) => entry.path)) {
+  const deployedSeed = readFileSync(source.path.replace(/^\.\//, ""), "utf8");
+  assert.match(deployedSeed, /Act as an attending hospitalist with over 30 years of inpatient experience/i, `${source.label} must carry the shared attending persona`);
+}
 
 // New installs receive exactly the canonical defaults, in the requested order.
 {
