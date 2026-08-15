@@ -70,7 +70,7 @@ export function createPromptsPresentation({ escapeHtml }) {
               ${variables.map((variable) => `
                 <div class="smart-variable-row" data-token="${escapeHtml(variable.token)}">
                   ${tokenColorSwatchButton(variable.token, colorOverrides, escapeHtml)}
-                  <button type="button" class="smart-variable-insert" data-action="insert-prompt-variable" data-token="${escapeHtml(variable.token)}"><strong>${escapeHtml(variable.token)}</strong><span>${escapeHtml(variable.description)}</span></button>
+                  <button type="button" class="smart-variable-insert" data-action="insert-prompt-variable" data-token="${escapeHtml(variable.token)}"><span class="smart-variable-identity"><strong>${escapeHtml(variable.label)}</strong><code>${escapeHtml(variable.token)}</code></span><span>${escapeHtml(variable.description)}</span></button>
                 </div>
               `).join("")}
             </div>

@@ -52,9 +52,9 @@ let patient = createPatientRecord("Room 7", { id: "patient_prompt" });
 patient = {
   ...patient,
   contextSections: [
-    { ...patient.contextSections[0], label: "Admission context", deidentifiedText: "Admitted for dyspnea and edema." },
-    { ...patient.contextSections[1], label: "Medications", deidentifiedText: "Furosemide 40 mg PO daily. Lisinopril 10 mg PO daily." },
-    { ...patient.contextSections[2], label: "Labs", deidentifiedText: "Creatinine 1.4, BNP elevated." }
+    { ...patient.contextSections[0], sourceKind: "primary_note", label: "Admission context", deidentifiedText: "Admitted for dyspnea and edema." },
+    { ...patient.contextSections[1], sourceKind: "medication_activity", label: "Medications", deidentifiedText: "Furosemide 40 mg PO daily. Lisinopril 10 mg PO daily." },
+    { ...patient.contextSections[2], sourceKind: "results", label: "Labs", deidentifiedText: "Creatinine 1.4, BNP elevated." }
   ]
 };
 const day = createDailyRecord({ date: "2026-07-09", label: "Hospital day 2" });
@@ -81,18 +81,35 @@ patient = {
 assert.equal(openEvidenceTasks[["final", "rounds", "update"].join("_")], undefined);
 
 const admission = buildOpenEvidencePrompt("initial_admission_rounds", { patient, guidelines });
-assert.match(admission, /Attending-Facing H&P Instructions/);
+assert.match(admission, /Admission H&P — Rounds Presentation Instructions/);
 assert.match(admission, /Limit the overall Assessment to two sentences/);
 assert.match(admission, /Scale detail to case complexity and make a straightforward case very brief/);
 assert.match(admission, /Omit every subjective, objective, and historical detail that does not change the current differential, management, plan, risk, or disposition/);
 assert.match(admission, /why the patient was admitted plus the one or two past medical-history conditions most pertinent/);
 assert.match(admission, /differential diagnoses under the applicable problem in Plan/);
 assert.match(admission, /most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4/);
-assert.match(guidelines.admission, /Begin with age, sex or gender as documented/);
-assert.match(guidelines.admission, /conditions or procedures that modify diagnosis or treatment/);
-assert.match(guidelines.admission, /Use the straightforward-case format unless there is meaningful diagnostic uncertainty/);
-assert.match(guidelines.admission, /material treatment already received when it affects current care/);
-assert.match(guidelines.admission, /clearly distinguish your recommendations from documented treatment/);
+assert.match(guidelines.admission, /Write a concise presentation of a newly admitted patient/);
+assert.match(guidelines.admission, /Use the supplied information as the only source of patient-specific facts/);
+assert.match(guidelines.admission, /Every element earns its place by supporting a differential item/);
+assert.match(guidelines.admission, /A specific value or detail may appear in HPI or Objective only if that identical value or detail appears again/);
+assert.match(guidelines.admission, /wording must always distinguish your recommendations from completed treatment/);
+assert.match(guidelines.admission, /Origin and hospital status/);
+assert.match(guidelines.admission, /Home — held/);
+assert.match(guidelines.admission, /Hospital-started — active/);
+assert.match(guidelines.admission, /Every medication documented as administered in hospital/);
+assert.match(guidelines.admission, /Home — regimen changed/);
+assert.match(guidelines.admission, /Home — hospital status not documented/);
+assert.match(guidelines.admission, /Origin and hospital status not documented/);
+assert.match(guidelines.admission, /frequency not documented/);
+assert.match(guidelines.admission, /One dose given \[date\]/);
+assert.match(guidelines.admission, /Never infer the indication from the medication class or the problem heading/);
+assert.match(guidelines.admission, /each gets its own row/);
+assert.match(guidelines.admission, /Every bullet is one or two concise sentences/);
+assert.match(guidelines.admission, /Use an if\/then sentence that names the discriminating result and the management consequence/);
+assert.match(guidelines.admission, /preferred to the closest reasonable first-line alternative/);
+assert.match(guidelines.admission, /decision, risk, or barrier the action resolves/);
+assert.match(guidelines.admission, /make the recommendation conditional on verifying that factor rather than inventing a rationale/);
+assert.doesNotMatch(guidelines.admission, /Bullets carry actions only|Never append a because|bullets contain actions only/i);
 assert.match(admission, /Admission context/);
 assert.match(admission, /Chest pain\?/);
 assert.match(admission, /Patient mentioned new hip pain unrelated to admission\./);
@@ -105,14 +122,29 @@ assert.match(progress, /Omit every subjective, objective, and historical detail 
 assert.match(progress, /why the patient was admitted plus the one or two past medical-history conditions most pertinent/);
 assert.match(progress, /differential diagnoses under the applicable problem in Plan/);
 assert.match(progress, /most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4/);
-assert.match(guidelines.progress, /The first sentence must restate the overall One-Liner synthesis/);
-assert.match(guidelines.progress, /One or two comorbidities or recent interventions most relevant to today’s decisions/);
-assert.match(guidelines.progress, /Target 350–500 words for a complex patient and fewer for a straightforward patient/);
-assert.match(guidelines.progress, /If removing this fact would not change today’s clinical interpretation/);
-assert.match(guidelines.progress, /Use one to three active problem groups/);
-assert.match(progress, /Vitals and Clinical Support/);
-assert.match(progress, /Focused Examination/);
-assert.match(progress, /Current vital signs and oxygen requirement are not available/);
+assert.match(guidelines.progress, /Write a concise daily progress note presentation/);
+assert.match(guidelines.progress, /one or two comorbidities or recent interventions most relevant to today's decisions/);
+assert.match(guidelines.progress, /Every element earns its place by supporting a differential item/);
+assert.match(guidelines.progress, /selected-day findings only, each restated downstream/);
+assert.match(guidelines.progress, /The One-Liner is the admission anchor/);
+assert.match(guidelines.progress, /Origin and hospital status/);
+assert.match(guidelines.progress, /Home — held/);
+assert.match(guidelines.progress, /Hospital-started — active/);
+assert.match(guidelines.progress, /Every medication documented as administered in hospital/);
+assert.match(guidelines.progress, /Home — regimen changed/);
+assert.match(guidelines.progress, /Home — hospital status not documented/);
+assert.match(guidelines.progress, /Origin and hospital status not documented/);
+assert.match(guidelines.progress, /frequency not documented/);
+assert.match(guidelines.progress, /One dose given \[date\]/);
+assert.match(guidelines.progress, /Never infer the indication from the medication class or the problem heading/);
+assert.match(guidelines.progress, /each gets its own row/);
+assert.match(guidelines.progress, /Every bullet is one or two concise sentences/);
+assert.match(guidelines.progress, /Use an if\/then sentence that names the discriminating result and the management consequence/);
+assert.match(guidelines.progress, /preferred to the closest reasonable first-line alternative/);
+assert.match(guidelines.progress, /decision, risk, or barrier the action resolves/);
+assert.match(guidelines.progress, /make the recommendation conditional on verifying that factor rather than inventing a rationale/);
+assert.match(guidelines.progress, /Every Plan bullet contains one action plus a concise justification/);
+assert.doesNotMatch(guidelines.progress, /Bullets carry actions only|Never append a because|bullets contain actions only/i);
 assert.match(progress, /Patient mentioned new hip pain unrelated to admission\./);
 assert.match(progress, /Feels less short of breath/);
 assert.match(progress, /Selected hospital day/, "daily progress prompt must identify the selected day explicitly");
@@ -207,7 +239,8 @@ assert.match(checklistAnswersPrompt, /Patient mentioned new hip pain unrelated t
 
 const fieldVariables = promptVariablesForPatient(patient);
 assert.equal(fieldVariables.filter((variable) => variable.sectionId).length, patient.contextSections.length);
-assert.equal(fieldVariables.find((variable) => variable.sectionId === patient.contextSections[0].id)?.token, "@admission-context");
+assert.equal(fieldVariables.find((variable) => variable.sectionId === patient.contextSections[0].id)?.token, "@admission-primary-team-note");
+assert.equal(fieldVariables.find((variable) => variable.sectionId === patient.contextSections[0].id)?.label, "Admission — Primary team note");
 assert.equal(fieldVariables.some((variable) => variable.token === "@guidelines"), false, "H&P and SOAP guidelines must not share one variable");
 
 const guidelineSets = [
@@ -237,7 +270,7 @@ assert.match(directDayFieldPrompt, /Feels less short of breath/);
 
 const directFieldPrompt = buildCustomOpenEvidencePrompt({
   taskId: "teaching_case_trajectory",
-  template: "Use @admission-context only.",
+  template: "Use @admission-primary-team-note only.",
   patient,
   selectedDayId: day.id
 });
@@ -246,7 +279,7 @@ assert.doesNotMatch(directFieldPrompt, /Furosemide 40 mg/);
 
 const plainCustomPrompt = buildCustomOpenEvidencePrompt({
   taskId: "teaching_case_trajectory",
-  template: "Explain [this] {saved context} for @admission-context.",
+  template: "Explain [this] {saved context} for @admission-primary-team-note.",
   patient,
   selectedDayId: day.id
 });
@@ -308,11 +341,12 @@ const directGuidelines = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelineSets
 });
-assert.match(directGuidelines, /Attending-Facing H&P Instructions/);
-assert.match(directGuidelines, /most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4/);
+assert.match(directGuidelines, /Admission H&P — Rounds Presentation Instructions/);
+assert.match(directGuidelines, /Clues against this differential/);
 assert.doesNotMatch(directGuidelines, /@admission-guidelines/);
 
-const differentialFormat = "most likely diagnosis vs plausible alternative 1 vs plausible alternative 2 vs plausible alternative 3 vs plausible alternative 4";
+const admissionGuidelineMarker = "Admission H&P — Rounds Presentation Instructions";
+const progressGuidelineMarker = "Daily Progress Note Presentation Instructions";
 const defaultAdmissionPrompt = buildCustomOpenEvidencePrompt({
   template: DEFAULT_PROMPT_TEMPLATES.initial_admission_rounds,
   patient,
@@ -325,8 +359,8 @@ const defaultProgressPrompt = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelineSets
 });
-assert.equal(defaultAdmissionPrompt.split(differentialFormat).length - 1, 1, "Admission must receive the differential format exactly once from its editable guideline");
-assert.equal(defaultProgressPrompt.split(differentialFormat).length - 1, 1, "Progress must receive the differential format exactly once from its editable guideline");
+assert.equal(defaultAdmissionPrompt.split(admissionGuidelineMarker).length - 1, 1, "Admission must receive its editable guideline exactly once");
+assert.equal(defaultProgressPrompt.split(progressGuidelineMarker).length - 1, 1, "Progress must receive its editable guideline exactly once");
 
 const migratedStorageValues = new Map([[
   PROMPT_TEMPLATE_STORAGE_KEY,
@@ -378,7 +412,7 @@ assert.match(medicationSafetyDefaultPrompt, /Missing data alone are not a safety
 
 const consultPrompt = buildCustomOpenEvidencePrompt({
   taskId: "teaching_case_trajectory",
-  template: "@team-preferences\n\nUse @admission-context only.",
+  template: "@team-preferences\n\nUse @admission-primary-team-note only.",
   patient,
   selectedDayId: day.id,
   teamPreferences: { teamInstructions: "Focus on the consulted arrhythmia question. Start with the one-liner." }

@@ -21,7 +21,7 @@ export function createExamFindingsController({ state, active, persistVault, setS
                   ...(currentDay.sourceCaptures || []),
                   createSourceCapture({
                     sourceKind: "physical_exam",
-                    label: "Physical exam (today)",
+                    label: "Physical exam (selected day)",
                     text,
                     residualWarnings,
                     now: () => now
@@ -35,8 +35,10 @@ export function createExamFindingsController({ state, active, persistVault, setS
       const label = "Physical exam findings - Admission";
       const existing = (current.contextSections || []).find((section) => section.label === label);
       const section = {
-        ...(existing || createTextSection(label)),
+        ...(existing || createTextSection(label, { scope: "context", role: "admission_history", sourceKind: "prior_physical_exam" })),
         label,
+        role: "admission_history",
+        sourceKind: "prior_physical_exam",
         deidentifiedText: String(text || ""),
         residualWarnings: sanitizeResidualWarningMetadata(residualWarnings),
         updatedAt: now

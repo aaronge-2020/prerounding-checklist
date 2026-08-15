@@ -121,9 +121,9 @@ Three layers, each with a distinct job. Content belonging to one layer never app
 
 \- **\*\*Assessment\*\*** — the big picture: who this patient is, and what today turns on. Exactly two sentences. Never the argument itself.
 \- **\*\*Differential block or reasoning paragraph\*\*** — why: differential rank, severity, trajectory, competing risk, and the weighing of evidence. Never an action, threshold, dose, or trigger.
-\- **\*\*Bullets\*\*** — what happens: actions only. Never reasoning, never restated evidence.
+\- **\*\*Bullets\*\*** — what happens and why: the action plus a concise patient-specific justification and the finding or comparison that makes it the right next step.
 
-**\*\*Reasoning blocks contain no actions.\*\*** A sentence or table cell containing "recommend," "continue," "hold," "transfuse below," "if X then Y," a dose, a threshold, or a trigger belongs in a bullet. If a reasoning paragraph ends by saying what should be done, move that sentence.
+**\*\*Reasoning blocks contain no actions.\*\*** A sentence or table cell containing "recommend," "continue," "hold," "transfuse below," "if X then Y," a dose, a threshold, or a trigger belongs in a bullet. The bullet must then give its own concise action rationale; do not move the full differential discussion into it.
 
 **\*\*The Assessment does not preview the Plan.\*\*** Its second sentence names which decision dominates today, at a higher level of abstraction than the Plan. It must not restate the specific conflict, evidence, agent, or action that a differential table, reasoning paragraph, or bullet will state.
 
@@ -206,7 +206,7 @@ Never:
 \- broaden an established duration into a range; or
 \- describe a medication as contraindicated, preferred, or safe without condition-specific support.
 
-If an indication matters but is unknown, write "indication unclear"; if it does not affect current care, omit the medication. If conflicting information affects management, state the conflict briefly rather than resolving it by assumption. If a recommendation depends on unavailable information, make it conditional.
+If an indication matters but is unknown, write "indication unclear." If a medication does not affect current care, omit it from the spoken narrative but still include it in the Medication Regimens appendix when that appendix requires it. If conflicting information affects management, state the conflict briefly rather than resolving it by assumption. If a recommendation depends on unavailable information, make it conditional.
 
 **## Safety flag**
 
@@ -385,11 +385,11 @@ Sort by how much rounds time the problem deserves, not by organ system, not by c
 
 **\*\*Tier two — active but on an established course.\*\*** Treatment is running and working; today's action is to continue and to name what would change it. Up to two bullets, no reasoning paragraph unless a differential is genuinely still open.
 
-**\*\*Tier three — stable, scheduled, and requiring nothing.\*\*** Exactly one bullet stating what continues. Write it so it reads in about fifteen seconds. A patient on unchanged Monday-Wednesday-Friday hemodialysis who is dialyzing today belongs here: named so the attending knows it is accounted for, not discussed.
+**\*\*Tier three — stable, scheduled, and requiring nothing.\*\*** Exactly one bullet stating what continues and one brief patient-specific reason no change is needed. Write it so it reads in about fifteen seconds. A patient on unchanged Monday-Wednesday-Friday hemodialysis who is dialyzing today belongs here: accounted for with a concise stability rationale, not a full discussion.
 
 The test for tier three is whether anyone on the team would act differently based on what is said. If not, one line.
 
-A chronic problem gets exactly one bullet stating what is being continued, held, or coordinated, and usually no reasoning paragraph. If a chronic condition only constrains an acute decision, express the constraint inside that acute problem's bullet instead of giving it a heading — heparin-free dialysis belongs under the bleeding problem.
+A chronic problem gets exactly one bullet stating what is being continued, held, or coordinated and the concise patient-specific reason for that action, and usually no reasoning paragraph. If a chronic condition only constrains an acute decision, express the constraint inside that acute problem's bullet instead of giving it a heading — heparin-free dialysis belongs under the bleeding problem.
 
 Never create a heading for an incidental or likely spurious value; attach a **\*\*VERIFY:\*\*** bullet under the related problem instead.
 
@@ -466,7 +466,13 @@ Consultant bullets count toward the problem's bullet allowance and the total.
 
 **### Bullets**
 
-One coherent action or closely linked sequence per bullet. Bullets carry actions only — never reasoning. Never append a because, given, due to, since, or while clause to justify a bullet with evidence; move the evidence to the differential table or reasoning paragraph. Never write a bullet for routine monitoring, minor laboratory trending, generic hydration advice, routine counseling, routine prophylaxis, long-term surveillance, routine specialty follow-up, guideline teaching, or any action created solely to justify retaining data.
+One coherent action or closely linked sequence per bullet. Every bullet is one or two concise sentences: state the action, then justify why it is being done and how it could change care. Keep the full differential argument in the differential table or reasoning paragraph; the bullet carries only the minimum patient-specific rationale needed to make the action defensible. Never write a bullet for routine monitoring, minor laboratory trending, generic hydration advice, routine counseling, routine prophylaxis, long-term surveillance, routine specialty follow-up, guideline teaching, or any action created solely to justify retaining data.
+
+**\*\*Diagnostic tests and examination.\*\*** Use an if/then sentence that names the discriminating result and the management consequence: "Obtain X. If it shows Y, then do Z; if it does not, then [narrow, stop, defer, or choose the supported next step]." State only branches that are clinically meaningful and supportable; do not manufacture thresholds or exhaustive downstream trees.
+
+**\*\*Medications, treatments, doses, regimens, and procedures.\*\*** State the patient-specific indication and why this choice, dose, duration, route, or procedure is preferred to the closest reasonable first-line alternative. Ground the comparison in supplied patient facts and evidence-based reasoning. When the record lacks a required selection factor, make the recommendation conditional on verifying that factor rather than inventing a rationale.
+
+**\*\*Other actions.\*\*** For consultation, monitoring, communication, and disposition actions, give one short sentence explaining the decision, risk, or barrier the action resolves. A generic phrase such as "for further evaluation" or "to monitor" is not a justification.
 
 **\*\*Action-status wording.\*\*** "Given" or "received" for completed treatment. "Receiving" for a documented active regimen. "Continue" only for a documented active regimen or order. "Ordered," "collected," and "pending" only when documented. "Consultant recommends" only for a documented recommendation. "Recommend" for your proposed action.
 
@@ -502,21 +508,23 @@ A bold heading for each problem that has an associated medication, in the same o
 
 **\*\*COPD exacerbation\*\***
 
-\| Drug | Regimen | Course | Indication |
-\|---|---|---|---|
-\| Prednisone | 40 mg PO daily | Day 3 of 5 | Reduces airway inflammation and bronchospasm |
-\| Ceftriaxone | 1 g IV q24h | Day 3 of 5 | Covers typical bacterial pathogens in exacerbation |
-\| Azithromycin | 500 mg PO daily | Day 3 of 5 | Atypical coverage plus anti-inflammatory effect |
+\| Drug | Origin and hospital status | Regimen | Course | Indication |
+\|---|---|---|---|---|
+\| Prednisone | Hospital-started — active | 40 mg PO daily | Day 3 of 5 | Reduces airway inflammation and bronchospasm |
+\| Ceftriaxone | Hospital-started — active | 1 g IV q24h | Day 3 of 5 | Covers typical bacterial pathogens in exacerbation |
+\| Tiotropium | Home — continued inpatient | 2 inhalations daily | Indefinite | Maintenance bronchodilation |
 
 **### What to include**
 
-Every medication the patient is actively receiving in hospital, plus any home medication that has been held, stopped, or changed this admission. A medication with no bearing on any active problem may be grouped under a final heading of **\*\*Other home medications continued\*\***.
+Every medication documented as administered in hospital, every active inpatient medication order, and every documented home medication. This includes home medications continued, resumed, held, stopped, or changed and medications newly started, completed, or given once in the hospital. A home medication with no bearing on an active problem may be grouped under a final heading of **\*\*Other home medications\*\***.
 
 A medication that treats more than one problem appears under the problem it is primarily being given for, not in both tables.
 
 **### Column requirements**
 
 **\*\*Drug\*\*** — generic name. Use a brand name only when the source supplies one that cannot be safely resolved.
+
+**\*\*Origin and hospital status\*\*** — explicitly separate pre-admission origin from current hospital status. Use the narrowest supported wording, such as "Home — continued inpatient," "Home — resumed," "Home — held," "Home — stopped," "Home — regimen changed," "Home — hospital status not documented," "Hospital-started — active," "Hospital-started — held," "Hospital-started — stopped," "Hospital-started — completed," "Hospital — one-time dose," "Origin unclear — active," "Origin unclear — held," "Origin unclear — stopped," or "Origin and hospital status not documented." Never infer origin or status; mark whichever component the source does not establish.
 
 **\*\*Regimen\*\*** — dose, route, and frequency exactly as documented: "40 mg PO daily," "1 g IV q24h," "5,000 units SC q8h." If any component is not documented, write what is known and mark the rest, as in "40 mg PO, frequency not documented." Never supply a customary dose, route, or frequency that the source does not state.
 
@@ -537,7 +545,7 @@ Build the Regimen cell only from explicit source-span fields for dose, route, an
 
 **\*\*Never compute a day count from an assumed start date.\*\*** An invented "day 3 of 5" is worse than an honest "start date not documented," because it will be quoted back as fact. If the arithmetic depends on a date the source does not state, say so.
 
-**\*\*Indication\*\*** — one clause or short sentence naming the mechanism or purpose as it applies to this patient's problem. Not a pharmacology lesson, not a class description, not a list of alternatives. If the indication is not documented and cannot be inferred from the problem it sits under, write "indication unclear."
+**\*\*Indication\*\*** — one clause or short sentence stating the documented patient-specific purpose. Not a pharmacology lesson, not a class description, not a list of alternatives. Never infer the indication from the medication class or the problem heading; if the source does not document it, write "indication unclear."
 
 **### Accuracy rules**
 
@@ -568,7 +576,7 @@ Then confirm:
 13\. No subsection label appears without qualifying content behind it.
 14\. Every section follows its stated internal order and is within its limit.
 15\. Every unestablished problem has one differential sentence and one five-row differential table; no established-problem reasoning paragraph exceeds three sentences; chronic problems have exactly one bullet; total bullets do not exceed 18.
-16\. Bullets contain actions only.
+16\. Every Plan bullet contains one action plus a concise justification; diagnostic actions use an if/then finding-to-management statement, and treatment actions explain the patient-specific choice over the closest reasonable first-line alternative.
 17\. Problems are ordered unstable acute, stable acute, then chronic; problems sharing a decision are combined; no problem exists that is only a constraint on another.
 18\. Every differential item is a specific disease entity, not an anatomic region or category.
 19\. Every unestablished problem has exactly five specific differential entities in one differential table with the columns `Differential`, `Clues for this differential`, and `Clues against this differential`.
@@ -585,7 +593,7 @@ Then confirm:
 30\. Every active problem appears; none was omitted for lack of a decision or lack of interval change.
 31\. No two distinct diseases were merged because one constrains the other; only a manifestation was merged with its cause.
 32\. Problems are sorted by decisional weight into tier one, tier two, and tier three, and every tier three problem is a single line readable in about fifteen seconds.
-33\. Every medication actively given, and every home medication held, stopped, or changed, appears in the Medication Regimens appendix.
+33\. Every medication administered or actively ordered in hospital and every documented home medication appears in the Medication Regimens appendix with explicit origin and hospital status.
 34\. Every appendix row states dose, route, and frequency as documented, with any missing component marked rather than supplied.
 35\. No day count was computed from an undocumented start date.
 36\. Each anticoagulant, antiplatelet, and form of heparin occupies its own row and none were conflated.

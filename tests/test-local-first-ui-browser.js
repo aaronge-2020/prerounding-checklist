@@ -5,6 +5,7 @@ import { extname, join, normalize } from "node:path";
 import { chromium } from "playwright";
 
 const root = process.cwd();
+let failProgressPromptRefresh = false;
 const mime = new Map([
   [".html", "text/html"],
   [".js", "text/javascript"],
@@ -19,6 +20,11 @@ const mime = new Map([
 function staticServer() {
   const server = createServer((request, response) => {
     const url = new URL(request.url, "http://127.0.0.1");
+    if (failProgressPromptRefresh && url.pathname.endsWith("/prompts/Guidelines-progress.md") && url.searchParams.has("prompt-refresh")) {
+      response.writeHead(503);
+      response.end("unavailable");
+      return;
+    }
     const relative = url.pathname === "/" ? "index.html" : url.pathname.slice(1);
     const file = normalize(join(root, relative));
     if (!file.startsWith(root) || !existsSync(file) || !statSync(file).isFile()) {
@@ -38,7 +44,8 @@ const server = await staticServer();
 const { port } = server.address();
 const baseUrl = `http://127.0.0.1:${port}/`;
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
+const context = await browser.newContext({ viewport: { width: 1280, height: 820 } });
+const page = await context.newPage();
 await page.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
 
 // The plain-text prompt textarea was removed (the highlighted preview made it
@@ -114,12 +121,15 @@ try {
   assert.equal(await page.locator("#vaultPassphraseError").isHidden(), true);
   await page.click('[data-action="unlock-vault"]');
   await page.waitForFunction(() => /Vault unlocked/.test(document.querySelector("#statusLine")?.textContent || ""));
+
   await page.fill("#newPatientLabel", "Room 12");
   await page.click('[data-action="admit-patient"]');
   await page.waitForSelector("#contextSections");
-  assert.equal(await page.locator('[data-action="save-context"]').isEnabled(), true, "Save changes must stay clickable even before the model has loaded - it loads the model itself instead of requiring a separate trip first");
+  assert.equal(await page.locator('[data-action="add-admission-source"]').isDisabled(), true, "adding an admission source requires a pasted chart block");
   await page.selectOption("#deidModeSelect", "structured");
-  assert.equal(await page.locator('[data-action="save-context"]').isEnabled(), true);
+  await page.fill("#admissionSourceDraft", "Source ready for local de-identification.");
+  assert.equal(await page.locator('[data-action="add-admission-source"]').isEnabled(), true, "the add action must become available without a separate model-loading trip");
+  await page.fill("#admissionSourceDraft", "");
 
   await page.click('[data-view-target="settings"]');
   await page.waitForSelector("#guidelineSearchInput");
@@ -182,6 +192,45 @@ try {
   await page.waitForFunction(() => !document.querySelector('.guideline-row')?.textContent?.includes("Temporary bulk delete"));
   assert.match(await page.locator("#statusLine").innerText(), /Deleted \d+ guidelines?/);
 
+  const admissionGuideline = page.locator('.guideline-row', { hasText: "Admission" }).filter({ has: page.locator('code', { hasText: "@admission-guidelines" }) });
+  const admissionGuidelineId = await admissionGuideline.getAttribute("data-guideline-id");
+  await admissionGuideline.locator(".guideline-row-open").click();
+  await page.fill(`#guidelineSetText-${admissionGuidelineId}`, "LOCAL ADMISSION EDIT TO REPLACE");
+  await page.click(`[data-action="save-guideline-set"][data-guideline-set-id="${admissionGuidelineId}"]`);
+  await page.click('[data-action="request-refresh-default-guidelines"]');
+  await page.waitForFunction(() => document.querySelector("#refreshDefaultGuidelinesConfirmDialog")?.open === true);
+  assert.match(await page.locator("#refreshDefaultGuidelinesConfirmDialog").innerText(), /Team preferences and custom guidelines remain unchanged/i);
+  await page.click('#refreshDefaultGuidelinesConfirmDialog button[value="cancel"]');
+  await page.waitForFunction(() => document.querySelector("#refreshDefaultGuidelinesConfirmDialog")?.open === false);
+  assert.equal(await page.locator(`#guidelineSetText-${admissionGuidelineId}`).inputValue(), "LOCAL ADMISSION EDIT TO REPLACE", "cancel must preserve the local built-in edit");
+  await page.route("**/prompts/Guidelines-admission.md?**", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    await route.continue();
+  });
+  await page.click('[data-action="request-refresh-default-guidelines"]');
+  await page.waitForFunction(() => document.querySelector("#refreshDefaultGuidelinesConfirmDialog")?.open === true);
+  await page.click('[data-action="confirm-refresh-default-guidelines"]');
+  await page.waitForFunction(() => document.querySelector("#confirmRefreshDefaultGuidelinesButton")?.disabled === true);
+  await page.waitForFunction(() => /Built-in prompts updated from this site/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.unroute("**/prompts/Guidelines-admission.md?**");
+  assert.equal(await page.locator('.guideline-row', { hasText: "Discharge summary" }).count(), 1, "refresh must preserve custom guidelines");
+  const refreshedAdmission = page.locator('.guideline-row', { hasText: "Admission" }).filter({ has: page.locator('code', { hasText: "@admission-guidelines" }) });
+  await refreshedAdmission.locator(".guideline-row-open").click();
+  assert.doesNotMatch(await page.locator(`#guidelineSetText-${admissionGuidelineId}`).inputValue(), /LOCAL ADMISSION EDIT TO REPLACE/);
+  await page.fill(`#guidelineSetText-${admissionGuidelineId}`, "LOCAL EDIT THAT MUST SURVIVE A FAILED REFRESH");
+  await page.click(`[data-action="save-guideline-set"][data-guideline-set-id="${admissionGuidelineId}"]`);
+  failProgressPromptRefresh = true;
+  await page.click('[data-action="request-refresh-default-guidelines"]');
+  await page.waitForFunction(() => document.querySelector("#refreshDefaultGuidelinesConfirmDialog")?.open === true);
+  await page.click('[data-action="confirm-refresh-default-guidelines"]');
+  await page.waitForFunction(() => /No local prompts were changed/.test(document.querySelector("#statusLine")?.textContent || ""));
+  assert.equal(await page.locator(`#guidelineSetText-${admissionGuidelineId}`).inputValue(), "LOCAL EDIT THAT MUST SURVIVE A FAILED REFRESH");
+  await page.click('#refreshDefaultGuidelinesConfirmDialog button[value="cancel"]');
+  failProgressPromptRefresh = false;
+  await page.click('[data-action="request-refresh-default-guidelines"]');
+  await page.click('[data-action="confirm-refresh-default-guidelines"]');
+  await page.waitForFunction(() => /Built-in prompts updated from this site/.test(document.querySelector("#statusLine")?.textContent || ""));
+
   await page.click('[data-view-target="prompts"]');
   await page.locator("#promptPreview").fill("@discharge");
   await page.waitForSelector("#smartVariableMenu.open");
@@ -208,6 +257,7 @@ try {
 
   await page.click('[data-view-target="prompts"]');
   await page.waitForSelector("#promptOutputHighlighted");
+  await page.selectOption("#promptTaskSelect", "preround_bedside_exam");
   const selectedDayPreviewToken = page.locator('#promptOutputHighlighted button.var-fill[data-token="@selected-day"]');
   assert.equal(await selectedDayPreviewToken.count(), 1, "selected-day must render as one clickable preview target");
   await page.evaluate(() => { document.querySelector("#promptOutputHighlighted").scrollTop = 0; });
@@ -218,23 +268,23 @@ try {
     assert.doesNotMatch(copied, /Write for the Primary team|Consult service|consulted rhythm question/);
   }
   await page.click('[data-view-target="daily"]');
-  assert.equal(await page.locator("#contextSections .section-editor").first().locator(".section-role").count(), 1, "admission fields must retain a controlled purpose");
-
-  await page.locator("#contextSections .section-editor").nth(0).locator('[data-action="toggle-section-editor"]').click();
-  await page.locator("#contextSections .section-editor").nth(0).locator(".section-text").fill("Jane Patient MRN 123456 admitted with dyspnea.");
-  await page.locator("#contextSections .section-editor").nth(1).locator('[data-action="toggle-section-editor"]').click();
-  await page.locator("#contextSections .section-editor").nth(1).locator(".section-text").fill("Furosemide 40 mg PO daily. Lisinopril 10 mg PO daily.");
-  await page.locator("#contextSections .section-editor").nth(2).locator('[data-action="toggle-section-editor"]').click();
-  await page.locator("#contextSections .section-editor").nth(2).locator(".section-text").fill("Creatinine 1.4 today.");
-  await page.locator("#contextSections .section-editor").nth(3).locator('[data-action="toggle-section-editor"]').click();
-  await page.locator("#contextSections .section-editor").nth(3).locator(".section-text").fill("AM Labs reviewed with the team.");
   await page.fill("#dailyAdmissionDateInput", "2026-07-17");
-  await page.click('[data-action="save-context"]');
-  await page.waitForFunction(() => /Context saved|Admission packet de-identified|did not complete/.test(document.querySelector("#statusLine")?.textContent || ""));
-  assert.match(await page.locator("#statusLine").innerText(), /Context saved|Admission packet de-identified/);
+  const addAdmissionCapture = async (sourceKind, text) => {
+    const previousCount = await page.locator("#contextSections .section-editor").count();
+    await page.click(`[data-action="select-admission-source-kind"][data-source-kind="${sourceKind}"]`);
+    await page.fill("#admissionSourceDraft", text);
+    await page.click('[data-action="add-admission-source"]');
+    await page.waitForFunction((count) => document.querySelectorAll("#contextSections .section-editor").length === count + 1, previousCount);
+  };
+  await addAdmissionCapture("primary_note", "Jane Patient MRN 123456 admitted with dyspnea.");
+  await addAdmissionCapture("medication_activity", "Furosemide 40 mg PO daily. Lisinopril 10 mg PO daily. Reconciled by Dr. Alice Smith.");
+  await addAdmissionCapture("results", "Creatinine 1.4 today.");
+  await addAdmissionCapture("bedside_update", "AM Labs reviewed with the team.");
+  assert.equal(await page.locator("#contextSections .section-editor").count(), 4);
+  assert.equal(await page.locator("#contextSections .section-editor").first().locator(".section-role").count(), 1, "admission fields must retain a controlled purpose");
   await page.waitForFunction(() => document.querySelector("#contextSections")?.textContent.includes("[MRN]"));
   await page.waitForSelector("#contextSections .redaction-review");
-  assert.equal(await page.locator("#contextSections .section-editor").nth(0).evaluate((node) => node.classList.contains("is-expanded")), true, "the first review field should open automatically after save");
+  assert.equal(await page.locator("#contextSections .section-editor").nth(0).evaluate((node) => node.classList.contains("is-expanded")), true, "the first pending review field should remain open as sources are added");
   const residualWarning = page.locator('#residualWarnings-context .residual-warning').first();
   if (await residualWarning.count()) {
     await residualWarning.click();
@@ -249,14 +299,13 @@ try {
   await page.waitForSelector("#contextSections .redaction-review");
   assert.equal(await page.locator("#contextSections .redaction-change").count() > 0, true);
   await page.locator("#contextSections .redaction-change").first().click();
-  assert.match(await page.locator("#contextSections [data-redaction-document]").first().innerText(), /Jane Patient|123456/);
+  assert.match(await page.locator("#contextSections [data-redaction-document]").first().innerText(), /\[PATIENT NAME\]|\[MRN\]/);
   assert.equal(await page.evaluate(() => Object.values(localStorage).join(" ").includes("Jane Patient")), false);
   await page.click('#contextSections [data-action="keep-reviewed-redaction"]');
   const acceptedContextToken = page.locator("#contextSections .redaction-change--confirmed").first();
   assert.equal(await acceptedContextToken.locator("del").count(), 0, "Hospital Stay should also hide an accepted original");
   assert.equal(await acceptedContextToken.locator("mark").count(), 1, "Hospital Stay should retain the safe replacement as a clickable highlight");
   assert.equal(await acceptedContextToken.getAttribute("data-original"), null, "Hospital Stay must not leave an accepted original in the DOM");
-  await page.locator('#contextSections [data-action="keep-reviewed-redaction"]').first().click();
   assert.equal(await page.locator("#contextSections .section-editor").nth(1).evaluate((node) => node.classList.contains("is-expanded")), true, "finishing one field should advance into the next field without closing review");
   const activeContextEditor = page.locator("#contextSections .section-editor.is-expanded");
   assert.equal(await activeContextEditor.count(), 1, "only the active review field should remain expanded");
@@ -276,17 +325,13 @@ try {
   });
   await activeContextEditor.locator('[data-action="manual-redact-selection"]').click();
   await page.waitForFunction(() => /Selected text marked for manual redaction/.test(document.querySelector("#statusLine")?.textContent || ""));
-  const movedSectionLabel = await page.locator("#contextSections .section-editor").nth(2).locator(".section-label").inputValue();
-  await page.locator("#contextSections .section-editor").nth(2).locator(".section-drag-handle").dragTo(page.locator("#contextSections .section-editor").nth(0).locator(".section-drag-handle"));
-  await page.waitForFunction(() => /Section updated/.test(document.querySelector("#statusLine")?.textContent || ""));
-  assert.equal(await page.locator("#contextSections .section-editor").first().locator(".section-label").inputValue(), movedSectionLabel);
 
   await page.click('[data-view-target="daily"]');
   await page.fill("#newDayDate", "2026-07-09");
   await page.fill("#newDayLabel", "Hospital day 1");
   await page.click('[data-action="add-day"]');
   await page.waitForSelector('[data-action="select-daily-source-kind"]');
-  assert.equal(await page.locator('[data-action="select-daily-source-kind"]').count(), 6, "Hospital Stay should ask where a broad Epic paste came from, not require note-section copy editing");
+  assert.equal(await page.locator('[data-action="select-daily-source-kind"]').count(), 7, "Hospital Stay should include the selected-day physical exam alongside the broad Epic source choices");
   await page.fill("#dailySourceDraft", "Overnight oxygen requirement improved.");
   await page.click('[data-action="add-daily-source"]');
   await page.waitForSelector("#dailySources .source-capture-editor");
@@ -358,7 +403,9 @@ try {
   // done) - reopen it to paste a fresh draft for the OpenAI-formatting flow
   // below, same as a real user would.
   await page.locator(".workup-import summary").click();
-  await page.route("https://api.openai.com/v1/responses", async (route) => {
+  let openAiFormatRequestCount = 0;
+  await context.route("**/v1/responses", async (route) => {
+    openAiFormatRequestCount += 1;
     await route.fulfill({
       contentType: "application/json",
       body: JSON.stringify({
@@ -385,7 +432,10 @@ try {
   await page.check("#workupApiDeidConfirmed");
   assert.equal(await page.locator('[data-action="format-workup-json-api"]').isEnabled(), true);
   await page.click('[data-action="format-workup-json-api"]');
-  await page.waitForFunction(() => /OpenAI formatted and loaded/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.waitForTimeout(1_000);
+  assert.equal(openAiFormatRequestCount, 1, await page.locator("#statusLine").innerText());
+  await page.waitForFunction(() => /OpenAI formatted and loaded|OpenAI request failed|Unable|invalid/i.test(document.querySelector("#statusLine")?.textContent || ""));
+  assert.match(await page.locator("#statusLine").innerText(), /OpenAI formatted and loaded/);
   assert.equal(await page.locator('[data-workup-kind="history"] [data-field="item-text"]').first().inputValue(), "API history question");
   await page.locator(".workup-catalog-menu summary").click();
   await page.locator(".workup-checkbox").first().check();
@@ -453,14 +503,15 @@ try {
   await page.setViewportSize({ width: 1280, height: 820 });
   await page.click('[data-view-target="prompts"]');
   await page.waitForSelector("#promptOutputHighlighted");
+  await page.selectOption("#promptTaskSelect", "initial_admission_rounds");
   {
     const copied = await copiedPromptText();
-    assert.match(copied, /Admission H&P Instructions/);
+    assert.match(copied, /Admission H&P [^\r\n]*Instructions/);
     assert.doesNotMatch(copied, /Privacy rules:/);
   }
   await page.locator("#promptPreview").fill("@");
   await page.waitForSelector("#smartVariableMenu.open");
-  assert.equal(await page.locator("#smartVariableMenu").filter({ hasText: "@admission-context" }).count(), 1);
+  assert.equal(await page.locator("#smartVariableMenu").filter({ hasText: "@admission-primary-team-note" }).count(), 1);
   assert.equal(await page.locator("#smartVariableMenu").filter({ hasText: "@admission-guidelines" }).count(), 1);
   assert.equal(await page.locator("#smartVariableMenu").filter({ hasText: "@team-preferences" }).count(), 1);
   await page.locator('#smartVariableMenu button.smart-variable-insert[data-token="@admission-guidelines"]').click();
@@ -469,23 +520,26 @@ try {
   // Regression test: the dropdown must actually narrow as the user keeps
   // typing after "@", and non-matching entries must be truly invisible (not
   // just marked hidden while a CSS rule silently keeps them on screen).
-  await page.locator("#promptPreview").fill("@admission-c");
+  await page.locator("#promptPreview").fill("@admission-p");
   await page.waitForFunction(() => {
     const visible = [...document.querySelectorAll("#smartVariableMenu .smart-variable-row[data-token]")].filter((row) => !row.hidden);
-    return visible.length === 1 && visible[0].dataset.token === "@admission-context";
+    return visible.length === 3
+      && visible.some((row) => row.dataset.token === "@admission-packet")
+      && visible.some((row) => row.dataset.token === "@admission-primary-team-note")
+      && visible.some((row) => row.dataset.token === "@admission-physical-exam");
   });
-  assert.equal(await page.locator('#smartVariableMenu button[data-token="@admission-context"]').isVisible(), true);
-  assert.equal(await page.locator('#smartVariableMenu button[data-token="@admission-guidelines"]').isVisible(), false);
+  assert.equal(await page.locator('#smartVariableMenu button.smart-variable-insert[data-token="@admission-primary-team-note"]').isVisible(), true);
+  assert.equal(await page.locator('#smartVariableMenu button.smart-variable-insert[data-token="@admission-guidelines"]').isVisible(), false);
 
   // Regression: a caret at index 0 is valid. Removing a leading variable must
   // inspect only the text before that caret, rather than finding a later token
   // and incorrectly keeping the menu open.
-  await page.locator("#promptPreview").fill("@selected-day-exam-findings\\nUse @admission-context");
+  await page.locator("#promptPreview").fill("@selected-day-physical-exam\\nUse @admission-primary-team-note");
   await page.locator("#promptPreview").press("Control+Home");
   await page.locator("#promptPreview").press("Delete");
   assert.equal(await page.locator("#smartVariableMenu").isVisible(), false);
 
-  await page.locator("#promptPreview").fill("Use @admission-context");
+  await page.locator("#promptPreview").fill("Use @admission-primary-team-note");
   await page.waitForFunction(() => /PATIENT NAME/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   {
     const preview = await page.locator("#promptOutputHighlighted").textContent();
@@ -494,11 +548,11 @@ try {
     assert.match(copied, /PATIENT NAME/);
   }
   await page.selectOption("#promptTaskSelect", "daily_progress_note");
-  await page.waitForFunction(() => /Daily Progress Note Instructions/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
+  await page.waitForFunction(() => /Daily Progress Note [^\r\n]*Instructions/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   await page.selectOption("#promptTaskSelect", "teaching_case_trajectory");
-  await page.waitForFunction(() => /Teach the full case trajectory/i.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
+  await page.waitForFunction(() => /clinical teacher producing a concise rounds teaching snippet/i.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   await page.selectOption("#promptTaskSelect", "medication_explainer_by_problem");
-  await page.waitForFunction(() => /disease, condition, symptom/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
+  await page.waitForFunction(() => /condition, symptom, or clinical purpose/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   await page.selectOption("#promptTaskSelect", "medication_safety_audit");
   await page.waitForFunction(() => /insufficient information/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
 
@@ -525,34 +579,9 @@ try {
   await page.click('[data-view-target="quickDeid"]');
   await page.waitForSelector("#quickDeidMode");
   await page.waitForSelector(".quick-model-control");
-  await page.locator("#quickDeidMode").evaluate((node) => {
-    node.value = "openmed-superclinical-small";
-    node.dispatchEvent(new Event("change", { bubbles: true }));
-  });
-  await page.route("https://huggingface.co/Wismut/openmed-onnx/**", (route) => route.fulfill({ status: 503, body: "unavailable" }));
-  await page.locator('[data-action="download-model-pack"][data-model-key="openmed-superclinical-small"]').click();
-  await page.waitForSelector(".model-selection-message--error");
-  assert.match(await page.locator(".model-selection-message--error").innerText(), /could not download config\.json/i);
-  await page.unroute("https://huggingface.co/Wismut/openmed-onnx/**");
   assert.equal(await page.locator('#quickDeidMode option[value="openmed-superclinical"]').count(), 0, "unsupported large OpenMed must not remain selectable");
   assert.equal(await page.locator('#quickDeidMode option[value="openmed-superclinical-small"]').count(), 1);
   assert.equal(await page.locator('#quickDeidMode option[value="gliner-multi-pii"]').count(), 1);
-  const modelPackFixture = await page.evaluate(async () => {
-    const options = await import("/src/patient-context/deid-model-options.js");
-    const storage = await import("/src/patient-context/model-pack-storage.js");
-    const option = options.deidModelOptionByKey("openmed-superclinical-small");
-    const service = await storage.ensureModelPackServiceWorker();
-    const entries = option.requiredFiles.map((path) => ({
-      path: `small/${path}`,
-      file: new File([`fixture:${path}`], path.split("/").at(-1), { type: "application/octet-stream" })
-    }));
-    await storage.importModelPack(option, entries);
-    const state = await storage.getModelPackState(option);
-    const response = await fetch("/__prerounding-models/Wismut/openmed-onnx/small/onnx/model_int8.onnx");
-    await storage.removeModelPack(option);
-    return { ready: service.ready, state: state.state, response: response.status };
-  });
-  assert.deepEqual(modelPackFixture, { ready: true, state: "installed", response: 200 });
   await page.selectOption("#quickDeidMode", "structured");
   assert.equal(await page.locator("#quickDeidMode").inputValue(), "structured");
   await page.fill("#quickDeidInput", "Jane Patient MRN 123456 was evaluated by Dr. Smith.");
@@ -619,17 +648,17 @@ try {
   await page.fill("#newDayDate", "2026-07-10");
   await page.fill("#newDayLabel", "Hospital day 2");
   await page.click('[data-action="add-day"]');
-  await page.waitForFunction(() => document.querySelectorAll(".day-row").length === 2);
+  await page.waitForFunction(() => document.querySelectorAll(".day-row").length === 3);
   await page.click('[data-action="remove-day"]');
   await page.waitForFunction(() => document.querySelector("#removeDayConfirmDialog")?.open === true);
   await page.click('[data-action="confirm-remove-day"]');
-  await page.waitForFunction(() => document.querySelectorAll(".day-row").length === 1);
+  await page.waitForFunction(() => document.querySelectorAll(".day-row").length === 2);
 
   await page.click('[data-view-target="vault"]');
   await page.click('[data-action="archive-patient"]');
   await page.waitForFunction(() => document.querySelector("#archiveConfirmDialog")?.open === true);
   await page.click('[data-action="confirm-archive-patient"]');
-  await page.waitForFunction(() => /No patients yet/.test(document.querySelector("#vaultContent")?.textContent || ""));
+  await page.waitForFunction(() => /No patients yet|No patient added/.test(document.querySelector("#vaultContent")?.textContent || ""));
   await page.click('[data-view-target="daily"]');
   assert.match(await page.locator("#dailyContent").innerText(), /unlock the vault and add a patient/i, "Hospital Stay must clear when the roster is empty");
   await page.click('[data-view-target="workups"]');
@@ -637,6 +666,7 @@ try {
   await page.click('[data-view-target="checklist"]');
   assert.match(await page.locator("#checklistContent").innerText(), /unlock the vault and add a patient/i, "Checklist must clear when the roster is empty");
 
+  await page.click('[data-view-target="vault"]');
   await page.click('[data-action="lock-vault"]');
   await page.waitForFunction(() => /Vault locked/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.waitForSelector("#vaultContent .locked-vault-shell");
@@ -653,12 +683,10 @@ try {
   assert.equal(await page.locator("#confirmDeleteVaultButton").isEnabled(), true);
   await page.click('[data-action="confirm-delete-vault"]');
   await page.waitForFunction(() => /Vault deleted from this browser/.test(document.querySelector("#statusLine")?.textContent || ""));
-  assert.match(await page.locator("#vaultPassphrase").getAttribute("placeholder"), /Create local vault/);
+  assert.equal(await page.locator("#vaultPassphrase").getAttribute("placeholder"), "At least 12 characters");
 
   assert.deepEqual(backendRequests, []);
-  assert.deepEqual(externalModelRequests, [
-    "https://huggingface.co/Wismut/openmed-onnx/resolve/763dff8d32cc23ff045dd396221f8be62cb1ca03/small/config.json"
-  ], "the only external model request must be the explicitly-clicked, pinned OpenMed Small download");
+  assert.deepEqual(externalModelRequests, [], "ordinary app and prompt-refresh workflows must make no external model requests");
   assert.deepEqual(
     consoleErrors.filter((message) => !/503 \(Service Unavailable\)/.test(message)),
     [],

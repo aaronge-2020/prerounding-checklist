@@ -1,4 +1,4 @@
-import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js";
+import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260815-prompt-refresh";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({

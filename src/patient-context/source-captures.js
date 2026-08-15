@@ -6,15 +6,22 @@ const sourceKinds = [
   ["results", "Results", "Selected-day laboratory, imaging, microbiology, and diagnostic results."],
   ["medication_activity", "Medication activity", "Medication administrations, holds, starts, stops, and active orders."],
   ["consult_note", "Consult note", "A consultant note, recommendation, or procedure update."],
-  ["prior_physical_exam", "Physical exam (prior)", "A physical examination documented by another clinician before the current pre-round visit."],
-  ["pre_round_physical_exam", "Physical exam (today)", "The physical examination you performed during the current pre-round visit."],
-  ["physical_exam", "Physical exam (today)", "The physical examination you found yourself during today’s pre-round visit."],
+  ["prior_physical_exam", "Physical exam (admission)", "The physical examination documented in the admission record."],
+  ["pre_round_physical_exam", "Physical exam (selected day)", "Legacy selected-day physical examination source."],
+  ["physical_exam", "Physical exam (selected day)", "The physical examination performed for this hospital-day packet."],
   ["bedside_update", "Bedside update", "What the patient, nursing team, or clinician learned at the bedside."],
   ["other_chart_text", "Other chart text", "Other selected-day chart text that should remain in the packet." ]
 ];
 
 export const DAILY_SOURCE_KINDS = sourceKinds.map(([id, label, description]) => ({ id, label, description }));
 export const DEFAULT_DAILY_SOURCE_KIND = "primary_note";
+
+export function normalizeSourceKindForScope(scope, kind) {
+  const sourceKind = String(kind || "other_chart_text");
+  if (scope === "context" && sourceKind === "physical_exam") return "prior_physical_exam";
+  if (scope === "daily" && sourceKind === "pre_round_physical_exam") return "physical_exam";
+  return dailySourceKind(sourceKind)?.id || "other_chart_text";
+}
 
 const legacySourceKindByRole = new Map([
   ["interval_events", "primary_note"],
@@ -58,19 +65,19 @@ export function dailySourceKindLabel(kind) {
 
 export function dailySourceKindOptions() {
   return DAILY_SOURCE_KINDS
-    .filter(({ id }) => id !== "pre_round_physical_exam")
+    .filter(({ id }) => !["prior_physical_exam", "pre_round_physical_exam"].includes(id))
     .map(({ id, label, description }) => ({ id, label, description }));
 }
 
 export function admissionSourceKindOptions() {
   return DAILY_SOURCE_KINDS
-    .filter(({ id }) => id !== "pre_round_physical_exam")
+    .filter(({ id }) => !["physical_exam", "pre_round_physical_exam"].includes(id))
     .map(({ id, label, description }) => ({ id, label, description }));
 }
 
 export function normalizeSourceCapture(capture, { now = () => new Date().toISOString() } = {}) {
   const timestamp = now();
-  const sourceKind = dailySourceKind(capture?.sourceKind)?.id || "other_chart_text";
+  const sourceKind = normalizeSourceKindForScope("daily", capture?.sourceKind);
   return {
     id: String(capture?.id || localCaptureId()),
     sourceKind,

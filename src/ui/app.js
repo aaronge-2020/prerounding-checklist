@@ -17,7 +17,7 @@ import {
   setWorkupOverride,
   setWorkupOverrides,
   updateActivePatient
-} from "../app/state/vault.js?v=20260722-unified-stay-v2";
+} from "../app/state/vault.js?v=20260815-smart-variable-fields";
 import {
   deleteEncryptedVaultRecord,
   downloadJson,
@@ -96,16 +96,16 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260804-clean-guideline-variables";
+} from "../prompts/custom-templates.js?v=20260815-smart-variable-fields";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
-import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260723-edit-save";
+import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
 import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260727-differential-format-2";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import {
   ensureCanonicalDefaultGuidelineSets,
   ensureTeachingGuidelineSet,
   loadOrMigrateGuidelineSets
-} from "../prompts/guideline-sets.js?v=20260810-teaching-guidelines";
+} from "../prompts/guideline-sets.js?v=20260815-prompt-refresh";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences,
@@ -160,8 +160,8 @@ import { createChecklistSearchController, toggleItemNote } from "./checklist/sea
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260714-deid-ux-polish";
-import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260721-admission-context";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260726-presentation-editor";
+import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260815-smart-variable-fields";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260815-smart-variable-fields";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
@@ -169,11 +169,11 @@ import {
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
 } from "./prompts/controller.js?v=20260726-presentation-editor";
-import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260722-guideline-concept-v2";
+import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260815-prompt-refresh";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721-persisted-anchor";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260722-guideline-concept-v2";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260722-guideline-concept-v2";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260815-prompt-refresh";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
   createRedactionPresentation,
@@ -183,7 +183,7 @@ import {
 } from "./redaction/presentation.js?v=20260726-redaction-copy-1";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
-import { createDemoController } from "./demo/controller.js?v=20260809-demo-nstemi-workup-1";
+import { createDemoController } from "./demo/controller.js?v=20260815-single-redaction-accept";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260809-demo-nstemi-workup-1";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260809-demo-nstemi-workup-1";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
@@ -1916,15 +1916,7 @@ async function handleClick(event) {
     if (action === "create-prompt-task") promptTaskController.createTaskFromInput();
     if (action === "request-remove-prompt-task") promptTaskController.requestRemove(target.dataset.taskId);
     if (action === "confirm-remove-prompt-task") promptTaskController.confirmRemovePending();
-    if (action === "create-guideline-set") guidelineSetsController.openCreate();
-    if (action === "save-new-guideline-set") guidelineSetsController.saveCreate();
-    if (action === "cancel-new-guideline") guidelineSetsController.cancelCreate();
-    if (action === "toggle-guideline-set") guidelineSetsController.toggleOpen(target.dataset.guidelineSetId);
-    if (action === "save-guideline-set") guidelineSetsController.saveEdit(target.dataset.guidelineSetId);
-    if (action === "request-remove-guideline-set") guidelineSetsController.requestRemove(target.dataset.guidelineSetId);
-    if (action === "confirm-remove-guideline-set") guidelineSetsController.confirmRemovePending();
-    if (action === "delete-selected-guidelines") guidelineSetsController.deleteSelected();
-    if (action === "clear-guideline-selection") guidelineSetsController.clearSelection();
+    if (action.includes("guideline")) await guidelineSetsController.handleAction(action, target);
     if (action === "insert-prompt-variable") insertPromptVariable(target.dataset.token);
     if (action === "jump-to-prompt-variable") {
       event.preventDefault();
@@ -2990,7 +2982,7 @@ function admissionRoleForSourceKind(sourceKind) {
     results: "admission_results",
     medication_activity: "procedures_devices",
     consult_note: "procedures_devices",
-    physical_exam: "admission_history",
+    prior_physical_exam: "admission_history",
     bedside_update: "admission_history"
   })[sourceKind] || "additional_admission_source";
 }

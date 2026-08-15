@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { buildPromptVariableMap, DEFAULT_PROMPT_TEMPLATES, SMART_PROMPT_VARIABLES } from "../src/prompts/custom-templates.js";
+import { ADMISSION_PSEUDO_DAY_ID, buildPromptVariableMap, DEFAULT_PROMPT_TEMPLATES, promptVariablesForPatient, SMART_PROMPT_VARIABLES } from "../src/prompts/custom-templates.js";
+import { admissionSourceKindOptions, dailySourceKindOptions } from "../src/patient-context/source-captures.js";
 
 const snapshot = {
   items: [
@@ -13,19 +14,26 @@ function patientWithDay({ contextSections = [], sourceCaptures = [], answers = {
 }
 
 assert.equal(SMART_PROMPT_VARIABLES.some(({ token }) => token === "@exam-findings"), false);
-assert.equal(SMART_PROMPT_VARIABLES.some(({ token }) => token === "@admissions-exam-findings"), true);
-assert.equal(SMART_PROMPT_VARIABLES.some(({ token }) => token === "@selected-day-exam-findings"), true);
+assert.equal(SMART_PROMPT_VARIABLES.some(({ token }) => token === "@admission-physical-exam"), true);
+assert.equal(SMART_PROMPT_VARIABLES.some(({ token }) => token === "@selected-day-physical-exam"), true);
+assert.equal(admissionSourceKindOptions().some(({ id, label }) => id === "prior_physical_exam" && label === "Physical exam (admission)"), true);
+assert.equal(admissionSourceKindOptions().some(({ id }) => id === "physical_exam"), false);
+assert.equal(dailySourceKindOptions().some(({ id, label }) => id === "physical_exam" && label === "Physical exam (selected day)"), true);
+assert.equal(dailySourceKindOptions().some(({ id }) => id === "prior_physical_exam"), false);
+
+const emptyPatientVariables = buildPromptVariableMap({ patient: { contextSections: [], days: [] } });
+assert.equal(Object.keys(emptyPatientVariables).some((token) => /@admission-other-chart-text-\d+/.test(token)), false);
 
 // Admission physical exam text comes from the admission packet.
 {
   const variables = buildPromptVariableMap({
     patient: patientWithDay({
-      contextSections: [{ label: "Physical exam findings - Admission", deidentifiedText: "Admission: lungs clear bilaterally." }]
+      contextSections: [{ sourceKind: "prior_physical_exam", label: "Physical exam findings - Admission", deidentifiedText: "Admission: lungs clear bilaterally." }]
     }),
     selectedDayId: "day1"
   });
-  assert.match(variables["@admissions-exam-findings"], /Prior clinician physical exam findings[\s\S]*Admission: lungs clear bilaterally\./);
-  assert.equal(variables["@selected-day-exam-findings"], "No exam findings recorded.");
+  assert.match(variables["@admission-physical-exam"], /Prior clinician physical exam findings[\s\S]*Admission: lungs clear bilaterally\./);
+  assert.equal(variables["@selected-day-physical-exam"], "No exam findings recorded.");
 }
 
 // Hospital Stay physical-exam source text comes from the selected day packet.
@@ -36,8 +44,8 @@ assert.equal(SMART_PROMPT_VARIABLES.some(({ token }) => token === "@selected-day
     }),
     selectedDayId: "day1"
   });
-  assert.match(variables["@selected-day-exam-findings"], /HD1: faint wheeze\./);
-  assert.doesNotMatch(variables["@selected-day-exam-findings"], /No exam findings recorded/);
+  assert.match(variables["@selected-day-physical-exam"], /HD1: faint wheeze\./);
+  assert.doesNotMatch(variables["@selected-day-physical-exam"], /No exam findings recorded/);
 }
 
 // Prior exams remain in the admission packet, while today's exam is excluded
@@ -45,7 +53,7 @@ assert.equal(SMART_PROMPT_VARIABLES.some(({ token }) => token === "@selected-day
 {
   const patient = patientWithDay({
     contextSections: [
-      { id: "admission-exam", label: "Physical exam findings - Admission", deidentifiedText: "Prior lungs clear." },
+      { id: "admission-exam", sourceKind: "prior_physical_exam", label: "Physical exam findings - Admission", deidentifiedText: "Prior lungs clear." },
       { id: "admission-reason", label: "Admission context", deidentifiedText: "Admitted for dyspnea." }
     ],
     sourceCaptures: [
@@ -54,12 +62,20 @@ assert.equal(SMART_PROMPT_VARIABLES.some(({ token }) => token === "@selected-day
     ]
   });
   const variables = buildPromptVariableMap({ patient, selectedDayId: "day1" });
+  const menuVariables = promptVariablesForPatient(patient, { selectedDayId: "day1" });
+  assert.equal(menuVariables.filter(({ token }) => token === "@admission-physical-exam").length, 1);
+  assert.equal(menuVariables.filter(({ token }) => token === "@selected-day-physical-exam").length, 1);
+  assert.equal(menuVariables.some(({ token }) => /physical-exam-(?:admission|selected-day)/.test(token)), false);
   assert.match(variables["@admission-packet"], /Prior lungs clear/);
-  assert.match(variables["@admissions-exam-findings"], /Prior lungs clear/);
+  assert.match(variables["@admission-physical-exam"], /Prior lungs clear/);
   assert.doesNotMatch(variables["@admission-packet"], /Current lungs clear/);
   assert.doesNotMatch(variables["@selected-day"], /Current lungs clear/);
   assert.doesNotMatch(variables["@selected-day"], /Prior lungs clear/);
-  assert.match(variables["@selected-day-exam-findings"], /Current lungs clear/);
+  assert.match(variables["@selected-day-physical-exam"], /Current lungs clear/);
+
+  const admissionSelected = buildPromptVariableMap({ patient, selectedDayId: ADMISSION_PSEUDO_DAY_ID });
+  assert.match(admissionSelected["@selected-day-physical-exam"], /Prior lungs clear/);
+  assert.doesNotMatch(admissionSelected["@selected-day-physical-exam"], /Current lungs clear/);
 }
 
 // Legacy checklist-only records still resolve until their packet is edited.
@@ -68,11 +84,11 @@ assert.equal(SMART_PROMPT_VARIABLES.some(({ token }) => token === "@selected-day
     patient: patientWithDay({ answers: { gen_appearance: { selected: ["Normal"], note: "" } } }),
     selectedDayId: "day1"
   });
-  assert.match(variables["@selected-day-exam-findings"], /General appearance[\s\S]*Answer: Normal/);
+  assert.match(variables["@selected-day-physical-exam"], /General appearance[\s\S]*Answer: Normal/);
 }
 
-assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.initial_admission_rounds, /@admissions-exam-findings/);
-assert.match(DEFAULT_PROMPT_TEMPLATES.consulting, /@selected-day-exam-findings/);
+assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.initial_admission_rounds, /@admission-physical-exam/);
+assert.match(DEFAULT_PROMPT_TEMPLATES.consulting, /@selected-day-physical-exam/);
 for (const template of Object.values(DEFAULT_PROMPT_TEMPLATES)) assert.doesNotMatch(template, /@exam-findings/);
 
 console.log("Exam-findings prompt token tests passed");

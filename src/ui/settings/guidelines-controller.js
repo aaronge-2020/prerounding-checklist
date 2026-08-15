@@ -1,4 +1,4 @@
-import { addGuidelineSet, guidelineSetMatchesQuery, removeGuidelineSet, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js";
+import { addGuidelineSet, guidelineSetMatchesQuery, removeGuidelineSet, restoreLatestDefaultGuidelineSets, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js?v=20260815-prompt-refresh";
 
 // CRUD for user-managed documentation-guideline sets - kept out of app.js to
 // respect the coordinator-file size boundary (scripts/check-ui-module-boundaries.js).
@@ -132,5 +132,41 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
     byId("removeGuidelineSetConfirmDialog")?.showModal();
   }
 
-  return Object.freeze({ openCreate, saveCreate, cancelCreate, saveEdit, toggleOpen, requestRemove, confirmRemovePending, setSearchQuery, toggleSelection, selectAllVisible, clearSelection, deleteSelected });
+  function requestRefreshDefaults() {
+    byId("refreshDefaultGuidelinesConfirmDialog")?.showModal();
+  }
+
+  async function confirmRefreshDefaults() {
+    const button = byId("confirmRefreshDefaultGuidelinesButton");
+    if (button) button.disabled = true;
+    setStatus("Downloading the latest built-in prompts…");
+    try {
+      state.guidelineSets = await restoreLatestDefaultGuidelineSets(state.guidelineSets);
+      state.guidelineOpenId = "";
+      state.guidelineSelectedIds.clear();
+      byId("refreshDefaultGuidelinesConfirmDialog")?.close();
+      setStatus("Built-in prompts updated from this site. Local built-in edits were replaced; custom guidelines were preserved.");
+      renderGuidelineChanges();
+    } catch (error) {
+      setStatus(error instanceof Error ? `${error.message} No local prompts were changed.` : "Prompt update failed. No local prompts were changed.");
+    } finally {
+      if (button) button.disabled = false;
+    }
+  }
+
+  async function handleAction(action, target) {
+    if (action === "create-guideline-set") openCreate();
+    if (action === "save-new-guideline-set") saveCreate();
+    if (action === "cancel-new-guideline") cancelCreate();
+    if (action === "toggle-guideline-set") toggleOpen(target.dataset.guidelineSetId);
+    if (action === "save-guideline-set") saveEdit(target.dataset.guidelineSetId);
+    if (action === "request-remove-guideline-set") requestRemove(target.dataset.guidelineSetId);
+    if (action === "confirm-remove-guideline-set") confirmRemovePending();
+    if (action === "delete-selected-guidelines") deleteSelected();
+    if (action === "clear-guideline-selection") clearSelection();
+    if (action === "request-refresh-default-guidelines") requestRefreshDefaults();
+    if (action === "confirm-refresh-default-guidelines") await confirmRefreshDefaults();
+  }
+
+  return Object.freeze({ handleAction, setSearchQuery, toggleSelection, selectAllVisible });
 }

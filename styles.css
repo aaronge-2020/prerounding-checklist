@@ -1581,7 +1581,7 @@ p {
 
 .smart-variable-insert {
   display: grid;
-  grid-template-columns: 150px minmax(0, 1fr);
+  grid-template-columns: minmax(150px, 0.9fr) minmax(0, 1.1fr);
   align-items: center;
   gap: 8px;
   border: 0;
@@ -1590,6 +1590,16 @@ p {
   text-align: left;
   min-height: 30px;
   padding: 0;
+}
+
+.smart-variable-identity {
+  display: grid;
+  gap: 2px;
+}
+
+.smart-variable-identity code {
+  color: var(--muted);
+  font-size: 11px;
 }
 
 .prompt-preview,
@@ -5879,6 +5889,10 @@ body.vault-locked .vault-access {
 
 .guideline-library-heading {
   margin-bottom: 4px;
+}
+
+.guideline-refresh-note {
+  margin: 0 0 10px;
 }
 
 .guideline-library-toolbar {

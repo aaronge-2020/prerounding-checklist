@@ -12,6 +12,7 @@ import {
   loadGuidelineSets,
   loadOrMigrateGuidelineSets,
   removeGuidelineSet,
+  restoreLatestDefaultGuidelineSets,
   saveGuidelineSets,
   updateGuidelineSet
 } from "../src/prompts/guideline-sets.js";
@@ -164,6 +165,70 @@ assert.doesNotMatch(Object.values(DEFAULT_PROMPT_TEMPLATES).join("\n"), /updated
   } finally {
     globalThis.fetch = originalFetch;
   }
+}
+
+// Explicit refresh replaces/restores only deploy-backed defaults, while
+// preserving the local-only Team preferences set and all custom identities.
+{
+  const admission = createGuidelineSet("Admission custom label", "Locally edited admission.", { token: "@admission-guidelines" });
+  const team = createGuidelineSet("Team preferences", "Rounds at 06:45.", { token: "@team-preferences" });
+  const custom = createGuidelineSet("Night float", "Call family before 21:00.");
+  const storage = fakeStorage();
+  const requests = [];
+  const refreshed = await restoreLatestDefaultGuidelineSets([admission, team, custom], {
+    storage,
+    fetchImpl: async (url, options) => {
+      requests.push({ url, options });
+      return { ok: true, text: async () => `Newest deployed text for ${url.split("?")[0]}` };
+    }
+  });
+  assert.equal(requests.length, DEFAULT_GUIDELINE_SET_SOURCES.filter(({ path }) => path).length);
+  assert.ok(requests.every(({ url }) => /[?&]prompt-refresh=\d+/.test(url)), "refresh URLs must bypass stale Pages caches");
+  assert.ok(requests.every(({ options }) => options.cache === "no-store"));
+  for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter(({ path }) => path)) {
+    assert.equal(
+      refreshed.find(({ token }) => token === source.token)?.text,
+      `Newest deployed text for ${source.path}`,
+      `${source.token} must receive the text downloaded from its own deployed source`
+    );
+  }
+  assert.equal(refreshed.find(({ token }) => token === "@team-preferences")?.text, team.text);
+  assert.equal(refreshed.find(({ token }) => token === custom.token)?.text, custom.text);
+  assert.deepEqual(loadGuidelineSets(storage), refreshed);
+}
+
+// Downloads complete before storage is mutated, so any failed prompt leaves
+// every local edit intact instead of producing a partially refreshed set.
+{
+  const existing = [createGuidelineSet("Admission", "Keep this edit.", { token: "@admission-guidelines" })];
+  const storage = fakeStorage({ [GUIDELINE_SET_STORAGE_KEY]: JSON.stringify(existing) });
+  let requestCount = 0;
+  await assert.rejects(
+    restoreLatestDefaultGuidelineSets(existing, {
+      storage,
+      fetchImpl: async () => {
+        requestCount += 1;
+        return requestCount === 2
+          ? { ok: false, text: async () => "" }
+          : { ok: true, text: async () => "Downloaded text." };
+      }
+    }),
+    /Could not download/
+  );
+  assert.deepEqual(loadGuidelineSets(storage), existing);
+}
+
+{
+  const existing = [createGuidelineSet("Admission", "Keep this edit too.", { token: "@admission-guidelines" })];
+  const storage = fakeStorage({ [GUIDELINE_SET_STORAGE_KEY]: JSON.stringify(existing) });
+  await assert.rejects(
+    restoreLatestDefaultGuidelineSets(existing, {
+      storage,
+      fetchImpl: async () => ({ ok: true, text: async () => "   \n" })
+    }),
+    /was empty/
+  );
+  assert.deepEqual(loadGuidelineSets(storage), existing, "an empty deployed prompt must leave local storage unchanged");
 }
 
 // CRUD remains fully user-managed after seeding.

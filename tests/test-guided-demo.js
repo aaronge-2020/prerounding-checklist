@@ -5,6 +5,7 @@ import { createChecklistSnapshot } from "../src/workups/checklist-conversion.js"
 import { effectiveWorkupCatalog } from "../src/workups/schema.js";
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 import { DEMO_GUIDE_STAGES, createDemoPresentation, demoStage } from "../src/ui/demo/presentation.js";
+import { DEMO_REVIEW_ACTIONS, demoReviewTransition } from "../src/ui/demo/controller.js";
 
 const escapeHtml = (value = "") => String(value)
   .replace(/&/g, "&amp;")
@@ -46,8 +47,15 @@ const promptSummary = checklistAnswersSummary(snapshot, seededAnswers);
 assert.match(promptSummary, /JVP not elevated/);
 assert.match(promptSummary, /Clear throughout including bases/);
 assert.doesNotMatch(promptSummary, /Are you having chest pressure or pain now/);
-assert.equal(demoStage("context-review").targetSelector, '[data-action="confirm-all-section-redactions"]');
-assert.equal(demoStage("daily-review").targetSelector, '[data-action="confirm-all-section-redactions"]');
+assert.equal(demoStage("context-review").targetSelector, '[data-action="keep-reviewed-redaction"]');
+assert.equal(demoStage("daily-review").targetSelector, '[data-action="keep-reviewed-redaction"]');
+assert.deepEqual([...DEMO_REVIEW_ACTIONS], ["keep-reviewed-redaction", "confirm-all-section-redactions", "continue-section-review"]);
+assert.equal(demoReviewTransition("keep-reviewed-redaction", true), "preserve-review");
+assert.equal(demoReviewTransition("confirm-all-section-redactions", true), "preserve-review");
+assert.equal(demoReviewTransition("continue-section-review", true), "preserve-review");
+assert.equal(demoReviewTransition("keep-reviewed-redaction", false), "complete-review");
+assert.equal(demoReviewTransition("copy-prompt", false), "unrelated");
+assert.match(demoStage("context-review").instruction, /Accept.*one change at a time/i);
 assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 13);
 Object.values(DEMO_GUIDE_STAGES).forEach((stage) => {
   assert.ok(stage.instruction, `${stage.title} should tell the user what to do`);

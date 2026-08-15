@@ -1,7 +1,7 @@
 import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
 import { buildTrajectoryBlock } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260722-unified-stay-v2";
-import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260722-unified-stay-v2";
+import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js?v=20260722-guideline-library";
 import { naturalLanguagePrompt } from "./natural-language.js";
 import { buildProgressNotePacket } from "./progress-note-packet.js";
@@ -39,21 +39,21 @@ export const DEFAULT_PROMPT_TEMPLATES = {
   medication_explainer_by_problem: `${MEDICATION_EXPLAINER_INSTRUCTIONS}\n\n@admission-packet\n\n@medications\n\n@selected-day`,
   medication_safety_audit: `${MEDICATION_SAFETY_INSTRUCTIONS}\n\n@admission-packet\n\n@medications\n\n@labs\n\n@selected-day`,
   checklist_workup_refinement: `@admission-packet\n\n@selected-day\n\n@checklist-answers`,
-  preround_bedside_exam: `@team-preferences\n\n@pre-round-checklist-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`,
-  discharge_instructions: `@team-preferences\n\n@discharge-instructions-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`,
-  consulting: `@team-preferences\n\n@consulting-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-exam-findings`
+  preround_bedside_exam: `@team-preferences\n\n@pre-round-checklist-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-physical-exam`,
+  discharge_instructions: `@team-preferences\n\n@discharge-instructions-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-physical-exam`,
+  consulting: `@team-preferences\n\n@consulting-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-physical-exam`
 };
 
 export const SMART_PROMPT_VARIABLES = [
   { token: TEAM_PREFERENCES_PROMPT_TOKEN, label: "Team preferences", description: "The exact text in your Team preferences guideline, if any." },
-  { token: "@admission-packet", label: "Admission packet", description: "All saved admission fields, labeled." },
-  { token: "@selected-day", label: "Selected hospital day", description: "The chosen hospital-day packet; defaults to the latest saved day." },
-  { token: "@progress-note-packet", label: "Progress-note packet", description: "Curated carry-forward context plus the selected day, in clinical order." },
-  { token: "@presentation-to-edit", label: "Presentation to edit", description: "The de-identified presentation pasted into the editor; held only in this tab." },
-  { token: "@checklist-answers", label: "Checklist answers", description: "History and physical exam answers." },
-  { token: "@admissions-exam-findings", label: "Prior clinician exam findings", description: "Physical exam findings documented by another clinician in the admission packet." },
-  { token: "@selected-day-exam-findings", label: "Current pre-round exam findings", description: "The physical exam documented during the current pre-round visit for the selected day." },
-  { token: "@openevidence-exam-note", label: "OpenEvidence exam note", description: "The saved de-identified OpenEvidence exam note for the selected hospital day, if any." }
+  { token: "@admission-packet", label: "All admission fields", description: "Every saved field in the Admission packet." },
+  { token: "@selected-day", label: "All selected-day fields", description: "Every saved field for the selected hospital day; defaults to the latest day." },
+  { token: "@progress-note-packet", label: "Curated progress-note context", description: "Carry-forward admission context plus the selected hospital day, in clinical order." },
+  { token: "@presentation-to-edit", label: "Presentation draft", description: "The de-identified presentation pasted into the editor; held only in this tab." },
+  { token: "@checklist-answers", label: "Selected-day checklist answers", description: "History and physical-exam answers saved for the selected hospital day." },
+  { token: "@admission-physical-exam", label: "Physical exam — admission", description: "Only the physical-exam field saved in the Admission packet." },
+  { token: "@selected-day-physical-exam", label: "Physical exam — selected day", description: "Only the physical exam for the selected packet, including Admission when Admission is selected." },
+  { token: "@openevidence-exam-note", label: "OpenEvidence exam note — selected day", description: "The saved de-identified OpenEvidence exam note for the selected hospital day, if any." }
 ];
 
 function promptToken(label, index, used) {
@@ -103,19 +103,23 @@ export function promptVariablesForPatient(patient, { selectedDayId = "", guideli
     ...SMART_PROMPT_VARIABLES.map((variable) => variable.token),
     ...guidelineVariables.map((variable) => variable.token)
   ]);
-  const sectionVariables = (patient?.contextSections || []).map((section, index) => ({
-    token: promptToken(section.label, index, used),
-    label: section.label || `Admission field ${index + 1}`,
-    description: "This admission packet field.",
+  const sectionVariables = (patient?.contextSections || [])
+    .filter((section) => String(section?.deidentifiedText || "").trim() && section?.sourceKind !== "prior_physical_exam")
+    .map((section, index) => ({
+    token: promptToken(`admission-${dailySourceKindLabel(section.sourceKind)}`, index, used),
+    label: `Admission — ${dailySourceKindLabel(section.sourceKind)}`,
+    description: `Only this saved Admission field: ${dailySourceKindLabel(section.sourceKind)}.`,
     sectionId: section.id
-  }));
+    }));
   const day = selectedPromptDay(patient, selectedDayId);
-  const daySourceVariables = (day?.sourceCaptures || []).map((capture, index) => ({
-    token: promptToken(`day-${capture.label || dailySourceKindLabel(capture.sourceKind)}`, index, used),
-    label: `${day.label || "Selected day"}: ${capture.label || dailySourceKindLabel(capture.sourceKind)}`,
-    description: "This selected hospital-day source.",
+  const daySourceVariables = (day?.sourceCaptures || [])
+    .filter((capture) => String(capture?.deidentifiedText || "").trim() && !isPhysicalExamCapture(capture))
+    .map((capture, index) => ({
+    token: promptToken(`selected-day-${dailySourceKindLabel(capture.sourceKind)}`, index, used),
+    label: `${day.label || "Selected day"} — ${dailySourceKindLabel(capture.sourceKind)}`,
+    description: `Only this saved ${day.label || "selected-day"} field: ${dailySourceKindLabel(capture.sourceKind)}.`,
     daySourceId: capture.id
-  }));
+    }));
   return [...guidelineVariables, ...sectionVariables, ...daySourceVariables, ...SMART_PROMPT_VARIABLES];
 }
 
@@ -139,7 +143,7 @@ function savedExamNoteText(day) {
 
 function physicalExamSections(patient) {
   return (patient?.contextSections || []).filter((section) =>
-    ["physical_exam", "prior_physical_exam"].includes(section?.sourceKind) || /^Physical exam findings(?: - Admission)?$/i.test(section?.label || "")
+    section?.sourceKind === "prior_physical_exam" || /^Physical exam findings(?: - Admission)?$/i.test(section?.label || "")
   );
 }
 
@@ -147,12 +151,8 @@ function isPhysicalExamCapture(capture) {
   return ["physical_exam", "pre_round_physical_exam"].includes(capture?.sourceKind);
 }
 
-function isTodayExamSection(section) {
-  return section?.sourceKind === "physical_exam";
-}
-
 function admissionSectionsWithoutTodayExam(patient) {
-  return (patient?.contextSections || []).filter((section) => !isTodayExamSection(section));
+  return patient?.contextSections || [];
 }
 
 function selectedDayCapturesWithoutExam(day) {
@@ -166,7 +166,8 @@ function admissionExamFindings(patient) {
   return texts.length ? `Prior clinician physical exam findings.\n\n${texts.join("\n\n")}` : "No prior clinician exam findings recorded.";
 }
 
-function selectedDayExamFindings(day) {
+function selectedDayExamFindings(patient, selectedDayId, day) {
+  if (selectedDayId === ADMISSION_PSEUDO_DAY_ID) return admissionExamFindings(patient);
   const captures = (day?.sourceCaptures || []).filter((capture) =>
     capture?.sourceKind === "physical_exam" && String(capture?.deidentifiedText || "").trim()
   );
@@ -187,6 +188,8 @@ export function loadPromptTemplateOverrides(storage = localStorage) {
       "@clinical-differential-instructions": "",
       "@presentation-editor-instructions": PRESENTATION_EDITOR_INSTRUCTIONS,
       "@teaching-case-instructions": "@teaching-guidelines",
+      "@admissions-exam-findings": "@admission-physical-exam",
+      "@selected-day-exam-findings": "@selected-day-physical-exam",
       "@medication-explainer-instructions": MEDICATION_EXPLAINER_INSTRUCTIONS,
       "@medication-safety-instructions": MEDICATION_SAFETY_INSTRUCTIONS
     };
@@ -266,14 +269,14 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
     "@presentation-to-edit": String(presentationToEdit || "").trim(),
     "@checklist-answers": checklistAnswersSummary(snapshot, answers, quickNotes),
     "@openevidence-exam-note": savedExamNoteText(selectedDay) || "No saved OpenEvidence exam note.",
-    "@admissions-exam-findings": admissionExamFindings(patient),
-    "@selected-day-exam-findings": selectedDayExamFindings(selectedDay)
+    "@admission-physical-exam": admissionExamFindings(patient),
+    "@selected-day-physical-exam": selectedDayExamFindings(patient, selectedDayId, selectedDay)
   };
 }
 
 export function interpolatePromptTemplate(template, variables) {
   // Replace longer tokens first. Tokens such as @selected-day and
-  // @selected-day-exam-findings intentionally share a prefix; replacing the
+  // @selected-day-physical-exam intentionally share a prefix; replacing the
   // short token first corrupts the longer token and leaks "-exam-findings"
   // into the generated prompt.
   return Object.entries(variables).sort(([left], [right]) => right.length - left.length).reduce(

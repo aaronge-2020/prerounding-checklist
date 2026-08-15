@@ -104,6 +104,47 @@ async function fetchGuidelineText(path) {
   }
 }
 
+async function fetchLatestGuidelineText(path, fetchImpl) {
+  const separator = path.includes("?") ? "&" : "?";
+  const response = await fetchImpl(`${path}${separator}prompt-refresh=${Date.now()}`, { cache: "no-store" });
+  if (!response?.ok) throw new Error(`Could not download ${path}.`);
+  const text = await response.text();
+  if (!String(text || "").trim()) throw new Error(`The downloaded prompt ${path} was empty.`);
+  return text;
+}
+
+// Explicit destructive refresh only. Startup seeding remains one-time and
+// deletion-safe; this function runs solely after the user confirms that the
+// currently deployed built-ins should replace local edits.
+export async function restoreLatestDefaultGuidelineSets(
+  sets,
+  { storage = localStorage, fetchImpl = fetch } = {}
+) {
+  const current = Array.isArray(sets) ? sets : [];
+  const currentByToken = new Map(current.map((set) => [set.token, set]));
+  const refreshableSources = DEFAULT_GUIDELINE_SET_SOURCES.filter((source) => source.path);
+  const downloaded = await Promise.all(
+    refreshableSources.map(async (source) => [source.token, await fetchLatestGuidelineText(source.path, fetchImpl)])
+  );
+  const textByToken = new Map(downloaded);
+  const refreshedDefaults = DEFAULT_GUIDELINE_SET_SOURCES.flatMap((source) => {
+    const existing = currentByToken.get(source.token);
+    if (!source.path) return existing ? [{ ...existing, label: source.label, token: source.token }] : [];
+    const text = textByToken.get(source.token);
+    if (existing) {
+      return [{ ...existing, label: source.label, token: source.token, text, updatedAt: new Date().toISOString() }];
+    }
+    return [createGuidelineSet(source.label, text, {
+      token: source.token,
+      existingTokens: current.map((set) => set.token)
+    })];
+  });
+  const custom = current.filter((set) => !DEFAULT_TOKENS.has(set.token));
+  const next = [...refreshedDefaults, ...custom];
+  saveGuidelineSets(next, storage);
+  return next;
+}
+
 async function seedDefaultGuidelineSets({ legacyTeamPreferences = "" } = {}) {
   const sets = [];
   for (const source of DEFAULT_GUIDELINE_SET_SOURCES) {

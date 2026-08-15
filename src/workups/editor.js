@@ -8,18 +8,18 @@ export const WORKUP_ITEM_KINDS = ["history", "exam"];
 export const WORKUP_THOROUGHNESS = {
   focused: {
     label: "Fast rounds",
-    helper: "6–10 priority history questions and 6–10 focused exam items for a busy morning.",
-    prompt: "Use a focused fast-rounds scope: provide 6 to 10 highest-yield history questions and 6 to 10 focused physical-exam items. Omit lower-yield routine items."
+    helper: "Only time-sensitive and management-changing bedside items, ranked first.",
+    prompt: "Use a focused fast-rounds scope. Include every immediate-safety item and only the additional history questions or physical-exam items most likely to change care today. Use no fixed item count, rank every section from highest to lowest priority, and omit routine or low-value items."
   },
   standard: {
     label: "Standard",
-    helper: "12–18 targeted items per section for a balanced pre-round.",
-    prompt: "Use a standard scope: provide roughly 12 to 18 targeted history questions and 12 to 18 targeted physical-exam items, prioritizing the active problems."
+    helper: "All management-relevant bedside items, ordered by clinical priority.",
+    prompt: "Use a standard scope. Include every clinically justified history question and physical-exam item that could affect today’s assessment, treatment, monitoring, readiness, or disposition. Use no fixed item count and rank the items from highest to lowest clinical priority."
   },
   thorough: {
     label: "Thorough",
-    helper: "A broad, teaching-level review when there is time for a full bedside assessment.",
-    prompt: "Use a thorough teaching-level scope: cover all clinically relevant history questions and physical-exam items, including important systems beyond the immediate complaint."
+    helper: "Every clinically justified bedside item, including lower-frequency but consequential concerns.",
+    prompt: "Use a thorough teaching-level scope. Include every clinically justified history question and physical-exam item, including lower-frequency but consequential complications and relevant functional or disposition concerns. Do not pad the checklist, use no fixed item count, and rank all items from highest to lowest clinical priority."
   }
 };
 
@@ -134,7 +134,7 @@ export function buildOpenEvidenceWorkupDraftPrompt({ patientContext = "", dailyT
   const intro = guidelinesText
     ? `Follow the guidelines above for ${workupTitle || "this patient"}.`
     : `Review this de-identified information and suggest a practical bedside checklist for ${workupTitle || "this patient"}.`;
-  return naturalLanguagePrompt(`${guidelinesText ? `${guidelinesText}\n\n` : ""}${intro} ${buildTeamPreferencesPromptBlock(teamPreferences)} Put the negative, normal, absent, reassuring, or other baseline answer first, followed by positive or concerning findings, and never lead with not assessed or unable to assess. Use short, phone-tappable answer choices. ${scope.prompt} Exclude labs, imaging, orders, diagnoses, treatment plans, citations, and note prose. Use only the de-identified information provided here.
+  return naturalLanguagePrompt(`${guidelinesText ? `${guidelinesText}\n\n` : ""}${intro} ${buildTeamPreferencesPromptBlock(teamPreferences)} Put the negative, normal, absent, reassuring, or other baseline answer first, followed by positive or concerning findings, and never lead with not assessed or unable to assess. Use short, phone-tappable answer choices. ${scope.prompt} Exclude labs, imaging, orders, standalone diagnosis lists, diagnostic conclusions, treatment plans, citations, and assessment prose. Retain the chart-supported problem or decision label attached to each history or exam item. Use only the de-identified information provided here.
 
 Patient context. ${patientContext || "No saved patient context."}
 

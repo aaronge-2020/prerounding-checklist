@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { createChecklistReturnBundle, createChecklistReturnTransferFile, createPhoneChecklistTransferFile, decodeChecklistReturnBundle, decodeChecklistReturnInput, decodeChecklistReturnTransferFile, decodePhoneChecklistBundle, decodePhoneChecklistTransferFile, encodeChecklistReturnBundle, encodePhoneChecklistBundle, fillNegativeChecklistAnswers, mergeQuickNotes, mergeReturnedAnswers, setChecklistChoice } from "../src/checklist/state.js";
 import { BUNDLED_WORKUPS } from "../src/workups/catalog.js";
 import { createChecklistSnapshot } from "../src/workups/checklist-conversion.js";
@@ -106,10 +107,37 @@ assert.match(buildWorkupAuthoringPrompt(workup), /first choice must always be th
 assert.match(buildOpenEvidenceWorkupDraftPrompt(), /Put the negative, normal, absent, reassuring, or other baseline answer first/i);
 assert.match(buildOpenEvidenceWorkupDraftPrompt({ thoroughness: "focused" }), /focused fast-rounds scope/i);
 assert.match(buildOpenEvidenceWorkupDraftPrompt({ thoroughness: "thorough" }), /thorough teaching-level scope/i);
+for (const thoroughness of ["focused", "standard", "thorough"]) {
+  const prompt = buildOpenEvidenceWorkupDraftPrompt({ thoroughness });
+  assert.match(prompt, /no fixed item count/i);
+  assert.match(prompt, /highest to lowest (?:clinical )?priority/i);
+  assert.doesNotMatch(prompt, /\b(?:6|10|12|14|18)\s*(?:to|–|-)\s*(?:10|14|18)\b/i);
+}
 assert.match(buildOpenEvidenceWorkupDraftPrompt({ teamPreferences: { teamInstructions: "Focus on infection source control." } }), /infection source control/);
 assert.doesNotMatch(buildOpenEvidenceWorkupDraftPrompt(), /[\[\]{}<>()`]/);
 assert.doesNotMatch(buildOpenEvidenceWorkupDraftPrompt(), /^\s*(?:#|[-*]|\d+[.)])\s/m);
 assert.doesNotMatch(buildOpenEvidenceWorkupDraftPrompt({ patientContext: "[De-identified] context", dailyTrajectory: "<Daily update>" }), /[\[\]{}<>()`]/, "workup prompts must remove bracketed patient-context syntax");
 assert.match(buildJsonFormatterPrompt(), /first choice for every item must be the negative, normal, absent, reassuring, or baseline finding/i);
+
+const checklistGuidelines = readFileSync("prompts/Pre-round_checklist.md", "utf8");
+assert.match(checklistGuidelines, /attending hospitalist with 30 years/i);
+assert.match(checklistGuidelines, /no required, minimum, or maximum number of items/i);
+assert.match(checklistGuidelines, /What documented problem, treatment, procedure, uncertainty, or decision makes this item relevant/);
+assert.match(checklistGuidelines, /What important clinical possibilities would the answer or finding help distinguish/);
+assert.match(checklistGuidelines, /Number 1 is the highest priority/);
+assert.match(checklistGuidelines, /Output exactly these two sections and nothing else/);
+assert.match(checklistGuidelines, /### BEDSIDE QUESTIONS[\s\S]*### FOCUSED PHYSICAL EXAM/);
+assert.doesNotMatch(checklistGuidelines, /approximately 10–14|2–5 minutes/);
+const connectedChecklistPrompt = buildOpenEvidenceWorkupDraftPrompt({
+  guidelinesText: checklistGuidelines,
+  workupTitle: "Acute dyspnea",
+  patientContext: "New oxygen requirement after diuresis.",
+  thoroughness: "standard"
+});
+assert.match(connectedChecklistPrompt, /attending hospitalist with 30 years/i);
+assert.match(connectedChecklistPrompt, /number 1 is the highest priority/i);
+assert.match(connectedChecklistPrompt, /bedside questions[\s\S]*focused physical exam/i);
+assert.match(connectedChecklistPrompt, /retain the chart-supported problem or decision label/i);
+assert.doesNotMatch(connectedChecklistPrompt, /Exclude labs, imaging, orders, diagnoses/i);
 
 console.log("local-first workup/checklist tests passed");

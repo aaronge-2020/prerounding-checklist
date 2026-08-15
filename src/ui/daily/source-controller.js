@@ -1,7 +1,7 @@
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260722-unified-stay-v2";
-import { updateActivePatient } from "../../app/state/vault.js?v=20260722-unified-stay-v2";
+import { updateActivePatient } from "../../app/state/vault.js?v=20260815-smart-variable-fields";
 import { createEphemeralRedactionReview, reviewKey, synchronizeReviewPlaceholders } from "../../patient-context/review.js?v=20260715-reject-rest";
-import { admissionSourceKindOptions, createSourceCapture, dailySourceKindOptions, replaceSourceCapturesFromFormAsync, sourceCapturePacketCheck } from "../../patient-context/source-captures.js?v=20260723-edit-save";
+import { admissionSourceKindOptions, createSourceCapture, dailySourceKindOptions, replaceSourceCapturesFromFormAsync, sourceCapturePacketCheck } from "../../patient-context/source-captures.js?v=20260815-smart-variable-fields";
 
 export function createDailySourceController(deps) {
   const captureRows = () => [...document.querySelectorAll("#dailySources .source-capture-editor")].map((row) => ({

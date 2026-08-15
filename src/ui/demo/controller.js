@@ -1,5 +1,16 @@
-import { createDemoPresentation } from "./presentation.js?v=20260809-demo-nstemi-workup-1";
+import { createDemoPresentation } from "./presentation.js?v=20260815-single-redaction-accept";
 import { DEMO_DAY_ID, DEMO_REQUIRED_ANSWER_ITEM_ID, DEMO_WORKUP_ID, prefillDemoChecklist } from "./session.js?v=20260809-demo-nstemi-workup-1";
+
+export const DEMO_REVIEW_ACTIONS = Object.freeze(new Set([
+  "keep-reviewed-redaction",
+  "confirm-all-section-redactions",
+  "continue-section-review"
+]));
+
+export function demoReviewTransition(action, hasRemainingReview) {
+  if (!DEMO_REVIEW_ACTIONS.has(action)) return "unrelated";
+  return hasRemainingReview ? "preserve-review" : "complete-review";
+}
 
 export function createDemoController({ app, byId, escapeHtml, getSession, getView, render: renderApp, selectDemoPacket }) {
   const presentation = createDemoPresentation({ escapeHtml });
@@ -13,8 +24,8 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   function activeReviewAction(content) {
     return visibleTarget(
       content,
-      '.section-editor.is-expanded [data-action="confirm-all-section-redactions"], ' +
-        '.section-editor.is-expanded [data-action="keep-reviewed-redaction"], ' +
+      '.section-editor.is-expanded [data-action="keep-reviewed-redaction"], ' +
+        '.section-editor.is-expanded [data-action="confirm-all-section-redactions"], ' +
         '.section-editor.is-expanded [data-action="continue-section-review"]'
     );
   }
@@ -142,10 +153,12 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
         session.stage = "save-day";
       }
     }
-    if (
-      (action === "keep-reviewed-redaction" || action === "confirm-all-section-redactions" || action === "continue-section-review") &&
-      !activeReviewAction(document.querySelector("#dailyContent"))
-    ) {
+    const reviewTransition = demoReviewTransition(action, Boolean(activeReviewAction(document.querySelector("#dailyContent"))));
+    if (reviewTransition !== "unrelated") {
+      if (reviewTransition === "preserve-review") {
+        render();
+        return;
+      }
       if (session.stage === "daily-review") session.stage = "open-workups";
       else {
         app.selectedStayPacketId = DEMO_DAY_ID;

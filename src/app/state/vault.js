@@ -1,7 +1,7 @@
 import { normalizeUserPreferences } from "../preferences.js";
 import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js";
 import { CONTEXT_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRoleLabel } from "../../patient-context/packet-roles.js";
-import { migrateLegacyDailySections, normalizeSourceCapture } from "../../patient-context/source-captures.js?v=20260722-unified-stay-v2";
+import { migrateLegacyDailySections, normalizeSourceCapture, normalizeSourceKindForScope } from "../../patient-context/source-captures.js?v=20260815-smart-variable-fields";
 
 export const VAULT_SCHEMA_VERSION = 3;
 
@@ -35,7 +35,7 @@ export function createTextSection(label, { id = createLocalId("section"), text =
     id,
     label: String(label || "Section").trim() || "Section",
     role: normalizePacketRole(scope, role, label),
-    sourceKind: String(sourceKind || "other_chart_text"),
+    sourceKind: normalizeSourceKindForScope(scope, sourceKind),
     deidentifiedText: String(text || ""),
     residualWarnings: [],
     createdAt: timestamp,
@@ -77,7 +77,7 @@ export function normalizeSection(section, fallbackLabel = "Section", { now = tim
     id: String(section?.id || createLocalId("section")),
     label: String(section?.label || fallbackLabel).trim() || fallbackLabel,
     role: normalizePacketRole(scope, section?.role, section?.label || fallbackLabel, index),
-    sourceKind: String(section?.sourceKind || "other_chart_text"),
+    sourceKind: normalizeSourceKindForScope(scope, section?.sourceKind),
     deidentifiedText: String(section?.deidentifiedText || ""),
     residualWarnings: sanitizeResidualWarningMetadata(Array.isArray(section?.residualWarnings) ? section.residualWarnings : []),
     createdAt: String(section?.createdAt || timestamp),
