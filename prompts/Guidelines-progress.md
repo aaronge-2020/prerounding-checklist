@@ -26,7 +26,7 @@ Reason through the Assessment and Plan first, then build Subjective and Objectiv
 4\. Standalone Assessment and Plan — a clinician can understand the patient without reading earlier sections
 5\. Evidentiary closure — every fact presented is a fact used
 6\. Interval relevance in Subjective and Objective — every fact there is new, changed, or newly decisive
-7\. Five-item new-problem differentials
+7\. Supported three-to-five-item new-problem differentials
 8\. Diagnostic reasoning quality
 9\. Concision and oral readability
 10\. Formatting and internal ordering
@@ -39,10 +39,10 @@ Draft silently in this sequence. Do not draft in section order.
 
 1\. Reconstruct the interval since the last presentation and form the clinical picture.
 2\. Build a silent Problem Ledger with one row for every problem that must appear in the Plan: the clinical problem name, what it is being treated as, current status or trajectory, the few durable facts a future clinician must know, management-changing procedures or studies and when they occurred, current treatment, whether it is new in this presentation, whether its cause or mechanism is established, today's decision, its tier, the Subjective facts that support it, and the Objective facts that support it.
-3\. For every unresolved problem that is new since the prior presentation, and for every older unresolved problem whose differential rank changed today, build a silent Differential Ledger with exactly five chart-supported specific diagnoses, ordered by likelihood or immediate danger. For each diagnosis, write the affirmative patient-specific facts that support it and the patient-specific facts that make it less likely than the diagnosis above it.
+3\. For every unresolved problem that is new since the prior presentation, and for every older unresolved problem whose differential rank changed today, build a silent Differential Ledger targeting five chart-supported specific diagnoses, ordered by likelihood or immediate danger. Use three or four only when fewer than five distinct diagnoses have affirmative patient-specific support; never pad. For each diagnosis, write the affirmative facts that support it and the facts that make it less likely than the diagnosis above it.
 4\. Build a silent Missing-Discriminator Ledger for every decisive but absent datum that must be collected to rank, narrow, or rule out the listed differentials.
-5\. Write the Plan from the ledgers. Every problem gets a concise Key context synopsis before its reasoning and actions; every new or newly re-ranked unresolved problem also gets one differential sentence followed by a five-row differential table.
-6\. Write the Assessment, distilling the Plan into two sentences without importing problem-level reasoning.
+5\. Write the Plan from the ledgers. Every problem gets a concise Key context synopsis before its reasoning and actions; every new or newly re-ranked unresolved problem also gets one differential sentence followed by a three-to-five-row differential table.
+6\. Write the one-sentence Assessment, distilling the current state from the Plan without importing problem-level reasoning.
 7\. Build the Objective as the evidentiary case for the Problem Ledger, Differential Ledger, and Missing-Discriminator Ledger.
 8\. Build the Subjective the same way.
 9\. Run the reconciliation pass.
@@ -80,50 +80,43 @@ Write "hemoglobin holding at 7.5 across two draws." Not "hemoglobin remains 7.5.
 
 Prefacing yesterday's symptom list with "continues to" does not satisfy this exception. If the sentence would read the same as yesterday's presentation with one word added, delete it.
 
-**\*\*This interval gate does not apply to Key context.\*\*** Carry forward an unchanged problem-defining CT, ultrasound, pathology result, microbiology result, major surgery or procedure, consequential complication, core treatment course, or important held therapy when a clinician could not understand the active problem without it. Carry forward only the distilled fact, not yesterday's narrative or the full hospital course.
+**\*\*This interval gate does not apply to the standard 24-hour vital-sign summary; required bowel, bladder, and ambulation status; a clinically relevant intake/output summary; or Key context.\*\*** Carry forward an unchanged problem-defining CT, ultrasound, pathology result, microbiology result, major surgery or procedure, consequential complication, core treatment course, or important held therapy in Key context when a clinician could not understand the active problem without it. Carry forward only the distilled fact, not yesterday's narrative or the full hospital course.
 
-**### Gate two — restatement**
+**### Gate two — clinical closure**
 
-This is a mechanical string test, not a judgment call.
+Every selective fact in Subjective and Objective must support a named problem, differential rank, severity judgment, treatment response, action, contingency, or disposition decision. The downstream section must use the finding conceptually, but it does not need to repeat every word or number verbatim.
 
-**\*\*A specific value or detail may appear in Subjective or Objective only if that identical value or detail appears again in the Assessment, the applicable Key context synopsis, a differential table, a reasoning paragraph, or a Plan bullet.\*\***
+Repeat an exact value downstream when the number itself defines severity, establishes a clinically important trend, triggers an action, or serves as a treatment threshold.
 
-\- **\*\*Numbers.\*\*** The number itself must reappear downstream. "Creatinine 5.14" survives only if \`5.14\` is written again.
-\- **\*\*Qualitative findings.\*\*** The key term must reappear downstream. "Guaiac negative stool" survives only if "guaiac negative" is written again.
-\- **\*\*Trends.\*\*** At least the value being relied upon must reappear.
-\- **\*\*Negatives.\*\*** A denied symptom survives only if that symptom is named again in reasoning that weighs it.
+The following standard safety and function elements are exempt from downstream repetition but remain subject to factual accuracy: the 24-hour vital-sign summary; bowel, bladder, and ambulation status; a clinically relevant intake/output summary; a previous-day laboratory comparator included only to establish the direction of a reported trend; the identifying content of the One-Liner; and the Consultants roster.
 
-Two exemptions only: the identifying content of the One-Liner, and the Consultants roster.
-
-**\*\*The identical-string match is necessary but not sufficient.\*\*** A downstream mention closes a Subjective or Objective fact only when the sentence uses that fact to move a diagnosis up or down the differential, establish severity or trajectory, justify an action or contingency, or identify a decision-critical missing datum that the Plan obtains.
+**\*\*Conceptual linkage is necessary but not sufficient.\*\*** A downstream mention closes a selective Subjective or Objective fact only when it uses that fact to move a diagnosis up or down the differential, establish severity or trajectory, justify an action or contingency, or identify a decision-critical missing datum that the Plan obtains.
 
 A value repeated downstream solely as a label, parenthetical, or decorative citation does not close the loop. If the downstream sentence would make the same claim with the value deleted, the value has not earned its place upstream.
 
-Before final output, build a hidden Closure Table with one row for every upstream number, temporal detail, qualitative symptom, exam finding, imaging positive, imaging negative, micro detail, pending result, prior-support state, and data gap:
+Before final output, build a hidden Closure Table with one row for every selective upstream symptom, exam finding, imaging positive, imaging negative, micro detail, pending result, prior-support state, and data gap:
 
-\| Upstream quote | Downstream exact quote | Function |
+\| Upstream fact | Downstream use | Function |
 \|---|---|---|
-\| exact value or phrase | exact value or phrase in the Assessment, Key context, reasoning, or Plan | standalone problem definition, differential rank, severity, trajectory, action, contingency, or decision-critical missing data |
+\| value or finding | Assessment, Key context, differential table, reasoning paragraph, Plan bullet, or Disposition | problem definition, differential rank, severity, trajectory, treatment response, action, contingency, or disposition |
 
-Delete every Subjective or Objective fact whose row lacks an exact downstream quote and one of those functions. This includes yesterday's oxygen device, drain state, diet state, symptom duration, response-to-treatment values, and negative exam or imaging clauses.
-
-Treat every vital-sign component as its own Closure Table row: temperature, heart rate, blood pressure, respiratory rate, saturation, oxygen device, and oxygen flow each need a downstream exact quote and function. Delete the unused component even when other values from the same Vitals line survive.
+Delete every selective Subjective or Objective fact whose row lacks a downstream use and one of those functions.
 
 **### Corollary — cite your evidence**
 
-Because restatement is required, the Assessment, differential tables, and every reasoning paragraph must name the specific values they rely on rather than gesturing at them.
+The Assessment, differential tables, and every reasoning paragraph must name the specific values they actually rely on rather than gesturing at them.
 
 Write "hemoglobin has held at 7.5 across two draws." Not "hemoglobin has held."
 
 Write "systolics 108 to 123 off fluid boluses." Not "hemodynamically stable."
 
-Reasoning that gestures at evidence without naming it will strip that evidence out of the Objective, leaving a presentation with no data behind its conclusions.
+Reasoning that gestures at decisive evidence without naming it leaves the presentation with no data behind its conclusions.
 
 **### Missing decisive data**
 
 A decision-critical data gap is itself a finding. State it once, in the Objective subsection where the value would have appeared, and pair it with the Plan bullet that obtains it.
 
-For every new or newly re-ranked unresolved problem, ask which absent discriminator is necessary to rule in, rule out, or rank the five-item differential. If the supplied data omit a high-yield clinical input that any inpatient team should obtain now, call out that absence instead of silently reasoning around it.
+For every new or newly re-ranked unresolved problem, ask which absent discriminator is necessary to rule in, rule out, or rank the differential. If the supplied data omit a high-yield clinical input that any inpatient team should obtain now, call out that absence instead of silently reasoning around it.
 
 Examples: AKI or oliguria needs urine output and strict ins and outs; suspected shock needs a current blood pressure and perfusion marker; hypoxemia needs the current oxygen flow and saturation; possible infection needs cultures that were actually collected, not merely ordered.
 
@@ -141,18 +134,14 @@ Independently, do not report a value that is chronically abnormal and expected f
 
 Four layers, each with a distinct job. The Assessment and every problem's Key context must remain understandable when read without Subjective or Objective.
 
-\- **\*\*Assessment\*\*** — the interval big picture: who this patient is now, and what today turns on. Exactly two sentences. Never the argument itself.
+\- **\*\*Assessment\*\*** — one concise current-state synthesis: age, sex or gender as documented, hospital day, one to three management-relevant past medical conditions, the dominant active problem, and its trajectory. Exactly one sentence. Never the full argument or an action item.
 \- **\*\*Key context\*\*** — the compact, durable synopsis under every Plan problem: what the problem is being treated as, where it stands, and the few prior findings, procedures, treatments, complications, implemented consultant-led events, or durable outcomes a future clinician must know. Recommendation content still belongs only in its Plan bullet. Never an inventory.
 \- **\*\*Differential block or reasoning paragraph\*\*** — why: differential rank, severity, trajectory, competing risk, and the weighing of evidence. Never an action, threshold, dose, or trigger.
 \- **\*\*Bullets\*\*** — what happens and why: the action plus a concise patient-specific justification and the finding or comparison that makes it the right next step.
 
 **\*\*Reasoning blocks contain no actions.\*\*** A sentence or table cell containing "recommend," "continue," "hold," "transfuse below," "if X then Y," a dose, a threshold, or a trigger belongs in a bullet. The bullet must then give its own concise action rationale; do not move the full differential discussion into it.
 
-**\*\*The Assessment does not preview the Plan.\*\*** Its second sentence names which decision dominates today, at a higher level of abstraction than the Plan. It must not restate the specific conflict, evidence, agent, or action that a differential table, reasoning paragraph, or bullet will state.
-
-Write: "Today turns on whether antiplatelet therapy can resume before hemostasis is demonstrated."
-
-Not: "Today turns on reconciling the aspirin resumption order against vascular's recommendation to hold all antiplatelets." 
+**\*\*The Assessment does not preview the Plan.\*\*** It states who the patient is and where the dominant problem stands without restating a specific action, dose, threshold, consultant recommendation, or full differential.
 
 **## Formatting rules**
 
@@ -175,7 +164,7 @@ Other conventions:
 \- Plan bullets are true Markdown bullets: hyphen, space, one action.
 \- Express trends with arrows: \`Hgb 6.8 → 7.4 post-transfusion → 7.5 this morning\`. Use arrows only for serial values of the same measurement, and only in Objective.
 \- Never number problems, sections, or bullets.
-\- Never use tables, block quotes, or nested bullets, except for five-row differential tables under unresolved Plan problems and Medication Regimens appendix tables.
+\- Never use tables, block quotes, or nested bullets, except for three-to-five-row differential tables under unresolved Plan problems and Medication Regimens appendix tables.
 
 **\*\*A subsection label is never a reason to produce content.\*\*** If nothing in a subsection passes both gates, delete the entire subsection including its label. Never write "none," "unremarkable," "no new symptoms," "review of systems otherwise negative," or any placeholder.
 
@@ -185,24 +174,25 @@ Other conventions:
 \|---|---|
 \| One-Liner | one sentence, 25–40 words |
 \| Subjective | up to 4 sentences across all subsections |
-\| Objective | subsections as warranted; up to 5 sentences total |
-\| Assessment | exactly 2 sentences |
+\| Objective | subsections as warranted; target up to 7 compact spoken lines |
+\| Assessment | exactly 1 sentence |
 \| Plan — problems | every active problem, including stable tier three problems |
 \| Plan — Key context | every problem: 1–3 concise sentences; tier three usually 1 sentence |
-\| Plan — differential block | new or newly re-ranked unresolved problems: 1 lead sentence and a 5-row table |
+\| Plan — differential block | new or newly re-ranked unresolved problems: 1 lead sentence and a 3-to-5-row table |
 \| Plan — reasoning paragraph | established tier one problems only: up to 3 sentences |
 \| Plan — tier one problems | up to 3 bullets each |
 \| Plan — tier two problems | up to 2 bullets each |
 \| Plan — tier three problems | exactly 1 bullet each |
+\| FEN, VTE prophylaxis, and Code status | one compact line each |
 \| Disposition | one or two sentences |
 
-Reasoning sentences, differential tables, and reasoning paragraphs do not count toward per-problem bullet limits. **\*\*VERIFY:\*\*** bullets do count. There is no fixed total bullet cap: include every active problem, then enforce the tier-specific limit within each problem.
+Reasoning sentences, differential tables, reasoning paragraphs, FEN, VTE prophylaxis, Code status, and Disposition do not count toward per-problem bullet limits. **\*\*VERIFY:\*\*** bullets do count. There is no fixed total bullet cap: include every active problem, then enforce the tier-specific limit within each problem.
 
 Target 350 to 600 words. Exceed 700 only when multiple independently active problems require separate decisions or durable handoff context that cannot be safely compressed.
 
 These are hard limits unless exceeding them is necessary to communicate an immediate safety concern. If a limit is exceeded, rewrite before returning.
 
-The five-row table exists only to weigh a five-item differential. Do not use the differential sentence or table to add more actions, teaching, consultant summary, or background chronology.
+The differential table exists only to weigh three to five supported diagnoses. Do not use the differential sentence or table to add more actions, teaching, consultant summary, or background chronology.
 
 **## Status preservation**
 
@@ -267,7 +257,11 @@ Never narrate chart review. Do not write "the supplied sources show," "one note 
 \| Vital sign or clinical support | Objective |
 \| Examination finding | Objective |
 \| Laboratory, imaging, or diagnostic result | Objective |
-\| Interval synthesis and today's focus | Assessment |
+\| Short current-state synthesis with required identifiers, relevant conditions, dominant problem, and trajectory | Assessment |
+\| Diet, nutrition route, relevant fluids, and electrolyte plan | FEN |
+\| Pharmacologic or mechanical thromboprophylaxis status | VTE Prophylaxis |
+\| Documented resuscitation preference or need for clarification | Code Status |
+\| Destination, discharge barriers, and transition criteria | Disposition |
 \| Durable problem-defining synopsis needed to understand the Assessment and Plan alone | Key context under that Plan problem |
 \| Problem-level severity, trajectory, differential | Differential block or reasoning paragraph |
 \| Consultant service and status | Objective |
@@ -296,6 +290,12 @@ Print these headings in this order, bolded, each preceded by a blank line, with 
 
 **\*\*Plan\*\***
 
+**\*\*FEN\*\***
+
+**\*\*VTE Prophylaxis\*\***
+
+**\*\*Code Status\*\***
+
 **\*\*Disposition\*\***
 
 **\*\*Medication Regimens\*\***
@@ -304,9 +304,9 @@ Never add Review of Systems, Hospital Course, Data, Differential, or any other t
 
 **## One-Liner**
 
-One sentence, 25 to 40 words: age, sex, hospital day, original reason for admission, the one or two comorbidities or recent interventions most relevant to today's decisions, the dominant active problem, and its current trajectory.
+One sentence, 25 to 40 words: age, sex or gender as documented, hospital day, original reason for admission, the one or two comorbidities or recent interventions most relevant to today's decisions, the established or leading cause, the dominant active problem, and its current trajectory.
 
-The One-Liner is the admission anchor: it explains why the patient came in and why they remain hospitalized. The Assessment's first sentence is the current-state synthesis. Between the two, state each fact once — do not repeat the admission narrative in the Assessment, and do not put today's trajectory here.
+The One-Liner is the admission anchor plus the current headline: it explains who the patient is, why they came in, why they remain hospitalized, and how the dominant illness is moving today. The Assessment is a shorter current-state synthesis. Purposeful repetition of age, sex, hospital day, one to three relevant conditions, the dominant problem, and trajectory is required; do not repeat the full admission narrative or supporting argument.
 
 Omit medication lists, diagnostic results, routine chronic conditions, and procedure logistics unless they define the dominant current problem.
 
@@ -314,11 +314,11 @@ Every comorbidity or prior intervention named in the One-Liner must change today
 
 **## Subjective**
 
-Up to four sentences total. Include only subsections with qualifying content.
+Up to five sentences total. Include only subsections with qualifying content.
 
-**\*\*Interval events:\*\*** no more than two sentences on the one or two events since the last presentation that directly changed the assessment, today's plan, immediate risk, procedural readiness, or disposition. No laboratory or imaging results. No routine dialysis, routine medication administration, or routine bowel preparation. Bowel preparation appears only when its completion, failure, or adequacy determines whether today's procedure can occur.
+**\*\*Interval events:\*\*** no more than two sentences, in this order: first, acute overnight fever, desaturation, hemodynamic change, new symptom, urgent evaluation, treatment escalation, or cross-cover intervention; second, the one or two management-changing events from yesterday, such as a procedure, consultant evaluation, or pivotal completed study. Pair every acute event with what was done and the subsequent clinical response when documented. A completed procedure, study, or consultation may be named here, but laboratory values and report details belong in Objective and implications or recommendation content belong under the applicable Plan problem. Omit routine dialysis, routine medication administration, and routine bowel preparation unless they changed procedural readiness or management.
 
-**\*\*Patient report:\*\*** one or two sentences on how the patient feels compared with yesterday and the most important reported change in the dominant symptom. Qualify improvement as patient-reported when that is its only basis, and do not repeat it under interval events.
+**\*\*Patient report:\*\*** one or two sentences beginning with the symptom or functional limitation that prompted admission and whether it is improved, worse, or unchanged compared with yesterday and, when useful, with admission. Then include other pertinent symptoms. Qualify improvement as patient-reported when that is its only basis, and do not repeat it under interval events.
 
 Every daily Subjective must also document bowel function or the last bowel movement, bladder function or urination episodes, and current ambulation status under **\*\*Patient report:\*\*** because these are common discharge barriers. If any domain is absent from the supplied record, state that it is not documented; never invent a normal finding. These three required daily domains are exempt from omission solely for being unchanged or not otherwise management-changing.
 
@@ -328,15 +328,15 @@ Every daily Subjective must also document bowel function or the last bowel movem
 
 Measured, observed, examined, or diagnostic information only. No plans, recommendations, scheduling, treatment instructions, or interpretive conclusions.
 
-Up to five sentences total across all subsections, in this order. Omit any subsection entirely when nothing passes both gates.
+Use compact spoken lines across the following subsections, targeting no more than seven lines unless additional findings materially change management. Do not let the line target remove the standard vital summary, a management-relevant intake/output summary, or decisive diagnostic data. Omit any other subsection entirely when nothing passes both gates.
 
-**\*\*Vitals:\*\*** current values and support that change today's assessment or plan, including volume or oxygen requirement when decisive. Each emitted vital sign must be named again in the current-state sentence, a severity paragraph, or a bedside action. If current vital signs or oxygen requirement are unavailable and that absence affects a decision, write exactly: "Current vital signs and oxygen requirement are not available," and recommend obtaining them in the Plan. Never substitute stale values or an older narrative claim of stability.
+**\*\*Vitals:\*\*** report the available range over the last 24 hours: Tmax; when febrile, the number and approximate timing of febrile episodes; blood-pressure range followed by the predominant range and any clinically meaningful outlier; heart-rate range; respiratory-rate range; oxygen-saturation range; and oxygen device and flow requirement, including a transition to or from room air. Include Tmin when clinically useful. The standard vital summary is exempt from downstream repetition; repeat only the components used to establish severity, trajectory, or a management decision. Never call the patient hemodynamically stable from a single value. If the 24-hour vital summary or oxygen requirement is unavailable, state the specific limitation and recommend obtaining the missing decision-critical measurements in the Plan. Never substitute stale values or an older narrative claim of stability.
 
-Immediately before output, rerun the Vitals line one component at a time. Delete any temperature, heart rate, blood pressure, respiratory rate, saturation, oxygen device, or oxygen flow that does not have its own exact downstream match.
+**\*\*Ins/Outs:\*\*** include documented intake, urine output, net fluid balance, and relevant drain, Foley, ostomy, or rectal-tube output when they affect volume status, diuresis, renal function, bleeding assessment, nutrition, or device management. Include daily weight when it materially improves the volume assessment. If measurements are decision-critical but unavailable or unreliable, state the limitation and include an action to obtain reliable measurements. Omit this subsection when intake and output do not affect current care.
 
-**\*\*Exam:\*\*** selected-day findings only, each restated downstream. Omit "awake and conversant" unless mental status is relevant, "no acute distress" unless it changes severity assessment, unchanged heart sounds, patent lines, unrelated normal findings, and anything belonging in Subjective.
+**\*\*Exam:\*\*** silently review the complete documented selected-day examination, then report only pertinent positives, pertinent negatives, and findings changed from the prior examination. Do not invent or imply examination of an unreported system. Omit "awake and conversant" unless mental status is relevant, "no acute distress" unless it changes severity assessment, unchanged heart sounds, patent lines, unrelated normal findings, and anything belonging in Subjective.
 
-**\*\*Labs:\*\*** short bolded data labels with arrow notation for serial values. Include only the latest decision-driving value, the shortest reliable trend, any value that discriminates among the five items for a new or newly re-ranked differential, and a clearly timed response to treatment. Never reproduce complete panels. No more than three clusters.
+**\*\*Labs:\*\*** short bolded data labels with arrow notation for serial values. Include only values that define severity, show treatment response, alter the differential, or affect today's plan. For a current abnormal value, include the previous-day value or the most clinically relevant recent comparator when it helps establish whether the abnormality is improving, worsening, or stable. Do not include a comparator solely because both values are outside the reference range when they are at the documented chronic baseline and do not affect management. Include any value that discriminates among the listed diagnoses for a new or newly re-ranked differential and any clearly timed response to treatment. Never reproduce complete panels. No more than three clusters.
 
 **\*\*Imaging:\*\*** the single management-changing conclusion, in one sentence. Never reproduce the report or list incidental findings. Include an imaging negative only when it lowers a named differential item or changes a Plan action.
 
@@ -352,7 +352,7 @@ Write: "Gastroenterology, recommendations received. Vascular surgery, recommenda
 
 **\*\*Never state what a consultant recommended here.\*\*** This subsection exists so the team can see at a glance who is on the case and who is still owed a response. The content of every recommendation belongs in a Plan bullet under the problem it bears on.
 
-This subsection is exempt from the restatement rule: a service awaiting recommendations will have no downstream match, and that is the point. Include a service only while it is actively involved; drop it once it has signed off and its recommendations are incorporated.
+This subsection is exempt from the clinical-closure rule: a service awaiting recommendations will have no downstream match, and that is the point. Include a service only while it is actively involved; drop it once it has signed off and its recommendations are incorporated.
 
 Before emitting Objective, assign each result or finding to a Plan problem. If a finding supports several problems, choose the problem where it changes the most immediate differential or decision and restate it there. Do not include several redundant findings that all make the same point unless they distinguish different differential items.
 
@@ -371,13 +371,11 @@ Apply the same discipline to any intervention whose effect is being claimed.
 
 **## Assessment**
 
-Exactly two sentences. No differential, no problem-level reasoning, no action items, no bolding.
+Exactly one sentence. No differential, problem-level argument, action item, or bolding.
 
-**\*\*First sentence — the one-liner.\*\*** Age, sex, hospital day, the dominant active problem, and where the patient now stands, naming the specific value that establishes it. This is the current-state synthesis, not the admission story: the standalone One-Liner already says why the patient came in, so this sentence says where the patient is now and which way they are moving.
+Include age, sex or gender as documented, hospital day, one to three past medical conditions that materially affect today's care, the dominant active problem, and its current trajectory, naming the most important evidence that establishes that trajectory when it can be stated concisely. This is a shorter current-state version of the opening One-Liner, so purposeful repetition of those identifying and framing elements is required; do not repeat the full admission story.
 
-**\*\*Second sentence — today's focus.\*\*** The single thing today turns on, stated at a higher level of abstraction than the Plan. Name which decision dominates; do not rehearse the conflict, the evidence, the agent, or the action that a differential table, reasoning paragraph, or bullet will state. One issue only — do not join two with "and" or "while" to evade this.
-
-**\*\*Assessment quality gate.\*\*** If the first sentence becomes a comma-separated problem list or repeats the One-Liner's admission story, rewrite it around the single dominant interval syndrome and where it stands today. If the second sentence names a test, procedure, medication, consultant, dose, threshold, trigger, or two decisions joined by "and," "while," or "or," rewrite it around the single underlying clinical decision.
+**\*\*Assessment quality gate.\*\*** If the sentence becomes a comma-separated problem list, rewrite it around the single dominant interval syndrome and where it stands today. Do not name a proposed action, dose, threshold, consultant recommendation, or full differential here.
 
 Distinguish patient-reported improvement from measured improvement, a favorable trend from a sustained plateau, and one normal value from resolution.
 
@@ -390,6 +388,8 @@ Everything else moves to the differential block or reasoning paragraph of the pr
 Treat the Assessment and Plan as a self-contained clinical note. A covering or future clinician who reads only these two sections must understand why the patient remains hospitalized, what every active problem is being treated as, the current state of each problem, the few prior events that define it, the core treatment, and today's decision or contingency. Never make the reader search the One-Liner, Subjective, Objective, Disposition, or Medication Regimens appendix to understand a Plan problem.
 
 Under every problem heading, print **\*\*Key context:\*\*** followed by one to three concise sentences before any differential sentence, reasoning paragraph, or bullet. Tier three and uncomplicated chronic problems usually need one sentence. This is a durable problem synopsis, not a second Objective section or a replay of the hospital course.
+
+At minimum, Key context must answer what the problem is being treated as; its established or leading cause or mechanism; the patient-specific evidence supporting that conclusion; why it occurred when known; whether it is improved, worse, or unchanged compared with admission and, when relevant, yesterday; and what core treatment is currently active. If the cause remains unresolved, say so and use the differential block. Never claim causation or treatment response from temporal sequence alone.
 
 Include only the highest-value source-supported facts needed to hand off that problem safely:
 
@@ -420,11 +420,11 @@ List every active problem, including stable problems with no new decision today.
 
 A **\*\*new unresolved problem\*\*** is a clinical problem that first appears in this presentation, or first becomes active in this presentation, and whose cause, source, trigger, organism, bleeding lesion, injury mechanism, or dominant physiology is not established by the supplied record. A known disease with a new decompensation is unresolved when the trigger or mechanism of decompensation is still being worked up.
 
-Every new unresolved problem must have a five-item differential block, even when empiric treatment has already started. A syndrome label such as "sepsis," "AKI," "acute hypoxemic respiratory failure," "encephalopathy," "syncope," or "GI bleeding" is not established until the underlying cause or source driving today's management is established.
+Every new unresolved problem must have a three-to-five-item differential block, even when empiric treatment has already started. Target five diagnoses; use fewer only when additional entities lack affirmative patient-specific support. A syndrome label such as "sepsis," "AKI," "acute hypoxemic respiratory failure," "encephalopathy," "syncope," or "GI bleeding" is not established until the underlying cause or source driving today's management is established.
 
 **\*\*Daily Progress outputs use the same visible differential table as Admission H&Ps.\*\*** If the problem is new today, or if today's data materially re-rank an older unresolved differential, never write a prose differential paragraph. Write one italic ordered-differential sentence followed by the three-column table under that Plan problem heading.
 
-Do not repeat yesterday's five-item differential solely because the problem remains unresolved; restate and re-rank it only if today's data add, remove, or materially reorder an item.
+Do not repeat yesterday's differential table solely because the problem remains unresolved; restate and re-rank it only if today's data add, remove, or materially reorder an item.
 
 Do not write a differential for a stable chronic diagnosis, an already proven diagnosis, or a manifestation merged into its proven cause. Use the reasoning paragraph for severity, trajectory, and competing risk instead.
 
@@ -460,7 +460,7 @@ Bold each problem heading, preceded by a blank line. Immediately beneath it plac
 
 **### Differential block and reasoning paragraph**
 
-After Key context, for a new or newly re-ranked unresolved problem write one italic differential sentence followed by one Markdown table with exactly five body rows. For any other tier one problem whose severity, trajectory, or competing risk drives today's decision, write one italic reasoning paragraph up to three sentences. Omit both for a stable chronic problem continued unchanged.
+After Key context, for a new or newly re-ranked unresolved problem write one italic differential sentence followed by one Markdown table with three to five body rows. Target five rows; use three or four only when another distinct diagnosis cannot be supported without padding. For any other tier one problem whose severity, trajectory, or competing risk drives today's decision, write one italic reasoning paragraph up to three sentences. Omit both for a stable chronic problem continued unchanged.
 
 Cite specific values and findings by name. These blocks are where most of the Objective earns its place.
 
@@ -478,7 +478,7 @@ Cite specific values and findings by name. These blocks are where most of the Ob
 \| [fourth diagnosis] | [patient-specific facts supporting it] | [why it is less likely than the diagnoses above] |
 \| [fifth diagnosis] | [patient-specific facts supporting it] | [why it is least likely, lower probability, or danger-weighted] |
 
-The differential sentence contains only the five names in order, from most to least likely. The table has exactly these three columns and exactly five body rows sorted in the same order. A differential has not been reasoned through until each diagnosis has a row with one to two short clues for and one to two short clues against.
+The differential sentence contains only the listed names in order, from most to least likely. The table has exactly these three columns and three to five body rows sorted in the same order. Delete the fourth or fifth template row when that entity lacks affirmative support. A differential has not been reasoned through until each listed diagnosis has a row with one to two short clues for and one to two short clues against.
 
 Keep the table skimmable. Cells are telegraphic clauses, not mini-paragraphs. Name decisive values, but do not relist every supporting fact when two facts make the same point.
 
@@ -488,13 +488,13 @@ Keep the table skimmable. Cells are telegraphic clauses, not mini-paragraphs. Na
 
 Differential rules:
 
-**\*\*List exactly five specific disease entities for each unresolved problem.\*\*** Every item must be something that could be written as a final diagnosis — a named lesion, mechanism, or disease. Anatomic regions, organ systems, and category formulations are not diagnoses. "Small bowel source," "colonic source," "cardiac etiology," and "infectious versus inflammatory" are prohibited as list items. Diverticular bleeding, angiodysplasia, ischemic colitis, post-polypectomy bleeding, and colorectal neoplasm are diagnoses.
+**\*\*List three to five specific disease entities for each unresolved problem, targeting five.\*\*** Every item must be something that could be written as a final diagnosis — a named lesion, mechanism, or disease. Use fewer than five only when an additional entity would lack affirmative patient-specific support. Anatomic regions, organ systems, and category formulations are not diagnoses. "Small bowel source," "colonic source," "cardiac etiology," and "infectious versus inflammatory" are prohibited as list items. Diverticular bleeding, angiodysplasia, ischemic colitis, post-polypectomy bleeding, and colorectal neoplasm are diagnoses.
 
-Each of the five entities must carry a hidden affirmative support span copied from the supplied record. Counterevidence, exclusion, or the absence of CT findings can lower an entity but can never be its support span.
+Each listed entity must carry a hidden affirmative support span copied from the supplied record. Counterevidence, exclusion, or the absence of CT findings can lower an entity but can never be its support span.
 
 Each differential entity must plausibly explain the dominant syndrome, not merely one partial symptom. Reject any entity whose support span explains only dysuria, nausea, a lab abnormality, a nonspecific risk factor, or another fragment while failing to explain the core site, tempo, and severity of presentation.
 
-**\*\*Choose the right localization strategy.\*\*** If the syndrome is already localized, differentiate mostly within that compartment and include at most one actively supported competing-compartment diagnosis. If the syndrome is not localized, use five specific diagnoses across compartments that explain the same presenting physiology. Do not force one compartment before the chart supports it.
+**\*\*Choose the right localization strategy.\*\*** If the syndrome is already localized, differentiate mostly within that compartment and include at most one actively supported competing-compartment diagnosis. If the syndrome is not localized, use three to five specific diagnoses across compartments that explain the same presenting physiology. Do not force one compartment before the chart supports it.
 
 **\*\*Uncertainty never justifies inclusion.\*\*** An item earns a slot only on affirmative chart support: a positive finding, a risk factor, an exposure, a prior event, or a time course that fits. The following can never be the justification for including an item, in any phrasing:
 
@@ -511,7 +511,7 @@ A negative test result licenses removal, never inclusion. If the sentence defend
 
 **\*\*Exclude what the time course or severity argues against.\*\*** A source that cannot account for the documented magnitude, tempo, or duration does not belong on the list at all.
 
-Never pad to reach a count, and never invent supporting evidence. Search the supplied record deliberately for five supported entities before concluding the cause is established. Do not write a differential for an established diagnosis.
+Never pad to reach a count, and never invent supporting evidence. Search the supplied record deliberately for five supported entities; if only three or four remain supportable after that search, use the shorter table and identify any decision-critical missing discriminator. Do not write a differential for an established diagnosis.
 
 **### Consultant recommendations**
 
@@ -537,7 +537,7 @@ Specify what should be checked or done, when, and what decision it informs. Neve
 
 Do not combine several branching plans into one action. Recommend the next decision, not every downstream option. Add a contingency only when it addresses a credible high-risk event that would materially change immediate care.
 
-Never write a bullet for routine monitoring, minor laboratory trending, generic hydration advice, routine counseling, routine prophylaxis, long-term surveillance, routine specialty follow-up, guideline teaching, or any action created solely to justify retaining data.
+Never write a problem bullet for routine monitoring, minor laboratory trending, generic hydration advice, routine counseling, long-term surveillance, routine specialty follow-up, guideline teaching, or any action created solely to justify retaining data. Put required VTE prophylaxis in its dedicated closing section rather than using a problem bullet solely for housekeeping.
 
 **### Recommendation safeguards**
 
@@ -569,9 +569,21 @@ Include dialysis only when it changes today's electrolyte management, volume man
 
 Verify the last and next sessions. If consecutive-day dialysis is reported, do not assume it is correct or necessary; clarify the indication when it affects care.
 
+**## FEN**
+
+One compact line stating the current diet or nutrition route, clinically relevant intravenous fluids, and active electrolyte replacement or goals. Do not invent electrolyte targets, imply maintenance fluids are necessary, or include routine normal electrolytes.
+
+**## VTE Prophylaxis**
+
+One compact line stating the active pharmacologic agent and documented dose, or the mechanical prophylaxis in use. If prophylaxis is held, contraindicated, refused, or unnecessary because of therapeutic anticoagulation, state the reason precisely. Never treat catheter-lock heparin as VTE prophylaxis. If prophylaxis status is not documented, state that it requires clarification.
+
+**## Code Status**
+
+One compact line stating the documented code status. If it is absent or internally inconsistent, state that it requires clarification rather than assigning a status.
+
 **## Disposition**
 
-One or two sentences: anticipated destination when known, and no more than three barriers preventing discharge today.
+One or two sentences: anticipated destination when known, the concrete clinical, functional, consultant, medication-access, caregiver, placement, oxygen, or logistical barriers preventing discharge today, and the observable conditions needed for safe transition. Include no more than three active barriers.
 
 Use clinical endpoints rather than overstated procedural outcomes — completion of the inpatient evaluation, cessation of clinically significant bleeding, hemoglobin stability without further transfusion, a safe antithrombotic plan. Do not require definitive source identification unless it is truly necessary for discharge. Never invent numerical thresholds or duration ranges because measurements exist.
 
@@ -579,7 +591,9 @@ Use clinical endpoints rather than overstated procedural outcomes — completion
 
 A reference appendix placed last, after Disposition. It is not read aloud during the presentation — it exists so that any question about a drug, dose, frequency, or course can be answered instantly without searching.
 
-**\*\*This section is exempt from the restatement rule and from the concision limits.\*\*** Completeness is the point. A medication appears here whether or not it is mentioned anywhere else in the presentation.
+The spoken Plan must still state the exact dose, route, frequency, and duration of medications central to today's decisions. The appendix never substitutes for an actionable Plan.
+
+**\*\*This section is exempt from the clinical-closure rule and from the concision limits.\*\*** Completeness is the point. A medication appears here whether or not it is mentioned anywhere else in the presentation.
 
 **\*\*Tables are permitted here and only here.\*\***
 
@@ -638,37 +652,37 @@ If the source contains a dose, route, or frequency that is implausible for this 
 
 **## Final pass**
 
-Run the two-gate check first: for every number and finding in Subjective and Objective, confirm it is new, changed, or newly decisive, and locate the identical string in the Assessment, the applicable Key context synopsis, a differential sentence, a differential table, a reasoning paragraph, or a bullet. Resolve every failure through the reconciliation pass — revise the reasoning or Key context if the fact matters, delete the fact if it does not.
+Run the two-gate check first: for every selective finding in Subjective and Objective, confirm it is new, changed, or newly decisive and locate its clinical use in the Assessment, applicable Key context synopsis, differential table, reasoning paragraph, Plan bullet, or Disposition. Apply the stated exemptions for standard safety and function elements. Resolve every failure through the reconciliation pass — revise the reasoning or Key context if the fact matters, delete the fact if it does not.
 
 Then confirm:
 
-1\. No fact appears in Subjective or Objective that was already known and unchanged, unless its stability is itself the finding driving a decision.
-2\. No number appears in Subjective or Objective that does not appear again downstream.
-3\. No qualitative finding or negative appears whose key term does not appear again downstream.
-4\. No downstream mention exists solely to license a fact; every mention argues from the value rather than naming it.
+1\. No selective fact appears in Subjective or Objective that was already known and unchanged unless its stability is itself the finding driving a decision; the standard vital summary, required bowel/bladder/ambulation status, and clinically relevant intake/output summary remain exempt.
+2\. Every selective Subjective and Objective finding has a downstream clinical use; exact values are repeated when they define severity, establish an important trend, trigger an action, or serve as a treatment threshold.
+3\. No qualitative finding or negative appears unless it changes the differential, severity assessment, plan, or disposition.
+4\. No downstream mention exists solely to license a fact; every mention uses the value or finding clinically.
 5\. The Assessment, differential tables, and reasoning paragraphs name specific values rather than gesturing at them.
 6\. Read as a whole, Subjective and Objective build the case for the Assessment and Plan and contain nothing that does not.
-7\. The Assessment is exactly two sentences: a current-state one-liner and a statement of which decision dominates, the latter naming the decision without rehearsing the conflict, evidence, agent, or action stated later.
-8\. The One-Liner and the Assessment's first sentence do not repeat each other; the One-Liner anchors the admission, the Assessment states where the patient is now.
-9\. No problem-level severity, trajectory, differential, or test interpretation appears in the Assessment.
+7\. The Assessment is exactly one sentence containing age, sex or gender as documented, hospital day, one to three management-relevant past medical conditions, the dominant active problem, and its current trajectory.
+8\. The One-Liner supplies the admission anchor and current headline; the Assessment purposefully repeats the required identifying and framing elements in a shorter current-state synthesis without repeating the full admission story.
+9\. The Assessment may name the decisive evidence for trajectory but contains no full problem-level argument, differential, action, dose, threshold, or consultant recommendation.
 10\. No full situation, story, sequence, or report is re-narrated in more than one section; a distilled decisive fact may be selectively restated in Key context when required for read-alone understanding. Every flagged discrepancy appears only in its **\*\*VERIFY:\*\*** bullet, under the problem whose bullets act on it.
 11\. No differential table or reasoning paragraph contains a recommendation, dose, threshold, trigger, or conditional instruction.
 12\. Every problem heading names a clinical problem, not a treatment, test, workflow, or management activity.
 13\. Any decision-critical data gap is stated once in the relevant Objective subsection, not folded into a value line, and is paired with the bullet that obtains it.
 14\. No persistent symptom is re-narrated from yesterday with "continues to"; persistence appears only where it is itself the finding.
-15\. Subjective contains no laboratory or imaging findings and no examination findings.
+15\. Subjective contains no laboratory values, imaging-report details, consultant recommendation content, or examination findings; it may name a completed management-changing study, procedure, or consultation as an interval event.
 16\. Objective contains no plan, recommendation, scheduling, bowel preparation, or medication administration, and no causal or interpretive conclusion.
-16a\. Subjective documents today's bowel status, bladder or urination status, and ambulation status, explicitly stating when any one is not documented.
+16a\. Subjective begins with acute overnight events and responses, then management-changing events from yesterday, then the presenting symptom's trajectory, and documents today's bowel status, bladder or urination status, and ambulation status, explicitly stating when any one is not documented.
 17\. No value at documented chronic baseline appears anywhere.
 18\. No subsection label appears without qualifying content behind it.
-19\. Every section is within its limit; every active problem appears within its tier-specific bullet limit; every new or newly re-ranked unresolved problem has one differential sentence and one five-row differential table; no established-problem reasoning paragraph exceeds three sentences.
+19\. Every section is within its limit; every active problem appears within its tier-specific bullet limit; every new or newly re-ranked unresolved problem has one differential sentence and one three-to-five-row differential table; no established-problem reasoning paragraph exceeds three sentences.
 20\. Every Plan bullet contains one action plus a concise justification; diagnostic actions use an if/then finding-to-management statement, treatment actions explain the patient-specific choice over the closest reasonable first-line alternative, and other actions name the decision, risk, or barrier they resolve.
 21\. Problems sharing the same decision are combined; no problem exists that is only a constraint on another problem.
-22\. Every unresolved problem that is new or newly re-ranked today has exactly five specific differential entities in one differential table with the columns `Differential`, `Clues for this differential`, and `Clues against this differential`.
-23\. Each of the five entities has affirmative patient-specific support and a patient-specific reason it is more likely or less likely than another listed entity.
+22\. Every unresolved problem that is new or newly re-ranked today has three to five specific differential entities in one table with the columns `Differential`, `Clues for this differential`, and `Clues against this differential`; five are used whenever five are supportable.
+23\. Each listed entity has affirmative patient-specific support and a patient-specific reason it is more likely or less likely than another listed entity; no entry exists solely to fill a row.
 24\. No alternative diagnosis appears only in the differential sentence; every named entity has its own table row.
-25\. Every Subjective and Objective fact maps to a named Plan problem and to one of these functions: differential rank, severity, trajectory, action, contingency, or decision-critical missing data.
-26\. No downstream mention merely repeats a value to satisfy the string test.
+25\. Every selective Subjective and Objective fact maps to a named Plan problem or Disposition and to one of these functions: differential rank, severity, trajectory, treatment response, action, contingency, decision-critical missing data, or disposition readiness.
+26\. No downstream mention merely repeats a value to satisfy clinical closure.
 27\. Transfusion chronology supports every statement about response, and no response is characterized without a correctly timed post-transfusion value.
 28\. Anticoagulants, antiplatelets, and the several forms of heparin are reconciled separately and not conflated.
 29\. "Hospital day" is written in full and never abbreviated as HD.
@@ -694,3 +708,6 @@ Then confirm:
 49\. Key context carries forward unchanged problem-defining facts when necessary but contains no routine normal result, stale minor abnormality, redundant study, full report, or historical detail whose removal would leave diagnosis, severity, trajectory, present treatment, major risk, and the next decision unchanged.
 50\. Every procedure, surgery, or study in Key context uses the documented date, hospital day, or relative timing; missing or conflicting timing is identified rather than invented.
 51\. Whenever a problem's current treatment includes a clinically important documented regimen, Key context states its exact dose, route, frequency, and course or endpoint when available so the Assessment and Plan do not depend on the Medication Regimens appendix.
+52\. Objective includes the standard 24-hour vital-sign ranges, oxygen support, and any management-relevant intake/output summary without forcing their verbatim repetition downstream.
+53\. A current management-relevant abnormal laboratory value includes the previous-day or most useful recent comparator when it clarifies trajectory; documented chronic-baseline abnormalities are not recited solely because they are outside the reference range.
+54\. FEN, VTE Prophylaxis, Code Status, and Disposition are present in that order after the clinical problem list, use only supported facts, and identify missing prophylaxis or code-status documentation as requiring clarification.
