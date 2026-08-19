@@ -175,6 +175,14 @@ assert.doesNotMatch(guidelines.progress, /Bullets carry actions only|Never appen
 assert.match(progress, /Patient mentioned new hip pain unrelated to admission\./);
 assert.match(progress, /Feels less short of breath/);
 assert.match(progress, /Selected hospital day/, "daily progress prompt must identify the selected day explicitly");
+assert.match(admission, /Prior course/i, "admission prompt must separate the prior story from today's report");
+assert.match(admission, /Patient report today/i, "admission prompt must contain a current patient-report section");
+assert.match(admission, /bowel function or last bowel movement/i, "admission prompt must require daily bowel status");
+assert.match(admission, /bladder function or urination episodes/i, "admission prompt must require daily bladder status");
+assert.match(admission, /ambulation status/i, "admission prompt must require daily ambulation status");
+assert.match(progress, /bowel function or last bowel movement/i, "progress prompt must require daily bowel status");
+assert.match(progress, /bladder function or urination episodes/i, "progress prompt must require daily bladder status");
+assert.match(progress, /ambulation status/i, "progress prompt must require daily ambulation status");
 assert.doesNotMatch(progress, /2026-07-09/, "OpenEvidence progress prompts must not expose the selected packet's calendar date");
 
 const selectedDayOnlyPrompt = buildCustomOpenEvidencePrompt({

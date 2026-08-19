@@ -320,6 +320,8 @@ Up to four sentences total. Include only subsections with qualifying content.
 
 **\*\*Patient report:\*\*** one or two sentences on how the patient feels compared with yesterday and the most important reported change in the dominant symptom. Qualify improvement as patient-reported when that is its only basis, and do not repeat it under interval events.
 
+Every daily Subjective must also document bowel function or the last bowel movement, bladder function or urination episodes, and current ambulation status under **\*\*Patient report:\*\*** because these are common discharge barriers. If any domain is absent from the supplied record, state that it is not documented; never invent a normal finding. These three required daily domains are exempt from omission solely for being unchanged or not otherwise management-changing.
+
 **\*\*Pertinent symptoms:\*\*** only specific positives or negatives that change the differential, severity assessment, or plan. Never a complete review of systems. No examination findings.
 
 **## Objective**
@@ -656,6 +658,7 @@ Then confirm:
 14\. No persistent symptom is re-narrated from yesterday with "continues to"; persistence appears only where it is itself the finding.
 15\. Subjective contains no laboratory or imaging findings and no examination findings.
 16\. Objective contains no plan, recommendation, scheduling, bowel preparation, or medication administration, and no causal or interpretive conclusion.
+16a\. Subjective documents today's bowel status, bladder or urination status, and ambulation status, explicitly stating when any one is not documented.
 17\. No value at documented chronic baseline appears anywhere.
 18\. No subsection label appears without qualifying content behind it.
 19\. Every section is within its limit; every active problem appears within its tier-specific bullet limit; every new or newly re-ranked unresolved problem has one differential sentence and one five-row differential table; no established-problem reasoning paragraph exceeds three sentences.

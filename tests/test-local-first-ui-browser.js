@@ -232,6 +232,7 @@ try {
   await page.waitForFunction(() => /Built-in prompts updated from this site/.test(document.querySelector("#statusLine")?.textContent || ""));
 
   await page.click('[data-view-target="prompts"]');
+  assert.equal(await page.locator('#promptTaskSelect option', { hasText: "Discharge summary" }).count(), 1, "a Settings guideline must create exactly one matching prompt option");
   await page.locator("#promptPreview").fill("@discharge");
   await page.waitForSelector("#smartVariableMenu.open");
   const dischargeVariable = page.locator('#smartVariableMenu button.smart-variable-insert[data-token="@discharge-summary-guidelines"]');
@@ -257,6 +258,7 @@ try {
 
   await page.click('[data-view-target="prompts"]');
   await page.waitForSelector("#promptOutputHighlighted");
+  assert.equal(await page.locator('#promptTaskSelect option', { hasText: "Discharge summary" }).count(), 0, "deleting a Settings guideline must remove its matching prompt option");
   await page.selectOption("#promptTaskSelect", "preround_bedside_exam");
   const selectedDayPreviewToken = page.locator('#promptOutputHighlighted button.var-fill[data-token="@selected-day"]');
   assert.equal(await selectedDayPreviewToken.count(), 1, "selected-day must render as one clickable preview target");
@@ -558,6 +560,14 @@ try {
   await page.locator("#promptPreview").fill("Summarize @selected-day for the covering clinician.");
   await page.waitForFunction(() => /Summarize/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   assert.equal((await copiedPromptText()).match(/Act as an attending hospitalist with over 30 years of inpatient experience/g)?.length, 1, "a user-created prompt must retain the shared persona exactly once");
+  await page.click('[data-action="save-prompt-template"]');
+  await page.click('[data-view-target="settings"]');
+  const coveringGuideline = page.locator('.guideline-row', { hasText: "Covering clinician summary" });
+  assert.equal(await coveringGuideline.count(), 1, "a prompt created in OpenEvidence must create exactly one matching Settings guideline");
+  await coveringGuideline.locator(".guideline-row-open").click();
+  const coveringGuidelineId = await coveringGuideline.getAttribute("data-guideline-id");
+  assert.equal(await page.locator(`#guidelineSetText-${coveringGuidelineId}`).inputValue(), "Summarize @selected-day for the covering clinician.");
+  await page.click('[data-view-target="prompts"]');
 
   await page.selectOption("#promptTaskSelect", "daily_progress_note");
   await page.waitForFunction(() => /Daily Progress Note [^\r\n]*Instructions/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));

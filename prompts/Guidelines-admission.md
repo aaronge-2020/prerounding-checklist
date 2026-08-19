@@ -140,7 +140,7 @@ Not: "Today turns on reconciling the aspirin resumption order against vascular's
 **\*\*Bold marks what you navigate to, never what is important.\*\*** Emphasis is not a reason to bold anything. Bold is permitted in exactly five places:
 
 1\. Section headings.
-2\. Subsection labels in Relevant History and Objective, the **\*\*Key context:\*\*** label under each Plan problem, and condition anchors in Relevant History.
+2\. The **\*\*Prior course:\*\*** and **\*\*Patient report today:\*\*** HPI labels; subsection labels in Relevant History and Objective; the **\*\*Key context:\*\*** label under each Plan problem; and condition anchors in Relevant History.
 3\. Problem headings in Plan.
 4\. Short data labels within an Objective subsection.
 5\. The **\*\*VERIFY:\*\*** prefix on a safety flag.
@@ -254,13 +254,17 @@ One short patient-centered phrase. Add a diagnostic modifier only when necessary
 
 **## HPI**
 
-**\*\*Internal order, strictly:\*\*** one-liner → onset and progression → interval events since last contact → treatment already received → current reported state and functional barrier.
+Divide every admission HPI into exactly two labeled paragraphs, in this order:
+
+**\*\*Prior course:\*\*** the one-liner, onset and progression, clinically consequential events before today's encounter, and treatment already received. This paragraph tells the story of what happened previously without mixing in today's bedside report.
+
+**\*\*Patient report today:\*\*** what the patient told the clinician today, including the current state of the dominant symptoms and today's functional or discharge barriers. Every admission must document bowel function or the last bowel movement, bladder function or urination episodes, and current ambulation status in this paragraph. If any of these three domains is absent from the supplied record, state that it is not documented; never invent a normal finding.
 
 Open with a one-liner: age, sex or gender as documented, no more than three genuinely relevant modifiers, and the reason for presentation. A modifier qualifies only if it changes management, alters risk, frames the presentation materially, or reflects a physiologic state or baseline functional limitation affecting care. Preserve obstetric history in plain language.
 
 Use encounter anchors — before admission, in the ED, overnight, today — and never collapse symptoms with different onset times into one list. Any symptom in the Chief Complaint must have its onset, progression, or current status accounted for.
 
-Every clause is subject to the restatement rule. Include a negative only when that symptom is named again in reasoning that weighs it. At most one sentence for prior-encounter treatment, one for current subjective state. Distinguish subjective improvement from measured resolution: "she reports resolution of chills," not "her fever has resolved."
+Every clause is subject to the restatement rule, except the required bowel, bladder, and ambulation status, which must appear every day because these are common discharge barriers. Include a negative only when that symptom is named again in reasoning that weighs it. At most one sentence for prior-encounter treatment. Distinguish subjective improvement from measured resolution: "she reports resolution of chills," not "her fever has resolved."
 
 Omit vital signs, laboratory and imaging results, routine review-of-systems negatives, chronic symptoms unchanged from baseline, routine fluids and symptomatic medications, medication-administration chronology, routine outpatient reassurance, admission destination, and prior-encounter chronology that changes nothing today.
 
@@ -578,7 +582,7 @@ If the source contains a dose, route, or frequency that is implausible for this 
 
 **## Final pass**
 
-Run the restatement check first: for every number and finding in HPI and Objective, locate the identical string in the Assessment, the applicable Key context synopsis, a differential sentence, a differential table, a reasoning paragraph, or a bullet. Resolve every failure through the reconciliation pass — revise the reasoning or Key context if the fact matters, delete the fact if it does not.
+Run the restatement check first: for every number and finding in HPI and Objective other than the required bowel, bladder, and ambulation status, locate the identical string in the Assessment, the applicable Key context synopsis, a differential sentence, a differential table, a reasoning paragraph, or a bullet. Resolve every failure through the reconciliation pass — revise the reasoning or Key context if the fact matters, delete the fact if it does not.
 
 Then confirm:
 
@@ -586,7 +590,8 @@ Then confirm:
 2\. No qualitative finding or negative appears in HPI or Objective whose key term does not appear again downstream.
 3\. No downstream mention exists solely to license a fact; every mention argues from the value rather than naming it.
 4\. The Assessment, differential tables, and reasoning paragraphs name specific values rather than gesturing at them.
-5\. Read as a whole, HPI and Objective build the case for the Assessment and Plan and contain nothing that does not.
+5\. Read as a whole, HPI and Objective build the case for the Assessment and Plan and contain nothing that does not, apart from the required daily bowel, bladder, and ambulation status.
+5a\. HPI contains **\*\*Prior course:\*\*** followed by **\*\*Patient report today:\*\***, and Patient report today documents bowel status, bladder or urination status, and ambulation status, explicitly stating when any one is not documented.
 6\. The Assessment is exactly two sentences; the second names which decision dominates without rehearsing the conflict, evidence, agent, or action stated later.
 7\. No problem-level severity, trajectory, differential, or test interpretation appears in the Assessment.
 8\. No full situation, story, sequence, or report is re-narrated in more than one section; a distilled decisive fact may be selectively restated in Key context when required for read-alone understanding. Every flagged discrepancy appears only in its **\*\*VERIFY:\*\*** bullet, under the problem whose bullets act on it.
@@ -606,7 +611,7 @@ Then confirm:
 22\. Every HPI and Objective fact maps to a named Plan problem and to one of these functions: differential rank, severity, trajectory, action, contingency, or decision-critical missing data.
 23\. No downstream mention merely repeats a value to satisfy the string test.
 24\. No differential item is justified by unlocalizability, absence of examination, a negative test for something else, or incomplete history.
-25\. Bold appears only in section headings, subsection labels including **\*\*Key context:\*\***, condition anchors, Plan problem headings, Objective data labels, and **\*\*VERIFY:\*\*** prefixes. Italics appear only in the reasoning or differential sentence beneath Key context under a Plan heading.
+25\. Bold appears only in section headings, the HPI labels **\*\*Prior course:\*\*** and **\*\*Patient report today:\*\***, subsection labels including **\*\*Key context:\*\***, condition anchors, Plan problem headings, Objective data labels, and **\*\*VERIFY:\*\*** prefixes. Italics appear only in the reasoning or differential sentence beneath Key context under a Plan heading.
 26\. Every sentence reads naturally aloud with all formatting stripped.
 27\. Every patient-specific fact came from the source.
 28\. No status was upgraded: no dose became a regimen, no recommendation became an order, no suspected source became established.

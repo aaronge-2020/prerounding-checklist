@@ -1,15 +1,11 @@
 import { createLocalId, timestampNow } from "../app/state/vault.js";
+import { createGuidelineSet, isCustomGuidelineSet } from "./guideline-sets.js";
 
-// User-created prompt templates that go beyond the six fixed OPEN_EVIDENCE_TASKS.
-// Stored in plain localStorage - same tier as the per-task template overrides in
-// custom-templates.js, not the encrypted vault (these are prompt tooling, not
-// patient data).
+// Legacy prompt-only records. New user-created prompts live directly in the
+// guideline-set store so Settings and the OpenEvidence dropdown cannot drift.
 export const CUSTOM_PROMPT_TASK_STORAGE_KEY = "prerounding_custom_prompt_tasks_v1";
 
-// A custom task's template is not stored here - it lives in the same
-// `promptTemplates` override store (custom-templates.js) as built-in task
-// overrides, keyed by this task's id, so save/reset plumbing needs no
-// custom-vs-built-in branching.
+// These helpers remain only for deterministic migration and regression tests.
 export function createCustomPromptTask(label, { id = createLocalId("prompt_task"), now = timestampNow } = {}) {
   const timestamp = now();
   return {
@@ -45,4 +41,34 @@ export function removeCustomPromptTask(tasks, taskId) {
 
 export function allPromptTasks(builtInTasks = [], customTasks = []) {
   return [...builtInTasks, ...customTasks];
+}
+
+// User-created prompts and Settings guidelines are the same record. The
+// dropdown derives its custom entries from guideline sets instead of keeping
+// a second independently editable task list.
+export function guidelinePromptTasks(guidelineSets = []) {
+  return (guidelineSets || []).filter(isCustomGuidelineSet).map((set) => ({
+    id: set.id,
+    label: set.label,
+    custom: true,
+    guidelineSetId: set.id,
+    requiresGuidelines: true
+  }));
+}
+
+// Deterministically fold records created by the former prompt-only UI into
+// guideline sets. Callers persist the returned records, then clear the legacy
+// task store so guidelineSets remains the sole source of truth.
+export function migrateCustomPromptTasksToGuidelineSets(guidelineSets = [], customTasks = [], promptTemplates = {}) {
+  const next = [...(guidelineSets || [])];
+  const existingIds = new Set(next.map((set) => set.id));
+  for (const task of customTasks || []) {
+    if (!task?.id || existingIds.has(task.id)) continue;
+    next.push(createGuidelineSet(task.label, promptTemplates?.[task.id] || "", {
+      id: task.id,
+      existingTokens: next.map((set) => set.token)
+    }));
+    existingIds.add(task.id);
+  }
+  return next;
 }

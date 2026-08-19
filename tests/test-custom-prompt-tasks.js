@@ -6,8 +6,11 @@ import {
   addCustomPromptTask,
   removeCustomPromptTask,
   allPromptTasks,
+  guidelinePromptTasks,
+  migrateCustomPromptTasksToGuidelineSets,
   CUSTOM_PROMPT_TASK_STORAGE_KEY
 } from "../src/prompts/custom-tasks.js";
+import { createGuidelineSet } from "../src/prompts/guideline-sets.js";
 
 function fakeStorage() {
   const store = new Map();
@@ -16,6 +19,30 @@ function fakeStorage() {
     setItem: (key, value) => store.set(key, String(value)),
     removeItem: (key) => store.delete(key)
   };
+}
+
+// Custom guideline sets are the single source for user-created prompt rows.
+{
+  const builtIn = createGuidelineSet("Admission", "Built in", { token: "@admission-guidelines", id: "admission" });
+  const custom = createGuidelineSet("Night float", "Summarize for cross-cover.", { id: "night-float" });
+  assert.deepEqual(guidelinePromptTasks([builtIn, custom]), [{
+    id: "night-float",
+    label: "Night float",
+    custom: true,
+    guidelineSetId: "night-float",
+    requiresGuidelines: true
+  }]);
+}
+
+// Legacy prompt-only records migrate once into the same guideline record.
+{
+  const migrated = migrateCustomPromptTasksToGuidelineSets([], [
+    createCustomPromptTask("Covering summary", { id: "prompt_task_legacy" })
+  ], { prompt_task_legacy: "Use @selected-day." });
+  assert.equal(migrated.length, 1);
+  assert.equal(migrated[0].id, "prompt_task_legacy");
+  assert.equal(migrated[0].label, "Covering summary");
+  assert.equal(migrated[0].text, "Use @selected-day.");
 }
 
 // createCustomPromptTask shape.

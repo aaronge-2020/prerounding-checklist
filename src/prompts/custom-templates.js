@@ -211,7 +211,9 @@ export function savePromptTemplateOverrides(overrides, storage = localStorage) {
   storage.setItem(PROMPT_TEMPLATE_STORAGE_KEY, JSON.stringify(overrides || {}));
 }
 
-export function promptTemplateForTask(taskId, overrides = {}) {
+export function promptTemplateForTask(taskId, overrides = {}, guidelineSets = []) {
+  const guideline = (guidelineSets || []).find((set) => set.id === taskId);
+  if (guideline) return String(guideline.text || "");
   const saved = String(overrides?.[taskId] || "");
   return saved && saved !== "@default-prompt" ? saved : String(DEFAULT_PROMPT_TEMPLATES[taskId] || "");
 }

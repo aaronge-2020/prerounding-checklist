@@ -87,6 +87,10 @@ export function removeGuidelineSet(sets, id) {
   return sets.filter((set) => set.id !== id);
 }
 
+export function isCustomGuidelineSet(set) {
+  return Boolean(set?.id) && !DEFAULT_TOKENS.has(set.token);
+}
+
 export function guidelineSetMatchesQuery(set, query) {
   const terms = String(query || "").trim().toLowerCase().split(/\s+/).filter(Boolean);
   if (!terms.length) return true;

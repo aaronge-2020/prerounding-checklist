@@ -96,16 +96,12 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260815-standalone-ap";
+} from "../prompts/custom-templates.js?v=20260818-prompt-guideline-sync";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
-import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260815-standalone-ap";
-import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
-import {
-  ensureCanonicalDefaultGuidelineSets,
-  ensureTeachingGuidelineSet,
-  loadOrMigrateGuidelineSets
-} from "../prompts/guideline-sets.js?v=20260815-prompt-refresh";
+import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260818-daily-function";
+import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260818-prompt-guideline-sync";
+import { ensureCanonicalDefaultGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260818-prompt-guideline-sync";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences,
@@ -161,19 +157,19 @@ import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-fu
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
 import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260815-smart-variable-fields";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260815-standalone-ap";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260818-prompt-guideline-sync";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260815-standalone-ap";
-import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260815-prompt-refresh";
+} from "./prompts/controller.js?v=20260818-prompt-guideline-sync";
+import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260818-prompt-guideline-sync";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721-persisted-anchor";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260722-guideline-concept-v2";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260815-prompt-refresh";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260818-prompt-guideline-sync";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
   createRedactionPresentation,
@@ -1401,8 +1397,9 @@ function renderPrompts() {
     byId("promptsContent").innerHTML = patientRequiredMessage();
     return;
   }
-  const tasks = allPromptTasks(OPEN_EVIDENCE_TASKS, app.customPromptTasks);
+  const tasks = [...OPEN_EVIDENCE_TASKS, ...guidelinePromptTasks(app.guidelineSets)];
   const task = tasks.find((entry) => entry.id === app.selectedPromptTask) || tasks[0];
+  app.selectedPromptTask = task.id;
   const promptDays = sortDays(patient.days || []);
   // Follow the Checklist/Daily day until manually overridden here, so a
   // note saved on a newly-added day doesn't look lost behind a stale pick.
@@ -1416,7 +1413,7 @@ function renderPrompts() {
       null;
     app.promptDayId = selectedPromptDay ? selectedPromptDay.id : ADMISSION_PSEUDO_DAY_ID;
   }
-  const template = app.promptDrafts[task.id] ?? promptTemplateForTask(task.id, app.promptTemplates);
+  const template = app.promptDrafts[task.id] ?? promptTemplateForTask(task.id, app.promptTemplates, app.guidelineSets);
   let promptError = "";
   let previewSegments = [{ type: "text", value: "" }];
   try {
@@ -1517,7 +1514,7 @@ function refreshPromptPreview() {
   const patient = active();
   const highlighted = byId("promptOutputHighlighted");
   if (!patient || !highlighted) return;
-  const template = app.promptDrafts[app.selectedPromptTask] ?? promptTemplateForTask(app.selectedPromptTask, app.promptTemplates);
+  const template = app.promptDrafts[app.selectedPromptTask] ?? promptTemplateForTask(app.selectedPromptTask, app.promptTemplates, app.guidelineSets);
   try {
     const variableMap = buildPromptVariableMap({
       patient,
@@ -1551,7 +1548,7 @@ function currentPromptText() {
   // preview uses these same resolved segments.
   const template = byId("promptPreview")?.value
     ?? app.promptDrafts[app.selectedPromptTask]
-    ?? promptTemplateForTask(app.selectedPromptTask, app.promptTemplates);
+    ?? promptTemplateForTask(app.selectedPromptTask, app.promptTemplates, app.guidelineSets);
   try {
     const variableMap = buildPromptVariableMap({
       patient,
@@ -3780,6 +3777,7 @@ async function importPhoneBundleFile(file) {
 
 function savePromptTemplate() {
   const value = byId("promptPreview")?.value || "";
+  if (promptTaskController.saveGuidelineTemplate(value)) return;
   app.promptTemplates = { ...app.promptTemplates, [app.selectedPromptTask]: value };
   delete app.promptDrafts[app.selectedPromptTask];
   savePromptTemplateOverrides(app.promptTemplates);
@@ -4267,6 +4265,7 @@ async function refreshGuidelines() {
   const legacyTeamPreferences = app.vault?.preferences?.teamInstructions || "";
   app.guidelineSets = await ensureCanonicalDefaultGuidelineSets(app.guidelineSets, { legacyTeamPreferences });
   app.guidelineSets = await ensureTeachingGuidelineSet(app.guidelineSets);
+  promptTaskController.migrateLegacyTasks();
   if (legacyTeamPreferences.trim() && app.vault?.preferences) {
     app.vault = {
       ...app.vault,

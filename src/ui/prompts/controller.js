@@ -1,20 +1,44 @@
-import { addCustomPromptTask, removeCustomPromptTask, saveCustomPromptTasks } from "../../prompts/custom-tasks.js";
-import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20260815-standalone-ap";
-import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js";
+import { addGuidelineSet, removeGuidelineSet, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js?v=20260818-prompt-guideline-sync";
+import { migrateCustomPromptTasksToGuidelineSets, saveCustomPromptTasks } from "../../prompts/custom-tasks.js?v=20260818-prompt-guideline-sync";
+import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20260818-prompt-guideline-sync";
+import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js?v=20260818-daily-function";
 
 // Create/delete custom prompt tasks - kept out of app.js to respect the
 // coordinator-file size boundary (scripts/check-ui-module-boundaries.js).
 // `state` is the shared app state object, mutated directly the same way
 // the other controllers in src/ui/checklist/ already do.
 export function createPromptTaskController({ state, setStatus, renderPrompts, refreshPromptPreview, byId }) {
+  function migrateLegacyTasks() {
+    if (!state.customPromptTasks.length) return;
+    state.guidelineSets = migrateCustomPromptTasksToGuidelineSets(state.guidelineSets, state.customPromptTasks, state.promptTemplates);
+    saveGuidelineSets(state.guidelineSets);
+    const migratedTaskIds = new Set(state.customPromptTasks.map((task) => task.id));
+    state.promptTemplates = Object.fromEntries(Object.entries(state.promptTemplates).filter(([taskId]) => !migratedTaskIds.has(taskId)));
+    savePromptTemplateOverrides(state.promptTemplates);
+    state.customPromptTasks = [];
+    saveCustomPromptTasks([]);
+  }
+
+  function saveGuidelineTemplate(value) {
+    const guideline = state.guidelineSets.find((set) => set.id === state.selectedPromptTask);
+    if (!guideline) return false;
+    state.guidelineSets = updateGuidelineSet(state.guidelineSets, guideline.id, { text: value });
+    saveGuidelineSets(state.guidelineSets);
+    delete state.promptDrafts[state.selectedPromptTask];
+    state.smartMenuOpen = false;
+    setStatus("Prompt and matching guideline saved.");
+    renderPrompts();
+    return true;
+  }
+
   function createTaskFromInput() {
     const input = byId("newPromptTaskNameInput");
     const label = String(input?.value || "").trim();
     if (!label) throw new Error("Name the new prompt before creating it.");
-    const nextTasks = addCustomPromptTask(state.customPromptTasks, label);
-    state.customPromptTasks = nextTasks;
-    saveCustomPromptTasks(nextTasks);
-    state.selectedPromptTask = nextTasks.at(-1).id;
+    const nextSets = addGuidelineSet(state.guidelineSets, label, "");
+    state.guidelineSets = nextSets;
+    saveGuidelineSets(nextSets);
+    state.selectedPromptTask = nextSets.at(-1).id;
     if (input) input.value = "";
     renderPrompts();
   }
@@ -27,17 +51,13 @@ export function createPromptTaskController({ state, setStatus, renderPrompts, re
   function confirmRemovePending() {
     const taskId = state.pendingRemovePromptTaskId;
     if (!taskId) return;
-    state.customPromptTasks = removeCustomPromptTask(state.customPromptTasks, taskId);
-    saveCustomPromptTasks(state.customPromptTasks);
-    const nextOverrides = { ...state.promptTemplates };
-    delete nextOverrides[taskId];
-    state.promptTemplates = nextOverrides;
-    savePromptTemplateOverrides(nextOverrides);
+    state.guidelineSets = removeGuidelineSet(state.guidelineSets, taskId);
+    saveGuidelineSets(state.guidelineSets);
     delete state.promptDrafts[taskId];
     if (state.selectedPromptTask === taskId) state.selectedPromptTask = OPEN_EVIDENCE_TASKS[0].id;
     state.pendingRemovePromptTaskId = "";
     byId("removePromptTaskConfirmDialog")?.close();
-    setStatus("Custom prompt deleted.");
+    setStatus("Prompt and matching guideline deleted.");
     renderPrompts();
   }
 
@@ -46,7 +66,7 @@ export function createPromptTaskController({ state, setStatus, renderPrompts, re
     refreshPromptPreview();
   }
 
-  return Object.freeze({ createTaskFromInput, requestRemove, confirmRemovePending, updatePresentationToEdit });
+  return Object.freeze({ createTaskFromInput, requestRemove, confirmRemovePending, migrateLegacyTasks, saveGuidelineTemplate, updatePresentationToEdit });
 }
 
 // Filters the already-rendered variable buttons in place (same
