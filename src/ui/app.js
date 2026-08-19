@@ -99,7 +99,7 @@ import {
 } from "../prompts/custom-templates.js?v=20260818-prompt-guideline-sync";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
-import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260818-daily-function";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260819-dropdown-guideline-sync";
 import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260818-prompt-guideline-sync";
 import { ensureCanonicalDefaultGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260818-prompt-guideline-sync";
 import {
@@ -1397,7 +1397,7 @@ function renderPrompts() {
     byId("promptsContent").innerHTML = patientRequiredMessage();
     return;
   }
-  const tasks = [...OPEN_EVIDENCE_TASKS, ...guidelinePromptTasks(app.guidelineSets)];
+  const tasks = [...availableOpenEvidenceTasks(app.guidelineSets), ...guidelinePromptTasks(app.guidelineSets)];
   const task = tasks.find((entry) => entry.id === app.selectedPromptTask) || tasks[0];
   app.selectedPromptTask = task.id;
   const promptDays = sortDays(patient.days || []);

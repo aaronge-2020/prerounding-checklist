@@ -231,7 +231,23 @@ try {
   await page.click('[data-action="confirm-refresh-default-guidelines"]');
   await page.waitForFunction(() => /Built-in prompts updated from this site/.test(document.querySelector("#statusLine")?.textContent || ""));
 
+  // Built-in prompt options must be driven by their exact Settings guideline,
+  // not by an unconditional parallel registry. This is distinct from the
+  // custom-guideline coverage below.
+  const admissionRowForDropdown = page.locator('.guideline-row').filter({ has: page.locator('code', { hasText: "@admission-guidelines" }) });
+  const admissionIdForDropdown = await admissionRowForDropdown.getAttribute("data-guideline-id");
+  await admissionRowForDropdown.locator(".guideline-row-open").click();
+  await page.click(`[data-action="request-remove-guideline-set"][data-guideline-set-id="${admissionIdForDropdown}"]`);
+  await page.click('[data-action="confirm-remove-guideline-set"]');
   await page.click('[data-view-target="prompts"]');
+  assert.equal(await page.locator('#promptTaskSelect option[value="initial_admission_rounds"]').count(), 0, "deleting Admission guidelines must remove Initial admission rounds from the dropdown itself");
+  await page.click('[data-view-target="settings"]');
+  await page.click('[data-action="request-refresh-default-guidelines"]');
+  await page.click('[data-action="confirm-refresh-default-guidelines"]');
+  await page.waitForFunction(() => /Built-in prompts updated from this site/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.click('[data-view-target="prompts"]');
+  assert.equal(await page.locator('#promptTaskSelect option[value="initial_admission_rounds"]').count(), 1, "restoring Admission guidelines must restore exactly one Initial admission rounds dropdown option");
+
   assert.equal(await page.locator('#promptTaskSelect option', { hasText: "Discharge summary" }).count(), 1, "a Settings guideline must create exactly one matching prompt option");
   await page.locator("#promptPreview").fill("@discharge");
   await page.waitForSelector("#smartVariableMenu.open");

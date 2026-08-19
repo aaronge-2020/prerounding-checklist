@@ -10,6 +10,7 @@ import {
   buildMedicationSafetyPrompt,
   buildOpenEvidencePrompt,
   buildTeachingTrajectoryPrompt,
+  availableOpenEvidenceTasks,
   openEvidenceTasks
 } from "../src/prompts/open-evidence.js";
 import {
@@ -25,6 +26,21 @@ import { buildTeamPreferencesPromptBlock, normalizeUserPreferences } from "../sr
 import { createSourceCapture } from "../src/patient-context/source-captures.js";
 import { ATTENDING_HOSPITALIST_PERSONA } from "../src/prompts/natural-language.js";
 
+const allDefaultGuidelineSets = DEFAULT_GUIDELINE_SET_SOURCES.map((source) => createGuidelineSet(source.label, "", { token: source.token }));
+assert.equal(availableOpenEvidenceTasks(allDefaultGuidelineSets).some((task) => task.id === "initial_admission_rounds"), true);
+for (const task of Object.values(openEvidenceTasks).filter((entry) => entry.guidelineToken)) {
+  const withoutMatchingGuideline = allDefaultGuidelineSets.filter((set) => set.token !== task.guidelineToken);
+  assert.equal(
+    availableOpenEvidenceTasks(withoutMatchingGuideline).some((entry) => entry.id === task.id),
+    false,
+    `deleting ${task.guidelineToken} must remove ${task.label} from the dropdown registry`
+  );
+}
+assert.equal(
+  availableOpenEvidenceTasks([]).some((task) => task.id === "medication_safety_audit"),
+  true,
+  "tasks without a Settings guideline remain available"
+);
 const guidelines = {
   admission: readFileSync("prompts/Guidelines-admission.md", "utf8"),
   progress: readFileSync("prompts/Guidelines-progress.md", "utf8"),

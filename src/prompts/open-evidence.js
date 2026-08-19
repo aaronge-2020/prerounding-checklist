@@ -9,11 +9,13 @@ export const OPEN_EVIDENCE_TASKS = [
   {
     id: "initial_admission_rounds",
     label: "Initial admission rounds",
+    guidelineToken: "@admission-guidelines",
     requiresGuidelines: true
   },
   {
     id: "daily_progress_note",
     label: "Daily progress-note update",
+    guidelineToken: "@progress-guidelines",
     requiresGuidelines: true
   },
   {
@@ -24,7 +26,8 @@ export const OPEN_EVIDENCE_TASKS = [
   {
     id: "teaching_case_trajectory",
     label: "Teaching: full case trajectory",
-    requiresGuidelines: false
+    guidelineToken: "@teaching-guidelines",
+    requiresGuidelines: true
   },
   {
     id: "medication_explainer_by_problem",
@@ -44,21 +47,29 @@ export const OPEN_EVIDENCE_TASKS = [
   {
     id: "preround_bedside_exam",
     label: "Pre-round bedside exam",
+    guidelineToken: "@pre-round-checklist-guidelines",
     requiresGuidelines: true
   },
   {
     id: "discharge_instructions",
     label: "Discharge instructions",
+    guidelineToken: "@discharge-instructions-guidelines",
     requiresGuidelines: true
   },
   {
     id: "consulting",
     label: "Consulting",
+    guidelineToken: "@consulting-guidelines",
     requiresGuidelines: true
   }
 ];
 
 export const openEvidenceTasks = Object.fromEntries(OPEN_EVIDENCE_TASKS.map((task) => [task.id, task]));
+
+export function availableOpenEvidenceTasks(guidelineSets = []) {
+  const availableTokens = new Set((guidelineSets || []).map((set) => set.token));
+  return OPEN_EVIDENCE_TASKS.filter((task) => !task.guidelineToken || availableTokens.has(task.guidelineToken));
+}
 
 function compactText(text, limit = 42000) {
   const value = String(text || "");
