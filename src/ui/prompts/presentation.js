@@ -1,5 +1,5 @@
-import { ADMISSION_PSEUDO_DAY_ID, tokenAccentColor } from "../../prompts/custom-templates.js?v=20260818-prompt-guideline-sync";
-import { tokenColorSwatchButton } from "../token-color-picker.js";
+import { ADMISSION_PSEUDO_DAY_ID, tokenAccentColor } from "../../prompts/custom-templates.js?v=20260819-one-to-one-task-guidelines";
+import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260819-one-to-one-task-guidelines";
 
 export function renderHighlightedSegments(segments, escapeHtml, colorOverrides = {}, { interactive = true } = {}) {
   return segments.map((segment) => {

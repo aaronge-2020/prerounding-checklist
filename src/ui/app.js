@@ -96,12 +96,12 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260818-prompt-guideline-sync";
+} from "../prompts/custom-templates.js?v=20260819-one-to-one-task-guidelines";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
-import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260819-dropdown-guideline-sync";
-import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260818-prompt-guideline-sync";
-import { ensureCanonicalDefaultGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260818-prompt-guideline-sync";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260819-one-to-one-task-guidelines";
+import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260819-one-to-one-task-guidelines";
+import { ensureCanonicalDefaultGuidelineSets, ensureOpenEvidenceTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260819-one-to-one-task-guidelines";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences,
@@ -157,19 +157,19 @@ import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-fu
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
 import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260815-smart-variable-fields";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260818-prompt-guideline-sync";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260819-one-to-one-task-guidelines";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260818-prompt-guideline-sync";
-import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260818-prompt-guideline-sync";
+} from "./prompts/controller.js?v=20260819-one-to-one-task-guidelines";
+import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260819-one-to-one-task-guidelines";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721-persisted-anchor";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20260722-guideline-concept-v2";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260818-prompt-guideline-sync";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20260819-one-to-one-task-guidelines";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260819-one-to-one-task-guidelines";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
   createRedactionPresentation,
@@ -4265,6 +4265,7 @@ async function refreshGuidelines() {
   const legacyTeamPreferences = app.vault?.preferences?.teamInstructions || "";
   app.guidelineSets = await ensureCanonicalDefaultGuidelineSets(app.guidelineSets, { legacyTeamPreferences });
   app.guidelineSets = await ensureTeachingGuidelineSet(app.guidelineSets);
+  app.guidelineSets = await ensureOpenEvidenceTaskGuidelineSets(app.guidelineSets);
   promptTaskController.migrateLegacyTasks();
   if (legacyTeamPreferences.trim() && app.vault?.preferences) {
     app.vault = {

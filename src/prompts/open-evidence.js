@@ -4,71 +4,25 @@ import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260722
 import { attendingHospitalistPrompt } from "./natural-language.js?v=20260815-standalone-ap";
 import { buildProgressNotePacket } from "./progress-note-packet.js";
 import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
+import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20260819-one-to-one-task-guidelines";
 
-export const OPEN_EVIDENCE_TASKS = [
-  {
-    id: "initial_admission_rounds",
-    label: "Initial admission rounds",
-    guidelineToken: "@admission-guidelines",
+// Built-in dropdown entries are derived from the same records Settings uses.
+// A task cannot exist here without one exact editable guideline identity.
+export const OPEN_EVIDENCE_TASKS = DEFAULT_GUIDELINE_SET_SOURCES
+  .filter((source) => source.task)
+  .sort((left, right) => left.task.order - right.task.order)
+  .map((source) => ({
+    id: source.task.id,
+    label: source.task.label,
+    guidelineToken: source.token,
     requiresGuidelines: true
-  },
-  {
-    id: "daily_progress_note",
-    label: "Daily progress-note update",
-    guidelineToken: "@progress-guidelines",
-    requiresGuidelines: true
-  },
-  {
-    id: "presentation_quality_editor",
-    label: "Edit and verify presentation",
-    requiresGuidelines: false
-  },
-  {
-    id: "teaching_case_trajectory",
-    label: "Teaching: full case trajectory",
-    guidelineToken: "@teaching-guidelines",
-    requiresGuidelines: true
-  },
-  {
-    id: "medication_explainer_by_problem",
-    label: "Medication organization and explanation",
-    requiresGuidelines: false
-  },
-  {
-    id: "medication_safety_audit",
-    label: "Medication safety audit",
-    requiresGuidelines: false
-  },
-  {
-    id: "checklist_workup_refinement",
-    label: "Checklist/workup refinement",
-    requiresGuidelines: false
-  },
-  {
-    id: "preround_bedside_exam",
-    label: "Pre-round bedside exam",
-    guidelineToken: "@pre-round-checklist-guidelines",
-    requiresGuidelines: true
-  },
-  {
-    id: "discharge_instructions",
-    label: "Discharge instructions",
-    guidelineToken: "@discharge-instructions-guidelines",
-    requiresGuidelines: true
-  },
-  {
-    id: "consulting",
-    label: "Consulting",
-    guidelineToken: "@consulting-guidelines",
-    requiresGuidelines: true
-  }
-];
+  }));
 
 export const openEvidenceTasks = Object.fromEntries(OPEN_EVIDENCE_TASKS.map((task) => [task.id, task]));
 
 export function availableOpenEvidenceTasks(guidelineSets = []) {
   const availableTokens = new Set((guidelineSets || []).map((set) => set.token));
-  return OPEN_EVIDENCE_TASKS.filter((task) => !task.guidelineToken || availableTokens.has(task.guidelineToken));
+  return OPEN_EVIDENCE_TASKS.filter((task) => availableTokens.has(task.guidelineToken));
 }
 
 function compactText(text, limit = 42000) {

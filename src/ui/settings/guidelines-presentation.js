@@ -1,5 +1,5 @@
-import { tokenColorSwatchButton } from "../token-color-picker.js";
-import { guidelineSetMatchesQuery } from "../../prompts/guideline-sets.js?v=20260818-prompt-guideline-sync";
+import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260819-one-to-one-task-guidelines";
+import { guidelineSetMatchesQuery } from "../../prompts/guideline-sets.js?v=20260819-one-to-one-task-guidelines";
 
 // Pure presentation module. The library stays compact by keeping editing in a
 // single side panel instead of expanding every guideline into a giant card.
@@ -14,7 +14,7 @@ export function renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides 
       <div class="section-heading guideline-library-heading">
         <div>
           <h2>Documentation guidelines</h2>
-          <p class="muted">Create reusable instruction sets. Each custom guideline is the same saved record as its matching OpenEvidence prompt and also becomes a smart variable.</p>
+          <p class="muted">Every OpenEvidence dropdown option is backed by exactly one editable guideline here. Team preferences is shared across prompts. Adding a guideline creates a matching custom option and smart variable.</p>
         </div>
         <button class="button--secondary" type="button" data-action="request-refresh-default-guidelines">Update built-in prompts</button>
       </div>

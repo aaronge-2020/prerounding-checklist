@@ -1,4 +1,4 @@
-import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260818-prompt-guideline-sync";
+import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260819-one-to-one-task-guidelines";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({

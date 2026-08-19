@@ -4,10 +4,12 @@ import {
   DEFAULT_GUIDELINE_SET_SOURCES,
   GUIDELINE_SET_CANONICAL_DEFAULTS_KEY,
   GUIDELINE_SET_STORAGE_KEY,
+  OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY,
   TEACHING_GUIDELINE_SET_SEED_KEY,
   addGuidelineSet,
   createGuidelineSet,
   ensureCanonicalDefaultGuidelineSets,
+  ensureOpenEvidenceTaskGuidelineSets,
   ensureTeachingGuidelineSet,
   guidelineSetMatchesQuery,
   loadGuidelineSets,
@@ -35,7 +37,11 @@ const expectedTokens = [
   "@consulting-guidelines",
   "@team-preferences",
   "@progress-guidelines",
-  "@teaching-guidelines"
+  "@teaching-guidelines",
+  "@presentation-editor-guidelines",
+  "@medication-explainer-guidelines",
+  "@medication-safety-guidelines",
+  "@checklist-refinement-guidelines"
 ];
 
 assert.deepEqual(DEFAULT_GUIDELINE_SET_SOURCES.map((source) => source.token), expectedTokens);
@@ -43,6 +49,10 @@ assert.equal(new Set(expectedTokens).size, expectedTokens.length, "default guide
 assert.match(DEFAULT_PROMPT_TEMPLATES.preround_bedside_exam, /@pre-round-checklist-guidelines/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.discharge_instructions, /@discharge-instructions-guidelines/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /^@teaching-guidelines\b/);
+assert.match(DEFAULT_PROMPT_TEMPLATES.presentation_quality_editor, /^@presentation-editor-guidelines\b/);
+assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /^@medication-explainer-guidelines\b/);
+assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /^@medication-safety-guidelines\b/);
+assert.match(DEFAULT_PROMPT_TEMPLATES.checklist_workup_refinement, /^@checklist-refinement-guidelines\b/);
 assert.doesNotMatch(Object.values(DEFAULT_PROMPT_TEMPLATES).join("\n"), /updated-guidelines/);
 for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter((entry) => entry.path)) {
   const deployedSeed = readFileSync(source.path.replace(/^\.\//, ""), "utf8");
@@ -59,9 +69,41 @@ for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter((entry) => entry.path)
     assert.deepEqual(seeded.map((set) => set.token), expectedTokens);
     assert.equal(storage.getItem(GUIDELINE_SET_CANONICAL_DEFAULTS_KEY), "1");
     assert.equal(storage.getItem(TEACHING_GUIDELINE_SET_SEED_KEY), "1");
+    assert.equal(storage.getItem(OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY), "1");
 
     saveGuidelineSets([], storage);
     assert.deepEqual(await loadOrMigrateGuidelineSets(storage), [], "deleted defaults must stay deleted");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+}
+
+// Existing installs receive the four formerly embedded task guidelines once,
+// without restoring any older built-in the user deliberately deleted.
+{
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => ({ ok: true, text: async () => `Task guideline from ${url}` });
+  try {
+    const storage = fakeStorage({
+      [GUIDELINE_SET_STORAGE_KEY]: "[]",
+      [GUIDELINE_SET_CANONICAL_DEFAULTS_KEY]: "1",
+      [TEACHING_GUIDELINE_SET_SEED_KEY]: "1"
+    });
+    const existing = [createGuidelineSet("Progress notes", "Keep me.", { token: "@progress-guidelines" })];
+    const seeded = await ensureOpenEvidenceTaskGuidelineSets(existing, { storage });
+    assert.deepEqual(seeded.map(({ token }) => token), [
+      "@progress-guidelines",
+      "@presentation-editor-guidelines",
+      "@medication-explainer-guidelines",
+      "@medication-safety-guidelines",
+      "@checklist-refinement-guidelines"
+    ]);
+    assert.equal(storage.getItem(OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY), "1");
+    assert.equal(seeded.some(({ token }) => token === "@admission-guidelines"), false, "the migration must not restore unrelated deleted defaults");
+
+    const afterDeletion = seeded.filter(({ token }) => token !== "@presentation-editor-guidelines");
+    saveGuidelineSets(afterDeletion, storage);
+    assert.deepEqual(await ensureOpenEvidenceTaskGuidelineSets(afterDeletion, { storage }), afterDeletion);
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -87,7 +129,7 @@ for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter((entry) => entry.path)
       legacyTeamPreferences: "Rounds at 7.",
       storage
     });
-    assert.deepEqual(canonical.slice(0, 7).map((set) => set.token), expectedTokens);
+    assert.deepEqual(canonical.slice(0, expectedTokens.length).map((set) => set.token), expectedTokens);
     assert.equal(canonical.find((set) => set.token === "@admission-guidelines")?.text, "My edited admission text.");
     assert.equal(canonical.find((set) => set.token === "@team-preferences")?.text, "Rounds at 7.");
     assert.equal(canonical.find((set) => set.token === custom.token)?.text, custom.text);

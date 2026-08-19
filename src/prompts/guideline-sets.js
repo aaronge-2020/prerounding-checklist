@@ -3,15 +3,22 @@ import { createLocalId } from "../app/state/vault.js";
 export const GUIDELINE_SET_STORAGE_KEY = "prerounding_guideline_sets_v1";
 export const GUIDELINE_SET_CANONICAL_DEFAULTS_KEY = "prerounding_guideline_sets_canonical_defaults_v2";
 export const TEACHING_GUIDELINE_SET_SEED_KEY = "prerounding_teaching_guideline_set_seed_v1";
+export const OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY = "prerounding_open_evidence_task_guidelines_seed_v1";
+
+const OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP = "open_evidence_task_guidelines_v1";
 
 export const DEFAULT_GUIDELINE_SET_SOURCES = Object.freeze([
-  { label: "Admission", token: "@admission-guidelines", path: "./prompts/Guidelines-admission.md" },
-  { label: "Pre-round checklist", token: "@pre-round-checklist-guidelines", path: "./prompts/Pre-round_checklist.md" },
-  { label: "Discharge instructions", token: "@discharge-instructions-guidelines", path: "./prompts/Discharge_Instructions.md" },
-  { label: "Consulting", token: "@consulting-guidelines", path: "./prompts/Consulting.md" },
+  { label: "Admission", token: "@admission-guidelines", path: "./prompts/Guidelines-admission.md", task: { id: "initial_admission_rounds", label: "Initial admission rounds", order: 1 } },
+  { label: "Pre-round checklist", token: "@pre-round-checklist-guidelines", path: "./prompts/Pre-round_checklist.md", task: { id: "preround_bedside_exam", label: "Pre-round bedside exam", order: 8 } },
+  { label: "Discharge instructions", token: "@discharge-instructions-guidelines", path: "./prompts/Discharge_Instructions.md", task: { id: "discharge_instructions", label: "Discharge instructions", order: 9 } },
+  { label: "Consulting", token: "@consulting-guidelines", path: "./prompts/Consulting.md", task: { id: "consulting", label: "Consulting", order: 10 } },
   { label: "Team preferences", token: "@team-preferences", path: "" },
-  { label: "Progress notes", token: "@progress-guidelines", path: "./prompts/Guidelines-progress.md" },
-  { label: "Teaching", token: "@teaching-guidelines", path: "./prompts/teaching.md" }
+  { label: "Progress notes", token: "@progress-guidelines", path: "./prompts/Guidelines-progress.md", task: { id: "daily_progress_note", label: "Daily progress-note update", order: 2 } },
+  { label: "Teaching", token: "@teaching-guidelines", path: "./prompts/teaching.md", task: { id: "teaching_case_trajectory", label: "Teaching: full case trajectory", order: 4 } },
+  { label: "Presentation editor", token: "@presentation-editor-guidelines", path: "./prompts/Presentation-editor.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "presentation_quality_editor", label: "Edit and verify presentation", order: 3 } },
+  { label: "Medication organization and explanation", token: "@medication-explainer-guidelines", path: "./prompts/Medication-explainer.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "medication_explainer_by_problem", label: "Medication organization and explanation", order: 5 } },
+  { label: "Medication safety audit", token: "@medication-safety-guidelines", path: "./prompts/Medication-safety.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "medication_safety_audit", label: "Medication safety audit", order: 6 } },
+  { label: "Checklist/workup refinement", token: "@checklist-refinement-guidelines", path: "./prompts/Checklist-refinement.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "checklist_workup_refinement", label: "Checklist/workup refinement", order: 7 } }
 ]);
 
 const DEFAULT_TOKENS = new Set(DEFAULT_GUIDELINE_SET_SOURCES.map((source) => source.token));
@@ -172,6 +179,7 @@ export async function loadOrMigrateGuidelineSets(storage = localStorage) {
   saveGuidelineSets(seeded, storage);
   storage.setItem(GUIDELINE_SET_CANONICAL_DEFAULTS_KEY, "1");
   storage.setItem(TEACHING_GUIDELINE_SET_SEED_KEY, "1");
+  storage.setItem(OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY, "1");
   return seeded;
 }
 
@@ -192,6 +200,29 @@ export async function ensureTeachingGuidelineSet(sets, { storage = localStorage 
   ];
   if (!hasTeaching) saveGuidelineSets(next, storage);
   storage.setItem(TEACHING_GUIDELINE_SET_SEED_KEY, "1");
+  return next;
+}
+
+// Adds the formerly embedded task instructions exactly once for existing
+// installs. The marker makes later deletion authoritative, just like every
+// other Settings-backed guideline.
+export async function ensureOpenEvidenceTaskGuidelineSets(sets, { storage = localStorage } = {}) {
+  if (storage.getItem(OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY) !== null) return sets;
+  const current = Array.isArray(sets) ? sets : [];
+  const existingTokens = new Set(current.map((set) => set.token));
+  const sources = DEFAULT_GUIDELINE_SET_SOURCES.filter(({ seedGroup }) => seedGroup === OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP);
+  const additions = [];
+  for (const source of sources) {
+    if (existingTokens.has(source.token)) continue;
+    additions.push(createGuidelineSet(source.label, await fetchGuidelineText(source.path), {
+      token: source.token,
+      existingTokens: [...existingTokens]
+    }));
+    existingTokens.add(source.token);
+  }
+  const next = [...current, ...additions];
+  if (additions.length) saveGuidelineSets(next, storage);
+  storage.setItem(OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY, "1");
   return next;
 }
 

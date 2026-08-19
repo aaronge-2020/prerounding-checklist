@@ -1,4 +1,4 @@
-import { addGuidelineSet, guidelineSetMatchesQuery, removeGuidelineSet, restoreLatestDefaultGuidelineSets, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js?v=20260818-prompt-guideline-sync";
+import { addGuidelineSet, guidelineSetMatchesQuery, removeGuidelineSet, restoreLatestDefaultGuidelineSets, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js?v=20260819-one-to-one-task-guidelines";
 
 // CRUD for user-managed documentation-guideline sets - kept out of app.js to
 // respect the coordinator-file size boundary (scripts/check-ui-module-boundaries.js).

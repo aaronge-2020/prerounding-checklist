@@ -27,6 +27,11 @@ import { createSourceCapture } from "../src/patient-context/source-captures.js";
 import { ATTENDING_HOSPITALIST_PERSONA } from "../src/prompts/natural-language.js";
 
 const allDefaultGuidelineSets = DEFAULT_GUIDELINE_SET_SOURCES.map((source) => createGuidelineSet(source.label, "", { token: source.token }));
+const taskGuidelineSources = DEFAULT_GUIDELINE_SET_SOURCES.filter((source) => source.task);
+assert.equal(Object.keys(openEvidenceTasks).length, taskGuidelineSources.length, "every built-in dropdown option must have exactly one Settings guideline source");
+for (const task of Object.values(openEvidenceTasks)) {
+  assert.equal(taskGuidelineSources.filter((source) => source.token === task.guidelineToken && source.task.id === task.id).length, 1, `${task.label} must map to exactly one Settings guideline`);
+}
 assert.equal(availableOpenEvidenceTasks(allDefaultGuidelineSets).some((task) => task.id === "initial_admission_rounds"), true);
 for (const task of Object.values(openEvidenceTasks).filter((entry) => entry.guidelineToken)) {
   const withoutMatchingGuideline = allDefaultGuidelineSets.filter((set) => set.token !== task.guidelineToken);
@@ -37,15 +42,18 @@ for (const task of Object.values(openEvidenceTasks).filter((entry) => entry.guid
   );
 }
 assert.equal(
-  availableOpenEvidenceTasks([]).some((task) => task.id === "medication_safety_audit"),
-  true,
-  "tasks without a Settings guideline remain available"
+  availableOpenEvidenceTasks([]).length,
+  0,
+  "no built-in dropdown option may exist without its Settings guideline"
 );
 const guidelines = {
   admission: readFileSync("prompts/Guidelines-admission.md", "utf8"),
   progress: readFileSync("prompts/Guidelines-progress.md", "utf8"),
   teaching: readFileSync("prompts/teaching.md", "utf8")
 };
+const deployedGuidelineSets = DEFAULT_GUIDELINE_SET_SOURCES
+  .filter((source) => source.path)
+  .map((source) => createGuidelineSet(source.label, readFileSync(source.path.replace(/^\.\//, ""), "utf8"), { token: source.token }));
 
 for (const template of Object.values(DEFAULT_PROMPT_TEMPLATES)) {
   const hiddenInstructionTokens = template.match(/@[a-z0-9-]+/g)?.filter((token) => token.endsWith("-instructions")) || [];
@@ -64,8 +72,10 @@ for (const variable of instructionSmartVariables) {
 assert.match(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@progress-note-packet/, "daily progress template must use the compiled selected-day packet");
 assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@exam-findings/, "daily progress template must not use the removed all-days examination variable");
 assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /^@teaching-guidelines\b/, "case teaching instructions must come from the editable Settings guideline");
-assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /Teach this medication list/, "medication teaching instructions must be visible in the editable template");
-assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /Run a focused, supervised medication-safety teaching exercise/, "medication safety instructions must be visible in the editable template");
+assert.match(DEFAULT_PROMPT_TEMPLATES.presentation_quality_editor, /^@presentation-editor-guidelines\b/, "presentation editing instructions must come from the editable Settings guideline");
+assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /^@medication-explainer-guidelines\b/, "medication teaching instructions must come from the editable Settings guideline");
+assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /^@medication-safety-guidelines\b/, "medication safety instructions must come from the editable Settings guideline");
+assert.match(DEFAULT_PROMPT_TEMPLATES.checklist_workup_refinement, /^@checklist-refinement-guidelines\b/, "checklist refinement instructions must come from the editable Settings guideline");
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /@admission-packet/, "medication teaching defaults need patient context to establish indication");
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /@admission-packet/, "medication safety defaults need patient context for contraindications and verification");
 const customTeamInstructions = "Write only the highest-yield active problems and keep the plan action-focused.";
@@ -263,6 +273,7 @@ const presentationEditorPrompt = buildCustomOpenEvidencePrompt({
   template: DEFAULT_PROMPT_TEMPLATES.presentation_quality_editor,
   patient,
   selectedDayId: day.id,
+  guidelineSets: deployedGuidelineSets,
   presentationToEdit: "One-Liner\nA de-identified sample presentation.\n\nAssessment\nA concise assessment."
 });
 assert.match(presentationEditorPrompt, /Return only the fully revised presentation/);
@@ -274,7 +285,8 @@ const presentationEditorWithoutPastedText = buildCustomOpenEvidencePrompt({
   taskId: "presentation_quality_editor",
   template: DEFAULT_PROMPT_TEMPLATES.presentation_quality_editor,
   patient,
-  selectedDayId: day.id
+  selectedDayId: day.id,
+  guidelineSets: deployedGuidelineSets
 });
 assert.match(presentationEditorWithoutPastedText, /Return only the fully revised presentation/);
 assert.doesNotMatch(presentationEditorWithoutPastedText, /No presentation was pasted/);
@@ -308,13 +320,10 @@ assert.equal(fieldVariables.find((variable) => variable.sectionId === patient.co
 assert.equal(fieldVariables.find((variable) => variable.sectionId === patient.contextSections[0].id)?.label, "Admission — Primary team note");
 assert.equal(fieldVariables.some((variable) => variable.token === "@guidelines"), false, "H&P and SOAP guidelines must not share one variable");
 
-const guidelineSets = [
-  createGuidelineSet("Admission", guidelines.admission),
-  createGuidelineSet("Progress", guidelines.progress, { existingTokens: ["@admission-guidelines"] })
-];
+const guidelineSets = deployedGuidelineSets;
 const fieldVariablesWithGuidelines = promptVariablesForPatient(patient, { guidelineSets });
 assert.equal(fieldVariablesWithGuidelines.find((variable) => variable.token === "@admission-guidelines")?.label, "Admission");
-assert.equal(fieldVariablesWithGuidelines.find((variable) => variable.token === "@progress-guidelines")?.label, "Progress");
+assert.equal(fieldVariablesWithGuidelines.find((variable) => variable.token === "@progress-guidelines")?.label, "Progress notes");
 const teamGuideline = createGuidelineSet("Team preferences", "Use concise language.", { existingTokens: ["@team-preferences"] });
 teamGuideline.token = "@team-preferences";
 const teamVariables = promptVariablesForPatient(patient, { guidelineSets: [teamGuideline] });
@@ -460,6 +469,7 @@ const medicationTeachingPrompt = buildCustomOpenEvidencePrompt({
   template: `${DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem}\n\n@team-preferences`,
   patient,
   selectedDayId: day.id,
+  guidelineSets,
   teamPreferences: { teamInstructions: "Medication-focused review." }
 });
 assert.match(medicationTeachingPrompt, /Medication-focused review/);
@@ -470,6 +480,7 @@ const medicationDefaultPrompt = buildCustomOpenEvidencePrompt({
   template: DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem,
   patient,
   selectedDayId: day.id,
+  guidelineSets,
   teamPreferences: { teamInstructions: "Medication-focused review." }
 });
 assert.doesNotMatch(medicationDefaultPrompt, /Write for the Primary team/);
@@ -480,7 +491,8 @@ const medicationSafetyDefaultPrompt = buildCustomOpenEvidencePrompt({
   taskId: "medication_safety_audit",
   template: DEFAULT_PROMPT_TEMPLATES.medication_safety_audit,
   patient,
-  selectedDayId: day.id
+  selectedDayId: day.id,
+  guidelineSets
 });
 assert.match(medicationSafetyDefaultPrompt, /Rank only credible, clinically important concerns by urgency/i);
 assert.match(medicationSafetyDefaultPrompt, /case-specific pause-and-check questions/i);

@@ -1,5 +1,5 @@
 import { createLocalId, timestampNow } from "../app/state/vault.js";
-import { createGuidelineSet, isCustomGuidelineSet } from "./guideline-sets.js";
+import { createGuidelineSet, isCustomGuidelineSet } from "./guideline-sets.js?v=20260819-one-to-one-task-guidelines";
 
 // Legacy prompt-only records. New user-created prompts live directly in the
 // guideline-set store so Settings and the OpenEvidence dropdown cannot drift.

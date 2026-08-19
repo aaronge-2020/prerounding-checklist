@@ -1,6 +1,6 @@
-import { addGuidelineSet, removeGuidelineSet, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js?v=20260818-prompt-guideline-sync";
-import { migrateCustomPromptTasksToGuidelineSets, saveCustomPromptTasks } from "../../prompts/custom-tasks.js?v=20260818-prompt-guideline-sync";
-import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20260818-prompt-guideline-sync";
+import { addGuidelineSet, removeGuidelineSet, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js?v=20260819-one-to-one-task-guidelines";
+import { migrateCustomPromptTasksToGuidelineSets, saveCustomPromptTasks } from "../../prompts/custom-tasks.js?v=20260819-one-to-one-task-guidelines";
+import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20260819-one-to-one-task-guidelines";
 import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js?v=20260818-daily-function";
 
 // Create/delete custom prompt tasks - kept out of app.js to respect the

@@ -248,6 +248,35 @@ try {
   await page.click('[data-view-target="prompts"]');
   assert.equal(await page.locator('#promptTaskSelect option[value="initial_admission_rounds"]').count(), 1, "restoring Admission guidelines must restore exactly one Initial admission rounds dropdown option");
 
+  // The formerly standalone Presentation editor now has one editable Settings
+  // guideline. Its edit must resolve into the prompt, and deleting the record
+  // must remove the dropdown option itself.
+  await page.click('[data-view-target="settings"]');
+  const presentationGuideline = page.locator('.guideline-row').filter({ has: page.locator('code', { hasText: "@presentation-editor-guidelines" }) });
+  assert.equal(await presentationGuideline.count(), 1, "Edit and verify presentation must have exactly one Settings guideline");
+  const presentationGuidelineId = await presentationGuideline.getAttribute("data-guideline-id");
+  await presentationGuideline.locator(".guideline-row-open").click();
+  await page.fill(`#guidelineSetText-${presentationGuidelineId}`, "PRESENTATION EDITOR SETTINGS PROOF");
+  await page.click(`[data-action="save-guideline-set"][data-guideline-set-id="${presentationGuidelineId}"]`);
+  await page.click('[data-view-target="prompts"]');
+  await page.selectOption("#promptTaskSelect", "presentation_quality_editor");
+  await page.waitForFunction(() => /PRESENTATION EDITOR SETTINGS PROOF/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
+  await page.click('[data-view-target="settings"]');
+  const editedPresentationGuideline = page.locator('.guideline-row').filter({ has: page.locator('code', { hasText: "@presentation-editor-guidelines" }) });
+  const editedPresentationGuidelineId = await editedPresentationGuideline.getAttribute("data-guideline-id");
+  const editedPresentationOpenButton = editedPresentationGuideline.locator(".guideline-row-open");
+  if (await editedPresentationOpenButton.getAttribute("aria-expanded") !== "true") await editedPresentationOpenButton.click();
+  await page.click(`[data-action="request-remove-guideline-set"][data-guideline-set-id="${editedPresentationGuidelineId}"]`);
+  await page.click('[data-action="confirm-remove-guideline-set"]');
+  await page.click('[data-view-target="prompts"]');
+  assert.equal(await page.locator('#promptTaskSelect option[value="presentation_quality_editor"]').count(), 0, "deleting Presentation editor must remove Edit and verify presentation from the dropdown");
+  await page.click('[data-view-target="settings"]');
+  await page.click('[data-action="request-refresh-default-guidelines"]');
+  await page.click('[data-action="confirm-refresh-default-guidelines"]');
+  await page.waitForFunction(() => /Built-in prompts updated from this site/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.click('[data-view-target="prompts"]');
+  assert.equal(await page.locator('#promptTaskSelect option[value="presentation_quality_editor"]').count(), 1, "restoring built-ins must restore exactly one Edit and verify presentation option");
+
   assert.equal(await page.locator('#promptTaskSelect option', { hasText: "Discharge summary" }).count(), 1, "a Settings guideline must create exactly one matching prompt option");
   await page.locator("#promptPreview").fill("@discharge");
   await page.waitForSelector("#smartVariableMenu.open");
