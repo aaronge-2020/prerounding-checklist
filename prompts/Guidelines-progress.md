@@ -186,7 +186,7 @@ Other conventions:
 \| FEN, VTE prophylaxis, and Code status | one compact line each |
 \| Disposition | one or two sentences |
 
-Reasoning sentences, differential tables, reasoning paragraphs, FEN, VTE prophylaxis, Code status, and Disposition do not count toward per-problem bullet limits. **\*\*VERIFY:\*\*** bullets do count. There is no fixed total bullet cap: include every active problem, then enforce the tier-specific limit within each problem.
+Reasoning sentences, differential tables, reasoning paragraphs, explicitly attributed consultant-recommendation bullets, FEN, VTE prophylaxis, Code status, and Disposition do not count toward per-problem bullet limits. **\*\*VERIFY:\*\*** bullets do count. There is no fixed total bullet cap: include every active problem, enforce the tier-specific limit on the team's own action bullets, and then include every required consultant-recommendation bullet.
 
 Target 350 to 600 words. Exceed 700 only when multiple independently active problems require separate decisions or durable handoff context that cannot be safely compressed.
 
@@ -223,7 +223,7 @@ If an indication matters but is unknown, write "indication unclear." If a medica
 \- "Receiving" for a documented active regimen.
 \- "Continue," "hold," "proceed with," or "scheduled" for documented actions.
 \- "Ordered," "collected," and "pending" only when documented.
-\- "Consultant recommends" only for a documented recommendation.
+\- "[Service name] recommends" only for a documented recommendation, with the actual service named every time.
 \- "Recommend" for your proposed action.
 \- "Confirm," "clarify," or "reconcile" for an unresolved decision.
 \- "If [specific trigger], recommend [specific response]" for a contingency.
@@ -265,7 +265,7 @@ Never narrate chart review. Do not write "the supplied sources show," "one note 
 \| Durable problem-defining synopsis needed to understand the Assessment and Plan alone | Key context under that Plan problem |
 \| Problem-level severity, trajectory, differential | Differential block or reasoning paragraph |
 \| Consultant service and status | Objective |
-\| Consultant recommendation content | Plan bullet |
+\| Complete consultant recommendation content | Explicitly service-attributed bullet under the corresponding Plan problem |
 \| Documented or proposed action | Plan bullet |
 
 Never re-narrate a symptom story, event, full report, or serial result list across sections. Selectively restating a decisive fact in Key context is required when the Assessment and Plan would otherwise depend on another section to be understood.
@@ -515,13 +515,15 @@ Never pad to reach a count, and never invent supporting evidence. Search the sup
 
 **### Consultant recommendations**
 
-A consultant's recommendations appear only in Plan bullets, never in Subjective, Objective, or the Assessment.
+A consultant's recommendations appear only in Plan bullets under the clinical problem each recommendation addresses, never in Subjective, Objective, or the Assessment. Before writing, build a hidden Consultant Recommendation Ledger with the named service, corresponding clinical problem, every documented recommendation, and the implementation status of each recommendation when supplied.
 
-**\*\*One bullet per consultant per problem.\*\*** Consolidate everything that service advised about that problem into a single bullet. If a service's recommendations bear on two genuinely separate problems, it may have one bullet under each, but never two bullets under the same problem.
+**\*\*Name the service in every recommendation bullet.\*\*** Begin every such bullet with `- [Service name] recommends ...`. Never write "Consultant recommends," "per consultant," "per recommendations," "follow consultant recommendations," or an unattributed passive construction such as "urinalysis recommended." Write `- Nephrology recommends obtaining a urinalysis.`
 
-Attribute precisely. Write "Consultant recommends" only for a documented recommendation. Attempted contact, a pending callback, or a note that a service was consulted is not a recommendation. When your own proposal differs from or extends a consultant's, say both in the one bullet: "Gastroenterology recommends EGD if bleeding persists; recommend clarifying today whether repeat lower endoscopy is higher yield given the sigmoid findings."
+**\*\*Include the complete documented recommendation set.\*\*** Under each corresponding problem, list every active or still-relevant recommendation from that service, including diagnostic tests, medications with documented dose/route/frequency, treatment changes, monitoring, restrictions, follow-up, and contingencies. Do not select only the recommendation that matches the team's plan. State whether each recommendation was implemented, ordered, completed, declined, deferred, or remains pending only when that status is documented.
 
-Consultant bullets count toward the problem's bullet allowance and the total.
+Use one or more consecutive bullets for each service under that problem. Keep one coherent action or tightly linked set per bullet, and repeat the service name at the start of every bullet. If a service's recommendations bear on two genuinely separate problems, place the applicable portion under each problem rather than combining them under one heading. If the team's plan differs from or extends the consultant's recommendation, keep the attribution separate: `- Gastroenterology recommends EGD if bleeding persists. Our team recommends clarifying whether repeat lower endoscopy is higher yield given the sigmoid findings.`
+
+Attempted contact, a pending callback, or documentation that a service was consulted is not a recommendation. Never infer recommendation content. Consultant-recommendation bullets are exempt from tier-specific bullet limits because attribution and completeness take priority over compression.
 
 **### Bullets**
 
@@ -700,10 +702,11 @@ Then confirm:
 41\. No proposed medication of yours appears in the appendix; only documented medications do.
 42\. Every appendix indication is one clause tied to this patient's problem, not a class description.
 43\. The Consultants subsection lists services and status only, with no recommendation content.
-44\. Every consultant recommendation appears in a Plan bullet and nowhere else.
-45\. No problem carries more than one bullet from the same consultant.
-46\. No service is described as recommending anything on the basis of attempted contact or a pending callback.
-47\. Every Plan problem has a **\*\*Key context:\*\*** synopsis stating what it is being treated as, its current state, and the few durable diagnostic, procedural, treatment, complication, implemented consultant-led event, or durable outcome facts needed to understand it; unimplemented consultant recommendation content remains only in a Plan bullet.
+44\. Every documented active or still-relevant consultant recommendation appears under its corresponding Plan problem, including tests, medications or treatment changes, monitoring, restrictions, follow-up, and contingencies; none is omitted merely to meet a bullet or word limit.
+45\. Every consultant-recommendation bullet begins with the actual service name followed by "recommends"; none says "Consultant recommends," "per consultant," "per recommendations," "follow consultant recommendations," or uses an unattributed passive construction.
+46\. Recommendations from one service are consecutive under each problem, use as many explicitly attributed bullets as needed for completeness, and are separated from any differing or additional team proposal.
+46a\. No service is described as recommending anything on the basis of attempted contact, a pending callback, or consultation status alone, and implementation status is stated only when documented.
+47\. Every Plan problem has a **\*\*Key context:\*\*** synopsis stating what it is being treated as, its current state, and the few durable diagnostic, procedural, treatment, complication, implemented consultant-led event, or durable outcome facts needed to understand it; every unimplemented consultant recommendation remains in an explicitly service-attributed Plan bullet.
 48\. The Assessment and Plan pass the read-alone audit: with every other section hidden, they still explain why the patient remains hospitalized, every active problem's defining context and current treatment, today's justified actions, and any consequential contingency or unresolved decision.
 49\. Key context carries forward unchanged problem-defining facts when necessary but contains no routine normal result, stale minor abnormality, redundant study, full report, or historical detail whose removal would leave diagnosis, severity, trajectory, present treatment, major risk, and the next decision unchanged.
 50\. Every procedure, surgery, or study in Key context uses the documented date, hospital day, or relative timing; missing or conflicting timing is identified rather than invented.

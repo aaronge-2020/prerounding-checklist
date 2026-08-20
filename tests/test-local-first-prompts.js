@@ -124,6 +124,8 @@ assert.match(admission, /durable problem-defining context required to understand
 assert.match(admission, /age, sex or gender as documented, hospital day, one to three pertinent past medical conditions/);
 assert.match(admission, /differential diagnoses under the applicable Plan problem/);
 assert.match(admission, /visible three-to-five-row differential table/);
+assert.match(admission, /include every documented active or still-relevant consultant recommendation/);
+assert.match(admission, /actual service name followed by "recommends"/);
 assert.match(guidelines.admission, /Write a concise presentation of a newly admitted patient/);
 assert.match(guidelines.admission, /The One-Liner is the full admission anchor and current headline/);
 assert.match(guidelines.admission, /Use the supplied information as the only source of patient-specific facts/);
@@ -132,6 +134,9 @@ assert.match(guidelines.admission, /Every selective fact in HPI and Objective mu
 assert.match(guidelines.admission, /available range since presentation/);
 assert.match(guidelines.admission, /VTE Prophylaxis/);
 assert.match(guidelines.admission, /Code Status/);
+assert.match(guidelines.admission, /Begin every such bullet with .*Service name.* recommends/);
+assert.match(guidelines.admission, /Include the complete documented recommendation set/);
+assert.match(guidelines.admission, /Consultant-recommendation bullets are exempt from tier-specific bullet limits/);
 assert.match(guidelines.admission, /wording must always distinguish your recommendations from completed treatment/);
 assert.match(guidelines.admission, /Origin and hospital status/);
 assert.match(guidelines.admission, /Home — held/);
@@ -169,6 +174,8 @@ assert.match(progress, /durable problem-defining context required to understand 
 assert.match(progress, /age, sex or gender as documented, hospital day, one to three pertinent past medical conditions/);
 assert.match(progress, /differential diagnoses under the applicable Plan problem/);
 assert.match(progress, /visible three-to-five-row differential table/);
+assert.match(progress, /include every documented active or still-relevant consultant recommendation/);
+assert.match(progress, /actual service name followed by "recommends"/);
 assert.match(guidelines.progress, /Write a concise daily progress note presentation/);
 assert.match(guidelines.progress, /one or two comorbidities or recent interventions most relevant to today's decisions/);
 assert.match(guidelines.progress, /Every element earns its place by supporting a differential item/);
@@ -176,6 +183,9 @@ assert.match(guidelines.progress, /silently review the complete documented selec
 assert.match(guidelines.progress, /available range over the last 24 hours/);
 assert.match(guidelines.progress, /VTE Prophylaxis/);
 assert.match(guidelines.progress, /Code Status/);
+assert.match(guidelines.progress, /Begin every such bullet with .*Service name.* recommends/);
+assert.match(guidelines.progress, /Include the complete documented recommendation set/);
+assert.match(guidelines.progress, /Consultant-recommendation bullets are exempt from tier-specific bullet limits/);
 assert.match(guidelines.progress, /The One-Liner is the admission anchor/);
 assert.match(guidelines.progress, /Origin and hospital status/);
 assert.match(guidelines.progress, /Home — held/);
