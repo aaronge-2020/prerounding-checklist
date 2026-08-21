@@ -160,6 +160,7 @@ Other conventions:
 \| Chief Complaint | one phrase |
 \| HPI | up to 6 sentences |
 \| Relevant History | subsections as warranted; conditions segment up to 6 lines |
+\| Diet and Exercise | conditional; 1–3 compact lines |
 \| Objective | subsections as warranted; target up to 7 compact spoken lines |
 \| Assessment | exactly 1 sentence |
 \| Plan — problems | as many as are actively managed today |
@@ -215,7 +216,7 @@ Attach the flag under the problem whose bullets act on it, not the problem where
 
 **## Information ownership**
 
-Each fact has one primary home: the full identifying and admission anchor in One-Liner; symptoms and chronology in HPI; background in Relevant History; measurements and results in Objective; the shorter current-state synthesis in Assessment; each problem's durable synopsis in Key context; problem-level interpretation, severity, trajectory, and differential in that problem's differential block or reasoning paragraph; treatment and proposed actions in Plan bullets; complete consultant recommendation content in explicitly service-attributed bullets under the corresponding Plan problem; diet, nutrition, relevant fluids, and electrolyte planning in FEN; thromboprophylaxis in VTE Prophylaxis; resuscitation preference in Code Status; and level of care, destination, barriers, and transition criteria in Disposition. Selective restatement of a decisive fact in Key context is required when the Assessment and Plan would otherwise depend on another section to be understood.
+Each fact has one primary home: the full identifying and admission anchor in One-Liner; symptoms and chronology in HPI; background in Relevant History; patient-reported diet and activity history for a qualifying vascular, thrombotic, glucose, lipid, or metabolic problem in Diet and Exercise; measurements and results in Objective; the shorter current-state synthesis in Assessment; each problem's durable synopsis in Key context; problem-level interpretation, severity, trajectory, and differential in that problem's differential block or reasoning paragraph; treatment and proposed actions in Plan bullets; complete consultant recommendation content in explicitly service-attributed bullets under the corresponding Plan problem; diet, nutrition, relevant fluids, and electrolyte planning in FEN; thromboprophylaxis in VTE Prophylaxis; resuscitation preference in Code Status; and level of care, destination, barriers, and transition criteria in Disposition. Selective restatement of a decisive fact in Key context is required when the Assessment and Plan would otherwise depend on another section to be understood.
 
 Never re-narrate a symptom story, history, examination sequence, full report, or serial laboratory list across sections. Citing a specific value or finding downstream is not repetition when it establishes the problem, records a durable event, or explains today's decision.
 
@@ -230,6 +231,8 @@ Print these headings in this order, bolded, each preceded by a blank line, with 
 **\*\*HPI\*\***
 
 **\*\*Relevant History\*\***
+
+**\*\*Diet and Exercise\*\***
 
 **\*\*Objective\*\***
 
@@ -248,6 +251,8 @@ Print these headings in this order, bolded, each preceded by a blank line, with 
 **\*\*Medication Regimens\*\***
 
 Never add Review of Systems, ED Course, Hospital Course, Data, Differential, or any other top-level heading.
+
+The **\*\*Diet and Exercise\*\*** heading is conditional. Include it only when the patient has actual or suspected acute coronary syndrome, ischemic stroke or TIA, pulmonary embolism or other venous thromboembolism, diabetes or prediabetes, obesity, metabolic syndrome, metabolic liver disease, dyslipidemia, or another clinically meaningful lipid, glucose, or metabolic abnormality. All other headings are required.
 
 **## One-Liner**
 
@@ -304,6 +309,12 @@ Example of the intended density and formatting:
 Omit empty categories, unrelated negative history, "no other home medications," absent risk factors that do not change the differential, and background already conveyed in the HPI.
 
 Every condition, recent procedure, social factor, functional detail, and medication in Relevant History must map silently to an Assessment modifier, a Plan problem, or a reasoning sentence where it changes a differential, risk balance, medication choice, procedure plan, or disposition. If it maps nowhere, omit it. Home medications do not make a condition relevant by themselves.
+
+**## Diet and Exercise**
+
+For every patient who meets the trigger above, include one to three compact patient-reported lines covering the clinically relevant baseline diet and activity history. Report the usual eating pattern and, as applicable, sodium intake, saturated or trans fat exposure, refined carbohydrates or sugar-sweetened beverages, fruit/vegetable and whole-grain intake, alcohol exposure, exercise type/frequency/intensity, sedentary time, recent immobility or travel, and barriers to activity or dietary change.
+
+Select only domains relevant to the patient's vascular, thrombotic, lipid, glucose, or metabolic problem. Do not turn this section into generic counseling, and do not place recommendations here. If either diet or exercise history is absent, state the specific gap and say what targeted history should be obtained during the admission; never invent a healthy or unhealthy pattern.
 
 **## Objective**
 
@@ -621,6 +632,7 @@ Then confirm:
 12\. No documented chronic-baseline value appears solely because it is outside the reference range; a baseline comparator may appear when it materially changes interpretation of the admission value.
 13\. No subsection label appears without qualifying content behind it.
 14\. Every section follows its stated internal order and is within its limit.
+14a\. Diet and Exercise appears for every qualifying vascular, thrombotic, diabetes, lipid, glucose, or metabolic condition; it reports supported diet and activity history or explicitly identifies the targeted history still needed, without adding counseling or recommendations.
 15\. Every unestablished problem has one differential sentence and one three-to-five-row differential table; no established-problem reasoning paragraph exceeds three sentences; chronic problems have exactly one bullet; every active problem appears within its tier-specific bullet limit.
 16\. Every Plan bullet contains one action plus a concise justification; diagnostic actions use an if/then finding-to-management statement, and treatment actions explain the patient-specific choice over the closest reasonable first-line alternative.
 17\. Problems are ordered unstable acute, stable acute, then chronic; problems sharing a decision are combined; no problem exists that is only a constraint on another.

@@ -174,6 +174,7 @@ Other conventions:
 \|---|---|
 \| One-Liner | one sentence, 25–40 words |
 \| Subjective | up to 4 sentences across all subsections |
+\| Diet and Exercise | conditional; 1–3 compact lines |
 \| Objective | subsections as warranted; target up to 7 compact spoken lines |
 \| Assessment | exactly 1 sentence |
 \| Plan — problems | every active problem, including stable tier three problems |
@@ -254,6 +255,7 @@ Never narrate chart review. Do not write "the supplied sources show," "one note 
 \|---|---|
 \| Consequential nursing or cross-cover event | Subjective |
 \| Patient-reported symptom or concern | Subjective |
+\| Diet and activity history for a qualifying vascular, thrombotic, glucose, lipid, or metabolic problem | Diet and Exercise |
 \| Vital sign or clinical support | Objective |
 \| Examination finding | Objective |
 \| Laboratory, imaging, or diagnostic result | Objective |
@@ -284,6 +286,8 @@ Print these headings in this order, bolded, each preceded by a blank line, with 
 
 **\*\*Subjective\*\***
 
+**\*\*Diet and Exercise\*\***
+
 **\*\*Objective\*\***
 
 **\*\*Assessment\*\***
@@ -301,6 +305,8 @@ Print these headings in this order, bolded, each preceded by a blank line, with 
 **\*\*Medication Regimens\*\***
 
 Never add Review of Systems, Hospital Course, Data, Differential, or any other top-level heading.
+
+The **\*\*Diet and Exercise\*\*** heading is conditional. Include it only when the patient has actual or suspected acute coronary syndrome, ischemic stroke or TIA, pulmonary embolism or other venous thromboembolism, diabetes or prediabetes, obesity, metabolic syndrome, metabolic liver disease, dyslipidemia, or another clinically meaningful lipid, glucose, or metabolic abnormality. All other headings are required.
 
 **## One-Liner**
 
@@ -323,6 +329,12 @@ Up to five sentences total. Include only subsections with qualifying content.
 Every daily Subjective must also document bowel function or the last bowel movement, bladder function or urination episodes, and current ambulation status under **\*\*Patient report:\*\*** because these are common discharge barriers. If any domain is absent from the supplied record, state that it is not documented; never invent a normal finding. These three required daily domains are exempt from omission solely for being unchanged or not otherwise management-changing.
 
 **\*\*Pertinent symptoms:\*\*** only specific positives or negatives that change the differential, severity assessment, or plan. Never a complete review of systems. No examination findings.
+
+**## Diet and Exercise**
+
+For every patient who meets the trigger above, include one to three compact patient-reported lines covering the clinically relevant baseline diet and activity history. Report the usual eating pattern and, as applicable, sodium intake, saturated or trans fat exposure, refined carbohydrates or sugar-sweetened beverages, fruit/vegetable and whole-grain intake, alcohol exposure, exercise type/frequency/intensity, sedentary time, recent immobility or travel, and barriers to activity or dietary change. For a daily presentation, include any meaningful change during the hospitalization or since the prior assessment.
+
+Select only domains relevant to the patient's vascular, thrombotic, lipid, glucose, or metabolic problem. Do not turn this section into generic counseling, and do not place recommendations here. If either diet or exercise history is absent, state the specific gap and say what targeted history should be obtained today; never invent a healthy or unhealthy pattern.
 
 **## Objective**
 
@@ -675,6 +687,7 @@ Then confirm:
 15\. Subjective contains no laboratory values, imaging-report details, consultant recommendation content, or examination findings; it may name a completed management-changing study, procedure, or consultation as an interval event.
 16\. Objective contains no plan, recommendation, scheduling, bowel preparation, or medication administration, and no causal or interpretive conclusion.
 16a\. Subjective begins with acute overnight events and responses, then management-changing events from yesterday, then the presenting symptom's trajectory, and documents today's bowel status, bladder or urination status, and ambulation status, explicitly stating when any one is not documented.
+16b\. Diet and Exercise appears for every qualifying vascular, thrombotic, diabetes, lipid, glucose, or metabolic condition; it reports supported diet and activity history or explicitly identifies the targeted history still needed, without adding counseling or recommendations.
 17\. No value at documented chronic baseline appears anywhere.
 18\. No subsection label appears without qualifying content behind it.
 19\. Every section is within its limit; every active problem appears within its tier-specific bullet limit; every new or newly re-ranked unresolved problem has one differential sentence and one three-to-five-row differential table; no established-problem reasoning paragraph exceeds three sentences.

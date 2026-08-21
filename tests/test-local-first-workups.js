@@ -123,12 +123,19 @@ assert.match(buildJsonFormatterPrompt(), /attending hospitalist with over 30 yea
 
 const checklistGuidelines = readFileSync("prompts/Pre-round_checklist.md", "utf8");
 assert.match(checklistGuidelines, /attending hospitalist with over 30 years/i);
-assert.match(checklistGuidelines, /no required, minimum, or maximum number of items/i);
-assert.match(checklistGuidelines, /What documented problem, treatment, procedure, uncertainty, or decision makes this item relevant/);
-assert.match(checklistGuidelines, /What important clinical possibilities would the answer or finding help distinguish/);
-assert.match(checklistGuidelines, /Number 1 is the highest priority/);
-assert.match(checklistGuidelines, /Output exactly these two sections and nothing else/);
-assert.match(checklistGuidelines, /### BEDSIDE QUESTIONS[\s\S]*### FOCUSED PHYSICAL EXAM/);
+assert.ok(checklistGuidelines.split("\n").length <= 170, "pre-round checklist instructions must remain concise");
+assert.match(checklistGuidelines, /two- or three-sentence patient snapshot/i);
+assert.match(checklistGuidelines, /#### \[Current problem\] → \[specific etiology or cause\]/);
+assert.match(checklistGuidelines, /Factor V Leiden/);
+assert.match(checklistGuidelines, /prothrombin G20210A/);
+assert.match(checklistGuidelines, /antiphospholipid syndrome/);
+assert.match(checklistGuidelines, /systemic glucocorticoids/);
+assert.match(checklistGuidelines, /Target 12–18 total history questions/);
+assert.match(checklistGuidelines, /targeted diet and physical-activity questions/);
+assert.match(checklistGuidelines, /acute coronary syndrome, ischemic stroke or TIA, pulmonary embolism/);
+assert.match(checklistGuidelines, /Output exactly these three sections and nothing else/);
+assert.match(checklistGuidelines, /### PATIENT SNAPSHOT[\s\S]*### BEDSIDE QUESTIONS[\s\S]*### FOCUSED PHYSICAL EXAM/);
+assert.doesNotMatch(checklistGuidelines, /Do not output:[\s\S]*A patient summary/);
 assert.doesNotMatch(checklistGuidelines, /approximately 10–14|2–5 minutes/);
 const connectedChecklistPrompt = buildOpenEvidenceWorkupDraftPrompt({
   guidelinesText: checklistGuidelines,
@@ -137,9 +144,11 @@ const connectedChecklistPrompt = buildOpenEvidenceWorkupDraftPrompt({
   thoroughness: "standard"
 });
 assert.match(connectedChecklistPrompt, /attending hospitalist with over 30 years/i);
-assert.match(connectedChecklistPrompt, /number 1 is the highest priority/i);
-assert.match(connectedChecklistPrompt, /bedside questions[\s\S]*focused physical exam/i);
-assert.match(connectedChecklistPrompt, /retain the chart-supported problem or decision label/i);
+assert.match(connectedChecklistPrompt, /patient snapshot[\s\S]*bedside questions[\s\S]*focused physical exam/i);
+assert.match(connectedChecklistPrompt, /specific etiology or cause/i);
+assert.match(connectedChecklistPrompt, /without overriding the guideline's required structure or item-count rules/i);
+assert.doesNotMatch(connectedChecklistPrompt, /use no fixed item count/i);
+assert.doesNotMatch(connectedChecklistPrompt, /assessment prose/i);
 assert.doesNotMatch(connectedChecklistPrompt, /Exclude labs, imaging, orders, diagnoses/i);
 
 console.log("local-first workup/checklist tests passed");

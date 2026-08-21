@@ -125,8 +125,8 @@ import {
   collectWorkupDraftFromDocument,
   workupFromEditorDraft,
   workupThoroughnessOption
-} from "../workups/editor.js?v=20260815-standalone-ap";
-import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260815-standalone-ap";
+} from "../workups/editor.js?v=20260821-etiology-checklist";
+import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260821-etiology-checklist";
 import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260815-standalone-ap";
 import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260815-standalone-ap";
 import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20260711-functional-remediation-15";
