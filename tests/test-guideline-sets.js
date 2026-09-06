@@ -4,11 +4,13 @@ import {
   DEFAULT_GUIDELINE_SET_SOURCES,
   GUIDELINE_SET_CANONICAL_DEFAULTS_KEY,
   GUIDELINE_SET_STORAGE_KEY,
+  OBGYN_TASK_GUIDELINES_SEED_KEY,
   OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY,
   TEACHING_GUIDELINE_SET_SEED_KEY,
   addGuidelineSet,
   createGuidelineSet,
   ensureCanonicalDefaultGuidelineSets,
+  ensureObGynTaskGuidelineSets,
   ensureOpenEvidenceTaskGuidelineSets,
   ensureTeachingGuidelineSet,
   guidelineSetMatchesQuery,
@@ -37,6 +39,8 @@ const expectedTokens = [
   "@consulting-guidelines",
   "@team-preferences",
   "@progress-guidelines",
+  "@obgyn-hp-guidelines",
+  "@obgyn-soap-guidelines",
   "@teaching-guidelines",
   "@presentation-editor-guidelines",
   "@medication-explainer-guidelines",
@@ -46,8 +50,12 @@ const expectedTokens = [
 
 assert.deepEqual(DEFAULT_GUIDELINE_SET_SOURCES.map((source) => source.token), expectedTokens);
 assert.equal(new Set(expectedTokens).size, expectedTokens.length, "default guideline tokens must be unique");
+const taskOrders = DEFAULT_GUIDELINE_SET_SOURCES.filter((source) => source.task).map((source) => source.task.order);
+assert.equal(new Set(taskOrders).size, taskOrders.length, "built-in prompt task ordering must be deterministic and unique");
 assert.match(DEFAULT_PROMPT_TEMPLATES.preround_bedside_exam, /@pre-round-checklist-guidelines/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.discharge_instructions, /@discharge-instructions-guidelines/);
+assert.match(DEFAULT_PROMPT_TEMPLATES.obgyn_history_and_physical, /^@team-preferences\b[\s\S]*@obgyn-hp-guidelines\b[\s\S]*@admission-packet\b/);
+assert.match(DEFAULT_PROMPT_TEMPLATES.obgyn_soap_note, /^@team-preferences\b[\s\S]*@obgyn-soap-guidelines\b[\s\S]*@progress-note-packet\b/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /^@teaching-guidelines\b/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.presentation_quality_editor, /^@presentation-editor-guidelines\b/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /^@medication-explainer-guidelines\b/);
@@ -56,7 +64,10 @@ assert.match(DEFAULT_PROMPT_TEMPLATES.checklist_workup_refinement, /^@checklist-
 assert.doesNotMatch(Object.values(DEFAULT_PROMPT_TEMPLATES).join("\n"), /updated-guidelines/);
 for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter((entry) => entry.path)) {
   const deployedSeed = readFileSync(source.path.replace(/^\.\//, ""), "utf8");
-  assert.match(deployedSeed, /Act as an attending hospitalist with over 30 years of inpatient experience/i, `${source.label} must carry the shared attending persona`);
+  const expectedPersona = source.token.startsWith("@obgyn-")
+    ? /Act as an attending obstetrician-gynecologist with over 30 years of inpatient and ambulatory experience/i
+    : /Act as an attending hospitalist with over 30 years of inpatient experience/i;
+  assert.match(deployedSeed, expectedPersona, `${source.label} must carry its attending persona`);
 }
 
 // New installs receive exactly the canonical defaults, in the requested order.
@@ -70,9 +81,97 @@ for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter((entry) => entry.path)
     assert.equal(storage.getItem(GUIDELINE_SET_CANONICAL_DEFAULTS_KEY), "1");
     assert.equal(storage.getItem(TEACHING_GUIDELINE_SET_SEED_KEY), "1");
     assert.equal(storage.getItem(OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY), "1");
+    assert.equal(storage.getItem(OBGYN_TASK_GUIDELINES_SEED_KEY), "1");
 
     saveGuidelineSets([], storage);
     assert.deepEqual(await loadOrMigrateGuidelineSets(storage), [], "deleted defaults must stay deleted");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+}
+
+// First-install seeding is transactional: a missing bundled prompt stores no
+// empty records or markers, and a later startup can retry the complete seed.
+{
+  const originalFetch = globalThis.fetch;
+  const storage = fakeStorage();
+  try {
+    globalThis.fetch = async () => { throw new Error("temporary first-install failure"); };
+    await assert.rejects(loadOrMigrateGuidelineSets(storage), /Reload to retry/);
+    assert.equal(storage.getItem(GUIDELINE_SET_STORAGE_KEY), null);
+    assert.equal(storage.getItem(GUIDELINE_SET_CANONICAL_DEFAULTS_KEY), null);
+    assert.equal(storage.getItem(TEACHING_GUIDELINE_SET_SEED_KEY), null);
+    assert.equal(storage.getItem(OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY), null);
+    assert.equal(storage.getItem(OBGYN_TASK_GUIDELINES_SEED_KEY), null);
+
+    globalThis.fetch = async (url) => ({ ok: true, text: async () => `Recovered ${url}` });
+    const recovered = await loadOrMigrateGuidelineSets(storage);
+    assert.deepEqual(recovered.map((set) => set.token), expectedTokens);
+    assert.match(recovered.find((set) => set.token === "@obgyn-hp-guidelines").text, /Guidelines-obgyn-hp/);
+    assert.match(recovered.find((set) => set.token === "@obgyn-soap-guidelines").text, /Guidelines-obgyn-soap/);
+    assert.equal(storage.getItem(OBGYN_TASK_GUIDELINES_SEED_KEY), "1");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+}
+
+// Existing installs receive both OB/Gyn prompts once, without restoring other
+// defaults the user deliberately deleted. Later OB/Gyn deletion stays final.
+{
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => ({ ok: true, text: async () => `OB/Gyn guideline from ${url}` });
+  try {
+    const storage = fakeStorage({
+      [GUIDELINE_SET_STORAGE_KEY]: "[]",
+      [GUIDELINE_SET_CANONICAL_DEFAULTS_KEY]: "1",
+      [TEACHING_GUIDELINE_SET_SEED_KEY]: "1",
+      [OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY]: "1"
+    });
+    const existing = [createGuidelineSet("Progress notes", "Keep me.", { token: "@progress-guidelines" })];
+    const seeded = await ensureObGynTaskGuidelineSets(existing, { storage });
+    assert.deepEqual(seeded.map(({ token }) => token), [
+      "@progress-guidelines",
+      "@obgyn-hp-guidelines",
+      "@obgyn-soap-guidelines"
+    ]);
+    assert.equal(seeded[1].text, "OB/Gyn guideline from ./prompts/Guidelines-obgyn-hp.md");
+    assert.equal(seeded[2].text, "OB/Gyn guideline from ./prompts/Guidelines-obgyn-soap.md");
+    assert.equal(storage.getItem(OBGYN_TASK_GUIDELINES_SEED_KEY), "1");
+    assert.equal(seeded.some(({ token }) => token === "@admission-guidelines"), false);
+
+    const afterDeletion = seeded.filter(({ token }) => token !== "@obgyn-soap-guidelines");
+    saveGuidelineSets(afterDeletion, storage);
+    assert.deepEqual(await ensureObGynTaskGuidelineSets(afterDeletion, { storage }), afterDeletion);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+}
+
+// A transient seed fetch failure leaves both the records and marker untouched,
+// so the next startup can retry instead of preserving empty prompts forever.
+{
+  const originalFetch = globalThis.fetch;
+  const storage = fakeStorage({
+    [GUIDELINE_SET_STORAGE_KEY]: "[]",
+    [GUIDELINE_SET_CANONICAL_DEFAULTS_KEY]: "1",
+    [TEACHING_GUIDELINE_SET_SEED_KEY]: "1",
+    [OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY]: "1"
+  });
+  const existing = [createGuidelineSet("Progress notes", "Keep me.", { token: "@progress-guidelines" })];
+  try {
+    globalThis.fetch = async () => { throw new Error("temporary offline failure"); };
+    assert.deepEqual(await ensureObGynTaskGuidelineSets(existing, { storage }), existing);
+    assert.equal(storage.getItem(OBGYN_TASK_GUIDELINES_SEED_KEY), null);
+    assert.deepEqual(loadGuidelineSets(storage), []);
+
+    globalThis.fetch = async (url) => ({ ok: true, text: async () => `Recovered ${url}` });
+    const recovered = await ensureObGynTaskGuidelineSets(existing, { storage });
+    assert.deepEqual(recovered.map(({ token }) => token), [
+      "@progress-guidelines",
+      "@obgyn-hp-guidelines",
+      "@obgyn-soap-guidelines"
+    ]);
+    assert.equal(storage.getItem(OBGYN_TASK_GUIDELINES_SEED_KEY), "1");
   } finally {
     globalThis.fetch = originalFetch;
   }

@@ -3,9 +3,9 @@ import { buildTrajectoryBlock } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260722-unified-stay-v2";
 import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js?v=20260722-guideline-library";
-import { ATTENDING_HOSPITALIST_PERSONA, attendingHospitalistPrompt } from "./natural-language.js?v=20260815-standalone-ap";
+import { attendingPromptForTask, includesRequiredAttendingPersona, promptPersonaForTask, stripConflictingAttendingPersonas } from "./natural-language.js?v=20260831-obgyn-prompts";
 import { buildProgressNotePacket } from "./progress-note-packet.js";
-import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20260819-one-to-one-task-guidelines";
+import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20260831-obgyn-prompts";
 
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";
 export const TEAM_PREFERENCES_PROMPT_TOKEN = "@team-preferences";
@@ -16,6 +16,8 @@ const TASK_GUIDELINE_TOKENS = new Map(DEFAULT_GUIDELINE_SET_SOURCES.filter((sour
 export const DEFAULT_PROMPT_TEMPLATES = {
   initial_admission_rounds: `@team-preferences\n\n@admission-guidelines\n\n@admission-packet`,
   daily_progress_note: `@team-preferences\n\n@progress-guidelines\n\n@progress-note-packet`,
+  obgyn_history_and_physical: `@team-preferences\n\n@obgyn-hp-guidelines\n\n@admission-packet`,
+  obgyn_soap_note: `@team-preferences\n\n@obgyn-soap-guidelines\n\n@progress-note-packet`,
   presentation_quality_editor: `@presentation-editor-guidelines\n\n@presentation-to-edit\n\n@admission-packet\n\n@progress-note-packet`,
   teaching_case_trajectory: `@teaching-guidelines\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   medication_explainer_by_problem: `@medication-explainer-guidelines\n\n@admission-packet\n\n@medications\n\n@selected-day`,
@@ -273,10 +275,10 @@ export function interpolatePromptTemplate(template, variables) {
   );
 }
 
-export function buildCustomOpenEvidencePrompt({ template, patient, selectedDayId, guidelineSets = [], teamPreferences, presentationToEdit = "" }) {
+export function buildCustomOpenEvidencePrompt({ taskId, template, patient, selectedDayId, guidelineSets = [], teamPreferences, presentationToEdit = "" }) {
   const variables = buildPromptVariableMap({ patient, selectedDayId, guidelineSets, teamPreferences, presentationToEdit });
   const interpolated = interpolatePromptTemplate(template, variables);
-  return attendingHospitalistPrompt(interpolated);
+  return attendingPromptForTask(interpolated, taskId);
 }
 
 function hashToken(token) {
@@ -379,11 +381,11 @@ function escapeRegExpLiteral(value) {
 // "@admission-context") for the color-highlighted preview only - the plain
 // copy/OpenEvidence-ready text still comes from interpolatePromptTemplate
 // above, untouched by this.
-export function buildPromptPreviewSegments(template, variables, { ensurePersona = false } = {}) {
+export function buildPromptPreviewSegments(template, variables, { ensurePersona = false, taskId = "" } = {}) {
   const text = String(template || "");
   const tokens = Object.keys(variables || {}).sort((left, right) => right.length - left.length);
   if (!tokens.length) {
-    const promptText = ensurePersona ? attendingHospitalistPrompt(text) : text;
+    const promptText = ensurePersona ? attendingPromptForTask(text, taskId) : text;
     return [{ type: "text", value: promptText }];
   }
   const pattern = new RegExp(tokens.map(escapeRegExpLiteral).join("|"), "g");
@@ -397,9 +399,12 @@ export function buildPromptPreviewSegments(template, variables, { ensurePersona 
     match = pattern.exec(text);
   }
   if (lastIndex < text.length) segments.push({ type: "text", value: text.slice(lastIndex) });
+  if (taskId === "obgyn_history_and_physical" || taskId === "obgyn_soap_note") {
+    for (const segment of segments) segment.value = stripConflictingAttendingPersonas(segment.value, taskId);
+  }
   const resolved = segments.map((segment) => segment.value).join("");
-  if (ensurePersona && !resolved.toLowerCase().includes(ATTENDING_HOSPITALIST_PERSONA.toLowerCase())) {
-    segments.unshift({ type: "text", value: `${ATTENDING_HOSPITALIST_PERSONA}\n\n` });
+  if (ensurePersona && !includesRequiredAttendingPersona(resolved, taskId)) {
+    segments.unshift({ type: "text", value: `${promptPersonaForTask(taskId)}\n\n` });
   }
   return segments;
 }

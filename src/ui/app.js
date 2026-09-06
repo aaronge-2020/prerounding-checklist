@@ -96,12 +96,12 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260819-one-to-one-task-guidelines";
+} from "../prompts/custom-templates.js?v=20260831-obgyn-prompts";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
-import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260819-one-to-one-task-guidelines";
-import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260819-one-to-one-task-guidelines";
-import { ensureCanonicalDefaultGuidelineSets, ensureOpenEvidenceTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260819-one-to-one-task-guidelines";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260831-obgyn-prompts";
+import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260831-obgyn-prompts";
+import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260831-obgyn-prompts";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences,
@@ -157,19 +157,19 @@ import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-fu
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
 import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260815-smart-variable-fields";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260819-one-to-one-task-guidelines";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260831-obgyn-prompts";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260819-one-to-one-task-guidelines";
-import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260819-one-to-one-task-guidelines";
+} from "./prompts/controller.js?v=20260831-obgyn-prompts";
+import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260831-obgyn-prompts";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721-persisted-anchor";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20260819-one-to-one-task-guidelines";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260819-one-to-one-task-guidelines";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20260831-obgyn-prompts";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260831-obgyn-prompts";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
   createRedactionPresentation,
@@ -1397,8 +1397,8 @@ function renderPrompts() {
     byId("promptsContent").innerHTML = patientRequiredMessage();
     return;
   }
-  const tasks = [...availableOpenEvidenceTasks(app.guidelineSets), ...guidelinePromptTasks(app.guidelineSets)];
-  const task = tasks.find((entry) => entry.id === app.selectedPromptTask) || tasks[0];
+  const tasks = [...availableOpenEvidenceTasks(app.guidelineSets), ...guidelinePromptTasks(app.guidelineSets)]; const task = tasks.find((entry) => entry.id === app.selectedPromptTask) || tasks[0];
+  if (!task) { byId("promptsContent").textContent = "Built-in prompts are unavailable. Reload to retry."; return; }
   app.selectedPromptTask = task.id;
   const promptDays = sortDays(patient.days || []);
   // Follow the Checklist/Daily day until manually overridden here, so a
@@ -1424,7 +1424,7 @@ function renderPrompts() {
       teamPreferences: app.vault.preferences,
       presentationToEdit: app.presentationToEdit
     });
-    previewSegments = buildPromptPreviewSegments(template, variableMap, { ensurePersona: true });
+    previewSegments = buildPromptPreviewSegments(template, variableMap, { ensurePersona: true, taskId: task.id });
   } catch (error) {
     promptError = error instanceof Error ? error.message : "Unable to build prompt.";
   }
@@ -1524,7 +1524,7 @@ function refreshPromptPreview() {
       presentationToEdit: app.presentationToEdit
     });
     highlighted.innerHTML = renderHighlightedSegments(
-      buildPromptPreviewSegments(template, variableMap, { ensurePersona: true }),
+      buildPromptPreviewSegments(template, variableMap, { ensurePersona: true, taskId: app.selectedPromptTask }),
       escapeHtml,
       app.tokenColorOverrides
     );
@@ -1557,7 +1557,7 @@ function currentPromptText() {
       teamPreferences: app.vault.preferences,
       presentationToEdit: app.presentationToEdit
     });
-    return buildPromptPreviewSegments(template, variableMap, { ensurePersona: true })
+    return buildPromptPreviewSegments(template, variableMap, { ensurePersona: true, taskId: app.selectedPromptTask })
       .map((segment) => segment.value)
       .join("");
   } catch {
@@ -4224,7 +4224,7 @@ async function init() {
   bindEvents();
   render();
   void refreshWebGpuAvailability();
-  void refreshGuidelines();
+  void refreshGuidelines().catch((error) => setStatus(error instanceof Error ? error.message : "Built-in prompts are unavailable. Reload to retry."));
   void ensureModelPackServiceWorker()
     .then((service) => {
       app.modelPackService = service;
@@ -4265,7 +4265,7 @@ async function refreshGuidelines() {
   const legacyTeamPreferences = app.vault?.preferences?.teamInstructions || "";
   app.guidelineSets = await ensureCanonicalDefaultGuidelineSets(app.guidelineSets, { legacyTeamPreferences });
   app.guidelineSets = await ensureTeachingGuidelineSet(app.guidelineSets);
-  app.guidelineSets = await ensureOpenEvidenceTaskGuidelineSets(app.guidelineSets);
+  app.guidelineSets = await ensureTaskGuidelineSets(app.guidelineSets);
   promptTaskController.migrateLegacyTasks();
   if (legacyTeamPreferences.trim() && app.vault?.preferences) {
     app.vault = {

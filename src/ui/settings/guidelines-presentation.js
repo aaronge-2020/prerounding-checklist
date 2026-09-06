@@ -1,5 +1,5 @@
-import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260819-one-to-one-task-guidelines";
-import { guidelineSetMatchesQuery } from "../../prompts/guideline-sets.js?v=20260819-one-to-one-task-guidelines";
+import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260831-obgyn-prompts";
+import { guidelineSetMatchesQuery } from "../../prompts/guideline-sets.js?v=20260831-obgyn-prompts";
 
 // Pure presentation module. The library stays compact by keeping editing in a
 // single side panel instead of expanding every guideline into a giant card.

@@ -1,4 +1,4 @@
-import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260819-one-to-one-task-guidelines";
+import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260831-obgyn-prompts";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({

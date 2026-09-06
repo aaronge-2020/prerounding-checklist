@@ -15,6 +15,7 @@ import {
 } from "../src/prompts/open-evidence.js";
 import {
   buildCustomOpenEvidencePrompt,
+  buildPromptPreviewSegments,
   DEFAULT_PROMPT_TEMPLATES,
   loadPromptTemplateOverrides,
   PROMPT_TEMPLATE_STORAGE_KEY,
@@ -24,7 +25,7 @@ import {
 import { createGuidelineSet, DEFAULT_GUIDELINE_SET_SOURCES } from "../src/prompts/guideline-sets.js";
 import { buildTeamPreferencesPromptBlock, normalizeUserPreferences } from "../src/app/preferences.js";
 import { createSourceCapture } from "../src/patient-context/source-captures.js";
-import { ATTENDING_HOSPITALIST_PERSONA } from "../src/prompts/natural-language.js";
+import { ATTENDING_HOSPITALIST_PERSONA, ATTENDING_OBGYN_PERSONA } from "../src/prompts/natural-language.js";
 
 const allDefaultGuidelineSets = DEFAULT_GUIDELINE_SET_SOURCES.map((source) => createGuidelineSet(source.label, "", { token: source.token }));
 const taskGuidelineSources = DEFAULT_GUIDELINE_SET_SOURCES.filter((source) => source.task);
@@ -49,6 +50,8 @@ assert.equal(
 const guidelines = {
   admission: readFileSync("prompts/Guidelines-admission.md", "utf8"),
   progress: readFileSync("prompts/Guidelines-progress.md", "utf8"),
+  obgynHp: readFileSync("prompts/Guidelines-obgyn-hp.md", "utf8"),
+  obgynSoap: readFileSync("prompts/Guidelines-obgyn-soap.md", "utf8"),
   teaching: readFileSync("prompts/teaching.md", "utf8")
 };
 const deployedGuidelineSets = DEFAULT_GUIDELINE_SET_SOURCES
@@ -70,6 +73,8 @@ for (const variable of instructionSmartVariables) {
   assert.ok(canonicalGuidelineTokens.has(variable.token), `${variable.token} must map one-to-one to an editable Settings guideline`);
 }
 assert.match(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@progress-note-packet/, "daily progress template must use the compiled selected-day packet");
+assert.match(DEFAULT_PROMPT_TEMPLATES.obgyn_history_and_physical, /@obgyn-hp-guidelines[\s\S]*@admission-packet/, "OB/Gyn H&P must use its specialty guideline and admission packet");
+assert.match(DEFAULT_PROMPT_TEMPLATES.obgyn_soap_note, /@obgyn-soap-guidelines[\s\S]*@progress-note-packet/, "OB/Gyn SOAP must use its specialty guideline and selected-day packet");
 assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@exam-findings/, "daily progress template must not use the removed all-days examination variable");
 assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /^@teaching-guidelines\b/, "case teaching instructions must come from the editable Settings guideline");
 assert.match(DEFAULT_PROMPT_TEMPLATES.presentation_quality_editor, /^@presentation-editor-guidelines\b/, "presentation editing instructions must come from the editable Settings guideline");
@@ -115,6 +120,8 @@ patient = {
 };
 
 assert.equal(openEvidenceTasks[["final", "rounds", "update"].join("_")], undefined);
+assert.equal(openEvidenceTasks.obgyn_history_and_physical?.label, "OB/Gyn history & physical");
+assert.equal(openEvidenceTasks.obgyn_soap_note?.label, "OB/Gyn SOAP note");
 
 const admission = buildOpenEvidencePrompt("initial_admission_rounds", { patient, guidelines });
 assert.match(admission, /Admission H&P — Rounds Presentation Instructions/);
@@ -462,6 +469,99 @@ const defaultProgressPrompt = buildCustomOpenEvidencePrompt({
 });
 assert.equal(defaultAdmissionPrompt.split(admissionGuidelineMarker).length - 1, 1, "Admission must receive its editable guideline exactly once");
 assert.equal(defaultProgressPrompt.split(progressGuidelineMarker).length - 1, 1, "Progress must receive its editable guideline exactly once");
+const defaultObGynHpPrompt = buildCustomOpenEvidencePrompt({
+  taskId: "obgyn_history_and_physical",
+  template: DEFAULT_PROMPT_TEMPLATES.obgyn_history_and_physical,
+  patient,
+  selectedDayId: day.id,
+  guidelineSets
+});
+const defaultObGynSoapPrompt = buildCustomOpenEvidencePrompt({
+  taskId: "obgyn_soap_note",
+  template: DEFAULT_PROMPT_TEMPLATES.obgyn_soap_note,
+  patient,
+  selectedDayId: day.id,
+  guidelineSets
+});
+for (const prompt of [guidelines.obgynHp, guidelines.obgynSoap]) {
+  assert.match(prompt, /four cardinal questions/i);
+  assert.match(prompt, /vaginal bleeding/i);
+  assert.match(prompt, /contractions/i);
+  assert.match(prompt, /leakage of fluid/i);
+  assert.match(prompt, /fetal movement/i);
+  assert.match(prompt, /G\/P or GTPAL/i);
+  assert.match(prompt, /fetal heart rate or tracing description/i);
+  assert.match(prompt, /Do not assign a tracing category/i);
+  assert.match(prompt, /chaperone presence only when supplied/i);
+  assert.match(prompt, /implausible.*dose, route, frequency, or value/i);
+  assert.match(prompt, /VTE Prophylaxis/);
+  assert.match(prompt, /Code Status/);
+  assert.match(prompt, /not documented and needs clarification/i);
+  assert.match(prompt, /Medication Regimens/);
+}
+assert.match(guidelines.obgynHp, /Sexual history — six Ps/i);
+assert.match(guidelines.obgynHp, /Menstrual:/);
+assert.match(guidelines.obgynHp, /Cervical screening:/);
+assert.match(guidelines.obgynHp, /Bowel, bladder, and pelvic support:/);
+assert.match(guidelines.obgynHp, /term or preterm delivery/i);
+assert.match(guidelines.obgynHp, /abortions and ectopic pregnancies/i);
+assert.match(guidelines.obgynSoap, /mood or anxiety/i);
+assert.match(guidelines.obgynSoap, /sleep or fatigue/i);
+assert.match(guidelines.obgynSoap, /contraception or birth-spacing goals/i);
+assert.match(guidelines.obgynSoap, /follow-up for chronic conditions/i);
+assert.match(defaultObGynHpPrompt, /OB\/Gyn History and Physical Instructions/);
+assert.match(defaultObGynHpPrompt, /Admission packet/);
+assert.match(defaultObGynSoapPrompt, /OB\/Gyn SOAP Note Instructions/);
+assert.match(defaultObGynSoapPrompt, /Selected hospital day/);
+assert.doesNotMatch(defaultObGynHpPrompt, /attending hospitalist/i, "specialty H&P must not receive a conflicting hospitalist persona");
+assert.doesNotMatch(defaultObGynSoapPrompt, /attending hospitalist/i, "specialty SOAP must not receive a conflicting hospitalist persona");
+const editedObGynGuidelines = guidelineSets.map((set) => {
+  if (set.token === "@obgyn-hp-guidelines") return { ...set, text: "Write a focused OB/Gyn H&P." };
+  if (set.token === "@obgyn-soap-guidelines") return { ...set, text: "Write a focused OB/Gyn SOAP note." };
+  return set;
+});
+for (const [taskId, template] of [
+  ["obgyn_history_and_physical", DEFAULT_PROMPT_TEMPLATES.obgyn_history_and_physical],
+  ["obgyn_soap_note", DEFAULT_PROMPT_TEMPLATES.obgyn_soap_note]
+]) {
+  const copiedPrompt = buildCustomOpenEvidencePrompt({
+    taskId,
+    template,
+    patient,
+    selectedDayId: day.id,
+    guidelineSets: editedObGynGuidelines
+  });
+  assert.ok(copiedPrompt.startsWith(ATTENDING_OBGYN_PERSONA), `${taskId} must retain the specialty persona after a normal guideline edit`);
+  assert.doesNotMatch(copiedPrompt, /attending hospitalist/i);
+
+  const guidelineToken = taskId === "obgyn_history_and_physical" ? "@obgyn-hp-guidelines" : "@obgyn-soap-guidelines";
+  const preview = buildPromptPreviewSegments(guidelineToken, {
+    [guidelineToken]: editedObGynGuidelines.find((set) => set.token === guidelineToken).text
+  }, { ensurePersona: true, taskId }).map((segment) => segment.value).join("");
+  assert.ok(preview.startsWith(ATTENDING_OBGYN_PERSONA), `${taskId} preview must retain the specialty persona after a normal guideline edit`);
+  assert.doesNotMatch(preview, /attending hospitalist/i);
+
+  const stalePersonaGuidelines = editedObGynGuidelines.map((set) => set.token === guidelineToken
+    ? { ...set, text: `${ATTENDING_HOSPITALIST_PERSONA}\n\n${set.text}` }
+    : set);
+  const staleCopy = buildCustomOpenEvidencePrompt({
+    taskId,
+    template,
+    patient,
+    selectedDayId: day.id,
+    guidelineSets: stalePersonaGuidelines
+  });
+  assert.ok(staleCopy.startsWith(ATTENDING_OBGYN_PERSONA), `${taskId} must replace a stale hospitalist persona in copied output`);
+  assert.doesNotMatch(staleCopy, /attending hospitalist/i);
+  assert.equal(staleCopy.toLowerCase().split(ATTENDING_OBGYN_PERSONA.toLowerCase()).length - 1, 1);
+
+  const stalePreview = buildPromptPreviewSegments(guidelineToken, {
+    [guidelineToken]: stalePersonaGuidelines.find((set) => set.token === guidelineToken).text
+  }, { ensurePersona: true, taskId }).map((segment) => segment.value).join("");
+  assert.ok(stalePreview.startsWith(ATTENDING_OBGYN_PERSONA), `${taskId} preview must replace a stale hospitalist persona`);
+  assert.doesNotMatch(stalePreview, /attending hospitalist/i);
+  assert.equal(stalePreview.toLowerCase().split(ATTENDING_OBGYN_PERSONA.toLowerCase()).length - 1, 1);
+}
 for (const [taskId, template] of Object.entries(DEFAULT_PROMPT_TEMPLATES)) {
   const assembled = buildCustomOpenEvidencePrompt({
     taskId,
@@ -470,8 +570,9 @@ for (const [taskId, template] of Object.entries(DEFAULT_PROMPT_TEMPLATES)) {
     selectedDayId: day.id,
     guidelineSets
   });
-  assert.match(assembled, /Act as an attending hospitalist with over 30 years of inpatient experience/i, `${taskId} must carry the shared attending persona`);
-  assert.equal(assembled.match(/Act as an attending hospitalist with over 30 years of inpatient experience/gi)?.length, 1, `${taskId} must carry the persona exactly once`);
+  const persona = taskId.startsWith("obgyn_") ? ATTENDING_OBGYN_PERSONA : ATTENDING_HOSPITALIST_PERSONA;
+  assert.ok(assembled.toLowerCase().includes(persona.toLowerCase()), `${taskId} must carry the correct attending persona`);
+  assert.equal(assembled.toLowerCase().split(persona.toLowerCase()).length - 1, 1, `${taskId} must carry the persona exactly once`);
 }
 
 const migratedStorageValues = new Map([[
