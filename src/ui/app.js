@@ -96,12 +96,12 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260831-obgyn-prompts";
+} from "../prompts/custom-templates.js?v=20260906-presentation-coach";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
-import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260831-obgyn-prompts";
-import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260831-obgyn-prompts";
-import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260831-obgyn-prompts";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260906-presentation-coach";
+import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260906-presentation-coach";
+import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260906-presentation-coach";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences,
@@ -157,19 +157,19 @@ import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-fu
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
 import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260815-smart-variable-fields";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260831-obgyn-prompts";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260906-presentation-coach";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260831-obgyn-prompts";
-import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260831-obgyn-prompts";
+} from "./prompts/controller.js?v=20260906-presentation-coach";
+import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260906-presentation-coach";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721-persisted-anchor";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20260831-obgyn-prompts";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260831-obgyn-prompts";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20260906-presentation-coach";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260906-presentation-coach";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
   createRedactionPresentation,
@@ -224,6 +224,7 @@ const app = {
   promptTemplates: loadPromptTemplateOverrides(),
   promptDrafts: {},
   presentationToEdit: "",
+  presentationSpecialty: "",
   tokenColorOverrides: loadTokenColorOverrides(),
   smartMenuOpen: false,
   quickDeid: { input: "", output: "", warnings: [], status: "", review: null },
@@ -882,6 +883,7 @@ function clearPatientScopedSession() {
   app.promptDayFollowsChecklist = true;
   app.promptDrafts = {};
   app.presentationToEdit = "";
+  app.presentationSpecialty = "";
   app.sectionDrafts.clear();
   app.sectionEditingKeys.clear();
   app.pendingSectionReviewFocus = null;
@@ -1422,7 +1424,8 @@ function renderPrompts() {
       selectedDayId: app.promptDayId,
       guidelineSets: app.guidelineSets,
       teamPreferences: app.vault.preferences,
-      presentationToEdit: app.presentationToEdit
+      presentationToEdit: app.presentationToEdit,
+      presentationSpecialty: app.presentationSpecialty
     });
     previewSegments = buildPromptPreviewSegments(template, variableMap, { ensurePersona: true, taskId: task.id });
   } catch (error) {
@@ -1445,7 +1448,9 @@ function renderPrompts() {
     templateHighlightSegments,
     promptError,
     presentationToEdit: app.presentationToEdit,
-    requiresPresentationToEdit: task.id === "presentation_quality_editor",
+    presentationSpecialty: app.presentationSpecialty,
+    requiresPresentationToEdit: task.id === "presentation_quality_editor" || task.id === "attending_presentation_critique",
+    requiresPresentationSpecialty: task.id === "attending_presentation_critique",
     variables,
     smartMenuOpen: app.smartMenuOpen,
     colorOverrides: app.tokenColorOverrides
@@ -1521,7 +1526,8 @@ function refreshPromptPreview() {
       selectedDayId: app.promptDayId,
       guidelineSets: app.guidelineSets,
       teamPreferences: app.vault.preferences,
-      presentationToEdit: app.presentationToEdit
+      presentationToEdit: app.presentationToEdit,
+      presentationSpecialty: app.presentationSpecialty
     });
     highlighted.innerHTML = renderHighlightedSegments(
       buildPromptPreviewSegments(template, variableMap, { ensurePersona: true, taskId: app.selectedPromptTask }),
@@ -1555,7 +1561,8 @@ function currentPromptText() {
       selectedDayId: app.promptDayId,
       guidelineSets: app.guidelineSets,
       teamPreferences: app.vault.preferences,
-      presentationToEdit: app.presentationToEdit
+      presentationToEdit: app.presentationToEdit,
+      presentationSpecialty: app.presentationSpecialty
     });
     return buildPromptPreviewSegments(template, variableMap, { ensurePersona: true, taskId: app.selectedPromptTask })
       .map((segment) => segment.value)
@@ -4102,6 +4109,10 @@ function handleInput(event) {
   }
   if (event.target.id === "presentationToEdit") {
     promptTaskController.updatePresentationToEdit(event.target.value);
+    return;
+  }
+  if (event.target.id === "presentationSpecialty") {
+    promptTaskController.updatePresentationSpecialty(event.target.value);
     return;
   }
   if (event.target.id === "quickDeidInput") {

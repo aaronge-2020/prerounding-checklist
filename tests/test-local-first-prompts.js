@@ -25,7 +25,7 @@ import {
 import { createGuidelineSet, DEFAULT_GUIDELINE_SET_SOURCES } from "../src/prompts/guideline-sets.js";
 import { buildTeamPreferencesPromptBlock, normalizeUserPreferences } from "../src/app/preferences.js";
 import { createSourceCapture } from "../src/patient-context/source-captures.js";
-import { ATTENDING_HOSPITALIST_PERSONA, ATTENDING_OBGYN_PERSONA } from "../src/prompts/natural-language.js";
+import { ATTENDING_HOSPITALIST_PERSONA, ATTENDING_OBGYN_PERSONA, ATTENDING_SPECIALTY_COACH_PERSONA } from "../src/prompts/natural-language.js";
 
 const allDefaultGuidelineSets = DEFAULT_GUIDELINE_SET_SOURCES.map((source) => createGuidelineSet(source.label, "", { token: source.token }));
 const taskGuidelineSources = DEFAULT_GUIDELINE_SET_SOURCES.filter((source) => source.task);
@@ -78,6 +78,8 @@ assert.match(DEFAULT_PROMPT_TEMPLATES.obgyn_soap_note, /@obgyn-soap-guidelines[\
 assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@exam-findings/, "daily progress template must not use the removed all-days examination variable");
 assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /^@teaching-guidelines\b/, "case teaching instructions must come from the editable Settings guideline");
 assert.match(DEFAULT_PROMPT_TEMPLATES.presentation_quality_editor, /^@presentation-editor-guidelines\b/, "presentation editing instructions must come from the editable Settings guideline");
+assert.match(DEFAULT_PROMPT_TEMPLATES.attending_presentation_critique, /^@presentation-critique-guidelines\b/, "presentation critique instructions must come from the editable Settings guideline");
+assert.match(DEFAULT_PROMPT_TEMPLATES.attending_presentation_critique, /@specialty-team[\s\S]*@presentation-to-edit/, "presentation critique must include the tab-only specialty and learner draft");
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /^@medication-explainer-guidelines\b/, "medication teaching instructions must come from the editable Settings guideline");
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /^@medication-safety-guidelines\b/, "medication safety instructions must come from the editable Settings guideline");
 assert.match(DEFAULT_PROMPT_TEMPLATES.checklist_workup_refinement, /^@checklist-refinement-guidelines\b/, "checklist refinement instructions must come from the editable Settings guideline");
@@ -302,6 +304,7 @@ assert.throws(() => buildOpenEvidencePrompt("daily_progress_note", { patient, gu
 
 assert.equal(openEvidenceTasks.consulting?.label, "Consulting");
 assert.equal(openEvidenceTasks.presentation_quality_editor?.label, "Edit and verify presentation");
+assert.equal(openEvidenceTasks.attending_presentation_critique?.label, "Attending presentation critique");
 const presentationEditorPrompt = buildCustomOpenEvidencePrompt({
   taskId: "presentation_quality_editor",
   template: DEFAULT_PROMPT_TEMPLATES.presentation_quality_editor,
@@ -324,6 +327,25 @@ const presentationEditorWithoutPastedText = buildCustomOpenEvidencePrompt({
 });
 assert.match(presentationEditorWithoutPastedText, /Return only the fully revised presentation/);
 assert.doesNotMatch(presentationEditorWithoutPastedText, /No presentation was pasted/);
+const presentationCritiquePrompt = buildCustomOpenEvidencePrompt({
+  taskId: "attending_presentation_critique",
+  template: DEFAULT_PROMPT_TEMPLATES.attending_presentation_critique,
+  patient,
+  selectedDayId: day.id,
+  guidelineSets: deployedGuidelineSets,
+  presentationSpecialty: "Cardiology",
+  presentationToEdit: "A learner presentation with an incomplete assessment and plan."
+});
+assert.equal(presentationCritiquePrompt.match(new RegExp(ATTENDING_SPECIALTY_COACH_PERSONA.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"))?.length, 1);
+assert.doesNotMatch(presentationCritiquePrompt, new RegExp(ATTENDING_HOSPITALIST_PERSONA.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"));
+assert.match(presentationCritiquePrompt, /Specialty team: Cardiology/);
+assert.match(presentationCritiquePrompt, /Missing or unclear information/);
+assert.match(presentationCritiquePrompt, /Information to remove or de-emphasize/);
+assert.match(presentationCritiquePrompt, /Assessment and plan critique/);
+assert.match(presentationCritiquePrompt, /Fully revised presentation/);
+assert.match(presentationCritiquePrompt, /Teaching takeaways/);
+assert.match(presentationCritiquePrompt, /A learner presentation with an incomplete assessment and plan/);
+assert.doesNotMatch(presentationCritiquePrompt, /@(?:presentation-critique-guidelines|specialty-team|presentation-to-edit)/);
 const consultingGuidelines = createGuidelineSet("Consulting", readFileSync("prompts/Consulting.md", "utf8"));
 const consulting = buildCustomOpenEvidencePrompt({
   taskId: "consulting",
@@ -570,7 +592,9 @@ for (const [taskId, template] of Object.entries(DEFAULT_PROMPT_TEMPLATES)) {
     selectedDayId: day.id,
     guidelineSets
   });
-  const persona = taskId.startsWith("obgyn_") ? ATTENDING_OBGYN_PERSONA : ATTENDING_HOSPITALIST_PERSONA;
+  const persona = taskId === "attending_presentation_critique"
+    ? ATTENDING_SPECIALTY_COACH_PERSONA
+    : taskId.startsWith("obgyn_") ? ATTENDING_OBGYN_PERSONA : ATTENDING_HOSPITALIST_PERSONA;
   assert.ok(assembled.toLowerCase().includes(persona.toLowerCase()), `${taskId} must carry the correct attending persona`);
   assert.equal(assembled.toLowerCase().split(persona.toLowerCase()).length - 1, 1, `${taskId} must carry the persona exactly once`);
 }

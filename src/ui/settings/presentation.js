@@ -1,4 +1,4 @@
-import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260831-obgyn-prompts";
+import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260906-presentation-coach";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({

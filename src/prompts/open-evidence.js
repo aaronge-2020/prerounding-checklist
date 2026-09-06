@@ -4,7 +4,7 @@ import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260722
 import { attendingHospitalistPrompt } from "./natural-language.js?v=20260815-standalone-ap";
 import { buildProgressNotePacket } from "./progress-note-packet.js";
 import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
-import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20260831-obgyn-prompts";
+import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20260906-presentation-coach";
 
 // Built-in dropdown entries are derived from the same records Settings uses.
 // A task cannot exist here without one exact editable guideline identity.

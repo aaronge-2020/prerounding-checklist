@@ -6,12 +6,14 @@ import {
   GUIDELINE_SET_STORAGE_KEY,
   OBGYN_TASK_GUIDELINES_SEED_KEY,
   OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY,
+  PRESENTATION_COACH_GUIDELINE_SET_SEED_KEY,
   TEACHING_GUIDELINE_SET_SEED_KEY,
   addGuidelineSet,
   createGuidelineSet,
   ensureCanonicalDefaultGuidelineSets,
   ensureObGynTaskGuidelineSets,
   ensureOpenEvidenceTaskGuidelineSets,
+  ensurePresentationCoachGuidelineSet,
   ensureTeachingGuidelineSet,
   guidelineSetMatchesQuery,
   loadGuidelineSets,
@@ -43,6 +45,7 @@ const expectedTokens = [
   "@obgyn-soap-guidelines",
   "@teaching-guidelines",
   "@presentation-editor-guidelines",
+  "@presentation-critique-guidelines",
   "@medication-explainer-guidelines",
   "@medication-safety-guidelines",
   "@checklist-refinement-guidelines"
@@ -58,6 +61,7 @@ assert.match(DEFAULT_PROMPT_TEMPLATES.obgyn_history_and_physical, /^@team-prefer
 assert.match(DEFAULT_PROMPT_TEMPLATES.obgyn_soap_note, /^@team-preferences\b[\s\S]*@obgyn-soap-guidelines\b[\s\S]*@progress-note-packet\b/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /^@teaching-guidelines\b/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.presentation_quality_editor, /^@presentation-editor-guidelines\b/);
+assert.match(DEFAULT_PROMPT_TEMPLATES.attending_presentation_critique, /^@presentation-critique-guidelines\b[\s\S]*@specialty-team\b[\s\S]*@presentation-to-edit\b/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /^@medication-explainer-guidelines\b/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /^@medication-safety-guidelines\b/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.checklist_workup_refinement, /^@checklist-refinement-guidelines\b/);
@@ -66,7 +70,9 @@ for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter((entry) => entry.path)
   const deployedSeed = readFileSync(source.path.replace(/^\.\//, ""), "utf8");
   const expectedPersona = source.token.startsWith("@obgyn-")
     ? /Act as an attending obstetrician-gynecologist with over 30 years of inpatient and ambulatory experience/i
-    : /Act as an attending hospitalist with over 30 years of inpatient experience/i;
+    : source.token === "@presentation-critique-guidelines"
+      ? /Act as a highly experienced attending physician on the specialty team identified in the prompt/i
+      : /Act as an attending hospitalist with over 30 years of inpatient experience/i;
   assert.match(deployedSeed, expectedPersona, `${source.label} must carry its attending persona`);
 }
 
@@ -82,6 +88,7 @@ for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter((entry) => entry.path)
     assert.equal(storage.getItem(TEACHING_GUIDELINE_SET_SEED_KEY), "1");
     assert.equal(storage.getItem(OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY), "1");
     assert.equal(storage.getItem(OBGYN_TASK_GUIDELINES_SEED_KEY), "1");
+    assert.equal(storage.getItem(PRESENTATION_COACH_GUIDELINE_SET_SEED_KEY), "1");
 
     saveGuidelineSets([], storage);
     assert.deepEqual(await loadOrMigrateGuidelineSets(storage), [], "deleted defaults must stay deleted");
@@ -103,6 +110,7 @@ for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter((entry) => entry.path)
     assert.equal(storage.getItem(TEACHING_GUIDELINE_SET_SEED_KEY), null);
     assert.equal(storage.getItem(OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY), null);
     assert.equal(storage.getItem(OBGYN_TASK_GUIDELINES_SEED_KEY), null);
+    assert.equal(storage.getItem(PRESENTATION_COACH_GUIDELINE_SET_SEED_KEY), null);
 
     globalThis.fetch = async (url) => ({ ok: true, text: async () => `Recovered ${url}` });
     const recovered = await loadOrMigrateGuidelineSets(storage);
@@ -110,6 +118,27 @@ for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter((entry) => entry.path)
     assert.match(recovered.find((set) => set.token === "@obgyn-hp-guidelines").text, /Guidelines-obgyn-hp/);
     assert.match(recovered.find((set) => set.token === "@obgyn-soap-guidelines").text, /Guidelines-obgyn-soap/);
     assert.equal(storage.getItem(OBGYN_TASK_GUIDELINES_SEED_KEY), "1");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+}
+
+// Existing installs receive the attending-coach prompt once, while a later
+// deletion remains authoritative.
+{
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => ({ ok: true, text: async () => `Coach guideline from ${url}` });
+  try {
+    const storage = fakeStorage({ [GUIDELINE_SET_STORAGE_KEY]: "[]" });
+    const existing = [createGuidelineSet("Progress notes", "Keep me.", { token: "@progress-guidelines" })];
+    const seeded = await ensurePresentationCoachGuidelineSet(existing, { storage });
+    assert.deepEqual(seeded.map(({ token }) => token), ["@progress-guidelines", "@presentation-critique-guidelines"]);
+    assert.equal(seeded[1].text, "Coach guideline from ./prompts/Presentation-critique.md");
+    assert.equal(storage.getItem(PRESENTATION_COACH_GUIDELINE_SET_SEED_KEY), "1");
+
+    const afterDeletion = seeded.filter(({ token }) => token !== "@presentation-critique-guidelines");
+    saveGuidelineSets(afterDeletion, storage);
+    assert.deepEqual(await ensurePresentationCoachGuidelineSet(afterDeletion, { storage }), afterDeletion);
   } finally {
     globalThis.fetch = originalFetch;
   }
