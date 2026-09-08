@@ -25,7 +25,13 @@ import { createDailyRecord, saveOpenEvidenceExamNote, clearOpenEvidenceExamNote 
   const day = normalizeDay(raw);
   assert.deepEqual(day.openEvidenceExamNote, {
     text: "MRN: [MRN] exam unremarkable.",
-    residualWarnings: [{ severity: "review", type: "residual" }],
+    residualWarnings: [
+      {
+        severity: "review",
+        type: "residual",
+        reason: "Reprocess the source text in this tab to inspect the flagged value."
+      }
+    ],
     savedAt: "2026-07-13T10:00:00.000Z"
   });
   // residualWarnings defensively defaults to [] if malformed on a saved record.

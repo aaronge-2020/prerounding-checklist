@@ -25,6 +25,6 @@ assert.throws(
   /controlled workup-system id/
 );
 assert.doesNotMatch(buildOpenEvidenceWorkupDraftPrompt(), /controlled system ID/i);
-assert.match(buildJsonFormatterPrompt(), /- cardiovascular: Cardiovascular/);
+assert.match(buildJsonFormatterPrompt(), /\ncardiovascular: Cardiovascular/);
 
 console.log("controlled workup-system taxonomy tests passed");
