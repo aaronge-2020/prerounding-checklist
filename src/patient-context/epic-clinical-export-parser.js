@@ -331,7 +331,7 @@ function renderEpicMar(value) {
     suggestedSourceKind: remainder ? "" : "medication_activity",
     outputText: parts.join("\n\n"),
     itemCount: medications.length,
-    summary: `${plural(medications.length, "medication entry")}; ${plural(administrationCount, "administration")}${remainder ? "; unrecognized text preserved" : ""}.`,
+    summary: `${plural(medications.length, "medication entry", "medication entries")}; ${plural(administrationCount, "administration")}${remainder ? "; unrecognized text preserved" : ""}.`,
     preservedUnparsedText: Boolean(remainder)
   };
 }
