@@ -316,6 +316,36 @@ try {
   }
   await page.click('[data-view-target="daily"]');
   await page.fill("#dailyAdmissionDateInput", "2026-07-17");
+  const syntheticCprsOrders = `** INPATIENT ORDERS **
+======================================================================
+Location | | |
+Start Date Stop Date | Action Status
+----------------------------------------------------------------------
+INPATIENT | |
+Hospital Day 1 Hospital Day 3 | 0900 |
+@08:00 @12:00 | |
+ACETAMINOPHEN ORAL TAB | |
+ ACETAMINOPHEN 325MG TAB Give: 650MG PO Q6H PRN | |
+ RPH: ABC RN: xyz | |
+----------------------------------------------------------------------
+INPATIENT | |
+Hospital Day 1 Hospital Day 1 | 1000 |
+@09:00 @10:05 | GIVEN Hospital Day 1@10:05:00 xyz
+HYDRALAZINE ORAL TAB | |
+ HYDRALAZINE HCL 25MG TAB Give: 25MG PO ONCE | |
+ ***DISCONTINUED | |
+ RPH: ABC RN: xyz | |
+----------------------------------------------------------------------
+MEDICATION ADMINISTRATION HISTORY for Hospital Day 1`;
+  await page.fill("#admissionSourceDraft", syntheticCprsOrders);
+  await page.waitForSelector('[data-source-parse-state="recognized"]');
+  assert.equal(await page.locator('[data-action="select-admission-source-kind"][data-source-kind="medication_activity"]').getAttribute("aria-pressed"), "true", "a recognized CPRS medication report must select Medication activity");
+  const parsedCprsOrders = await page.locator("#admissionParsedSourceDraft").inputValue();
+  assert.match(parsedCprsOrders, /Medication activity parsed from CPRS report/);
+  assert.match(parsedCprsOrders, /ACETAMINOPHEN[\s\S]*HYDRALAZINE/);
+  assert.doesNotMatch(parsedCprsOrders, /RPH:|={10,}/, "the reviewable parser output must omit CPRS layout and pharmacy-routing noise");
+  await page.fill("#admissionSourceDraft", "");
+  assert.equal(await page.locator('[data-source-parse-state="recognized"]').count(), 0, "clearing the raw paste must also clear its session-only parse preview");
   const addAdmissionCapture = async (sourceKind, text) => {
     const previousCount = await page.locator("#contextSections .section-editor").count();
     await page.click(`[data-action="select-admission-source-kind"][data-source-kind="${sourceKind}"]`);

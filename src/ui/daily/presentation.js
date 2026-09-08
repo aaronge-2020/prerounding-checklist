@@ -1,6 +1,9 @@
 export function createDailyPresentation({ escapeHtml, icon }) {
   function renderDayRow(day, selectedDayId, index) {
-    const userLabel = String(day.label || "").replace(/^\s*hd\s*\d+\s*[-:|]?\s*/i, "").trim() || `Hospital day ${index + 1}`;
+    const userLabel =
+      String(day.label || "")
+        .replace(/^\s*hd\s*\d+\s*[-:|]?\s*/i, "")
+        .trim() || `Hospital day ${index + 1}`;
     return `
       <button type="button" class="day-row ${day.id === selectedDayId ? "selected" : ""}" data-action="select-day" data-day-id="${escapeHtml(day.id)}">
         <span>
@@ -14,13 +17,46 @@ export function createDailyPresentation({ escapeHtml, icon }) {
 
   function renderSourcePicker(sourceOptions, selectedSourceKind, scope = "daily") {
     return `
-      <div class="source-kind-picker" role="group" aria-label="Epic source for the next paste">
-        ${sourceOptions.map((option) => `
+      <div class="source-kind-picker" role="group" aria-label="Chart source for the next paste">
+        ${sourceOptions
+          .map(
+            (option) => `
           <button type="button" class="source-kind-button ${option.id === selectedSourceKind ? "selected" : ""}" data-action="select-${escapeHtml(scope)}-source-kind" data-source-kind="${escapeHtml(option.id)}" aria-pressed="${String(option.id === selectedSourceKind)}">
             ${escapeHtml(option.label)}
           </button>
-        `).join("")}
+        `
+          )
+          .join("")}
       </div>
+    `;
+  }
+
+  function renderSourceParsePreview({ scope, parseResult }) {
+    const prefix = scope === "admission" ? "admission" : "daily";
+    if (!parseResult?.rawCharacterCount) return "";
+    if (!parseResult.recognized) {
+      return `
+        <div class="source-parse-status" data-source-parse-state="plain">
+          <strong>${escapeHtml(parseResult.formatLabel)}</strong>
+          <span class="muted">${escapeHtml(parseResult.summary)}</span>
+        </div>
+      `;
+    }
+    return `
+      <section class="source-parse-review" data-source-parse-state="recognized" aria-labelledby="${prefix}ParseTitle">
+        <div class="source-parse-heading">
+          <div>
+            <strong id="${prefix}ParseTitle">${escapeHtml(parseResult.formatLabel)} recognized</strong>
+            <p class="muted">${escapeHtml(parseResult.summary)}</p>
+          </div>
+          <span class="source-parse-local">Session only</span>
+        </div>
+        <p class="source-parse-help">Review the organized text below. This is what will be de-identified and saved. Unrecognized narrative is labeled and preserved instead of being silently classified or removed.</p>
+        <label class="source-draft-label" for="${prefix}ParsedSourceDraft">Structured text
+          <textarea id="${prefix}ParsedSourceDraft" rows="10" data-source-parsed-draft data-source-scope="${prefix}">${escapeHtml(parseResult.outputText)}</textarea>
+        </label>
+        <span class="muted" data-source-parsed-count>${parseResult.outputText.length.toLocaleString()} characters after parsing</span>
+      </section>
     `;
   }
 
@@ -30,6 +66,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     sourceOptions,
     selectedSourceKind,
     sourceDraft,
+    sourceParse,
     renderSourceCaptureEditor,
     renderWarnings,
     packetCheck,
@@ -45,12 +82,13 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     const sourceTitle = scope === "admission" ? "Admission sources" : "Saved sources";
     return `
       ${renderDeidStrip}
-      <section class="source-capture-composer" aria-labelledby="addFromEpicTitle">
-        <div class="section-heading tight"><div><h3 id="addFromEpicTitle">Add from Epic</h3><p class="muted">Choose where the text came from, then paste the whole relevant block without reorganizing it.</p></div></div>
+      <section class="source-capture-composer" aria-labelledby="addChartSourceTitle">
+        <div class="section-heading tight"><div><h3 id="addChartSourceTitle">Add chart source</h3><p class="muted">Paste a full Epic or CPRS block. Medication, laboratory, and vital-sign tables are organized automatically; narrative text stays as written.</p></div></div>
         ${renderSourcePicker(sourceOptions, selectedSourceKind, scope)}
         <label class="source-draft-label" for="${draftId}">Paste the full copied block
           <textarea id="${draftId}" rows="8" placeholder="Paste the full copied text from ${escapeHtml(selectedSource.label)} here">${escapeHtml(sourceDraft)}</textarea>
         </label>
+        <div data-source-parse-preview="${prefix}">${renderSourceParsePreview({ scope, parseResult: sourceParse })}</div>
         <div class="source-draft-footer">
           <span class="muted" data-${prefix}-source-draft-count>${sourceDraft.length.toLocaleString()} characters · ${escapeHtml(selectedSource.description)}</span>
           <button class="button--primary" type="button" data-action="${addAction}" ${deidBusy || !sourceDraft.trim() ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "De-identify and add source"}</button>
@@ -69,8 +107,12 @@ export function createDailyPresentation({ escapeHtml, icon }) {
 
   function renderPacketCheck(packetCheck) {
     const included = packetCheck.included.length ? packetCheck.included.join(", ") : "No selected-day sources saved yet.";
-    const notSupplied = packetCheck.notSupplied.length ? packetCheck.notSupplied.join(", ") : "None of the expected source types are missing.";
-    const needsConfirmation = packetCheck.needsConfirmation.length ? packetCheck.needsConfirmation.join(", ") : "No residual de-identification warnings.";
+    const notSupplied = packetCheck.notSupplied.length
+      ? packetCheck.notSupplied.join(", ")
+      : "None of the expected source types are missing.";
+    const needsConfirmation = packetCheck.needsConfirmation.length
+      ? packetCheck.needsConfirmation.join(", ")
+      : "No residual de-identification warnings.";
     return `
       <section class="packet-check" aria-labelledby="packetCheckTitle">
         <div class="section-heading tight">
@@ -103,8 +145,10 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     admissionSourceOptions = sourceOptions,
     selectedSourceKind,
     sourceDraft = "",
+    sourceParse = null,
     admissionSourceKind = "primary_note",
     admissionSourceDraft = "",
+    admissionSourceParse = null,
     packetCheck,
     admissionPacketCheck = { included: [], notSupplied: [], needsConfirmation: [] },
     deidBusy
@@ -112,8 +156,12 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     if (!patient) return patientRequiredMessage;
     const selected = days.find((day) => day.id === selectedDayId) || days.at(-1) || null;
     const admissionSelected = selectedPacketId === "admission";
-    const visibleContextSections = patient.contextSections.filter((section) => String(section.deidentifiedText || "").trim() || (section.residualWarnings || []).length);
-    const admissionSections = patient.contextSections.filter((section) => String(section.deidentifiedText || "").trim() || (section.residualWarnings || []).length);
+    const visibleContextSections = patient.contextSections.filter(
+      (section) => String(section.deidentifiedText || "").trim() || (section.residualWarnings || []).length
+    );
+    const admissionSections = patient.contextSections.filter(
+      (section) => String(section.deidentifiedText || "").trim() || (section.residualWarnings || []).length
+    );
 
     return `
       <div class="stay-layout source-first-stay">
@@ -140,28 +188,40 @@ export function createDailyPresentation({ escapeHtml, icon }) {
           </details>
         </aside>
         <div class="stay-content">
-          ${admissionSelected ? `<section class="panel admission-packet packet-surface hospital-day-packet">
+          ${
+            admissionSelected
+              ? `<section class="panel admission-packet packet-surface hospital-day-packet">
               <div class="admission-packet-body">
-                <div class="section-heading source-day-heading"><div><h2>Admission</h2><p class="muted">Paste broad Epic blocks. The app preserves the source and includes every saved capture.</p></div></div>
-                ${renderSourceWorkspace({ scope: "admission", sources: admissionSections, sourceOptions: admissionSourceOptions, selectedSourceKind: admissionSourceKind, sourceDraft: admissionSourceDraft, renderSourceCaptureEditor: (section) => renderSectionEditor(section, "context"), renderWarnings, packetCheck: admissionPacketCheck, deidBusy, renderDeidStrip, generateAction: "open-admission-note", generateLabel: "Generate admission H&P" })}
+                <div class="section-heading source-day-heading"><div><h2>Admission</h2><p class="muted">Paste broad chart blocks. The app preserves the source and includes every saved capture.</p></div></div>
+                ${renderSourceWorkspace({ scope: "admission", sources: admissionSections, sourceOptions: admissionSourceOptions, selectedSourceKind: admissionSourceKind, sourceDraft: admissionSourceDraft, sourceParse: admissionSourceParse, renderSourceCaptureEditor: (section) => renderSectionEditor(section, "context"), renderWarnings, packetCheck: admissionPacketCheck, deidBusy, renderDeidStrip, generateAction: "open-admission-note", generateLabel: "Generate admission H&P" })}
               </div>
-          </section>` : ""}
-          ${!admissionSelected ? `<section class="panel hospital-day-packet packet-surface source-capture-workspace">
-            ${selected ? `
+          </section>`
+              : ""
+          }
+          ${
+            !admissionSelected
+              ? `<section class="panel hospital-day-packet packet-surface source-capture-workspace">
+            ${
+              selected
+                ? `
               <div class="section-heading source-day-heading">
-                <div><h2>${escapeHtml(selected.label)}</h2><p class="muted">${escapeHtml(selected.date)} · Paste broad Epic blocks. The app preserves their source and includes every saved capture.</p></div>
+                <div><h2>${escapeHtml(selected.label)}</h2><p class="muted">${escapeHtml(selected.date)} · Paste broad chart blocks. The app preserves their source and includes every saved capture.</p></div>
                 <div class="button-row">
                   <button class="button--quiet danger" type="button" data-action="remove-day">Remove day</button>
                   <button class="button--secondary" type="button" data-action="save-day" ${deidBusy || !selected.sourceCaptures.length ? "disabled" : ""}>Save source edits</button>
                 </div>
               </div>
-              ${renderSourceWorkspace({ scope: "daily", sources: selected.sourceCaptures, sourceOptions, selectedSourceKind, sourceDraft, renderSourceCaptureEditor, renderWarnings, packetCheck, deidBusy, renderDeidStrip, generateAction: "open-progress-note", generateLabel: "Generate progress note" })}
-            ` : `<div class="empty-state">Add a hospital day to begin capturing selected-day sources.</div>`}
-          </section>` : ""}
+              ${renderSourceWorkspace({ scope: "daily", sources: selected.sourceCaptures, sourceOptions, selectedSourceKind, sourceDraft, sourceParse, renderSourceCaptureEditor, renderWarnings, packetCheck, deidBusy, renderDeidStrip, generateAction: "open-progress-note", generateLabel: "Generate progress note" })}
+            `
+                : `<div class="empty-state">Add a hospital day to begin capturing selected-day sources.</div>`
+            }
+          </section>`
+              : ""
+          }
         </div>
       </div>
     `;
   }
 
-  return Object.freeze({ renderDaily, renderDayRow });
+  return Object.freeze({ renderDaily, renderDayRow, renderSourceParsePreview });
 }

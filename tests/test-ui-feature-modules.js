@@ -42,6 +42,20 @@ const dailyMarkup = dailyView.renderDaily({
 assert.match(dailyMarkup, /data-action="select-admission"/);
 assert.match(dailyMarkup, /data-action="add-admission-source"/);
 assert.match(dailyMarkup, /source-capture-composer/);
+const parsedSourceMarkup = dailyView.renderSourceParsePreview({
+  scope: "daily",
+  parseResult: {
+    recognized: true,
+    rawCharacterCount: 420,
+    formatLabel: "CPRS inpatient-order table",
+    summary: "2 medication entries; report columns removed.",
+    outputText: "Medication activity parsed from CPRS report."
+  }
+});
+assert.match(parsedSourceMarkup, /CPRS inpatient-order table recognized/);
+assert.match(parsedSourceMarkup, /data-source-parsed-draft/);
+assert.match(parsedSourceMarkup, /Session only/);
+assert.match(parsedSourceMarkup, /Unrecognized narrative is labeled and preserved/);
 
 const snapshot = {
   id: "checklist_test",

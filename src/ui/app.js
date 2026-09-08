@@ -9,7 +9,6 @@ import {
 import {
   activePatient,
   archivePatient,
-  createTextSection,
   createPatientRecord,
   removeWorkupOverride,
   setActivePatient,
@@ -98,7 +97,10 @@ import {
   saveTokenColorOverrides
 } from "../prompts/custom-templates.js?v=20260819-one-to-one-task-guidelines";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
-import { DEFAULT_DAILY_SOURCE_KIND, admissionSourceKindOptions, dailySourceKindOptions } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
+import {
+  DEFAULT_DAILY_SOURCE_KIND,
+  admissionSourceKindOptions
+} from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
 import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260819-one-to-one-task-guidelines";
 import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260819-one-to-one-task-guidelines";
 import { ensureCanonicalDefaultGuidelineSets, ensureOpenEvidenceTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260819-one-to-one-task-guidelines";
@@ -149,8 +151,8 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260722-unified-stay-v2";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260723-edit-save";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260828-clinical-export-parser";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260828-clinical-export-parser";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
@@ -236,8 +238,10 @@ const app = {
   pendingSectionReviewFocus: null,
   dailySourceKind: DEFAULT_DAILY_SOURCE_KIND,
   dailySourceDraft: "",
+  dailySourceParse: null,
   admissionSourceKind: DEFAULT_DAILY_SOURCE_KIND,
   admissionSourceDraft: "",
+  admissionSourceParse: null,
   workupThoroughness: "standard",
   workupImportDraft: "",
   workupApiBusy: false,
@@ -887,8 +891,10 @@ function clearPatientScopedSession() {
   app.pendingSectionReviewFocus = null;
   app.dailySourceKind = DEFAULT_DAILY_SOURCE_KIND;
   app.dailySourceDraft = "";
+  app.dailySourceParse = null;
   app.admissionSourceKind = DEFAULT_DAILY_SOURCE_KIND;
   app.admissionSourceDraft = "";
+  app.admissionSourceParse = null;
   clearPhiReviews();
   app.checklistSearchQuery = "";
   app.checklistOpenNoteIds = new Set();
@@ -1815,7 +1821,7 @@ async function handleClick(event) {
     if (action === "save-context") await saveContext();
     if (action === "add-day") await addDay();
     if (action === "add-daily-source") await dailySourceController.addSource();
-    if (action === "add-admission-source") await addAdmissionSource();
+    if (action === "add-admission-source") await dailySourceController.addAdmissionSource();
     if (action === "select-day" || action === "select-admission")
       dailySourceController.selectPacket(action === "select-admission" ? "admission" : target.dataset.dayId);
     if (action === "save-day") await dailySourceController.saveSources();
@@ -2973,48 +2979,6 @@ async function saveContext() {
   }
 }
 
-function admissionRoleForSourceKind(sourceKind) {
-  return ({
-    primary_note: "admission_reason",
-    results: "admission_results",
-    medication_activity: "procedures_devices",
-    consult_note: "procedures_devices",
-    prior_physical_exam: "admission_history",
-    bedside_update: "admission_history"
-  })[sourceKind] || "additional_admission_source";
-}
-
-async function addAdmissionSource() {
-  const patient = active();
-  const rawText = app.admissionSourceDraft.trim();
-  if (!patient) throw new Error("Select a patient first.");
-  if (!rawText) throw new Error("Paste a chart source before adding it.");
-  updateDeidOperation({ active: true, message: "De-identifying this admission source locally…", value: 0, total: 1 });
-  try {
-    await ensureSelectedDeidReady();
-    const result = await deidentify(rawText, { referenceDate: app.admissionDate });
-    const source = admissionSourceKindOptions().find((option) => option.id === app.admissionSourceKind);
-    const section = createTextSection(source?.label || "Other chart text", {
-      scope: "context",
-      role: admissionRoleForSourceKind(app.admissionSourceKind),
-      sourceKind: app.admissionSourceKind,
-      text: result.text || ""
-    });
-    app.phiReviews.set(reviewKey("context", section.id), createEphemeralRedactionReview(rawText, result));
-    setSectionDraftText("context", section.id, section.deidentifiedText);
-    app.vault = updateActivePatient(app.vault, (current) => ({ ...current, contextSections: [...(current.contextSections || []), section] }));
-    app.admissionSourceDraft = "";
-    admissionDateAnchor.remember();
-    beginSectionReview("context");
-    await persistVault("Source de-identified and added to Admission.");
-    updateDeidOperation({ active: false, message: "Admission source de-identified and saved locally." });
-    render();
-  } catch (error) {
-    updateDeidOperation({ active: false, message: error instanceof Error ? error.message : "De-identification did not complete." });
-    throw error;
-  }
-}
-
 async function addDay() {
   const patient = active();
   if (!patient) throw new Error("Select a patient first.");
@@ -4028,23 +3992,15 @@ function clearChecklistSearch() {
 
 function handleInput(event) {
   if (event.target.id === "dailySourceDraft") {
-    app.dailySourceDraft = event.target.value;
-    const count = document.querySelector("[data-source-draft-count]");
-    const source = dailySourceKindOptions().find((option) => option.id === app.dailySourceKind);
-    if (count)
-      count.textContent = `${app.dailySourceDraft.length.toLocaleString()} characters · ${source?.description || "Selected-day chart source."}`;
-    const addButton = document.querySelector('[data-action="add-daily-source"]');
-    if (addButton) addButton.disabled = app.deidOperation.active || !app.dailySourceDraft.trim();
+    dailySourceController.updateDraft("daily", event.target.value);
     return;
   }
   if (event.target.id === "admissionSourceDraft") {
-    app.admissionSourceDraft = event.target.value;
-    const count = document.querySelector("[data-admission-source-draft-count]");
-    const source = admissionSourceKindOptions().find((option) => option.id === app.admissionSourceKind);
-    if (count)
-      count.textContent = `${app.admissionSourceDraft.length.toLocaleString()} characters · ${source?.description || "Admission chart source."}`;
-    const addButton = document.querySelector('[data-action="add-admission-source"]');
-    if (addButton) addButton.disabled = app.deidOperation.active || !app.admissionSourceDraft.trim();
+    dailySourceController.updateDraft("admission", event.target.value);
+    return;
+  }
+  if (event.target.matches("[data-source-parsed-draft]")) {
+    dailySourceController.updateParsedDraft(event.target.dataset.sourceScope, event.target.value);
     return;
   }
   if (event.target.id === "guidelineSearchInput") {
