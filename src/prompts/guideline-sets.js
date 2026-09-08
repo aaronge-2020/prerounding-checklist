@@ -4,21 +4,28 @@ export const GUIDELINE_SET_STORAGE_KEY = "prerounding_guideline_sets_v1";
 export const GUIDELINE_SET_CANONICAL_DEFAULTS_KEY = "prerounding_guideline_sets_canonical_defaults_v2";
 export const TEACHING_GUIDELINE_SET_SEED_KEY = "prerounding_teaching_guideline_set_seed_v1";
 export const OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY = "prerounding_open_evidence_task_guidelines_seed_v1";
+export const OBGYN_TASK_GUIDELINES_SEED_KEY = "prerounding_obgyn_task_guidelines_seed_v1";
+export const PRESENTATION_COACH_GUIDELINE_SET_SEED_KEY = "prerounding_presentation_coach_guideline_set_seed_v1";
 
 const OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP = "open_evidence_task_guidelines_v1";
+const OBGYN_TASK_GUIDELINES_SEED_GROUP = "obgyn_task_guidelines_v1";
+const PRESENTATION_COACH_GUIDELINE_SET_SEED_GROUP = "presentation_coach_guideline_v1";
 
 export const DEFAULT_GUIDELINE_SET_SOURCES = Object.freeze([
   { label: "Admission", token: "@admission-guidelines", path: "./prompts/Guidelines-admission.md", task: { id: "initial_admission_rounds", label: "Initial admission rounds", order: 1 } },
-  { label: "Pre-round checklist", token: "@pre-round-checklist-guidelines", path: "./prompts/Pre-round_checklist.md", task: { id: "preround_bedside_exam", label: "Pre-round bedside exam", order: 8 } },
-  { label: "Discharge instructions", token: "@discharge-instructions-guidelines", path: "./prompts/Discharge_Instructions.md", task: { id: "discharge_instructions", label: "Discharge instructions", order: 9 } },
-  { label: "Consulting", token: "@consulting-guidelines", path: "./prompts/Consulting.md", task: { id: "consulting", label: "Consulting", order: 10 } },
+  { label: "Pre-round checklist", token: "@pre-round-checklist-guidelines", path: "./prompts/Pre-round_checklist.md", task: { id: "preround_bedside_exam", label: "Pre-round bedside exam", order: 11 } },
+  { label: "Discharge instructions", token: "@discharge-instructions-guidelines", path: "./prompts/Discharge_Instructions.md", task: { id: "discharge_instructions", label: "Discharge instructions", order: 12 } },
+  { label: "Consulting", token: "@consulting-guidelines", path: "./prompts/Consulting.md", task: { id: "consulting", label: "Consulting", order: 13 } },
   { label: "Team preferences", token: "@team-preferences", path: "" },
   { label: "Progress notes", token: "@progress-guidelines", path: "./prompts/Guidelines-progress.md", task: { id: "daily_progress_note", label: "Daily progress-note update", order: 2 } },
-  { label: "Teaching", token: "@teaching-guidelines", path: "./prompts/teaching.md", task: { id: "teaching_case_trajectory", label: "Teaching: full case trajectory", order: 4 } },
-  { label: "Presentation editor", token: "@presentation-editor-guidelines", path: "./prompts/Presentation-editor.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "presentation_quality_editor", label: "Edit and verify presentation", order: 3 } },
-  { label: "Medication organization and explanation", token: "@medication-explainer-guidelines", path: "./prompts/Medication-explainer.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "medication_explainer_by_problem", label: "Medication organization and explanation", order: 5 } },
-  { label: "Medication safety audit", token: "@medication-safety-guidelines", path: "./prompts/Medication-safety.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "medication_safety_audit", label: "Medication safety audit", order: 6 } },
-  { label: "Checklist/workup refinement", token: "@checklist-refinement-guidelines", path: "./prompts/Checklist-refinement.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "checklist_workup_refinement", label: "Checklist/workup refinement", order: 7 } }
+  { label: "OB/Gyn H&P", token: "@obgyn-hp-guidelines", path: "./prompts/Guidelines-obgyn-hp.md", seedGroup: OBGYN_TASK_GUIDELINES_SEED_GROUP, task: { id: "obgyn_history_and_physical", label: "OB/Gyn history & physical", order: 3 } },
+  { label: "OB/Gyn SOAP", token: "@obgyn-soap-guidelines", path: "./prompts/Guidelines-obgyn-soap.md", seedGroup: OBGYN_TASK_GUIDELINES_SEED_GROUP, task: { id: "obgyn_soap_note", label: "OB/Gyn SOAP note", order: 4 } },
+  { label: "Teaching", token: "@teaching-guidelines", path: "./prompts/teaching.md", task: { id: "teaching_case_trajectory", label: "Teaching: full case trajectory", order: 7 } },
+  { label: "Presentation editor", token: "@presentation-editor-guidelines", path: "./prompts/Presentation-editor.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "presentation_quality_editor", label: "Edit and verify presentation", order: 5 } },
+  { label: "Attending presentation critique", token: "@presentation-critique-guidelines", path: "./prompts/Presentation-critique.md", seedGroup: PRESENTATION_COACH_GUIDELINE_SET_SEED_GROUP, task: { id: "attending_presentation_critique", label: "Attending presentation critique", order: 6 } },
+  { label: "Medication organization and explanation", token: "@medication-explainer-guidelines", path: "./prompts/Medication-explainer.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "medication_explainer_by_problem", label: "Medication organization and explanation", order: 8 } },
+  { label: "Medication safety audit", token: "@medication-safety-guidelines", path: "./prompts/Medication-safety.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "medication_safety_audit", label: "Medication safety audit", order: 9 } },
+  { label: "Checklist/workup refinement", token: "@checklist-refinement-guidelines", path: "./prompts/Checklist-refinement.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "checklist_workup_refinement", label: "Checklist/workup refinement", order: 10 } }
 ]);
 
 const DEFAULT_TOKENS = new Set(DEFAULT_GUIDELINE_SET_SOURCES.map((source) => source.token));
@@ -162,6 +169,9 @@ async function seedDefaultGuidelineSets({ legacyTeamPreferences = "" } = {}) {
     const text = source.token === "@team-preferences"
       ? String(legacyTeamPreferences || "")
       : await fetchGuidelineText(source.path);
+    if (source.path && !String(text || "").trim()) {
+      throw new Error(`Could not load the built-in prompt at ${source.path}. Reload to retry.`);
+    }
     sets.push(createGuidelineSet(source.label, text, {
       token: source.token,
       existingTokens: sets.map((set) => set.token)
@@ -180,6 +190,8 @@ export async function loadOrMigrateGuidelineSets(storage = localStorage) {
   storage.setItem(GUIDELINE_SET_CANONICAL_DEFAULTS_KEY, "1");
   storage.setItem(TEACHING_GUIDELINE_SET_SEED_KEY, "1");
   storage.setItem(OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY, "1");
+  storage.setItem(OBGYN_TASK_GUIDELINES_SEED_KEY, "1");
+  storage.setItem(PRESENTATION_COACH_GUIDELINE_SET_SEED_KEY, "1");
   return seeded;
 }
 
@@ -224,6 +236,63 @@ export async function ensureOpenEvidenceTaskGuidelineSets(sets, { storage = loca
   if (additions.length) saveGuidelineSets(next, storage);
   storage.setItem(OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY, "1");
   return next;
+}
+
+// Adds the specialty documentation prompts exactly once to existing installs.
+// The marker preserves a later user deletion just like the other built-ins.
+export async function ensureObGynTaskGuidelineSets(sets, { storage = localStorage } = {}) {
+  if (storage.getItem(OBGYN_TASK_GUIDELINES_SEED_KEY) !== null) return sets;
+  const current = Array.isArray(sets) ? sets : [];
+  const existingTokens = new Set(current.map((set) => set.token));
+  const sources = DEFAULT_GUIDELINE_SET_SOURCES.filter(({ seedGroup }) => seedGroup === OBGYN_TASK_GUIDELINES_SEED_GROUP);
+  const additions = [];
+  for (const source of sources) {
+    if (existingTokens.has(source.token)) continue;
+    const text = await fetchGuidelineText(source.path);
+    if (!String(text || "").trim()) return current;
+    additions.push(createGuidelineSet(source.label, text, {
+      token: source.token,
+      existingTokens: [...existingTokens]
+    }));
+    existingTokens.add(source.token);
+  }
+  const next = [...current, ...additions];
+  if (additions.length) saveGuidelineSets(next, storage);
+  storage.setItem(OBGYN_TASK_GUIDELINES_SEED_KEY, "1");
+  return next;
+}
+
+// Adds the attending-coach prompt once to installations created before this
+// task existed. Its dedicated marker ensures a later user deletion remains
+// authoritative instead of being undone on startup.
+export async function ensurePresentationCoachGuidelineSet(sets, { storage = localStorage } = {}) {
+  if (storage.getItem(PRESENTATION_COACH_GUIDELINE_SET_SEED_KEY) !== null) return sets;
+  const current = Array.isArray(sets) ? sets : [];
+  const source = DEFAULT_GUIDELINE_SET_SOURCES.find(
+    ({ seedGroup }) => seedGroup === PRESENTATION_COACH_GUIDELINE_SET_SEED_GROUP
+  );
+  if (!source || current.some(({ token }) => token === source.token)) {
+    storage.setItem(PRESENTATION_COACH_GUIDELINE_SET_SEED_KEY, "1");
+    return current;
+  }
+  const text = await fetchGuidelineText(source.path);
+  if (!String(text || "").trim()) return current;
+  const next = [
+    ...current,
+    createGuidelineSet(source.label, text, {
+      token: source.token,
+      existingTokens: current.map((set) => set.token)
+    })
+  ];
+  saveGuidelineSets(next, storage);
+  storage.setItem(PRESENTATION_COACH_GUIDELINE_SET_SEED_KEY, "1");
+  return next;
+}
+
+export async function ensureTaskGuidelineSets(sets, { storage = localStorage } = {}) {
+  const withGeneralTasks = await ensureOpenEvidenceTaskGuidelineSets(sets, { storage });
+  const withObGynTasks = await ensureObGynTaskGuidelineSets(withGeneralTasks, { storage });
+  return ensurePresentationCoachGuidelineSet(withObGynTasks, { storage });
 }
 
 export async function ensureCanonicalDefaultGuidelineSets(sets, { legacyTeamPreferences = "", storage = localStorage } = {}) {

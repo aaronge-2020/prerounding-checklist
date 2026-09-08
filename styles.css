@@ -2653,10 +2653,15 @@ button.var-fill:focus-visible {
 }
 
 /* The presentation editor adds a dedicated panel above the template. Give it
-   a named grid row so the template never falls into an implicit row and
-   stretches underneath the pasted presentation. */
+   a named grid row so the template never falls into an implicit row. The
+   combined input and template can be taller than the fixed desktop route, so
+   this panel also owns vertical scrolling instead of clipping its lower rows. */
 .prompt-layout .prompt-panel.prompt-template-panel--presentation-editor {
   grid-template-rows: auto auto auto minmax(280px, 1fr) auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .prompt-layout .prompt-panel.prompt-output-panel {
@@ -7439,6 +7444,8 @@ body.vault-locked .vault-access {
 
 .presentation-editor-input h3 { margin: 0; font-size: 14px; }
 .presentation-editor-input p { margin: 3px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.presentation-specialty-input { display: grid; gap: 5px; font-size: 12px; font-weight: 700; }
+.presentation-specialty-input input { width: 100%; background: var(--surface); }
 .presentation-editor-input textarea { min-height: 150px; max-height: 320px; resize: vertical; background: var(--surface); }
 .presentation-editor-input__heading { display: grid; gap: 2px; }
 .presentation-editor-input__optional {

@@ -1,7 +1,7 @@
-import { addGuidelineSet, removeGuidelineSet, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js?v=20260819-one-to-one-task-guidelines";
-import { migrateCustomPromptTasksToGuidelineSets, saveCustomPromptTasks } from "../../prompts/custom-tasks.js?v=20260819-one-to-one-task-guidelines";
-import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20260819-one-to-one-task-guidelines";
-import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js?v=20260818-daily-function";
+import { addGuidelineSet, removeGuidelineSet, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js?v=20260906-presentation-coach";
+import { migrateCustomPromptTasksToGuidelineSets, saveCustomPromptTasks } from "../../prompts/custom-tasks.js?v=20260906-presentation-coach";
+import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20260906-presentation-coach";
+import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js?v=20260906-presentation-coach";
 
 // Create/delete custom prompt tasks - kept out of app.js to respect the
 // coordinator-file size boundary (scripts/check-ui-module-boundaries.js).
@@ -66,7 +66,12 @@ export function createPromptTaskController({ state, setStatus, renderPrompts, re
     refreshPromptPreview();
   }
 
-  return Object.freeze({ createTaskFromInput, requestRemove, confirmRemovePending, migrateLegacyTasks, saveGuidelineTemplate, updatePresentationToEdit });
+  function updatePresentationSpecialty(value) {
+    state.presentationSpecialty = value;
+    refreshPromptPreview();
+  }
+
+  return Object.freeze({ createTaskFromInput, requestRemove, confirmRemovePending, migrateLegacyTasks, saveGuidelineTemplate, updatePresentationToEdit, updatePresentationSpecialty });
 }
 
 // Filters the already-rendered variable buttons in place (same

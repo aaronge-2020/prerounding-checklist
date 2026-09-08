@@ -6,6 +6,7 @@ import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "../src/ui
 import { createDailyPresentation } from "../src/ui/daily/presentation.js";
 import { createDemoPresentation, demoStage } from "../src/ui/demo/presentation.js";
 import { createDemoPatient } from "../src/ui/demo/session.js";
+import { createPromptsPresentation } from "../src/ui/prompts/presentation.js";
 
 const escapeHtml = (value = "") => String(value)
   .replace(/&/g, "&amp;")
@@ -13,6 +14,30 @@ const escapeHtml = (value = "") => String(value)
   .replace(/>/g, "&gt;")
   .replace(/"/g, "&quot;");
 const icon = (name) => `<svg data-icon="${name}"></svg>`;
+
+const promptsView = createPromptsPresentation({ escapeHtml });
+const critiqueMarkup = promptsView.renderPrompts({
+  patient: { id: "patient_1" },
+  patientRequiredMessage: "",
+  task: { id: "attending_presentation_critique", label: "Attending presentation critique" },
+  tasks: [{ id: "attending_presentation_critique", label: "Attending presentation critique" }],
+  promptDays: [],
+  selectedPromptDayId: "admission",
+  template: "Template",
+  previewSegments: [{ type: "text", value: "Preview" }],
+  templateHighlightSegments: [{ type: "text", value: "Template" }],
+  promptError: "",
+  presentationToEdit: "De-identified draft",
+  presentationSpecialty: "Cardiology & EP",
+  requiresPresentationToEdit: true,
+  requiresPresentationSpecialty: true,
+  variables: [],
+  smartMenuOpen: false
+});
+assert.match(critiqueMarkup, /Presentation to critique/);
+assert.match(critiqueMarkup, /id="presentationSpecialty"/);
+assert.match(critiqueMarkup, /Cardiology &amp; EP/);
+assert.match(critiqueMarkup, /De-identified draft/);
 
 const dailyView = createDailyPresentation({ escapeHtml, icon });
 const demoView = createDemoPresentation({ escapeHtml });

@@ -1,4 +1,4 @@
-import { choicesToText, groupWorkupItems, WORKUP_THOROUGHNESS, workupThoroughnessOption } from "../../workups/editor.js?v=20260711-functional-remediation-19";
+import { choicesToText, groupWorkupItems, WORKUP_THOROUGHNESS, workupThoroughnessOption } from "../../workups/editor.js?v=20260821-etiology-checklist";
 import { WORKUP_SYSTEMS, workupSystemLabel } from "../../workups/systems.js?v=20260711-functional-remediation-19";
 
 export function normalizeWorkupCatalogQuery(query) {

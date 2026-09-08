@@ -160,6 +160,7 @@ Other conventions:
 \| Chief Complaint | one phrase |
 \| HPI | up to 6 sentences |
 \| Relevant History | subsections as warranted; conditions segment up to 6 lines |
+\| Diet and Exercise | conditional; 1–3 compact lines |
 \| Objective | subsections as warranted; target up to 7 compact spoken lines |
 \| Assessment | exactly 1 sentence |
 \| Plan — problems | as many as are actively managed today |
@@ -172,7 +173,7 @@ Other conventions:
 \| FEN, VTE prophylaxis, and Code status | one compact line each |
 \| Disposition | up to 3 sentences |
 
-Reasoning sentences, differential tables, and reasoning paragraphs do not count toward per-problem bullet limits. **\*\*VERIFY:\*\*** bullets do count. There is no fixed total bullet cap: include every active problem, then enforce the tier-specific limit within each problem.
+Reasoning sentences, differential tables, reasoning paragraphs, and explicitly attributed consultant-recommendation bullets do not count toward per-problem bullet limits. **\*\*VERIFY:\*\*** bullets do count. There is no fixed total bullet cap: include every active problem, enforce the tier-specific limit on the team's own action bullets, and then include every required consultant-recommendation bullet.
 
 The problem list may be long. No individual problem may be long. If a problem seems to need more bullets than allowed, the excess is almost always routine monitoring, restated evidence, reasoning that belongs in the reasoning paragraph, or an action that belongs to a different problem.
 
@@ -215,7 +216,7 @@ Attach the flag under the problem whose bullets act on it, not the problem where
 
 **## Information ownership**
 
-Each fact has one primary home: the full identifying and admission anchor in One-Liner; symptoms and chronology in HPI; background in Relevant History; measurements and results in Objective; the shorter current-state synthesis in Assessment; each problem's durable synopsis in Key context; problem-level interpretation, severity, trajectory, and differential in that problem's differential block or reasoning paragraph; treatment and proposed actions in Plan bullets; diet, nutrition, relevant fluids, and electrolyte planning in FEN; thromboprophylaxis in VTE Prophylaxis; resuscitation preference in Code Status; and level of care, destination, barriers, and transition criteria in Disposition. Selective restatement of a decisive fact in Key context is required when the Assessment and Plan would otherwise depend on another section to be understood.
+Each fact has one primary home: the full identifying and admission anchor in One-Liner; symptoms and chronology in HPI; background in Relevant History; patient-reported diet and activity history for a qualifying vascular, thrombotic, glucose, lipid, or metabolic problem in Diet and Exercise; measurements and results in Objective; the shorter current-state synthesis in Assessment; each problem's durable synopsis in Key context; problem-level interpretation, severity, trajectory, and differential in that problem's differential block or reasoning paragraph; treatment and proposed actions in Plan bullets; complete consultant recommendation content in explicitly service-attributed bullets under the corresponding Plan problem; diet, nutrition, relevant fluids, and electrolyte planning in FEN; thromboprophylaxis in VTE Prophylaxis; resuscitation preference in Code Status; and level of care, destination, barriers, and transition criteria in Disposition. Selective restatement of a decisive fact in Key context is required when the Assessment and Plan would otherwise depend on another section to be understood.
 
 Never re-narrate a symptom story, history, examination sequence, full report, or serial laboratory list across sections. Citing a specific value or finding downstream is not repetition when it establishes the problem, records a durable event, or explains today's decision.
 
@@ -230,6 +231,8 @@ Print these headings in this order, bolded, each preceded by a blank line, with 
 **\*\*HPI\*\***
 
 **\*\*Relevant History\*\***
+
+**\*\*Diet and Exercise\*\***
 
 **\*\*Objective\*\***
 
@@ -248,6 +251,8 @@ Print these headings in this order, bolded, each preceded by a blank line, with 
 **\*\*Medication Regimens\*\***
 
 Never add Review of Systems, ED Course, Hospital Course, Data, Differential, or any other top-level heading.
+
+The **\*\*Diet and Exercise\*\*** heading is conditional. Include it only when the patient has actual or suspected acute coronary syndrome, ischemic stroke or TIA, pulmonary embolism or other venous thromboembolism, diabetes or prediabetes, obesity, metabolic syndrome, metabolic liver disease, dyslipidemia, or another clinically meaningful lipid, glucose, or metabolic abnormality. All other headings are required.
 
 **## One-Liner**
 
@@ -304,6 +309,12 @@ Example of the intended density and formatting:
 Omit empty categories, unrelated negative history, "no other home medications," absent risk factors that do not change the differential, and background already conveyed in the HPI.
 
 Every condition, recent procedure, social factor, functional detail, and medication in Relevant History must map silently to an Assessment modifier, a Plan problem, or a reasoning sentence where it changes a differential, risk balance, medication choice, procedure plan, or disposition. If it maps nowhere, omit it. Home medications do not make a condition relevant by themselves.
+
+**## Diet and Exercise**
+
+For every patient who meets the trigger above, include one to three compact patient-reported lines covering the clinically relevant baseline diet and activity history. Report the usual eating pattern and, as applicable, sodium intake, saturated or trans fat exposure, refined carbohydrates or sugar-sweetened beverages, fruit/vegetable and whole-grain intake, alcohol exposure, exercise type/frequency/intensity, sedentary time, recent immobility or travel, and barriers to activity or dietary change.
+
+Select only domains relevant to the patient's vascular, thrombotic, lipid, glucose, or metabolic problem. Do not turn this section into generic counseling, and do not place recommendations here. If either diet or exercise history is absent, state the specific gap and say what targeted history should be obtained during the admission; never invent a healthy or unhealthy pattern.
 
 **## Objective**
 
@@ -484,13 +495,15 @@ Never pad to reach a count, and never invent supporting evidence. Search the sup
 
 **### Consultant recommendations**
 
-A consultant's recommendations appear only in Plan bullets, never in Subjective, Objective, or the Assessment.
+A consultant's recommendations appear only in Plan bullets under the clinical problem each recommendation addresses, never in HPI, Objective, or the Assessment. Before writing, build a hidden Consultant Recommendation Ledger with the named service, corresponding clinical problem, every documented recommendation, and the implementation status of each recommendation when supplied.
 
-**\*\*One bullet per consultant per problem.\*\*** Consolidate everything that service advised about that problem into a single bullet. If a service's recommendations bear on two genuinely separate problems, it may have one bullet under each, but never two bullets under the same problem.
+**\*\*Name the service in every recommendation bullet.\*\*** Begin every such bullet with `- [Service name] recommends ...`. Never write "Consultant recommends," "per consultant," "per recommendations," "follow consultant recommendations," or an unattributed passive construction such as "urinalysis recommended." Write `- Nephrology recommends obtaining a urinalysis.`
 
-Attribute precisely. Write "Consultant recommends" only for a documented recommendation. Attempted contact, a pending callback, or a note that a service was consulted is not a recommendation. When your own proposal differs from or extends a consultant's, say both in the one bullet: "Gastroenterology recommends EGD if bleeding persists; recommend clarifying today whether repeat lower endoscopy is higher yield given the sigmoid findings."
+**\*\*Include the complete documented recommendation set.\*\*** Under each corresponding problem, list every active or still-relevant recommendation from that service, including diagnostic tests, medications with documented dose/route/frequency, treatment changes, monitoring, restrictions, follow-up, and contingencies. Do not select only the recommendation that matches the team's plan. State whether each recommendation was implemented, ordered, completed, declined, deferred, or remains pending only when that status is documented.
 
-Consultant bullets count toward the problem's bullet allowance and the total.
+Use one or more consecutive bullets for each service under that problem. Keep one coherent action or tightly linked set per bullet, and repeat the service name at the start of every bullet. If a service's recommendations bear on two genuinely separate problems, place the applicable portion under each problem rather than combining them under one heading. If the team's plan differs from or extends the consultant's recommendation, keep the attribution separate: `- Gastroenterology recommends EGD if bleeding persists. Our team recommends clarifying whether repeat lower endoscopy is higher yield given the sigmoid findings.`
+
+Attempted contact, a pending callback, or documentation that a service was consulted is not a recommendation. Never infer recommendation content. Consultant-recommendation bullets are exempt from tier-specific bullet limits because attribution and completeness take priority over compression.
 
 **### Bullets**
 
@@ -502,7 +515,7 @@ One coherent action or closely linked sequence per bullet. Every bullet is one o
 
 **\*\*Other actions.\*\*** For consultation, monitoring, communication, and disposition actions, give one short sentence explaining the decision, risk, or barrier the action resolves. A generic phrase such as "for further evaluation" or "to monitor" is not a justification.
 
-**\*\*Action-status wording.\*\*** "Given" or "received" for completed treatment. "Receiving" for a documented active regimen. "Continue" only for a documented active regimen or order. "Ordered," "collected," and "pending" only when documented. "Consultant recommends" only for a documented recommendation. "Recommend" for your proposed action.
+**\*\*Action-status wording.\*\*** "Given" or "received" for completed treatment. "Receiving" for a documented active regimen. "Continue" only for a documented active regimen or order. "Ordered," "collected," and "pending" only when documented. "[Service name] recommends" only for a documented recommendation, with the actual service named every time. "Recommend" for your proposed action.
 
 If only one dose is documented: "Received [medication] once; recommend [proposed ongoing treatment]."
 
@@ -619,6 +632,7 @@ Then confirm:
 12\. No documented chronic-baseline value appears solely because it is outside the reference range; a baseline comparator may appear when it materially changes interpretation of the admission value.
 13\. No subsection label appears without qualifying content behind it.
 14\. Every section follows its stated internal order and is within its limit.
+14a\. Diet and Exercise appears for every qualifying vascular, thrombotic, diabetes, lipid, glucose, or metabolic condition; it reports supported diet and activity history or explicitly identifies the targeted history still needed, without adding counseling or recommendations.
 15\. Every unestablished problem has one differential sentence and one three-to-five-row differential table; no established-problem reasoning paragraph exceeds three sentences; chronic problems have exactly one bullet; every active problem appears within its tier-specific bullet limit.
 16\. Every Plan bullet contains one action plus a concise justification; diagnostic actions use an if/then finding-to-management statement, and treatment actions explain the patient-specific choice over the closest reasonable first-line alternative.
 17\. Problems are ordered unstable acute, stable acute, then chronic; problems sharing a decision are combined; no problem exists that is only a constraint on another.
@@ -644,10 +658,11 @@ Then confirm:
 37\. No proposed medication of yours appears in the appendix; only documented medications do.
 38\. Every appendix indication is one clause tied to this patient's problem, not a class description.
 39\. The Consultants subsection lists services and status only, with no recommendation content.
-40\. Every consultant recommendation appears in a Plan bullet and nowhere else.
-41\. No problem carries more than one bullet from the same consultant.
-42\. No service is described as recommending anything on the basis of attempted contact or a pending callback.
-43\. Every Plan problem has a **\*\*Key context:\*\*** synopsis stating what it is being treated as, its current state, and the few durable diagnostic, procedural, treatment, complication, implemented consultant-led event, or durable outcome facts needed to understand it; unimplemented consultant recommendation content remains only in a Plan bullet.
+40\. Every documented active or still-relevant consultant recommendation appears under its corresponding Plan problem, including tests, medications or treatment changes, monitoring, restrictions, follow-up, and contingencies; none is omitted merely to meet a bullet or word limit.
+41\. Every consultant-recommendation bullet begins with the actual service name followed by "recommends"; none says "Consultant recommends," "per consultant," "per recommendations," "follow consultant recommendations," or uses an unattributed passive construction.
+42\. Recommendations from one service are consecutive under each problem, use as many explicitly attributed bullets as needed for completeness, and are separated from any differing or additional team proposal.
+42a\. No service is described as recommending anything on the basis of attempted contact, a pending callback, or consultation status alone, and implementation status is stated only when documented.
+43\. Every Plan problem has a **\*\*Key context:\*\*** synopsis stating what it is being treated as, its current state, and the few durable diagnostic, procedural, treatment, complication, implemented consultant-led event, or durable outcome facts needed to understand it; every unimplemented consultant recommendation remains in an explicitly service-attributed Plan bullet.
 44\. The Assessment and Plan pass the read-alone audit: with every other section hidden, they still explain why the patient is hospitalized, every active problem's defining context and current treatment, today's justified actions, and any consequential contingency or unresolved decision.
 45\. Key context contains no routine normal result, stale minor abnormality, redundant study, full report, or historical detail whose removal would leave diagnosis, severity, trajectory, present treatment, major risk, and the next decision unchanged.
 46\. Every procedure, surgery, or study in Key context uses the documented date, hospital day, or relative timing; missing or conflicting timing is identified rather than invented.

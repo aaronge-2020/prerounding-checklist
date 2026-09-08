@@ -1,5 +1,5 @@
-import { ADMISSION_PSEUDO_DAY_ID, tokenAccentColor } from "../../prompts/custom-templates.js?v=20260819-one-to-one-task-guidelines";
-import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260819-one-to-one-task-guidelines";
+import { ADMISSION_PSEUDO_DAY_ID, tokenAccentColor } from "../../prompts/custom-templates.js?v=20260906-presentation-coach";
+import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260906-presentation-coach";
 
 export function renderHighlightedSegments(segments, escapeHtml, colorOverrides = {}, { interactive = true } = {}) {
   return segments.map((segment) => {
@@ -25,7 +25,9 @@ export function createPromptsPresentation({ escapeHtml }) {
     templateHighlightSegments,
     promptError,
     presentationToEdit,
+    presentationSpecialty,
     requiresPresentationToEdit,
+    requiresPresentationSpecialty,
     variables,
     smartMenuOpen,
     colorOverrides = {}
@@ -57,9 +59,15 @@ export function createPromptsPresentation({ escapeHtml }) {
           ${requiresPresentationToEdit ? `
             <section class="presentation-editor-input" aria-labelledby="presentationEditorInputTitle">
               <div class="presentation-editor-input__heading">
-                <h3 id="presentationEditorInputTitle">Presentation to edit <span class="presentation-editor-input__optional">Optional</span></h3>
-                <p>Paste a de-identified H&amp;P or progress presentation to insert it in the prompt. Leave this blank when you will provide the presentation in the chat instead. This text stays only in the current browser tab.</p>
+                <h3 id="presentationEditorInputTitle">Presentation to ${requiresPresentationSpecialty ? "critique" : "edit"} <span class="presentation-editor-input__optional">Optional</span></h3>
+                <p>Paste a de-identified H&amp;P, consult, or progress presentation to insert it in the prompt. Leave this blank when you will provide the presentation in the chat instead. This text stays only in the current browser tab.</p>
               </div>
+              ${requiresPresentationSpecialty ? `
+                <label class="presentation-specialty-input" for="presentationSpecialty">
+                  <span>Specialty or team</span>
+                  <input id="presentationSpecialty" type="text" maxlength="160" autocomplete="off" spellcheck="true" placeholder="For example: Cardiology, general surgery, MICU" value="${escapeHtml(presentationSpecialty)}">
+                </label>
+              ` : ""}
               <textarea id="presentationToEdit" rows="12" spellcheck="true" placeholder="Paste the de-identified presentation here...">${escapeHtml(presentationToEdit)}</textarea>
             </section>
           ` : ""}

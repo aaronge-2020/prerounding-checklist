@@ -95,15 +95,15 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260819-one-to-one-task-guidelines";
+} from "../prompts/custom-templates.js?v=20260906-presentation-coach";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import {
   DEFAULT_DAILY_SOURCE_KIND,
   admissionSourceKindOptions
 } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
-import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260819-one-to-one-task-guidelines";
-import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260819-one-to-one-task-guidelines";
-import { ensureCanonicalDefaultGuidelineSets, ensureOpenEvidenceTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260819-one-to-one-task-guidelines";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260906-presentation-coach";
+import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260906-presentation-coach";
+import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260906-presentation-coach";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences,
@@ -127,8 +127,8 @@ import {
   collectWorkupDraftFromDocument,
   workupFromEditorDraft,
   workupThoroughnessOption
-} from "../workups/editor.js?v=20260815-standalone-ap";
-import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260815-standalone-ap";
+} from "../workups/editor.js?v=20260821-etiology-checklist";
+import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260821-etiology-checklist";
 import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260815-standalone-ap";
 import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260815-standalone-ap";
 import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20260711-functional-remediation-15";
@@ -159,19 +159,19 @@ import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-fu
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
 import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260815-smart-variable-fields";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260819-one-to-one-task-guidelines";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260906-presentation-coach";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260819-one-to-one-task-guidelines";
-import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260819-one-to-one-task-guidelines";
+} from "./prompts/controller.js?v=20260906-presentation-coach";
+import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260906-presentation-coach";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721-persisted-anchor";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20260819-one-to-one-task-guidelines";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260819-one-to-one-task-guidelines";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20260906-presentation-coach";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260906-presentation-coach";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
   createRedactionPresentation,
@@ -226,6 +226,7 @@ const app = {
   promptTemplates: loadPromptTemplateOverrides(),
   promptDrafts: {},
   presentationToEdit: "",
+  presentationSpecialty: "",
   tokenColorOverrides: loadTokenColorOverrides(),
   smartMenuOpen: false,
   quickDeid: { input: "", output: "", warnings: [], status: "", review: null },
@@ -886,6 +887,7 @@ function clearPatientScopedSession() {
   app.promptDayFollowsChecklist = true;
   app.promptDrafts = {};
   app.presentationToEdit = "";
+  app.presentationSpecialty = "";
   app.sectionDrafts.clear();
   app.sectionEditingKeys.clear();
   app.pendingSectionReviewFocus = null;
@@ -1403,8 +1405,8 @@ function renderPrompts() {
     byId("promptsContent").innerHTML = patientRequiredMessage();
     return;
   }
-  const tasks = [...availableOpenEvidenceTasks(app.guidelineSets), ...guidelinePromptTasks(app.guidelineSets)];
-  const task = tasks.find((entry) => entry.id === app.selectedPromptTask) || tasks[0];
+  const tasks = [...availableOpenEvidenceTasks(app.guidelineSets), ...guidelinePromptTasks(app.guidelineSets)]; const task = tasks.find((entry) => entry.id === app.selectedPromptTask) || tasks[0];
+  if (!task) { byId("promptsContent").textContent = "Built-in prompts are unavailable. Reload to retry."; return; }
   app.selectedPromptTask = task.id;
   const promptDays = sortDays(patient.days || []);
   // Follow the Checklist/Daily day until manually overridden here, so a
@@ -1428,9 +1430,10 @@ function renderPrompts() {
       selectedDayId: app.promptDayId,
       guidelineSets: app.guidelineSets,
       teamPreferences: app.vault.preferences,
-      presentationToEdit: app.presentationToEdit
+      presentationToEdit: app.presentationToEdit,
+      presentationSpecialty: app.presentationSpecialty
     });
-    previewSegments = buildPromptPreviewSegments(template, variableMap, { ensurePersona: true });
+    previewSegments = buildPromptPreviewSegments(template, variableMap, { ensurePersona: true, taskId: task.id });
   } catch (error) {
     promptError = error instanceof Error ? error.message : "Unable to build prompt.";
   }
@@ -1451,7 +1454,9 @@ function renderPrompts() {
     templateHighlightSegments,
     promptError,
     presentationToEdit: app.presentationToEdit,
-    requiresPresentationToEdit: task.id === "presentation_quality_editor",
+    presentationSpecialty: app.presentationSpecialty,
+    requiresPresentationToEdit: task.id === "presentation_quality_editor" || task.id === "attending_presentation_critique",
+    requiresPresentationSpecialty: task.id === "attending_presentation_critique",
     variables,
     smartMenuOpen: app.smartMenuOpen,
     colorOverrides: app.tokenColorOverrides
@@ -1527,10 +1532,11 @@ function refreshPromptPreview() {
       selectedDayId: app.promptDayId,
       guidelineSets: app.guidelineSets,
       teamPreferences: app.vault.preferences,
-      presentationToEdit: app.presentationToEdit
+      presentationToEdit: app.presentationToEdit,
+      presentationSpecialty: app.presentationSpecialty
     });
     highlighted.innerHTML = renderHighlightedSegments(
-      buildPromptPreviewSegments(template, variableMap, { ensurePersona: true }),
+      buildPromptPreviewSegments(template, variableMap, { ensurePersona: true, taskId: app.selectedPromptTask }),
       escapeHtml,
       app.tokenColorOverrides
     );
@@ -1561,9 +1567,10 @@ function currentPromptText() {
       selectedDayId: app.promptDayId,
       guidelineSets: app.guidelineSets,
       teamPreferences: app.vault.preferences,
-      presentationToEdit: app.presentationToEdit
+      presentationToEdit: app.presentationToEdit,
+      presentationSpecialty: app.presentationSpecialty
     });
-    return buildPromptPreviewSegments(template, variableMap, { ensurePersona: true })
+    return buildPromptPreviewSegments(template, variableMap, { ensurePersona: true, taskId: app.selectedPromptTask })
       .map((segment) => segment.value)
       .join("");
   } catch {
@@ -4060,6 +4067,10 @@ function handleInput(event) {
     promptTaskController.updatePresentationToEdit(event.target.value);
     return;
   }
+  if (event.target.id === "presentationSpecialty") {
+    promptTaskController.updatePresentationSpecialty(event.target.value);
+    return;
+  }
   if (event.target.id === "quickDeidInput") {
     app.quickDeid.input = event.target.value;
     return;
@@ -4180,7 +4191,7 @@ async function init() {
   bindEvents();
   render();
   void refreshWebGpuAvailability();
-  void refreshGuidelines();
+  void refreshGuidelines().catch((error) => setStatus(error instanceof Error ? error.message : "Built-in prompts are unavailable. Reload to retry."));
   void ensureModelPackServiceWorker()
     .then((service) => {
       app.modelPackService = service;
@@ -4221,7 +4232,7 @@ async function refreshGuidelines() {
   const legacyTeamPreferences = app.vault?.preferences?.teamInstructions || "";
   app.guidelineSets = await ensureCanonicalDefaultGuidelineSets(app.guidelineSets, { legacyTeamPreferences });
   app.guidelineSets = await ensureTeachingGuidelineSet(app.guidelineSets);
-  app.guidelineSets = await ensureOpenEvidenceTaskGuidelineSets(app.guidelineSets);
+  app.guidelineSets = await ensureTaskGuidelineSets(app.guidelineSets);
   promptTaskController.migrateLegacyTasks();
   if (legacyTeamPreferences.trim() && app.vault?.preferences) {
     app.vault = {

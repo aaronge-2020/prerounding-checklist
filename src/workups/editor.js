@@ -131,10 +131,11 @@ export function collectWorkupDraftFromDocument(root = document) {
 
 export function buildOpenEvidenceWorkupDraftPrompt({ patientContext = "", dailyTrajectory = "", workupTitle = "", thoroughness = "standard", teamPreferences, guidelinesText = "" } = {}) {
   const scope = WORKUP_THOROUGHNESS[workupThoroughnessOption(thoroughness)];
-  const intro = guidelinesText
-    ? `Follow the guidelines above for ${workupTitle || "this patient"}.`
-    : `Review this de-identified information and suggest a practical bedside checklist for ${workupTitle || "this patient"}.`;
-  return attendingHospitalistPrompt(`${guidelinesText ? `${guidelinesText}\n\n` : ""}${intro} ${buildTeamPreferencesPromptBlock(teamPreferences)} Put the negative, normal, absent, reassuring, or other baseline answer first, followed by positive or concerning findings, and never lead with not assessed or unable to assess. Use short, phone-tappable answer choices. ${scope.prompt} Exclude labs, imaging, orders, standalone diagnosis lists, diagnostic conclusions, treatment plans, citations, and assessment prose. Retain the chart-supported problem or decision label attached to each history or exam item. Use only the de-identified information provided here.
+  const teamInstructions = buildTeamPreferencesPromptBlock(teamPreferences);
+  const taskInstructions = guidelinesText
+    ? `${guidelinesText}\n\nFollow the guidelines above for ${workupTitle || "this patient"}. ${teamInstructions} Use the selected ${scope.label.toLowerCase()} scope to prune lower-value etiologic groups without overriding the guideline's required structure or item-count rules. Use only the de-identified information provided here.`
+    : `Review this de-identified information and suggest a practical bedside checklist for ${workupTitle || "this patient"}. ${teamInstructions} Put the negative, normal, absent, reassuring, or other baseline answer first, followed by positive or concerning findings, and never lead with not assessed or unable to assess. Use short, phone-tappable answer choices. ${scope.prompt} Exclude labs, imaging, orders, standalone diagnosis lists, diagnostic conclusions, treatment plans, citations, and assessment prose. Retain the chart-supported problem or decision label attached to each history or exam item. Use only the de-identified information provided here.`;
+  return attendingHospitalistPrompt(`${taskInstructions}
 
 Patient context. ${patientContext || "No saved patient context."}
 

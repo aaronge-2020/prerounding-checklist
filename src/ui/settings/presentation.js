@@ -1,4 +1,4 @@
-import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260819-one-to-one-task-guidelines";
+import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260906-presentation-coach";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({
