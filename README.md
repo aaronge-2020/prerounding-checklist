@@ -7,7 +7,7 @@ The app does not create accounts, synchronize data, host patient records, infer 
 ## Workspace
 
 - **Vault / Roster**: create or unlock the local vault; admit, select, archive, export, and restore patients.
-- **Hospital Stay**: maintain the admission packet and labeled day-by-day updates in one place.
+- **Hospital Stay**: maintain the admission packet and labeled day-by-day updates in one place. Pasted Epic or CPRS result, MAR, and vital-sign exports are organized in an editable session-only preview before local de-identification; omitted fields are not invented and unrecognized text is retained for review.
 - **Workups**: create, edit, import, export, order, and explicitly convert local workups into a checklist. A saved BYOK option can format a reviewed, de-identified OpenEvidence draft into workup JSON; manual ChatGPT formatting remains available as the fallback.
 - **Checklist**: answer grouped History and Physical Exam items on a laptop or phone; transfer answers with an encrypted local bundle.
 - **OpenEvidence Prompts**: edit prompt text directly and insert labeled smart variables with `@`, including a named guideline-set variable (Settings) for general or OB/Gyn H&Ps and SOAP notes, progress notes, discharge instructions, bedside pre-round checklists, or your own prompt.

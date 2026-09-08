@@ -346,6 +346,22 @@ MEDICATION ADMINISTRATION HISTORY for Hospital Day 1`;
   assert.doesNotMatch(parsedCprsOrders, /RPH:|={10,}/, "the reviewable parser output must omit CPRS layout and pharmacy-routing noise");
   await page.fill("#admissionSourceDraft", "");
   assert.equal(await page.locator('[data-source-parse-state="recognized"]').count(), 0, "clearing the raw paste must also clear its session-only parse preview");
+  const syntheticEpicResults = `Results from EPIC:
+04/12/31 06:52
+WBC: 4.2 (L)
+Hemoglobin: 10.1 (L)
+Crossmatch: Red Blood Cells: Rpt (P)
+
+(L): Data is abnormally low
+(P): Preliminary`;
+  await page.fill("#admissionSourceDraft", syntheticEpicResults);
+  await page.waitForSelector('[data-source-parse-state="recognized"]');
+  assert.equal(await page.locator('[data-action="select-admission-source-kind"][data-source-kind="results"]').getAttribute("aria-pressed"), "true", "a recognized Epic result export must select Results");
+  const parsedEpicResults = await page.locator("#admissionParsedSourceDraft").inputValue();
+  assert.match(parsedEpicResults, /Laboratory and diagnostic results parsed from Epic export/);
+  assert.match(parsedEpicResults, /Result\. Crossmatch: Red Blood Cells: Rpt \(P\)/);
+  assert.doesNotMatch(parsedEpicResults, /Results from EPIC:/, "the structured preview must remove copied Epic chrome");
+  await page.fill("#admissionSourceDraft", "");
   const addAdmissionCapture = async (sourceKind, text) => {
     const previousCount = await page.locator("#contextSections .section-editor").count();
     await page.click(`[data-action="select-admission-source-kind"][data-source-kind="${sourceKind}"]`);
@@ -473,7 +489,7 @@ MEDICATION ADMINISTRATION HISTORY for Hospital Day 1`;
   await page.selectOption("#workupThoroughness", "focused");
   await page.click('[data-action="copy-open-evidence-workup-prompt"]');
   const copiedWorkupPrompt = await page.evaluate(() => navigator.clipboard.readText());
-  assert.match(copiedWorkupPrompt, /focused fast-rounds scope/i);
+  assert.match(copiedWorkupPrompt, /selected fast rounds scope/i);
   assert.match(copiedWorkupPrompt, /Primary team note\. Overnight oxygen requirement improved/);
   assert.match(copiedWorkupPrompt, /Results\. Repeat creatinine 1\.3/);
   // A successful "Parse & save" auto-collapses the import panel (its job is

@@ -157,6 +157,14 @@ assert.equal(parsedEpicMarMissingFields.recognized, true, "a partial medication 
 assert.match(parsedEpicMarMissingFields.outputText, /Route\. IV[\s\S]*Administration\. 0815 \(4 mg\)/);
 assert.doesNotMatch(parsedEpicMarMissingFields.outputText, /Dose\.|Frequency\.|Start\.|End\./);
 
+const syntheticSingleEpicMarRow = `Medications 04/12/31
+furosemide (LASIX) tablet 20 mg
+Freq: daily`;
+const parsedSingleEpicMarRow = parseClinicalExport(syntheticSingleEpicMarRow);
+assert.equal(parsedSingleEpicMarRow.recognized, true, "an Epic medication date header can identify a single sparse medication row");
+assert.equal(parsedSingleEpicMarRow.itemCount, 1);
+assert.match(parsedSingleEpicMarRow.outputText, /Medication 1\. furosemide[\s\S]*Frequency\. daily/);
+
 const syntheticEpicVitals = `Vitals
 &#x9;Temperature&#x9;&#x9;37.1 (9...&#x9;36.9 (...)&#x9;Temperature&#x9;
 &#x9;Source&#x9;&#x9;Oral&#x9;Source&#x9;

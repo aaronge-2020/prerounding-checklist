@@ -235,7 +235,9 @@ function hasMarMetadataAhead(lines, position) {
 function renderEpicMar(value) {
   const lines = nonemptyLines(value);
   if (!lines.length) return null;
-  const hasMarHeader = lines.some((line) => /^MAR$/i.test(line.text) || marSection(line.text));
+  const hasMarHeader = lines.some(
+    (line) => /^MAR$/i.test(line.text) || marSection(line.text) || /^Medications\s+\d{1,2}[/-]\d{1,2}[/-]\d{2,4}/i.test(line.text)
+  );
   const fieldLineCount = lines.filter((line) => MAR_FIELD_START.test(line.text)).length;
   if (!hasMarHeader && fieldLineCount < 2) return null;
 
