@@ -1,5 +1,23 @@
 import assert from "node:assert/strict";
-import { parseClinicalExport } from "../src/patient-context/clinical-export-parser.js";
+import { readFileSync } from "node:fs";
+import {
+  parseClinicalExport,
+  prepareClinicalExportForSave
+} from "../src/patient-context/clinical-export-parser.js";
+
+const parserRevision = "20260908-epic-parser-submit";
+const runtimeSources = {
+  index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
+  app: readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8"),
+  controller: readFileSync(new URL("../src/ui/daily/source-controller.js", import.meta.url), "utf8"),
+  parser: readFileSync(new URL("../src/patient-context/clinical-export-parser.js", import.meta.url), "utf8")
+};
+assert.match(runtimeSources.index, new RegExp(`styles\\.css\\?v=${parserRevision}`));
+assert.match(runtimeSources.index, new RegExp(`app\\.js\\?v=${parserRevision}`));
+assert.match(runtimeSources.app, new RegExp(`daily/presentation\\.js\\?v=${parserRevision}`));
+assert.match(runtimeSources.app, new RegExp(`daily/source-controller\\.js\\?v=${parserRevision}`));
+assert.match(runtimeSources.controller, new RegExp(`clinical-export-parser\\.js\\?v=${parserRevision}`));
+assert.match(runtimeSources.parser, new RegExp(`epic-clinical-export-parser\\.js\\?v=${parserRevision}`));
 
 const syntheticCprsMar = `
 ** INPATIENT ORDERS **
@@ -104,6 +122,17 @@ assert.equal(parsedEpicResults.itemCount, 4);
 assert.match(parsedEpicResults.outputText, /Collected\. 04\/12\/31 06:52/);
 assert.match(parsedEpicResults.outputText, /Result\. Crossmatch: Red Blood Cells: Rpt \(P\)/);
 assert.match(parsedEpicResults.outputText, /Reported flag definitions\.[\s\S]*L: Data is abnormally low[\s\S]*Rpt: View report/);
+
+const preparedEpicResults = prepareClinicalExportForSave(syntheticEpicResults);
+assert.equal(preparedEpicResults.parseResult.formatId, "epic_results");
+assert.equal(preparedEpicResults.sourceText, parsedEpicResults.outputText, "the save boundary must parse even when no textarea parse state is available");
+assert.doesNotMatch(preparedEpicResults.sourceText, /Results from EPIC:/);
+const reviewedEpicResults = prepareClinicalExportForSave(syntheticEpicResults, {
+  ...parsedEpicResults,
+  edited: true,
+  outputText: "Clinician-reviewed structured result text."
+});
+assert.equal(reviewedEpicResults.sourceText, "Clinician-reviewed structured result text.", "submit-time parsing must preserve an edited structured preview");
 
 const syntheticEpicResultsWithoutTimestamp = `Sodium: 137
 Creatinine: 0.9

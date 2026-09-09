@@ -347,7 +347,6 @@ MEDICATION ADMINISTRATION HISTORY for Hospital Day 1`;
   await page.fill("#admissionSourceDraft", "");
   assert.equal(await page.locator('[data-source-parse-state="recognized"]').count(), 0, "clearing the raw paste must also clear its session-only parse preview");
   const syntheticEpicResults = `Results from EPIC:
-04/12/31 06:52
 WBC: 4.2 (L)
 Hemoglobin: 10.1 (L)
 Crossmatch: Red Blood Cells: Rpt (P)
@@ -371,9 +370,12 @@ Crossmatch: Red Blood Cells: Rpt (P)
   };
   await addAdmissionCapture("primary_note", "Jane Patient MRN 123456 admitted with dyspnea.");
   await addAdmissionCapture("medication_activity", "Furosemide 40 mg PO daily. Lisinopril 10 mg PO daily. Reconciled by Dr. Alice Smith.");
-  await addAdmissionCapture("results", "Creatinine 1.4 today.");
+  await addAdmissionCapture("results", syntheticEpicResults);
   await addAdmissionCapture("bedside_update", "AM Labs reviewed with the team.");
   assert.equal(await page.locator("#contextSections .section-editor").count(), 4);
+  const savedEpicResults = await page.locator("#contextSections .section-editor").nth(2).locator(".section-text").inputValue();
+  assert.match(savedEpicResults, /Laboratory and diagnostic results parsed from Epic export/, "the click path must de-identify and save parser output");
+  assert.doesNotMatch(savedEpicResults, /Results from EPIC:/, "the click path must not save the unparsed Epic header");
   assert.equal(await page.locator("#contextSections .section-editor").first().locator(".section-role").count(), 1, "admission fields must retain a controlled purpose");
   await page.waitForFunction(() => document.querySelector("#contextSections")?.textContent.includes("[MRN]"));
   await page.waitForSelector("#contextSections .redaction-review");

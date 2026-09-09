@@ -151,8 +151,8 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260828-clinical-export-parser";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260828-clinical-export-parser";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260908-epic-parser-submit";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260908-epic-parser-submit";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";

@@ -1,4 +1,4 @@
-import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js";
+import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260908-epic-parser-submit";
 
 const REPORT_SEPARATOR = /^\s*[-=]{20,}\s*$/;
 const MEDICATION_STATUS = /\b(?:ADMINISTERED|CANCELLED|CANCELED|DISCONTINUED|GIVEN|HELD|MISSED|NOT GIVEN|REFUSED|STOPPED|BCMA EXPIRED)\b/i;
@@ -353,5 +353,15 @@ export function parseClinicalExport(value) {
     ...plainTextResult(rawText),
     rawCharacterCount: rawText.length,
     parsedCharacterCount: rawText.length
+  };
+}
+
+export function prepareClinicalExportForSave(value, priorResult = null) {
+  const rawText = normalizeNewlines(value).trim();
+  const parseResult = priorResult?.recognized && priorResult.edited ? priorResult : parseClinicalExport(value);
+  return {
+    rawText,
+    parseResult,
+    sourceText: parseResult.recognized ? String(parseResult.outputText || "").trim() : rawText
   };
 }

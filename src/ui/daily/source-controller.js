@@ -1,6 +1,9 @@
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260722-unified-stay-v2";
 import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260815-smart-variable-fields";
-import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260908-epic-parser";
+import {
+  parseClinicalExport,
+  prepareClinicalExportForSave
+} from "../../patient-context/clinical-export-parser.js?v=20260908-epic-parser-submit";
 import {
   createEphemeralRedactionReview,
   reviewKey,
@@ -36,9 +39,12 @@ export function createDailySourceController(deps) {
 
   function sourceTextForSave(scope) {
     const state = sourceState(scope);
-    const rawText = String(deps.app[state.draftKey] || "").trim();
-    const parsed = deps.app[state.parseKey];
-    return parsed?.recognized ? String(parsed.outputText || "").trim() : rawText;
+    const prepared = prepareClinicalExportForSave(deps.app[state.draftKey], deps.app[state.parseKey]);
+    deps.app[state.parseKey] = prepared.parseResult;
+    if (prepared.parseResult.suggestedSourceKind && state.options.some((option) => option.id === prepared.parseResult.suggestedSourceKind)) {
+      deps.app[state.kindKey] = prepared.parseResult.suggestedSourceKind;
+    }
+    return prepared;
   }
 
   function updateDraft(scope, value) {
@@ -164,10 +170,16 @@ export function createDailySourceController(deps) {
   async function addSource() {
     const day = deps.selectedChecklistDay(deps.active());
     if (!day) throw new Error("Add a hospital day first.");
-    const rawText = deps.app.dailySourceDraft.trim();
-    const sourceText = sourceTextForSave("daily");
+    const { rawText, sourceText, parseResult } = sourceTextForSave("daily");
     if (!rawText || !sourceText) throw new Error("Paste a chart source before adding it.");
-    deps.updateDeidOperation({ active: true, message: "De-identifying this source locally…", value: 0, total: 1 });
+    deps.updateDeidOperation({
+      active: true,
+      message: parseResult.recognized
+        ? `${parseResult.formatLabel} parsed locally; de-identifying the structured text…`
+        : "De-identifying this source locally…",
+      value: 0,
+      total: 1
+    });
     try {
       await deps.ensureSelectedDeidReady();
       const result = await deps.deidentify(sourceText, { referenceDate: day.date });
@@ -195,11 +207,17 @@ export function createDailySourceController(deps) {
 
   async function addAdmissionSource() {
     const patient = deps.active();
-    const rawText = deps.app.admissionSourceDraft.trim();
-    const sourceText = sourceTextForSave("admission");
+    const { rawText, sourceText, parseResult } = sourceTextForSave("admission");
     if (!patient) throw new Error("Select a patient first.");
     if (!rawText || !sourceText) throw new Error("Paste a chart source before adding it.");
-    deps.updateDeidOperation({ active: true, message: "De-identifying this admission source locally…", value: 0, total: 1 });
+    deps.updateDeidOperation({
+      active: true,
+      message: parseResult.recognized
+        ? `${parseResult.formatLabel} parsed locally; de-identifying the structured text…`
+        : "De-identifying this admission source locally…",
+      value: 0,
+      total: 1
+    });
     try {
       await deps.ensureSelectedDeidReady();
       const result = await deps.deidentify(sourceText, { referenceDate: deps.app.admissionDate });
