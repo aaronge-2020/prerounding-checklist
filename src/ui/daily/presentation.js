@@ -42,6 +42,38 @@ export function createDailyPresentation({ escapeHtml, icon }) {
         </div>
       `;
     }
+    const parsedSections = Array.isArray(parseResult.sections) ? parseResult.sections : [];
+    if (parsedSections.length > 1) {
+      return `
+        <section class="source-parse-review" data-source-parse-state="recognized" aria-labelledby="${prefix}ParseTitle">
+          <div class="source-parse-heading">
+            <div>
+              <strong id="${prefix}ParseTitle">${escapeHtml(parseResult.formatLabel)} recognized as ${parsedSections.length} sources</strong>
+              <p class="muted">${escapeHtml(parseResult.summary)}</p>
+            </div>
+            <span class="source-parse-local">Session only</span>
+          </div>
+          <p class="source-parse-help">Each section below will be de-identified and saved as its own typed source. Review or edit any section before continuing.</p>
+          <div class="source-parse-sections">
+            ${parsedSections.map((section, index) => {
+              const sourceLabel = section.sourceKind === "medication_activity" ? "Medication activity" : section.sourceKind === "results" ? "Results" : "Other chart text";
+              return `
+                <section class="source-parse-section" aria-labelledby="${prefix}ParsedSourceTitle${index}">
+                  <div class="source-parse-section-heading">
+                    <strong id="${prefix}ParsedSourceTitle${index}">${escapeHtml(sourceLabel)}</strong>
+                    <span class="muted">${escapeHtml(section.formatLabel)} · ${escapeHtml(section.summary)}</span>
+                  </div>
+                  <label class="source-draft-label" for="${prefix}ParsedSourceDraft${index}">Structured text
+                    <textarea id="${prefix}ParsedSourceDraft${index}" rows="7" data-source-parsed-draft data-source-scope="${prefix}" data-source-section-index="${index}">${escapeHtml(section.outputText)}</textarea>
+                  </label>
+                  <span class="muted" data-source-parsed-count="${index}">${section.outputText.length.toLocaleString()} characters after parsing</span>
+                </section>
+              `;
+            }).join("")}
+          </div>
+        </section>
+      `;
+    }
     return `
       <section class="source-parse-review" data-source-parse-state="recognized" aria-labelledby="${prefix}ParseTitle">
         <div class="source-parse-heading">
@@ -78,6 +110,8 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     const selectedSource = sourceOptions.find((option) => option.id === selectedSourceKind) || sourceOptions[0];
     const prefix = scope === "admission" ? "admission" : "daily";
     const addAction = scope === "admission" ? "add-admission-source" : "add-daily-source";
+    const parsedSourceCount = Array.isArray(sourceParse?.sections) && sourceParse.sections.length > 1 ? sourceParse.sections.length : 1;
+    const addLabel = parsedSourceCount > 1 ? `De-identify and add ${parsedSourceCount} sources` : "De-identify and add source";
     const draftId = `${prefix}SourceDraft`;
     const sourceTitle = scope === "admission" ? "Admission sources" : "Saved sources";
     return `
@@ -88,11 +122,11 @@ export function createDailyPresentation({ escapeHtml, icon }) {
         <label class="source-draft-label" for="${draftId}">Paste the full copied block
           <textarea id="${draftId}" rows="8" placeholder="Paste the full copied text from ${escapeHtml(selectedSource.label)} here">${escapeHtml(sourceDraft)}</textarea>
         </label>
-        <div data-source-parse-preview="${prefix}">${renderSourceParsePreview({ scope, parseResult: sourceParse })}</div>
         <div class="source-draft-footer">
           <span class="muted" data-${prefix}-source-draft-count>${sourceDraft.length.toLocaleString()} characters · ${escapeHtml(selectedSource.description)}</span>
-          <button class="button--primary" type="button" data-action="${addAction}" ${deidBusy || !sourceDraft.trim() ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "De-identify and add source"}</button>
+          <button class="button--primary" type="button" data-action="${addAction}" ${deidBusy || !sourceDraft.trim() ? "disabled" : ""}>${deidBusy ? "De-identifying…" : addLabel}</button>
         </div>
+        <div data-source-parse-preview="${prefix}">${renderSourceParsePreview({ scope, parseResult: sourceParse })}</div>
       </section>
       <section class="saved-source-list" aria-labelledby="savedSourcesTitle">
         <div class="section-heading tight"><div><h3 id="savedSourcesTitle">${sourceTitle}</h3><p class="muted">${sources.length} source${sources.length === 1 ? "" : "s"} · all included by default</p></div><button class="button--primary" type="button" data-action="${generateAction}" ${sources.length ? "" : "disabled"}>${generateLabel}</button></div>

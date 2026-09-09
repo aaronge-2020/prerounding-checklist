@@ -440,6 +440,27 @@ Crossmatch: Red Blood Cells: Rpt (P)
   assert.match(await page.locator(".packet-check").innerText(), /Not supplied[\s\S]*Medication activity, Bedside update/);
   assert.equal(await page.locator('[data-action="open-progress-note"]').isEnabled(), true);
 
+  const syntheticMixedEpic = `Sodium: 137
+Creatinine: 0.9
+This is the MAR:
+1 Day\t3 Days\t7 Days\t<\tToday\t>
+Medications\t04/11/31\t04/12/31
+ondansetron (ZOFRAN) injection
+Freq: once Route: IV
+0815 (4 mg)
+Vitals:
+Vitals
+&#x9;Pulse&#x9;76&#x9;Pulse&#x9;
+&#x9;Respirations&#x9;16&#x9;Respirations&#x9;`;
+  await page.fill("#dailySourceDraft", syntheticMixedEpic);
+  await page.waitForFunction(() => /recognized as 3 sources/.test(document.querySelector('[data-source-parse-preview="daily"]')?.textContent || ""));
+  assert.equal(await page.locator('[data-source-parse-preview="daily"] [data-source-section-index]').count(), 3, "one mixed Epic paste must expose three independently reviewable source sections");
+  assert.equal(await page.locator('[data-action="add-daily-source"]').innerText(), "De-identify and add 3 sources");
+  await page.click('[data-action="add-daily-source"]');
+  await page.waitForFunction(() => document.querySelectorAll("#dailySources .source-capture-editor").length === 5);
+  assert.deepEqual(await page.locator("#dailySources .source-capture-editor .source-kind").evaluateAll((nodes) => nodes.slice(-3).map((node) => node.value)), ["results", "medication_activity", "results"], "mixed Epic sections must retain their own source types after saving");
+  assert.match(await page.locator("#statusLine").innerText(), /3 sources de-identified and added to this hospital day/);
+
   await page.click('[data-view-target="workups"]');
   await page.selectOption("#workupEditorSelect", { label: "Acute kidney injury" });
   assert.equal(await page.locator('[data-workup-kind] .workup-item-scroll').count(), 2);

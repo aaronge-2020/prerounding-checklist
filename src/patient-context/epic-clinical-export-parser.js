@@ -182,6 +182,10 @@ function marChrome(text) {
   );
 }
 
+function isMarHeading(text) {
+  return /^(?:(?:this is|copied)\s+(?:the\s+)?)?MAR$/i.test(text.replace(/\s*:\s*$/, ""));
+}
+
 function extractMarFields(text) {
   const matches = [...text.matchAll(MAR_FIELD)];
   if (!matches.length) return [];
@@ -236,7 +240,7 @@ function renderEpicMar(value) {
   const lines = nonemptyLines(value);
   if (!lines.length) return null;
   const hasMarHeader = lines.some(
-    (line) => /^MAR$/i.test(line.text) || marSection(line.text) || /^Medications\s+\d{1,2}[/-]\d{1,2}[/-]\d{2,4}/i.test(line.text)
+    (line) => isMarHeading(line.text) || marSection(line.text) || /^Medications\s+\d{1,2}[/-]\d{1,2}[/-]\d{2,4}/i.test(line.text)
   );
   const fieldLineCount = lines.filter((line) => MAR_FIELD_START.test(line.text)).length;
   if (!hasMarHeader && fieldLineCount < 2) return null;
@@ -264,7 +268,7 @@ function renderEpicMar(value) {
       consumed.add(line.index);
       continue;
     }
-    if (/^MAR$/i.test(line.text) || marChrome(line.text)) {
+    if (isMarHeading(line.text) || marChrome(line.text)) {
       consumed.add(line.index);
       continue;
     }
@@ -403,7 +407,111 @@ function renderEpicVitals(value) {
   };
 }
 
+function findVitalsBoundary(lines) {
+  for (let position = 0; position < lines.length; position += 1) {
+    const line = lines[position];
+    if (isEpicHeading(line.text, /^vital signs?$|^vitals$/i)) {
+      const followingVitals = lines.slice(position + 1, position + 14).filter((candidate) => parseVitalLine(candidate)).length;
+      if (followingVitals) return line.index;
+    }
+    if (!parseVitalLine(line)) continue;
+    const nearbyVitals = lines.slice(position, position + 10).filter((candidate) => parseVitalLine(candidate)).length;
+    if (nearbyVitals >= 2) return line.index;
+  }
+  return null;
+}
+
+function findMarBoundary(lines, vitalsBoundary) {
+  const beforeVitals = lines.filter((line) => vitalsBoundary === null || line.index < vitalsBoundary);
+  for (let position = 0; position < beforeVitals.length; position += 1) {
+    const line = beforeVitals[position];
+    if (isMarHeading(line.text)) return line.index;
+    if (/^(?:1 Day|3 Days|7 Days|10 Days)(?:\s|$)/i.test(line.text)) return line.index;
+    if (/^Medications\s+\d{1,2}[/-]\d{1,2}[/-]\d{2,4}/i.test(line.text)) return line.index;
+    if (marSection(line.text)) {
+      const nearbyMetadata = beforeVitals.slice(position + 1, position + 8).some((candidate) => MAR_FIELD_START.test(candidate.text));
+      if (nearbyMetadata) return line.index;
+    }
+  }
+  for (let position = 1; position < beforeVitals.length; position += 1) {
+    if (!MAR_FIELD_START.test(beforeVitals[position].text)) continue;
+    const candidate = beforeVitals[position - 1];
+    if (!parseResultPair(candidate.text) && !EPIC_RESULT_TIMESTAMP.test(candidate.text)) return candidate.index;
+  }
+  return null;
+}
+
+function mixedSection({ kind, text, result, index }) {
+  if (!result) {
+    return {
+      id: `unparsed_${index + 1}`,
+      formatId: "unparsed_epic_section",
+      formatLabel: "Unparsed source text",
+      sourceKind: "other_chart_text",
+      outputText: text.trim(),
+      itemCount: 0,
+      summary: "This part of the paste was preserved unchanged for review.",
+      preservedUnparsedText: true
+    };
+  }
+  const sourceKind = kind === "mar" ? "medication_activity" : "results";
+  return {
+    id: `${kind}_${index + 1}`,
+    ...result,
+    sourceKind
+  };
+}
+
+function renderMixedEpicExport(value) {
+  const decoded = decodeClinicalClipboardText(value);
+  const allLines = decoded.split("\n");
+  const lines = allLines
+    .map((raw, index) => ({ index, raw: raw.replace(/[ \t]+$/g, ""), text: compact(raw) }))
+    .filter((line) => line.text);
+  if (!lines.length) return null;
+
+  const vitalsBoundary = findVitalsBoundary(lines);
+  const marBoundary = findMarBoundary(lines, vitalsBoundary);
+  const boundaries = [marBoundary, vitalsBoundary].filter((boundary) => boundary !== null).sort((left, right) => left - right);
+  if (!boundaries.length) return null;
+
+  const segments = [];
+  const firstBoundary = boundaries[0];
+  if (firstBoundary > 0) segments.push({ kind: "results", start: 0, end: firstBoundary });
+  if (marBoundary !== null) segments.push({ kind: "mar", start: marBoundary, end: vitalsBoundary !== null && vitalsBoundary > marBoundary ? vitalsBoundary : allLines.length });
+  if (vitalsBoundary !== null) segments.push({ kind: "vitals", start: vitalsBoundary, end: allLines.length });
+  if (segments.length < 2) return null;
+
+  const parsers = { results: renderEpicResults, mar: renderEpicMar, vitals: renderEpicVitals };
+  const sections = segments
+    .map((segment, index) => {
+      const text = allLines.slice(segment.start, segment.end).join("\n").trim();
+      return text ? mixedSection({ kind: segment.kind, text, result: parsers[segment.kind](text), index }) : null;
+    })
+    .filter(Boolean);
+  const recognizedSections = sections.filter((section) => section.formatId !== "unparsed_epic_section");
+  if (sections.length < 2 || recognizedSections.length < 2) return null;
+
+  const sourceLabels = sections.map((section) => section.sourceKind === "medication_activity" ? "Medication activity" : section.sourceKind === "results" ? "Results" : "Other chart text");
+  const outputText = sections
+    .map((section, index) => `Source ${index + 1}. ${sourceLabels[index]} — ${section.formatLabel}\n${section.outputText}`)
+    .join("\n\n");
+  return {
+    recognized: true,
+    formatId: "epic_mixed_export",
+    formatLabel: "Mixed Epic export",
+    suggestedSourceKind: "",
+    sections,
+    outputText,
+    itemCount: sections.reduce((total, section) => total + section.itemCount, 0),
+    summary: `${plural(sections.length, "source section")} detected: ${sections.map((section, index) => `${sourceLabels[index]} (${section.summary.replace(/\.$/, "")})`).join("; ")}.`,
+    preservedUnparsedText: sections.some((section) => section.preservedUnparsedText)
+  };
+}
+
 export function parseEpicClinicalExport(value) {
+  const mixed = renderMixedEpicExport(value);
+  if (mixed) return mixed;
   const parsers = [renderEpicMar, renderEpicVitals, renderEpicResults];
   for (const parser of parsers) {
     const result = parser(value);

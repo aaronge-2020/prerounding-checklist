@@ -7251,6 +7251,30 @@ body.vault-locked .vault-access {
   background: var(--surface);
 }
 
+.source-parse-sections {
+  border-top: 1px solid #cbdedf;
+}
+
+.source-parse-section {
+  display: grid;
+  gap: 8px;
+  padding-block: 12px;
+  border-bottom: 1px solid #cbdedf;
+}
+
+.source-parse-section-heading {
+  display: grid;
+  gap: 2px;
+}
+
+.source-parse-section-heading .muted {
+  font-size: 11px;
+}
+
+.source-parse-section textarea {
+  min-height: 140px;
+}
+
 .source-draft-footer {
   display: flex;
   align-items: center;

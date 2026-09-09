@@ -5,7 +5,7 @@ import {
   prepareClinicalExportForSave
 } from "../src/patient-context/clinical-export-parser.js";
 
-const parserRevision = "20260908-epic-parser-submit";
+const parserRevision = "20260908-epic-mixed-packet";
 const runtimeSources = {
   index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
   app: readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8"),
@@ -217,5 +217,34 @@ SpO2 (%) 100 SpO2 (%)`;
 const parsedEpicVitalsMissingHeader = parseClinicalExport(syntheticEpicVitalsMissingHeader);
 assert.equal(parsedEpicVitalsMissingHeader.recognized, true, "repeated Epic vital labels are sufficient when the Vitals heading was omitted");
 assert.equal(parsedEpicVitalsMissingHeader.itemCount, 3);
+
+const syntheticMixedEpic = `${syntheticEpicResults}
+This is the MAR:
+${syntheticEpicMar}
+Vitals:
+${syntheticEpicVitals}`;
+const parsedMixedEpic = parseClinicalExport(syntheticMixedEpic);
+assert.equal(parsedMixedEpic.recognized, true);
+assert.equal(parsedMixedEpic.formatId, "epic_mixed_export", "one Epic paste containing results, MAR, and vitals must be split before de-identification");
+assert.equal(parsedMixedEpic.sections.length, 3);
+assert.deepEqual(parsedMixedEpic.sections.map((section) => section.sourceKind), ["results", "medication_activity", "results"]);
+assert.deepEqual(parsedMixedEpic.sections.map((section) => section.itemCount), [4, 3, 6]);
+assert.equal(parsedMixedEpic.preservedUnparsedText, false);
+assert.doesNotMatch(parsedMixedEpic.sections[0].outputText, /Medication activity|Vital signs/);
+assert.doesNotMatch(parsedMixedEpic.sections[1].outputText, /WBC:|Temperature\./);
+assert.doesNotMatch(parsedMixedEpic.sections[2].outputText, /WBC:|Medication activity/);
+
+const syntheticMixedEpicMissingHeadings = `Sodium: 137
+Creatinine: 0.9
+${syntheticEpicMar}
+${syntheticEpicVitalsMissingHeader}`;
+const parsedMixedEpicMissingHeadings = parseClinicalExport(syntheticMixedEpicMissingHeadings);
+assert.equal(parsedMixedEpicMissingHeadings.formatId, "epic_mixed_export", "structural row patterns must split a partial Epic paste even when MAR and Vitals headings were omitted");
+assert.deepEqual(parsedMixedEpicMissingHeadings.sections.map((section) => section.sourceKind), ["results", "medication_activity", "results"]);
+assert.deepEqual(parsedMixedEpicMissingHeadings.sections.map((section) => section.itemCount), [2, 3, 3]);
+
+const preparedMixedEpic = prepareClinicalExportForSave(syntheticMixedEpic);
+assert.equal(preparedMixedEpic.parseResult.sections.length, 3, "the submit boundary must retain all typed sections without relying on an input event");
+assert.equal(preparedMixedEpic.sourceText, parsedMixedEpic.outputText);
 
 console.log("clinical export parser tests passed");

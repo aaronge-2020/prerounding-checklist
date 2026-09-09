@@ -3,7 +3,7 @@ import { createTextSection, updateActivePatient } from "../../app/state/vault.js
 import {
   parseClinicalExport,
   prepareClinicalExportForSave
-} from "../../patient-context/clinical-export-parser.js?v=20260908-epic-parser-submit";
+} from "../../patient-context/clinical-export-parser.js?v=20260908-epic-mixed-packet";
 import {
   createEphemeralRedactionReview,
   reviewKey,
@@ -47,6 +47,43 @@ export function createDailySourceController(deps) {
     return prepared;
   }
 
+  function sourcePartsForSave(prepared, fallbackSourceKind) {
+    const sections = Array.isArray(prepared.parseResult.sections) ? prepared.parseResult.sections : [];
+    if (sections.length) {
+      return sections
+        .map((section) => ({
+          sourceKind: section.sourceKind || "other_chart_text",
+          label: section.formatLabel || "Parsed chart source",
+          sourceText: String(section.outputText || "").trim()
+        }))
+        .filter((section) => section.sourceText);
+    }
+    return prepared.sourceText
+      ? [{
+          sourceKind: prepared.parseResult.suggestedSourceKind || fallbackSourceKind,
+          label: prepared.parseResult.recognized ? prepared.parseResult.formatLabel : "",
+          sourceText: prepared.sourceText
+        }]
+      : [];
+  }
+
+  async function deidentifySourceParts(parts, referenceDate) {
+    const deidentified = [];
+    for (let index = 0; index < parts.length; index += 1) {
+      const part = parts[index];
+      deps.updateDeidOperation({
+        active: true,
+        message: parts.length > 1
+          ? `De-identifying source ${index + 1} of ${parts.length}: ${part.label}…`
+          : `De-identifying ${part.label || "this source"} locally…`,
+        value: index,
+        total: parts.length
+      });
+      deidentified.push({ part, result: await deps.deidentify(part.sourceText, { referenceDate }) });
+    }
+    return deidentified;
+  }
+
   function updateDraft(scope, value) {
     const state = sourceState(scope);
     deps.app[state.draftKey] = String(value || "");
@@ -68,13 +105,31 @@ export function createDailySourceController(deps) {
       button.setAttribute("aria-pressed", String(selected));
     });
     const addButton = document.querySelector(`[data-action="${state.addAction}"]`);
-    if (addButton) addButton.disabled = deps.app.deidOperation.active || !deps.app[state.draftKey].trim();
+    if (addButton) {
+      const parsedSourceCount = Array.isArray(parsed.sections) && parsed.sections.length > 1 ? parsed.sections.length : 1;
+      addButton.textContent = parsedSourceCount > 1 ? `De-identify and add ${parsedSourceCount} sources` : "De-identify and add source";
+      addButton.disabled = deps.app.deidOperation.active || !deps.app[state.draftKey].trim();
+    }
   }
 
-  function updateParsedDraft(scope, value) {
+  function updateParsedDraft(scope, value, sectionIndex = "") {
     const state = sourceState(scope);
     const parsed = deps.app[state.parseKey];
     if (!parsed?.recognized) return;
+    const numericSectionIndex = sectionIndex === "" ? -1 : Number(sectionIndex);
+    if (numericSectionIndex >= 0 && Array.isArray(parsed.sections)) {
+      const sections = parsed.sections.map((section, index) => index === numericSectionIndex ? { ...section, outputText: String(value || "") } : section);
+      deps.app[state.parseKey] = {
+        ...parsed,
+        sections,
+        outputText: sections.map((section) => section.outputText).join("\n\n"),
+        parsedCharacterCount: sections.reduce((total, section) => total + section.outputText.length, 0),
+        edited: true
+      };
+      const count = document.querySelector(`[data-source-parse-preview="${scope}"] [data-source-parsed-count="${numericSectionIndex}"]`);
+      if (count) count.textContent = `${String(value || "").length.toLocaleString()} characters after parsing`;
+      return;
+    }
     deps.app[state.parseKey] = {
       ...parsed,
       outputText: String(value || ""),
@@ -170,34 +225,39 @@ export function createDailySourceController(deps) {
   async function addSource() {
     const day = deps.selectedChecklistDay(deps.active());
     if (!day) throw new Error("Add a hospital day first.");
-    const { rawText, sourceText, parseResult } = sourceTextForSave("daily");
-    if (!rawText || !sourceText) throw new Error("Paste a chart source before adding it.");
+    const prepared = sourceTextForSave("daily");
+    const parts = sourcePartsForSave(prepared, deps.app.dailySourceKind);
+    if (!prepared.rawText || !parts.length) throw new Error("Paste a chart source before adding it.");
     deps.updateDeidOperation({
       active: true,
-      message: parseResult.recognized
-        ? `${parseResult.formatLabel} parsed locally; de-identifying the structured text…`
+      message: prepared.parseResult.recognized
+        ? `${prepared.parseResult.formatLabel} parsed into ${parts.length} source${parts.length === 1 ? "" : "s"}; preparing local de-identification…`
         : "De-identifying this source locally…",
       value: 0,
-      total: 1
+      total: parts.length
     });
     try {
       await deps.ensureSelectedDeidReady();
-      const result = await deps.deidentify(sourceText, { referenceDate: day.date });
-      const capture = createSourceCapture({
-        sourceKind: deps.app.dailySourceKind,
+      const deidentified = await deidentifySourceParts(parts, day.date);
+      const captures = deidentified.map(({ part, result }) => createSourceCapture({
+        sourceKind: part.sourceKind,
+        label: part.label,
         text: result.text || "",
         residualWarnings: result.residualWarnings || result.flags || []
+      }));
+      captures.forEach((capture, index) => {
+        const { part, result } = deidentified[index];
+        deps.app.phiReviews.set(reviewKey("daily", capture.id), createEphemeralRedactionReview(part.sourceText, result));
+        deps.setSectionDraftText("daily", capture.id, capture.deidentifiedText);
       });
-      deps.app.phiReviews.set(reviewKey("daily", capture.id), createEphemeralRedactionReview(sourceText, result));
-      deps.setSectionDraftText("daily", capture.id, capture.deidentifiedText);
-      const nextDay = { ...day, sourceCaptures: [...(day.sourceCaptures || []), capture], updatedAt: new Date().toISOString() };
+      const nextDay = { ...day, sourceCaptures: [...(day.sourceCaptures || []), ...captures], updatedAt: new Date().toISOString() };
       deps.admissionDateAnchor.remember();
       deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({ ...patient, days: upsertDay(patient.days, nextDay) }));
       deps.app.dailySourceDraft = "";
       deps.app.dailySourceParse = null;
       deps.beginSectionReview("daily");
-      await deps.persistVault("Source de-identified and added to this hospital day.");
-      deps.updateDeidOperation({ active: false, message: "Source de-identified and saved locally." });
+      await deps.persistVault(`${captures.length} source${captures.length === 1 ? "" : "s"} de-identified and added to this hospital day.`);
+      deps.updateDeidOperation({ active: false, message: `${captures.length} source${captures.length === 1 ? "" : "s"} de-identified and saved locally.` });
       deps.render();
     } catch (error) {
       deps.updateDeidOperation({ active: false, message: error instanceof Error ? error.message : "De-identification did not complete." });
@@ -207,39 +267,42 @@ export function createDailySourceController(deps) {
 
   async function addAdmissionSource() {
     const patient = deps.active();
-    const { rawText, sourceText, parseResult } = sourceTextForSave("admission");
+    const prepared = sourceTextForSave("admission");
+    const parts = sourcePartsForSave(prepared, deps.app.admissionSourceKind);
     if (!patient) throw new Error("Select a patient first.");
-    if (!rawText || !sourceText) throw new Error("Paste a chart source before adding it.");
+    if (!prepared.rawText || !parts.length) throw new Error("Paste a chart source before adding it.");
     deps.updateDeidOperation({
       active: true,
-      message: parseResult.recognized
-        ? `${parseResult.formatLabel} parsed locally; de-identifying the structured text…`
+      message: prepared.parseResult.recognized
+        ? `${prepared.parseResult.formatLabel} parsed into ${parts.length} source${parts.length === 1 ? "" : "s"}; preparing local de-identification…`
         : "De-identifying this admission source locally…",
       value: 0,
-      total: 1
+      total: parts.length
     });
     try {
       await deps.ensureSelectedDeidReady();
-      const result = await deps.deidentify(sourceText, { referenceDate: deps.app.admissionDate });
-      const source = admissionSourceKindOptions().find((option) => option.id === deps.app.admissionSourceKind);
-      const section = createTextSection(source?.label || "Other chart text", {
+      const deidentified = await deidentifySourceParts(parts, deps.app.admissionDate);
+      const sections = deidentified.map(({ part, result }) => createTextSection(part.label || "Other chart text", {
         scope: "context",
-        role: admissionRoleForSourceKind(deps.app.admissionSourceKind),
-        sourceKind: deps.app.admissionSourceKind,
+        role: admissionRoleForSourceKind(part.sourceKind),
+        sourceKind: part.sourceKind,
         text: result.text || ""
+      }));
+      sections.forEach((section, index) => {
+        const { part, result } = deidentified[index];
+        deps.app.phiReviews.set(reviewKey("context", section.id), createEphemeralRedactionReview(part.sourceText, result));
+        deps.setSectionDraftText("context", section.id, section.deidentifiedText);
       });
-      deps.app.phiReviews.set(reviewKey("context", section.id), createEphemeralRedactionReview(sourceText, result));
-      deps.setSectionDraftText("context", section.id, section.deidentifiedText);
       deps.app.vault = updateActivePatient(deps.app.vault, (current) => ({
         ...current,
-        contextSections: [...(current.contextSections || []), section]
+        contextSections: [...(current.contextSections || []), ...sections]
       }));
       deps.app.admissionSourceDraft = "";
       deps.app.admissionSourceParse = null;
       deps.admissionDateAnchor.remember();
       deps.beginSectionReview("context");
-      await deps.persistVault("Source de-identified and added to Admission.");
-      deps.updateDeidOperation({ active: false, message: "Admission source de-identified and saved locally." });
+      await deps.persistVault(`${sections.length} admission source${sections.length === 1 ? "" : "s"} de-identified and added.`);
+      deps.updateDeidOperation({ active: false, message: `${sections.length} admission source${sections.length === 1 ? "" : "s"} de-identified and saved locally.` });
       deps.render();
     } catch (error) {
       deps.updateDeidOperation({ active: false, message: error instanceof Error ? error.message : "De-identification did not complete." });

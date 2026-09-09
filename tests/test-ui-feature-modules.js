@@ -81,6 +81,42 @@ assert.match(parsedSourceMarkup, /CPRS inpatient-order table recognized/);
 assert.match(parsedSourceMarkup, /data-source-parsed-draft/);
 assert.match(parsedSourceMarkup, /Session only/);
 assert.match(parsedSourceMarkup, /Unrecognized narrative is labeled and preserved/);
+const mixedSourceParse = {
+  recognized: true,
+  rawCharacterCount: 900,
+  formatLabel: "Mixed Epic export",
+  summary: "3 source sections detected.",
+  outputText: "Combined structured text",
+  sections: [
+    { sourceKind: "results", formatLabel: "Epic results", summary: "2 results.", outputText: "Results text" },
+    { sourceKind: "medication_activity", formatLabel: "Epic MAR", summary: "1 medication entry.", outputText: "MAR text" },
+    { sourceKind: "results", formatLabel: "Epic vitals", summary: "2 vital-sign fields.", outputText: "Vitals text" }
+  ]
+};
+const mixedSourceMarkup = dailyView.renderSourceParsePreview({ scope: "daily", parseResult: mixedSourceParse });
+assert.match(mixedSourceMarkup, /Mixed Epic export recognized as 3 sources/);
+assert.equal((mixedSourceMarkup.match(/data-source-section-index=/g) || []).length, 3);
+assert.match(mixedSourceMarkup, /Each section below will be de-identified and saved as its own typed source/);
+const dailyMixedMarkup = dailyView.renderDaily({
+  patient: { contextSections: [] },
+  days: [{ id: "day1", label: "HD1", date: "2026-01-02", sourceCaptures: [] }],
+  selectedDayId: "day1",
+  selectedPacketId: "day1",
+  localCalendarDate: "2026-01-02",
+  patientRequiredMessage: "",
+  renderDeidStrip: "<div>De-ID</div>",
+  renderSectionEditor: () => "",
+  renderSourceCaptureEditor: () => "",
+  renderWarnings: () => "",
+  sourceOptions: [{ id: "results", label: "Results", description: "Labs and vitals" }],
+  selectedSourceKind: "results",
+  sourceDraft: "Mixed Epic text",
+  sourceParse: mixedSourceParse,
+  packetCheck: { included: [], notSupplied: [], needsConfirmation: [] },
+  deidBusy: false
+});
+assert.match(dailyMixedMarkup, /De-identify and add 3 sources/);
+assert.equal(dailyMixedMarkup.indexOf("De-identify and add 3 sources") < dailyMixedMarkup.indexOf("Mixed Epic export recognized as 3 sources"), true, "the save action must remain visible before the structured review");
 
 const snapshot = {
   id: "checklist_test",
