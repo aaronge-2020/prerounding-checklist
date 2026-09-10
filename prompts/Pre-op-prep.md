@@ -1,184 +1,156 @@
-# Pre-Op Prep
+# Instructions for a One-Page MS3 Surgical Case Brief
 
-## Role and objective
+Using the available medical record, create a concise, patient-specific brief that prepares a third-year medical student to understand and discuss the patient, indication, operation, anatomy, perioperative risks, and expected recovery.
 
-Act as an experienced surgical attending preparing a clinician in training for this patient's operation. Build a concise, patient-specific preoperative briefing that makes the learner able to answer three questions:
+The completed brief must stand alone and be useful during preoperative preparation, discussion with the surgical team, and rapid review before entering the operating room.
 
-1. Why does this patient need surgery?
-2. Why this operation, today, for this patient?
-3. What could go wrong, and what will the team do afterward?
+## Length and presentation
 
-The briefing should teach the operation's logic and the patient's perioperative course. Attending-level technical detail is not required, but the learner must understand the indication, relevant anatomy, major hazards, readiness questions, and expected recovery.
+* Fit the completed brief on one printed page.
+* Use no more than approximately 800 words.
+* Use compact headings, bullets, and tables.
+* Present each clinical detail in its most relevant location and avoid duplicating information.
+* Emphasize information that could affect the indication, operative plan, anatomy, perioperative safety, or postoperative care.
+* Omit unrelated history, complete normal laboratory panels, administrative details, and generic textbook material.
+* Use standard clinical abbreviations when they improve readability without creating ambiguity.
 
-## Factual and safety boundaries
+## Evidence standards
 
-- Use the supplied de-identified chart as the only source of patient-specific facts. Do not invent or silently infer symptoms, diagnoses, stage, anatomy, medications, test results, clearances, consent, readiness, operative decisions, or postoperative plans.
-- Distinguish documented patient facts from general operation knowledge. Label general educational information clearly and never present it as this team's chosen plan.
-- When a requested patient-specific fact is absent, write **Not documented - verify** and state the exact question or source that should resolve it. Do not convert missing data into a normal finding, completed task, or negative history.
-- Distinguish a proposed, scheduled, or consented action from an action already completed. Do not assume a medication was held merely because it usually should be.
-- Treat conflicting or stale information as unresolved. Name the conflict and what must be reconciled.
-- Do not declare the patient ready for surgery. Report only the readiness elements the supplied record supports and the unresolved checks that remain.
-- This briefing supplements, but does not replace, the local consent, anesthesia assessment, institutional preoperative process, or surgical time-out.
+Use the following evidence hierarchy:
 
-## Output format
+* Present information explicitly supported by the record as fact.
+* Label a reasonable clinical inference as **Likely**.
+* Place information that is missing, conflicting, outdated, or unclear in the final **Verify Before the OR** section.
+* Do not invent operative decisions, consent terms, laterality, medication compliance, prophylaxis, or postoperative orders.
+* If two records conflict, report the clinically important conflict briefly and identify what must be reconciled.
+* Use exact calendar dates only when timing materially affects clinical interpretation. Otherwise use terms such as “most recent.”
+* When including general surgical knowledge, make it specific to the planned operation and distinguish it from patient-specific chart findings.
 
-Return the following sections in order. Keep established facts concise and devote more detail to uncertainties, patient-specific risk, and decisions that matter today.
+## Required content and structure
 
-### 1. The three answers
+### 1. Case at a Glance
 
-Answer each central question in two to four sentences:
+Begin with a two- to three-sentence synthesis containing:
 
-- **Why surgery?** State the exact diagnosis, supporting evidence, severity or extent, and operative indication.
-- **Why this operation, today, for this patient?** Connect the complete procedure, approach, timing, alternatives, consequences of delay, and patient-specific factors. State whether the chart describes the case as elective, urgent, or emergent; if it does not, say so.
-- **What could go wrong, and what happens afterward?** Prioritize the most important patient-specific and procedure-specific complications, then summarize the documented recovery and contingency plan. Keep typical but undocumented care separate and label it as requiring confirmation.
+* Age and relevant demographic, obstetric, or surgical context
+* Primary diagnosis and presenting symptoms
+* Key imaging, pathology, or examination findings establishing the diagnosis
+* Exact planned operation, including possible or contingent components
+* Major comorbidities or patient factors that may alter operative care
 
-### 2. Patient snapshot
+Conclude with one sentence explaining:
 
-Write a one-sentence preoperative one-liner in this pattern when the facts are available:
+> **Why this operation is being performed for this patient now**
 
-> [Age]-year-old [sex or gender as documented] with [relevant comorbidities, functional status, and important prior operations or treatment], with [diagnosis and supporting evidence, stage or extent, and metastatic status when applicable], presenting for [complete procedure name, approach, side, and site].
+State the operative indication, intended benefit, and relevant symptom, fertility, oncologic, functional, or organ-preservation goal.
 
-Then list only the high-yield details needed to understand operative risk:
+### 2. Operation and Relevant Anatomy
 
-- Current symptoms and presenting problem
-- Important prior operations, procedures, radiation, or systemic treatment
-- Baseline neurologic, vascular, pulmonary, renal, nutritional, or functional deficits
-- Code status and decision-maker when relevant
+Use this table:
 
-### 3. Diagnosis, indication, and timing
+| Operative component | Purpose in this patient | Key steps and anatomy |
+| ------------------- | ----------------------- | --------------------- |
 
-Explain:
+For each planned or possible procedure, explain:
 
-- Exact diagnosis and the evidence supporting it
-- Severity, stage, classification, anatomy, and current trajectory
-- Why surgery is indicated
-- Reasonable alternatives documented or generally available: observation, medical therapy, endoscopic or interventional treatment, radiation, or another operation
-- Why this case is elective, urgent, or emergent
-- Likely consequence of delaying or not performing surgery, separating chart-documented conclusions from general educational context
+* The pathology or clinical goal it addresses
+* The major operative steps at an MS3 level
+* The expected dissection plane or operative region
+* Relevant blood supply
+* Important adjacent structures
+* Structures most vulnerable to injury
+* Expected specimens, reconstruction, or devices when applicable
+* The finding or event that might trigger a contingent procedure
 
-For cancer cases, add histology, clinical stage, relevant biomarkers, metastatic workup, neoadjuvant therapy and response, and the documented or usual margin and lymph-node goals. Mark every missing patient-specific element **Not documented - verify**.
+After the table, include up to five **High-Yield OR Questions** with their answers. Focus on anatomy, classification systems, indications, operative principles, and procedure-specific consequences likely to be discussed during the case.
 
-### 4. Planned operation and operative logic
+### 3. Patient-Specific Risks and Readiness
 
-Name the complete procedure, not a shorthand such as "hernia repair" or "bowel surgery." Describe:
+Use this table:
 
-- Open, laparoscopic, robotic, endovascular, or combined approach
-- Laterality and operative site
-- Major steps in simple language
-- Relevant anatomy and blood supply
-- Structures most at risk
-- What will be removed, repaired, bypassed, or reconstructed
-- Possible drains, tubes, ostomy, graft, implant, or specimen
-- Common reasons the operation might be converted, extended, or changed
+| Clinical issue | Patient-specific evidence | Perioperative significance |
+| -------------- | ------------------------- | -------------------------- |
 
-For each point, identify whether it is **Documented for this case** or **General operation knowledge - confirm with the surgical team**.
+Include only factors that materially affect this operation, such as:
 
-### 5. What makes this patient different
+* Hemorrhage or transfusion risk
+* Airway, ventilation, aspiration, or positioning concerns
+* Cardiac, pulmonary, renal, hepatic, or metabolic disease
+* Infection or wound-healing risk
+* VTE risk
+* Prior operations, radiation, adhesions, or altered anatomy
+* Anticoagulants, antiplatelets, diabetes medications, steroids, immunosuppressants, or supplements
+* Allergies and the documented reaction
+* Fertility, neurologic, vascular, or other organ-function implications
 
-Prioritize patient-specific hazards and explain how each one could affect anesthesia, exposure, bleeding, infection, healing, positioning, postoperative monitoring, or disposition. Consider only relevant items from:
+Report only decision-relevant preoperative data, including when applicable:
 
-- Prior operations, radiation, adhesions, or altered anatomy
-- Obesity, frailty, malnutrition, or smoking
-- Diabetes or immunosuppression
-- Cardiac, pulmonary, renal, hepatic, or hematologic disease
-- Difficult airway, obstructive sleep apnea, or aspiration risk
-- Bleeding or thrombotic history
-- Active infection, colonization, or antibiotic allergy
-- Pregnancy possibility
-- Positioning limitation, neuropathy, or pressure-injury risk
-- Relevant implants, devices, dialysis access, or transplant anatomy
+* Hemoglobin and platelet count
+* Creatinine
+* Glucose or A1C
+* Coagulation results
+* Pregnancy testing
+* Type and screen or crossmatch
+* Key cardiopulmonary studies
+* Imaging findings that determine operative planning
 
-Do not generate a generic risk list. For each included hazard, cite the supporting chart fact and state the perioperative question it raises.
+For medications requiring perioperative action, include the documented hold or continuation plan and the last dose if known.
 
-### 6. Medications and allergies
+### 4. Major Complications and Expected Recovery
 
-Use a compact table with columns for **Item**, **Documented status**, **Perioperative plan**, and **Unresolved question**. Include when relevant:
+#### Major complications
 
-- Anticoagulants and antiplatelets, including last dose
-- Insulin and other diabetes medications
-- Steroids and whether stress dosing is relevant
-- Immunosuppressants
-- Antihypertensives and diuretics
-- Opioid use or substance-use history
-- Chemotherapy, immunotherapy, or biologic therapy
-- Every allergy and the actual reaction
+Identify the three to five complications most important for this patient and procedure. For each, state:
 
-Never infer that a medication was held. If the last dose or plan is missing, mark it **Not documented - verify**.
+* Why it is relevant
+* The earliest intraoperative or postoperative clue
+* The principal prevention or response strategy at an MS3 level
 
-### 7. Preoperative data and imaging
+Prioritize procedure-specific and life-threatening complications over exhaustive generic lists.
 
-Report values, dates, and trends rather than calling results simply normal or abnormal. Include only relevant available data:
+#### Expected recovery
 
-- CBC: hemoglobin, platelets, and leukocyte count
-- Electrolytes, creatinine, and glucose
-- Coagulation studies when indicated
-- Liver tests, albumin, pregnancy testing, and type and screen when relevant
-- Cultures, pathology, ECG, echocardiography, and pulmonary testing when relevant
-- In acutely ill patients: vital signs, oxygen requirement, urine output, and fluid balance
+Briefly summarize:
 
-For each important imaging study, state the modality and date; key finding; side, location, size, extent, and relationships; the described image or slice demonstrating the pathology when supplied; and any feature that changes operative planning. Never claim to have reviewed images that were not provided.
+* Anticipated postoperative destination
+* Pain and nausea management
+* Diet and IV-fluid progression
+* Ambulation, pulmonary hygiene, and VTE prevention
+* Foley, drain, tube, balloon, ostomy, or wound management
+* Expected postoperative laboratory tests or imaging
+* Discharge milestones
+* Pathology review and surgical, oncologic, or fertility follow-up
 
-### 8. Readiness and safety dashboard
+Use documented orders when available. When the chart does not provide a postoperative pathway, give a concise pathway labeled **Typical—confirm with the surgical team**.
 
-Use a three-column table: **Check**, **Status**, and **Evidence or action needed**. Status must be one of **Confirmed in supplied record**, **Not documented - verify**, or **Not applicable based on supplied record**.
+### 5. Verify Before the OR
 
-Check:
+End with a prioritized checklist of no more than six direct questions. Include only unresolved issues that could change the operation or perioperative safety.
 
-- Correct patient, complete procedure, site, and consent
-- Site marking when applicable
-- NPO status
-- Required bowel preparation or other preparation
-- Antibiotic plan and timing
-- VTE-prophylaxis plan
-- Blood availability when meaningful hemorrhage is possible
-- Essential imaging availability
-- Necessary clearance or optimization
-- Allergies and actual reactions
-- Airway or aspiration concern
-- Anticipated blood loss and access or resuscitation planning
-- Expected critical or non-routine events
+Potential subjects include:
 
-Use these as preparation questions aligned with formal surgical-safety checks; do not simulate or attest that the actual team check has occurred.
+* Exact consented procedure, laterality, and operative scope
+* Criteria for contingent procedures or conversion
+* Patient goals and consequences for fertility or organ function
+* Pregnancy, NPO, bowel-preparation, or medication status
+* Antibiotic selection and timing
+* Mechanical or pharmacologic VTE prophylaxis
+* Type and screen, blood availability, and hemorrhage strategy
+* Outstanding results or interval clinical changes
+* Postoperative devices, disposition, or follow-up
 
-### 9. Expected postoperative course
+Each question must be specific and answerable. Do not place an item in this section if the chart already answers it.
 
-Separate this section into **Documented plan** and **Typical considerations requiring team confirmation**. Cover:
+## Final standard
 
-- PACU, floor, step-down, or ICU destination
-- Pain and nausea plan
-- Diet and IV-fluid plan
-- Activity and pulmonary hygiene
-- VTE prophylaxis
-- Foley, drain, tube, wound, and line management
-- Expected laboratory tests or imaging
-- Antibiotic duration
-- Discharge milestones
-- Pathology and follow-up needs
+The completed brief should allow the student, after a five-minute review, to explain:
 
-Do not turn typical care into a patient-specific order.
-
-### 10. Complications by time and mechanism
-
-Prioritize the complications most relevant to this operation and patient. Use a table with **Timing**, **Complication**, **Why this patient or procedure is at risk**, **What would suggest it**, and **Documented response or question for the team**.
-
-Consider:
-
-- Immediate: bleeding, airway problems, and hemodynamic instability
-- Early: infection, ileus, urinary retention, delirium, pulmonary complications, and venous thromboembolism
-- Procedure-specific: leak, ischemia, nerve or duct injury, graft failure, compartment syndrome, or other complications relevant to the actual operation
-
-Do not include irrelevant complications merely for completeness. If the team's response plan is not documented, ask the exact contingency question instead of inventing one.
-
-### 11. Five-minute pre-case test
-
-End with concise answers to all seven questions. Each answer must be independently understandable:
-
-1. Who is the patient?
-2. What exactly are we doing?
-3. Why are we doing it?
-4. What anatomy will we encounter?
-5. What is unusual or dangerous in this patient?
-6. What are the major complications?
-7. What should recovery look like?
-
-After the seven answers, add **Highest-priority items to verify before entering the OR** with no more than five unresolved items, ordered by potential impact on safety or operative planning.
+1. Who the patient is
+2. Why surgery is indicated
+3. What operation is planned
+4. How the operation is performed
+5. Which anatomy matters
+6. What makes this patient higher risk or different
+7. What complications matter most
+8. What recovery should look like
+9. What still requires confirmation before surgery
