@@ -198,9 +198,13 @@ export function savePromptTemplateOverrides(overrides, storage = localStorage) {
 }
 
 export function promptTemplateForTask(taskId, overrides = {}, guidelineSets = []) {
-  const guideline = (guidelineSets || []).find((set) => set.id === taskId);
-  if (guideline) return String(guideline.text || "");
   const saved = String(overrides?.[taskId] || "");
+  const customGuideline = (guidelineSets || []).find((set) => set.id === taskId);
+  if (customGuideline) {
+    // Settings owns the smart-variable content; this surface owns only the
+    // variable arrangement. Never copy guideline text into the editor.
+    return saved && saved !== "@default-prompt" ? saved : String(customGuideline.token || "");
+  }
   const template = saved && saved !== "@default-prompt" ? saved : String(DEFAULT_PROMPT_TEMPLATES[taskId] || "");
   const guidelineToken = TASK_GUIDELINE_TOKENS.get(taskId);
   return guidelineToken && !template.includes(guidelineToken) ? `${guidelineToken}\n\n${template}`.trim() : template;

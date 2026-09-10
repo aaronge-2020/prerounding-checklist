@@ -1,7 +1,8 @@
-import { addGuidelineSet, removeGuidelineSet, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js?v=20260910-pre-op-prep";
+import { addGuidelineSet, removeGuidelineSet, saveGuidelineSets } from "../../prompts/guideline-sets.js?v=20260910-pre-op-prep";
 import { migrateCustomPromptTasksToGuidelineSets, saveCustomPromptTasks } from "../../prompts/custom-tasks.js?v=20260910-pre-op-prep";
-import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20260910-pre-op-prep";
+import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20260910-guideline-pagination";
 import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js?v=20260910-pre-op-prep";
+import { guidelinePageModel } from "../settings/guideline-pagination.js?v=20260910-guideline-pagination";
 
 // Create/delete custom prompt tasks - kept out of app.js to respect the
 // coordinator-file size boundary (scripts/check-ui-module-boundaries.js).
@@ -19,24 +20,14 @@ export function createPromptTaskController({ state, setStatus, renderPrompts, re
     saveCustomPromptTasks([]);
   }
 
-  function saveGuidelineTemplate(value) {
-    const guideline = state.guidelineSets.find((set) => set.id === state.selectedPromptTask);
-    if (!guideline) return false;
-    state.guidelineSets = updateGuidelineSet(state.guidelineSets, guideline.id, { text: value });
-    saveGuidelineSets(state.guidelineSets);
-    delete state.promptDrafts[state.selectedPromptTask];
-    state.smartMenuOpen = false;
-    setStatus("Prompt and matching guideline saved.");
-    renderPrompts();
-    return true;
-  }
-
   function createTaskFromInput() {
     const input = byId("newPromptTaskNameInput");
     const label = String(input?.value || "").trim();
     if (!label) throw new Error("Name the new prompt before creating it.");
     const nextSets = addGuidelineSet(state.guidelineSets, label, "");
     state.guidelineSets = nextSets;
+    state.guidelineSearchQuery = "";
+    state.guidelinePage = guidelinePageModel(nextSets, { page: Number.MAX_SAFE_INTEGER }).currentPage;
     saveGuidelineSets(nextSets);
     state.selectedPromptTask = nextSets.at(-1).id;
     if (input) input.value = "";
@@ -71,7 +62,7 @@ export function createPromptTaskController({ state, setStatus, renderPrompts, re
     refreshPromptPreview();
   }
 
-  return Object.freeze({ createTaskFromInput, requestRemove, confirmRemovePending, migrateLegacyTasks, saveGuidelineTemplate, updatePresentationToEdit, updatePresentationSpecialty });
+  return Object.freeze({ createTaskFromInput, requestRemove, confirmRemovePending, migrateLegacyTasks, updatePresentationToEdit, updatePresentationSpecialty });
 }
 
 // Filters the already-rendered variable buttons in place (same

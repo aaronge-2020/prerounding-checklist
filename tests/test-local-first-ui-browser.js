@@ -134,6 +134,18 @@ try {
   await page.click('[data-view-target="settings"]');
   await page.waitForSelector("#guidelineSearchInput");
   assert.equal(await page.locator('[data-action="export-vault"]').filter({ hasText: "Export Vault Backup" }).count(), 1);
+  assert.equal(await page.locator(".guideline-row").count(), 10, "Settings must show no more than ten guidelines on a page");
+  assert.match(await page.locator(".guideline-list-footer").innerText(), /Showing 1-10 of \d+ guidelines[\s\S]*Page 1 of 2/);
+  assert.equal(await page.locator('.guideline-row code', { hasText: "@pre-op-prep-guidelines" }).count(), 1, "Pre-Op Prep must be visible on the first Settings page");
+  await page.click('[data-action="show-guideline-page"][data-guideline-page="2"]');
+  const secondGuidelinePageCount = await page.locator(".guideline-row").count();
+  assert.ok(secondGuidelinePageCount <= 10, "every Settings page must be capped at ten guideline rows");
+  assert.match(await page.locator(".guideline-list-footer").innerText(), /Page 2 of 2/);
+  await page.locator('[data-action="select-all-guidelines"]').check();
+  assert.equal(await page.locator(".guideline-selection-count").innerText(), `${secondGuidelinePageCount} selected`, "Select page must select only the current page");
+  await page.locator('[data-action="select-all-guidelines"]').uncheck();
+  assert.equal(await page.locator(".guideline-selection-count").innerText(), "", "unchecking Select page must preserve other pages and clear only this page");
+  await page.click('[data-action="show-guideline-page"][data-guideline-page="1"]');
   assert.equal(await page.locator('.guideline-row', { hasText: "Team preferences" }).count(), 1);
   const guidelineRowsFit = await page.locator(".guideline-row").evaluateAll((rows) => rows.every((row) => {
     const cardBounds = row.getBoundingClientRect();
@@ -172,6 +184,21 @@ try {
   // here must show up as its own smart variable on the Prompts page.
   assert.equal(await page.locator(".guideline-row code", { hasText: "@admission-guidelines" }).count(), 1);
   assert.equal(await page.locator(".guideline-row code", { hasText: "@progress-guidelines" }).count(), 1);
+  const preOpGuideline = page.locator('.guideline-row').filter({ has: page.locator('code', { hasText: "@pre-op-prep-guidelines" }) });
+  const preOpGuidelineId = await preOpGuideline.getAttribute("data-guideline-id");
+  await preOpGuideline.locator(".guideline-row-open").click();
+  await page.click(`[data-action="request-remove-guideline-set"][data-guideline-set-id="${preOpGuidelineId}"]`);
+  await page.click('[data-action="confirm-remove-guideline-set"]');
+  await page.click('[data-view-target="prompts"]');
+  assert.equal(await page.locator('#promptTaskSelect option[value="pre_op_prep"]').count(), 0, "removing the Pre-Op Prep guideline must remove its prompt option");
+  await page.click('[data-view-target="settings"]');
+  await page.click('[data-action="request-refresh-default-guidelines"]');
+  await page.click('[data-action="confirm-refresh-default-guidelines"]');
+  await page.waitForFunction(() => /Built-in prompts updated from this site/.test(document.querySelector("#statusLine")?.textContent || ""));
+  assert.equal(await page.locator('.guideline-row code', { hasText: "@pre-op-prep-guidelines" }).count(), 1, "updating built-ins must restore Pre-Op Prep in Settings");
+  await page.click('[data-view-target="prompts"]');
+  assert.equal(await page.locator('#promptTaskSelect option[value="pre_op_prep"]').count(), 1, "updating built-ins must restore Pre-Op Prep in the prompt dropdown");
+  await page.click('[data-view-target="settings"]');
   await page.click('[data-action="create-guideline-set"]');
   await page.waitForSelector("#guidelineCreateLabel");
   assert.equal(await page.locator(".guideline-editor h2").innerText(), "New guideline");
@@ -191,6 +218,7 @@ try {
   await page.click('[data-action="confirm-remove-guideline-set"]');
   await page.waitForFunction(() => !document.querySelector('.guideline-row')?.textContent?.includes("Temporary bulk delete"));
   assert.match(await page.locator("#statusLine").innerText(), /Deleted \d+ guidelines?/);
+  await page.click('[data-action="show-guideline-page"][data-guideline-page="1"]');
 
   const admissionGuideline = page.locator('.guideline-row', { hasText: "Admission" }).filter({ has: page.locator('code', { hasText: "@admission-guidelines" }) });
   const admissionGuidelineId = await admissionGuideline.getAttribute("data-guideline-id");
@@ -213,7 +241,9 @@ try {
   await page.waitForFunction(() => document.querySelector("#confirmRefreshDefaultGuidelinesButton")?.disabled === true);
   await page.waitForFunction(() => /Built-in prompts updated from this site/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.unroute("**/prompts/Guidelines-admission.md?**");
+  await page.fill("#guidelineSearchInput", "Discharge summary");
   assert.equal(await page.locator('.guideline-row', { hasText: "Discharge summary" }).count(), 1, "refresh must preserve custom guidelines");
+  await page.fill("#guidelineSearchInput", "");
   const refreshedAdmission = page.locator('.guideline-row', { hasText: "Admission" }).filter({ has: page.locator('code', { hasText: "@admission-guidelines" }) });
   await refreshedAdmission.locator(".guideline-row-open").click();
   assert.doesNotMatch(await page.locator(`#guidelineSetText-${admissionGuidelineId}`).inputValue(), /LOCAL ADMISSION EDIT TO REPLACE/);
@@ -252,6 +282,7 @@ try {
   // guideline. Its edit must resolve into the prompt, and deleting the record
   // must remove the dropdown option itself.
   await page.click('[data-view-target="settings"]');
+  await page.fill("#guidelineSearchInput", "presentation editor");
   const presentationGuideline = page.locator('.guideline-row').filter({ has: page.locator('code', { hasText: "@presentation-editor-guidelines" }) });
   assert.equal(await presentationGuideline.count(), 1, "Edit and verify presentation must have exactly one Settings guideline");
   const presentationGuidelineId = await presentationGuideline.getAttribute("data-guideline-id");
@@ -292,6 +323,7 @@ try {
   await page.waitForFunction(() => /Prompt template reset/.test(document.querySelector("#statusLine")?.textContent || ""));
 
   await page.click('[data-view-target="settings"]');
+  await page.fill("#guidelineSearchInput", "Discharge summary");
   const dischargeCardAgain = page.locator(".guideline-row", { hasText: "Discharge summary" });
   const dischargeIdAgain = await dischargeCardAgain.getAttribute("data-guideline-id");
   await dischargeCardAgain.locator('.guideline-row-open').click();
@@ -665,13 +697,13 @@ Vitals
     assert.equal(copied.match(/Act as an attending hospitalist with over 30 years of inpatient experience/g)?.length, 1, "an unsaved live edit must retain the shared persona exactly once");
   }
   await page.click('[data-action="save-prompt-template"]');
-  await page.waitForFunction(() => /Prompt saved locally/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.waitForFunction(() => /Prompt template saved locally/.test(document.querySelector("#statusLine")?.textContent || ""));
   assert.equal((await copiedPromptText()).match(/Act as an attending hospitalist with over 30 years of inpatient experience/g)?.length, 1, "a saved override must retain the shared persona exactly once");
 
   await page.fill("#newPromptTaskNameInput", "Covering clinician summary");
   await page.click('[data-action="create-prompt-task"]');
   await page.waitForFunction(() => document.querySelector("#promptTaskSelect")?.selectedOptions?.[0]?.textContent === "Covering clinician summary");
-  await page.locator("#promptPreview").fill("Summarize @selected-day for the covering clinician.");
+  await page.locator("#promptPreview").fill("@covering-clinician-summary-guidelines\n\nSummarize @selected-day for the covering clinician.");
   await page.waitForFunction(() => /Summarize/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   assert.equal((await copiedPromptText()).match(/Act as an attending hospitalist with over 30 years of inpatient experience/g)?.length, 1, "a user-created prompt must retain the shared persona exactly once");
   await page.click('[data-action="save-prompt-template"]');
@@ -680,8 +712,12 @@ Vitals
   assert.equal(await coveringGuideline.count(), 1, "a prompt created in OpenEvidence must create exactly one matching Settings guideline");
   await coveringGuideline.locator(".guideline-row-open").click();
   const coveringGuidelineId = await coveringGuideline.getAttribute("data-guideline-id");
-  assert.equal(await page.locator(`#guidelineSetText-${coveringGuidelineId}`).inputValue(), "Summarize @selected-day for the covering clinician.");
+  assert.equal(await page.locator(`#guidelineSetText-${coveringGuidelineId}`).inputValue(), "", "saving a prompt template must not overwrite its Settings guideline");
+  await page.fill(`#guidelineSetText-${coveringGuidelineId}`, "Use a concise covering-clinician format.");
+  await page.click(`[data-action="save-guideline-set"][data-guideline-set-id="${coveringGuidelineId}"]`);
   await page.click('[data-view-target="prompts"]');
+  assert.equal(await page.locator("#promptPreview").inputValue(), "@covering-clinician-summary-guidelines\n\nSummarize @selected-day for the covering clinician.", "editing Settings guidelines must not rewrite the saved OpenEvidence template");
+  assert.match(await page.locator("#promptOutputHighlighted").innerText(), /Use a concise covering-clinician format/);
 
   await page.selectOption("#promptTaskSelect", "daily_progress_note");
   await page.waitForFunction(() => /Daily Progress Note [^\r\n]*Instructions/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));

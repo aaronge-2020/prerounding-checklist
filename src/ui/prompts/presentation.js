@@ -1,5 +1,5 @@
-import { ADMISSION_PSEUDO_DAY_ID, tokenAccentColor } from "../../prompts/custom-templates.js?v=20260910-pre-op-prep";
-import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260910-pre-op-prep";
+import { ADMISSION_PSEUDO_DAY_ID, tokenAccentColor } from "../../prompts/custom-templates.js?v=20260910-guideline-pagination";
+import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260910-guideline-pagination";
 
 export function renderHighlightedSegments(segments, escapeHtml, colorOverrides = {}, { interactive = true } = {}) {
   return segments.map((segment) => {
@@ -42,7 +42,7 @@ export function createPromptsPresentation({ escapeHtml }) {
           <div class="prompt-panel-header">
             <div>
               <h2>Prompt template (editable)</h2>
-              <p class="muted">Next: choose a task, adjust the template, then copy the de-identified prompt.</p>
+              <p class="muted">Choose a task and arrange its smart variables here. Saving stores only this template; variable content remains editable in Settings.</p>
             </div>
             <select id="promptTaskSelect" aria-label="Prompt type">
               ${tasks.map((entry) => `<option value="${escapeHtml(entry.id)}" ${entry.id === task.id ? "selected" : ""}>${escapeHtml(entry.label)}</option>`).join("")}
@@ -86,7 +86,7 @@ export function createPromptsPresentation({ escapeHtml }) {
           <div class="prompt-template-footer">
             <div class="notice">Insert only the saved context you want to include - nothing is added automatically.</div>
             <div class="button-row">
-              <button class="button--secondary" type="button" data-action="save-prompt-template">Save prompt</button>
+              <button class="button--secondary" type="button" data-action="save-prompt-template">Save template</button>
               ${task.custom
                 ? `<button class="button--quiet danger-button" type="button" data-action="request-remove-prompt-task" data-task-id="${escapeHtml(task.id)}">Delete this prompt</button>`
                 : `<button class="button--quiet" type="button" data-action="reset-prompt-template">Reset</button>`}

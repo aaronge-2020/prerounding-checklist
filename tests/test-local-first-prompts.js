@@ -18,6 +18,7 @@ import {
   buildPromptPreviewSegments,
   DEFAULT_PROMPT_TEMPLATES,
   loadPromptTemplateOverrides,
+  promptTemplateForTask,
   PROMPT_TEMPLATE_STORAGE_KEY,
   promptVariablesForPatient,
   SMART_PROMPT_VARIABLES
@@ -90,6 +91,20 @@ assert.match(guidelines.preOpPrep, /Readiness and safety dashboard/i);
 assert.match(guidelines.preOpPrep, /Expected postoperative course/i);
 assert.match(guidelines.preOpPrep, /Complications by time and mechanism/i);
 assert.match(guidelines.preOpPrep, /Five-minute pre-case test/i);
+const customGuidelineTemplate = createGuidelineSet("Custom teaching", "Explain the saved variable content.", {
+  id: "custom_teaching",
+  token: "@custom-teaching-guidelines"
+});
+assert.equal(
+  promptTemplateForTask(customGuidelineTemplate.id, {}, [customGuidelineTemplate]),
+  customGuidelineTemplate.token,
+  "a custom task defaults to its smart-variable token instead of copying guideline text into the template"
+);
+assert.equal(
+  promptTemplateForTask(customGuidelineTemplate.id, { [customGuidelineTemplate.id]: "@custom-teaching-guidelines\n\n@selected-day" }, [customGuidelineTemplate]),
+  "@custom-teaching-guidelines\n\n@selected-day",
+  "a saved custom task template remains independent from its Settings guideline text"
+);
 assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@exam-findings/, "daily progress template must not use the removed all-days examination variable");
 assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /^@teaching-guidelines\b/, "case teaching instructions must come from the editable Settings guideline");
 assert.match(DEFAULT_PROMPT_TEMPLATES.presentation_quality_editor, /^@presentation-editor-guidelines\b/, "presentation editing instructions must come from the editable Settings guideline");

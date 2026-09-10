@@ -43,9 +43,10 @@ export function allPromptTasks(builtInTasks = [], customTasks = []) {
   return [...builtInTasks, ...customTasks];
 }
 
-// User-created prompts and Settings guidelines are the same record. The
-// dropdown derives its custom entries from guideline sets instead of keeping
-// a second independently editable task list.
+// A custom task's identity comes from its Settings guideline so the dropdown
+// cannot drift from the smart-variable list. Its editable template is stored
+// separately in PROMPT_TEMPLATE_STORAGE_KEY and only references that guideline
+// through its stable token.
 export function guidelinePromptTasks(guidelineSets = []) {
   return (guidelineSets || []).filter(isCustomGuidelineSet).map((set) => ({
     id: set.id,

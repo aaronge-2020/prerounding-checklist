@@ -95,7 +95,7 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260910-pre-op-prep";
+} from "../prompts/custom-templates.js?v=20260910-guideline-pagination";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import {
   DEFAULT_DAILY_SOURCE_KIND,
@@ -159,19 +159,19 @@ import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-fu
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
 import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260815-smart-variable-fields";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260910-pre-op-prep";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260910-guideline-pagination";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260910-pre-op-prep";
-import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260910-pre-op-prep";
+} from "./prompts/controller.js?v=20260910-guideline-pagination";
+import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260910-guideline-pagination";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721-persisted-anchor";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20260910-pre-op-prep";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260910-pre-op-prep";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20260910-guideline-pagination";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260910-guideline-pagination";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
   createRedactionPresentation,
@@ -1484,6 +1484,7 @@ function renderSettings() {
     apiKeySaved: Boolean(preferences.openAiApiKey),
     guidelineSets: app.guidelineSets,
     guidelineSearchQuery: app.guidelineSearchQuery,
+    guidelinePage: app.guidelinePage,
     guidelineSelectedIds: app.guidelineSelectedIds,
     guidelineOpenId: app.guidelineOpenId,
     guidelineCreateDraft: app.guidelineCreateDraft,
@@ -3748,12 +3749,11 @@ async function importPhoneBundleFile(file) {
 
 function savePromptTemplate() {
   const value = byId("promptPreview")?.value || "";
-  if (promptTaskController.saveGuidelineTemplate(value)) return;
   app.promptTemplates = { ...app.promptTemplates, [app.selectedPromptTask]: value };
   delete app.promptDrafts[app.selectedPromptTask];
   savePromptTemplateOverrides(app.promptTemplates);
   app.smartMenuOpen = false;
-  setStatus("Prompt saved locally.");
+  setStatus("Prompt template saved locally.");
   renderPrompts();
 }
 
@@ -3831,7 +3831,7 @@ function handleChange(event) {
   }
   if (event.target.matches?.('[data-action="select-all-guidelines"]')) {
     if (event.target.checked) guidelineSetsController.selectAllVisible();
-    else guidelineSetsController.clearSelection();
+    else guidelineSetsController.deselectVisible();
     return;
   }
   if (event.target.matches(".workup-checkbox")) {

@@ -1,4 +1,4 @@
-import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260910-pre-op-prep";
+import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260910-guideline-pagination";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({
@@ -6,6 +6,7 @@ export function createSettingsPresentation({ escapeHtml }) {
     apiKeySaved,
     guidelineSets,
     guidelineSearchQuery = "",
+    guidelinePage = 1,
     guidelineSelectedIds = new Set(),
     guidelineOpenId = "",
     guidelineCreateDraft = null,
@@ -62,7 +63,7 @@ export function createSettingsPresentation({ escapeHtml }) {
           </section>
           </div>
 
-          ${renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides, searchQuery: guidelineSearchQuery, selectedIds: guidelineSelectedIds, openId: guidelineOpenId })}
+          ${renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides, searchQuery: guidelineSearchQuery, page: guidelinePage, selectedIds: guidelineSelectedIds, openId: guidelineOpenId })}
         </div>
         ${renderGuidelineEditor({ guidelineSets, escapeHtml, openId: guidelineOpenId, createDraft: guidelineCreateDraft })}
       </div>

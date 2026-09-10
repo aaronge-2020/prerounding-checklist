@@ -7,6 +7,8 @@ import { createDailyPresentation } from "../src/ui/daily/presentation.js";
 import { createDemoPresentation, demoStage } from "../src/ui/demo/presentation.js";
 import { createDemoPatient } from "../src/ui/demo/session.js";
 import { createPromptsPresentation } from "../src/ui/prompts/presentation.js";
+import { GUIDELINE_PAGE_SIZE, guidelinePageModel } from "../src/ui/settings/guideline-pagination.js";
+import { renderGuidelineSets } from "../src/ui/settings/guidelines-presentation.js";
 
 const escapeHtml = (value = "") => String(value)
   .replace(/&/g, "&amp;")
@@ -16,6 +18,30 @@ const escapeHtml = (value = "") => String(value)
 const icon = (name) => `<svg data-icon="${name}"></svg>`;
 
 const promptsView = createPromptsPresentation({ escapeHtml });
+const paginationGuidelines = Array.from({ length: 23 }, (_, index) => ({
+  id: `guideline-${index + 1}`,
+  label: index === 19 ? "Pre-Op Prep" : `Guideline ${index + 1}`,
+  token: index === 19 ? "@pre-op-prep-guidelines" : `@guideline-${index + 1}`,
+  text: `Instructions ${index + 1}`
+}));
+assert.equal(GUIDELINE_PAGE_SIZE, 10);
+assert.equal(guidelinePageModel(paginationGuidelines, { page: 1 }).pageSets.length, 10);
+assert.equal(guidelinePageModel(paginationGuidelines, { page: 2 }).pageSets.length, 10);
+assert.equal(guidelinePageModel(paginationGuidelines, { page: 3 }).pageSets.length, 3);
+assert.equal(guidelinePageModel(paginationGuidelines, { page: 99 }).currentPage, 3, "guideline pages clamp after deletion or filtering");
+const filteredGuidelinePage = guidelinePageModel(paginationGuidelines, { searchQuery: "pre-op", page: 2 });
+assert.equal(filteredGuidelinePage.currentPage, 1);
+assert.deepEqual(filteredGuidelinePage.pageSets.map(({ label }) => label), ["Pre-Op Prep"]);
+const guidelinePageMarkup = renderGuidelineSets({
+  guidelineSets: paginationGuidelines,
+  escapeHtml,
+  page: 2
+});
+assert.equal((guidelinePageMarkup.match(/class="guideline-row /g) || []).length, 10);
+assert.match(guidelinePageMarkup, /Showing 11-20 of 23 guidelines/);
+assert.match(guidelinePageMarkup, /Page 2 of 3/);
+assert.match(guidelinePageMarkup, /data-guideline-page="1"/);
+assert.match(guidelinePageMarkup, /data-guideline-page="3"/);
 const critiqueMarkup = promptsView.renderPrompts({
   patient: { id: "patient_1" },
   patientRequiredMessage: "",

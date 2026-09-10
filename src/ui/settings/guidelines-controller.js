@@ -1,4 +1,5 @@
 import { addGuidelineSet, guidelineSetMatchesQuery, removeGuidelineSet, restoreLatestDefaultGuidelineSets, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js?v=20260910-pre-op-prep";
+import { guidelinePageModel } from "./guideline-pagination.js?v=20260910-guideline-pagination";
 
 // CRUD for user-managed documentation-guideline sets - kept out of app.js to
 // respect the coordinator-file size boundary (scripts/check-ui-module-boundaries.js).
@@ -10,6 +11,13 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
     // Keep the prompt builder's already-rendered smart-variable menu in sync
     // when a guideline is changed from Settings before the user returns to it.
     renderPrompts?.();
+  }
+
+  function normalizePage() {
+    state.guidelinePage = guidelinePageModel(state.guidelineSets, {
+      searchQuery: state.guidelineSearchQuery,
+      page: state.guidelinePage
+    }).currentPage;
   }
 
   function openCreate() {
@@ -32,6 +40,8 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
     state.guidelineSets = nextSets;
     state.guidelineCreateDraft = null;
     state.guidelineOpenId = created.id;
+    state.guidelineSearchQuery = "";
+    state.guidelinePage = guidelinePageModel(nextSets, { page: Number.MAX_SAFE_INTEGER }).currentPage;
     saveGuidelineSets(nextSets);
     setStatus(`Added "${label}" guidelines.`);
     renderGuidelineChanges();
@@ -72,6 +82,7 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
       saveGuidelineSets(state.guidelineSets);
       state.pendingRemoveGuidelineSetIds = [];
       state.guidelineSelectedIds.clear();
+      normalizePage();
       byId("removeGuidelineSetConfirmDialog")?.close();
       setStatus(`Deleted ${ids.length} guideline${ids.length === 1 ? "" : "s"}.`);
       renderGuidelineChanges();
@@ -84,6 +95,7 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
     saveGuidelineSets(state.guidelineSets);
     state.pendingRemoveGuidelineSetId = "";
     state.pendingRemoveGuidelineSetIds = [];
+    normalizePage();
     byId("removeGuidelineSetConfirmDialog")?.close();
     setStatus("Guideline set deleted.");
     renderGuidelineChanges();
@@ -91,6 +103,7 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
 
   function setSearchQuery(value) {
     state.guidelineSearchQuery = String(value || "");
+    state.guidelinePage = 1;
     const query = state.guidelineSearchQuery.trim().toLowerCase();
     const visibleIds = new Set(state.guidelineSets.filter((set) => guidelineSetMatchesQuery(set, query)).map((set) => set.id));
     for (const id of state.guidelineSelectedIds) {
@@ -111,10 +124,29 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
   }
 
   function selectAllVisible() {
-    const query = state.guidelineSearchQuery.trim().toLowerCase();
-    for (const set of state.guidelineSets) {
-      if (guidelineSetMatchesQuery(set, query)) state.guidelineSelectedIds.add(set.id);
-    }
+    const { pageSets } = guidelinePageModel(state.guidelineSets, {
+      searchQuery: state.guidelineSearchQuery,
+      page: state.guidelinePage
+    });
+    for (const set of pageSets) state.guidelineSelectedIds.add(set.id);
+    renderSettings();
+  }
+
+  function deselectVisible() {
+    const { pageSets } = guidelinePageModel(state.guidelineSets, {
+      searchQuery: state.guidelineSearchQuery,
+      page: state.guidelinePage
+    });
+    for (const set of pageSets) state.guidelineSelectedIds.delete(set.id);
+    renderSettings();
+  }
+
+  function showPage(value) {
+    state.guidelinePage = guidelinePageModel(state.guidelineSets, {
+      searchQuery: state.guidelineSearchQuery,
+      page: value
+    }).currentPage;
+    state.guidelineOpenId = "";
     renderSettings();
   }
 
@@ -144,6 +176,7 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
       state.guidelineSets = await restoreLatestDefaultGuidelineSets(state.guidelineSets);
       state.guidelineOpenId = "";
       state.guidelineSelectedIds.clear();
+      state.guidelinePage = 1;
       byId("refreshDefaultGuidelinesConfirmDialog")?.close();
       setStatus("Built-in prompts updated from this site. Local built-in edits were replaced; custom guidelines were preserved.");
       renderGuidelineChanges();
@@ -164,9 +197,10 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
     if (action === "confirm-remove-guideline-set") confirmRemovePending();
     if (action === "delete-selected-guidelines") deleteSelected();
     if (action === "clear-guideline-selection") clearSelection();
+    if (action === "show-guideline-page") showPage(target.dataset.guidelinePage);
     if (action === "request-refresh-default-guidelines") requestRefreshDefaults();
     if (action === "confirm-refresh-default-guidelines") await confirmRefreshDefaults();
   }
 
-  return Object.freeze({ handleAction, setSearchQuery, toggleSelection, selectAllVisible });
+  return Object.freeze({ handleAction, setSearchQuery, toggleSelection, selectAllVisible, deselectVisible });
 }

@@ -1,12 +1,12 @@
-import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260910-pre-op-prep";
-import { guidelineSetMatchesQuery } from "../../prompts/guideline-sets.js?v=20260910-pre-op-prep";
+import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260910-guideline-pagination";
+import { guidelinePageModel } from "./guideline-pagination.js?v=20260910-guideline-pagination";
 
 // Pure presentation module. The library stays compact by keeping editing in a
 // single side panel instead of expanding every guideline into a giant card.
-export function renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides = {}, searchQuery = "", selectedIds = new Set(), openId = "" }) {
-  const query = String(searchQuery || "").trim().toLowerCase();
-  const visibleSets = guidelineSets.filter((set) => guidelineSetMatchesQuery(set, query));
-  const allVisibleSelected = visibleSets.length > 0 && visibleSets.every((set) => selectedIds.has(set.id));
+export function renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides = {}, searchQuery = "", page = 1, selectedIds = new Set(), openId = "" }) {
+  const pageModel = guidelinePageModel(guidelineSets, { searchQuery, page });
+  const { query, pageSets, currentPage, totalPages, totalCount, startIndex, endIndex } = pageModel;
+  const allVisibleSelected = pageSets.length > 0 && pageSets.every((set) => selectedIds.has(set.id));
   const previewText = (text) => String(text || "").replace(/\s+/g, " ").trim().slice(0, 112);
 
   return `
@@ -14,7 +14,7 @@ export function renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides 
       <div class="section-heading guideline-library-heading">
         <div>
           <h2>Documentation guidelines</h2>
-          <p class="muted">Every OpenEvidence dropdown option is backed by exactly one editable guideline here. Team preferences is shared across prompts. Adding a guideline creates a matching custom option and smart variable.</p>
+          <p class="muted">Every OpenEvidence dropdown option is backed by exactly one editable guideline here. Adding a guideline creates a matching custom option and smart variable. Guideline content is edited here; arranging and saving a task template does not overwrite it.</p>
         </div>
         <button class="button--secondary" type="button" data-action="request-refresh-default-guidelines">Update built-in prompts</button>
       </div>
@@ -29,7 +29,7 @@ export function renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides 
         </div>
       </div>
       <div class="guideline-bulk-toolbar">
-        <label class="guideline-select-all"><input type="checkbox" data-action="select-all-guidelines" ${allVisibleSelected ? "checked" : ""} ${visibleSets.length ? "" : "disabled"}> <span>Select all visible</span></label>
+        <label class="guideline-select-all"><input type="checkbox" data-action="select-all-guidelines" ${allVisibleSelected ? "checked" : ""} ${pageSets.length ? "" : "disabled"}> <span>Select page</span></label>
         <span class="guideline-selection-count">${selectedIds.size ? `${selectedIds.size} selected` : ""}</span>
         <button class="button--quiet danger-button" type="button" data-action="delete-selected-guidelines" ${selectedIds.size ? "" : "disabled"}>Delete selected</button>
         <button class="button--quiet" type="button" data-action="clear-guideline-selection" ${selectedIds.size ? "" : "disabled"}>Clear selection</button>
@@ -39,7 +39,7 @@ export function renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides 
           <div class="guideline-list-header" role="row">
             <span></span><span></span><span>Name</span><span>Token</span><span>Preview</span><span>Edit</span>
           </div>
-          ${visibleSets.length ? visibleSets.map((set) => `
+          ${pageSets.length ? pageSets.map((set) => `
             <div class="guideline-row ${openId === set.id ? "is-active" : ""}" data-guideline-id="${escapeHtml(set.id)}" role="row">
               <input class="guideline-select" type="checkbox" data-guideline-id="${escapeHtml(set.id)}" ${selectedIds.has(set.id) ? "checked" : ""} aria-label="Select ${escapeHtml(set.label)}">
               ${tokenColorSwatchButton(set.token, colorOverrides, escapeHtml)}
@@ -49,7 +49,18 @@ export function renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides 
               <button class="guideline-row-edit button--quiet" type="button" data-action="toggle-guideline-set" data-guideline-set-id="${escapeHtml(set.id)}">Edit</button>
             </div>
           `).join("") : `<div class="guideline-empty"><strong>${query ? "No guidelines match that search." : "No guidelines yet."}</strong><span>${query ? "Try another name, variable, or phrase." : "Add a guideline above to create your first smart variable."}</span></div>`}
-          ${visibleSets.length ? `<div class="guideline-list-footer"><span>Showing ${visibleSets.length} of ${guidelineSets.length} guidelines</span></div>` : ""}
+          ${pageSets.length ? `
+            <div class="guideline-list-footer">
+              <span>Showing ${startIndex + 1}-${endIndex} of ${totalCount}${query ? " matching" : ""} guidelines</span>
+              ${totalPages > 1 ? `
+                <nav class="guideline-pagination" aria-label="Guideline pages">
+                  <button class="button--quiet" type="button" data-action="show-guideline-page" data-guideline-page="${currentPage - 1}" ${currentPage === 1 ? "disabled" : ""}>Previous</button>
+                  <span aria-live="polite">Page ${currentPage} of ${totalPages}</span>
+                  <button class="button--quiet" type="button" data-action="show-guideline-page" data-guideline-page="${currentPage + 1}" ${currentPage === totalPages ? "disabled" : ""}>Next</button>
+                </nav>
+              ` : ""}
+            </div>
+          ` : ""}
         </div>
       </div>
     </section>

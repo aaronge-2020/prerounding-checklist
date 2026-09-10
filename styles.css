@@ -6025,10 +6025,22 @@ body.vault-locked .vault-access {
 .guideline-list-footer {
   display: flex;
   justify-content: space-between;
+  gap: 12px;
   min-height: 44px;
   align-items: center;
   color: var(--muted);
   font-size: 12px;
+}
+
+.guideline-pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.guideline-pagination .button--quiet {
+  min-height: 30px;
+  padding: 4px 8px;
 }
 
 .guideline-editor {
@@ -6120,6 +6132,12 @@ body.vault-locked .vault-access {
 
   .guideline-row-preview {
     grid-column: 1 / -1;
+  }
+
+  .guideline-list-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 8px 0;
   }
 }
 
