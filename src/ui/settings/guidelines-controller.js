@@ -1,4 +1,4 @@
-import { addGuidelineSet, guidelineSetMatchesQuery, removeGuidelineSet, restoreLatestDefaultGuidelineSets, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js?v=20260906-presentation-coach";
+import { addGuidelineSet, guidelineSetMatchesQuery, removeGuidelineSet, restoreLatestDefaultGuidelineSets, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js?v=20260910-pre-op-prep";
 
 // CRUD for user-managed documentation-guideline sets - kept out of app.js to
 // respect the coordinator-file size boundary (scripts/check-ui-module-boundaries.js).

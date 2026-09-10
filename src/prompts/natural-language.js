@@ -14,6 +14,7 @@ export function naturalLanguagePrompt(value) {
 export const ATTENDING_HOSPITALIST_PERSONA = "Act as an attending hospitalist with over 30 years of inpatient experience.";
 export const ATTENDING_OBGYN_PERSONA = "Act as an attending obstetrician-gynecologist with over 30 years of inpatient and ambulatory experience.";
 export const ATTENDING_SPECIALTY_COACH_PERSONA = "Act as a highly experienced attending physician on the specialty team identified in the prompt.";
+export const ATTENDING_SURGEON_PERSONA = "Act as an experienced surgical attending preparing a clinician in training for this patient's operation.";
 
 export function includesSupportedAttendingPersona(value) {
   const normalized = String(value || "").toLowerCase();
@@ -23,24 +24,23 @@ export function includesSupportedAttendingPersona(value) {
 
 export function promptPersonaForTask(taskId) {
   if (taskId === "attending_presentation_critique") return ATTENDING_SPECIALTY_COACH_PERSONA;
+  if (taskId === "pre_op_prep") return ATTENDING_SURGEON_PERSONA;
   return taskId === "obgyn_history_and_physical" || taskId === "obgyn_soap_note"
     ? ATTENDING_OBGYN_PERSONA
     : ATTENDING_HOSPITALIST_PERSONA;
 }
 
 export function includesRequiredAttendingPersona(value, taskId) {
-  if (promptPersonaForTask(taskId) === ATTENDING_SPECIALTY_COACH_PERSONA) {
-    return String(value || "").toLowerCase().includes(ATTENDING_SPECIALTY_COACH_PERSONA.toLowerCase());
-  }
-  if (promptPersonaForTask(taskId) === ATTENDING_OBGYN_PERSONA) {
-    return String(value || "").toLowerCase().includes(ATTENDING_OBGYN_PERSONA.toLowerCase());
+  const persona = promptPersonaForTask(taskId);
+  if ([ATTENDING_SPECIALTY_COACH_PERSONA, ATTENDING_OBGYN_PERSONA, ATTENDING_SURGEON_PERSONA].includes(persona)) {
+    return String(value || "").toLowerCase().includes(persona.toLowerCase());
   }
   return includesSupportedAttendingPersona(value);
 }
 
 export function stripConflictingAttendingPersonas(value, taskId) {
   const text = String(value || "");
-  if (promptPersonaForTask(taskId) !== ATTENDING_OBGYN_PERSONA) return text;
+  if (![ATTENDING_OBGYN_PERSONA, ATTENDING_SURGEON_PERSONA].includes(promptPersonaForTask(taskId))) return text;
   if (!/\bAct as an attending hospitalist\b/i.test(text)) return text;
   return text
     .replace(/\bAct as an attending hospitalist\b[^.\n]*\.?/gi, "")

@@ -3,9 +3,9 @@ import { buildTrajectoryBlock } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260722-unified-stay-v2";
 import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js?v=20260722-guideline-library";
-import { attendingPromptForTask, includesRequiredAttendingPersona, promptPersonaForTask, stripConflictingAttendingPersonas } from "./natural-language.js?v=20260906-presentation-coach";
+import { attendingPromptForTask, includesRequiredAttendingPersona, promptPersonaForTask, stripConflictingAttendingPersonas } from "./natural-language.js?v=20260910-pre-op-prep";
 import { buildProgressNotePacket } from "./progress-note-packet.js";
-import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20260906-presentation-coach";
+import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20260910-pre-op-prep";
 
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";
 export const TEAM_PREFERENCES_PROMPT_TOKEN = "@team-preferences";
@@ -21,6 +21,7 @@ export const DEFAULT_PROMPT_TEMPLATES = {
   presentation_quality_editor: `@presentation-editor-guidelines\n\n@presentation-to-edit\n\n@admission-packet\n\n@progress-note-packet`,
   attending_presentation_critique: `@presentation-critique-guidelines\n\n@specialty-team\n\n@team-preferences\n\n@presentation-to-edit\n\n@admission-packet\n\n@progress-note-packet`,
   teaching_case_trajectory: `@teaching-guidelines\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
+  pre_op_prep: `@team-preferences\n\n@pre-op-prep-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-physical-exam`,
   medication_explainer_by_problem: `@medication-explainer-guidelines\n\n@admission-packet\n\n@medications\n\n@selected-day`,
   medication_safety_audit: `@medication-safety-guidelines\n\n@admission-packet\n\n@medications\n\n@labs\n\n@selected-day`,
   checklist_workup_refinement: `@checklist-refinement-guidelines\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,

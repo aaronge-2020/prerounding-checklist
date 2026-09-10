@@ -95,15 +95,15 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260906-presentation-coach";
+} from "../prompts/custom-templates.js?v=20260910-pre-op-prep";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import {
   DEFAULT_DAILY_SOURCE_KIND,
   admissionSourceKindOptions
 } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
-import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260906-presentation-coach";
-import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260906-presentation-coach";
-import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260906-presentation-coach";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260910-pre-op-prep";
+import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260910-pre-op-prep";
+import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260910-pre-op-prep";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences,
@@ -159,19 +159,19 @@ import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-fu
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
 import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260815-smart-variable-fields";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260906-presentation-coach";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260910-pre-op-prep";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260906-presentation-coach";
-import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260906-presentation-coach";
+} from "./prompts/controller.js?v=20260910-pre-op-prep";
+import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260910-pre-op-prep";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721-persisted-anchor";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20260906-presentation-coach";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260906-presentation-coach";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20260910-pre-op-prep";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260910-pre-op-prep";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
   createRedactionPresentation,

@@ -1,7 +1,7 @@
-import { addGuidelineSet, removeGuidelineSet, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js?v=20260906-presentation-coach";
-import { migrateCustomPromptTasksToGuidelineSets, saveCustomPromptTasks } from "../../prompts/custom-tasks.js?v=20260906-presentation-coach";
-import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20260906-presentation-coach";
-import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js?v=20260906-presentation-coach";
+import { addGuidelineSet, removeGuidelineSet, saveGuidelineSets, updateGuidelineSet } from "../../prompts/guideline-sets.js?v=20260910-pre-op-prep";
+import { migrateCustomPromptTasksToGuidelineSets, saveCustomPromptTasks } from "../../prompts/custom-tasks.js?v=20260910-pre-op-prep";
+import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20260910-pre-op-prep";
+import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js?v=20260910-pre-op-prep";
 
 // Create/delete custom prompt tasks - kept out of app.js to respect the
 // coordinator-file size boundary (scripts/check-ui-module-boundaries.js).

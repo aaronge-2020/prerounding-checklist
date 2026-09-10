@@ -687,6 +687,14 @@ Vitals
   await page.waitForFunction(() => /Daily Progress Note [^\r\n]*Instructions/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   await page.selectOption("#promptTaskSelect", "teaching_case_trajectory");
   await page.waitForFunction(() => /clinical teacher producing a concise rounds teaching snippet/i.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
+  await page.selectOption("#promptTaskSelect", "pre_op_prep");
+  await page.waitForFunction(() => /Why this operation, today, for this patient/i.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
+  {
+    const copied = await copiedPromptText();
+    assert.match(copied, /Act as an experienced surgical attending preparing a clinician in training for this patient's operation/i);
+    assert.match(copied, /Highest-priority items to verify before entering the OR/i);
+    assert.doesNotMatch(copied, /Act as an attending hospitalist/i);
+  }
   await page.selectOption("#promptTaskSelect", "medication_explainer_by_problem");
   await page.waitForFunction(() => /condition, symptom, or clinical purpose/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   await page.selectOption("#promptTaskSelect", "medication_safety_audit");

@@ -25,7 +25,7 @@ import {
 import { createGuidelineSet, DEFAULT_GUIDELINE_SET_SOURCES } from "../src/prompts/guideline-sets.js";
 import { buildTeamPreferencesPromptBlock, normalizeUserPreferences } from "../src/app/preferences.js";
 import { createSourceCapture } from "../src/patient-context/source-captures.js";
-import { ATTENDING_HOSPITALIST_PERSONA, ATTENDING_OBGYN_PERSONA, ATTENDING_SPECIALTY_COACH_PERSONA } from "../src/prompts/natural-language.js";
+import { ATTENDING_HOSPITALIST_PERSONA, ATTENDING_OBGYN_PERSONA, ATTENDING_SPECIALTY_COACH_PERSONA, ATTENDING_SURGEON_PERSONA } from "../src/prompts/natural-language.js";
 
 const allDefaultGuidelineSets = DEFAULT_GUIDELINE_SET_SOURCES.map((source) => createGuidelineSet(source.label, "", { token: source.token }));
 const taskGuidelineSources = DEFAULT_GUIDELINE_SET_SOURCES.filter((source) => source.task);
@@ -52,7 +52,8 @@ const guidelines = {
   progress: readFileSync("prompts/Guidelines-progress.md", "utf8"),
   obgynHp: readFileSync("prompts/Guidelines-obgyn-hp.md", "utf8"),
   obgynSoap: readFileSync("prompts/Guidelines-obgyn-soap.md", "utf8"),
-  teaching: readFileSync("prompts/teaching.md", "utf8")
+  teaching: readFileSync("prompts/teaching.md", "utf8"),
+  preOpPrep: readFileSync("prompts/Pre-op-prep.md", "utf8")
 };
 const deployedGuidelineSets = DEFAULT_GUIDELINE_SET_SOURCES
   .filter((source) => source.path)
@@ -75,6 +76,20 @@ for (const variable of instructionSmartVariables) {
 assert.match(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@progress-note-packet/, "daily progress template must use the compiled selected-day packet");
 assert.match(DEFAULT_PROMPT_TEMPLATES.obgyn_history_and_physical, /@obgyn-hp-guidelines[\s\S]*@admission-packet/, "OB/Gyn H&P must use its specialty guideline and admission packet");
 assert.match(DEFAULT_PROMPT_TEMPLATES.obgyn_soap_note, /@obgyn-soap-guidelines[\s\S]*@progress-note-packet/, "OB/Gyn SOAP must use its specialty guideline and selected-day packet");
+assert.match(DEFAULT_PROMPT_TEMPLATES.pre_op_prep, /@pre-op-prep-guidelines[\s\S]*@admission-packet[\s\S]*@selected-day[\s\S]*@selected-day-physical-exam/, "Pre-Op Prep must include its editable guideline and the available perioperative patient context");
+assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.pre_op_prep, /@medications|@labs/, "Pre-Op Prep must not duplicate medication and lab text already carried by the admission and selected-day packets");
+assert.match(guidelines.preOpPrep, /Why does this patient need surgery/i);
+assert.match(guidelines.preOpPrep, /Why this operation, today, for this patient/i);
+assert.match(guidelines.preOpPrep, /What could go wrong, and what will the team do afterward/i);
+assert.match(guidelines.preOpPrep, /Not documented - verify/g);
+assert.match(guidelines.preOpPrep, /Diagnosis, indication, and timing/i);
+assert.match(guidelines.preOpPrep, /Planned operation and operative logic/i);
+assert.match(guidelines.preOpPrep, /Medications and allergies/i);
+assert.match(guidelines.preOpPrep, /Preoperative data and imaging/i);
+assert.match(guidelines.preOpPrep, /Readiness and safety dashboard/i);
+assert.match(guidelines.preOpPrep, /Expected postoperative course/i);
+assert.match(guidelines.preOpPrep, /Complications by time and mechanism/i);
+assert.match(guidelines.preOpPrep, /Five-minute pre-case test/i);
 assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.daily_progress_note, /@exam-findings/, "daily progress template must not use the removed all-days examination variable");
 assert.match(DEFAULT_PROMPT_TEMPLATES.teaching_case_trajectory, /^@teaching-guidelines\b/, "case teaching instructions must come from the editable Settings guideline");
 assert.match(DEFAULT_PROMPT_TEMPLATES.presentation_quality_editor, /^@presentation-editor-guidelines\b/, "presentation editing instructions must come from the editable Settings guideline");
@@ -584,6 +599,19 @@ for (const [taskId, template] of [
   assert.doesNotMatch(stalePreview, /attending hospitalist/i);
   assert.equal(stalePreview.toLowerCase().split(ATTENDING_OBGYN_PERSONA.toLowerCase()).length - 1, 1);
 }
+const editedPreOpGuidelines = guidelineSets.map((set) => set.token === "@pre-op-prep-guidelines"
+  ? { ...set, text: `${ATTENDING_HOSPITALIST_PERSONA}\n\nCreate a patient-specific preoperative briefing.` }
+  : set);
+const editedPreOpPrompt = buildCustomOpenEvidencePrompt({
+  taskId: "pre_op_prep",
+  template: DEFAULT_PROMPT_TEMPLATES.pre_op_prep,
+  patient,
+  selectedDayId: day.id,
+  guidelineSets: editedPreOpGuidelines
+});
+assert.ok(editedPreOpPrompt.startsWith(ATTENDING_SURGEON_PERSONA), "Pre-Op Prep must retain its surgical persona after guideline edits");
+assert.doesNotMatch(editedPreOpPrompt, /attending hospitalist/i, "Pre-Op Prep must remove a conflicting hospitalist persona");
+assert.equal(editedPreOpPrompt.toLowerCase().split(ATTENDING_SURGEON_PERSONA.toLowerCase()).length - 1, 1);
 for (const [taskId, template] of Object.entries(DEFAULT_PROMPT_TEMPLATES)) {
   const assembled = buildCustomOpenEvidencePrompt({
     taskId,
@@ -594,7 +622,9 @@ for (const [taskId, template] of Object.entries(DEFAULT_PROMPT_TEMPLATES)) {
   });
   const persona = taskId === "attending_presentation_critique"
     ? ATTENDING_SPECIALTY_COACH_PERSONA
-    : taskId.startsWith("obgyn_") ? ATTENDING_OBGYN_PERSONA : ATTENDING_HOSPITALIST_PERSONA;
+    : taskId === "pre_op_prep"
+      ? ATTENDING_SURGEON_PERSONA
+      : taskId.startsWith("obgyn_") ? ATTENDING_OBGYN_PERSONA : ATTENDING_HOSPITALIST_PERSONA;
   assert.ok(assembled.toLowerCase().includes(persona.toLowerCase()), `${taskId} must carry the correct attending persona`);
   assert.equal(assembled.toLowerCase().split(persona.toLowerCase()).length - 1, 1, `${taskId} must carry the persona exactly once`);
 }

@@ -1,5 +1,5 @@
-import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260906-presentation-coach";
-import { guidelineSetMatchesQuery } from "../../prompts/guideline-sets.js?v=20260906-presentation-coach";
+import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260910-pre-op-prep";
+import { guidelineSetMatchesQuery } from "../../prompts/guideline-sets.js?v=20260910-pre-op-prep";
 
 // Pure presentation module. The library stays compact by keeping editing in a
 // single side panel instead of expanding every guideline into a giant card.
