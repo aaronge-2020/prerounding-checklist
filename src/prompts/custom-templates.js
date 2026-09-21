@@ -1,12 +1,12 @@
 import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
-import { buildTrajectoryBlock } from "../daily-updates/days.js?v=20260921-checklist-note-export";
-import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260921-checklist-note-export";
-import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-checklist-note-export";
+import { buildTrajectoryBlock } from "../daily-updates/days.js?v=20260921-note-builder-polish";
+import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260921-note-builder-polish";
+import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-note-builder-polish";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js?v=20260722-guideline-library";
 import { attendingPromptForTask, includesRequiredAttendingPersona, promptPersonaForTask, stripConflictingAttendingPersonas } from "./natural-language.js?v=20260910-pre-op-prep";
-import { buildProgressNotePacket } from "./progress-note-packet.js?v=20260921-checklist-note-export";
+import { buildProgressNotePacket } from "./progress-note-packet.js?v=20260921-note-builder-polish";
 import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20260910-pre-op-prep";
-import { renderFinalNote } from "../note-drafts/index.js?v=20260921-checklist-note-export";
+import { renderFinalNote } from "../note-drafts/index.js?v=20260921-note-builder-polish";
 
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";
 export const TEAM_PREFERENCES_PROMPT_TOKEN = "@team-preferences";
@@ -74,6 +74,16 @@ function selectedPromptDay(patient, selectedDayId = "") {
   if (selectedDayId === ADMISSION_PSEUDO_DAY_ID) return null;
   const days = [...(patient?.days || [])].sort((left, right) => `${left.date || ""} ${left.createdAt || ""}`.localeCompare(`${right.date || ""} ${right.createdAt || ""}`));
   return days.find((day) => day.id === selectedDayId) || days.at(-1) || null;
+}
+
+export function studentNoteForPrompt(patient, selectedDayId = "") {
+  const day = selectedPromptDay(patient, selectedDayId);
+  const packetId = selectedDayId === ADMISSION_PSEUDO_DAY_ID ? "admission" : (day?.id || "admission");
+  const draft = patient?.noteDrafts?.[packetId] || null;
+  return {
+    packetId,
+    text: draft ? renderFinalNote(draft).trim() : ""
+  };
 }
 
 function guidelineSetVariables(guidelineSets = []) {

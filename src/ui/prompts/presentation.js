@@ -1,5 +1,5 @@
-import { ADMISSION_PSEUDO_DAY_ID, tokenAccentColor } from "../../prompts/custom-templates.js?v=20260921-checklist-note-export";
-import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260921-checklist-note-export";
+import { ADMISSION_PSEUDO_DAY_ID, tokenAccentColor } from "../../prompts/custom-templates.js?v=20260921-note-builder-polish";
+import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260921-note-builder-polish";
 
 export function renderHighlightedSegments(segments, escapeHtml, colorOverrides = {}, { interactive = true } = {}) {
   return segments.map((segment) => {
@@ -25,6 +25,7 @@ export function createPromptsPresentation({ escapeHtml }) {
     templateHighlightSegments,
     promptError,
     presentationToEdit,
+    presentationAutoPopulated,
     presentationSpecialty,
     requiresPresentationToEdit,
     requiresPresentationSpecialty,
@@ -59,8 +60,8 @@ export function createPromptsPresentation({ escapeHtml }) {
           ${requiresPresentationToEdit ? `
             <section class="presentation-editor-input" aria-labelledby="presentationEditorInputTitle">
               <div class="presentation-editor-input__heading">
-                <h3 id="presentationEditorInputTitle">Presentation to ${requiresPresentationSpecialty ? "critique" : "edit"} <span class="presentation-editor-input__optional">Optional</span></h3>
-                <p>Paste a de-identified H&amp;P, consult, or progress presentation to insert it in the prompt. Leave this blank when you will provide the presentation in the chat instead. This text stays only in the current browser tab.</p>
+                <h3 id="presentationEditorInputTitle">Student note to ${requiresPresentationSpecialty ? "critique" : "edit and verify"}${presentationAutoPopulated ? ` <span class="presentation-editor-input__optional">From Draft Note</span>` : ""}</h3>
+                <p>${presentationAutoPopulated ? "Your saved encrypted draft is populated automatically from Review Data / Draft Note. Confirm it contains no identifiers before sending it for feedback; this tab-only copy remains editable." : "No saved draft is available for this packet yet. Write and save one in Review Data / Draft Note, or paste a note with identifiers removed here. This text stays only in the current browser tab."}</p>
               </div>
               ${requiresPresentationSpecialty ? `
                 <label class="presentation-specialty-input" for="presentationSpecialty">
@@ -84,7 +85,7 @@ export function createPromptsPresentation({ escapeHtml }) {
             </div>
           </div>
           <div class="prompt-template-footer">
-            <div class="notice">Insert only the saved context you want to include - nothing is added automatically.</div>
+            <div class="notice">${requiresPresentationToEdit ? "The selected packet’s student note is added automatically when available; other smart variables remain under your control." : "Insert only the saved context you want to include - nothing is added automatically."}</div>
             <div class="button-row">
               <button class="button--secondary" type="button" data-action="save-prompt-template">Save template</button>
               ${task.custom

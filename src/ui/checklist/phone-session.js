@@ -1,6 +1,6 @@
 import { emptyChecklistAnswers, addQuickNote, removeQuickNote } from "../../checklist/state.js?v=20260711-functional-remediation-19";
-import { updateActivePatient } from "../../app/state/vault.js?v=20260921-checklist-note-export";
-import { upsertDay } from "../../daily-updates/days.js?v=20260921-checklist-note-export";
+import { updateActivePatient } from "../../app/state/vault.js?v=20260921-note-builder-polish";
+import { upsertDay } from "../../daily-updates/days.js?v=20260921-note-builder-polish";
 
 // Coordinates the phone-mode checklist session - entering phone-mode,
 // autosave/resume, and quick notes (shared between phone and desktop) - kept

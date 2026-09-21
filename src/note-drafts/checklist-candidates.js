@@ -36,7 +36,9 @@ export function buildChecklistNoteCandidates(patient, packetId = "admission") {
     const kind = item.kind === "exam" ? "exam" : "history";
     const question = clean(item.text);
     const selectionId = `checklist:${day.id}:${clean(item.id)}`;
-    const generatedText = `${question}: ${answerText}`;
+    // Checklist prompts guide the bedside interaction; they are not chart
+    // language. Only the documented answer belongs in the note.
+    const generatedText = answerText;
     candidates.push({
       id: selectionId,
       selectionId,

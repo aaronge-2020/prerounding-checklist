@@ -7,6 +7,7 @@ import {
   addDifferential,
   addPlanProblem,
   buildChecklistNoteCandidates,
+  changeNoteDraftType,
   containsExcludedGuidanceLanguage,
   createNoteDraft,
   deselectChecklistFinding,
@@ -95,8 +96,8 @@ const options = { now: fixedNow, idFactory: fixedId };
   assert.throws(() => updateNoteSection(progress, "past_medical_history", "Should not be accepted", { now: fixedNow }), /not available/);
 }
 
-// Only completed checklist questions and performed exam maneuvers are offered
-// for deliberate import. Imported lines remain independently editable.
+// Completed checklist answers become chart-ready findings without copying the
+// bedside questions into the note.
 {
   const checklistPatient = {
     days: [{
@@ -118,19 +119,34 @@ const options = { now: fixedNow, idFactory: fixedId };
   };
   const candidates = buildChecklistNoteCandidates(checklistPatient, "day_checklist");
   assert.deepEqual(candidates.map(({ question }) => question), ["Chest pain now?", "Lower-extremity edema"]);
+  assert.deepEqual(candidates.map(({ generatedText }) => generatedText), ["No · Denies pressure.", "None"]);
   let draft = createNoteDraft(NOTE_TYPES.PROGRESS, { ...options, id: "checklist_import" });
   draft = selectChecklistFinding(draft, candidates[0], { now: fixedNow });
   draft = selectChecklistFinding(draft, candidates[1], { now: fixedNow });
   draft = editChecklistFinding(draft, candidates[1].id, "No lower-extremity edema bilaterally.", { now: fixedNow });
   const rendered = renderFinalNote(draft);
-  assert.match(rendered, /\*\*Focused History from Checklist\*\*[\s\S]*Chest pain now\?[^\n]*No/);
+  assert.match(rendered, /\*\*Subjective\*\*[\s\S]*No · Denies pressure/);
+  assert.doesNotMatch(rendered, /Chest pain now\?|Lower-extremity edema:/);
   assert.match(rendered, /\*\*Physical Exam\*\*[\s\S]*No lower-extremity edema bilaterally/);
   const plain = renderFinalNotePlainText(draft);
-  assert.match(plain, /^Focused History from Checklist/m);
+  assert.match(plain, /^Subjective$/m);
   assert.doesNotMatch(plain, /\*\*/);
   draft = deselectChecklistFinding(draft, candidates[0].id, { now: fixedNow });
   assert.doesNotMatch(renderFinalNote(draft), /Chest pain now/);
   assert.match(renderFinalNote(draft), /No lower-extremity edema/);
+}
+
+// Switching the selected note format changes the available sections while
+// preserving shared content and the closest matching patient narrative.
+{
+  let draft = createNoteDraft(NOTE_TYPES.H_AND_P, { ...options, id: "switch_type" });
+  draft = updateNoteSection(draft, "one_liner", "Synthetic one-liner", { now: fixedNow });
+  draft = updateNoteSection(draft, "history_of_present_illness", "Chest discomfort improved.", { now: fixedNow });
+  draft = changeNoteDraftType(draft, NOTE_TYPES.PROGRESS, { now: fixedNow });
+  assert.equal(draft.noteType, NOTE_TYPES.PROGRESS);
+  assert.equal(draft.sections.one_liner.deidentifiedText, "Synthetic one-liner");
+  assert.equal(draft.sections.patient_report.deidentifiedText, "Chest discomfort improved.");
+  assert.equal(draft.sections.chief_complaint, undefined);
 }
 
 // Student edits to imported checklist findings are preserved when the source

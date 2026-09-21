@@ -227,6 +227,27 @@ export function createNoteDraft(noteType, {
   }, { now: () => timestamp, idFactory });
 }
 
+export function changeNoteDraftType(draft, noteType, { now = timestampNow } = {}) {
+  const targetType = assertNoteType(noteType);
+  if (draft.noteType === targetType) return draft;
+  const timestamp = now();
+  const sourceSections = draft.sections || {};
+  const mappedSections = Object.fromEntries(fieldsForNoteType(targetType).map(({ id }) => {
+    let source = sourceSections[id];
+    if (!source && targetType === NOTE_TYPES.PROGRESS && id === "patient_report")
+      source = sourceSections.history_of_present_illness;
+    if (!source && targetType === NOTE_TYPES.H_AND_P && id === "history_of_present_illness")
+      source = sourceSections.patient_report;
+    return [id, normalizeDraftText(source || "", { timestamp })];
+  }));
+  return normalizeNoteDraft({
+    ...draft,
+    noteType: targetType,
+    sections: mappedSections,
+    updatedAt: timestamp
+  }, { now: () => timestamp });
+}
+
 function touch(draft, changes, now) {
   return { ...draft, ...changes, updatedAt: now() };
 }

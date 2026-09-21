@@ -12,7 +12,7 @@ import {
   modelPackManifestIsValid,
   modelPackVerifiedForCurrentRuntime,
   validateModelPackEntries
-} from "./model-packs.js?v=20260921-checklist-note-export";
+} from "./model-packs.js?v=20260921-note-builder-polish";
 
 const MODEL_PACK_DATABASE = "prerounding-local-model-pack-handles-v1";
 const MODEL_PACK_STORE = "packs";

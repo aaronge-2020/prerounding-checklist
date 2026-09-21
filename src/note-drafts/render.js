@@ -40,6 +40,10 @@ function checklistFindingText(draft, kind) {
     .join("\n");
 }
 
+function appendChecklistFindings(body, findings) {
+  return [body, findings].filter(Boolean).join("\n\n");
+}
+
 function relevantHistoryText(sections) {
   return [
     labeledLine("Past medical history", sections.past_medical_history),
@@ -113,14 +117,13 @@ export function renderFinalNote(draft) {
         section("One-Liner", valueText(fields.one_liner)),
         section("Chief Complaint", valueText(fields.chief_complaint)),
         section("HPI", valueText(fields.history_of_present_illness)),
+        section("Review of Systems", checklistFindingText(draft, "history")),
         section("Relevant History", relevantHistoryText(fields)),
-        section("Diet and Exercise", valueText(fields.diet_and_exercise)),
-        section("History / Review of Systems from Checklist", checklistFindingText(draft, "history"))
+        section("Diet and Exercise", valueText(fields.diet_and_exercise))
       ]
     : [
         section("One-Liner", valueText(fields.one_liner)),
-        section("Subjective", subjectiveText(fields)),
-        section("Focused History from Checklist", checklistFindingText(draft, "history"))
+        section("Subjective", appendChecklistFindings(subjectiveText(fields), checklistFindingText(draft, "history")))
       ];
 
   parts.push(

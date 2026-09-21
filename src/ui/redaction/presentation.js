@@ -1,5 +1,5 @@
-import { sectionWarningSummary } from "../../patient-context/sections.js?v=20260921-checklist-note-export";
-import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-checklist-note-export";
+import { sectionWarningSummary } from "../../patient-context/sections.js?v=20260921-note-builder-polish";
+import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-note-builder-polish";
 
 export function redactionPosition(text, redaction) {
   const source = String(text || "");

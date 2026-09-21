@@ -5,7 +5,7 @@ import {
   removeDay,
   sortDays,
   upsertDay
-} from "../daily-updates/days.js?v=20260921-checklist-note-export";
+} from "../daily-updates/days.js?v=20260921-note-builder-polish";
 import {
   activePatient,
   archivePatient,
@@ -16,7 +16,7 @@ import {
   setWorkupOverride,
   setWorkupOverrides,
   updateActivePatient
-} from "../app/state/vault.js?v=20260921-checklist-note-export";
+} from "../app/state/vault.js?v=20260921-note-builder-polish";
 import {
   deleteEncryptedVaultRecord,
   downloadJson, downloadText,
@@ -24,7 +24,7 @@ import {
   readEncryptedVaultRecord,
   saveEncryptedVault,
   writeEncryptedVaultRecord
-} from "../app/state/persistence.js?v=20260921-checklist-note-export";
+} from "../app/state/persistence.js?v=20260921-note-builder-polish";
 import {
   authorizeWorkupWorkspaceMirror,
   disconnectWorkupWorkspaceMirror,
@@ -36,7 +36,7 @@ import {
   reorderSections,
   reorderSectionsById,
   replaceSectionsFromFormAsync
-} from "../patient-context/sections.js?v=20260921-checklist-note-export";
+} from "../patient-context/sections.js?v=20260921-note-builder-polish";
 import {
   createEphemeralRedactionReview,
   refreshEphemeralRedactionReview,
@@ -59,13 +59,13 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../patient-context/deid-client.js?v=20260921-checklist-note-export";
+} from "../patient-context/deid-client.js?v=20260921-note-builder-polish";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../patient-context/deid-model-options.js?v=20260921-checklist-note-export";
+} from "../patient-context/deid-model-options.js?v=20260921-note-builder-polish";
 import {
   canAutomaticallyInstallModel,
   ensureModelPackServiceWorker,
@@ -77,13 +77,13 @@ import {
   modelFilesFromInput,
   removeModelPack,
   requestPersistentModelStorage
-} from "../patient-context/model-pack-storage.js?v=20260921-checklist-note-export";
+} from "../patient-context/model-pack-storage.js?v=20260921-note-builder-polish";
 import {
   formatBytes,
   hasAutomaticModelDownload,
   isInstallableModel,
   modelDownloadBytes
-} from "../patient-context/model-packs.js?v=20260921-checklist-note-export";
+} from "../patient-context/model-packs.js?v=20260921-note-builder-polish";
 import {
   ADMISSION_PSEUDO_DAY_ID,
   buildPromptPreviewSegments,
@@ -93,14 +93,14 @@ import {
   promptTemplateForTask,
   promptVariablesForPatient,
   savePromptTemplateOverrides,
-  saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260921-checklist-note-export";
+  saveTokenColorOverrides, studentNoteForPrompt
+} from "../prompts/custom-templates.js?v=20260921-note-builder-polish";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import {
   DEFAULT_DAILY_SOURCE_KIND,
   admissionSourceKindOptions
-} from "../patient-context/source-captures.js?v=20260921-checklist-note-export";
-import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260921-checklist-note-export";
+} from "../patient-context/source-captures.js?v=20260921-note-builder-polish";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260921-note-builder-polish";
 import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260910-pre-op-prep";
 import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260910-pre-op-prep";
 import {
@@ -127,8 +127,8 @@ import {
   workupFromEditorDraft,
   workupThoroughnessOption
 } from "../workups/editor.js?v=20260821-etiology-checklist";
-import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260921-checklist-note-export";
-import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260921-checklist-note-export";
+import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260921-note-builder-polish";
+import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260921-note-builder-polish";
 import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260815-standalone-ap";
 import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20260711-functional-remediation-15";
 import {
@@ -150,51 +150,49 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260921-checklist-note-export";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260921-checklist-note-export";
-import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-checklist-note-export";
-import { createReviewPresentation } from "./review/presentation.js?v=20260921-checklist-note-export";
-import { createReviewController } from "./review/controller.js?v=20260921-checklist-note-export";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260921-note-builder-polish";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260921-note-builder-polish";
+import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-note-builder-polish";
+import { createReviewPresentation } from "./review/presentation.js?v=20260921-note-builder-polish";
+import { createReviewController } from "./review/controller.js?v=20260921-note-builder-polish";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
-import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260921-checklist-note-export";
+import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260921-note-builder-polish";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
-import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260921-checklist-note-export";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-checklist-note-export";
+import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260921-note-builder-polish";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-note-builder-polish";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260921-checklist-note-export";
+} from "./prompts/controller.js?v=20260921-note-builder-polish";
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260910-guideline-pagination";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
-import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-checklist-note-export";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-checklist-note-export";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-checklist-note-export";
+import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-note-builder-polish";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-note-builder-polish";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-note-builder-polish";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
   createRedactionPresentation,
   redactionPosition,
   warningDescription,
   warningSnippet
-} from "./redaction/presentation.js?v=20260921-checklist-note-export";
+} from "./redaction/presentation.js?v=20260921-note-builder-polish";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
-import { createDemoController } from "./demo/controller.js?v=20260815-single-redaction-accept";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-checklist-note-export";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20260809-demo-nstemi-workup-1";
+import { createDemoController } from "./demo/controller.js?v=20260921-note-builder-polish";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-note-builder-polish";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-note-builder-polish";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
   vault: null,
   passphrase: "",
   view: "vault",
   selectedDayId: "",
-  selectedStayPacketId: "admission",
-  selectedPromptTask: "initial_admission_rounds",
-  promptDayId: "",
+  selectedStayPacketId: "admission", selectedPromptTask: "presentation_quality_editor", promptDayId: "",
   promptDayFollowsChecklist: true,
   customPromptTasks: loadCustomPromptTasks(),
   pendingRemovePromptTaskId: "",
@@ -227,7 +225,7 @@ const app = {
   webGpuAvailable: typeof navigator !== "undefined" && Boolean(navigator.gpu),
   promptTemplates: loadPromptTemplateOverrides(),
   promptDrafts: {},
-  presentationToEdit: "",
+  presentationToEdit: "", presentationToEditPacketId: "", presentationToEditEdited: false,
   presentationSpecialty: "",
   tokenColorOverrides: loadTokenColorOverrides(),
   smartMenuOpen: false,
@@ -240,7 +238,7 @@ const app = {
   sectionEditingKeys: new Set(),
   pendingSectionReviewFocus: null,
   structuredNoteDrafts: new Map(), noteDraftSessions: new Map(),
-  reviewPacketId: "admission", reviewSearchQuery: "", reviewCategory: "all", reviewPage: 0, reviewHelpKey: "", reviewDifferenceSelectionId: "",
+  reviewPacketId: "admission", reviewSearchQuery: "", reviewCategory: "all", reviewPage: 0, reviewDifferenceSelectionId: "",
   dailySourceKind: DEFAULT_DAILY_SOURCE_KIND,
   dailySourceDraft: "",
   dailySourceParse: null,
@@ -278,7 +276,7 @@ const app = {
   demoSession: null,
   admissionDate: "" // in-memory copy of the encrypted patient's admission-date anchor
 };
-const viewIds = ["vault", "daily", "review", "workups", "checklist", "prompts", "quickDeid", "settings"];
+const viewIds = ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "settings"];
 const viewTitles = {
   vault: "Vault / Roster", daily: "Hospital Stay", review: "Review Data / Draft Note",
   workups: "Workups", checklist: "Checklist", prompts: "OpenEvidence Prompts",
@@ -307,7 +305,6 @@ const workupPresentation = createWorkupPresentation({ escapeHtml, icon });
 const promptsPresentation = createPromptsPresentation({ escapeHtml });
 const settingsPresentation = createSettingsPresentation({ escapeHtml });
 const vaultPresentation = createVaultPresentation({ escapeHtml, icon });
-const reviewController = createReviewController({ app, active, byId, presentation: reviewPresentation, patientRequiredMessage, ensureSelectedDeidReady, deidentify, updateDeidOperation, persistVault, render, setStatus, copyText, downloadText });
 const demoController = createDemoController({
   app,
   byId,
@@ -320,6 +317,7 @@ const demoController = createDemoController({
     app.dailySourceKind = "other_chart_text"; app.dailySourceDraft = DEMO_DAILY_TEXTS.join("\n\n");
   }
 });
+const reviewController = createReviewController({ app, active, byId, presentation: reviewPresentation, patientRequiredMessage, persistVault, render, setStatus, copyText, downloadText, isEphemeralDemo: () => Boolean(app.demoSession), onDraftSaved: () => demoController.observeDraftSaved() });
 const demoSessionController = createDemoSessionController({
   app,
   createDemoPatient,
@@ -889,14 +887,14 @@ function clearPatientScopedSession() {
   app.selectedStayPacketId = "admission";
   app.promptDayId = "";
   app.promptDayFollowsChecklist = true;
-  app.promptDrafts = {};
-  app.presentationToEdit = "";
+  app.promptDrafts = {}; app.selectedPromptTask = "presentation_quality_editor";
+  app.presentationToEdit = ""; app.presentationToEditPacketId = ""; app.presentationToEditEdited = false;
   app.presentationSpecialty = "";
   app.sectionDrafts.clear();
   app.sectionEditingKeys.clear();
   app.pendingSectionReviewFocus = null;
   app.structuredNoteDrafts.clear(); app.noteDraftSessions.clear();
-  Object.assign(app, { reviewPacketId: "admission", reviewSearchQuery: "", reviewCategory: "all", reviewPage: 0, reviewHelpKey: "", reviewDifferenceSelectionId: "" });
+  Object.assign(app, { reviewPacketId: "admission", reviewSearchQuery: "", reviewCategory: "all", reviewPage: 0, reviewDifferenceSelectionId: "" });
   app.dailySourceKind = DEFAULT_DAILY_SOURCE_KIND;
   app.dailySourceDraft = "";
   app.dailySourceParse = null;
@@ -1432,6 +1430,8 @@ function renderPrompts() {
       null;
     app.promptDayId = selectedPromptDay ? selectedPromptDay.id : ADMISSION_PSEUDO_DAY_ID;
   }
+  const studentNote = studentNoteForPrompt(patient, app.promptDayId);
+  if (["presentation_quality_editor", "attending_presentation_critique"].includes(task.id) && (app.presentationToEditPacketId !== studentNote.packetId || !app.presentationToEditEdited)) { app.presentationToEdit = studentNote.text; app.presentationToEditPacketId = studentNote.packetId; app.presentationToEditEdited = false; }
   const template = app.promptDrafts[task.id] ?? promptTemplateForTask(task.id, app.promptTemplates, app.guidelineSets);
   let promptError = "";
   let previewSegments = [{ type: "text", value: "" }];
@@ -1464,7 +1464,7 @@ function renderPrompts() {
     previewSegments,
     templateHighlightSegments,
     promptError,
-    presentationToEdit: app.presentationToEdit,
+    presentationToEdit: app.presentationToEdit, presentationAutoPopulated: Boolean(studentNote.text) && !app.presentationToEditEdited,
     presentationSpecialty: app.presentationSpecialty,
     requiresPresentationToEdit: task.id === "presentation_quality_editor" || task.id === "attending_presentation_critique",
     requiresPresentationSpecialty: task.id === "attending_presentation_critique",
@@ -3823,7 +3823,7 @@ async function runQuickDeid() {
 }
 
 function handleChange(event) {
-  if (app.view === "review" && reviewController.change(event.target)) return;
+  if (app.view === "review" && reviewController.change(event.target)) { demoController.observeChange(event.target); return; }
   if (event.target.matches("[data-result-metadata]")) return dailySourceController.updateResultMetadata(event.target.dataset.resultScope || "daily", event.target.dataset.resultMetadata, event.target.value);
   if (event.target.matches?.(".guideline-select")) {
     guidelineSetsController.toggleSelection(event.target.dataset.guidelineId, event.target.checked);
@@ -3998,7 +3998,7 @@ function clearChecklistSearch() {
 }
 
 function handleInput(event) {
-  if (app.view === "review" && reviewController.input(event.target)) return;
+  if (app.view === "review" && reviewController.input(event.target)) { demoController.observeInput(event.target); return; }
   if (event.target.matches("[data-result-metadata]")) return dailySourceController.updateResultMetadata(event.target.dataset.resultScope || "daily", event.target.dataset.resultMetadata, event.target.value);
   if (event.target.matches("[data-structured-note-field]")) return dailySourceController.updateStructuredNoteDraft(event.target.dataset.structuredNoteScope || "daily", event.target.dataset.structuredNoteField, event.target.value);
   if (event.target.matches("[data-clinical-medication-search]")) return updateClinicalMedicationPage(event.target.closest('[data-clinical-view="medications"]'), { reset: true });
@@ -4148,7 +4148,7 @@ function bindEvents() {
         render();
         return;
       }
-      if (app.demoSession && !["daily", "workups", "checklist", "prompts"].includes(button.dataset.viewTarget))
+      if (app.demoSession && !["daily", "workups", "checklist", "review", "prompts"].includes(button.dataset.viewTarget))
         demoSessionController.exit({ renderAfter: false });
       if (button.dataset.viewTarget === "review") app.reviewPacketId = app.selectedStayPacketId || app.selectedDayId || "admission"; app.view = button.dataset.viewTarget;
       app.smartMenuOpen = false;

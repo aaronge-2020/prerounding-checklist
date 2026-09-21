@@ -62,7 +62,8 @@ const critiqueMarkup = promptsView.renderPrompts({
   variables: [],
   smartMenuOpen: false
 });
-assert.match(critiqueMarkup, /Presentation to critique/);
+assert.match(critiqueMarkup, /Student note to critique/);
+assert.match(critiqueMarkup, /No saved draft is available/);
 assert.match(critiqueMarkup, /id="presentationSpecialty"/);
 assert.match(critiqueMarkup, /Cardiology &amp; EP/);
 assert.match(critiqueMarkup, /De-identified draft/);
@@ -88,8 +89,8 @@ const demoView = createDemoPresentation({ escapeHtml });
 const demoPatient = createDemoPatient();
 assert.equal(demoPatient.contextSections.length, 0, "the guided demo must begin with an empty admission source list");
 assert.equal(demoPatient.days[0].sourceCaptures.length, 0, "the guided demo must add the selected-day source through the normal workflow");
-assert.equal(demoStage("teaching-showcase").title, "See the case teaching explanation");
-assert.match(demoView.renderGuide({ session: { stage: "teaching-showcase" }, currentView: "prompts" }), /See the case teaching explanation/);
+assert.equal(demoStage("write-note").title, "Write your clinical assessment");
+assert.match(demoView.renderGuide({ session: { stage: "write-note" }, currentView: "review" }), /student note sent for feedback/i);
 assert.match(demoView.renderCallout({ stage: demoStage("save-context") }), /Daniel Morgan is a synthetic 61-year-old/);
 const dailyMarkup = dailyView.renderDaily({
   patient: { contextSections: [{ id: "admission", label: "Admission context", deidentifiedText: "", residualWarnings: [], createdAt: "2026-01-01" }] },

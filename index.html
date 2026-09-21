@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#f7f6f2">
     <title>Pre-Rounding Checklist Builder</title>
     <link rel="icon" href="./favicon.ico">
-    <link rel="stylesheet" href="./styles.css?v=20260921-checklist-note-export">
+    <link rel="stylesheet" href="./styles.css?v=20260921-note-builder-polish">
   </head>
   <body class="vault-locked">
     <div class="app-shell">
@@ -26,9 +26,9 @@
         <nav class="primary-nav" aria-label="Workspace sections">
           <button type="button" data-view-target="vault" class="active" data-icon="lock">Vault / Roster</button>
           <button type="button" data-view-target="daily" data-icon="calendar">Hospital Stay</button>
-          <button type="button" data-view-target="review" data-icon="clipboard">Review Data / Draft Note</button>
           <button type="button" data-view-target="workups" data-icon="workup">Workups</button>
           <button type="button" data-view-target="checklist" data-icon="checklist">Checklist</button>
+          <button type="button" data-view-target="review" data-icon="clipboard">Review Data / Draft Note</button>
           <button type="button" data-view-target="prompts" data-icon="prompt">OpenEvidence Prompts</button>
           <button type="button" data-view-target="quickDeid" data-icon="wand">Quick De-ID</button>
           <button type="button" data-action="start-guided-demo" data-icon="play">Guided demo</button>
@@ -69,14 +69,14 @@
           <section id="dailyView" class="view" aria-labelledby="daily-heading">
             <div id="dailyContent"></div>
           </section>
-          <section id="reviewView" class="view" aria-labelledby="review-heading">
-            <div id="reviewContent"></div>
-          </section>
           <section id="workupsView" class="view" aria-labelledby="workups-heading">
             <div id="workupsContent"></div>
           </section>
           <section id="checklistView" class="view" aria-labelledby="checklist-heading">
             <div id="checklistContent"></div>
+          </section>
+          <section id="reviewView" class="view" aria-labelledby="review-heading">
+            <div id="reviewContent"></div>
           </section>
           <section id="promptsView" class="view" aria-labelledby="prompts-heading">
             <div id="promptsContent"></div>
@@ -195,6 +195,6 @@
     </div>
 
     <input id="modelPackFolderInput" type="file" webkitdirectory multiple hidden>
-    <script type="module" src="./src/ui/app.js?v=20260921-checklist-note-export"></script>
+    <script type="module" src="./src/ui/app.js?v=20260921-note-builder-polish"></script>
   </body>
 </html>

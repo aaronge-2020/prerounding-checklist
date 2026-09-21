@@ -21,12 +21,14 @@ import {
   promptTemplateForTask,
   PROMPT_TEMPLATE_STORAGE_KEY,
   promptVariablesForPatient,
-  SMART_PROMPT_VARIABLES
+  SMART_PROMPT_VARIABLES,
+  studentNoteForPrompt
 } from "../src/prompts/custom-templates.js";
 import { createGuidelineSet, DEFAULT_GUIDELINE_SET_SOURCES } from "../src/prompts/guideline-sets.js";
 import { buildTeamPreferencesPromptBlock, normalizeUserPreferences } from "../src/app/preferences.js";
 import { createSourceCapture } from "../src/patient-context/source-captures.js";
 import { ATTENDING_HOSPITALIST_PERSONA, ATTENDING_OBGYN_PERSONA, ATTENDING_SPECIALTY_COACH_PERSONA, ATTENDING_SURGEON_PERSONA } from "../src/prompts/natural-language.js";
+import { createNoteDraft, NOTE_TYPES, updateAssessment, updateNoteSection } from "../src/note-drafts/index.js";
 
 const allDefaultGuidelineSets = DEFAULT_GUIDELINE_SET_SOURCES.map((source) => createGuidelineSet(source.label, "", { token: source.token }));
 const taskGuidelineSources = DEFAULT_GUIDELINE_SET_SOURCES.filter((source) => source.task);
@@ -127,6 +129,7 @@ patient = {
     { ...patient.contextSections[2], sourceKind: "results", label: "Labs", deidentifiedText: "Creatinine 1.4, BNP elevated." }
   ]
 };
+
 const day = createDailyRecord({ date: "2026-07-09", label: "Hospital day 2" });
 const primaryDaySource = { ...createSourceCapture({ sourceKind: "primary_note", text: "Feels less short of breath after diuresis." }), id: "day_source_primary" };
 const checklistSnapshot = {
@@ -147,6 +150,16 @@ patient = {
     quickNotes: [{ id: "note_1", text: "Patient mentioned new hip pain unrelated to admission.", createdAt: "2026-07-09T12:05:00.000Z" }]
   })
 };
+
+let studentDraft = createNoteDraft(NOTE_TYPES.PROGRESS, { id: "student_note", patientId: patient.id, hospitalDayId: day.id });
+studentDraft = updateNoteSection(studentDraft, "one_liner", "Adult on hospital day 2 with improving dyspnea.");
+studentDraft = updateAssessment(studentDraft, "Volume status and breathing have improved after diuresis.");
+const persistedStudentNote = studentNoteForPrompt({ ...patient, noteDrafts: { [day.id]: studentDraft } }, day.id);
+assert.equal(persistedStudentNote.packetId, day.id);
+assert.match(persistedStudentNote.text, /Adult on hospital day 2 with improving dyspnea/);
+assert.match(persistedStudentNote.text, /Volume status and breathing have improved/);
+assert.equal(studentNoteForPrompt(patient, day.id).text, "", "an unsaved session draft must not populate an external-tool prompt");
+assert.equal(studentNoteForPrompt(patient, "__admission__").packetId, "admission");
 
 assert.equal(openEvidenceTasks[["final", "rounds", "update"].join("_")], undefined);
 assert.equal(openEvidenceTasks.obgyn_history_and_physical?.label, "OB/Gyn history & physical");

@@ -62,15 +62,41 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     instruction: "Record that Daniel has no chest discomfort now.",
     helper: "All other history and examination findings are pre-filled for this sample case.",
     calloutTitle: "Complete the one open finding",
-    callout: "The other history and examination findings are pre-filled to keep the walkthrough focused. Confirming whether chest pain is present now is the remaining high-priority question, and your answer will flow into the OpenEvidence prompt."
+    callout: "The other history and examination findings are pre-filled to keep the walkthrough focused. Confirming whether chest pain is present now completes bedside data collection before you begin writing the note."
+  },
+  "open-review": {
+    view: "review",
+    navTarget: "review",
+    title: "Write after bedside data collection",
+    instruction: "Click Review Data / Draft Note in the sidebar.",
+    calloutTitle: "Next: write the note",
+    callout: "History questions and physical-exam maneuvers come first. Every completed answer is already placed in Subjective or Physical Exam, using only the chart-ready answer rather than the bedside question."
+  },
+  "write-note": {
+    view: "review",
+    targetSelector: "[data-draft-assessment]",
+    title: "Write your clinical assessment",
+    instruction: "Write a short assessment in your own words.",
+    helper: "Your checklist findings and assessment will become the student note sent for feedback.",
+    calloutTitle: "The student writes first",
+    callout: "The app organizes evidence, but it does not invent your reasoning. Write your synthesis here before asking an external tool to edit or verify the note."
+  },
+  "save-note": {
+    view: "review",
+    targetSelector: '[data-action="save-note-draft"]',
+    title: "Save the encrypted draft",
+    instruction: "Click Save encrypted draft.",
+    helper: "The synthetic tutorial keeps this saved note only for the temporary demo session.",
+    calloutTitle: "Keep the draft local",
+    callout: "Saving encrypts the note in the local vault without running a de-identification model. Unsaved note text is never inserted automatically into an external-tool prompt."
   },
   "open-prompts": {
     view: "prompts",
     navTarget: "prompts",
     title: "Open the prompt builder",
     instruction: "Click OpenEvidence Prompts in the sidebar.",
-    calloutTitle: "Create a prompt from reviewed information",
-    callout: "The prompt builder combines the sources and checklist answers you reviewed. It uses de-identified text only."
+    calloutTitle: "Get feedback on the note you wrote",
+    callout: "Edit and verify presentation is the default prompt. Your student note is populated automatically so you can send it to OpenEvidence or Doximity for feedback after completing the bedside work and your own draft."
   },
   "copy-prompt": {
     view: "prompts",
@@ -78,29 +104,13 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     title: "Copy the prompt",
     instruction: "Click Copy prompt.",
     calloutTitle: "Copy the prepared prompt",
-    callout: "The prompt is ready to paste into your preferred clinical reasoning tool. The app does not send the prompt or save an external response."
-  },
-  "open-teaching": {
-    view: "prompts",
-    targetSelector: "#promptTaskSelect",
-    title: "Open the teaching showcase",
-    instruction: "Choose Teaching: full case trajectory from the prompt list.",
-    calloutTitle: "Switch to the teaching prompt",
-    callout: "This version uses the same reviewed case information, but asks for an explanation of the clinical reasoning for a learner."
-  },
-  "teaching-showcase": {
-    view: "prompts",
-    targetSelector: "#promptOutputHighlighted",
-    title: "See the case teaching explanation",
-    instruction: "Review the teaching prompt, then click Copy prompt to finish the demo.",
-    calloutTitle: "What this prompt teaches",
-    callout: "It asks the receiving tool to explain Daniel’s presentation, key decisions, and hospital course in a way a clinician in training can follow."
+    callout: "The copied prompt contains your draft note plus the edit-and-verify instructions. Confirm the draft has no identifiers before pasting it into OpenEvidence or Doximity; the app does not send it automatically or save the external response."
   },
   done: {
     view: "prompts",
     title: "Demo complete",
     instruction: "You followed the full sample workflow.",
-    helper: "You reviewed the sample case, created a prompt, and reached the teaching showcase. Nothing from this demo was written to your vault."
+    helper: "You gathered history and exam findings, wrote and encrypted a student note, and prepared it for external feedback. Nothing from this demo was written to your vault."
   }
 });
 

@@ -1,5 +1,5 @@
-import { createDemoPresentation } from "./presentation.js?v=20260815-single-redaction-accept";
-import { DEMO_DAY_ID, DEMO_REQUIRED_ANSWER_ITEM_ID, DEMO_WORKUP_ID, prefillDemoChecklist } from "./session.js?v=20260809-demo-nstemi-workup-1";
+import { createDemoPresentation } from "./presentation.js?v=20260921-note-builder-polish";
+import { DEMO_DAY_ID, DEMO_REQUIRED_ANSWER_ITEM_ID, DEMO_WORKUP_ID, prefillDemoChecklist } from "./session.js?v=20260921-note-builder-polish";
 
 export const DEMO_REVIEW_ACTIONS = Object.freeze(new Set([
   "keep-reviewed-redaction",
@@ -175,7 +175,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       };
       session.stage = "answer-checklist";
     }
-    if (action === "copy-prompt") session.stage = session.stage === "copy-prompt" ? "open-teaching" : "done";
+    if (action === "copy-prompt") session.stage = "done";
     renderApp();
   }
 
@@ -185,19 +185,34 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     if (session.stage === "select-workup" && target.matches?.(`.workup-checkbox[value="${DEMO_WORKUP_ID}"]`) && target.checked)
       session.stage = "build-checklist";
     if (session.stage === "answer-checklist" && target.matches?.(`.checklist-answer[name="${DEMO_REQUIRED_ANSWER_ITEM_ID}"]`) && (target.value || target.checked))
-      session.stage = "open-prompts";
-    if (session.stage === "open-teaching" && target.id === "promptTaskSelect" && target.value === "teaching_case_trajectory")
-      session.stage = "teaching-showcase";
+      session.stage = "open-review";
     setTimeout(render, 0);
+  }
+
+  function observeInput(target) {
+    const session = getSession();
+    if (!session) return;
+    if (session.stage === "write-note" && target.matches?.("[data-draft-assessment]") && String(target.value || "").trim()) {
+      session.stage = "save-note";
+      setTimeout(render, 0);
+    }
+  }
+
+  function observeDraftSaved() {
+    const session = getSession();
+    if (!session || session.stage !== "save-note") return;
+    session.stage = "open-prompts";
+    renderApp();
   }
 
   function observeNavigation(view) {
     const session = getSession();
     if (!session) return;
     if (session.stage === "open-workups" && view === "workups") session.stage = "select-workup";
+    if (session.stage === "open-review" && view === "review") session.stage = "write-note";
     if (session.stage === "open-prompts" && view === "prompts") session.stage = "copy-prompt";
     renderApp();
   }
 
-  return { observeAction, observeChange, observeNavigation, render };
+  return { observeAction, observeChange, observeDraftSaved, observeInput, observeNavigation, render };
 }

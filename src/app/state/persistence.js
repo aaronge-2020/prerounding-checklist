@@ -1,4 +1,4 @@
-import { createEmptyVaultState, migrateVaultState } from "./vault.js?v=20260921-checklist-note-export";
+import { createEmptyVaultState, migrateVaultState } from "./vault.js?v=20260921-note-builder-polish";
 
 export const VAULT_DATA_KEY = "prerounding.local.encryptedVault.v1";
 const KDF_ITERATIONS = 210000;

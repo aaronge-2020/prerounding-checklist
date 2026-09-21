@@ -35,10 +35,10 @@ try {
   await page.waitForSelector("#reviewContent .review-workspace");
   assert.match(await page.locator(".review-one-liner").innerText(), /community-acquired pneumonia/);
   assert.equal(await page.locator('[data-draft-section="past_surgical_history"]').count(), 1);
-  await page.locator('[data-action="toggle-note-help"][data-help-key="assessment"]').focus();
-  await page.keyboard.press("Enter");
-  assert.match(await page.locator(".note-help-panel").innerText(), /concise synthesis/i);
-  assert.doesNotMatch(await page.locator(".note-help-panel").innerText(), /act as|prompt token|hidden reasoning|return only/i);
+  const assessmentHelp = page.locator('[data-help-key="assessment"]');
+  assert.match(await assessmentHelp.getAttribute("data-tooltip"), /concise synthesis/i);
+  assert.doesNotMatch(await assessmentHelp.getAttribute("data-tooltip"), /act as|prompt token|hidden reasoning|return only/i);
+  assert.equal(await page.locator(".note-help-panel").count(), 0, "help must stay in a hover/focus tooltip instead of inserting a panel");
 
   // The problem builder preserves student wording, known etiology, plans, and order.
   await page.click('[data-action="add-plan-problem"]');
@@ -81,6 +81,11 @@ try {
   await page.click('[data-action="insert-no-acute-events"]');
   assert.equal(await page.locator('[data-draft-section="interval_events"]').inputValue(), "No acute events overnight.");
   assert.equal(await page.locator('[data-draft-section="past_medical_history"]').count(), 0);
+  assert.equal(await page.locator("#reviewNoteType").inputValue(), "progress");
+  await page.selectOption("#reviewNoteType", "hp");
+  assert.equal(await page.locator('[data-draft-section="history_of_present_illness"]').count(), 1);
+  assert.equal(await page.locator('[data-draft-section="interval_events"]').count(), 0);
+  await page.selectOption("#reviewNoteType", "progress");
 
   // Add realistic patient-wide data through the visible Hospital Stay workflow.
   await page.click('[data-view-target="daily"]');
@@ -134,7 +139,7 @@ Sodium: 138`;
   await addDailySource("laboratory_results", dayTwoLabs, 1);
 
   // Build and complete only one history question and one exam maneuver for
-  // this day; unanswered checklist items must never be offered to the note.
+  // this day; answered findings must flow into the note automatically.
   await page.click('[data-view-target="workups"]');
   const catalogMenu = page.locator(".workup-catalog-menu");
   if (!(await catalogMenu.getAttribute("open"))) await catalogMenu.locator("summary").click();
@@ -149,28 +154,24 @@ Sodium: 138`;
   else await historyItem.locator('input.checklist-answer').first().check();
   if (await examItem.locator("select.checklist-answer").count()) await examItem.locator("select.checklist-answer").selectOption({ index: 1 });
   else await examItem.locator('input.checklist-answer').first().check();
+  const historyAnswer = await historyItem.locator("select.checklist-answer option:checked").textContent();
+  const examAnswer = await examItem.locator("select.checklist-answer option:checked").textContent();
   await page.waitForFunction(() => [...document.querySelectorAll("#checklistSections .checklist-item")].filter((item) => item.querySelector("select.checklist-answer")?.value || item.querySelector("input.checklist-answer:checked")).length >= 2);
 
   await page.click('[data-view-target="review"]');
   await page.waitForSelector("#reviewContent .review-workspace");
-  assert.equal(await page.locator("[data-checklist-finding-candidate]").count(), 2);
-  await page.fill("#checklistFindingSearch", historyQuestion);
-  assert.equal(await page.locator("[data-checklist-finding-candidate]:visible").count(), 1);
-  await page.fill("#checklistFindingSearch", "");
-  await page.locator('[data-checklist-finding-kind="history"] [data-checklist-finding-selection-id]').check();
-  await page.locator('[data-checklist-finding-kind="exam"] [data-checklist-finding-selection-id]').check();
-  assert.match(await page.locator("[data-final-note-preview]").innerText(), new RegExp(historyQuestion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.match(await page.locator("[data-final-note-preview]").innerText(), new RegExp(examQuestion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  const importedExam = page.locator('[data-checklist-finding-block]').filter({ has: page.locator("strong", { hasText: "Physical exam" }) });
-  await importedExam.locator("textarea").fill("Focused exam finding edited for the note.");
-  await page.locator('[data-checklist-finding-kind="history"] [data-checklist-finding-selection-id]').uncheck();
-  assert.doesNotMatch(await page.locator("[data-final-note-preview]").innerText(), new RegExp(historyQuestion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.match(await page.locator("[data-final-note-preview]").innerText(), /Focused exam finding edited for the note/);
+  assert.equal(await page.locator('[data-checklist-finding-kind="history"] li').count(), 1);
+  assert.equal(await page.locator('[data-checklist-finding-kind="exam"] li').count(), 1);
+  const notePreview = await page.locator("[data-final-note-preview]").innerText();
+  assert.match(notePreview, new RegExp(String(historyAnswer).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(notePreview, new RegExp(String(examAnswer).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.doesNotMatch(notePreview, new RegExp(historyQuestion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.doesNotMatch(notePreview, new RegExp(examQuestion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.equal(await page.locator('[data-action="copy-final-note"]').isVisible(), true);
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: new URL(server.baseUrl).origin });
   await page.click('[data-action="copy-final-note"]');
   const copiedNote = await page.evaluate(() => navigator.clipboard.readText());
-  assert.match(copiedNote, /Physical Exam[\s\S]*Focused exam finding edited for the note/);
+  assert.match(copiedNote, new RegExp(`Physical Exam[\\s\\S]*${String(examAnswer).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`));
   assert.doesNotMatch(copiedNote, /\*\*/);
   const noteDownload = page.waitForEvent("download");
   await page.click('[data-action="download-final-note"]');
@@ -258,10 +259,10 @@ Sodium: 138`;
   // Narrow layout remains usable by keyboard without horizontal document overflow.
   await page.setViewportSize({ width: 390, height: 844 });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1), true);
-  const help = page.locator('[data-action="toggle-note-help"][data-help-key="objective"]');
+  const help = page.locator('[data-help-key="objective"]');
   await help.focus();
-  await page.keyboard.press("Enter");
-  assert.equal(await page.locator(".note-help-panel").isVisible(), true);
+  assert.match(await help.getAttribute("data-tooltip"), /measured|diagnostic/i);
+  assert.equal(await page.locator(".note-help-panel").count(), 0);
 
   assert.deepEqual(pageErrors, []);
   assert.deepEqual(consoleErrors.filter((message) => !/503 \(Service Unavailable\)/.test(message)), []);

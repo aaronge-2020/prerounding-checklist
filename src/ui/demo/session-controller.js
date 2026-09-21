@@ -5,7 +5,7 @@ import {
   DEMO_DAY_ID,
   DEMO_PATIENT_ID,
   DEMO_WORKUP_ID
-} from "./session.js?v=20260809-demo-nstemi-workup-1";
+} from "./session.js?v=20260921-note-builder-polish";
 
 export function createDemoSessionController({
   app,
@@ -29,6 +29,9 @@ export function createDemoSessionController({
       restoreAdmissionDate: app.admissionDate,
       restoreSelectedWorkupEditorId: app.selectedWorkupEditorId,
       restoreSelectedPromptTask: app.selectedPromptTask,
+      restorePresentationToEdit: app.presentationToEdit,
+      restorePresentationToEditPacketId: app.presentationToEditPacketId,
+      restorePresentationToEditEdited: app.presentationToEditEdited,
       restorePromptDayId: app.promptDayId,
       restorePromptDayFollowsChecklist: app.promptDayFollowsChecklist,
       restoreDraftWorkup: app.draftWorkup,
@@ -38,7 +41,9 @@ export function createDemoSessionController({
       restoreAdmissionSourceDraft: app.admissionSourceDraft,
       restoreAdmissionSourceKind: app.admissionSourceKind,
       restoreDailySourceDraft: app.dailySourceDraft,
-      restoreDailySourceKind: app.dailySourceKind
+      restoreDailySourceKind: app.dailySourceKind,
+      restoreNoteDraftSessions: new Map(app.noteDraftSessions),
+      restoreReviewPacketId: app.reviewPacketId
     };
     const sourcePatient = createDemoPatient();
     const patient = {
@@ -61,6 +66,13 @@ export function createDemoSessionController({
     app.admissionDate = DEMO_ADMISSION_DATE;
     app.deidMode = structuredDeidMode;
     app.selectedWorkupEditorId = DEMO_WORKUP_ID;
+    app.selectedPromptTask = "presentation_quality_editor";
+    app.promptDayId = DEMO_DAY_ID;
+    app.presentationToEdit = "";
+    app.presentationToEditPacketId = "";
+    app.presentationToEditEdited = false;
+    app.noteDraftSessions = new Map();
+    app.reviewPacketId = DEMO_DAY_ID;
     app.draftWorkup = null;
     app.checklistSearchQuery = "";
     app.workupCatalogQuery = "";
@@ -87,6 +99,9 @@ export function createDemoSessionController({
     app.admissionDate = session.restoreAdmissionDate;
     app.selectedWorkupEditorId = session.restoreSelectedWorkupEditorId;
     app.selectedPromptTask = session.restoreSelectedPromptTask;
+    app.presentationToEdit = session.restorePresentationToEdit;
+    app.presentationToEditPacketId = session.restorePresentationToEditPacketId;
+    app.presentationToEditEdited = session.restorePresentationToEditEdited;
     app.promptDayId = session.restorePromptDayId;
     app.promptDayFollowsChecklist = session.restorePromptDayFollowsChecklist;
     app.draftWorkup = session.restoreDraftWorkup;
@@ -97,6 +112,8 @@ export function createDemoSessionController({
     app.admissionSourceKind = session.restoreAdmissionSourceKind;
     app.dailySourceDraft = session.restoreDailySourceDraft;
     app.dailySourceKind = session.restoreDailySourceKind;
+    app.noteDraftSessions = new Map(session.restoreNoteDraftSessions);
+    app.reviewPacketId = session.restoreReviewPacketId;
     app.demoSession = null;
     clearPhiReviews();
     clearQuickDeidSession();

@@ -1,7 +1,7 @@
 import {
   clinicalDisplayModelFromPromptText,
   laboratoryAbnormality
-} from "../patient-context/structured-clinical-data.js?v=20260921-checklist-note-export";
+} from "../patient-context/structured-clinical-data.js?v=20260921-note-builder-polish";
 
 const GROUP_DEFINITIONS = Object.freeze([
   Object.freeze({ id: "vitals", label: "Vital signs" }),

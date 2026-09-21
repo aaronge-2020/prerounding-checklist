@@ -1,4 +1,4 @@
-import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260921-checklist-note-export";
+import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260921-note-builder-polish";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({

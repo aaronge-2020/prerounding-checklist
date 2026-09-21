@@ -1,6 +1,6 @@
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-checklist-note-export";
-import { clearOpenEvidenceExamNote, latestDay, saveOpenEvidenceExamNote, upsertDay } from "../../daily-updates/days.js?v=20260921-checklist-note-export";
-import { createSourceCapture } from "../../patient-context/source-captures.js?v=20260921-checklist-note-export";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-note-builder-polish";
+import { clearOpenEvidenceExamNote, latestDay, saveOpenEvidenceExamNote, upsertDay } from "../../daily-updates/days.js?v=20260921-note-builder-polish";
+import { createSourceCapture } from "../../patient-context/source-captures.js?v=20260921-note-builder-polish";
 import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js";
 
 export function createExamFindingsController({ state, active, persistVault, setStatus }) {

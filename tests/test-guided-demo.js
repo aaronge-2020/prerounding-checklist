@@ -45,8 +45,12 @@ assert.deepEqual(seededAnswers[DEMO_REQUIRED_ANSWER_ITEM_ID].selected, [], "the 
 assert.equal(Object.values(seededAnswers).filter((answer) => answer.selected.length).length, snapshot.items.length - 1);
 const promptSummary = checklistAnswersSummary(snapshot, seededAnswers);
 assert.match(promptSummary, /JVP not elevated/);
-assert.match(promptSummary, /Clear throughout including bases/);
-assert.doesNotMatch(promptSummary, /Are you having chest pressure or pain now/);
+assert.match(promptSummary, /Lungs clear throughout, including the bases/);
+assert.doesNotMatch(promptSummary, /Do you have chest pressure or pain now/);
+assert.equal(seededPatient.days[0].sourceCaptures.length, 5, "the guided note workspace should include objective demo data");
+assert.ok(seededPatient.days[0].sourceCaptures.some((capture) => capture.sourceKind === "vital_signs"));
+assert.ok(seededPatient.days[0].sourceCaptures.some((capture) => capture.sourceKind === "laboratory_results"));
+assert.ok(seededPatient.days[0].sourceCaptures.some((capture) => capture.label === "ECG interpretation"));
 assert.equal(demoStage("context-review").targetSelector, '[data-action="keep-reviewed-redaction"]');
 assert.equal(demoStage("daily-review").targetSelector, '[data-action="keep-reviewed-redaction"]');
 assert.deepEqual([...DEMO_REVIEW_ACTIONS], ["keep-reviewed-redaction", "confirm-all-section-redactions", "continue-section-review"]);
@@ -56,7 +60,12 @@ assert.equal(demoReviewTransition("continue-section-review", true), "preserve-re
 assert.equal(demoReviewTransition("keep-reviewed-redaction", false), "complete-review");
 assert.equal(demoReviewTransition("copy-prompt", false), "unrelated");
 assert.match(demoStage("context-review").instruction, /Accept.*one change at a time/i);
-assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 13);
+assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 14);
+const stageOrder = Object.keys(DEMO_GUIDE_STAGES);
+assert.ok(stageOrder.indexOf("answer-checklist") < stageOrder.indexOf("write-note"));
+assert.ok(stageOrder.indexOf("write-note") < stageOrder.indexOf("save-note"));
+assert.ok(stageOrder.indexOf("save-note") < stageOrder.indexOf("open-prompts"));
+assert.ok(stageOrder.indexOf("write-note") < stageOrder.indexOf("open-prompts"));
 Object.values(DEMO_GUIDE_STAGES).forEach((stage) => {
   assert.ok(stage.instruction, `${stage.title} should tell the user what to do`);
 });
@@ -70,6 +79,12 @@ assert.match(guide, /data-action="exit-guided-demo"/);
 assert.match(guide, />Exit demo</);
 assert.doesNotMatch(guide, /Restart demo/);
 assert.doesNotMatch(guide, /demo-answer|demo-generate-prompt|static/i);
+const noteGuide = presentation.renderGuide({ session: { stage: "write-note" }, currentView: "review" });
+assert.match(noteGuide, /Write your clinical assessment/);
+assert.match(noteGuide, /student note sent for feedback/i);
+const feedbackGuide = presentation.renderGuide({ session: { stage: "open-prompts" }, currentView: "review" });
+assert.match(feedbackGuide, /Open OpenEvidence Prompts/i);
+assert.match(presentation.renderCallout({ stage: demoStage("open-prompts") }), /feedback on the note you wrote/i);
 const handoffGuide = presentation.renderGuide({
   session: { stage: "context-review" },
   currentView: "daily",
@@ -82,6 +97,7 @@ assert.match(handoffGuide, /You check the app's suggestions before moving on/);
 
 const complete = presentation.renderGuide({ session: { stage: "done" }, currentView: "prompts" });
 assert.match(complete, /Demo complete/);
+assert.match(complete, /gathered history and exam findings, wrote and encrypted a student note/i);
 assert.match(complete, /nothing from this demo was written to your vault/i);
 assert.match(complete, /data-action="exit-guided-demo"/);
 

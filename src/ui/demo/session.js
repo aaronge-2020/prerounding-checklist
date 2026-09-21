@@ -1,4 +1,5 @@
-import { createPatientRecord, normalizeDay } from "../../app/state/vault.js?v=20260921-checklist-note-export";
+import { createPatientRecord, normalizeDay } from "../../app/state/vault.js?v=20260921-note-builder-polish";
+import { normalizeSourceCapture } from "../../patient-context/source-captures.js?v=20260921-note-builder-polish";
 
 export const DEMO_PATIENT_ID = "demo_patient_guided_case";
 export const DEMO_DAY_ID = "demo_day_guided_case";
@@ -197,6 +198,85 @@ The patient reported improved chest discomfort, decreasing from 8/10 at presenta
 The patient remained NPO after midnight in preparation for coronary angiography. Fall precautions and continuous telemetry were maintained. Nursing staff provided education regarding acute coronary syndrome, medication adherence, smoking cessation reinforcement, and expected inpatient treatment course.`
 ];
 
+const DEMO_CAPTURE_TIME = "2026-07-17T18:00:00.000Z";
+const DEMO_OBJECTIVE_CAPTURES = Object.freeze([
+  {
+    id: "demo_vitals",
+    sourceKind: "vital_signs",
+    label: "Hospital day 1 vital signs",
+    deidentifiedText: `Vitals
+@ 07/17/26 1800: BP 128/76; Pulse 82; Respiratory rate 16; Temp 37.0; SpO2 97
+@ 07/17/26 1400: BP 136/82; Pulse 88; Respiratory rate 18; Temp 37.1; SpO2 96
+@ 07/17/26 1000: BP 148/88; Pulse 96; Respiratory rate 18; Temp 37.2; SpO2 96
+@ 07/17/26 0845: BP 166/94; Pulse 106; Respiratory rate 20; Temp 37.1; SpO2 95`,
+    capturedAt: DEMO_CAPTURE_TIME,
+    createdAt: DEMO_CAPTURE_TIME,
+    updatedAt: DEMO_CAPTURE_TIME
+  },
+  {
+    id: "demo_labs",
+    sourceKind: "laboratory_results",
+    label: "Serial cardiac and metabolic labs",
+    deidentifiedText: `Labs
+@ 07/17/26 1800
+High-sensitivity troponin: 312 ng/L; ref 0-19; flag H
+Creatinine: 1.0 mg/dL; ref 0.6-1.3
+Potassium: 4.2 mmol/L; ref 3.5-5.1
+Glucose: 164 mg/dL; ref 70-140; flag H
+Hemoglobin: 14.2 g/dL; ref 13.5-17.5
+
+@ 07/17/26 1400
+High-sensitivity troponin: 364 ng/L; ref 0-19; flag H
+Creatinine: 1.0 mg/dL; ref 0.6-1.3
+Potassium: 4.0 mmol/L; ref 3.5-5.1
+
+@ 07/17/26 0900
+High-sensitivity troponin: 86 ng/L; ref 0-19; flag H
+Creatinine: 1.1 mg/dL; ref 0.6-1.3
+Potassium: 4.1 mmol/L; ref 3.5-5.1`,
+    capturedAt: DEMO_CAPTURE_TIME,
+    createdAt: DEMO_CAPTURE_TIME,
+    updatedAt: DEMO_CAPTURE_TIME
+  },
+  {
+    id: "demo_ecg",
+    sourceKind: "results",
+    label: "ECG interpretation",
+    resultCategory: "other",
+    resultDate: "Hospital day 1 · 14:15",
+    resultContext: "Repeat ECG",
+    deidentifiedText: "Sinus rhythm at 86 bpm with persistent 1 mm ST-segment depressions in V4-V6 and T-wave inversions in leads I and aVL; no new ST elevation.",
+    capturedAt: DEMO_CAPTURE_TIME,
+    createdAt: DEMO_CAPTURE_TIME,
+    updatedAt: DEMO_CAPTURE_TIME
+  },
+  {
+    id: "demo_echo",
+    sourceKind: "results",
+    label: "Transthoracic echocardiogram",
+    resultCategory: "imaging",
+    resultDate: "Hospital day 1",
+    resultContext: "Final interpretation",
+    deidentifiedText: "LVEF 48% with mild anterior-wall hypokinesis. Normal right-ventricular size and function. No hemodynamically significant valvular disease or pericardial effusion.",
+    capturedAt: DEMO_CAPTURE_TIME,
+    createdAt: DEMO_CAPTURE_TIME,
+    updatedAt: DEMO_CAPTURE_TIME
+  },
+  {
+    id: "demo_medications",
+    sourceKind: "medication_activity",
+    label: "Active medication regimens",
+    deidentifiedText: `Medications
+[Scheduled Medications] aspirin — 81 mg; daily; PO; Day 1 | 0900
+[Scheduled Medications] ticagrelor — 90 mg; twice daily; PO; Day 1 | 0900
+[Continuous Infusions] unfractionated heparin — 12 units/kg/hr; continuous; IV; Day 1 | 1745
+[Scheduled Medications] atorvastatin — 80 mg; nightly; PO; Day 1 | 2100`,
+    capturedAt: DEMO_CAPTURE_TIME,
+    createdAt: DEMO_CAPTURE_TIME,
+    updatedAt: DEMO_CAPTURE_TIME
+  }
+]);
+
 export function createDemoPatient() {
   const day = normalizeDay({
     id: DEMO_DAY_ID,
@@ -216,24 +296,24 @@ export function createDemoPatient() {
 }
 
 const DEMO_PREFILLED_ANSWERS = Object.freeze({
-  "nitroglycerin-response": "Relieved promptly",
-  "heart-failure-symptoms": "None",
-  "rhythm-low-output-symptoms": "None",
+  "nitroglycerin-response": "Chest discomfort relieved promptly with nitroglycerin",
+  "heart-failure-symptoms": "No dyspnea, orthopnea, or new swelling",
+  "rhythm-low-output-symptoms": "No palpitations, dizziness, or syncope",
   "bleeding-symptoms": "No bleeding symptoms",
   "ischemic-equivalents": "Mild fatigue only",
-  "medication-history": "Taken consistently without adverse effects",
-  "procedure-readiness": "NPO, understands, no prior reaction",
+  "medication-history": "Cardiac medications taken consistently without adverse effects",
+  "procedure-readiness": "NPO, understands the procedure, and reports no prior contrast reaction",
   "glycemic-symptoms": "No hypo- or hyperglycemic symptoms",
   "overall-appearance": "Comfortable, alert, no diaphoresis or respiratory distress",
   hemodynamics: "Hemodynamically stable without new oxygen need",
   "jugular-venous-pressure": "JVP not elevated",
   "cardiac-auscultation": "Regular rhythm, no new murmur, gallop, or rub",
-  "lung-exam": "Clear throughout including bases",
+  "lung-exam": "Lungs clear throughout, including the bases",
   "perfusion-pulses": "Warm, well perfused, symmetric palpable pulses",
   edema: "No peripheral or sacral edema",
   "chest-wall": "No reproducible chest-wall tenderness",
   "calf-exam": "No calf asymmetry, warmth, or tenderness",
-  "abdominal-aortic-exam": "Soft, nontender, no concerning pulsatile mass",
+  "abdominal-aortic-exam": "Abdomen soft and nontender without a concerning pulsatile mass",
   "focused-neurologic-exam": "Alert with clear speech and no focal deficit",
   "bleeding-skin-exam": "No active bleeding or significant bruising"
 });
@@ -249,7 +329,12 @@ export function prefillDemoChecklist(patient) {
         const selected = DEMO_PREFILLED_ANSWERS[item.itemId];
         if (selected && item.choices.includes(selected)) answers[item.id] = { selected: [selected], note: "" };
       }
-      return { ...day, answers };
+      const demoIds = new Set(DEMO_OBJECTIVE_CAPTURES.map((capture) => capture.id));
+      const sourceCaptures = [
+        ...(day.sourceCaptures || []).filter((capture) => !demoIds.has(capture.id)),
+        ...DEMO_OBJECTIVE_CAPTURES.map((capture) => normalizeSourceCapture(capture, { now: () => DEMO_CAPTURE_TIME }))
+      ];
+      return { ...day, answers, sourceCaptures };
     })
   };
 }

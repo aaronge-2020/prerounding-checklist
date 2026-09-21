@@ -1,8 +1,8 @@
 import { normalizeUserPreferences } from "../preferences.js";
 import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js";
 import { CONTEXT_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRoleLabel } from "../../patient-context/packet-roles.js";
-import { migrateLegacyDailySections, normalizeDiagnosticResultCategory, normalizeSourceCapture, normalizeSourceKindForScope } from "../../patient-context/source-captures.js?v=20260921-checklist-note-export";
-import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260921-checklist-note-export";
+import { migrateLegacyDailySections, normalizeDiagnosticResultCategory, normalizeSourceCapture, normalizeSourceKindForScope } from "../../patient-context/source-captures.js?v=20260921-note-builder-polish";
+import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260921-note-builder-polish";
 
 export const VAULT_SCHEMA_VERSION = 4;
 

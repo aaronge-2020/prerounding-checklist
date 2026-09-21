@@ -1,23 +1,20 @@
-import { sortDays } from "../../daily-updates/days.js?v=20260921-checklist-note-export";
-import { updateActivePatient } from "../../app/state/vault.js?v=20260921-checklist-note-export";
-import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260921-checklist-note-export";
+import { sortDays } from "../../daily-updates/days.js?v=20260921-note-builder-polish";
+import { updateActivePatient } from "../../app/state/vault.js?v=20260921-note-builder-polish";
+import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260921-note-builder-polish";
 import {
   addDifferential,
   addPlanProblem,
   buildChecklistNoteCandidates,
+  changeNoteDraftType,
   createNoteDraft,
-  deselectChecklistFinding,
   deselectObjectiveBlock,
-  editChecklistFinding,
   editObjectiveBlock,
   fieldsForNoteType,
   keepObjectiveBlock,
-  keepChecklistFinding,
   NOTE_TYPES,
   normalizeNoteDraft,
   reconcileObjectiveBlock,
   reconcileChecklistFinding,
-  refreshChecklistFinding,
   refreshObjectiveBlock,
   removeDifferential,
   removePlanProblem,
@@ -34,7 +31,7 @@ import {
   updateManualObjective,
   updateNoteSection,
   updatePlanProblem
-} from "../../note-drafts/index.js?v=20260921-checklist-note-export";
+} from "../../note-drafts/index.js?v=20260921-note-builder-polish";
 
 const REVIEW_PAGE_SIZE = 8;
 
@@ -73,70 +70,6 @@ function draftFromSource(patient, selectedPacketId) {
   return draft;
 }
 
-async function deidentifyDraftText(value, deidentify, referenceDate) {
-  const original = String(value?.deidentifiedText || "");
-  if (!original.trim()) return { ...value, deidentifiedText: "", residualWarnings: [] };
-  const result = await deidentify(original, { referenceDate });
-  return {
-    ...value,
-    deidentifiedText: String(result.text || ""),
-    residualWarnings: Array.isArray(result.residualWarnings) ? result.residualWarnings : (result.flags || []),
-    updatedAt: new Date().toISOString()
-  };
-}
-
-async function deidentifyDraft(draft, deidentify, referenceDate) {
-  const sections = Object.fromEntries(await Promise.all(Object.entries(draft.sections).map(async ([key, value]) => [key, await deidentifyDraftText(value, deidentify, referenceDate)])));
-  const closing = Object.fromEntries(await Promise.all(Object.entries(draft.closing).map(async ([key, value]) => [key, await deidentifyDraftText(value, deidentify, referenceDate)])));
-  const manual = await deidentifyDraftText(draft.objective.manual, deidentify, referenceDate);
-  const selectedBlocks = [];
-  for (const block of draft.objective.selectedBlocks) {
-    const result = block.editedText === block.generatedText
-      ? { text: block.editedText }
-      : await deidentify(block.editedText, { referenceDate });
-    selectedBlocks.push({ ...block, editedText: String(result.text || "") });
-  }
-  const checklistBlocks = [];
-  for (const block of draft.checklistFindings.selectedBlocks) {
-    const [generated, edited] = await Promise.all([
-      deidentify(block.generatedText, { referenceDate }),
-      deidentify(block.editedText, { referenceDate })
-    ]);
-    checklistBlocks.push({ ...block, generatedText: String(generated.text || ""), editedText: String(edited.text || "") });
-  }
-  const problems = [];
-  for (const problem of draft.problems) {
-    const differentials = [];
-    for (const differential of problem.differentials) {
-      differentials.push({
-        ...differential,
-        diagnosis: await deidentifyDraftText(differential.diagnosis, deidentify, referenceDate),
-        cluesFor: await deidentifyDraftText(differential.cluesFor, deidentify, referenceDate),
-        cluesAgainst: await deidentifyDraftText(differential.cluesAgainst, deidentify, referenceDate)
-      });
-    }
-    problems.push({
-      ...problem,
-      problem: await deidentifyDraftText(problem.problem, deidentify, referenceDate),
-      keyContext: await deidentifyDraftText(problem.keyContext, deidentify, referenceDate),
-      knownEtiology: await deidentifyDraftText(problem.knownEtiology, deidentify, referenceDate),
-      diagnosticPlan: await deidentifyDraftText(problem.diagnosticPlan, deidentify, referenceDate),
-      therapeuticPlan: await deidentifyDraftText(problem.therapeuticPlan, deidentify, referenceDate),
-      differentials
-    });
-  }
-  return normalizeNoteDraft({
-    ...draft,
-    sections,
-    objective: { manual, selectedBlocks },
-    checklistFindings: { selectedBlocks: checklistBlocks },
-    assessment: await deidentifyDraftText(draft.assessment, deidentify, referenceDate),
-    problems,
-    closing,
-    updatedAt: new Date().toISOString()
-  });
-}
-
 export function createReviewController(deps) {
   function packets(patient) {
     return [
@@ -166,9 +99,17 @@ export function createReviewController(deps) {
       });
     }
     const checklistById = new Map(checklistCandidates.map((candidate) => [candidate.id, candidate]));
-    for (const block of draft.checklistFindings.selectedBlocks) {
-      const candidate = checklistById.get(block.selectionId);
-      if (candidate) draft = reconcileChecklistFinding(draft, candidate);
+    for (const candidate of checklistCandidates) {
+      const existing = draft.checklistFindings.selectedBlocks.find((block) => block.selectionId === candidate.id);
+      draft = existing ? reconcileChecklistFinding(draft, candidate) : selectChecklistFinding(draft, candidate);
+    }
+    if (draft.checklistFindings.selectedBlocks.some((block) => !checklistById.has(block.selectionId))) {
+      draft = normalizeNoteDraft({
+        ...draft,
+        checklistFindings: {
+          selectedBlocks: draft.checklistFindings.selectedBlocks.filter((block) => checklistById.has(block.selectionId))
+        }
+      });
     }
     deps.app.noteDraftSessions.set(key, draft);
     return draft;
@@ -223,7 +164,6 @@ export function createReviewController(deps) {
           query: deps.app.reviewSearchQuery,
           category: deps.app.reviewCategory,
           draft: current.draft,
-          helpKey: deps.app.reviewHelpKey,
           guidanceFor: (sectionId) => studentGuidance(current.draft.noteType, sectionId),
           differenceSelectionId: deps.app.reviewDifferenceSelectionId,
           finalNote: renderFinalNote(current.draft),
@@ -234,7 +174,6 @@ export function createReviewController(deps) {
 
   function open(selectedPacketId = "admission") {
     deps.app.reviewPacketId = selectedPacketId || "admission";
-    deps.app.reviewHelpKey = "";
     deps.app.view = "review";
     deps.render();
   }
@@ -244,7 +183,6 @@ export function createReviewController(deps) {
     if (!current.patient) return false;
     let draft = current.draft;
     if (target.matches("[data-draft-section]")) draft = updateNoteSection(draft, target.dataset.draftSection, target.value);
-    else if (target.matches("[data-checklist-finding-text]")) draft = editChecklistFinding(draft, target.dataset.checklistFindingText, target.value);
     else if (target.matches("[data-draft-objective-manual]")) draft = updateManualObjective(draft, target.value);
     else if (target.matches("[data-objective-block-text]")) draft = editObjectiveBlock(draft, target.dataset.objectiveBlockText, target.value);
     else if (target.matches("[data-draft-assessment]")) draft = updateAssessment(draft, target.value);
@@ -270,9 +208,13 @@ export function createReviewController(deps) {
     if (target.id === "reviewPacketSelect") {
       deps.app.reviewPacketId = target.value || "admission";
       deps.app.reviewPage = 0;
-      deps.app.reviewHelpKey = "";
       deps.app.reviewDifferenceSelectionId = "";
       deps.render();
+      return true;
+    }
+    if (target.id === "reviewNoteType") {
+      setDraft(changeNoteDraftType(current.draft, target.value));
+      render();
       return true;
     }
     if (target.id === "reviewDataCategory") {
@@ -291,13 +233,6 @@ export function createReviewController(deps) {
       render();
       return true;
     }
-    if (target.matches("[data-checklist-finding-selection-id]")) {
-      const candidate = current.checklistCandidates.find((entry) => entry.id === target.dataset.checklistFindingSelectionId);
-      if (!candidate) return true;
-      setDraft(target.checked ? selectChecklistFinding(current.draft, candidate) : deselectChecklistFinding(current.draft, candidate.id));
-      render();
-      return true;
-    }
     if (target.matches("[data-problem-etiology]")) {
       const problemId = target.closest("[data-problem-id]")?.dataset.problemId;
       if (problemId) setDraft(updatePlanProblem(current.draft, problemId, { etiologyStatus: target.value }));
@@ -308,15 +243,6 @@ export function createReviewController(deps) {
   }
 
   function input(target) {
-    if (target.id === "checklistFindingSearch") {
-      const query = String(target.value || "").trim().toLocaleLowerCase("en-US");
-      const cards = [...(deps.byId("reviewContent")?.querySelectorAll("[data-checklist-finding-candidate]") || [])];
-      cards.forEach((card) => { card.hidden = Boolean(query) && !String(card.dataset.checklistFindingSearch || "").includes(query); });
-      const count = cards.filter((card) => !card.hidden).length;
-      const output = deps.byId("reviewContent")?.querySelector("[data-checklist-finding-count]");
-      if (output) output.textContent = `${count} matching completed item${count === 1 ? "" : "s"}`;
-      return true;
-    }
     if (target.id === "reviewDataSearch") {
       deps.app.reviewSearchQuery = target.value;
       deps.app.reviewPage = 0;
@@ -345,7 +271,6 @@ export function createReviewController(deps) {
           query: deps.app.reviewSearchQuery,
           category: deps.app.reviewCategory,
           draft: current.draft,
-          helpKey: deps.app.reviewHelpKey,
           guidanceFor: (sectionId) => studentGuidance(current.draft.noteType, sectionId),
           differenceSelectionId: deps.app.reviewDifferenceSelectionId,
           finalNote: renderFinalNote(current.draft),
@@ -368,23 +293,18 @@ export function createReviewController(deps) {
   async function saveDraft() {
     const current = model();
     if (!current.patient) return;
-    deps.updateDeidOperation({ active: true, message: "De-identifying and encrypting the note draft…" });
-    try {
-      await deps.ensureSelectedDeidReady();
-      const safeDraft = await deidentifyDraft(current.draft, deps.deidentify, current.packet.date || deps.app.admissionDate);
-      deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({
-        ...patient,
-        noteDrafts: { ...(patient.noteDrafts || {}), [current.packet.id]: safeDraft }
-      }));
-      setDraft(safeDraft);
-      await deps.persistVault("Note draft de-identified and saved in the encrypted vault.");
-      deps.updateDeidOperation({ active: false, message: "Encrypted note draft saved." });
-      deps.setStatus("Encrypted note draft saved.");
-      deps.render();
-    } catch (error) {
-      deps.updateDeidOperation({ active: false, message: error instanceof Error ? error.message : "The note draft was not saved." });
-      throw error;
-    }
+    const savedDraft = normalizeNoteDraft(current.draft);
+    deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({
+      ...patient,
+      noteDrafts: { ...(patient.noteDrafts || {}), [current.packet.id]: savedDraft }
+    }));
+    setDraft(savedDraft);
+    const ephemeralDemo = deps.isEphemeralDemo?.();
+    if (!ephemeralDemo) await deps.persistVault("Encrypted note draft saved.");
+    const savedMessage = ephemeralDemo ? "Demo note kept only for this temporary walkthrough." : "Encrypted note draft saved.";
+    deps.setStatus(savedMessage);
+    deps.onDraftSaved?.();
+    deps.render();
   }
 
   function click(target) {
@@ -413,11 +333,6 @@ export function createReviewController(deps) {
       render();
       return true;
     }
-    if (action === "toggle-note-help") {
-      deps.app.reviewHelpKey = deps.app.reviewHelpKey === button.dataset.helpKey ? "" : button.dataset.helpKey;
-      render();
-      return true;
-    }
     if (action === "insert-no-acute-events") {
       draft = updateNoteSection(draft, "interval_events", "No acute events overnight.");
     } else if (action === "add-plan-problem") draft = addPlanProblem(draft);
@@ -435,10 +350,7 @@ export function createReviewController(deps) {
       deps.app.reviewDifferenceSelectionId = deps.app.reviewDifferenceSelectionId === button.dataset.selectionId ? "" : button.dataset.selectionId;
       render();
       return true;
-    } else if (action === "remove-checklist-finding") draft = deselectChecklistFinding(draft, button.dataset.selectionId);
-    else if (action === "refresh-checklist-finding") draft = refreshChecklistFinding(draft, button.dataset.selectionId);
-    else if (action === "keep-checklist-finding") draft = keepChecklistFinding(draft, button.dataset.selectionId);
-    else return false;
+    } else return false;
     setDraft(draft);
     render();
     return true;

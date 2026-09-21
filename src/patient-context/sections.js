@@ -1,4 +1,4 @@
-import { createTextSection, normalizeSection } from "../app/state/vault.js?v=20260921-checklist-note-export";
+import { createTextSection, normalizeSection } from "../app/state/vault.js?v=20260921-note-builder-polish";
 import { isActionableResidualWarning, sanitizeResidualWarningMetadata } from "./review.js";
 import { naturalLanguagePrompt } from "../prompts/natural-language.js";
 
