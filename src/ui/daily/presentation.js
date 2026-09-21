@@ -249,7 +249,8 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     const detectedIds = new Set(parseResult?.detectedFieldIds || []);
     const detectedFields = fields.filter((field) => detectedIds.has(field.id));
     if (!detectedFields.length) {
-      return `<div class="structured-note-detected-empty"><p>No sections found yet.</p><span>Paste a note with headings such as HPI, Medications, Exam, or Assessment and Plan.</span></div>`;
+      const hasText = Boolean(parseResult?.rawCharacterCount);
+      return `<div class="structured-note-detected-empty"><p>${hasText ? "No standard headings found." : "No sections found yet."}</p><span>${hasText ? "The full note will be kept under Other note content for your review." : "Paste a note with headings such as HPI, Medications, Exam, or Assessment and Plan."}</span></div>`;
     }
     return `
       <ul class="structured-note-detected-list">
@@ -303,7 +304,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
           </aside>
         </div>
         <div class="structured-note-paste-meta"><span data-structured-note-paste-count="${escapeHtml(scope)}">${pastedText.length.toLocaleString()} characters · session only</span></div>
-        <div class="structured-note-actions"><button type="button" class="button--quiet" data-action="clear-structured-note-paste" data-note-scope="${escapeHtml(scope)}" ${pastedText ? "" : "disabled"}>Clear</button><button type="button" class="button--primary" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() && parseResult.detectedSectionCount ? "" : "disabled"}>Review sections</button></div>
+        <div class="structured-note-actions"><button type="button" class="button--quiet" data-action="clear-structured-note-paste" data-note-scope="${escapeHtml(scope)}" ${pastedText ? "" : "disabled"}>Clear</button><button type="button" class="button--primary" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>${parseResult.detectedSectionCount ? "Review sections" : "Review note"}</button></div>
       ` : `
         <div class="structured-note-section-layout">
           <nav class="structured-note-section-nav" aria-label="Note sections">

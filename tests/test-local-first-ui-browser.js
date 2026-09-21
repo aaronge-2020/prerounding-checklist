@@ -136,6 +136,16 @@ try {
   await page.waitForSelector("#contextSections");
   assert.equal(await page.locator('[data-structured-note-paste][data-structured-note-scope="admission"]').count(), 1, "primary notes begin with one paste-first editor");
   assert.equal(await page.locator('[data-action="review-structured-note-sections"][data-note-scope="admission"]').isDisabled(), true, "section review requires pasted note text");
+  await page.fill('[data-structured-note-paste][data-structured-note-scope="admission"]', "Unlabeled primary-team narrative that still belongs in the admission packet.");
+  assert.equal(await page.locator('[data-action="review-structured-note-sections"][data-note-scope="admission"]').isEnabled(), true, "an unlabeled primary note must still be reviewable and saveable");
+  assert.match(await page.locator('[data-structured-note-detected="admission"]').innerText(), /kept under Other note content/i);
+  await page.click('[data-action="review-structured-note-sections"][data-note-scope="admission"]');
+  assert.equal(await page.locator('[data-structured-note-scope="admission"][data-structured-note-field="other"]').inputValue(), "Unlabeled primary-team narrative that still belongs in the admission packet.");
+  await page.fill("#dailyAdmissionDateInput", "2026-07-01");
+  await page.selectOption("#deidModeSelect", "structured");
+  await page.click('[data-action="save-structured-primary-note"][data-note-scope="admission"]');
+  await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  assert.equal(await page.locator('[data-review-item="primary_note"][data-review-status="reviewed"]').count(), 1, "an unlabeled primary note must save into the admission packet after de-identification");
   await page.click('[data-action="select-admission-source-kind"][data-source-kind="other_chart_text"]');
   assert.equal(await page.locator('[data-action="add-admission-source"]').isDisabled(), true, "adding an admission source requires a pasted chart block");
   await page.selectOption("#deidModeSelect", "structured");
@@ -362,7 +372,29 @@ try {
   await page.fill("#dailyAdmissionDateInput", "2026-07-17");
   await page.click('[data-action="select-admission-source-kind"][data-source-kind="primary_note"]');
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="admission"][data-note-mode="sections"]');
-  await page.click('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="one_liner"]');
+  await page.locator("#dailyContent").evaluate((content) => { content.style.minHeight = "1600px"; });
+  const noteSectionScroll = await page.locator("#dailyView").evaluate((view) => {
+    view.scrollTop = Math.min(520, view.scrollHeight - view.clientHeight);
+    return view.scrollTop;
+  });
+  assert.equal(noteSectionScroll > 0, true, "the Hospital Stay route must be scrollable for the navigation regression test");
+  await page.locator('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="history_of_present_illness"]').evaluate((button) => button.click());
+  await page.waitForSelector('[data-structured-note-scope="admission"][data-structured-note-field="history_of_present_illness"]');
+  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  assert.equal(
+    await page.locator("#dailyView").evaluate((view) => view.scrollTop),
+    noteSectionScroll,
+    "choosing an HPI section must not move the Hospital Stay scroll position"
+  );
+  await page.locator('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="one_liner"]').first().evaluate((button) => button.click());
+  await page.waitForSelector('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]');
+  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  assert.equal(
+    await page.locator("#dailyView").evaluate((view) => view.scrollTop),
+    noteSectionScroll,
+    "choosing a One-Liner section must not move the Hospital Stay scroll position"
+  );
+  await page.locator("#dailyContent").evaluate((content) => { content.style.minHeight = ""; });
   await page.fill('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]', "Adult admitted with dyspnea for evaluation.");
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="admission"]');
   await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));

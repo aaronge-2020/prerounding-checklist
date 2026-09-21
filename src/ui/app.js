@@ -150,13 +150,13 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260921-medication-card-v4";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=save-unlabeled-v2";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260921-medication-card-v4&scroll=preserve-navigation-scroll-v2";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20260921-medication-card-v4";
 import { createReviewController } from "./review/controller.js?v=20260921-medication-card-v4";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
-import { createChecklistSearchController, preserveChecklistScrollOnRender, toggleItemNote } from "./checklist/search.js?v=20260921-checklist-scroll-position";
+import { createChecklistSearchController, preserveChecklistScrollOnRender, toggleItemNote } from "./checklist/search.js?v=20260921-checklist-scroll-position&focus=prevent-scroll-v2";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260921-medication-card-v4";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
@@ -169,7 +169,7 @@ import {
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
 } from "./prompts/controller.js?v=20260921-medication-card-v4";
-import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260910-guideline-pagination";
+import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260910-guideline-pagination&focus=prevent-scroll-v2";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-medication-card-v4";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-medication-card-v4";
@@ -1024,7 +1024,7 @@ function showVaultUnlockError(message) {
   if (input) {
     input.setAttribute("aria-describedby", "vaultPassphraseError");
     input.setAttribute("aria-invalid", "true");
-    input.focus();
+    input.focus({ preventScroll: true });
   }
   if (error) {
     error.textContent = message;
@@ -1800,7 +1800,7 @@ async function handleClick(event) {
         target.setAttribute("aria-label", isExpanded ? "Collapse section" : "Edit section");
         if (isExpanded)
           requestAnimationFrame(() =>
-            (editor.querySelector("[data-redaction-document]") || editor.querySelector(".section-text"))?.focus()
+            (editor.querySelector("[data-redaction-document]") || editor.querySelector(".section-text"))?.focus({ preventScroll: true })
           );
       }
     }
@@ -1880,7 +1880,7 @@ async function handleClick(event) {
       const search = byId("workupCatalogSearch");
       if (search) {
         search.value = "";
-        search.focus();
+        search.focus({ preventScroll: true });
       }
       updateWorkupCatalogFilter();
     }
@@ -2281,7 +2281,7 @@ function editSectionText(scope, sectionId) {
   const field = editor.querySelector(".section-text");
   requestAnimationFrame(() => {
     restoreScrollChain(scrollSnapshot);
-    field?.focus();
+    field?.focus({ preventScroll: true });
   });
 }
 
@@ -3782,7 +3782,7 @@ function insertPromptVariable(token) {
   // re-render, especially when the inserted token is at the start of the
   // textarea.
   byId("smartVariableMenu")?.classList.remove("open");
-  editor.focus();
+  editor.focus({ preventScroll: true });
   renderPrompts();
   requestAnimationFrame(() => scrollPromptOutputToVariable(byId("promptOutputHighlighted"), token));
 }

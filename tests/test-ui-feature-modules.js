@@ -131,6 +131,19 @@ assert.match(dailyMarkup, /Enter by section/);
 assert.match(dailyMarkup, /Sections found/);
 assert.equal((dailyMarkup.match(/<textarea/g) || []).length, 1, "paste mode should render one full-note editor");
 assert.doesNotMatch(dailyMarkup, /data-action="add-admission-source"/, "the primary note uses its dedicated paste-first composer");
+const unlabeledNoteMarkup = dailyView.renderDaily({
+  ...dailyRenderOptions,
+  structuredNoteComposers: {
+    admission: {
+      mode: "paste",
+      pastedText: "Unlabeled primary-team narrative.",
+      parseResult: { rawCharacterCount: 34, detectedFieldIds: [], detectedSectionCount: 0 }
+    }
+  }
+});
+assert.match(unlabeledNoteMarkup, /full note will be kept under Other note content/i);
+assert.match(unlabeledNoteMarkup, /data-action="review-structured-note-sections"[^>]*>Review note<\/button>/);
+assert.doesNotMatch(unlabeledNoteMarkup, /data-action="review-structured-note-sections"[^>]*disabled/);
 const sectionMarkup = dailyView.renderDaily({
   ...dailyRenderOptions,
   structuredNoteComposers: { admission: { mode: "sections", activeFieldId: "physical_exam" } },

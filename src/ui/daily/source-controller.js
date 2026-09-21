@@ -96,7 +96,8 @@ export function createDailySourceController(deps) {
     const panel = document.querySelector(`[data-structured-note-detected="${scope}"]`);
     if (panel) panel.innerHTML = deps.dailyPresentation.renderStructuredNoteDetected({ noteType, parseResult, scope });
     document.querySelectorAll(`[data-action="review-structured-note-sections"][data-note-scope="${scope}"]`).forEach((button) => {
-      button.disabled = !String(value || "").trim() || !parseResult.detectedSectionCount;
+      button.disabled = !String(value || "").trim();
+      button.textContent = parseResult.detectedSectionCount ? "Review sections" : "Review note";
     });
     const count = document.querySelector(`[data-structured-note-paste-count="${scope}"]`);
     if (count) count.textContent = `${String(value || "").length.toLocaleString()} characters · session only`;
@@ -126,7 +127,11 @@ export function createDailySourceController(deps) {
     if (!fields.some((field) => field.id === fieldId)) return;
     setStructuredNoteComposer(scope, { mode: "sections", activeFieldId: fieldId });
     deps.render();
-    requestAnimationFrame(() => document.querySelector(`[data-structured-note-scope="${scope}"][data-structured-note-field="${fieldId}"]`)?.focus());
+    requestAnimationFrame(() => {
+      document
+        .querySelector(`[data-structured-note-scope="${scope}"][data-structured-note-field="${fieldId}"]`)
+        ?.focus({ preventScroll: true });
+    });
   }
 
   function moveStructuredNoteField(scope, direction) {

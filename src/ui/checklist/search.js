@@ -52,7 +52,7 @@ export function createChecklistSearchController({ Fuse, normalizeQuery, byId }) 
     const input = byId("checklistSearchInput");
     if (input) {
       input.value = "";
-      input.focus();
+      input.focus({ preventScroll: true });
     }
     updateFilter("");
   }
@@ -75,7 +75,7 @@ export function toggleItemNote(button, openNoteIds) {
     if (input) {
       // Force layout so iOS Safari recognizes it is no longer display: none
       void input.offsetHeight; 
-      input.focus();
+      input.focus({ preventScroll: true });
     }
   } else {
     openNoteIds.delete(itemId);

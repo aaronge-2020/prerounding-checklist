@@ -24,7 +24,7 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
     state.guidelineCreateDraft = { id: "new-guideline", label: "", token: "", text: "" };
     state.guidelineOpenId = "";
     renderSettings();
-    byId("guidelineCreateLabel")?.focus();
+    byId("guidelineCreateLabel")?.focus({ preventScroll: true });
   }
 
   function saveCreate() {
@@ -32,7 +32,7 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
     const text = byId("guidelineCreateText")?.value ?? "";
     if (!label) {
       setStatus("Name the guideline in the editor before saving.");
-      byId("guidelineCreateLabel")?.focus();
+      byId("guidelineCreateLabel")?.focus({ preventScroll: true });
       return;
     }
     const nextSets = addGuidelineSet(state.guidelineSets, label, text);
@@ -112,7 +112,7 @@ export function createGuidelineSetsController({ state, setStatus, renderSettings
     renderSettings();
     const input = byId("guidelineSearchInput");
     if (input) {
-      input.focus();
+      input.focus({ preventScroll: true });
       input.setSelectionRange(input.value.length, input.value.length);
     }
   }
