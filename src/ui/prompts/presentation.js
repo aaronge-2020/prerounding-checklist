@@ -1,5 +1,5 @@
-import { ADMISSION_PSEUDO_DAY_ID, tokenAccentColor } from "../../prompts/custom-templates.js?v=20260921-medication-review-v3";
-import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260921-medication-review-v3";
+import { ADMISSION_PSEUDO_DAY_ID, tokenAccentColor } from "../../prompts/custom-templates.js?v=20260921-medication-card-v4";
+import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260921-medication-card-v4";
 
 export function renderHighlightedSegments(segments, escapeHtml, colorOverrides = {}, { interactive = true } = {}) {
   return segments.map((segment) => {

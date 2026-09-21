@@ -1,4 +1,4 @@
-import { updateActivePatient } from "../app/state/vault.js?v=20260921-medication-review-v3";
+import { updateActivePatient } from "../app/state/vault.js?v=20260921-medication-card-v4";
 
 export function createAdmissionDateAnchor({ state, active, sortDays }) {
   function restore() {

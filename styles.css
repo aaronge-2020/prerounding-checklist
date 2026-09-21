@@ -2496,52 +2496,45 @@ button.var-fill:focus-visible {
 
 .review-data-item--medication {
   display: grid;
-  gap: 10px;
-  padding: 12px 14px;
+  gap: 0;
+  overflow: hidden;
+  padding: 0;
 }
 
 .review-medication-header {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: start;
-  gap: 10px;
+  grid-template-columns: auto minmax(0, 1fr) minmax(112px, auto);
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
 }
 
 .review-medication-selection {
   display: flex;
-  padding-top: 2px;
 }
 
 .review-medication-selection input {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   margin: 0;
 }
 
-.review-medication-identity,
-.review-medication-identity p {
+.review-medication-identity {
   min-width: 0;
-  margin: 0;
-}
-
-.review-medication-identity p {
-  margin-top: 2px;
-  color: var(--muted);
-  font-size: 11px;
 }
 
 .review-medication-title-line {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
 }
 
 .review-medication-title-line h3 {
   margin: 0;
   color: var(--ink);
-  font-size: 14px;
-  line-height: 1.35;
+  font-size: 16px;
+  line-height: 1.3;
 }
 
 .review-medication-type {
@@ -2569,76 +2562,193 @@ button.var-fill:focus-visible {
   color: var(--accent-ink, var(--accent));
 }
 
-.review-medication-summary {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-  gap: 8px;
-  margin-left: 28px;
+.review-medication-regimen,
+.review-medication-rate {
+  margin: 3px 0 0;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.4;
 }
 
-.review-medication-summary > div {
+.review-medication-rate {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.review-medication-latest {
   display: grid;
-  align-content: start;
+  justify-items: end;
   gap: 2px;
-  min-width: 0;
   border-left: 2px solid var(--border);
-  padding-left: 9px;
+  padding-left: 14px;
+  text-align: right;
 }
 
-.review-medication-summary span,
-.review-medication-summary small,
+.review-medication-latest span,
 .review-medication-prn span {
   color: var(--muted);
   font-size: 10px;
 }
 
-.review-medication-summary strong {
+.review-medication-latest strong {
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.review-medication-details {
+  border-top: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface-subtle) 52%, var(--panel));
+}
+
+.review-medication-details > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  padding: 9px 16px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.review-medication-details > summary::-webkit-details-marker { display: none; }
+
+.review-medication-activity-label,
+.review-medication-disclosure {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.review-medication-activity-label strong {
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.review-medication-activity-label small,
+.review-medication-disclosure {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.review-medication-list-icon {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.review-medication-disclosure {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.review-medication-chevron {
+  display: inline-flex;
+  transform: rotate(90deg);
+  transition: transform 150ms ease;
+}
+
+.review-medication-chevron .icon {
+  width: 12px;
+  height: 12px;
+}
+
+.review-medication-details[open] .review-medication-chevron {
+  transform: rotate(-90deg);
+}
+
+.review-medication-history {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+  padding: 14px 16px 16px;
+}
+
+.review-medication-history section {
+  display: grid;
+  grid-template-columns: minmax(112px, 0.3fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 14px;
+}
+
+.review-medication-history section + section {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.review-medication-history section > header {
+  display: grid;
+  gap: 2px;
+}
+
+.review-medication-history section > header strong {
   color: var(--ink);
   font-size: 12px;
-  font-weight: 650;
-  overflow-wrap: anywhere;
 }
 
-.review-medication-details,
-.review-medication-note-preview {
-  margin-left: 28px;
-}
-
-.review-medication-details summary,
-.review-medication-note-preview summary {
+.review-medication-history section > header small {
   color: var(--muted);
-  font-size: 11px;
-  font-weight: 650;
+  font-size: 9px;
 }
 
-.review-medication-administrations {
-  display: flex;
-  flex-wrap: wrap;
+.review-medication-administration-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(82px, 1fr));
   gap: 6px;
-  margin: 9px 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.review-medication-administrations li {
+.review-medication-administration-grid li {
+  display: grid;
+  align-content: center;
+  gap: 1px;
+  min-height: 36px;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 7px;
   background: var(--surface-subtle);
-  padding: 3px 7px;
-  color: var(--text);
-  font-size: 10px;
+  padding: 5px 7px;
+}
+
+.review-medication-administration-grid strong {
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.review-medication-administration-grid small {
+  color: var(--danger);
+  font-size: 8px;
+}
+
+.review-medication-administration-grid li[data-administration-status="cancelled"] {
+  border-color: color-mix(in srgb, var(--danger) 28%, var(--border));
+  background: color-mix(in srgb, var(--danger) 5%, var(--panel));
 }
 
 .review-medication-prn {
-  margin-top: 9px;
   border-left: 2px solid var(--warning);
-  padding-left: 9px;
+  padding: 2px 0 2px 9px;
 }
 
 .review-medication-prn p {
   margin: 2px 0 0;
   font-size: 11px;
   line-height: 1.45;
+}
+
+.review-medication-note-preview {
+  border-top: 1px solid var(--border);
+  padding: 9px 16px 11px;
+}
+
+.review-medication-note-preview summary {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 650;
 }
 
 .review-mini-chart {
@@ -3335,8 +3445,7 @@ button.var-fill:focus-visible {
   .closing-section-grid,
   .two-column-form,
   .objective-diff,
-  .review-vital-stats,
-  .review-medication-summary {
+  .review-vital-stats {
     grid-template-columns: 1fr;
   }
 
@@ -3347,6 +3456,45 @@ button.var-fill:focus-visible {
   .differential-card,
   .objective-linked-block {
     padding: 12px;
+  }
+
+  .review-data-item--medication { padding: 0; }
+
+  .review-medication-header {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: 10px;
+    padding: 13px;
+  }
+
+  .review-medication-title-line {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .review-medication-latest {
+    grid-column: 2;
+    justify-items: start;
+    border-left: 0;
+    padding-left: 0;
+    text-align: left;
+  }
+
+  .review-medication-details > summary {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+    padding-inline: 13px;
+  }
+
+  .review-medication-history {
+    padding-inline: 13px;
+  }
+
+  .review-medication-history section {
+    grid-template-columns: 1fr;
+    gap: 7px;
   }
 
   .plan-problem-heading,

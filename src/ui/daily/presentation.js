@@ -1,9 +1,9 @@
-import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-medication-review-v3";
-import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260921-medication-review-v3";
-import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-medication-review-v3";
-import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-medication-review-v3";
-import { primaryTeamNoteFields } from "../../patient-context/primary-team-note.js?v=20260921-medication-review-v3";
-import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-medication-review-v3";
+import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-medication-card-v4";
+import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260921-medication-card-v4";
+import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-medication-card-v4";
+import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-medication-card-v4";
+import { primaryTeamNoteFields } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
+import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
 
 export function createDailyPresentation({ escapeHtml, icon }) {
   function renderRowReviewStatus(completeness) {

@@ -161,7 +161,30 @@ Freq: every 6 hours PRN Route: PO
 Start: 09/18/26 1200
 Admin Instructions:
 Use for fever or pain.
-1815 (650 mg)`;
+1815 (650 mg)
+
+chlorhexidine gluconate (PERIDEX) 0.12 % oral rinse 15 mL
+Dose: 15 mL
+Freq: 4 times daily Route: SWISH & SPIT
+Start: 09/17/26 1200
+0000 (15 mL)
+0532 (15 mL)
+1200 (15 mL)
+1800 (15 mL)
+0019 (15 mL)
+0627 (15 mL)
+1232 (15 mL)
+1711 (15 mL)
+0034 (15 mL)
+0543 (15 mL)
+1313 (15 mL)
+1800 [C]
+1813
+2044
+0004 (15 mL)
+0511 (15 mL)
+1200
+1800`;
   await addDailySource("medication_activity", medications, 4);
   await page.click('[data-action="select-daily-source-kind"][data-source-kind="results"]');
   await page.fill('[data-result-metadata="label"][data-result-scope="daily"]', "CT Head/Neck Without Contrast");
@@ -300,9 +323,27 @@ Sodium: 138`;
 
   await page.fill("#reviewDataSearch", "ceftriaxone");
   const medicationCard = page.locator("[data-review-candidate]").first();
-  assert.match(await medicationCard.innerText(), /Scheduled[\s\S]*Regimen[\s\S]*1 g · IV · every 24 hours[\s\S]*Latest listed administration[\s\S]*0900 \(1 g\)/i);
-  assert.match(await medicationCard.innerText(), /1 listed administration/i);
+  assert.match(await medicationCard.innerText(), /Scheduled[\s\S]*1 g · IV · every 24 hours[\s\S]*Latest listed[\s\S]*09:00/i);
+  assert.match(await medicationCard.innerText(), /1 administration recorded/i);
   assert.doesNotMatch(await medicationCard.innerText(), /Course/i);
+  await medicationCard.locator(".review-medication-details > summary").click();
+  assert.match(await medicationCard.innerText(), /Most recent listed[\s\S]*09:00/i);
+
+  await page.fill("#reviewDataSearch", "acetaminophen");
+  const prnMedicationCard = page.locator("[data-review-candidate]").first();
+  assert.match(await prnMedicationCard.innerText(), /PRN[\s\S]*650 mg · PO · every 6 hours PRN[\s\S]*18:15/i);
+
+  await page.fill("#reviewDataSearch", "chlorhexidine");
+  const scheduledMedicationCard = page.locator("[data-review-candidate]").first();
+  assert.match(await scheduledMedicationCard.innerText(), /Scheduled[\s\S]*15 mL · SWISH & SPIT · 4 times daily[\s\S]*Latest listed[\s\S]*18:00/i);
+  assert.match(await scheduledMedicationCard.innerText(), /18 administrations recorded/i);
+  await scheduledMedicationCard.locator(".review-medication-details > summary").click();
+  assert.match(await scheduledMedicationCard.innerText(), /Most recent listed[\s\S]*6 entries[\s\S]*Earlier listed[\s\S]*12 entries[\s\S]*Cancelled/i);
+  assert.doesNotMatch(await scheduledMedicationCard.innerText(), /00:00 \(15 mL\)/i, "administration history must not repeat the unchanged order dose beside every time");
+  if (process.env.REVIEW_MEDICATION_SCREENSHOT) {
+    await page.setViewportSize({ width: 1024, height: 900 });
+    await scheduledMedicationCard.screenshot({ path: process.env.REVIEW_MEDICATION_SCREENSHOT });
+  }
 
   await page.fill("#reviewDataSearch", "CT Head/Neck");
   const ctCard = page.locator("[data-review-candidate]").first();

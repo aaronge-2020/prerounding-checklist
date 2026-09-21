@@ -1,6 +1,6 @@
-import { sortDays } from "../../daily-updates/days.js?v=20260921-medication-review-v3";
-import { updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-review-v3";
-import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260921-medication-review-v3";
+import { sortDays } from "../../daily-updates/days.js?v=20260921-medication-card-v4";
+import { updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
+import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260921-medication-card-v4";
 import {
   addDifferential,
   addPlanProblem,
@@ -31,7 +31,7 @@ import {
   updateManualObjective,
   updateNoteSection,
   updatePlanProblem
-} from "../../note-drafts/index.js?v=20260921-medication-review-v3";
+} from "../../note-drafts/index.js?v=20260921-medication-card-v4";
 
 const REVIEW_PAGE_SIZE = 8;
 

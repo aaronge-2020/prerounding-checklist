@@ -1,4 +1,4 @@
-import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-medication-review-v3";
+import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-medication-card-v4";
 
 function valueText(value) {
   return String(value?.deidentifiedText || "");
@@ -84,18 +84,31 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     const regimen = [candidate.dose, candidate.route, candidate.frequency].filter(Boolean).join(" · ");
     const prnDetails = [candidate.prnReason, candidate.prnComment].filter(Boolean).join(" — ");
     const administrations = candidate.administrations || [];
+    const escapedDose = candidate.dose.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const repeatedDose = escapedDose ? new RegExp(`\\s*\\(\\s*${escapedDose}\\s*\\)$`, "i") : null;
+    const formatAdministration = (value) => {
+      const withClock = String(value || "").replace(/^(\d{2})(\d{2})(?=\s|$)/, "$1:$2");
+      return repeatedDose ? withClock.replace(repeatedDose, "") : withClock;
+    };
+    const recentAdministrations = administrations.slice(-6);
+    const earlierAdministrations = administrations.slice(0, -6);
+    const administrationList = (items) => `<ol class="review-medication-administration-grid">${items.map((administration) => {
+      const cancelled = /\s*\[C\]\s*$/i.test(administration);
+      const value = formatAdministration(administration.replace(/\s*\[C\]\s*$/i, ""));
+      return `<li ${cancelled ? `data-administration-status="cancelled"` : ""}><strong>${escapeHtml(value)}</strong>${cancelled ? `<small>Cancelled</small>` : ""}</li>`;
+    }).join("")}</ol>`;
     return `<article class="review-data-item review-data-item--medication ${selected ? "is-selected" : ""}" data-review-candidate="${escapeHtml(candidate.id)}">
       <header class="review-medication-header">
         <label class="review-medication-selection"><input type="checkbox" data-objective-selection-id="${escapeHtml(candidate.id)}" aria-label="Include ${escapeHtml(candidate.name)} in the note" ${selected ? "checked" : ""}></label>
-        <div class="review-medication-identity"><div class="review-medication-title-line"><h3>${escapeHtml(candidate.name)}</h3><span class="review-medication-type" data-medication-type="${escapeHtml(candidate.scheduleLabel.toLowerCase())}">${escapeHtml(candidate.scheduleLabel)}</span></div><p>${escapeHtml(candidate.latestSavedEntry?.savedSection || "Medication activity")}</p></div>
+        <div class="review-medication-identity"><div class="review-medication-title-line"><h3>${escapeHtml(candidate.name)}</h3><span class="review-medication-type" data-medication-type="${escapeHtml(candidate.scheduleLabel.toLowerCase())}">${escapeHtml(candidate.scheduleLabel)}</span></div><p class="review-medication-regimen">${escapeHtml(regimen || "Regimen not documented")}</p>${candidate.rate ? `<p class="review-medication-rate">Infusion rate ${escapeHtml(candidate.rate)}</p>` : ""}</div>
+        <div class="review-medication-latest"><span>Latest listed</span><strong>${escapeHtml(formatAdministration(candidate.latestAdministration) || "None")}</strong></div>
       </header>
-      <div class="review-medication-summary">
-        <div><span>Regimen</span><strong>${escapeHtml(regimen || candidate.rate || "Not documented")}</strong>${candidate.rate && regimen ? `<small>Rate ${escapeHtml(candidate.rate)}</small>` : ""}</div>
-        <div><span>Latest listed administration</span><strong>${escapeHtml(candidate.latestAdministration || "None documented")}</strong><small>${escapeHtml(candidate.latestSavedEntry?.dayLabel || "")}</small></div>
-      </div>
-      <details class="review-medication-details"><summary>${administrations.length ? `${administrations.length} listed administration${administrations.length === 1 ? "" : "s"}` : "No administration history"}${prnDetails ? " · PRN details" : ""}</summary>
-        ${administrations.length ? `<ol class="review-medication-administrations">${administrations.map((administration) => `<li>${escapeHtml(administration)}</li>`).join("")}</ol>` : `<p class="muted">No administration was documented in this saved MAR entry.</p>`}
-        ${prnDetails ? `<div class="review-medication-prn"><span>Documented PRN use</span><p>${escapeHtml(prnDetails)}</p></div>` : ""}
+      <details class="review-medication-details"><summary><span class="review-medication-activity-label"><span class="review-medication-list-icon" aria-hidden="true">☷</span><strong>${administrations.length} administration${administrations.length === 1 ? "" : "s"} recorded</strong>${prnDetails ? `<small>PRN details included</small>` : ""}</span><span class="review-medication-disclosure">${administrations.length ? "View administration history" : "View order details"}<span class="review-medication-chevron" aria-hidden="true">${icon("chevron")}</span></span></summary>
+        <div class="review-medication-history">
+          ${recentAdministrations.length ? `<section><header><strong>Most recent listed</strong><small>${recentAdministrations.length} entr${recentAdministrations.length === 1 ? "y" : "ies"}</small></header>${administrationList(recentAdministrations)}</section>` : `<p class="muted">No administration was documented in this saved MAR entry.</p>`}
+          ${earlierAdministrations.length ? `<section><header><strong>Earlier listed</strong><small>${earlierAdministrations.length} entr${earlierAdministrations.length === 1 ? "y" : "ies"}</small></header>${administrationList(earlierAdministrations)}</section>` : ""}
+          ${prnDetails ? `<div class="review-medication-prn"><span>Documented PRN use</span><p>${escapeHtml(prnDetails)}</p></div>` : ""}
+        </div>
       </details>
       <details class="review-medication-note-preview"><summary>Preview note insertion</summary><pre>${escapeHtml(candidate.insertionText)}</pre></details>
     </article>`;

@@ -12,8 +12,8 @@ import {
 } from "../src/patient-context/structured-clinical-data.js";
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
-const parserRevision = "20260921-medication-review-v3";
-const primaryNoteRevision = "20260921-medication-review-v3";
+const parserRevision = "20260921-medication-card-v4";
+const primaryNoteRevision = "20260921-medication-card-v4";
 const runtimeSources = {
   index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
   app: readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8"),

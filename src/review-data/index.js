@@ -1,11 +1,11 @@
 import {
   clinicalDisplayModelFromPromptText,
   laboratoryAbnormality
-} from "../patient-context/structured-clinical-data.js?v=20260921-medication-review-v3";
+} from "../patient-context/structured-clinical-data.js?v=20260921-medication-card-v4";
 import {
   laboratoryAnalyteKey,
   laboratoryPanelLabel
-} from "../patient-context/laboratory-panels.js?v=20260921-medication-review-v3";
+} from "../patient-context/laboratory-panels.js?v=20260921-medication-card-v4";
 
 const GROUP_DEFINITIONS = Object.freeze([
   Object.freeze({ id: "vitals", label: "Vital signs" }),

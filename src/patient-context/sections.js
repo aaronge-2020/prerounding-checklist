@@ -1,4 +1,4 @@
-import { createTextSection, normalizeSection } from "../app/state/vault.js?v=20260921-medication-review-v3";
+import { createTextSection, normalizeSection } from "../app/state/vault.js?v=20260921-medication-card-v4";
 import { isActionableResidualWarning, sanitizeResidualWarningMetadata } from "./review.js";
 import { naturalLanguagePrompt } from "../prompts/natural-language.js";
 

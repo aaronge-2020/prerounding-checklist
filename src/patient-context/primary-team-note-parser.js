@@ -1,4 +1,4 @@
-import { primaryTeamNoteFields } from "./primary-team-note.js?v=20260921-medication-review-v3";
+import { primaryTeamNoteFields } from "./primary-team-note.js?v=20260921-medication-card-v4";
 
 const H_AND_P = "hp";
 const PROGRESS = "progress";
