@@ -1,9 +1,9 @@
-import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260921-clinical-review-fix";
+import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260921-lab-panel-sets";
 import {
   clinicalDataModel,
   laboratoryAbnormality,
   withClinicalRepresentations
-} from "./structured-clinical-data.js?v=20260921-clinical-review-fix";
+} from "./structured-clinical-data.js?v=20260921-lab-panel-sets";
 
 const REPORT_SEPARATOR = /^\s*[-=]{20,}\s*$/;
 const MEDICATION_STATUS = /\b(?:ADMINISTERED|CANCELLED|CANCELED|DISCONTINUED|GIVEN|HELD|MISSED|NOT GIVEN|REFUSED|STOPPED|BCMA EXPIRED)\b/i;
@@ -497,6 +497,234 @@ function renderWideVitalTable(lines = []) {
   }, model);
 }
 
+const FRAGMENTED_LAB_CELL = /^\s*\|\s*\|\s*$/;
+const FRAGMENTED_LAB_RULE = /^\s*\|\s*-+\s*\|\s*$/;
+const FRAGMENTED_LAB_TIMESTAMP = /^\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\s+\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?$/i;
+
+function cleanFragmentedLabCell(value) {
+  return compactLine(value)
+    .replace(/^\*\*(.*?)\*\*$/, "$1")
+    .replace(/\\\*/g, "*")
+    .replace(/\\\s+/g, " ")
+    .trim();
+}
+
+function fragmentedLabCells(lines = []) {
+  const cells = [];
+  for (let index = 0; index < lines.length - 1; index += 1) {
+    if (!FRAGMENTED_LAB_CELL.test(lines[index]) || !FRAGMENTED_LAB_RULE.test(lines[index + 1])) continue;
+    const sourceIndex = index;
+    const payload = [];
+    let reachedLegend = false;
+    index += 2;
+    while (index < lines.length) {
+      const text = String(lines[index] || "").trim();
+      if (FRAGMENTED_LAB_CELL.test(lines[index]) && FRAGMENTED_LAB_RULE.test(lines[index + 1] || "")) {
+        index -= 1;
+        break;
+      }
+      if (vitalTableHeaders(lines[index]).length) {
+        index -= 1;
+        break;
+      }
+      if (/^\*{0,2}\((?:LL|HH|H|L)\)\*{0,2}\s*:|^\(P\)\s*:|^Rpt\s*:/i.test(text)) {
+        reachedLegend = true;
+        break;
+      }
+      if (text) payload.push(text);
+      index += 1;
+    }
+    cells.push({ text: cleanFragmentedLabCell(payload.join(" ")), sourceIndex });
+    if (reachedLegend) break;
+  }
+  return cells;
+}
+
+function fragmentedLabDescriptor(value) {
+  const text = cleanFragmentedLabCell(value);
+  const number = "(?:\\d+(?:\\.\\d+)?|\\.\\d+)";
+  const interval = new RegExp(`^(.+?)((?:[<>]=?\\s*)?-?${number}\\s*(?:-|–|—|to)\\s*(?:[<>]=?\\s*)?-?${number})\\s+(.+)$`, "i");
+  const threshold = new RegExp(`^(.+?)([<>]=?\\s*-?${number})\\s+(.+)$`, "i");
+  const match = text.match(interval) || text.match(threshold);
+  return match
+    ? { name: compactLine(match[1]), referenceRange: compactLine(match[2]), unit: compactLine(match[3]) }
+    : { name: text, referenceRange: "", unit: "" };
+}
+
+function fragmentedLabValue(value) {
+  const text = cleanFragmentedLabCell(value).replace(/\\\s*$/g, "").trim();
+  const flagged = text.match(/^(.*?)\s+\((LL|HH|H|L|P)\)$/i);
+  return {
+    value: compactLine(flagged ? flagged[1] : text),
+    flag: compactLine(flagged?.[2] || "").toUpperCase()
+  };
+}
+
+function normalizedLabName(value) {
+  return compactLine(value).toLowerCase().replace(/[^a-z0-9%]+/g, " ").trim();
+}
+
+function laboratoryPanelFamily(name) {
+  const normalized = normalizedLabName(name);
+  if (/^(?:wbc|white blood cell count|hemoglobin|hgb|hematocrit|hct|platelets?|platelet count|rbc|red blood cell count|mcv|mch|mchc|rdw|mpv|nucleated rbc|nrbc)(?:\b|%)/.test(normalized)) return "cbc";
+  if (/^(?:neutrophils?|lymphocytes?|monocytes?|eosinophils?|basophils?|immature granulocytes?|absolute neutrophil count|anc)(?:\b|%)/.test(normalized)) return "cbc_differential";
+  if (/^(?:sodium|potassium|chloride|co2 total|carbon dioxide|bicarbonate|anion gap|bun|blood urea nitrogen|creatinine|egfr|glucose(?: bld)?|calcium)$/.test(normalized)) return "metabolic";
+  if (/^(?:albumin|total protein|protein total|ast|aspartate aminotransferase|alt|alanine aminotransferase|alkaline phosphatase|alk phos|bilirubin(?: total| direct| indirect)?|ggt)$/.test(normalized)) return "hepatic";
+  if (/^(?:pt|prothrombin time|inr|ptt|aptt|partial thromboplastin time|fibrinogen|d dimer)$/.test(normalized)) return "coagulation";
+  if (/^(?:ph|pco2|po2|hco3|base excess|lactate|oxygen saturation|o2 saturation)(?:\b|$)/.test(normalized)) return "blood_gas";
+  if (/^(?:crossmatch|transfuse|type and screen|abo|rh|antibody screen)/.test(normalized)) return "blood_bank";
+  if (/^osmolality(?:\b|$)/.test(normalized)) return "osmolality";
+  return "other";
+}
+
+function splitLaboratoryRowsByPanel(rows = []) {
+  const families = rows.map((row) => laboratoryPanelFamily(row.name));
+  const hasMetabolic = families.includes("metabolic");
+  const hasHepatic = families.includes("hepatic");
+  const hasDifferential = families.includes("cbc_differential");
+  const buckets = new Map();
+  rows.forEach((row, index) => {
+    let key = families[index];
+    if ((key === "metabolic" || key === "hepatic") && hasMetabolic && hasHepatic) key = "comprehensive_metabolic";
+    if (key === "cbc_differential") key = "cbc";
+    if (!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key).push(row);
+  });
+  const labels = {
+    cbc: hasDifferential ? "CBC with differential" : "CBC",
+    metabolic: "Basic metabolic panel",
+    comprehensive_metabolic: "Comprehensive metabolic panel",
+    hepatic: "Hepatic function panel",
+    coagulation: "Coagulation panel",
+    blood_gas: "Blood gas",
+    blood_bank: "Blood bank",
+    osmolality: "Osmolality",
+    other: "Other laboratory results"
+  };
+  const order = ["cbc", "metabolic", "comprehensive_metabolic", "hepatic", "coagulation", "blood_gas", "blood_bank", "osmolality", "other"];
+  return order.filter((key) => buckets.has(key)).map((key) => ({ key, label: labels[key], rows: buckets.get(key) }));
+}
+
+function laboratoryPanelSections(model, { sourceSystem, formatId } = {}) {
+  return model.groups.map((group, index) => {
+    const formatLabel = `${group.label} · ${group.timestamp}`;
+    const sectionModel = clinicalDataModel({ kind: "laboratory_results", sourceSystem, formatId, formatLabel, groups: [group] });
+    return {
+      id: `laboratory_panel_${index + 1}`,
+      sourceKind: "laboratory_results",
+      panelLabel: group.label,
+      ...withClinicalRepresentations({
+        recognized: true,
+        formatId,
+        formatLabel,
+        suggestedSourceKind: "laboratory_results",
+        itemCount: group.rows.length,
+        summary: `${group.rows.length} result${group.rows.length === 1 ? "" : "s"} in ${group.label} collected ${group.timestamp}.`,
+        preservedUnparsedText: false
+      }, sectionModel)
+    };
+  });
+}
+
+function renderFragmentedEpicLabTable(lines = []) {
+  const cells = fragmentedLabCells(lines);
+  const headingIndex = cells.findIndex((cell) => /^Latest Reference Range & Units$/i.test(cell.text));
+  if (headingIndex < 0) return null;
+  const timestamps = [];
+  let rowStart = headingIndex + 1;
+  while (rowStart < cells.length && FRAGMENTED_LAB_TIMESTAMP.test(cells[rowStart].text)) {
+    timestamps.push(cells[rowStart].text);
+    rowStart += 1;
+  }
+  if (!timestamps.length) return null;
+
+  const width = timestamps.length + 1;
+  const parsedRows = [];
+  for (let index = rowStart; index < cells.length; index += width) {
+    const descriptorCell = cells[index];
+    if (!descriptorCell?.text) continue;
+    const descriptor = fragmentedLabDescriptor(descriptorCell.text);
+    const results = timestamps.map((timestamp, timestampIndex) => ({
+      timestamp,
+      sourceIndex: cells[index + timestampIndex + 1]?.sourceIndex ?? descriptorCell.sourceIndex,
+      ...fragmentedLabValue(cells[index + timestampIndex + 1]?.text || "")
+    }));
+    if (results.some((result) => result.value)) parsedRows.push({ ...descriptor, sourceIndex: descriptorCell.sourceIndex, results });
+  }
+  const resultCount = parsedRows.reduce((total, row) => total + row.results.filter((result) => result.value).length, 0);
+  if (!parsedRows.length || !resultCount) return null;
+
+  const formatId = "epic_fragmented_labs";
+  const formatLabel = "Epic Results Review laboratory table";
+  const model = clinicalDataModel({
+    kind: "laboratory_results",
+    sourceSystem: "Epic",
+    formatId,
+    formatLabel,
+    groups: timestamps.flatMap((timestamp, timestampIndex) => {
+      const rows = parsedRows.flatMap((row, rowIndex) => {
+        const result = row.results[timestampIndex];
+        if (!result?.value) return [];
+        return [{
+          id: `result_${timestampIndex + 1}_${rowIndex + 1}`,
+          name: row.name,
+          value: result.value,
+          unit: row.unit,
+          referenceRange: row.referenceRange,
+          flag: result.flag,
+          abnormality: laboratoryAbnormality({ value: result.value, flag: result.flag, referenceRange: row.referenceRange }),
+          sourceIndex: result.sourceIndex
+        }];
+      });
+      return splitLaboratoryRowsByPanel(rows).map((panel, panelIndex) => ({
+        id: `collection_${timestampIndex + 1}_${panelIndex + 1}`,
+        label: panel.label,
+        timestamp,
+        rows: panel.rows
+      }));
+    })
+  });
+  const sections = laboratoryPanelSections(model, { sourceSystem: "Epic", formatId });
+  return {
+    ...withClinicalRepresentations({
+    recognized: true,
+    formatId,
+    formatLabel,
+    suggestedSourceKind: "laboratory_results",
+    itemCount: resultCount,
+    summary: `${resultCount} laboratory results across ${timestamps.length} collection times; empty copied cells removed.`,
+    preservedUnparsedText: false
+    }, model),
+    sections,
+    displayModels: sections.map((section) => section.displayModel)
+  };
+}
+
+function renderFragmentedLabsWithWideVitals(lines = []) {
+  const vitalIndex = lines.findIndex((line) => vitalTableHeaders(line).length);
+  if (vitalIndex <= 0) return null;
+  const labs = renderFragmentedEpicLabTable(lines.slice(0, vitalIndex));
+  const vitals = renderWideVitalTable(lines.slice(vitalIndex));
+  if (!labs || !vitals) return null;
+  const sections = [
+    ...(labs.sections || [{ id: "epic_fragmented_labs_1", sourceKind: "laboratory_results", ...labs }]),
+    { id: "epic_wide_vitals_1", sourceKind: "vital_signs", ...vitals }
+  ];
+  return {
+    recognized: true,
+    formatId: "epic_mixed_fragmented_labs_vitals",
+    formatLabel: "Epic laboratory results and vital signs",
+    suggestedSourceKind: "",
+    sections,
+    displayModels: sections.map((section) => section.displayModel),
+    promptText: sections.map((section) => section.promptText).join("\n\n"),
+    outputText: sections.map((section) => section.outputText).join("\n\n"),
+    itemCount: sections.reduce((total, section) => total + section.itemCount, 0),
+    summary: `${sections.length} source sections detected: ${labs.summary} ${vitals.summary}`,
+    preservedUnparsedText: false
+  };
+}
+
 function renderDelimitedClipboardTable(lines = []) {
   const headerIndex = lines.findIndex((line, index) => index < 12 && delimitedCells(line).length >= 2);
   if (headerIndex < 0) return null;
@@ -612,6 +840,12 @@ export function parseClinicalExport(value, { sourceKind = "" } = {}) {
       parsedCharacterCount: rawText.length
     };
   }
+  const lines = decodeClinicalClipboardText(value).split("\n");
+  const fragmentedMixedResult = renderFragmentedLabsWithWideVitals(lines);
+  if (fragmentedMixedResult) {
+    const compactResult = nonExpandingResult(fragmentedMixedResult, rawText);
+    return { ...compactResult, rawCharacterCount: rawText.length, parsedCharacterCount: compactResult.outputText.length };
+  }
   const epicResult = parseEpicClinicalExport(value);
   if (epicResult) {
     const compactResult = nonExpandingResult(epicResult, rawText);
@@ -621,8 +855,7 @@ export function parseClinicalExport(value, { sourceKind = "" } = {}) {
       parsedCharacterCount: compactResult.outputText.length
     };
   }
-  const lines = decodeClinicalClipboardText(value).split("\n");
-  const parsers = [renderMedicationReport, renderWideVitalTable, renderDelimitedClipboardTable, renderCprsStructuredTables];
+  const parsers = [renderMedicationReport, renderFragmentedEpicLabTable, renderWideVitalTable, renderDelimitedClipboardTable, renderCprsStructuredTables];
   for (const parser of parsers) {
     const result = parser(lines);
     if (result) {

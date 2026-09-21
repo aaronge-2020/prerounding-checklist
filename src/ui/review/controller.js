@@ -1,6 +1,6 @@
-import { sortDays } from "../../daily-updates/days.js?v=20260921-clinical-review-fix";
-import { updateActivePatient } from "../../app/state/vault.js?v=20260921-clinical-review-fix";
-import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260921-clinical-review-fix";
+import { sortDays } from "../../daily-updates/days.js?v=20260921-lab-panel-sets";
+import { updateActivePatient } from "../../app/state/vault.js?v=20260921-lab-panel-sets";
+import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260921-lab-panel-sets";
 import {
   addDifferential,
   addPlanProblem,
@@ -31,7 +31,7 @@ import {
   updateManualObjective,
   updateNoteSection,
   updatePlanProblem
-} from "../../note-drafts/index.js?v=20260921-clinical-review-fix";
+} from "../../note-drafts/index.js?v=20260921-lab-panel-sets";
 
 const REVIEW_PAGE_SIZE = 8;
 

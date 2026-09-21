@@ -5,7 +5,7 @@ import {
   DEMO_DAY_ID,
   DEMO_PATIENT_ID,
   DEMO_WORKUP_ID
-} from "./session.js?v=20260921-clinical-review-fix";
+} from "./session.js?v=20260921-lab-panel-sets";
 
 export function createDemoSessionController({
   app,

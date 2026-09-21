@@ -1,7 +1,7 @@
 import {
   clinicalDisplayModelFromPromptText,
   laboratoryAbnormality
-} from "../patient-context/structured-clinical-data.js?v=20260921-clinical-review-fix";
+} from "../patient-context/structured-clinical-data.js?v=20260921-lab-panel-sets";
 
 const GROUP_DEFINITIONS = Object.freeze([
   Object.freeze({ id: "vitals", label: "Vital signs" }),
@@ -270,37 +270,50 @@ function diagnosticCandidate(source) {
   return candidate;
 }
 
+function laboratoryPanelName(source, group) {
+  const sourceLabel = clean(source.sourceLabel);
+  const generic = /^(?:laboratory results?|lab results?|morning labs?|admission labs?|epic results review laboratory table)$/i.test(sourceLabel);
+  if (!generic && sourceLabel) return clean(sourceLabel.split(/\s+·\s+/)[0]);
+  return clean(group.label) && !/^laboratory results?$/i.test(clean(group.label)) ? clean(group.label) : "Laboratory results";
+}
+
+function finalizeLaboratoryPanel(candidate) {
+  const results = [...candidate.results];
+  const context = [candidate.dayLabel, candidate.timestamp].filter(Boolean).join(" · ");
+  const renderedResults = results.map((result) => {
+    const value = [result.value, result.unit].filter(Boolean).join(" ") || "No value recorded";
+    const flag = result.flag ? ` [${result.flag}]` : result.status && !["normal", "unknown"].includes(result.status) ? ` [${result.status}]` : "";
+    return `${result.name}: ${value}${flag}`;
+  });
+  const finalized = {
+    ...candidate,
+    group: "labs",
+    results,
+    insertionText: `${candidate.name}${context ? ` (${context})` : ""}\n${renderedResults.join("\n")}`,
+    searchText: clean([candidate.name, candidate.dayLabel, candidate.timestamp, candidate.source.sourceLabel, ...results.flatMap((result) => [result.name, result.value, result.unit, result.referenceRange, result.flag, result.status])].join(" ")).toLocaleLowerCase("en-US")
+  };
+  finalized.fingerprint = fingerprint({
+    id: finalized.id,
+    name: finalized.name,
+    timestamp: finalized.timestamp,
+    results: results.map(({ id, name, value, unit, referenceRange, flag, status }) => ({ id, name, value, unit, referenceRange, flag, status }))
+  });
+  return finalized;
+}
+
 function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap) {
   const display = clinicalDisplayModelFromPromptText(source.sourceKind, source.record.deidentifiedText);
   if (!display?.groups?.length) return;
   const provenance = sourceProvenance(source);
 
   if (display.type === "labs") {
-    display.groups.forEach((group, groupOrder) => group.rows.forEach((row, rowOrder) => {
-      const [name = "", displayedValue = "", displayedUnit = "", referenceRange = "", flag = ""] = row.cells || [];
-      const parsed = splitValueAndUnit(displayedValue, displayedUnit);
-      const value = parsed.value;
-      const unit = parsed.unit;
-      const reportedStatus = clean(row.emphasis) || "unknown";
-      const calculatedStatus = laboratoryAbnormality({ value, flag, referenceRange }).status;
-      const key = `${normalizedExact(name)}\u0000${normalizedExact(unit)}`;
-      if (!normalizedExact(name)) return;
-      if (!labMap.has(key)) labMap.set(key, {
-        id: stableId("lab", key, name),
-        kind: "laboratory_result",
-        name: clean(name),
-        unit: clean(unit),
-        observations: []
-      });
-      const identity = `${source.scope}\u0000${source.dayId}\u0000${source.sourceId}\u0000${groupOrder}\u0000${rowOrder}`;
-      labMap.get(key).observations.push({
-        id: stableId("lab_observation", identity, name),
-        name: clean(name),
-        value: clean(value),
-        unit: clean(unit),
-        referenceRange: clean(referenceRange),
-        flag: clean(flag),
-        status: reportedStatus === "unknown" ? calculatedStatus : reportedStatus,
+    display.groups.forEach((group, groupOrder) => {
+      const identity = `${source.scope}\u0000${source.dayId}\u0000${source.sourceId}\u0000${groupOrder}`;
+      const name = laboratoryPanelName(source, group);
+      const candidate = {
+        id: stableId("lab_panel", identity, `${name}-${group.timestamp}`),
+        kind: "laboratory_panel",
+        name,
         timestamp: clean(group.timestamp),
         dayLabel: source.dayLabel,
         dayDate: source.dayDate,
@@ -308,11 +321,29 @@ function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap)
         dayIndex: source.dayIndex,
         sourceOrder,
         groupOrder,
-        rowOrder,
         source: provenance,
-        parserProvenance: row.provenance || null
+        results: []
+      };
+      group.rows.forEach((row, rowOrder) => {
+        const [resultName = "", displayedValue = "", displayedUnit = "", referenceRange = "", flag = ""] = row.cells || [];
+        if (!normalizedExact(resultName)) return;
+        const parsed = splitValueAndUnit(displayedValue, displayedUnit);
+        const reportedStatus = clean(row.emphasis) || "unknown";
+        const calculatedStatus = laboratoryAbnormality({ value: parsed.value, flag, referenceRange }).status;
+        candidate.results.push({
+          id: stableId("lab_result", `${identity}\u0000${rowOrder}`, resultName),
+          name: clean(resultName),
+          value: clean(parsed.value),
+          unit: clean(parsed.unit),
+          referenceRange: clean(referenceRange),
+          flag: clean(flag),
+          status: reportedStatus === "unknown" ? calculatedStatus : reportedStatus,
+          rowOrder,
+          parserProvenance: row.provenance || null
+        });
       });
-    }));
+      if (candidate.results.length) labMap.set(identity, candidate);
+    });
     return;
   }
 
@@ -448,9 +479,8 @@ export function buildClinicalReviewIndex(patient) {
     else addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap);
   });
 
-  coalesceUnitlessObservations(labMap);
   coalesceUnitlessObservations(vitalMap);
-  const labs = [...labMap.values()].map((candidate) => finalizeObservationCandidate(candidate, "labs"));
+  const labs = [...labMap.values()].map(finalizeLaboratoryPanel);
   let vitals = [...vitalMap.values()].map((candidate) => finalizeObservationCandidate(candidate, "vitals"));
   const latestVitalTime = vitals.flatMap((candidate) => candidate.observations)
     .filter((observation) => Number.isFinite(observation.numericValue) && Number.isFinite(observation.sortTime))
@@ -465,7 +495,11 @@ export function buildClinicalReviewIndex(patient) {
 
   const byGroup = new Map(GROUP_DEFINITIONS.map(({ id }) => [id, []]));
   for (const candidate of [...vitals, ...labs, ...medications, ...diagnostics]) byGroup.get(candidate.group)?.push(candidate);
-  for (const candidates of byGroup.values()) candidates.sort((left, right) => left.name.localeCompare(right.name) || left.id.localeCompare(right.id));
+  for (const [group, candidates] of byGroup) candidates.sort((left, right) =>
+    group === "labs"
+      ? (Number.isFinite(left.sortTime) && Number.isFinite(right.sortTime) ? left.sortTime - right.sortTime : left.dayIndex - right.dayIndex || left.sourceOrder - right.sourceOrder || left.groupOrder - right.groupOrder) || left.name.localeCompare(right.name)
+      : left.name.localeCompare(right.name) || left.id.localeCompare(right.id)
+  );
 
   const groups = GROUP_DEFINITIONS.map((definition) => ({ ...definition, candidates: byGroup.get(definition.id) }));
   const candidates = groups.flatMap((group) => group.candidates);

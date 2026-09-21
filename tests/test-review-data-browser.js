@@ -89,18 +89,25 @@ try {
 
   // Add realistic patient-wide data through the visible Hospital Stay workflow.
   await page.click('[data-view-target="daily"]');
-  const dayOneLabs = `Results from EPIC:
-WBC: 15.2 (H)
-Creatinine: 1.4 (H)
-Sodium: 137
-
-(H): Data is abnormally high`;
-  await addDailySource("laboratory_results", dayOneLabs, 1);
+  const fragmentedCell = (value = "") => `|   |\n| - |\n\n${value}`;
+  const dayOneLabs = [
+    fragmentedCell("Latest Reference Range & Units"),
+    fragmentedCell("09/19/26 06:00"),
+    fragmentedCell("WBC4.0 - 10.0 10\\*3/uL"),
+    fragmentedCell("**15.2 (H)**"),
+    fragmentedCell("Creatinine0.5 - 1.0 mg/dL"),
+    fragmentedCell("**1.4 (H)**"),
+    fragmentedCell("Sodium136 - 145 mmol/L"),
+    fragmentedCell("137")
+  ].join("\n\n");
+  await addDailySource("laboratory_results", dayOneLabs, 2);
+  assert.match(await page.locator("#dailySources").innerText(), /CBC · \[Hospital Day 2 at 06:00\]/);
+  assert.match(await page.locator("#dailySources").innerText(), /Basic metabolic panel · \[Hospital Day 2 at 06:00\]/);
   const vitals = `| Date/TimeTempPulseHeart Rate (Monitored)RespBPMAPArterial BPMAPSpO2$ O2 DeviceO2 Flow Rate (l/min)FiO2 (%)Weight | | | | | | | | | | | | | |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 09/19/26 0600 | 36.5 °C (97.7 °F) | — | 72 | 18 | 119/77 | 93 mmHg | — | — | 99 % | Room air | — | — | — |
 | 09/18/26 2300 | 37.8 °C (100 °F) | — | 96 | 20 | 110/70 | 83 mmHg | — | — | 95 % | Nasal cannula | 2 | — | — |`;
-  await addDailySource("vital_signs", vitals, 2);
+  await addDailySource("vital_signs", vitals, 3);
   const medications = `Medications\t09/18/26\t09/19/26\t09/20/26
 cefTRIAXone (ROCEPHIN) injection 1 g
 Dose: 1 g
@@ -115,7 +122,7 @@ Start: 09/18/26 1200
 Admin Instructions:
 Use for fever or pain.
 1815 (650 mg)`;
-  await addDailySource("medication_activity", medications, 3);
+  await addDailySource("medication_activity", medications, 4);
   await page.click('[data-action="select-daily-source-kind"][data-source-kind="results"]');
   await page.fill('[data-result-metadata="label"][data-result-scope="daily"]', "CT Head/Neck Without Contrast");
   await page.selectOption('[data-result-metadata="category"][data-result-scope="daily"]', "imaging");
@@ -123,7 +130,7 @@ Use for fever or pain.
   await page.fill('[data-result-metadata="context"][data-result-scope="daily"]', "Final read");
   await page.fill("#dailySourceDraft", "No acute intracranial abnormality.");
   await page.click('[data-action="add-daily-source"]');
-  await page.waitForFunction(() => document.querySelectorAll("#dailySources .source-capture-editor").length === 4);
+  await page.waitForFunction(() => document.querySelectorAll("#dailySources .source-capture-editor").length === 5);
   assert.match(await page.locator("#dailySources .source-capture-editor").last().innerText(), /CT Head\/Neck Without Contrast/);
   assert.equal(await page.locator('#dailySources [data-clinical-view]').count(), 0, "Hospital Stay must not render clinical summaries");
 
@@ -178,31 +185,38 @@ Sodium: 138`;
   await page.click('[data-action="download-final-note"]');
   assert.match((await noteDownload).suggestedFilename(), /progress-note\.txt$/);
   await page.selectOption("#reviewDataCategory", "labs");
-  assert.equal(await page.locator("[data-review-candidate]").count(), 1, "the Labs filter must show one laboratory trend at a time");
-  assert.match(await page.locator(".review-data-pagination output").innerText(), /Lab 1 of 3/);
+  assert.equal(await page.locator("[data-review-candidate]").count(), 1, "the Labs filter must show one timestamped laboratory panel at a time");
+  assert.match(await page.locator(".review-data-pagination output").innerText(), /Lab set 1 of 3/);
   await page.click('[data-action="review-data-page"][data-direction="1"]');
   assert.equal(await page.locator("[data-review-candidate]").count(), 1);
-  assert.match(await page.locator(".review-data-pagination output").innerText(), /Lab 2 of 3/);
+  assert.match(await page.locator(".review-data-pagination output").innerText(), /Lab set 2 of 3/);
   await page.selectOption("#reviewDataCategory", "all");
   assert.equal(await page.locator(".review-data-pagination").isVisible(), true);
   await page.click('[data-action="review-data-page"][data-direction="1"]');
   assert.match(await page.locator(".review-data-pagination output").innerText(), /Page 2/);
   await page.click('[data-action="review-data-page"][data-direction="-1"]');
   await page.fill("#reviewDataSearch", "WBC");
-  await page.waitForFunction(() => document.querySelectorAll("[data-review-candidate]").length === 1);
-  const wbcCard = page.locator("[data-review-candidate]").first();
-  assert.match(await wbcCard.innerText(), /15\.2[\s\S]*8\.8/);
+  await page.waitForFunction(() => document.querySelectorAll("[data-review-candidate]").length === 2);
+  const wbcCard = page.locator("[data-review-candidate]").last();
+  assert.match(await wbcCard.innerText(), /WBC[\s\S]*8\.8/);
+  assert.doesNotMatch(await wbcCard.innerText(), /15\.2/, "each collection must remain a separate lab-set card");
   await wbcCard.locator('[data-objective-selection-id]').check();
   const wbcBlock = page.locator("[data-objective-block]").first();
-  assert.match(await wbcBlock.locator("textarea").inputValue(), /latest 8\.8/);
-  assert.match(await wbcBlock.locator("textarea").inputValue(), /15\.2[\s\S]*→[\s\S]*8\.8/);
+  assert.match(await wbcBlock.locator("textarea").inputValue(), /WBC: 8\.8/);
   await wbcBlock.locator("textarea").fill("Student wording: WBC has improved substantially.");
   await page.fill('[data-draft-objective-manual]', "Lungs clear to auscultation.");
   await page.selectOption("#reviewDataCategory", "medications");
 
   // Updating source data marks an edited linked block stale without overwriting it.
   await page.click('[data-view-target="daily"]');
-  await addDailySource("laboratory_results", "Results from EPIC:\nWBC: 7.7", 2);
+  const currentLabSource = page.locator("#dailySources .source-capture-editor").first();
+  if ((await currentLabSource.locator('[data-action="toggle-section-editor"]').getAttribute("aria-expanded")) !== "true") {
+    await currentLabSource.locator('[data-action="toggle-section-editor"]').click();
+  }
+  const currentLabText = await currentLabSource.locator(".section-text").inputValue();
+  await currentLabSource.locator(".section-text").fill(currentLabText.replace("WBC: 8.8", "WBC: 7.7"));
+  await page.click('[data-action="save-day"]');
+  await page.waitForFunction(() => /Source edits saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.click('[data-view-target="review"]');
   assert.equal(await page.locator("#reviewDataCategory").inputValue(), "all", "returning to Patient Data Review must not leave labs and vitals hidden behind the prior medication filter");
   await page.fill("#reviewDataSearch", "WBC");
@@ -213,13 +227,13 @@ Sodium: 138`;
   await page.click('[data-action="keep-objective-selection"]');
   assert.equal(await page.locator("[data-objective-state]").first().getAttribute("data-objective-state"), "edited");
 
-  // Several labs can be selected independently; deselecting one preserves the others and manual text.
-  await page.fill("#reviewDataSearch", "Creatinine");
+  // Several lab sets can be selected independently; deselecting one preserves the others and manual text.
+  await page.fill("#reviewDataSearch", "15.2");
   await page.locator('[data-objective-selection-id]').check();
-  await page.fill("#reviewDataSearch", "Sodium");
+  await page.fill("#reviewDataSearch", "1.4");
   await page.locator('[data-objective-selection-id]').check();
   assert.equal(await page.locator("[data-objective-block]").count(), 3);
-  await page.fill("#reviewDataSearch", "WBC");
+  await page.fill("#reviewDataSearch", "7.7");
   await page.locator('[data-objective-selection-id]').uncheck();
   assert.equal(await page.locator("[data-objective-block]").count(), 2);
   assert.equal(await page.locator('[data-draft-objective-manual]').inputValue(), "Lungs clear to auscultation.");

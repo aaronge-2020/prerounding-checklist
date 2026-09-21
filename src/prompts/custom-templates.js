@@ -1,12 +1,12 @@
 import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
-import { buildTrajectoryBlock } from "../daily-updates/days.js?v=20260921-clinical-review-fix";
-import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260921-clinical-review-fix";
-import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-clinical-review-fix";
+import { buildTrajectoryBlock } from "../daily-updates/days.js?v=20260921-lab-panel-sets";
+import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260921-lab-panel-sets";
+import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-lab-panel-sets";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js?v=20260722-guideline-library";
 import { attendingPromptForTask, includesRequiredAttendingPersona, promptPersonaForTask, stripConflictingAttendingPersonas } from "./natural-language.js?v=20260910-pre-op-prep";
-import { buildProgressNotePacket } from "./progress-note-packet.js?v=20260921-clinical-review-fix";
+import { buildProgressNotePacket } from "./progress-note-packet.js?v=20260921-lab-panel-sets";
 import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20260910-pre-op-prep";
-import { renderFinalNote } from "../note-drafts/index.js?v=20260921-clinical-review-fix";
+import { renderFinalNote } from "../note-drafts/index.js?v=20260921-lab-panel-sets";
 
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";
 export const TEAM_PREFERENCES_PROMPT_TOKEN = "@team-preferences";

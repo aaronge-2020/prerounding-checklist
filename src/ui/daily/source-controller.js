@@ -1,9 +1,9 @@
-import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-clinical-review-fix";
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-clinical-review-fix";
+import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-lab-panel-sets";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-lab-panel-sets";
 import {
   parseClinicalExport,
   prepareClinicalExportForSave
-} from "../../patient-context/clinical-export-parser.js?v=20260921-clinical-review-fix";
+} from "../../patient-context/clinical-export-parser.js?v=20260921-lab-panel-sets";
 import {
   createEphemeralRedactionReview,
   reviewKey,
@@ -16,8 +16,8 @@ import {
   dailySourceKindOptions,
   replaceSourceCapturesFromFormAsync,
   sourceCapturePacketCheck
-} from "../../patient-context/source-captures.js?v=20260921-clinical-review-fix";
-import { createNoteDraft, fieldsForNoteType, NOTE_TYPES, updateNoteSection } from "../../note-drafts/index.js?v=20260921-clinical-review-fix";
+} from "../../patient-context/source-captures.js?v=20260921-lab-panel-sets";
+import { createNoteDraft, fieldsForNoteType, NOTE_TYPES, updateNoteSection } from "../../note-drafts/index.js?v=20260921-lab-panel-sets";
 
 export function createDailySourceController(deps) {
   function structuredNoteKey(scope) {
@@ -116,6 +116,7 @@ export function createDailySourceController(deps) {
         .map((section) => ({
           sourceKind: section.sourceKind || "other_chart_text",
           label: section.formatLabel || "Parsed chart source",
+          panelLabel: section.panelLabel || "",
           resultCategory: section.sourceKind === "results" ? resultMetadata.category : "",
           resultDate: section.sourceKind === "results" ? resultMetadata.date : "",
           resultContext: section.sourceKind === "results" ? resultMetadata.context : "",
@@ -149,7 +150,16 @@ export function createDailySourceController(deps) {
         value: index,
         total: parts.length
       });
-      deidentified.push({ part, result: await deps.deidentify(part.sourceText, { referenceDate }) });
+      const result = await deps.deidentify(part.sourceText, { referenceDate });
+      const safeCollectionTime = part.panelLabel
+        ? String(result.text || "").match(/^@\s*(.+)$/m)?.[1] || ""
+        : "";
+      deidentified.push({
+        part: part.panelLabel
+          ? { ...part, label: [part.panelLabel, safeCollectionTime].filter(Boolean).join(" · ") }
+          : part,
+        result
+      });
     }
     return deidentified;
   }

@@ -1,4 +1,4 @@
-import { createTextSection, normalizeSection } from "../app/state/vault.js?v=20260921-clinical-review-fix";
+import { createTextSection, normalizeSection } from "../app/state/vault.js?v=20260921-lab-panel-sets";
 import { isActionableResidualWarning, sanitizeResidualWarningMetadata } from "./review.js";
 import { naturalLanguagePrompt } from "../prompts/natural-language.js";
 

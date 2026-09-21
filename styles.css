@@ -2257,6 +2257,39 @@ button.var-fill:focus-visible {
   border-color: var(--danger, #a33);
 }
 
+.review-lab-table-wrap {
+  margin-top: 12px;
+  overflow-x: auto;
+}
+
+.review-lab-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.review-lab-table th,
+.review-lab-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 7px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.review-lab-table thead th {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.review-lab-table tbody tr[data-clinical-emphasis="high"] td:nth-child(2),
+.review-lab-table tbody tr[data-clinical-emphasis="low"] td:nth-child(2),
+.review-lab-table tbody tr[data-clinical-emphasis="abnormal"] td:nth-child(2) {
+  color: var(--danger, #a33);
+  font-weight: 700;
+}
+
 .review-result-text {
   white-space: pre-wrap;
 }

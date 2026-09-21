@@ -1,5 +1,5 @@
-import { sectionWarningSummary } from "../../patient-context/sections.js?v=20260921-clinical-review-fix";
-import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-clinical-review-fix";
+import { sectionWarningSummary } from "../../patient-context/sections.js?v=20260921-lab-panel-sets";
+import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-lab-panel-sets";
 
 export function redactionPosition(text, redaction) {
   const source = String(text || "");
@@ -171,13 +171,16 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
     const capturedLabel = capturedAt && !Number.isNaN(capturedAt.getTime())
       ? capturedAt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
       : "Saved source";
+    const sourceKindLabel = sourceOptions.find((option) => option.id === capture.sourceKind)?.label || "Other chart text";
+    const sourceIdentity = capture.label && capture.label !== sourceKindLabel ? capture.label : sourceKindLabel;
+    const sourceTypePrefix = sourceIdentity !== sourceKindLabel ? `${sourceKindLabel} · ` : "";
     return `
       <article class="section-editor source-capture-editor ${isExpanded ? "is-expanded" : ""}" data-section-id="${escapeHtml(capture.id)}" data-section-scope="${escapeHtml(scope)}" data-created-at="${escapeHtml(capture.createdAt)}" data-source-label="${escapeHtml(capture.label || "")}" ${scope === "daily" ? `data-captured-at="${escapeHtml(capture.capturedAt || capture.createdAt)}"` : ""}>
         ${scope === "context" ? `<input class="section-label" type="hidden" value="${escapeHtml(capture.label)}"><input class="section-role" type="hidden" value="${escapeHtml(capture.role)}">` : ""}
         <div class="section-toolbar source-capture-toolbar">
           <div class="source-capture-identity">
-            <strong>${escapeHtml(capture.sourceKind === "results" ? capture.label : sourceOptions.find((option) => option.id === capture.sourceKind)?.label || capture.label || "Other chart text")}</strong>
-            <span class="section-meta">${capturedLabel} · ${characterCount.toLocaleString()} chars${draftMarker}</span>
+            <strong>${escapeHtml(sourceIdentity)}</strong>
+            <span class="section-meta">${escapeHtml(sourceTypePrefix)}${capturedLabel} · ${characterCount.toLocaleString()} chars${draftMarker}</span>
           </div>
           <div class="button-row">
             <button class="button--quiet" type="button" data-action="toggle-section-editor" aria-label="${isExpanded ? "Collapse source" : "Edit source"}" aria-expanded="${String(isExpanded)}">${isExpanded ? "Done" : "Edit"}</button>

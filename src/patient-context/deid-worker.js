@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20260921-clinical-review-fix";
+} from "./deid-service.js?v=20260921-lab-panel-sets";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });

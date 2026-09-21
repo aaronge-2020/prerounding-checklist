@@ -12,7 +12,7 @@ import {
   modelPackManifestIsValid,
   modelPackVerifiedForCurrentRuntime,
   validateModelPackEntries
-} from "./model-packs.js?v=20260921-clinical-review-fix";
+} from "./model-packs.js?v=20260921-lab-panel-sets";
 
 const MODEL_PACK_DATABASE = "prerounding-local-model-pack-handles-v1";
 const MODEL_PACK_STORE = "packs";

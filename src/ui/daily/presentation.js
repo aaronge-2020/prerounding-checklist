@@ -1,8 +1,8 @@
-import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-clinical-review-fix";
-import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260921-clinical-review-fix";
-import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-clinical-review-fix";
-import { fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-clinical-review-fix";
-import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-clinical-review-fix";
+import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-lab-panel-sets";
+import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260921-lab-panel-sets";
+import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-lab-panel-sets";
+import { fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-lab-panel-sets";
+import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-lab-panel-sets";
 
 export function createDailyPresentation({ escapeHtml, icon }) {
   function renderRowReviewStatus(completeness) {

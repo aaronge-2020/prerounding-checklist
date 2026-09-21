@@ -1,4 +1,4 @@
-import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-clinical-review-fix";
+import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-lab-panel-sets";
 
 function valueText(value) {
   return String(value?.deidentifiedText || "");
@@ -40,12 +40,15 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     const medication = candidate.kind === "medication" && candidate.latestSavedEntry
       ? `<dl class="review-medication-regimen"><div><dt>Dose</dt><dd>${escapeHtml(candidate.latestSavedEntry.dose || "Not documented")}</dd></div><div><dt>Route</dt><dd>${escapeHtml(candidate.latestSavedEntry.route || "Not documented")}</dd></div><div><dt>Administration times</dt><dd>${escapeHtml(candidate.latestSavedEntry.administrationTimes || "None documented")}</dd></div></dl>`
       : "";
+    const laboratoryPanel = candidate.kind === "laboratory_panel"
+      ? `<div class="review-lab-table-wrap"><table class="review-lab-table"><thead><tr><th>Test</th><th>Result</th><th>Reference</th></tr></thead><tbody>${candidate.results.map((result) => `<tr data-clinical-emphasis="${escapeHtml(result.status || "unknown")}"><th>${escapeHtml(result.name)}</th><td>${escapeHtml([result.value, result.unit].filter(Boolean).join(" ") || "—")}${result.flag ? ` <small>${escapeHtml(result.flag)}</small>` : ""}</td><td>${escapeHtml(result.referenceRange || "—")}</td></tr>`).join("")}</tbody></table></div>`
+      : "";
     return `<article class="review-data-item ${selected ? "is-selected" : ""}" data-review-candidate="${escapeHtml(candidate.id)}">
       <label class="objective-choice">
         <input type="checkbox" data-objective-selection-id="${escapeHtml(candidate.id)}" ${selected ? "checked" : ""}>
         <span><strong>${escapeHtml(candidate.name)}</strong><small>${escapeHtml(candidate.source?.dayLabel || candidate.group)}</small></span>
       </label>
-      ${stats}${medication}${diagnostic}${candidate.kind !== "medication" && candidate.observations?.length ? renderTrend(candidate) : ""}
+      ${stats}${laboratoryPanel}${medication}${diagnostic}${candidate.kind !== "medication" && candidate.observations?.length ? renderTrend(candidate) : ""}
       <details><summary>Preview note insertion</summary><pre>${escapeHtml(candidate.insertionText)}</pre></details>
     </article>`;
   }
@@ -53,7 +56,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   function renderDataExplorer({ index, filteredCandidates, filteredCandidateCount, page, pageCount, selectedIds, query, category }) {
     const labOnly = category === "labs";
     const pagination = pageCount > 1
-      ? `<nav class="review-data-pagination" aria-label="${labOnly ? "Laboratory result" : "Clinical data"} pages"><button type="button" class="icon-button" data-action="review-data-page" data-direction="-1" aria-label="Previous ${labOnly ? "laboratory result" : "clinical data page"}" ${page <= 0 ? "disabled" : ""}>←</button><output>${labOnly ? "Lab" : "Page"} ${page + 1} of ${pageCount}</output><button type="button" class="icon-button" data-action="review-data-page" data-direction="1" aria-label="Next ${labOnly ? "laboratory result" : "clinical data page"}" ${page >= pageCount - 1 ? "disabled" : ""}>→</button></nav>`
+      ? `<nav class="review-data-pagination" aria-label="${labOnly ? "Laboratory panel" : "Clinical data"} pages"><button type="button" class="icon-button" data-action="review-data-page" data-direction="-1" aria-label="Previous ${labOnly ? "laboratory panel" : "clinical data page"}" ${page <= 0 ? "disabled" : ""}>←</button><output>${labOnly ? "Lab set" : "Page"} ${page + 1} of ${pageCount}</output><button type="button" class="icon-button" data-action="review-data-page" data-direction="1" aria-label="Next ${labOnly ? "laboratory panel" : "clinical data page"}" ${page >= pageCount - 1 ? "disabled" : ""}>→</button></nav>`
       : "";
     return `<section class="review-data-panel panel" aria-labelledby="reviewDataHeading">
       <div class="section-heading"><div><h2 id="reviewDataHeading">Clinical data</h2><p class="muted">Saved source data and calculated summaries stay distinct. Check only what belongs in this note.</p></div></div>

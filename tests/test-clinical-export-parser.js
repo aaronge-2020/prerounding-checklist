@@ -12,7 +12,7 @@ import {
 } from "../src/patient-context/structured-clinical-data.js";
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
-const parserRevision = "20260921-clinical-review-fix";
+const parserRevision = "20260921-lab-panel-sets";
 const runtimeSources = {
   index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
   app: readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8"),
@@ -403,6 +403,48 @@ const savedWideEpicVitals = clinicalDisplayModelFromPromptText("vital_signs", pa
 assert.ok(savedWideEpicVitals.series.some(({ name }) => name === "Heart Rate (Monitored)"), "saved vital display must retain monitored heart rate");
 assert.ok(savedWideEpicVitals.series.some(({ name }) => name === "Systolic BP"), "saved vital display must retain separated blood pressure trends");
 assert.ok(savedWideEpicVitals.series.some(({ name }) => name === "FiO2"), "saved vital display must retain oxygen settings");
+
+const fragmentedCell = (value = "") => `|   |
+| - |
+
+${value}`;
+const fragmentedLabsAndVitals = [
+  fragmentedCell("Latest Reference Range & Units"),
+  fragmentedCell("09/21/26 04:03"),
+  fragmentedCell("09/21/26 11:22"),
+  fragmentedCell("WBC4.0 - 10.0 10\\*3/uL"),
+  fragmentedCell("**10.4 (H)**"),
+  fragmentedCell("**10.9 (H)**"),
+  fragmentedCell("Hemoglobin11.2 - 15.7 g/dL"),
+  fragmentedCell("**6.5 (LL)**"),
+  fragmentedCell("**7.9 (L)**"),
+  fragmentedCell("Sodium136 - 145 mmol/L"),
+  fragmentedCell("**150 (H)**"),
+  fragmentedCell("**147 (H)**"),
+  fragmentedCell("Creatinine0.5 - 1.0 mg/dL"),
+  fragmentedCell("0.5"),
+  fragmentedCell("0.5")
+].join("\n\n") + `\n\n${wideEpicVitals}`;
+const parsedFragmentedLabsAndVitals = parseClinicalExport(fragmentedLabsAndVitals);
+assert.equal(parsedFragmentedLabsAndVitals.formatId, "epic_mixed_fragmented_labs_vitals");
+assert.deepEqual(parsedFragmentedLabsAndVitals.sections.map(({ sourceKind, formatLabel }) => [sourceKind, formatLabel]), [
+  ["laboratory_results", "CBC · 09/21/26 04:03"],
+  ["laboratory_results", "Basic metabolic panel · 09/21/26 04:03"],
+  ["laboratory_results", "CBC · 09/21/26 11:22"],
+  ["laboratory_results", "Basic metabolic panel · 09/21/26 11:22"],
+  ["vital_signs", "Epic vital-sign flowsheet"]
+], "fragmented Epic labs must become separate timestamped panel sources before saving");
+assert.deepEqual(
+  parsedFragmentedLabsAndVitals.sections.slice(0, 4).map((section) => section.structuredData.groups.map(({ label, timestamp }) => ({ label, timestamp }))),
+  [
+    [{ label: "CBC", timestamp: "09/21/26 04:03" }],
+    [{ label: "Basic metabolic panel", timestamp: "09/21/26 04:03" }],
+    [{ label: "CBC", timestamp: "09/21/26 11:22" }],
+    [{ label: "Basic metabolic panel", timestamp: "09/21/26 11:22" }]
+  ]
+);
+assert.equal(parsedFragmentedLabsAndVitals.sections[0].structuredData.groups[0].rows[0].unit, "10*3/uL");
+assert.equal(parsedFragmentedLabsAndVitals.sections[0].structuredData.groups[0].rows[1].flag, "LL");
 const deidentifiedWideEpicVitals = deidentifyTextStructuredOnly(parsedWideEpicVitals.outputText, new Date("2026-09-17T00:00:00")).text;
 const savedDeidentifiedWideEpicVitals = clinicalDisplayModelFromPromptText("vital_signs", deidentifiedWideEpicVitals);
 assert.deepEqual(savedDeidentifiedWideEpicVitals.series.find(({ name }) => name === "Temperature").points.map(({ timestamp }) => timestamp), [

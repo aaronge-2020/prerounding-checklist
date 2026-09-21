@@ -138,23 +138,23 @@ const index = buildClinicalReviewIndex(patient);
 assert.equal(index.patientId, "patient_review");
 assert.deepEqual(index.groups.map(({ id }) => id), ["vitals", "labs", "medications", "imaging", "microbiology", "pathology", "other_results"]);
 
-const wbc = index.labs.find((candidate) => candidate.name === "WBC");
-assert.ok(wbc);
-assert.deepEqual(wbc.observations.map(({ value }) => value), ["15.2", "12.0", "8.8"], "repeated labs must be chronological across days even when day input is not");
-assert.deepEqual(wbc.observations.map(({ status }) => status), ["high", "high", "normal"]);
-assert.equal(wbc.latest.value, "8.8");
-assert.match(wbc.insertionText, /latest 8\.8 K\/uL/);
-assert.match(wbc.insertionText, /15\.2 K\/uL \[high\][\s\S]*12\.0 K\/uL \[high\][\s\S]*8\.8 K\/uL/);
+const laboratoryResults = (reviewIndex, name) => reviewIndex.labs.flatMap((panel) =>
+  panel.results.filter((result) => result.name === name).map((result) => ({ ...result, panel }))
+);
+assert.equal(index.labs.length, 3, "each saved laboratory collection must remain a separate selectable set");
+assert.ok(index.labs.every((candidate) => candidate.kind === "laboratory_panel"));
+const wbcResults = laboratoryResults(index, "WBC");
+assert.deepEqual(wbcResults.map(({ value }) => value), ["15.2", "12.0", "8.8"], "laboratory sets must remain chronological across days even when day input is not");
+assert.deepEqual(wbcResults.map(({ status }) => status), ["high", "high", "normal"]);
+assert.match(wbcResults.at(-1).panel.insertionText, /Laboratory results[\s\S]*WBC: 8\.8 K\/uL/);
 
-const glucoseCandidates = index.labs.filter((candidate) => candidate.name === "Glucose");
-assert.equal(glucoseCandidates.length, 2, "identical names with incompatible units must never be merged");
-assert.deepEqual(glucoseCandidates.map(({ unit }) => unit).sort(), ["mg/dL", "mmol/L"]);
+const glucoseResults = laboratoryResults(index, "Glucose");
+assert.deepEqual(glucoseResults.map(({ unit }) => unit).sort(), ["mg/dL", "mmol/L"], "panel rows must preserve their documented units");
 
-const lactate = index.labs.find((candidate) => candidate.name === "Lactate");
-assert.equal(lactate.latest.value, "<0.5", "comparator observations remain selectable even though they are not numeric graph points");
-const creatinine = index.labs.find((candidate) => candidate.name === "Creatinine");
-assert.equal(creatinine.latest.value, "pending", "latest non-numeric/missing-status observations must not be discarded");
-assert.equal(creatinine.observations.length, 3);
+assert.equal(laboratoryResults(index, "Lactate")[0].value, "<0.5", "comparator results remain selectable within their panel");
+const creatinineResults = laboratoryResults(index, "Creatinine");
+assert.equal(creatinineResults.at(-1).value, "pending", "latest non-numeric/missing-status results must not be discarded");
+assert.equal(creatinineResults.length, 3);
 
 const heartRate = index.vitals.find((candidate) => candidate.name === "Pulse");
 assert.ok(heartRate);
@@ -218,14 +218,15 @@ assert.equal(filterClinicalReviewCandidates(index, "head/neck").map(({ id }) => 
 assert.deepEqual(filterClinicalReviewCandidates(index, "blood", { group: "microbiology" }).map(({ label }) => label), ["Blood Culture"]);
 
 const repeatedIndex = buildClinicalReviewIndex(structuredClone(patient));
-const repeatedWbc = repeatedIndex.labs.find((candidate) => candidate.name === "WBC");
-assert.equal(repeatedWbc.id, wbc.id, "selection IDs must be stable for unchanged source identity");
-assert.equal(repeatedWbc.fingerprint, wbc.fingerprint);
+const latestLabPanel = index.labs.find((candidate) => candidate.source.sourceId === "labs_three");
+const repeatedLatestLabPanel = repeatedIndex.labs.find((candidate) => candidate.source.sourceId === "labs_three");
+assert.equal(repeatedLatestLabPanel.id, latestLabPanel.id, "panel selection IDs must be stable for unchanged source identity");
+assert.equal(repeatedLatestLabPanel.fingerprint, latestLabPanel.fingerprint);
 const changedPatient = structuredClone(patient);
 changedPatient.days.find(({ id }) => id === "day_three").sourceCaptures.find(({ id }) => id === "labs_three").deidentifiedText = changedPatient.days.find(({ id }) => id === "day_three").sourceCaptures.find(({ id }) => id === "labs_three").deidentifiedText.replace("8.8", "9.1");
-const changedWbc = buildClinicalReviewIndex(changedPatient).labs.find((candidate) => candidate.name === "WBC");
-assert.equal(changedWbc.id, wbc.id, "content changes must not break a saved selection reference");
-assert.notEqual(changedWbc.fingerprint, wbc.fingerprint, "content changes must be detectable for explicit refresh decisions");
+const changedLatestLabPanel = buildClinicalReviewIndex(changedPatient).labs.find((candidate) => candidate.source.sourceId === "labs_three");
+assert.equal(changedLatestLabPanel.id, latestLabPanel.id, "content changes must not break a saved panel selection reference");
+assert.notEqual(changedLatestLabPanel.fingerprint, latestLabPanel.fingerprint, "panel content changes must be detectable for explicit refresh decisions");
 
 const serialized = JSON.stringify(index);
 assert.doesNotMatch(serialized, /RAW ORIGINAL MUST NEVER APPEAR|RAW PATHOLOGY ORIGINAL/);
