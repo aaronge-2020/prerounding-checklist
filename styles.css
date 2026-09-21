@@ -3185,7 +3185,7 @@ button.var-fill:focus-visible {
   border-radius: 7px;
   background: var(--ink);
   box-shadow: 0 8px 24px rgba(15, 37, 56, 0.18);
-  color: var(--panel);
+  color: var(--surface);
   content: attr(data-tooltip);
   font-size: 12px;
   font-weight: 500;
