@@ -1,5 +1,5 @@
-import { createLocalId, normalizeDay, timestampNow } from "../app/state/vault.js?v=20260921-lab-panel-ui";
-import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-lab-panel-ui";
+import { createLocalId, normalizeDay, timestampNow } from "../app/state/vault.js?v=20260921-lab-trends-v2";
+import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-lab-trends-v2";
 import { renderPrimaryTeamNote } from "../patient-context/primary-team-note.js?v=20260921-primary-note-source";
 
 export function localCalendarDate(value = new Date()) {

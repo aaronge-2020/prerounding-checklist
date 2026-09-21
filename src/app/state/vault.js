@@ -1,9 +1,9 @@
 import { normalizeUserPreferences } from "../preferences.js";
 import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js";
 import { CONTEXT_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRoleLabel } from "../../patient-context/packet-roles.js";
-import { migrateLegacyDailySections, normalizeDiagnosticResultCategory, normalizeSourceCapture, normalizeSourceKindForScope } from "../../patient-context/source-captures.js?v=20260921-lab-panel-ui";
+import { migrateLegacyDailySections, normalizeDiagnosticResultCategory, normalizeSourceCapture, normalizeSourceKindForScope } from "../../patient-context/source-captures.js?v=20260921-lab-trends-v2";
 import { normalizePrimaryTeamNote } from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
-import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260921-lab-panel-ui";
+import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260921-lab-trends-v2";
 
 export const VAULT_SCHEMA_VERSION = 5;
 

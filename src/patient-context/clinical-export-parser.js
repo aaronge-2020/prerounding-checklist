@@ -1,9 +1,10 @@
-import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260921-lab-panel-ui";
+import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260921-lab-trends-v2";
 import {
   clinicalDataModel,
   laboratoryAbnormality,
   withClinicalRepresentations
-} from "./structured-clinical-data.js?v=20260921-lab-panel-ui";
+} from "./structured-clinical-data.js?v=20260921-lab-trends-v2";
+import { splitLaboratoryRowsByPanel } from "./laboratory-panels.js?v=20260921-lab-trends-v2";
 
 const REPORT_SEPARATOR = /^\s*[-=]{20,}\s*$/;
 const MEDICATION_STATUS = /\b(?:ADMINISTERED|CANCELLED|CANCELED|DISCONTINUED|GIVEN|HELD|MISSED|NOT GIVEN|REFUSED|STOPPED|BCMA EXPIRED)\b/i;
@@ -558,51 +559,6 @@ function fragmentedLabValue(value) {
     value: compactLine(flagged ? flagged[1] : text),
     flag: compactLine(flagged?.[2] || "").toUpperCase()
   };
-}
-
-function normalizedLabName(value) {
-  return compactLine(value).toLowerCase().replace(/[^a-z0-9%]+/g, " ").trim();
-}
-
-function laboratoryPanelFamily(name) {
-  const normalized = normalizedLabName(name);
-  if (/^(?:wbc|white blood cell count|hemoglobin|hgb|hematocrit|hct|platelets?|platelet count|rbc|red blood cell count|mcv|mch|mchc|rdw|mpv|nucleated rbc|nrbc)(?:\b|%)/.test(normalized)) return "cbc";
-  if (/^(?:neutrophils?|lymphocytes?|monocytes?|eosinophils?|basophils?|immature granulocytes?|absolute neutrophil count|anc)(?:\b|%)/.test(normalized)) return "cbc_differential";
-  if (/^(?:sodium|potassium|chloride|co2 total|carbon dioxide|bicarbonate|anion gap|bun|blood urea nitrogen|creatinine|egfr|glucose(?: bld)?|calcium)$/.test(normalized)) return "metabolic";
-  if (/^(?:albumin|total protein|protein total|ast|aspartate aminotransferase|alt|alanine aminotransferase|alkaline phosphatase|alk phos|bilirubin(?: total| direct| indirect)?|ggt)$/.test(normalized)) return "hepatic";
-  if (/^(?:pt|prothrombin time|inr|ptt|aptt|partial thromboplastin time|fibrinogen|d dimer)$/.test(normalized)) return "coagulation";
-  if (/^(?:ph|pco2|po2|hco3|base excess|lactate|oxygen saturation|o2 saturation)(?:\b|$)/.test(normalized)) return "blood_gas";
-  if (/^(?:crossmatch|transfuse|type and screen|abo|rh|antibody screen)/.test(normalized)) return "blood_bank";
-  if (/^osmolality(?:\b|$)/.test(normalized)) return "osmolality";
-  return "other";
-}
-
-function splitLaboratoryRowsByPanel(rows = []) {
-  const families = rows.map((row) => laboratoryPanelFamily(row.name));
-  const hasMetabolic = families.includes("metabolic");
-  const hasHepatic = families.includes("hepatic");
-  const hasDifferential = families.includes("cbc_differential");
-  const buckets = new Map();
-  rows.forEach((row, index) => {
-    let key = families[index];
-    if ((key === "metabolic" || key === "hepatic") && hasMetabolic && hasHepatic) key = "comprehensive_metabolic";
-    if (key === "cbc_differential") key = "cbc";
-    if (!buckets.has(key)) buckets.set(key, []);
-    buckets.get(key).push(row);
-  });
-  const labels = {
-    cbc: hasDifferential ? "CBC with differential" : "CBC",
-    metabolic: "Basic metabolic panel",
-    comprehensive_metabolic: "Comprehensive metabolic panel",
-    hepatic: "Hepatic function panel",
-    coagulation: "Coagulation panel",
-    blood_gas: "Blood gas",
-    blood_bank: "Blood bank",
-    osmolality: "Osmolality",
-    other: "Other laboratory results"
-  };
-  const order = ["cbc", "metabolic", "comprehensive_metabolic", "hepatic", "coagulation", "blood_gas", "blood_bank", "osmolality", "other"];
-  return order.filter((key) => buckets.has(key)).map((key) => ({ key, label: labels[key], rows: buckets.get(key) }));
 }
 
 function laboratoryPanelSections(model, { sourceSystem, formatId } = {}) {

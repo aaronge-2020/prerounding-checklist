@@ -1,9 +1,9 @@
-import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-lab-panel-ui";
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-lab-panel-ui";
+import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-lab-trends-v2";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-lab-trends-v2";
 import {
   parseClinicalExport,
   prepareClinicalExportForSave
-} from "../../patient-context/clinical-export-parser.js?v=20260921-lab-panel-ui";
+} from "../../patient-context/clinical-export-parser.js?v=20260921-lab-trends-v2";
 import {
   createEphemeralRedactionReview,
   reviewKey,
@@ -16,8 +16,8 @@ import {
   dailySourceKindOptions,
   replaceSourceCapturesFromFormAsync,
   sourceCapturePacketCheck
-} from "../../patient-context/source-captures.js?v=20260921-lab-panel-ui";
-import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-lab-panel-ui";
+} from "../../patient-context/source-captures.js?v=20260921-lab-trends-v2";
+import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-lab-trends-v2";
 import {
   createPrimaryTeamNote,
   primaryTeamNoteFields,

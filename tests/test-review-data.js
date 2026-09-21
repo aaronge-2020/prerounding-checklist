@@ -149,6 +149,34 @@ assert.deepEqual(wbcResults.map(({ status }) => status), ["high", "high", "norma
 assert.deepEqual(wbcResults.at(-1).trend.map(({ value }) => value), ["15.2", "12.0", "8.8"], "every lab row must carry its chronological series for on-demand trend display");
 assert.match(wbcResults.at(-1).panel.insertionText, /Laboratory results[\s\S]*WBC: 8\.8 K\/uL/);
 
+const legacyCombinedLabIndex = buildClinicalReviewIndex({
+  id: "legacy_combined_labs",
+  days: [{
+    id: "legacy_day",
+    date: "2026-09-21",
+    label: "HD4",
+    sourceCaptures: [{
+      id: "legacy_lab_source",
+      sourceKind: "laboratory_results",
+      label: "Epic results with unparsed text",
+      deidentifiedText: `Labs
+@ 09/21/26 04:03
+WBC: 10.4 10*3/uL; ref 4.0 - 10.0; flag H
+Hemoglobin: 6.5 g/dL; ref 11.2 - 15.7; flag LL
+
+Labs
+@ 09/21/26 11:22
+WBC: 10.9 10*3/uL; ref 4.0 - 10.0; flag H
+Hemoglobin: 7.9 g/dL; ref 11.2 - 15.7; flag L
+Platelets: 267 10*3/uL; ref 182 - 369`
+    }]
+  }]
+});
+assert.deepEqual(legacyCombinedLabIndex.labs.map(({ name }) => name), ["CBC", "CBC"], "generic legacy Epic labels must be replaced by the parsed panel identity");
+const legacyWbc = legacyCombinedLabIndex.labs.at(-1).results.find(({ name }) => name === "WBC");
+assert.deepEqual(legacyWbc.trend.map(({ value }) => value), ["10.4", "10.9"], "matching WBC rows from legacy collection blocks must share one trend");
+assert.equal(legacyCombinedLabIndex.labs.at(-1).results.find(({ name }) => name === "Platelets").trend.length, 1, "single results must remain explicitly identifiable as having no trend");
+
 const glucoseResults = laboratoryResults(index, "Glucose");
 assert.deepEqual(glucoseResults.map(({ unit }) => unit).sort(), ["mg/dL", "mmol/L"], "panel rows must preserve their documented units");
 

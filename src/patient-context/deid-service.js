@@ -1,15 +1,15 @@
 import {
   createDeidentifier,
   deidentifyTextStructuredOnly
-} from "../vault/deid.js?v=20260921-lab-panel-ui";
+} from "../vault/deid.js?v=20260921-lab-trends-v2";
 import {
   DEFAULT_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,
   deidModelCandidates,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20260921-lab-panel-ui";
-import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260921-lab-panel-ui";
-import { importedModelBaseUrl } from "./model-packs.js?v=20260921-lab-panel-ui";
+} from "./deid-model-options.js?v=20260921-lab-trends-v2";
+import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260921-lab-trends-v2";
+import { importedModelBaseUrl } from "./model-packs.js?v=20260921-lab-trends-v2";
 
 const deidentifierPromises = new Map();
 let activeModelKey = DEFAULT_DEID_MODEL_KEY;

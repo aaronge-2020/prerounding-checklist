@@ -12,7 +12,7 @@ import {
   modelPackManifestIsValid,
   modelPackVerifiedForCurrentRuntime,
   validateModelPackEntries
-} from "./model-packs.js?v=20260921-lab-panel-ui";
+} from "./model-packs.js?v=20260921-lab-trends-v2";
 
 const MODEL_PACK_DATABASE = "prerounding-local-model-pack-handles-v1";
 const MODEL_PACK_STORE = "packs";

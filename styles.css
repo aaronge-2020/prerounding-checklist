@@ -2257,36 +2257,9 @@ button.var-fill:focus-visible {
   border-color: var(--danger, #a33);
 }
 
-.review-lab-table-wrap {
-  overflow-x: auto;
-}
-
-.review-lab-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.86rem;
-}
-
-.review-lab-table th,
-.review-lab-table td {
-  border-bottom: 1px solid var(--border);
-  padding: 10px 16px;
-  text-align: left;
-  vertical-align: middle;
-}
-
-.review-lab-table thead th {
-  background: color-mix(in srgb, var(--subtle-panel, #f4f3ef) 72%, var(--panel));
-  color: var(--muted);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
 .review-data-item--lab {
   overflow: hidden;
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 0;
 }
 
@@ -2295,12 +2268,20 @@ button.var-fill:focus-visible {
 }
 
 .review-lab-panel-header {
-  display: grid;
-  grid-template-columns: auto minmax(140px, 1fr) auto;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 12px;
   border-bottom: 1px solid var(--border);
-  padding: 14px 16px;
+  padding: 13px 15px;
+}
+
+.review-lab-panel-heading {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 11px;
 }
 
 .review-lab-selection {
@@ -2334,7 +2315,7 @@ button.var-fill:focus-visible {
 }
 
 .review-lab-title-line h3 {
-  font-size: 1rem;
+  font-size: 0.96rem;
   line-height: 1.25;
 }
 
@@ -2344,31 +2325,22 @@ button.var-fill:focus-visible {
   font-size: 0.76rem;
 }
 
-.review-lab-abnormal-count,
-.review-lab-normal-count {
+.review-lab-abnormal-count {
   display: inline-flex;
   align-items: center;
-  min-height: 22px;
+  min-height: 20px;
   border-radius: 999px;
-  padding: 2px 8px;
-  font-size: 0.68rem;
+  background: color-mix(in srgb, var(--danger, #a33) 9%, var(--panel));
+  color: var(--danger, #a33);
+  padding: 1px 7px;
+  font-size: 0.66rem;
   font-weight: 700;
   white-space: nowrap;
 }
 
-.review-lab-abnormal-count {
-  background: color-mix(in srgb, var(--danger, #a33) 10%, var(--panel));
-  color: var(--danger, #a33);
-}
-
-.review-lab-normal-count {
-  background: color-mix(in srgb, var(--accent) 8%, var(--panel));
-  color: var(--muted);
-}
-
 .review-lab-panel-navigation {
   display: grid;
-  grid-template-columns: auto minmax(7.5rem, auto) auto;
+  grid-template-columns: auto minmax(4.8rem, auto) auto;
   align-items: center;
   gap: 7px;
 }
@@ -2388,52 +2360,96 @@ button.var-fill:focus-visible {
   padding: 0;
 }
 
-.review-lab-result-button {
-  display: inline-flex;
+.review-lab-results-header,
+.review-lab-result > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(100px, 0.72fr) minmax(120px, 0.9fr);
   align-items: center;
-  gap: 7px;
-  width: 100%;
-  min-height: 32px;
-  border: 0;
-  background: transparent;
-  color: var(--ink);
-  font: inherit;
-  font-weight: 650;
-  padding: 0;
-  text-align: left;
+  gap: 14px;
 }
 
-.review-lab-result-button span {
-  display: inline-block;
+.review-lab-results-header {
+  background: color-mix(in srgb, var(--subtle-panel, #f4f3ef) 72%, var(--panel));
   color: var(--muted);
-  font-size: 1.2rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 8px 15px;
+  text-transform: uppercase;
+}
+
+.review-lab-result {
+  border-bottom: 1px solid var(--border);
+}
+
+.review-lab-result:last-child {
+  border-bottom: 0;
+}
+
+.review-lab-result > summary {
+  min-height: 58px;
+  cursor: pointer;
+  padding: 8px 15px;
+  list-style: none;
+}
+
+.review-lab-result > summary::-webkit-details-marker {
+  display: none;
+}
+
+.review-lab-result > summary:hover,
+.review-lab-result[open] > summary {
+  background: color-mix(in srgb, var(--accent) 5%, var(--panel));
+}
+
+.review-lab-result-name {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 6px;
+  min-width: 0;
+}
+
+.review-lab-result-name strong {
+  min-width: 0;
+  color: var(--ink);
+  font-size: 0.84rem;
+  line-height: 1.25;
+}
+
+.review-lab-result-name small {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 0.67rem;
+  font-weight: 600;
+}
+
+.review-lab-result[data-has-trend="true"] .review-lab-result-name small {
+  color: var(--accent);
+}
+
+.review-lab-chevron {
+  color: var(--muted);
+  font-size: 1rem;
   line-height: 1;
   transition: transform 140ms ease;
 }
 
-.review-lab-table tr.is-trend-open .review-lab-result-button span {
+.review-lab-result[open] .review-lab-chevron {
   color: var(--accent);
   transform: rotate(90deg);
 }
 
-.review-lab-table tbody tr:hover,
-.review-lab-table tbody tr.is-trend-open {
-  background: color-mix(in srgb, var(--accent) 5%, var(--panel));
-}
-
-.review-lab-table tbody tr {
-  cursor: pointer;
-}
-
-.review-lab-table tbody tr:last-child th,
-.review-lab-table tbody tr:last-child td {
-  border-bottom: 0;
-}
-
-.review-lab-table td:nth-child(2) {
+.review-lab-result-value {
   color: var(--ink);
+  font-size: 0.84rem;
   font-variant-numeric: tabular-nums;
-  font-weight: 650;
+  font-weight: 700;
+}
+
+.review-lab-reference {
+  color: var(--muted);
+  font-size: 0.78rem;
 }
 
 .review-lab-flag {
@@ -2449,11 +2465,10 @@ button.var-fill:focus-visible {
   padding: 1px 5px;
 }
 
-.review-lab-table tbody tr[data-clinical-emphasis="high"] td:nth-child(2),
-.review-lab-table tbody tr[data-clinical-emphasis="low"] td:nth-child(2),
-.review-lab-table tbody tr[data-clinical-emphasis="abnormal"] td:nth-child(2) {
+.review-lab-result[data-clinical-emphasis="high"] .review-lab-result-value,
+.review-lab-result[data-clinical-emphasis="low"] .review-lab-result-value,
+.review-lab-result[data-clinical-emphasis="abnormal"] .review-lab-result-value {
   color: var(--danger, #a33);
-  font-weight: 700;
 }
 
 .review-lab-trend-drawer {
@@ -2461,7 +2476,7 @@ button.var-fill:focus-visible {
   gap: 12px;
   border-top: 1px solid var(--border);
   background: color-mix(in srgb, var(--accent) 4%, var(--panel));
-  padding: 16px;
+  padding: 14px 15px 16px 35px;
 }
 
 .review-lab-trend-heading {
@@ -2477,7 +2492,12 @@ button.var-fill:focus-visible {
 
 .review-lab-trend-heading h4 {
   margin-top: 2px;
-  font-size: 0.96rem;
+  font-size: 0.9rem;
+}
+
+.review-lab-trend-heading > span {
+  color: var(--muted);
+  font-size: 0.7rem;
 }
 
 .review-lab-trend-chart {
@@ -2563,24 +2583,40 @@ button.var-fill:focus-visible {
 
 @media (max-width: 680px) {
   .review-lab-panel-header {
-    grid-template-columns: auto minmax(0, 1fr);
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .review-lab-panel-navigation {
-    grid-column: 1 / -1;
     justify-content: center;
     border-top: 1px solid var(--border);
     padding-top: 10px;
   }
 
-  .review-lab-table th,
-  .review-lab-table td {
-    min-width: 110px;
+  .review-lab-results-header {
+    display: none;
+  }
+
+  .review-lab-result > summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 7px 12px;
+    min-height: 64px;
     padding: 9px 12px;
   }
 
-  .review-lab-table th:first-child {
-    min-width: 150px;
+  .review-lab-reference {
+    grid-column: 1 / -1;
+    margin-left: 20px;
+    font-size: 0.7rem;
+  }
+
+  .review-lab-reference::before {
+    content: "Reference: ";
+    font-weight: 650;
+  }
+
+  .review-lab-trend-drawer {
+    padding: 13px 12px 15px;
   }
 }
 

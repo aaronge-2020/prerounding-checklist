@@ -1,9 +1,9 @@
-import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-lab-panel-ui";
-import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260921-lab-panel-ui";
-import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-lab-panel-ui";
-import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-lab-panel-ui";
+import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-lab-trends-v2";
+import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260921-lab-trends-v2";
+import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-lab-trends-v2";
+import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-lab-trends-v2";
 import { primaryTeamNoteFields } from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
-import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-lab-panel-ui";
+import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-lab-trends-v2";
 
 export function createDailyPresentation({ escapeHtml, icon }) {
   function renderRowReviewStatus(completeness) {

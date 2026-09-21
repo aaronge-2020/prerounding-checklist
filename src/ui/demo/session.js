@@ -1,5 +1,5 @@
-import { createPatientRecord, normalizeDay } from "../../app/state/vault.js?v=20260921-lab-panel-ui";
-import { normalizeSourceCapture } from "../../patient-context/source-captures.js?v=20260921-lab-panel-ui";
+import { createPatientRecord, normalizeDay } from "../../app/state/vault.js?v=20260921-lab-trends-v2";
+import { normalizeSourceCapture } from "../../patient-context/source-captures.js?v=20260921-lab-trends-v2";
 
 export const DEMO_PATIENT_ID = "demo_patient_guided_case";
 export const DEMO_DAY_ID = "demo_day_guided_case";

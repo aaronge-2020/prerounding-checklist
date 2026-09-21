@@ -1,4 +1,4 @@
-import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260921-lab-panel-ui";
+import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260921-lab-trends-v2";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({

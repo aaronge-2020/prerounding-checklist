@@ -1,7 +1,11 @@
 import {
   clinicalDisplayModelFromPromptText,
   laboratoryAbnormality
-} from "../patient-context/structured-clinical-data.js?v=20260921-lab-panel-ui";
+} from "../patient-context/structured-clinical-data.js?v=20260921-lab-trends-v2";
+import {
+  laboratoryAnalyteKey,
+  laboratoryPanelLabel
+} from "../patient-context/laboratory-panels.js?v=20260921-lab-trends-v2";
 
 const GROUP_DEFINITIONS = Object.freeze([
   Object.freeze({ id: "vitals", label: "Vital signs" }),
@@ -272,7 +276,7 @@ function diagnosticCandidate(source) {
 
 function laboratoryPanelName(source, group) {
   const sourceLabel = clean(source.sourceLabel);
-  const generic = /^(?:laboratory results?|lab results?|morning labs?|admission labs?|epic results review laboratory table)$/i.test(sourceLabel);
+  const generic = /^(?:laboratory results?|lab results?|morning labs?|admission labs?|epic results(?: with unparsed text)?|epic results review laboratory table)$/i.test(sourceLabel);
   if (!generic && sourceLabel) return clean(sourceLabel.split(/\s+·\s+/)[0]);
   return clean(group.label) && !/^laboratory results?$/i.test(clean(group.label)) ? clean(group.label) : "Laboratory results";
 }
@@ -305,7 +309,7 @@ function attachLaboratoryTrends(laboratoryPanels) {
   const trendsByName = new Map();
   for (const panel of laboratoryPanels) {
     for (const result of panel.results) {
-      const key = normalizedExact(result.name);
+      const key = laboratoryAnalyteKey(result.name);
       if (!trendsByName.has(key)) trendsByName.set(key, []);
       trendsByName.get(key).push({
         id: result.id,
@@ -332,7 +336,7 @@ function attachLaboratoryTrends(laboratoryPanels) {
     ...panel,
     results: panel.results.map((result) => ({
       ...result,
-      trend: trendsByName.get(normalizedExact(result.name)) || []
+      trend: trendsByName.get(laboratoryAnalyteKey(result.name)) || []
     }))
   }));
 }
@@ -378,6 +382,7 @@ function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap)
           parserProvenance: row.provenance || null
         });
       });
+      if (candidate.name === "Laboratory results") candidate.name = laboratoryPanelLabel(candidate.results);
       if (candidate.results.length) labMap.set(identity, candidate);
     });
     return;
