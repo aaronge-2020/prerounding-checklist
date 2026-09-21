@@ -1,4 +1,4 @@
-import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260920-clinical-review";
+import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260921-clinical-navigation";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({

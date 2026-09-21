@@ -1,9 +1,9 @@
-import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260920-clinical-review";
+import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260921-clinical-navigation";
 import {
   clinicalDataModel,
   laboratoryAbnormality,
   withClinicalRepresentations
-} from "./structured-clinical-data.js?v=20260920-clinical-review";
+} from "./structured-clinical-data.js?v=20260921-clinical-navigation";
 
 const REPORT_SEPARATOR = /^\s*[-=]{20,}\s*$/;
 const MEDICATION_STATUS = /\b(?:ADMINISTERED|CANCELLED|CANCELED|DISCONTINUED|GIVEN|HELD|MISSED|NOT GIVEN|REFUSED|STOPPED|BCMA EXPIRED)\b/i;
@@ -394,8 +394,107 @@ function renderCprsStructuredTables(lines = []) {
 
 function delimitedCells(line) {
   if (line.includes("\t")) return line.split("\t").map(compactLine);
-  if (/\s+\|\s+/.test(line)) return line.split(/\s+\|\s+/).map(compactLine);
+  if (line.includes("|")) {
+    const cells = line.split("|").map(compactLine);
+    if (!cells[0]) cells.shift();
+    if (!cells.at(-1)) cells.pop();
+    return cells;
+  }
   return [];
+}
+
+const EPIC_WIDE_VITAL_HEADERS = [
+  "Date/Time",
+  "Temp",
+  "Pulse",
+  "Heart Rate (Monitored)",
+  "Resp",
+  "BP",
+  "MAP",
+  "Arterial BP",
+  "Arterial MAP",
+  "SpO2",
+  "O2 Device",
+  "O2 Flow Rate",
+  "FiO2",
+  "Weight"
+];
+
+function cleanVitalCell(value) {
+  return compactLine(value).replace(/^\*\*(.*?)\*\*$/, "$1").replace(/^[—–-]$/, "");
+}
+
+function vitalTableHeaders(line) {
+  const cells = delimitedCells(line);
+  if (cells.length >= 8 && /date\s*\/\s*time/i.test(cells[0]) && cells.some((cell) => /(?:temp|spo2|heart rate|resp)/i.test(cell))) return cells;
+  const compactHeader = cells.join(" ");
+  if (/date\s*\/\s*time.*temp.*heart rate.*spo2/i.test(compactHeader)) return EPIC_WIDE_VITAL_HEADERS;
+  return [];
+}
+
+function numberAndUnit(value, defaultUnit = "") {
+  const match = cleanVitalCell(value).match(/([-+]?(?:\d+(?:\.\d+)?|\.\d+))/);
+  return match ? { value: match[1], unit: defaultUnit } : null;
+}
+
+function vitalRowsForCell(name, rawValue, sourceIndex) {
+  const value = cleanVitalCell(rawValue);
+  if (!value) return [];
+  const row = (measurement, parsedValue, unit = "") => ({ name: measurement, value: parsedValue, unit, sourceIndex });
+  if (/^(?:BP|Blood Pressure)$/i.test(name) || /^Arterial BP$/i.test(name)) {
+    const match = value.match(/(\d{2,3})\s*\/\s*(\d{2,3})/);
+    if (!match) return [row(name, value)];
+    const prefix = /^Arterial/i.test(name) ? "Arterial " : "";
+    return [row(`${prefix}Systolic BP`, match[1], "mmHg"), row(`${prefix}Diastolic BP`, match[2], "mmHg")];
+  }
+  const definitions = [
+    [/^(?:Temp|Temperature)$/i, "Temperature", "°C"],
+    [/^Pulse$/i, "Pulse", "bpm"],
+    [/^Heart Rate/i, "Heart Rate (Monitored)", "bpm"],
+    [/^(?:Resp|Respirations|Respiratory Rate)$/i, "Respirations", "breaths/min"],
+    [/^MAP$/i, "MAP (cuff)", "mmHg"],
+    [/^Arterial MAP$/i, "MAP (arterial)", "mmHg"],
+    [/^SpO2/i, "SpO2", "%"],
+    [/^O2 Flow/i, "O2 Flow Rate", "L/min"],
+    [/^FiO2/i, "FiO2", "%"],
+    [/^Weight/i, "Weight", "kg"]
+  ];
+  const definition = definitions.find(([pattern]) => pattern.test(name));
+  if (!definition) return [row(name.replace(/^\$\s*/, ""), value)];
+  const numeric = numberAndUnit(value, definition[2]);
+  return numeric ? [row(definition[1], numeric.value, numeric.unit)] : [row(definition[1], value)];
+}
+
+function renderWideVitalTable(lines = []) {
+  const headerIndex = lines.findIndex((line, index) => index < 12 && vitalTableHeaders(line).length);
+  if (headerIndex < 0) return null;
+  const originalHeaders = vitalTableHeaders(lines[headerIndex]);
+  const headers = originalHeaders.length === 1 || originalHeaders.slice(1).every((header) => !header)
+    ? EPIC_WIDE_VITAL_HEADERS
+    : originalHeaders.map((header) => compactLine(header));
+  const groups = [];
+  for (let index = headerIndex + 1; index < lines.length; index += 1) {
+    const cells = delimitedCells(lines[index]);
+    if (!cells.length || cells.every((cell) => /^:?-{3,}:?$/.test(compactLine(cell)))) continue;
+    const timestamp = cleanVitalCell(cells[0]);
+    if (!/^\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\s+\d{3,4}$/.test(timestamp)) continue;
+    const rows = headers.slice(1).flatMap((header, cellIndex) => vitalRowsForCell(header, cells[cellIndex + 1], index));
+    if (rows.length) groups.push({ id: `vitals_${groups.length + 1}`, label: "Vital signs", timestamp, rows: rows.map((row, rowIndex) => ({ id: `vital_${groups.length + 1}_${rowIndex + 1}`, ...row })) });
+  }
+  if (!groups.length) return null;
+  const formatId = "epic_wide_vitals";
+  const formatLabel = "Epic vital-sign flowsheet";
+  const model = clinicalDataModel({ kind: "vital_signs", sourceSystem: "Epic", formatId, formatLabel, groups });
+  const itemCount = groups.reduce((total, group) => total + group.rows.length, 0);
+  return withClinicalRepresentations({
+    recognized: true,
+    formatId,
+    formatLabel,
+    suggestedSourceKind: "vital_signs",
+    itemCount,
+    summary: `${groups.length} time points and ${itemCount} vital-sign measurements; empty cells removed.`,
+    preservedUnparsedText: false
+  }, model);
 }
 
 function renderDelimitedClipboardTable(lines = []) {
@@ -494,6 +593,7 @@ function nonExpandingResult(result, rawText) {
   if (String(result?.outputText || "").length <= rawText.length) return result;
   return {
     ...result,
+    canonicalPromptText: result.promptText || result.outputText,
     promptText: rawText,
     outputText: rawText,
     usedSourceTextForCompactness: true
@@ -522,7 +622,7 @@ export function parseClinicalExport(value, { sourceKind = "" } = {}) {
     };
   }
   const lines = decodeClinicalClipboardText(value).split("\n");
-  const parsers = [renderMedicationReport, renderDelimitedClipboardTable, renderCprsStructuredTables];
+  const parsers = [renderMedicationReport, renderWideVitalTable, renderDelimitedClipboardTable, renderCprsStructuredTables];
   for (const parser of parsers) {
     const result = parser(lines);
     if (result) {
@@ -549,6 +649,8 @@ export function prepareClinicalExportForSave(value, priorResult = null, { source
   return {
     rawText,
     parseResult,
-    sourceText: parseResult.recognized ? String(parseResult.outputText || "").trim() : rawText
+    sourceText: parseResult.recognized
+      ? String(parseResult.edited ? parseResult.outputText : parseResult.canonicalPromptText || parseResult.outputText || "").trim()
+      : rawText
   };
 }

@@ -7347,6 +7347,7 @@ body.vault-locked .vault-access {
 }
 
 .clinical-data-group + .clinical-data-group { border-top: 1px solid var(--border); }
+.clinical-data-view [hidden] { display: none !important; }
 .clinical-data-table-wrap { min-width: 0; overflow-x: auto; }
 
 .clinical-data-table {
@@ -7373,6 +7374,76 @@ body.vault-locked .vault-access {
 }
 
 .clinical-data-table tbody th { color: var(--ink); font-weight: 650; }
+
+.clinical-lab-navigation,
+.clinical-medication-controls,
+.clinical-medication-controls nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clinical-lab-navigation {
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding: 6px 10px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.clinical-medication-controls {
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding: 8px 10px;
+}
+
+.clinical-medication-controls label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: min(100%, 420px);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.clinical-medication-controls input { min-width: 0; flex: 1; }
+.clinical-medication-controls nav { color: var(--muted); font-size: 11px; white-space: nowrap; }
+
+[data-clinical-view="medications"] .clinical-data-table th,
+[data-clinical-view="medications"] .clinical-data-table td {
+  max-width: 320px;
+  white-space: normal;
+}
+
+.clinical-vital-summary {
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding: 10px;
+}
+
+.clinical-vital-summary__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 11px;
+}
+
+.clinical-vital-summary__heading span { color: var(--muted); font-size: 10px; }
+.clinical-vital-summary__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 7px; }
+
+.clinical-vital-stat {
+  display: grid;
+  gap: 2px;
+  border: 1px solid var(--border);
+  background: var(--surface-subtle);
+  padding: 7px 8px;
+}
+
+.clinical-vital-stat strong { color: var(--ink); font-size: 10px; }
+.clinical-vital-stat span { color: var(--text); font-size: 12px; }
+.clinical-vital-stat small { color: var(--muted); font-size: 9px; }
 
 .clinical-data-table tr[data-clinical-emphasis="high"],
 .clinical-data-table tr[data-clinical-emphasis="low"],
@@ -7607,6 +7678,10 @@ body.vault-locked .vault-access {
   .packet-review-item__status { grid-column: 2 / -1; text-align: left; }
   .clinical-data-view__heading,
   .clinical-data-group__heading { align-items: flex-start; flex-direction: column; gap: 2px; }
+  .clinical-medication-controls,
+  .clinical-vital-summary__heading { align-items: stretch; flex-direction: column; }
+  .clinical-medication-controls label { min-width: 100%; }
+  .clinical-medication-controls nav { justify-content: space-between; }
   .clinical-trends > div { grid-template-columns: 1fr; }
   .clinical-trend { grid-template-columns: minmax(84px, 1fr) minmax(90px, 140px) auto; }
 }

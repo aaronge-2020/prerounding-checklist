@@ -1,15 +1,15 @@
 import {
   createDeidentifier,
   deidentifyTextStructuredOnly
-} from "../vault/deid.js?v=20260729-clinical-false-positives-1";
+} from "../vault/deid.js?v=20260921-clinical-navigation";
 import {
   DEFAULT_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,
   deidModelCandidates,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20260809-restricted-network-chunks-2";
-import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260809-restricted-network-chunks-2";
-import { importedModelBaseUrl } from "./model-packs.js?v=20260809-restricted-network-chunks-2";
+} from "./deid-model-options.js?v=20260921-clinical-navigation";
+import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260921-clinical-navigation";
+import { importedModelBaseUrl } from "./model-packs.js?v=20260921-clinical-navigation";
 
 const deidentifierPromises = new Map();
 let activeModelKey = DEFAULT_DEID_MODEL_KEY;

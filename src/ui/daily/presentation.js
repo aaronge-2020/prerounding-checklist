@@ -1,6 +1,6 @@
-import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260920-clinical-review";
-import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260920-clinical-review";
-import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260920-clinical-review";
+import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-clinical-navigation";
+import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260921-clinical-navigation";
+import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-clinical-navigation";
 
 export function createDailyPresentation({ escapeHtml, icon }) {
   function renderRowReviewStatus(completeness) {
@@ -66,8 +66,26 @@ export function createDailyPresentation({ escapeHtml, icon }) {
           <polyline points="${coordinates.map((point) => `${point.x},${point.y}`).join(" ")}"></polyline>
           ${coordinates.map((point) => `<circle cx="${point.x}" cy="${point.y}" r="2.5"></circle>`).join("")}
         </svg>
-        <span class="clinical-trend__range">${escapeHtml(String(values[0]))} → ${escapeHtml(String(values.at(-1)))}${series.points[0]?.unit ? ` ${escapeHtml(series.points[0].unit)}` : ""}</span>
+        <span class="clinical-trend__range">${escapeHtml(String(minimum))}–${escapeHtml(String(maximum))}${series.points[0]?.unit ? ` ${escapeHtml(series.points[0].unit)}` : ""}</span>
       </div>
+    `;
+  }
+
+  function renderVitalStatistics(statistics = []) {
+    if (!statistics.length) return "";
+    return `
+      <section class="clinical-vital-summary" aria-label="24-hour vital-sign summary">
+        <div class="clinical-vital-summary__heading"><strong>24-hour summary</strong><span>Range, mean, and median through the latest recorded time</span></div>
+        <div class="clinical-vital-summary__grid">
+          ${statistics.map((statistic) => `
+            <article class="clinical-vital-stat">
+              <strong>${escapeHtml(statistic.name)}</strong>
+              <span><b>${escapeHtml(String(statistic.minimum))}–${escapeHtml(String(statistic.maximum))}</b> ${escapeHtml(statistic.unit || "")}</span>
+              <small>Mean ${escapeHtml(String(statistic.mean))} · Median ${escapeHtml(String(statistic.median))} · n=${statistic.count}</small>
+            </article>
+          `).join("")}
+        </div>
+      </section>
     `;
   }
 
@@ -75,8 +93,9 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     if (!displayModel?.groups?.length) return "";
     const safeIdBase = String(idBase || "clinical").replace(/[^a-z0-9_-]/gi, "") || "clinical";
     const allowedEmphasis = new Set(["high", "low", "abnormal", "normal", "unknown"]);
-    const tables = displayModel.groups.map((group, groupIndex) => `
-      <section class="clinical-data-group" aria-labelledby="${safeIdBase}ClinicalDataGroup${groupIndex}">
+    const groups = displayModel.type === "vitals" ? displayModel.groups.slice(0, 1) : displayModel.groups;
+    const tables = groups.map((group, groupIndex) => `
+      <section class="clinical-data-group" aria-labelledby="${safeIdBase}ClinicalDataGroup${groupIndex}"${displayModel.type === "labs" ? ` data-clinical-lab-panel="${groupIndex}"${groupIndex ? " hidden" : ""}` : ""}>
         <div class="clinical-data-group__heading" id="${safeIdBase}ClinicalDataGroup${groupIndex}">
           <strong>${escapeHtml(group.label || displayModel.title)}</strong>
           ${group.timestamp ? `<span>${escapeHtml(group.timestamp)}</span>` : ""}
@@ -94,6 +113,37 @@ export function createDailyPresentation({ escapeHtml, icon }) {
         </div>
       </section>
     `).join("");
+    const labNavigation = displayModel.type === "labs" && groups.length > 1 ? `
+      <nav class="clinical-lab-navigation" aria-label="Laboratory collection navigation">
+        <button type="button" class="button--quiet" data-action="clinical-lab-page" data-direction="-1" disabled aria-label="Previous laboratory collection">←</button>
+        <span data-clinical-lab-position>1 of ${groups.length}</span>
+        <button type="button" class="button--quiet" data-action="clinical-lab-page" data-direction="1" aria-label="Next laboratory collection">→</button>
+      </nav>
+    ` : "";
+    const medicationRowCount = displayModel.type === "medications" ? groups.reduce((total, group) => total + group.rows.length, 0) : 0;
+    const medicationPageCount = Math.max(1, Math.ceil(medicationRowCount / 10));
+    const medicationControls = displayModel.type === "medications" ? `
+      <div class="clinical-medication-controls">
+        <label>Find medication <input type="search" data-clinical-medication-search placeholder="Name, dose, route, or regimen" autocomplete="off"></label>
+        <nav aria-label="Medication pages">
+          <button type="button" class="button--quiet" data-action="clinical-medication-page" data-direction="-1" disabled aria-label="Previous medication page">←</button>
+          <span data-clinical-medication-position>1 of ${medicationPageCount} · ${medicationRowCount} medications</span>
+          <button type="button" class="button--quiet" data-action="clinical-medication-page" data-direction="1" ${medicationPageCount === 1 ? "disabled" : ""} aria-label="Next medication page">→</button>
+        </nav>
+      </div>
+    ` : "";
+    let medicationRowIndex = 0;
+    const medicationTables = displayModel.type === "medications" ? groups.map((group, groupIndex) => `
+      <section class="clinical-data-group" aria-labelledby="${safeIdBase}ClinicalDataGroup${groupIndex}">
+        <div class="clinical-data-group__heading" id="${safeIdBase}ClinicalDataGroup${groupIndex}"><strong>${escapeHtml(group.label || displayModel.title)}</strong></div>
+        <div class="clinical-data-table-wrap">
+          <table class="clinical-data-table">
+            <thead><tr>${displayModel.columns.map((column) => `<th scope="col">${escapeHtml(column)}</th>`).join("")}</tr></thead>
+            <tbody>${group.rows.map((row) => `<tr data-medication-row${medicationRowIndex++ >= 10 ? " hidden" : ""}>${row.cells.map((cell, cellIndex) => `<${cellIndex ? "td" : "th"}${cellIndex ? "" : ' scope="row"'}>${escapeHtml(cell || "—")}</${cellIndex ? "td" : "th"}>`).join("")}</tr>`).join("")}</tbody>
+          </table>
+        </div>
+      </section>
+    `).join("") : tables;
     const trends = (displayModel.series || []).filter((series) => series.points?.length > 1).slice(0, 8);
     const sourceSystem = displayModel.provenance?.sourceSystem || "the copied chart";
     return `
@@ -102,7 +152,10 @@ export function createDailyPresentation({ escapeHtml, icon }) {
           <strong>${escapeHtml(displayModel.title)}</strong>
           <span>Parsed locally from ${escapeHtml(sourceSystem)} standard-format data</span>
         </div>
-        ${tables}
+        ${labNavigation}
+        ${medicationControls}
+        ${medicationTables}
+        ${displayModel.type === "vitals" ? renderVitalStatistics(displayModel.statistics24h || []) : ""}
         ${trends.length ? `<section class="clinical-trends" aria-label="Available numeric trends"><strong>Trends in this paste</strong><div>${trends.map(renderClinicalTrend).join("")}</div></section>` : ""}
       </div>
     `;
@@ -166,7 +219,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
                     <span class="muted">${escapeHtml(section.formatLabel)} · ${escapeHtml(section.summary)}</span>
                   </div>
                   ${renderClinicalDisplay(section.displayModel, `${prefix}${index}`)}
-                  ${renderPromptTextEditor({ prefix, outputText: section.outputText, sectionIndex: String(index) })}
+                  ${renderPromptTextEditor({ prefix, outputText: section.canonicalPromptText || section.outputText, sectionIndex: String(index) })}
                 </section>
               `;
             }).join("")}
@@ -185,7 +238,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
         </div>
         <p class="source-parse-help">Review the clean display below. The separate AI-ready text is compact, editable, and is the only parsed representation sent through local de-identification and into prompts.</p>
         ${renderClinicalDisplay(parseResult.displayModel, prefix)}
-        ${renderPromptTextEditor({ prefix, outputText: parseResult.outputText })}
+        ${renderPromptTextEditor({ prefix, outputText: parseResult.canonicalPromptText || parseResult.outputText })}
       </section>
     `;
   }

@@ -10,8 +10,9 @@ import {
   clinicalDisplayModelFromPromptText,
   laboratoryAbnormality
 } from "../src/patient-context/structured-clinical-data.js";
+import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
-const parserRevision = "20260920-clinical-review";
+const parserRevision = "20260921-clinical-navigation";
 const runtimeSources = {
   index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
   app: readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8"),
@@ -278,6 +279,44 @@ assert.doesNotMatch(parsedEpicMar.outputText, /&#x9;|1 Day|Legend:/);
 assert.equal(parsedEpicMar.displayModel.type, "medications");
 assert.ok(parsedEpicMar.parsedCharacterCount < parsedEpicMar.rawCharacterCount, "normalized Epic MAR text must not expand the paste");
 
+const epicMarWithRateAndMetadata = `Medications\t09/18/26\t09/19/26\t09/20/26\t09/21/26
+*NUTRITION Tube Feeding Continuous Formula Per NG Tube
+Rate: 10-100 mL/hr
+Freq: continuous Route: PER NG TUBE
+Start: 09/17/26 0015
+Order specific questions:
+1218
+
+calcium replacement IVPB
+Dose: 2 g
+Freq: every 12 hours PRN Route: IV
+PRN Reason: Electrolyte Replacement
+PRN Comment: for ionized calcium below goal
+Start: 09/19/26 1225
+1813
+
+propofol infusion
+Rate: 1.43-14.34 mL/hr Dose: 5-50 mcg/kg/min
+Weight Dosing Info: 47.8 kg
+Freq: titrated Route: IV
+Start: 09/19/26 1500
+1446 (25 mcg/kg/min)`;
+const parsedEpicMarMetadata = parseClinicalExport(epicMarWithRateAndMetadata);
+assert.equal(parsedEpicMarMetadata.itemCount, 3, "rate and PRN metadata rows must stay attached to their medications");
+assert.deepEqual(parsedEpicMarMetadata.structuredData.groups[0].rows.map(({ name }) => name), [
+  "*NUTRITION Tube Feeding Continuous Formula Per NG Tube",
+  "calcium replacement IVPB",
+  "propofol infusion"
+]);
+assert.equal(parsedEpicMarMetadata.structuredData.groups[0].rows[0].rate, "10-100 mL/hr");
+assert.equal(parsedEpicMarMetadata.structuredData.groups[0].rows[0].asOfDate, "09/21/26");
+assert.match(parsedEpicMarMetadata.displayModel.groups[0].rows[0].cells[2], /Day 5/);
+assert.match(parsedEpicMarMetadata.displayModel.groups[0].rows[1].cells[4], /PRN Reason: Electrolyte Replacement/);
+assert.equal(parsedEpicMarMetadata.preservedUnparsedText, false);
+const savedEpicMarMetadata = clinicalDisplayModelFromPromptText("medication_activity", parsedEpicMarMetadata.outputText);
+assert.deepEqual(savedEpicMarMetadata.columns, ["Medication", "Current regimen", "Course", "Recent administrations", "Instructions"]);
+assert.match(savedEpicMarMetadata.groups[0].rows[0].cells[2], /Day 5/);
+
 const syntheticEpicMarMissingFields = `Medications
 ondansetron (ZOFRAN) injection
 Route: IV
@@ -326,6 +365,45 @@ const parsedCompactEpicVitals = parseClinicalExport(compactEpicVitals);
 assert.equal(parsedCompactEpicVitals.recognized, true, "standard abbreviated numeric vitals are structured");
 assert.ok(parsedCompactEpicVitals.parsedCharacterCount <= parsedCompactEpicVitals.rawCharacterCount, "short structured vital text must never expand after parsing");
 
+const wideEpicVitals = `| Date/TimeTempPulseHeart Rate (Monitored)RespBPMAPArterial BPMAPSpO2$ O2 DeviceO2 Flow Rate (l/min)FiO2 (%)Weight | | | | | | | | | | | | | |
+| --- | --- | - | -- | ------ | ------ | -------- | - | - | ----- | ---------- | - | ---- | - |
+| 09/21/26 0600 | 36.5 °C (97.7 °F) | — | 72 | 18 | 119/77 | 93 mmHg | — | — | 99 % | Ventilator | — | 30 % | — |
+| 09/21/26 0500 | 36.3 °C (97.3 °F) | — | 73 | 18 | 117/76 | 92 mmHg | — | — | 100 % | — | — | — | — |
+| 09/20/26 2300 | 35.6 °C (96.1 °F) | — | 77 | 19 | 112/77 | 90 mmHg | — | — | 100 % | — | — | — | — |`;
+const parsedWideEpicVitals = parseClinicalExport(wideEpicVitals);
+assert.equal(parsedWideEpicVitals.formatId, "epic_wide_vitals");
+assert.equal(parsedWideEpicVitals.structuredData.groups.length, 3);
+assert.ok(parsedWideEpicVitals.structuredData.groups[0].rows.some(({ name, value }) => name === "Systolic BP" && value === "119"));
+assert.deepEqual(parsedWideEpicVitals.displayModel.series.find(({ name }) => name === "Temperature").points.map(({ timestamp }) => timestamp), [
+  "09/20/26 2300",
+  "09/21/26 0500",
+  "09/21/26 0600"
+], "vital graphs must run chronologically even when Epic copies newest first");
+const temperatureSummary = parsedWideEpicVitals.displayModel.statistics24h.find(({ name }) => name === "Temperature");
+assert.deepEqual(temperatureSummary, { name: "Temperature", unit: "°C", count: 3, minimum: 35.6, maximum: 36.5, mean: 36.1, median: 36.3 });
+const savedWideEpicVitals = clinicalDisplayModelFromPromptText("vital_signs", parsedWideEpicVitals.outputText);
+assert.ok(savedWideEpicVitals.series.some(({ name }) => name === "Heart Rate (Monitored)"), "saved vital display must retain monitored heart rate");
+assert.ok(savedWideEpicVitals.series.some(({ name }) => name === "Systolic BP"), "saved vital display must retain separated blood pressure trends");
+assert.ok(savedWideEpicVitals.series.some(({ name }) => name === "FiO2"), "saved vital display must retain oxygen settings");
+const deidentifiedWideEpicVitals = deidentifyTextStructuredOnly(parsedWideEpicVitals.outputText, new Date("2026-09-17T00:00:00")).text;
+const savedDeidentifiedWideEpicVitals = clinicalDisplayModelFromPromptText("vital_signs", deidentifiedWideEpicVitals);
+assert.deepEqual(savedDeidentifiedWideEpicVitals.series.find(({ name }) => name === "Temperature").points.map(({ timestamp }) => timestamp), [
+  "[Hospital Day 4 at 23:00]",
+  "[Hospital Day 5 at 05:00]",
+  "[Hospital Day 5 at 06:00]"
+], "de-identified hospital-day timestamps must remain chronological");
+assert.equal(savedDeidentifiedWideEpicVitals.series.find(({ name }) => name === "Temperature").unit, "°C");
+assert.equal(savedDeidentifiedWideEpicVitals.statistics24h.find(({ name }) => name === "Systolic BP").unit, "mmHg");
+const admissionDayDeidentifiedVitals = deidentifyTextStructuredOnly(parsedWideEpicVitals.outputText, new Date("2026-09-21T00:00:00")).text;
+const admissionDaySavedVitals = clinicalDisplayModelFromPromptText("vital_signs", admissionDayDeidentifiedVitals);
+assert.match(admissionDayDeidentifiedVitals, /\[1 day prior to hospital admission at 23:00\]/);
+assert.deepEqual(admissionDaySavedVitals.statistics24h, parsedWideEpicVitals.displayModel.statistics24h, "pre-admission times within the latest 24 hours must remain in saved statistics");
+assert.equal(
+  deidentifyTextStructuredOnly("Swish in mouth undiluted for 30 seconds, expel remainder.", new Date("2026-09-21T00:00:00")).text,
+  "Swish in mouth undiluted for 30 seconds, expel remainder.",
+  "medication instruction durations must not become timeline dates"
+);
+
 assert.deepEqual(
   laboratoryAbnormality({ value: "<3.5", referenceRange: "3.5-5.1" }),
   { status: "low", basis: "reference_range_bound", flag: "" },
@@ -356,6 +434,14 @@ assert.equal(splitUnitSeries.find((series) => series.unit === "mmol/L").points.l
 const savedLabDisplay = clinicalDisplayModelFromPromptText("laboratory_results", parsedEpicResults.outputText);
 assert.equal(savedLabDisplay.type, "labs");
 assert.equal(savedLabDisplay.groups[0].rows[0].emphasis, "low", "saved de-identified lab text reconstructs its clean display without retaining raw source data");
+const compactFallbackLabs = "Results\n9/20/26\nW: 1\n9/21/26\nW: 2";
+const parsedCompactFallbackLabs = parseClinicalExport(compactFallbackLabs);
+assert.equal(parsedCompactFallbackLabs.usedSourceTextForCompactness, true);
+assert.equal(parsedCompactFallbackLabs.outputText, compactFallbackLabs, "parser output length contract may retain shorter source text");
+assert.match(parsedCompactFallbackLabs.canonicalPromptText, /^Labs\n@ 9\/20\/26/);
+const preparedCompactFallbackLabs = prepareClinicalExportForSave(compactFallbackLabs);
+assert.equal(preparedCompactFallbackLabs.sourceText, parsedCompactFallbackLabs.canonicalPromptText, "recognized lab saves must use the canonical representation so collection navigation survives");
+assert.equal(clinicalDisplayModelFromPromptText("laboratory_results", preparedCompactFallbackLabs.sourceText).groups.length, 2);
 const savedVitalDisplay = clinicalDisplayModelFromPromptText("vital_signs", parsedEpicVitals.outputText);
 assert.equal(savedVitalDisplay.type, "vitals");
 assert.ok(savedVitalDisplay.groups[0].rows.some((row) => row.cells[1] === "Pulse"));

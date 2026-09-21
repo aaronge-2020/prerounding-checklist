@@ -1,4 +1,4 @@
-import { sectionWarningSummary } from "../../patient-context/sections.js?v=20260920-clinical-review";
+import { sectionWarningSummary } from "../../patient-context/sections.js?v=20260921-clinical-navigation";
 
 export function redactionPosition(text, redaction) {
   const source = String(text || "");

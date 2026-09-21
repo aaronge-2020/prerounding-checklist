@@ -1,9 +1,9 @@
-import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260920-clinical-review";
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260920-clinical-review";
+import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-clinical-navigation";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-clinical-navigation";
 import {
   parseClinicalExport,
   prepareClinicalExportForSave
-} from "../../patient-context/clinical-export-parser.js?v=20260920-clinical-review";
+} from "../../patient-context/clinical-export-parser.js?v=20260921-clinical-navigation";
 import {
   createEphemeralRedactionReview,
   reviewKey,
@@ -16,7 +16,7 @@ import {
   dailySourceKindOptions,
   replaceSourceCapturesFromFormAsync,
   sourceCapturePacketCheck
-} from "../../patient-context/source-captures.js?v=20260920-clinical-review";
+} from "../../patient-context/source-captures.js?v=20260921-clinical-navigation";
 
 export function createDailySourceController(deps) {
   const sourceState = (scope) =>
@@ -57,7 +57,7 @@ export function createDailySourceController(deps) {
         .map((section) => ({
           sourceKind: section.sourceKind || "other_chart_text",
           label: section.formatLabel || "Parsed chart source",
-          sourceText: String(section.outputText || "").trim()
+          sourceText: String(section.edited ? section.outputText : section.canonicalPromptText || section.outputText || "").trim()
         }))
         .filter((section) => section.sourceText);
     }
@@ -129,7 +129,7 @@ export function createDailySourceController(deps) {
     if (!parsed?.recognized) return;
     const numericSectionIndex = sectionIndex === "" ? -1 : Number(sectionIndex);
     if (numericSectionIndex >= 0 && Array.isArray(parsed.sections)) {
-      const sections = parsed.sections.map((section, index) => index === numericSectionIndex ? { ...section, outputText: String(value || "") } : section);
+      const sections = parsed.sections.map((section, index) => index === numericSectionIndex ? { ...section, outputText: String(value || ""), edited: true } : section);
       deps.app[state.parseKey] = {
         ...parsed,
         sections,

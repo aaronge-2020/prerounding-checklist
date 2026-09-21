@@ -1,7 +1,7 @@
 import { addGuidelineSet, removeGuidelineSet, saveGuidelineSets } from "../../prompts/guideline-sets.js?v=20260910-pre-op-prep";
 import { migrateCustomPromptTasksToGuidelineSets, saveCustomPromptTasks } from "../../prompts/custom-tasks.js?v=20260910-pre-op-prep";
-import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20260920-clinical-review";
-import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js?v=20260920-clinical-review";
+import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20260921-clinical-navigation";
+import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js?v=20260921-clinical-navigation";
 import { guidelinePageModel } from "../settings/guideline-pagination.js?v=20260910-guideline-pagination";
 
 // Create/delete custom prompt tasks - kept out of app.js to respect the

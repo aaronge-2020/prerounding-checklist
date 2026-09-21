@@ -118,6 +118,7 @@ function laboratoryDisplay(model) {
 }
 
 function vitalDisplay(model) {
+  const series = observationSeries(model);
   return {
     type: "vitals",
     view: "table_and_trends",
@@ -133,8 +134,35 @@ function vitalDisplay(model) {
         provenance: row.provenance
       }))
     })),
-    series: observationSeries(model)
+    series,
+    statistics24h: vitalStatistics24h(series)
   };
+}
+
+function parseChartDate(value) {
+  const text = clean(value);
+  const hospitalDay = text.match(/^\[?Hospital Day\s+(\d+)\s+at\s+(\d{1,2}):(\d{2})\]?/i);
+  if (hospitalDay) return new Date(2000, 0, Number(hospitalDay[1]), Number(hospitalDay[2]), Number(hospitalDay[3]));
+  const priorDay = text.match(/^\[?(\d+)\s+days?\s+prior to hospital admission(?:\s+at\s+(\d{1,2}):(\d{2}))?\]?/i);
+  if (priorDay) return new Date(2000, 0, 1 - Number(priorDay[1]), Number(priorDay[2] || 0), Number(priorDay[3] || 0));
+  const match = text.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2}|\d{4})(?:\s+(\d{1,2})(?::?(\d{2}))?)?/);
+  if (!match) return null;
+  const year = Number(match[3]) < 100 ? 2000 + Number(match[3]) : Number(match[3]);
+  const date = new Date(year, Number(match[1]) - 1, Number(match[2]), Number(match[4] || 0), Number(match[5] || 0));
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function courseDayLabel(row) {
+  const asOf = parseChartDate(row.asOfDate);
+  const start = parseChartDate(row.start);
+  const end = parseChartDate(row.end);
+  if (!asOf || !start) return "";
+  const dayMilliseconds = 24 * 60 * 60 * 1000;
+  const calendarDay = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+  const difference = Math.round((calendarDay(asOf) - calendarDay(start)) / dayMilliseconds);
+  if (difference < 0) return `Starts in ${Math.abs(difference)} day${difference === -1 ? "" : "s"}`;
+  if (end && calendarDay(end) < calendarDay(asOf)) return "Course ended";
+  return `Day ${difference + 1}`;
 }
 
 function medicationDisplay(model) {
@@ -142,7 +170,7 @@ function medicationDisplay(model) {
     type: "medications",
     view: "medication_table",
     title: "Medication activity",
-    columns: ["Medication", "Order", "Status / administrations", "Instructions"],
+    columns: ["Medication", "Current regimen", "Course", "Recent administrations", "Instructions"],
     groups: model.groups.map((group) => ({
       label: group.label,
       timestamp: group.timestamp,
@@ -150,7 +178,8 @@ function medicationDisplay(model) {
         id: row.id,
         cells: [
           row.name,
-          [row.dose, row.frequency, row.route, row.timing].filter(Boolean).join(" · "),
+          [row.dose, row.rate, row.frequency, row.route].filter(Boolean).join(" · "),
+          courseDayLabel(row),
           [...(row.status || []), ...(row.administrations || [])].join(" · "),
           row.instructions
         ],
@@ -179,7 +208,48 @@ function observationSeries(model) {
       });
     }
   }
-  return [...series.values()];
+  return [...series.values()].map((entry) => ({
+    ...entry,
+    points: [...entry.points].sort((left, right) => {
+      const leftTime = parseChartDate(left.timestamp)?.getTime();
+      const rightTime = parseChartDate(right.timestamp)?.getTime();
+      return Number.isFinite(leftTime) && Number.isFinite(rightTime) ? leftTime - rightTime : 0;
+    })
+  }));
+}
+
+function rounded(value) {
+  return Number(value.toFixed(1));
+}
+
+function median(values) {
+  const ordered = [...values].sort((left, right) => left - right);
+  const middle = Math.floor(ordered.length / 2);
+  return ordered.length % 2 ? ordered[middle] : (ordered[middle - 1] + ordered[middle]) / 2;
+}
+
+function vitalStatistics24h(series = []) {
+  const timestamped = series.flatMap((entry) => entry.points.map((point) => parseChartDate(point.timestamp)?.getTime()).filter(Number.isFinite));
+  const latest = timestamped.length ? Math.max(...timestamped) : null;
+  return series.map((entry) => {
+    const windowPoints = latest === null
+      ? entry.points
+      : entry.points.filter((point) => {
+          const timestamp = parseChartDate(point.timestamp)?.getTime();
+          return Number.isFinite(timestamp) && timestamp >= latest - 24 * 60 * 60 * 1000 && timestamp <= latest;
+        });
+    const values = windowPoints.map((point) => point.value).filter(Number.isFinite);
+    if (!values.length) return null;
+    return {
+      name: entry.name,
+      unit: entry.unit,
+      count: values.length,
+      minimum: Math.min(...values),
+      maximum: Math.max(...values),
+      mean: rounded(values.reduce((total, value) => total + value, 0) / values.length),
+      median: rounded(median(values))
+    };
+  }).filter(Boolean);
 }
 
 export function clinicalDisplayModel(model) {
@@ -214,8 +284,15 @@ function vitalPrompt(model) {
     ["Respirations", "RR"],
     ["Respiratory rate", "RR"],
     ["Pulse", "HR"],
+    ["Heart Rate (Monitored)", "HRm"],
+    ["Systolic BP", "SBP"],
+    ["Diastolic BP", "DBP"],
+    ["Arterial Systolic BP", "Art SBP"],
+    ["Arterial Diastolic BP", "Art DBP"],
     ["Oxygen saturation", "SpO2"],
     ["MAP (cuff)", "MAP"],
+    ["MAP (arterial)", "Art MAP"],
+    ["O2 Flow Rate", "O2 flow"],
     ["Weight (kg)", "Weight"]
   ]);
   const lines = ["Vitals"];
@@ -230,7 +307,7 @@ function medicationPrompt(model) {
   const lines = ["Medications"];
   for (const group of model.groups) {
     for (const row of group.rows) {
-      const order = [row.dose, row.frequency, row.route, row.timing].filter(Boolean).join("; ");
+      const order = [row.dose, row.rate, row.frequency, row.route, row.timing, courseDayLabel(row)].filter(Boolean).join("; ");
       const activity = [...(row.status || []), ...(row.administrations || [])].join("; ");
       const details = [order, activity, row.instructions].filter(Boolean).join(" | ");
       lines.push(`${group.label ? `[${group.label}] ` : ""}${row.name}${details ? ` — ${details}` : ""}`);
@@ -240,6 +317,21 @@ function medicationPrompt(model) {
 }
 
 const SAVED_VITAL_NAMES = [
+  "Heart Rate (Monitored)",
+  "Arterial Systolic BP",
+  "Arterial Diastolic BP",
+  "MAP (arterial)",
+  "Systolic BP",
+  "Diastolic BP",
+  "O2 Flow Rate",
+  "Art SBP",
+  "Art DBP",
+  "Art MAP",
+  "O2 flow",
+  "HRm",
+  "SBP",
+  "DBP",
+  "FiO2",
   "Blood Pressure (cuff)",
   "Respiratory rate",
   "Oxygen saturation",
@@ -267,7 +359,37 @@ const SAVED_VITAL_LABELS = new Map([
   ["BP", "Blood Pressure (cuff)"],
   ["HR", "Pulse"],
   ["RR", "Respirations"],
-  ["Temp", "Temperature"]
+  ["Temp", "Temperature"],
+  ["HRm", "Heart Rate (Monitored)"],
+  ["SBP", "Systolic BP"],
+  ["DBP", "Diastolic BP"],
+  ["Art SBP", "Arterial Systolic BP"],
+  ["Art DBP", "Arterial Diastolic BP"],
+  ["Art MAP", "MAP (arterial)"],
+  ["O2 flow", "O2 Flow Rate"],
+  ["MAP", "MAP (cuff)"]
+]);
+
+const SAVED_VITAL_UNITS = new Map([
+  ["Temperature", "°C"],
+  ["Pulse", "bpm"],
+  ["Heart Rate (Monitored)", "bpm"],
+  ["Respirations", "breaths/min"],
+  ["Respiratory rate", "breaths/min"],
+  ["Blood Pressure (cuff)", "mmHg"],
+  ["Blood pressure", "mmHg"],
+  ["Systolic BP", "mmHg"],
+  ["Diastolic BP", "mmHg"],
+  ["Arterial Systolic BP", "mmHg"],
+  ["Arterial Diastolic BP", "mmHg"],
+  ["MAP (cuff)", "mmHg"],
+  ["MAP (arterial)", "mmHg"],
+  ["SpO2", "%"],
+  ["Oxygen saturation", "%"],
+  ["FiO2", "%"],
+  ["O2 Flow Rate", "L/min"],
+  ["Weight", "kg"],
+  ["Weight (kg)", "kg"]
 ]);
 
 function savedLaboratoryModel(lines) {
@@ -322,11 +444,12 @@ function savedVitalModel(lines) {
     const rows = text.split(/;\s*/).map((measurement, rowIndex) => {
       const name = SAVED_VITAL_NAMES.find((candidate) => measurement === candidate || measurement.startsWith(`${candidate} `));
       if (!name) return null;
+      const normalizedName = SAVED_VITAL_LABELS.get(name) || name;
       return {
         id: `saved_vital_${groups.length + 1}_${rowIndex + 1}`,
-        name: SAVED_VITAL_LABELS.get(name) || name,
+        name: normalizedName,
         value: clean(measurement.slice(name.length)),
-        unit: ""
+        unit: SAVED_VITAL_UNITS.get(normalizedName) || ""
       };
     }).filter(Boolean);
     if (rows.length) groups.push({ id: `saved_vitals_${groups.length + 1}`, label: "Vital signs", timestamp, rows });
@@ -343,9 +466,14 @@ function savedMedicationDisplay(lines) {
     if (!match) continue;
     const groupLabel = clean(match[1]) || "Medication activity";
     if (!groups.has(groupLabel)) groups.set(groupLabel, []);
+    const details = clean(match[3]);
+    const [order = "", activity = "", instructions = ""] = details.split(/\s+\|\s+/);
+    const orderParts = order.split(/;\s*/).filter(Boolean);
+    const course = orderParts.find((part) => /^(?:Day \d+|Starts in \d+ days?|Course ended)$/.test(part)) || "";
+    const regimen = orderParts.filter((part) => part !== course && !/^(?:start|end)\s+/i.test(part)).join(" · ");
     groups.get(groupLabel).push({
       id: `saved_medication_${groups.size}_${groups.get(groupLabel).length + 1}`,
-      cells: [clean(match[2]), clean(match[3]) || "—"],
+      cells: [clean(match[2]), regimen, course, activity, instructions],
       emphasis: "unknown",
       provenance: { sourceSystem: "Saved de-identified source", formatId: "saved_prompt_medications", group: groupLabel, timestamp: "", sourceIndex: null }
     });
@@ -355,7 +483,7 @@ function savedMedicationDisplay(lines) {
     type: "medications",
     view: "medication_table",
     title: "Medication activity",
-    columns: ["Medication", "Details"],
+    columns: ["Medication", "Current regimen", "Course", "Recent administrations", "Instructions"],
     groups: [...groups.entries()].map(([label, rows]) => ({ label, timestamp: "", rows })),
     provenance: { sourceSystem: "Saved de-identified source", formatId: "saved_prompt_medications", formatLabel: "Saved medication activity", extraction: "canonical_prompt_text" }
   };

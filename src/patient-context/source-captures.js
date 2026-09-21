@@ -1,6 +1,6 @@
 import { sanitizeResidualWarningMetadata } from "./review.js";
 import { naturalLanguagePrompt } from "../prompts/natural-language.js";
-import { evaluatePacketCompleteness } from "../daily-updates/packet-completeness.js?v=20260920-clinical-review";
+import { evaluatePacketCompleteness } from "../daily-updates/packet-completeness.js?v=20260921-clinical-navigation";
 
 const sourceKinds = [
   ["primary_note", "Primary team note", "The latest primary-team note or interval update copied from Epic."],

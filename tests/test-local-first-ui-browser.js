@@ -708,7 +708,7 @@ Vitals
   // inspect only the text before that caret, rather than finding a later token
   // and incorrectly keeping the menu open.
   await page.locator("#promptPreview").fill("@selected-day-physical-exam\\nUse @admission-primary-team-note");
-  await page.locator("#promptPreview").press("Control+Home");
+  await page.locator("#promptPreview").evaluate((node) => node.setSelectionRange(0, 0));
   await page.locator("#promptPreview").press("Delete");
   assert.equal(await page.locator("#smartVariableMenu").isVisible(), false);
 

@@ -1,4 +1,4 @@
-import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260920-clinical-review";
+import { tokenColorSwatchButton } from "../token-color-picker.js?v=20260921-clinical-navigation";
 import { guidelinePageModel } from "./guideline-pagination.js?v=20260910-guideline-pagination";
 
 // Pure presentation module. The library stays compact by keeping editing in a

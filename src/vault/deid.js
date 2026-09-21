@@ -269,7 +269,7 @@ function isLikelyDurationOfConditionPhrase(rawText, start, end) {
   }
   const after = rawText.slice(end, Math.min(rawText.length, end + 8));
   return /^\s+of\b/i.test(after) ||
-    /^(?:for|within|in)\s+\d+\s+(?:minutes?|hours?)$/i.test(span);
+    /^(?:for|within|in)\s+\d+\s+(?:seconds?|minutes?|hours?)$/i.test(span);
 }
 
 // chrono's "<duration> after/later" parser resolves a bare relative offset
@@ -2407,10 +2407,11 @@ function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYe
   const year = temporal.year || fallbackYear || currentSourceDate?.getUTCFullYear() || null;
   const date = dateFromParts(temporal, year, currentSourceDate, temporalContextDirection(entity));
   const placement = classifyTemporalPlacement(temporal, date, currentSourceDate, entity);
+  const clockTime = temporal.clockTime || "";
   if (placement.historical) {
     const duration = historicalDurationBeforeAdmission(date, currentSourceDate, { hasDayPrecision: temporal.kind !== "month" });
     if (duration) {
-      return `[${duration} prior to hospital admission]`;
+      return `[${duration} prior to hospital admission${clockTime && duration === "1 day" ? ` at ${clockTime}` : ""}]`;
     }
     // Without an admission date to measure against, a birth date can't be
     // turned into an age/duration - and unlike an arbitrary historical lab
@@ -2421,7 +2422,6 @@ function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYe
     }
     return placement.year ? `[Historical: ${placement.year}]` : "[Historical date]";
   }
-  const clockTime = temporal.clockTime || "";
   // "Yesterday morning" and similar relative phrases identify a calendar
   // day, but the time-of-day wording is clinically meaningful and not an
   // exact timestamp. Preserve that qualifier after replacing the calendar

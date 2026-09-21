@@ -2,16 +2,18 @@ import {
   clinicalDataModel,
   laboratoryAbnormality,
   withClinicalRepresentations
-} from "./structured-clinical-data.js?v=20260920-clinical-review";
+} from "./structured-clinical-data.js?v=20260921-clinical-navigation";
 
 const EPIC_RESULT_TIMESTAMP = /^(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})(?:[ T,]+(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?|\d{4}))?$/i;
 const RESULT_VALUE = /^(?:[-+]?\d|[<>]=?\s*[-+]?\d|positive\b|negative\b|detected\b|not detected\b|reactive\b|nonreactive\b|pending\b|present\b|absent\b|rpt\b)/i;
 const RESULT_LEGEND = /^\(([A-Z]{1,4})\)\s*:\s*(.+)$/i;
 const REPORT_LEGEND = /^(Rpt)\s*:\s*(View report\b.*)$/i;
-const MAR_FIELD = /\b(Dose|Freq(?:uency)?|Route|Start|End)\s*:\s*/gi;
-const MAR_FIELD_START = /^(?:Dose|Freq(?:uency)?|Route|Start|End)\s*:/i;
+const MAR_FIELD = /\b(Rate|Dose|Freq(?:uency)?|Route|Start|End)\s*:\s*/gi;
+const MAR_FIELD_START = /^(?:Rate|Dose|Freq(?:uency)?|Route|Start|End)\s*:/i;
 const MAR_INSTRUCTIONS = /^Admin(?:istration)? Instructions?\s*:\s*(.*)$/i;
-const MAR_EVENT = /(?:^|\s)(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4})(?:\s*\(\s*([^)]*?)\s*\))?(?:\s*(\[[A-Z]+\]))?(?=\s|$)/gi;
+const MAR_METADATA = /^(?:PRN Reasons?|PRN Comment|Weight Dosing Info)\s*:\s*(.*)$/i;
+const MAR_EVENT = /(?:^|\s)(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4})(?:\s*\(\s*([^)]*?)\s*\))?(?:\s*(\[[A-Z]+\]))?(?:-\s*(See Alt))?(?=\s|$)/gi;
+const MAR_DATE = /\b(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\b/g;
 
 const VITAL_FIELDS = [
   { label: "Blood Pressure (cuff)", aliases: ["blood pressure (cuff)", "blood pressure", "bp (cuff)", "bp"] },
@@ -231,7 +233,8 @@ function marChrome(text) {
     /^(?:1 Day|3 Days|7 Days|10 Days)(?:\s|$)/i.test(text) ||
     /^(?:<\s*)?Today(?:\s*>|$)/i.test(text) ||
     /^Legend\s*:?$/i.test(text) ||
-    /^(?:Medications\s+)?\d{1,2}[/-]\d{1,2}[/-]\d{2,4}(?:\s+\d{1,2}[/-]\d{1,2}[/-]\d{2,4})+$/i.test(text)
+    /^(?:Medications\s+)?\d{1,2}[/-]\d{1,2}[/-]\d{2,4}(?:\s+\d{1,2}[/-]\d{1,2}[/-]\d{2,4})+$/i.test(text) ||
+    /^(?:Order specific questions?|Or|Followed by)\s*:?$/i.test(text)
   );
 }
 
@@ -251,6 +254,7 @@ function extractMarFields(text) {
 function extractMarEvents(text) {
   const events = [];
   for (const match of text.matchAll(MAR_EVENT)) {
+    if (match[4]) continue;
     const dose = compact(match[2]);
     events.push(`${match[1]}${dose ? ` (${dose})` : ""}${match[3] ? ` ${match[3]}` : ""}`);
   }
@@ -259,9 +263,8 @@ function extractMarEvents(text) {
 
 function isMarEventLine(text) {
   MAR_EVENT.lastIndex = 0;
-  const events = extractMarEvents(text);
-  MAR_EVENT.lastIndex = 0;
-  if (!events.length) return false;
+  const matches = [...text.matchAll(MAR_EVENT)];
+  if (!matches.length) return false;
   const residue = compact(text.replace(MAR_EVENT, ""));
   MAR_EVENT.lastIndex = 0;
   return !residue || /^[-–—,;]+$/.test(residue);
@@ -269,12 +272,12 @@ function isMarEventLine(text) {
 
 function isMedicationCandidate(lines, position) {
   const text = lines[position]?.text || "";
-  if (!text || marChrome(text) || marSection(text) || MAR_FIELD_START.test(text) || MAR_INSTRUCTIONS.test(text) || isMarEventLine(text)) return false;
+  if (!text || marChrome(text) || marSection(text) || MAR_FIELD_START.test(text) || MAR_INSTRUCTIONS.test(text) || MAR_METADATA.test(text) || isMarEventLine(text)) return false;
   if (EPIC_RESULT_TIMESTAMP.test(text) || RESULT_LEGEND.test(text)) return false;
   for (let offset = 1; offset <= 4 && position + offset < lines.length; offset += 1) {
     const next = lines[position + offset].text;
     if (marSection(next)) return false;
-    if (MAR_FIELD_START.test(next) || MAR_INSTRUCTIONS.test(next) || isMarEventLine(next)) return true;
+    if (MAR_FIELD_START.test(next) || MAR_INSTRUCTIONS.test(next) || MAR_METADATA.test(next) || isMarEventLine(next)) return true;
     if (!marChrome(next)) return false;
   }
   return false;
@@ -283,7 +286,7 @@ function isMedicationCandidate(lines, position) {
 function hasMarMetadataAhead(lines, position) {
   for (let offset = 1; offset <= 4 && position + offset < lines.length; offset += 1) {
     const next = lines[position + offset].text;
-    if (MAR_FIELD_START.test(next) || MAR_INSTRUCTIONS.test(next)) return true;
+    if (MAR_FIELD_START.test(next) || MAR_INSTRUCTIONS.test(next) || MAR_METADATA.test(next)) return true;
     if (!marChrome(next)) return false;
   }
   return false;
@@ -300,6 +303,9 @@ function renderEpicMar(value) {
 
   const consumed = new Set();
   const medications = [];
+  const dateHeader = lines.find((line) => /^Medications\s+\d{1,2}[/-]\d{1,2}[/-]\d{2,4}/i.test(line.text));
+  const chartDates = dateHeader ? [...dateHeader.text.matchAll(MAR_DATE)].map((match) => match[1]) : [];
+  const asOfDate = chartDates.at(-1) || "";
   let section = "Medications";
   let current = null;
   let inInstructions = false;
@@ -340,6 +346,14 @@ function renderEpicMar(value) {
       current.indexes.push(line.index);
       consumed.add(line.index);
       if (instructions[1]) current.instructions.push(instructions[1]);
+      continue;
+    }
+    const metadata = line.text.match(MAR_METADATA);
+    if (metadata) {
+      inInstructions = false;
+      current.instructions.push(`${line.text.slice(0, line.text.indexOf(":"))}: ${metadata[1]}`);
+      current.indexes.push(line.index);
+      consumed.add(line.index);
       continue;
     }
     const fields = extractMarFields(line.text);
@@ -399,9 +413,13 @@ function renderEpicMar(value) {
           id: `medication_${groupIndex + 1}_${medicationIndex + 1}`,
           name: medication.name,
           dose: field("Dose"),
+          rate: field("Rate"),
           frequency: field("Frequency"),
           route: field("Route"),
           timing,
+          start: field("Start"),
+          end: field("End"),
+          asOfDate,
           status: [],
           administrations: medication.administrations,
           instructions: medication.instructions,
@@ -637,7 +655,7 @@ export function parseEpicClinicalExport(value) {
   if (mixed) {
     const rawText = decodeClinicalClipboardText(value).trim();
     if (String(mixed.outputText || "").length <= rawText.length) return mixed;
-    return { ...mixed, promptText: rawText, outputText: rawText, usedSourceTextForCompactness: true };
+    return { ...mixed, canonicalPromptText: mixed.promptText || mixed.outputText, promptText: rawText, outputText: rawText, usedSourceTextForCompactness: true };
   }
   const parsers = [renderEpicMar, renderEpicVitals, renderEpicResults];
   for (const parser of parsers) {
@@ -647,6 +665,7 @@ export function parseEpicClinicalExport(value) {
       if (String(result.outputText || "").length <= rawText.length) return result;
       return {
         ...result,
+        canonicalPromptText: result.promptText || result.outputText,
         promptText: rawText,
         outputText: rawText,
         usedSourceTextForCompactness: true

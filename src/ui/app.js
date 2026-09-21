@@ -5,7 +5,7 @@ import {
   removeDay,
   sortDays,
   upsertDay
-} from "../daily-updates/days.js?v=20260920-clinical-review";
+} from "../daily-updates/days.js?v=20260921-clinical-navigation";
 import {
   activePatient,
   archivePatient,
@@ -16,7 +16,7 @@ import {
   setWorkupOverride,
   setWorkupOverrides,
   updateActivePatient
-} from "../app/state/vault.js?v=20260920-clinical-review";
+} from "../app/state/vault.js?v=20260921-clinical-navigation";
 import {
   deleteEncryptedVaultRecord,
   downloadJson,
@@ -24,7 +24,7 @@ import {
   readEncryptedVaultRecord,
   saveEncryptedVault,
   writeEncryptedVaultRecord
-} from "../app/state/persistence.js?v=20260920-clinical-review";
+} from "../app/state/persistence.js?v=20260921-clinical-navigation";
 import {
   authorizeWorkupWorkspaceMirror,
   disconnectWorkupWorkspaceMirror,
@@ -36,7 +36,7 @@ import {
   reorderSections,
   reorderSectionsById,
   replaceSectionsFromFormAsync
-} from "../patient-context/sections.js?v=20260920-clinical-review";
+} from "../patient-context/sections.js?v=20260921-clinical-navigation";
 import {
   createEphemeralRedactionReview,
   refreshEphemeralRedactionReview,
@@ -59,13 +59,13 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../patient-context/deid-client.js?v=20260809-restricted-network-chunks-2";
+} from "../patient-context/deid-client.js?v=20260921-clinical-navigation";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../patient-context/deid-model-options.js?v=20260809-restricted-network-chunks-2";
+} from "../patient-context/deid-model-options.js?v=20260921-clinical-navigation";
 import {
   canAutomaticallyInstallModel,
   ensureModelPackServiceWorker,
@@ -77,13 +77,13 @@ import {
   modelFilesFromInput,
   removeModelPack,
   requestPersistentModelStorage
-} from "../patient-context/model-pack-storage.js?v=20260809-restricted-network-chunks-2";
+} from "../patient-context/model-pack-storage.js?v=20260921-clinical-navigation";
 import {
   formatBytes,
   hasAutomaticModelDownload,
   isInstallableModel,
   modelDownloadBytes
-} from "../patient-context/model-packs.js?v=20260809-restricted-network-chunks-2";
+} from "../patient-context/model-packs.js?v=20260921-clinical-navigation";
 import {
   ADMISSION_PSEUDO_DAY_ID,
   buildPromptPreviewSegments,
@@ -94,13 +94,13 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260920-clinical-review";
+} from "../prompts/custom-templates.js?v=20260921-clinical-navigation";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import {
   DEFAULT_DAILY_SOURCE_KIND,
   admissionSourceKindOptions
-} from "../patient-context/source-captures.js?v=20260920-clinical-review";
-import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260920-clinical-review";
+} from "../patient-context/source-captures.js?v=20260921-clinical-navigation";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260921-clinical-navigation";
 import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260910-pre-op-prep";
 import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260910-pre-op-prep";
 import {
@@ -127,8 +127,8 @@ import {
   workupFromEditorDraft,
   workupThoroughnessOption
 } from "../workups/editor.js?v=20260821-etiology-checklist";
-import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260920-clinical-review";
-import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260920-clinical-review";
+import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260921-clinical-navigation";
+import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260921-clinical-navigation";
 import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260815-standalone-ap";
 import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20260711-functional-remediation-15";
 import {
@@ -150,38 +150,39 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260920-clinical-review";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260920-clinical-review";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260921-clinical-navigation";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260921-clinical-navigation";
+import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-clinical-navigation";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
-import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260920-clinical-review";
+import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260921-clinical-navigation";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
-import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260920-clinical-review";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260920-clinical-review";
+import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260921-clinical-navigation";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-clinical-navigation";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260920-clinical-review";
+} from "./prompts/controller.js?v=20260921-clinical-navigation";
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260910-guideline-pagination";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
-import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260920-clinical-review";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20260920-clinical-review";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260920-clinical-review";
+import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-clinical-navigation";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-clinical-navigation";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-clinical-navigation";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
   createRedactionPresentation,
   redactionPosition,
   warningDescription,
   warningSnippet
-} from "./redaction/presentation.js?v=20260920-clinical-review";
+} from "./redaction/presentation.js?v=20260921-clinical-navigation";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
 import { createDemoController } from "./demo/controller.js?v=20260815-single-redaction-accept";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260920-clinical-review";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-clinical-navigation";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260809-demo-nstemi-workup-1";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
@@ -1795,6 +1796,8 @@ async function handleClick(event) {
           );
       }
     }
+    if (action === "clinical-lab-page") navigateClinicalLabCollections(target);
+    if (action === "clinical-medication-page") updateClinicalMedicationPage(target.closest('[data-clinical-view="medications"]'), { direction: Number(target.dataset.direction || 0) });
     if (action === "select-daily-source-kind") {
       dailySourceController.selectSourceKind("daily", target.dataset.sourceKind || DEFAULT_DAILY_SOURCE_KIND);
       renderDaily();
@@ -3998,6 +4001,7 @@ function clearChecklistSearch() {
 }
 
 function handleInput(event) {
+  if (event.target.matches("[data-clinical-medication-search]")) return updateClinicalMedicationPage(event.target.closest('[data-clinical-view="medications"]'), { reset: true });
   if (event.target.id === "dailySourceDraft") {
     dailySourceController.updateDraft("daily", event.target.value);
     return;
