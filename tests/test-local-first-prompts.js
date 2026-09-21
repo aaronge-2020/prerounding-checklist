@@ -353,12 +353,16 @@ const presentationEditorPrompt = buildCustomOpenEvidencePrompt({
   guidelineSets: deployedGuidelineSets,
   presentationToEdit: "One-Liner\nA de-identified sample presentation.\n\nAssessment\nA concise assessment."
 });
-assert.match(presentationEditorPrompt, /not to replace the learner's thinking/i);
-assert.match(presentationEditorPrompt, /Blind-spot map/i);
-assert.match(presentationEditorPrompt, /Understanding check/i);
-assert.match(presentationEditorPrompt, /Do not provide a fully rewritten presentation/i);
+assert.match(presentationEditorPrompt, /Improve the learner, not just the presentation/i);
+assert.match(presentationEditorPrompt, /between 250 and 500 words/i);
+assert.match(presentationEditorPrompt, /Two learning targets/i);
+assert.match(presentationEditorPrompt, /Choose no more than two/i);
+assert.match(presentationEditorPrompt, /Ask exactly three short questions/i);
+assert.match(presentationEditorPrompt, /Close the notes and teach back the Remember rule/i);
+assert.match(presentationEditorPrompt, /mnemonic, contrast pair, causal chain, illness script, analogy, or one-sentence rule/i);
+assert.match(presentationEditorPrompt, /Do not rewrite the full presentation/i);
 assert.match(presentationEditorPrompt, /complete model presentation only after the learner has attempted a revision/i);
-assert.match(presentationEditorPrompt, /omitted-record fact, missing-data question, reasoning gap, or knowledge gap/i);
+assert.match(presentationEditorPrompt, /omitted chart fact, missing patient data, faulty reasoning, and missing knowledge/i);
 assert.match(presentationEditorPrompt, /A de-identified sample presentation/);
 assert.doesNotMatch(presentationEditorPrompt, /@presentation-to-edit/);
 const presentationEditorWithoutPastedText = buildCustomOpenEvidencePrompt({
@@ -368,7 +372,7 @@ const presentationEditorWithoutPastedText = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelineSets: deployedGuidelineSets
 });
-assert.match(presentationEditorWithoutPastedText, /Revision assignment/);
+assert.match(presentationEditorWithoutPastedText, /One-minute revision/);
 assert.doesNotMatch(presentationEditorWithoutPastedText, /No presentation was pasted/);
 const presentationCritiquePrompt = buildCustomOpenEvidencePrompt({
   taskId: "attending_presentation_critique",
