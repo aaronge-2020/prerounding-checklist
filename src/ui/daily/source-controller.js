@@ -1,9 +1,9 @@
-import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-lab-panel-sets";
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-lab-panel-sets";
+import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-lab-panel-ui";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-lab-panel-ui";
 import {
   parseClinicalExport,
   prepareClinicalExportForSave
-} from "../../patient-context/clinical-export-parser.js?v=20260921-lab-panel-sets";
+} from "../../patient-context/clinical-export-parser.js?v=20260921-lab-panel-ui";
 import {
   createEphemeralRedactionReview,
   reviewKey,
@@ -16,8 +16,8 @@ import {
   dailySourceKindOptions,
   replaceSourceCapturesFromFormAsync,
   sourceCapturePacketCheck
-} from "../../patient-context/source-captures.js?v=20260921-lab-panel-sets";
-import { createNoteDraft, fieldsForNoteType, NOTE_TYPES, updateNoteSection } from "../../note-drafts/index.js?v=20260921-lab-panel-sets";
+} from "../../patient-context/source-captures.js?v=20260921-lab-panel-ui";
+import { createNoteDraft, fieldsForNoteType, NOTE_TYPES, updateNoteSection } from "../../note-drafts/index.js?v=20260921-lab-panel-ui";
 
 export function createDailySourceController(deps) {
   function structuredNoteKey(scope) {

@@ -1,7 +1,7 @@
 import {
   clinicalDisplayModelFromPromptText,
   laboratoryAbnormality
-} from "../patient-context/structured-clinical-data.js?v=20260921-lab-panel-sets";
+} from "../patient-context/structured-clinical-data.js?v=20260921-lab-panel-ui";
 
 const GROUP_DEFINITIONS = Object.freeze([
   Object.freeze({ id: "vitals", label: "Vital signs" }),
@@ -301,6 +301,42 @@ function finalizeLaboratoryPanel(candidate) {
   return finalized;
 }
 
+function attachLaboratoryTrends(laboratoryPanels) {
+  const trendsByName = new Map();
+  for (const panel of laboratoryPanels) {
+    for (const result of panel.results) {
+      const key = normalizedExact(result.name);
+      if (!trendsByName.has(key)) trendsByName.set(key, []);
+      trendsByName.get(key).push({
+        id: result.id,
+        panelId: panel.id,
+        value: result.value,
+        numericValue: numericValue(result.value),
+        unit: result.unit,
+        status: result.status,
+        flag: result.flag,
+        referenceRange: result.referenceRange,
+        timestamp: panel.timestamp,
+        dayLabel: panel.dayLabel,
+        dayDate: panel.dayDate,
+        sortTime: panel.sortTime,
+        dayIndex: panel.dayIndex,
+        sourceOrder: panel.sourceOrder,
+        groupOrder: panel.groupOrder,
+        rowOrder: result.rowOrder
+      });
+    }
+  }
+  for (const trend of trendsByName.values()) trend.sort(compareObservations);
+  return laboratoryPanels.map((panel) => ({
+    ...panel,
+    results: panel.results.map((result) => ({
+      ...result,
+      trend: trendsByName.get(normalizedExact(result.name)) || []
+    }))
+  }));
+}
+
 function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap) {
   const display = clinicalDisplayModelFromPromptText(source.sourceKind, source.record.deidentifiedText);
   if (!display?.groups?.length) return;
@@ -480,7 +516,7 @@ export function buildClinicalReviewIndex(patient) {
   });
 
   coalesceUnitlessObservations(vitalMap);
-  const labs = [...labMap.values()].map(finalizeLaboratoryPanel);
+  const labs = attachLaboratoryTrends([...labMap.values()].map(finalizeLaboratoryPanel));
   let vitals = [...vitalMap.values()].map((candidate) => finalizeObservationCandidate(candidate, "vitals"));
   const latestVitalTime = vitals.flatMap((candidate) => candidate.observations)
     .filter((observation) => Number.isFinite(observation.numericValue) && Number.isFinite(observation.sortTime))

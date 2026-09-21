@@ -1,4 +1,4 @@
-import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-lab-panel-sets";
+import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-lab-panel-ui";
 
 function valueText(value) {
   return String(value?.deidentifiedText || "");
@@ -29,8 +29,60 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return `${chart}${observationList}`;
   }
 
-  function renderCandidate(candidate, selectedIds) {
+  function renderLaboratoryTrend(result) {
+    const observations = result.trend || [];
+    const numeric = observations.filter((entry) => Number.isFinite(entry.numericValue));
+    const units = new Set(numeric.map((entry) => entry.unit).filter(Boolean));
+    let chart = "";
+    if (numeric.length > 1 && units.size <= 1) {
+      const values = numeric.map((entry) => entry.numericValue);
+      const minimum = Math.min(...values);
+      const maximum = Math.max(...values);
+      const spread = maximum - minimum;
+      const coordinates = values.map((value, index) => ({
+        x: 24 + (index * 312) / Math.max(1, values.length - 1),
+        y: spread ? 88 - ((value - minimum) / spread) * 64 : 56
+      }));
+      const points = coordinates.map(({ x, y }) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+      chart = `<svg class="review-lab-trend-chart" viewBox="0 0 360 112" role="img" aria-label="${escapeHtml(result.name)} trend across ${numeric.length} results">
+        <line x1="24" y1="24" x2="336" y2="24"></line><line x1="24" y1="56" x2="336" y2="56"></line><line x1="24" y1="88" x2="336" y2="88"></line>
+        <polyline points="${points}"></polyline>
+        ${coordinates.map(({ x, y }, index) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4"><title>${escapeHtml([numeric[index].value, numeric[index].unit, numeric[index].dayLabel, numeric[index].timestamp].filter(Boolean).join(" · "))}</title></circle>`).join("")}
+      </svg>`;
+    }
+    const message = observations.length <= 1
+      ? `<p class="muted review-lab-trend-message">Only one saved result is available.</p>`
+      : numeric.length > 1 && units.size > 1
+        ? `<p class="muted review-lab-trend-message">Values use different units, so they are listed without connecting them on a graph.</p>`
+        : "";
+    return `<section class="review-lab-trend-drawer" aria-label="${escapeHtml(result.name)} trend">
+      <div class="review-lab-trend-heading"><div><span class="eyebrow">Trend</span><h4>${escapeHtml(result.name)}</h4></div><button type="button" class="button--quiet" data-action="toggle-lab-trend" data-lab-result-id="${escapeHtml(result.id)}" aria-label="Collapse ${escapeHtml(result.name)} trend">Collapse</button></div>
+      ${chart}${message}
+      <ol class="review-lab-trend-values">${observations.map((entry) => `<li data-clinical-emphasis="${escapeHtml(entry.status || "unknown")}"><strong>${escapeHtml([entry.value, entry.unit].filter(Boolean).join(" ") || "—")}</strong><span>${escapeHtml([entry.dayLabel, entry.timestamp].filter(Boolean).join(" · ") || "Saved result")}</span></li>`).join("")}</ol>
+    </section>`;
+  }
+
+  function renderLaboratoryPanel(candidate, selected, labNavigation, openLabTrendId) {
+    const abnormalCount = candidate.results.filter((result) => ["high", "low", "abnormal", "critical"].includes(result.status)).length;
+    const openResult = candidate.results.find((result) => result.id === openLabTrendId);
+    const navigation = labNavigation
+      ? `<nav class="review-lab-panel-navigation" aria-label="Laboratory panel sets"><button type="button" class="icon-button" data-action="review-data-page" data-direction="-1" aria-label="Previous laboratory panel" ${labNavigation.page <= 0 ? "disabled" : ""}>←</button><output>${escapeHtml(candidate.name)} · Set ${labNavigation.page + 1} of ${labNavigation.pageCount}</output><button type="button" class="icon-button" data-action="review-data-page" data-direction="1" aria-label="Next laboratory panel" ${labNavigation.page >= labNavigation.pageCount - 1 ? "disabled" : ""}>→</button></nav>`
+      : "";
+    return `<article class="review-data-item review-data-item--lab ${selected ? "is-selected" : ""}" data-review-candidate="${escapeHtml(candidate.id)}">
+      <header class="review-lab-panel-header">
+        <label class="review-lab-selection"><input type="checkbox" data-objective-selection-id="${escapeHtml(candidate.id)}" aria-label="Include this ${escapeHtml(candidate.name)} panel in the note" ${selected ? "checked" : ""}></label>
+        <div class="review-lab-panel-identity"><div class="review-lab-title-line"><h3>${escapeHtml(candidate.name)}</h3>${abnormalCount ? `<span class="review-lab-abnormal-count">${abnormalCount} abnormal</span>` : `<span class="review-lab-normal-count">No flagged results</span>`}</div><p>${escapeHtml([candidate.dayLabel, candidate.timestamp].filter(Boolean).join(" · ") || "Saved laboratory panel")}</p></div>
+        ${navigation}
+      </header>
+      <div class="review-lab-table-wrap"><table class="review-lab-table"><thead><tr><th scope="col">Test</th><th scope="col">Result</th><th scope="col">Reference range</th></tr></thead><tbody>${candidate.results.map((result) => `<tr data-action="toggle-lab-trend" data-lab-result-id="${escapeHtml(result.id)}" data-clinical-emphasis="${escapeHtml(result.status || "unknown")}" class="${result.id === openLabTrendId ? "is-trend-open" : ""}"><th scope="row"><button type="button" class="review-lab-result-button" data-action="toggle-lab-trend" data-lab-result-id="${escapeHtml(result.id)}" aria-expanded="${result.id === openLabTrendId ? "true" : "false"}"><span aria-hidden="true">›</span>${escapeHtml(result.name)}</button></th><td>${escapeHtml([result.value, result.unit].filter(Boolean).join(" ") || "—")}${result.flag ? ` <small class="review-lab-flag">${escapeHtml(result.flag)}</small>` : ""}</td><td>${escapeHtml(result.referenceRange || "—")}</td></tr>`).join("")}</tbody></table></div>
+      ${openResult ? renderLaboratoryTrend(openResult) : ""}
+      <details class="review-lab-note-preview"><summary>Preview note insertion</summary><pre>${escapeHtml(candidate.insertionText)}</pre></details>
+    </article>`;
+  }
+
+  function renderCandidate(candidate, selectedIds, { labNavigation = null, openLabTrendId = "" } = {}) {
     const selected = selectedIds.has(candidate.id);
+    if (candidate.kind === "laboratory_panel") return renderLaboratoryPanel(candidate, selected, labNavigation, openLabTrendId);
     const stats = candidate.statistics24h
       ? `<dl class="review-vital-stats"><div><dt>24-hour range</dt><dd>${escapeHtml(`${candidate.statistics24h.minimum}–${candidate.statistics24h.maximum} ${candidate.unit || ""}`.trim())}</dd></div><div><dt>Mean</dt><dd>${escapeHtml(`${candidate.statistics24h.mean} ${candidate.unit || ""}`.trim())}</dd></div><div><dt>Median</dt><dd>${escapeHtml(`${candidate.statistics24h.median} ${candidate.unit || ""}`.trim())}</dd></div></dl>`
       : "";
@@ -40,33 +92,30 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     const medication = candidate.kind === "medication" && candidate.latestSavedEntry
       ? `<dl class="review-medication-regimen"><div><dt>Dose</dt><dd>${escapeHtml(candidate.latestSavedEntry.dose || "Not documented")}</dd></div><div><dt>Route</dt><dd>${escapeHtml(candidate.latestSavedEntry.route || "Not documented")}</dd></div><div><dt>Administration times</dt><dd>${escapeHtml(candidate.latestSavedEntry.administrationTimes || "None documented")}</dd></div></dl>`
       : "";
-    const laboratoryPanel = candidate.kind === "laboratory_panel"
-      ? `<div class="review-lab-table-wrap"><table class="review-lab-table"><thead><tr><th>Test</th><th>Result</th><th>Reference</th></tr></thead><tbody>${candidate.results.map((result) => `<tr data-clinical-emphasis="${escapeHtml(result.status || "unknown")}"><th>${escapeHtml(result.name)}</th><td>${escapeHtml([result.value, result.unit].filter(Boolean).join(" ") || "—")}${result.flag ? ` <small>${escapeHtml(result.flag)}</small>` : ""}</td><td>${escapeHtml(result.referenceRange || "—")}</td></tr>`).join("")}</tbody></table></div>`
-      : "";
     return `<article class="review-data-item ${selected ? "is-selected" : ""}" data-review-candidate="${escapeHtml(candidate.id)}">
       <label class="objective-choice">
         <input type="checkbox" data-objective-selection-id="${escapeHtml(candidate.id)}" ${selected ? "checked" : ""}>
         <span><strong>${escapeHtml(candidate.name)}</strong><small>${escapeHtml(candidate.source?.dayLabel || candidate.group)}</small></span>
       </label>
-      ${stats}${laboratoryPanel}${medication}${diagnostic}${candidate.kind !== "medication" && candidate.observations?.length ? renderTrend(candidate) : ""}
+      ${stats}${medication}${diagnostic}${candidate.kind !== "medication" && candidate.observations?.length ? renderTrend(candidate) : ""}
       <details><summary>Preview note insertion</summary><pre>${escapeHtml(candidate.insertionText)}</pre></details>
     </article>`;
   }
 
-  function renderDataExplorer({ index, filteredCandidates, filteredCandidateCount, page, pageCount, selectedIds, query, category }) {
+  function renderDataExplorer({ index, filteredCandidates, filteredCandidateCount, page, pageCount, selectedIds, query, category, openLabTrendId }) {
     const labOnly = category === "labs";
-    const pagination = pageCount > 1
-      ? `<nav class="review-data-pagination" aria-label="${labOnly ? "Laboratory panel" : "Clinical data"} pages"><button type="button" class="icon-button" data-action="review-data-page" data-direction="-1" aria-label="Previous ${labOnly ? "laboratory panel" : "clinical data page"}" ${page <= 0 ? "disabled" : ""}>←</button><output>${labOnly ? "Lab set" : "Page"} ${page + 1} of ${pageCount}</output><button type="button" class="icon-button" data-action="review-data-page" data-direction="1" aria-label="Next ${labOnly ? "laboratory panel" : "clinical data page"}" ${page >= pageCount - 1 ? "disabled" : ""}>→</button></nav>`
+    const pagination = pageCount > 1 && !labOnly
+      ? `<nav class="review-data-pagination" aria-label="Clinical data pages"><button type="button" class="icon-button" data-action="review-data-page" data-direction="-1" aria-label="Previous clinical data page" ${page <= 0 ? "disabled" : ""}>←</button><output>Page ${page + 1} of ${pageCount}</output><button type="button" class="icon-button" data-action="review-data-page" data-direction="1" aria-label="Next clinical data page" ${page >= pageCount - 1 ? "disabled" : ""}>→</button></nav>`
       : "";
     return `<section class="review-data-panel panel" aria-labelledby="reviewDataHeading">
       <div class="section-heading"><div><h2 id="reviewDataHeading">Clinical data</h2><p class="muted">Saved source data and calculated summaries stay distinct. Check only what belongs in this note.</p></div></div>
       <div class="review-filter-row">
-        <label>Search all results<input type="search" id="reviewDataSearch" value="${escapeHtml(query)}" placeholder="WBC, ceftriaxone, CT Head…" autocomplete="off"></label>
+        <label>Search patient data<input type="search" id="reviewDataSearch" value="${escapeHtml(query)}" placeholder="${labOnly ? "WBC, CBC, metabolic panel…" : "WBC, ceftriaxone, CT Head…"}" autocomplete="off"></label>
         <label>Show<select id="reviewDataCategory"><option value="all">All clinical data</option>${index.groups.map((group) => `<option value="${escapeHtml(group.id)}" ${category === group.id ? "selected" : ""}>${escapeHtml(group.label)} (${group.candidates.length})</option>`).join("")}</select></label>
       </div>
-      <p class="review-filter-summary" aria-live="polite">${filteredCandidateCount} matching item${filteredCandidateCount === 1 ? "" : "s"}</p>
+      <p class="review-filter-summary ${labOnly ? "review-filter-summary--lab" : ""}" aria-live="polite">${filteredCandidateCount} ${labOnly ? `lab set${filteredCandidateCount === 1 ? "" : "s"}` : `matching item${filteredCandidateCount === 1 ? "" : "s"}`}</p>
       <div class="review-pagination-slot">${pagination}</div>
-      <div class="review-data-list">${filteredCandidates.length ? filteredCandidates.map((candidate) => renderCandidate(candidate, selectedIds)).join("") : `<div class="empty-state">No saved clinical data match this search.</div>`}</div>
+      <div class="review-data-list">${filteredCandidates.length ? filteredCandidates.map((candidate) => renderCandidate(candidate, selectedIds, { labNavigation: labOnly ? { page, pageCount } : null, openLabTrendId })).join("") : `<div class="empty-state">No saved clinical data match this search.</div>`}</div>
     </section>`;
   }
 
@@ -139,7 +188,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     </section>`;
   }
 
-  function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, filteredCandidates, filteredCandidateCount, page, pageCount, query, category, draft, guidanceFor, differenceSelectionId, finalNote, patientRequiredMessage }) {
+  function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, filteredCandidates, filteredCandidateCount, page, pageCount, query, category, openLabTrendId, draft, guidanceFor, differenceSelectionId, finalNote, patientRequiredMessage }) {
     if (!draft) return patientRequiredMessage;
     const selectedIds = new Set((draft.objective?.selectedBlocks || []).map((block) => block.selectionId));
     return `<div class="review-workspace">
@@ -147,7 +196,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         <div><span class="eyebrow">${escapeHtml(patientLabel)}</span><h1 id="review-heading">Review Data / Draft Note</h1><p class="review-one-liner ${oneLiner ? "" : "is-empty"}">${escapeHtml(oneLiner || "One-liner not entered yet. You can continue and add it in the draft.")}</p></div>
         <label>Note packet<select id="reviewPacketSelect">${packets.map((packet) => `<option value="${escapeHtml(packet.id)}" ${packet.id === selectedPacketId ? "selected" : ""}>${escapeHtml(packet.label)}</option>`).join("")}</select></label>
       </header>
-      <div class="review-columns">${renderDataExplorer({ index, filteredCandidates, filteredCandidateCount, page, pageCount, selectedIds, query, category })}${renderDraft({ draft, guidanceFor, differenceSelectionId, finalNote })}</div>
+      <div class="review-columns">${renderDataExplorer({ index, filteredCandidates, filteredCandidateCount, page, pageCount, selectedIds, query, category, openLabTrendId })}${renderDraft({ draft, guidanceFor, differenceSelectionId, finalNote })}</div>
     </div>`;
   }
 

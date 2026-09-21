@@ -146,6 +146,7 @@ assert.ok(index.labs.every((candidate) => candidate.kind === "laboratory_panel")
 const wbcResults = laboratoryResults(index, "WBC");
 assert.deepEqual(wbcResults.map(({ value }) => value), ["15.2", "12.0", "8.8"], "laboratory sets must remain chronological across days even when day input is not");
 assert.deepEqual(wbcResults.map(({ status }) => status), ["high", "high", "normal"]);
+assert.deepEqual(wbcResults.at(-1).trend.map(({ value }) => value), ["15.2", "12.0", "8.8"], "every lab row must carry its chronological series for on-demand trend display");
 assert.match(wbcResults.at(-1).panel.insertionText, /Laboratory results[\s\S]*WBC: 8\.8 K\/uL/);
 
 const glucoseResults = laboratoryResults(index, "Glucose");

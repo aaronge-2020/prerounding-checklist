@@ -2258,29 +2258,195 @@ button.var-fill:focus-visible {
 }
 
 .review-lab-table-wrap {
-  margin-top: 12px;
   overflow-x: auto;
 }
 
 .review-lab-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.82rem;
+  font-size: 0.86rem;
 }
 
 .review-lab-table th,
 .review-lab-table td {
   border-bottom: 1px solid var(--border);
-  padding: 7px 8px;
+  padding: 10px 16px;
   text-align: left;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 .review-lab-table thead th {
+  background: color-mix(in srgb, var(--subtle-panel, #f4f3ef) 72%, var(--panel));
   color: var(--muted);
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.review-data-item--lab {
+  overflow: hidden;
+  border-radius: 14px;
+  padding: 0;
+}
+
+.review-data-item--lab.is-selected {
+  box-shadow: inset 4px 0 0 var(--accent);
+}
+
+.review-lab-panel-header {
+  display: grid;
+  grid-template-columns: auto minmax(140px, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px;
+}
+
+.review-lab-selection {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.review-lab-selection input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.review-lab-panel-identity {
+  min-width: 0;
+}
+
+.review-lab-title-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.review-lab-title-line h3,
+.review-lab-trend-heading h4 {
+  margin: 0;
+  color: var(--ink);
+}
+
+.review-lab-title-line h3 {
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.review-lab-panel-identity p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.review-lab-abnormal-count,
+.review-lab-normal-count {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.review-lab-abnormal-count {
+  background: color-mix(in srgb, var(--danger, #a33) 10%, var(--panel));
+  color: var(--danger, #a33);
+}
+
+.review-lab-normal-count {
+  background: color-mix(in srgb, var(--accent) 8%, var(--panel));
+  color: var(--muted);
+}
+
+.review-lab-panel-navigation {
+  display: grid;
+  grid-template-columns: auto minmax(7.5rem, auto) auto;
+  align-items: center;
+  gap: 7px;
+}
+
+.review-lab-panel-navigation output {
+  color: var(--muted);
+  font-size: 0.76rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.review-lab-panel-navigation .icon-button {
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+}
+
+.review-lab-result-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 32px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 650;
+  padding: 0;
+  text-align: left;
+}
+
+.review-lab-result-button span {
+  display: inline-block;
+  color: var(--muted);
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: transform 140ms ease;
+}
+
+.review-lab-table tr.is-trend-open .review-lab-result-button span {
+  color: var(--accent);
+  transform: rotate(90deg);
+}
+
+.review-lab-table tbody tr:hover,
+.review-lab-table tbody tr.is-trend-open {
+  background: color-mix(in srgb, var(--accent) 5%, var(--panel));
+}
+
+.review-lab-table tbody tr {
+  cursor: pointer;
+}
+
+.review-lab-table tbody tr:last-child th,
+.review-lab-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.review-lab-table td:nth-child(2) {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+
+.review-lab-flag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  margin-left: 4px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--danger, #a33) 10%, var(--panel));
+  color: inherit;
+  font-size: 0.66rem;
+  font-weight: 800;
+  padding: 1px 5px;
 }
 
 .review-lab-table tbody tr[data-clinical-emphasis="high"] td:nth-child(2),
@@ -2288,6 +2454,134 @@ button.var-fill:focus-visible {
 .review-lab-table tbody tr[data-clinical-emphasis="abnormal"] td:nth-child(2) {
   color: var(--danger, #a33);
   font-weight: 700;
+}
+
+.review-lab-trend-drawer {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  background: color-mix(in srgb, var(--accent) 4%, var(--panel));
+  padding: 16px;
+}
+
+.review-lab-trend-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.review-lab-trend-heading .eyebrow {
+  font-size: 0.64rem;
+}
+
+.review-lab-trend-heading h4 {
+  margin-top: 2px;
+  font-size: 0.96rem;
+}
+
+.review-lab-trend-chart {
+  width: 100%;
+  height: 112px;
+  overflow: visible;
+}
+
+.review-lab-trend-chart line {
+  stroke: color-mix(in srgb, var(--border) 72%, transparent);
+  stroke-width: 1;
+}
+
+.review-lab-trend-chart polyline {
+  fill: none;
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.review-lab-trend-chart circle {
+  fill: var(--panel);
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.review-lab-trend-message {
+  margin: 0;
+  font-size: 0.78rem;
+}
+
+.review-lab-trend-values {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.review-lab-trend-values li {
+  display: grid;
+  gap: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 8px 10px;
+}
+
+.review-lab-trend-values strong {
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.review-lab-trend-values span {
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+
+.review-lab-trend-values li[data-clinical-emphasis="high"] strong,
+.review-lab-trend-values li[data-clinical-emphasis="low"] strong,
+.review-lab-trend-values li[data-clinical-emphasis="abnormal"] strong {
+  color: var(--danger, #a33);
+}
+
+.review-lab-note-preview {
+  border-top: 1px solid var(--border);
+  padding: 11px 16px 13px;
+}
+
+.review-lab-note-preview summary {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.review-lab-note-preview pre {
+  margin: 10px 0 0;
+}
+
+@media (max-width: 680px) {
+  .review-lab-panel-header {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .review-lab-panel-navigation {
+    grid-column: 1 / -1;
+    justify-content: center;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+  }
+
+  .review-lab-table th,
+  .review-lab-table td {
+    min-width: 110px;
+    padding: 9px 12px;
+  }
+
+  .review-lab-table th:first-child {
+    min-width: 150px;
+  }
 }
 
 .review-result-text {

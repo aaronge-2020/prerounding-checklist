@@ -5,7 +5,7 @@ import {
   removeDay,
   sortDays,
   upsertDay
-} from "../daily-updates/days.js?v=20260921-lab-panel-sets";
+} from "../daily-updates/days.js?v=20260921-lab-panel-ui";
 import {
   activePatient,
   archivePatient,
@@ -16,7 +16,7 @@ import {
   setWorkupOverride,
   setWorkupOverrides,
   updateActivePatient
-} from "../app/state/vault.js?v=20260921-lab-panel-sets";
+} from "../app/state/vault.js?v=20260921-lab-panel-ui";
 import {
   deleteEncryptedVaultRecord,
   downloadJson, downloadText,
@@ -24,7 +24,7 @@ import {
   readEncryptedVaultRecord,
   saveEncryptedVault,
   writeEncryptedVaultRecord
-} from "../app/state/persistence.js?v=20260921-lab-panel-sets";
+} from "../app/state/persistence.js?v=20260921-lab-panel-ui";
 import {
   authorizeWorkupWorkspaceMirror,
   disconnectWorkupWorkspaceMirror,
@@ -36,7 +36,7 @@ import {
   reorderSections,
   reorderSectionsById,
   replaceSectionsFromFormAsync
-} from "../patient-context/sections.js?v=20260921-lab-panel-sets";
+} from "../patient-context/sections.js?v=20260921-lab-panel-ui";
 import {
   createEphemeralRedactionReview,
   refreshEphemeralRedactionReview,
@@ -59,13 +59,13 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../patient-context/deid-client.js?v=20260921-lab-panel-sets";
+} from "../patient-context/deid-client.js?v=20260921-lab-panel-ui";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../patient-context/deid-model-options.js?v=20260921-lab-panel-sets";
+} from "../patient-context/deid-model-options.js?v=20260921-lab-panel-ui";
 import {
   canAutomaticallyInstallModel,
   ensureModelPackServiceWorker,
@@ -77,13 +77,13 @@ import {
   modelFilesFromInput,
   removeModelPack,
   requestPersistentModelStorage
-} from "../patient-context/model-pack-storage.js?v=20260921-lab-panel-sets";
+} from "../patient-context/model-pack-storage.js?v=20260921-lab-panel-ui";
 import {
   formatBytes,
   hasAutomaticModelDownload,
   isInstallableModel,
   modelDownloadBytes
-} from "../patient-context/model-packs.js?v=20260921-lab-panel-sets";
+} from "../patient-context/model-packs.js?v=20260921-lab-panel-ui";
 import {
   ADMISSION_PSEUDO_DAY_ID,
   buildPromptPreviewSegments,
@@ -94,13 +94,13 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides, studentNoteForPrompt
-} from "../prompts/custom-templates.js?v=20260921-lab-panel-sets";
+} from "../prompts/custom-templates.js?v=20260921-lab-panel-ui";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import {
   DEFAULT_DAILY_SOURCE_KIND,
   admissionSourceKindOptions
-} from "../patient-context/source-captures.js?v=20260921-lab-panel-sets";
-import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260921-lab-panel-sets";
+} from "../patient-context/source-captures.js?v=20260921-lab-panel-ui";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260921-lab-panel-ui";
 import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260910-pre-op-prep";
 import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260910-pre-op-prep";
 import {
@@ -127,8 +127,8 @@ import {
   workupFromEditorDraft,
   workupThoroughnessOption
 } from "../workups/editor.js?v=20260821-etiology-checklist";
-import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260921-lab-panel-sets";
-import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260921-lab-panel-sets";
+import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260921-lab-panel-ui";
+import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260921-lab-panel-ui";
 import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260815-standalone-ap";
 import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20260711-functional-remediation-15";
 import {
@@ -150,42 +150,42 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260921-lab-panel-sets";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260921-lab-panel-sets";
-import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-lab-panel-sets";
-import { createReviewPresentation } from "./review/presentation.js?v=20260921-lab-panel-sets";
-import { createReviewController } from "./review/controller.js?v=20260921-lab-panel-sets";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260921-lab-panel-ui";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260921-lab-panel-ui";
+import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-lab-panel-ui";
+import { createReviewPresentation } from "./review/presentation.js?v=20260921-lab-panel-ui";
+import { createReviewController } from "./review/controller.js?v=20260921-lab-panel-ui";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
-import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260921-lab-panel-sets";
+import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260921-lab-panel-ui";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
-import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260921-lab-panel-sets";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-lab-panel-sets";
+import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260921-lab-panel-ui";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-lab-panel-ui";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260921-lab-panel-sets";
+} from "./prompts/controller.js?v=20260921-lab-panel-ui";
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260910-guideline-pagination";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
-import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-lab-panel-sets";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-lab-panel-sets";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-lab-panel-sets";
+import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-lab-panel-ui";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-lab-panel-ui";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-lab-panel-ui";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
   createRedactionPresentation,
   redactionPosition,
   warningDescription,
   warningSnippet
-} from "./redaction/presentation.js?v=20260921-lab-panel-sets";
+} from "./redaction/presentation.js?v=20260921-lab-panel-ui";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
-import { createDemoController } from "./demo/controller.js?v=20260921-lab-panel-sets";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-lab-panel-sets";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-lab-panel-sets";
+import { createDemoController } from "./demo/controller.js?v=20260921-lab-panel-ui";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-lab-panel-ui";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-lab-panel-ui";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
   vault: null,
@@ -238,7 +238,7 @@ const app = {
   sectionEditingKeys: new Set(),
   pendingSectionReviewFocus: null,
   structuredNoteDrafts: new Map(), noteDraftSessions: new Map(),
-  reviewPacketId: "admission", reviewSearchQuery: "", reviewCategory: "all", reviewPage: 0, reviewDifferenceSelectionId: "",
+  reviewPacketId: "admission", reviewSearchQuery: "", reviewCategory: "all", reviewPage: 0, reviewOpenLabTrendId: "", reviewDifferenceSelectionId: "",
   dailySourceKind: DEFAULT_DAILY_SOURCE_KIND,
   dailySourceDraft: "",
   dailySourceParse: null,
@@ -894,7 +894,7 @@ function clearPatientScopedSession() {
   app.sectionEditingKeys.clear();
   app.pendingSectionReviewFocus = null;
   app.structuredNoteDrafts.clear(); app.noteDraftSessions.clear();
-  Object.assign(app, { reviewPacketId: "admission", reviewSearchQuery: "", reviewCategory: "all", reviewPage: 0, reviewDifferenceSelectionId: "" });
+  Object.assign(app, { reviewPacketId: "admission", reviewSearchQuery: "", reviewCategory: "all", reviewPage: 0, reviewOpenLabTrendId: "", reviewDifferenceSelectionId: "" });
   app.dailySourceKind = DEFAULT_DAILY_SOURCE_KIND;
   app.dailySourceDraft = "";
   app.dailySourceParse = null;

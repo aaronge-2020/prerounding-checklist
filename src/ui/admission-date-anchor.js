@@ -1,4 +1,4 @@
-import { updateActivePatient } from "../app/state/vault.js?v=20260921-lab-panel-sets";
+import { updateActivePatient } from "../app/state/vault.js?v=20260921-lab-panel-ui";
 
 export function createAdmissionDateAnchor({ state, active, sortDays }) {
   function restore() {

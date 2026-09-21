@@ -1,6 +1,6 @@
-import { createLocalId, normalizeDay, timestampNow } from "../app/state/vault.js?v=20260921-lab-panel-sets";
-import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-lab-panel-sets";
-import { renderFinalNote } from "../note-drafts/index.js?v=20260921-lab-panel-sets";
+import { createLocalId, normalizeDay, timestampNow } from "../app/state/vault.js?v=20260921-lab-panel-ui";
+import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-lab-panel-ui";
+import { renderFinalNote } from "../note-drafts/index.js?v=20260921-lab-panel-ui";
 
 export function localCalendarDate(value = new Date()) {
   const date = value instanceof Date ? value : new Date(value);

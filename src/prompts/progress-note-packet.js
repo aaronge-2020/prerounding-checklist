@@ -1,8 +1,8 @@
 import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
 import { isCarryForwardContextRole, packetRoleFor, packetRoleLabel, packetRolesForScope } from "../patient-context/packet-roles.js";
-import { dailySourceKindLabel, sourceCapturePacketCheck } from "../patient-context/source-captures.js?v=20260921-lab-panel-sets";
+import { dailySourceKindLabel, sourceCapturePacketCheck } from "../patient-context/source-captures.js?v=20260921-lab-panel-ui";
 import { naturalLanguagePrompt } from "./natural-language.js";
-import { renderFinalNote } from "../note-drafts/index.js?v=20260921-lab-panel-sets";
+import { renderFinalNote } from "../note-drafts/index.js?v=20260921-lab-panel-ui";
 
 function compactText(value) {
   return String(value || "").trim();

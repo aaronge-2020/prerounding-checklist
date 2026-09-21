@@ -95,6 +95,10 @@ try {
     fragmentedCell("09/19/26 06:00"),
     fragmentedCell("WBC4.0 - 10.0 10\\*3/uL"),
     fragmentedCell("**15.2 (H)**"),
+    fragmentedCell("Hemoglobin11.2 - 15.7 g/dL"),
+    fragmentedCell("**10.1 (L)**"),
+    fragmentedCell("Platelets182 - 369 10\\*3/uL"),
+    fragmentedCell("242"),
     fragmentedCell("Creatinine0.5 - 1.0 mg/dL"),
     fragmentedCell("**1.4 (H)**"),
     fragmentedCell("Sodium136 - 145 mmol/L"),
@@ -186,10 +190,20 @@ Sodium: 138`;
   assert.match((await noteDownload).suggestedFilename(), /progress-note\.txt$/);
   await page.selectOption("#reviewDataCategory", "labs");
   assert.equal(await page.locator("[data-review-candidate]").count(), 1, "the Labs filter must show one timestamped laboratory panel at a time");
-  assert.match(await page.locator(".review-data-pagination output").innerText(), /Lab set 1 of 3/);
+  assert.equal(await page.locator(".review-data-pagination").count(), 0, "laboratory navigation belongs inside the panel card");
+  assert.match(await page.locator(".review-lab-panel-navigation output").innerText(), /Set 1 of 3/);
+  assert.equal(await page.locator(".review-lab-table tbody tr").count(), 2, "a complete metabolic panel must be displayed together");
   await page.click('[data-action="review-data-page"][data-direction="1"]');
   assert.equal(await page.locator("[data-review-candidate]").count(), 1);
-  assert.match(await page.locator(".review-data-pagination output").innerText(), /Lab set 2 of 3/);
+  assert.match(await page.locator(".review-lab-panel-navigation output").innerText(), /CBC · Set 2 of 3/);
+  assert.equal(await page.locator(".review-lab-table tbody tr").count(), 3, "CBC analytes must remain grouped in one panel");
+  assert.match(await page.locator(".review-lab-table").innerText(), /WBC[\s\S]*Hemoglobin[\s\S]*Platelets/);
+  await page.getByRole("button", { name: "WBC", exact: true }).click();
+  assert.equal(await page.locator(".review-lab-trend-drawer").count(), 1, "clicking a lab must expand its trend inline");
+  assert.match(await page.locator(".review-lab-trend-values").innerText(), /15\.2[\s\S]*8\.8/);
+  assert.equal(await page.locator(".review-lab-trend-chart").count(), 1, "numeric longitudinal results must be graphed");
+  await page.locator(".review-lab-trend-heading").getByRole("button", { name: /collapse/i }).click();
+  assert.equal(await page.locator(".review-lab-trend-drawer").count(), 0, "the lab trend must collapse without leaving the panel");
   await page.selectOption("#reviewDataCategory", "all");
   assert.equal(await page.locator(".review-data-pagination").isVisible(), true);
   await page.click('[data-action="review-data-page"][data-direction="1"]');

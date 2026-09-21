@@ -1,6 +1,6 @@
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-lab-panel-sets";
-import { clearOpenEvidenceExamNote, latestDay, saveOpenEvidenceExamNote, upsertDay } from "../../daily-updates/days.js?v=20260921-lab-panel-sets";
-import { createSourceCapture } from "../../patient-context/source-captures.js?v=20260921-lab-panel-sets";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-lab-panel-ui";
+import { clearOpenEvidenceExamNote, latestDay, saveOpenEvidenceExamNote, upsertDay } from "../../daily-updates/days.js?v=20260921-lab-panel-ui";
+import { createSourceCapture } from "../../patient-context/source-captures.js?v=20260921-lab-panel-ui";
 import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js";
 
 export function createExamFindingsController({ state, active, persistVault, setStatus }) {

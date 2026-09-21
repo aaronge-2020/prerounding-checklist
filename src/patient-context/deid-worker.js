@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20260921-lab-panel-sets";
+} from "./deid-service.js?v=20260921-lab-panel-ui";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });

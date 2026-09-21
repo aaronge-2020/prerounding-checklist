@@ -1,6 +1,6 @@
-import { sortDays } from "../../daily-updates/days.js?v=20260921-lab-panel-sets";
-import { updateActivePatient } from "../../app/state/vault.js?v=20260921-lab-panel-sets";
-import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260921-lab-panel-sets";
+import { sortDays } from "../../daily-updates/days.js?v=20260921-lab-panel-ui";
+import { updateActivePatient } from "../../app/state/vault.js?v=20260921-lab-panel-ui";
+import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260921-lab-panel-ui";
 import {
   addDifferential,
   addPlanProblem,
@@ -31,7 +31,7 @@ import {
   updateManualObjective,
   updateNoteSection,
   updatePlanProblem
-} from "../../note-drafts/index.js?v=20260921-lab-panel-sets";
+} from "../../note-drafts/index.js?v=20260921-lab-panel-ui";
 
 const REVIEW_PAGE_SIZE = 8;
 
@@ -163,6 +163,7 @@ export function createReviewController(deps) {
           pageCount: current.pageCount,
           query: deps.app.reviewSearchQuery,
           category: deps.app.reviewCategory,
+          openLabTrendId: deps.app.reviewOpenLabTrendId,
           draft: current.draft,
           guidanceFor: (sectionId) => studentGuidance(current.draft.noteType, sectionId),
           differenceSelectionId: deps.app.reviewDifferenceSelectionId,
@@ -177,6 +178,7 @@ export function createReviewController(deps) {
     deps.app.reviewSearchQuery = "";
     deps.app.reviewCategory = "all";
     deps.app.reviewPage = 0;
+    deps.app.reviewOpenLabTrendId = "";
   }
 
   function open(selectedPacketId = "admission") {
@@ -216,6 +218,7 @@ export function createReviewController(deps) {
       deps.app.reviewPacketId = target.value || "admission";
       deps.app.reviewPage = 0;
       deps.app.reviewDifferenceSelectionId = "";
+      deps.app.reviewOpenLabTrendId = "";
       deps.render();
       return true;
     }
@@ -227,6 +230,7 @@ export function createReviewController(deps) {
     if (target.id === "reviewDataCategory") {
       deps.app.reviewCategory = target.value || "all";
       deps.app.reviewPage = 0;
+      deps.app.reviewOpenLabTrendId = "";
       render();
       return true;
     }
@@ -253,6 +257,7 @@ export function createReviewController(deps) {
     if (target.id === "reviewDataSearch") {
       deps.app.reviewSearchQuery = target.value;
       deps.app.reviewPage = 0;
+      deps.app.reviewOpenLabTrendId = "";
       const current = model();
       const group = deps.app.reviewCategory === "all" ? "" : deps.app.reviewCategory;
       const matchingCandidates = filterClinicalReviewCandidates(current.index, deps.app.reviewSearchQuery, { group });
@@ -277,6 +282,7 @@ export function createReviewController(deps) {
           pageCount,
           query: deps.app.reviewSearchQuery,
           category: deps.app.reviewCategory,
+          openLabTrendId: deps.app.reviewOpenLabTrendId,
           draft: current.draft,
           guidanceFor: (sectionId) => studentGuidance(current.draft.noteType, sectionId),
           differenceSelectionId: deps.app.reviewDifferenceSelectionId,
@@ -337,6 +343,12 @@ export function createReviewController(deps) {
     }
     if (action === "review-data-page") {
       deps.app.reviewPage = Math.min(Math.max(0, current.page + Number(button.dataset.direction || 0)), current.pageCount - 1);
+      deps.app.reviewOpenLabTrendId = "";
+      render();
+      return true;
+    }
+    if (action === "toggle-lab-trend") {
+      deps.app.reviewOpenLabTrendId = deps.app.reviewOpenLabTrendId === button.dataset.labResultId ? "" : button.dataset.labResultId;
       render();
       return true;
     }

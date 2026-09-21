@@ -1,6 +1,6 @@
 import { sanitizeResidualWarningMetadata } from "./review.js";
 import { naturalLanguagePrompt } from "../prompts/natural-language.js";
-import { evaluatePacketCompleteness } from "../daily-updates/packet-completeness.js?v=20260921-lab-panel-sets";
+import { evaluatePacketCompleteness } from "../daily-updates/packet-completeness.js?v=20260921-lab-panel-ui";
 
 const sourceKinds = [
   ["primary_note", "Primary team note", "The latest primary-team note or interval update copied from Epic."],
