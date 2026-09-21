@@ -65,9 +65,9 @@ export function createDemoSessionController({
     app.checklistSearchQuery = "";
     app.workupCatalogQuery = "";
     app.workupCatalogOpen = true;
-    app.admissionSourceKind = "primary_note";
+    app.admissionSourceKind = "other_chart_text";
     app.admissionSourceDraft = DEMO_CONTEXT_TEXTS.join("\n\n");
-    app.dailySourceKind = "primary_note";
+    app.dailySourceKind = "other_chart_text";
     app.dailySourceDraft = DEMO_DAILY_TEXTS.join("\n\n");
     clearPhiReviews();
     clearQuickDeidSession();

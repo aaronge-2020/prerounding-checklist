@@ -1,9 +1,10 @@
 import { normalizeUserPreferences } from "../preferences.js";
 import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js";
 import { CONTEXT_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRoleLabel } from "../../patient-context/packet-roles.js";
-import { migrateLegacyDailySections, normalizeSourceCapture, normalizeSourceKindForScope } from "../../patient-context/source-captures.js?v=20260921-clinical-navigation";
+import { migrateLegacyDailySections, normalizeDiagnosticResultCategory, normalizeSourceCapture, normalizeSourceKindForScope } from "../../patient-context/source-captures.js?v=20260921-checklist-note-export";
+import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260921-checklist-note-export";
 
-export const VAULT_SCHEMA_VERSION = 3;
+export const VAULT_SCHEMA_VERSION = 4;
 
 export const DEFAULT_CONTEXT_SECTION_LABELS = CONTEXT_PACKET_ROLES.map(({ label }) => label);
 
@@ -29,13 +30,17 @@ export function createEmptyVaultState({ now = timestampNow } = {}) {
   };
 }
 
-export function createTextSection(label, { id = createLocalId("section"), text = "", role = "", scope = "context", sourceKind = "other_chart_text", now = timestampNow } = {}) {
+export function createTextSection(label, { id = createLocalId("section"), text = "", role = "", scope = "context", sourceKind = "other_chart_text", resultCategory = "", resultDate = "", resultContext = "", now = timestampNow } = {}) {
   const timestamp = now();
+  const normalizedSourceKind = normalizeSourceKindForScope(scope, sourceKind);
   return {
     id,
     label: String(label || "Section").trim() || "Section",
     role: normalizePacketRole(scope, role, label),
-    sourceKind: normalizeSourceKindForScope(scope, sourceKind),
+    sourceKind: normalizedSourceKind,
+    resultCategory: normalizedSourceKind === "results" ? normalizeDiagnosticResultCategory(resultCategory) : "",
+    resultDate: normalizedSourceKind === "results" ? String(resultDate || "") : "",
+    resultContext: normalizedSourceKind === "results" ? String(resultContext || "") : "",
     deidentifiedText: String(text || ""),
     residualWarnings: [],
     createdAt: timestamp,
@@ -73,11 +78,15 @@ export function createPatientRecord(
 
 export function normalizeSection(section, fallbackLabel = "Section", { now = timestampNow, scope = "context", index = 0 } = {}) {
   const timestamp = now();
+  const sourceKind = normalizeSourceKindForScope(scope, section?.sourceKind);
   return {
     id: String(section?.id || createLocalId("section")),
     label: String(section?.label || fallbackLabel).trim() || fallbackLabel,
     role: normalizePacketRole(scope, section?.role, section?.label || fallbackLabel, index),
-    sourceKind: normalizeSourceKindForScope(scope, section?.sourceKind),
+    sourceKind,
+    resultCategory: sourceKind === "results" ? normalizeDiagnosticResultCategory(section?.resultCategory) : "",
+    resultDate: sourceKind === "results" ? String(section?.resultDate || "") : "",
+    resultContext: sourceKind === "results" ? String(section?.resultContext || "") : "",
     deidentifiedText: String(section?.deidentifiedText || ""),
     residualWarnings: sanitizeResidualWarningMetadata(Array.isArray(section?.residualWarnings) ? section.residualWarnings : []),
     createdAt: String(section?.createdAt || timestamp),
@@ -96,6 +105,7 @@ export function normalizeDay(day, index = 0, { now = timestampNow } = {}) {
     date: String(day?.date || fallbackDate),
     label: String(day?.label || `Hospital day ${index + 1}`).trim() || `Hospital day ${index + 1}`,
     sourceCaptures,
+    primaryTeamNote: normalizeOptionalNoteDraft(day?.primaryTeamNote, NOTE_TYPES.PROGRESS, { now }),
     checklistSnapshot: day?.checklistSnapshot || null,
     answers: day?.answers && typeof day.answers === "object" ? day.answers : {},
     quickNotes: Array.isArray(day?.quickNotes) ? day.quickNotes : [],
@@ -116,18 +126,50 @@ export function normalizeDay(day, index = 0, { now = timestampNow } = {}) {
   };
 }
 
+function normalizeOptionalNoteDraft(value, noteType, { now = timestampNow, patientId = "", hospitalDayId = "" } = {}) {
+  if (!value || typeof value !== "object") return null;
+  return normalizeNoteDraft({ ...value, noteType, patientId: value.patientId || patientId, hospitalDayId: value.hospitalDayId || hospitalDayId }, { now });
+}
+
+function normalizeSavedNoteDrafts(value, patient, { now = timestampNow } = {}) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  return Object.fromEntries(
+    Object.entries(value)
+      .filter(([key, draft]) => key && draft && typeof draft === "object")
+      .map(([key, draft]) => [
+        key,
+        normalizeNoteDraft({
+          ...draft,
+          noteType: key === "admission" ? NOTE_TYPES.H_AND_P : NOTE_TYPES.PROGRESS,
+          patientId: draft.patientId || patient?.id || "",
+          hospitalDayId: key === "admission" ? "" : (draft.hospitalDayId || key)
+        }, { now })
+      ])
+  );
+}
+
 export function normalizePatient(patient, index = 0, { now = timestampNow } = {}) {
   const timestamp = now();
   const labels = DEFAULT_CONTEXT_SECTION_LABELS;
   const contextSections = Array.isArray(patient?.contextSections) && patient.contextSections.length
     ? patient.contextSections.map((section, sectionIndex) => normalizeSection(section, labels[sectionIndex] || packetRoleLabel("context", defaultPacketRole("context", sectionIndex), "Context"), { now, scope: "context", index: sectionIndex }))
     : createDefaultSections(labels, { now, scope: "context" });
+  const id = String(patient?.id || createLocalId("patient"));
   return {
-    id: String(patient?.id || createLocalId("patient")),
+    id,
     displayLabel: String(patient?.displayLabel || patient?.label || `Patient ${index + 1}`).trim() || `Patient ${index + 1}`,
     metadata: patient?.metadata && typeof patient.metadata === "object" ? { ...patient.metadata } : {},
     contextSections,
-    days: Array.isArray(patient?.days) ? patient.days.map((day, dayIndex) => normalizeDay(day, dayIndex, { now })) : [],
+    admissionPrimaryTeamNote: normalizeOptionalNoteDraft(patient?.admissionPrimaryTeamNote, NOTE_TYPES.H_AND_P, { now, patientId: id }),
+    noteDrafts: normalizeSavedNoteDrafts(patient?.noteDrafts, { ...patient, id }, { now }),
+    days: Array.isArray(patient?.days)
+      ? patient.days.map((day, dayIndex) => {
+          const normalized = normalizeDay(day, dayIndex, { now });
+          return normalized.primaryTeamNote
+            ? { ...normalized, primaryTeamNote: normalizeOptionalNoteDraft(normalized.primaryTeamNote, NOTE_TYPES.PROGRESS, { now, patientId: id, hospitalDayId: normalized.id }) }
+            : normalized;
+        })
+      : [],
     archivedAt: String(patient?.archivedAt || ""),
     createdAt: String(patient?.createdAt || timestamp),
     updatedAt: String(patient?.updatedAt || patient?.createdAt || timestamp)

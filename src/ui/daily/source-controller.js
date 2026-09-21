@@ -1,9 +1,9 @@
-import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-clinical-navigation";
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-clinical-navigation";
+import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-checklist-note-export";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-checklist-note-export";
 import {
   parseClinicalExport,
   prepareClinicalExportForSave
-} from "../../patient-context/clinical-export-parser.js?v=20260921-clinical-navigation";
+} from "../../patient-context/clinical-export-parser.js?v=20260921-checklist-note-export";
 import {
   createEphemeralRedactionReview,
   reviewKey,
@@ -16,9 +16,68 @@ import {
   dailySourceKindOptions,
   replaceSourceCapturesFromFormAsync,
   sourceCapturePacketCheck
-} from "../../patient-context/source-captures.js?v=20260921-clinical-navigation";
+} from "../../patient-context/source-captures.js?v=20260921-checklist-note-export";
+import { createNoteDraft, fieldsForNoteType, NOTE_TYPES, updateNoteSection } from "../../note-drafts/index.js?v=20260921-checklist-note-export";
 
 export function createDailySourceController(deps) {
+  function structuredNoteKey(scope) {
+    return scope === "admission" ? "admission" : deps.selectedChecklistDay(deps.active())?.id || "";
+  }
+
+  function updateStructuredNoteDraft(scope, fieldId, value) {
+    const key = structuredNoteKey(scope);
+    if (!key) return;
+    const current = deps.app.structuredNoteDrafts.get(key) || {};
+    deps.app.structuredNoteDrafts.set(key, { ...current, [fieldId]: String(value || "") });
+  }
+
+  async function saveStructuredPrimaryNote(scope) {
+    const patient = deps.active();
+    const day = scope === "admission" ? null : deps.selectedChecklistDay(patient);
+    if (!patient) throw new Error("Select a patient first.");
+    if (scope !== "admission" && !day) throw new Error("Add a hospital day first.");
+    const noteType = scope === "admission" ? NOTE_TYPES.H_AND_P : NOTE_TYPES.PROGRESS;
+    const key = structuredNoteKey(scope);
+    const existing = scope === "admission" ? patient.admissionPrimaryTeamNote : day.primaryTeamNote;
+    const draftValues = deps.app.structuredNoteDrafts.get(key) || {};
+    let note = existing || createNoteDraft(noteType, {
+      patientId: patient.id,
+      hospitalDayId: day?.id || ""
+    });
+    deps.updateDeidOperation({ active: true, message: "De-identifying structured note sections locally…", value: 0, total: fieldsForNoteType(noteType).length });
+    try {
+      await deps.ensureSelectedDeidReady();
+      const fields = fieldsForNoteType(noteType);
+      for (let index = 0; index < fields.length; index += 1) {
+        const field = fields[index];
+        const rawText = Object.hasOwn(draftValues, field.id)
+          ? draftValues[field.id]
+          : existing?.sections?.[field.id]?.deidentifiedText || "";
+        const result = rawText.trim()
+          ? await deps.deidentify(rawText, { referenceDate: day?.date || deps.app.admissionDate })
+          : { text: "", residualWarnings: [] };
+        note = updateNoteSection(note, field.id, {
+          deidentifiedText: result.text || "",
+          residualWarnings: result.residualWarnings || result.flags || []
+        });
+        deps.updateDeidOperation({ active: true, message: `De-identified ${index + 1} of ${fields.length} note sections locally.`, value: index + 1, total: fields.length });
+      }
+      deps.app.vault = updateActivePatient(deps.app.vault, (current) => {
+        if (scope === "admission") return { ...current, admissionPrimaryTeamNote: note };
+        const nextDay = { ...day, primaryTeamNote: note, updatedAt: new Date().toISOString() };
+        return { ...current, days: upsertDay(current.days, nextDay) };
+      });
+      deps.app.structuredNoteDrafts.delete(key);
+      await deps.persistVault(`${noteType === NOTE_TYPES.H_AND_P ? "H&P" : "Progress-note"} sections de-identified and saved locally.`);
+      deps.updateDeidOperation({ active: false, message: "Structured note saved in the encrypted vault." });
+      deps.setStatus("Structured note saved in the encrypted vault.");
+      deps.render();
+    } catch (error) {
+      deps.updateDeidOperation({ active: false, message: error instanceof Error ? error.message : "The structured note was not saved." });
+      throw error;
+    }
+  }
+
   const sourceState = (scope) =>
     scope === "admission"
       ? {
@@ -50,13 +109,16 @@ export function createDailySourceController(deps) {
     return prepared;
   }
 
-  function sourcePartsForSave(prepared, fallbackSourceKind) {
+  function sourcePartsForSave(prepared, fallbackSourceKind, resultMetadata = {}) {
     const sections = Array.isArray(prepared.parseResult.sections) ? prepared.parseResult.sections : [];
     if (sections.length) {
       return sections
         .map((section) => ({
           sourceKind: section.sourceKind || "other_chart_text",
           label: section.formatLabel || "Parsed chart source",
+          resultCategory: section.sourceKind === "results" ? resultMetadata.category : "",
+          resultDate: section.sourceKind === "results" ? resultMetadata.date : "",
+          resultContext: section.sourceKind === "results" ? resultMetadata.context : "",
           sourceText: String(section.edited ? section.outputText : section.canonicalPromptText || section.outputText || "").trim()
         }))
         .filter((section) => section.sourceText);
@@ -64,7 +126,12 @@ export function createDailySourceController(deps) {
     return prepared.sourceText
       ? [{
           sourceKind: prepared.parseResult.suggestedSourceKind || fallbackSourceKind,
-          label: prepared.parseResult.recognized ? prepared.parseResult.formatLabel : "",
+          label: (prepared.parseResult.suggestedSourceKind || fallbackSourceKind) === "results"
+            ? String(resultMetadata.label || prepared.parseResult.formatLabel || "Diagnostic result")
+            : (prepared.parseResult.recognized ? prepared.parseResult.formatLabel : ""),
+          resultCategory: (prepared.parseResult.suggestedSourceKind || fallbackSourceKind) === "results" ? resultMetadata.category : "",
+          resultDate: (prepared.parseResult.suggestedSourceKind || fallbackSourceKind) === "results" ? resultMetadata.date : "",
+          resultContext: (prepared.parseResult.suggestedSourceKind || fallbackSourceKind) === "results" ? resultMetadata.context : "",
           sourceText: prepared.sourceText
         }]
       : [];
@@ -123,6 +190,12 @@ export function createDailySourceController(deps) {
     updateDraft(scope, deps.app[state.draftKey]);
   }
 
+  function updateResultMetadata(scope, field, value) {
+    const key = scope === "admission" ? "admissionResultMetadata" : "dailyResultMetadata";
+    if (!Object.hasOwn(deps.app[key], field)) return;
+    deps.app[key] = { ...deps.app[key], [field]: String(value || "") };
+  }
+
   function updateParsedDraft(scope, value, sectionIndex = "") {
     const state = sourceState(scope);
     const parsed = deps.app[state.parseKey];
@@ -172,7 +245,10 @@ export function createDailySourceController(deps) {
       createdAt: row.dataset.createdAt,
       capturedAt: row.dataset.capturedAt,
       sourceKind: row.querySelector(".source-kind")?.value || "other_chart_text",
-      label: row.querySelector(".source-kind option:checked")?.textContent || "Other chart text",
+      label: row.querySelector("[data-saved-result-label]")?.value || row.dataset.sourceLabel || row.querySelector(".source-kind option:checked")?.textContent || "Other chart text",
+      resultCategory: row.querySelector("[data-saved-result-category]")?.value || "",
+      resultDate: row.querySelector("[data-saved-result-date]")?.value || "",
+      resultContext: row.querySelector("[data-saved-result-context]")?.value || "",
       text: row.querySelector(".section-text")?.value || ""
     }));
 
@@ -189,7 +265,7 @@ export function createDailySourceController(deps) {
       pendingFocus: deps.app.pendingSectionReviewFocus,
       review,
       draftText,
-      structuredDisplay: deps.dailyPresentation.renderSavedClinicalDisplay(capture.sourceKind, draftText, `saved${capture.id}`),
+      structuredDisplay: "",
       captures: deps.reviewSectionsForScope("daily"),
       reviewFor: (id) => deps.sectionReviewFor("daily", id)
     });
@@ -226,11 +302,15 @@ export function createDailySourceController(deps) {
       admissionSourceKind: deps.app.admissionSourceKind,
       admissionSourceDraft: deps.app.admissionSourceDraft,
       admissionSourceParse: deps.app.admissionSourceParse,
-      packetCheck: sourceCapturePacketCheck(selected?.sourceCaptures || []),
+      structuredNoteDrafts: Object.fromEntries(deps.app.structuredNoteDrafts),
+      dailyResultMetadata: deps.app.dailyResultMetadata,
+      admissionResultMetadata: deps.app.admissionResultMetadata,
+      packetCheck: sourceCapturePacketCheck(selected?.sourceCaptures || [], { structuredNote: selected?.primaryTeamNote, scope: "daily" }),
       admissionPacketCheck: sourceCapturePacketCheck(
         (patient?.contextSections || []).filter(
           (section) => String(section.deidentifiedText || "").trim() || (section.residualWarnings || []).length
-        )
+        ),
+        { structuredNote: patient?.admissionPrimaryTeamNote, scope: "admission" }
       ),
       deidBusy: deps.app.deidOperation.active
     });
@@ -239,8 +319,10 @@ export function createDailySourceController(deps) {
   async function addSource() {
     const day = deps.selectedChecklistDay(deps.active());
     if (!day) throw new Error("Add a hospital day first.");
+    if (deps.app.dailySourceKind === "results" && !deps.app.dailyResultMetadata.label.trim())
+      throw new Error("Enter a descriptive result label before adding this result.");
     const prepared = sourceTextForSave("daily");
-    const parts = sourcePartsForSave(prepared, deps.app.dailySourceKind);
+    const parts = sourcePartsForSave(prepared, deps.app.dailySourceKind, deps.app.dailyResultMetadata);
     if (!prepared.rawText || !parts.length) throw new Error("Paste a chart source before adding it.");
     deps.updateDeidOperation({
       active: true,
@@ -256,6 +338,9 @@ export function createDailySourceController(deps) {
       const captures = deidentified.map(({ part, result }) => createSourceCapture({
         sourceKind: part.sourceKind,
         label: part.label,
+        resultCategory: part.resultCategory,
+        resultDate: part.resultDate,
+        resultContext: part.resultContext,
         text: result.text || "",
         residualWarnings: result.residualWarnings || result.flags || []
       }));
@@ -269,6 +354,7 @@ export function createDailySourceController(deps) {
       deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({ ...patient, days: upsertDay(patient.days, nextDay) }));
       deps.app.dailySourceDraft = "";
       deps.app.dailySourceParse = null;
+      deps.app.dailyResultMetadata = { label: "", category: "imaging", date: "", context: "" };
       deps.beginSectionReview("daily");
       await deps.persistVault(`${captures.length} source${captures.length === 1 ? "" : "s"} de-identified and added to this hospital day.`);
       deps.updateDeidOperation({ active: false, message: `${captures.length} source${captures.length === 1 ? "" : "s"} de-identified and saved locally.` });
@@ -281,8 +367,10 @@ export function createDailySourceController(deps) {
 
   async function addAdmissionSource() {
     const patient = deps.active();
+    if (deps.app.admissionSourceKind === "results" && !deps.app.admissionResultMetadata.label.trim())
+      throw new Error("Enter a descriptive result label before adding this result.");
     const prepared = sourceTextForSave("admission");
-    const parts = sourcePartsForSave(prepared, deps.app.admissionSourceKind);
+    const parts = sourcePartsForSave(prepared, deps.app.admissionSourceKind, deps.app.admissionResultMetadata);
     if (!patient) throw new Error("Select a patient first.");
     if (!prepared.rawText || !parts.length) throw new Error("Paste a chart source before adding it.");
     deps.updateDeidOperation({
@@ -300,6 +388,9 @@ export function createDailySourceController(deps) {
         scope: "context",
         role: admissionRoleForSourceKind(part.sourceKind),
         sourceKind: part.sourceKind,
+        resultCategory: part.resultCategory,
+        resultDate: part.resultDate,
+        resultContext: part.resultContext,
         text: result.text || ""
       }));
       sections.forEach((section, index) => {
@@ -313,6 +404,7 @@ export function createDailySourceController(deps) {
       }));
       deps.app.admissionSourceDraft = "";
       deps.app.admissionSourceParse = null;
+      deps.app.admissionResultMetadata = { label: "", category: "imaging", date: "", context: "" };
       deps.admissionDateAnchor.remember();
       deps.beginSectionReview("context");
       await deps.persistVault(`${sections.length} admission source${sections.length === 1 ? "" : "s"} de-identified and added.`);
@@ -384,5 +476,5 @@ export function createDailySourceController(deps) {
     deps.render();
   }
 
-  return Object.freeze({ addAdmissionSource, addSource, renderDaily, saveSources, selectPacket, selectSourceKind, updateDraft, updateParsedDraft });
+  return Object.freeze({ addAdmissionSource, addSource, renderDaily, saveSources, saveStructuredPrimaryNote, selectPacket, selectSourceKind, updateDraft, updateParsedDraft, updateResultMetadata, updateStructuredNoteDraft });
 }

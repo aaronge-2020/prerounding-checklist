@@ -1,4 +1,5 @@
-import { sectionWarningSummary } from "../../patient-context/sections.js?v=20260921-clinical-navigation";
+import { sectionWarningSummary } from "../../patient-context/sections.js?v=20260921-checklist-note-export";
+import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-checklist-note-export";
 
 export function redactionPosition(text, redaction) {
   const source = String(text || "");
@@ -171,11 +172,11 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
       ? capturedAt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
       : "Saved source";
     return `
-      <article class="section-editor source-capture-editor ${isExpanded ? "is-expanded" : ""}" data-section-id="${escapeHtml(capture.id)}" data-section-scope="${escapeHtml(scope)}" data-created-at="${escapeHtml(capture.createdAt)}" ${scope === "daily" ? `data-captured-at="${escapeHtml(capture.capturedAt || capture.createdAt)}"` : ""}>
+      <article class="section-editor source-capture-editor ${isExpanded ? "is-expanded" : ""}" data-section-id="${escapeHtml(capture.id)}" data-section-scope="${escapeHtml(scope)}" data-created-at="${escapeHtml(capture.createdAt)}" data-source-label="${escapeHtml(capture.label || "")}" ${scope === "daily" ? `data-captured-at="${escapeHtml(capture.capturedAt || capture.createdAt)}"` : ""}>
         ${scope === "context" ? `<input class="section-label" type="hidden" value="${escapeHtml(capture.label)}"><input class="section-role" type="hidden" value="${escapeHtml(capture.role)}">` : ""}
         <div class="section-toolbar source-capture-toolbar">
           <div class="source-capture-identity">
-            <strong>${escapeHtml(sourceOptions.find((option) => option.id === capture.sourceKind)?.label || capture.label || "Other chart text")}</strong>
+            <strong>${escapeHtml(capture.sourceKind === "results" ? capture.label : sourceOptions.find((option) => option.id === capture.sourceKind)?.label || capture.label || "Other chart text")}</strong>
             <span class="section-meta">${capturedLabel} · ${characterCount.toLocaleString()} chars${draftMarker}</span>
           </div>
           <div class="button-row">
@@ -189,6 +190,12 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
             ${sourceOptions.map((option) => `<option value="${escapeHtml(option.id)}" ${option.id === capture.sourceKind ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
           </select>
         </label>
+        ${capture.sourceKind === "results" ? `<div class="structured-result-fields saved-result-fields">
+          <label>Result label<input data-saved-result-label value="${escapeHtml(capture.label || "")}"></label>
+          <label>Result type<select data-saved-result-category>${DIAGNOSTIC_RESULT_CATEGORIES.map((entry) => `<option value="${escapeHtml(entry.id)}" ${entry.id === capture.resultCategory ? "selected" : ""}>${escapeHtml(entry.label)}</option>`).join("")}</select></label>
+          <label>Result date<input type="date" data-saved-result-date value="${escapeHtml(capture.resultDate || "")}"></label>
+          <label>Context<input data-saved-result-context value="${escapeHtml(capture.resultContext || "")}"></label>
+        </div>` : ""}
         ${renderSectionSurface({ section: capture, scope, review, editing, draftText, sections: captures, reviewFor })}
       </article>
     `;

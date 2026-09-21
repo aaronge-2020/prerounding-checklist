@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20260921-clinical-navigation";
+} from "./deid-service.js?v=20260921-checklist-note-export";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });

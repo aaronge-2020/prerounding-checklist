@@ -2030,6 +2030,418 @@ button.var-fill:focus-visible {
   }
 }
 
+/* Review Data / Draft Note */
+.structured-primary-note,
+.structured-result-fields {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--panel) 94%, var(--accent) 6%);
+  padding: 18px;
+}
+
+.structured-note-grid,
+.structured-result-fields,
+.closing-section-grid,
+.two-column-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.structured-note-one-liner {
+  grid-column: 1 / -1;
+}
+
+.review-workspace {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.review-hero {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.review-hero h1 {
+  margin: 4px 0 8px;
+}
+
+.review-one-liner {
+  max-width: 920px;
+  margin: 0;
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.review-one-liner.is-empty {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.review-columns {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.85fr) minmax(460px, 1.4fr);
+  align-items: start;
+  gap: 16px;
+}
+
+.review-data-panel,
+.note-draft-panel {
+  min-width: 0;
+}
+
+.review-data-panel {
+  position: sticky;
+  top: 0;
+  max-height: calc(100vh - 140px);
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.review-filter-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.45fr);
+  gap: 12px;
+}
+
+.review-filter-summary {
+  margin: 12px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.review-data-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-bottom: 0.7rem;
+}
+
+.review-data-pagination output {
+  min-width: 6.5rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.checklist-note-import details {
+  margin: 0.7rem 0 1rem;
+}
+
+.checklist-finding-search {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.8rem 0 0.45rem;
+}
+
+.checklist-finding-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  max-height: 24rem;
+  overflow: auto;
+  padding-right: 0.35rem;
+}
+
+.checklist-finding-group {
+  min-width: 0;
+}
+
+.checklist-finding-candidate {
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  padding: 0.55rem;
+  margin-bottom: 0.45rem;
+  background: var(--surface-subtle);
+}
+
+.checklist-finding-candidate[hidden] {
+  display: none;
+}
+
+.checklist-finding-candidate label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.55rem;
+  align-items: start;
+}
+
+.checklist-finding-candidate span,
+.checklist-finding-candidate small {
+  display: block;
+}
+
+.checklist-finding-candidate small {
+  margin-top: 0.2rem;
+  color: var(--muted);
+}
+
+.checklist-finding-imports {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.note-export-actions {
+  margin: 0.8rem 0 0.35rem;
+}
+
+@media (max-width: 680px) {
+  .checklist-finding-picker {
+    grid-template-columns: minmax(0, 1fr);
+    max-height: 30rem;
+  }
+}
+
+.review-data-list,
+.note-section-stack,
+.plan-problem-list,
+.objective-linked-blocks {
+  display: grid;
+  gap: 12px;
+}
+
+.review-data-item,
+.note-field-card,
+.note-builder-section,
+.plan-problem-card,
+.differential-card,
+.objective-linked-block {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 14px;
+}
+
+.review-data-item.is-selected,
+.note-field-card--primary {
+  border-color: color-mix(in srgb, var(--accent) 58%, var(--border));
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.objective-choice,
+.note-field-heading,
+.plan-problem-heading,
+.objective-linked-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.objective-choice {
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+.objective-choice input {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.objective-choice span {
+  display: grid;
+  gap: 2px;
+}
+
+.objective-choice small,
+.review-observation-list small {
+  color: var(--muted);
+}
+
+.review-vital-stats,
+.review-medication-regimen {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.review-vital-stats div,
+.review-medication-regimen div {
+  display: grid;
+  gap: 3px;
+  border-radius: 8px;
+  background: var(--subtle-panel, #f4f3ef);
+  padding: 8px;
+}
+
+.review-vital-stats dt,
+.review-medication-regimen dt {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.review-vital-stats dd,
+.review-medication-regimen dd {
+  margin: 0;
+  font-size: 13px;
+}
+
+.review-mini-chart {
+  width: 100%;
+  height: 58px;
+  margin-top: 10px;
+  overflow: visible;
+}
+
+.review-mini-chart polyline {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.review-observation-list {
+  display: flex;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  overflow-x: auto;
+  list-style: none;
+}
+
+.review-observation-list li {
+  display: grid;
+  flex: 0 0 auto;
+  gap: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.review-observation-list li[data-clinical-emphasis="high"],
+.review-observation-list li[data-clinical-emphasis="low"],
+.review-observation-list li[data-clinical-emphasis="abnormal"] {
+  border-color: var(--danger, #a33);
+}
+
+.review-result-text {
+  white-space: pre-wrap;
+}
+
+.note-draft-panel,
+.note-builder-section {
+  display: grid;
+  gap: 14px;
+}
+
+.note-builder-section {
+  margin-top: 16px;
+}
+
+.note-field-heading h3,
+.note-builder-section h3 {
+  margin: 0;
+}
+
+.note-help-button {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  place-items: center;
+  font-weight: 800;
+}
+
+.note-help-panel {
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, var(--panel));
+  padding: 10px 12px;
+}
+
+.note-help-panel p {
+  margin: 5px 0;
+}
+
+.plan-problem-card,
+.differential-builder {
+  display: grid;
+  gap: 12px;
+}
+
+.differential-card {
+  display: grid;
+  gap: 10px;
+  background: color-mix(in srgb, var(--panel) 94%, var(--accent) 6%);
+}
+
+.objective-linked-block[data-objective-state="stale"] {
+  border-color: var(--warning, #9a6700);
+  background: color-mix(in srgb, #f0b429 8%, var(--panel));
+}
+
+.objective-diff {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.objective-diff pre,
+.review-data-item pre,
+.final-note-preview pre {
+  margin: 8px 0 0;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.final-note-preview {
+  margin-top: 18px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+@media (max-width: 1100px) {
+  .review-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .review-data-panel {
+    position: static;
+    max-height: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .review-hero {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .review-filter-row,
+  .structured-note-grid,
+  .structured-result-fields,
+  .closing-section-grid,
+  .two-column-form,
+  .objective-diff,
+  .review-vital-stats,
+  .review-medication-regimen {
+    grid-template-columns: 1fr;
+  }
+
+  .review-data-item,
+  .note-field-card,
+  .note-builder-section,
+  .plan-problem-card,
+  .differential-card,
+  .objective-linked-block {
+    padding: 12px;
+  }
+
+  .plan-problem-heading,
+  .objective-linked-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
 .brand-lockup span,
 .side-footer {
   font-size: 11px;

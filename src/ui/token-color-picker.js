@@ -1,4 +1,4 @@
-import { setTokenColorOverride, tokenAccentHex } from "../prompts/custom-templates.js?v=20260921-clinical-navigation";
+import { setTokenColorOverride, tokenAccentHex } from "../prompts/custom-templates.js?v=20260921-checklist-note-export";
 
 export function tokenColorSwatchButton(token, colorOverrides, escapeHtml) {
   const color = tokenAccentHex(token, colorOverrides);

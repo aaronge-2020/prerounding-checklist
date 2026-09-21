@@ -109,14 +109,14 @@ const dailyMarkup = dailyView.renderDaily({
   deidBusy: false
 });
 assert.match(dailyMarkup, /data-action="select-admission"/);
-assert.match(dailyMarkup, /data-action="add-admission-source"/);
-assert.match(dailyMarkup, /source-capture-composer/);
+assert.match(dailyMarkup, /data-action="save-structured-primary-note"/);
+assert.match(dailyMarkup, /data-structured-note-field="one_liner"/);
+assert.doesNotMatch(dailyMarkup, /data-action="add-admission-source"/, "the primary-team note is entered through explicit sections instead of one large paste box");
 assert.match(dailyMarkup, /Review completeness/);
 assert.match(dailyMarkup, /Required items are visible reminders, not blockers/);
 assert.match(dailyMarkup, /data-review-item="primary_note" data-review-requirement="required" data-review-status="not_reviewed"/);
 assert.match(dailyMarkup, /data-review-item="consult_note" data-review-requirement="optional" data-review-status="not_reviewed"/);
 assert.match(dailyMarkup, /data-required-missing="3"/);
-assert.match(dailyMarkup, /data-source-kind="primary_note" data-review-requirement="required"/);
 const parsedSourceMarkup = dailyView.renderSourceParsePreview({
   scope: "daily",
   parseResult: {
@@ -137,7 +137,7 @@ const parsedSourceMarkup = dailyView.renderSourceParsePreview({
 assert.match(parsedSourceMarkup, /CPRS inpatient-order table recognized/);
 assert.match(parsedSourceMarkup, /data-source-parsed-draft/);
 assert.match(parsedSourceMarkup, /Session only/);
-assert.match(parsedSourceMarkup, /data-clinical-view="medications"/);
+assert.doesNotMatch(parsedSourceMarkup, /data-clinical-view="medications"/, "clinical summaries belong on Review Data, not Hospital Stay");
 assert.match(parsedSourceMarkup, /Acetaminophen/);
 assert.match(parsedSourceMarkup, /AI-ready text/);
 const labPreviewMarkup = dailyView.renderSourceParsePreview({
@@ -158,54 +158,8 @@ const labPreviewMarkup = dailyView.renderSourceParsePreview({
     }
   }
 });
-assert.match(labPreviewMarkup, /data-clinical-view="labs"/);
-assert.match(labPreviewMarkup, /data-clinical-emphasis="low"/);
-assert.match(labPreviewMarkup, /clinical-trend/);
-const labCarouselMarkup = dailyView.renderClinicalDisplay({
-  type: "labs",
-  title: "Laboratory results",
-  columns: ["Test", "Result"],
-  provenance: { sourceSystem: "Epic" },
-  groups: [
-    { label: "CBC", timestamp: "09/21 06:00", rows: [{ cells: ["WBC", "7.1"], emphasis: "normal" }] },
-    { label: "CBC", timestamp: "09/20 06:00", rows: [{ cells: ["WBC", "8.2"], emphasis: "normal" }] }
-  ],
-  series: []
-}, "labCarousel");
-assert.match(labCarouselMarkup, /data-action="clinical-lab-page"/);
-assert.match(labCarouselMarkup, /data-clinical-lab-position>1 of 2/);
-assert.match(labCarouselMarkup, /data-clinical-lab-panel="1" hidden/);
-
-const medicationPaginationMarkup = dailyView.renderClinicalDisplay({
-  type: "medications",
-  title: "Medication activity",
-  columns: ["Medication", "Current regimen", "Course", "Recent administrations", "Instructions"],
-  provenance: { sourceSystem: "Epic" },
-  groups: [{
-    label: "Medications",
-    timestamp: "",
-    rows: Array.from({ length: 21 }, (_, index) => ({ cells: [`Medication ${index + 1}`, "daily · PO", `Day ${index + 1}`, "0900", ""], emphasis: "unknown" }))
-  }]
-});
-assert.match(medicationPaginationMarkup, /data-clinical-medication-search/);
-assert.match(medicationPaginationMarkup, /1 of 3 · 21 medications/);
-assert.equal((medicationPaginationMarkup.match(/data-medication-row hidden/g) || []).length, 11, "only the first medication page is initially visible");
-
-const vitalSummaryMarkup = dailyView.renderClinicalDisplay({
-  type: "vitals",
-  title: "Vital signs",
-  columns: ["Recorded", "Measurement", "Value"],
-  provenance: { sourceSystem: "Epic" },
-  groups: [
-    { label: "Vital signs", timestamp: "09/21/26 0600", rows: [{ cells: ["09/21/26 0600", "Pulse", "72"], emphasis: "unknown" }] },
-    { label: "Vital signs", timestamp: "09/21/26 0500", rows: [{ cells: ["09/21/26 0500", "Pulse", "73"], emphasis: "unknown" }] }
-  ],
-  statistics24h: [{ name: "Pulse", unit: "bpm", minimum: 72, maximum: 73, mean: 72.5, median: 72.5, count: 2 }],
-  series: [{ name: "Pulse", points: [{ value: 72, unit: "bpm" }, { value: 73, unit: "bpm" }] }]
-});
-assert.match(vitalSummaryMarkup, /24-hour summary/);
-assert.match(vitalSummaryMarkup, /Mean 72\.5 · Median 72\.5/);
-assert.equal((vitalSummaryMarkup.match(/class="clinical-data-group"/g) || []).length, 1, "vital detail should show one latest snapshot instead of every time point");
+assert.doesNotMatch(labPreviewMarkup, /data-clinical-view="labs"/);
+assert.doesNotMatch(labPreviewMarkup, /clinical-trend/);
 const mixedSourceParse = {
   recognized: true,
   rawCharacterCount: 900,

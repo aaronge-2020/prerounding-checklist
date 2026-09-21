@@ -1,6 +1,8 @@
-import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-clinical-navigation";
-import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260921-clinical-navigation";
-import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-clinical-navigation";
+import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-checklist-note-export";
+import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260921-checklist-note-export";
+import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-checklist-note-export";
+import { fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-checklist-note-export";
+import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-checklist-note-export";
 
 export function createDailyPresentation({ escapeHtml, icon }) {
   function renderRowReviewStatus(completeness) {
@@ -218,7 +220,6 @@ export function createDailyPresentation({ escapeHtml, icon }) {
                     <strong id="${prefix}ParsedSourceTitle${index}">${escapeHtml(sourceLabel)}</strong>
                     <span class="muted">${escapeHtml(section.formatLabel)} · ${escapeHtml(section.summary)}</span>
                   </div>
-                  ${renderClinicalDisplay(section.displayModel, `${prefix}${index}`)}
                   ${renderPromptTextEditor({ prefix, outputText: section.canonicalPromptText || section.outputText, sectionIndex: String(index) })}
                 </section>
               `;
@@ -236,11 +237,28 @@ export function createDailyPresentation({ escapeHtml, icon }) {
           </div>
           <span class="source-parse-local">Session only</span>
         </div>
-        <p class="source-parse-help">Review the clean display below. The separate AI-ready text is compact, editable, and is the only parsed representation sent through local de-identification and into prompts.</p>
-        ${renderClinicalDisplay(parseResult.displayModel, prefix)}
+        <p class="source-parse-help">The compact AI-ready text below is editable and is the only parsed representation sent through local de-identification and into prompts. Clinical summaries and trends appear after saving on Review Data / Draft Note.</p>
         ${renderPromptTextEditor({ prefix, outputText: parseResult.canonicalPromptText || parseResult.outputText })}
       </section>
     `;
+  }
+
+  function renderStructuredPrimaryNote({ noteType, note, draftValues = {}, scope, deidBusy }) {
+    const typeLabel = noteType === NOTE_TYPES.H_AND_P ? "H&P source sections" : "Progress-note source sections";
+    const saved = Boolean(note);
+    return `<section class="structured-primary-note" aria-labelledby="${scope}StructuredNoteHeading">
+      <div class="section-heading tight"><div><h3 id="${scope}StructuredNoteHeading">${typeLabel}</h3><p class="muted">Enter only the sections that are available. The one-liner is encouraged but never required.</p></div><span class="source-parse-local">${saved ? "Saved locally" : "Optional"}</span></div>
+      <div class="structured-note-grid">
+        ${fieldsForNoteType(noteType).map((field) => {
+          const value = Object.hasOwn(draftValues, field.id)
+            ? draftValues[field.id]
+            : note?.sections?.[field.id]?.deidentifiedText || "";
+          const rows = field.id === "one_liner" || field.id === "chief_complaint" ? 2 : 4;
+          return `<label class="${field.id === "one_liner" ? "structured-note-one-liner" : ""}">${escapeHtml(field.label)}${field.id === "one_liner" ? " · primary summary" : ""}<textarea rows="${rows}" data-structured-note-field="${escapeHtml(field.id)}" data-structured-note-scope="${escapeHtml(scope)}" placeholder="Optional">${escapeHtml(value)}</textarea></label>`;
+        }).join("")}
+      </div>
+      <div class="source-draft-footer"><span class="muted">Saved fields are locally de-identified before entering the encrypted vault.</span><button type="button" class="button--primary" data-action="save-structured-primary-note" data-note-scope="${escapeHtml(scope)}" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save structured note"}</button></div>
+    </section>`;
   }
 
   function renderSourceWorkspace({
@@ -256,7 +274,11 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     deidBusy,
     renderDeidStrip,
     generateAction,
-    generateLabel
+    generateLabel,
+    primaryTeamNote,
+    structuredNoteDraft,
+    noteType,
+    resultMetadata = { label: "", category: "imaging", date: "", context: "" }
   }) {
     const selectedSource = sourceOptions.find((option) => option.id === selectedSourceKind) || sourceOptions[0];
     const prefix = scope === "admission" ? "admission" : "daily";
@@ -267,9 +289,15 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     const sourceTitle = scope === "admission" ? "Admission sources" : "Saved sources";
     return `
       ${renderDeidStrip}
-      <section class="source-capture-composer" aria-labelledby="addChartSourceTitle">
+      ${renderSourcePicker(sourceOptions, selectedSourceKind, scope)}
+      ${selectedSourceKind === "primary_note" ? renderStructuredPrimaryNote({ noteType, note: primaryTeamNote, draftValues: structuredNoteDraft, scope, deidBusy }) : `<section class="source-capture-composer" aria-labelledby="addChartSourceTitle">
         <div class="section-heading tight"><div><h3 id="addChartSourceTitle">Add chart source</h3><p class="muted">Paste a full Epic or CPRS block. Medication, laboratory, and vital-sign tables are organized automatically; narrative text stays as written.</p></div></div>
-        ${renderSourcePicker(sourceOptions, selectedSourceKind, scope)}
+        ${selectedSourceKind === "results" ? `<div class="structured-result-fields">
+          <label>Result label<input data-result-metadata="label" data-result-scope="${escapeHtml(scope)}" value="${escapeHtml(resultMetadata.label || "")}" placeholder="CT Head/Neck Without Contrast"></label>
+          <label>Result type<select data-result-metadata="category" data-result-scope="${escapeHtml(scope)}">${DIAGNOSTIC_RESULT_CATEGORIES.map((entry) => `<option value="${escapeHtml(entry.id)}" ${entry.id === resultMetadata.category ? "selected" : ""}>${escapeHtml(entry.label)}</option>`).join("")}</select></label>
+          <label>Result date<input type="date" data-result-metadata="date" data-result-scope="${escapeHtml(scope)}" value="${escapeHtml(resultMetadata.date || "")}"></label>
+          <label>Context<input data-result-metadata="context" data-result-scope="${escapeHtml(scope)}" value="${escapeHtml(resultMetadata.context || "")}" placeholder="Final read, blood culture source, specimen…"></label>
+        </div>` : ""}
         <label class="source-draft-label" for="${draftId}">Paste the full copied block
           <textarea id="${draftId}" rows="8" placeholder="Paste the full copied text from ${escapeHtml(selectedSource.label)} here">${escapeHtml(sourceDraft)}</textarea>
         </label>
@@ -278,9 +306,9 @@ export function createDailyPresentation({ escapeHtml, icon }) {
           <button class="button--primary" type="button" data-action="${addAction}" ${deidBusy || !sourceDraft.trim() ? "disabled" : ""}>${deidBusy ? "De-identifying…" : addLabel}</button>
         </div>
         <div data-source-parse-preview="${prefix}">${renderSourceParsePreview({ scope, parseResult: sourceParse })}</div>
-      </section>
+      </section>`}
       <section class="saved-source-list" aria-labelledby="savedSourcesTitle">
-        <div class="section-heading tight"><div><h3 id="savedSourcesTitle">${sourceTitle}</h3><p class="muted">${sources.length} source${sources.length === 1 ? "" : "s"} · all included by default</p></div><button class="button--primary" type="button" data-action="${generateAction}" ${sources.length ? "" : "disabled"}>${generateLabel}</button></div>
+        <div class="section-heading tight"><div><h3 id="savedSourcesTitle">${sourceTitle}</h3><p class="muted">${sources.length} source${sources.length === 1 ? "" : "s"} · summaries are reviewed on the separate note workspace</p></div><button class="button--primary" type="button" data-action="${generateAction}" ${sources.length || primaryTeamNote ? "" : "disabled"}>${generateLabel}</button></div>
         <div id="${scope === "admission" ? "contextSections" : "dailySources"}" class="source-capture-list">
           ${sources.length ? sources.map(renderSourceCaptureEditor).join("") : `<div class="empty-state">No sources saved yet. Start with the primary team note, Results, or Medication Activity.</div>`}
         </div>
@@ -291,7 +319,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
   }
 
   function renderPacketCheck(packetCheck, sources, scope) {
-    const completeness = evaluatePacketCompleteness(sources, { scope });
+    const completeness = packetCheck.completeness || evaluatePacketCompleteness(sources, { scope });
     const included = packetCheck.included.length ? packetCheck.included.join(", ") : "No selected-day sources saved yet.";
     const needsConfirmation = packetCheck.needsConfirmation.length
       ? packetCheck.needsConfirmation.join(", ")
@@ -346,6 +374,9 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     admissionSourceKind = "primary_note",
     admissionSourceDraft = "",
     admissionSourceParse = null,
+    structuredNoteDrafts = {},
+    dailyResultMetadata = { label: "", category: "imaging", date: "", context: "" },
+    admissionResultMetadata = { label: "", category: "imaging", date: "", context: "" },
     packetCheck,
     admissionPacketCheck = { included: [], notSupplied: [], needsConfirmation: [] },
     deidBusy
@@ -394,7 +425,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
               ? `<section class="panel admission-packet packet-surface hospital-day-packet">
               <div class="admission-packet-body">
                 <div class="section-heading source-day-heading"><div><h2>Admission</h2><p class="muted">Paste broad chart blocks. The app preserves the source and includes every saved capture.</p></div></div>
-                ${renderSourceWorkspace({ scope: "admission", sources: admissionSections, sourceOptions: admissionSourceOptions, selectedSourceKind: admissionSourceKind, sourceDraft: admissionSourceDraft, sourceParse: admissionSourceParse, renderSourceCaptureEditor: (section) => renderSectionEditor(section, "context"), renderWarnings, packetCheck: admissionPacketCheck, deidBusy, renderDeidStrip, generateAction: "open-admission-note", generateLabel: "Generate admission H&P" })}
+                ${renderSourceWorkspace({ scope: "admission", sources: admissionSections, sourceOptions: admissionSourceOptions, selectedSourceKind: admissionSourceKind, sourceDraft: admissionSourceDraft, sourceParse: admissionSourceParse, renderSourceCaptureEditor: (section) => renderSectionEditor(section, "context"), renderWarnings, packetCheck: admissionPacketCheck, deidBusy, renderDeidStrip, generateAction: "open-admission-note", generateLabel: "Review data / draft H&P", primaryTeamNote: patient.admissionPrimaryTeamNote, structuredNoteDraft: structuredNoteDrafts?.admission || {}, noteType: NOTE_TYPES.H_AND_P, resultMetadata: admissionResultMetadata })}
               </div>
           </section>`
               : ""
@@ -412,7 +443,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
                   <button class="button--secondary" type="button" data-action="save-day" ${deidBusy || !selected.sourceCaptures.length ? "disabled" : ""}>Save source edits</button>
                 </div>
               </div>
-              ${renderSourceWorkspace({ scope: "daily", sources: selected.sourceCaptures, sourceOptions, selectedSourceKind, sourceDraft, sourceParse, renderSourceCaptureEditor, renderWarnings, packetCheck, deidBusy, renderDeidStrip, generateAction: "open-progress-note", generateLabel: "Generate progress note" })}
+              ${renderSourceWorkspace({ scope: "daily", sources: selected.sourceCaptures, sourceOptions, selectedSourceKind, sourceDraft, sourceParse, renderSourceCaptureEditor, renderWarnings, packetCheck, deidBusy, renderDeidStrip, generateAction: "open-progress-note", generateLabel: "Review data / draft progress note", primaryTeamNote: selected.primaryTeamNote, structuredNoteDraft: structuredNoteDrafts?.[selected.id] || {}, noteType: NOTE_TYPES.PROGRESS, resultMetadata: dailyResultMetadata })}
             `
                 : `<div class="empty-state">Add a hospital day to begin capturing selected-day sources.</div>`
             }

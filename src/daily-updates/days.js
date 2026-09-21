@@ -1,5 +1,6 @@
-import { createLocalId, normalizeDay, timestampNow } from "../app/state/vault.js?v=20260921-clinical-navigation";
-import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-clinical-navigation";
+import { createLocalId, normalizeDay, timestampNow } from "../app/state/vault.js?v=20260921-checklist-note-export";
+import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-checklist-note-export";
+import { renderFinalNote } from "../note-drafts/index.js?v=20260921-checklist-note-export";
 
 export function localCalendarDate(value = new Date()) {
   const date = value instanceof Date ? value : new Date(value);
@@ -56,7 +57,8 @@ export function buildTrajectoryBlock(patient, { selectedDayId = "", includeAllDa
     // copied into an external prompt; each capture was already de-identified
     // against this packet's date when it was saved.
     const body = sourceCapturesToPromptBlock(day.sourceCaptures, "Hospital-day source record");
-    return body;
+    const structured = day.primaryTeamNote ? renderFinalNote(day.primaryTeamNote).trim() : "";
+    return structured ? `${body}\n\nStructured primary-team progress-note sections.\n\n${structured}` : body;
   });
   return `Hospital trajectory.\n\n${rendered.join("\n\n")}`;
 }

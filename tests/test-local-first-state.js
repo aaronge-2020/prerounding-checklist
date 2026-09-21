@@ -3,6 +3,7 @@ import { createDailyRecord, localCalendarDate, removeDay, upsertDay } from "../s
 import { activePatient, createEmptyVaultState, createPatientRecord, migrateVaultState, updateActivePatient } from "../src/app/state/vault.js";
 import { deleteEncryptedVaultRecord, loadOrCreateVault, saveEncryptedVault, readEncryptedVaultRecord } from "../src/app/state/persistence.js";
 import { createEphemeralRedactionReview, sanitizeResidualWarningMetadata } from "../src/patient-context/review.js";
+import { createNoteDraft, selectChecklistFinding, updateNoteSection, NOTE_TYPES } from "../src/note-drafts/index.js";
 
 function memoryStorage() {
   const store = new Map();
@@ -14,7 +15,7 @@ function memoryStorage() {
 }
 
 const vault = createEmptyVaultState({ now: () => "2026-07-09T12:00:00.000Z" });
-assert.equal(vault.schemaVersion, 3);
+assert.equal(vault.schemaVersion, 4);
 assert.deepEqual(vault.patients, []);
 assert.equal(vault.preferences.medicalService, "");
 assert.equal(vault.preferences.openAiApiKey, "");
@@ -110,11 +111,37 @@ assert.deepEqual(
 );
 
 const storage = memoryStorage();
+let admissionDraft = createNoteDraft(NOTE_TYPES.H_AND_P, { patientId: patient.id });
+admissionDraft = updateNoteSection(admissionDraft, "one_liner", "De-identified one-liner with pneumonia.");
+admissionDraft = selectChecklistFinding(admissionDraft, {
+  selectionId: "checklist:day_test:dyspnea",
+  sourceFingerprint: "dyspnea-v1",
+  kind: "history",
+  question: "Dyspnea now?",
+  generatedText: "Dyspnea now?: Improved with rest.",
+  sourceDayLabel: "Hospital day 1",
+  workupTitle: "Dyspnea"
+});
 const vaultWithDeidentifiedContext = updateActivePatient(normalized, (current) => ({
   ...current,
   contextSections: current.contextSections.map((section, index) =>
     index === 0 ? { ...section, deidentifiedText: "MRN [MRN] with chest pain" } : section
-  )
+  ),
+  admissionPrimaryTeamNote: admissionDraft,
+  noteDrafts: { admission: admissionDraft },
+  days: current.days.map((entry) => ({
+    ...entry,
+    sourceCaptures: [{
+      id: "ct_result",
+      sourceKind: "results",
+      label: "CT Head/Neck Without Contrast",
+      resultCategory: "imaging",
+      resultDate: "2026-07-09",
+      resultContext: "Final read",
+      deidentifiedText: "No acute intracranial abnormality.",
+      residualWarnings: []
+    }]
+  }))
 }));
 await saveEncryptedVault(
   vaultWithDeidentifiedContext,
@@ -124,7 +151,7 @@ await saveEncryptedVault(
 
 const encryptedRecord = readEncryptedVaultRecord(storage);
 assert.equal(encryptedRecord.schema, "prerounding_encrypted_vault_v1");
-assert.doesNotMatch(JSON.stringify(encryptedRecord), /chest pain|Room 12|MRN \[MRN\]/);
+assert.doesNotMatch(JSON.stringify(encryptedRecord), /chest pain|Room 12|MRN \[MRN\]|pneumonia|CT Head\/Neck|intracranial|Dyspnea now|Improved with rest/);
 
 await saveEncryptedVault(
   {
@@ -149,6 +176,11 @@ assert.match(loaded.patients[0].contextSections[0].deidentifiedText, /MRN \[MRN\
 assert.equal(loaded.preferences.openAiApiKey, "local-test-key");
 assert.equal(loaded.preferences.openAiModel, "gpt-5.6-terra");
 assert.equal(loaded.preferences.medicalService, "consult");
+assert.equal(loaded.patients[0].admissionPrimaryTeamNote.sections.one_liner.deidentifiedText, "De-identified one-liner with pneumonia.");
+assert.equal(loaded.patients[0].noteDrafts.admission.schema, "student_note_draft_v2");
+assert.equal(loaded.patients[0].noteDrafts.admission.checklistFindings.selectedBlocks[0].editedText, "Dyspnea now?: Improved with rest.");
+assert.equal(loaded.patients[0].days[0].sourceCaptures[0].label, "CT Head/Neck Without Contrast");
+assert.equal(loaded.patients[0].days[0].sourceCaptures[0].resultCategory, "imaging");
 
 const migratedLegacyModel = migrateVaultState({
   ...loaded,

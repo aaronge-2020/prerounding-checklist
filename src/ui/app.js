@@ -5,7 +5,7 @@ import {
   removeDay,
   sortDays,
   upsertDay
-} from "../daily-updates/days.js?v=20260921-clinical-navigation";
+} from "../daily-updates/days.js?v=20260921-checklist-note-export";
 import {
   activePatient,
   archivePatient,
@@ -16,15 +16,15 @@ import {
   setWorkupOverride,
   setWorkupOverrides,
   updateActivePatient
-} from "../app/state/vault.js?v=20260921-clinical-navigation";
+} from "../app/state/vault.js?v=20260921-checklist-note-export";
 import {
   deleteEncryptedVaultRecord,
-  downloadJson,
+  downloadJson, downloadText,
   loadOrCreateVault,
   readEncryptedVaultRecord,
   saveEncryptedVault,
   writeEncryptedVaultRecord
-} from "../app/state/persistence.js?v=20260921-clinical-navigation";
+} from "../app/state/persistence.js?v=20260921-checklist-note-export";
 import {
   authorizeWorkupWorkspaceMirror,
   disconnectWorkupWorkspaceMirror,
@@ -36,7 +36,7 @@ import {
   reorderSections,
   reorderSectionsById,
   replaceSectionsFromFormAsync
-} from "../patient-context/sections.js?v=20260921-clinical-navigation";
+} from "../patient-context/sections.js?v=20260921-checklist-note-export";
 import {
   createEphemeralRedactionReview,
   refreshEphemeralRedactionReview,
@@ -59,13 +59,13 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../patient-context/deid-client.js?v=20260921-clinical-navigation";
+} from "../patient-context/deid-client.js?v=20260921-checklist-note-export";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../patient-context/deid-model-options.js?v=20260921-clinical-navigation";
+} from "../patient-context/deid-model-options.js?v=20260921-checklist-note-export";
 import {
   canAutomaticallyInstallModel,
   ensureModelPackServiceWorker,
@@ -77,13 +77,13 @@ import {
   modelFilesFromInput,
   removeModelPack,
   requestPersistentModelStorage
-} from "../patient-context/model-pack-storage.js?v=20260921-clinical-navigation";
+} from "../patient-context/model-pack-storage.js?v=20260921-checklist-note-export";
 import {
   formatBytes,
   hasAutomaticModelDownload,
   isInstallableModel,
   modelDownloadBytes
-} from "../patient-context/model-packs.js?v=20260921-clinical-navigation";
+} from "../patient-context/model-packs.js?v=20260921-checklist-note-export";
 import {
   ADMISSION_PSEUDO_DAY_ID,
   buildPromptPreviewSegments,
@@ -94,13 +94,13 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260921-clinical-navigation";
+} from "../prompts/custom-templates.js?v=20260921-checklist-note-export";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import {
   DEFAULT_DAILY_SOURCE_KIND,
   admissionSourceKindOptions
-} from "../patient-context/source-captures.js?v=20260921-clinical-navigation";
-import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260921-clinical-navigation";
+} from "../patient-context/source-captures.js?v=20260921-checklist-note-export";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260921-checklist-note-export";
 import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260910-pre-op-prep";
 import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260910-pre-op-prep";
 import {
@@ -127,8 +127,8 @@ import {
   workupFromEditorDraft,
   workupThoroughnessOption
 } from "../workups/editor.js?v=20260821-etiology-checklist";
-import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260921-clinical-navigation";
-import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260921-clinical-navigation";
+import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260921-checklist-note-export";
+import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260921-checklist-note-export";
 import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260815-standalone-ap";
 import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20260711-functional-remediation-15";
 import {
@@ -150,39 +150,41 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260921-clinical-navigation";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260921-clinical-navigation";
-import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-clinical-navigation";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260921-checklist-note-export";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260921-checklist-note-export";
+import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-checklist-note-export";
+import { createReviewPresentation } from "./review/presentation.js?v=20260921-checklist-note-export";
+import { createReviewController } from "./review/controller.js?v=20260921-checklist-note-export";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
-import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260921-clinical-navigation";
+import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260921-checklist-note-export";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
-import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260921-clinical-navigation";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-clinical-navigation";
+import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260921-checklist-note-export";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-checklist-note-export";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260921-clinical-navigation";
+} from "./prompts/controller.js?v=20260921-checklist-note-export";
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260910-guideline-pagination";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
-import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-clinical-navigation";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-clinical-navigation";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-clinical-navigation";
+import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-checklist-note-export";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-checklist-note-export";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-checklist-note-export";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
   createRedactionPresentation,
   redactionPosition,
   warningDescription,
   warningSnippet
-} from "./redaction/presentation.js?v=20260921-clinical-navigation";
+} from "./redaction/presentation.js?v=20260921-checklist-note-export";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
 import { createDemoController } from "./demo/controller.js?v=20260815-single-redaction-accept";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-clinical-navigation";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-checklist-note-export";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260809-demo-nstemi-workup-1";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
@@ -237,12 +239,16 @@ const app = {
   sectionDrafts: new Map(),
   sectionEditingKeys: new Set(),
   pendingSectionReviewFocus: null,
+  structuredNoteDrafts: new Map(), noteDraftSessions: new Map(),
+  reviewPacketId: "admission", reviewSearchQuery: "", reviewCategory: "all", reviewPage: 0, reviewHelpKey: "", reviewDifferenceSelectionId: "",
   dailySourceKind: DEFAULT_DAILY_SOURCE_KIND,
   dailySourceDraft: "",
   dailySourceParse: null,
+  dailyResultMetadata: { label: "", category: "imaging", date: "", context: "" },
   admissionSourceKind: DEFAULT_DAILY_SOURCE_KIND,
   admissionSourceDraft: "",
   admissionSourceParse: null,
+  admissionResultMetadata: { label: "", category: "imaging", date: "", context: "" },
   workupThoroughness: "standard",
   workupImportDraft: "",
   workupApiBusy: false,
@@ -272,15 +278,11 @@ const app = {
   demoSession: null,
   admissionDate: "" // in-memory copy of the encrypted patient's admission-date anchor
 };
-const viewIds = ["vault", "daily", "workups", "checklist", "prompts", "quickDeid", "settings"];
+const viewIds = ["vault", "daily", "review", "workups", "checklist", "prompts", "quickDeid", "settings"];
 const viewTitles = {
-  vault: "Vault / Roster",
-  daily: "Hospital Stay",
-  workups: "Workups",
-  checklist: "Checklist",
-  prompts: "OpenEvidence Prompts",
-  quickDeid: "Quick De-ID Tool",
-  settings: "Settings"
+  vault: "Vault / Roster", daily: "Hospital Stay", review: "Review Data / Draft Note",
+  workups: "Workups", checklist: "Checklist", prompts: "OpenEvidence Prompts",
+  quickDeid: "Quick De-ID Tool", settings: "Settings"
 };
 let draggedWorkupRow = null;
 let workupDragSaved = false;
@@ -297,14 +299,15 @@ function byId(id) {
 function escapeHtml(value = "") {
   return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
-const checklistPresentation = createChecklistPresentation({ escapeHtml, icon });
-const dailyPresentation = createDailyPresentation({ escapeHtml, icon });
+const checklistPresentation = createChecklistPresentation({ escapeHtml, icon }), dailyPresentation = createDailyPresentation({ escapeHtml, icon });
+const reviewPresentation = createReviewPresentation({ escapeHtml, icon });
 const redactionPresentation = createRedactionPresentation({ escapeHtml, icon });
 const quickDeidPresentation = createQuickDeidPresentation({ escapeHtml, icon });
 const workupPresentation = createWorkupPresentation({ escapeHtml, icon });
 const promptsPresentation = createPromptsPresentation({ escapeHtml });
 const settingsPresentation = createSettingsPresentation({ escapeHtml });
 const vaultPresentation = createVaultPresentation({ escapeHtml, icon });
+const reviewController = createReviewController({ app, active, byId, presentation: reviewPresentation, patientRequiredMessage, ensureSelectedDeidReady, deidentify, updateDeidOperation, persistVault, render, setStatus, copyText, downloadText });
 const demoController = createDemoController({
   app,
   byId,
@@ -314,7 +317,7 @@ const demoController = createDemoController({
   render,
   selectDemoPacket: () => {
     dailySourceController.selectPacket("demo_day_guided_case");
-    app.dailySourceDraft = DEMO_DAILY_TEXTS.join("\n\n");
+    app.dailySourceKind = "other_chart_text"; app.dailySourceDraft = DEMO_DAILY_TEXTS.join("\n\n");
   }
 });
 const demoSessionController = createDemoSessionController({
@@ -388,6 +391,7 @@ const dailySourceController = createDailySourceController({
   ensureSelectedDeidReady,
   deidentify,
   updateDeidOperation,
+  setStatus,
   setSectionDraftText,
   admissionDateAnchor,
   beginSectionReview,
@@ -867,7 +871,7 @@ function recordVaultActivity() {
 }
 
 function clearProtectedViewContent() {
-  ["dailyContent", "workupsContent", "checklistContent", "promptsContent", "quickDeidContent", "settingsContent"].forEach((id) => {
+  ["dailyContent", "reviewContent", "workupsContent", "checklistContent", "promptsContent", "quickDeidContent", "settingsContent"].forEach((id) => {
     const container = byId(id);
     if (container) container.replaceChildren();
   });
@@ -891,12 +895,16 @@ function clearPatientScopedSession() {
   app.sectionDrafts.clear();
   app.sectionEditingKeys.clear();
   app.pendingSectionReviewFocus = null;
+  app.structuredNoteDrafts.clear(); app.noteDraftSessions.clear();
+  Object.assign(app, { reviewPacketId: "admission", reviewSearchQuery: "", reviewCategory: "all", reviewPage: 0, reviewHelpKey: "", reviewDifferenceSelectionId: "" });
   app.dailySourceKind = DEFAULT_DAILY_SOURCE_KIND;
   app.dailySourceDraft = "";
   app.dailySourceParse = null;
+  app.dailyResultMetadata = { label: "", category: "imaging", date: "", context: "" };
   app.admissionSourceKind = DEFAULT_DAILY_SOURCE_KIND;
   app.admissionSourceDraft = "";
   app.admissionSourceParse = null;
+  app.admissionResultMetadata = { label: "", category: "imaging", date: "", context: "" };
   clearPhiReviews();
   app.checklistSearchQuery = "";
   app.checklistOpenNoteIds = new Set();
@@ -974,7 +982,7 @@ function render() {
   // cached data) must never prevent renderStatusBar() below from running -
   // that's what reflects patient selection, so a single broken view previously
   // made the whole app look like patient selection had stopped working.
-  for (const renderView of [renderVault, renderDaily, renderWorkups, renderChecklist, renderPrompts, renderQuickDeid, renderSettings]) {
+  for (const renderView of [renderVault, renderDaily, renderReview, renderWorkups, renderChecklist, renderPrompts, renderQuickDeid, renderSettings]) {
     try {
       renderView();
     } catch (error) {
@@ -1223,7 +1231,7 @@ function renderSectionEditor(section, scope) {
       pendingFocus: app.pendingSectionReviewFocus,
       review,
       draftText,
-      structuredDisplay: dailyPresentation.renderSavedClinicalDisplay(section.sourceKind, draftText, `saved${section.id}`),
+      structuredDisplay: "",
       captures: reviewSectionsForScope(scope),
       reviewFor: (id) => sectionReviewFor(scope, id)
     });
@@ -1248,6 +1256,8 @@ function renderDaily() {
   dailySourceController.renderDaily();
   bindSectionReordering();
 }
+
+function renderReview() { reviewController.render(); }
 function workupCatalogQueryValue(query) {
   return normalizeWorkupCatalogQuery(query);
 }
@@ -1680,9 +1690,12 @@ function collectSectionRows(containerId) {
   return [...document.querySelectorAll(`#${containerId} .section-editor`)].map((row) => ({
     id: row.dataset.sectionId,
     createdAt: row.dataset.createdAt,
-    label: row.querySelector(".section-label")?.value || "",
+    label: row.querySelector("[data-saved-result-label]")?.value || row.querySelector(".section-label")?.value || "",
     role: row.querySelector(".section-role")?.value || "",
     sourceKind: row.querySelector(".source-kind")?.value || "other_chart_text",
+    resultCategory: row.querySelector("[data-saved-result-category]")?.value || "",
+    resultDate: row.querySelector("[data-saved-result-date]")?.value || "",
+    resultContext: row.querySelector("[data-saved-result-context]")?.value || "",
     text: row.querySelector(".section-text")?.value || ""
   }));
 }
@@ -1751,12 +1764,6 @@ async function handleClick(event) {
     return;
   }
   const target = event.target.closest("[data-action]");
-  if (target && target.dataset.action === "import-phone-return")
-    console.log(
-      "TEXTAREA VALUE IN HANDLER:",
-      document.getElementById("phoneReturnText")?.value.length,
-      document.getElementById("phoneReturnText")?.value.substring(0, 50)
-    );
   if (!target) return;
   const action = target.dataset.action;
   actionFeedback(target, action);
@@ -1768,6 +1775,7 @@ async function handleClick(event) {
     ) {
       throw new Error("Unlock the local vault before using workspace tools.");
     }
+    if (app.view === "review" && reviewController.click(target)) return;
     if (action === "unlock-vault") await unlockVault();
     if (action === "start-guided-demo" || action === "restart-guided-demo") demoSessionController.start();
     if (action === "exit-guided-demo") demoSessionController.exit();
@@ -1830,28 +1838,15 @@ async function handleClick(event) {
     if (action === "allow-reviewed-non-phi")
       allowReviewedNonPhi(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex));
     if (action === "save-context") await saveContext();
+    if (action === "save-structured-primary-note") await dailySourceController.saveStructuredPrimaryNote(target.dataset.noteScope || "daily");
     if (action === "add-day") await addDay();
     if (action === "add-daily-source") await dailySourceController.addSource();
     if (action === "add-admission-source") await dailySourceController.addAdmissionSource();
     if (action === "select-day" || action === "select-admission")
       dailySourceController.selectPacket(action === "select-admission" ? "admission" : target.dataset.dayId);
     if (action === "save-day") await dailySourceController.saveSources();
-    if (action === "open-progress-note") {
-      app.selectedPromptTask = "daily_progress_note";
-      app.promptDayId = app.selectedDayId;
-      app.promptDayFollowsChecklist = true;
-      app.smartMenuOpen = false;
-      app.view = "prompts";
-      render();
-    }
-    if (action === "open-admission-note") {
-      app.selectedPromptTask = "initial_admission_rounds";
-      app.promptDayId = "";
-      app.promptDayFollowsChecklist = false;
-      app.smartMenuOpen = false;
-      app.view = "prompts";
-      render();
-    }
+    if (action === "open-progress-note") reviewController.open(app.selectedDayId);
+    if (action === "open-admission-note") reviewController.open("admission");
     if (action === "load-advanced-deid") await loadAdvancedModel();
     if (action === "select-deid-model") selectDeidModel(target.dataset.modelKey);
     if (action === "download-model-pack") await downloadSelectedModelPack(target.dataset.modelKey);
@@ -3828,6 +3823,8 @@ async function runQuickDeid() {
 }
 
 function handleChange(event) {
+  if (app.view === "review" && reviewController.change(event.target)) return;
+  if (event.target.matches("[data-result-metadata]")) return dailySourceController.updateResultMetadata(event.target.dataset.resultScope || "daily", event.target.dataset.resultMetadata, event.target.value);
   if (event.target.matches?.(".guideline-select")) {
     guidelineSetsController.toggleSelection(event.target.dataset.guidelineId, event.target.checked);
     return;
@@ -4001,6 +3998,9 @@ function clearChecklistSearch() {
 }
 
 function handleInput(event) {
+  if (app.view === "review" && reviewController.input(event.target)) return;
+  if (event.target.matches("[data-result-metadata]")) return dailySourceController.updateResultMetadata(event.target.dataset.resultScope || "daily", event.target.dataset.resultMetadata, event.target.value);
+  if (event.target.matches("[data-structured-note-field]")) return dailySourceController.updateStructuredNoteDraft(event.target.dataset.structuredNoteScope || "daily", event.target.dataset.structuredNoteField, event.target.value);
   if (event.target.matches("[data-clinical-medication-search]")) return updateClinicalMedicationPage(event.target.closest('[data-clinical-view="medications"]'), { reset: true });
   if (event.target.id === "dailySourceDraft") {
     dailySourceController.updateDraft("daily", event.target.value);
@@ -4150,7 +4150,7 @@ function bindEvents() {
       }
       if (app.demoSession && !["daily", "workups", "checklist", "prompts"].includes(button.dataset.viewTarget))
         demoSessionController.exit({ renderAfter: false });
-      app.view = button.dataset.viewTarget;
+      if (button.dataset.viewTarget === "review") app.reviewPacketId = app.selectedStayPacketId || app.selectedDayId || "admission"; app.view = button.dataset.viewTarget;
       app.smartMenuOpen = false;
       render();
       demoController.observeNavigation(app.view);

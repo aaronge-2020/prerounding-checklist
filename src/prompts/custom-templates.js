@@ -1,15 +1,21 @@
 import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
-import { buildTrajectoryBlock } from "../daily-updates/days.js?v=20260921-clinical-navigation";
-import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260921-clinical-navigation";
-import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-clinical-navigation";
+import { buildTrajectoryBlock } from "../daily-updates/days.js?v=20260921-checklist-note-export";
+import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260921-checklist-note-export";
+import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-checklist-note-export";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js?v=20260722-guideline-library";
 import { attendingPromptForTask, includesRequiredAttendingPersona, promptPersonaForTask, stripConflictingAttendingPersonas } from "./natural-language.js?v=20260910-pre-op-prep";
-import { buildProgressNotePacket } from "./progress-note-packet.js?v=20260921-clinical-navigation";
+import { buildProgressNotePacket } from "./progress-note-packet.js?v=20260921-checklist-note-export";
 import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20260910-pre-op-prep";
+import { renderFinalNote } from "../note-drafts/index.js?v=20260921-checklist-note-export";
 
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";
 export const TEAM_PREFERENCES_PROMPT_TOKEN = "@team-preferences";
 const TASK_GUIDELINE_TOKENS = new Map(DEFAULT_GUIDELINE_SET_SOURCES.filter((source) => source.task).map((source) => [source.task.id, source.token]));
+
+function promptBlockWithStructuredNote(base, note, label) {
+  const structured = note ? renderFinalNote(note).trim() : "";
+  return structured ? `${base}\n\n${label}.\n\n${structured}` : base;
+}
 
 // Every built-in task starts with its Settings-backed guideline token. The
 // task registry hides the task when that exact guideline is deleted.
@@ -98,6 +104,14 @@ export function promptVariablesForPatient(patient, { selectedDayId = "", guideli
     description: `Only this saved Admission field: ${dailySourceKindLabel(section.sourceKind)}.`,
     sectionId: section.id
     }));
+  const admissionStructuredVariables = patient?.admissionPrimaryTeamNote && renderFinalNote(patient.admissionPrimaryTeamNote).trim()
+    ? [{
+        token: promptToken("admission-primary-team-note", 0, used),
+        label: "Admission — structured primary-team note",
+        description: "Only the explicitly labeled, de-identified H&P source sections.",
+        structuredNoteScope: "admission"
+      }]
+    : [];
   const day = selectedPromptDay(patient, selectedDayId);
   const daySourceVariables = (day?.sourceCaptures || [])
     .filter((capture) => String(capture?.deidentifiedText || "").trim() && !isPhysicalExamCapture(capture))
@@ -107,7 +121,15 @@ export function promptVariablesForPatient(patient, { selectedDayId = "", guideli
     description: `Only this saved ${day.label || "selected-day"} field: ${dailySourceKindLabel(capture.sourceKind)}.`,
     daySourceId: capture.id
     }));
-  return [...guidelineVariables, ...sectionVariables, ...daySourceVariables, ...SMART_PROMPT_VARIABLES];
+  const dayStructuredVariables = day?.primaryTeamNote && renderFinalNote(day.primaryTeamNote).trim()
+    ? [{
+        token: promptToken("selected-day-primary-team-note", 0, used),
+        label: `${day.label || "Selected day"} — structured primary-team note`,
+        description: "Only the explicitly labeled, de-identified progress-note source sections.",
+        structuredNoteScope: "selected-day"
+      }]
+    : [];
+  return [...guidelineVariables, ...sectionVariables, ...admissionStructuredVariables, ...daySourceVariables, ...dayStructuredVariables, ...SMART_PROMPT_VARIABLES];
 }
 
 function sectionByLabel(sections = [], pattern) {
@@ -237,16 +259,31 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
         return [variable.token, capture?.deidentifiedText?.trim() || `No saved ${variable.label.toLowerCase()} text.`];
       })
   );
+  const structuredNoteValues = Object.fromEntries(
+    allVariables
+      .filter((variable) => variable.structuredNoteScope)
+      .map((variable) => [
+        variable.token,
+        variable.structuredNoteScope === "admission"
+          ? renderFinalNote(patient?.admissionPrimaryTeamNote)
+          : renderFinalNote(selectedDay?.primaryTeamNote)
+      ])
+  );
   const guidelineValues = Object.fromEntries(
     guidelineSets.map((set) => [set.token, set.text.trim() || `No saved "${set.label}" guidelines yet - add them in Settings.`])
   );
   return {
     ...sectionValues,
     ...selectedDayValues,
+    ...structuredNoteValues,
     ...guidelineValues,
     [TEAM_PREFERENCES_PROMPT_TOKEN]: guidelineSets.find((set) => set.token === TEAM_PREFERENCES_PROMPT_TOKEN)?.text?.trim()
       || buildTeamPreferencesPromptBlock(teamPreferences),
-    "@admission-packet": sectionsToPromptBlock(admissionSectionsWithoutTodayExam(patient), "Admission packet"),
+    "@admission-packet": promptBlockWithStructuredNote(
+      sectionsToPromptBlock(admissionSectionsWithoutTodayExam(patient), "Admission packet"),
+      patient?.admissionPrimaryTeamNote,
+      "Structured primary-team H&P sections"
+    ),
     "@medications": selectedMedicationSources.length
       ? sourceCapturesToPromptBlock(selectedMedicationSources, "Selected-day medication activity")
       : medicationSection?.deidentifiedText || "No saved medication text.",
@@ -257,8 +294,8 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
     // only @selected-day so there is one clear choice of hospital-day scope.
     "@hospital-stay": buildTrajectoryBlock(patient, { selectedDayId: selectedDay?.id, includeAllDays: false }),
     "@selected-day": usingAdmission
-      ? sectionsToPromptBlock(admissionSectionsWithoutTodayExam(patient), "Admission")
-      : (selectedDay ? sourceCapturesToPromptBlock(selectedDayCapturesWithoutExam(selectedDay), "Selected hospital-day source record") : "No saved hospital day."),
+      ? promptBlockWithStructuredNote(sectionsToPromptBlock(admissionSectionsWithoutTodayExam(patient), "Admission"), patient?.admissionPrimaryTeamNote, "Structured primary-team H&P sections")
+      : (selectedDay ? promptBlockWithStructuredNote(sourceCapturesToPromptBlock(selectedDayCapturesWithoutExam(selectedDay), "Selected hospital-day source record"), selectedDay.primaryTeamNote, "Structured primary-team progress-note sections") : "No saved hospital day."),
     "@progress-note-packet": buildProgressNotePacket({ patient, selectedDay }),
     // A presentation can be supplied directly in the destination chat. Keep
     // this optional token empty rather than inserting an instruction that

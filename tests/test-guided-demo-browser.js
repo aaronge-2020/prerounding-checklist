@@ -1,10 +1,11 @@
 import assert from "node:assert/strict";
 import { createReadStream, existsSync, statSync } from "node:fs";
 import { createServer } from "node:http";
-import { extname, join, normalize } from "node:path";
+import { dirname, extname, join, normalize } from "node:path";
+import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
-const root = process.cwd();
+const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const mime = new Map([
   [".html", "text/html"],
   [".js", "text/javascript"],
@@ -29,7 +30,13 @@ const server = createServer((request, response) => {
   createReadStream(file).pipe(response);
 });
 
-await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+await new Promise((resolve, reject) => {
+  server.once("error", reject);
+  server.listen(0, "127.0.0.1", () => {
+    server.removeListener("error", reject);
+    resolve();
+  });
+});
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
 const consoleErrors = [];

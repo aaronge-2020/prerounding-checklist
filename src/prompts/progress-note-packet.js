@@ -1,7 +1,8 @@
 import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
 import { isCarryForwardContextRole, packetRoleFor, packetRoleLabel, packetRolesForScope } from "../patient-context/packet-roles.js";
-import { dailySourceKindLabel, sourceCapturePacketCheck } from "../patient-context/source-captures.js?v=20260921-clinical-navigation";
+import { dailySourceKindLabel, sourceCapturePacketCheck } from "../patient-context/source-captures.js?v=20260921-checklist-note-export";
 import { naturalLanguagePrompt } from "./natural-language.js";
+import { renderFinalNote } from "../note-drafts/index.js?v=20260921-checklist-note-export";
 
 function compactText(value) {
   return String(value || "").trim();
@@ -39,7 +40,9 @@ function selectedDaySources(captures = []) {
 export function buildProgressNotePacket({ patient, selectedDay } = {}) {
   const admission = sortedFields("context", patient?.contextSections || [], (section) => isCarryForwardContextRole(section.role));
   const daySources = selectedDaySources(selectedDay?.sourceCaptures || []);
-  const packetCheck = sourceCapturePacketCheck(selectedDay?.sourceCaptures || []);
+  const admissionStructuredNote = patient?.admissionPrimaryTeamNote ? renderFinalNote(patient.admissionPrimaryTeamNote).trim() : "";
+  const dailyStructuredNote = selectedDay?.primaryTeamNote ? renderFinalNote(selectedDay.primaryTeamNote).trim() : "";
+  const packetCheck = sourceCapturePacketCheck(selectedDay?.sourceCaptures || [], { structuredNote: selectedDay?.primaryTeamNote, scope: "daily" });
   const exam = selectedDayExam(selectedDay);
 
   const parts = [
@@ -47,8 +50,8 @@ export function buildProgressNotePacket({ patient, selectedDay } = {}) {
     // OpenEvidence context. The source text already carries only relative
     // timeline placeholders, and this heading must preserve that boundary.
     "Selected hospital day.",
-    `Carry-forward admission context. ${admission.length ? admission.join("\n\n") : "No carry-forward admission context saved."}`,
-    `Selected-day source record. ${daySources.length ? daySources.join("\n\n") : "No selected-day sources saved."}`,
+    `Carry-forward admission context. ${[admission.join("\n\n"), admissionStructuredNote].filter(Boolean).join("\n\n") || "No carry-forward admission context saved."}`,
+    `Selected-day source record. ${[daySources.join("\n\n"), dailyStructuredNote].filter(Boolean).join("\n\n") || "No selected-day sources saved."}`,
     exam ? `Separate selected-day examination. ${exam}` : "Separate selected-day examination. No checklist or examination note saved outside the source record.",
     packetCheck.notSupplied.length
       ? `Packet limitations. The following source types were not supplied: ${packetCheck.notSupplied.join(", ")}. Do not infer their contents from another source.`

@@ -21,6 +21,7 @@ for (const legacyTemplate of [
 for (const path of [
   "../src/ui/checklist/presentation.js",
   "../src/ui/redaction/presentation.js",
+  "../src/ui/review/presentation.js",
   "../src/ui/workups/presentation.js",
   "../src/ui/prompts/presentation.js",
   "../src/ui/demo/presentation.js",

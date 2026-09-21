@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
 const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
@@ -28,6 +28,13 @@ const packageScriptFiles = Object.values(packageJson.scripts || {}).flatMap((com
   [...String(command).matchAll(/\bnode\s+([^\s&|]+\.js)\b/g)].map((match) => match[1].replaceAll("\\", "/"))
 );
 
+function javascriptFiles(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = `${directory}/${entry.name}`;
+    return entry.isDirectory() ? javascriptFiles(path) : entry.isFile() && entry.name.endsWith(".js") ? [path] : [];
+  });
+}
+
 function runNodeCheck(file) {
   if (!existsSync(file)) return;
   const result = spawnSync(process.execPath, ["--check", file], { encoding: "utf8" });
@@ -38,7 +45,7 @@ function runNodeCheck(file) {
   }
 }
 
-for (const file of [...new Set([...coreFiles, ...packageScriptFiles])].sort()) runNodeCheck(file);
+for (const file of [...new Set([...coreFiles, ...javascriptFiles("src"), ...packageScriptFiles])].sort()) runNodeCheck(file);
 
 const html = readFileSync("index.html", "utf8");
 const stylesheet = readFileSync("styles.css", "utf8");

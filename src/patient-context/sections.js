@@ -1,4 +1,4 @@
-import { createTextSection, normalizeSection } from "../app/state/vault.js?v=20260921-clinical-navigation";
+import { createTextSection, normalizeSection } from "../app/state/vault.js?v=20260921-checklist-note-export";
 import { isActionableResidualWarning, sanitizeResidualWarningMetadata } from "./review.js";
 import { naturalLanguagePrompt } from "../prompts/natural-language.js";
 
@@ -36,6 +36,9 @@ export function replaceSectionsFromForm(rows, deidentify, { scope = "context" } 
         label: row.label || `Section ${index + 1}`,
         role: row.role,
         sourceKind: row.sourceKind,
+        resultCategory: row.resultCategory,
+        resultDate: row.resultDate,
+        resultContext: row.resultContext,
         deidentifiedText: result.text || "",
         residualWarnings: sanitizeResidualWarningMetadata(result.residualWarnings || result.flags || []),
         createdAt: row.createdAt,
@@ -120,6 +123,9 @@ export async function replaceSectionsFromFormAsync(rows, deidentify, { onResult,
         label: row.label || `Section ${index + 1}`,
         role: row.role,
         sourceKind: row.sourceKind,
+        resultCategory: row.resultCategory,
+        resultDate: row.resultDate,
+        resultContext: row.resultContext,
         deidentifiedText: result.text || "",
         // Warning snippets can themselves contain residual PHI. Persist only
         // the metadata; detailed review remains in the active browser tab.

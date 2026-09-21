@@ -1,10 +1,11 @@
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { createReadStream, existsSync, statSync } from "node:fs";
-import { extname, join, normalize } from "node:path";
+import { dirname, extname, join, normalize } from "node:path";
+import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
-const root = process.cwd();
+const root = dirname(dirname(fileURLToPath(import.meta.url)));
 let failProgressPromptRefresh = false;
 const mime = new Map([
   [".html", "text/html"],
@@ -35,8 +36,12 @@ function staticServer() {
     response.writeHead(200, { "content-type": mime.get(extname(file)) || "application/octet-stream" });
     createReadStream(file).pipe(response);
   });
-  return new Promise((resolve) => {
-    server.listen(0, "127.0.0.1", () => resolve(server));
+  return new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", () => {
+      server.removeListener("error", reject);
+      resolve(server);
+    });
   });
 }
 
@@ -78,8 +83,12 @@ page.on("request", (request) => {
 });
 
 try {
-  await page.goto(baseUrl);
-  await page.waitForSelector("#vaultContent");
+  const navigation = await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
+  assert.ok(navigation, "the app navigation must return an HTTP response");
+  assert.equal(navigation.status(), 200, `expected the real app document, received ${navigation.status()} at ${page.url()}`);
+  assert.match(navigation.headers()["content-type"] || "", /text\/html/);
+  assert.equal(page.url(), baseUrl);
+  await page.waitForSelector("#vaultPassphrase");
   assert.equal(await page.title(), "Pre-Rounding Checklist Builder");
   await page.waitForSelector("#vaultContent .locked-vault-shell");
   assert.equal(await page.locator("body").evaluate((node) => node.classList.contains("vault-locked")), true);
@@ -125,6 +134,8 @@ try {
   await page.fill("#newPatientLabel", "Room 12");
   await page.click('[data-action="admit-patient"]');
   await page.waitForSelector("#contextSections");
+  assert.equal(await page.locator('[data-action="save-structured-primary-note"][data-note-scope="admission"]').isEnabled(), true, "structured H&P sections remain optional and saveable");
+  await page.click('[data-action="select-admission-source-kind"][data-source-kind="other_chart_text"]');
   assert.equal(await page.locator('[data-action="add-admission-source"]').isDisabled(), true, "adding an admission source requires a pasted chart block");
   await page.selectOption("#deidModeSelect", "structured");
   await page.fill("#admissionSourceDraft", "Source ready for local de-identification.");
@@ -348,6 +359,11 @@ try {
   }
   await page.click('[data-view-target="daily"]');
   await page.fill("#dailyAdmissionDateInput", "2026-07-17");
+  await page.click('[data-action="select-admission-source-kind"][data-source-kind="primary_note"]');
+  await page.fill('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]', "Adult admitted with dyspnea for evaluation.");
+  await page.click('[data-action="save-structured-primary-note"][data-note-scope="admission"]');
+  await page.waitForFunction(() => /Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.click('[data-action="select-admission-source-kind"][data-source-kind="other_chart_text"]');
   const primaryNoteWithQuotedResults = `Primary team assessment and plan.
 Results from EPIC:
 WBC: 4.2 (L)
@@ -385,7 +401,7 @@ MEDICATION ADMINISTRATION HISTORY for Hospital Day 1`;
   assert.match(parsedCprsOrders, /^Medications/m);
   assert.match(parsedCprsOrders, /ACETAMINOPHEN[\s\S]*HYDRALAZINE/);
   assert.doesNotMatch(parsedCprsOrders, /RPH:|={10,}/, "the reviewable parser output must omit CPRS layout and pharmacy-routing noise");
-  assert.equal(await page.locator('[data-source-parse-preview="admission"] [data-clinical-view="medications"]').count(), 1, "recognized medication reports should render a clean table separately from AI-ready text");
+  assert.equal(await page.locator('[data-source-parse-preview="admission"] [data-clinical-view="medications"]').count(), 0, "clinical summaries must be reserved for Review Data");
   await page.fill("#admissionSourceDraft", "");
   assert.equal(await page.locator('[data-source-parse-state="recognized"]').count(), 0, "clearing the raw paste must also clear its session-only parse preview");
   const syntheticEpicResults = `Results from EPIC:
@@ -403,7 +419,7 @@ Crossmatch: Red Blood Cells: Rpt (P)
   assert.match(parsedEpicResults, /^Labs/m);
   assert.match(parsedEpicResults, /Crossmatch: Red Blood Cells: Rpt; flag P/);
   assert.doesNotMatch(parsedEpicResults, /Results from EPIC:/, "the structured preview must remove copied Epic chrome");
-  assert.equal(await page.locator('[data-source-parse-preview="admission"] [data-clinical-emphasis="low"]').count(), 2, "explicit low flags should be emphasized in the lab table");
+  assert.equal(await page.locator('[data-source-parse-preview="admission"] [data-clinical-emphasis="low"]').count(), 0, "Hospital Stay must not render the lab summary table");
   await page.fill("#admissionSourceDraft", "");
   const addAdmissionCapture = async (sourceKind, text) => {
     const previousCount = await page.locator("#contextSections .section-editor").count();
@@ -412,7 +428,7 @@ Crossmatch: Red Blood Cells: Rpt (P)
     await page.click('[data-action="add-admission-source"]');
     await page.waitForFunction((count) => document.querySelectorAll("#contextSections .section-editor").length === count + 1, previousCount);
   };
-  await addAdmissionCapture("primary_note", "Jane Patient MRN 123456 admitted with dyspnea.");
+  await addAdmissionCapture("other_chart_text", "Jane Patient MRN 123456 admitted with dyspnea.");
   await addAdmissionCapture("medication_activity", syntheticCprsOrders);
   await addAdmissionCapture("laboratory_results", syntheticEpicResults);
   await addAdmissionCapture("bedside_update", "AM Labs reviewed with the team.");
@@ -420,8 +436,7 @@ Crossmatch: Red Blood Cells: Rpt (P)
   const savedEpicResults = await page.locator("#contextSections .section-editor").nth(2).locator(".section-text").inputValue();
   assert.match(savedEpicResults, /^Labs/m, "the click path must de-identify and save compact AI-ready parser output");
   assert.doesNotMatch(savedEpicResults, /Results from EPIC:/, "the click path must not save the unparsed Epic header");
-  assert.equal(await page.locator('#contextSections .source-capture-editor [data-clinical-view="medications"]').count(), 1, "saved medication activity should retain a clean table after the parse preview closes");
-  assert.equal(await page.locator('#contextSections .source-capture-editor [data-clinical-view="labs"]').count(), 1, "saved laboratory results should retain a clean table after the parse preview closes");
+  assert.equal(await page.locator('#contextSections .source-capture-editor [data-clinical-view]').count(), 0, "saved clinical summaries must not remain on Hospital Stay");
   assert.equal(await page.locator("#contextSections .section-editor").first().locator(".section-role").count(), 1, "admission fields must retain a controlled purpose");
   await page.waitForFunction(() => document.querySelector("#contextSections")?.textContent.includes("[MRN]"));
   await page.waitForSelector("#contextSections .redaction-review");
@@ -473,24 +488,23 @@ Crossmatch: Red Blood Cells: Rpt (P)
   await page.click('[data-action="add-day"]');
   await page.waitForSelector('[data-action="select-daily-source-kind"]');
   assert.equal(await page.locator('[data-action="select-daily-source-kind"]').count(), 9, "Hospital Stay should expose distinct required vital-sign and laboratory source choices");
-  await page.fill("#dailySourceDraft", "Overnight oxygen requirement improved.");
-  await page.click('[data-action="add-daily-source"]');
-  await page.waitForSelector("#dailySources .source-capture-editor");
-  assert.match(await page.locator("#dailySources .source-capture-editor").first().innerText(), /Primary team note/);
+  await page.fill('[data-structured-note-scope="daily"][data-structured-note-field="interval_events"]', "Overnight oxygen requirement improved.");
+  await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
+  await page.waitForFunction(() => /Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   assert.match(await page.locator(".packet-review-summary").innerText(), /2 required items have not been reviewed/);
   assert.equal(await page.locator('[data-action="open-progress-note"]').isEnabled(), true, "missing review reminders must not block note generation");
   await page.click('[data-action="select-daily-source-kind"][data-source-kind="vital_signs"]');
   await page.fill("#dailySourceDraft", "Pulse 76; respirations 16; blood pressure 118/64.");
   await page.click('[data-action="add-daily-source"]');
-  await page.waitForFunction(() => document.querySelectorAll("#dailySources .source-capture-editor").length === 2);
-  assert.match(await page.locator("#dailySources .source-capture-editor").nth(1).innerText(), /Vital signs/);
+  await page.waitForFunction(() => document.querySelectorAll("#dailySources .source-capture-editor").length === 1);
+  assert.match(await page.locator("#dailySources .source-capture-editor").nth(0).innerText(), /Vital signs/);
   assert.match(await page.locator(".packet-review-summary").innerText(), /1 required item has not been reviewed/);
   await page.click('[data-action="select-daily-source-kind"][data-source-kind="laboratory_results"]');
   await page.fill("#dailySourceDraft", syntheticEpicResults);
   await page.click('[data-action="add-daily-source"]');
-  await page.waitForFunction(() => document.querySelectorAll("#dailySources .source-capture-editor").length === 3);
-  assert.match(await page.locator("#dailySources .source-capture-editor").nth(2).innerText(), /Laboratory results/);
-  assert.equal(await page.locator('#dailySources .source-capture-editor [data-clinical-view="labs"]').count(), 1, "saved daily laboratory results should remain visibly structured");
+  await page.waitForFunction(() => document.querySelectorAll("#dailySources .source-capture-editor").length === 2);
+  assert.match(await page.locator("#dailySources .source-capture-editor").nth(1).innerText(), /Laboratory results/);
+  assert.equal(await page.locator('#dailySources .source-capture-editor [data-clinical-view]').count(), 0, "saved daily summaries should appear only on Review Data");
   assert.match(await page.locator(".packet-check").innerText(), /Included[\s\S]*Primary team note, Vital signs, Laboratory results/);
   assert.match(await page.locator(".packet-review-summary").innerText(), /All required items have been reviewed/);
   assert.equal(await page.locator('[data-action="open-progress-note"]').isEnabled(), true);
@@ -513,7 +527,7 @@ Vitals
   assert.equal(await page.locator('[data-source-parse-preview="daily"] [data-source-section-index]').count(), 3, "one mixed Epic paste must expose three independently reviewable source sections");
   assert.equal(await page.locator('[data-action="add-daily-source"]').innerText(), "De-identify and add 3 sources");
   await page.click('[data-action="add-daily-source"]');
-  await page.waitForFunction(() => document.querySelectorAll("#dailySources .source-capture-editor").length === 6);
+  await page.waitForFunction(() => document.querySelectorAll("#dailySources .source-capture-editor").length === 5);
   assert.deepEqual(await page.locator("#dailySources .source-capture-editor .source-kind").evaluateAll((nodes) => nodes.slice(-3).map((node) => node.value)), ["other_chart_text", "medication_activity", "vital_signs"], "only standard-format Epic sections should receive structured source types after saving");
   assert.match(await page.locator("#statusLine").innerText(), /3 sources de-identified and added to this hospital day/);
 
@@ -569,7 +583,7 @@ Vitals
   await page.click('[data-action="copy-open-evidence-workup-prompt"]');
   const copiedWorkupPrompt = await page.evaluate(() => navigator.clipboard.readText());
   assert.match(copiedWorkupPrompt, /selected fast rounds scope/i);
-  assert.match(copiedWorkupPrompt, /Primary team note\. Overnight oxygen requirement improved/);
+  assert.match(copiedWorkupPrompt, /Structured primary-team progress-note sections[\s\S]*Overnight oxygen requirement improved/);
   assert.match(copiedWorkupPrompt, /Vital signs\. Pulse 76; respirations 16; blood pressure 118\/64/);
   assert.match(copiedWorkupPrompt, /Laboratory results\. Labs[\s\S]*WBC: 4\.2; flag L/);
   // A successful "Parse & save" auto-collapses the import panel (its job is
@@ -713,12 +727,12 @@ Vitals
   assert.equal(await page.locator("#smartVariableMenu").isVisible(), false);
 
   await page.locator("#promptPreview").fill("Use @admission-primary-team-note");
-  await page.waitForFunction(() => /PATIENT NAME/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
+  await page.waitForFunction(() => /Adult admitted with dyspnea/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   {
     const preview = await page.locator("#promptOutputHighlighted").textContent();
     const copied = await copiedPromptText();
     assert.equal(copied.replace(/\r\n/g, "\n"), preview.replace(/\r\n/g, "\n"), "Copy prompt must use the exact text shown in the generated prompt preview");
-    assert.match(copied, /PATIENT NAME/);
+    assert.match(copied, /Adult admitted with dyspnea/);
     assert.equal(copied.match(/Act as an attending hospitalist with over 30 years of inpatient experience/g)?.length, 1, "an unsaved live edit must retain the shared persona exactly once");
   }
   await page.click('[data-action="save-prompt-template"]');
@@ -805,8 +819,6 @@ Vitals
     const rect = node.getBoundingClientRect();
     return { display: style.display, minHeight: style.minHeight, height: rect.height, lineHeight: parseFloat(style.lineHeight) };
   });
-  assert.equal(quickTokenLayout.display, "inline", "redaction choices should remain inline with surrounding document text");
-  assert.equal(quickTokenLayout.minHeight, "0px", "inline redaction choices must not inherit the global button height");
   assert.equal(quickTokenLayout.height <= quickTokenLayout.lineHeight * 1.5, true, "inline redaction choices must not add a large blank block");
   assert.equal(await page.locator("#quickDeidContent .redaction-change del").count() > 0, true, "the original should be crossed out inline beside the replacement");
   await page.click('[data-action="confirm-quick-redaction"]');

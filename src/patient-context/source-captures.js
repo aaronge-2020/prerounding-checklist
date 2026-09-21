@@ -1,6 +1,6 @@
 import { sanitizeResidualWarningMetadata } from "./review.js";
 import { naturalLanguagePrompt } from "../prompts/natural-language.js";
-import { evaluatePacketCompleteness } from "../daily-updates/packet-completeness.js?v=20260921-clinical-navigation";
+import { evaluatePacketCompleteness } from "../daily-updates/packet-completeness.js?v=20260921-checklist-note-export";
 
 const sourceKinds = [
   ["primary_note", "Primary team note", "The latest primary-team note or interval update copied from Epic."],
@@ -18,6 +18,18 @@ const sourceKinds = [
 
 export const DAILY_SOURCE_KINDS = sourceKinds.map(([id, label, description]) => ({ id, label, description }));
 export const DEFAULT_DAILY_SOURCE_KIND = "primary_note";
+
+export const DIAGNOSTIC_RESULT_CATEGORIES = Object.freeze([
+  { id: "imaging", label: "Imaging" },
+  { id: "microbiology", label: "Microbiology" },
+  { id: "pathology", label: "Pathology" },
+  { id: "other", label: "Other diagnostic result" }
+]);
+
+export function normalizeDiagnosticResultCategory(value) {
+  const candidate = String(value || "other");
+  return DIAGNOSTIC_RESULT_CATEGORIES.some((entry) => entry.id === candidate) ? candidate : "other";
+}
 
 export function normalizeSourceKindForScope(scope, kind) {
   const sourceKind = String(kind || "other_chart_text");
@@ -85,6 +97,9 @@ export function normalizeSourceCapture(capture, { now = () => new Date().toISOSt
     id: String(capture?.id || localCaptureId()),
     sourceKind,
     label: String(capture?.label || dailySourceKindLabel(sourceKind)).trim() || dailySourceKindLabel(sourceKind),
+    resultCategory: sourceKind === "results" ? normalizeDiagnosticResultCategory(capture?.resultCategory) : "",
+    resultDate: sourceKind === "results" ? String(capture?.resultDate || "") : "",
+    resultContext: sourceKind === "results" ? String(capture?.resultContext || "") : "",
     deidentifiedText: String(capture?.deidentifiedText || ""),
     residualWarnings: sanitizeResidualWarningMetadata(Array.isArray(capture?.residualWarnings) ? capture.residualWarnings : []),
     capturedAt: String(capture?.capturedAt || capture?.createdAt || timestamp),
@@ -93,8 +108,8 @@ export function normalizeSourceCapture(capture, { now = () => new Date().toISOSt
   };
 }
 
-export function createSourceCapture({ sourceKind = DEFAULT_DAILY_SOURCE_KIND, label = "", text = "", residualWarnings = [], now = () => new Date().toISOString() } = {}) {
-  return normalizeSourceCapture({ sourceKind, label, deidentifiedText: text, residualWarnings }, { now });
+export function createSourceCapture({ sourceKind = DEFAULT_DAILY_SOURCE_KIND, label = "", resultCategory = "", resultDate = "", resultContext = "", text = "", residualWarnings = [], now = () => new Date().toISOString() } = {}) {
+  return normalizeSourceCapture({ sourceKind, label, resultCategory, resultDate, resultContext, deidentifiedText: text, residualWarnings }, { now });
 }
 
 // This is a one-time exact migration from the previous controlled role IDs.
@@ -158,6 +173,9 @@ export async function replaceSourceCapturesFromFormAsync(rows, deidentify, { onR
       id: row.id,
       sourceKind: row.sourceKind,
       label: row.label || dailySourceKindLabel(row.sourceKind),
+      resultCategory: row.resultCategory,
+      resultDate: row.resultDate,
+      resultContext: row.resultContext,
       deidentifiedText: result.text || "",
       residualWarnings: result.residualWarnings || result.flags || [],
       capturedAt: row.capturedAt || prior?.capturedAt,
@@ -175,9 +193,13 @@ export function sourceCapturesToPromptBlock(captures = [], title = "Selected-day
   return naturalLanguagePrompt(`${title}.\n\n${body}`);
 }
 
-export function sourceCapturePacketCheck(captures = []) {
-  const supplied = new Set((captures || []).filter((capture) => String(capture?.deidentifiedText || "").trim()).map((capture) => capture.sourceKind));
-  const completeness = evaluatePacketCompleteness(captures);
+export function sourceCapturePacketCheck(captures = [], { structuredNote = null, scope = "daily" } = {}) {
+  const structuredNoteHasContent = Object.values(structuredNote?.sections || {}).some((section) => String(section?.deidentifiedText || "").trim());
+  const reviewedCaptures = structuredNoteHasContent
+    ? [...(captures || []), { sourceKind: "primary_note", deidentifiedText: "Structured primary-team note reviewed." }]
+    : (captures || []);
+  const supplied = new Set(reviewedCaptures.filter((capture) => String(capture?.deidentifiedText || "").trim()).map((capture) => capture.sourceKind));
+  const completeness = evaluatePacketCompleteness(reviewedCaptures, { scope });
   const included = DAILY_SOURCE_KINDS.filter((kind) => supplied.has(kind.id)).map((kind) => kind.label);
   const notSupplied = completeness.missingRequired.map((item) => item.label);
   const warningCount = (captures || []).reduce((count, capture) => count + (capture?.residualWarnings?.length || 0), 0);
