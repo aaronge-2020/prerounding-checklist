@@ -1,0 +1,292 @@
+Name: [PATIENT NAME]
+MRN: [MRN]
+DOB: [40 years and 7 months prior to hospital admission]
+Room: [ADDRESS]/[ID]	ALLERGIES: Patient has no known allergies.
+
+Treatment Team: Attending Provider: [PROVIDER NAME], MD; Team: UMMC, NEUROLOGY STROKE
+ 	CODE STATUS: CPR, Full Code
+LOS: 5 days
+
+
+Subjective / Interval History
+40 y/o F with prior stroke and L sided deficits who presented with completed R MCA/ACA stroke with malignant edema s/p DHC [Hospital Day 1].
+
+[Hospital Day 3]. Interval increase in leftward midline shift from 5 mm --> 8 mm
+[Hospital Day 5]: Decline in NPI this AM, R pupil NR; head CT showed progression of cerebral edema. Plan for expansive hemicraniectomy.
+
+[Hospital Day 6] No acute overnight events. Aspirin held. On fent and prop gtt. Hemoglobin 6.5.
+
+
+Medications
+Current Rx
+Current Rx
+
+
+Current Facility-Administered Medications
+Medication	Route	Frequency
+•	*NUTRITION Tube Feeding Continuous Osmolite 1.5 TF Per NG Tube	Per NG Tube	continuous
+•	acetaminophen (TYLENOL) tablet 1,000 mg	Per G Tube	Q6H
+•	[Held by provider] aspirin chewable tablet 81 mg	[PROVIDER NAME]	1X daily
+•	atorvastatin (LIPITOR) tablet 80 mg	[PROVIDER NAME]	nightly
+•	calcium gluconate 2 g in sodium chloride 0.675% 100 mL [PROVIDER NAME]	Q12H PRN
+•	ceFAZolin (ANCEF) 2 g in sodium chloride 0.9 % 100 mL IVPB MINI-BAG Plus 30-minute infusion	Intravenous	Q8H
+•	chlorhexidine gluconate (PERIDEX) 0.12 % oral rinse 15 mL	Swish & Spit	4X daily
+•	dextrose 50 % injection 25 mL	Intravenous	Q15 min PRN
+•	famotidine (PEPCID) tablet 20 mg	[PROVIDER NAME]	2X daily
+•	fentaNYL (SUBLIMAZE) 2,500 mcg in 50 mL infusion	Intravenous	continuous
+•	fentaNYL (SUBLIMAZE) bolus from bag 50 mcg	Intravenous	Q30 min PRN
+•	glucagon (GLUCAGEN) injection 1 mg	Intramuscular	once PRN until discontinued
+•	[Held by provider] heparin 5000 units/mL injection 5,000 Units	Subcutaneous	2X daily
+•	hydrALAZINE (APRESOLINE) injection 10 mg	Intravenous	Q4H PRN
+•	labetalol (NORMODYNE;TRANDATE) injection 10 mg	Intravenous	Q1H PRN
+•	levETIRAcetam (KEPPRA) tablet 1,000 mg	[PROVIDER NAME]	2X daily
+•	magnesium sulfate  2 g in 50 mL IVPB premix	Intravenous	Q12H PRN
+ 	Or
+•	magnesium sulfate 4 g in 100 mL IVPB premix	Intravenous	Q12H PRN
+•	multivitamin tablet 1 tablet	Per NG Tube	1X daily
+•	nicotine (NICODERM CQ) 14 MG/24HR patch 1 patch	Transdermal	1X daily
+ 	Followed by
+•	[START ON [Hospital Day 16]] nicotine (NICODERM CQ) 7 MG/24HR patch 1 patch	Transdermal	1X daily
+•	ondansetron (ZOFRAN) injection 4 mg	Intravenous	Q6H PRN
+•	perflutren lipid microspheres (DEFINITY) injection 2-6 mL	Intravenous	on call
+•	potassium bicarb-citric acid (EFFER-K) tablet 20 mEq	[PROVIDER NAME]	2X daily PRN
+ 	Or
+•	potassium bicarb-citric acid (EFFER-K) tablet 40 mEq	[PROVIDER NAME]	2X daily PRN
+ 	Or
+•	potassium bicarb-citric acid (EFFER-K) tablet 60 mEq	[PROVIDER NAME]	2X daily PRN
+•	potassium chloride 10 mEq in 100 mL IVPB	Intravenous	Q1H PRN
+•	propofol (DIPRIVAN) 1000 mg in 100 mL infusion	Intravenous	titrated
+•	[Held by provider] senna (SENOKOT) tablet 17.2 mg	[PROVIDER NAME]	2X daily
+•	sodium phosphate 30 mmol in sodium chloride 0.9 % 500 mL IVPB	Intravenous	Q12H PRN
+•	[Transfer Hold] thiamine (VITAMIN B-1) tablet 100 mg	Per NG Tube	1X daily
+
+
+Objective
+Vital signs:
+
+Encounter Vitals Stats ([1 day prior to hospital admission at 00:00])
+
+
+ 	Vital Sign	MIN	AVG	MAX
+ 	Temp	35 °C (95 °F)	36.1 °C (96.91 °F)	36.8 °C (98.2 °F)
+ 	Resp	4	17.54	26
+ 	BP: Systolic	110	121.13	141
+ 	BP: Diastolic	66	78.21	88
+ 	Heart Rate (Monitored)	70	80.22	97
+ 	SpO2	97 %	99.57 %	100 %
+
+
+Physical exam:
+
+General: NAD, craniectomy flap full and pulsatile
+Pulm: Intubated. No respiratory distress
+
+Neurological Examination:
+Mental Status: Sedated, not following commands.
+CN:                          Pupils reactive L <R, cough reflex present
+Motor:                           RUE withdraws to noxious stimuli, RLE no response to noxious stimuli
+
+
+Objective/ Diagnostic Studies
+Labs
+
+Hospital Encounter on [Hospital Day 1] (from the [1 day prior to hospital admission at 12:00])
+CT Head/Brain W/O Con
+ 	Timeline: [Hospital Day 5 at 21:57]
+Result	Value	Ref Range
+ 	IMG WORKSTATION ID	RADHSGHARAVI
+Arterial Blood Gas
+ 	Timeline: [Hospital Day 5 at 23:59]
+ 	Specimen: Arterial Blood
+Result	Value	Ref Range
+ 	pH Arterial	7.50 (H)	7.35 - 7.45 pH
+ 	pCO2 Arterial	29.5 (L)	32.0 - 48.0 mmHg
+ 	pO2 Arterial	103.0	83.0 - 108.0 mmHg
+ 	HCO3 Art	22.7	>=16.0 mmol/L
+ 	Base Exc Art	0.0	-2.0 - 2.0 mmol/L
+ 	O2 Saturation	98.3	%
+ 	HBO2 Sat Art	96.8	94.0 - 99.0 %
+ 	FIO2	30	%
+ 	Body Temperature	37.0	degC
+Basic Metabolic Panel
+ 	Timeline: [Hospital Day 6 at 00:00]
+ 	Specimen: Blood
+Result	Value	Ref Range
+ 	Sodium	149 (H)	136 - 145 mmol/L
+ 	Potassium	3.6	3.5 - 5.1 mmol/L
+ 	Chloride	120 (H)	98 - 107 mmol/L
+ 	CO2 Total	23	21 - 30 mmol/L
+ 	Anion Gap	6	4 - 16 mmol/L
+ 	Glucose Level	90	74 - [Historical date] mg/dL
+ 	BUN	14	7 - 17 mg/dL
+ 	Creatinine	0.5	0.5 - 1.0 mg/dL
+ 	Calcium	7.9 (L)	8.6 - 10.2 mg/dL
+ 	eGFR	122	>=60 mL/min/1.73 m2
+Osmolality
+ 	Timeline: [Hospital Day 6 at 00:00]
+ 	Specimen: Blood
+Result	Value	Ref Range
+ 	Osmolality	308 (H)	275 - 295 mOsm/kg
+Arterial Blood Gas
+ 	Timeline: [Hospital Day 6 at 04:02]
+ 	Specimen: Arterial Blood
+Result	Value	Ref Range
+ 	pH Arterial	7.50 (H)	7.35 - 7.45 pH
+ 	pCO2 Arterial	31.8 (L)	32.0 - 48.0 mmHg
+ 	pO2 Arterial	147.0 (H)	83.0 - 108.0 mmHg
+ 	HCO3 Art	24.4	>=16.0 mmol/L
+ 	Base Exc Art	1.5	-2.0 - 2.0 mmol/L
+ 	O2 Saturation	99.3	%
+ 	HBO2 Sat Art	97.7	94.0 - 99.0 %
+ 	FIO2	30	%
+ 	Body Temperature	37.0	degC
+CBC W/O Auto Diff
+ 	Timeline: [Hospital Day 6 at 04:03]
+ 	Specimen: Blood
+Result	Value	Ref Range
+ 	WBC	10.4 (H)	4.0 - 10.0 10*3/uL
+ 	RBC	2.39 (L)	3.93 - 5.22 10*6/uL
+ 	Hemoglobin	6.5 (LL)	11.2 - 15.7 g/dL
+ 	Hematocrit	21.5 (L)	34.1 - 44.9 %
+ 	MCV	90.0	79.4 - 94.8 fL
+ 	MCH	27.2	25.6 - 32.2 pg
+ 	MCHC	30.2 (L)	32.2 - 35.5 g/dL
+ 	Platelets	242	182 - 369 10*3/uL
+ 	MPV	10.7	9.4 - 12.3 fL
+ 	RDW	17.3 (H)	11.7 - 14.4 %
+ 	Nucleated Red Blood Cells	0.00	0.00 - 0.01 10*3/uL
+ 	Nucleated RBC %	0.0	0.0 - 0.2 %
+Basic Metabolic Panel
+ 	Timeline: [Hospital Day 6 at 04:03]
+ 	Specimen: Blood
+Result	Value	Ref Range
+ 	Sodium	150 (H)	136 - 145 mmol/L
+ 	Potassium	3.5	3.5 - 5.1 mmol/L
+ 	Chloride	121 (H)	98 - 107 mmol/L
+ 	CO2 Total	23	21 - 30 mmol/L
+ 	Anion Gap	6	4 - 16 mmol/L
+ 	Glucose Level	94	74 - 109 mg/dL
+ 	BUN	14	7 - 17 mg/dL
+ 	Creatinine	0.5	0.5 - 1.0 mg/dL
+ 	Calcium	8.0 (L)	8.6 - 10.2 mg/dL
+ 	eGFR	122	>=60 mL/min/1.73 m2
+Osmolality
+ 	Timeline: [Hospital Day 6 at 04:03]
+ 	Specimen: Blood
+Result	Value	Ref Range
+ 	Osmolality	311 (H)	275 - 295 mOsm/kg
+
+
+Imaging
+[Hospital Day 5] CT head showed worsening of leftward subfalcine herniation with midline shift. From 9 mm --> 13 mm. Worsened obstructive dilatation of left ventricle with periventricular edema  No evidence of hemorrhagic conversion.
+
+[Hospital Day 6] Status post expansion of the right hemicraniectomy as well as durotomy and placement of a drain. Slight improvement of midline shift, measuring 1.2 cm from 1.4 cm before. Persistent entrapment of the left lateral ventricle with ventriculomegaly and transependymal edema. Otherwise, no significant interval change.
+
+
+ Assessment and Plan
+[PATIENT NAME] is a 40 y.o.  with PMHx significant for prior stroke with residual L sided deficits presenting to ED on [Hospital Day 1] with L facial droop, L sided weakness, R gaze deviation and severe dysarthria, found to have loss of gray-white matter differentiation in R ACA-MCA territory and abrupt cut off of right ICA terminus. Patient not a candidate for intervention given level of stroke burden on CTH. Admitted to stroke team for continued workup, ICU level of care, with hospitalization complicated by worsening midline shift and progression of cerebral edema.
+
+
+Active Hospital Problems
+ 	Diagnosis
+•	Acute ischemic right MCA stroke (CMS/HHS-HCC)
+•	Cerebral edema (CMS/HHS-HCC)
+•	Acute hypoxic respiratory failure (CMS/HHS-HCC)
+•	Electrolyte and fluid disorder
+•	Cerebral herniation (CMS/HHS-HCC)
+
+
+Neuro
+#Right MCA/ACA
+#Malignant edema
+Date of Stroke: [Hospital Day 1]
+Acute revascularization therapy: No
+Stroke Type/Location:  Ischemic stroke of the Right  > [7 months and 13 days prior to hospital admission] of the MCA territory
+Stroke risk factors: smoking
+Stroke Etiology: possibly drugs (Urox positive for cocaine, fentanyl), cardioembolic or thrombophilia iso malignancy.
+- Antithrombotic Therapy:  Antiplatelet: Aspirin 81 mg held
+- Statin: Atorvastatin 80mg
+- Blood pressure goals: MAP goal 80-100
+- Cardiac assessment: TTE with saline bubble contrast showed LVEF 55-60%
+- CT and CTA head/neck [Hospital Day 1] with hyperdense R MCA, with abrupt cut off of right ICA terminus with few collateral to right MCA.
+- Decompressive hemicraniectomy performed [Hospital Day 1]
+- Repeat CT head s/p DHC showed evolving infarctions involving nearly the entirety of the right MCA and ACA territories with sulcal effacement and regional mass effect effacing the right lateral ventricle with persistent 5 mm leftward midline shift and right uncal herniation despite hemicraniectomy.
+- Repeat CT head [Hospital Day 2] PM showed change from 5 mm --> 8 mm leftward midline shift and right uncal herniation despite hemicraniectomy.
+- Repeat CT head [Hospital Day 3]: Further mild increase in edema with increasing herniation of infarcted parenchyma through the right decompressive hemicraniectomy defect
+- Repeat head CT [Hospital Day 5] showed  worsening midline shift. 9 mm --> 13 mm midline shift. See imaging results above. S/p repeat hemicraniectomy.
+- MRI Brain pending
+- obtain MRI fat sat
+- Labs: LDL 105, HgA1C pending, and TSH 0.105, T4 1.5
+- Rehab consultations: PT and OT
+- Swallow evaluation: [OCCUPATION] swallow evaluation
+- Keppra 1000 mg BID
+- Care per neurocritical care - currently on prop, fent, RASS goal -3.
+
+#History of substance use
+Utox positive for cannabis, cocaine, fentanyl and oxycodone.
+- oxycodone as needed
+
+#Tobacco use disorder
+- Nicotine patch
+
+Pulmonary
+#Intubation
+Intubated for weak airway protection due to neurologic injury
+- Care per neurocritical care.
+
+Renal
+Electrolyte derangements
+- Na > 145 per NSGY
+- Monitor electrolytes.
+- Monitor UOP
+
+GI
+#Ulcreative colitis
+Continue to monitor
+- ulcer prophylaxis with famotidine
+
+#Dysphagia
+- NGT/TF
+- bowel regimen with senna
+
+
+Heme/Onc
+#Right breast nodules
+Multiple enhancing small nodules are seen throughout the right breast.
+- Heme onc consulted
+- U/S right breast not possible inpatient
+- CT PET whenever able
+- Follow up hypercoagulability labs
+
+#Anemia
+No active bleeding. Hgb 6.5 on [Hospital Day 6] AM.
+- Transfusion < 7, Plt < 50K.
+
+ID
+#Leukocytosis
+- Downtrending, monitor signs of infection
+
+- Prophylaxis:
+             Venous Thromboembolism Prophylaxis: Yes, mechanical compression devices.
+
+- LDA:
+
+Patient Lines/Drains/Airways Status
+
+
+Active Active LDAs (selected)
+
+
+ 	Name	Placement date	Placement time	Site	Days
+ 	CVC Non-Tunneled [Hospital Day 5 at 14:00] Right Femoral	[Hospital Day 5 at 14:00] 	Femoral 	less than 1
+ 	Peripheral IV [Hospital Day 1 at 05:20] 24 G Posterior;Right Hand	[Hospital Day 1 at 05:20] 	Hand 	5
+ 	Peripheral IV [Hospital Day 1 at 10:02] 20 G Anterior;Right Forearm	[Hospital Day 1 at 10:02] 	Forearm 	4
+ 	Peripheral IV [Hospital Day 1 at 13:25] 20 G Left Hand	[Hospital Day 1 at 13:25] 	Hand 	4
+ 	Peripheral IV [Hospital Day 3 at 16:00] 20 G Anterior;Left;Lateral Forearm	[Hospital Day 3 at 16:00] 	Forearm 	2
+ 	Peripheral IV [Hospital Day 4 at 15:00] 20 G Left;Posterior Forearm	[Hospital Day 4 at 15:00] 	Forearm 	1
+ 	Peripheral IV [Hospital Day 5 at 13:33] 20 G Posterior;Right Forearm	[Hospital Day 5 at 13:33] 	Forearm 	less than 1
+ 	Urinary Catheter [Hospital Day 5 at 15:50]	[Hospital Day 5 at 15:50] 	— 	less than 1
+ 	Non-Surgical Airway [Hospital Day 1 at 13:22]	[Hospital Day 1 at 13:22] 	—	4
+
+
+- Code Status: CPR, Full Code

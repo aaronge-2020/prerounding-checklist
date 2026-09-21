@@ -22,11 +22,153 @@ import {
   createPrimaryTeamNote,
   primaryTeamNoteFields,
   updatePrimaryTeamNoteSection
-} from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
+} from "../../patient-context/primary-team-note.js?v=20260921-primary-note-composer";
+import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20260921-primary-note-composer";
 
 export function createDailySourceController(deps) {
+  function noteDraftSessionHasContent(draft) {
+    const textValues = [
+      ...Object.values(draft?.sections || {}),
+      draft?.objective?.manual,
+      draft?.assessment,
+      ...Object.values(draft?.closing || {})
+    ];
+    return textValues.some((value) => String(value?.deidentifiedText || "").trim())
+      || Boolean(draft?.objective?.selectedBlocks?.length)
+      || Boolean(draft?.checklistFindings?.selectedBlocks?.length)
+      || Boolean(draft?.problems?.length);
+  }
+
   function structuredNoteKey(scope) {
     return scope === "admission" ? "admission" : deps.selectedChecklistDay(deps.active())?.id || "";
+  }
+
+  function structuredNoteType(scope) {
+    return scope === "admission" ? NOTE_TYPES.H_AND_P : NOTE_TYPES.PROGRESS;
+  }
+
+  function existingStructuredNote(scope) {
+    const patient = deps.active();
+    const day = scope === "admission" ? null : deps.selectedChecklistDay(patient);
+    return scope === "admission" ? patient?.admissionPrimaryTeamNote : day?.primaryTeamNote;
+  }
+
+  function structuredNoteComposer(scope, { create = true } = {}) {
+    const key = structuredNoteKey(scope);
+    if (!key) return null;
+    const existing = deps.app.structuredNoteComposers.get(key);
+    if (existing || !create) return existing || null;
+    const noteType = structuredNoteType(scope);
+    const composer = {
+      mode: existingStructuredNote(scope) ? "sections" : "paste",
+      pastedText: "",
+      parseResult: parsePrimaryTeamNote("", noteType),
+      activeFieldId: primaryTeamNoteFields(noteType)[0]?.id || "",
+      dirtyFieldIds: []
+    };
+    deps.app.structuredNoteComposers.set(key, composer);
+    return composer;
+  }
+
+  function setStructuredNoteComposer(scope, changes) {
+    const key = structuredNoteKey(scope);
+    if (!key) return null;
+    const current = structuredNoteComposer(scope) || {};
+    const next = { ...current, ...changes };
+    deps.app.structuredNoteComposers.set(key, next);
+    return next;
+  }
+
+  function updateStructuredNotePaste(scope, value) {
+    const key = structuredNoteKey(scope);
+    if (!key) return;
+    const noteType = structuredNoteType(scope);
+    const parseResult = parsePrimaryTeamNote(value, noteType);
+    const composer = structuredNoteComposer(scope);
+    const dirty = new Set(composer?.dirtyFieldIds || []);
+    const current = deps.app.structuredNoteDrafts.get(key) || {};
+    const parsedDrafts = { ...current };
+    for (const field of primaryTeamNoteFields(noteType)) {
+      if (!dirty.has(field.id)) parsedDrafts[field.id] = parseResult.sections[field.id] || "";
+    }
+    deps.app.structuredNoteDrafts.set(key, parsedDrafts);
+    setStructuredNoteComposer(scope, { pastedText: String(value || ""), parseResult });
+    const panel = document.querySelector(`[data-structured-note-detected="${scope}"]`);
+    if (panel) panel.innerHTML = deps.dailyPresentation.renderStructuredNoteDetected({ noteType, parseResult, scope });
+    document.querySelectorAll(`[data-action="review-structured-note-sections"][data-note-scope="${scope}"]`).forEach((button) => {
+      button.disabled = !String(value || "").trim() || !parseResult.detectedSectionCount;
+    });
+    const count = document.querySelector(`[data-structured-note-paste-count="${scope}"]`);
+    if (count) count.textContent = `${String(value || "").length.toLocaleString()} characters · session only`;
+  }
+
+  function setStructuredNoteMode(scope, mode) {
+    setStructuredNoteComposer(scope, { mode: mode === "sections" ? "sections" : "paste" });
+    deps.render();
+  }
+
+  function reviewStructuredNoteSections(scope) {
+    const composer = structuredNoteComposer(scope);
+    const drafts = deps.app.structuredNoteDrafts.get(structuredNoteKey(scope)) || {};
+    const fields = primaryTeamNoteFields(structuredNoteType(scope));
+    const detected = new Set(composer?.parseResult?.detectedFieldIds || []);
+    const firstDetected = fields.find((field) => detected.has(field.id) && String(drafts[field.id] || "").trim())?.id;
+    const firstPopulated = fields.find((field) => String(drafts[field.id] || "").trim())?.id;
+    setStructuredNoteComposer(scope, {
+      mode: "sections",
+      activeFieldId: firstDetected || firstPopulated || composer?.activeFieldId
+    });
+    deps.render();
+  }
+
+  function selectStructuredNoteField(scope, fieldId) {
+    const fields = primaryTeamNoteFields(structuredNoteType(scope));
+    if (!fields.some((field) => field.id === fieldId)) return;
+    setStructuredNoteComposer(scope, { mode: "sections", activeFieldId: fieldId });
+    deps.render();
+    requestAnimationFrame(() => document.querySelector(`[data-structured-note-scope="${scope}"][data-structured-note-field="${fieldId}"]`)?.focus());
+  }
+
+  function moveStructuredNoteField(scope, direction) {
+    const fields = primaryTeamNoteFields(structuredNoteType(scope));
+    const composer = structuredNoteComposer(scope);
+    const currentIndex = Math.max(0, fields.findIndex((field) => field.id === composer?.activeFieldId));
+    const nextIndex = Math.min(fields.length - 1, Math.max(0, currentIndex + Number(direction || 0)));
+    selectStructuredNoteField(scope, fields[nextIndex]?.id || fields[0]?.id || "");
+  }
+
+  function clearStructuredNoteField(scope, fieldId) {
+    updateStructuredNoteDraft(scope, fieldId, "");
+    deps.render();
+  }
+
+  function clearStructuredNotePaste(scope) {
+    const composer = structuredNoteComposer(scope);
+    setStructuredNoteComposer(scope, { dirtyFieldIds: [] });
+    updateStructuredNotePaste(scope, "");
+    if (composer?.mode !== "paste") setStructuredNoteComposer(scope, { mode: "paste" });
+    deps.render();
+  }
+
+  function handleStructuredNoteAction(target) {
+    const scope = target.dataset.noteScope || "daily";
+    const action = target.dataset.action;
+    if (action === "select-structured-note-mode") setStructuredNoteMode(scope, target.dataset.noteMode || "paste");
+    else if (action === "review-structured-note-sections") reviewStructuredNoteSections(scope);
+    else if (action === "select-structured-note-field") selectStructuredNoteField(scope, target.dataset.noteField || "");
+    else if (action === "move-structured-note-field") moveStructuredNoteField(scope, Number(target.dataset.direction || 0));
+    else if (action === "clear-structured-note-field") clearStructuredNoteField(scope, target.dataset.noteField || "");
+    else if (action === "clear-structured-note-paste") clearStructuredNotePaste(scope);
+    else return false;
+    return true;
+  }
+
+  function handleInput(target) {
+    if (target.matches("[data-result-metadata]")) updateResultMetadata(target.dataset.resultScope || "daily", target.dataset.resultMetadata, target.value);
+    else if (target.matches("[data-structured-note-paste]")) updateStructuredNotePaste(target.dataset.structuredNoteScope || "daily", target.value);
+    else if (target.matches("[data-structured-note-field]")) updateStructuredNoteDraft(target.dataset.structuredNoteScope || "daily", target.dataset.structuredNoteField, target.value);
+    else return false;
+    return true;
   }
 
   function updateStructuredNoteDraft(scope, fieldId, value) {
@@ -34,6 +176,19 @@ export function createDailySourceController(deps) {
     if (!key) return;
     const current = deps.app.structuredNoteDrafts.get(key) || {};
     deps.app.structuredNoteDrafts.set(key, { ...current, [fieldId]: String(value || "") });
+    const composer = structuredNoteComposer(scope);
+    const dirty = new Set(composer?.dirtyFieldIds || []);
+    dirty.add(fieldId);
+    setStructuredNoteComposer(scope, { activeFieldId: fieldId, dirtyFieldIds: [...dirty] });
+    const row = document.querySelector(`[data-action="select-structured-note-field"][data-note-scope="${scope}"][data-note-field="${fieldId}"]`);
+    const cleaned = String(value || "").replace(/\s+/g, " ").trim();
+    const status = row?.querySelector(".structured-note-section-status");
+    if (status) { status.classList.toggle("complete", Boolean(cleaned)); status.textContent = cleaned ? "✓" : ""; }
+    const snippet = row?.querySelector("small");
+    if (snippet) snippet.textContent = cleaned ? (cleaned.length > 54 ? `${cleaned.slice(0, 53)}…` : cleaned) : "Not added";
+    const nav = row?.closest(".structured-note-section-nav");
+    const count = nav?.querySelector(".structured-note-section-nav-heading span");
+    if (count) count.textContent = `${nav.querySelectorAll(".structured-note-section-status.complete").length} of ${primaryTeamNoteFields(structuredNoteType(scope)).length} added`;
   }
 
   async function saveStructuredPrimaryNote(scope) {
@@ -73,6 +228,8 @@ export function createDailySourceController(deps) {
         return { ...current, days: upsertDay(current.days, nextDay) };
       });
       deps.app.structuredNoteDrafts.delete(key);
+      deps.app.structuredNoteComposers.delete(key);
+      if (!noteDraftSessionHasContent(deps.app.noteDraftSessions.get(key))) deps.app.noteDraftSessions.delete(key);
       await deps.persistVault(`${noteType === NOTE_TYPES.H_AND_P ? "H&P" : "Progress-note"} source de-identified and saved locally.`);
       deps.updateDeidOperation({ active: false, message: "Primary-team note saved in the encrypted vault." });
       deps.setStatus("Primary-team note saved in the encrypted vault.");
@@ -318,6 +475,7 @@ export function createDailySourceController(deps) {
       admissionSourceDraft: deps.app.admissionSourceDraft,
       admissionSourceParse: deps.app.admissionSourceParse,
       structuredNoteDrafts: Object.fromEntries(deps.app.structuredNoteDrafts),
+      structuredNoteComposers: Object.fromEntries(deps.app.structuredNoteComposers),
       dailyResultMetadata: deps.app.dailyResultMetadata,
       admissionResultMetadata: deps.app.admissionResultMetadata,
       packetCheck: sourceCapturePacketCheck(selected?.sourceCaptures || [], { structuredNote: selected?.primaryTeamNote, scope: "daily" }),
@@ -491,5 +649,25 @@ export function createDailySourceController(deps) {
     deps.render();
   }
 
-  return Object.freeze({ addAdmissionSource, addSource, renderDaily, saveSources, saveStructuredPrimaryNote, selectPacket, selectSourceKind, updateDraft, updateParsedDraft, updateResultMetadata, updateStructuredNoteDraft });
+  return Object.freeze({
+    addAdmissionSource,
+    addSource,
+    clearStructuredNoteField,
+    clearStructuredNotePaste,
+    handleStructuredNoteAction,
+    handleInput,
+    moveStructuredNoteField,
+    renderDaily,
+    saveSources,
+    saveStructuredPrimaryNote,
+    selectPacket,
+    selectSourceKind,
+    selectStructuredNoteField,
+    setStructuredNoteMode,
+    updateDraft,
+    updateParsedDraft,
+    updateResultMetadata,
+    updateStructuredNoteDraft,
+    updateStructuredNotePaste
+  });
 }

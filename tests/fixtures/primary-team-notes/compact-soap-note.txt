@@ -1,0 +1,93 @@
+HPI
+40 y.o. female history of previous CVA, ulcerative colitis who presents with as a stroke.  Last known well midnight, CT/CTA obtained on arrival to the ED demonstrates a complete occlusion of the right M1 MCA with acute infarct of the entire right MCA territory.  Along with this sulcal effacement and 3 mm of leftward midline shift.  No reported AC/AP.
+
+9/21: Patient taken emergently to the OR yesterday for re-expansion of right decompressive craniectomy with expansile duraplasty given cerebral edema
+
+O:
+Vitals:
+Temp:  [35 °C (95 °F)-36.9 °C (98.4 °F)] 36.9 °C (98.4 °F)
+Heart Rate (Monitored):  [70-97] 71
+Resp:  [4-26] 18
+BP: (110-141)/(66-88) 122/78
+MAP:  [83 MM HG-102 MM HG] 93 MM HG
+SpO2:  [97 %-100 %] 100 %
+ETCO2 (mm/Hg):  [21-30] 30
+
+Intake/Output Summary (Last 24 hours) at 9/21/2026 0929
+Last data filed at 9/21/2026 0800
+Gross per 24 hour
+Intake	2122.26 ml
+Output	1914 ml
+Net	208.26 ml
+
+Exam:
+On propofol 50 and fentanyl 50
+GCS 3T, +cgc
+R pupil 3.85mm NPI 2.1, L pupil 2.37mm NPI 4.2
+BU/BL flaccid (on sedation for ICP control)
+
+
+
+Labs:
+BMP
+
+150\*	121\*	14	94
+3.5	23	0.5
+CBC
+
+10.4\*	6.5\*	242
+21.5\*
+COAG
+
+
+
+
+
+Imaging:
+Reviewed
+
+Current Meds:
+Current Rx
+Current Rx
+•  \*NUTRITION Tube Feeding Continuous,
+•  acetaminophen, 1,000 mg
+•  [Held by provider] aspirin, 81 mg
+•  atorvastatin, 80 mg
+•  calcium gluconate, 2 g
+•  ceFAZolin, 2 g
+•  chlorhexidine gluconate, 15 mL
+•  dextrose, 25 mL
+•  famotidine, 20 mg
+•  fentaNYL, 50 mcg/hr
+•  fentaNYL, 50 mcg
+•  glucagon, 1 mg
+•  heparin, 5,000 Units
+•  hydrALAZINE, 10 mg
+•  labetalol, 10 mg
+•  levETIRAcetam, 1,000 mg
+•  magnesium sulfate, 2 g **OR** magnesium sulfate, 4 g
+•  multivitamin, 1 tablet
+•  nicotine, 1 patch **FOLLOWED BY** [START ON 10/1/2026] nicotine, 1 patch
+•  ondansetron, 4 mg
+•  perflutren lipid microspheres, 2-6 mL
+•  potassium bicarb-citric acid, 20 mEq **OR** potassium bicarb-citric acid, 40 mEq **OR** potassium bicarb-citric acid, 60 mEq
+•  potassium chloride, 10 mEq
+•  propofol, 5-50 mcg/kg/min
+•  [Held by provider] senna, 2 tablet
+•  sodium acetate/chloride 7.5% bolus, 250 mL
+•  sodium phosphate IV (non-ICU), 30 mmol
+•  thiamine, 100 mg
+
+A/P:\
+40 y.o. female s/p R DHC with expansile duraplasty
+
+Plan
+
+- SBP<160
+- q1 checks with pupillometry
+- JPx1 on bulb suction
+- Closed with staples
+- CT head w/o reviewed
+- HOB>45
+- NA>145
+- Verticalize in AM

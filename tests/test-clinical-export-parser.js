@@ -13,6 +13,7 @@ import {
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
 const parserRevision = "20260921-lab-trends-v2";
+const primaryNoteRevision = "20260921-primary-note-composer";
 const runtimeSources = {
   index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
   app: readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8"),
@@ -33,10 +34,10 @@ const runtimeSources = {
   parser: readFileSync(new URL("../src/patient-context/clinical-export-parser.js", import.meta.url), "utf8"),
   epicParser: readFileSync(new URL("../src/patient-context/epic-clinical-export-parser.js", import.meta.url), "utf8")
 };
-assert.match(runtimeSources.index, new RegExp(`styles\\.css\\?v=${parserRevision}`));
-assert.match(runtimeSources.index, new RegExp(`app\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.app, new RegExp(`daily/presentation\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.app, new RegExp(`daily/source-controller\\.js\\?v=${parserRevision}`));
+assert.match(runtimeSources.index, new RegExp(`styles\\.css\\?v=${primaryNoteRevision}`));
+assert.match(runtimeSources.index, new RegExp(`app\\.js\\?v=${primaryNoteRevision}`));
+assert.match(runtimeSources.app, new RegExp(`daily/presentation\\.js\\?v=${primaryNoteRevision}`));
+assert.match(runtimeSources.app, new RegExp(`daily/source-controller\\.js\\?v=${primaryNoteRevision}`));
 assert.match(runtimeSources.app, new RegExp(`source-captures\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.app, new RegExp(`app/state/persistence\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.app, new RegExp(`patient-context/sections\\.js\\?v=${parserRevision}`));

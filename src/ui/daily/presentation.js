@@ -2,7 +2,7 @@ import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily
 import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260921-lab-trends-v2";
 import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-lab-trends-v2";
 import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-lab-trends-v2";
-import { primaryTeamNoteFields } from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
+import { primaryTeamNoteFields } from "../../patient-context/primary-team-note.js?v=20260921-primary-note-composer";
 import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-lab-trends-v2";
 
 export function createDailyPresentation({ escapeHtml, icon }) {
@@ -244,25 +244,90 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function renderStructuredPrimaryNote({ noteType, note, draftValues = {}, scope, deidBusy }) {
+  function renderStructuredNoteDetected({ noteType, parseResult, scope }) {
+    const fields = primaryTeamNoteFields(noteType);
+    const detectedIds = new Set(parseResult?.detectedFieldIds || []);
+    const detectedFields = fields.filter((field) => detectedIds.has(field.id));
+    if (!detectedFields.length) {
+      return `<div class="structured-note-detected-empty"><p>No sections found yet.</p><span>Paste a note with headings such as HPI, Medications, Exam, or Assessment and Plan.</span></div>`;
+    }
+    return `
+      <ul class="structured-note-detected-list">
+        ${detectedFields.map((field) => `<li><span aria-hidden="true">✓</span>${escapeHtml(field.label)}</li>`).join("")}
+      </ul>
+      <button type="button" class="button--quiet structured-note-review-mapping" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}">Review section mapping →</button>
+    `;
+  }
+
+  function structuredNoteValue(note, draftValues, fieldId) {
+    return Object.hasOwn(draftValues, fieldId)
+      ? String(draftValues[fieldId] || "")
+      : String(note?.sections?.[fieldId]?.deidentifiedText || "");
+  }
+
+  function structuredNoteSnippet(value) {
+    const singleLine = String(value || "").replace(/\s+/g, " ").trim();
+    if (!singleLine) return "Not added";
+    return singleLine.length > 54 ? `${singleLine.slice(0, 53)}…` : singleLine;
+  }
+
+  function renderStructuredPrimaryNote({ noteType, note, draftValues = {}, composer = {}, scope, deidBusy }) {
     const admission = noteType === NOTE_TYPES.H_AND_P;
     const typeLabel = admission ? "Primary-team admission note" : "Prior primary-team progress note";
     const help = admission
-      ? "Enter every available section from the admission H&P. This is source material for the note you will draft separately."
-      : "Enter every available section from the prior primary-team note, usually yesterday’s note. Include objective data, assessment, and plan—not only the subjective history.";
+      ? "Paste the complete admission H&P. You’ll review what is kept before anything is saved."
+      : "Paste the complete prior primary-team note. You’ll review what is kept before anything is saved.";
     const saved = Boolean(note);
+    const fields = primaryTeamNoteFields(noteType);
+    const mode = composer.mode === "sections" || (!composer.mode && saved) ? "sections" : "paste";
+    const activeField = fields.find((field) => field.id === composer.activeFieldId) || fields[0];
+    const activeIndex = Math.max(0, fields.findIndex((field) => field.id === activeField?.id));
+    const completedCount = fields.filter((field) => structuredNoteValue(note, draftValues, field.id).trim()).length;
+    const parseResult = composer.parseResult || { detectedFieldIds: [] };
+    const manuallyEditedFields = new Set(composer.dirtyFieldIds || []);
+    const pastedText = String(composer.pastedText || "");
     return `<section class="structured-primary-note" aria-labelledby="${scope}StructuredNoteHeading">
-      <div class="section-heading tight"><div><h3 id="${scope}StructuredNoteHeading">${typeLabel}</h3><p class="muted">${help} Leave unavailable sections blank.</p></div><span class="source-parse-local">${saved ? "Saved locally" : "Optional"}</span></div>
-      <div class="structured-note-grid">
-        ${primaryTeamNoteFields(noteType).map((field) => {
-          const value = Object.hasOwn(draftValues, field.id)
-            ? draftValues[field.id]
-            : note?.sections?.[field.id]?.deidentifiedText || "";
-          const rows = field.rows || 4;
-          return `<label class="${field.id === "one_liner" ? "structured-note-one-liner" : ""}">${escapeHtml(field.label)}${field.id === "one_liner" ? " · source summary" : ""}<textarea rows="${rows}" data-structured-note-field="${escapeHtml(field.id)}" data-structured-note-scope="${escapeHtml(scope)}" placeholder="Optional">${escapeHtml(value)}</textarea></label>`;
-        }).join("")}
+      <div class="section-heading tight structured-note-heading"><div><h3 id="${scope}StructuredNoteHeading">${typeLabel}</h3><p class="muted">${help}</p></div><span class="source-parse-local">${saved ? "Saved locally" : "Optional"}</span></div>
+      <div class="structured-note-mode-toggle" role="group" aria-label="Primary-team note entry mode">
+        <button type="button" data-action="select-structured-note-mode" data-note-scope="${escapeHtml(scope)}" data-note-mode="paste" aria-pressed="${String(mode === "paste")}" class="${mode === "paste" ? "selected" : ""}">Paste full note</button>
+        <button type="button" data-action="select-structured-note-mode" data-note-scope="${escapeHtml(scope)}" data-note-mode="sections" aria-pressed="${String(mode === "sections")}" class="${mode === "sections" ? "selected" : ""}">Enter by section</button>
       </div>
-      <div class="source-draft-footer"><span class="muted">Saved source fields are locally de-identified before entering the encrypted vault.</span><button type="button" class="button--primary" data-action="save-structured-primary-note" data-note-scope="${escapeHtml(scope)}" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save primary-team note"}</button></div>
+      ${mode === "paste" ? `
+        <div class="structured-note-paste-layout">
+          <label class="structured-note-paste-label" for="${scope}PrimaryNotePaste">${admission ? "Admission note" : "Prior progress note"}
+            <textarea id="${scope}PrimaryNotePaste" rows="16" data-structured-note-paste data-structured-note-scope="${escapeHtml(scope)}" placeholder="Paste the full note here…">${escapeHtml(pastedText)}</textarea>
+          </label>
+          <aside class="structured-note-detected" aria-labelledby="${scope}DetectedSectionsTitle">
+            <h4 id="${scope}DetectedSectionsTitle">Sections found</h4>
+            <div data-structured-note-detected="${escapeHtml(scope)}" role="status" aria-live="polite">${renderStructuredNoteDetected({ noteType, parseResult, scope })}</div>
+          </aside>
+        </div>
+        <div class="structured-note-paste-meta"><span data-structured-note-paste-count="${escapeHtml(scope)}">${pastedText.length.toLocaleString()} characters · session only</span></div>
+        <div class="structured-note-actions"><button type="button" class="button--quiet" data-action="clear-structured-note-paste" data-note-scope="${escapeHtml(scope)}" ${pastedText ? "" : "disabled"}>Clear</button><button type="button" class="button--primary" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() && parseResult.detectedSectionCount ? "" : "disabled"}>Review sections</button></div>
+      ` : `
+        <div class="structured-note-section-layout">
+          <nav class="structured-note-section-nav" aria-label="Note sections">
+            <div class="structured-note-section-nav-heading"><strong>Note sections</strong><span>${completedCount} of ${fields.length} added</span></div>
+            <div class="structured-note-section-list">
+              ${fields.map((field) => {
+                const value = structuredNoteValue(note, draftValues, field.id);
+                const complete = Boolean(value.trim());
+                const selected = field.id === activeField?.id;
+                const snippet = structuredNoteSnippet(value);
+                const statusText = manuallyEditedFields.has(field.id) ? `Manually edited · ${snippet}` : snippet;
+                return `<button type="button" data-action="select-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-note-field="${escapeHtml(field.id)}" class="${selected ? "selected" : ""}" aria-current="${selected ? "true" : "false"}"><span class="structured-note-section-status ${complete ? "complete" : ""}" aria-hidden="true">${complete ? "✓" : ""}</span><span><strong>${escapeHtml(field.label)}</strong><small>${escapeHtml(statusText)}</small></span></button>`;
+              }).join("")}
+            </div>
+          </nav>
+          <div class="structured-note-section-editor">
+            <div class="structured-note-section-editor-heading"><div><h4>${escapeHtml(activeField?.label || "Note section")}</h4><p class="muted">Add only what is available in the source note.</p></div><span>Optional</span></div>
+            <textarea rows="15" aria-label="${escapeHtml(activeField?.label || "Note section")}" data-structured-note-field="${escapeHtml(activeField?.id || "")}" data-structured-note-scope="${escapeHtml(scope)}" placeholder="Optional">${escapeHtml(structuredNoteValue(note, draftValues, activeField?.id || ""))}</textarea>
+            <div class="structured-note-editor-actions"><button type="button" class="button--quiet" data-action="clear-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-note-field="${escapeHtml(activeField?.id || "")}">Clear section</button><div class="button-row"><button type="button" class="button--secondary" data-action="move-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-direction="-1" ${activeIndex === 0 ? "disabled" : ""}>Previous</button><button type="button" class="button--primary" data-action="move-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-direction="1" ${activeIndex === fields.length - 1 ? "disabled" : ""}>Next section</button></div></div>
+          </div>
+        </div>
+        <div class="structured-note-actions structured-note-actions--save"><span></span><div class="button-row"><button type="button" class="button--secondary" data-action="select-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-note-field="${escapeHtml(fields[0]?.id || "")}">Review all sections</button><button type="button" class="button--primary" data-action="save-structured-primary-note" data-note-scope="${escapeHtml(scope)}" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Review and de-identify"}</button></div></div>
+      `}
+      <div class="structured-note-privacy"><span aria-hidden="true">${icon("shield")}</span><span>Text stays in this tab until it is de-identified and saved.</span></div>
     </section>`;
   }
 
@@ -282,6 +347,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     generateLabel,
     primaryTeamNote,
     structuredNoteDraft,
+    structuredNoteComposer,
     noteType,
     resultMetadata = { label: "", category: "imaging", date: "", context: "" }
   }) {
@@ -295,7 +361,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     return `
       ${renderDeidStrip}
       ${renderSourcePicker(sourceOptions, selectedSourceKind, scope)}
-      ${selectedSourceKind === "primary_note" ? renderStructuredPrimaryNote({ noteType, note: primaryTeamNote, draftValues: structuredNoteDraft, scope, deidBusy }) : `<section class="source-capture-composer" aria-labelledby="addChartSourceTitle">
+      ${selectedSourceKind === "primary_note" ? renderStructuredPrimaryNote({ noteType, note: primaryTeamNote, draftValues: structuredNoteDraft, composer: structuredNoteComposer, scope, deidBusy }) : `<section class="source-capture-composer" aria-labelledby="addChartSourceTitle">
         <div class="section-heading tight"><div><h3 id="addChartSourceTitle">Add chart source</h3><p class="muted">Paste a full Epic or CPRS block. Medication, laboratory, and vital-sign tables are organized automatically; narrative text stays as written.</p></div></div>
         ${selectedSourceKind === "results" ? `<div class="structured-result-fields">
           <label>Result label<input data-result-metadata="label" data-result-scope="${escapeHtml(scope)}" value="${escapeHtml(resultMetadata.label || "")}" placeholder="CT Head/Neck Without Contrast"></label>
@@ -380,6 +446,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     admissionSourceDraft = "",
     admissionSourceParse = null,
     structuredNoteDrafts = {},
+    structuredNoteComposers = {},
     dailyResultMetadata = { label: "", category: "imaging", date: "", context: "" },
     admissionResultMetadata = { label: "", category: "imaging", date: "", context: "" },
     packetCheck,
@@ -430,7 +497,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
               ? `<section class="panel admission-packet packet-surface hospital-day-packet">
               <div class="admission-packet-body">
                 <div class="section-heading source-day-heading"><div><h2>Admission</h2><p class="muted">Paste broad chart blocks. The app preserves the source and includes every saved capture.</p></div></div>
-                ${renderSourceWorkspace({ scope: "admission", sources: admissionSections, sourceOptions: admissionSourceOptions, selectedSourceKind: admissionSourceKind, sourceDraft: admissionSourceDraft, sourceParse: admissionSourceParse, renderSourceCaptureEditor: (section) => renderSectionEditor(section, "context"), renderWarnings, packetCheck: admissionPacketCheck, deidBusy, renderDeidStrip, generateAction: "open-admission-note", generateLabel: "Review data / draft H&P", primaryTeamNote: patient.admissionPrimaryTeamNote, structuredNoteDraft: structuredNoteDrafts?.admission || {}, noteType: NOTE_TYPES.H_AND_P, resultMetadata: admissionResultMetadata })}
+                ${renderSourceWorkspace({ scope: "admission", sources: admissionSections, sourceOptions: admissionSourceOptions, selectedSourceKind: admissionSourceKind, sourceDraft: admissionSourceDraft, sourceParse: admissionSourceParse, renderSourceCaptureEditor: (section) => renderSectionEditor(section, "context"), renderWarnings, packetCheck: admissionPacketCheck, deidBusy, renderDeidStrip, generateAction: "open-admission-note", generateLabel: "Review data / draft H&P", primaryTeamNote: patient.admissionPrimaryTeamNote, structuredNoteDraft: structuredNoteDrafts?.admission || {}, structuredNoteComposer: structuredNoteComposers?.admission || {}, noteType: NOTE_TYPES.H_AND_P, resultMetadata: admissionResultMetadata })}
               </div>
           </section>`
               : ""
@@ -448,7 +515,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
                   <button class="button--secondary" type="button" data-action="save-day" ${deidBusy || !selected.sourceCaptures.length ? "disabled" : ""}>Save source edits</button>
                 </div>
               </div>
-              ${renderSourceWorkspace({ scope: "daily", sources: selected.sourceCaptures, sourceOptions, selectedSourceKind, sourceDraft, sourceParse, renderSourceCaptureEditor, renderWarnings, packetCheck, deidBusy, renderDeidStrip, generateAction: "open-progress-note", generateLabel: "Review data / draft progress note", primaryTeamNote: selected.primaryTeamNote, structuredNoteDraft: structuredNoteDrafts?.[selected.id] || {}, noteType: NOTE_TYPES.PROGRESS, resultMetadata: dailyResultMetadata })}
+              ${renderSourceWorkspace({ scope: "daily", sources: selected.sourceCaptures, sourceOptions, selectedSourceKind, sourceDraft, sourceParse, renderSourceCaptureEditor, renderWarnings, packetCheck, deidBusy, renderDeidStrip, generateAction: "open-progress-note", generateLabel: "Review data / draft progress note", primaryTeamNote: selected.primaryTeamNote, structuredNoteDraft: structuredNoteDrafts?.[selected.id] || {}, structuredNoteComposer: structuredNoteComposers?.[selected.id] || {}, noteType: NOTE_TYPES.PROGRESS, resultMetadata: dailyResultMetadata })}
             `
                 : `<div class="empty-state">Add a hospital day to begin capturing selected-day sources.</div>`
             }
@@ -460,5 +527,5 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  return Object.freeze({ renderClinicalDisplay, renderDaily, renderDayRow, renderSavedClinicalDisplay, renderSourceParsePreview });
+  return Object.freeze({ renderClinicalDisplay, renderDaily, renderDayRow, renderSavedClinicalDisplay, renderSourceParsePreview, renderStructuredNoteDetected });
 }

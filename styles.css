@@ -2039,6 +2039,285 @@ button.var-fill:focus-visible {
   padding: 18px;
 }
 
+.structured-primary-note {
+  display: grid;
+  gap: 16px;
+}
+
+.structured-note-heading { margin: 0; }
+.structured-note-heading h3 { margin-bottom: 3px; }
+.structured-note-heading p { max-width: 82ch; margin: 0; }
+
+.structured-note-mode-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 215px));
+  width: fit-content;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.structured-note-mode-toggle button {
+  min-height: 42px;
+  border: 0;
+  border-right: 1px solid var(--border);
+  background: var(--surface-subtle);
+  padding: 8px 18px;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.structured-note-mode-toggle button:last-child { border-right: 0; }
+.structured-note-mode-toggle button.selected {
+  background: color-mix(in srgb, var(--surface) 90%, var(--accent) 10%);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--ink);
+}
+
+.structured-note-paste-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 290px);
+  align-items: stretch;
+  gap: 16px;
+  min-width: 0;
+}
+
+.structured-note-paste-label {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+}
+
+.structured-note-paste-label textarea {
+  min-height: 360px;
+  resize: vertical;
+  background: var(--surface);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  tab-size: 4;
+}
+
+.structured-note-detected {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 360px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.structured-note-detected h4 {
+  margin: 0;
+  padding: 15px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+}
+
+.structured-note-detected > div {
+  display: grid;
+  align-content: start;
+  min-height: 0;
+  overflow: auto;
+}
+
+.structured-note-detected-list {
+  display: grid;
+  margin: 0;
+  padding: 0 16px;
+  list-style: none;
+}
+
+.structured-note-detected-list li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.structured-note-detected-list li span,
+.structured-note-section-status.complete {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 20%, var(--surface));
+  color: var(--accent-strong, var(--accent));
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.structured-note-review-mapping { justify-self: start; margin: 12px 10px; }
+
+.structured-note-detected-empty {
+  padding: 20px 16px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.structured-note-detected-empty p { margin: 0 0 5px; color: var(--ink); font-weight: 700; }
+.structured-note-paste-meta { margin-top: -9px; color: var(--muted); font-size: 11px; }
+
+.structured-note-actions,
+.structured-note-editor-actions,
+.structured-note-privacy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.structured-note-actions--save { border-top: 1px solid var(--border); padding-top: 14px; }
+
+.structured-note-privacy {
+  justify-content: flex-start;
+  border-top: 1px solid var(--border);
+  padding-top: 13px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.structured-note-privacy > span:first-child {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--muted);
+  border-radius: 8px;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.structured-note-section-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 310px) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 16px;
+  min-width: 0;
+}
+
+.structured-note-section-nav,
+.structured-note-section-editor {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.structured-note-section-nav {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 470px;
+}
+
+.structured-note-section-nav-heading,
+.structured-note-section-editor-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.structured-note-section-nav-heading span,
+.structured-note-section-editor-heading > span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.structured-note-section-list {
+  min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.structured-note-section-list > button {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 54px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  padding: 8px 12px;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.structured-note-section-list > button:hover { background: var(--surface-subtle); }
+.structured-note-section-list > button.selected {
+  background: color-mix(in srgb, var(--surface) 84%, var(--accent) 16%);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.structured-note-section-list strong,
+.structured-note-section-list small { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.structured-note-section-list strong { color: var(--ink); font-size: 12px; }
+.structured-note-section-list small { margin-top: 2px; color: var(--muted); font-size: 10px; }
+
+.structured-note-section-status {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border-strong, var(--border));
+  border-radius: 50%;
+}
+
+.structured-note-section-editor {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 470px;
+  padding: 0 15px 14px;
+}
+
+.structured-note-section-editor-heading { margin-inline: -15px; }
+.structured-note-section-editor-heading h4 { margin: 0 0 3px; color: var(--ink); }
+.structured-note-section-editor-heading p { margin: 0; font-size: 11px; }
+
+.structured-note-section-editor textarea {
+  min-height: 320px;
+  margin: 14px 0;
+  resize: none;
+  background: var(--surface);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+@media (max-width: 980px) {
+  .structured-note-paste-layout,
+  .structured-note-section-layout { grid-template-columns: 1fr; }
+  .structured-note-detected { min-height: 0; }
+  .structured-note-section-nav { height: 300px; }
+}
+
+@media (max-width: 680px) {
+  .structured-primary-note { padding: 14px; }
+  .structured-note-mode-toggle { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+  .structured-note-mode-toggle button { padding-inline: 10px; }
+  .structured-note-paste-label textarea { min-height: 280px; }
+  .structured-note-actions,
+  .structured-note-editor-actions { align-items: stretch; flex-direction: column; }
+  .structured-note-actions button,
+  .structured-note-editor-actions > button,
+  .structured-note-editor-actions .button-row { width: 100%; }
+  .structured-note-editor-actions .button-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
 .structured-note-grid,
 .structured-result-fields,
 .closing-section-grid,

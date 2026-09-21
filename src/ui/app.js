@@ -150,8 +150,8 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260921-lab-trends-v2";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260921-lab-trends-v2";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260921-primary-note-composer";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260921-primary-note-composer";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-lab-trends-v2";
 import { createReviewPresentation } from "./review/presentation.js?v=20260921-lab-trends-v2";
 import { createReviewController } from "./review/controller.js?v=20260921-lab-trends-v2";
@@ -237,7 +237,7 @@ const app = {
   sectionDrafts: new Map(),
   sectionEditingKeys: new Set(),
   pendingSectionReviewFocus: null,
-  structuredNoteDrafts: new Map(), noteDraftSessions: new Map(),
+  structuredNoteDrafts: new Map(), structuredNoteComposers: new Map(), noteDraftSessions: new Map(),
   reviewPacketId: "admission", reviewSearchQuery: "", reviewCategory: "all", reviewPage: 0, reviewDifferenceSelectionId: "",
   dailySourceKind: DEFAULT_DAILY_SOURCE_KIND,
   dailySourceDraft: "",
@@ -893,7 +893,7 @@ function clearPatientScopedSession() {
   app.sectionDrafts.clear();
   app.sectionEditingKeys.clear();
   app.pendingSectionReviewFocus = null;
-  app.structuredNoteDrafts.clear(); app.noteDraftSessions.clear();
+  app.structuredNoteDrafts.clear(); app.structuredNoteComposers.clear(); app.noteDraftSessions.clear();
   Object.assign(app, { reviewPacketId: "admission", reviewSearchQuery: "", reviewCategory: "all", reviewPage: 0, reviewDifferenceSelectionId: "" });
   app.dailySourceKind = DEFAULT_DAILY_SOURCE_KIND;
   app.dailySourceDraft = "";
@@ -1814,6 +1814,7 @@ async function handleClick(event) {
       dailySourceController.selectSourceKind("admission", target.dataset.sourceKind || DEFAULT_DAILY_SOURCE_KIND);
       renderDaily();
     }
+    if (dailySourceController.handleStructuredNoteAction(target)) return;
     if (action === "move-section-up")
       await mutateSections(target.dataset.scope, (sections) => reorderSections(sections, target.dataset.sectionId, "up"));
     if (action === "move-section-down")
@@ -3999,8 +4000,7 @@ function clearChecklistSearch() {
 
 function handleInput(event) {
   if (app.view === "review" && reviewController.input(event.target)) { demoController.observeInput(event.target); return; }
-  if (event.target.matches("[data-result-metadata]")) return dailySourceController.updateResultMetadata(event.target.dataset.resultScope || "daily", event.target.dataset.resultMetadata, event.target.value);
-  if (event.target.matches("[data-structured-note-field]")) return dailySourceController.updateStructuredNoteDraft(event.target.dataset.structuredNoteScope || "daily", event.target.dataset.structuredNoteField, event.target.value);
+  if (dailySourceController.handleInput(event.target)) return;
   if (event.target.matches("[data-clinical-medication-search]")) return updateClinicalMedicationPage(event.target.closest('[data-clinical-view="medications"]'), { reset: true });
   if (event.target.id === "dailySourceDraft") {
     dailySourceController.updateDraft("daily", event.target.value);

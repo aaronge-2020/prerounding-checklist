@@ -1,0 +1,344 @@
+Basic Information
+Chief Complaint: Acute ischemic stroke and Cerebral edema
+HPI: 40 year old woman with prior stroke presented with completed RMCA/ACA stroke with malignant edema s/p DHC.
+
+Premorbid mRS:NCCU Modified Rankin premorbid: 1 = No significant disability (despite symptoms, able to carry out all usual activities)
+Stay Summary:
+[Hospital Day 1]: OR for DHC
+Principal Problem:
+  Acute ischemic right MCA stroke (CMS/HHS-HCC)
+Active Problems:
+  Cerebral edema (CMS/HHS-HCC)
+  Acute hypoxic respiratory failure (CMS/HHS-HCC)
+  Electrolyte and fluid disorder
+  Cerebral herniation (CMS/HHS-HCC)
+Resolved Problems:
+  * No resolved hospital problems. *
+
+
+Interval History
+[Hospital Day 2]: ; Admitted to NCCU exam stable form that described in CCRU; anisocoria, restarted Propofol
+[Hospital Day 3]:  Fluctuation interval HEAD CT progression of cerebral edema; exam remains stable continues to FC.
+[Hospital Day 4]: HEAD CT stable MLS exam stable later decline exam with loss of NPI HTS mild hypocapnia, Propofol gtt with imapovement of pupillometer numbers.
+[Hospital Day 5]: Pupillometer numbers stable overnight, then decline in NPI this AM, R pupil NR; HEAD CT progression of cerebral edema, d/w Stroek dn NSU and met with her parents to explain option for treating progressive edema; NSU willing to take back to OR for expansion f hemicraniectomy.  Initiated  Tier 3 treatment for IC-HTN
+[Hospital Day 6] POD6/POD1: yest RTOR for blown right pupil for extension of prior DC and expansile durotomy; 1.2L plyte; ebl 200; postop CT shows shift 1.4-->1.2 cm; Hb 6.8; npi ou > 3 this am; Tc=36.8; paco2 31.8; Na 150;
+
+
+Physical Exam
+Encounter Vitals Stats ([1 day prior to hospital admission at 00:00])
+
+
+ 	Vital Sign	MIN	AVG	MAX
+ 	Temp	35 °C (95 °F)	36.1 °C (96.91 °F)	36.8 °C (98.2 °F)
+ 	Resp	4	17.54	26
+ 	BP: Systolic	110	121.13	141
+ 	BP: Diastolic	66	78.21	88
+ 	Heart Rate (Monitored)	70	80.22	97
+ 	SpO2	97 %	99.57 %	100 %
+
+
+Physical Exam
+Vitals and nursing note reviewed.
+Constitutional:
+   Appearance: She is underweight.
+   Interventions: She is intubated.
+HENT:
+   Head: Normocephalic.
+   Comments: Crani flap full and pulsatile
+Eyes:
+   Conjunctiva/sclera: Conjunctivae normal.
+Neck:
+   Thyroid: No thyromegaly.
+   Comments: No goiter
+Cardiovascular:
+   Rate and Rhythm: Normal rate.
+   Pulses: Normal pulses.
+   Heart sounds: No murmur heard.
+Pulmonary:
+   Effort: Pulmonary effort is normal. She is intubated.
+   Breath sounds: No wheezing or rales.
+Abdominal:
+   Palpations: Abdomen is soft.
+Musculoskeletal:
+   Comments: no clubbing
+Skin:
+   General: Skin is warm and dry.
+   Capillary Refill: Capillary refill takes less than 2 seconds.
+Neurological:
+   Comments: Briefly opens eyes, ? apraxia FC
+Pupils reactive L< R, + cough
+LUE extends LLE TF
+RUE [6 months and 11 days prior to hospital admission] RLE wdwl
+
+
+[Hospital Day 4]
+OE FC thumbs up and wiggles toes on R
+Pupils reactive to light + cough and gag
+RUE/RLE [6 months and 11 days prior to hospital admission]
+L flex and TF
+
+Decline
+No FC
+RUE flex
+LE TF
+
+
+Pupillometer
+R Pupil Size: 3.58 mm Npi: 4.6
+L Pupil Size: 2.63 mm Npi: 4.6
+
+Eye Opening: 1
+Best Verbal Response: 1
+Glasgow Coma Best Motor Response: 1 (UTA)
+Glasgow Coma Scale Score: 3
+
+
+Diagnostic Studies / Review Management
+I reviewed diagnostic studies and their associated reports available at the time this note was created. Applicable details are noted in my assessment and plan.
+
+ 	Diagnostic and Objective Findings	Assessment and Plan
+Neuro	Glasgow Coma Scale Score  Avg: 3  Min: 3  Max: 3
+
+
+[Lab 1/5]  	[Hospital Day 6 at 04:03]	[Hospital Day 6 at 00:00]	[Hospital Day 5 at 17:13]
+SODIUM	150*	149*	151*
+OSMOLALITY	311*	308*	313*
+
+I personally reviewed the images.
+CT/CTA: Sulcal effacement and loss of gray-white matter differentiation in the frontal and temporal lobes consistent with acute to subacute infarcts. Hyperdense right MCA sign.
+2.  Abrupt cut off of the right ICA terminus with few collateral to the right MCA.
+3.  [PATIENT NAME] perfusion and evaluation of the cervical arterial vasculature due to patient motion during initial acquisition.
+
+Continued increase in edema of the evolving infarcts involving essentially the entirety of the left ACA and MCA vascular territories.
+
+Due to the increased edema there is increased bulging of the infarcted parenchyma through the craniectomy defect however, despite the decompressive hemicraniectomy there is interval increased leftward midline shift [Hospital Day 1] measuring 8 mm, previously 5 mm with persistent right uncal herniation.
+
+MRI/MRA:
+
+Last Pain Scale Used *: N/A-for another purpose
+Last
+Last RASS Score *: Restless: Anxious but movements not aggressive or vigorous
+Last  	R MCA/ACA
+Malignant edema s/p DC
+Etiology: Evaluation underway: Possible drugs (Utox + cocaine) RT ICA occlusion; ? carotid dissection, cardioembolic or thrombophilia (malignancy?) > unlikely paradoxical (no PFO)
+Progression of cerebral edema and herniation despite decompression
+-- LEV per NSU [Hospital Day 8]
+-- HI statin
+-- Na goal 150-155, serial Na Q6h, prn HTS 7% NaAcetate
+-- MRI brain (deferred)
+
+IC-HTN control
+-- s/p RTOR [Hospital Day 5] for expansion of durotomy and DC extension
+-- JP output 19 bloody
+--MAP goal 80-100
+--HOB @ 30 degrees; neck straight to improve venous return
+-- refractory edema treatments include: Hypothermia > Verticalization > PTB
+--Hypocapnea (goal PaCO2 30-35)
+- Osmotherapy:
+> Mannitol 1g/kg wide open
+> Hypertonic acetate:
+    - Na Q6h (Na goal 150-155)
+   - Check Sosm if >320, maxed out osmolar therapy
+- Analgesia/Sedation
+RASS goal -3
+-- Propofol gtt @ 50
+-- Fentanyl gtt
+--
+-- NT Tylenol
+
+Substance use disorder
+-- Oxycodone prn
+
+Delirium assessment
+ICDSC: None
+
+Mobility
+-- OOB
+CV	Heart Rate (Monitored)  Avg: 80.2  Min: 70  Max: 97
+Systolic (24hrs), Avg:121 , Min:110 , Max:141
+
+Diastolic (24hrs), Avg:78, Min:66, Max:88
+
+Non-invasive MAP  Avg: 93.2 mmHg  Min: 87 mmHg  Max: 102 mmHg
+
+
+First: QTc: (not recorded)
+Most Recent: QTc: (not recorded)
+TTE:  Normal biventricular size and systolic function. Normal segmental wall motion and LV filling.
+LVEF: 55-60%
+No significant valvular dysfunction
+There is no evidence of a right to left shunt with multiple intravenous injections of agitated
+saline.
+- Monitor for arrhythmias; hemodynamic instability
+-- SBP goal <160 MAP >80
+- Labetalol 10mg IV prn SBP above goal
+Pulm	Non-Surgical Airway [Hospital Day 1 at 13:22] (5)
+
+CPAP/PSV Ventilator Mode: PRVC
+Pressure Support: 8 cmH20
+PEEP: 5 cmH20
+Total Resp Rate: 18 breaths/min
+Spontaneous VT: 329 CC/L
+Vent FiO2: 30 %
+Ve (L/min) = (MV): 6.6 l/min
+ETCO2 (mm/Hg): 21
+SpO2: 98 %
+
+SBT Pass/Fail: (not recorded)
+
+SpO2  Avg: 99.6 %  Min: 97 %  Max: 100 %
+Sputum Amount: Scant
+Sputum Color: White
+Sputum Consistency: Thin
+
+
+ 	[Hospital Day 6 at 04:02]	[Hospital Day 5 at 23:59]	[Hospital Day 5 at 08:41]	[Hospital Day 5 at 04:24]	[Hospital Day 4 at 16:43]
+PH ART	7.50*	7.50*	7.49*	7.42	7.46*
+PCO2 ART	31.8*	29.5*	32.7	36.6	31.5*
+PO2 ART	147.0*	103.0	223.0*	48.8*	169.0*
+HCO3 ART	24.4	22.7	24.4	23.2	22.2
+BASE EXC ART	1.5	0.0	1.4	-0.7	-0.8
+FIO2	30	30	60	30	30
+PEEP	 -- 	 -- 	10	5	5
+
+
+CXR: Interpreted by Radiologist and I reviewed the image. [Hospital Day 1] 	Intubated  for procedure remains intubated for weak airway protectives due to neurologic injury
+-- Monitor for aspiration
+-- PRVC RR 18
+-- ETCo2 goal 30-35
+-- Neurologic instability precludes wean to PSV
+
+Renal
+
+Intake/Output Summary ([1 day prior to hospital admission at 00:00]) at [Hospital Day 6 at 07:35]
+Last data filed at [Hospital Day 6 at 06:00]
+
+Gross per 24 hour
+Intake	2230.94 ml
+Output	2087 ml
+Net	143.94 ml
+
+
+[Lab 2/5]  	[Hospital Day 6 at 04:03]	[Hospital Day 6 at 00:00]	[Hospital Day 5 at 17:13]	[Hospital Day 5 at 04:24]	[Hospital Day 4 at 18:30]	[Hospital Day 4 at 02:28]
+SODIUM	150*	149*	151*	144	  < >	144
+POTASSIUM	3.5	3.6	4.0	3.4*	  < >	3.5
+CHLORIDE	121*	120*	122*	116*	  < >	113*
+CO2 TOTAL	23	23	20*	24	  < >	24
+BUN	14	14	14	13	  < >	5*
+CREATININE	0.5	0.5	0.5	0.5	  < >	0.5
+CALCIUM	8.0*	7.9*	8.4*	8.4*	  < >	8.8
+MAGNESIUM	 -- 	 -- 	 -- 	 -- 	 -- 	2.0
+PHOSPHORUS	 -- 	 -- 	 -- 	4.3	 -- 	2.1*
+ANION GAP	6	6	9	4	  < >	7
+ < > = values in this interval not displayed.
+	Electrolyte derangements, Urinary retention
+Hypokalemia
+hyperchloremia
+-- Monitor electrolytes and replete per protocol
+-- Monitor UOP
+
+Foley indication: Periop: Prolonged procedure >2 hours
+Heme
+
+[Lab 3/5]  	[Hospital Day 6 at 04:03]	[Hospital Day 5 at 08:38]	[Hospital Day 5 at 06:18]
+HEMOGLOBIN	6.5*	7.5*	7.0*
+HEMATOCRIT	21.5*	23.1*	22.1*
+PLATELETS	242	261	235
+
+
+Duplex: 	Anemia
+No active bleeding.
+Continue close monitoring.
+Transfusion for Hgb <=7, plt <= 50 K
+
+1u prbc for Hb 6.8 (EBL 200); repeat CBC
+
+VTE prevention
+- SCDs for DVT prophylaxis; restart SQH at 24 hours postop
+
+Multiple enhancing small nodules are seen throughout the right breast on CT.
+-- Ultrasound R breast to further stratify not possible impatient
+-- CT PET when feasible
+ID	Temp (24hrs), Avg:35.8 °C (96.4 °F), Min:35 °C (95 °F), Max:36.8 °C (98.2 °F)
+
+No data recorded
+
+
+[Lab 4/5]  	[Hospital Day 6 at 04:03]	[Hospital Day 5 at 08:38]	[Hospital Day 5 at 06:18]
+WBC	10.4*	12.7*	11.6*
+
+
+ 	Leukocytosis downtrending
+Monitor for clinical signs of infection
+Ancef 24h post op
+-- Continue to monitor off  antimicrobials at this time
+
+Central Line indication: Hyperosmolar Therapy
+
+
+GI / Nutrition	Diet: NPO In conjunction with: Tube Feeding (see Medication Orders)
+Stool Occurrence: (not recorded)
+
+ 	Dysphagia/Malnutrition
+-- NGT; TF
+-- Bowel regimen: Senna
+-- Ulcer prophylaxis: Famotidine
+Endo
+
+**[LATEST_RESULT]** [Lab 5/5]  	[Hospital Day 6 at 04:03]	[Hospital Day 6 at 00:00]	[Hospital Day 5 at 17:13]
+GLUCOSE BLD	94	90	110*
+
+Hemoglobin A1C:
+
+Lab Results
+Component	Value	Date/Time
+ 	HGBA1C	5.2	[Hospital Day 2 at 04:40]
+ 	HGBA1C	5.2	[8 months prior to hospital admission]
+ 	Euglycemia
+Suppressed TSH normal T4 T3 low. Subclinical
+Maintain glucose < 180
+SSI / insulin gtt per protocol
+Msk / Derm	Braden Total Score: 13	- Nursing skin assessment per protocol and wound care consult prn
+- Turn and reposition per protocol
+Lines / Drains / Airway
+Patient Lines/Drains/Airways Status
+
+
+Active Active LDAs (selected)
+
+
+ 	Name	Placement date	Placement time	Site	Days
+ 	CVC Non-Tunneled [Hospital Day 5 at 14:00] Right Femoral	[Hospital Day 5 at 14:00] 	Femoral 	less than 1
+ 	Peripheral IV [Hospital Day 1 at 05:20] 24 G Posterior;Right Hand	[Hospital Day 1 at 05:20] 	Hand 	5
+ 	Peripheral IV [Hospital Day 1 at 10:02] 20 G Anterior;Right Forearm	[Hospital Day 1 at 10:02] 	Forearm 	4
+ 	Peripheral IV [Hospital Day 1 at 13:25] 20 G Left Hand	[Hospital Day 1 at 13:25] 	Hand 	4
+ 	Peripheral IV [Hospital Day 3 at 16:00] 20 G Anterior;Left;Lateral Forearm	[Hospital Day 3 at 16:00] 	Forearm 	2
+ 	Peripheral IV [Hospital Day 4 at 15:00] 20 G Left;Posterior Forearm	[Hospital Day 4 at 15:00] 	Forearm 	1
+ 	Peripheral IV [Hospital Day 5 at 13:33] 20 G Posterior;Right Forearm	[Hospital Day 5 at 13:33] 	Forearm 	less than 1
+ 	Urinary Catheter [Hospital Day 5 at 15:50]	[Hospital Day 5 at 15:50] 	— 	less than 1
+ 	Non-Surgical Airway [Hospital Day 1 at 13:22]	[Hospital Day 1 at 13:22] 	—	4
+
+
+Patient Lines/Drains/Airways Status
+
+
+Active Active Drains
+
+
+ 	Name	Placement date	Placement time	Site	Days
+ 	Closed Drain [Hospital Day 5 at 19:29] #1 Right Head JP	[Hospital Day 5 at 19:29] 	Head 	less than 1
+
+
+Education, discharge planning and follow-up
+EDUCATION/COUNSELING:
+[Hospital Day 5]: I met with her parents and explained persistent or worsening cerebral edema after decompressive hemicraniectomy, failing osmotic and tier based therapies, would consult neurosurgery to return to OR for expansion of craniectomy or strokectomy if we would like to continue all measures to reduce mortality. They have great insight into the gravity of the injury and would like to try all that is possible to reduce swelling; they understand this will not reverse injury already occurred and significant neurologic disability as best possible outcome.
+
+Consults:
+NSU
+
+Discharge planning:
+
+Length of stay to date is  5
+Anticipated medical stability for discharge:
+
+FOLLOWUP: Stroke

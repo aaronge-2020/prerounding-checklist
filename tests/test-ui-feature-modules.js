@@ -92,7 +92,7 @@ assert.equal(demoPatient.days[0].sourceCaptures.length, 0, "the guided demo must
 assert.equal(demoStage("write-note").title, "Write your clinical assessment");
 assert.match(demoView.renderGuide({ session: { stage: "write-note" }, currentView: "review" }), /student note sent for feedback/i);
 assert.match(demoView.renderCallout({ stage: demoStage("save-context") }), /Daniel Morgan is a synthetic 61-year-old/);
-const dailyMarkup = dailyView.renderDaily({
+const dailyRenderOptions = {
   patient: { contextSections: [{ id: "admission", label: "Admission context", deidentifiedText: "", residualWarnings: [], createdAt: "2026-01-01" }] },
   days: [{ id: "day1", label: "HD1", date: "2026-01-02", sourceCaptures: [] }],
   selectedDayId: "day1",
@@ -108,14 +108,28 @@ const dailyMarkup = dailyView.renderDaily({
   sourceDraft: "",
   packetCheck: { included: [], notSupplied: [], needsConfirmation: [] },
   deidBusy: false
-});
+};
+const dailyMarkup = dailyView.renderDaily(dailyRenderOptions);
 assert.match(dailyMarkup, /data-action="select-admission"/);
-assert.match(dailyMarkup, /data-action="save-structured-primary-note"/);
-assert.match(dailyMarkup, /data-structured-note-field="one_liner"/);
-assert.match(dailyMarkup, /data-structured-note-field="physical_exam"/);
-assert.match(dailyMarkup, /data-structured-note-field="assessment"/);
-assert.match(dailyMarkup, /data-structured-note-field="plan"/);
-assert.doesNotMatch(dailyMarkup, /data-action="add-admission-source"/, "the primary-team note is entered through explicit sections instead of one large paste box");
+assert.match(dailyMarkup, /data-structured-note-paste/);
+assert.match(dailyMarkup, /Paste full note/);
+assert.match(dailyMarkup, /Enter by section/);
+assert.match(dailyMarkup, /Sections found/);
+assert.equal((dailyMarkup.match(/<textarea/g) || []).length, 1, "paste mode should render one full-note editor");
+assert.doesNotMatch(dailyMarkup, /data-action="add-admission-source"/, "the primary note uses its dedicated paste-first composer");
+const sectionMarkup = dailyView.renderDaily({
+  ...dailyRenderOptions,
+  structuredNoteComposers: { admission: { mode: "sections", activeFieldId: "physical_exam" } },
+  structuredNoteDrafts: { admission: { one_liner: "Adult with dyspnea.", physical_exam: "No respiratory distress." } }
+});
+assert.match(sectionMarkup, /data-action="save-structured-primary-note"/);
+assert.match(sectionMarkup, /data-note-field="one_liner"/);
+assert.match(sectionMarkup, /data-note-field="physical_exam"/);
+assert.match(sectionMarkup, /data-note-field="assessment"/);
+assert.match(sectionMarkup, /data-note-field="plan"/);
+assert.match(sectionMarkup, /data-structured-note-field="physical_exam"/);
+assert.equal((sectionMarkup.match(/<textarea/g) || []).length, 1, "section mode should render only the active section editor");
+assert.match(sectionMarkup, /2 of 20 added/);
 assert.match(dailyMarkup, /Review completeness/);
 assert.match(dailyMarkup, /Required items are visible reminders, not blockers/);
 assert.match(dailyMarkup, /data-review-item="primary_note" data-review-requirement="required" data-review-status="not_reviewed"/);

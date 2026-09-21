@@ -134,7 +134,8 @@ try {
   await page.fill("#newPatientLabel", "Room 12");
   await page.click('[data-action="admit-patient"]');
   await page.waitForSelector("#contextSections");
-  assert.equal(await page.locator('[data-action="save-structured-primary-note"][data-note-scope="admission"]').isEnabled(), true, "structured H&P sections remain optional and saveable");
+  assert.equal(await page.locator('[data-structured-note-paste][data-structured-note-scope="admission"]').count(), 1, "primary notes begin with one paste-first editor");
+  assert.equal(await page.locator('[data-action="review-structured-note-sections"][data-note-scope="admission"]').isDisabled(), true, "section review requires pasted note text");
   await page.click('[data-action="select-admission-source-kind"][data-source-kind="other_chart_text"]');
   assert.equal(await page.locator('[data-action="add-admission-source"]').isDisabled(), true, "adding an admission source requires a pasted chart block");
   await page.selectOption("#deidModeSelect", "structured");
@@ -360,9 +361,11 @@ try {
   await page.click('[data-view-target="daily"]');
   await page.fill("#dailyAdmissionDateInput", "2026-07-17");
   await page.click('[data-action="select-admission-source-kind"][data-source-kind="primary_note"]');
+  await page.click('[data-action="select-structured-note-mode"][data-note-scope="admission"][data-note-mode="sections"]');
+  await page.click('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="one_liner"]');
   await page.fill('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]', "Adult admitted with dyspnea for evaluation.");
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="admission"]');
-  await page.waitForFunction(() => /Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.click('[data-action="select-admission-source-kind"][data-source-kind="other_chart_text"]');
   const primaryNoteWithQuotedResults = `Primary team assessment and plan.
 Results from EPIC:
@@ -488,9 +491,11 @@ Crossmatch: Red Blood Cells: Rpt (P)
   await page.click('[data-action="add-day"]');
   await page.waitForSelector('[data-action="select-daily-source-kind"]');
   assert.equal(await page.locator('[data-action="select-daily-source-kind"]').count(), 9, "Hospital Stay should expose distinct required vital-sign and laboratory source choices");
+  await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="sections"]');
+  await page.click('[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="interval_events"]');
   await page.fill('[data-structured-note-scope="daily"][data-structured-note-field="interval_events"]', "Overnight oxygen requirement improved.");
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
-  await page.waitForFunction(() => /Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   assert.match(await page.locator(".packet-review-summary").innerText(), /2 required items have not been reviewed/);
   assert.equal(await page.locator('[data-action="open-progress-note"]').isEnabled(), true, "missing review reminders must not block note generation");
   await page.click('[data-action="select-daily-source-kind"][data-source-kind="vital_signs"]');
@@ -583,7 +588,7 @@ Vitals
   await page.click('[data-action="copy-open-evidence-workup-prompt"]');
   const copiedWorkupPrompt = await page.evaluate(() => navigator.clipboard.readText());
   assert.match(copiedWorkupPrompt, /selected fast rounds scope/i);
-  assert.match(copiedWorkupPrompt, /Prior primary-team progress note source[\s\S]*Overnight oxygen requirement improved/);
+  assert.match(copiedWorkupPrompt, /Prior primary-team progress note(?: source)?\.?[\s\S]*Overnight oxygen requirement improved/);
   assert.match(copiedWorkupPrompt, /Vital signs\. Pulse 76; respirations 16; blood pressure 118\/64/);
   assert.match(copiedWorkupPrompt, /Laboratory results\. Labs[\s\S]*WBC: 4\.2; flag L/);
   // A successful "Parse & save" auto-collapses the import panel (its job is

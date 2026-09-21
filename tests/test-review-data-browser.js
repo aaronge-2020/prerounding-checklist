@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { chromium } from "playwright";
 import { createAppServer, openRealApp, unlockAndCreatePatient } from "./browser/app-harness.js";
+
+const compactPrimaryNote = readFileSync(new URL("./fixtures/primary-team-notes/compact-soap-note.txt", import.meta.url), "utf8");
+const progressTeamNote = readFileSync(new URL("./fixtures/primary-team-notes/progress-team-note.txt", import.meta.url), "utf8");
+const criticalCareNote = readFileSync(new URL("./fixtures/primary-team-notes/critical-care-note.txt", import.meta.url), "utf8");
 
 const server = await createAppServer();
 const browser = await chromium.launch();
@@ -22,13 +27,15 @@ try {
   await openRealApp(page, server.baseUrl);
   await unlockAndCreatePatient(page);
 
-  // Structured H&P entry: only the one-liner is populated and every other field remains optional.
+  // Section entry uses one reusable editor; every other field remains optional.
+  await page.click('[data-action="select-structured-note-mode"][data-note-scope="admission"][data-note-mode="sections"]');
   assert.equal(await page.locator('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]').count(), 1);
-  assert.equal(await page.locator('[data-structured-note-scope="admission"][data-structured-note-field="past_medical_history"]').count(), 1);
+  assert.equal(await page.locator('[data-structured-note-scope="admission"][data-structured-note-field]').count(), 1);
+  assert.equal(await page.locator('[data-action="select-structured-note-field"][data-note-field="past_medical_history"]').count(), 1);
   const oneLiner = "Adult with community-acquired pneumonia improving on room air.";
   await page.fill('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]', oneLiner);
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="admission"]');
-  await page.waitForFunction(() => /Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   assert.equal(await page.locator('[data-action="open-admission-note"]').isEnabled(), true);
 
   await page.click('[data-action="open-admission-note"]');
@@ -68,18 +75,44 @@ try {
   assert.match(await page.locator("[data-final-note-preview]").innerText(), /Documented pneumococcal infection/);
   assert.match(await page.locator("[data-final-note-preview]").innerText(), /Differential \| Clues for this differential \| Clues against this differential/);
 
-  // A prior progress note captures the complete source, not only subjective fields.
+  // A pasted prior progress note is parsed through the same visible workflow used by the app.
   await page.click('[data-view-target="daily"]');
   await page.fill("#newDayDate", "2026-09-19");
   await page.fill("#newDayLabel", "Hospital day 2");
   await page.click('[data-action="add-day"]');
-  await page.waitForSelector('[data-structured-note-scope="daily"][data-structured-note-field="interval_events"]');
-  assert.equal(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="past_medical_history"]').count(), 0);
-  assert.equal(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="objective"]').count(), 1);
-  assert.equal(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="assessment"]').count(), 1);
-  assert.equal(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="plan"]').count(), 1);
+  await page.waitForSelector('[data-structured-note-paste][data-structured-note-scope="daily"]');
+  await page.fill('[data-structured-note-paste][data-structured-note-scope="daily"]', progressTeamNote);
+  assert.match(await page.locator('[data-structured-note-detected="daily"]').innerText(), /Interval events/);
+  assert.match(await page.locator('[data-structured-note-detected="daily"]').innerText(), /Medications/);
+  assert.equal(await page.locator('.structured-note-actions [data-action="review-structured-note-sections"][data-note-scope="daily"]').isEnabled(), true);
+  await page.click('[data-action="review-structured-note-sections"][data-note-scope="daily"]');
+  assert.equal(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="interval_events"]').count(), 1, "review should open on the first detected section");
+  assert.match(await page.locator('[data-structured-note-field="interval_events"]').inputValue(), /No acute overnight events/);
+  await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
+  await page.fill('[data-structured-note-paste][data-structured-note-scope="daily"]', criticalCareNote);
+  assert.match(await page.locator('[data-structured-note-detected="daily"]').innerText(), /Patient report/);
+  assert.match(await page.locator('[data-structured-note-detected="daily"]').innerText(), /Physical exam/);
+  await page.click('[data-action="review-structured-note-sections"][data-note-scope="daily"]');
+  await page.click('[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="objective"]');
+  assert.match(await page.locator('[data-structured-note-field="objective"]').inputValue(), /PH ART/);
+  assert.match(await page.locator('[data-structured-note-field="objective"]').inputValue(), /SBP goal <160/);
+  await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
+  await page.fill('[data-structured-note-paste][data-structured-note-scope="daily"]', compactPrimaryNote);
+  assert.match(await page.locator('[data-structured-note-detected="daily"]').innerText(), /Patient report/);
+  assert.match(await page.locator('[data-structured-note-detected="daily"]').innerText(), /Objective data/);
+  assert.match(await page.locator('[data-structured-note-detected="daily"]').innerText(), /Plan/);
+  const storageBeforeSave = await page.evaluate(() => JSON.stringify(localStorage));
+  assert.doesNotMatch(storageBeforeSave, /Verticalize in AM/, "raw pasted note text must remain session-only before save");
+  await page.click('[data-action="review-structured-note-sections"][data-note-scope="daily"]');
+  await page.click('[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="patient_report"]');
+  assert.match(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="patient_report"]').inputValue(), /right M1 MCA/);
+  await page.click('[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="objective"]');
+  assert.match(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="objective"]').inputValue(), /Intake\/Output Summary/);
+  await page.click('[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="plan"]');
+  assert.match(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="plan"]').inputValue(), /SBP<160/);
+  assert.equal(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field]').count(), 1, "only the active section editor is rendered");
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
-  await page.waitForFunction(() => /Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.click('[data-action="open-progress-note"]');
   await page.click('[data-action="insert-no-acute-events"]');
   assert.equal(await page.locator('[data-draft-section="interval_events"]').inputValue(), "No acute events overnight.");
@@ -279,9 +312,17 @@ Sodium: 138`;
   // Saved draft survives encryption/reload; lock clears all protected content.
   await page.click('[data-action="save-note-draft"]');
   await page.waitForFunction(() => /Encrypted note draft saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.click('[data-view-target="daily"]');
+  await page.click('[data-action="select-daily-source-kind"][data-source-kind="primary_note"]');
+  await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
+  const sessionOnlyRawToken = "SESSION_ONLY_RAW_NOTE_MUST_CLEAR_ON_LOCK";
+  await page.fill('[data-structured-note-paste][data-structured-note-scope="daily"]', `HPI:\n${sessionOnlyRawToken}`);
+  assert.match(await page.locator('[data-structured-note-paste][data-structured-note-scope="daily"]').inputValue(), new RegExp(sessionOnlyRawToken));
+  assert.doesNotMatch(await page.evaluate(() => JSON.stringify(localStorage)), new RegExp(sessionOnlyRawToken), "unsaved pasted chart text must not enter local storage");
   await page.click('[data-view-target="vault"]');
   await page.click('[data-action="lock-vault"]');
   assert.equal(await page.locator("#reviewContent").innerHTML(), "");
+  assert.equal(await page.locator('[data-structured-note-paste]').count(), 0, "locking must remove the raw paste editor from the protected DOM");
   assert.doesNotMatch(await page.locator("body").innerText(), /intracranial abnormality|community-acquired pneumonia/);
 
   await page.reload({ waitUntil: "domcontentloaded" });
@@ -289,6 +330,11 @@ Sodium: 138`;
   await page.fill("#vaultPassphrase", "clinical review test passphrase");
   await page.click('[data-action="unlock-vault"]');
   await page.waitForFunction(() => /Vault unlocked/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.click('[data-view-target="daily"]');
+  await page.locator('[data-action="select-day"]').last().click();
+  await page.click('[data-action="select-daily-source-kind"][data-source-kind="primary_note"]');
+  await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
+  assert.doesNotMatch(await page.locator('[data-structured-note-paste][data-structured-note-scope="daily"]').inputValue(), new RegExp(sessionOnlyRawToken), "locking must clear the session-only raw paste draft");
   await page.click('[data-view-target="review"]');
   const savedPacketValue = await page.locator('#reviewPacketSelect option').filter({ hasText: "Hospital day 3" }).getAttribute("value");
   await page.selectOption("#reviewPacketSelect", savedPacketValue);
