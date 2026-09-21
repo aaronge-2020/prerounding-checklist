@@ -56,8 +56,9 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   }
 
   function renderDataExplorer({ index, filteredCandidates, filteredCandidateCount, page, pageCount, selectedIds, query, category }) {
+    const labOnly = category === "labs";
     const pagination = pageCount > 1
-      ? `<nav class="review-data-pagination" aria-label="Clinical data pages"><button type="button" class="icon-button" data-action="review-data-page" data-direction="-1" aria-label="Previous clinical data page" ${page <= 0 ? "disabled" : ""}>←</button><output>Page ${page + 1} of ${pageCount}</output><button type="button" class="icon-button" data-action="review-data-page" data-direction="1" aria-label="Next clinical data page" ${page >= pageCount - 1 ? "disabled" : ""}>→</button></nav>`
+      ? `<nav class="review-data-pagination" aria-label="${labOnly ? "Laboratory result" : "Clinical data"} pages"><button type="button" class="icon-button" data-action="review-data-page" data-direction="-1" aria-label="Previous ${labOnly ? "laboratory result" : "clinical data page"}" ${page <= 0 ? "disabled" : ""}>←</button><output>${labOnly ? "Lab" : "Page"} ${page + 1} of ${pageCount}</output><button type="button" class="icon-button" data-action="review-data-page" data-direction="1" aria-label="Next ${labOnly ? "laboratory result" : "clinical data page"}" ${page >= pageCount - 1 ? "disabled" : ""}>→</button></nav>`
       : "";
     return `<section class="review-data-panel panel" aria-labelledby="reviewDataHeading">
       <div class="section-heading"><div><h2 id="reviewDataHeading">Clinical data</h2><p class="muted">Saved source data and calculated summaries stay distinct. Check only what belongs in this note.</p></div></div>

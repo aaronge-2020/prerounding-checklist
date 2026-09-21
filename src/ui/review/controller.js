@@ -38,6 +38,10 @@ import {
 
 const REVIEW_PAGE_SIZE = 8;
 
+function pageSizeForCategory(category) {
+  return category === "labs" ? 1 : REVIEW_PAGE_SIZE;
+}
+
 function packetKey(value) {
   return String(value || "admission");
 }
@@ -182,9 +186,10 @@ export function createReviewController(deps) {
     const checklistCandidates = buildChecklistNoteCandidates(patient, packet.id);
     const group = deps.app.reviewCategory === "all" ? "" : deps.app.reviewCategory;
     const matchingCandidates = filterClinicalReviewCandidates(index, deps.app.reviewSearchQuery, { group });
-    const pageCount = Math.max(1, Math.ceil(matchingCandidates.length / REVIEW_PAGE_SIZE));
+    const pageSize = pageSizeForCategory(deps.app.reviewCategory);
+    const pageCount = Math.max(1, Math.ceil(matchingCandidates.length / pageSize));
     deps.app.reviewPage = Math.min(Math.max(0, Number(deps.app.reviewPage) || 0), pageCount - 1);
-    const filteredCandidates = matchingCandidates.slice(deps.app.reviewPage * REVIEW_PAGE_SIZE, (deps.app.reviewPage + 1) * REVIEW_PAGE_SIZE);
+    const filteredCandidates = matchingCandidates.slice(deps.app.reviewPage * pageSize, (deps.app.reviewPage + 1) * pageSize);
     const draft = reviewDraft(patient, packet.id, index, checklistCandidates);
     const sourceOneLiner = sourceNoteForPacket(patient, packet.id)?.sections?.one_liner?.deidentifiedText || "";
     return {
@@ -318,8 +323,9 @@ export function createReviewController(deps) {
       const current = model();
       const group = deps.app.reviewCategory === "all" ? "" : deps.app.reviewCategory;
       const matchingCandidates = filterClinicalReviewCandidates(current.index, deps.app.reviewSearchQuery, { group });
-      const pageCount = Math.max(1, Math.ceil(matchingCandidates.length / REVIEW_PAGE_SIZE));
-      const candidates = matchingCandidates.slice(0, REVIEW_PAGE_SIZE);
+      const pageSize = pageSizeForCategory(deps.app.reviewCategory);
+      const pageCount = Math.max(1, Math.ceil(matchingCandidates.length / pageSize));
+      const candidates = matchingCandidates.slice(0, pageSize);
       const selectedIds = new Set(current.draft.objective.selectedBlocks.map((block) => block.selectionId));
       const wrapper = deps.byId("reviewContent")?.querySelector(".review-data-list");
       const summary = deps.byId("reviewContent")?.querySelector(".review-filter-summary");
