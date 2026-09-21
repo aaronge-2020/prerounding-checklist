@@ -74,21 +74,12 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   },
   "write-note": {
     view: "review",
-    targetSelector: "[data-draft-assessment]",
-    title: "Write your clinical assessment",
-    instruction: "Write a short assessment in your own words.",
-    helper: "Your checklist findings and assessment will become the student note sent for feedback.",
-    calloutTitle: "The student writes first",
-    callout: "The app organizes evidence, but it does not invent your reasoning. Write your synthesis here before asking an external tool to edit or verify the note."
-  },
-  "save-note": {
-    view: "review",
     targetSelector: '[data-action="save-note-draft"]',
-    title: "Save the encrypted draft",
-    instruction: "Click Save encrypted draft.",
+    title: "Review the complete assessment and plan",
+    instruction: "Review the fully written synthetic assessment and problem-oriented plan, make any edits you want, then click Save encrypted draft.",
     helper: "The synthetic tutorial keeps this saved note only for the temporary demo session.",
-    calloutTitle: "Keep the draft local",
-    callout: "Saving encrypts the note in the local vault without running a de-identification model. Unsaved note text is never inserted automatically into an external-tool prompt."
+    calloutTitle: "Review before asking for feedback",
+    callout: "The demo supplies complete synthetic clinical reasoning so you can inspect the whole note. Saving keeps the draft local and advances only when you explicitly click the button; typing alone never moves the walkthrough forward."
   },
   "open-prompts": {
     view: "prompts",

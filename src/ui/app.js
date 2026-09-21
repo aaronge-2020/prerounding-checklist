@@ -184,9 +184,9 @@ import {
 } from "./redaction/presentation.js?v=20260921-medication-card-v4";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
-import { createDemoController } from "./demo/controller.js?v=20260921-medication-card-v4";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-medication-card-v4";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-medication-card-v4";
+import { createDemoController } from "./demo/controller.js?v=20260921-demo-complete-plan";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-demo-complete-plan";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-demo-complete-plan";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
   vault: null,

@@ -5,7 +5,7 @@ import {
   DEMO_DAY_ID,
   DEMO_PATIENT_ID,
   DEMO_WORKUP_ID
-} from "./session.js?v=20260921-medication-card-v4";
+} from "./session.js?v=20260921-demo-complete-plan";
 
 export function createDemoSessionController({
   app,

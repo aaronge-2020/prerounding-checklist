@@ -6,6 +6,40 @@ export const DEMO_DAY_ID = "demo_day_guided_case";
 export const DEMO_WORKUP_ID = "nstemi-prerounds";
 export const DEMO_REQUIRED_ANSWER_ITEM_ID = `${DEMO_WORKUP_ID}:chest-pain-now`;
 export const DEMO_ADMISSION_DATE = "2026-07-17";
+export const DEMO_ASSESSMENT = `61-year-old man with known coronary artery disease, prior LAD drug-eluting stent, hypertension, hyperlipidemia, type 2 diabetes, obesity, and former tobacco use admitted with a high-risk NSTEMI. His ischemic chest pain has improved with nitroglycerin, high-sensitivity troponin peaked at 364 ng/L and is now downtrending, and ECG continues to show lateral ST depressions without ST elevation. He remains hemodynamically stable without arrhythmia or clinical heart failure. Echocardiography shows mildly reduced LVEF of 48% with anterior-wall hypokinesis. He is awaiting early invasive coronary angiography.`;
+
+export const DEMO_PLAN_PROBLEMS = Object.freeze([
+  Object.freeze({
+    id: "demo_problem_nstemi",
+    problem: "NSTEMI / coronary artery disease",
+    keyContext: "Typical exertional chest pressure with dynamic troponin elevation, persistent lateral ischemic changes, and prior LAD PCI; pain is now improved and troponin is downtrending.",
+    etiologyStatus: "known",
+    knownEtiology: "Acute coronary syndrome from presumed plaque rupture in established atherosclerotic coronary disease.",
+    differentials: [],
+    diagnosticPlan: "Continue telemetry and repeat ECG for recurrent pain or clinical change. Trend troponin to confirm decline. Coronary angiography is planned today; review anatomy and intervention results with Cardiology.",
+    therapeuticPlan: "Continue aspirin 81 mg daily, ticagrelor 90 mg twice daily, therapeutic unfractionated heparin until angiography, atorvastatin 80 mg nightly, and metoprolol as hemodynamics allow. Use sublingual nitroglycerin for recurrent pain, maintain NPO status, and escalate urgently for refractory pain, instability, or new ST elevation."
+  }),
+  Object.freeze({
+    id: "demo_problem_lv_dysfunction",
+    problem: "Mild ischemic left-ventricular systolic dysfunction",
+    keyContext: "TTE shows LVEF 48% with mild anterior-wall hypokinesis; the patient is warm, euvolemic, and without dyspnea, orthopnea, edema, or oxygen requirement.",
+    etiologyStatus: "known",
+    knownEtiology: "Most consistent with myocardial stunning or ischemic cardiomyopathy in the setting of NSTEMI.",
+    differentials: [],
+    diagnosticPlan: "Follow volume status, intake/output, daily weight, renal function, and potassium. Repeat echocardiography after revascularization and guideline-directed therapy according to the Cardiology follow-up plan.",
+    therapeuticPlan: "Continue metoprolol and lisinopril as blood pressure and renal function permit. No diuresis is indicated while clinically euvolemic. Provide heart-failure warning-sign and medication-adherence education."
+  }),
+  Object.freeze({
+    id: "demo_problem_diabetes",
+    problem: "Type 2 diabetes mellitus",
+    keyContext: "Mild inpatient hyperglycemia with stable renal function; home metformin and empagliflozin are held around acute illness and iodinated contrast exposure.",
+    etiologyStatus: "known",
+    knownEtiology: "Established type 2 diabetes mellitus.",
+    differentials: [],
+    diagnosticPlan: "Check bedside glucose before meals and at bedtime and review the most recent hemoglobin A1c. Continue daily metabolic panels around contrast exposure.",
+    therapeuticPlan: "Use correctional insulin while NPO. Avoid hypoglycemia. Resume the outpatient regimen only after oral intake and renal function are stable and there is no ongoing contraindication after angiography."
+  })
+]);
 
 export const DEMO_CONTEXT_TEXTS = [
   `Patient Information
@@ -199,6 +233,16 @@ The patient remained NPO after midnight in preparation for coronary angiography.
 ];
 
 const DEMO_CAPTURE_TIME = "2026-07-17T18:00:00.000Z";
+function demoNoteDraft(patientId = DEMO_PATIENT_ID) {
+  return {
+    noteType: "progress",
+    patientId,
+    hospitalDayId: DEMO_DAY_ID,
+    assessment: DEMO_ASSESSMENT,
+    problems: DEMO_PLAN_PROBLEMS
+  };
+}
+
 const DEMO_OBJECTIVE_CAPTURES = Object.freeze([
   {
     id: "demo_vitals",
@@ -287,12 +331,15 @@ export function createDemoPatient() {
     answers: {},
     quickNotes: []
   }, 0);
-  return createPatientRecord("Demo patient · Synthetic NSTEMI case", {
+  return {
+    ...createPatientRecord("Demo patient · Synthetic NSTEMI case", {
     id: DEMO_PATIENT_ID,
     metadata: { demo: true, synthetic: true },
     contextSections: [],
     days: [day]
-  });
+    }),
+    noteDrafts: { [DEMO_DAY_ID]: demoNoteDraft() }
+  };
 }
 
 const DEMO_PREFILLED_ANSWERS = Object.freeze({
@@ -321,6 +368,10 @@ const DEMO_PREFILLED_ANSWERS = Object.freeze({
 export function prefillDemoChecklist(patient) {
   return {
     ...patient,
+    noteDrafts: {
+      ...(patient?.noteDrafts || {}),
+      [DEMO_DAY_ID]: demoNoteDraft(patient?.id)
+    },
     days: (patient?.days || []).map((day) => {
       if (day.id !== DEMO_DAY_ID || !day.checklistSnapshot) return day;
       const answers = { ...(day.answers || {}) };

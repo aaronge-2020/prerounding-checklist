@@ -105,7 +105,10 @@ try {
   await page.waitForSelector('[data-checklist-finding-kind="history"] li');
   assert.match(await page.locator('[data-checklist-finding-kind="history"]').innerText(), /No chest discomfort now/);
   assert.doesNotMatch(await page.locator("[data-final-note-preview]").innerText(), /Do you have chest pressure or pain now/);
-  assert.match(await page.locator("[data-demo-guide]").innerText(), /Write your clinical assessment/);
+  assert.match(await page.locator("[data-demo-guide]").innerText(), /Review the complete assessment and plan/);
+  assert.match(await page.locator("[data-draft-assessment]").inputValue(), /high-risk NSTEMI/i);
+  assert.equal(await page.locator(".plan-problem-card").count(), 3);
+  assert.match(await page.locator('.plan-problem-card').first().locator('[data-problem-field="diagnosticPlan"]').inputValue(), /Coronary angiography is planned today/i);
   await page.selectOption("#reviewDataCategory", "vitals");
   assert.match(await page.locator(".review-data-list").innerText(), /24-hour range[\s\S]*Mean[\s\S]*Median/);
   await page.selectOption("#reviewDataCategory", "labs");
@@ -116,20 +119,21 @@ try {
   assert.match(await page.locator(".review-data-list").innerText(), /ECG interpretation[\s\S]*ST-segment depressions/i);
   await page.fill("#reviewDataSearch", "");
   await page.selectOption("#reviewDataCategory", "all");
-  await page.fill("[data-draft-assessment]", "NSTEMI symptoms are improving while awaiting coronary angiography.");
-  assert.match(await page.locator("[data-demo-guide]").innerText(), /Save the encrypted draft/);
+  await page.locator("[data-draft-assessment]").press("End");
+  await page.locator("[data-draft-assessment]").pressSequentially(" X");
+  assert.match(await page.locator("[data-demo-guide]").innerText(), /Review the complete assessment and plan/, "typing must not advance the demo");
   await page.click('[data-action="save-note-draft"]');
   await page.waitForFunction(() => /Open the prompt builder/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Open the prompt builder/);
 
   await page.click('[data-view-target="prompts"]');
   assert.equal(await page.locator("#promptTaskSelect").inputValue(), "presentation_quality_editor");
-  assert.match(await page.locator("#presentationToEdit").inputValue(), /NSTEMI symptoms are improving/);
+  assert.match(await page.locator("#presentationToEdit").inputValue(), /high-risk NSTEMI/i);
   assert.match(await page.locator("#presentationToEdit").inputValue(), /Physical Exam/);
   assert.match(await page.locator("#presentationEditorInputTitle").innerText(), /From Draft Note/);
   assert.equal(await page.locator('[data-action="open-open-evidence"]').count(), 2);
   await page.click('[data-action="copy-prompt"]');
-  assert.match(await page.evaluate(() => navigator.clipboard.readText()), /NSTEMI symptoms are improving/);
+  assert.match(await page.evaluate(() => navigator.clipboard.readText()), /high-risk NSTEMI/i);
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Demo complete/);
   await page.click('[data-action="exit-guided-demo"]');
   await page.waitForFunction(() => !document.querySelector("[data-demo-guide]"));

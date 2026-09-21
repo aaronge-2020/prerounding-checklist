@@ -103,8 +103,8 @@ const demoView = createDemoPresentation({ escapeHtml });
 const demoPatient = createDemoPatient();
 assert.equal(demoPatient.contextSections.length, 0, "the guided demo must begin with an empty admission source list");
 assert.equal(demoPatient.days[0].sourceCaptures.length, 0, "the guided demo must add the selected-day source through the normal workflow");
-assert.equal(demoStage("write-note").title, "Write your clinical assessment");
-assert.match(demoView.renderGuide({ session: { stage: "write-note" }, currentView: "review" }), /student note sent for feedback/i);
+assert.equal(demoStage("write-note").title, "Review the complete assessment and plan");
+assert.match(demoView.renderGuide({ session: { stage: "write-note" }, currentView: "review" }), /fully written synthetic assessment/i);
 assert.match(demoView.renderCallout({ stage: demoStage("save-context") }), /Daniel Morgan is a synthetic 61-year-old/);
 const dailyRenderOptions = {
   patient: { contextSections: [{ id: "admission", label: "Admission context", deidentifiedText: "", residualWarnings: [], createdAt: "2026-01-01" }] },

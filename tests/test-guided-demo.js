@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { createDemoPatient, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS, DEMO_DAY_ID, DEMO_PATIENT_ID, DEMO_REQUIRED_ANSWER_ITEM_ID, DEMO_WORKUP_ID, prefillDemoChecklist } from "../src/ui/demo/session.js";
+import { createDemoPatient, DEMO_ASSESSMENT, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS, DEMO_DAY_ID, DEMO_PATIENT_ID, DEMO_PLAN_PROBLEMS, DEMO_REQUIRED_ANSWER_ITEM_ID, DEMO_WORKUP_ID, prefillDemoChecklist } from "../src/ui/demo/session.js";
 import { checklistAnswersSummary, emptyChecklistAnswers } from "../src/checklist/state.js";
 import { createChecklistSnapshot } from "../src/workups/checklist-conversion.js";
 import { effectiveWorkupCatalog } from "../src/workups/schema.js";
@@ -51,6 +51,13 @@ assert.equal(seededPatient.days[0].sourceCaptures.length, 5, "the guided note wo
 assert.ok(seededPatient.days[0].sourceCaptures.some((capture) => capture.sourceKind === "vital_signs"));
 assert.ok(seededPatient.days[0].sourceCaptures.some((capture) => capture.sourceKind === "laboratory_results"));
 assert.ok(seededPatient.days[0].sourceCaptures.some((capture) => capture.label === "ECG interpretation"));
+assert.equal(seededPatient.noteDrafts[DEMO_DAY_ID].assessment, DEMO_ASSESSMENT);
+assert.equal(seededPatient.noteDrafts[DEMO_DAY_ID].problems, DEMO_PLAN_PROBLEMS);
+assert.ok(DEMO_ASSESSMENT.length > 400, "the guided assessment should be fully written");
+assert.equal(DEMO_PLAN_PROBLEMS.length, 3, "the guided plan should cover the active clinical problems");
+DEMO_PLAN_PROBLEMS.forEach((problem) => {
+  assert.ok(problem.problem && problem.keyContext && problem.diagnosticPlan && problem.therapeuticPlan);
+});
 assert.equal(demoStage("context-review").targetSelector, '[data-action="keep-reviewed-redaction"]');
 assert.equal(demoStage("daily-review").targetSelector, '[data-action="keep-reviewed-redaction"]');
 assert.deepEqual([...DEMO_REVIEW_ACTIONS], ["keep-reviewed-redaction", "confirm-all-section-redactions", "continue-section-review"]);
@@ -60,11 +67,9 @@ assert.equal(demoReviewTransition("continue-section-review", true), "preserve-re
 assert.equal(demoReviewTransition("keep-reviewed-redaction", false), "complete-review");
 assert.equal(demoReviewTransition("copy-prompt", false), "unrelated");
 assert.match(demoStage("context-review").instruction, /Accept.*one change at a time/i);
-assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 14);
+assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 13);
 const stageOrder = Object.keys(DEMO_GUIDE_STAGES);
 assert.ok(stageOrder.indexOf("answer-checklist") < stageOrder.indexOf("write-note"));
-assert.ok(stageOrder.indexOf("write-note") < stageOrder.indexOf("save-note"));
-assert.ok(stageOrder.indexOf("save-note") < stageOrder.indexOf("open-prompts"));
 assert.ok(stageOrder.indexOf("write-note") < stageOrder.indexOf("open-prompts"));
 Object.values(DEMO_GUIDE_STAGES).forEach((stage) => {
   assert.ok(stage.instruction, `${stage.title} should tell the user what to do`);
@@ -80,8 +85,8 @@ assert.match(guide, />Exit demo</);
 assert.doesNotMatch(guide, /Restart demo/);
 assert.doesNotMatch(guide, /demo-answer|demo-generate-prompt|static/i);
 const noteGuide = presentation.renderGuide({ session: { stage: "write-note" }, currentView: "review" });
-assert.match(noteGuide, /Write your clinical assessment/);
-assert.match(noteGuide, /student note sent for feedback/i);
+assert.match(noteGuide, /Review the complete assessment and plan/);
+assert.match(noteGuide, /fully written synthetic assessment/i);
 const feedbackGuide = presentation.renderGuide({ session: { stage: "open-prompts" }, currentView: "review" });
 assert.match(feedbackGuide, /Open Prompts/i);
 assert.match(presentation.renderCallout({ stage: demoStage("open-prompts") }), /feedback on the note you wrote/i);

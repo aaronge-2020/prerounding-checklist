@@ -1,5 +1,5 @@
-import { createDemoPresentation } from "./presentation.js?v=20260921-medication-card-v4";
-import { DEMO_DAY_ID, DEMO_REQUIRED_ANSWER_ITEM_ID, DEMO_WORKUP_ID, prefillDemoChecklist } from "./session.js?v=20260921-medication-card-v4";
+import { createDemoPresentation } from "./presentation.js?v=20260921-demo-complete-plan";
+import { DEMO_DAY_ID, DEMO_REQUIRED_ANSWER_ITEM_ID, DEMO_WORKUP_ID, prefillDemoChecklist } from "./session.js?v=20260921-demo-complete-plan";
 
 export const DEMO_REVIEW_ACTIONS = Object.freeze(new Set([
   "keep-reviewed-redaction",
@@ -189,18 +189,11 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     setTimeout(render, 0);
   }
 
-  function observeInput(target) {
-    const session = getSession();
-    if (!session) return;
-    if (session.stage === "write-note" && target.matches?.("[data-draft-assessment]") && String(target.value || "").trim()) {
-      session.stage = "save-note";
-      setTimeout(render, 0);
-    }
-  }
+  function observeInput() {}
 
   function observeDraftSaved() {
     const session = getSession();
-    if (!session || session.stage !== "save-note") return;
+    if (!session || session.stage !== "write-note") return;
     session.stage = "open-prompts";
     renderApp();
   }
