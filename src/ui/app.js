@@ -5,7 +5,7 @@ import {
   removeDay,
   sortDays,
   upsertDay
-} from "../daily-updates/days.js?v=20260921-lab-trends-v2";
+} from "../daily-updates/days.js?v=20260921-medication-review-v3";
 import {
   activePatient,
   archivePatient,
@@ -16,7 +16,7 @@ import {
   setWorkupOverride,
   setWorkupOverrides,
   updateActivePatient
-} from "../app/state/vault.js?v=20260921-lab-trends-v2";
+} from "../app/state/vault.js?v=20260921-medication-review-v3";
 import {
   deleteEncryptedVaultRecord,
   downloadJson, downloadText,
@@ -24,7 +24,7 @@ import {
   readEncryptedVaultRecord,
   saveEncryptedVault,
   writeEncryptedVaultRecord
-} from "../app/state/persistence.js?v=20260921-lab-trends-v2";
+} from "../app/state/persistence.js?v=20260921-medication-review-v3";
 import {
   authorizeWorkupWorkspaceMirror,
   disconnectWorkupWorkspaceMirror,
@@ -36,7 +36,7 @@ import {
   reorderSections,
   reorderSectionsById,
   replaceSectionsFromFormAsync
-} from "../patient-context/sections.js?v=20260921-lab-trends-v2";
+} from "../patient-context/sections.js?v=20260921-medication-review-v3";
 import {
   createEphemeralRedactionReview,
   refreshEphemeralRedactionReview,
@@ -59,13 +59,13 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../patient-context/deid-client.js?v=20260921-lab-trends-v2";
+} from "../patient-context/deid-client.js?v=20260921-medication-review-v3";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../patient-context/deid-model-options.js?v=20260921-lab-trends-v2";
+} from "../patient-context/deid-model-options.js?v=20260921-medication-review-v3";
 import {
   canAutomaticallyInstallModel,
   ensureModelPackServiceWorker,
@@ -77,13 +77,13 @@ import {
   modelFilesFromInput,
   removeModelPack,
   requestPersistentModelStorage
-} from "../patient-context/model-pack-storage.js?v=20260921-lab-trends-v2";
+} from "../patient-context/model-pack-storage.js?v=20260921-medication-review-v3";
 import {
   formatBytes,
   hasAutomaticModelDownload,
   isInstallableModel,
   modelDownloadBytes
-} from "../patient-context/model-packs.js?v=20260921-lab-trends-v2";
+} from "../patient-context/model-packs.js?v=20260921-medication-review-v3";
 import {
   ADMISSION_PSEUDO_DAY_ID,
   buildPromptPreviewSegments,
@@ -94,13 +94,13 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides, studentNoteForPrompt
-} from "../prompts/custom-templates.js?v=20260921-lab-trends-v2";
+} from "../prompts/custom-templates.js?v=20260921-medication-review-v3";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import {
   DEFAULT_DAILY_SOURCE_KIND,
   admissionSourceKindOptions
-} from "../patient-context/source-captures.js?v=20260921-lab-trends-v2";
-import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260921-lab-trends-v2";
+} from "../patient-context/source-captures.js?v=20260921-medication-review-v3";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260921-medication-review-v3";
 import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260910-pre-op-prep";
 import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260910-pre-op-prep";
 import {
@@ -127,8 +127,8 @@ import {
   workupFromEditorDraft,
   workupThoroughnessOption
 } from "../workups/editor.js?v=20260821-etiology-checklist";
-import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260921-lab-trends-v2";
-import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260921-lab-trends-v2";
+import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260921-medication-review-v3";
+import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260921-medication-review-v3";
 import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260815-standalone-ap";
 import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20260711-functional-remediation-15";
 import {
@@ -150,42 +150,42 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260921-primary-note-composer";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260921-primary-note-composer";
-import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-lab-trends-v2";
-import { createReviewPresentation } from "./review/presentation.js?v=20260921-lab-trends-v2";
-import { createReviewController } from "./review/controller.js?v=20260921-lab-trends-v2";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-review-v3";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260921-medication-review-v3";
+import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-review-v3";
+import { createReviewPresentation } from "./review/presentation.js?v=20260921-medication-review-v3";
+import { createReviewController } from "./review/controller.js?v=20260921-medication-review-v3";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
-import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260921-lab-trends-v2";
+import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260921-medication-review-v3";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
-import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260921-lab-trends-v2";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-lab-trends-v2";
+import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260921-medication-review-v3";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-medication-review-v3";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260921-lab-trends-v2";
+} from "./prompts/controller.js?v=20260921-medication-review-v3";
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260910-guideline-pagination";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
-import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-lab-trends-v2";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-lab-trends-v2";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-lab-trends-v2";
+import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-medication-review-v3";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-medication-review-v3";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-medication-review-v3";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
   createRedactionPresentation,
   redactionPosition,
   warningDescription,
   warningSnippet
-} from "./redaction/presentation.js?v=20260921-lab-trends-v2";
+} from "./redaction/presentation.js?v=20260921-medication-review-v3";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
-import { createDemoController } from "./demo/controller.js?v=20260921-lab-trends-v2";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-lab-trends-v2";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-lab-trends-v2";
+import { createDemoController } from "./demo/controller.js?v=20260921-medication-review-v3";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-medication-review-v3";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-medication-review-v3";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
   vault: null,

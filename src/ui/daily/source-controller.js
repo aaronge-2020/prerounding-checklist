@@ -1,9 +1,9 @@
-import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-lab-trends-v2";
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-lab-trends-v2";
+import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-medication-review-v3";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-review-v3";
 import {
   parseClinicalExport,
   prepareClinicalExportForSave
-} from "../../patient-context/clinical-export-parser.js?v=20260921-lab-trends-v2";
+} from "../../patient-context/clinical-export-parser.js?v=20260921-medication-review-v3";
 import {
   createEphemeralRedactionReview,
   reviewKey,
@@ -16,14 +16,14 @@ import {
   dailySourceKindOptions,
   replaceSourceCapturesFromFormAsync,
   sourceCapturePacketCheck
-} from "../../patient-context/source-captures.js?v=20260921-lab-trends-v2";
-import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-lab-trends-v2";
+} from "../../patient-context/source-captures.js?v=20260921-medication-review-v3";
+import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-medication-review-v3";
 import {
   createPrimaryTeamNote,
   primaryTeamNoteFields,
   updatePrimaryTeamNoteSection
-} from "../../patient-context/primary-team-note.js?v=20260921-primary-note-composer";
-import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20260921-primary-note-composer";
+} from "../../patient-context/primary-team-note.js?v=20260921-medication-review-v3";
+import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20260921-medication-review-v3";
 
 export function createDailySourceController(deps) {
   function noteDraftSessionHasContent(draft) {

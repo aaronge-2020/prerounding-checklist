@@ -1,5 +1,5 @@
-import { sectionWarningSummary } from "../../patient-context/sections.js?v=20260921-lab-trends-v2";
-import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-lab-trends-v2";
+import { sectionWarningSummary } from "../../patient-context/sections.js?v=20260921-medication-review-v3";
+import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-medication-review-v3";
 
 export function redactionPosition(text, redaction) {
   const source = String(text || "");

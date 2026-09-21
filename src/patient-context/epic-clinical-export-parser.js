@@ -2,7 +2,7 @@ import {
   clinicalDataModel,
   laboratoryAbnormality,
   withClinicalRepresentations
-} from "./structured-clinical-data.js?v=20260921-lab-trends-v2";
+} from "./structured-clinical-data.js?v=20260921-medication-review-v3";
 
 const EPIC_RESULT_TIMESTAMP = /^(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})(?:[ T,]+(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?|\d{4}))?$/i;
 const RESULT_VALUE = /^(?:[-+]?\d|[<>]=?\s*[-+]?\d|positive\b|negative\b|detected\b|not detected\b|reactive\b|nonreactive\b|pending\b|present\b|absent\b|rpt\b)/i;
@@ -11,7 +11,7 @@ const REPORT_LEGEND = /^(Rpt)\s*:\s*(View report\b.*)$/i;
 const MAR_FIELD = /\b(Rate|Dose|Freq(?:uency)?|Route|Start|End)\s*:\s*/gi;
 const MAR_FIELD_START = /^(?:Rate|Dose|Freq(?:uency)?|Route|Start|End)\s*:/i;
 const MAR_INSTRUCTIONS = /^Admin(?:istration)? Instructions?\s*:\s*(.*)$/i;
-const MAR_METADATA = /^(?:PRN Reasons?|PRN Comment|Weight Dosing Info)\s*:\s*(.*)$/i;
+const MAR_METADATA = /^(PRN Reasons?|PRN Comment|Weight Dosing Info)\s*:\s*(.*)$/i;
 const MAR_EVENT = /(?:^|\s)(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4})(?:\s*\(\s*([^)]*?)\s*\))?(?:\s*(\[[A-Z]+\]))?(?:-\s*(See Alt))?(?=\s|$)/gi;
 const MAR_DATE = /\b(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\b/g;
 
@@ -334,7 +334,7 @@ function renderEpicMar(value) {
     const medicationCandidate = isMedicationCandidate(lines, position);
     if (medicationCandidate && (!inInstructions || hasMarMetadataAhead(lines, position))) {
       finishCurrent();
-      current = { name: line.text, section, fields: [], administrations: [], instructions: [], indexes: [line.index] };
+      current = { name: line.text, section, fields: [], administrations: [], instructions: [], metadata: [], indexes: [line.index] };
       consumed.add(line.index);
       continue;
     }
@@ -351,7 +351,7 @@ function renderEpicMar(value) {
     const metadata = line.text.match(MAR_METADATA);
     if (metadata) {
       inInstructions = false;
-      current.instructions.push(`${line.text.slice(0, line.text.indexOf(":"))}: ${metadata[1]}`);
+      current.metadata.push({ key: metadata[1], value: compact(metadata[2]) });
       current.indexes.push(line.index);
       consumed.add(line.index);
       continue;
@@ -408,6 +408,8 @@ function renderEpicMar(value) {
       timestamp: "",
       rows: medications.filter((medication) => medication.section === groupLabel).map((medication, medicationIndex) => {
         const field = (key) => medication.fields.find((entry) => entry.key === key)?.value || "";
+        const metadata = (key) => medication.metadata.find((entry) => entry.key.toLowerCase() === key.toLowerCase())?.value || "";
+        const prnReason = metadata("PRN Reason") || metadata("PRN Reasons");
         const timing = [field("Start") && `start ${field("Start")}`, field("End") && `end ${field("End")}`].filter(Boolean).join("; ");
         return {
           id: `medication_${groupIndex + 1}_${medicationIndex + 1}`,
@@ -422,6 +424,9 @@ function renderEpicMar(value) {
           asOfDate,
           status: [],
           administrations: medication.administrations,
+          prnReason,
+          prnComment: metadata("PRN Comment"),
+          weightDosingInfo: metadata("Weight Dosing Info"),
           instructions: medication.instructions,
           sourceIndex: medication.indexes[0]
         };

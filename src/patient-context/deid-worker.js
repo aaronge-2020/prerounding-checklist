@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20260921-lab-trends-v2";
+} from "./deid-service.js?v=20260921-medication-review-v3";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });

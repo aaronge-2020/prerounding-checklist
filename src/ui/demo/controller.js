@@ -1,5 +1,5 @@
-import { createDemoPresentation } from "./presentation.js?v=20260921-lab-trends-v2";
-import { DEMO_DAY_ID, DEMO_REQUIRED_ANSWER_ITEM_ID, DEMO_WORKUP_ID, prefillDemoChecklist } from "./session.js?v=20260921-lab-trends-v2";
+import { createDemoPresentation } from "./presentation.js?v=20260921-medication-review-v3";
+import { DEMO_DAY_ID, DEMO_REQUIRED_ANSWER_ITEM_ID, DEMO_WORKUP_ID, prefillDemoChecklist } from "./session.js?v=20260921-medication-review-v3";
 
 export const DEMO_REVIEW_ACTIONS = Object.freeze(new Set([
   "keep-reviewed-redaction",

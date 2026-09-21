@@ -300,8 +300,9 @@ Sodium: 138`;
 
   await page.fill("#reviewDataSearch", "ceftriaxone");
   const medicationCard = page.locator("[data-review-candidate]").first();
-  assert.match(await medicationCard.innerText(), /Dose[\s\S]*1 g[\s\S]*Route[\s\S]*IV[\s\S]*Administration times[\s\S]*0900 \(1 g\)/i);
-  assert.doesNotMatch(await medicationCard.innerText(), /Course|Day \d+|every 24 hours/i);
+  assert.match(await medicationCard.innerText(), /Scheduled[\s\S]*Regimen[\s\S]*1 g · IV · every 24 hours[\s\S]*Latest listed administration[\s\S]*0900 \(1 g\)/i);
+  assert.match(await medicationCard.innerText(), /1 listed administration/i);
+  assert.doesNotMatch(await medicationCard.innerText(), /Course/i);
 
   await page.fill("#reviewDataSearch", "CT Head/Neck");
   const ctCard = page.locator("[data-review-candidate]").first();

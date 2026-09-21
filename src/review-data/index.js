@@ -1,11 +1,11 @@
 import {
   clinicalDisplayModelFromPromptText,
   laboratoryAbnormality
-} from "../patient-context/structured-clinical-data.js?v=20260921-lab-trends-v2";
+} from "../patient-context/structured-clinical-data.js?v=20260921-medication-review-v3";
 import {
   laboratoryAnalyteKey,
   laboratoryPanelLabel
-} from "../patient-context/laboratory-panels.js?v=20260921-lab-trends-v2";
+} from "../patient-context/laboratory-panels.js?v=20260921-medication-review-v3";
 
 const GROUP_DEFINITIONS = Object.freeze([
   Object.freeze({ id: "vitals", label: "Vital signs" }),
@@ -23,6 +23,21 @@ function clean(value) {
 
 function normalizedExact(value) {
   return clean(value).toLocaleLowerCase("en-US");
+}
+
+function isMedicationName(value) {
+  const name = clean(value).replace(/^(?:\[[^\]]+\]\s*)+/, "");
+  return Boolean(name) && !/^(?:Rate|Dose|Freq(?:uency)?|Route|Start|End|PRN Reasons?|PRN Comment|Weight Dosing Info|Admin(?:istration)? Instructions?|Order specific questions?|\d{3,4}(?:-See Alt)?)(?:\s*:|$)/i.test(name);
+}
+
+function medicationScheduleLabel(entry) {
+  const section = clean(entry.savedSection);
+  const frequency = clean(entry.frequency);
+  if (/completed|discontinued/i.test(section)) return "Completed";
+  if (/\bPRN\b/i.test(frequency)) return "PRN";
+  if (/continuous|titrated/i.test(frequency) || entry.rate) return "Continuous";
+  if (/on call/i.test(frequency)) return "On call";
+  return frequency ? "Scheduled" : "Order";
 }
 
 function stableHash(value) {
@@ -432,7 +447,13 @@ function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap)
 
   if (display.type === "medications") {
     display.groups.forEach((group, groupOrder) => group.rows.forEach((row, rowOrder) => {
-      const [name = "", dose = "", route = "", administrationTimes = ""] = row.cells || [];
+      const [legacyName = "", legacyDose = "", legacyRoute = "", legacyAdministrations = ""] = row.cells || [];
+      const medication = row.medication || {};
+      const name = clean(medication.name || legacyName).replace(/^(?:\[[^\]]+\]\s*)+/, "");
+      if (!isMedicationName(name)) return;
+      const administrations = Array.isArray(medication.administrations)
+        ? medication.administrations.map(clean).filter(Boolean)
+        : clean(legacyAdministrations).split(/\s*(?:·|;)\s*/).filter(Boolean);
       const key = normalizedExact(name);
       if (!key) return;
       if (!medicationMap.has(key)) medicationMap.set(key, {
@@ -445,9 +466,16 @@ function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap)
       medicationMap.get(key).observations.push({
         id: stableId("medication_entry", identity, name),
         name: clean(name),
-        dose: clean(dose),
-        route: clean(route),
-        administrationTimes: clean(administrationTimes),
+        dose: clean(medication.dose || legacyDose),
+        rate: clean(medication.rate),
+        route: clean(medication.route || legacyRoute),
+        frequency: clean(medication.frequency),
+        administrations,
+        administrationTimes: administrations.join(" · "),
+        latestAdministration: administrations.at(-1) || "",
+        prnReason: clean(medication.prnReason),
+        prnComment: clean(medication.prnComment),
+        timing: clean(medication.timing),
         savedSection: clean(group.label),
         timestamp: clean(group.timestamp),
         dayLabel: source.dayLabel,
@@ -468,13 +496,13 @@ function finalizeMedicationCandidate(candidate) {
   const observations = [...candidate.observations].sort(compareObservations);
   const latestSavedEntry = observations.at(-1) || null;
   const describe = (entry) => {
-    const details = [
-      entry.dose && `dose ${entry.dose}`,
-      entry.route && `route ${entry.route}`,
-      entry.administrationTimes && `administered ${entry.administrationTimes}`
-    ].filter(Boolean).join(" · ");
+    const regimen = [entry.dose, entry.route, entry.frequency].filter(Boolean).join(" ");
+    const details = [regimen, entry.rate && `rate ${entry.rate}`, entry.latestAdministration && `last listed ${entry.latestAdministration}`].filter(Boolean).join(" · ");
     return `${entry.dayLabel}${details ? `: ${details}` : ""}`;
   };
+  const scheduleLabel = latestSavedEntry ? medicationScheduleLabel(latestSavedEntry) : "Order";
+  const regimen = latestSavedEntry ? [latestSavedEntry.dose, latestSavedEntry.route, latestSavedEntry.frequency].filter(Boolean).join(" · ") : "";
+  const prnDetails = latestSavedEntry ? [latestSavedEntry.prnReason, latestSavedEntry.prnComment].filter(Boolean).join(" — ") : "";
   const finalized = {
     ...candidate,
     group: "medications",
@@ -482,16 +510,24 @@ function finalizeMedicationCandidate(candidate) {
     history: observations,
     latestSavedEntry,
     dose: latestSavedEntry?.dose || "",
+    rate: latestSavedEntry?.rate || "",
     route: latestSavedEntry?.route || "",
+    frequency: latestSavedEntry?.frequency || "",
+    scheduleLabel,
+    regimen,
+    administrations: latestSavedEntry?.administrations || [],
     administrationTimes: latestSavedEntry?.administrationTimes || "",
+    latestAdministration: latestSavedEntry?.latestAdministration || "",
+    prnReason: latestSavedEntry?.prnReason || "",
+    prnComment: latestSavedEntry?.prnComment || "",
     insertionText: latestSavedEntry
-      ? `${candidate.name} — latest saved entry ${describe(latestSavedEntry)}${observations.length > 1 ? `; saved history ${observations.map(describe).join(" | ")}` : ""}`
+      ? `${candidate.name}${regimen ? ` — ${regimen}` : ""}${latestSavedEntry.rate ? ` · rate ${latestSavedEntry.rate}` : ""}${latestSavedEntry.latestAdministration ? `; latest listed administration ${latestSavedEntry.latestAdministration}` : "; no administration documented"}${prnDetails ? `; documented PRN use: ${prnDetails}` : ""}${observations.length > 1 ? `; saved history ${observations.map(describe).join(" | ")}` : ""}`
       : candidate.name,
-    searchText: clean([candidate.name, ...observations.flatMap((entry) => [entry.dose, entry.route, entry.administrationTimes, entry.savedSection, entry.dayLabel])].join(" ")).toLocaleLowerCase("en-US")
+    searchText: clean([candidate.name, ...observations.flatMap((entry) => [entry.dose, entry.rate, entry.route, entry.frequency, entry.administrationTimes, entry.prnReason, entry.prnComment, entry.savedSection, entry.dayLabel])].join(" ")).toLocaleLowerCase("en-US")
   };
   finalized.fingerprint = fingerprint({
     id: finalized.id,
-    entries: observations.map(({ id, dose, route, administrationTimes, savedSection, dayLabel }) => ({ id, dose, route, administrationTimes, savedSection, dayLabel }))
+    entries: observations.map(({ id, dose, rate, route, frequency, administrationTimes, prnReason, prnComment, savedSection, dayLabel }) => ({ id, dose, rate, route, frequency, administrationTimes, prnReason, prnComment, savedSection, dayLabel }))
   });
   return finalized;
 }

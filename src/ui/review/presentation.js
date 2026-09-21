@@ -1,4 +1,4 @@
-import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-lab-trends-v2";
+import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-medication-review-v3";
 
 function valueText(value) {
   return String(value?.deidentifiedText || "");
@@ -80,24 +80,43 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     </article>`;
   }
 
+  function renderMedication(candidate, selected) {
+    const regimen = [candidate.dose, candidate.route, candidate.frequency].filter(Boolean).join(" · ");
+    const prnDetails = [candidate.prnReason, candidate.prnComment].filter(Boolean).join(" — ");
+    const administrations = candidate.administrations || [];
+    return `<article class="review-data-item review-data-item--medication ${selected ? "is-selected" : ""}" data-review-candidate="${escapeHtml(candidate.id)}">
+      <header class="review-medication-header">
+        <label class="review-medication-selection"><input type="checkbox" data-objective-selection-id="${escapeHtml(candidate.id)}" aria-label="Include ${escapeHtml(candidate.name)} in the note" ${selected ? "checked" : ""}></label>
+        <div class="review-medication-identity"><div class="review-medication-title-line"><h3>${escapeHtml(candidate.name)}</h3><span class="review-medication-type" data-medication-type="${escapeHtml(candidate.scheduleLabel.toLowerCase())}">${escapeHtml(candidate.scheduleLabel)}</span></div><p>${escapeHtml(candidate.latestSavedEntry?.savedSection || "Medication activity")}</p></div>
+      </header>
+      <div class="review-medication-summary">
+        <div><span>Regimen</span><strong>${escapeHtml(regimen || candidate.rate || "Not documented")}</strong>${candidate.rate && regimen ? `<small>Rate ${escapeHtml(candidate.rate)}</small>` : ""}</div>
+        <div><span>Latest listed administration</span><strong>${escapeHtml(candidate.latestAdministration || "None documented")}</strong><small>${escapeHtml(candidate.latestSavedEntry?.dayLabel || "")}</small></div>
+      </div>
+      <details class="review-medication-details"><summary>${administrations.length ? `${administrations.length} listed administration${administrations.length === 1 ? "" : "s"}` : "No administration history"}${prnDetails ? " · PRN details" : ""}</summary>
+        ${administrations.length ? `<ol class="review-medication-administrations">${administrations.map((administration) => `<li>${escapeHtml(administration)}</li>`).join("")}</ol>` : `<p class="muted">No administration was documented in this saved MAR entry.</p>`}
+        ${prnDetails ? `<div class="review-medication-prn"><span>Documented PRN use</span><p>${escapeHtml(prnDetails)}</p></div>` : ""}
+      </details>
+      <details class="review-medication-note-preview"><summary>Preview note insertion</summary><pre>${escapeHtml(candidate.insertionText)}</pre></details>
+    </article>`;
+  }
+
   function renderCandidate(candidate, selectedIds, { labNavigation = null } = {}) {
     const selected = selectedIds.has(candidate.id);
     if (candidate.kind === "laboratory_panel") return renderLaboratoryPanel(candidate, selected, labNavigation);
+    if (candidate.kind === "medication") return renderMedication(candidate, selected);
     const stats = candidate.statistics24h
       ? `<dl class="review-vital-stats"><div><dt>24-hour range</dt><dd>${escapeHtml(`${candidate.statistics24h.minimum}–${candidate.statistics24h.maximum} ${candidate.unit || ""}`.trim())}</dd></div><div><dt>Mean</dt><dd>${escapeHtml(`${candidate.statistics24h.mean} ${candidate.unit || ""}`.trim())}</dd></div><div><dt>Median</dt><dd>${escapeHtml(`${candidate.statistics24h.median} ${candidate.unit || ""}`.trim())}</dd></div></dl>`
       : "";
     const diagnostic = candidate.kind === "diagnostic_result"
       ? `<p class="review-result-text">${escapeHtml(candidate.text)}</p><small>${escapeHtml([candidate.resultDate, candidate.source?.dayLabel, candidate.context].filter(Boolean).join(" · "))}</small>`
       : "";
-    const medication = candidate.kind === "medication" && candidate.latestSavedEntry
-      ? `<dl class="review-medication-regimen"><div><dt>Dose</dt><dd>${escapeHtml(candidate.latestSavedEntry.dose || "Not documented")}</dd></div><div><dt>Route</dt><dd>${escapeHtml(candidate.latestSavedEntry.route || "Not documented")}</dd></div><div><dt>Administration times</dt><dd>${escapeHtml(candidate.latestSavedEntry.administrationTimes || "None documented")}</dd></div></dl>`
-      : "";
     return `<article class="review-data-item ${selected ? "is-selected" : ""}" data-review-candidate="${escapeHtml(candidate.id)}">
       <label class="objective-choice">
         <input type="checkbox" data-objective-selection-id="${escapeHtml(candidate.id)}" ${selected ? "checked" : ""}>
         <span><strong>${escapeHtml(candidate.name)}</strong><small>${escapeHtml(candidate.source?.dayLabel || candidate.group)}</small></span>
       </label>
-      ${stats}${medication}${diagnostic}${candidate.kind !== "medication" && candidate.observations?.length ? renderTrend(candidate) : ""}
+      ${stats}${diagnostic}${candidate.observations?.length ? renderTrend(candidate) : ""}
       <details><summary>Preview note insertion</summary><pre>${escapeHtml(candidate.insertionText)}</pre></details>
     </article>`;
   }

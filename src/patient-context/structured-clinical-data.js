@@ -157,7 +157,7 @@ function medicationDisplay(model) {
     type: "medications",
     view: "medication_table",
     title: "Medication activity",
-    columns: ["Medication", "Dose", "Route", "Administration times"],
+    columns: ["Medication", "Current regimen", "Most recent administration", "Administration history"],
     groups: model.groups.map((group) => ({
       label: group.label,
       timestamp: group.timestamp,
@@ -165,10 +165,26 @@ function medicationDisplay(model) {
         id: row.id,
         cells: [
           row.name,
-          row.dose || row.rate,
-          row.route,
-          [...(row.status || []), ...(row.administrations || [])].join(" · ")
+          [row.dose, row.rate && `rate ${row.rate}`, row.route, row.frequency].filter(Boolean).join(" · "),
+          row.administrations?.at(-1) || "",
+          (row.administrations || []).join(" · ")
         ],
+        medication: {
+          name: row.name,
+          dose: row.dose || "",
+          rate: row.rate || "",
+          route: row.route || "",
+          frequency: row.frequency || "",
+          timing: row.timing || "",
+          start: row.start || "",
+          end: row.end || "",
+          asOfDate: row.asOfDate || "",
+          status: row.status || [],
+          administrations: row.administrations || [],
+          prnReason: row.prnReason || "",
+          prnComment: row.prnComment || "",
+          weightDosingInfo: row.weightDosingInfo || ""
+        },
         emphasis: "unknown",
         provenance: row.provenance
       }))
@@ -295,8 +311,12 @@ function medicationPrompt(model) {
     for (const row of group.rows) {
       const activity = [...(row.status || []), ...(row.administrations || [])].join("; ");
       const details = [
-        (row.dose || row.rate) && `Dose: ${row.dose || row.rate}`,
+        row.dose && `Dose: ${row.dose}`,
+        row.rate && `Rate: ${row.rate}`,
         row.route && `Route: ${row.route}`,
+        row.frequency && `Frequency: ${row.frequency}`,
+        row.prnReason && `PRN reason: ${row.prnReason}`,
+        row.prnComment && `PRN parameters: ${row.prnComment}`,
         activity && `Administrations: ${activity}`
       ].filter(Boolean).join(" | ");
       lines.push(`${group.label ? `[${group.label}] ` : ""}${row.name}${details ? ` — ${details}` : ""}`);
@@ -454,28 +474,55 @@ function savedMedicationDisplay(lines) {
     const match = clean(line).match(/^(?:\[([^\]]+)\]\s*)?(.+?)(?:\s+—\s+(.+))?$/);
     if (!match) continue;
     const groupLabel = clean(match[1]) || "Medication activity";
-    const name = clean(match[2]);
+    const name = clean(match[2]).replace(/^(?:\[[^\]]+\]\s*)+/, "");
     if (!name || /^(?:Rate|Dose|Freq(?:uency)?|Route|Start|End|PRN Reasons?|PRN Comment|Weight Dosing Info|Admin(?:istration)? Instructions?|Order specific questions?|\d{3,4}(?:-See Alt)?)(?:\s*:|$)/i.test(name)) continue;
     const details = clean(match[3]);
     const detailParts = details.split(/\s+\|\s+/).filter(Boolean);
     const labeled = Object.fromEntries(detailParts.map((part) => {
-      const field = part.match(/^(Dose|Route|Administrations)\s*:\s*(.*)$/i);
-      return field ? [field[1].toLowerCase(), clean(field[2])] : ["", ""];
+      const field = part.match(/^(Dose|Rate|Route|Frequency|Administrations|PRN reason|PRN parameters)\s*:\s*(.*)$/i);
+      return field ? [field[1].toLowerCase().replace(/\s+/g, ""), clean(field[2])] : ["", ""];
     }).filter(([key]) => key));
     let dose = labeled.dose || "";
+    let rate = labeled.rate || "";
     let route = labeled.route || "";
+    let frequency = labeled.frequency || "";
     let administrations = labeled.administrations || "";
+    let prnReason = labeled.prnreason || "";
+    let prnComment = labeled.prnparameters || "";
     if (!Object.keys(labeled).length) {
       const [legacyOrder = "", legacyActivity = ""] = detailParts;
       const orderParts = legacyOrder.split(/;\s*/).map(clean).filter(Boolean);
       route = orderParts.find((part) => /^(?:PO|IV|IM|SC|SQ|SL|TD|INH|ORAL|RECTAL|SWISH\s*&\s*SPIT|PER\s+(?:G|NG|NJ|PEG)\s+TUBE)$/i.test(part)) || "";
-      dose = orderParts.find((part) => part !== route && !/^(?:start|end)\s+|^(?:Day \d+|Starts in \d+ days?|Course ended)$|^(?:once|daily|nightly|continuous|titrated|on call|every\b|\d+ times? daily)/i.test(part)) || "";
+      dose = orderParts.find((part) => part !== route && !/^(?:start|end)\s+|^(?:Day \d+|Starts in \d+ days?|Course ended)$|^(?:once|daily|nightly|continuous|titrated|on call|every\b|q\d+h\b|\d+x\s*daily\b|\d+ times? daily)/i.test(part)) || "";
+      frequency = orderParts.find((part) => /^(?:once|daily|nightly|continuous|titrated|on call|every\b|q\d+h\b|\d+x\s*daily\b|\d+ times? daily)/i.test(part)) || "";
       administrations = legacyActivity;
     }
+    const administrationList = administrations.split(/\s*;\s*/).map(clean).filter(Boolean);
     if (!groups.has(groupLabel)) groups.set(groupLabel, []);
     groups.get(groupLabel).push({
       id: `saved_medication_${groups.size}_${groups.get(groupLabel).length + 1}`,
-      cells: [name, dose, route, administrations],
+      cells: [
+        name,
+        [dose, rate && `rate ${rate}`, route, frequency].filter(Boolean).join(" · "),
+        administrationList.at(-1) || "",
+        administrationList.join(" · ")
+      ],
+      medication: {
+        name,
+        dose,
+        rate,
+        route,
+        frequency,
+        timing: "",
+        start: "",
+        end: "",
+        asOfDate: "",
+        status: [],
+        administrations: administrationList,
+        prnReason,
+        prnComment,
+        weightDosingInfo: ""
+      },
       emphasis: "unknown",
       provenance: { sourceSystem: "Saved de-identified source", formatId: "saved_prompt_medications", group: groupLabel, timestamp: "", sourceIndex: null }
     });
@@ -485,7 +532,7 @@ function savedMedicationDisplay(lines) {
     type: "medications",
     view: "medication_table",
     title: "Medication activity",
-    columns: ["Medication", "Dose", "Route", "Administration times"],
+    columns: ["Medication", "Current regimen", "Most recent administration", "Administration history"],
     groups: [...groups.entries()].map(([label, rows]) => ({ label, timestamp: "", rows })),
     provenance: { sourceSystem: "Saved de-identified source", formatId: "saved_prompt_medications", formatLabel: "Saved medication activity", extraction: "canonical_prompt_text" }
   };

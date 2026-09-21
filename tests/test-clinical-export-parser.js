@@ -12,8 +12,8 @@ import {
 } from "../src/patient-context/structured-clinical-data.js";
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
-const parserRevision = "20260921-lab-trends-v2";
-const primaryNoteRevision = "20260921-primary-note-composer";
+const parserRevision = "20260921-medication-review-v3";
+const primaryNoteRevision = "20260921-medication-review-v3";
 const runtimeSources = {
   index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
   app: readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8"),
@@ -311,18 +311,36 @@ assert.deepEqual(parsedEpicMarMetadata.structuredData.groups[0].rows.map(({ name
 ]);
 assert.equal(parsedEpicMarMetadata.structuredData.groups[0].rows[0].rate, "10-100 mL/hr");
 assert.equal(parsedEpicMarMetadata.structuredData.groups[0].rows[0].asOfDate, "09/21/26");
-assert.deepEqual(parsedEpicMarMetadata.displayModel.columns, ["Medication", "Dose", "Route", "Administration times"]);
+assert.deepEqual(parsedEpicMarMetadata.displayModel.columns, ["Medication", "Current regimen", "Most recent administration", "Administration history"]);
 assert.deepEqual(parsedEpicMarMetadata.displayModel.groups[0].rows[0].cells, [
   "*NUTRITION Tube Feeding Continuous Formula Per NG Tube",
-  "10-100 mL/hr",
-  "PER NG TUBE",
+  "rate 10-100 mL/hr · PER NG TUBE · continuous",
+  "1218",
   "1218"
 ]);
-assert.doesNotMatch(JSON.stringify(parsedEpicMarMetadata.displayModel), /Day 5|PRN Reason|PRN Comment/);
+assert.equal(parsedEpicMarMetadata.displayModel.groups[0].rows[1].medication.prnReason, "Electrolyte Replacement");
+assert.equal(parsedEpicMarMetadata.displayModel.groups[0].rows[1].medication.prnComment, "for ionized calcium below goal");
+assert.doesNotMatch(JSON.stringify(parsedEpicMarMetadata.displayModel), /Day 5/);
 assert.equal(parsedEpicMarMetadata.preservedUnparsedText, false);
 const savedEpicMarMetadata = clinicalDisplayModelFromPromptText("medication_activity", parsedEpicMarMetadata.outputText);
-assert.deepEqual(savedEpicMarMetadata.columns, ["Medication", "Dose", "Route", "Administration times"]);
+assert.deepEqual(savedEpicMarMetadata.columns, ["Medication", "Current regimen", "Most recent administration", "Administration history"]);
 assert.deepEqual(savedEpicMarMetadata.groups[0].rows[0].cells, parsedEpicMarMetadata.displayModel.groups[0].rows[0].cells);
+assert.deepEqual(savedEpicMarMetadata.groups[0].rows[1].medication, {
+  name: "calcium replacement IVPB",
+  dose: "2 g",
+  rate: "",
+  route: "IV",
+  frequency: "every 12 hours PRN",
+  timing: "",
+  start: "",
+  end: "",
+  asOfDate: "",
+  status: [],
+  administrations: ["1813"],
+  prnReason: "Electrolyte Replacement",
+  prnComment: "for ionized calcium below goal",
+  weightDosingInfo: ""
+});
 
 const savedNoisyLegacyMar = clinicalDisplayModelFromPromptText("medication_activity", `Medications
 [Medications] PRN Comment: for K+ < 3.3 mEq/L — start 09/19/26 | 0420 (60 mEq)
@@ -330,8 +348,8 @@ const savedNoisyLegacyMar = clinicalDisplayModelFromPromptText("medication_activ
 [PRN Medications] potassium chloride IVPB — 10 mEq; every 1 hour PRN; IV; Day 3 | 0420 (10 mEq)`);
 assert.deepEqual(savedNoisyLegacyMar.groups.flatMap(({ rows }) => rows.map(({ cells }) => cells)), [[
   "potassium chloride IVPB",
-  "10 mEq",
-  "IV",
+  "10 mEq · IV · every 1 hour PRN",
+  "0420 (10 mEq)",
   "0420 (10 mEq)"
 ]], "legacy saved MAR metadata must not be presented as medications");
 assert.doesNotMatch(JSON.stringify(savedNoisyLegacyMar), /PRN Comment|Order specific questions|Day 3/);

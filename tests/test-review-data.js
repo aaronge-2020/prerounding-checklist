@@ -228,9 +228,12 @@ assert.ok(ceftriaxone);
 assert.equal(ceftriaxone.history.length, 2);
 assert.equal(ceftriaxone.latestSavedEntry.dose, "2 g");
 assert.equal(ceftriaxone.latestSavedEntry.route, "IV");
+assert.equal(ceftriaxone.latestSavedEntry.frequency, "q24h");
 assert.equal(ceftriaxone.latestSavedEntry.administrationTimes, "0600");
+assert.equal(ceftriaxone.latestAdministration, "0600");
+assert.equal(ceftriaxone.scheduleLabel, "Scheduled");
 assert.equal("course" in ceftriaxone.latestSavedEntry, false, "review data must not retain an inferred medication course");
-assert.match(ceftriaxone.insertionText, /latest saved entry/, "medication output must describe saved state rather than claiming a recomputation");
+assert.match(ceftriaxone.insertionText, /latest listed administration 0600/, "medication output must describe the saved MAR rather than claiming a recomputation");
 assert.doesNotMatch(ceftriaxone.insertionText, /Day 3/, "note insertion must omit legacy inferred course labels");
 assert.ok(index.medications.some((candidate) => candidate.name === "acetaminophen"));
 
