@@ -72,12 +72,15 @@ assert.match(DEFAULT_PROMPT_TEMPLATES.checklist_workup_refinement, /^@checklist-
 assert.doesNotMatch(Object.values(DEFAULT_PROMPT_TEMPLATES).join("\n"), /updated-guidelines/);
 for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter((entry) => entry.path)) {
   const deployedSeed = readFileSync(source.path.replace(/^\.\//, ""), "utf8");
+  if (source.token === "@pre-op-prep-guidelines") {
+    assert.match(deployedSeed, /Why this operation is being performed for this patient now/i);
+    assert.match(deployedSeed, /Operation and Relevant Anatomy/i);
+    continue;
+  }
   const expectedPersona = source.token.startsWith("@obgyn-")
     ? /Act as an attending obstetrician-gynecologist with over 30 years of inpatient and ambulatory experience/i
     : source.token === "@presentation-critique-guidelines"
       ? /Act as a highly experienced attending physician on the specialty team identified in the prompt/i
-      : source.token === "@pre-op-prep-guidelines"
-        ? /Act as an experienced surgical attending preparing a clinician in training for this patient's operation/i
       : /Act as an attending hospitalist with over 30 years of inpatient experience/i;
   assert.match(deployedSeed, expectedPersona, `${source.label} must carry its attending persona`);
 }

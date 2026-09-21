@@ -1,9 +1,9 @@
-import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260722-unified-stay-v2";
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260815-smart-variable-fields";
+import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260920-clinical-review";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260920-clinical-review";
 import {
   parseClinicalExport,
   prepareClinicalExportForSave
-} from "../../patient-context/clinical-export-parser.js?v=20260908-epic-mixed-packet";
+} from "../../patient-context/clinical-export-parser.js?v=20260920-clinical-review";
 import {
   createEphemeralRedactionReview,
   reviewKey,
@@ -12,10 +12,11 @@ import {
 import {
   admissionSourceKindOptions,
   createSourceCapture,
+  dailySourceKindLabel,
   dailySourceKindOptions,
   replaceSourceCapturesFromFormAsync,
   sourceCapturePacketCheck
-} from "../../patient-context/source-captures.js?v=20260815-smart-variable-fields";
+} from "../../patient-context/source-captures.js?v=20260920-clinical-review";
 
 export function createDailySourceController(deps) {
   const sourceState = (scope) =>
@@ -39,7 +40,9 @@ export function createDailySourceController(deps) {
 
   function sourceTextForSave(scope) {
     const state = sourceState(scope);
-    const prepared = prepareClinicalExportForSave(deps.app[state.draftKey], deps.app[state.parseKey]);
+    const prepared = prepareClinicalExportForSave(deps.app[state.draftKey], deps.app[state.parseKey], {
+      sourceKind: deps.app[state.kindKey]
+    });
     deps.app[state.parseKey] = prepared.parseResult;
     if (prepared.parseResult.suggestedSourceKind && state.options.some((option) => option.id === prepared.parseResult.suggestedSourceKind)) {
       deps.app[state.kindKey] = prepared.parseResult.suggestedSourceKind;
@@ -87,7 +90,7 @@ export function createDailySourceController(deps) {
   function updateDraft(scope, value) {
     const state = sourceState(scope);
     deps.app[state.draftKey] = String(value || "");
-    const parsed = parseClinicalExport(value);
+    const parsed = parseClinicalExport(value, { sourceKind: deps.app[state.kindKey] });
     deps.app[state.parseKey] = parsed;
     if (parsed.suggestedSourceKind && state.options.some((option) => option.id === parsed.suggestedSourceKind)) {
       deps.app[state.kindKey] = parsed.suggestedSourceKind;
@@ -110,6 +113,14 @@ export function createDailySourceController(deps) {
       addButton.textContent = parsedSourceCount > 1 ? `De-identify and add ${parsedSourceCount} sources` : "De-identify and add source";
       addButton.disabled = deps.app.deidOperation.active || !deps.app[state.draftKey].trim();
     }
+  }
+
+  function selectSourceKind(scope, sourceKind) {
+    const state = sourceState(scope);
+    deps.app[state.kindKey] = state.options.some((option) => option.id === sourceKind)
+      ? sourceKind
+      : "primary_note";
+    updateDraft(scope, deps.app[state.draftKey]);
   }
 
   function updateParsedDraft(scope, value, sectionIndex = "") {
@@ -144,6 +155,8 @@ export function createDailySourceController(deps) {
     return (
       {
         primary_note: "admission_reason",
+        vital_signs: "admission_results",
+        laboratory_results: "admission_results",
         results: "admission_results",
         medication_activity: "procedures_devices",
         consult_note: "procedures_devices",
@@ -176,6 +189,7 @@ export function createDailySourceController(deps) {
       pendingFocus: deps.app.pendingSectionReviewFocus,
       review,
       draftText,
+      structuredDisplay: deps.dailyPresentation.renderSavedClinicalDisplay(capture.sourceKind, draftText, `saved${capture.id}`),
       captures: deps.reviewSectionsForScope("daily"),
       reviewFor: (id) => deps.sectionReviewFor("daily", id)
     });
@@ -282,7 +296,7 @@ export function createDailySourceController(deps) {
     try {
       await deps.ensureSelectedDeidReady();
       const deidentified = await deidentifySourceParts(parts, deps.app.admissionDate);
-      const sections = deidentified.map(({ part, result }) => createTextSection(part.label || "Other chart text", {
+      const sections = deidentified.map(({ part, result }) => createTextSection(part.label || dailySourceKindLabel(part.sourceKind), {
         scope: "context",
         role: admissionRoleForSourceKind(part.sourceKind),
         sourceKind: part.sourceKind,
@@ -370,5 +384,5 @@ export function createDailySourceController(deps) {
     deps.render();
   }
 
-  return Object.freeze({ addAdmissionSource, addSource, renderDaily, saveSources, selectPacket, updateDraft, updateParsedDraft });
+  return Object.freeze({ addAdmissionSource, addSource, renderDaily, saveSources, selectPacket, selectSourceKind, updateDraft, updateParsedDraft });
 }

@@ -1,9 +1,12 @@
 import { sanitizeResidualWarningMetadata } from "./review.js";
 import { naturalLanguagePrompt } from "../prompts/natural-language.js";
+import { evaluatePacketCompleteness } from "../daily-updates/packet-completeness.js?v=20260920-clinical-review";
 
 const sourceKinds = [
   ["primary_note", "Primary team note", "The latest primary-team note or interval update copied from Epic."],
-  ["results", "Results", "Selected-day laboratory, imaging, microbiology, and diagnostic results."],
+  ["vital_signs", "Vital signs", "Selected-day vital signs and clinical support measurements."],
+  ["laboratory_results", "Laboratory results", "Selected-day laboratory results."],
+  ["results", "Other results", "Selected-day imaging, microbiology, and diagnostic results that are not vital signs or laboratory results."],
   ["medication_activity", "Medication activity", "Medication administrations, holds, starts, stops, and active orders."],
   ["consult_note", "Consult note", "A consultant note, recommendation, or procedure update."],
   ["prior_physical_exam", "Physical exam (admission)", "The physical examination documented in the admission record."],
@@ -174,13 +177,14 @@ export function sourceCapturesToPromptBlock(captures = [], title = "Selected-day
 
 export function sourceCapturePacketCheck(captures = []) {
   const supplied = new Set((captures || []).filter((capture) => String(capture?.deidentifiedText || "").trim()).map((capture) => capture.sourceKind));
-  const expected = ["primary_note", "results", "medication_activity", "bedside_update"];
+  const completeness = evaluatePacketCompleteness(captures);
   const included = DAILY_SOURCE_KINDS.filter((kind) => supplied.has(kind.id)).map((kind) => kind.label);
-  const notSupplied = expected.filter((kind) => !supplied.has(kind)).map((kind) => dailySourceKindLabel(kind));
+  const notSupplied = completeness.missingRequired.map((item) => item.label);
   const warningCount = (captures || []).reduce((count, capture) => count + (capture?.residualWarnings?.length || 0), 0);
   return {
     included,
     notSupplied,
-    needsConfirmation: warningCount ? [`${warningCount} residual de-identification warning${warningCount === 1 ? "" : "s"}`] : []
+    needsConfirmation: warningCount ? [`${warningCount} residual de-identification warning${warningCount === 1 ? "" : "s"}`] : [],
+    completeness
   };
 }

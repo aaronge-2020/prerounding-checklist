@@ -1,6 +1,6 @@
 import { buildJsonFormatterPrompt, buildOpenEvidenceWorkupDraftPrompt } from "../../workups/editor.js?v=20260821-etiology-checklist";
-import { sectionsToPromptBlock } from "../../patient-context/sections.js";
-import { buildTrajectoryBlock, latestDay } from "../../daily-updates/days.js";
+import { sectionsToPromptBlock } from "../../patient-context/sections.js?v=20260920-clinical-review";
+import { buildTrajectoryBlock, latestDay } from "../../daily-updates/days.js?v=20260920-clinical-review";
 import { formatWorkupDraftWithOpenAi } from "../openai-workup-api.js";
 
 // The "paste an OpenEvidence draft, then format it into workup JSON with

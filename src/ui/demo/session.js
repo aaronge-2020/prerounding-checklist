@@ -1,4 +1,4 @@
-import { createPatientRecord, normalizeDay } from "../../app/state/vault.js";
+import { createPatientRecord, normalizeDay } from "../../app/state/vault.js?v=20260920-clinical-review";
 
 export const DEMO_PATIENT_ID = "demo_patient_guided_case";
 export const DEMO_DAY_ID = "demo_day_guided_case";

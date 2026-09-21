@@ -1,6 +1,6 @@
 import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
 import { isCarryForwardContextRole, packetRoleFor, packetRoleLabel, packetRolesForScope } from "../patient-context/packet-roles.js";
-import { dailySourceKindLabel, sourceCapturePacketCheck } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
+import { dailySourceKindLabel, sourceCapturePacketCheck } from "../patient-context/source-captures.js?v=20260920-clinical-review";
 import { naturalLanguagePrompt } from "./natural-language.js";
 
 function compactText(value) {
@@ -52,7 +52,7 @@ export function buildProgressNotePacket({ patient, selectedDay } = {}) {
     exam ? `Separate selected-day examination. ${exam}` : "Separate selected-day examination. No checklist or examination note saved outside the source record.",
     packetCheck.notSupplied.length
       ? `Packet limitations. The following source types were not supplied: ${packetCheck.notSupplied.join(", ")}. Do not infer their contents from another source.`
-      : "Packet limitations. The expected primary note, results, medication activity, and bedside update source types were supplied. This does not establish that the chart is complete or internally consistent."
+      : "Packet limitations. The required daily review sources—primary team note, vital signs, and laboratory results—were supplied. Consult notes and medication activity are optional sources. This does not establish that the chart is complete or internally consistent."
   ];
   return naturalLanguagePrompt(parts.filter(Boolean).join("\n\n"));
 }

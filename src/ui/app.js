@@ -5,7 +5,7 @@ import {
   removeDay,
   sortDays,
   upsertDay
-} from "../daily-updates/days.js?v=20260722-unified-stay-v2";
+} from "../daily-updates/days.js?v=20260920-clinical-review";
 import {
   activePatient,
   archivePatient,
@@ -16,7 +16,7 @@ import {
   setWorkupOverride,
   setWorkupOverrides,
   updateActivePatient
-} from "../app/state/vault.js?v=20260815-smart-variable-fields";
+} from "../app/state/vault.js?v=20260920-clinical-review";
 import {
   deleteEncryptedVaultRecord,
   downloadJson,
@@ -24,7 +24,7 @@ import {
   readEncryptedVaultRecord,
   saveEncryptedVault,
   writeEncryptedVaultRecord
-} from "../app/state/persistence.js?v=20260711-functional-remediation-15";
+} from "../app/state/persistence.js?v=20260920-clinical-review";
 import {
   authorizeWorkupWorkspaceMirror,
   disconnectWorkupWorkspaceMirror,
@@ -32,12 +32,11 @@ import {
   mirrorWorkupOverridesToWorkspace
 } from "../app/state/workspace-mirror.js?v=20260711-functional-remediation-15";
 import {
-  addSection,
   removeSection,
   reorderSections,
   reorderSectionsById,
   replaceSectionsFromFormAsync
-} from "../patient-context/sections.js?v=20260722-unified-stay-v2";
+} from "../patient-context/sections.js?v=20260920-clinical-review";
 import {
   createEphemeralRedactionReview,
   refreshEphemeralRedactionReview,
@@ -95,13 +94,13 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides
-} from "../prompts/custom-templates.js?v=20260910-guideline-pagination";
+} from "../prompts/custom-templates.js?v=20260920-clinical-review";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import {
   DEFAULT_DAILY_SOURCE_KIND,
   admissionSourceKindOptions
-} from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
-import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260910-pre-op-prep";
+} from "../patient-context/source-captures.js?v=20260920-clinical-review";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260920-clinical-review";
 import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260910-pre-op-prep";
 import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260910-pre-op-prep";
 import {
@@ -128,8 +127,8 @@ import {
   workupFromEditorDraft,
   workupThoroughnessOption
 } from "../workups/editor.js?v=20260821-etiology-checklist";
-import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260821-etiology-checklist";
-import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260815-standalone-ap";
+import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260920-clinical-review";
+import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260920-clinical-review";
 import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260815-standalone-ap";
 import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20260711-functional-remediation-15";
 import {
@@ -151,38 +150,38 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260908-epic-mixed-packet";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260908-epic-mixed-packet";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260920-clinical-review";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260920-clinical-review";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
-import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
+import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260920-clinical-review";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
-import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260815-smart-variable-fields";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260910-guideline-pagination";
+import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260920-clinical-review";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260920-clinical-review";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260910-guideline-pagination";
+} from "./prompts/controller.js?v=20260920-clinical-review";
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260910-guideline-pagination";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
-import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260721-persisted-anchor";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20260910-guideline-pagination";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260910-guideline-pagination";
+import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260920-clinical-review";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20260920-clinical-review";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260920-clinical-review";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
   createRedactionPresentation,
   redactionPosition,
   warningDescription,
   warningSnippet
-} from "./redaction/presentation.js?v=20260726-redaction-copy-1";
+} from "./redaction/presentation.js?v=20260920-clinical-review";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
 import { createDemoController } from "./demo/controller.js?v=20260815-single-redaction-accept";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260809-demo-nstemi-workup-1";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260920-clinical-review";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260809-demo-nstemi-workup-1";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
@@ -1223,6 +1222,7 @@ function renderSectionEditor(section, scope) {
       pendingFocus: app.pendingSectionReviewFocus,
       review,
       draftText,
+      structuredDisplay: dailyPresentation.renderSavedClinicalDisplay(section.sourceKind, draftText, `saved${section.id}`),
       captures: reviewSectionsForScope(scope),
       reviewFor: (id) => sectionReviewFor(scope, id)
     });
@@ -1796,11 +1796,11 @@ async function handleClick(event) {
       }
     }
     if (action === "select-daily-source-kind") {
-      app.dailySourceKind = target.dataset.sourceKind || DEFAULT_DAILY_SOURCE_KIND;
+      dailySourceController.selectSourceKind("daily", target.dataset.sourceKind || DEFAULT_DAILY_SOURCE_KIND);
       renderDaily();
     }
     if (action === "select-admission-source-kind") {
-      app.admissionSourceKind = target.dataset.sourceKind || DEFAULT_DAILY_SOURCE_KIND;
+      dailySourceController.selectSourceKind("admission", target.dataset.sourceKind || DEFAULT_DAILY_SOURCE_KIND);
       renderDaily();
     }
     if (action === "move-section-up")

@@ -1,7 +1,21 @@
-import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260908-epic-mixed-packet";
+import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260920-clinical-review";
+import {
+  clinicalDataModel,
+  laboratoryAbnormality,
+  withClinicalRepresentations
+} from "./structured-clinical-data.js?v=20260920-clinical-review";
 
 const REPORT_SEPARATOR = /^\s*[-=]{20,}\s*$/;
 const MEDICATION_STATUS = /\b(?:ADMINISTERED|CANCELLED|CANCELED|DISCONTINUED|GIVEN|HELD|MISSED|NOT GIVEN|REFUSED|STOPPED|BCMA EXPIRED)\b/i;
+const NARRATIVE_SOURCE_KINDS = new Set([
+  "primary_note",
+  "consult_note",
+  "prior_physical_exam",
+  "pre_round_physical_exam",
+  "physical_exam",
+  "bedside_update",
+  "other_chart_text"
+]);
 
 function normalizeNewlines(value) {
   return String(value || "").replace(/\r\n?/g, "\n");
@@ -137,24 +151,40 @@ function renderMedicationReport(lines = []) {
   const medications = blocks.map(parseMedicationBlock).filter(Boolean);
   if (!medications.length) return null;
 
-  const entries = medications.map((medication, index) => {
-    const fields = [`Medication ${index + 1}. ${medication.orderText}`];
-    if (medication.timing.length) fields.push(`Order timing. ${medication.timing.join("; ")}`);
-    if (medication.status.length) fields.push(`Administration or order status. ${medication.status.join("; ")}`);
-    if (medication.instructions.length) fields.push(`Special instructions. ${medication.instructions.join(" ")}`);
-    return fields.join("\n");
+  const formatId = administrationHeader ? "cprs_mar" : "cprs_inpatient_orders";
+  const formatLabel = administrationHeader ? "CPRS medication administration report" : "CPRS inpatient-order table";
+  const model = clinicalDataModel({
+    kind: "medication_activity",
+    sourceSystem: "CPRS",
+    formatId,
+    formatLabel,
+    groups: [{
+      id: "medications_1",
+      label: "Medication activity",
+      timestamp: "",
+      rows: medications.map((medication, index) => ({
+        id: `medication_${index + 1}`,
+        name: medication.orderText,
+        dose: "",
+        frequency: "",
+        route: "",
+        timing: medication.timing.join("; "),
+        status: medication.status,
+        administrations: [],
+        instructions: medication.instructions.join(" "),
+        sourceIndex: index
+      }))
+    }]
   });
-
-  return {
+  return withClinicalRepresentations({
     recognized: true,
-    formatId: administrationHeader ? "cprs_mar" : "cprs_inpatient_orders",
-    formatLabel: administrationHeader ? "CPRS medication administration report" : "CPRS inpatient-order table",
+    formatId,
+    formatLabel,
     suggestedSourceKind: "medication_activity",
-    outputText: `Medication activity parsed from CPRS report.\n\n${entries.join("\n\n")}`,
     itemCount: medications.length,
     summary: `${medications.length} medication ${medications.length === 1 ? "entry" : "entries"}; report columns, separators, and pharmacy routing rows removed.`,
     preservedUnparsedText: false
-  };
+  }, model);
 }
 
 function previousPanelTitle(lines, timelineIndex) {
@@ -197,6 +227,32 @@ function parseCprsLaboratoryTables(lines = []) {
   return panels;
 }
 
+function parseCprsLabRow(text, sourceIndex) {
+  const row = compactLine(text);
+  const match = row.match(/^(.*?)\s+((?:[<>]=?\s*)?[-+]?(?:\d+(?:\.\d+)?|\.\d+)|positive|negative|detected|not detected|reactive|nonreactive|pending)(?:\s+\(?([HL]{1,2}|A|ABN)\)?)?\s+(\S+)\s+([-+]?(?:\d+(?:\.\d+)?|\.\d+)\s*(?:-|–|—|to)\s*[-+]?(?:\d+(?:\.\d+)?|\.\d+))$/i);
+  if (!match) {
+    return {
+      name: row,
+      value: "",
+      unit: "",
+      referenceRange: "",
+      flag: "",
+      abnormality: laboratoryAbnormality(),
+      sourceIndex
+    };
+  }
+  const [, name, value, flag = "", unit, referenceRange] = match;
+  return {
+    name: compactLine(name),
+    value: compactLine(value),
+    unit: compactLine(unit),
+    referenceRange: compactLine(referenceRange),
+    flag: compactLine(flag),
+    abnormality: laboratoryAbnormality({ value, flag, referenceRange }),
+    sourceIndex
+  };
+}
+
 function parseCprsVitals(lines = []) {
   const headerIndex = lines.findIndex((line) => /DATE\s*\/\s*TIME\s+TEMP\s+PULSE\s+RESP\s+BP\s+PAIN\s+WEIGHT/i.test(line));
   if (headerIndex < 0) return null;
@@ -208,16 +264,26 @@ function parseCprsVitals(lines = []) {
     endIndex += 1;
   }
   if (!rows.length) return null;
-  const renderedRows = rows.map((row) => {
+  const groups = rows.map((row, rowIndex) => {
     const match = row.match(/^(.*?)\s+@\s*(\d{1,4})\s+(.+)$/);
-    if (!match) return `Vital-sign row. ${row}`;
+    if (!match) return { id: `vitals_${rowIndex + 1}`, label: "Vital signs", timestamp: "", rows: [{ name: "Vital-sign row", value: row, unit: "", sourceIndex: headerIndex + 1 + rowIndex }] };
     const values = match[3].split(/\s+/).filter(Boolean);
-    if (values.length < 5) return `Vital-sign row. ${row}`;
+    if (values.length < 5) return { id: `vitals_${rowIndex + 1}`, label: "Vital signs", timestamp: `${match[1]} @ ${match[2]}`, rows: [{ name: "Vital-sign row", value: match[3], unit: "", sourceIndex: headerIndex + 1 + rowIndex }] };
     const labels = ["Temperature", "Pulse", "Respiratory rate", "Blood pressure", "Pain", "Weight"];
-    const measurements = values.slice(0, labels.length).map((value, index) => `${labels[index]}. ${value}`);
-    return `Recorded ${match[1]} at ${match[2]}. ${measurements.join("; ")}.`;
+    return {
+      id: `vitals_${rowIndex + 1}`,
+      label: "Vital signs",
+      timestamp: `${match[1]} @ ${match[2]}`,
+      rows: values.slice(0, labels.length).map((value, index) => ({
+        id: `vital_${rowIndex + 1}_${index + 1}`,
+        name: labels[index],
+        value,
+        unit: "",
+        sourceIndex: headerIndex + 1 + rowIndex
+      }))
+    };
   });
-  return { rows: renderedRows, range: [headerIndex, endIndex - 1] };
+  return { groups, rowCount: rows.length, range: [headerIndex, endIndex - 1] };
 }
 
 function rangeIndexes(ranges = []) {
@@ -231,47 +297,103 @@ function renderCprsStructuredTables(lines = []) {
   const labs = parseCprsLaboratoryTables(lines);
   if (!vitals && !labs.length) return null;
 
-  const parts = [];
   const ranges = [];
-  if (vitals) {
-    parts.push(`Vital signs parsed from CPRS table.\n${vitals.rows.join("\n")}`);
-    ranges.push(vitals.range);
-  }
-  if (labs.length) {
-    const renderedPanels = labs.map((panel) => `Panel. ${panel.title}\nCollected. ${panel.timeline}\n${panel.rows.join("\n")}`);
-    parts.push(`Laboratory results parsed from CPRS tables.\n\n${renderedPanels.join("\n\n")}`);
-    ranges.push(...labs.map((panel) => panel.range));
-  }
-
+  if (vitals) ranges.push(vitals.range);
+  if (labs.length) ranges.push(...labs.map((panel) => panel.range));
   const removed = rangeIndexes(ranges);
-  const remainderLines = collapseBlankLines(lines.filter((_, index) => !removed.has(index)));
-  const remainder = remainderLines.join("\n").trim();
-  if (remainder) parts.push(`Unparsed source text preserved as pasted.\n${remainder}`);
+  const remainder = collapseBlankLines(lines.filter((_, index) => !removed.has(index))).join("\n").trim();
   const counts = [];
-  if (vitals) counts.push(`${vitals.rows.length} vital-sign ${vitals.rows.length === 1 ? "row" : "rows"}`);
+  if (vitals) counts.push(`${vitals.rowCount} vital-sign ${vitals.rowCount === 1 ? "row" : "rows"}`);
   if (labs.length) counts.push(`${labs.reduce((total, panel) => total + panel.rows.length, 0)} laboratory results`);
   if (remainder) counts.push("non-table text preserved unchanged");
 
+  const sections = [];
+  if (vitals) {
+    const formatId = "cprs_vitals";
+    const formatLabel = "CPRS vital-sign table";
+    const model = clinicalDataModel({ kind: "vital_signs", sourceSystem: "CPRS", formatId, formatLabel, groups: vitals.groups });
+    sections.push({
+      id: "cprs_vitals_1",
+      sourceKind: "vital_signs",
+      ...withClinicalRepresentations({
+        recognized: true,
+        formatId,
+        formatLabel,
+        suggestedSourceKind: "vital_signs",
+        itemCount: vitals.groups.reduce((total, group) => total + group.rows.length, 0),
+        summary: `${vitals.rowCount} vital-sign ${vitals.rowCount === 1 ? "row" : "rows"}.`,
+        preservedUnparsedText: false
+      }, model)
+    });
+  }
+  if (labs.length) {
+    const formatId = "cprs_labs";
+    const formatLabel = "CPRS laboratory tables";
+    const model = clinicalDataModel({
+      kind: "laboratory_results",
+      sourceSystem: "CPRS",
+      formatId,
+      formatLabel,
+      groups: labs.map((panel, panelIndex) => ({
+        id: `panel_${panelIndex + 1}`,
+        label: panel.title,
+        timestamp: panel.timeline,
+        rows: panel.rows.map((row, rowIndex) => ({
+          id: `lab_${panelIndex + 1}_${rowIndex + 1}`,
+          ...parseCprsLabRow(row, panel.range[0] + rowIndex)
+        }))
+      }))
+    });
+    sections.push({
+      id: "cprs_labs_1",
+      sourceKind: "laboratory_results",
+      ...withClinicalRepresentations({
+        recognized: true,
+        formatId,
+        formatLabel,
+        suggestedSourceKind: "laboratory_results",
+        itemCount: labs.reduce((total, panel) => total + panel.rows.length, 0),
+        summary: `${labs.reduce((total, panel) => total + panel.rows.length, 0)} laboratory results.`,
+        preservedUnparsedText: false
+      }, model)
+    });
+  }
+  if (remainder) {
+    sections.push({
+      id: "cprs_unparsed_1",
+      sourceKind: "other_chart_text",
+      recognized: false,
+      formatId: "unparsed_cprs_text",
+      formatLabel: "Unparsed CPRS text",
+      outputText: remainder,
+      promptText: remainder,
+      itemCount: 0,
+      summary: "Narrative text preserved unchanged.",
+      preservedUnparsedText: true
+    });
+  }
+
+  const formatId = sections.length > 1 ? "cprs_mixed_tables" : sections[0].formatId;
+  const formatLabel = sections.length > 1 ? "Mixed CPRS text with structured tables" : sections[0].formatLabel;
   return {
     recognized: true,
-    formatId: remainder ? "cprs_mixed_tables" : vitals && labs.length ? "cprs_vitals_labs" : vitals ? "cprs_vitals" : "cprs_labs",
-    formatLabel: remainder
-      ? "Mixed CPRS text with structured tables"
-      : vitals && labs.length
-        ? "CPRS vital-sign and laboratory tables"
-        : vitals
-          ? "CPRS vital-sign table"
-          : "CPRS laboratory tables",
-    suggestedSourceKind: remainder ? "" : "results",
-    outputText: parts.join("\n\n"),
-    itemCount: (vitals?.rows.length || 0) + labs.reduce((total, panel) => total + panel.rows.length, 0),
+    formatId,
+    formatLabel,
+    suggestedSourceKind: sections.length === 1 ? sections[0].sourceKind : "",
+    sections: sections.length > 1 ? sections : undefined,
+    structuredData: sections.length === 1 ? sections[0].structuredData : undefined,
+    displayModel: sections.length === 1 ? sections[0].displayModel : undefined,
+    displayModels: sections.filter((section) => section.displayModel).map((section) => section.displayModel),
+    promptText: sections.map((section) => section.promptText || section.outputText).join("\n\n"),
+    outputText: sections.map((section) => section.outputText).join("\n\n"),
+    itemCount: sections.reduce((total, section) => total + section.itemCount, 0),
     summary: `${counts.join("; ")}.`,
     preservedUnparsedText: Boolean(remainder)
   };
 }
 
 function delimitedCells(line) {
-  if (line.includes("\t")) return line.split(/\t+/).map(compactLine);
+  if (line.includes("\t")) return line.split("\t").map(compactLine);
   if (/\s+\|\s+/.test(line)) return line.split(/\s+\|\s+/).map(compactLine);
   return [];
 }
@@ -294,21 +416,63 @@ function renderDelimitedClipboardTable(lines = []) {
     if (!String(lines[index] || "").trim()) continue;
     const cells = delimitedCells(lines[index]);
     if (cells.length < 2) continue;
-    const fields = headers.map((header, cellIndex) => (cells[cellIndex] ? `${header}. ${cells[cellIndex]}` : "")).filter(Boolean);
-    if (fields.length >= 2) rows.push(fields.join("; "));
+    const values = Object.fromEntries(normalizedHeaders.map((header, cellIndex) => [header, cells[cellIndex] || ""]));
+    if (Object.values(values).filter(Boolean).length >= 2) rows.push({ values, sourceIndex: index });
   }
   if (!rows.length) return null;
   const noun = medicationTable ? "medication activity" : "laboratory results";
-  return {
+  const valueFor = (row, patterns) => Object.entries(row.values).find(([header]) => patterns.some((pattern) => pattern.test(header)))?.[1] || "";
+  const formatId = medicationTable ? "delimited_medication_table" : "delimited_lab_table";
+  const formatLabel = medicationTable ? "Medication clipboard table" : "Laboratory clipboard table";
+  const kind = medicationTable ? "medication_activity" : "laboratory_results";
+  const groups = medicationTable
+    ? [{
+        id: "medications_1",
+        label: "Medication activity",
+        timestamp: "",
+        rows: rows.map((row, index) => ({
+          id: `medication_${index + 1}`,
+          name: valueFor(row, [/^(?:medication|drug|medication name)$/]),
+          dose: valueFor(row, [/dose/]),
+          frequency: valueFor(row, [/(?:frequency|freq)/]),
+          route: valueFor(row, [/route/]),
+          timing: valueFor(row, [/(?:time|date|start|end)/]),
+          status: [valueFor(row, [/(?:action|administration|status|given)/])].filter(Boolean),
+          administrations: [],
+          instructions: valueFor(row, [/(?:instruction|comment|note)/]),
+          sourceIndex: row.sourceIndex
+        }))
+      }]
+    : [...new Set(rows.map((row) => valueFor(row, [/^(?:collected|collection|date\/time|date|time)$/])))].map((timestamp, groupIndex) => ({
+        id: `labs_${groupIndex + 1}`,
+        label: "Laboratory results",
+        timestamp,
+        rows: rows.filter((row) => valueFor(row, [/^(?:collected|collection|date\/time|date|time)$/]) === timestamp).map((row, rowIndex) => {
+          const value = valueFor(row, [/^(?:result|value)$/]);
+          const flag = valueFor(row, [/^(?:flag|abnormal|status)$/]);
+          const referenceRange = valueFor(row, [/(?:reference range|ref range|range)/]);
+          return {
+            id: `lab_${groupIndex + 1}_${rowIndex + 1}`,
+            name: valueFor(row, [/^(?:component|test|test name|analyte)$/]),
+            value,
+            unit: valueFor(row, [/^(?:unit|units)$/]),
+            referenceRange,
+            flag,
+            abnormality: laboratoryAbnormality({ value, flag, referenceRange }),
+            sourceIndex: row.sourceIndex
+          };
+        })
+      }));
+  const model = clinicalDataModel({ kind, sourceSystem: "Clipboard table", formatId, formatLabel, groups });
+  return withClinicalRepresentations({
     recognized: true,
-    formatId: medicationTable ? "delimited_medication_table" : "delimited_lab_table",
-    formatLabel: medicationTable ? "Medication clipboard table" : "Laboratory clipboard table",
-    suggestedSourceKind: medicationTable ? "medication_activity" : "results",
-    outputText: `${medicationTable ? "Medication activity" : "Laboratory results"} parsed from clipboard table.\n${rows.map((row, index) => `${medicationTable ? `Medication ${index + 1}` : "Result"}. ${row}`).join("\n")}`,
+    formatId,
+    formatLabel,
+    suggestedSourceKind: kind,
     itemCount: rows.length,
     summary: `${rows.length} ${noun} ${rows.length === 1 ? "row" : "rows"}; empty clipboard columns removed.`,
     preservedUnparsedText: false
-  };
+  }, model);
 }
 
 function plainTextResult(rawText) {
@@ -326,15 +490,35 @@ function plainTextResult(rawText) {
   };
 }
 
-export function parseClinicalExport(value) {
+function nonExpandingResult(result, rawText) {
+  if (String(result?.outputText || "").length <= rawText.length) return result;
+  return {
+    ...result,
+    promptText: rawText,
+    outputText: rawText,
+    usedSourceTextForCompactness: true
+  };
+}
+
+export function parseClinicalExport(value, { sourceKind = "" } = {}) {
   const rawText = normalizeNewlines(value).trim();
   if (!rawText) return plainTextResult("");
+  if (NARRATIVE_SOURCE_KINDS.has(sourceKind)) {
+    return {
+      ...plainTextResult(rawText),
+      summary: "This source type is narrative and is intentionally kept exactly as pasted.",
+      intentionallySkipped: true,
+      rawCharacterCount: rawText.length,
+      parsedCharacterCount: rawText.length
+    };
+  }
   const epicResult = parseEpicClinicalExport(value);
   if (epicResult) {
+    const compactResult = nonExpandingResult(epicResult, rawText);
     return {
-      ...epicResult,
+      ...compactResult,
       rawCharacterCount: rawText.length,
-      parsedCharacterCount: epicResult.outputText.length
+      parsedCharacterCount: compactResult.outputText.length
     };
   }
   const lines = decodeClinicalClipboardText(value).split("\n");
@@ -342,10 +526,11 @@ export function parseClinicalExport(value) {
   for (const parser of parsers) {
     const result = parser(lines);
     if (result) {
+      const compactResult = nonExpandingResult(result, rawText);
       return {
-        ...result,
+        ...compactResult,
         rawCharacterCount: rawText.length,
-        parsedCharacterCount: result.outputText.length
+        parsedCharacterCount: compactResult.outputText.length
       };
     }
   }
@@ -356,9 +541,11 @@ export function parseClinicalExport(value) {
   };
 }
 
-export function prepareClinicalExportForSave(value, priorResult = null) {
+export function prepareClinicalExportForSave(value, priorResult = null, { sourceKind = "" } = {}) {
   const rawText = normalizeNewlines(value).trim();
-  const parseResult = priorResult?.recognized && priorResult.edited ? priorResult : parseClinicalExport(value);
+  const parseResult = priorResult?.recognized && priorResult.edited && !NARRATIVE_SOURCE_KINDS.has(sourceKind)
+    ? priorResult
+    : parseClinicalExport(value, { sourceKind });
   return {
     rawText,
     parseResult,

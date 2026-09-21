@@ -20,6 +20,8 @@ assert.equal(admissionSourceKindOptions().some(({ id, label }) => id === "prior_
 assert.equal(admissionSourceKindOptions().some(({ id }) => id === "physical_exam"), false);
 assert.equal(dailySourceKindOptions().some(({ id, label }) => id === "physical_exam" && label === "Physical exam (selected day)"), true);
 assert.equal(dailySourceKindOptions().some(({ id }) => id === "prior_physical_exam"), false);
+assert.equal(dailySourceKindOptions().some(({ id, label }) => id === "vital_signs" && label === "Vital signs"), true);
+assert.equal(dailySourceKindOptions().some(({ id, label }) => id === "laboratory_results" && label === "Laboratory results"), true);
 
 const emptyPatientVariables = buildPromptVariableMap({ patient: { contextSections: [], days: [] } });
 assert.equal(Object.keys(emptyPatientVariables).some((token) => /@admission-other-chart-text-\d+/.test(token)), false);

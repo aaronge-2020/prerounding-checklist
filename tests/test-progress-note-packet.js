@@ -43,7 +43,7 @@ assert.match(packet, /Primary team note\. Received hemodialysis overnight/);
 assert.match(packet, /Medication activity\. Carvedilol was given and later held/);
 assert.match(packet, /Other chart text\. Case management is awaiting/);
 assert.match(packet, /Separate selected-day examination\. Lungs clear/);
-assert.match(packet, /Results, Bedside update/, "missing expected source types must be disclosed without inventing content");
+assert.match(packet, /Vital signs, Laboratory results/, "missing required source types must be disclosed without inventing content");
 assert.doesNotMatch(packet, /Older exam/, "only the selected-day examination may enter the default progress packet");
 assert.doesNotMatch(packet, /[\[\]{}<>()`]/, "progress packet must remain compatible with the plain-language OpenEvidence contract");
 

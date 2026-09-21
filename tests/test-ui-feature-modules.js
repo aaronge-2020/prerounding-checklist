@@ -9,6 +9,8 @@ import { createDemoPatient } from "../src/ui/demo/session.js";
 import { createPromptsPresentation } from "../src/ui/prompts/presentation.js";
 import { GUIDELINE_PAGE_SIZE, guidelinePageModel } from "../src/ui/settings/guideline-pagination.js";
 import { renderGuidelineSets } from "../src/ui/settings/guidelines-presentation.js";
+import { evaluatePacketCompleteness, packetReviewRequirement } from "../src/daily-updates/packet-completeness.js";
+import { sourceCapturePacketCheck } from "../src/patient-context/source-captures.js";
 
 const escapeHtml = (value = "") => String(value)
   .replace(/&/g, "&amp;")
@@ -66,6 +68,22 @@ assert.match(critiqueMarkup, /Cardiology &amp; EP/);
 assert.match(critiqueMarkup, /De-identified draft/);
 
 const dailyView = createDailyPresentation({ escapeHtml, icon });
+const missingPacket = evaluatePacketCompleteness([
+  { sourceKind: "primary_note", deidentifiedText: "Reviewed note." },
+  { sourceKind: "results", deidentifiedText: "Legacy combined results." },
+  { sourceKind: "consult_note", deidentifiedText: "Consult reviewed." }
+]);
+assert.equal(missingPacket.requiredReviewed, 1);
+assert.deepEqual(missingPacket.missingRequired.map(({ id }) => id), ["vital_signs", "laboratory_results"], "generic legacy results must not silently satisfy the distinct vital-sign and laboratory requirements");
+assert.equal(missingPacket.items.find(({ id }) => id === "consult_note").requirement, "optional");
+assert.equal(packetReviewRequirement("medication_activity"), "optional");
+const completePacket = evaluatePacketCompleteness([
+  { sourceKind: "primary_note", deidentifiedText: "Reviewed note." },
+  { sourceKind: "vital_signs", deidentifiedText: "Reviewed vitals." },
+  { sourceKind: "laboratory_results", deidentifiedText: "Reviewed labs." }
+]);
+assert.equal(completePacket.hasMissingRequired, false);
+assert.deepEqual(sourceCapturePacketCheck([{ sourceKind: "results", deidentifiedText: "Legacy results." }]).notSupplied, ["Primary team note", "Vital signs", "Laboratory results"]);
 const demoView = createDemoPresentation({ escapeHtml });
 const demoPatient = createDemoPatient();
 assert.equal(demoPatient.contextSections.length, 0, "the guided demo must begin with an empty admission source list");
@@ -93,6 +111,12 @@ const dailyMarkup = dailyView.renderDaily({
 assert.match(dailyMarkup, /data-action="select-admission"/);
 assert.match(dailyMarkup, /data-action="add-admission-source"/);
 assert.match(dailyMarkup, /source-capture-composer/);
+assert.match(dailyMarkup, /Review completeness/);
+assert.match(dailyMarkup, /Required items are visible reminders, not blockers/);
+assert.match(dailyMarkup, /data-review-item="primary_note" data-review-requirement="required" data-review-status="not_reviewed"/);
+assert.match(dailyMarkup, /data-review-item="consult_note" data-review-requirement="optional" data-review-status="not_reviewed"/);
+assert.match(dailyMarkup, /data-required-missing="3"/);
+assert.match(dailyMarkup, /data-source-kind="primary_note" data-review-requirement="required"/);
 const parsedSourceMarkup = dailyView.renderSourceParsePreview({
   scope: "daily",
   parseResult: {
@@ -100,13 +124,43 @@ const parsedSourceMarkup = dailyView.renderSourceParsePreview({
     rawCharacterCount: 420,
     formatLabel: "CPRS inpatient-order table",
     summary: "2 medication entries; report columns removed.",
-    outputText: "Medication activity parsed from CPRS report."
+    outputText: "Medications\nAcetaminophen 650 mg PO — given",
+    displayModel: {
+      type: "medications",
+      title: "Medication activity",
+      columns: ["Medication", "Order", "Status / administrations", "Instructions"],
+      provenance: { sourceSystem: "CPRS" },
+      groups: [{ label: "Scheduled", timestamp: "", rows: [{ id: "med_1", cells: ["Acetaminophen", "650 mg · PO", "Given", ""], emphasis: "unknown" }] }]
+    }
   }
 });
 assert.match(parsedSourceMarkup, /CPRS inpatient-order table recognized/);
 assert.match(parsedSourceMarkup, /data-source-parsed-draft/);
 assert.match(parsedSourceMarkup, /Session only/);
-assert.match(parsedSourceMarkup, /Unrecognized narrative is labeled and preserved/);
+assert.match(parsedSourceMarkup, /data-clinical-view="medications"/);
+assert.match(parsedSourceMarkup, /Acetaminophen/);
+assert.match(parsedSourceMarkup, /AI-ready text/);
+const labPreviewMarkup = dailyView.renderSourceParsePreview({
+  scope: "daily",
+  parseResult: {
+    recognized: true,
+    rawCharacterCount: 120,
+    formatLabel: "Laboratory clipboard table",
+    summary: "2 results.",
+    outputText: "Labs\nSodium: 140 mmol/L\nSodium: 132 mmol/L; flag L",
+    displayModel: {
+      type: "labs",
+      title: "Laboratory results",
+      columns: ["Test", "Result", "Units", "Reference range", "Flag"],
+      provenance: { sourceSystem: "Clipboard table" },
+      groups: [{ label: "Chemistry", timestamp: "Hospital day", rows: [{ id: "lab_1", cells: ["Sodium", "132", "mmol/L", "135–145", "L"], emphasis: "low" }] }],
+      series: [{ name: "Sodium", points: [{ value: 140, unit: "mmol/L" }, { value: 132, unit: "mmol/L" }] }]
+    }
+  }
+});
+assert.match(labPreviewMarkup, /data-clinical-view="labs"/);
+assert.match(labPreviewMarkup, /data-clinical-emphasis="low"/);
+assert.match(labPreviewMarkup, /clinical-trend/);
 const mixedSourceParse = {
   recognized: true,
   rawCharacterCount: 900,
@@ -114,9 +168,9 @@ const mixedSourceParse = {
   summary: "3 source sections detected.",
   outputText: "Combined structured text",
   sections: [
-    { sourceKind: "results", formatLabel: "Epic results", summary: "2 results.", outputText: "Results text" },
+    { sourceKind: "laboratory_results", formatLabel: "Epic results", summary: "2 results.", outputText: "Results text" },
     { sourceKind: "medication_activity", formatLabel: "Epic MAR", summary: "1 medication entry.", outputText: "MAR text" },
-    { sourceKind: "results", formatLabel: "Epic vitals", summary: "2 vital-sign fields.", outputText: "Vitals text" }
+    { sourceKind: "vital_signs", formatLabel: "Epic vitals", summary: "2 vital-sign fields.", outputText: "Vitals text" }
   ]
 };
 const mixedSourceMarkup = dailyView.renderSourceParsePreview({ scope: "daily", parseResult: mixedSourceParse });

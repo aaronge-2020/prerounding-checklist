@@ -1,9 +1,9 @@
 import { checklistAnswersSummary } from "../checklist/state.js";
-import { buildTrajectoryBlock } from "../daily-updates/days.js";
-import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260722-unified-stay-v2";
+import { buildTrajectoryBlock } from "../daily-updates/days.js?v=20260920-clinical-review";
+import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260920-clinical-review";
 import { attendingHospitalistPrompt } from "./natural-language.js?v=20260815-standalone-ap";
-import { buildProgressNotePacket } from "./progress-note-packet.js";
-import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260815-smart-variable-fields";
+import { buildProgressNotePacket } from "./progress-note-packet.js?v=20260920-clinical-review";
+import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260920-clinical-review";
 import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20260910-pre-op-prep";
 
 // Built-in dropdown entries are derived from the same records Settings uses.

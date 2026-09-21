@@ -1,4 +1,4 @@
-import { sectionWarningSummary } from "../../patient-context/sections.js?v=20260722-unified-stay-v2";
+import { sectionWarningSummary } from "../../patient-context/sections.js?v=20260920-clinical-review";
 
 export function redactionPosition(text, redaction) {
   const source = String(text || "");
@@ -161,7 +161,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function renderSourceCaptureEditor({ capture, scope = "daily", sourceOptions = [], editing, pendingFocus, review, draftText, captures = [], reviewFor = () => null }) {
+  function renderSourceCaptureEditor({ capture, scope = "daily", sourceOptions = [], editing, pendingFocus, review, draftText, captures = [], reviewFor = () => null, structuredDisplay = "" }) {
     const characterCount = draftText?.length || 0;
     const draftMarker = draftText !== capture.deidentifiedText ? " · draft" : "";
     const isInitialReviewTarget = pendingFocus?.scope === scope && pendingFocus.sectionId === capture.id;
@@ -183,6 +183,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
             <button class="button--quiet danger-subtle" type="button" data-action="remove-section" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(capture.id)}">Remove</button>
           </div>
         </div>
+        ${!isExpanded && structuredDisplay ? `<div class="saved-clinical-display">${structuredDisplay}</div>` : ""}
         <label class="source-kind-control">Epic source
           <select class="source-kind" aria-label="Epic source">
             ${sourceOptions.map((option) => `<option value="${escapeHtml(option.id)}" ${option.id === capture.sourceKind ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}

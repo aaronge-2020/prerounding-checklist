@@ -79,18 +79,15 @@ assert.match(DEFAULT_PROMPT_TEMPLATES.obgyn_history_and_physical, /@obgyn-hp-gui
 assert.match(DEFAULT_PROMPT_TEMPLATES.obgyn_soap_note, /@obgyn-soap-guidelines[\s\S]*@progress-note-packet/, "OB/Gyn SOAP must use its specialty guideline and selected-day packet");
 assert.match(DEFAULT_PROMPT_TEMPLATES.pre_op_prep, /@pre-op-prep-guidelines[\s\S]*@admission-packet[\s\S]*@selected-day[\s\S]*@selected-day-physical-exam/, "Pre-Op Prep must include its editable guideline and the available perioperative patient context");
 assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.pre_op_prep, /@medications|@labs/, "Pre-Op Prep must not duplicate medication and lab text already carried by the admission and selected-day packets");
-assert.match(guidelines.preOpPrep, /Why does this patient need surgery/i);
-assert.match(guidelines.preOpPrep, /Why this operation, today, for this patient/i);
-assert.match(guidelines.preOpPrep, /What could go wrong, and what will the team do afterward/i);
-assert.match(guidelines.preOpPrep, /Not documented - verify/g);
-assert.match(guidelines.preOpPrep, /Diagnosis, indication, and timing/i);
-assert.match(guidelines.preOpPrep, /Planned operation and operative logic/i);
-assert.match(guidelines.preOpPrep, /Medications and allergies/i);
-assert.match(guidelines.preOpPrep, /Preoperative data and imaging/i);
-assert.match(guidelines.preOpPrep, /Readiness and safety dashboard/i);
-assert.match(guidelines.preOpPrep, /Expected postoperative course/i);
-assert.match(guidelines.preOpPrep, /Complications by time and mechanism/i);
-assert.match(guidelines.preOpPrep, /Five-minute pre-case test/i);
+assert.match(guidelines.preOpPrep, /Why this operation is being performed for this patient now/i);
+assert.match(guidelines.preOpPrep, /Operation and Relevant Anatomy/i);
+assert.match(guidelines.preOpPrep, /Major Complications and Expected Recovery/i);
+assert.match(guidelines.preOpPrep, /Verify Before the OR/i);
+assert.match(guidelines.preOpPrep, /Case at a Glance/i);
+assert.match(guidelines.preOpPrep, /Patient-Specific Risks and Readiness/i);
+assert.match(guidelines.preOpPrep, /High-Yield OR Questions/i);
+assert.match(guidelines.preOpPrep, /Expected recovery/i);
+assert.match(guidelines.preOpPrep, /Final standard/i);
 const customGuidelineTemplate = createGuidelineSet("Custom teaching", "Explain the saved variable content.", {
   id: "custom_teaching",
   token: "@custom-teaching-guidelines"

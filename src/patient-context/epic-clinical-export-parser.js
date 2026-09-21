@@ -1,3 +1,9 @@
+import {
+  clinicalDataModel,
+  laboratoryAbnormality,
+  withClinicalRepresentations
+} from "./structured-clinical-data.js?v=20260920-clinical-review";
+
 const EPIC_RESULT_TIMESTAMP = /^(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})(?:[ T,]+(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?|\d{4}))?$/i;
 const RESULT_VALUE = /^(?:[-+]?\d|[<>]=?\s*[-+]?\d|positive\b|negative\b|detected\b|not detected\b|reactive\b|nonreactive\b|pending\b|present\b|absent\b|rpt\b)/i;
 const RESULT_LEGEND = /^\(([A-Z]{1,4})\)\s*:\s*(.+)$/i;
@@ -10,7 +16,7 @@ const MAR_EVENT = /(?:^|\s)(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4})(?:\s*\(\s*([^)]*
 const VITAL_FIELDS = [
   { label: "Blood Pressure (cuff)", aliases: ["blood pressure (cuff)", "blood pressure", "bp (cuff)", "bp"] },
   { label: "Temperature", aliases: ["temperature", "temp"] },
-  { label: "Respirations", aliases: ["respirations", "respiratory rate", "resp"] },
+  { label: "Respirations", aliases: ["respirations", "respiratory rate", "resp", "rr"] },
   { label: "Weight (kg)", aliases: ["weight (kg)", "weight"] },
   { label: "SpO2 (%)", aliases: ["spo2 (%)", "spo2", "oxygen saturation"] },
   { label: "O2 Device", aliases: ["o2 device", "oxygen device"] },
@@ -18,7 +24,7 @@ const VITAL_FIELDS = [
   { label: "RASS Score", aliases: ["rass score", "rass"] },
   { label: "Braden Scale", aliases: ["braden scale", "braden"] },
   { label: "Source", aliases: ["source"] },
-  { label: "Pulse", aliases: ["pulse", "heart rate"] }
+  { label: "Pulse", aliases: ["pulse", "heart rate", "hr"] }
 ];
 
 function decodeEntity(match, hex, decimal) {
@@ -85,9 +91,19 @@ function parseResultPair(text) {
   const label = compact(text.slice(0, separator));
   const value = compact(text.slice(separator + 1));
   if (!label || !value || label.length > 140 || value.length > 240) return null;
-  if (/^(?:legend|dose|freq(?:uency)?|route|start|end|admin(?:istration)? instructions?|rph|rn)(?:\b|$)/i.test(label)) return null;
+  if (/^(?:legend|dose|freq(?:uency)?|route|start|end|admin(?:istration)? instructions?|rph|rn|assessment|plan|recommendations?|impression|history|hpi|interval|follow[ -]?up|disposition)(?:\b|$)/i.test(label)) return null;
   if (/^\([A-Z]{1,4}\)$/i.test(label)) return null;
   return { label, value };
+}
+
+function splitResultValue(value) {
+  const text = compact(value);
+  const explicit = text.match(/^(.*?)(?:\s+|^)(?:\(([A-Z]{1,4})\)|\[([A-Z]{1,4})\])$/);
+  const flag = explicit ? compact(explicit[2] || explicit[3]) : "";
+  return {
+    value: explicit ? compact(explicit[1]) : text,
+    flag
+  };
 }
 
 function renderEpicResults(value) {
@@ -129,9 +145,12 @@ function renderEpicResults(value) {
   const results = groups.flatMap((group) => group.results);
   const resultishCount = results.filter((result) => RESULT_VALUE.test(result.value)).length;
   const timestampedResultCount = groups.filter((group) => group.collected && group.results.length).length;
+  // A loose cluster of "Label: value" lines is common in primary-team notes.
+  // Require an explicit results heading or a timestamped export group so prose
+  // cannot become a laboratory source merely because it mentions results.
   const recognized =
-    results.length >= 2 && (hasResultsHeading || resultishCount >= 1 || timestampedResultCount >= 1) ||
-    results.length === 1 && (hasResultsHeading || (timestampedResultCount === 1 && resultishCount === 1));
+    results.length >= 1 && hasResultsHeading && resultishCount >= 1 ||
+    results.length >= 1 && timestampedResultCount >= 1 && resultishCount >= 1;
   if (!recognized) return null;
 
   for (const group of groups) {
@@ -152,16 +171,50 @@ function renderEpicResults(value) {
   const remainder = unconsumedText(lines, consumed);
   addUnparsedSection(parts, "Unparsed Epic result text preserved as pasted.", remainder);
 
-  return {
+  const formatId = remainder ? "epic_results_with_remainder" : "epic_results";
+  const formatLabel = remainder ? "Epic results with unparsed text" : "Epic results";
+  const model = clinicalDataModel({
+    kind: "laboratory_results",
+    sourceSystem: "Epic",
+    formatId,
+    formatLabel,
+    groups: groups.filter((group) => group.results.length).map((group, groupIndex) => ({
+      id: `collection_${groupIndex + 1}`,
+      label: "Laboratory results",
+      timestamp: group.collected,
+      rows: group.results.map((result, resultIndex) => {
+        const parsedValue = splitResultValue(result.value);
+        return {
+          id: `result_${groupIndex + 1}_${resultIndex + 1}`,
+          name: result.label,
+          value: parsedValue.value,
+          unit: "",
+          referenceRange: "",
+          flag: parsedValue.flag,
+          abnormality: laboratoryAbnormality({ value: parsedValue.value, flag: parsedValue.flag }),
+          sourceIndex: result.index
+        };
+      })
+    }))
+  });
+  const represented = withClinicalRepresentations({
     recognized: true,
-    formatId: remainder ? "epic_results_with_remainder" : "epic_results",
-    formatLabel: remainder ? "Epic results with unparsed text" : "Epic results",
-    suggestedSourceKind: remainder ? "" : "results",
-    outputText: parts.join("\n\n"),
+    formatId,
+    formatLabel,
+    suggestedSourceKind: remainder ? "" : "laboratory_results",
     itemCount: results.length,
     summary: `${plural(results.length, "result")} across ${plural(renderedGroups.length, "collection group")}${legends.length ? `; ${plural(legends.length, "flag definition")}` : ""}${remainder ? "; unrecognized text preserved" : ""}.`,
-    preservedUnparsedText: Boolean(remainder)
-  };
+    preservedUnparsedText: Boolean(remainder),
+    unparsedText: remainder,
+    flagDefinitions: legends.map(({ code, meaning }) => ({ code, meaning }))
+  }, model);
+  const flagText = legends.length ? `\nFlags: ${legends.map(({ code, meaning }) => `${code}=${meaning}`).join(";")}` : "";
+  if (!remainder) {
+    const promptText = `${represented.promptText}${flagText}`;
+    return { ...represented, promptText, outputText: promptText };
+  }
+  const promptText = `${represented.promptText}${flagText}\n${remainder}`;
+  return { ...represented, promptText, outputText: promptText };
 }
 
 function marSection(text) {
@@ -328,16 +381,48 @@ function renderEpicMar(value) {
   addUnparsedSection(parts, "Unparsed Epic MAR text preserved as pasted.", remainder);
   const administrationCount = medications.reduce((total, medication) => total + medication.administrations.length, 0);
 
-  return {
+  const formatId = remainder ? "epic_mar_with_remainder" : "epic_mar";
+  const formatLabel = remainder ? "Epic MAR with unparsed text" : "Epic MAR";
+  const model = clinicalDataModel({
+    kind: "medication_activity",
+    sourceSystem: "Epic",
+    formatId,
+    formatLabel,
+    groups: [...new Set(medications.map((medication) => medication.section))].map((groupLabel, groupIndex) => ({
+      id: `mar_${groupIndex + 1}`,
+      label: groupLabel,
+      timestamp: "",
+      rows: medications.filter((medication) => medication.section === groupLabel).map((medication, medicationIndex) => {
+        const field = (key) => medication.fields.find((entry) => entry.key === key)?.value || "";
+        const timing = [field("Start") && `start ${field("Start")}`, field("End") && `end ${field("End")}`].filter(Boolean).join("; ");
+        return {
+          id: `medication_${groupIndex + 1}_${medicationIndex + 1}`,
+          name: medication.name,
+          dose: field("Dose"),
+          frequency: field("Frequency"),
+          route: field("Route"),
+          timing,
+          status: [],
+          administrations: medication.administrations,
+          instructions: medication.instructions,
+          sourceIndex: medication.indexes[0]
+        };
+      })
+    }))
+  });
+  const represented = withClinicalRepresentations({
     recognized: true,
-    formatId: remainder ? "epic_mar_with_remainder" : "epic_mar",
-    formatLabel: remainder ? "Epic MAR with unparsed text" : "Epic MAR",
+    formatId,
+    formatLabel,
     suggestedSourceKind: remainder ? "" : "medication_activity",
-    outputText: parts.join("\n\n"),
     itemCount: medications.length,
     summary: `${plural(medications.length, "medication entry", "medication entries")}; ${plural(administrationCount, "administration")}${remainder ? "; unrecognized text preserved" : ""}.`,
-    preservedUnparsedText: Boolean(remainder)
-  };
+    preservedUnparsedText: Boolean(remainder),
+    unparsedText: remainder
+  }, model);
+  if (!remainder) return represented;
+  const promptText = `${represented.promptText}\n${remainder}`;
+  return { ...represented, promptText, outputText: promptText };
 }
 
 function vitalFieldFor(text) {
@@ -355,6 +440,17 @@ function removeVitalLabel(text, aliases, fromEnd = false) {
   return text;
 }
 
+function structuredVitalValues(field, values, line) {
+  const numeric = values.some((value) => /^(?:[-+]?\d|[<>]=?\s*[-+]?\d)/.test(value));
+  if (["O2 Device", "Source"].includes(field.label)) {
+    const lower = compact(line.text).toLowerCase();
+    const repeatedLabel = field.aliases.some((alias) => lower.endsWith(alias) && lower !== alias);
+    return /\t/.test(line.raw) || repeatedLabel;
+  }
+  if (field.label === "Blood Pressure (cuff)") return values.some((value) => /\b\d{2,3}\s*\/\s*\d{2,3}\b/.test(value));
+  return numeric;
+}
+
 function parseVitalLine(line) {
   const field = vitalFieldFor(line.text);
   if (!field) return null;
@@ -367,7 +463,7 @@ function parseVitalLine(line) {
     remainder = removeVitalLabel(remainder, field.aliases, true);
     if (compact(remainder)) values = [compact(remainder)];
   }
-  if (!values.length) return null;
+  if (!values.length || !structuredVitalValues(field, values, line)) return null;
   return { label: field.label, value: values.join(" | "), truncated: values.some((entry) => /\.\.\.|…/.test(entry)) };
 }
 
@@ -395,16 +491,40 @@ function renderEpicVitals(value) {
   const remainder = unconsumedText(lines, consumed);
   addUnparsedSection(parts, "Unparsed Epic vital-sign text preserved as pasted.", remainder);
   const truncatedCount = vitals.filter((vital) => vital.truncated).length;
-  return {
+  const formatId = remainder ? "epic_vitals_with_remainder" : "epic_vitals";
+  const formatLabel = remainder ? "Epic vitals with unparsed text" : "Epic vitals";
+  const model = clinicalDataModel({
+    kind: "vital_signs",
+    sourceSystem: "Epic",
+    formatId,
+    formatLabel,
+    groups: [{
+      id: "vitals_1",
+      label: "Vital signs",
+      timestamp: "",
+      rows: vitals.map((vital, index) => ({
+        id: `vital_${index + 1}`,
+        name: vital.label,
+        value: vital.value,
+        unit: "",
+        truncated: vital.truncated,
+        sourceIndex: index
+      }))
+    }]
+  });
+  const represented = withClinicalRepresentations({
     recognized: true,
-    formatId: remainder ? "epic_vitals_with_remainder" : "epic_vitals",
-    formatLabel: remainder ? "Epic vitals with unparsed text" : "Epic vitals",
-    suggestedSourceKind: remainder ? "" : "results",
-    outputText: parts.join("\n\n"),
+    formatId,
+    formatLabel,
+    suggestedSourceKind: remainder ? "" : "vital_signs",
     itemCount: vitals.length,
     summary: `${plural(vitals.length, "vital-sign field")}${truncatedCount ? `; ${plural(truncatedCount, "truncated copied value")}` : ""}${remainder ? "; unrecognized text preserved" : ""}.`,
-    preservedUnparsedText: Boolean(remainder)
-  };
+    preservedUnparsedText: Boolean(remainder),
+    unparsedText: remainder
+  }, model);
+  if (!remainder) return represented;
+  const promptText = `${represented.promptText}\n${remainder}`;
+  return { ...represented, promptText, outputText: promptText };
 }
 
 function findVitalsBoundary(lines) {
@@ -454,11 +574,16 @@ function mixedSection({ kind, text, result, index }) {
       preservedUnparsedText: true
     };
   }
-  const sourceKind = kind === "mar" ? "medication_activity" : "results";
+  const sourceKind = kind === "mar" ? "medication_activity" : kind === "vitals" ? "vital_signs" : "laboratory_results";
+  const compactSource = text.trim();
+  const promptText = String(result.outputText || "").length <= compactSource.length ? result.outputText : compactSource;
   return {
     id: `${kind}_${index + 1}`,
     ...result,
-    sourceKind
+    sourceKind,
+    promptText,
+    outputText: promptText,
+    usedSourceTextForCompactness: promptText === compactSource && promptText !== result.outputText
   };
 }
 
@@ -492,10 +617,8 @@ function renderMixedEpicExport(value) {
   const recognizedSections = sections.filter((section) => section.formatId !== "unparsed_epic_section");
   if (sections.length < 2 || recognizedSections.length < 2) return null;
 
-  const sourceLabels = sections.map((section) => section.sourceKind === "medication_activity" ? "Medication activity" : section.sourceKind === "results" ? "Results" : "Other chart text");
-  const outputText = sections
-    .map((section, index) => `Source ${index + 1}. ${sourceLabels[index]} — ${section.formatLabel}\n${section.outputText}`)
-    .join("\n\n");
+  const sourceLabels = sections.map((section) => section.sourceKind === "medication_activity" ? "Medication activity" : section.sourceKind === "vital_signs" ? "Vital signs" : section.sourceKind === "laboratory_results" ? "Laboratory results" : "Other chart text");
+  const outputText = sections.map((section) => section.outputText).join("\n\n");
   return {
     recognized: true,
     formatId: "epic_mixed_export",
@@ -511,11 +634,24 @@ function renderMixedEpicExport(value) {
 
 export function parseEpicClinicalExport(value) {
   const mixed = renderMixedEpicExport(value);
-  if (mixed) return mixed;
+  if (mixed) {
+    const rawText = decodeClinicalClipboardText(value).trim();
+    if (String(mixed.outputText || "").length <= rawText.length) return mixed;
+    return { ...mixed, promptText: rawText, outputText: rawText, usedSourceTextForCompactness: true };
+  }
   const parsers = [renderEpicMar, renderEpicVitals, renderEpicResults];
   for (const parser of parsers) {
     const result = parser(value);
-    if (result) return result;
+    if (result) {
+      const rawText = decodeClinicalClipboardText(value).trim();
+      if (String(result.outputText || "").length <= rawText.length) return result;
+      return {
+        ...result,
+        promptText: rawText,
+        outputText: rawText,
+        usedSourceTextForCompactness: true
+      };
+    }
   }
   return null;
 }

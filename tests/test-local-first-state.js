@@ -88,6 +88,27 @@ assert.deepEqual(migratedLegacyDailyPacket.patients[0].days[0].sourceCaptures.ma
 assert.equal(migratedLegacyDailyPacket.patients[0].days[0].sourceCaptures[0].deidentifiedText, "Oxygen requirement improved.");
 assert.equal("sections" in migratedLegacyDailyPacket.patients[0].days[0], false, "legacy daily role fields must migrate to the canonical source-capture contract");
 
+const normalizedExplicitReviewSources = migrateVaultState({
+  activePatientId: patient.id,
+  patients: [{
+    ...patient,
+    days: [{
+      id: "typed_day",
+      date: "2026-07-09",
+      label: "Hospital day 1",
+      sourceCaptures: [
+        { id: "vitals", sourceKind: "vital_signs", deidentifiedText: "Pulse 76.", residualWarnings: [] },
+        { id: "labs", sourceKind: "laboratory_results", deidentifiedText: "Sodium 140.", residualWarnings: [] }
+      ]
+    }]
+  }]
+});
+assert.deepEqual(
+  normalizedExplicitReviewSources.patients[0].days[0].sourceCaptures.map((capture) => capture.sourceKind),
+  ["vital_signs", "laboratory_results"],
+  "explicit review source kinds must survive vault normalization without being collapsed into generic results"
+);
+
 const storage = memoryStorage();
 const vaultWithDeidentifiedContext = updateActivePatient(normalized, (current) => ({
   ...current,
