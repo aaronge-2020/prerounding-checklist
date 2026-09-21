@@ -81,3 +81,38 @@ export function toggleItemNote(button, openNoteIds) {
     openNoteIds.delete(itemId);
   }
 }
+
+// Checklist answers are persisted by rebuilding the checklist markup. Capture
+// every active scroll owner before that replacement and resolve ID-backed
+// owners again afterward so the new checklist panel keeps the same position.
+export function preserveChecklistScrollOnRender(control, {
+  documentObject = document,
+  windowObject = window,
+  schedule = requestAnimationFrame
+} = {}) {
+  const documentOwner = documentObject.scrollingElement;
+  const owners = [];
+  for (let current = control?.parentElement; current; current = current.parentElement) {
+    const overflowY = windowObject.getComputedStyle(current).overflowY;
+    if (/(auto|scroll|overlay)/.test(overflowY) && current.scrollHeight > current.clientHeight) owners.push(current);
+  }
+  if (documentOwner && documentOwner.scrollHeight > documentOwner.clientHeight && !owners.includes(documentOwner)) owners.push(documentOwner);
+  const snapshot = owners.map((owner) => ({
+    owner,
+    ownerId: owner.id || "",
+    isDocumentOwner: owner === documentOwner,
+    top: owner.scrollTop,
+    left: owner.scrollLeft
+  }));
+  const restore = () => snapshot.forEach(({ owner, ownerId, isDocumentOwner, top, left }) => {
+    const currentOwner = owner.isConnected ? owner : isDocumentOwner ? documentObject.scrollingElement : documentObject.getElementById(ownerId);
+    if (!currentOwner) return;
+    currentOwner.scrollTop = top;
+    currentOwner.scrollLeft = left;
+  });
+  return (render) => {
+    render();
+    restore();
+    schedule(restore);
+  };
+}

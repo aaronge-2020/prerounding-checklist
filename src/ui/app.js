@@ -156,7 +156,7 @@ import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./
 import { createReviewPresentation } from "./review/presentation.js?v=20260921-medication-review-v3";
 import { createReviewController } from "./review/controller.js?v=20260921-medication-review-v3";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
-import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
+import { createChecklistSearchController, preserveChecklistScrollOnRender, toggleItemNote } from "./checklist/search.js?v=20260921-checklist-scroll-position";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260921-medication-review-v3";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
@@ -3929,6 +3929,7 @@ function handleChange(event) {
 }
 
 async function updateChecklistAnswer(input) {
+  const rerenderAtCurrentPosition = preserveChecklistScrollOnRender(input);
   if (app.phoneBundle) {
     const item = app.phoneBundle.checklist.items.find((entry) => entry.id === input.name);
     app.phoneAnswers = setChecklistChoice(
@@ -3937,8 +3938,7 @@ async function updateChecklistAnswer(input) {
       input.value,
       input.tagName === "SELECT" ? Boolean(input.value) : input.checked
     );
-    phoneSession.saveAutosave();
-    renderPhoneChecklist();
+    phoneSession.saveAutosave(); rerenderAtCurrentPosition(renderPhoneChecklist);
     return;
   }
   const patient = active();
@@ -3954,7 +3954,7 @@ async function updateChecklistAnswer(input) {
   const nextDay = { ...day, answers, updatedAt: new Date().toISOString() };
   app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
   await persistVault("Checklist answer saved.");
-  renderChecklist();
+  rerenderAtCurrentPosition(renderChecklist);
 }
 
 async function fillChecklistNegatives({ kind = "", system = "" } = {}) {

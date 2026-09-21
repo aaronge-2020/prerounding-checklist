@@ -637,6 +637,18 @@ Vitals
   await page.waitForSelector("#checklistSections .checklist-item");
   assert.equal(await page.locator("#checklistSections .checklist-item").count() >= 10, true);
   assert.equal(await page.locator("#checklistSections .checklist-system").count() > 0, true);
+  const checklistScrollTop = await page.locator("#checklistSections").evaluate((node) => {
+    node.scrollTop = node.scrollHeight;
+    return node.scrollTop;
+  });
+  assert.equal(checklistScrollTop > 0, true, "the checklist must be long enough to exercise its scroll owner");
+  await page.locator("#checklistSections .checklist-answer-select").last().selectOption({ index: 1 });
+  await page.waitForFunction(() => /Checklist answer saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  assert.equal(
+    await page.locator("#checklistSections").evaluate((node) => node.scrollTop),
+    checklistScrollTop,
+    "answering a history or exam item must not reset the checklist scroll position"
+  );
   await page.click('[data-action="fill-section-negatives"][data-kind="exam"]');
   await page.waitForFunction(() => [...document.querySelectorAll("#checklistSections .checklist-answer-select")].some((select) => select.value) || document.querySelectorAll("#checklistSections .checklist-answer:checked").length > 0);
   assert.equal(await page.locator('[data-action="share-phone-bundle"]').count(), 1, "desktop should offer native link sharing");
@@ -658,6 +670,20 @@ Vitals
   await phonePage.goto(phoneLink);
   await phonePage.waitForSelector(".phone-mode #checklistSections .checklist-item");
   assert.equal(await phonePage.locator("#phoneReturnBundle").count(), 0);
+  const phoneChecklistScrollTop = await phonePage.locator("#checklistSections").evaluate((node) => {
+    node.scrollTop = node.scrollHeight;
+    return node.scrollTop;
+  });
+  const unansweredPhoneAnswerIndex = await phonePage
+    .locator("#checklistSections .checklist-answer-select")
+    .evaluateAll((nodes) => nodes.findIndex((node) => !node.value));
+  assert.equal(unansweredPhoneAnswerIndex >= 0, true, "the transferred checklist should retain an unanswered item");
+  await phonePage.locator("#checklistSections .checklist-answer-select").nth(unansweredPhoneAnswerIndex).selectOption({ index: 1 });
+  assert.equal(
+    await phonePage.locator("#checklistSections").evaluate((node) => node.scrollTop),
+    phoneChecklistScrollTop,
+    "answering a phone checklist item must not reset the checklist scroll position"
+  );
   await phonePage.click('[data-action="fill-all-negatives"]');
   assert.equal(await phonePage.locator("#phoneReturnBundle").count(), 0);
   await phonePage.click('[data-action="show-phone-return"]');
