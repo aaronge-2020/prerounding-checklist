@@ -1,6 +1,6 @@
-import { sortDays } from "../../daily-updates/days.js?v=20260921-note-builder-polish";
-import { updateActivePatient } from "../../app/state/vault.js?v=20260921-note-builder-polish";
-import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260921-note-builder-polish";
+import { sortDays } from "../../daily-updates/days.js?v=20260921-clinical-review-fix";
+import { updateActivePatient } from "../../app/state/vault.js?v=20260921-clinical-review-fix";
+import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260921-clinical-review-fix";
 import {
   addDifferential,
   addPlanProblem,
@@ -31,7 +31,7 @@ import {
   updateManualObjective,
   updateNoteSection,
   updatePlanProblem
-} from "../../note-drafts/index.js?v=20260921-note-builder-polish";
+} from "../../note-drafts/index.js?v=20260921-clinical-review-fix";
 
 const REVIEW_PAGE_SIZE = 8;
 
@@ -172,8 +172,15 @@ export function createReviewController(deps) {
       : deps.patientRequiredMessage();
   }
 
-  function open(selectedPacketId = "admission") {
+  function prepare(selectedPacketId = "admission") {
     deps.app.reviewPacketId = selectedPacketId || "admission";
+    deps.app.reviewSearchQuery = "";
+    deps.app.reviewCategory = "all";
+    deps.app.reviewPage = 0;
+  }
+
+  function open(selectedPacketId = "admission") {
+    prepare(selectedPacketId);
     deps.app.view = "review";
     deps.render();
   }
@@ -356,5 +363,5 @@ export function createReviewController(deps) {
     return true;
   }
 
-  return Object.freeze({ change, click, input, open, render, saveDraft });
+  return Object.freeze({ change, click, input, open, prepare, render, saveDraft });
 }

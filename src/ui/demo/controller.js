@@ -1,5 +1,5 @@
-import { createDemoPresentation } from "./presentation.js?v=20260921-note-builder-polish";
-import { DEMO_DAY_ID, DEMO_REQUIRED_ANSWER_ITEM_ID, DEMO_WORKUP_ID, prefillDemoChecklist } from "./session.js?v=20260921-note-builder-polish";
+import { createDemoPresentation } from "./presentation.js?v=20260921-clinical-review-fix";
+import { DEMO_DAY_ID, DEMO_REQUIRED_ANSWER_ITEM_ID, DEMO_WORKUP_ID, prefillDemoChecklist } from "./session.js?v=20260921-clinical-review-fix";
 
 export const DEMO_REVIEW_ACTIONS = Object.freeze(new Set([
   "keep-reviewed-redaction",

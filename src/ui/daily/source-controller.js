@@ -1,9 +1,9 @@
-import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-note-builder-polish";
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-note-builder-polish";
+import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-clinical-review-fix";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-clinical-review-fix";
 import {
   parseClinicalExport,
   prepareClinicalExportForSave
-} from "../../patient-context/clinical-export-parser.js?v=20260921-note-builder-polish";
+} from "../../patient-context/clinical-export-parser.js?v=20260921-clinical-review-fix";
 import {
   createEphemeralRedactionReview,
   reviewKey,
@@ -16,8 +16,8 @@ import {
   dailySourceKindOptions,
   replaceSourceCapturesFromFormAsync,
   sourceCapturePacketCheck
-} from "../../patient-context/source-captures.js?v=20260921-note-builder-polish";
-import { createNoteDraft, fieldsForNoteType, NOTE_TYPES, updateNoteSection } from "../../note-drafts/index.js?v=20260921-note-builder-polish";
+} from "../../patient-context/source-captures.js?v=20260921-clinical-review-fix";
+import { createNoteDraft, fieldsForNoteType, NOTE_TYPES, updateNoteSection } from "../../note-drafts/index.js?v=20260921-clinical-review-fix";
 
 export function createDailySourceController(deps) {
   function structuredNoteKey(scope) {

@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20260921-note-builder-polish";
+} from "./deid-service.js?v=20260921-clinical-review-fix";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });

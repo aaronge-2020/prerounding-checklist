@@ -160,6 +160,7 @@ Sodium: 138`;
 
   await page.click('[data-view-target="review"]');
   await page.waitForSelector("#reviewContent .review-workspace");
+  assert.equal(await page.locator("#reviewDataCategory").inputValue(), "all", "opening Patient Data Review must reveal labs, vitals, medications, and results");
   assert.equal(await page.locator('[data-checklist-finding-kind="history"] li').count(), 1);
   assert.equal(await page.locator('[data-checklist-finding-kind="exam"] li').count(), 1);
   const notePreview = await page.locator("[data-final-note-preview]").innerText();
@@ -197,11 +198,13 @@ Sodium: 138`;
   assert.match(await wbcBlock.locator("textarea").inputValue(), /15\.2[\s\S]*→[\s\S]*8\.8/);
   await wbcBlock.locator("textarea").fill("Student wording: WBC has improved substantially.");
   await page.fill('[data-draft-objective-manual]', "Lungs clear to auscultation.");
+  await page.selectOption("#reviewDataCategory", "medications");
 
   // Updating source data marks an edited linked block stale without overwriting it.
   await page.click('[data-view-target="daily"]');
   await addDailySource("laboratory_results", "Results from EPIC:\nWBC: 7.7", 2);
   await page.click('[data-view-target="review"]');
+  assert.equal(await page.locator("#reviewDataCategory").inputValue(), "all", "returning to Patient Data Review must not leave labs and vitals hidden behind the prior medication filter");
   await page.fill("#reviewDataSearch", "WBC");
   await page.waitForSelector('[data-objective-state="stale"]');
   assert.equal(await page.locator('[data-objective-state="stale"] textarea').inputValue(), "Student wording: WBC has improved substantially.");
@@ -227,8 +230,8 @@ Sodium: 138`;
 
   await page.fill("#reviewDataSearch", "ceftriaxone");
   const medicationCard = page.locator("[data-review-candidate]").first();
-  assert.match(await medicationCard.innerText(), /Current saved regimen[\s\S]*1 g[\s\S]*every 24 hours[\s\S]*IV/i);
-  assert.match(await medicationCard.innerText(), /Course[\s\S]*Day 3/i);
+  assert.match(await medicationCard.innerText(), /Dose[\s\S]*1 g[\s\S]*Route[\s\S]*IV[\s\S]*Administration times[\s\S]*0900 \(1 g\)/i);
+  assert.doesNotMatch(await medicationCard.innerText(), /Course|Day \d+|every 24 hours/i);
 
   await page.fill("#reviewDataSearch", "CT Head/Neck");
   const ctCard = page.locator("[data-review-candidate]").first();

@@ -1,4 +1,4 @@
-import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-note-builder-polish";
+import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-clinical-review-fix";
 
 function valueText(value) {
   return String(value?.deidentifiedText || "");
@@ -38,7 +38,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       ? `<p class="review-result-text">${escapeHtml(candidate.text)}</p><small>${escapeHtml([candidate.resultDate, candidate.source?.dayLabel, candidate.context].filter(Boolean).join(" · "))}</small>`
       : "";
     const medication = candidate.kind === "medication" && candidate.latestSavedEntry
-      ? `<dl class="review-medication-regimen"><div><dt>Current saved regimen</dt><dd>${escapeHtml(candidate.latestSavedEntry.currentRegimen || "Not documented")}</dd></div><div><dt>Course</dt><dd>${escapeHtml(candidate.latestSavedEntry.course || "Not documented")}</dd></div><div><dt>Recent administrations</dt><dd>${escapeHtml(candidate.latestSavedEntry.recentAdministrations || "None in saved source")}</dd></div></dl>`
+      ? `<dl class="review-medication-regimen"><div><dt>Dose</dt><dd>${escapeHtml(candidate.latestSavedEntry.dose || "Not documented")}</dd></div><div><dt>Route</dt><dd>${escapeHtml(candidate.latestSavedEntry.route || "Not documented")}</dd></div><div><dt>Administration times</dt><dd>${escapeHtml(candidate.latestSavedEntry.administrationTimes || "None documented")}</dd></div></dl>`
       : "";
     return `<article class="review-data-item ${selected ? "is-selected" : ""}" data-review-candidate="${escapeHtml(candidate.id)}">
       <label class="objective-choice">

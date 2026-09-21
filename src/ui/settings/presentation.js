@@ -1,4 +1,4 @@
-import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260921-note-builder-polish";
+import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260921-clinical-review-fix";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({

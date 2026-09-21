@@ -1,5 +1,5 @@
-import { createPatientRecord, normalizeDay } from "../../app/state/vault.js?v=20260921-note-builder-polish";
-import { normalizeSourceCapture } from "../../patient-context/source-captures.js?v=20260921-note-builder-polish";
+import { createPatientRecord, normalizeDay } from "../../app/state/vault.js?v=20260921-clinical-review-fix";
+import { normalizeSourceCapture } from "../../patient-context/source-captures.js?v=20260921-clinical-review-fix";
 
 export const DEMO_PATIENT_ID = "demo_patient_guided_case";
 export const DEMO_DAY_ID = "demo_day_guided_case";
@@ -267,10 +267,10 @@ Potassium: 4.1 mmol/L; ref 3.5-5.1`,
     sourceKind: "medication_activity",
     label: "Active medication regimens",
     deidentifiedText: `Medications
-[Scheduled Medications] aspirin — 81 mg; daily; PO; Day 1 | 0900
-[Scheduled Medications] ticagrelor — 90 mg; twice daily; PO; Day 1 | 0900
-[Continuous Infusions] unfractionated heparin — 12 units/kg/hr; continuous; IV; Day 1 | 1745
-[Scheduled Medications] atorvastatin — 80 mg; nightly; PO; Day 1 | 2100`,
+[Scheduled Medications] aspirin — Dose: 81 mg | Route: PO | Administrations: 0900
+[Scheduled Medications] ticagrelor — Dose: 90 mg | Route: PO | Administrations: 0900
+[Continuous Infusions] unfractionated heparin — Dose: 12 units/kg/hr | Route: IV | Administrations: 1745
+[Scheduled Medications] atorvastatin — Dose: 80 mg | Route: PO | Administrations: 2100`,
     capturedAt: DEMO_CAPTURE_TIME,
     createdAt: DEMO_CAPTURE_TIME,
     updatedAt: DEMO_CAPTURE_TIME

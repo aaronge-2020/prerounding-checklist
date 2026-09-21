@@ -1,5 +1,5 @@
 import { effectiveWorkupCatalog, isBundledWorkupId } from "../../workups/schema.js?v=20260815-standalone-ap";
-import { hideWorkupId, removeWorkupOverride, setSelectedWorkups, unhideWorkupId } from "../../app/state/vault.js?v=20260921-note-builder-polish";
+import { hideWorkupId, removeWorkupOverride, setSelectedWorkups, unhideWorkupId } from "../../app/state/vault.js?v=20260921-clinical-review-fix";
 
 // Workup delete/restore CRUD, kept out of app.js to respect the
 // coordinator-file size boundary (scripts/check-ui-module-boundaries.js).

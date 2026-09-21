@@ -1,7 +1,7 @@
 import {
   clinicalDisplayModelFromPromptText,
   laboratoryAbnormality
-} from "../patient-context/structured-clinical-data.js?v=20260921-note-builder-polish";
+} from "../patient-context/structured-clinical-data.js?v=20260921-clinical-review-fix";
 
 const GROUP_DEFINITIONS = Object.freeze([
   Object.freeze({ id: "vitals", label: "Vital signs" }),
@@ -360,7 +360,7 @@ function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap)
 
   if (display.type === "medications") {
     display.groups.forEach((group, groupOrder) => group.rows.forEach((row, rowOrder) => {
-      const [name = "", currentRegimen = "", course = "", recentAdministrations = "", instructions = ""] = row.cells || [];
+      const [name = "", dose = "", route = "", administrationTimes = ""] = row.cells || [];
       const key = normalizedExact(name);
       if (!key) return;
       if (!medicationMap.has(key)) medicationMap.set(key, {
@@ -373,10 +373,9 @@ function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap)
       medicationMap.get(key).observations.push({
         id: stableId("medication_entry", identity, name),
         name: clean(name),
-        currentRegimen: clean(currentRegimen),
-        course: clean(course),
-        recentAdministrations: clean(recentAdministrations),
-        instructions: clean(instructions),
+        dose: clean(dose),
+        route: clean(route),
+        administrationTimes: clean(administrationTimes),
         savedSection: clean(group.label),
         timestamp: clean(group.timestamp),
         dayLabel: source.dayLabel,
@@ -397,7 +396,11 @@ function finalizeMedicationCandidate(candidate) {
   const observations = [...candidate.observations].sort(compareObservations);
   const latestSavedEntry = observations.at(-1) || null;
   const describe = (entry) => {
-    const details = [entry.currentRegimen, entry.course, entry.recentAdministrations, entry.instructions].filter(Boolean).join(" · ");
+    const details = [
+      entry.dose && `dose ${entry.dose}`,
+      entry.route && `route ${entry.route}`,
+      entry.administrationTimes && `administered ${entry.administrationTimes}`
+    ].filter(Boolean).join(" · ");
     return `${entry.dayLabel}${details ? `: ${details}` : ""}`;
   };
   const finalized = {
@@ -406,16 +409,17 @@ function finalizeMedicationCandidate(candidate) {
     observations,
     history: observations,
     latestSavedEntry,
-    currentRegimen: latestSavedEntry?.currentRegimen || "",
-    course: latestSavedEntry?.course || "",
+    dose: latestSavedEntry?.dose || "",
+    route: latestSavedEntry?.route || "",
+    administrationTimes: latestSavedEntry?.administrationTimes || "",
     insertionText: latestSavedEntry
       ? `${candidate.name} — latest saved entry ${describe(latestSavedEntry)}${observations.length > 1 ? `; saved history ${observations.map(describe).join(" | ")}` : ""}`
       : candidate.name,
-    searchText: clean([candidate.name, ...observations.flatMap((entry) => [entry.currentRegimen, entry.course, entry.recentAdministrations, entry.instructions, entry.savedSection, entry.dayLabel])].join(" ")).toLocaleLowerCase("en-US")
+    searchText: clean([candidate.name, ...observations.flatMap((entry) => [entry.dose, entry.route, entry.administrationTimes, entry.savedSection, entry.dayLabel])].join(" ")).toLocaleLowerCase("en-US")
   };
   finalized.fingerprint = fingerprint({
     id: finalized.id,
-    entries: observations.map(({ id, currentRegimen, course, recentAdministrations, instructions, savedSection, dayLabel }) => ({ id, currentRegimen, course, recentAdministrations, instructions, savedSection, dayLabel }))
+    entries: observations.map(({ id, dose, route, administrationTimes, savedSection, dayLabel }) => ({ id, dose, route, administrationTimes, savedSection, dayLabel }))
   });
   return finalized;
 }

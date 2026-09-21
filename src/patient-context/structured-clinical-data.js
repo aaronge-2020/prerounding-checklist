@@ -152,25 +152,12 @@ function parseChartDate(value) {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
-function courseDayLabel(row) {
-  const asOf = parseChartDate(row.asOfDate);
-  const start = parseChartDate(row.start);
-  const end = parseChartDate(row.end);
-  if (!asOf || !start) return "";
-  const dayMilliseconds = 24 * 60 * 60 * 1000;
-  const calendarDay = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
-  const difference = Math.round((calendarDay(asOf) - calendarDay(start)) / dayMilliseconds);
-  if (difference < 0) return `Starts in ${Math.abs(difference)} day${difference === -1 ? "" : "s"}`;
-  if (end && calendarDay(end) < calendarDay(asOf)) return "Course ended";
-  return `Day ${difference + 1}`;
-}
-
 function medicationDisplay(model) {
   return {
     type: "medications",
     view: "medication_table",
     title: "Medication activity",
-    columns: ["Medication", "Current regimen", "Course", "Recent administrations", "Instructions"],
+    columns: ["Medication", "Dose", "Route", "Administration times"],
     groups: model.groups.map((group) => ({
       label: group.label,
       timestamp: group.timestamp,
@@ -178,10 +165,9 @@ function medicationDisplay(model) {
         id: row.id,
         cells: [
           row.name,
-          [row.dose, row.rate, row.frequency, row.route].filter(Boolean).join(" · "),
-          courseDayLabel(row),
-          [...(row.status || []), ...(row.administrations || [])].join(" · "),
-          row.instructions
+          row.dose || row.rate,
+          row.route,
+          [...(row.status || []), ...(row.administrations || [])].join(" · ")
         ],
         emphasis: "unknown",
         provenance: row.provenance
@@ -307,9 +293,12 @@ function medicationPrompt(model) {
   const lines = ["Medications"];
   for (const group of model.groups) {
     for (const row of group.rows) {
-      const order = [row.dose, row.rate, row.frequency, row.route, row.timing, courseDayLabel(row)].filter(Boolean).join("; ");
       const activity = [...(row.status || []), ...(row.administrations || [])].join("; ");
-      const details = [order, activity, row.instructions].filter(Boolean).join(" | ");
+      const details = [
+        (row.dose || row.rate) && `Dose: ${row.dose || row.rate}`,
+        row.route && `Route: ${row.route}`,
+        activity && `Administrations: ${activity}`
+      ].filter(Boolean).join(" | ");
       lines.push(`${group.label ? `[${group.label}] ` : ""}${row.name}${details ? ` — ${details}` : ""}`);
     }
   }
@@ -465,15 +454,28 @@ function savedMedicationDisplay(lines) {
     const match = clean(line).match(/^(?:\[([^\]]+)\]\s*)?(.+?)(?:\s+—\s+(.+))?$/);
     if (!match) continue;
     const groupLabel = clean(match[1]) || "Medication activity";
-    if (!groups.has(groupLabel)) groups.set(groupLabel, []);
+    const name = clean(match[2]);
+    if (!name || /^(?:Rate|Dose|Freq(?:uency)?|Route|Start|End|PRN Reasons?|PRN Comment|Weight Dosing Info|Admin(?:istration)? Instructions?|Order specific questions?|\d{3,4}(?:-See Alt)?)(?:\s*:|$)/i.test(name)) continue;
     const details = clean(match[3]);
-    const [order = "", activity = "", instructions = ""] = details.split(/\s+\|\s+/);
-    const orderParts = order.split(/;\s*/).filter(Boolean);
-    const course = orderParts.find((part) => /^(?:Day \d+|Starts in \d+ days?|Course ended)$/.test(part)) || "";
-    const regimen = orderParts.filter((part) => part !== course && !/^(?:start|end)\s+/i.test(part)).join(" · ");
+    const detailParts = details.split(/\s+\|\s+/).filter(Boolean);
+    const labeled = Object.fromEntries(detailParts.map((part) => {
+      const field = part.match(/^(Dose|Route|Administrations)\s*:\s*(.*)$/i);
+      return field ? [field[1].toLowerCase(), clean(field[2])] : ["", ""];
+    }).filter(([key]) => key));
+    let dose = labeled.dose || "";
+    let route = labeled.route || "";
+    let administrations = labeled.administrations || "";
+    if (!Object.keys(labeled).length) {
+      const [legacyOrder = "", legacyActivity = ""] = detailParts;
+      const orderParts = legacyOrder.split(/;\s*/).map(clean).filter(Boolean);
+      route = orderParts.find((part) => /^(?:PO|IV|IM|SC|SQ|SL|TD|INH|ORAL|RECTAL|SWISH\s*&\s*SPIT|PER\s+(?:G|NG|NJ|PEG)\s+TUBE)$/i.test(part)) || "";
+      dose = orderParts.find((part) => part !== route && !/^(?:start|end)\s+|^(?:Day \d+|Starts in \d+ days?|Course ended)$|^(?:once|daily|nightly|continuous|titrated|on call|every\b|\d+ times? daily)/i.test(part)) || "";
+      administrations = legacyActivity;
+    }
+    if (!groups.has(groupLabel)) groups.set(groupLabel, []);
     groups.get(groupLabel).push({
       id: `saved_medication_${groups.size}_${groups.get(groupLabel).length + 1}`,
-      cells: [clean(match[2]), regimen, course, activity, instructions],
+      cells: [name, dose, route, administrations],
       emphasis: "unknown",
       provenance: { sourceSystem: "Saved de-identified source", formatId: "saved_prompt_medications", group: groupLabel, timestamp: "", sourceIndex: null }
     });
@@ -483,7 +485,7 @@ function savedMedicationDisplay(lines) {
     type: "medications",
     view: "medication_table",
     title: "Medication activity",
-    columns: ["Medication", "Current regimen", "Course", "Recent administrations", "Instructions"],
+    columns: ["Medication", "Dose", "Route", "Administration times"],
     groups: [...groups.entries()].map(([label, rows]) => ({ label, timestamp: "", rows })),
     provenance: { sourceSystem: "Saved de-identified source", formatId: "saved_prompt_medications", formatLabel: "Saved medication activity", extraction: "canonical_prompt_text" }
   };

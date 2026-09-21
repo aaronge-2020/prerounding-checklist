@@ -6,7 +6,7 @@ export const STUDENT_GUIDANCE = Object.freeze({
     one_liner: "Summarize who the patient is, why they presented, the leading diagnosis, and current severity or trajectory in one concise sentence.",
     chief_complaint: "Use a short patient-centered phrase for the main reason for presentation.",
     history_of_present_illness: "Tell the story chronologically, then describe how the presenting symptom is doing now. Include relevant bowel, bladder, and ambulation status when known.",
-    medications: "Record the documented medication, dose, route, frequency, current status, and course when available. Do not fill in missing regimen details.",
+    medications: "Record only the documented medication name, dose, route, and administration times. Do not infer missing regimen details or a course day.",
     allergies: "Record medication allergies and the documented reaction.",
     past_medical_history: "Include conditions that affect the current differential, risk, treatment, or disposition.",
     past_surgical_history: "Include procedures that affect the current presentation or management, with timing when known.",
@@ -42,7 +42,7 @@ export const STUDENT_GUIDANCE = Object.freeze({
     fen: "Record the current diet or nutrition route, relevant fluids, and active electrolyte replacement or goals.",
     vte_prophylaxis: "Record the active prophylaxis and dose, or the documented reason it is held, contraindicated, refused, or unnecessary.",
     code_status: "Record the documented code status. If it is missing or conflicting, identify the need for clarification.",
-    medication_regimens: "Use only documented medication status, dose, route, frequency, start date, and total duration. Do not calculate a course day from an assumed start date."
+    medication_regimens: "Use only the documented medication name, dose, route, and administration times. Do not calculate or infer a course day."
   })
 });
 

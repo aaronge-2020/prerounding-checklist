@@ -1,8 +1,8 @@
-import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-note-builder-polish";
-import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260921-note-builder-polish";
-import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-note-builder-polish";
-import { fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-note-builder-polish";
-import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-note-builder-polish";
+import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-clinical-review-fix";
+import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260921-clinical-review-fix";
+import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-clinical-review-fix";
+import { fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-clinical-review-fix";
+import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-clinical-review-fix";
 
 export function createDailyPresentation({ escapeHtml, icon }) {
   function renderRowReviewStatus(completeness) {

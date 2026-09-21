@@ -5,7 +5,7 @@ import {
   DEMO_DAY_ID,
   DEMO_PATIENT_ID,
   DEMO_WORKUP_ID
-} from "./session.js?v=20260921-note-builder-polish";
+} from "./session.js?v=20260921-clinical-review-fix";
 
 export function createDemoSessionController({
   app,

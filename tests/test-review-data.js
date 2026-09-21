@@ -197,10 +197,12 @@ assert.match(relativeTemperature.insertionText, /latest 36\.5/);
 const ceftriaxone = index.medications.find((candidate) => candidate.name === "ceftriaxone");
 assert.ok(ceftriaxone);
 assert.equal(ceftriaxone.history.length, 2);
-assert.equal(ceftriaxone.history[0].course, "Day 1");
-assert.equal(ceftriaxone.latestSavedEntry.course, "Day 3");
-assert.equal(ceftriaxone.currentRegimen, "2 g · q24h · IV");
+assert.equal(ceftriaxone.latestSavedEntry.dose, "2 g");
+assert.equal(ceftriaxone.latestSavedEntry.route, "IV");
+assert.equal(ceftriaxone.latestSavedEntry.administrationTimes, "0600");
+assert.equal("course" in ceftriaxone.latestSavedEntry, false, "review data must not retain an inferred medication course");
 assert.match(ceftriaxone.insertionText, /latest saved entry/, "medication output must describe saved state rather than claiming a recomputation");
+assert.doesNotMatch(ceftriaxone.insertionText, /Day 3/, "note insertion must omit legacy inferred course labels");
 assert.ok(index.medications.some((candidate) => candidate.name === "acetaminophen"));
 
 const ct = index.diagnosticResults.find((candidate) => candidate.label === "CT Head/Neck Without Contrast");
