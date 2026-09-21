@@ -343,7 +343,7 @@ for (const directPrompt of [
 assert.throws(() => buildOpenEvidencePrompt("daily_progress_note", { patient, guidelines: "" }), /task-specific documentation standard/);
 
 assert.equal(openEvidenceTasks.consulting?.label, "Consulting");
-assert.equal(openEvidenceTasks.presentation_quality_editor?.label, "Edit and verify presentation");
+assert.equal(openEvidenceTasks.presentation_quality_editor?.label, "Coach and verify presentation");
 assert.equal(openEvidenceTasks.attending_presentation_critique?.label, "Attending presentation critique");
 const presentationEditorPrompt = buildCustomOpenEvidencePrompt({
   taskId: "presentation_quality_editor",
@@ -353,9 +353,12 @@ const presentationEditorPrompt = buildCustomOpenEvidencePrompt({
   guidelineSets: deployedGuidelineSets,
   presentationToEdit: "One-Liner\nA de-identified sample presentation.\n\nAssessment\nA concise assessment."
 });
-assert.match(presentationEditorPrompt, /Return only the fully revised presentation/);
-assert.match(presentationEditorPrompt, /Treat Assessment and Plan as a self-contained note/i);
-assert.match(presentationEditorPrompt, /Key context synopsis/i);
+assert.match(presentationEditorPrompt, /not to replace the learner's thinking/i);
+assert.match(presentationEditorPrompt, /Blind-spot map/i);
+assert.match(presentationEditorPrompt, /Understanding check/i);
+assert.match(presentationEditorPrompt, /Do not provide a fully rewritten presentation/i);
+assert.match(presentationEditorPrompt, /complete model presentation only after the learner has attempted a revision/i);
+assert.match(presentationEditorPrompt, /omitted-record fact, missing-data question, reasoning gap, or knowledge gap/i);
 assert.match(presentationEditorPrompt, /A de-identified sample presentation/);
 assert.doesNotMatch(presentationEditorPrompt, /@presentation-to-edit/);
 const presentationEditorWithoutPastedText = buildCustomOpenEvidencePrompt({
@@ -365,7 +368,7 @@ const presentationEditorWithoutPastedText = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelineSets: deployedGuidelineSets
 });
-assert.match(presentationEditorWithoutPastedText, /Return only the fully revised presentation/);
+assert.match(presentationEditorWithoutPastedText, /Revision assignment/);
 assert.doesNotMatch(presentationEditorWithoutPastedText, /No presentation was pasted/);
 const presentationCritiquePrompt = buildCustomOpenEvidencePrompt({
   taskId: "attending_presentation_critique",

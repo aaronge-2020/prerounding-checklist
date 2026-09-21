@@ -87,7 +87,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     title: "Open the prompt builder",
     instruction: "Click Prompts in the sidebar.",
     calloutTitle: "Get feedback on the note you wrote",
-    callout: "Edit and verify presentation is the default prompt. Your student note is populated automatically so you can send it to OpenEvidence or Doximity for feedback after completing the bedside work and your own draft."
+    callout: "Coach and verify presentation is the default prompt. Your student note is populated automatically so you can send it to OpenEvidence or Doximity for guided feedback after completing the bedside work and your own draft."
   },
   "copy-prompt": {
     view: "prompts",

@@ -60,7 +60,7 @@ export function createPromptsPresentation({ escapeHtml }) {
           ${requiresPresentationToEdit ? `
             <section class="presentation-editor-input" aria-labelledby="presentationEditorInputTitle">
               <div class="presentation-editor-input__heading">
-                <h3 id="presentationEditorInputTitle">Student note to ${requiresPresentationSpecialty ? "critique" : "edit and verify"}${presentationAutoPopulated ? ` <span class="presentation-editor-input__optional">From Draft Note</span>` : ""}</h3>
+                <h3 id="presentationEditorInputTitle">Student note to ${requiresPresentationSpecialty ? "critique" : "coach and verify"}${presentationAutoPopulated ? ` <span class="presentation-editor-input__optional">From Draft Note</span>` : ""}</h3>
                 <p>${presentationAutoPopulated ? "Your saved encrypted draft is populated automatically from Review Data / Draft Note. Confirm it contains no identifiers before sending it for feedback; this tab-only copy remains editable." : "No saved draft is available for this packet yet. Write and save one in Review Data / Draft Note, or paste a note with identifiers removed here. This text stays only in the current browser tab."}</p>
               </div>
               ${requiresPresentationSpecialty ? `
