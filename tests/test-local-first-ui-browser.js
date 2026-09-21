@@ -583,7 +583,7 @@ Vitals
   await page.click('[data-action="copy-open-evidence-workup-prompt"]');
   const copiedWorkupPrompt = await page.evaluate(() => navigator.clipboard.readText());
   assert.match(copiedWorkupPrompt, /selected fast rounds scope/i);
-  assert.match(copiedWorkupPrompt, /Structured primary-team progress-note sections[\s\S]*Overnight oxygen requirement improved/);
+  assert.match(copiedWorkupPrompt, /Prior primary-team progress note source[\s\S]*Overnight oxygen requirement improved/);
   assert.match(copiedWorkupPrompt, /Vital signs\. Pulse 76; respirations 16; blood pressure 118\/64/);
   assert.match(copiedWorkupPrompt, /Laboratory results\. Labs[\s\S]*WBC: 4\.2; flag L/);
   // A successful "Parse & save" auto-collapses the import panel (its job is

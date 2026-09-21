@@ -112,6 +112,9 @@ const dailyMarkup = dailyView.renderDaily({
 assert.match(dailyMarkup, /data-action="select-admission"/);
 assert.match(dailyMarkup, /data-action="save-structured-primary-note"/);
 assert.match(dailyMarkup, /data-structured-note-field="one_liner"/);
+assert.match(dailyMarkup, /data-structured-note-field="physical_exam"/);
+assert.match(dailyMarkup, /data-structured-note-field="assessment"/);
+assert.match(dailyMarkup, /data-structured-note-field="plan"/);
 assert.doesNotMatch(dailyMarkup, /data-action="add-admission-source"/, "the primary-team note is entered through explicit sections instead of one large paste box");
 assert.match(dailyMarkup, /Review completeness/);
 assert.match(dailyMarkup, /Required items are visible reminders, not blockers/);

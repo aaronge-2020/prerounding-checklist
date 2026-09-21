@@ -17,7 +17,12 @@ import {
   replaceSourceCapturesFromFormAsync,
   sourceCapturePacketCheck
 } from "../../patient-context/source-captures.js?v=20260921-lab-panel-ui";
-import { createNoteDraft, fieldsForNoteType, NOTE_TYPES, updateNoteSection } from "../../note-drafts/index.js?v=20260921-lab-panel-ui";
+import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-lab-panel-ui";
+import {
+  createPrimaryTeamNote,
+  primaryTeamNoteFields,
+  updatePrimaryTeamNoteSection
+} from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
 
 export function createDailySourceController(deps) {
   function structuredNoteKey(scope) {
@@ -40,14 +45,14 @@ export function createDailySourceController(deps) {
     const key = structuredNoteKey(scope);
     const existing = scope === "admission" ? patient.admissionPrimaryTeamNote : day.primaryTeamNote;
     const draftValues = deps.app.structuredNoteDrafts.get(key) || {};
-    let note = existing || createNoteDraft(noteType, {
+    let note = existing || createPrimaryTeamNote(noteType, {
       patientId: patient.id,
       hospitalDayId: day?.id || ""
     });
-    deps.updateDeidOperation({ active: true, message: "De-identifying structured note sections locally…", value: 0, total: fieldsForNoteType(noteType).length });
+    deps.updateDeidOperation({ active: true, message: "De-identifying primary-team note sections locally…", value: 0, total: primaryTeamNoteFields(noteType).length });
     try {
       await deps.ensureSelectedDeidReady();
-      const fields = fieldsForNoteType(noteType);
+      const fields = primaryTeamNoteFields(noteType);
       for (let index = 0; index < fields.length; index += 1) {
         const field = fields[index];
         const rawText = Object.hasOwn(draftValues, field.id)
@@ -56,7 +61,7 @@ export function createDailySourceController(deps) {
         const result = rawText.trim()
           ? await deps.deidentify(rawText, { referenceDate: day?.date || deps.app.admissionDate })
           : { text: "", residualWarnings: [] };
-        note = updateNoteSection(note, field.id, {
+        note = updatePrimaryTeamNoteSection(note, field.id, {
           deidentifiedText: result.text || "",
           residualWarnings: result.residualWarnings || result.flags || []
         });
@@ -68,9 +73,9 @@ export function createDailySourceController(deps) {
         return { ...current, days: upsertDay(current.days, nextDay) };
       });
       deps.app.structuredNoteDrafts.delete(key);
-      await deps.persistVault(`${noteType === NOTE_TYPES.H_AND_P ? "H&P" : "Progress-note"} sections de-identified and saved locally.`);
-      deps.updateDeidOperation({ active: false, message: "Structured note saved in the encrypted vault." });
-      deps.setStatus("Structured note saved in the encrypted vault.");
+      await deps.persistVault(`${noteType === NOTE_TYPES.H_AND_P ? "H&P" : "Progress-note"} source de-identified and saved locally.`);
+      deps.updateDeidOperation({ active: false, message: "Primary-team note saved in the encrypted vault." });
+      deps.setStatus("Primary-team note saved in the encrypted vault.");
       deps.render();
     } catch (error) {
       deps.updateDeidOperation({ active: false, message: error instanceof Error ? error.message : "The structured note was not saved." });

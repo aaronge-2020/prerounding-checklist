@@ -3,6 +3,8 @@ import { createDailyRecord } from "../src/daily-updates/days.js";
 import { createPatientRecord } from "../src/app/state/vault.js";
 import { buildProgressNotePacket } from "../src/prompts/progress-note-packet.js";
 import { createSourceCapture } from "../src/patient-context/source-captures.js";
+import { createPrimaryTeamNote, updatePrimaryTeamNoteSection } from "../src/patient-context/primary-team-note.js";
+import { NOTE_TYPES } from "../src/note-drafts/index.js";
 
 function withText(sections, role, text) {
   return sections.map((section) => (section.role === role ? { ...section, deidentifiedText: text } : section));
@@ -23,10 +25,16 @@ const olderDay = {
   ...createDailyRecord({ date: "2026-07-08", label: "Hospital day 1" }),
   sourceCaptures: [createSourceCapture({ sourceKind: "bedside_update", text: "Older exam: diffuse crackles." })]
 };
+let priorPrimaryTeamNote = createPrimaryTeamNote(NOTE_TYPES.PROGRESS, { patientId: patient.id, hospitalDayId: "hospital_day_2" });
+priorPrimaryTeamNote = updatePrimaryTeamNoteSection(priorPrimaryTeamNote, "interval_events", "Received hemodialysis overnight.");
+priorPrimaryTeamNote = updatePrimaryTeamNoteSection(priorPrimaryTeamNote, "objective", "Weight decreased after ultrafiltration.");
+priorPrimaryTeamNote = updatePrimaryTeamNoteSection(priorPrimaryTeamNote, "assessment", "Volume overload is improving.");
+priorPrimaryTeamNote = updatePrimaryTeamNoteSection(priorPrimaryTeamNote, "plan", "Continue dialysis and reassess oxygen requirement.");
+
 const selectedDay = {
   ...createDailyRecord({ date: "2026-07-09", label: "Hospital day 2" }),
+  primaryTeamNote: priorPrimaryTeamNote,
   sourceCaptures: [
-    createSourceCapture({ sourceKind: "primary_note", text: "Received hemodialysis overnight." }),
     createSourceCapture({ sourceKind: "medication_activity", text: "Carvedilol was given and later held." }),
     createSourceCapture({ sourceKind: "other_chart_text", text: "Case management is awaiting an outpatient dialysis chair." })
   ],
@@ -39,7 +47,10 @@ assert.doesNotMatch(packet, /2026-07-09/, "OpenEvidence packets must not expose 
 assert.match(packet, /Admission reason and initial severity: Admitted for dyspnea/);
 assert.match(packet, /Relevant baseline and active problem context: HFpEF and ESRD/);
 assert.doesNotMatch(packet, /Admission BNP/, "admission-only objective data must stay out of the progress packet");
-assert.match(packet, /Primary team note\. Received hemodialysis overnight/);
+assert.match(packet, /Interval events[\s\S]*Received hemodialysis overnight/);
+assert.match(packet, /Objective data[\s\S]*Weight decreased after ultrafiltration/);
+assert.match(packet, /Assessment[\s\S]*Volume overload is improving/);
+assert.match(packet, /Plan[\s\S]*Continue dialysis and reassess oxygen requirement/);
 assert.match(packet, /Medication activity\. Carvedilol was given and later held/);
 assert.match(packet, /Other chart text\. Case management is awaiting/);
 assert.match(packet, /Separate selected-day examination\. Lungs clear/);

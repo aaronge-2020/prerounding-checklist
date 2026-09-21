@@ -68,13 +68,16 @@ try {
   assert.match(await page.locator("[data-final-note-preview]").innerText(), /Documented pneumococcal infection/);
   assert.match(await page.locator("[data-final-note-preview]").innerText(), /Differential \| Clues for this differential \| Clues against this differential/);
 
-  // Progress entry shows only progress-appropriate fields and permits a blank one-liner.
+  // A prior progress note captures the complete source, not only subjective fields.
   await page.click('[data-view-target="daily"]');
   await page.fill("#newDayDate", "2026-09-19");
   await page.fill("#newDayLabel", "Hospital day 2");
   await page.click('[data-action="add-day"]');
   await page.waitForSelector('[data-structured-note-scope="daily"][data-structured-note-field="interval_events"]');
   assert.equal(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="past_medical_history"]').count(), 0);
+  assert.equal(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="objective"]').count(), 1);
+  assert.equal(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="assessment"]').count(), 1);
+  assert.equal(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="plan"]').count(), 1);
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
   await page.waitForFunction(() => /Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.click('[data-action="open-progress-note"]');

@@ -1,7 +1,8 @@
 import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-lab-panel-ui";
 import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260921-lab-panel-ui";
 import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-lab-panel-ui";
-import { fieldsForNoteType, NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-lab-panel-ui";
+import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-lab-panel-ui";
+import { primaryTeamNoteFields } from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
 import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-lab-panel-ui";
 
 export function createDailyPresentation({ escapeHtml, icon }) {
@@ -244,20 +245,24 @@ export function createDailyPresentation({ escapeHtml, icon }) {
   }
 
   function renderStructuredPrimaryNote({ noteType, note, draftValues = {}, scope, deidBusy }) {
-    const typeLabel = noteType === NOTE_TYPES.H_AND_P ? "H&P source sections" : "Progress-note source sections";
+    const admission = noteType === NOTE_TYPES.H_AND_P;
+    const typeLabel = admission ? "Primary-team admission note" : "Prior primary-team progress note";
+    const help = admission
+      ? "Enter every available section from the admission H&P. This is source material for the note you will draft separately."
+      : "Enter every available section from the prior primary-team note, usually yesterday’s note. Include objective data, assessment, and plan—not only the subjective history.";
     const saved = Boolean(note);
     return `<section class="structured-primary-note" aria-labelledby="${scope}StructuredNoteHeading">
-      <div class="section-heading tight"><div><h3 id="${scope}StructuredNoteHeading">${typeLabel}</h3><p class="muted">Enter only the sections that are available. The one-liner is encouraged but never required.</p></div><span class="source-parse-local">${saved ? "Saved locally" : "Optional"}</span></div>
+      <div class="section-heading tight"><div><h3 id="${scope}StructuredNoteHeading">${typeLabel}</h3><p class="muted">${help} Leave unavailable sections blank.</p></div><span class="source-parse-local">${saved ? "Saved locally" : "Optional"}</span></div>
       <div class="structured-note-grid">
-        ${fieldsForNoteType(noteType).map((field) => {
+        ${primaryTeamNoteFields(noteType).map((field) => {
           const value = Object.hasOwn(draftValues, field.id)
             ? draftValues[field.id]
             : note?.sections?.[field.id]?.deidentifiedText || "";
-          const rows = field.id === "one_liner" || field.id === "chief_complaint" ? 2 : 4;
-          return `<label class="${field.id === "one_liner" ? "structured-note-one-liner" : ""}">${escapeHtml(field.label)}${field.id === "one_liner" ? " · primary summary" : ""}<textarea rows="${rows}" data-structured-note-field="${escapeHtml(field.id)}" data-structured-note-scope="${escapeHtml(scope)}" placeholder="Optional">${escapeHtml(value)}</textarea></label>`;
+          const rows = field.rows || 4;
+          return `<label class="${field.id === "one_liner" ? "structured-note-one-liner" : ""}">${escapeHtml(field.label)}${field.id === "one_liner" ? " · source summary" : ""}<textarea rows="${rows}" data-structured-note-field="${escapeHtml(field.id)}" data-structured-note-scope="${escapeHtml(scope)}" placeholder="Optional">${escapeHtml(value)}</textarea></label>`;
         }).join("")}
       </div>
-      <div class="source-draft-footer"><span class="muted">Saved fields are locally de-identified before entering the encrypted vault.</span><button type="button" class="button--primary" data-action="save-structured-primary-note" data-note-scope="${escapeHtml(scope)}" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save structured note"}</button></div>
+      <div class="source-draft-footer"><span class="muted">Saved source fields are locally de-identified before entering the encrypted vault.</span><button type="button" class="button--primary" data-action="save-structured-primary-note" data-note-scope="${escapeHtml(scope)}" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save primary-team note"}</button></div>
     </section>`;
   }
 

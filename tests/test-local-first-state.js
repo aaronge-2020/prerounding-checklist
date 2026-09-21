@@ -15,7 +15,7 @@ function memoryStorage() {
 }
 
 const vault = createEmptyVaultState({ now: () => "2026-07-09T12:00:00.000Z" });
-assert.equal(vault.schemaVersion, 4);
+assert.equal(vault.schemaVersion, 5);
 assert.deepEqual(vault.patients, []);
 assert.equal(vault.preferences.medicalService, "");
 assert.equal(vault.preferences.openAiApiKey, "");
@@ -177,6 +177,7 @@ assert.equal(loaded.preferences.openAiApiKey, "local-test-key");
 assert.equal(loaded.preferences.openAiModel, "gpt-5.6-terra");
 assert.equal(loaded.preferences.medicalService, "consult");
 assert.equal(loaded.patients[0].admissionPrimaryTeamNote.sections.one_liner.deidentifiedText, "De-identified one-liner with pneumonia.");
+assert.equal(loaded.patients[0].admissionPrimaryTeamNote.schema, "primary_team_note_source_v1");
 assert.equal(loaded.patients[0].noteDrafts.admission.schema, "student_note_draft_v2");
 assert.equal(loaded.patients[0].noteDrafts.admission.checklistFindings.selectedBlocks[0].editedText, "Dyspnea now?: Improved with rest.");
 assert.equal(loaded.patients[0].days[0].sourceCaptures[0].label, "CT Head/Neck Without Contrast");

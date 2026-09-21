@@ -2,7 +2,7 @@ import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checkli
 import { isCarryForwardContextRole, packetRoleFor, packetRoleLabel, packetRolesForScope } from "../patient-context/packet-roles.js";
 import { dailySourceKindLabel, sourceCapturePacketCheck } from "../patient-context/source-captures.js?v=20260921-lab-panel-ui";
 import { naturalLanguagePrompt } from "./natural-language.js";
-import { renderFinalNote } from "../note-drafts/index.js?v=20260921-lab-panel-ui";
+import { renderPrimaryTeamNote } from "../patient-context/primary-team-note.js?v=20260921-primary-note-source";
 
 function compactText(value) {
   return String(value || "").trim();
@@ -40,8 +40,8 @@ function selectedDaySources(captures = []) {
 export function buildProgressNotePacket({ patient, selectedDay } = {}) {
   const admission = sortedFields("context", patient?.contextSections || [], (section) => isCarryForwardContextRole(section.role));
   const daySources = selectedDaySources(selectedDay?.sourceCaptures || []);
-  const admissionStructuredNote = patient?.admissionPrimaryTeamNote ? renderFinalNote(patient.admissionPrimaryTeamNote).trim() : "";
-  const dailyStructuredNote = selectedDay?.primaryTeamNote ? renderFinalNote(selectedDay.primaryTeamNote).trim() : "";
+  const admissionStructuredNote = patient?.admissionPrimaryTeamNote ? renderPrimaryTeamNote(patient.admissionPrimaryTeamNote).trim() : "";
+  const dailyStructuredNote = selectedDay?.primaryTeamNote ? renderPrimaryTeamNote(selectedDay.primaryTeamNote).trim() : "";
   const packetCheck = sourceCapturePacketCheck(selectedDay?.sourceCaptures || [], { structuredNote: selectedDay?.primaryTeamNote, scope: "daily" });
   const exam = selectedDayExam(selectedDay);
 

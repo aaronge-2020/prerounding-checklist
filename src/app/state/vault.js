@@ -2,9 +2,10 @@ import { normalizeUserPreferences } from "../preferences.js";
 import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js";
 import { CONTEXT_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRoleLabel } from "../../patient-context/packet-roles.js";
 import { migrateLegacyDailySections, normalizeDiagnosticResultCategory, normalizeSourceCapture, normalizeSourceKindForScope } from "../../patient-context/source-captures.js?v=20260921-lab-panel-ui";
+import { normalizePrimaryTeamNote } from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
 import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260921-lab-panel-ui";
 
-export const VAULT_SCHEMA_VERSION = 4;
+export const VAULT_SCHEMA_VERSION = 5;
 
 export const DEFAULT_CONTEXT_SECTION_LABELS = CONTEXT_PACKET_ROLES.map(({ label }) => label);
 
@@ -105,7 +106,7 @@ export function normalizeDay(day, index = 0, { now = timestampNow } = {}) {
     date: String(day?.date || fallbackDate),
     label: String(day?.label || `Hospital day ${index + 1}`).trim() || `Hospital day ${index + 1}`,
     sourceCaptures,
-    primaryTeamNote: normalizeOptionalNoteDraft(day?.primaryTeamNote, NOTE_TYPES.PROGRESS, { now }),
+    primaryTeamNote: normalizeOptionalPrimaryTeamNote(day?.primaryTeamNote, NOTE_TYPES.PROGRESS, { now }),
     checklistSnapshot: day?.checklistSnapshot || null,
     answers: day?.answers && typeof day.answers === "object" ? day.answers : {},
     quickNotes: Array.isArray(day?.quickNotes) ? day.quickNotes : [],
@@ -126,9 +127,9 @@ export function normalizeDay(day, index = 0, { now = timestampNow } = {}) {
   };
 }
 
-function normalizeOptionalNoteDraft(value, noteType, { now = timestampNow, patientId = "", hospitalDayId = "" } = {}) {
+function normalizeOptionalPrimaryTeamNote(value, noteType, { now = timestampNow, patientId = "", hospitalDayId = "" } = {}) {
   if (!value || typeof value !== "object") return null;
-  return normalizeNoteDraft({ ...value, noteType, patientId: value.patientId || patientId, hospitalDayId: value.hospitalDayId || hospitalDayId }, { now });
+  return normalizePrimaryTeamNote(value, noteType, { now, patientId, hospitalDayId });
 }
 
 function normalizeSavedNoteDrafts(value, patient, { now = timestampNow } = {}) {
@@ -160,13 +161,13 @@ export function normalizePatient(patient, index = 0, { now = timestampNow } = {}
     displayLabel: String(patient?.displayLabel || patient?.label || `Patient ${index + 1}`).trim() || `Patient ${index + 1}`,
     metadata: patient?.metadata && typeof patient.metadata === "object" ? { ...patient.metadata } : {},
     contextSections,
-    admissionPrimaryTeamNote: normalizeOptionalNoteDraft(patient?.admissionPrimaryTeamNote, NOTE_TYPES.H_AND_P, { now, patientId: id }),
+    admissionPrimaryTeamNote: normalizeOptionalPrimaryTeamNote(patient?.admissionPrimaryTeamNote, NOTE_TYPES.H_AND_P, { now, patientId: id }),
     noteDrafts: normalizeSavedNoteDrafts(patient?.noteDrafts, { ...patient, id }, { now }),
     days: Array.isArray(patient?.days)
       ? patient.days.map((day, dayIndex) => {
           const normalized = normalizeDay(day, dayIndex, { now });
           return normalized.primaryTeamNote
-            ? { ...normalized, primaryTeamNote: normalizeOptionalNoteDraft(normalized.primaryTeamNote, NOTE_TYPES.PROGRESS, { now, patientId: id, hospitalDayId: normalized.id }) }
+            ? { ...normalized, primaryTeamNote: normalizeOptionalPrimaryTeamNote(normalized.primaryTeamNote, NOTE_TYPES.PROGRESS, { now, patientId: id, hospitalDayId: normalized.id }) }
             : normalized;
         })
       : [],

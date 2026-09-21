@@ -196,13 +196,18 @@ export function sourceCapturesToPromptBlock(captures = [], title = "Selected-day
 export function sourceCapturePacketCheck(captures = [], { structuredNote = null, scope = "daily" } = {}) {
   const structuredNoteHasContent = Object.values(structuredNote?.sections || {}).some((section) => String(section?.deidentifiedText || "").trim());
   const reviewedCaptures = structuredNoteHasContent
-    ? [...(captures || []), { sourceKind: "primary_note", deidentifiedText: "Structured primary-team note reviewed." }]
+    ? [...(captures || []), { sourceKind: "primary_note", deidentifiedText: "Primary-team note reviewed." }]
     : (captures || []);
   const supplied = new Set(reviewedCaptures.filter((capture) => String(capture?.deidentifiedText || "").trim()).map((capture) => capture.sourceKind));
   const completeness = evaluatePacketCompleteness(reviewedCaptures, { scope });
   const included = DAILY_SOURCE_KINDS.filter((kind) => supplied.has(kind.id)).map((kind) => kind.label);
   const notSupplied = completeness.missingRequired.map((item) => item.label);
-  const warningCount = (captures || []).reduce((count, capture) => count + (capture?.residualWarnings?.length || 0), 0);
+  const sourceWarningCount = (captures || []).reduce((count, capture) => count + (capture?.residualWarnings?.length || 0), 0);
+  const noteWarningCount = Object.values(structuredNote?.sections || {}).reduce(
+    (count, section) => count + (section?.residualWarnings?.length || 0),
+    0
+  );
+  const warningCount = sourceWarningCount + noteWarningCount;
   return {
     included,
     notSupplied,

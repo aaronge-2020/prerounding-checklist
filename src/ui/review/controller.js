@@ -63,6 +63,9 @@ function draftFromSource(patient, selectedPacketId) {
     patientId: patient?.id || "",
     hospitalDayId: selectedPacketId === "admission" ? "" : selectedPacketId
   });
+  // A hospital-day primary-team note is the prior note used as source
+  // evidence. It must not silently become today's subjective report.
+  if (selectedPacketId !== "admission") return draft;
   const source = sourceNoteForPacket(patient, selectedPacketId);
   for (const { id } of fieldsForNoteType(noteType)) {
     if (source?.sections?.[id]) draft = updateNoteSection(draft, id, source.sections[id]);
@@ -132,7 +135,6 @@ export function createReviewController(deps) {
     deps.app.reviewPage = Math.min(Math.max(0, Number(deps.app.reviewPage) || 0), pageCount - 1);
     const filteredCandidates = matchingCandidates.slice(deps.app.reviewPage * pageSize, (deps.app.reviewPage + 1) * pageSize);
     const draft = reviewDraft(patient, packet.id, index, checklistCandidates);
-    const sourceOneLiner = sourceNoteForPacket(patient, packet.id)?.sections?.one_liner?.deidentifiedText || "";
     return {
       patient,
       packet,
@@ -143,7 +145,7 @@ export function createReviewController(deps) {
       page: deps.app.reviewPage,
       pageCount,
       draft,
-      oneLiner: sourceOneLiner || draft.sections.one_liner.deidentifiedText || ""
+      oneLiner: draft.sections.one_liner.deidentifiedText || ""
     };
   }
 
