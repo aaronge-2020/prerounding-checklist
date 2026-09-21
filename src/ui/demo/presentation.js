@@ -94,7 +94,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "prompts",
     navTarget: "prompts",
     title: "Open the prompt builder",
-    instruction: "Click OpenEvidence Prompts in the sidebar.",
+    instruction: "Click Prompts in the sidebar.",
     calloutTitle: "Get feedback on the note you wrote",
     callout: "Edit and verify presentation is the default prompt. Your student note is populated automatically so you can send it to OpenEvidence or Doximity for feedback after completing the bedside work and your own draft."
   },
@@ -129,7 +129,7 @@ export function createDemoPresentation({ escapeHtml }) {
       ? `The previous field is complete. Click Continue to next field to review ${nextSectionLabel || "the next field"}. You check the app's suggestions before moving on.`
       : "";
     const nextInstruction = routeMismatch
-      ? `Open ${stage.view === "workups" ? "Workups" : stage.view === "prompts" ? "OpenEvidence Prompts" : stage.view} with the highlighted sidebar control to continue.`
+      ? `Open ${stage.view === "workups" ? "Workups" : stage.view === "prompts" ? "Prompts" : stage.view} with the highlighted sidebar control to continue.`
       : reviewHandoff || stage.instruction;
     return `
       <section class="guided-demo-bar" data-demo-guide role="status" aria-live="polite">

@@ -11,6 +11,7 @@ import { GUIDELINE_PAGE_SIZE, guidelinePageModel } from "../src/ui/settings/guid
 import { renderGuidelineSets } from "../src/ui/settings/guidelines-presentation.js";
 import { evaluatePacketCompleteness, packetReviewRequirement } from "../src/daily-updates/packet-completeness.js";
 import { sourceCapturePacketCheck } from "../src/patient-context/source-captures.js";
+import { replaceViewContent } from "../src/ui/view-scroll.js";
 
 const escapeHtml = (value = "") => String(value)
   .replace(/&/g, "&amp;")
@@ -18,6 +19,19 @@ const escapeHtml = (value = "") => String(value)
   .replace(/>/g, "&gt;")
   .replace(/"/g, "&quot;");
 const icon = (name) => `<svg data-icon="${name}"></svg>`;
+
+const scrollOwner = { scrollTop: 640, scrollLeft: 18 };
+const viewContent = {
+  closest: (selector) => selector === ".view" ? scrollOwner : null,
+  set innerHTML(value) {
+    this.markup = value;
+    scrollOwner.scrollTop = 0;
+    scrollOwner.scrollLeft = 0;
+  }
+};
+replaceViewContent(viewContent, "<button>Saved</button>");
+assert.equal(viewContent.markup, "<button>Saved</button>");
+assert.deepEqual([scrollOwner.scrollTop, scrollOwner.scrollLeft], [640, 18], "whole-view rerenders preserve route scroll");
 
 const promptsView = createPromptsPresentation({ escapeHtml });
 const paginationGuidelines = Array.from({ length: 23 }, (_, index) => ({

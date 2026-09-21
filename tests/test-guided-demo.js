@@ -83,7 +83,7 @@ const noteGuide = presentation.renderGuide({ session: { stage: "write-note" }, c
 assert.match(noteGuide, /Write your clinical assessment/);
 assert.match(noteGuide, /student note sent for feedback/i);
 const feedbackGuide = presentation.renderGuide({ session: { stage: "open-prompts" }, currentView: "review" });
-assert.match(feedbackGuide, /Open OpenEvidence Prompts/i);
+assert.match(feedbackGuide, /Open Prompts/i);
 assert.match(presentation.renderCallout({ stage: demoStage("open-prompts") }), /feedback on the note you wrote/i);
 const handoffGuide = presentation.renderGuide({
   session: { stage: "context-review" },

@@ -173,6 +173,7 @@ import { createGuidelineSetsController } from "./settings/guidelines-controller.
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-medication-card-v4";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-medication-card-v4";
+import { preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20260921-preserve-view-scroll";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-medication-card-v4";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
 import {
@@ -279,7 +280,7 @@ const app = {
 const viewIds = ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "settings"];
 const viewTitles = {
   vault: "Vault / Roster", daily: "Hospital Stay", review: "Review Data / Draft Note",
-  workups: "Workups", checklist: "Checklist", prompts: "OpenEvidence Prompts",
+  workups: "Workups", checklist: "Checklist", prompts: "Prompts",
   quickDeid: "Quick De-ID Tool", settings: "Settings"
 };
 let draggedWorkupRow = null;
@@ -1077,13 +1078,13 @@ function updateVaultPassphraseStrength(value) {
 
 function renderVault() {
   const record = readEncryptedVaultRecord();
-  byId("vaultContent").innerHTML = vaultPresentation.renderVault({
+  replaceViewContent(byId("vaultContent"), vaultPresentation.renderVault({
     record,
     unlocked: vaultIsUnlocked(),
     vault: app.vault,
     patients: visiblePatients(app.vault),
     vaultUnlockError: app.vaultUnlockError
-  });
+  }));
 }
 
 function renderDeidStrip() {
@@ -1249,13 +1250,12 @@ function renderSectionEditor(section, scope) {
 function renderWarnings(sections, scope) {
   return redactionPresentation.renderWarnings({ sections, scope, reviewFor: sectionReviewFor });
 }
-
 function renderDaily() {
-  dailySourceController.renderDaily();
+  preserveViewScroll(byId("dailyContent"), () => dailySourceController.renderDaily());
   bindSectionReordering();
 }
 
-function renderReview() { reviewController.render(); }
+function renderReview() { preserveViewScroll(byId("reviewContent"), () => reviewController.render()); }
 function workupCatalogQueryValue(query) {
   return normalizeWorkupCatalogQuery(query);
 }
@@ -1288,7 +1288,7 @@ function updateWorkupCatalogFilter() {
 function renderWorkups() {
   const patient = active();
   if (!patient || !app.vault) {
-    byId("workupsContent").innerHTML = patientRequiredMessage();
+    replaceViewContent(byId("workupsContent"), patientRequiredMessage());
     return;
   }
   const catalog = effectiveWorkupCatalog(app.vault.workupOverrides, app.vault.hiddenWorkupIds);
@@ -1309,7 +1309,7 @@ function renderWorkups() {
     app.draftWorkup || catalog.find((workup) => workup.id === app.selectedWorkupEditorId) || catalog[0] || createBlankWorkup();
   app.selectedWorkupEditorId = editorWorkup.id;
   const preferences = currentPreferences();
-  byId("workupsContent").innerHTML = workupPresentation.renderWorkups({
+  replaceViewContent(byId("workupsContent"), workupPresentation.renderWorkups({
     catalog,
     selectedIds,
     matchingWorkupIds,
@@ -1328,7 +1328,7 @@ function renderWorkups() {
     workupImportPanelOpen: app.workupImportPanelOpen,
     workupImportDraft: app.workupImportDraft,
     hiddenWorkups
-  });
+  }));
   bindWorkupReordering();
 }
 
@@ -1342,7 +1342,7 @@ function selectedChecklistDay(patient) {
 function renderChecklist() {
   const patient = active();
   if (!patient) {
-    byId("checklistContent").innerHTML = patientRequiredMessage({ allowPhoneBundleImport: true });
+    replaceViewContent(byId("checklistContent"), patientRequiredMessage({ allowPhoneBundleImport: true }));
     return;
   }
   const day = selectedChecklistDay(patient);
@@ -1358,7 +1358,7 @@ function renderChecklist() {
     )
     .join("");
   checklistSearch.buildIndex(snapshot);
-  byId("checklistContent").innerHTML = checklistPresentation.renderDesktopChecklist({
+  replaceViewContent(byId("checklistContent"), checklistPresentation.renderDesktopChecklist({
     day,
     snapshot,
     answers,
@@ -1381,7 +1381,7 @@ function renderChecklist() {
       examFindingsText !== "No physical exam items are included in this checklist."
     ),
     dayOptionsHtml
-  });
+  }));
   checklistSearch.updateFilter(app.checklistSearchQuery);
 }
 
@@ -1411,11 +1411,11 @@ function currentPhoneReturnBundle() {
 function renderPrompts() {
   const patient = active();
   if (!patient) {
-    byId("promptsContent").innerHTML = patientRequiredMessage();
+    replaceViewContent(byId("promptsContent"), patientRequiredMessage());
     return;
   }
   const tasks = [...availableOpenEvidenceTasks(app.guidelineSets), ...guidelinePromptTasks(app.guidelineSets)]; const task = tasks.find((entry) => entry.id === app.selectedPromptTask) || tasks[0];
-  if (!task) { byId("promptsContent").textContent = "Built-in prompts are unavailable. Reload to retry."; return; }
+  if (!task) { replaceViewContent(byId("promptsContent"), "Built-in prompts are unavailable. Reload to retry.", { text: true }); return; }
   app.selectedPromptTask = task.id;
   const promptDays = sortDays(patient.days || []);
   // Follow the Checklist/Daily day until manually overridden here, so a
@@ -1453,7 +1453,7 @@ function renderPrompts() {
     template,
     Object.fromEntries(variables.map((entry) => [entry.token, entry.token]))
   );
-  byId("promptsContent").innerHTML = promptsPresentation.renderPrompts({
+  replaceViewContent(byId("promptsContent"), promptsPresentation.renderPrompts({
     patient,
     patientRequiredMessage: patientRequiredMessage(),
     task,
@@ -1471,7 +1471,7 @@ function renderPrompts() {
     variables,
     smartMenuOpen: app.smartMenuOpen,
     colorOverrides: app.tokenColorOverrides
-  });
+  }));
   const templateEditor = byId("promptPreview");
   const templateBackdrop = byId("promptTemplateHighlight");
   if (templateEditor && templateBackdrop) {
@@ -1490,7 +1490,7 @@ function renderSettings() {
   const container = byId("settingsContent");
   if (!container || !vaultIsUnlocked()) return;
   const preferences = currentPreferences();
-  container.innerHTML = settingsPresentation.renderSettings({
+  replaceViewContent(container, settingsPresentation.renderSettings({
     preferences,
     apiKeySaved: Boolean(preferences.openAiApiKey),
     guidelineSets: app.guidelineSets,
@@ -1501,7 +1501,7 @@ function renderSettings() {
     guidelineCreateDraft: app.guidelineCreateDraft,
     OPENAI_WORKUP_MODEL_OPTIONS,
     colorOverrides: app.tokenColorOverrides
-  });
+  }));
 }
 
 function setVaultPreferences(nextPreferences) {
@@ -1652,7 +1652,7 @@ function renderQuickModelControl() {
 
 function renderQuickDeid() {
   const hasReview = Boolean(app.quickDeid.review);
-  byId("quickDeidContent").innerHTML = quickDeidPresentation.renderQuickDeid({
+  replaceViewContent(byId("quickDeidContent"), quickDeidPresentation.renderQuickDeid({
     hasReview,
     disabled: Boolean(app.modelPackBusyKey || app.quickDeidBusy),
     busy: app.quickDeidBusy,
@@ -1660,7 +1660,7 @@ function renderQuickDeid() {
     quickDeidInput: app.quickDeid.input,
     renderQuickModelControlHtml: renderQuickModelControl(),
     renderQuickDeidReviewHtml: hasReview ? renderQuickDeidReview() : ""
-  });
+  }));
   scheduleQuickReviewFocus();
 }
 
@@ -1681,7 +1681,7 @@ function renderPhoneChecklist() {
   });
   document.querySelectorAll(".view").forEach((view) => view.classList.remove("active"));
   byId("checklistView").classList.add("active");
-  byId("checklistContent").innerHTML = phoneView.markup;
+  replaceViewContent(byId("checklistContent"), phoneView.markup);
   checklistSearch.updateFilter(app.checklistSearchQuery);
   renderStatusBar();
 }

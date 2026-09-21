@@ -2,7 +2,7 @@
 
 ## Visual target
 
-Use [the concept board](./preround-ui-concept-board.png) as the single visual reference. It redesigns the six existing application routes without changing the product model: `Vault / Roster`, `Hospital Stay`, `Workups`, `Checklist`, `OpenEvidence Prompts`, and `Quick De-ID`.
+Use [the concept board](./preround-ui-concept-board.png) as the single visual reference. It redesigns the six existing application routes without changing the product model: `Vault / Roster`, `Hospital Stay`, `Workups`, `Checklist`, `Prompts`, and `Quick De-ID`.
 
 The goal is a calmer, more legible clinical workspace. The current layout has strong routing and compact information density, but its visual language treats almost every element as the same bordered card. The target instead uses page-level surfaces, row dividers, quiet tinted state, and only one unmistakable primary action per task.
 
@@ -113,7 +113,7 @@ Update `renderChecklist()`, `renderChecklistSection()`, `renderChecklistSystem()
 - Keep optional notes collapsed or visually secondary until used. The existing status dot should become a clear teal completion mark and a neutral outlined circle when unanswered.
 - Keep `renderPhoneTransfer()` as the narrow right utility rail: copy link, download fallback, and returned-bundle import. Use a single outer surface and divider-separated blocks. Do not introduce remote phone sync.
 
-### OpenEvidence Prompts
+### Prompts
 
 Update `renderPrompts()` and the `.prompt-layout` rules.
 
