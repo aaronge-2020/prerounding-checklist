@@ -141,13 +141,14 @@ assert.deepEqual(index.groups.map(({ id }) => id), ["vitals", "labs", "medicatio
 const laboratoryResults = (reviewIndex, name) => reviewIndex.labs.flatMap((panel) =>
   panel.results.filter((result) => result.name === name).map((result) => ({ ...result, panel }))
 );
-assert.equal(index.labs.length, 3, "each saved laboratory collection must remain a separate selectable set");
+assert.equal(index.labs.length, 1, "the review index must expose only the latest collection for each laboratory panel type");
 assert.ok(index.labs.every((candidate) => candidate.kind === "laboratory_panel"));
 const wbcResults = laboratoryResults(index, "WBC");
-assert.deepEqual(wbcResults.map(({ value }) => value), ["15.2", "12.0", "8.8"], "laboratory sets must remain chronological across days even when day input is not");
-assert.deepEqual(wbcResults.map(({ status }) => status), ["high", "high", "normal"]);
-assert.deepEqual(wbcResults.at(-1).trend.map(({ value }) => value), ["15.2", "12.0", "8.8"], "every lab row must carry its chronological series for on-demand trend display");
+assert.deepEqual(wbcResults.map(({ value }) => value), ["8.8"], "the visible panel must use the latest saved collection");
+assert.deepEqual(wbcResults.map(({ status }) => status), ["normal"]);
+assert.deepEqual(wbcResults[0].trend.map(({ value }) => value), ["15.2", "12.0", "8.8"], "the latest lab row must retain older collections for its on-demand trend display");
 assert.match(wbcResults.at(-1).panel.insertionText, /Laboratory results[\s\S]*WBC: 8\.8 K\/uL/);
+assert.equal(filterClinicalReviewCandidates(index, "15.2", { group: "labs" })[0].id, index.labs[0].id, "historical values must still find the latest panel type");
 
 const legacyCombinedLabIndex = buildClinicalReviewIndex({
   id: "legacy_combined_labs",
@@ -172,18 +173,21 @@ Platelets: 267 10*3/uL; ref 182 - 369`
     }]
   }]
 });
-assert.deepEqual(legacyCombinedLabIndex.labs.map(({ name }) => name), ["CBC", "CBC"], "generic legacy Epic labels must be replaced by the parsed panel identity");
+assert.deepEqual(legacyCombinedLabIndex.labs.map(({ name }) => name), ["CBC"], "repeated legacy collections must collapse to the latest parsed panel type");
+assert.deepEqual(legacyCombinedLabIndex.labs[0].results.find(({ name }) => name === "WBC").trend.map(({ value }) => value), ["10.4", "10.9"]);
 const legacyWbc = legacyCombinedLabIndex.labs.at(-1).results.find(({ name }) => name === "WBC");
 assert.deepEqual(legacyWbc.trend.map(({ value }) => value), ["10.4", "10.9"], "matching WBC rows from legacy collection blocks must share one trend");
 assert.equal(legacyCombinedLabIndex.labs.at(-1).results.find(({ name }) => name === "Platelets").trend.length, 1, "single results must remain explicitly identifiable as having no trend");
 
 const glucoseResults = laboratoryResults(index, "Glucose");
-assert.deepEqual(glucoseResults.map(({ unit }) => unit).sort(), ["mg/dL", "mmol/L"], "panel rows must preserve their documented units");
+assert.deepEqual(glucoseResults.map(({ unit }) => unit), ["mmol/L"], "the latest panel must preserve its documented unit");
+assert.deepEqual(glucoseResults[0].trend.map(({ unit }) => unit).sort(), ["mg/dL", "mmol/L"], "prior units remain available only in the analyte trend");
 
-assert.equal(laboratoryResults(index, "Lactate")[0].value, "<0.5", "comparator results remain selectable within their panel");
+assert.equal(laboratoryResults(index, "Lactate").length, 0, "analytes absent from the latest panel must not keep an older collection visible");
 const creatinineResults = laboratoryResults(index, "Creatinine");
 assert.equal(creatinineResults.at(-1).value, "pending", "latest non-numeric/missing-status results must not be discarded");
-assert.equal(creatinineResults.length, 3);
+assert.equal(creatinineResults.length, 1);
+assert.deepEqual(creatinineResults[0].trend.map(({ value }) => value), ["1.7", "1.3", "pending"]);
 
 const heartRate = index.vitals.find((candidate) => candidate.name === "Pulse");
 assert.ok(heartRate);
@@ -250,14 +254,14 @@ assert.equal(filterClinicalReviewCandidates(index, "head/neck").map(({ id }) => 
 assert.deepEqual(filterClinicalReviewCandidates(index, "blood", { group: "microbiology" }).map(({ label }) => label), ["Blood Culture"]);
 
 const repeatedIndex = buildClinicalReviewIndex(structuredClone(patient));
-const latestLabPanel = index.labs.find((candidate) => candidate.source.sourceId === "labs_three");
-const repeatedLatestLabPanel = repeatedIndex.labs.find((candidate) => candidate.source.sourceId === "labs_three");
-assert.equal(repeatedLatestLabPanel.id, latestLabPanel.id, "panel selection IDs must be stable for unchanged source identity");
+const latestLabPanel = index.labs[0];
+const repeatedLatestLabPanel = repeatedIndex.labs[0];
+assert.equal(repeatedLatestLabPanel.id, latestLabPanel.id, "panel-type selection IDs must be stable for unchanged data");
 assert.equal(repeatedLatestLabPanel.fingerprint, latestLabPanel.fingerprint);
 const changedPatient = structuredClone(patient);
 changedPatient.days.find(({ id }) => id === "day_three").sourceCaptures.find(({ id }) => id === "labs_three").deidentifiedText = changedPatient.days.find(({ id }) => id === "day_three").sourceCaptures.find(({ id }) => id === "labs_three").deidentifiedText.replace("8.8", "9.1");
-const changedLatestLabPanel = buildClinicalReviewIndex(changedPatient).labs.find((candidate) => candidate.source.sourceId === "labs_three");
-assert.equal(changedLatestLabPanel.id, latestLabPanel.id, "content changes must not break a saved panel selection reference");
+const changedLatestLabPanel = buildClinicalReviewIndex(changedPatient).labs[0];
+assert.equal(changedLatestLabPanel.id, latestLabPanel.id, "new latest content must not break a saved panel-type selection reference");
 assert.notEqual(changedLatestLabPanel.fingerprint, latestLabPanel.fingerprint, "panel content changes must be detectable for explicit refresh decisions");
 
 const serialized = JSON.stringify(index);

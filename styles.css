@@ -2473,16 +2473,20 @@ button.var-fill:focus-visible {
 .review-vital-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  margin: 12px 0;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .review-vital-stats div {
   display: grid;
   gap: 3px;
-  border-radius: 8px;
-  background: var(--subtle-panel, #f4f3ef);
-  padding: 8px;
+  padding: 10px 14px;
+}
+
+.review-vital-stats div + div {
+  border-left: 1px solid var(--border);
 }
 
 .review-vital-stats dt {
@@ -2752,42 +2756,193 @@ button.var-fill:focus-visible {
   font-weight: 650;
 }
 
-.review-mini-chart {
+.review-data-item--vital {
+  overflow: hidden;
+  padding: 0;
+}
+
+.review-vital-heading {
+  padding: 13px 14px;
+}
+
+.review-vital-trend {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 12px 14px 9px;
+}
+
+.review-vital-trend figcaption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.review-vital-trend figcaption strong {
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.review-vital-trend figcaption span,
+.review-trend-boundaries {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.review-trend-plot {
+  position: relative;
   width: 100%;
-  height: 58px;
-  margin-top: 10px;
+  height: clamp(132px, 18vw, 172px);
+}
+
+.review-trend-plot svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   overflow: visible;
 }
 
-.review-mini-chart polyline {
+.review-trend-plot line {
+  stroke: color-mix(in srgb, var(--border) 78%, transparent);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.review-trend-plot polyline {
   fill: none;
   stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
   stroke-width: 2.5;
   vector-effect: non-scaling-stroke;
 }
 
-.review-observation-list {
-  display: flex;
-  gap: 6px;
-  margin: 8px 0 0;
+.review-trend-point {
+  position: absolute;
+  left: var(--point-x);
+  top: var(--point-y);
+  width: 13px;
+  min-width: 13px;
+  height: 13px;
+  min-height: 13px;
+  margin: 0;
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+  background: var(--panel);
   padding: 0;
-  overflow-x: auto;
-  list-style: none;
+  transform: translate(-50%, -50%);
+  transition: background 120ms ease, border-color 120ms ease;
+  z-index: 1;
 }
 
-.review-observation-list li {
+.review-trend-point:hover,
+.review-trend-point:focus {
+  border-color: var(--ink);
+  background: var(--accent);
+  outline: 2px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  outline-offset: 3px;
+  z-index: 3;
+}
+
+.review-trend-point[data-clinical-emphasis="high"],
+.review-trend-point[data-clinical-emphasis="low"],
+.review-trend-point[data-clinical-emphasis="abnormal"],
+.review-trend-point[data-clinical-emphasis="critical"] {
+  border-color: var(--danger);
+}
+
+.review-trend-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
   display: grid;
-  flex: 0 0 auto;
+  width: max-content;
+  max-width: 210px;
   gap: 2px;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 6px 8px;
+  border-radius: 7px;
+  background: var(--ink);
+  color: var(--surface);
+  opacity: 0;
+  padding: 7px 9px;
+  pointer-events: none;
+  text-align: left;
+  transform: translateX(-50%);
+  transition: opacity 120ms ease;
 }
 
-.review-observation-list li[data-clinical-emphasis="high"],
-.review-observation-list li[data-clinical-emphasis="low"],
-.review-observation-list li[data-clinical-emphasis="abnormal"] {
-  border-color: var(--danger, #a33);
+.review-trend-tooltip strong {
+  color: inherit;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.review-trend-tooltip span {
+  color: inherit;
+  font-size: 9px;
+  line-height: 1.35;
+  opacity: 0.82;
+}
+
+.review-trend-point:hover .review-trend-tooltip,
+.review-trend-point:focus .review-trend-tooltip {
+  opacity: 1;
+}
+
+.review-trend-point[data-edge="start"] .review-trend-tooltip {
+  left: -4px;
+  transform: none;
+}
+
+.review-trend-point[data-edge="end"] .review-trend-tooltip {
+  right: -4px;
+  left: auto;
+  transform: none;
+}
+
+.review-trend-point[data-tooltip-side="below"] .review-trend-tooltip {
+  top: 18px;
+  bottom: auto;
+}
+
+.review-trend-boundaries {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  line-height: 1.35;
+}
+
+.review-trend-boundaries span:last-child {
+  text-align: right;
+}
+
+.review-trend-empty {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 5px 8px;
+  margin: 0;
+  border-top: 1px solid var(--border);
+  padding: 12px 14px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.review-trend-empty strong {
+  color: var(--ink);
+}
+
+.review-vital-note-preview {
+  border-top: 1px solid var(--border);
+  padding: 9px 14px 11px;
+}
+
+.review-vital-note-preview summary {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 650;
 }
 
 .review-data-item--lab {
@@ -3446,10 +3601,6 @@ button.var-fill:focus-visible {
   .closing-section-grid,
   .two-column-form,
   .objective-diff,
-  .review-vital-stats {
-    grid-template-columns: 1fr;
-  }
-
   .review-data-item,
   .note-field-card,
   .note-builder-section,
@@ -3460,6 +3611,17 @@ button.var-fill:focus-visible {
   }
 
   .review-data-item--medication { padding: 0; }
+  .review-data-item--vital { padding: 0; }
+
+  .review-vital-stats div {
+    padding: 9px 10px;
+  }
+
+  .review-vital-trend figcaption {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
 
   .review-medication-header {
     grid-template-columns: auto minmax(0, 1fr);

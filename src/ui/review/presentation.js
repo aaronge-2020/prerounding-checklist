@@ -10,23 +10,45 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   function renderTrend(candidate) {
     const observations = candidate.observations || [];
     const numeric = observations.filter((entry) => Number.isFinite(entry.numericValue ?? Number(entry.value)));
-    let chart = "";
-    if (numeric.length > 1) {
-      const values = numeric.map((entry) => Number(entry.numericValue ?? entry.value));
-      const minimum = Math.min(...values);
-      const maximum = Math.max(...values);
-      const spread = maximum - minimum;
-      const points = values.map((value, index) => {
-        const x = 5 + (index * 150) / Math.max(1, values.length - 1);
-        const y = spread ? 35 - ((value - minimum) / spread) * 28 : 21;
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
-      }).join(" ");
-      chart = `<svg class="review-mini-chart" viewBox="0 0 160 42" role="img" aria-label="${escapeHtml(candidate.name)} chronological trend"><polyline points="${points}"></polyline></svg>`;
+    if (!numeric.length) {
+      const latest = observations.at(-1);
+      return latest
+        ? `<p class="review-trend-empty">Latest saved reading: <strong>${escapeHtml([latest.value, latest.unit].filter(Boolean).join(" ") || "No value")}</strong><span>${escapeHtml([latest.dayLabel, latest.timestamp].filter(Boolean).join(" · "))}</span></p>`
+        : "";
     }
-    const observationList = observations.length
-      ? `<ol class="review-observation-list">${observations.map((entry) => `<li data-clinical-emphasis="${escapeHtml(entry.status || "unknown")}"><span>${escapeHtml([entry.value, entry.unit].filter(Boolean).join(" ") || "No value")}</span><small>${escapeHtml([entry.dayLabel, entry.timestamp].filter(Boolean).join(" · "))}${entry.status && !["normal", "unknown"].includes(entry.status) ? ` · ${escapeHtml(entry.status)}` : ""}</small></li>`).join("")}</ol>`
-      : "";
-    return `${chart}${observationList}`;
+    const values = numeric.map((entry) => Number(entry.numericValue ?? entry.value));
+    const minimum = Math.min(...values);
+    const maximum = Math.max(...values);
+    const spread = maximum - minimum;
+    const sortableTimes = numeric.map((entry) => entry.sortTime);
+    const timeScaled = sortableTimes.every(Number.isFinite) && Math.max(...sortableTimes) > Math.min(...sortableTimes);
+    const firstTime = timeScaled ? Math.min(...sortableTimes) : 0;
+    const timeSpan = timeScaled ? Math.max(...sortableTimes) - firstTime : 0;
+    const coordinates = numeric.map((entry, index) => {
+      const value = values[index];
+      const x = numeric.length === 1
+        ? 50
+        : 4 + 92 * (timeScaled ? (entry.sortTime - firstTime) / timeSpan : index / (numeric.length - 1));
+      const y = spread ? 78 - ((value - minimum) / spread) * 64 : 46;
+      return { entry, x, y };
+    });
+    const points = coordinates.map(({ x, y }) => `${x.toFixed(2)},${y.toFixed(2)}`).join(" ");
+    const boundaryLabel = (entry) => [entry.dayLabel, entry.timestamp].filter(Boolean).join(" · ") || "Saved reading";
+    const pointLabel = (entry) => {
+      const status = entry.status && !["normal", "unknown"].includes(entry.status) ? `, ${entry.status}` : "";
+      return `${[entry.value, entry.unit].filter(Boolean).join(" ") || "No value"}, ${boundaryLabel(entry)}${status}`;
+    };
+    return `<figure class="review-vital-trend" aria-label="${escapeHtml(candidate.name)} chronological trend">
+      <figcaption><strong>Trend</strong><span>${numeric.length} saved reading${numeric.length === 1 ? "" : "s"} · Hover or focus a point</span></figcaption>
+      <div class="review-trend-plot">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="4" y1="14" x2="96" y2="14"></line><line x1="4" y1="46" x2="96" y2="46"></line><line x1="4" y1="78" x2="96" y2="78"></line>
+          ${numeric.length > 1 ? `<polyline points="${points}"></polyline>` : ""}
+        </svg>
+        ${coordinates.map(({ entry, x, y }, index) => `<button type="button" class="review-trend-point" style="--point-x:${x.toFixed(2)}%;--point-y:${y.toFixed(2)}%" data-edge="${index === 0 ? "start" : index === coordinates.length - 1 ? "end" : "middle"}" data-tooltip-side="${y < 32 ? "below" : "above"}" data-clinical-emphasis="${escapeHtml(entry.status || "unknown")}" aria-label="${escapeHtml(pointLabel(entry))}"><span class="review-trend-tooltip"><strong>${escapeHtml([entry.value, entry.unit].filter(Boolean).join(" ") || "No value")}</strong><span>${escapeHtml(boundaryLabel(entry))}</span></span></button>`).join("")}
+      </div>
+      <div class="review-trend-boundaries" aria-hidden="true"><span>${escapeHtml(boundaryLabel(numeric[0]))}</span><span>${escapeHtml(boundaryLabel(numeric.at(-1)))}</span></div>
+    </figure>`;
   }
 
   function renderLaboratoryTrend(result) {
@@ -65,7 +87,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   function renderLaboratoryPanel(candidate, selected, labNavigation) {
     const abnormalCount = candidate.results.filter((result) => ["high", "low", "abnormal", "critical"].includes(result.status)).length;
     const navigation = labNavigation
-      ? `<nav class="review-lab-panel-navigation" aria-label="Laboratory panel sets"><button type="button" class="icon-button" data-action="review-data-page" data-direction="-1" aria-label="Previous laboratory panel" ${labNavigation.page <= 0 ? "disabled" : ""}>←</button><output>Set ${labNavigation.page + 1} of ${labNavigation.pageCount}</output><button type="button" class="icon-button" data-action="review-data-page" data-direction="1" aria-label="Next laboratory panel" ${labNavigation.page >= labNavigation.pageCount - 1 ? "disabled" : ""}>→</button></nav>`
+      ? `<nav class="review-lab-panel-navigation" aria-label="Laboratory panel types"><button type="button" class="icon-button" data-action="review-data-page" data-direction="-1" aria-label="Previous laboratory panel type" ${labNavigation.page <= 0 ? "disabled" : ""}>←</button><output>Panel type ${labNavigation.page + 1} of ${labNavigation.pageCount}</output><button type="button" class="icon-button" data-action="review-data-page" data-direction="1" aria-label="Next laboratory panel type" ${labNavigation.page >= labNavigation.pageCount - 1 ? "disabled" : ""}>→</button></nav>`
       : "";
     return `<article class="review-data-item review-data-item--lab ${selected ? "is-selected" : ""}" data-review-candidate="${escapeHtml(candidate.id)}">
       <header class="review-lab-panel-header">
@@ -124,13 +146,14 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     const diagnostic = candidate.kind === "diagnostic_result"
       ? `<p class="review-result-text">${escapeHtml(candidate.text)}</p><small>${escapeHtml([candidate.resultDate, candidate.source?.dayLabel, candidate.context].filter(Boolean).join(" · "))}</small>`
       : "";
-    return `<article class="review-data-item ${selected ? "is-selected" : ""}" data-review-candidate="${escapeHtml(candidate.id)}">
-      <label class="objective-choice">
+    const vital = candidate.kind === "vital_sign";
+    return `<article class="review-data-item ${vital ? "review-data-item--vital" : ""} ${selected ? "is-selected" : ""}" data-review-candidate="${escapeHtml(candidate.id)}">
+      <label class="objective-choice ${vital ? "review-vital-heading" : ""}">
         <input type="checkbox" data-objective-selection-id="${escapeHtml(candidate.id)}" ${selected ? "checked" : ""}>
-        <span><strong>${escapeHtml(candidate.name)}</strong><small>${escapeHtml(candidate.source?.dayLabel || candidate.group)}</small></span>
+        <span><strong>${escapeHtml(candidate.name)}</strong><small>${escapeHtml(vital ? `${candidate.observations?.length || 0} saved reading${candidate.observations?.length === 1 ? "" : "s"}` : candidate.source?.dayLabel || candidate.group)}</small></span>
       </label>
       ${stats}${diagnostic}${candidate.observations?.length ? renderTrend(candidate) : ""}
-      <details><summary>Preview note insertion</summary><pre>${escapeHtml(candidate.insertionText)}</pre></details>
+      <details class="${vital ? "review-vital-note-preview" : ""}"><summary>Preview note insertion</summary><pre>${escapeHtml(candidate.insertionText)}</pre></details>
     </article>`;
   }
 

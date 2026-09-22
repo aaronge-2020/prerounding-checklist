@@ -324,7 +324,7 @@ function attachLaboratoryTrends(laboratoryPanels) {
   const trendsByName = new Map();
   for (const panel of laboratoryPanels) {
     for (const result of panel.results) {
-      const key = laboratoryAnalyteKey(result.name);
+      const key = `${normalizedExact(panel.name)}\u0000${laboratoryAnalyteKey(result.name)}`;
       if (!trendsByName.has(key)) trendsByName.set(key, []);
       trendsByName.get(key).push({
         id: result.id,
@@ -351,9 +351,39 @@ function attachLaboratoryTrends(laboratoryPanels) {
     ...panel,
     results: panel.results.map((result) => ({
       ...result,
-      trend: trendsByName.get(laboratoryAnalyteKey(result.name)) || []
+      trend: trendsByName.get(`${normalizedExact(panel.name)}\u0000${laboratoryAnalyteKey(result.name)}`) || []
     }))
   }));
+}
+
+function latestLaboratoryPanels(laboratoryPanels) {
+  const latestByType = new Map();
+  const compareRecency = (left, right) => {
+    if (Number.isFinite(left.sortTime) && Number.isFinite(right.sortTime) && left.sortTime !== right.sortTime) return left.sortTime - right.sortTime;
+    if (Number.isFinite(left.sortTime) !== Number.isFinite(right.sortTime)) return Number.isFinite(left.sortTime) ? 1 : -1;
+    return left.dayIndex - right.dayIndex || left.sourceOrder - right.sourceOrder || left.groupOrder - right.groupOrder;
+  };
+  for (const panel of laboratoryPanels) {
+    const key = normalizedExact(panel.name) || "laboratory results";
+    const current = latestByType.get(key);
+    if (!current || compareRecency(panel, current) > 0) latestByType.set(key, panel);
+  }
+  return [...latestByType.entries()].map(([key, panel]) => {
+    const id = stableId("lab_panel", `latest\u0000${key}`, panel.name);
+    const trendSearchText = panel.results.flatMap((result) => result.trend || []).flatMap((entry) => [entry.value, entry.unit, entry.flag, entry.status, entry.dayLabel, entry.timestamp]);
+    const next = {
+      ...panel,
+      id,
+      searchText: clean([panel.searchText, ...trendSearchText].join(" ")).toLocaleLowerCase("en-US")
+    };
+    next.fingerprint = fingerprint({
+      id,
+      timestamp: next.timestamp,
+      dayLabel: next.dayLabel,
+      results: next.results.map(({ name, value, unit, referenceRange, flag, status }) => ({ name, value, unit, referenceRange, flag, status }))
+    });
+    return next;
+  });
 }
 
 function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap) {
@@ -557,7 +587,7 @@ export function buildClinicalReviewIndex(patient) {
   });
 
   coalesceUnitlessObservations(vitalMap);
-  const labs = attachLaboratoryTrends([...labMap.values()].map(finalizeLaboratoryPanel));
+  const labs = latestLaboratoryPanels(attachLaboratoryTrends([...labMap.values()].map(finalizeLaboratoryPanel)));
   let vitals = [...vitalMap.values()].map((candidate) => finalizeObservationCandidate(candidate, "vitals"));
   const latestVitalTime = vitals.flatMap((candidate) => candidate.observations)
     .filter((observation) => Number.isFinite(observation.numericValue) && Number.isFinite(observation.sortTime))
@@ -572,11 +602,7 @@ export function buildClinicalReviewIndex(patient) {
 
   const byGroup = new Map(GROUP_DEFINITIONS.map(({ id }) => [id, []]));
   for (const candidate of [...vitals, ...labs, ...medications, ...diagnostics]) byGroup.get(candidate.group)?.push(candidate);
-  for (const [group, candidates] of byGroup) candidates.sort((left, right) =>
-    group === "labs"
-      ? (Number.isFinite(left.sortTime) && Number.isFinite(right.sortTime) ? left.sortTime - right.sortTime : left.dayIndex - right.dayIndex || left.sourceOrder - right.sourceOrder || left.groupOrder - right.groupOrder) || left.name.localeCompare(right.name)
-      : left.name.localeCompare(right.name) || left.id.localeCompare(right.id)
-  );
+  for (const candidates of byGroup.values()) candidates.sort((left, right) => left.name.localeCompare(right.name) || left.id.localeCompare(right.id));
 
   const groups = GROUP_DEFINITIONS.map((definition) => ({ ...definition, candidates: byGroup.get(definition.id) }));
   const candidates = groups.flatMap((group) => group.candidates);
