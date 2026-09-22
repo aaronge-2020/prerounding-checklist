@@ -147,7 +147,9 @@ const wbcResults = laboratoryResults(index, "WBC");
 assert.deepEqual(wbcResults.map(({ value }) => value), ["8.8"], "the visible panel must use the latest saved collection");
 assert.deepEqual(wbcResults.map(({ status }) => status), ["normal"]);
 assert.deepEqual(wbcResults[0].trend.map(({ value }) => value), ["15.2", "12.0", "8.8"], "the latest lab row must retain older collections for its on-demand trend display");
-assert.match(wbcResults.at(-1).panel.insertionText, /Laboratory results[\s\S]*WBC: 8\.8 K\/uL/);
+assert.match(wbcResults.at(-1).panel.insertionText, /Laboratory results[\s\S]*WBC: 15\.2 → 12\.0 → 8\.8 K\/uL/);
+assert.match(wbcResults[0].selectionCandidate.insertionText, /^WBC: 15\.2 → 12\.0 → 8\.8 K\/uL$/);
+assert.ok(index.objectiveCandidates.some(({ id }) => id === wbcResults[0].selectionCandidate.id), "individual lab results must be independently selectable for Objective");
 assert.equal(filterClinicalReviewCandidates(index, "15.2", { group: "labs" })[0].id, index.labs[0].id, "historical values must still find the latest panel type");
 
 const legacyCombinedLabIndex = buildClinicalReviewIndex({
@@ -205,6 +207,8 @@ assert.deepEqual(
   },
   "24-hour vital statistics must use the latest patient-wide vital timestamp"
 );
+assert.equal(heartRate.insertionText, "Pulse: latest 80 bpm; 24-hour range 80–100 bpm; median 90 bpm");
+assert.doesNotMatch(heartRate.insertionText, /Hospital Day|09\/| → /, "vital note insertion must summarize rather than list every reading");
 
 const relativeVitalIndex = buildClinicalReviewIndex({
   id: "relative_vitals",

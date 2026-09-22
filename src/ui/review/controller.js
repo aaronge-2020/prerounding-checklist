@@ -1,6 +1,6 @@
 import { sortDays } from "../../daily-updates/days.js?v=20260921-medication-card-v4";
 import { updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
-import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260921-medication-card-v4&labs=latest-panel-type-v2";
+import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260922-readable-objective-v1&labs=analyte-selection-v1";
 import {
   addDifferential,
   addPlanProblem,
@@ -92,7 +92,7 @@ export function createReviewController(deps) {
     const key = packetKey(selectedPacketId);
     let draft = deps.app.noteDraftSessions.get(key) || patient?.noteDrafts?.[key] || draftFromSource(patient, key);
     draft = normalizeNoteDraft(draft);
-    const candidates = new Map(index.candidates.map((candidate) => [candidate.id, candidate]));
+    const candidates = new Map((index.objectiveCandidates || index.candidates).map((candidate) => [candidate.id, candidate]));
     for (const block of draft.objective.selectedBlocks) {
       const candidate = candidates.get(block.selectionId);
       if (candidate) draft = reconcileObjectiveBlock(draft, {
@@ -233,11 +233,22 @@ export function createReviewController(deps) {
       return true;
     }
     if (target.matches("[data-objective-selection-id]")) {
-      const candidate = current.index.candidates.find((entry) => entry.id === target.dataset.objectiveSelectionId);
+      const candidate = (current.index.objectiveCandidates || current.index.candidates).find((entry) => entry.id === target.dataset.objectiveSelectionId);
       if (!candidate) return true;
-      const draft = target.checked
-        ? selectObjectiveBlock(current.draft, { selectionId: candidate.id, sourceFingerprint: candidate.fingerprint, generatedText: candidate.insertionText })
-        : deselectObjectiveBlock(current.draft, candidate.id);
+      let draft = current.draft;
+      if (target.checked) {
+        if (target.matches("[data-lab-panel-selection]")) {
+          const panel = current.index.labs.find((entry) => entry.id === candidate.id);
+          for (const result of panel?.results || []) draft = deselectObjectiveBlock(draft, result.selectionCandidate?.id);
+        } else if (target.matches("[data-lab-result-selection]")) {
+          for (const panel of current.index.labs) {
+            if (panel.results.some((result) => result.selectionCandidate?.id === candidate.id)) draft = deselectObjectiveBlock(draft, panel.id);
+          }
+        }
+        draft = selectObjectiveBlock(draft, { selectionId: candidate.id, sourceFingerprint: candidate.fingerprint, generatedText: candidate.insertionText });
+      } else {
+        draft = deselectObjectiveBlock(draft, candidate.id);
+      }
       setDraft(draft);
       render();
       return true;

@@ -185,17 +185,12 @@ function displayedObservation(observation, { includeName = false } = {}) {
 function finalizeObservationCandidate(candidate, group) {
   const observations = [...candidate.observations].sort(compareObservations);
   const latest = observations.at(-1) || null;
-  const insertionText = latest
-    ? observations.length > 1
-      ? `${candidate.name}: latest ${displayedObservation(latest)}; trend ${observations.map((observation) => displayedObservation(observation)).join(" → ")}`
-      : displayedObservation(latest, { includeName: true })
-    : candidate.name;
   const finalized = {
     ...candidate,
     group,
     observations,
     latest,
-    insertionText,
+    insertionText: latest ? displayedObservation(latest, { includeName: true }) : candidate.name,
     searchText: clean([
       candidate.name,
       candidate.unit,
@@ -252,6 +247,16 @@ function vitalStatistics(candidate, latestVitalTime) {
     windowStart: latestVitalTime - 24 * 60 * 60 * 1000,
     windowEnd: latestVitalTime
   };
+}
+
+function vitalInsertionText(candidate, statistics24h) {
+  const latest = candidate.latest;
+  if (!latest) return candidate.name;
+  const latestValue = [latest.value, latest.unit].filter(Boolean).join(" ") || "No value recorded";
+  const status = latest.status && !["normal", "unknown"].includes(latest.status) ? ` [${latest.status}]` : "";
+  if (!statistics24h) return `${candidate.name}: latest ${latestValue}${status}`;
+  const unit = candidate.unit ? ` ${candidate.unit}` : "";
+  return `${candidate.name}: latest ${latestValue}${status}; 24-hour range ${statistics24h.minimum}–${statistics24h.maximum}${unit}; median ${statistics24h.median}${unit}`;
 }
 
 function resultGroup(resultCategory) {
@@ -320,11 +325,25 @@ function finalizeLaboratoryPanel(candidate) {
   return finalized;
 }
 
+function compactLaboratoryTrend(result) {
+  const observations = (result.trend || []).slice(-3);
+  if (!observations.length) return `${result.name}: No value recorded`;
+  const units = new Set(observations.map((entry) => clean(entry.unit)).filter(Boolean));
+  const sharedUnit = units.size === 1 ? [...units][0] : "";
+  const values = observations.map((entry) => {
+    const value = clean(entry.value) || "No value recorded";
+    return sharedUnit ? value : [value, entry.unit].filter(Boolean).join(" ");
+  });
+  const latest = observations.at(-1);
+  const flag = latest?.flag ? ` [${latest.flag}]` : latest?.status && !["normal", "unknown"].includes(latest.status) ? ` [${latest.status}]` : "";
+  return `${result.name}: ${values.join(" → ")}${sharedUnit ? ` ${sharedUnit}` : ""}${flag}`;
+}
+
 function attachLaboratoryTrends(laboratoryPanels) {
   const trendsByName = new Map();
   for (const panel of laboratoryPanels) {
     for (const result of panel.results) {
-      const key = `${normalizedExact(panel.name)}\u0000${laboratoryAnalyteKey(result.name)}`;
+      const key = laboratoryAnalyteKey(result.name);
       if (!trendsByName.has(key)) trendsByName.set(key, []);
       trendsByName.get(key).push({
         id: result.id,
@@ -351,7 +370,7 @@ function attachLaboratoryTrends(laboratoryPanels) {
     ...panel,
     results: panel.results.map((result) => ({
       ...result,
-      trend: trendsByName.get(`${normalizedExact(panel.name)}\u0000${laboratoryAnalyteKey(result.name)}`) || []
+      trend: trendsByName.get(laboratoryAnalyteKey(result.name)) || []
     }))
   }));
 }
@@ -371,16 +390,34 @@ function latestLaboratoryPanels(laboratoryPanels) {
   return [...latestByType.entries()].map(([key, panel]) => {
     const id = stableId("lab_panel", `latest\u0000${key}`, panel.name);
     const trendSearchText = panel.results.flatMap((result) => result.trend || []).flatMap((entry) => [entry.value, entry.unit, entry.flag, entry.status, entry.dayLabel, entry.timestamp]);
+    const results = panel.results.map((result) => {
+      const resultId = stableId("lab_result", `latest\u0000${laboratoryAnalyteKey(result.name)}`, result.name);
+      const insertionText = compactLaboratoryTrend(result);
+      const selectionCandidate = {
+        id: resultId,
+        kind: "laboratory_result",
+        group: "labs",
+        name: result.name,
+        panelName: panel.name,
+        insertionText,
+        searchText: clean([panel.name, result.name, result.value, result.unit, result.referenceRange, result.flag, result.status, ...(result.trend || []).flatMap((entry) => [entry.value, entry.unit, entry.flag, entry.status])].join(" ")).toLocaleLowerCase("en-US")
+      };
+      selectionCandidate.fingerprint = fingerprint({ id: resultId, insertionText });
+      return { ...result, selectionCandidate };
+    });
+    const context = [panel.dayLabel, panel.timestamp].filter(Boolean).join(" · ");
     const next = {
       ...panel,
       id,
+      results,
+      insertionText: `${panel.name}${context ? ` (${context})` : ""}\n${results.map((result) => result.selectionCandidate.insertionText).join("\n")}`,
       searchText: clean([panel.searchText, ...trendSearchText].join(" ")).toLocaleLowerCase("en-US")
     };
     next.fingerprint = fingerprint({
       id,
       timestamp: next.timestamp,
       dayLabel: next.dayLabel,
-      results: next.results.map(({ name, value, unit, referenceRange, flag, status }) => ({ name, value, unit, referenceRange, flag, status }))
+      insertionText: next.insertionText
     });
     return next;
   });
@@ -594,7 +631,7 @@ export function buildClinicalReviewIndex(patient) {
     .reduce((latest, observation) => Math.max(latest, observation.sortTime), Number.NEGATIVE_INFINITY);
   vitals = vitals.map((candidate) => {
     const statistics24h = vitalStatistics(candidate, latestVitalTime);
-    const next = { ...candidate, statistics24h };
+    const next = { ...candidate, statistics24h, insertionText: vitalInsertionText(candidate, statistics24h) };
     next.fingerprint = fingerprint({ id: next.id, observations: next.observations.map(({ id, value, unit, timestamp, dayLabel }) => ({ id, value, unit, timestamp, dayLabel })), statistics24h });
     return next;
   });
@@ -606,10 +643,16 @@ export function buildClinicalReviewIndex(patient) {
 
   const groups = GROUP_DEFINITIONS.map((definition) => ({ ...definition, candidates: byGroup.get(definition.id) }));
   const candidates = groups.flatMap((group) => group.candidates);
+  const objectiveCandidateMap = new Map(candidates.map((candidate) => [candidate.id, candidate]));
+  for (const panel of labs) {
+    for (const result of panel.results) objectiveCandidateMap.set(result.selectionCandidate.id, result.selectionCandidate);
+  }
+  const objectiveCandidates = [...objectiveCandidateMap.values()];
   return {
     patientId: clean(patient?.id),
     groups,
     candidates,
+    objectiveCandidates,
     vitals: byGroup.get("vitals"),
     labs: byGroup.get("labs"),
     medications: byGroup.get("medications"),

@@ -110,7 +110,7 @@ try {
   assert.equal(await page.locator(".plan-problem-card").count(), 3);
   assert.match(await page.locator('.plan-problem-card').first().locator('[data-problem-field="diagnosticPlan"]').inputValue(), /Coronary angiography is planned today/i);
   await page.selectOption("#reviewDataCategory", "vitals");
-  assert.match(await page.locator(".review-data-list").innerText(), /24-hour range[\s\S]*Mean[\s\S]*Median/);
+  assert.match(await page.locator(".review-data-list").innerText(), /Most recent[\s\S]*24-hour range[\s\S]*Median/);
   await page.selectOption("#reviewDataCategory", "labs");
   await page.fill("#reviewDataSearch", "troponin");
   assert.match(await page.locator(".review-data-list").innerText(), /High-sensitivity troponin/i);

@@ -84,19 +84,23 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     </section>`;
   }
 
-  function renderLaboratoryPanel(candidate, selected, labNavigation) {
+  function renderLaboratoryPanel(candidate, selectedIds, labNavigation) {
     const abnormalCount = candidate.results.filter((result) => ["high", "low", "abnormal", "critical"].includes(result.status)).length;
+    const panelSelected = selectedIds.has(candidate.id);
+    const selectedResultCount = candidate.results.filter((result) => selectedIds.has(result.selectionCandidate?.id)).length;
     const navigation = labNavigation
       ? `<nav class="review-lab-panel-navigation" aria-label="Laboratory panel types"><button type="button" class="icon-button" data-action="review-data-page" data-direction="-1" aria-label="Previous laboratory panel type" ${labNavigation.page <= 0 ? "disabled" : ""}>←</button><output>Panel type ${labNavigation.page + 1} of ${labNavigation.pageCount}</output><button type="button" class="icon-button" data-action="review-data-page" data-direction="1" aria-label="Next laboratory panel type" ${labNavigation.page >= labNavigation.pageCount - 1 ? "disabled" : ""}>→</button></nav>`
       : "";
-    return `<article class="review-data-item review-data-item--lab ${selected ? "is-selected" : ""}" data-review-candidate="${escapeHtml(candidate.id)}">
+    return `<article class="review-data-item review-data-item--lab ${panelSelected || selectedResultCount ? "is-selected" : ""}" data-review-candidate="${escapeHtml(candidate.id)}">
       <header class="review-lab-panel-header">
-        <div class="review-lab-panel-heading"><label class="review-lab-selection"><input type="checkbox" data-objective-selection-id="${escapeHtml(candidate.id)}" aria-label="Include this ${escapeHtml(candidate.name)} panel in the note" ${selected ? "checked" : ""}></label><div class="review-lab-panel-identity"><div class="review-lab-title-line"><h3>${escapeHtml(candidate.name)}</h3>${abnormalCount ? `<span class="review-lab-abnormal-count">${abnormalCount} abnormal</span>` : ""}</div><p>${escapeHtml([candidate.dayLabel, candidate.timestamp].filter(Boolean).join(" · ") || "Saved laboratory panel")}</p></div></div>
+        <div class="review-lab-panel-heading"><label class="review-lab-selection"><input type="checkbox" data-objective-selection-id="${escapeHtml(candidate.id)}" data-lab-panel-selection="${escapeHtml(candidate.id)}" aria-label="Include all results from this ${escapeHtml(candidate.name)} panel in the note" ${panelSelected ? "checked" : ""}></label><div class="review-lab-panel-identity"><div class="review-lab-title-line"><h3>${escapeHtml(candidate.name)}</h3>${abnormalCount ? `<span class="review-lab-abnormal-count">${abnormalCount} abnormal</span>` : ""}</div><p>${escapeHtml([candidate.dayLabel, candidate.timestamp].filter(Boolean).join(" · ") || "Saved laboratory panel")}${selectedResultCount ? ` · ${selectedResultCount} selected` : ""}</p></div></div>
         ${navigation}
       </header>
-      <div class="review-lab-results"><div class="review-lab-results-header" aria-hidden="true"><span>Test</span><span>Result</span><span>Reference range</span></div>${candidate.results.map((result) => {
+      <div class="review-lab-results"><div class="review-lab-results-header" aria-hidden="true"><span></span><span>Test</span><span>Result</span><span>Reference range</span></div>${candidate.results.map((result) => {
         const trendCount = result.trend?.length || 0;
-        return `<details class="review-lab-result" data-has-trend="${trendCount > 1}" data-clinical-emphasis="${escapeHtml(result.status || "unknown")}"><summary><span class="review-lab-result-name"><span class="review-lab-chevron" aria-hidden="true">›</span><strong>${escapeHtml(result.name)}</strong><small>${trendCount > 1 ? `${trendCount} results` : "No trend"}</small></span><span class="review-lab-result-value">${escapeHtml([result.value, result.unit].filter(Boolean).join(" ") || "—")}${result.flag ? ` <small class="review-lab-flag">${escapeHtml(result.flag)}</small>` : ""}</span><span class="review-lab-reference">${escapeHtml(result.referenceRange || "—")}</span></summary>${renderLaboratoryTrend(result)}</details>`;
+        const selection = result.selectionCandidate;
+        const resultSelected = selection && selectedIds.has(selection.id);
+        return `<div class="review-lab-result-row ${resultSelected ? "is-selected" : ""}"><label class="review-lab-result-selection"><input type="checkbox" data-objective-selection-id="${escapeHtml(selection?.id || "")}" data-lab-result-selection="${escapeHtml(candidate.id)}" aria-label="Include only ${escapeHtml(result.name)} from ${escapeHtml(candidate.name)} in the note" ${resultSelected ? "checked" : ""}></label><details class="review-lab-result" data-has-trend="${trendCount > 1}" data-clinical-emphasis="${escapeHtml(result.status || "unknown")}"><summary><span class="review-lab-result-name"><span class="review-lab-chevron" aria-hidden="true">›</span><strong>${escapeHtml(result.name)}</strong><small>${trendCount > 1 ? `${Math.min(trendCount, 3)}-value note trend` : "No trend"}</small></span><span class="review-lab-result-value">${escapeHtml([result.value, result.unit].filter(Boolean).join(" ") || "—")}${result.flag ? ` <small class="review-lab-flag">${escapeHtml(result.flag)}</small>` : ""}</span><span class="review-lab-reference">${escapeHtml(result.referenceRange || "—")}</span></summary>${renderLaboratoryTrend(result)}</details></div>`;
       }).join("")}</div>
       <details class="review-lab-note-preview"><summary>Preview note insertion</summary><pre>${escapeHtml(candidate.insertionText)}</pre></details>
     </article>`;
@@ -138,10 +142,10 @@ export function createReviewPresentation({ escapeHtml, icon }) {
 
   function renderCandidate(candidate, selectedIds, { labNavigation = null } = {}) {
     const selected = selectedIds.has(candidate.id);
-    if (candidate.kind === "laboratory_panel") return renderLaboratoryPanel(candidate, selected, labNavigation);
+    if (candidate.kind === "laboratory_panel") return renderLaboratoryPanel(candidate, selectedIds, labNavigation);
     if (candidate.kind === "medication") return renderMedication(candidate, selected);
     const stats = candidate.statistics24h
-      ? `<dl class="review-vital-stats"><div><dt>24-hour range</dt><dd>${escapeHtml(`${candidate.statistics24h.minimum}–${candidate.statistics24h.maximum} ${candidate.unit || ""}`.trim())}</dd></div><div><dt>Mean</dt><dd>${escapeHtml(`${candidate.statistics24h.mean} ${candidate.unit || ""}`.trim())}</dd></div><div><dt>Median</dt><dd>${escapeHtml(`${candidate.statistics24h.median} ${candidate.unit || ""}`.trim())}</dd></div></dl>`
+      ? `<dl class="review-vital-stats"><div><dt>Most recent</dt><dd>${escapeHtml([candidate.latest?.value, candidate.latest?.unit].filter(Boolean).join(" ") || "—")}</dd></div><div><dt>24-hour range</dt><dd>${escapeHtml(`${candidate.statistics24h.minimum}–${candidate.statistics24h.maximum} ${candidate.unit || ""}`.trim())}</dd></div><div><dt>Median</dt><dd>${escapeHtml(`${candidate.statistics24h.median} ${candidate.unit || ""}`.trim())}</dd></div></dl>`
       : "";
     const diagnostic = candidate.kind === "diagnostic_result"
       ? `<p class="review-result-text">${escapeHtml(candidate.text)}</p><small>${escapeHtml([candidate.resultDate, candidate.source?.dayLabel, candidate.context].filter(Boolean).join(" · "))}</small>`
