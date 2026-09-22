@@ -253,9 +253,22 @@ export function createDailyPresentation({ escapeHtml, icon }) {
       const hasText = Boolean(parseResult?.rawCharacterCount);
       return `<div class="structured-note-detected-empty"><p>${hasText ? "No standard headings found." : "No sections found yet."}</p><span>${hasText ? "The full note will be kept under Other note content for your review." : "Paste a note with headings such as HPI, Medications, Exam, or Assessment and Plan."}</span></div>`;
     }
+    const detectedTables = parseResult?.detectedTables || [];
+    const tableBadge = (type) => {
+      if (type === "labs") return "lab results";
+      if (type === "lda") return "LDAs";
+      if (type === "vitals_stats") return "vital signs stats";
+      if (type === "facility_meds") return "medications";
+      return "table";
+    };
+    const fieldTables = (fieldId) => detectedTables.filter((t) => t.fieldId === fieldId);
     return `
       <ul class="structured-note-detected-list">
-        ${detectedFields.map((field) => `<li><span aria-hidden="true">✓</span>${escapeHtml(field.label)}</li>`).join("")}
+        ${detectedFields.map((field) => {
+          const tables = fieldTables(field.id);
+          const tableNote = tables.length ? ` <small class="muted">(${tables.map((t) => `${t.rowCount} ${tableBadge(t.type)}`).join(", ")})</small>` : "";
+          return `<li><span aria-hidden="true">✓</span>${escapeHtml(field.label)}${tableNote}</li>`;
+        }).join("")}
       </ul>
       <button type="button" class="button--quiet structured-note-review-mapping" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}">Review section mapping →</button>
     `;

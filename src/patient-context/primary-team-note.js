@@ -24,6 +24,7 @@ export const PRIMARY_TEAM_NOTE_FIELDS = Object.freeze({
     Object.freeze({ id: "assessment", label: "Assessment" }),
     Object.freeze({ id: "plan", label: "Plan", rows: 8 }),
     Object.freeze({ id: "fen", label: "FEN" }),
+    Object.freeze({ id: "lda", label: "Lines / drains / airways" }),
     Object.freeze({ id: "vte_prophylaxis", label: "VTE prophylaxis" }),
     Object.freeze({ id: "code_status", label: "Code status" }),
     Object.freeze({ id: "disposition", label: "Disposition" }),
@@ -41,6 +42,7 @@ export const PRIMARY_TEAM_NOTE_FIELDS = Object.freeze({
     Object.freeze({ id: "plan", label: "Plan", rows: 8 }),
     Object.freeze({ id: "medications", label: "Medications / medication changes" }),
     Object.freeze({ id: "fen", label: "FEN" }),
+    Object.freeze({ id: "lda", label: "Lines / drains / airways" }),
     Object.freeze({ id: "vte_prophylaxis", label: "VTE prophylaxis" }),
     Object.freeze({ id: "code_status", label: "Code status" }),
     Object.freeze({ id: "disposition", label: "Disposition" }),
@@ -122,9 +124,9 @@ function migratedSections(value) {
   setText("objective", legacyObjective(value));
   setText("assessment", value?.assessment?.deidentifiedText);
   setText("plan", legacyPlan(value));
-  for (const id of ["fen", "vte_prophylaxis", "code_status", "disposition", "medication_regimens"]) {
+  for (const id of ["fen", "lda", "vte_prophylaxis", "code_status", "disposition", "medication_regimens"]) {
     const targetId = id === "medication_regimens" ? "medications" : id;
-    setText(targetId, value?.closing?.[id]?.deidentifiedText);
+    setText(targetId, value?.closing?.[id]?.deidentifiedText || value?.[id]?.deidentifiedText);
   }
   return sections;
 }

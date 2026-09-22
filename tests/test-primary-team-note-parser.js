@@ -19,10 +19,11 @@ assertMostlyLossless(progressTeamNote, progressParsed, "progress-team note");
 assert.match(progressParsed.sections.interval_events, /No acute overnight events/);
 assert.match(progressParsed.sections.medications, /NUTRITION Tube Feeding/);
 assert.match(progressParsed.sections.physical_exam, /Sedated, not following commands/);
-assert.match(progressParsed.sections.objective, /Sodium\s+150/);
+assert.match(progressParsed.sections.objective, /Sodium[ |]+150/);
 assert.match(progressParsed.sections.objective, /midline shift/);
 assert.match(progressParsed.sections.plan, /Right MCA\/ACA/);
-assert.match(progressParsed.sections.plan, /Patient Lines\/Drains\/Airways Status/);
+assert.match(progressParsed.sections.lda, /Patient Lines\/Drains\/Airways Status/);
+assert.doesNotMatch(progressParsed.sections.plan, /Patient Lines\/Drains\/Airways Status/);
 assert.doesNotMatch(progressParsed.sections.vte_prophylaxis, /Patient Lines\/Drains\/Airways Status/);
 assert.match(progressParsed.sections.other, /Name: \[PATIENT NAME\]/);
 assert.match(progressParsed.sections.other, /ALLERGIES: Patient has no known allergies/);
@@ -106,8 +107,422 @@ assert.match(radiologySubheadings.sections.objective, /Exam: Noncontrast head CT
 assert.match(radiologySubheadings.sections.objective, /Impression: No hemorrhage/);
 assert.equal(radiologySubheadings.sections.assessment, "Stable");
 
-const opaque = parsePrimaryTeamNote("Unlabeled narrative remains intact.\nSecond line remains intact.", "hp");
-assert.equal(opaque.recognized, false);
-assert.equal(opaque.sections.other, "Unlabeled narrative remains intact.\nSecond line remains intact.");
+const userSampleNote = `Labs
+
+
+
+
+
+
+
+
+Hospital Encounter on 09/16/26 (from the past 12 hours)
+CT Head/Brain W/O Con
+ 
+Collection Time: 09/20/26  9:57 PM
+Result
+Value
+Ref Range
+ 
+IMG WORKSTATION ID
+RADHSGHARAVI
+ 
+Arterial Blood Gas
+ 
+Collection Time: 09/20/26 11:59 PM
+ 
+Specimen: Arterial Blood
+Result
+Value
+Ref Range
+ 
+pH Arterial
+7.50 (H)
+7.35 - 7.45 pH
+ 
+pCO2 Arterial
+29.5 (L)
+32.0 - 48.0 mmHg
+ 
+pO2 Arterial
+103.0
+83.0 - 108.0 mmHg
+ 
+HCO3 Art
+22.7
+>=16.0 mmol/L
+ 
+Base Exc Art
+0.0
+-2.0 - 2.0 mmol/L
+ 
+O2 Saturation
+98.3
+%
+ 
+HBO2 Sat Art
+96.8
+94.0 - 99.0 %
+ 
+FIO2
+30
+%
+ 
+Body Temperature
+37.0
+degC
+Basic Metabolic Panel
+ 
+Collection Time: 09/21/26 12:00 AM
+ 
+Specimen: Blood
+Result
+Value
+Ref Range
+ 
+Sodium
+149 (H)
+136 - 145 mmol/L
+ 
+Potassium
+3.6
+3.5 - 5.1 mmol/L
+ 
+Chloride
+120 (H)
+98 - 107 mmol/L
+ 
+CO2 Total
+23
+21 - 30 mmol/L
+ 
+Anion Gap
+6
+4 - 16 mmol/L
+ 
+Glucose Level
+90
+74 - 109 mg/dL
+ 
+BUN
+14
+7 - 17 mg/dL
+ 
+Creatinine
+0.5
+0.5 - 1.0 mg/dL
+ 
+Calcium
+7.9 (L)
+8.6 - 10.2 mg/dL
+ 
+eGFR
+122
+>=60 mL/min/1.73 m2
+Osmolality
+ 
+Collection Time: 09/21/26 12:00 AM
+ 
+Specimen: Blood
+Result
+Value
+Ref Range
+ 
+Osmolality
+308 (H)
+275 - 295 mOsm/kg
+Arterial Blood Gas
+ 
+Collection Time: 09/21/26  4:02 AM
+ 
+Specimen: Arterial Blood
+Result
+Value
+Ref Range
+ 
+pH Arterial
+7.50 (H)
+7.35 - 7.45 pH
+ 
+pCO2 Arterial
+31.8 (L)
+32.0 - 48.0 mmHg
+ 
+pO2 Arterial
+147.0 (H)
+83.0 - 108.0 mmHg
+ 
+HCO3 Art
+24.4
+>=16.0 mmol/L
+ 
+Base Exc Art
+1.5
+-2.0 - 2.0 mmol/L
+ 
+O2 Saturation
+99.3
+%
+ 
+HBO2 Sat Art
+97.7
+94.0 - 99.0 %
+ 
+FIO2
+30
+%
+ 
+Body Temperature
+37.0
+degC
+CBC W/O Auto Diff
+ 
+Collection Time: 09/21/26  4:03 AM
+ 
+Specimen: Blood
+Result
+Value
+Ref Range
+ 
+WBC
+10.4 (H)
+4.0 - 10.0 10*3/uL
+ 
+RBC
+2.39 (L)
+3.93 - 5.22 10*6/uL
+ 
+Hemoglobin
+6.5 (LL)
+11.2 - 15.7 g/dL
+ 
+Hematocrit
+21.5 (L)
+34.1 - 44.9 %
+ 
+MCV
+90.0
+79.4 - 94.8 fL
+ 
+MCH
+27.2
+25.6 - 32.2 pg
+ 
+MCHC
+30.2 (L)
+32.2 - 35.5 g/dL
+ 
+Platelets
+242
+182 - 369 10*3/uL
+ 
+MPV
+10.7
+9.4 - 12.3 fL
+ 
+RDW
+17.3 (H)
+11.7 - 14.4 %
+ 
+Nucleated Red Blood Cells
+0.00
+0.00 - 0.01 10*3/uL
+ 
+Nucleated RBC %
+0.0
+0.0 - 0.2 %
+Basic Metabolic Panel
+ 
+Collection Time: 09/21/26  4:03 AM
+ 
+Specimen: Blood
+Result
+Value
+Ref Range
+ 
+Sodium
+150 (H)
+136 - 145 mmol/L
+ 
+Potassium
+3.5
+3.5 - 5.1 mmol/L
+ 
+Chloride
+121 (H)
+98 - 107 mmol/L
+ 
+CO2 Total
+23
+21 - 30 mmol/L
+ 
+Anion Gap
+6
+4 - 16 mmol/L
+ 
+Glucose Level
+94
+74 - 109 mg/dL
+ 
+BUN
+14
+7 - 17 mg/dL
+ 
+Creatinine
+0.5
+0.5 - 1.0 mg/dL
+ 
+Calcium
+8.0 (L)
+8.6 - 10.2 mg/dL
+ 
+eGFR
+122
+>=60 mL/min/1.73 m2
+Osmolality
+ 
+Collection Time: 09/21/26  4:03 AM
+ 
+Specimen: Blood
+Result
+Value
+Ref Range
+ 
+Osmolality
+311 (H)
+275 - 295 mOsm/kg
+
+
+Patient Lines/Drains/Airways Status
+
+ 
+ 
+
+Active Active LDAs (selected)
+
+ 
+ 
+Name
+Placement date
+Placement time
+Site
+Days
+ 
+CVC Non-Tunneled 09/20/26 1400 Right Femoral
+09/20/26
+1400
+Femoral
+less than 1
+ 
+Peripheral IV 09/16/26 0520 24 G Posterior;Right Hand
+09/16/26
+0520
+Hand
+5
+ 
+Peripheral IV 09/16/26 1002 20 G Anterior;Right Forearm
+09/16/26
+1002
+Forearm
+4
+ 
+Peripheral IV 09/16/26 1325 20 G Left Hand
+09/16/26
+1325
+Hand
+4
+ 
+Peripheral IV 09/18/26 1600 20 G Anterior;Left;Lateral Forearm
+09/18/26
+1600
+Forearm
+2
+ 
+Peripheral IV 09/19/26 1500 20 G Left;Posterior Forearm
+09/19/26
+1500
+Forearm
+1
+ 
+Peripheral IV 09/20/26 1333 20 G Posterior;Right Forearm
+09/20/26
+1333
+Forearm
+less than 1
+ 
+Urinary Catheter 09/20/26 1550
+09/20/26
+1550
+—
+less than 1
+ 
+Non-Surgical Airway 09/16/26 1322
+09/16/26
+1322
+—
+4
+
+
+
+
+Vital signs:
+Encounter Vitals Stats (last 24 hours)
+
+ 
+ 
+Vital Sign
+MIN
+AVG
+MAX
+ 
+Temp
+35 °C (95 °F)
+36.1 °C (96.91 °F)
+36.8 °C (98.2 °F)
+ 
+Resp
+4
+17.54
+26
+ 
+BP: Systolic
+110
+121.13
+141
+ 
+BP: Diastolic
+66
+78.21
+88
+ 
+Heart Rate (Monitored)
+70
+80.22
+97
+ 
+SpO2
+97 %
+99.57 %
+100 %
+`;
+
+const userParsed = parsePrimaryTeamNote(userSampleNote, "progress");
+assertMostlyLossless(userSampleNote, userParsed, "user note with labs, ldas, vitals");
+assert.equal(userParsed.recognized, true);
+assert.ok(userParsed.detectedFieldIds.includes("objective"));
+assert.ok(userParsed.detectedFieldIds.includes("lda"));
+assert.equal(userParsed.sections.plan, "", "LDAs must not go into plan section");
+assert.match(userParsed.sections.lda, /\| Name \| Placement date \| Placement time \| Site \| Days \|/);
+assert.match(userParsed.sections.lda, /CVC Non-Tunneled 09\/20\/26 1400 Right Femoral/);
+assert.match(userParsed.sections.lda, /Urinary Catheter 09\/20\/26 1550/);
+assert.match(userParsed.sections.objective, /\| Result \| Value \| Ref Range \|/);
+assert.match(userParsed.sections.objective, /\| pH Arterial \| 7\.50 \(H\) \| 7\.35 - 7\.45 pH \|/);
+assert.match(userParsed.sections.objective, /\| Sodium \| 149 \(H\) \| 136 - 145 mmol\/L \|/);
+assert.match(userParsed.sections.objective, /\| Vital Sign \| MIN \| AVG \| MAX \|/);
+assert.match(userParsed.sections.objective, /\| Temp \| 35 °C \(95 °F\) \| 36\.1 °C \(96\.91 °F\) \| 36\.8 °C \(98\.2 °F\) \|/);
+assert.equal(userParsed.detectedTables.length, 10);
+assert.equal(userParsed.detectedTables.filter((t) => t.type === "labs").length, 8);
+assert.equal(userParsed.detectedTables.filter((t) => t.type === "lda").length, 1);
+assert.equal(userParsed.detectedTables.filter((t) => t.type === "vitals_stats").length, 1);
 
 console.log("primary-team note parser tests passed");

@@ -15,6 +15,7 @@ import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 const parserRevision = "20260921-medication-card-v4";
 const clinicalParserRevision = "20260921-table-parser-v6";
 const primaryNoteRevision = "20260921-medication-card-v4";
+const appRevision = "20260922-readable-objective-v1";
 const runtimeSources = {
   index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
   app: readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8"),
@@ -36,7 +37,7 @@ const runtimeSources = {
   epicParser: readFileSync(new URL("../src/patient-context/epic-clinical-export-parser.js", import.meta.url), "utf8")
 };
 assert.match(runtimeSources.index, new RegExp(`styles\\.css\\?v=${primaryNoteRevision}`));
-assert.match(runtimeSources.index, new RegExp(`app\\.js\\?v=${primaryNoteRevision}`));
+assert.match(runtimeSources.index, new RegExp(`app\\.js\\?v=${appRevision}`));
 assert.match(runtimeSources.app, new RegExp(`daily/presentation\\.js\\?v=${primaryNoteRevision}`));
 assert.match(runtimeSources.app, new RegExp(`daily/source-controller\\.js\\?v=${primaryNoteRevision}`));
 assert.match(runtimeSources.app, new RegExp(`source-captures\\.js\\?v=${parserRevision}`));

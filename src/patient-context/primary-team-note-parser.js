@@ -1,4 +1,5 @@
 import { primaryTeamNoteFields } from "./primary-team-note.js?v=20260921-medication-card-v4";
+import { transformClinicalTablesInText } from "./clinical-table-parser.js";
 
 const H_AND_P = "hp";
 const PROGRESS = "progress";
@@ -28,14 +29,26 @@ const HEADING_DEFINITIONS = Object.freeze([
   heading(["diet and exercise", "diet exercise"], { [H_AND_P]: "diet_and_exercise", [PROGRESS]: "other" }),
   heading(["physical exam", "physical examination", "exam", "examination", "neurological examination", "neurologic examination"], "physical_exam"),
   heading(["objective", "objective data", "objective findings", "o"], "objective"),
-  heading(["vital signs", "vitals", "intake output", "i o", "laboratory data", "laboratory results", "labs", "imaging", "diagnostic studies", "diagnostic studies review management", "diagnostic studies / review management", "diagnostic and objective findings", "objective diagnostic studies", "objective / diagnostic studies", "results"], "objective", true),
+  heading([
+    "vital signs", "vitals", "encounter vitals stats", "encounter vitals stats last 24 hours",
+    "encounter vitals", "vitals stats", "vital signs stats", "encounter vitals summary",
+    "intake output", "i o", "laboratory data", "laboratory results", "labs",
+    "imaging", "diagnostic studies", "diagnostic studies review management",
+    "diagnostic studies / review management", "diagnostic and objective findings",
+    "objective diagnostic studies", "objective / diagnostic studies", "results"
+  ], "objective", true),
   heading(["assessment", "impression", "a"], "assessment"),
   heading(["assessment and plan", "assessment / plan", "a and p", "a p", "ap", "impression and plan", "plan", "p"], "plan"),
   heading(["fen", "fluids electrolytes nutrition"], "fen"),
+  heading([
+    "lda", "ldas", "lines drains airways", "lines drains and airways",
+    "lines drains airways status", "lines drains and airways status",
+    "patient lines drains airways status", "patient lines drains and airways status",
+    "active active ldas selected", "active ldas selected", "active active ldas", "active ldas", "active lda"
+  ], "lda", true),
   heading(["vte prophylaxis", "dvt prophylaxis", "venous thromboembolism prophylaxis"], "vte_prophylaxis"),
   heading(["code status"], "code_status"),
   heading(["disposition", "dispo", "discharge planning", "education discharge planning and follow up"], "disposition"),
-  heading(["lda", "lines drains airways", "lines drains and airways"], "plan", true),
   heading(["principal problem", "active problems", "resolved problems", "active hospital problems"], "assessment", true, true),
   heading(["basic information", "premorbid mrs"], {
     [H_AND_P]: "other",
@@ -88,7 +101,7 @@ function delimiterStartBefore(line, index) {
 
 function permitsBulletHeading(definition) {
   const fields = typeof definition.field === "string" ? [definition.field] : Object.values(definition.field);
-  return fields.some((field) => ["code_status", "disposition", "fen", "vte_prophylaxis", "plan"].includes(field));
+  return fields.some((field) => ["code_status", "disposition", "fen", "vte_prophylaxis", "plan", "lda"].includes(field));
 }
 
 function headingMatch(line) {
@@ -190,18 +203,28 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
   }
   flush();
 
-  const sections = Object.fromEntries(fields.map(({ id }) => [id, (blocks.get(id) || []).join("\n\n").trim()]));
-  const detectedFieldIds = [...new Set(detected.map(({ fieldId }) => fieldId).filter((fieldId) => sections[fieldId]))];
+  const transformedSections = {};
+  const detectedTables = [];
+  for (const { id } of fields) {
+    const raw = (blocks.get(id) || []).join("\n\n").trim();
+    const { text: transformed, detectedTables: tables } = transformClinicalTablesInText(raw);
+    transformedSections[id] = transformed;
+    if (tables?.length) {
+      detectedTables.push(...tables.map((table) => ({ ...table, fieldId: id })));
+    }
+  }
+  const detectedFieldIds = [...new Set(detected.map(({ fieldId }) => fieldId).filter((fieldId) => transformedSections[fieldId]))];
   return {
     recognized: detectedFieldIds.length > 0,
     rawCharacterCount: source.length,
     sourceCharacterCount: source.length,
-    parsedCharacterCount: Object.values(sections).reduce((total, value) => total + value.length, 0),
-    sections,
+    parsedCharacterCount: Object.values(transformedSections).reduce((total, value) => total + value.length, 0),
+    sections: transformedSections,
     detected,
+    detectedTables,
     detectedFieldIds,
     detectedSectionCount: detectedFieldIds.length,
     matchedHeadingCount: detected.length,
-    unmatchedText: sections.other || ""
+    unmatchedText: transformedSections.other || ""
   };
 }
