@@ -151,6 +151,129 @@ function compactBlock(lines) {
   return lines.join("\n").replace(/^\n+|\n+$/g, "");
 }
 
+const ABBREVIATIONS = new Set([
+  "yo", "y.o", "mo", "m.o", "wo", "w.o",
+  "dr", "mr", "mrs", "ms", "prof",
+  "md", "m.d", "do", "d.o", "rn", "r.n", "np", "n.p", "pa", "p.a",
+  "vs", "approx", "pt", "hx", "fx", "dx", "rx", "sx", "tx",
+  "st", "jr", "sr", "dept", "no", "vol", "gen"
+]);
+
+const INCOMPLETE_LINE_ENDINGS = new Set([
+  "and", "or", "but", "with", "w/", "without", "w/o", "for", "to", "in", "on", "at",
+  "from", "by", "of", "into", "as", "is", "was", "are", "were", "has", "had", "have",
+  "been", "be", "who", "which", "that", "s/p", "completed", "severe", "mild", "moderate"
+]);
+
+const NEW_SENTENCE_STARTERS = new Set([
+  "patient", "pt", "he", "she", "they", "last", "onset", "pain", "reports", "denies",
+  "complains", "presented", "admitted", "hospital", "stay", "events", "yesterday",
+  "today", "prior", "initial", "no", "also", "furthermore", "however"
+]);
+
+function isAbbreviation(word) {
+  if (!word) return false;
+  const clean = word.toLowerCase().replace(/^[([{"']+/, "").replace(/[)\]}"']+$/, "");
+  if (ABBREVIATIONS.has(clean)) return true;
+  if (/^[a-z]\.?$/i.test(clean)) return true;
+  if (/^(?:[a-z]\.)+[a-z]?$/i.test(clean)) return true;
+  return false;
+}
+
+function findSentenceEnd(text) {
+  const regex = /([.!?]+)(?=\s|$)/g;
+  let match;
+  while ((match = regex.exec(text)) !== null) {
+    const punct = match[1];
+    const punctIndex = match.index + punct.length;
+    const beforePunct = text.slice(0, match.index).trim();
+    const afterPunct = text.slice(punctIndex);
+
+    if (punct.includes("!") || punct.includes("?")) {
+      return punctIndex;
+    }
+
+    if (/\d$/.test(beforePunct)) {
+      continue;
+    }
+
+    const lastWordMatch = beforePunct.match(/([a-zA-Z0-9./-]+)$/);
+    const lastWord = lastWordMatch ? lastWordMatch[1] : "";
+
+    if (isAbbreviation(lastWord)) {
+      continue;
+    }
+
+    const nextCharMatch = afterPunct.match(/^\s*([^\s])/);
+    if (nextCharMatch) {
+      const nextChar = nextCharMatch[1];
+      if (/[a-z]/.test(nextChar)) {
+        continue;
+      }
+    }
+
+    return punctIndex;
+  }
+  return -1;
+}
+
+export function extractFirstSentence(text) {
+  if (!text || typeof text !== "string") return "";
+
+  let narrative = text.trim();
+
+  const hpiMatch = narrative.match(/(?:^|\n)\s*(?:hpi|history of present illness)\s*[:—–-]\s*([\s\S]+)$/i);
+  if (hpiMatch) {
+    narrative = hpiMatch[1].trim();
+  } else {
+    narrative = narrative.replace(/^[-*•>]\s*/, "");
+    narrative = narrative.replace(/^(?:subjective(?:\s*\/\s*interval history)?|patient report|hpi|history of present illness)\s*[:—–-]?\s*/i, "");
+  }
+
+  if (!narrative.trim()) return "";
+
+  const lines = narrative.split(/\r?\n/);
+  const collected = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const rawLine = lines[i];
+    const line = rawLine.trim();
+    if (!line) {
+      if (collected.length > 0) break;
+      continue;
+    }
+    if (collected.length > 0 && (/^[-*•>]/.test(line) || /^(?:[A-Z][a-zA-Z\s/]{1,30}:|\[Hospital Day|\d{1,2}\/\d{1,2})/.test(line))) {
+      break;
+    }
+
+    if (collected.length > 0) {
+      const prevLine = collected[collected.length - 1];
+      const prevEnd = findSentenceEnd(prevLine);
+      if (prevEnd !== -1) {
+        break;
+      }
+      const prevLastWord = prevLine.split(/\s+/).pop()?.toLowerCase() || "";
+      const currentFirstWord = line.split(/\s+/)[0]?.toLowerCase() || "";
+      if (!INCOMPLETE_LINE_ENDINGS.has(prevLastWord) && NEW_SENTENCE_STARTERS.has(currentFirstWord)) {
+        break;
+      }
+    }
+
+    collected.push(line);
+    const currentText = collected.join(" ");
+
+    const sentenceEnd = findSentenceEnd(currentText);
+    if (sentenceEnd !== -1) {
+      return currentText.slice(0, sentenceEnd).replace(/^[-*•>]\s*/, "").trim();
+    }
+  }
+
+  const result = collected.join(" ").trim();
+  const end = findSentenceEnd(result);
+  const candidate = (end !== -1 ? result.slice(0, end) : result).trim();
+  return candidate.replace(/^[-*•>]\s*/, "").trim();
+}
+
 export function parsePrimaryTeamNote(sourceText, noteType) {
   const source = normalizedSource(sourceText);
   const fields = primaryTeamNoteFields(noteType);
@@ -211,6 +334,34 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
     transformedSections[id] = transformed;
     if (tables?.length) {
       detectedTables.push(...tables.map((table) => ({ ...table, fieldId: id })));
+    }
+  }
+
+  if (!transformedSections.one_liner) {
+    let candidateText = "";
+    if (noteType === H_AND_P) {
+      candidateText = transformedSections.history_of_present_illness || "";
+    } else {
+      const patientReport = transformedSections.patient_report || "";
+      const intervalEvents = transformedSections.interval_events || "";
+      if (/(?:^|\n)\s*(?:hpi|history of present illness)\s*[:—–-]/i.test(patientReport)) {
+        candidateText = patientReport;
+      } else if (patientReport && !/^\s*(?:chief complaint|cc|reason for admission)\s*[:—–-]/i.test(patientReport)) {
+        candidateText = patientReport;
+      } else if (intervalEvents) {
+        candidateText = intervalEvents;
+      } else {
+        candidateText = patientReport;
+      }
+    }
+    if (candidateText) {
+      const extracted = extractFirstSentence(candidateText);
+      if (extracted) {
+        transformedSections.one_liner = extracted;
+        if (!detected.some((d) => d.fieldId === "one_liner")) {
+          detected.unshift({ fieldId: "one_liner", heading: "One-liner" });
+        }
+      }
     }
   }
   const detectedFieldIds = [...new Set(detected.map(({ fieldId }) => fieldId).filter((fieldId) => transformedSections[fieldId]))];
