@@ -279,5 +279,5 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  return Object.freeze({ renderWorkups });
+  return Object.freeze({ renderWorkups, renderWorkupItemEditor });
 }

@@ -124,7 +124,7 @@ Past Medical History Alice has asthma.
 Physical Exam I examined the patient. Her vital signs show normal limits.
 Assessment Alice has a tension headache. I prescribed rest.`,
     expected: `Patient Name [PATIENT NAME]
-Date of Birth [46 years, 6 months, and 12 days prior to hospital admission]
+Date of Birth [46 years prior to hospital admission]
 Timeline [1 month and 6 days prior to hospital admission]
 Medical Record Number [MRN]
 Address [ADDRESS]
@@ -151,7 +151,7 @@ Past Medical History Brian has hypertension.
 Physical Exam I observed swelling on the right knee.
 Assessment Brian has a knee sprain. I ordered an x ray.`,
     expected: `Patient Name [PATIENT NAME]
-Date of Birth [61 years, 4 months, and 1 day prior to hospital admission]
+Date of Birth [61 years prior to hospital admission]
 Timeline [14 days prior to hospital admission]
 Medical Record Number [MRN]
 Address [ADDRESS]

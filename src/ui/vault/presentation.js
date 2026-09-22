@@ -110,9 +110,11 @@ export function createVaultPresentation({ escapeHtml, icon }) {
           <div class="vault-session-state" role="status">
             <div>
               <strong>Vault unlocked</strong>
-              <span>Patient data is available only in this browser session.</span>
+              <span>${record
+                ? "Patient data is encrypted and stored in this browser. It persists across sessions — unlock with your passphrase after reload."
+                : "Patient data is available only in this browser session. Create a passphrase below to keep it after reload."}</span>
             </div>
-            <button class="button--secondary vault-lock-button" type="button" data-action="lock-vault">${icon("lock")}<span>Lock vault</span></button>
+            <button class="button--secondary vault-lock-button" type="button" data-action="lock-vault"${record ? "" : " disabled title=\"Create a passphrase first — locking now would discard your session data.\""}>${icon("lock")}<span>Lock vault</span></button>
           </div>
           ${
             record && !vault

@@ -178,6 +178,8 @@ import { createTokenColorPickerController } from "./token-color-picker.js?v=2026
 import { preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20260921-preserve-view-scroll";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-medication-card-v4";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
+import { createVaultSessionGuards } from "./vault/session-guards.js?v=20260922-vault-guards";
+import { createClipboard } from "./clipboard.js?v=20260922-clipboard";
 import { createVaultPassphraseController } from "./vault/passphrase-controller.js?v=20260921-landing-onboarding";
 import {
   createRedactionPresentation,
@@ -186,6 +188,7 @@ import {
   warningSnippet
 } from "./redaction/presentation.js?v=20260921-medication-card-v4";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
+import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20260922-deid-session";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
 import { createDemoController } from "./demo/controller.js?v=20260921-demo-complete-plan";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-demo-complete-plan";
@@ -233,7 +236,7 @@ const app = {
   presentationSpecialty: "",
   tokenColorOverrides: loadTokenColorOverrides(),
   smartMenuOpen: false,
-  quickDeid: { input: "", output: "", warnings: [], status: "", review: null },
+  quickDeid: { input: "", output: "", warnings: [], status: "", review: null, admissionDate: "" },
   quickDeidBusy: false,
   phiReviews: new Map(),
   // Session-only edits remain outside the encrypted vault until the user
@@ -317,6 +320,8 @@ const {
   updateVaultPassphraseStrength,
   updateVaultPrimaryActionEnabled
 } = createVaultPassphraseController({ app });
+const vaultSessionGuards = createVaultSessionGuards({ readEncryptedVaultRecord });
+const clipboard = createClipboard({ setStatus });
 const demoController = createDemoController({
   app,
   byId,
@@ -382,6 +387,7 @@ const workupDeleteController = createWorkupDeleteController({ state: app, render
 const promptTaskController = createPromptTaskController({ state: app, setStatus, renderPrompts, refreshPromptPreview, byId });
 const guidelineSetsController = createGuidelineSetsController({ state: app, setStatus, renderSettings, renderPrompts, byId });
 const admissionDateGate = createAdmissionDateGate({ app, byId });
+const deidSession = createDeidSessionCoordinator({ state: app, admissionDateAnchor, admissionDateGate, deidentifyText, updateDeidStatus, updateDeidOperation, setStatus });
 const dailySourceController = createDailySourceController({
   app,
   active,
@@ -835,15 +841,11 @@ async function persistVault(message = "Saved.") {
   setStatus(message);
 }
 
-async function copyText(text) {
-  await navigator.clipboard.writeText(text);
-  setStatus("Copied.");
-}
-
 function patientRequiredMessage({ allowPhoneBundleImport = false } = {}) {
+  const heading = vaultIsUnlocked() ? "Next step: add a patient." : "Next step: unlock the vault and add a patient.";
   return `
     <div class="empty-state next-step">
-      <strong>Next step: unlock the vault and add a patient.</strong>
+      <strong>${heading}</strong>
       <span>Use a de-identified room label to begin a new hospital stay.</span>
       ${allowPhoneBundleImport ? `<div class="transfer-actions"><button class="button--secondary button--transfer" type="button" data-action="choose-phone-bundle-file">${icon("upload")} Open shared checklist file</button><input id="phoneBundleFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden></div>` : ""}
     </div>
@@ -1010,7 +1012,7 @@ function renderStatusBar() {
   const patient = active();
   const record = readEncryptedVaultRecord();
   byId("currentPageTitle").textContent = viewTitles[app.view] || "Preround";
-  byId("vaultStateLabel").textContent = app.vault ? "Vault unlocked" : record ? "Vault locked" : "No vault on this device";
+  byId("vaultStateLabel").textContent = vaultIsUnlocked() ? "Vault unlocked" : record ? "Vault locked" : "No vault on this device";
   const deidStatus = selectedDeidStatus();
   byId("deidStateLabel").textContent = `Redaction model: ${deidModelLabel(app.deidMode)} — ${deidStatus.ready ? "ready" : "not loaded"}`;
   byId("statusLine").textContent =
@@ -1137,7 +1139,7 @@ function clearPhiReviews(scope = "") {
 }
 
 function clearQuickDeidSession() {
-  app.quickDeid = { input: "", output: "", warnings: [], status: "", review: null };
+  app.quickDeid = { input: "", output: "", warnings: [], status: "", review: null, admissionDate: "" };
 }
 
 // The same annotated document is used by Quick De-ID and Hospital Stay. It is
@@ -1610,7 +1612,7 @@ function renderQuickDeid() {
     hasReview,
     disabled: Boolean(app.modelPackBusyKey || app.quickDeidBusy),
     busy: app.quickDeidBusy,
-    admissionDate: app.admissionDate,
+    admissionDate: app.quickDeid.admissionDate,
     quickDeidInput: app.quickDeid.input,
     renderQuickModelControlHtml: renderQuickModelControl(),
     renderQuickDeidReviewHtml: hasReview ? renderQuickDeidReview() : ""
@@ -1689,26 +1691,6 @@ function refreshDeidControlsInActiveView() {
   }
   if (app.view === "quickDeid") renderQuickDeid();
   renderStatusBar();
-}
-
-async function deidentify(rawText, { referenceDate = app.admissionDate } = {}) {
-  if (!app.admissionDate) admissionDateAnchor.restore();
-  if (!app.admissionDate) {
-    await admissionDateGate.requestAdmissionDateFromUser();
-    admissionDateAnchor.remember();
-  }
-  return deidentifyText(rawText, {
-    mode: app.deidMode,
-    admissionDate: app.admissionDate,
-    relativeDate: referenceDate || app.admissionDate,
-    onStatus: updateDeidStatus,
-    onProgress: (progress) => {
-      if (progress?.message) {
-        setStatus(progress.message);
-        if (app.deidOperation.active) updateDeidOperation({ ...app.deidOperation, message: progress.message });
-      }
-    }
-  });
 }
 
 async function handleClick(event) {
@@ -1876,13 +1858,13 @@ async function handleClick(event) {
     }
     if (action === "choose-phone-bundle-file") byId("phoneBundleFileInput")?.click();
     if (action === "share-phone-bundle") await phoneTransfer.shareChecklist();
-    if (action === "copy-phone-bundle") await copyText(target.dataset.bundle || byId("phoneBundleText")?.value || "");
+    if (action === "copy-phone-bundle") await clipboard.copyText(target.dataset.bundle || byId("phoneBundleText")?.value || "");
     if (action === "download-phone-bundle") phoneTransfer.downloadChecklist();
     if (action === "choose-phone-return-file") byId("phoneReturnFileInput")?.click();
     if (action === "import-phone-return") await importPhoneReturn();
     if (action === "share-phone-return") await phoneTransfer.shareReturn();
     if (action === "download-phone-return") phoneTransfer.downloadReturn();
-    if (action === "copy-phone-return") await copyText(byId("phoneReturnBundle")?.value || "");
+    if (action === "copy-phone-return") await clipboard.copyText(byId("phoneReturnBundle")?.value || "");
     if (action === "show-phone-return") showPhoneReturn();
     if (action === "fill-all-negatives") await fillChecklistNegatives();
     if (action === "fill-section-negatives") await fillChecklistNegatives({ kind: target.dataset.kind });
@@ -1905,7 +1887,7 @@ async function handleClick(event) {
       scrollPromptOutputToVariable(byId("promptOutputHighlighted"), target.dataset.token);
     }
     if (action === "copy-prompt") {
-      await copyText(currentPromptText());
+      await clipboard.copyText(currentPromptText());
     }
     if (action === "open-open-evidence") window.open(target.dataset.destination === "doximity" ? "https://www.doximity.com/" : "https://www.openevidence.com/", "_blank", "noopener,noreferrer");
     if (action === "reset-variable-colors") {
@@ -1921,7 +1903,7 @@ async function handleClick(event) {
       clearQuickDeidSession();
       renderQuickDeid();
     }
-    if (action === "copy-quick-deid-output") await copyText(app.quickDeid.output || byId("quickDeidOutput")?.value || "");
+    if (action === "copy-quick-deid-output") await clipboard.copyText(app.quickDeid.output || byId("quickDeidOutput")?.value || "");
     if (action === "review-quick-warning") reviewQuickWarning(Number(target.dataset.warningIndex));
     if (action === "inspect-quick-redaction") inspectQuickRedaction(Number(target.dataset.redactionIndex));
     if (action === "confirm-quick-redaction") confirmQuickRedaction();
@@ -1985,6 +1967,7 @@ async function unlockVault() {
 }
 
 function lockVault(message = "Vault locked.") {
+  vaultSessionGuards.guardLockVault();
   clearSensitiveSession();
   app.view = "vault";
   setStatus(message);
@@ -2016,6 +1999,7 @@ async function admitPatient() {
   const label = byId("newPatientLabel").value.trim();
   if (!label) throw new Error("Enter a local display label.");
   app.vault = updateOrInitializeVault(createPatientRecord(label));
+  admissionDateAnchor.restore();
   await persistVault("Patient admitted locally.");
   app.view = "daily";
   render();
@@ -2309,7 +2293,7 @@ async function resumeSectionReview(scope, sectionId) {
   updateDeidOperation({ active: true, message: "Re-running local de-identification review…", value: 0, total: 1 });
   try {
     await ensureSelectedDeidReady();
-    const result = await deidentify(rawText, { referenceDate });
+    const result = await deidSession.deidentify(rawText, { referenceDate });
     const review = refreshEphemeralRedactionReview(sectionReviewFor(scope, sectionId), rawText, result);
     app.phiReviews.set(reviewKey(scope, sectionId), review);
     setSectionDraftText(scope, sectionId, result.text || "");
@@ -2858,7 +2842,7 @@ function redactQuickWarning(warningIndex) {
 
 function exportVault() {
   const record = readEncryptedVaultRecord();
-  if (!record) throw new Error("No encrypted vault exists on this device.");
+  if (!record) throw new Error("No encrypted vault exists on this device. Create a vault passphrase first — without one, your data lives only in this browser session and there is nothing encrypted to export.");
   downloadJson(`prerounding-vault-${new Date().toISOString().slice(0, 10)}.json`, record);
 }
 
@@ -2921,7 +2905,7 @@ async function deidentifySectionRows(scope, containerId, priorSections = [], ref
   for (const key of [...app.phiReviews.keys()]) {
     if (key.startsWith(`${scope}:`) && !retainedIds.has(key.slice(scope.length + 1))) app.phiReviews.delete(key);
   }
-  const sections = await replaceSectionsFromFormAsync(rows, (text) => deidentify(text, { referenceDate }), {
+  const sections = await replaceSectionsFromFormAsync(rows, (text) => deidSession.deidentify(text, { referenceDate }), {
     priorSections,
     reprocessEditedText: true,
     scope,
@@ -3316,6 +3300,7 @@ function queueWorkupAutosave() {
     workupAutosaveChain = workupAutosaveChain
       .then(async () => {
         const workup = workupFromEditorDraft(collectWorkupDraftFromDocument(document));
+        if (!workup.title) return;
         await commitWorkupOverride(workup, "Workup changes saved locally.");
         app.selectedWorkupEditorId = workup.id;
         app.draftWorkup = null;
@@ -3350,7 +3335,7 @@ function editWorkup(workupId) {
 function addWorkupItemRow(kind) {
   const column = document.querySelector(`[data-workup-kind="${kind}"] .list-stack`);
   if (!column) return;
-  column.insertAdjacentHTML("beforeend", renderWorkupItemEditor(createBlankWorkupItem(kind), kind, column.children.length));
+  column.insertAdjacentHTML("beforeend", workupPresentation.renderWorkupItemEditor(createBlankWorkupItem(kind), kind, column.children.length));
   updateWorkupRowNumbers(column);
 }
 
@@ -3611,6 +3596,11 @@ function bindWorkupReordering() {
 
 async function saveWorkupUi(message = "Local workup saved.") {
   const workup = workupFromEditorDraft(collectWorkupDraftFromDocument(document));
+  if (!workup.title) {
+    setStatus("Give the workup a title before saving.");
+    byId("workupTitleInput")?.focus();
+    return;
+  }
   clearTimeout(workupAutosaveTimer);
   await commitWorkupOverride(workup, message);
   app.selectedWorkupEditorId = workup.id;
@@ -3774,13 +3764,19 @@ function insertPromptVariable(token) {
 
 async function runQuickDeid() {
   app.quickDeid.input = byId("quickDeidInput")?.value || "";
+  if (!app.quickDeid.input.trim()) {
+    setStatus("Paste or type some text to de-identify first.");
+    return;
+  }
+  const quickAdmissionDate = String(app.quickDeid.admissionDate || byId("quickDeidAdmissionDateInput")?.value || "").trim();
+  app.quickDeid.admissionDate = quickAdmissionDate;
   app.deidMode = byId("quickDeidMode")?.value || app.deidMode;
   app.quickDeid.status = "Running de-identification...";
   app.quickDeidBusy = true;
   renderQuickDeid();
   try {
     await ensureSelectedDeidReady();
-    const result = await deidentify(app.quickDeid.input);
+    const result = await deidSession.deidentify(app.quickDeid.input, { admissionDate: quickAdmissionDate, skipAdmissionGate: true });
     app.quickDeid = {
       input: app.quickDeid.input,
       output: result.text || "",
@@ -3809,6 +3805,12 @@ async function runQuickDeid() {
 }
 
 function handleChange(event) {
+  if (event.target.id === "vaultPassphrase") {
+    clearVaultUnlockError();
+    updateVaultPassphraseStrength(event.target.value);
+    updateVaultPrimaryActionEnabled(event.target.value);
+    return;
+  }
   if (app.view === "review" && reviewController.change(event.target)) { demoController.observeChange(event.target); return; }
   if (event.target.matches("[data-result-metadata]")) return dailySourceController.updateResultMetadata(event.target.dataset.resultScope || "daily", event.target.dataset.resultMetadata, event.target.value);
   if (event.target.matches?.(".guideline-select")) {
@@ -3872,7 +3874,12 @@ function handleChange(event) {
     if (app.view === "daily") refreshDeidControlsInActiveView();
     if (app.view === "quickDeid") renderQuickDeid();
   }
-  if (event.target.id === "quickDeidAdmissionDateInput" || event.target.id === "dailyAdmissionDateInput") {
+  if (event.target.id === "quickDeidAdmissionDateInput") {
+    app.quickDeid.admissionDate = event.target.value;
+    if (app.view === "quickDeid") renderQuickDeid();
+    return;
+  }
+  if (event.target.id === "dailyAdmissionDateInput") {
     app.admissionDate = event.target.value;
     if (app.view === "daily") refreshDeidControlsInActiveView();
     if (app.view === "quickDeid") renderQuickDeid();
@@ -4009,7 +4016,12 @@ function handleInput(event) {
     updateVaultPrimaryActionEnabled(event.target.value);
     return;
   }
-  if (event.target.id === "quickDeidAdmissionDateInput" || event.target.id === "dailyAdmissionDateInput") {
+  if (event.target.id === "quickDeidAdmissionDateInput") {
+    app.quickDeid.admissionDate = event.target.value;
+    if (app.view === "quickDeid") renderQuickDeid();
+    return;
+  }
+  if (event.target.id === "dailyAdmissionDateInput") {
     app.admissionDate = event.target.value;
     if (app.view === "daily") refreshDeidControlsInActiveView();
     if (app.view === "quickDeid") renderQuickDeid();

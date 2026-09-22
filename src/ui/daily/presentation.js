@@ -9,7 +9,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
   function renderRowReviewStatus(completeness) {
     const missingCount = completeness.missingRequired.length;
     if (missingCount) {
-      return `<span class="day-row-review day-row-review--attention" data-required-missing="${missingCount}" aria-label="${missingCount} required source ${missingCount === 1 ? "is" : "are"} not saved"><span aria-hidden="true">!</span> ${missingCount} required</span>`;
+      return `<span class="day-row-review day-row-review--attention" data-required-missing="${missingCount}" aria-label="${missingCount} required source${missingCount === 1 ? "" : "s"} ${missingCount === 1 ? "is" : "are"} not saved"><span aria-hidden="true">!</span> ${missingCount} required</span>`;
     }
     return `<span class="day-row-review day-row-review--complete" data-required-missing="0">Required saved</span>`;
   }

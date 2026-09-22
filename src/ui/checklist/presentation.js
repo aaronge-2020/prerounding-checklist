@@ -254,6 +254,7 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
         <div>
           <h3>Send to phone</h3>
           <p class="muted">Share the link if your browser supports it, or download the file instead.</p>
+          <p class="muted"><strong>Privacy note:</strong> the link itself contains the checklist answers encoded in its address — treat it like the data and only share it with your own phone.</p>
         </div>
         <label>Checklist link
           <textarea id="phoneBundleText" readonly rows="4">${escapeHtml(phoneLink)}</textarea>

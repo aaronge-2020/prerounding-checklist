@@ -131,9 +131,8 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
           <label for="quickDeidAdmissionDateInput">Admission date</label>
           <div class="quick-model-control-row">
             <input type="date" id="quickDeidAdmissionDateInput" value="${escapeHtml(admissionDate || "")}" aria-label="Admission date">
-            ${admissionDate ? "" : `<span class="model-selection-message">Set this before running de-identification.</span>`}
           </div>
-          <p class="muted">Anchors dates in this note to Hospital Day numbers, then is discarded. Change it any time — it never affects text you've already de-identified.</p>
+          <p class="muted">Optional. Anchors dates in this note to Hospital Day numbers, then is discarded. Without it, dates get generic placeholders. Change it any time — it never affects text you've already de-identified.</p>
         </section>
         ${renderQuickModelControlHtml}
         ${hasReview ? `
