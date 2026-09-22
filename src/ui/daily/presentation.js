@@ -308,7 +308,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     const parseResult = composer.parseResult || { detectedFieldIds: [] };
     const manuallyEditedFields = new Set(composer.dirtyFieldIds || []);
     const pastedText = String(composer.pastedText || "");
-    return `<section class="structured-primary-note" aria-labelledby="${scope}StructuredNoteHeading">
+    return `<section class="structured-primary-note" data-structured-primary-note-scope="${escapeHtml(scope)}" aria-labelledby="${scope}StructuredNoteHeading">
       <div class="section-heading tight structured-note-heading"><div><h3 id="${scope}StructuredNoteHeading">${typeLabel}</h3><p class="muted">${help}</p></div><span class="source-parse-local">${saved ? "Saved locally" : "Optional"}</span></div>
       <div class="structured-note-mode-toggle" role="group" aria-label="Primary-team note entry mode">
         <button type="button" data-action="select-structured-note-mode" data-note-scope="${escapeHtml(scope)}" data-note-mode="paste" aria-pressed="${String(mode === "paste")}" class="${mode === "paste" ? "selected" : ""}">Paste full note</button>
@@ -554,5 +554,13 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  return Object.freeze({ renderClinicalDisplay, renderDaily, renderDayRow, renderSavedClinicalDisplay, renderSourceParsePreview, renderStructuredNoteDetected });
+  return Object.freeze({
+    renderClinicalDisplay,
+    renderDaily,
+    renderDayRow,
+    renderSavedClinicalDisplay,
+    renderSourceParsePreview,
+    renderStructuredNoteDetected,
+    renderStructuredPrimaryNote
+  });
 }

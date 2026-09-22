@@ -123,16 +123,45 @@ export function createDailySourceController(deps) {
     deps.render();
   }
 
+  function renderStructuredNoteEditor(scope, { focusFieldId = "" } = {}) {
+    const current = document.querySelector(`[data-structured-primary-note-scope="${scope}"]`);
+    if (!current) {
+      deps.render();
+      return;
+    }
+    const view = current.closest(".view");
+    const scrollTop = view?.scrollTop || 0;
+    const scrollLeft = view?.scrollLeft || 0;
+    current.outerHTML = deps.dailyPresentation.renderStructuredPrimaryNote({
+      noteType: structuredNoteType(scope),
+      note: existingStructuredNote(scope),
+      draftValues: deps.app.structuredNoteDrafts.get(structuredNoteKey(scope)) || {},
+      composer: structuredNoteComposer(scope) || {},
+      scope,
+      deidBusy: deps.app.deidOperation.active
+    });
+    const restore = () => {
+      if (view) {
+        view.scrollTop = scrollTop;
+        view.scrollLeft = scrollLeft;
+      }
+    };
+    restore();
+    requestAnimationFrame(() => {
+      const field = focusFieldId
+        ? document.querySelector(`[data-structured-note-scope="${scope}"][data-structured-note-field="${focusFieldId}"]`)
+        : null;
+      field?.focus({ preventScroll: true });
+      restore();
+      requestAnimationFrame(restore);
+    });
+  }
+
   function selectStructuredNoteField(scope, fieldId) {
     const fields = primaryTeamNoteFields(structuredNoteType(scope));
     if (!fields.some((field) => field.id === fieldId)) return;
     setStructuredNoteComposer(scope, { mode: "sections", activeFieldId: fieldId });
-    deps.render();
-    requestAnimationFrame(() => {
-      document
-        .querySelector(`[data-structured-note-scope="${scope}"][data-structured-note-field="${fieldId}"]`)
-        ?.focus({ preventScroll: true });
-    });
+    renderStructuredNoteEditor(scope, { focusFieldId: fieldId });
   }
 
   function moveStructuredNoteField(scope, direction) {

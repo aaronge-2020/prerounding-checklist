@@ -100,12 +100,12 @@ try {
   assert.match(await page.locator("#vaultPassphraseStrength").innerText(), /two or more words/i);
 
   await page.fill("#vaultPassphrase", "shortcode");
-  await page.click('[data-action="unlock-vault"]');
-  await page.waitForFunction(() => /at least 12 characters/.test(document.querySelector("#vaultPassphraseError")?.textContent || ""));
+  assert.equal(await page.locator('[data-action="unlock-vault"]').isDisabled(), true, "a short passphrase must not enable vault creation");
   assert.equal(await page.locator("#vaultPassphraseStrength").evaluate((node) => node.classList.contains("is-weak")), true);
 
   await page.fill("#vaultPassphrase", "test passphrase");
   assert.equal(await page.locator("#vaultPassphraseStrength").evaluate((node) => node.classList.contains("is-strong")), true);
+  assert.equal(await page.locator('[data-action="unlock-vault"]').isEnabled(), true, "a valid passphrase must enable vault creation");
   await page.click('[data-action="unlock-vault"]');
   await page.waitForFunction(() => /Vault unlocked/.test(document.querySelector("#statusLine")?.textContent || ""));
   assert.equal(await page.locator("body").evaluate((node) => node.classList.contains("vault-locked")), false);
@@ -378,7 +378,7 @@ try {
     return view.scrollTop;
   });
   assert.equal(noteSectionScroll > 0, true, "the Hospital Stay route must be scrollable for the navigation regression test");
-  await page.locator('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="history_of_present_illness"]').evaluate((button) => button.click());
+  await page.locator('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="history_of_present_illness"]').click();
   await page.waitForSelector('[data-structured-note-scope="admission"][data-structured-note-field="history_of_present_illness"]');
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   assert.equal(
@@ -386,7 +386,7 @@ try {
     noteSectionScroll,
     "choosing an HPI section must not move the Hospital Stay scroll position"
   );
-  await page.locator('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="one_liner"]').first().evaluate((button) => button.click());
+  await page.locator('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="one_liner"]').first().click();
   await page.waitForSelector('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]');
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   assert.equal(
@@ -852,7 +852,7 @@ Vitals
   }), true);
   {
     const copied = await copiedPromptText();
-    assert.match(copied, /Return only the fully revised presentation/);
+    assert.match(copied, /Close the notes and teach back the Remember rule/i);
     assert.doesNotMatch(copied, /No presentation was pasted/);
   }
   await page.locator("#presentationToEdit").fill("One-Liner\nDe-identified presentation supplied in the editor.");

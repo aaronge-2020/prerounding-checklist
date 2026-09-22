@@ -152,8 +152,8 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=save-unlabeled-v2";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260921-medication-card-v4&scroll=preserve-navigation-scroll-v2";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=section-scroll-v3";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260921-medication-card-v4&scroll=preserve-section-scroll-v3";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20260921-medication-card-v4";
 import { createReviewController } from "./review/controller.js?v=20260921-medication-card-v4";
