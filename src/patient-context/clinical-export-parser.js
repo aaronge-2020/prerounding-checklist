@@ -520,6 +520,7 @@ function vitalRowsForCell(name, rawValue, sourceIndex) {
   const value = cleanVitalCell(rawValue);
   if (!value) return [];
   const headerKey = normalizedHeaderKey(name);
+  const temperatureUnit = value.match(/[-+]?(?:\d+(?:\.\d+)?|\.\d+)\s*°?\s*([CF])\b/i)?.[1]?.toUpperCase();
   const row = (measurement, parsedValue, unit = "") => ({ name: measurement, value: parsedValue, unit, sourceIndex });
   if (["bp", "bloodpressure", "arterialbp", "arterialbloodpressure"].includes(headerKey)) {
     const match = value.match(/(\d{2,3})\s*\/\s*(\d{2,3})/);
@@ -528,7 +529,7 @@ function vitalRowsForCell(name, rawValue, sourceIndex) {
     return [row(`${prefix}Systolic BP`, match[1], "mmHg"), row(`${prefix}Diastolic BP`, match[2], "mmHg")];
   }
   const definitions = [
-    [["temp", "temperature"], "Temperature", /°?\s*f\b/i.test(value) ? "°F" : "°C"],
+    [["temp", "temperature"], "Temperature", temperatureUnit ? `°${temperatureUnit}` : "°C"],
     [["pulse"], "Pulse", "bpm"],
     [["hr", "heartrate"], "Heart Rate", "bpm"],
     [["heartratemonitored", "monitoredheartrate"], "Heart Rate (Monitored)", "bpm"],
@@ -634,7 +635,7 @@ function fragmentedLabDescriptor(value) {
 
 function fragmentedLabValue(value) {
   const text = cleanFragmentedLabCell(value).replace(/\\\s*$/g, "").trim();
-  const flagged = text.match(/^(.*?)\s+\((LL|HH|H|L|P)\)$/i);
+  const flagged = text.match(/^(.*?)\s+\(?((?:LL|HH|H|L|P))\)?$/i);
   return {
     value: compactLine(flagged ? flagged[1] : text),
     flag: compactLine(flagged?.[2] || "").toUpperCase()
@@ -730,6 +731,98 @@ function renderFragmentedEpicLabTable(lines = []) {
     itemCount: resultCount,
     summary: `${resultCount} laboratory results across ${timestamps.length} collection times; empty copied cells removed.`,
     preservedUnparsedText: false
+    }, model),
+    sections,
+    displayModels: sections.map((section) => section.displayModel)
+  };
+}
+
+const WIDE_LAB_TIMESTAMP = /\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?\s+\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?/gi;
+
+function wideLabHeaders(line) {
+  const cells = delimitedCells(line);
+  if (cells.length < 3) return null;
+  const nonempty = cells.filter(Boolean);
+  if (nonempty.length === 1) {
+    const header = nonempty[0];
+    const first = header.match(/^(?:test(?:\s*name)?|component|analyte)/i);
+    const last = header.match(/(?:latest\s+)?(?:reference(?:\s*(?:range|interval))?|ref(?:\s*(?:range|interval))?)$/i);
+    if (!first || !last || last.index <= first[0].length) return null;
+    const middle = header.slice(first[0].length, last.index);
+    const timestamps = [...middle.matchAll(WIDE_LAB_TIMESTAMP)].map(([timestamp]) => compactLine(timestamp));
+    if (!timestamps.length || middle.replace(WIDE_LAB_TIMESTAMP, "").trim()) return null;
+    return { timestamps };
+  }
+  const first = normalizedHeaderKey(cells[0]);
+  const last = normalizedHeaderKey(cells.at(-1));
+  if (!["test", "testname", "component", "analyte"].includes(first) || !["reference", "referencerange", "referenceinterval", "ref", "refrange", "refinterval"].includes(last)) return null;
+  const timestamps = cells.slice(1, -1).map(compactLine);
+  if (!timestamps.length || timestamps.some((timestamp) => !new RegExp(`^(?:${WIDE_LAB_TIMESTAMP.source})$`, "i").test(timestamp))) return null;
+  return { timestamps };
+}
+
+function wideLabReference(value) {
+  const descriptor = fragmentedLabDescriptor(`Result ${value}`);
+  return descriptor.name === "Result"
+    ? { referenceRange: descriptor.referenceRange, unit: descriptor.unit }
+    : { referenceRange: compactLine(value), unit: "" };
+}
+
+function renderWideLabMatrix(lines = []) {
+  const headerIndex = lines.findIndex((line, index) => index < 12 && wideLabHeaders(line));
+  if (headerIndex < 0) return null;
+  const { timestamps } = wideLabHeaders(lines[headerIndex]);
+  const parsedRows = [];
+  for (let index = headerIndex + 1; index < lines.length; index += 1) {
+    const cells = delimitedCells(lines[index]);
+    if (!cells.length || cells.every((cell) => /^:?-{3,}:?$/.test(compactLine(cell)))) continue;
+    if (cells.length < timestamps.length + 2 || !compactLine(cells[0])) continue;
+    const name = compactLine(cells[0]);
+    const reference = wideLabReference(cells[timestamps.length + 1]);
+    const results = timestamps.map((timestamp, timestampIndex) => {
+      const parsed = fragmentedLabValue(cells[timestampIndex + 1]);
+      return /^[—–-]$/.test(parsed.value) ? { timestamp, value: "", flag: "", sourceIndex: index } : { timestamp, ...parsed, sourceIndex: index };
+    });
+    if (results.some(({ value }) => value)) parsedRows.push({ name, ...reference, results });
+  }
+  const resultCount = parsedRows.reduce((total, row) => total + row.results.filter(({ value }) => value).length, 0);
+  if (!parsedRows.length || !resultCount) return null;
+
+  const formatId = "wide_lab_matrix";
+  const formatLabel = "Timestamped laboratory matrix";
+  const groups = timestamps.flatMap((timestamp, timestampIndex) => {
+    const rows = parsedRows.flatMap((row, rowIndex) => {
+      const result = row.results[timestampIndex];
+      if (!result?.value) return [];
+      return [{
+        id: `result_${timestampIndex + 1}_${rowIndex + 1}`,
+        name: row.name,
+        value: result.value,
+        unit: row.unit,
+        referenceRange: row.referenceRange,
+        flag: result.flag,
+        abnormality: laboratoryAbnormality({ value: result.value, flag: result.flag, referenceRange: row.referenceRange }),
+        sourceIndex: result.sourceIndex
+      }];
+    });
+    return splitLaboratoryRowsByPanel(rows).map((panel, panelIndex) => ({
+      id: `collection_${timestampIndex + 1}_${panelIndex + 1}`,
+      label: panel.label,
+      timestamp,
+      rows: panel.rows
+    }));
+  });
+  const model = clinicalDataModel({ kind: "laboratory_results", sourceSystem: "Clipboard table", formatId, formatLabel, groups });
+  const sections = laboratoryPanelSections(model, { sourceSystem: "Clipboard table", formatId });
+  return {
+    ...withClinicalRepresentations({
+      recognized: true,
+      formatId,
+      formatLabel,
+      suggestedSourceKind: "laboratory_results",
+      itemCount: resultCount,
+      summary: `${resultCount} laboratory results across ${timestamps.length} collection times; empty copied cells removed.`,
+      preservedUnparsedText: false
     }, model),
     sections,
     displayModels: sections.map((section) => section.displayModel)
@@ -920,7 +1013,7 @@ export function parseClinicalExport(value, { sourceKind = "" } = {}) {
       parsedCharacterCount: compactResult.outputText.length
     };
   }
-  const parsers = [renderMedicationReport, renderFragmentedEpicLabTable, renderWideVitalTable, renderDelimitedClipboardTable, renderCprsStructuredTables];
+  const parsers = [renderMedicationReport, renderFragmentedEpicLabTable, renderWideVitalTable, renderWideLabMatrix, renderDelimitedClipboardTable, renderCprsStructuredTables];
   for (const parser of parsers) {
     const result = parser(lines);
     if (result) {

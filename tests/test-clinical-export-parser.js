@@ -13,7 +13,7 @@ import {
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
 const parserRevision = "20260921-medication-card-v4";
-const clinicalParserRevision = "20260921-table-parser-v5";
+const clinicalParserRevision = "20260921-table-parser-v6";
 const primaryNoteRevision = "20260921-medication-card-v4";
 const runtimeSources = {
   index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
@@ -442,6 +442,25 @@ const collapsedHeaderLabs = `| Test NameResultUnitsReference RangeFlagCollected 
 const parsedCollapsedHeaderLabs = parseClinicalExport(collapsedHeaderLabs);
 assert.equal(parsedCollapsedHeaderLabs.formatId, "delimited_lab_table");
 assert.equal(parsedCollapsedHeaderLabs.structuredData.groups[0].rows[0].name, "WBC");
+
+const wideCollapsedHeaderLabs = `| Test09/18 14:5209/19 05:1809/20 05:41Reference | | | | |
+| --- | --- | --- | --- | --- |
+| WBC | 14.8 H | 11.6 H | 8.9 | 4.0–11.0 K/µL |
+| Sodium | 134 L | 137 | 139 | 135–145 mmol/L |
+| Lactate | 1.6 | — | — | 0.5–2.2 mmol/L |
+| Procalcitonin | 0.34 H | — | — | <0.10 ng/mL |`;
+const parsedWideCollapsedHeaderLabs = parseClinicalExport(wideCollapsedHeaderLabs);
+assert.equal(parsedWideCollapsedHeaderLabs.formatId, "wide_lab_matrix");
+assert.equal(parsedWideCollapsedHeaderLabs.suggestedSourceKind, "laboratory_results");
+assert.equal(parsedWideCollapsedHeaderLabs.itemCount, 8, "em dashes represent empty cells rather than laboratory values");
+const wideWbc = parsedWideCollapsedHeaderLabs.structuredData.groups.flatMap(({ rows }) => rows).find(({ name, sourceIndex }) => name === "WBC" && sourceIndex === 2);
+assert.deepEqual({ value: wideWbc.value, flag: wideWbc.flag, unit: wideWbc.unit, referenceRange: wideWbc.referenceRange }, {
+  value: "14.8",
+  flag: "H",
+  unit: "K/µL",
+  referenceRange: "4.0–11.0"
+});
+assert.deepEqual([...new Set(parsedWideCollapsedHeaderLabs.structuredData.groups.map(({ timestamp }) => timestamp))], ["09/18 14:52", "09/19 05:18", "09/20 05:41"]);
 
 const collapsedHeaderMar = `| MedicationDoseRouteFrequencyAdministration Status | | | | |
 | --- | --- | --- | --- | --- |

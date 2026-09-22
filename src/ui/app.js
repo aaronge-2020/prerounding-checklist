@@ -38,7 +38,7 @@ import {
   reorderSectionsById,
   replaceSectionsFromFormAsync
 } from "../patient-context/sections.js?v=20260921-medication-card-v4";
-import { clinicalParseWarning } from "../patient-context/clinical-export-parser.js?v=20260921-table-parser-v5";
+import { clinicalParseWarning } from "../patient-context/clinical-export-parser.js?v=20260921-table-parser-v6";
 import {
   createEphemeralRedactionReview,
   refreshEphemeralRedactionReview,
@@ -152,8 +152,8 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=section-scroll-v3&parser=table-v5";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260921-medication-card-v4&scroll=preserve-section-scroll-v3&parser=table-v5";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=section-scroll-v3&parser=table-v6";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260921-medication-card-v4&scroll=preserve-section-scroll-v3&parser=table-v6";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20260921-medication-card-v4";
 import { createReviewController } from "./review/controller.js?v=20260921-medication-card-v4";
