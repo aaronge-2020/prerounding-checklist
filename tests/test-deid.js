@@ -540,6 +540,16 @@ assert.deepEqual(timelineDateResult.residualWarnings, [], "timeline placeholders
 assert.ok(!timelineDateResult.text.includes("2026-05-01"), "exact ISO date should not leak");
 assert.ok(!timelineDateResult.text.includes("2026-04-"), "the real admission date must never be reconstructible from the output");
 
+const extendedAdmissionDateResult = deidentifyTextStructuredOnly(
+  "Follow-up labs on 9/21",
+  new Date("2027-08-17")
+);
+assert.equal(
+  extendedAdmissionDateResult.text,
+  "Follow-up labs on [Hospital Day 36]",
+  "a yearless date more than 30 days after admission must stay in the admission year"
+);
+
 const hospitalDayRelativeResult = deidentifyTextStructuredOnly(
   "Symptoms are better today and worsened yesterday; plan tomorrow.",
   new Date("2026-07-01"),

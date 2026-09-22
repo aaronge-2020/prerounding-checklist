@@ -1873,7 +1873,7 @@ function parseTemporalSpan(value, context = {}, referenceDate = null) {
 // plausible. Nearest-by-distance is the right tiebreaker when every
 // candidate falls close to the reference (a presenting complaint dated a
 // day or two before admission, a plan item a few days after) - but once
-// the nearest candidate lands more than a month past the reference, it
+// the nearest candidate lands more than a plausible extended admission past the reference, it
 // stops being a good tiebreaker: this app's source text is chart
 // documentation, which is overwhelmingly retrospective (PMH/PSH lists,
 // prior encounters, "found to have X on Y"), and a document doesn't
@@ -1882,7 +1882,7 @@ function parseTemporalSpan(value, context = {}, referenceDate = null) {
 // carries explicit forward-looking wording (follow-up/scheduled/planned -
 // see temporalContextDirection); otherwise the most recent
 // non-far-future candidate wins instead.
-const AMBIGUOUS_YEAR_FUTURE_GRACE_DAYS = 30;
+const AMBIGUOUS_YEAR_FUTURE_GRACE_DAYS = 90;
 
 function dateFromParts(parts, fallbackYear = null, referenceDate = null, direction = "neutral") {
   if (!parts || !parts.month || (parts.kind !== "month" && !parts.day)) {
