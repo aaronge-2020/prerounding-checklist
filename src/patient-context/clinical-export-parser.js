@@ -1,6 +1,7 @@
 import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260921-medication-card-v4";
 import {
   clinicalDataModel,
+  clinicalDisplayModelFromPromptText,
   laboratoryAbnormality,
   withClinicalRepresentations
 } from "./structured-clinical-data.js?v=20260921-medication-card-v4";
@@ -842,4 +843,25 @@ export function prepareClinicalExportForSave(value, priorResult = null, { source
       ? String(parseResult.edited ? parseResult.outputText : parseResult.canonicalPromptText || parseResult.outputText || "").trim()
       : rawText
   };
+}
+
+const STRUCTURED_SOURCE_KIND_LABELS = {
+  vital_signs: "vital signs",
+  laboratory_results: "labs",
+  medication_activity: "medication activity"
+};
+
+// A saved source of one of these kinds is expected to yield a structured
+// clinical-data table. When the saved text is non-trivial but neither the
+// canonical saved-prompt format nor a fresh parse of it produces any
+// sections/items, the source silently contributes nothing to Clinical data
+// even though it still counts as "included" for review completeness. Surface
+// that gap explicitly instead of leaving it silent.
+export function clinicalParseWarning(sourceKind, text) {
+  const label = STRUCTURED_SOURCE_KIND_LABELS[sourceKind];
+  const trimmed = normalizeNewlines(text).trim();
+  if (!label || !trimmed) return "";
+  if (clinicalDisplayModelFromPromptText(sourceKind, trimmed)?.groups?.length) return "";
+  if (parseClinicalExport(trimmed, { sourceKind }).displayModel?.groups?.length) return "";
+  return `Saved as free text — couldn't parse into structured ${label}. The raw text is still saved and available to the AI prompt.`;
 }

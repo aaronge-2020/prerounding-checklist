@@ -47,7 +47,7 @@ export async function openRealApp(page, baseUrl) {
   assert.match(response.headers()["content-type"] || "", /text\/html/);
   assert.equal(page.url(), baseUrl);
   await page.waitForSelector("#vaultPassphrase");
-  assert.equal(await page.title(), "Pre-Rounding Checklist Builder");
+  assert.equal(await page.title(), "Preround");
 }
 
 export async function unlockAndCreatePatient(page, { passphrase = "clinical review test passphrase", label = "Synthetic Room" } = {}) {

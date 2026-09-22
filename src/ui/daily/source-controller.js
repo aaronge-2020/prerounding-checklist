@@ -1,6 +1,7 @@
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-medication-card-v4";
 import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 import {
+  clinicalParseWarning,
   parseClinicalExport,
   prepareClinicalExportForSave
 } from "../../patient-context/clinical-export-parser.js?v=20260921-medication-card-v4";
@@ -443,6 +444,7 @@ export function createDailySourceController(deps) {
       review,
       draftText,
       structuredDisplay: "",
+      parseWarning: clinicalParseWarning(capture.sourceKind, draftText),
       captures: deps.reviewSectionsForScope("daily"),
       reviewFor: (id) => deps.sectionReviewFor("daily", id)
     });

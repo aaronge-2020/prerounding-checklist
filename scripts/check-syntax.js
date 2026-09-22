@@ -54,7 +54,7 @@ const modelOptions = readFileSync("src/patient-context/deid-model-options.js", "
 const modelService = readFileSync("src/patient-context/deid-service.js", "utf8");
 
 for (const required of [
-  "Pre-Rounding Checklist Builder",
+  "<title>Preround</title>",
   "Content-Security-Policy",
   "connect-src 'self'",
   "./src/ui/app.js",

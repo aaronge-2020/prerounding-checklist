@@ -42,7 +42,7 @@ const credentialWords = new Set([
   "msw", "lcsw", "aprn", "fnp", "dnp", "rd", "rrt", "emt"
 ]);
 
-const honorificWords = new Set(["mr", "mrs", "ms", "miss", "mx", "dr", "doctor", "prof", "professor"]);
+const honorificWords = new Set(["mr", "mrs", "ms", "miss", "mx", "dr", "doctor", "prof", "professor", "st"]);
 
 const patientRefWords = new Set(["patient", "pt"]);
 

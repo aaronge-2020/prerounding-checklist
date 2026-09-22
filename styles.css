@@ -13,6 +13,7 @@
   --ink: #14324b;
   --text: #1e3447;
   --muted: #687989;
+  --muted-strong: #4f5e6c;
   --faint: #95a4ae;
   --primary: #14324b;
   --primary-hover: #0e273d;
@@ -4396,11 +4397,77 @@ button.var-fill:focus-visible {
 }
 
 .vault-access,
-.roster-surface {
+.roster-surface,
+.vault-pitch {
   padding: 18px;
 }
 
 .vault-access { display: grid; gap: 18px; }
+
+.vault-pitch { display: grid; gap: 14px; }
+
+.vault-pitch-title { margin: 0; font-size: 22px; color: var(--ink); }
+
+.vault-pitch-lede {
+  margin: 0;
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.5;
+  max-width: 62ch;
+}
+
+.vault-edu-disclaimer {
+  align-items: flex-start;
+  background: var(--surface-tint);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  display: flex;
+  font-size: 13px;
+  gap: 10px;
+  line-height: 1.5;
+  padding: 12px 14px;
+}
+
+.vault-edu-disclaimer .icon {
+  color: var(--accent);
+  flex: 0 0 auto;
+  height: 18px;
+  margin-top: 1px;
+  width: 18px;
+}
+
+.vault-edu-disclaimer strong { color: var(--ink); }
+
+.vault-demo-cta { display: grid; gap: 6px; }
+
+.vault-demo-cta > .muted { color: var(--muted-strong); font-size: 12px; }
+
+.vault-trust-footer {
+  align-items: center;
+  color: var(--muted-strong);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 12px;
+  gap: 6px 16px;
+  padding: 2px 4px 0;
+}
+
+.vault-trust-links { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+
+.vault-trust-links a {
+  align-items: center;
+  color: var(--accent);
+  display: inline-flex;
+  font-weight: 600;
+  gap: 5px;
+  text-decoration: none;
+}
+
+.vault-trust-links a:hover,
+.vault-trust-links a:focus-visible { text-decoration: underline; }
+
+.vault-trust-links .icon { height: 13px; width: 13px; }
 
 .vault-access-heading { margin: 0; align-items: center; }
 
@@ -4555,7 +4622,7 @@ button.var-fill:focus-visible {
 }
 
 .vault-passphrase-strength {
-  color: var(--muted);
+  color: var(--muted-strong);
   display: grid;
   font-size: 12px;
   gap: 6px;
@@ -6529,6 +6596,8 @@ body.vault-locked #vaultView.active {
 }
 
 .locked-vault-shell {
+  display: grid;
+  gap: 16px;
   width: 100%;
 }
 
@@ -9018,6 +9087,20 @@ body.vault-locked .vault-access {
 .source-capture-identity { display: grid; min-width: 0; gap: 2px; }
 .source-capture-identity strong { color: var(--ink); font-size: 13px; }
 .source-capture-editor:not(.is-expanded) .source-kind-control { display: none; }
+
+.primary-note-source-summary {
+  min-height: 58px;
+  padding: 10px 8px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.primary-note-source-summary:first-child { border-top: none; }
+.primary-note-source-summary .source-capture-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
 
 .source-kind-control {
   display: grid;

@@ -162,7 +162,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function renderSourceCaptureEditor({ capture, scope = "daily", sourceOptions = [], editing, pendingFocus, review, draftText, captures = [], reviewFor = () => null, structuredDisplay = "" }) {
+  function renderSourceCaptureEditor({ capture, scope = "daily", sourceOptions = [], editing, pendingFocus, review, draftText, captures = [], reviewFor = () => null, structuredDisplay = "", parseWarning = "" }) {
     const characterCount = draftText?.length || 0;
     const draftMarker = draftText !== capture.deidentifiedText ? " · draft" : "";
     const isInitialReviewTarget = pendingFocus?.scope === scope && pendingFocus.sectionId === capture.id;
@@ -187,6 +187,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
             <button class="button--quiet danger-subtle" type="button" data-action="remove-section" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(capture.id)}">Remove</button>
           </div>
         </div>
+        ${parseWarning ? `<div class="warning-box"><strong>Not parsed into structured data</strong><br><span>${escapeHtml(parseWarning)}</span></div>` : ""}
         ${!isExpanded && structuredDisplay ? `<div class="saved-clinical-display">${structuredDisplay}</div>` : ""}
         <label class="source-kind-control">Epic source
           <select class="source-kind" aria-label="Epic source">

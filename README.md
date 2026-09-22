@@ -1,4 +1,4 @@
-# Local Prerounding Workspace
+# Preround
 
 Static, server-free browser workspace for inpatient pre-rounding. It keeps de-identified patient packets in an encrypted browser-local vault, organizes hospital-day updates, builds bedside checklists, and assembles copy-ready OpenEvidence prompts.
 

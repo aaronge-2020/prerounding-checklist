@@ -680,7 +680,7 @@ export const clinicalInstructionAnchorWords = new Set([
 ]);
 
 export const medicationClassOrStemPattern = /(?:^cef|cillin$|cycline$|floxacin$|mycin$|azole$|avir$|pril$|sartan$|olol$|dipine$|statin$|parin$|prazole$|tidine$|zepam$|zolam$|azepam$|azide$|semide$|thiazide$|gliflozin$|gliptin$|tide$|caine$|sone$|mab$|nib$)/i;
-export const honorificPatternSource = String.raw`(?:Mr|Mrs|Ms|Miss|Mx|Dr|Doctor|Prof|Professor)`;
+export const honorificPatternSource = String.raw`(?:Mr|Mrs|Ms|Miss|Mx|Dr|Doctor|Prof|Professor|St)`;
 export const patientHonorificPatternSource = String.raw`(?:Mr|Mrs|Ms|Miss|Mx)`;
 export const nameWordPatternSource = String.raw`[A-Z][A-Za-z.'-]{1,}`;
 export const namePartPatternSource = String.raw`(?:${nameWordPatternSource}|[A-Z]\.?)`;

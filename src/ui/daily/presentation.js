@@ -2,16 +2,16 @@ import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily
 import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260921-medication-card-v4";
 import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-medication-card-v4";
 import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260921-medication-card-v4";
-import { primaryTeamNoteFields } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
-import { DIAGNOSTIC_RESULT_CATEGORIES } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
+import { primaryTeamNoteFields, primaryTeamNoteHasContent } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
+import { DIAGNOSTIC_RESULT_CATEGORIES, sourceCapturePacketCheck } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
 
 export function createDailyPresentation({ escapeHtml, icon }) {
   function renderRowReviewStatus(completeness) {
     const missingCount = completeness.missingRequired.length;
     if (missingCount) {
-      return `<span class="day-row-review day-row-review--attention" data-required-missing="${missingCount}" aria-label="${missingCount} required source ${missingCount === 1 ? "is" : "are"} not reviewed"><span aria-hidden="true">!</span> ${missingCount} required</span>`;
+      return `<span class="day-row-review day-row-review--attention" data-required-missing="${missingCount}" aria-label="${missingCount} required source ${missingCount === 1 ? "is" : "are"} not saved"><span aria-hidden="true">!</span> ${missingCount} required</span>`;
     }
-    return `<span class="day-row-review day-row-review--complete" data-required-missing="0">Required reviewed</span>`;
+    return `<span class="day-row-review day-row-review--complete" data-required-missing="0">Required saved</span>`;
   }
 
   function renderDayRow(day, selectedDayId, index) {
@@ -19,6 +19,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
       String(day.label || "")
         .replace(/^\s*hd\s*\d+\s*[-:|]?\s*/i, "")
         .trim() || `Hospital day ${index + 1}`;
+    const sourceCount = day.sourceCaptures.length + (primaryTeamNoteHasContent(day.primaryTeamNote) ? 1 : 0);
     return `
       <button type="button" class="day-row ${day.id === selectedDayId ? "selected" : ""}" data-action="select-day" data-day-id="${escapeHtml(day.id)}">
         <span>
@@ -26,8 +27,8 @@ export function createDailyPresentation({ escapeHtml, icon }) {
           <span class="muted">${escapeHtml(userLabel)} - ${escapeHtml(day.date)}</span>
         </span>
         <span class="day-row-meta">
-          <span class="muted">${day.sourceCaptures.length} source${day.sourceCaptures.length === 1 ? "" : "s"}</span>
-          ${renderRowReviewStatus(evaluatePacketCompleteness(day.sourceCaptures, { scope: "daily" }))}
+          <span class="muted">${sourceCount} source${sourceCount === 1 ? "" : "s"}</span>
+          ${renderRowReviewStatus(sourceCapturePacketCheck(day.sourceCaptures, { structuredNote: day.primaryTeamNote, scope: "daily" }).completeness)}
         </span>
       </button>
     `;
@@ -272,6 +273,26 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     return singleLine.length > 54 ? `${singleLine.slice(0, 53)}…` : singleLine;
   }
 
+  function renderPrimaryNoteSourceSummary({ noteType, note, scope }) {
+    const fields = primaryTeamNoteFields(noteType);
+    const completedCount = fields.filter((field) => String(note?.sections?.[field.id]?.deidentifiedText || "").trim()).length;
+    const label = noteType === NOTE_TYPES.H_AND_P ? "Primary-team admission note" : "Primary-team progress note";
+    const selectKindAction = scope === "admission" ? "select-admission-source-kind" : "select-daily-source-kind";
+    return `
+      <div class="primary-note-source-summary" data-primary-note-summary="${escapeHtml(scope)}">
+        <div class="source-capture-toolbar">
+          <div class="source-capture-identity">
+            <strong>${escapeHtml(label)}</strong>
+            <span class="section-meta">Saved locally · ${completedCount} of ${fields.length} sections saved</span>
+          </div>
+          <div class="button-row">
+            <button class="button--quiet" type="button" data-action="${selectKindAction}" data-source-kind="primary_note">Edit note</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   function renderStructuredPrimaryNote({ noteType, note, draftValues = {}, composer = {}, scope, deidBusy }) {
     const admission = noteType === NOTE_TYPES.H_AND_P;
     const typeLabel = admission ? "Primary-team admission note" : "Prior primary-team progress note";
@@ -359,6 +380,8 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     const addLabel = parsedSourceCount > 1 ? `De-identify and add ${parsedSourceCount} sources` : "De-identify and add source";
     const draftId = `${prefix}SourceDraft`;
     const sourceTitle = scope === "admission" ? "Admission sources" : "Saved sources";
+    const hasPrimaryNote = primaryTeamNoteHasContent(primaryTeamNote);
+    const totalSourceCount = sources.length + (hasPrimaryNote ? 1 : 0);
     return `
       ${renderDeidStrip}
       ${renderSourcePicker(sourceOptions, selectedSourceKind, scope)}
@@ -380,9 +403,10 @@ export function createDailyPresentation({ escapeHtml, icon }) {
         <div data-source-parse-preview="${prefix}">${renderSourceParsePreview({ scope, parseResult: sourceParse })}</div>
       </section>`}
       <section class="saved-source-list" aria-labelledby="savedSourcesTitle">
-        <div class="section-heading tight"><div><h3 id="savedSourcesTitle">${sourceTitle}</h3><p class="muted">${sources.length} source${sources.length === 1 ? "" : "s"} · summaries are reviewed on the separate note workspace</p></div><button class="button--primary" type="button" data-action="${generateAction}" ${sources.length || primaryTeamNote ? "" : "disabled"}>${generateLabel}</button></div>
+        <div class="section-heading tight"><div><h3 id="savedSourcesTitle">${sourceTitle}</h3><p class="muted">${totalSourceCount} source${totalSourceCount === 1 ? "" : "s"} · summaries are reviewed on the separate note workspace</p></div><button class="button--primary" type="button" data-action="${generateAction}" ${totalSourceCount ? "" : "disabled"}>${generateLabel}</button></div>
         <div id="${scope === "admission" ? "contextSections" : "dailySources"}" class="source-capture-list">
-          ${sources.length ? sources.map(renderSourceCaptureEditor).join("") : `<div class="empty-state">No sources saved yet. Start with the primary team note, Results, or Medication Activity.</div>`}
+          ${hasPrimaryNote ? renderPrimaryNoteSourceSummary({ noteType, note: primaryTeamNote, scope }) : ""}
+          ${sources.length ? sources.map(renderSourceCaptureEditor).join("") : (hasPrimaryNote ? "" : `<div class="empty-state">No sources saved yet. Start with the primary team note, Results, or Medication Activity.</div>`)}
         </div>
         ${renderWarnings(sources, scope === "admission" ? "context" : "daily")}
       </section>
@@ -407,15 +431,15 @@ export function createDailyPresentation({ escapeHtml, icon }) {
         </div>
         <div class="packet-review-summary" data-packet-review-state="${missingCount ? "attention" : "complete"}">
           <span class="packet-review-summary__indicator" aria-hidden="true">${missingCount ? "!" : "✓"}</span>
-          <span class="packet-review-summary__copy">${missingCount ? `${missingCount} required item${missingCount === 1 ? " has" : "s have"} not been reviewed` : "All required items have been reviewed"}</span>
+          <span class="packet-review-summary__copy">${missingCount ? `${missingCount} required item${missingCount === 1 ? " is" : "s are"} not yet saved` : "All required items are saved"}</span>
         </div>
         <ul class="packet-review-list" aria-label="Required and optional packet items">
           ${completeness.items.map((item) => `
-            <li class="packet-review-item packet-review-item--${item.reviewed ? "reviewed" : "missing"}" data-review-item="${escapeHtml(item.id)}" data-review-requirement="${item.requirement}" data-review-status="${item.status}">
-              <span class="packet-review-item__indicator" aria-hidden="true">${item.reviewed ? "✓" : item.requirement === "required" ? "!" : "—"}</span>
+            <li class="packet-review-item packet-review-item--${item.saved ? "saved" : "missing"}" data-review-item="${escapeHtml(item.id)}" data-review-requirement="${item.requirement}" data-review-status="${item.status}">
+              <span class="packet-review-item__indicator" aria-hidden="true">${item.saved ? (item.reviewed ? "✓" : "•") : item.requirement === "required" ? "!" : "—"}</span>
               <strong class="packet-review-item__label">${escapeHtml(item.label)}</strong>
               <span class="packet-review-item__requirement">${item.requirement === "required" ? "Required" : "Optional"}</span>
-              <span class="packet-review-item__status">${item.reviewed ? "Reviewed" : "Not reviewed"}</span>
+              <span class="packet-review-item__status">${item.saved ? (item.reviewed ? "Saved · reviewed" : "Saved · needs PHI confirmation") : "Not saved"}</span>
             </li>
           `).join("")}
         </ul>
@@ -463,7 +487,9 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     const admissionSections = patient.contextSections.filter(
       (section) => String(section.deidentifiedText || "").trim() || (section.residualWarnings || []).length
     );
-    const admissionCompleteness = evaluatePacketCompleteness(admissionSections, { scope: "admission" });
+    const admissionHasPrimaryNote = primaryTeamNoteHasContent(patient.admissionPrimaryTeamNote);
+    const admissionSourceCount = visibleContextSections.length + (admissionHasPrimaryNote ? 1 : 0);
+    const admissionCompleteness = sourceCapturePacketCheck(admissionSections, { structuredNote: patient.admissionPrimaryTeamNote, scope: "admission" }).completeness;
 
     return `
       <div class="stay-layout source-first-stay">
@@ -473,7 +499,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
             <button type="button" class="day-row admission-day-row ${admissionSelected ? "selected" : ""}" data-action="select-admission" aria-current="${admissionSelected ? "page" : "false"}">
               <span><strong>Admission</strong><span class="muted">Initial presentation and admission sources</span></span>
               <span class="day-row-meta">
-                <span class="muted">${visibleContextSections.length} source${visibleContextSections.length === 1 ? "" : "s"}</span>
+                <span class="muted">${admissionSourceCount} source${admissionSourceCount === 1 ? "" : "s"}</span>
                 ${renderRowReviewStatus(admissionCompleteness)}
               </span>
             </button>

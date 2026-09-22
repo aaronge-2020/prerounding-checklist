@@ -41,25 +41,33 @@ export function createVaultPresentation({ escapeHtml, icon }) {
       const creatingVault = !record;
       return `
         <div class="locked-vault-shell">
+          ${creatingVault ? `
+          <section class="vault-pitch surface-panel">
+            <h1 class="vault-pitch-title">Preround</h1>
+            <p class="vault-pitch-lede">A local workspace for inpatient pre-rounding: organize hospital-day updates, build bedside checklists, and draft OpenEvidence prompts &mdash; everything encrypted in your browser. Nothing is sent to a server.</p>
+            <div class="vault-edu-disclaimer" role="note">
+              ${icon("shield")}
+              <span><strong>Educational use only.</strong> Use de-identified room labels and synthetic details &mdash; never real patient names, MRNs, or other identifiers. This is a personal study aid, not audited PHI storage or a hospital system of record.</span>
+            </div>
+            <div class="vault-demo-cta">
+              <button class="button--primary vault-primary-action" type="button" data-action="start-guided-demo">${icon("play")} Try the demo &mdash; no setup needed</button>
+              <span class="muted">Walks through a synthetic patient end to end. Nothing is saved and no passphrase is required.</span>
+            </div>
+          </section>` : ""}
           <section class="vault-access surface-panel">
             <div class="section-heading vault-access-heading">
               <div>
-                ${creatingVault ? '<div class="vault-onboarding-kicker">Start here <span>·</span> Step 1 of 2</div>' : ""}
-                <h2 id="vault-heading">${creatingVault ? "Create your local vault" : "Unlock your local vault"}</h2>
-                <p class="muted">${creatingVault ? "Choose one passphrase to protect this browser's data. After this, click Guided demo in the left sidebar to start the synthetic walkthrough." : "Your passphrase decrypts patient, workup, checklist, and prompt data stored on this device. Nothing loads until you unlock it."}</p>
+                <h2 id="vault-heading">${creatingVault ? "Or create your local vault" : "Unlock your local vault"}</h2>
+                <p class="muted">${creatingVault ? "Choose one passphrase to protect this browser's data so you can save your own de-identified patients." : "Your passphrase decrypts patient, workup, checklist, and prompt data stored on this device. Nothing loads until you unlock it."}</p>
               </div>
               <div class="transfer-actions">
                 <button class="button--secondary button--transfer" type="button" data-action="restore-vault">${icon("upload")} Restore vault</button>
                 <input id="restoreVaultInput" type="file" accept="application/json" hidden>
               </div>
             </div>
-            ${creatingVault ? `<ol class="vault-onboarding-steps" aria-label="Getting started">
-              <li class="is-current"><span class="vault-step-number">1</span><span><strong>Create your vault</strong><small>Choose a passphrase you will remember.</small></span></li>
-              <li><span class="vault-step-number">2</span><span><strong>Click Guided demo</strong><small>See the synthetic walkthrough without adding patient data.</small></span></li>
-            </ol>` : ""}
             <div class="vault-access-controls ${record ? "" : "vault-setup-controls"}">
               ${vaultPassphraseField(record, vaultUnlockError)}
-              <button class="button--primary vault-primary-action" type="button" data-action="unlock-vault">${record ? "Unlock vault" : "Create vault and continue"}</button>
+              <button class="button--primary vault-primary-action" type="button" data-action="unlock-vault" disabled>${record ? "Unlock vault" : "Create vault and continue"}</button>
             </div>
             ${
               record
@@ -71,6 +79,14 @@ export function createVaultPresentation({ escapeHtml, icon }) {
                 : ""
             }
           </section>
+          <footer class="vault-trust-footer">
+            <span>Preround is open source &mdash; verify the trust claims yourself.</span>
+            <div class="vault-trust-links">
+              <a href="https://github.com/aaronge-2020/prerounding-checklist" target="_blank" rel="noopener">${icon("externalLink")} GitHub repo</a>
+              <a href="https://github.com/aaronge-2020/prerounding-checklist/blob/main/PRIVACY.md" target="_blank" rel="noopener">${icon("externalLink")} Privacy notes</a>
+              <a href="https://github.com/aaronge-2020/prerounding-checklist/blob/main/SECURITY.md" target="_blank" rel="noopener">${icon("externalLink")} Security posture</a>
+            </div>
+          </footer>
         </div>
       `;
     }

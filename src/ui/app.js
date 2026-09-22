@@ -9,6 +9,7 @@ import {
 import {
   activePatient,
   archivePatient,
+  createEmptyVaultState,
   createPatientRecord,
   removeWorkupOverride,
   setActivePatient,
@@ -37,6 +38,7 @@ import {
   reorderSectionsById,
   replaceSectionsFromFormAsync
 } from "../patient-context/sections.js?v=20260921-medication-card-v4";
+import { clinicalParseWarning } from "../patient-context/clinical-export-parser.js?v=20260921-medication-card-v4";
 import {
   createEphemeralRedactionReview,
   refreshEphemeralRedactionReview,
@@ -176,6 +178,7 @@ import { createTokenColorPickerController } from "./token-color-picker.js?v=2026
 import { preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20260921-preserve-view-scroll";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-medication-card-v4";
 import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
+import { createVaultPassphraseController } from "./vault/passphrase-controller.js?v=20260921-landing-onboarding";
 import {
   createRedactionPresentation,
   redactionPosition,
@@ -275,6 +278,7 @@ const app = {
   pendingRemoveDayId: "",
   pendingDeleteWorkupId: "",
   demoSession: null,
+  demoPreviewMode: false,
   admissionDate: "" // in-memory copy of the encrypted patient's admission-date anchor
 };
 const viewIds = ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "settings"];
@@ -306,6 +310,13 @@ const workupPresentation = createWorkupPresentation({ escapeHtml, icon });
 const promptsPresentation = createPromptsPresentation({ escapeHtml });
 const settingsPresentation = createSettingsPresentation({ escapeHtml });
 const vaultPresentation = createVaultPresentation({ escapeHtml, icon });
+const {
+  showVaultUnlockError,
+  clearVaultUnlockError,
+  toggleVaultPassphraseVisibility,
+  updateVaultPassphraseStrength,
+  updateVaultPrimaryActionEnabled
+} = createVaultPassphraseController({ app });
 const demoController = createDemoController({
   app,
   byId,
@@ -927,6 +938,7 @@ function clearSensitiveSession() {
   if (app.demoSession) demoSessionController.exit({ renderAfter: false });
   app.vault = null;
   app.passphrase = "";
+  app.demoPreviewMode = false;
   app.vaultUnlockError = "";
   clearPatientScopedSession();
   app.draftWorkup = null;
@@ -1015,65 +1027,6 @@ function renderStatusBar() {
         )
         .join("")
     : `<option>No patient selected</option>`;
-}
-
-function showVaultUnlockError(message) {
-  app.vaultUnlockError = message;
-  const input = byId("vaultPassphrase");
-  const error = byId("vaultPassphraseError");
-  if (input) {
-    input.setAttribute("aria-describedby", "vaultPassphraseError");
-    input.setAttribute("aria-invalid", "true");
-    input.focus({ preventScroll: true });
-  }
-  if (error) {
-    error.textContent = message;
-    error.hidden = false;
-  }
-}
-
-function clearVaultUnlockError() {
-  if (!app.vaultUnlockError) return;
-  app.vaultUnlockError = "";
-  byId("vaultPassphrase")?.removeAttribute("aria-describedby");
-  byId("vaultPassphrase")?.removeAttribute("aria-invalid");
-  const error = byId("vaultPassphraseError");
-  if (error) {
-    error.textContent = "";
-    error.hidden = true;
-  }
-}
-
-function toggleVaultPassphraseVisibility() {
-  const input = byId("vaultPassphrase");
-  const button = byId("vaultPassphraseVisibility");
-  if (!input || !button) return;
-  const isMasked = input.type === "password";
-  input.type = isMasked ? "text" : "password";
-  button.setAttribute("aria-label", isMasked ? "Hide passphrase" : "Show passphrase");
-  button.title = isMasked ? "Hide passphrase" : "Show passphrase";
-  button.setAttribute("aria-pressed", String(isMasked));
-}
-
-function updateVaultPassphraseStrength(value) {
-  const strength = byId("vaultPassphraseStrength");
-  if (!strength) return;
-  const length = value.length;
-  const words = value.trim() ? value.trim().split(/\s+/).length : 0;
-  let state = "is-empty";
-  let label = "Use at least 12 characters and two or more words.";
-  if (length > 0 && length < 12) {
-    state = "is-weak";
-    label = `${length}/12 characters — add more words, not a short code.`;
-  } else if (length >= 12 && words < 2) {
-    state = "is-fair";
-    label = "Long enough, but use two or more words for a stronger passphrase.";
-  } else if (length >= 12) {
-    state = "is-strong";
-    label = "Strong passphrase — multiple words make it easier to remember.";
-  }
-  strength.className = `vault-passphrase-strength ${state}`;
-  strength.querySelector(".vault-passphrase-strength-label").textContent = label;
 }
 
 function renderVault() {
@@ -1231,6 +1184,7 @@ function renderSectionEditor(section, scope) {
       review,
       draftText,
       structuredDisplay: "",
+      parseWarning: clinicalParseWarning(section.sourceKind, draftText),
       captures: reviewSectionsForScope(scope),
       reviewFor: (id) => sectionReviewFor(scope, id)
     });
@@ -1771,14 +1725,32 @@ async function handleClick(event) {
     if (
       !app.phoneBundle &&
       !vaultIsUnlocked() &&
-      !["unlock-vault", "toggle-vault-passphrase", "restore-vault", "request-delete-vault", "confirm-delete-vault"].includes(action)
+      !["unlock-vault", "toggle-vault-passphrase", "restore-vault", "request-delete-vault", "confirm-delete-vault", "start-guided-demo"].includes(action)
     ) {
       throw new Error("Unlock the local vault before using workspace tools.");
     }
     if (app.view === "review" && reviewController.click(target)) return;
     if (action === "unlock-vault") await unlockVault();
-    if (action === "start-guided-demo" || action === "restart-guided-demo") demoSessionController.start();
-    if (action === "exit-guided-demo") demoSessionController.exit();
+    if (action === "start-guided-demo" || action === "restart-guided-demo") {
+      if (!vaultIsUnlocked() && !app.demoSession) {
+        app.demoPreviewMode = true;
+        app.vault = createEmptyVaultState();
+        app.passphrase = "demo-preview-session";
+      }
+      demoSessionController.start();
+    }
+    if (action === "exit-guided-demo") {
+      if (app.demoPreviewMode) {
+        demoSessionController.exit({ renderAfter: false });
+        app.demoPreviewMode = false;
+        app.vault = null;
+        app.passphrase = "";
+        setStatus("Guided demo closed. No vault was created — nothing was saved.");
+        render();
+      } else {
+        demoSessionController.exit();
+      }
+    }
     if (action === "toggle-vault-passphrase") toggleVaultPassphraseVisibility();
     if (action === "lock-vault") lockVault();
     if (action === "request-delete-vault") requestVaultDeletion();
@@ -1983,20 +1955,33 @@ async function unlockVault() {
     showVaultUnlockError("Use a passphrase with at least 12 characters to create this vault.");
     return;
   }
+  let vault;
   try {
-    const vault = await loadOrCreateVault(passphrase);
-    app.vault = vault;
-    app.passphrase = passphrase;
-    await refreshGuidelines();
-    admissionDateAnchor.restore();
-    app.vaultUnlockError = "";
-    app.view = active() ? "daily" : "vault";
-    resetVaultInactivityTimer();
-    setStatus("Vault unlocked.");
-    render();
+    vault = await loadOrCreateVault(passphrase);
   } catch {
     showVaultUnlockError("Could not unlock this vault. Check the passphrase and try again.");
+    return;
   }
+  // Decryption succeeded, so the vault is unlocked as of here. The guideline
+  // refresh and admission-date restore below are best-effort setup, not part
+  // of authenticating the passphrase - if either throws (e.g. a transient
+  // fetch of a guideline seed file), it must never be reported as "wrong
+  // passphrase" and must never leave app.vault/app.passphrase set while the
+  // UI is stuck showing the locked screen with an error (vaultIsUnlocked()
+  // would already be true internally at that point).
+  app.vault = vault;
+  app.passphrase = passphrase;
+  app.vaultUnlockError = "";
+  try {
+    await refreshGuidelines();
+    admissionDateAnchor.restore();
+  } catch (error) {
+    console.error("Vault unlocked, but refreshing guidelines or the admission date failed:", error);
+  }
+  app.view = active() ? "daily" : "vault";
+  resetVaultInactivityTimer();
+  setStatus("Vault unlocked.");
+  render();
 }
 
 function lockVault(message = "Vault locked.") {
@@ -4021,6 +4006,7 @@ function handleInput(event) {
   if (event.target.id === "vaultPassphrase") {
     clearVaultUnlockError();
     updateVaultPassphraseStrength(event.target.value);
+    updateVaultPrimaryActionEnabled(event.target.value);
     return;
   }
   if (event.target.id === "quickDeidAdmissionDateInput" || event.target.id === "dailyAdmissionDateInput") {

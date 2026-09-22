@@ -89,7 +89,7 @@ try {
   assert.match(navigation.headers()["content-type"] || "", /text\/html/);
   assert.equal(page.url(), baseUrl);
   await page.waitForSelector("#vaultPassphrase");
-  assert.equal(await page.title(), "Pre-Rounding Checklist Builder");
+  assert.equal(await page.title(), "Preround");
   await page.waitForSelector("#vaultContent .locked-vault-shell");
   assert.equal(await page.locator("body").evaluate((node) => node.classList.contains("vault-locked")), true);
   assert.equal(await page.locator(".side-nav").isHidden(), true);
@@ -528,14 +528,14 @@ Crossmatch: Red Blood Cells: Rpt (P)
   await page.fill('[data-structured-note-scope="daily"][data-structured-note-field="interval_events"]', "Overnight oxygen requirement improved.");
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
   await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
-  assert.match(await page.locator(".packet-review-summary").innerText(), /2 required items have not been reviewed/);
+  assert.match(await page.locator(".packet-review-summary").innerText(), /2 required items are not yet saved/);
   assert.equal(await page.locator('[data-action="open-progress-note"]').isEnabled(), true, "missing review reminders must not block note generation");
   await page.click('[data-action="select-daily-source-kind"][data-source-kind="vital_signs"]');
   await page.fill("#dailySourceDraft", "Pulse 76; respirations 16; blood pressure 118/64.");
   await page.click('[data-action="add-daily-source"]');
   await page.waitForFunction(() => document.querySelectorAll("#dailySources .source-capture-editor").length === 1);
   assert.match(await page.locator("#dailySources .source-capture-editor").nth(0).innerText(), /Vital signs/);
-  assert.match(await page.locator(".packet-review-summary").innerText(), /1 required item has not been reviewed/);
+  assert.match(await page.locator(".packet-review-summary").innerText(), /1 required item is not yet saved/);
   await page.click('[data-action="select-daily-source-kind"][data-source-kind="laboratory_results"]');
   await page.fill("#dailySourceDraft", syntheticEpicResults);
   await page.click('[data-action="add-daily-source"]');
@@ -543,7 +543,7 @@ Crossmatch: Red Blood Cells: Rpt (P)
   assert.match(await page.locator("#dailySources .source-capture-editor").nth(1).innerText(), /Laboratory results/);
   assert.equal(await page.locator('#dailySources .source-capture-editor [data-clinical-view]').count(), 0, "saved daily summaries should appear only on Review Data");
   assert.match(await page.locator(".packet-check").innerText(), /Included[\s\S]*Primary team note, Vital signs, Laboratory results/);
-  assert.match(await page.locator(".packet-review-summary").innerText(), /All required items have been reviewed/);
+  assert.match(await page.locator(".packet-review-summary").innerText(), /All required items are saved/);
   assert.equal(await page.locator('[data-action="open-progress-note"]').isEnabled(), true);
   if (process.env.UI_QA_SCREENSHOT) await page.screenshot({ path: process.env.UI_QA_SCREENSHOT, fullPage: true });
 

@@ -869,7 +869,7 @@ function sentenceBreakIndexForName(span) {
   const matches = [...String(span || "").matchAll(/\.\s+[A-Z]/g)];
   for (const match of matches) {
     const beforeDot = span.slice(0, match.index + 1);
-    if (/\b(?:Dr|Doctor|Mr|Mrs|Ms|Miss|Mx|Prof|Professor)\.$/i.test(beforeDot.trim())) {
+    if (/\b(?:Dr|Doctor|Mr|Mrs|Ms|Miss|Mx|Prof|Professor|St)\.$/.test(beforeDot.trim())) {
       continue;
     }
     if (/\b[A-Za-z]\.[ \t]*$/i.test(beforeDot)) {
@@ -1354,6 +1354,16 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
     // US Passport (9 digits or letter+8 digits from Presidio)
     { label: "ID", regex: /\b[A-Z][0-9]{8}\b/g },
     { label: "PHONE", regex: /(?:\+?1[-.\s]?)?\(?\b\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g },
+    // International phone numbers: leading +, country code (1-3 digits), then
+    // 7–12 digits optionally grouped with spaces, dots, or dashes.
+    // Catches UK (+44 20 7946 0018), Australia (+61), Ireland (+353), etc.
+    // The leading \+ anchor avoids re-matching US "+1" numbers already caught
+    // above and prevents false positives on numeric clinical values (PH-03).
+    { label: "PHONE", regex: /\+\d{1,3}(?:[-.\s]\d{2,5}){1,5}(?=\s|$|[^\d])/g },
+    // Labeled 7-digit phone numbers: "Phone: 555-0142" or "Tel: 555 0142".
+    // Without an area code they are ambiguous in free text, but in a labeled
+    // phone context they are clearly phone numbers (AV-06).
+    { label: "PHONE", regex: /\b(?:Phone|Tel|Telephone|Cell|Mobile|Fax|Pager|Callback)\s*[:#]?\s*\d{3}[-.\s]\d{4}\b/gi },
     // Free-text date/time detection runs through chrono-node instead (see
     // addTemporalPatternEntities below) - it covers every format this list
     // used to enumerate by hand (ISO, slash/dash dates in any order, "Month
@@ -1502,6 +1512,10 @@ export function mergeEntities(entities, rawText) {
 }
 
 export function filterLikelyFalsePositiveEntities(rawText, entities) {
+  // Tracks identifier text values that have already passed the filter so that
+  // exact duplicates of accepted IDs are never dropped on a later occurrence
+  // (ID-03: same encounter number in a different line context leaked).
+  const acceptedIdTexts = new Set();
   return entities.filter((entity) => {
     if (entity.label === "ROOM") {
       const normalized = normalizePhrase(rawText.slice(entity.start, entity.end));
@@ -1575,6 +1589,13 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
           entity.placeholder = placeholderForLabel("ORGANIZATION");
           return true;
         }
+        // Trust model-flagged initial+surname patterns (e.g. "J. Smith") without
+        // demanding a nearby person-verb. parsePersonName rejects them because it
+        // strips initials before counting real parts, so they'd always fall through
+        // to the false-positive filter even when the model is correct (PN-08).
+        if (/^[A-Z]\.\s+[A-Z][A-Za-z'-]{1,}$/.test(span)) {
+          return true;
+        }
         return false;
       }
       // If it parses as a name but ends with a facility suffix, relabel
@@ -1601,7 +1622,20 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
       if (/^DEV(?:ICE)?[:#=](?=[A-Z0-9:._\/-]*\d)[A-Z0-9][A-Z0-9:._\/-]{2,}$/i.test(rawText.slice(entity.start, entity.end))) {
         return true;
       }
-      return !isLikelyIdentifierFalsePositive(rawText, entity.start, entity.end);
+      const idText = rawText.slice(entity.start, entity.end).trim();
+      // An exact duplicate of an already-accepted identifier is the safest
+      // detection available — the first occurrence's acceptance proves the
+      // value is a real identifier (ID-03: third mention of "987654321"
+      // leaked because the context differed just enough to trigger the
+      // clinical-result-line filter for that instance).
+      if (acceptedIdTexts.has(idText)) {
+        return true;
+      }
+      const keep = !isLikelyIdentifierFalsePositive(rawText, entity.start, entity.end);
+      if (keep) {
+        acceptedIdTexts.add(idText);
+      }
+      return keep;
     }
 
     if (entity.label === "NAME") {
@@ -2953,7 +2987,16 @@ function inferNameAliases(rawText, entities) {
 
 function addAliasRepeatEntities(rawText, entities, aliases) {
   aliases.forEach((alias) => {
-    const regex = new RegExp(`(^|[^A-Za-z])(${escapeRegExp(alias.text)})(?=$|[^A-Za-z])`, "g");
+    // Use case-insensitive matching for multi-word patient/contact name aliases
+    // so that lowercase occurrences of accepted names are still caught (PN-05,
+    // FM-06: "johnson" leaked when the model missed the lowercase surname even
+    // though "Robert Johnson" was already accepted as the patient name). Apply
+    // only to multi-word full names to avoid false positives from single-word
+    // aliases like surnames or first names that double as common words.
+    const isFullNameAlias = (alias.label === "PATIENT NAME" || alias.label === "CONTACT NAME") &&
+      alias.text.trim().split(/\s+/).length >= 2;
+    const flags = isFullNameAlias ? "gi" : "g";
+    const regex = new RegExp(`(^|[^A-Za-z])(${escapeRegExp(alias.text)})(?=$|[^A-Za-z])`, flags);
     for (const match of rawText.matchAll(regex)) {
       const start = match.index + match[1].length;
       const end = start + match[2].length;
@@ -2973,6 +3016,27 @@ function addAliasRepeatEntities(rawText, entities, aliases) {
         }
       }
       pushPatternEntity(entities, rawText, alias.label, start, end, alias.source || "alias repeat", `known alias: ${alias.text}`);
+    }
+
+    // Newline-tolerant secondary pass for multi-word patient/contact names
+    // (AV-02: "Mary\nSmith" — the model was inconsistent across line breaks,
+    // catching the second "Mary" but not the first because the newline broke
+    // the span it was evaluating). We only do this for full multi-word names
+    // where space → \s+ to avoid over-broadening single-word alias scope.
+    if (isFullNameAlias && alias.text.includes(" ")) {
+      const nlPattern = escapeRegExp(alias.text).replace(/ /g, "\\s+");
+      const nlRegex = new RegExp(`(^|[^A-Za-z])(${nlPattern})(?=$|[^A-Za-z])`, "gis");
+      for (const match of rawText.matchAll(nlRegex)) {
+        const start = match.index + match[1].length;
+        const end = start + match[2].length;
+        if (isSpanCovered(start, end, entities)) {
+          continue;
+        }
+        if (alias.requiresStrongContext && !hasStrongNameContext(rawText, start, end)) {
+          continue;
+        }
+        pushPatternEntity(entities, rawText, alias.label, start, end, alias.source || "alias repeat", `known alias (newline-split): ${alias.text}`);
+      }
     }
   });
   return entities;
@@ -3353,6 +3417,73 @@ function addExactStructuredPatientNameRepeats(rawText, entities) {
   return entities;
 }
 
+// Words too generic to serve as standalone organization aliases. These appear
+// in many org names but cannot uniquely identify a specific facility or employer.
+const GENERIC_ORG_HEAD_WORDS = new Set([
+  "the", "a", "an", "of", "and", "at", "in", "for", "to", "by", "with",
+  "new", "old", "east", "west", "north", "south", "central", "greater",
+  "metro", "regional", "national", "american", "united", "general",
+  "community", "partners", "health", "medical", "care", "group",
+  "center", "centre", "foundation", "network", "system", "services",
+  "associates", "association", "institute", "corporation", "company",
+  "college", "university", "school", "clinic", "hospital", "healthcare"
+]);
+
+/**
+ * Organization alias expansion (FC-03, AO-04): When a multi-word ORGANIZATION
+ * or FACILITY entity was accepted, its first distinctive capitalized word is
+ * often used alone in subsequent prose ("Spaulding accepted the patient...",
+ * "Raytheon provides his insurance..."). This function finds those standalone
+ * uses and adds them as ORGANIZATION entities under the same label.
+ *
+ * Guard: only emit an alias when the candidate word is ≥5 characters, is not
+ * clinical vocabulary, and is not one of the generic head words above. This
+ * avoids redacting short common words that happen to be part of an org name.
+ */
+function addOrganizationFirstWordAliases(rawText, entities) {
+  const orgLabels = new Set(["ORGANIZATION", "FACILITY"]);
+  // Gather the first distinctive word of every accepted multi-word org entity.
+  const orgFirstWords = new Map(); // lowercased key -> { original, label }
+  entities.forEach((entity) => {
+    if (!orgLabels.has(entity.label)) {
+      return;
+    }
+    const span = rawText.slice(entity.start, entity.end).trim();
+    const words = span.split(/\s+/);
+    if (words.length < 2) {
+      return;
+    }
+    // Skip if the first word is a generic lead or article.
+    const firstWord = words[0].replace(/[^A-Za-z'-]/g, "");
+    const firstNorm = firstWord.toLowerCase();
+    if (firstWord.length < 5 || GENERIC_ORG_HEAD_WORDS.has(firstNorm)) {
+      return;
+    }
+    // Skip if the word is clinical vocabulary (avoids redacting "Boston" from
+    // "Boston criteria" or similar clinical eponyms used in context).
+    if (nonNameClinicalWords.has(firstNorm) || clinicalAnchorWords.has(firstNorm)) {
+      return;
+    }
+    if (!orgFirstWords.has(firstNorm)) {
+      orgFirstWords.set(firstNorm, { original: firstWord, label: entity.label });
+    }
+  });
+
+  // For each distinctive first word, find standalone occurrences not already covered.
+  orgFirstWords.forEach(({ original, label }) => {
+    const regex = new RegExp(`(^|[^A-Za-z])(${escapeRegExp(original)})(?=$|[^A-Za-z])`, "g");
+    for (const match of rawText.matchAll(regex)) {
+      const start = match.index + match[1].length;
+      const end = start + match[2].length;
+      if (isSpanCovered(start, end, entities)) {
+        continue;
+      }
+      pushPatternEntity(entities, rawText, label, start, end, "org first-word alias", `distinctive first word of accepted org: ${original}`);
+    }
+  });
+  return entities;
+}
+
 function expandIdentityGraphEntities(rawText, seedEntities, maxPasses = 3) {
   let entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addExactStructuredPatientNameRepeats(rawText, addDictionaryNameEntities(rawText, seedEntities)), rawText));
   let graph = buildIdentityGraph(rawText, entities);
@@ -3365,6 +3496,9 @@ function expandIdentityGraphEntities(rawText, seedEntities, maxPasses = 3) {
     entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(promoteResidualNameEntities(rawText, entities, graph), rawText));
     graph = buildIdentityGraph(rawText, entities);
     entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addAliasRepeatEntities(rawText, entities, graph.aliases), rawText));
+    // Organization first-word alias expansion (FC-03, AO-04): after the alias
+    // pass has settled, propagate first distinctive words of accepted orgs.
+    entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addOrganizationFirstWordAliases(rawText, entities), rawText));
     if (entitySignature(entities) === before) {
       break;
     }

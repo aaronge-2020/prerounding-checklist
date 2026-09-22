@@ -159,8 +159,8 @@ assert.equal((sectionMarkup.match(/<textarea/g) || []).length, 1, "section mode 
 assert.match(sectionMarkup, /2 of 20 added/);
 assert.match(dailyMarkup, /Review completeness/);
 assert.match(dailyMarkup, /Required items are visible reminders, not blockers/);
-assert.match(dailyMarkup, /data-review-item="primary_note" data-review-requirement="required" data-review-status="not_reviewed"/);
-assert.match(dailyMarkup, /data-review-item="consult_note" data-review-requirement="optional" data-review-status="not_reviewed"/);
+assert.match(dailyMarkup, /data-review-item="primary_note" data-review-requirement="required" data-review-status="not_saved"/);
+assert.match(dailyMarkup, /data-review-item="consult_note" data-review-requirement="optional" data-review-status="not_saved"/);
 assert.match(dailyMarkup, /data-required-missing="3"/);
 const parsedSourceMarkup = dailyView.renderSourceParsePreview({
   scope: "daily",
