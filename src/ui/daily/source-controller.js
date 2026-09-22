@@ -4,7 +4,7 @@ import {
   clinicalParseWarning,
   parseClinicalExport,
   prepareClinicalExportForSave
-} from "../../patient-context/clinical-export-parser.js?v=20260921-medication-card-v4";
+} from "../../patient-context/clinical-export-parser.js?v=20260921-table-parser-v5";
 import {
   createEphemeralRedactionReview,
   reviewKey,

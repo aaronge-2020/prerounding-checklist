@@ -13,6 +13,7 @@ import {
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
 const parserRevision = "20260921-medication-card-v4";
+const clinicalParserRevision = "20260921-table-parser-v5";
 const primaryNoteRevision = "20260921-medication-card-v4";
 const runtimeSources = {
   index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
@@ -46,10 +47,10 @@ assert.match(runtimeSources.app, new RegExp(`redaction/presentation\\.js\\?v=${p
 assert.match(runtimeSources.app, new RegExp(`prompts/presentation\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.app, new RegExp(`prompts/controller\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.app, new RegExp(`token-color-picker\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.controller, new RegExp(`clinical-export-parser\\.js\\?v=${parserRevision}`));
+assert.match(runtimeSources.controller, new RegExp(`clinical-export-parser\\.js\\?v=${clinicalParserRevision}`));
 assert.match(runtimeSources.controller, new RegExp(`daily-updates/days\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.dailyPresentation, new RegExp(`structured-clinical-data\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.dailyPresentation, new RegExp(`clinical-export-parser\\.js\\?v=${parserRevision}`));
+assert.match(runtimeSources.dailyPresentation, new RegExp(`clinical-export-parser\\.js\\?v=${clinicalParserRevision}`));
 assert.match(runtimeSources.dailyPresentation, new RegExp(`packet-completeness\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.persistence, new RegExp(`vault\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.sections, new RegExp(`vault\\.js\\?v=${parserRevision}`));
@@ -67,6 +68,7 @@ assert.match(runtimeSources.promptPresentation, new RegExp(`custom-templates\\.j
 assert.match(runtimeSources.phoneSession, new RegExp(`daily-updates/days\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.examFindings, new RegExp(`daily-updates/days\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.examFindings, new RegExp(`app/state/vault\\.js\\?v=${parserRevision}`));
+assert.match(runtimeSources.app, new RegExp(`clinical-export-parser\\.js\\?v=${clinicalParserRevision}`));
 assert.match(runtimeSources.parser, new RegExp(`epic-clinical-export-parser\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.parser, new RegExp(`structured-clinical-data\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.epicParser, new RegExp(`structured-clinical-data\\.js\\?v=${parserRevision}`));
@@ -422,6 +424,31 @@ const savedWideEpicVitals = clinicalDisplayModelFromPromptText("vital_signs", pa
 assert.ok(savedWideEpicVitals.series.some(({ name }) => name === "Heart Rate (Monitored)"), "saved vital display must retain monitored heart rate");
 assert.ok(savedWideEpicVitals.series.some(({ name }) => name === "Systolic BP"), "saved vital display must retain separated blood pressure trends");
 assert.ok(savedWideEpicVitals.series.some(({ name }) => name === "FiO2"), "saved vital display must retain oxygen settings");
+
+const collapsedHeaderVitals = `| Date/timeTempHRBPRRSpO₂OxygenPain | | | | | | | |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 09/18 14:38 | 101.8°F | 112 | 108/66 | 24 | 88% | Room air | 4/10 |
+| 09/18 15:05 | 101.2°F | 106 | 110/68 | 22 | 95% | NC 2 L/min | 3/10 |`;
+const parsedCollapsedHeaderVitals = parseClinicalExport(collapsedHeaderVitals);
+assert.equal(parsedCollapsedHeaderVitals.formatId, "epic_wide_vitals", "collapsed Markdown vital headers must be recovered despite blank placeholder cells");
+assert.equal(parsedCollapsedHeaderVitals.structuredData.groups.length, 2, "month/day timestamps without a copied year must remain recognizable");
+assert.ok(parsedCollapsedHeaderVitals.structuredData.groups[0].rows.some(({ name, value, unit }) => name === "Temperature" && value === "101.8" && unit === "°F"));
+assert.ok(parsedCollapsedHeaderVitals.structuredData.groups[0].rows.some(({ name, value }) => name === "Heart Rate" && value === "112"));
+assert.ok(parsedCollapsedHeaderVitals.structuredData.groups[0].rows.some(({ name, value }) => name === "SpO2" && value === "88"));
+
+const collapsedHeaderLabs = `| Test NameResultUnitsReference RangeFlagCollected | | | | | |
+| --- | --- | --- | --- | --- | --- |
+| WBC | 12.1 | 10*3/uL | 4.0-10.0 | H | 09/18 14:38 |`;
+const parsedCollapsedHeaderLabs = parseClinicalExport(collapsedHeaderLabs);
+assert.equal(parsedCollapsedHeaderLabs.formatId, "delimited_lab_table");
+assert.equal(parsedCollapsedHeaderLabs.structuredData.groups[0].rows[0].name, "WBC");
+
+const collapsedHeaderMar = `| MedicationDoseRouteFrequencyAdministration Status | | | | |
+| --- | --- | --- | --- | --- |
+| ceftriaxone | 1 g | IV | every 24 hours | Given |`;
+const parsedCollapsedHeaderMar = parseClinicalExport(collapsedHeaderMar);
+assert.equal(parsedCollapsedHeaderMar.formatId, "delimited_medication_table");
+assert.equal(parsedCollapsedHeaderMar.structuredData.groups[0].rows[0].name, "ceftriaxone");
 
 const fragmentedCell = (value = "") => `|   |
 | - |

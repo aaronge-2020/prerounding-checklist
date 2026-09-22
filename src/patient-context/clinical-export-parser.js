@@ -405,6 +405,81 @@ function delimitedCells(line) {
   return [];
 }
 
+function normalizedHeaderKey(value) {
+  return compactLine(value)
+    .normalize("NFKD")
+    .replace(/[₀-₉]/g, (digit) => String("₀₁₂₃₄₅₆₇₈₉".indexOf(digit)))
+    .replace(/[^a-z0-9]+/gi, "")
+    .toLowerCase();
+}
+
+const VITAL_HEADER_TOKENS = [
+  [/date\s*\/\s*time|date\s*time/i, "Date/Time"],
+  [/heart\s*rate\s*\(\s*monitored\s*\)|monitored\s*heart\s*rate/i, "Heart Rate (Monitored)"],
+  [/oxygen\s*flow\s*rate|o2\s*flow\s*rate|oxygen\s*flow|o2\s*flow/i, "O2 Flow Rate"],
+  [/oxygen\s*saturation|o2\s*saturation|spo(?:2|₂)/i, "SpO2"],
+  [/oxygen\s*device|o2\s*device/i, "O2 Device"],
+  [/arterial\s*blood\s*pressure|arterial\s*bp/i, "Arterial BP"],
+  [/arterial\s*mean\s*arterial\s*pressure|arterial\s*map/i, "Arterial MAP"],
+  [/respiratory\s*rate|respirations|resp|rr/i, "Resp"],
+  [/blood\s*pressure|bp/i, "BP"],
+  [/temperature|temp/i, "Temp"],
+  [/heart\s*rate|pulse|hr/i, "Heart Rate"],
+  [/mean\s*arterial\s*pressure|map/i, "MAP"],
+  [/fraction\s*of\s*inspired\s*oxygen|fio2/i, "FiO2"],
+  [/oxygen|o2/i, "O2 Device"],
+  [/pain(?:\s*score)?/i, "Pain"],
+  [/weight/i, "Weight"]
+];
+
+const LAB_HEADER_TOKENS = [
+  [/reference\s*(?:range|interval)|ref\s*(?:range|interval)/i, "reference_range"],
+  [/collection\s*date\s*\/\s*time|collected\s*date\s*\/\s*time|date\s*\/\s*time/i, "collected"],
+  [/test\s*name|test\s*description|component|analyte|laboratory\s*test|lab\s*test|test/i, "name"],
+  [/result|value/i, "value"],
+  [/abnormal(?:ity)?|flag/i, "flag"],
+  [/collected|collection|date|time/i, "collected"],
+  [/units?|uom/i, "unit"]
+];
+
+const MEDICATION_HEADER_TOKENS = [
+  [/medication\s*name|medication|drug\s*name|drug|order\s*name/i, "name"],
+  [/administration\s*(?:action|status|time)|admin\s*(?:action|status|time)|given/i, "status"],
+  [/instructions?|comments?|notes?/i, "instructions"],
+  [/frequency|freq/i, "frequency"],
+  [/date\s*\/\s*time|date|time|start|end/i, "timing"],
+  [/action|status/i, "status"],
+  [/dose/i, "dose"],
+  [/route/i, "route"]
+];
+
+function tokenizeCollapsedHeader(value, definitions) {
+  const source = compactLine(value);
+  const headers = [];
+  let offset = 0;
+  while (offset < source.length) {
+    const remaining = source.slice(offset);
+    const whitespace = remaining.match(/^\s+/)?.[0].length || 0;
+    offset += whitespace;
+    if (offset >= source.length) break;
+    let best = null;
+    for (const [pattern, canonical] of definitions) {
+      const match = source.slice(offset).match(new RegExp(`^(?:${pattern.source})`, pattern.flags.replace("g", "")));
+      if (match && (!best || match[0].length > best.text.length)) best = { text: match[0], canonical };
+    }
+    if (!best) return [];
+    headers.push(best.canonical);
+    offset += best.text.length;
+  }
+  return headers;
+}
+
+function recoverCollapsedHeaders(cells, definitions) {
+  const nonempty = cells.filter(Boolean);
+  if (nonempty.length !== 1 || cells.length < 2) return [];
+  return tokenizeCollapsedHeader(nonempty[0], definitions);
+}
+
 const EPIC_WIDE_VITAL_HEADERS = [
   "Date/Time",
   "Temp",
@@ -428,7 +503,9 @@ function cleanVitalCell(value) {
 
 function vitalTableHeaders(line) {
   const cells = delimitedCells(line);
-  if (cells.length >= 8 && /date\s*\/\s*time/i.test(cells[0]) && cells.some((cell) => /(?:temp|spo2|heart rate|resp)/i.test(cell))) return cells;
+  const collapsed = recoverCollapsedHeaders(cells, VITAL_HEADER_TOKENS);
+  if (collapsed.length && collapsed[0] === "Date/Time" && collapsed.some((cell) => /^(?:Temp|Heart Rate|Resp|SpO2)$/.test(cell))) return collapsed;
+  if (cells.length >= 4 && /date\s*\/?\s*time/i.test(cells[0]) && cells.some((cell) => /(?:temp|spo(?:2|₂)|heart\s*rate|\bhr\b|resp|\brr\b|blood\s*pressure|\bbp\b)/i.test(cell))) return cells;
   const compactHeader = cells.join(" ");
   if (/date\s*\/\s*time.*temp.*heart rate.*spo2/i.test(compactHeader)) return EPIC_WIDE_VITAL_HEADERS;
   return [];
@@ -442,26 +519,28 @@ function numberAndUnit(value, defaultUnit = "") {
 function vitalRowsForCell(name, rawValue, sourceIndex) {
   const value = cleanVitalCell(rawValue);
   if (!value) return [];
+  const headerKey = normalizedHeaderKey(name);
   const row = (measurement, parsedValue, unit = "") => ({ name: measurement, value: parsedValue, unit, sourceIndex });
-  if (/^(?:BP|Blood Pressure)$/i.test(name) || /^Arterial BP$/i.test(name)) {
+  if (["bp", "bloodpressure", "arterialbp", "arterialbloodpressure"].includes(headerKey)) {
     const match = value.match(/(\d{2,3})\s*\/\s*(\d{2,3})/);
     if (!match) return [row(name, value)];
-    const prefix = /^Arterial/i.test(name) ? "Arterial " : "";
+    const prefix = headerKey.startsWith("arterial") ? "Arterial " : "";
     return [row(`${prefix}Systolic BP`, match[1], "mmHg"), row(`${prefix}Diastolic BP`, match[2], "mmHg")];
   }
   const definitions = [
-    [/^(?:Temp|Temperature)$/i, "Temperature", "°C"],
-    [/^Pulse$/i, "Pulse", "bpm"],
-    [/^Heart Rate/i, "Heart Rate (Monitored)", "bpm"],
-    [/^(?:Resp|Respirations|Respiratory Rate)$/i, "Respirations", "breaths/min"],
-    [/^MAP$/i, "MAP (cuff)", "mmHg"],
-    [/^Arterial MAP$/i, "MAP (arterial)", "mmHg"],
-    [/^SpO2/i, "SpO2", "%"],
-    [/^O2 Flow/i, "O2 Flow Rate", "L/min"],
-    [/^FiO2/i, "FiO2", "%"],
-    [/^Weight/i, "Weight", "kg"]
+    [["temp", "temperature"], "Temperature", /°?\s*f\b/i.test(value) ? "°F" : "°C"],
+    [["pulse"], "Pulse", "bpm"],
+    [["hr", "heartrate"], "Heart Rate", "bpm"],
+    [["heartratemonitored", "monitoredheartrate"], "Heart Rate (Monitored)", "bpm"],
+    [["rr", "resp", "respirations", "respiratoryrate"], "Respirations", "breaths/min"],
+    [["map", "meanarterialpressure"], "MAP (cuff)", "mmHg"],
+    [["arterialmap", "arterialmeanarterialpressure"], "MAP (arterial)", "mmHg"],
+    [["spo2", "oxygensaturation", "o2saturation"], "SpO2", "%"],
+    [["o2flow", "o2flowrate", "oxygenflow", "oxygenflowrate"], "O2 Flow Rate", "L/min"],
+    [["fio2", "fractionofinspiredoxygen"], "FiO2", "%"],
+    [["weight"], "Weight", "kg"]
   ];
-  const definition = definitions.find(([pattern]) => pattern.test(name));
+  const definition = definitions.find(([keys]) => keys.includes(headerKey));
   if (!definition) return [row(name.replace(/^\$\s*/, ""), value)];
   const numeric = numberAndUnit(value, definition[2]);
   return numeric ? [row(definition[1], numeric.value, numeric.unit)] : [row(definition[1], value)];
@@ -479,7 +558,7 @@ function renderWideVitalTable(lines = []) {
     const cells = delimitedCells(lines[index]);
     if (!cells.length || cells.every((cell) => /^:?-{3,}:?$/.test(compactLine(cell)))) continue;
     const timestamp = cleanVitalCell(cells[0]);
-    if (!/^\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\s+\d{3,4}$/.test(timestamp)) continue;
+    if (!/^\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?(?:\s+|\s*@\s*)(?:\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?|\d{3,4})$/i.test(timestamp)) continue;
     const rows = headers.slice(1).flatMap((header, cellIndex) => vitalRowsForCell(header, cells[cellIndex + 1], index));
     if (rows.length) groups.push({ id: `vitals_${groups.length + 1}`, label: "Vital signs", timestamp, rows: rows.map((row, rowIndex) => ({ id: `vital_${groups.length + 1}_${rowIndex + 1}`, ...row })) });
   }
@@ -683,25 +762,54 @@ function renderFragmentedLabsWithWideVitals(lines = []) {
 }
 
 function renderDelimitedClipboardTable(lines = []) {
-  const headerIndex = lines.findIndex((line, index) => index < 12 && delimitedCells(line).length >= 2);
+  const headerCandidates = lines.slice(0, 12).map((line, index) => {
+    const cells = delimitedCells(line);
+    const collapsedLab = recoverCollapsedHeaders(cells, LAB_HEADER_TOKENS);
+    const collapsedMedication = recoverCollapsedHeaders(cells, MEDICATION_HEADER_TOKENS);
+    const rawKeys = cells.map(normalizedHeaderKey);
+    const canonical = (keys) => keys.map((key) => {
+      if (["component", "test", "testname", "testdescription", "analyte", "laboratorytest", "labtest"].includes(key)) return "name";
+      if (["result", "value"].includes(key)) return "value";
+      if (["unit", "units", "uom"].includes(key)) return "unit";
+      if (["referencerange", "referenceinterval", "refrange", "refinterval", "range"].includes(key)) return "reference_range";
+      if (["flag", "abnormal", "abnormality"].includes(key)) return "flag";
+      if (["collected", "collection", "collectiondatetime", "collecteddatetime", "datetime"].includes(key)) return "collected";
+      if (["medication", "medicationname", "drug", "drugname", "ordername"].includes(key)) return "name";
+      if (["frequency", "freq"].includes(key)) return "frequency";
+      if (["administration", "administrationaction", "administrationstatus", "administrationtime", "adminaction", "adminstatus", "admintime", "action", "status", "given"].includes(key)) return "status";
+      if (["instruction", "instructions", "comment", "comments", "note", "notes"].includes(key)) return "instructions";
+      if (["date", "time", "start", "end"].includes(key)) return "timing";
+      return key;
+    });
+    const labHeaders = collapsedLab.length ? collapsedLab : canonical(rawKeys).map((header, cellIndex) => {
+      if (["date", "time"].includes(rawKeys[cellIndex])) return "collected";
+      if (rawKeys[cellIndex] === "status") return "flag";
+      return header;
+    });
+    const medicationHeaders = collapsedMedication.length ? collapsedMedication : canonical(rawKeys);
+    const labTable = labHeaders.includes("name") && labHeaders.includes("value");
+    const medicationTable = medicationHeaders.includes("name") && medicationHeaders.some((header) => ["dose", "frequency", "route", "timing", "status"].includes(header));
+    return { index, labTable, medicationTable, headers: medicationTable ? medicationHeaders : labHeaders };
+  });
+  const candidate = headerCandidates.find(({ labTable, medicationTable }) => labTable || medicationTable);
+  const headerIndex = candidate?.index ?? -1;
   if (headerIndex < 0) return null;
-  const headers = delimitedCells(lines[headerIndex]);
-  const normalizedHeaders = headers.map((header) => header.toLowerCase());
-  const labTable =
-    normalizedHeaders.some((header) => /^(?:component|test|test name|analyte)$/.test(header)) &&
-    normalizedHeaders.some((header) => /^(?:result|value)$/.test(header));
-  const medicationTable =
-    normalizedHeaders.some((header) => /^(?:medication|drug|medication name)$/.test(header)) &&
-    normalizedHeaders.some((header) => /(?:action|administration|status|given)/.test(header));
-  if (!labTable && !medicationTable) return null;
+  const normalizedHeaders = candidate.headers;
+  const { labTable, medicationTable } = candidate;
 
   const rows = [];
   for (let index = headerIndex + 1; index < lines.length; index += 1) {
     if (!String(lines[index] || "").trim()) continue;
     const cells = delimitedCells(lines[index]);
     if (cells.length < 2) continue;
-    const values = Object.fromEntries(normalizedHeaders.map((header, cellIndex) => [header, cells[cellIndex] || ""]));
-    if (Object.values(values).filter(Boolean).length >= 2) rows.push({ values, sourceIndex: index });
+    if (cells.every((cell) => /^:?-{3,}:?$/.test(compactLine(cell)))) continue;
+    const values = {};
+    normalizedHeaders.forEach((header, cellIndex) => {
+      const cell = cells[cellIndex] || "";
+      if (!header || !cell) return;
+      values[header] = values[header] ? `${values[header]} ${cell}` : cell;
+    });
+    if ((labTable && values.name && values.value) || (medicationTable && values.name)) rows.push({ values, sourceIndex: index });
   }
   if (!rows.length) return null;
   const noun = medicationTable ? "medication activity" : "laboratory results";
@@ -716,30 +824,30 @@ function renderDelimitedClipboardTable(lines = []) {
         timestamp: "",
         rows: rows.map((row, index) => ({
           id: `medication_${index + 1}`,
-          name: valueFor(row, [/^(?:medication|drug|medication name)$/]),
-          dose: valueFor(row, [/dose/]),
-          frequency: valueFor(row, [/(?:frequency|freq)/]),
-          route: valueFor(row, [/route/]),
-          timing: valueFor(row, [/(?:time|date|start|end)/]),
-          status: [valueFor(row, [/(?:action|administration|status|given)/])].filter(Boolean),
+          name: valueFor(row, [/^name$/]),
+          dose: valueFor(row, [/^dose$/]),
+          frequency: valueFor(row, [/^frequency$/]),
+          route: valueFor(row, [/^route$/]),
+          timing: valueFor(row, [/^timing$/]),
+          status: [valueFor(row, [/^status$/])].filter(Boolean),
           administrations: [],
           instructions: valueFor(row, [/(?:instruction|comment|note)/]),
           sourceIndex: row.sourceIndex
         }))
       }]
-    : [...new Set(rows.map((row) => valueFor(row, [/^(?:collected|collection|date\/time|date|time)$/])))].map((timestamp, groupIndex) => ({
+    : [...new Set(rows.map((row) => valueFor(row, [/^collected$/])))].map((timestamp, groupIndex) => ({
         id: `labs_${groupIndex + 1}`,
         label: "Laboratory results",
         timestamp,
-        rows: rows.filter((row) => valueFor(row, [/^(?:collected|collection|date\/time|date|time)$/]) === timestamp).map((row, rowIndex) => {
-          const value = valueFor(row, [/^(?:result|value)$/]);
-          const flag = valueFor(row, [/^(?:flag|abnormal|status)$/]);
-          const referenceRange = valueFor(row, [/(?:reference range|ref range|range)/]);
+        rows: rows.filter((row) => valueFor(row, [/^collected$/]) === timestamp).map((row, rowIndex) => {
+          const value = valueFor(row, [/^value$/]);
+          const flag = valueFor(row, [/^flag$/]);
+          const referenceRange = valueFor(row, [/^reference_range$/]);
           return {
             id: `lab_${groupIndex + 1}_${rowIndex + 1}`,
-            name: valueFor(row, [/^(?:component|test|test name|analyte)$/]),
+            name: valueFor(row, [/^name$/]),
             value,
-            unit: valueFor(row, [/^(?:unit|units)$/]),
+            unit: valueFor(row, [/^unit$/]),
             referenceRange,
             flag,
             abnormality: laboratoryAbnormality({ value, flag, referenceRange }),
