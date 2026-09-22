@@ -32,6 +32,7 @@ import {
   updateNoteSection,
   updatePlanProblem
 } from "../../note-drafts/index.js?v=20260921-medication-card-v4";
+import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js";
 
 const REVIEW_PAGE_SIZE = 8;
 
@@ -63,13 +64,36 @@ function draftFromSource(patient, selectedPacketId) {
     patientId: patient?.id || "",
     hospitalDayId: selectedPacketId === "admission" ? "" : selectedPacketId
   });
-  // A hospital-day primary-team note is the prior note used as source
-  // evidence. It must not silently become today's subjective report.
-  if (selectedPacketId !== "admission") return draft;
   const source = sourceNoteForPacket(patient, selectedPacketId);
-  for (const { id } of fieldsForNoteType(noteType)) {
-    if (source?.sections?.[id]) draft = updateNoteSection(draft, id, source.sections[id]);
+  if (!source) return draft;
+
+  if (selectedPacketId === "admission") {
+    for (const { id } of fieldsForNoteType(noteType)) {
+      if (source?.sections?.[id]) draft = updateNoteSection(draft, id, source.sections[id]);
+    }
+  } else {
+    for (const { id } of fieldsForNoteType(noteType)) {
+      if (id !== "patient_report" && source?.sections?.[id]) {
+        draft = updateNoteSection(draft, id, source.sections[id]);
+      }
+    }
   }
+
+  const rawPlan = source?.sections?.plan?.deidentifiedText || source?.sections?.plan || "";
+  const problems = source?.parsedProblems || (rawPlan ? parseClinicalPlanProblems(rawPlan) : []);
+  if (Array.isArray(problems) && problems.length > 0 && (!draft.problems || draft.problems.length === 0)) {
+    for (const p of problems) {
+      draft = addPlanProblem(draft, {
+        problem: p.problem || p.title || "",
+        keyContext: p.keyContext || "",
+        knownEtiology: p.knownEtiology || "",
+        differentials: p.differentials || [],
+        diagnosticPlan: p.diagnosticPlan || "",
+        therapeuticPlan: p.therapeuticPlan || ""
+      });
+    }
+  }
+
   return draft;
 }
 
@@ -92,6 +116,24 @@ export function createReviewController(deps) {
     const key = packetKey(selectedPacketId);
     let draft = deps.app.noteDraftSessions.get(key) || patient?.noteDrafts?.[key] || draftFromSource(patient, key);
     draft = normalizeNoteDraft(draft);
+
+    if (!draft.problems || draft.problems.length === 0) {
+      const source = sourceNoteForPacket(patient, selectedPacketId);
+      const rawPlan = source?.sections?.plan?.deidentifiedText || source?.sections?.plan || "";
+      const problems = source?.parsedProblems || (rawPlan ? parseClinicalPlanProblems(rawPlan) : []);
+      if (Array.isArray(problems) && problems.length > 0) {
+        for (const p of problems) {
+          draft = addPlanProblem(draft, {
+            problem: p.problem || p.title || "",
+            keyContext: p.keyContext || "",
+            knownEtiology: p.knownEtiology || "",
+            differentials: p.differentials || [],
+            diagnosticPlan: p.diagnosticPlan || "",
+            therapeuticPlan: p.therapeuticPlan || ""
+          });
+        }
+      }
+    }
     const candidates = new Map((index.objectiveCandidates || index.candidates).map((candidate) => [candidate.id, candidate]));
     for (const block of draft.objective.selectedBlocks) {
       const candidate = candidates.get(block.selectionId);

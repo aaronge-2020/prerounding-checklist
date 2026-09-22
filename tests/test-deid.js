@@ -558,8 +558,8 @@ const hospitalDayRelativeResult = deidentifyTextStructuredOnly(
 assert.ok(!hospitalDayRelativeResult.text.includes("2026-07-15"), "relative-day output should not expose the packet calendar date");
 assert.equal(
   hospitalDayRelativeResult.text,
-  "Symptoms are better [Hospital Day 15] and worsened [Hospital Day 14]; plan [Hospital Day 16].",
-  "relative words in a hospital-day packet should resolve against that packet's date while Hospital Day numbering stays anchored to admission"
+  "Symptoms are better today and worsened [Hospital Day 14]; plan [Hospital Day 16].",
+  "yesterday and tomorrow in a hospital-day packet should resolve against that packet's date while today is preserved"
 );
 
 const admissionDateFormatText = `EGD/colo (7/9) for melena and +FOBT in ICU, remarkable for non-erosive gastritis for which she has been managed with daily PPI as well as diverticulosis in the sigmoid and descending colon without evidence of active bleeding. She was taken to the OR on 7/15 for left femoral endarterectomy and bilateral iliac covered stent placement. She was started on Xarelto 2.5mg BID as well as DAPT on 07/16/26, now held for bleeding. GI was reengaged on Jul 19, 2026 for reports of blood bowel movements by nursing team. She had multiple CTAs performed, last one 2026-07-23 with questionable active bleeding within the cecum just inferior to the ileocecal valve versus normal mural vasculature in this region. Repeat cscope 7/24.`;
@@ -569,8 +569,8 @@ const admissionDateFormatResult = deidentifyTextStructuredOnly(
 );
 assert.equal(
   admissionDateFormatResult.text,
-  "EGD/colo ([Hospital Day 5]) for melena and +FOBT in ICU, remarkable for non-erosive gastritis for which she has been managed with daily PPI as well as diverticulosis in the sigmoid and descending colon without evidence of active bleeding. She was taken to the OR on [Hospital Day 11] for left femoral endarterectomy and bilateral iliac covered stent placement. She was started on Xarelto 2.5mg BID as well as DAPT on [Hospital Day 12], [Hospital Day 1] held for bleeding. GI was reengaged on [Hospital Day 15] for reports of blood bowel movements by nursing team. She had multiple CTAs performed, last one [Hospital Day 19] with questionable active bleeding within the cecum just inferior to the ileocecal valve versus normal mural vasculature in this region. Repeat cscope [Hospital Day 20].",
-  "all date spellings in an admission narrative, including now, must use the admission date"
+  "EGD/colo ([Hospital Day 5]) for melena and +FOBT in ICU, remarkable for non-erosive gastritis for which she has been managed with daily PPI as well as diverticulosis in the sigmoid and descending colon without evidence of active bleeding. She was taken to the OR on [Hospital Day 11] for left femoral endarterectomy and bilateral iliac covered stent placement. She was started on Xarelto 2.5mg BID as well as DAPT on [Hospital Day 12], now held for bleeding. GI was reengaged on [Hospital Day 15] for reports of blood bowel movements by nursing team. She had multiple CTAs performed, last one [Hospital Day 19] with questionable active bleeding within the cecum just inferior to the ileocecal valve versus normal mural vasculature in this region. Repeat cscope [Hospital Day 20].",
+  "all date spellings in an admission narrative must use the admission date while now is preserved"
 );
 assert.deepEqual(admissionDateFormatResult.residualWarnings, [], "converted admission-narrative dates must not leave exact-date residual warnings");
 
@@ -586,7 +586,7 @@ const hospitalDayNowResult = deidentifyTextStructuredOnly(
   new Date("2026-07-05"),
   { relativeDate: new Date("2026-07-28") }
 );
-assert.equal(hospitalDayNowResult.text, "The patient is [Hospital Day 24] hemodynamically stable.", "now in a hospital-day packet must use that packet's date");
+assert.equal(hospitalDayNowResult.text, "The patient is now hemodynamically stable.", "now must remain unredacted as natural prose");
 
 const progressNoteFalsePositiveText = `Overnight Events
 No events of concern occurred overnight.

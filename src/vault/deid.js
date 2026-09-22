@@ -2144,6 +2144,9 @@ export function collectTemporalEntities(rawText, referenceDate = null) {
   const results = collectChronoResultsBySegment(text, ref);
 
   results.forEach(({ result, start }) => {
+    if (/^\s*(?:today|now)\s*$/i.test(result.text)) {
+      return;
+    }
     const end = start + result.text.length;
     if (explicitDateRanges.some((range) => start < range.end && end > range.start)) {
       return;
@@ -2206,24 +2209,6 @@ export function collectTemporalEntities(rawText, referenceDate = null) {
     }
     pushTemporalEntity(text, entities, start, entityEnd, "temporal", "", temporal);
   });
-
-  // chrono deliberately treats "now" as a clock-time concept rather than a
-  // calendar-day expression, so it does not produce a result for it. In a
-  // clinical narrative, though, bare "now" refers to the packet's source
-  // day just like "today". Add it at the shared temporal-collection boundary
-  // so structured and model-assisted redaction use the same anchored
-  // Hospital Day conversion. This is date normalization, not a separate PII
-  // detector.
-  const nowTemporal = parseTemporalSpan("today", {}, ref);
-  if (nowTemporal) {
-    for (const match of text.matchAll(/\bnow\b/gi)) {
-      const start = match.index;
-      const end = start + match[0].length;
-      if (!isInsideBracketPlaceholder(text, start, end)) {
-        pushTemporalEntity(text, entities, start, end, "temporal", "", { ...nowTemporal });
-      }
-    }
-  }
 
   return mergeEntities(entities, text);
 }

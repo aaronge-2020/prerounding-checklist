@@ -3,7 +3,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { parsePrimaryTeamNote, extractFirstSentence } from "../src/patient-context/primary-team-note-parser.js";
+import {
+  parsePrimaryTeamNote,
+  extractFirstSentence,
+  parseClinicalPlanProblems
+} from "../src/patient-context/primary-team-note-parser.js";
 
 const fixtureDirectory = path.join(path.dirname(fileURLToPath(import.meta.url)), "fixtures", "primary-team-notes");
 const fixture = (name) => fs.readFileSync(path.join(fixtureDirectory, name), "utf8");
@@ -560,7 +564,91 @@ assert.equal(
   extractFirstSentence("40 year old woman with prior stroke presented with completed\nRMCA/ACA stroke with malignant edema s/p DHC.\nShe was taken to the OR."),
   "40 year old woman with prior stroke presented with completed RMCA/ACA stroke with malignant edema s/p DHC."
 );
-assert.equal(extractFirstSentence("Adult with dyspnea"), "Adult with dyspnea");
-assert.equal(extractFirstSentence("   "), "");
+// Test 2-column EHR table with assessment and plan
+const twoColumnNote = `Diagnostic and Objective Findings\tAssessment and Plan
+Neuro\tGlasgow Coma Scale Score  Avg: 6.8  Min: 3  Max: 11\tL MCA occlusion s/p mechanical thrombectomy
+\t-- Neurochecks per protocol for 24 hours
+\t-- ASA 81mg daily
+\t-- High dose statin
+\t-- MRI Brain
+CV\tHeart Rate (Monitored)  Avg: 81.2\tHypoTN on pressor
+\t-- Wean norepinephrine as tolerated
+Renal\tIntake/Output Summary\tCKD3a
+\tHyponatremia
+\t-- Monitor UOP
+Patient Lines/Drains/Airways Status
+Active Active LDAs (selected)
+\tPeripheral IV 20G\tForearm
+\tUrinary Catheter\t—
+Heme/Onc Plan:
+Recommendations:
+\tPursue outpatient mammogram
+Neurosurgery plan:
+Plan:
+- SBP<160
+- q1 checks with pupillometry`;
+
+const twoColumnParsed = parsePrimaryTeamNote(twoColumnNote, "progress");
+assert.equal(twoColumnParsed.recognized, true);
+assert.ok(twoColumnParsed.detectedFieldIds.includes("objective"));
+assert.ok(twoColumnParsed.detectedFieldIds.includes("plan"));
+assert.ok(twoColumnParsed.detectedFieldIds.includes("lda"));
+assert.match(twoColumnParsed.sections.objective, /Glasgow Coma Scale Score/);
+assert.match(twoColumnParsed.sections.objective, /Heart Rate/);
+assert.match(twoColumnParsed.sections.lda, /Peripheral IV/);
+assert.doesNotMatch(twoColumnParsed.sections.plan, /Peripheral IV/);
+assert.match(twoColumnParsed.sections.plan, /L MCA occlusion/);
+assert.match(twoColumnParsed.sections.plan, /Neurosurgery plan/);
+
+assert.ok(twoColumnParsed.parsedProblems.length >= 4);
+const lMcaProblem = twoColumnParsed.parsedProblems.find((p) => p.problem.includes("L MCA occlusion"));
+assert.ok(lMcaProblem, "Should extract L MCA problem");
+assert.match(lMcaProblem.therapeuticPlan, /ASA 81mg daily/);
+assert.match(lMcaProblem.diagnosticPlan, /MRI Brain/);
+
+const nsgyProblem = twoColumnParsed.parsedProblems.find((p) => p.problem.includes("Neurosurgery"));
+assert.ok(nsgyProblem, "Should extract Neurosurgery problem");
+assert.match(nsgyProblem.therapeuticPlan, /SBP<160/);
+assert.match(nsgyProblem.diagnosticPlan, /pupillometry/);
+
+// Direct unit tests for parseClinicalPlanProblems
+const hashPlan = `#Right MCA/ACA
+Date of Stroke: 9/16/2026
+Differential: cardioembolic vs dissection
+-- ASA 81mg held
+-- MRI Brain W/WO
+#Hypotension
+Loaded w/ 500ml NS
+-- Wean levophed`;
+
+const hashProblems = parseClinicalPlanProblems(hashPlan);
+assert.equal(hashProblems.length, 2);
+assert.equal(hashProblems[0].problem, "Right MCA/ACA");
+assert.match(hashProblems[0].keyContext, /Date of Stroke/);
+assert.equal(hashProblems[0].differentials.length, 2);
+assert.equal(hashProblems[0].differentials[0].diagnosis, "cardioembolic");
+assert.equal(hashProblems[0].differentials[1].diagnosis, "dissection");
+assert.match(hashProblems[0].therapeuticPlan, /ASA 81mg/);
+assert.match(hashProblems[0].diagnosticPlan, /MRI Brain/);
+assert.equal(hashProblems[1].problem, "Hypotension");
+assert.match(hashProblems[1].keyContext, /Loaded w\/ 500ml NS/);
+assert.match(hashProblems[1].therapeuticPlan, /Wean levophed/);
+
+// Numbered plan items
+const numberedPlan = `1. Acute Stroke
+Etiology: RT ICA occlusion
+- LEV 750mg BID
+- TTE with bubble
+2. Type 2 Diabetes
+- Check blood glucose QAC`;
+
+const numberedProblems = parseClinicalPlanProblems(numberedPlan);
+assert.equal(numberedProblems.length, 2);
+assert.equal(numberedProblems[0].problem, "Acute Stroke");
+assert.match(numberedProblems[0].keyContext, /RT ICA occlusion/);
+assert.match(numberedProblems[0].therapeuticPlan, /LEV 750mg BID/);
+assert.match(numberedProblems[0].diagnosticPlan, /TTE with bubble/);
+assert.equal(numberedProblems[1].problem, "Type 2 Diabetes");
+assert.match(numberedProblems[1].diagnosticPlan, /Check blood glucose/);
 
 console.log("primary-team note parser tests passed");

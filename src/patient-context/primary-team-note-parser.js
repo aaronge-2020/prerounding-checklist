@@ -1,5 +1,10 @@
 import { primaryTeamNoteFields } from "./primary-team-note.js?v=20260921-medication-card-v4";
 import { transformClinicalTablesInText } from "./clinical-table-parser.js";
+import {
+  normalizeTwoColumnEhrText,
+  parseClinicalPlanProblems,
+  splitTwoColumnEhrTables
+} from "./clinical-plan-parser.js";
 
 const H_AND_P = "hp";
 const PROGRESS = "progress";
@@ -85,10 +90,17 @@ function fieldFor(definition, noteType, availableFields) {
   return availableFields.has(candidate) ? candidate : availableFields.has("other") ? "other" : "";
 }
 
+const TEAM_PLAN_DEFINITION = heading([], "plan", true);
+
 function definitionFor(candidate) {
   const normalized = normalizeHeading(candidate);
   if (!normalized) return null;
-  return HEADING_DEFINITIONS.find((definition) => definition.aliases.includes(normalized)) || null;
+  const match = HEADING_DEFINITIONS.find((definition) => definition.aliases.includes(normalized));
+  if (match) return match;
+  if (/^[a-z0-9\s/]+(?:team\s+)?plan$/i.test(normalized) && !normalized.includes("discharge")) {
+    return TEAM_PLAN_DEFINITION;
+  }
+  return null;
 }
 
 function delimiterStartBefore(line, index) {
@@ -275,7 +287,9 @@ export function extractFirstSentence(text) {
 }
 
 export function parsePrimaryTeamNote(sourceText, noteType) {
-  const source = normalizedSource(sourceText);
+  const rawSource = normalizedSource(sourceText);
+  const preprocessed = normalizeTwoColumnEhrText(sourceText);
+  const source = normalizedSource(preprocessed);
   const fields = primaryTeamNoteFields(noteType);
   const availableFields = new Set(fields.map(({ id }) => id));
   const fallbackField = availableFields.has("other") ? "other" : fields[0]?.id || "";
@@ -365,12 +379,14 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
     }
   }
   const detectedFieldIds = [...new Set(detected.map(({ fieldId }) => fieldId).filter((fieldId) => transformedSections[fieldId]))];
+  const parsedProblems = parseClinicalPlanProblems(transformedSections.plan || "");
   return {
     recognized: detectedFieldIds.length > 0,
-    rawCharacterCount: source.length,
-    sourceCharacterCount: source.length,
+    rawCharacterCount: rawSource.length,
+    sourceCharacterCount: rawSource.length,
     parsedCharacterCount: Object.values(transformedSections).reduce((total, value) => total + value.length, 0),
     sections: transformedSections,
+    parsedProblems,
     detected,
     detectedTables,
     detectedFieldIds,
@@ -379,3 +395,9 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
     unmatchedText: transformedSections.other || ""
   };
 }
+
+export {
+  normalizeTwoColumnEhrText,
+  parseClinicalPlanProblems,
+  splitTwoColumnEhrTables
+};

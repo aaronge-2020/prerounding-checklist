@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../src/review-data/index.js";
+import { createReviewController } from "../src/ui/review/controller.js";
 
 const patient = {
   id: "patient_review",
@@ -271,5 +272,62 @@ assert.notEqual(changedLatestLabPanel.fingerprint, latestLabPanel.fingerprint, "
 const serialized = JSON.stringify(index);
 assert.doesNotMatch(serialized, /RAW ORIGINAL MUST NEVER APPEAR|RAW PATHOLOGY ORIGINAL/);
 assert.doesNotMatch(serialized, /originalText|rawText/, "the review index must derive only from saved de-identified text and explicit metadata");
+
+// Problem-oriented plan auto-population from primary note
+{
+  const patientWithPrimaryNote = {
+    id: "pt_auto_plan",
+    days: [{
+      id: "day_today",
+      date: "2026-09-21",
+      label: "HD1",
+      primaryTeamNote: {
+        noteType: "progress",
+        sections: {
+          plan: {
+            deidentifiedText: "#Right MCA/ACA\nDate of Stroke: 9/16\nDifferential: cardioembolic vs dissection\n-- ASA 81mg held\n-- MRI Brain\n#Hypotension\nLoaded w/ 500ml NS\n-- Wean levophed"
+          }
+        }
+      }
+    }]
+  };
+  let capturedModel = null;
+  const controller = createReviewController({
+    app: {
+      noteDraftSessions: new Map(),
+      reviewPacketId: "day_today",
+      reviewCategory: "all",
+      reviewSearchQuery: "",
+      reviewPage: 0
+    },
+    active: () => patientWithPrimaryNote,
+    byId: () => ({ innerHTML: "" }),
+    presentation: {
+      renderReview: (data) => {
+        capturedModel = data;
+        return "";
+      }
+    },
+    patientRequiredMessage: () => "",
+    persistVault: async () => {},
+    render: () => {},
+    setStatus: () => {},
+    copyText: async () => {},
+    downloadText: () => {}
+  });
+  controller.render();
+  assert.ok(capturedModel, "controller.render should populate review model");
+  assert.equal(capturedModel.draft.problems.length, 2, "should populate all problems from today's primary note");
+  assert.equal(capturedModel.draft.problems[0].problem.deidentifiedText, "Right MCA/ACA");
+  assert.match(capturedModel.draft.problems[0].keyContext.deidentifiedText, /Date of Stroke: 9\/16/);
+  assert.equal(capturedModel.draft.problems[0].differentials.length, 2);
+  assert.equal(capturedModel.draft.problems[0].differentials[0].diagnosis.deidentifiedText, "cardioembolic");
+  assert.equal(capturedModel.draft.problems[0].differentials[1].diagnosis.deidentifiedText, "dissection");
+  assert.match(capturedModel.draft.problems[0].therapeuticPlan.deidentifiedText, /ASA 81mg held/);
+  assert.match(capturedModel.draft.problems[0].diagnosticPlan.deidentifiedText, /MRI Brain/);
+  assert.equal(capturedModel.draft.problems[1].problem.deidentifiedText, "Hypotension");
+  assert.match(capturedModel.draft.problems[1].keyContext.deidentifiedText, /Loaded w\/ 500ml NS/);
+  assert.match(capturedModel.draft.problems[1].therapeuticPlan.deidentifiedText, /Wean levophed/);
+}
 
 console.log("review data index tests passed");
