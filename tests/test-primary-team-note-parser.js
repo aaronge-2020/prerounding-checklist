@@ -651,4 +651,62 @@ assert.match(numberedProblems[0].diagnosticPlan, /TTE with bubble/);
 assert.equal(numberedProblems[1].problem, "Type 2 Diabetes");
 assert.match(numberedProblems[1].diagnosticPlan, /Check blood glucose/);
 
+// Regression tests for a real progress note shape: hash-prefixed plan
+// problems must not be stolen as note section headings, "Cardio:" must be a
+// recognized system, the opening assessment narrative must not become a
+// problem, "Active Hospital Problems" must split into individual problems,
+// and "NAI" entries must not become problems.
+const hashTheftNote = `Assessment and Plan
+[NAME] is a 74 y.o. with a long and complicated history of stroke, cancer, and many other details that make this opening narrative paragraph quite long, well over two hundred characters, so it must not become a problem entry.
+
+Active Hospital Problems
+Diagnosis
+- Acute ischemic stroke
+- Cerebral edema
+
+Neuro:
+#Left ICA occlusion s/p thrombectomy
+- aspirin 81 mg daily
+
+Cardio:
+#Hypotensive
+- NE per ICU
+
+Heme/Onc:
+#DVT prophylaxis
+- heparin TID
+
+ID:
+NAI
+
+GI:
+#Dysphagia
+S/p PEG
+- TF
+
+Endo:
+NAI
+
+- Prophylaxis:
+Venous Thromboembolism Prophylaxis: Yes, mechanical compression devices.`;
+
+const hashTheftParsed = parsePrimaryTeamNote(hashTheftNote, "progress");
+assert.ok(hashTheftParsed.sections.plan.includes("#DVT prophylaxis"), "hash-prefixed plan problems stay in the plan section");
+assert.match(hashTheftParsed.sections.plan, /#Dysphagia/, "plan content after a hash problem must be retained");
+assert.match(hashTheftParsed.sections.vte_prophylaxis || "", /mechanical compression devices/, "- Prophylaxis: maps to the VTE prophylaxis section");
+
+const theftTitles = hashTheftParsed.parsedProblems.map((problem) => problem.problem);
+assert.ok(!theftTitles.some((title) => title.length > 200), "the assessment narrative must not become a problem title");
+assert.deepEqual(theftTitles.slice(0, 2), ["Acute ischemic stroke", "Cerebral edema"], "Active Hospital Problems splits into individual problems");
+assert.ok(theftTitles.includes("Left ICA occlusion s/p thrombectomy"));
+const cardioProblem = hashTheftParsed.parsedProblems.find((problem) => problem.problem === "Hypotensive");
+assert.ok(cardioProblem, "Cardio: is a recognized system header");
+assert.equal(cardioProblem.system, "Cardio");
+const dvtProblem = hashTheftParsed.parsedProblems.find((problem) => problem.problem === "DVT prophylaxis");
+assert.ok(dvtProblem, "#DVT prophylaxis stays a plan problem");
+assert.equal(dvtProblem.system, "Heme/Onc");
+assert.match(dvtProblem.therapeuticPlan, /heparin TID/);
+assert.ok(theftTitles.includes("Dysphagia"), "sections after the hash problem are retained");
+assert.ok(!theftTitles.includes("NAI"), "NAI must not become a problem");
+
 console.log("primary-team note parser tests passed");

@@ -1,6 +1,6 @@
 import { sortDays } from "../../daily-updates/days.js?v=20260921-medication-card-v4";
 import { updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
-import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260922-readable-objective-v1&labs=analyte-selection-v1";
+import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260922-readable-objective-v1&labs=analyte-selection-v2";
 import {
   addDifferential,
   addPlanProblem,
@@ -32,7 +32,7 @@ import {
   updateNoteSection,
   updatePlanProblem
 } from "../../note-drafts/index.js?v=20260921-medication-card-v4";
-import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js";
+import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20260923-plan-problems-v1";
 
 const REVIEW_PAGE_SIZE = 8;
 

@@ -24,7 +24,7 @@ import {
   primaryTeamNoteFields,
   updatePrimaryTeamNoteSection
 } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
-import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20260921-medication-card-v4";
+import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20260923-plan-problems-v1";
 
 export function createDailySourceController(deps) {
   function noteDraftSessionHasContent(draft) {

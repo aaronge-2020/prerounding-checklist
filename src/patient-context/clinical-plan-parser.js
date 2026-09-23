@@ -1,13 +1,29 @@
 const TWO_COLUMN_HEADER_REGEX = /Diagnostic and Objective Findings\s*[\t|]\s*Assessment and Plan/i;
 
 const KNOWN_SYSTEMS = new Set([
-  "neuro", "neurology", "neurosurgery", "cv", "cardiovascular", "cardiology",
+  "neuro", "neurology", "neurosurgery", "cv", "cardiovascular", "cardiology", "cardio", "cards",
   "pulm", "pulmonary", "pulmonology", "renal", "nephrology", "heme",
   "hematology", "heme / onc", "heme/onc", "oncology", "id", "infectious disease",
   "gi / nutrition", "gi/nutrition", "gi", "gastrointestinal", "endo",
   "endocrine", "endocrinology", "msk / derm", "msk/derm", "msk", "derm",
   "dermatology", "prophylaxis", "fen"
 ]);
+
+// Headers that introduce a flat problem list: every bullet underneath becomes
+// its own problem, while non-bullet lines (for example a "Diagnosis"
+// subheader) are skipped instead of turning into context or plans.
+const PROBLEM_LIST_HEADERS = new Set([
+  "active hospital problems",
+  "active problems",
+  "hospital problems",
+  "principal problems",
+  "problem list",
+  "problems"
+]);
+
+// Titles that mean "no problem here" (for example "ID:" followed by "NAI")
+// and must never become problem entries.
+const NEGATED_PROBLEM_TITLE = /^(?:nai|na|n[/]a|none|no active (?:issues?|problems?)|no issues?|not applicable|negative|unremarkable|no acute issues?)[.]?$/i;
 
 const LAB_OR_LDA_ROW = /^\s*\t\s*(?:\[(?:Lab|LATEST|Hospital\s+Day|\d+\s+days?\s+prior)|Component\t|\d{1,2}\/\d{1,2}\/\d{2,4}|Peripheral IV|Urinary Catheter|Non-Surgical Airway|Arterial Line|CVC|PICC|Chest Tube|JP|Jackson|Drain|Airway|Endotracheal|HGBA1C)/i;
 const NOT_PLAN_TEXT = /^(?:none|no data recorded|no active orders?|\[lab\s*\d+\/\d+\]|component\b|\d{1,2}\/\d{1,2}\/\d{2,4}|[a-z0-9_,\s]+\t+(?:--|\d|\+|-|negative|positive|clear|trace|normal))/i;
@@ -231,18 +247,53 @@ export function parseClinicalPlanProblems(planText) {
 
   const problems = [];
   let currentSystemContext = "";
+  let blockIndex = 0;
+
+  const pushProblem = ({ title, system, keyContext = "", diagnosticPlan = "", therapeuticPlan = "", differentials = [] }) => {
+    const cleanTitle = String(title || "").replace(/[:\s]+$/, "").trim();
+    if (!cleanTitle || NEGATED_PROBLEM_TITLE.test(cleanTitle)) return;
+    problems.push({
+      id: `problem_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`,
+      system,
+      title: cleanTitle,
+      problem: cleanTitle,
+      keyContext: String(keyContext || "").trim(),
+      differentials,
+      diagnosticPlan: String(diagnosticPlan || "").trim(),
+      therapeuticPlan: String(therapeuticPlan || "").trim()
+    });
+  };
 
   for (const block of blocks) {
+    const isFirstBlock = blockIndex === 0;
+    blockIndex += 1;
     const nonBlank = block.map((l) => l.trim()).filter(Boolean);
     if (!nonBlank.length) continue;
 
     const firstLine = nonBlank[0];
     const cleanFirst = firstLine.replace(/^#+\s*/, "").replace(/[:\s]+$/, "");
+    const strippedFirst = cleanFirst.replace(/^[-•*>—–\s]+|^>>\s*/, "").trim();
 
-    const cleanSystemCandidate = cleanFirst.replace(/\s+plan$/i, "").toLowerCase();
+    // A leading assessment narrative ("74 y.o. with ... s/p HBOT.") is not a
+    // problem entry; it stays in the plan section text and must not become a
+    // problem with the whole paragraph as its title.
+    const hasProblemMarker = nonBlank.some((line) => /^#+\s*[a-zA-Z0-9]|^[-•*>—–]|^>>|^\d+[.)]/.test(line));
+    if (isFirstBlock && firstLine.length > 200 && !hasProblemMarker) continue;
+
+    const cleanSystemCandidate = strippedFirst.replace(/\s+plan$/i, "").toLowerCase();
     if (KNOWN_SYSTEMS.has(cleanSystemCandidate)) {
-      currentSystemContext = cleanFirst.replace(/plan$/i, "").trim();
+      currentSystemContext = strippedFirst.replace(/plan$/i, "").trim();
       if (nonBlank.length === 1) continue;
+    }
+
+    if (PROBLEM_LIST_HEADERS.has(strippedFirst.toLowerCase())) {
+      for (let j = 1; j < nonBlank.length; j++) {
+        const line = nonBlank[j];
+        if (!/^[-•*>—–]|^>>|^\d+[.)]/.test(line)) continue;
+        const title = line.replace(/^[-•*>—–\s]+|^>>\s*|^\d+[.)]\s*/, "").trim();
+        pushProblem({ title, system: currentSystemContext });
+      }
+      continue;
     }
 
     let problemTitle = "";
@@ -251,8 +302,8 @@ export function parseClinicalPlanProblems(planText) {
     if (SPECIALTY_PLAN_HEADER.test(firstLine)) {
       problemTitle = cleanFirst;
       startIndex = 1;
-    } else if (KNOWN_SYSTEMS.has(cleanFirst.toLowerCase()) && nonBlank.length > 1) {
-      currentSystemContext = cleanFirst;
+    } else if (KNOWN_SYSTEMS.has(strippedFirst.toLowerCase()) && nonBlank.length > 1) {
+      currentSystemContext = strippedFirst;
       problemTitle = nonBlank[1].replace(/^#+\s*/, "").replace(/^(?:problem\s*\d+[:.]|\d{1,2}[.:])\s*/i, "");
       startIndex = 2;
     } else {
@@ -312,16 +363,13 @@ export function parseClinicalPlanProblems(planText) {
       }
     }
 
-    const cleanTitle = problemTitle.replace(/[:\s]+$/, "");
-    problems.push({
-      id: `problem_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`,
+    pushProblem({
+      title: problemTitle,
       system: currentSystemContext,
-      title: cleanTitle,
-      problem: cleanTitle,
-      keyContext: contextLines.join("\n").trim(),
+      keyContext: contextLines.join("\n"),
       differentials,
-      diagnosticPlan: diagLines.join("\n").trim(),
-      therapeuticPlan: theraLines.join("\n").trim()
+      diagnosticPlan: diagLines.join("\n"),
+      therapeuticPlan: theraLines.join("\n")
     });
   }
 

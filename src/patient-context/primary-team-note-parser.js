@@ -4,7 +4,7 @@ import {
   normalizeTwoColumnEhrText,
   parseClinicalPlanProblems,
   splitTwoColumnEhrTables
-} from "./clinical-plan-parser.js";
+} from "./clinical-plan-parser.js?v=20260923-plan-problems-v1";
 
 const H_AND_P = "hp";
 const PROGRESS = "progress";
@@ -51,7 +51,7 @@ const HEADING_DEFINITIONS = Object.freeze([
     "patient lines drains airways status", "patient lines drains and airways status",
     "active active ldas selected", "active ldas selected", "active active ldas", "active ldas", "active lda"
   ], "lda", true),
-  heading(["vte prophylaxis", "dvt prophylaxis", "venous thromboembolism prophylaxis"], "vte_prophylaxis"),
+  heading(["vte prophylaxis", "dvt prophylaxis", "venous thromboembolism prophylaxis", "prophylaxis"], "vte_prophylaxis"),
   heading(["code status"], "code_status"),
   heading(["disposition", "dispo", "discharge planning", "education discharge planning and follow up"], "disposition"),
   heading(["principal problem", "active problems", "resolved problems", "active hospital problems"], "assessment", true, true),
@@ -305,7 +305,12 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
   };
 
   for (const line of source.split("\n")) {
-    const match = headingMatch(line);
+    // Inside an Assessment/Plan section, "#..." lines are problem entries for
+    // parseClinicalPlanProblems, not markdown headings. Without this guard a
+    // line like "#DVT prophylaxis" is stolen as a VTE-prophylaxis section
+    // heading and everything after it is swallowed into the wrong field.
+    const inPlanSection = activeField === "plan";
+    const match = inPlanSection && /^#/.test(line.trim()) ? null : headingMatch(line);
     if (!match) {
       activeLines.push(line);
       continue;

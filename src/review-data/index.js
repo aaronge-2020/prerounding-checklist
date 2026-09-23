@@ -339,11 +339,19 @@ function compactLaboratoryTrend(result) {
   return `${result.name}: ${values.join(" → ")}${sharedUnit ? ` ${sharedUnit}` : ""}${flag}`;
 }
 
+function laboratoryTrendKey(panel, analyteName) {
+  // The same analyte name can come from different panel types (for example
+  // lactate drawn as a serum chemistry versus lactate from a blood gas).
+  // Those are different tests and must keep separate trends, so the trend
+  // key includes the panel name and not just the analyte.
+  return `${laboratoryAnalyteKey(analyteName)}\u0000${normalizedExact(panel?.name)}`;
+}
+
 function attachLaboratoryTrends(laboratoryPanels) {
   const trendsByName = new Map();
   for (const panel of laboratoryPanels) {
     for (const result of panel.results) {
-      const key = laboratoryAnalyteKey(result.name);
+      const key = laboratoryTrendKey(panel, result.name);
       if (!trendsByName.has(key)) trendsByName.set(key, []);
       trendsByName.get(key).push({
         id: result.id,
@@ -370,7 +378,7 @@ function attachLaboratoryTrends(laboratoryPanels) {
     ...panel,
     results: panel.results.map((result) => ({
       ...result,
-      trend: trendsByName.get(laboratoryAnalyteKey(result.name)) || []
+      trend: trendsByName.get(laboratoryTrendKey(panel, result.name)) || []
     }))
   }));
 }
@@ -391,7 +399,7 @@ function latestLaboratoryPanels(laboratoryPanels) {
     const id = stableId("lab_panel", `latest\u0000${key}`, panel.name);
     const trendSearchText = panel.results.flatMap((result) => result.trend || []).flatMap((entry) => [entry.value, entry.unit, entry.flag, entry.status, entry.dayLabel, entry.timestamp]);
     const results = panel.results.map((result) => {
-      const resultId = stableId("lab_result", `latest\u0000${laboratoryAnalyteKey(result.name)}`, result.name);
+      const resultId = stableId("lab_result", `latest\u0000${normalizedExact(panel.name)}\u0000${laboratoryAnalyteKey(result.name)}`, result.name);
       const insertionText = compactLaboratoryTrend(result);
       const selectionCandidate = {
         id: resultId,

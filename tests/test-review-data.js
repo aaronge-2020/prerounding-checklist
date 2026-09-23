@@ -330,4 +330,43 @@ assert.doesNotMatch(serialized, /originalText|rawText/, "the review index must d
   assert.match(capturedModel.draft.problems[1].therapeuticPlan.deidentifiedText, /Wean levophed/);
 }
 
+const multiSourceLabPatient = {
+  id: "multi_source_labs",
+  days: [{
+    id: "ms_day",
+    date: "2026-09-21",
+    label: "HD1",
+    createdAt: "2026-09-21T06:00:00.000Z",
+    sourceCaptures: [
+      {
+        id: "serum_labs",
+        sourceKind: "laboratory_results",
+        label: "Morning labs",
+        deidentifiedText: `Labs
+@ 09/21/26 0600
+Lactate: 3.1 mmol/L; ref 0.5-2.0; flag H`
+      },
+      {
+        id: "abg_labs",
+        sourceKind: "laboratory_results",
+        label: "ABG",
+        deidentifiedText: `Labs
+@ 09/21/26 0700
+Lactate: 1.9 mmol/L; ref 0.5-2.0`
+      }
+    ]
+  }]
+};
+const multiSourceIndex = buildClinicalReviewIndex(multiSourceLabPatient);
+const lactatePanels = multiSourceIndex.labs.filter((panel) =>
+  panel.results.some((result) => result.name === "Lactate"));
+assert.equal(lactatePanels.length, 2, "lactate from different panel types must stay as separate panels");
+const serumLactate = lactatePanels.find((panel) => panel.source.sourceLabel === "Morning labs")
+  .results.find((result) => result.name === "Lactate");
+const abgLactate = lactatePanels.find((panel) => panel.source.sourceLabel === "ABG")
+  .results.find((result) => result.name === "Lactate");
+assert.deepEqual(serumLactate.trend.map(({ value }) => value), ["3.1"], "serum lactate trend must not include the ABG lactate value");
+assert.deepEqual(abgLactate.trend.map(({ value }) => value), ["1.9"], "ABG lactate trend must not include the serum lactate value");
+assert.notEqual(serumLactate.selectionCandidate.id, abgLactate.selectionCandidate.id, "lactate results from different sources must be independently selectable");
+
 console.log("review data index tests passed");
