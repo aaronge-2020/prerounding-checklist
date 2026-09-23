@@ -13,9 +13,11 @@ import {
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
 const parserRevision = "20260921-medication-card-v4";
+const epicParserRevision = "20260921-medication-card-v5";
 const clinicalParserRevision = "20260921-table-parser-v6";
 const primaryNoteRevision = "20260921-medication-card-v4";
-const appRevision = "20260922-readable-objective-v1";
+const sourceControllerRevision = "20260923-plan-problems-v1";
+const appRevision = "20260923-mar-dates-v1";
 const runtimeSources = {
   index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
   app: readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8"),
@@ -39,7 +41,7 @@ const runtimeSources = {
 assert.match(runtimeSources.index, new RegExp(`styles\\.css\\?v=${primaryNoteRevision}`));
 assert.match(runtimeSources.index, new RegExp(`app\\.js\\?v=${appRevision}`));
 assert.match(runtimeSources.app, new RegExp(`daily/presentation\\.js\\?v=${primaryNoteRevision}`));
-assert.match(runtimeSources.app, new RegExp(`daily/source-controller\\.js\\?v=${primaryNoteRevision}`));
+assert.match(runtimeSources.app, new RegExp(`daily/source-controller\\.js\\?v=${sourceControllerRevision}`));
 assert.match(runtimeSources.app, new RegExp(`source-captures\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.app, new RegExp(`app/state/persistence\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.app, new RegExp(`patient-context/sections\\.js\\?v=${parserRevision}`));
@@ -70,7 +72,7 @@ assert.match(runtimeSources.phoneSession, new RegExp(`daily-updates/days\\.js\\?
 assert.match(runtimeSources.examFindings, new RegExp(`daily-updates/days\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.examFindings, new RegExp(`app/state/vault\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.app, new RegExp(`clinical-export-parser\\.js\\?v=${clinicalParserRevision}`));
-assert.match(runtimeSources.parser, new RegExp(`epic-clinical-export-parser\\.js\\?v=${parserRevision}`));
+assert.match(runtimeSources.parser, new RegExp(`epic-clinical-export-parser\\.js\\?v=${epicParserRevision}`));
 assert.match(runtimeSources.parser, new RegExp(`structured-clinical-data\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.epicParser, new RegExp(`structured-clinical-data\\.js\\?v=${parserRevision}`));
 
@@ -277,6 +279,8 @@ assert.match(parsedEpicMar.outputText, /^Medications/);
 assert.match(parsedEpicMar.outputText, /\[Completed Medications\] acetaminophen/);
 assert.match(parsedEpicMar.outputText, /Dose: 1,000 mg \| Route: PO/);
 assert.match(parsedEpicMar.outputText, /0829 \(30 mL\) \[C\]/);
+assert.match(parsedEpicMar.outputText, /04\/12\/31 0829 \(30 mL\) \[C\]/, "an administration under a date column keeps that date");
+assert.match(parsedEpicMar.outputText, /04\/12\/31 0634 \(1,000 mg\)/, "the dated administration matches the order start/end date");
 assert.doesNotMatch(parsedEpicMar.outputText, /Maximum synthetic daily dose|Freq:|Start:|End:/);
 assert.match(parsedEpicMar.outputText, /\[Other Encounter\] ceFAZolin/);
 assert.doesNotMatch(parsedEpicMar.outputText, /&#x9;|1 Day|Legend:/);
@@ -318,14 +322,14 @@ assert.deepEqual(parsedEpicMarMetadata.displayModel.columns, ["Medication", "Cur
 assert.deepEqual(parsedEpicMarMetadata.displayModel.groups[0].rows[0].cells, [
   "*NUTRITION Tube Feeding Continuous Formula Per NG Tube",
   "rate 10-100 mL/hr · PER NG TUBE · continuous",
-  "1218",
-  "1218"
+  "09/18/26 1218",
+  "09/18/26 1218"
 ]);
 assert.equal(parsedEpicMarMetadata.displayModel.groups[0].rows[1].medication.prnReason, "Electrolyte Replacement");
 assert.equal(parsedEpicMarMetadata.displayModel.groups[0].rows[1].medication.prnComment, "for ionized calcium below goal");
 assert.doesNotMatch(JSON.stringify(parsedEpicMarMetadata.displayModel), /Day 5/);
 assert.equal(parsedEpicMarMetadata.preservedUnparsedText, false);
-const savedEpicMarMetadata = clinicalDisplayModelFromPromptText("medication_activity", parsedEpicMarMetadata.outputText);
+const savedEpicMarMetadata = clinicalDisplayModelFromPromptText("medication_activity", parsedEpicMarMetadata.canonicalPromptText || parsedEpicMarMetadata.outputText);
 assert.deepEqual(savedEpicMarMetadata.columns, ["Medication", "Current regimen", "Most recent administration", "Administration history"]);
 assert.deepEqual(savedEpicMarMetadata.groups[0].rows[0].cells, parsedEpicMarMetadata.displayModel.groups[0].rows[0].cells);
 assert.deepEqual(savedEpicMarMetadata.groups[0].rows[1].medication, {
@@ -339,7 +343,7 @@ assert.deepEqual(savedEpicMarMetadata.groups[0].rows[1].medication, {
   end: "",
   asOfDate: "",
   status: [],
-  administrations: ["1813"],
+  administrations: ["09/18/26 1813"],
   prnReason: "Electrolyte Replacement",
   prnComment: "for ionized calcium below goal",
   weightDosingInfo: ""
@@ -356,6 +360,36 @@ assert.deepEqual(savedNoisyLegacyMar.groups.flatMap(({ rows }) => rows.map(({ ce
   "0420 (10 mEq)"
 ]], "legacy saved MAR metadata must not be presented as medications");
 assert.doesNotMatch(JSON.stringify(savedNoisyLegacyMar), /PRN Comment|Order specific questions|Day 3/);
+
+const multiDayMar = `Medications\t09/20/26\t09/21/26\t09/22/26\t09/23/26
+acetaminophen (TYLENOL) tablet 1,000 mg
+Dose: 1,000 mg
+Freq: every 6 hours Route: PER G TUBE
+Start: 09/19/26 1530
+Admin Instructions:
+Maximum dose of acetaminophen is 4000 mg from all sources in 24 hours.
+0418 (1,000 mg)
+\t0951 (1,000 mg)
+1431 (1,000 mg)
+\t1813
+2044
+\t2213 (1,000 mg)`;
+const parsedMultiDayMar = parseClinicalExport(multiDayMar);
+const multiDayAdministrations = parsedMultiDayMar.displayModel.groups[0].rows[0].medication.administrations;
+assert.deepEqual(multiDayAdministrations, [
+  "09/20/26 0418 (1,000 mg)",
+  "09/20/26 1431 (1,000 mg)",
+  "09/20/26 2044",
+  "09/21/26 0951 (1,000 mg)",
+  "09/21/26 1813",
+  "09/21/26 2213 (1,000 mg)"
+], "each administration keeps the date of the column it was pasted under, in chronological order");
+assert.equal(
+  parsedMultiDayMar.displayModel.groups[0].rows[0].cells[2],
+  "09/21/26 2213 (1,000 mg)",
+  "the most recent administration is the chronologically latest dated event"
+);
+assert.match(parsedMultiDayMar.outputText, /Administrations: 09\/20\/26 0418 \(1,000 mg\)/);
 
 const syntheticEpicMarMissingFields = `Medications
 ondansetron (ZOFRAN) injection

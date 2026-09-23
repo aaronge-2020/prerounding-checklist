@@ -155,7 +155,7 @@ import { createChecklistPresentation } from "./checklist/presentation.js?v=20260
 import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=section-scroll-v3&parser=table-v6";
 import { createDailySourceController } from "./daily/source-controller.js?v=20260923-plan-problems-v1&scroll=preserve-section-scroll-v3&parser=table-v7";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
-import { createReviewPresentation } from "./review/presentation.js?v=20260922-readable-objective-v1&trend=concise-v2";
+import { createReviewPresentation } from "./review/presentation.js?v=20260922-readable-objective-v1&trend=concise-v3";
 import { createReviewController } from "./review/controller.js?v=20260922-readable-objective-v1&labs=analyte-selection-v3";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, preserveChecklistScrollOnRender, toggleItemNote } from "./checklist/search.js?v=20260921-checklist-scroll-position&focus=prevent-scroll-v2";

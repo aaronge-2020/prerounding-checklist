@@ -116,7 +116,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     const escapedDose = candidate.dose.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const repeatedDose = escapedDose ? new RegExp(`\\s*\\(\\s*${escapedDose}\\s*\\)$`, "i") : null;
     const formatAdministration = (value) => {
-      const withClock = String(value || "").replace(/^(\d{2})(\d{2})(?=\s|$)/, "$1:$2");
+      const withClock = String(value || "").replace(/^((?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\s+)?)(\d{2})(\d{2})(?=\s|$)/, "$1$2:$3");
       return repeatedDose ? withClock.replace(repeatedDose, "") : withClock;
     };
     const recentAdministrations = administrations.slice(-6);

@@ -261,6 +261,50 @@ function extractMarEvents(text) {
   return events;
 }
 
+// The MAR grid lays administration times out under per-date columns, so the
+// column a time was pasted under tells us its date. The raw line keeps the
+// tab structure that the compacted text collapses away; each tab-separated
+// cell maps to the same position in the header's date list.
+function extractDatedMarEvents(rawLine, chartDates) {
+  const dated = [];
+  const cells = String(rawLine || "").split("\t");
+  cells.forEach((cell, cellIndex) => {
+    const date = chartDates[cellIndex] || "";
+    for (const event of extractMarEvents(cell)) {
+      dated.push({
+        date,
+        dateOrder: date ? cellIndex : Number.POSITIVE_INFINITY,
+        timeMinutes: marEventTimeMinutes(event),
+        text: date ? `${date} ${event}` : event
+      });
+    }
+  });
+  return dated;
+}
+
+function marEventTimeMinutes(event) {
+  const match = String(event || "").match(/^(?:(\d{1,2}):(\d{2})|(\d{3,4}))(?:\s*([AP]M))?/i);
+  if (!match) return null;
+  let hours = match[3] ? Math.floor(Number(match[3]) / 100) : Number(match[1]);
+  const minutes = match[3] ? Number(match[3]) % 100 : Number(match[2]);
+  const meridiem = (match[4] || "").toUpperCase();
+  if (meridiem === "PM" && hours < 12) hours += 12;
+  if (meridiem === "AM" && hours === 12) hours = 0;
+  if (hours > 23 || minutes > 59) return null;
+  return hours * 60 + minutes;
+}
+
+// Once dates are attached, the grid's column-major paste order is no longer
+// chronological, so administrations sort by date then time of day. Pastes
+// without a date header keep their original order.
+function finalizeMarAdministrations(dated) {
+  const entries = [...dated];
+  if (entries.some((entry) => entry.date)) {
+    entries.sort((left, right) => left.dateOrder - right.dateOrder || (left.timeMinutes ?? 0) - (right.timeMinutes ?? 0));
+  }
+  return entries.map((entry) => entry.text);
+}
+
 function isMarEventLine(text) {
   MAR_EVENT.lastIndex = 0;
   const matches = [...text.matchAll(MAR_EVENT)];
@@ -313,6 +357,7 @@ function renderEpicMar(value) {
   const finishCurrent = () => {
     if (!current) return;
     current.instructions = compact(current.instructions.join(" "));
+    current.administrations = finalizeMarAdministrations(current.administrations);
     medications.push(current);
     current = null;
     inInstructions = false;
@@ -366,7 +411,7 @@ function renderEpicMar(value) {
     }
     if (isMarEventLine(line.text)) {
       inInstructions = false;
-      current.administrations.push(...extractMarEvents(line.text));
+      current.administrations.push(...extractDatedMarEvents(line.raw, chartDates));
       current.indexes.push(line.index);
       consumed.add(line.index);
       continue;

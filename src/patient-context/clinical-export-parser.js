@@ -1,4 +1,4 @@
-import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260921-medication-card-v4";
+import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260921-medication-card-v5";
 import {
   clinicalDataModel,
   clinicalDisplayModelFromPromptText,
