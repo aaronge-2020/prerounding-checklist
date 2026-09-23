@@ -52,7 +52,9 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   }
 
   function renderLaboratoryTrend(result) {
-    const observations = result.trend || [];
+    const fullTrend = result.trend || [];
+    const observations = result.displayTrend?.length ? result.displayTrend : fullTrend.slice(-3);
+    const totalCount = fullTrend.length || observations.length;
     const numeric = observations.filter((entry) => Number.isFinite(entry.numericValue));
     const units = new Set(numeric.map((entry) => entry.unit).filter(Boolean));
     let chart = "";
@@ -78,7 +80,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         ? `<p class="muted review-lab-trend-message">Values use different units, so they are listed without connecting them on a graph.</p>`
         : "";
     return `<section class="review-lab-trend-drawer" aria-label="${escapeHtml(result.name)} trend">
-      <div class="review-lab-trend-heading"><div><span class="eyebrow">Trend</span><h4>${escapeHtml(result.name)}</h4></div><span>${observations.length} saved result${observations.length === 1 ? "" : "s"}</span></div>
+      <div class="review-lab-trend-heading"><div><span class="eyebrow">Trend</span><h4>${escapeHtml(result.name)}</h4></div><span>${totalCount > observations.length ? `${observations.length} of ${totalCount} saved results` : `${totalCount} saved result${totalCount === 1 ? "" : "s"}`}</span></div>
       ${chart}${message}
       <ol class="review-lab-trend-values">${observations.map((entry) => `<li data-clinical-emphasis="${escapeHtml(entry.status || "unknown")}"><strong>${escapeHtml([entry.value, entry.unit].filter(Boolean).join(" ") || "—")}</strong><span>${escapeHtml([entry.dayLabel, entry.timestamp].filter(Boolean).join(" · ") || "Saved result")}</span></li>`).join("")}</ol>
     </section>`;
@@ -98,9 +100,10 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       </header>
       <div class="review-lab-results"><div class="review-lab-results-header" aria-hidden="true"><span></span><span>Test</span><span>Result</span><span>Reference range</span></div>${candidate.results.map((result) => {
         const trendCount = result.trend?.length || 0;
+        const displayTrendCount = result.displayTrend?.length || Math.min(trendCount, 3);
         const selection = result.selectionCandidate;
         const resultSelected = selection && selectedIds.has(selection.id);
-        return `<div class="review-lab-result-row ${resultSelected ? "is-selected" : ""}"><label class="review-lab-result-selection"><input type="checkbox" data-objective-selection-id="${escapeHtml(selection?.id || "")}" data-lab-result-selection="${escapeHtml(candidate.id)}" aria-label="Include only ${escapeHtml(result.name)} from ${escapeHtml(candidate.name)} in the note" ${resultSelected ? "checked" : ""}></label><details class="review-lab-result" data-has-trend="${trendCount > 1}" data-clinical-emphasis="${escapeHtml(result.status || "unknown")}"><summary><span class="review-lab-result-name"><span class="review-lab-chevron" aria-hidden="true">›</span><strong>${escapeHtml(result.name)}</strong><small>${trendCount > 1 ? `${Math.min(trendCount, 3)}-value note trend` : "No trend"}</small></span><span class="review-lab-result-value">${escapeHtml([result.value, result.unit].filter(Boolean).join(" ") || "—")}${result.flag ? ` <small class="review-lab-flag">${escapeHtml(result.flag)}</small>` : ""}</span><span class="review-lab-reference">${escapeHtml(result.referenceRange || "—")}</span></summary>${renderLaboratoryTrend(result)}</details></div>`;
+        return `<div class="review-lab-result-row ${resultSelected ? "is-selected" : ""}"><label class="review-lab-result-selection"><input type="checkbox" data-objective-selection-id="${escapeHtml(selection?.id || "")}" data-lab-result-selection="${escapeHtml(candidate.id)}" aria-label="Include only ${escapeHtml(result.name)} from ${escapeHtml(candidate.name)} in the note" ${resultSelected ? "checked" : ""}></label><details class="review-lab-result" data-has-trend="${trendCount > 1}" data-clinical-emphasis="${escapeHtml(result.status || "unknown")}"><summary><span class="review-lab-result-name"><span class="review-lab-chevron" aria-hidden="true">›</span><strong>${escapeHtml(result.name)}</strong><small>${displayTrendCount > 1 ? `${displayTrendCount}-value note trend` : "No trend"}</small></span><span class="review-lab-result-value">${escapeHtml([result.value, result.unit].filter(Boolean).join(" ") || "—")}${result.flag ? ` <small class="review-lab-flag">${escapeHtml(result.flag)}</small>` : ""}</span><span class="review-lab-reference">${escapeHtml(result.referenceRange || "—")}</span></summary>${renderLaboratoryTrend(result)}</details></div>`;
       }).join("")}</div>
       <details class="review-lab-note-preview"><summary>Preview note insertion</summary><pre>${escapeHtml(candidate.insertionText)}</pre></details>
     </article>`;

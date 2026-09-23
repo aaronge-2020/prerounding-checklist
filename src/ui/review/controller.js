@@ -1,6 +1,6 @@
 import { sortDays } from "../../daily-updates/days.js?v=20260921-medication-card-v4";
 import { updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
-import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260922-readable-objective-v1&labs=analyte-selection-v2";
+import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../../review-data/index.js?v=20260922-readable-objective-v1&labs=analyte-selection-v3";
 import {
   addDifferential,
   addPlanProblem,

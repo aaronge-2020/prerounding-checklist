@@ -325,18 +325,54 @@ function finalizeLaboratoryPanel(candidate) {
   return finalized;
 }
 
+// At most three points are shown per lab trend. The latest observation always
+// anchors the trend; the remaining slots go to the most clinically
+// informative earlier points: abnormal results first, then the most recent
+// ones. The selection is returned in chronological order.
+const MAX_LABORATORY_TREND_POINTS = 3;
+
 function compactLaboratoryTrend(result) {
-  const observations = (result.trend || []).slice(-3);
+  // The note shows at most three trend points, each labeled with its hospital
+  // day and timestamp so the reader can tell when every value was drawn.
+  const observations = selectLaboratoryTrendPoints(
+    result.displayTrend?.length ? result.displayTrend : (result.trend || [])
+  );
   if (!observations.length) return `${result.name}: No value recorded`;
   const units = new Set(observations.map((entry) => clean(entry.unit)).filter(Boolean));
   const sharedUnit = units.size === 1 ? [...units][0] : "";
   const values = observations.map((entry) => {
     const value = clean(entry.value) || "No value recorded";
-    return sharedUnit ? value : [value, entry.unit].filter(Boolean).join(" ");
+    const context = observationContext(entry);
+    const labeled = context ? `${value} (${context})` : value;
+    return sharedUnit ? labeled : [labeled, entry.unit].filter(Boolean).join(" ");
   });
   const latest = observations.at(-1);
   const flag = latest?.flag ? ` [${latest.flag}]` : latest?.status && !["normal", "unknown"].includes(latest.status) ? ` [${latest.status}]` : "";
   return `${result.name}: ${values.join(" → ")}${sharedUnit ? ` ${sharedUnit}` : ""}${flag}`;
+}
+
+function selectLaboratoryTrendPoints(observations, maxPoints = MAX_LABORATORY_TREND_POINTS) {
+  const sorted = [...(observations || [])];
+  if (sorted.length <= maxPoints) return sorted;
+  const abnormalityRank = (entry) => {
+    switch (entry?.status) {
+      case "critical": return 3;
+      case "high":
+      case "low":
+      case "abnormal": return 2;
+      default: return 0;
+    }
+  };
+  const ranked = sorted
+    .map((entry, index) => ({ entry, index }))
+    .slice(0, -1)
+    .sort((left, right) => abnormalityRank(right.entry) - abnormalityRank(left.entry) || right.index - left.index);
+  const keep = new Set([sorted.length - 1]);
+  for (const { index } of ranked) {
+    if (keep.size >= maxPoints) break;
+    keep.add(index);
+  }
+  return sorted.filter((_, index) => keep.has(index));
 }
 
 function laboratoryTrendKey(panel, analyteName) {
@@ -376,10 +412,10 @@ function attachLaboratoryTrends(laboratoryPanels) {
   for (const trend of trendsByName.values()) trend.sort(compareObservations);
   return laboratoryPanels.map((panel) => ({
     ...panel,
-    results: panel.results.map((result) => ({
-      ...result,
-      trend: trendsByName.get(laboratoryTrendKey(panel, result.name)) || []
-    }))
+    results: panel.results.map((result) => {
+      const trend = trendsByName.get(laboratoryTrendKey(panel, result.name)) || [];
+      return { ...result, trend, displayTrend: selectLaboratoryTrendPoints(trend) };
+    })
   }));
 }
 

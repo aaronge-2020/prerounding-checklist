@@ -148,8 +148,8 @@ const wbcResults = laboratoryResults(index, "WBC");
 assert.deepEqual(wbcResults.map(({ value }) => value), ["8.8"], "the visible panel must use the latest saved collection");
 assert.deepEqual(wbcResults.map(({ status }) => status), ["normal"]);
 assert.deepEqual(wbcResults[0].trend.map(({ value }) => value), ["15.2", "12.0", "8.8"], "the latest lab row must retain older collections for its on-demand trend display");
-assert.match(wbcResults.at(-1).panel.insertionText, /Laboratory results[\s\S]*WBC: 15\.2 → 12\.0 → 8\.8 K\/uL/);
-assert.match(wbcResults[0].selectionCandidate.insertionText, /^WBC: 15\.2 → 12\.0 → 8\.8 K\/uL$/);
+assert.match(wbcResults.at(-1).panel.insertionText, /Laboratory results[\s\S]*WBC: 15\.2 \(HD1 · 09\/19\/26 0600\) → 12\.0 \(HD2 · 09\/20\/26 0600\) → 8\.8 \(HD3 · 09\/21\/26 0600\) K\/uL/);
+assert.match(wbcResults[0].selectionCandidate.insertionText, /^WBC: 15\.2 \(HD1 · 09\/19\/26 0600\) → 12\.0 \(HD2 · 09\/20\/26 0600\) → 8\.8 \(HD3 · 09\/21\/26 0600\) K\/uL$/);
 assert.ok(index.objectiveCandidates.some(({ id }) => id === wbcResults[0].selectionCandidate.id), "individual lab results must be independently selectable for Objective");
 assert.equal(filterClinicalReviewCandidates(index, "15.2", { group: "labs" })[0].id, index.labs[0].id, "historical values must still find the latest panel type");
 
@@ -368,5 +368,38 @@ const abgLactate = lactatePanels.find((panel) => panel.source.sourceLabel === "A
 assert.deepEqual(serumLactate.trend.map(({ value }) => value), ["3.1"], "serum lactate trend must not include the ABG lactate value");
 assert.deepEqual(abgLactate.trend.map(({ value }) => value), ["1.9"], "ABG lactate trend must not include the serum lactate value");
 assert.notEqual(serumLactate.selectionCandidate.id, abgLactate.selectionCandidate.id, "lactate results from different sources must be independently selectable");
+
+// Lab trends show at most three points, each labeled with its hospital day and
+// timestamp. The latest value always anchors the trend; abnormal values are
+// preferred over older normal ones.
+const sodiumDays = [140, 141, 160, 142, 139].map((value, index) => ({
+  id: `sodium_day_${index + 1}`,
+  date: `2026-09-${17 + index}`,
+  label: `HD${index + 1}`,
+  sourceCaptures: [{
+    id: `sodium_labs_${index + 1}`,
+    sourceKind: "laboratory_results",
+    label: "Morning labs",
+    deidentifiedText: `Labs\n@ 09/${17 + index}/26 0600\nSodium: ${value} mmol/L; ref 135-145${value === 160 ? "; flag H" : ""}`
+  }]
+}));
+const sodiumIndex = buildClinicalReviewIndex({ id: "sodium_trend", days: sodiumDays });
+const sodiumResult = sodiumIndex.labs
+  .flatMap((panel) => panel.results)
+  .find((result) => result.name === "Sodium" && (result.trend || []).length === 5);
+assert.ok(sodiumResult, "five daily sodium results form one trend");
+assert.deepEqual(
+  sodiumResult.displayTrend.map((entry) => entry.value),
+  ["160", "142", "139"],
+  "the displayed trend keeps the latest value, the abnormal value, and the most recent other value"
+);
+assert.ok(sodiumResult.displayTrend.length <= 3, "at most three trend points are shown per lab");
+const sodiumInsertion = sodiumResult.selectionCandidate.insertionText;
+assert.match(sodiumInsertion, /→/, "the note trend connects the selected points");
+for (const [day, stamp] of [["HD3", "09/19/26 0600"], ["HD4", "09/20/26 0600"], ["HD5", "09/21/26 0600"]]) {
+  assert.ok(sodiumInsertion.includes(day), `the note trend labels the hospital day (${day})`);
+  assert.ok(sodiumInsertion.includes(stamp), `the note trend labels the timestamp (${stamp})`);
+}
+assert.ok(!sodiumInsertion.includes("HD1") && !sodiumInsertion.includes("HD2"), "unselected trend points stay out of the note");
 
 console.log("review data index tests passed");
