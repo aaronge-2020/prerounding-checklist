@@ -334,7 +334,7 @@ const demoController = createDemoController({
     app.dailySourceKind = "other_chart_text"; app.dailySourceDraft = DEMO_DAILY_TEXTS.join("\n\n");
   }
 });
-const reviewController = createReviewController({ app, active, byId, presentation: reviewPresentation, patientRequiredMessage, persistVault, render, setStatus, copyText, downloadText, isEphemeralDemo: () => Boolean(app.demoSession), onDraftSaved: () => demoController.observeDraftSaved() });
+const reviewController = createReviewController({ app, active, byId, presentation: reviewPresentation, patientRequiredMessage, persistVault, render, setStatus, copyText: clipboard.copyText, downloadText, isEphemeralDemo: () => Boolean(app.demoSession), onDraftSaved: () => demoController.observeDraftSaved() });
 const demoSessionController = createDemoSessionController({
   app,
   createDemoPatient,
@@ -364,10 +364,10 @@ const openEvidenceImport = createOpenEvidenceImportController({
   persistVault,
   renderChecklist,
   byId,
-  copyText,
+  copyText: clipboard.copyText,
   setStatus,
   currentPreferences,
-  deidentify,
+  deidentify: (...args) => deidSession.deidentify(...args),
   ensureDeidReady: ensureSelectedDeidReady,
   formatChecklistAnswersWithOpenAi,
   saveExamFindings: examFindingsController.saveExamFindings,
@@ -377,7 +377,7 @@ const workupOpenAiImport = createWorkupOpenAiImportController({
   state: app,
   active,
   byId,
-  copyText,
+  copyText: clipboard.copyText,
   setStatus,
   currentPreferences,
   renderWorkups,
@@ -405,7 +405,7 @@ const dailySourceController = createDailySourceController({
   sectionDraftText,
   reviewSectionsForScope,
   ensureSelectedDeidReady,
-  deidentify,
+  deidentify: deidSession.deidentify,
   updateDeidOperation,
   setStatus,
   setSectionDraftText,
