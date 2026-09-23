@@ -60,11 +60,23 @@ function compact(value) {
     .trim();
 }
 
-function nonemptyLines(value) {
+function nonemptyLines(value, keepTabSeparators = false) {
   return decodeClinicalClipboardText(value)
     .split("\n")
-    .map((raw, index) => ({ index, raw: raw.replace(/[ \t]+$/g, ""), text: compact(raw) }))
-    .filter((line) => line.text);
+    .map((raw, index) => {
+      const leadingTabs = (/^\t+/.exec(raw) || [""])[0].length;
+      const text = compact(raw);
+      return {
+        index,
+        raw: raw.replace(/[ \t]+$/g, ""),
+        text,
+        leadingTabs,
+        // Epic's MAR grid positions each date column's administrations with a
+        // run of tab-only lines. They carry no text but are load-bearing.
+        tabOnly: leadingTabs > 0 && !text
+      };
+    })
+    .filter((line) => line.text || (keepTabSeparators && line.tabOnly));
 }
 
 function plural(count, singular, pluralForm = `${singular}s`) {
@@ -261,19 +273,27 @@ function extractMarEvents(text) {
   return events;
 }
 
-// The MAR grid lays administration times out under per-date columns, so the
-// column a time was pasted under tells us its date. The raw line keeps the
-// tab structure that the compacted text collapses away; each tab-separated
-// cell maps to the same position in the header's date list.
-function extractDatedMarEvents(rawLine, chartDates) {
+// The MAR grid lays administration times out under per-date columns, and each
+// date column is positioned by a run of one or more tab-only lines: the first
+// run's tab count is the 1-based column (the Medications label column is column
+// 1, so N tabs select the Nth date in the header), and every later run advances
+// exactly one date column. Administration lines inherit that sticky column, so
+// their own leading tabs are row striping, not dates. Pastes without tab-only
+// runs keep the old behavior where each line's own tab offset selects the date.
+function extractDatedMarEvents(rawLine, chartDates, gridColumn) {
   const dated = [];
+  const stickyDate =
+    Number.isInteger(gridColumn) && gridColumn >= 0 && gridColumn < chartDates.length
+      ? chartDates[gridColumn]
+      : "";
   const cells = String(rawLine || "").split("\t");
   cells.forEach((cell, cellIndex) => {
-    const date = chartDates[cellIndex] || "";
+    const date = stickyDate || chartDates[cellIndex] || "";
+    const dateOrder = stickyDate ? gridColumn : cellIndex;
     for (const event of extractMarEvents(cell)) {
       dated.push({
         date,
-        dateOrder: date ? cellIndex : Number.POSITIVE_INFINITY,
+        dateOrder: date ? dateOrder : Number.POSITIVE_INFINITY,
         timeMinutes: marEventTimeMinutes(event),
         text: date ? `${date} ${event}` : event
       });
@@ -337,7 +357,7 @@ function hasMarMetadataAhead(lines, position) {
 }
 
 function renderEpicMar(value) {
-  const lines = nonemptyLines(value);
+  const lines = nonemptyLines(value, true);
   if (!lines.length) return null;
   const hasMarHeader = lines.some(
     (line) => isMarHeading(line.text) || marSection(line.text) || /^Medications\s+\d{1,2}[/-]\d{1,2}[/-]\d{2,4}/i.test(line.text)
@@ -353,6 +373,9 @@ function renderEpicMar(value) {
   let section = "Medications";
   let current = null;
   let inInstructions = false;
+  let prevTabOnly = false;
+  let gridColumn = null;
+  let gridPositioned = false;
 
   const finishCurrent = () => {
     if (!current) return;
@@ -361,10 +384,14 @@ function renderEpicMar(value) {
     medications.push(current);
     current = null;
     inInstructions = false;
+    gridColumn = null;
+    gridPositioned = false;
   };
 
   for (let position = 0; position < lines.length; position += 1) {
     const line = lines[position];
+    const separatorRun = line.tabOnly && !prevTabOnly;
+    prevTabOnly = line.tabOnly;
     const heading = marSection(line.text);
     if (heading) {
       finishCurrent();
@@ -381,6 +408,21 @@ function renderEpicMar(value) {
       finishCurrent();
       current = { name: line.text, section, fields: [], administrations: [], instructions: [], metadata: [], indexes: [line.index] };
       consumed.add(line.index);
+      continue;
+    }
+    if (line.tabOnly) {
+      consumed.add(line.index);
+      if (current) {
+        inInstructions = false;
+        if (separatorRun) {
+          if (!gridPositioned) {
+            gridColumn = line.leadingTabs - 1;
+            gridPositioned = true;
+          } else {
+            gridColumn += 1;
+          }
+        }
+      }
       continue;
     }
     if (!current) continue;
@@ -411,7 +453,7 @@ function renderEpicMar(value) {
     }
     if (isMarEventLine(line.text)) {
       inInstructions = false;
-      current.administrations.push(...extractDatedMarEvents(line.raw, chartDates));
+      current.administrations.push(...extractDatedMarEvents(line.raw, chartDates, gridPositioned ? gridColumn : null));
       current.indexes.push(line.index);
       consumed.add(line.index);
       continue;

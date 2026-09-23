@@ -38,7 +38,7 @@ import {
   reorderSectionsById,
   replaceSectionsFromFormAsync
 } from "../patient-context/sections.js?v=20260921-medication-card-v4";
-import { clinicalParseWarning } from "../patient-context/clinical-export-parser.js?v=20260921-table-parser-v6";
+import { clinicalParseWarning } from "../patient-context/clinical-export-parser.js?v=20260923-mar-grid-v7";
 import {
   createEphemeralRedactionReview,
   refreshEphemeralRedactionReview,

@@ -13,11 +13,11 @@ import {
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
 const parserRevision = "20260921-medication-card-v4";
-const epicParserRevision = "20260921-medication-card-v5";
-const clinicalParserRevision = "20260921-table-parser-v6";
+const epicParserRevision = "20260923-mar-grid-v6";
+const clinicalParserRevision = "20260923-mar-grid-v7";
 const primaryNoteRevision = "20260921-medication-card-v4";
 const sourceControllerRevision = "20260923-plan-problems-v1";
-const appRevision = "20260923-mar-dates-v1";
+const appRevision = "20260923-mar-grid-v2";
 const runtimeSources = {
   index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
   app: readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8"),
@@ -390,6 +390,81 @@ assert.equal(
   "the most recent administration is the chronologically latest dated event"
 );
 assert.match(parsedMultiDayMar.outputText, /Administrations: 09\/20\/26 0418 \(1,000 mg\)/);
+
+// Epic positions each date column's administrations with a run of tab-only
+// lines: the first run's tab count selects the date column (the Medications
+// label column is column 1), and each later run advances exactly one column.
+// Administration lines inherit that sticky column.
+const stickyColumnMar = `Medications\t09/20/26\t09/21/26\t09/22/26\t09/23/26
+thiamine (VITAMIN B-1) tablet 100 mg
+Dose: 100 mg
+Freq: 1 time daily Route: PER G TUBE
+Start: 09/21/26 1000 End: 09/24/26 0959
+\t\t
+0900 (100 mg)
+\t
+\t
+1039 (100 mg)
+\t
+\t
+1000
+\t
+heparin 5000 units/mL injection 5,000 Units
+Dose: 5,000 Units
+Freq: 2 times daily Route: SC
+Start: 09/21/26 2200
+\t\t
+2108 (5,000 Units)
+\t
+\t
+1039 (5,000 Units)
+\t2110 (5,000 Units)
+
+*NUTRITION Modular Supplement Prosource TF20; 1 packet Per NG Tube
+Freq: 2 times daily Route: PER NG TUBE
+Start: 09/23/26 1000
+Order specific questions:
+\t\t\t\t
+1000
+\t2200
+
+Completed Medications
+alteplase (CATHFLO) 1 mg in sterile water 1 mL syringe for catheter clearance
+Dose: 1 mg
+Freq: once Route: INTRACATHETE
+Start: 09/21/26 2215 End: 09/21/26 2215
+\t\t
+2215 (1 mg) [C]
+\t
+\t`;
+const parsedStickyColumnMar = parseClinicalExport(stickyColumnMar);
+const stickyRows = parsedStickyColumnMar.displayModel.groups.flatMap((group) => group.rows);
+assert.deepEqual(
+  stickyRows.find((row) => row.medication.name.startsWith("thiamine")).medication.administrations,
+  ["09/21/26 0900 (100 mg)", "09/22/26 1039 (100 mg)", "09/23/26 1000"],
+  "a daily medication's administrations advance one date column per separator run"
+);
+assert.deepEqual(
+  stickyRows.find((row) => row.medication.name.startsWith("heparin")).medication.administrations,
+  ["09/21/26 2108 (5,000 Units)", "09/22/26 1039 (5,000 Units)", "09/22/26 2110 (5,000 Units)"],
+  "administrations sharing a column keep that column's date"
+);
+assert.deepEqual(
+  stickyRows.find((row) => row.medication.name.startsWith("*NUTRITION Modular")).medication.administrations,
+  ["09/23/26 1000", "09/23/26 2200"],
+  "the first separator run's tab count selects the date column and administration lines ignore their own tabs"
+);
+assert.deepEqual(
+  stickyRows.find((row) => row.medication.name.startsWith("alteplase")).medication.administrations,
+  ["09/21/26 2215 (1 mg) [C]"],
+  "completed medications use the same grid positioning"
+);
+assert.equal(
+  stickyRows.find((row) => row.medication.name.startsWith("thiamine")).cells[2],
+  "09/23/26 1000",
+  "the most recent administration follows the sticky column dates"
+);
+assert.equal(parsedStickyColumnMar.preservedUnparsedText, false, "tab-only separator lines must not leak into unparsed text");
 
 const syntheticEpicMarMissingFields = `Medications
 ondansetron (ZOFRAN) injection
