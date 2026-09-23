@@ -393,6 +393,26 @@ assert.match(presentationCritiquePrompt, /Fully revised presentation/);
 assert.match(presentationCritiquePrompt, /Teaching takeaways/);
 assert.match(presentationCritiquePrompt, /A learner presentation with an incomplete assessment and plan/);
 assert.doesNotMatch(presentationCritiquePrompt, /@(?:presentation-critique-guidelines|specialty-team|presentation-to-edit)/);
+assert.match(DEFAULT_PROMPT_TEMPLATES.attending_presentation_critique, /@presentation-to-edit/, "the reviewer template must carry the learner-note token");
+assert.match(DEFAULT_PROMPT_TEMPLATES.attending_presentation_critique, /@admission-packet/, "the reviewer template must carry the full admission-packet token");
+const patientWithSavedNote = { ...patient, noteDrafts: { [day.id]: studentDraft } };
+const autoPassedNote = studentNoteForPrompt(patientWithSavedNote, day.id);
+assert.ok(autoPassedNote.text.length > 0, "the saved draft note must resolve for the selected day");
+const critiqueWithAutoNote = buildCustomOpenEvidencePrompt({
+  taskId: "attending_presentation_critique",
+  template: DEFAULT_PROMPT_TEMPLATES.attending_presentation_critique,
+  patient: patientWithSavedNote,
+  selectedDayId: day.id,
+  guidelineSets: deployedGuidelineSets,
+  presentationToEdit: autoPassedNote.text,
+  presentationSpecialty: "Cardiology"
+});
+assert.match(critiqueWithAutoNote, /Adult on hospital day 2 with improving dyspnea/, "the saved draft note must be passed automatically to the reviewer prompt");
+assert.match(critiqueWithAutoNote, /Volume status and breathing have improved after diuresis/, "the note assessment must be passed automatically to the reviewer prompt");
+assert.match(critiqueWithAutoNote, /Admitted for dyspnea and edema/, "the full admission packet context must be available to the reviewer");
+assert.match(critiqueWithAutoNote, /Furosemide 40 mg PO daily/, "the admission medications must be available to the reviewer");
+assert.match(critiqueWithAutoNote, /Creatinine 1\.4, BNP elevated/, "the admission labs must be available to the reviewer");
+assert.doesNotMatch(critiqueWithAutoNote, /@admission-packet/, "no unfilled admission-packet token may remain");
 const consultingGuidelines = createGuidelineSet("Consulting", readFileSync("prompts/Consulting.md", "utf8"));
 const consulting = buildCustomOpenEvidencePrompt({
   taskId: "consulting",
