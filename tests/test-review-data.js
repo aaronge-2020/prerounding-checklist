@@ -565,7 +565,7 @@ assert.deepEqual(
   "study lines from the note become diagnostic candidates"
 );
 
-// MAP is computed from SBP/DBP; range falls back across readings without timestamps.
+// BP insertion does not auto-compute MAP; MAP only appears when documented.
 {
   const mapIndex = buildClinicalReviewIndex({
     id: "map_vitals",
@@ -583,7 +583,7 @@ assert.deepEqual(
   });
   const bp = mapIndex.vitals.find((c) => /blood pressure/i.test(c.name));
   assert.ok(bp, "BP candidate exists");
-  assert.match(bp.insertionText, /\(MAP 63\)/, "MAP 63 computed from 92/48");
+  assert.doesNotMatch(bp.insertionText, /MAP/, "MAP is not auto-computed from BP");
 }
 
 // Two same-day HR readings produce a 24-hour range (day-level timestamps apply).

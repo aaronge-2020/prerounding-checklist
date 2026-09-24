@@ -277,6 +277,45 @@ export function createDailySourceController(deps) {
     }
   }
 
+  // Save the primary note form values directly to the draft session WITHOUT
+  // de-identification. This lets the student transfer their work to the Draft
+  // Note tab immediately, then de-identify separately via "Save note".
+  // The draft session holds raw text (not persisted to vault); the vault only
+  // receives de-identified text via saveStructuredPrimaryNote.
+  function saveStructuredNoteToDraft(scope) {
+    const patient = deps.active();
+    if (!patient) throw new Error("Select a patient first.");
+    const key = structuredNoteKey(scope);
+    const draftValues = deps.app.structuredNoteDrafts.get(key) || {};
+    const noteType = structuredNoteType(scope);
+    const fields = primaryTeamNoteFields(noteType);
+
+    // Build a draft from the raw form values (not de-identified).
+    const sections = {};
+    for (const field of fields) {
+      const rawText = Object.hasOwn(draftValues, field.id) ? draftValues[field.id] : "";
+      if (rawText?.trim()) {
+        sections[field.id] = { deidentifiedText: rawText.trim(), notDeidentified: true };
+      }
+    }
+
+    // Get or create the draft session, update with the raw sections.
+    let draft = deps.app.noteDraftSessions.get(key);
+    if (!draft) {
+      // Create a minimal draft structure; the review controller will populate the rest.
+      draft = { noteType, sections: {}, objective: { selectedBlocks: [] } };
+    }
+    draft = {
+      ...draft,
+      sections: { ...draft.sections, ...sections },
+      _hasRawText: true,
+      _rawTextWarning: "This draft contains text that has not been de-identified."
+    };
+    deps.app.noteDraftSessions.set(key, draft);
+    deps.setStatus("Note saved to draft (not de-identified). Use 'Save note' to de-identify and save to vault.");
+    deps.render();
+  }
+
   const sourceState = (scope) =>
     scope === "admission"
       ? {
@@ -698,6 +737,7 @@ export function createDailySourceController(deps) {
     renderDaily,
     saveSources,
     saveStructuredPrimaryNote,
+    saveStructuredNoteToDraft,
     selectPacket,
     selectSourceKind,
     selectStructuredNoteField,

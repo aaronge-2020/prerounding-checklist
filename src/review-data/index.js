@@ -298,32 +298,14 @@ function statisticsFor(observations, { is24h, windowStart, windowEnd } = {}) {
   return stats;
 }
 
-function meanArterialPressure(bpValue) {
-  const match = clean(bpValue).match(/^(\d{2,3})\s*\/\s*(\d{2,3})$/);
-  if (!match) return null;
-  const sbp = Number(match[1]);
-  const dbp = Number(match[2]);
-  if (!Number.isFinite(sbp) || !Number.isFinite(dbp) || sbp <= dbp) return null;
-  return Math.round(dbp + (sbp - dbp) / 3);
-}
-
-function isBloodPressureCandidate(candidate) {
-  const name = clean(candidate.name).toLowerCase();
-  return name.includes("blood pressure") || name === "bp";
-}
-
 function vitalInsertionText(candidate, statistics24h) {
   const latest = candidate.latest;
   if (!latest) return candidate.name;
   const latestValue = [latest.value, latest.unit].filter(Boolean).join(" ") || "No value recorded";
   const status = latest.status && !["normal", "unknown"].includes(latest.status) ? ` [${latest.status}]` : "";
+  // Clean format: "BP: latest 92/48", not "Blood Pressure (cuff): latest 92/48 (MAP 63)".
+  // MAP is only shown when explicitly documented in the note, never auto-computed.
   let text = `${candidate.name}: latest ${latestValue}${status}`;
-  // Mean arterial pressure is standard for inpatient BP; compute it when the
-  // note gives SBP/DBP but not an explicit MAP.
-  if (isBloodPressureCandidate(candidate)) {
-    const map = meanArterialPressure(latest.value);
-    if (map) text += ` (MAP ${map})`;
-  }
   if (!statistics24h) return text;
   const unit = candidate.unit ? ` ${candidate.unit}` : "";
   const rangeLabel = statistics24h.is24h === false

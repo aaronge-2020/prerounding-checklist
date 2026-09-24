@@ -125,12 +125,32 @@ export function createReviewController(deps) {
   // Local UI state only; it survives re-renders and the search-only DOM patch.
   const collapsedFamilies = new Set();
 
-  // Vitals and medications are in the note by default: the editor auto-adds
-  // their candidates unless the student unchecked them (remembered in
-  // objective.deselectedIds). Labs and diagnostic results are never
-  // auto-added.
+  // Whether the Clinical Data panel is collapsed (user can focus on the note).
+  // Local UI state only; survives re-renders.
+  let clinicalDataCollapsed = false;
+
+  // Only the 5 core vitals are auto-selected: BP, SpO2, HR, RR, Temp.
+  // Medications are also auto-added. Labs and other vitals (weight, MAP, etc.)
+  // are never auto-added — the student selects them explicitly.
+  // Deselections survive re-renders via objective.deselectedIds.
+  const CORE_VITAL_NAMES = new Set([
+    "blood pressure", "bp",
+    "spo2", "oxygen saturation", "o2 sat",
+    "heart rate", "hr", "pulse",
+    "respiratory rate", "rr", "respirations",
+    "temperature", "temp"
+  ]);
+  const isCoreVital = (candidate) => {
+    if (candidate?.noteGroupKey !== "vitals") return false;
+    const name = String(candidate?.name || "").toLowerCase().trim();
+    // Match against core vital names (handles "Blood Pressure (cuff)", "Pulse", etc.)
+    for (const core of CORE_VITAL_NAMES) {
+      if (name === core || name.startsWith(core + " ") || name.startsWith(core + "(")) return true;
+    }
+    return false;
+  };
   const isDefaultOn = (candidate) =>
-    candidate?.noteGroupKey === "vitals" || candidate?.noteGroupKey === "medications";
+    isCoreVital(candidate) || candidate?.noteGroupKey === "medications";
 
   function selectionInputFor(candidate) {
     return {
@@ -259,6 +279,7 @@ export function createReviewController(deps) {
       differenceSelectionId: deps.app.reviewDifferenceSelectionId,
       baselineEditorId,
       collapsedFamilies,
+      clinicalDataCollapsed,
       patientRequiredMessage: deps.patientRequiredMessage()
     };
   }
@@ -281,9 +302,24 @@ export function createReviewController(deps) {
 
   function render() {
     const current = model();
-    deps.byId("reviewContent").innerHTML = current.patient
+    const container = deps.byId("reviewContent");
+    // Preserve scroll position across re-renders: selecting a vital or toggling
+    // a candidate must not yank the user back to the top of the page.
+    // Guard for non-browser environments (tests).
+    const canPreserveScroll = typeof window !== "undefined" && typeof document !== "undefined";
+    const scrollX = canPreserveScroll ? window.scrollX : 0;
+    const scrollY = canPreserveScroll ? window.scrollY : 0;
+    const activeId = canPreserveScroll ? (document.activeElement?.id || null) : null;
+    container.innerHTML = current.patient
       ? deps.presentation.renderReview(reviewViewModel(current))
       : deps.patientRequiredMessage();
+    if (canPreserveScroll) {
+      window.scrollTo(scrollX, scrollY);
+      if (activeId) {
+        const restored = document.getElementById(activeId);
+        if (restored) restored.focus({ preventScroll: true });
+      }
+    }
   }
 
   function prepare(selectedPacketId = "admission") {
@@ -526,6 +562,11 @@ export function createReviewController(deps) {
         else collapsedFamilies.add(family);
       }
       patchDataList();
+      return true;
+    }
+    if (action === "toggle-clinical-data") {
+      clinicalDataCollapsed = !clinicalDataCollapsed;
+      render();
       return true;
     }
     if (action === "baseline-cancel") {

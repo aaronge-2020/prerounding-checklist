@@ -2755,6 +2755,37 @@ button.var-fill:focus-visible {
   opacity: 1;
 }
 
+/* Vital signs: clean scannable list, one vital per line. */
+.ed-vitals-list {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ed-vitals-list:hover {
+  background: color-mix(in srgb, var(--panel) 50%, transparent);
+}
+
+.ed-vitals-list:focus {
+  outline: 1px solid var(--accent);
+  background: var(--background, #fff);
+}
+
+.ed-vital-line {
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 1px 0;
+  border-bottom: 1px dotted color-mix(in srgb, var(--text) 15%, transparent);
+}
+
+.ed-vital-line:last-child {
+  border-bottom: none;
+}
+
 .ed-block-bar,
 .ed-problem-bar,
 .ed-diff-bar {

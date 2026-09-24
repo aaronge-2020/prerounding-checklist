@@ -1795,6 +1795,7 @@ async function handleClick(event) {
       allowReviewedNonPhi(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex));
     if (action === "save-context") await saveContext();
     if (action === "save-structured-primary-note") await dailySourceController.saveStructuredPrimaryNote(target.dataset.noteScope || "daily");
+    if (action === "save-structured-note-to-draft") await dailySourceController.saveStructuredNoteToDraft(target.dataset.noteScope || "daily");
     if (action === "add-day") await addDay();
     if (action === "add-daily-source") await dailySourceController.addSource();
     if (action === "add-admission-source") await dailySourceController.addAdmissionSource();

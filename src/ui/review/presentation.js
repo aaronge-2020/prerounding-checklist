@@ -294,7 +294,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return (index.diagnosticResults || []).filter((candidate) => candidate.group === groupId).length;
   }
 
-  function renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies }) {
+  function renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed }) {
     const q = normalizedQuery(query);
     const showVitals = category === "all" || category === "vitals";
     const showLabs = category === "all" || category === "labs";
@@ -317,14 +317,18 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       + (showLabs ? (index.labs || []).filter((candidate) => candidate.kind === "narrative" && matchesQuery(candidate.searchText, q)).length : 0)
       + (showMeds ? (index.medications || []).filter((candidate) => matchesQuery(candidate.searchText, q)).length : 0)
       + (showDiagnostics ? (index.diagnosticResults || []).filter((candidate) => (!category || category === "all" || candidate.group === category) && matchesQuery(candidate.searchText, q)).length : 0);
-    return `<section class="review-data-panel panel" aria-labelledby="reviewDataHeading">
-      <div class="section-heading"><div><h2 id="reviewDataHeading">Clinical data</h2><p class="muted">Vitals and medications are in the note automatically — uncheck to remove. Check labs or results to add them.</p></div></div>
+    const toggleLabel = clinicalDataCollapsed ? "Show clinical data" : "Hide clinical data";
+    const toggleIcon = clinicalDataCollapsed ? "▶" : "▼";
+    const bodyHtml = clinicalDataCollapsed ? "" : `
       <div class="review-filter-row">
         <label>Search patient data<input type="search" id="reviewDataSearch" value="${escapeHtml(query)}" placeholder="${category === "labs" ? "WBC, CBC, metabolic panel…" : "WBC, ceftriaxone, CT Head…"}" autocomplete="off"></label>
         <label>Show<select id="reviewDataCategory"><option value="all">All clinical data</option>${index.groups.map((group) => `<option value="${escapeHtml(group.id)}" ${category === group.id ? "selected" : ""}>${escapeHtml(group.label)} (${groupCount(index, group.id)})</option>`).join("")}</select></label>
       </div>
       <p class="review-filter-summary" aria-live="polite">${matchCount} matching item${matchCount === 1 ? "" : "s"}</p>
-      <div class="review-data-list">${sections.length ? sections.join("") : `<div class="empty-state">No saved clinical data match this search.</div>`}</div>
+      <div class="review-data-list">${sections.length ? sections.join("") : `<div class="empty-state">No saved clinical data match this search.</div>`}</div>`;
+    return `<section class="review-data-panel panel" aria-labelledby="reviewDataHeading">
+      <div class="section-heading"><div><h2 id="reviewDataHeading">Clinical data</h2><p class="muted">Vitals and medications are in the note automatically — uncheck to remove. Check labs or results to add them.</p></div><button type="button" class="ed-mini" data-action="toggle-clinical-data" title="${toggleLabel}" aria-label="${toggleLabel}" aria-expanded="${!clinicalDataCollapsed}">${toggleIcon}</button></div>
+      ${bodyHtml}
     </section>`;
   }
 
@@ -374,23 +378,51 @@ export function createReviewPresentation({ escapeHtml, icon }) {
 
   function renderObjectiveBlocksEditor(draft) {
     // Medication blocks are managed in the Medications section, never here.
-    // Blocks group by category (all vitals under one "Vital signs" line, labs
-    // by panel family) and render as compact inline text — Epic smart-phrase
-    // style — not as one chunky card per finding.
+    // Vitals render as a clean scannable list (one vital per line, short labels,
+    // no "latest"/timestamp clutter). Labs group by panel family. Everything is
+    // inline-editable, Epic smart-phrase style — not chunky cards.
     const groups = objectiveEditorGroups(draft);
     return groups.map((group) => {
       const hasStale = group.blocks.some((block) => block.state === "stale");
-      const combinedText = group.blocks
-        .map((block) => String(block.editedText || block.generatedText || "").trim())
-        .filter(Boolean)
-        .join("; ");
+      const isVitals = group.key === "vitals";
+      let bodyHtml;
+      if (isVitals) {
+        // One clean line per vital: "BP 92/48", "HR 101", not a semicolon wall.
+        // Edited blocks show their edited text; otherwise use clean label+detail.
+        const lines = group.blocks
+          .map((block) => {
+            if (block.state === "edited" && block.editedText) {
+              // Multi-line edited text: split into per-line divs.
+              return String(block.editedText).split("\n").map((line) =>
+                line.trim() ? `<div class="ed-vital-line">${editorHtml(line.trim())}</div>` : ""
+              ).join("");
+            }
+            const label = String(block.noteLabel || "").trim();
+            const detail = String(block.noteDetail || "").trim();
+            const text = label && detail ? `${label} ${detail}` : (label || detail || String(block.generatedText || "").trim());
+            return text ? `<div class="ed-vital-line" data-vital-line="${escapeHtml(block.selectionId)}">${editorHtml(text)}</div>` : "";
+          })
+          .filter(Boolean)
+          .join("");
+        bodyHtml = `<div class="ed-vitals-list" contenteditable="true" data-objective-group-text="${escapeHtml(group.key)}" data-placeholder="Optional" spellcheck="true">${lines}</div>`;
+      } else {
+        const combinedText = group.blocks
+          .map((block) => {
+            const label = String(block.noteLabel || "").trim();
+            const detail = String(block.noteDetail || "").trim();
+            return label && detail ? `${label} ${detail}` : (label || detail || String(block.editedText || block.generatedText || "").trim());
+          })
+          .filter(Boolean)
+          .join("; ");
+        bodyHtml = `<div class="ed-body ed-body--inline" contenteditable="true" data-objective-group-text="${escapeHtml(group.key)}" data-placeholder="Optional" spellcheck="true">${editorHtml(combinedText)}</div>`;
+      }
       const label = group.label
         ? `<span class="ed-group-label">${escapeHtml(group.label)}:</span>`
         : "";
       const staleButton = hasStale
         ? `<button type="button" class="ed-mini" data-action="refresh-objective-group" data-group="${escapeHtml(group.key)}" title="Source updated — refresh this line">↻</button>`
         : "";
-      return `<div class="ed-group" data-objective-group="${escapeHtml(group.key)}">${label}<div class="ed-body ed-body--inline" contenteditable="true" data-objective-group-text="${escapeHtml(group.key)}" data-placeholder="Optional" spellcheck="true">${editorHtml(combinedText)}</div><span class="ed-mini-row">${staleButton}<button type="button" class="ed-mini ed-mini--danger" data-action="remove-objective-group" data-group="${escapeHtml(group.key)}" title="Remove ${escapeHtml(group.label || "item")}" aria-label="Remove ${escapeHtml(group.label || "item")}">×</button></span></div>`;
+      return `<div class="ed-group" data-objective-group="${escapeHtml(group.key)}">${label}${bodyHtml}<span class="ed-mini-row">${staleButton}<button type="button" class="ed-mini ed-mini--danger" data-action="remove-objective-group" data-group="${escapeHtml(group.key)}" title="Remove ${escapeHtml(group.label || "item")}" aria-label="Remove ${escapeHtml(group.label || "item")}">×</button></span></div>`;
     }).join("");
   }
 
@@ -495,7 +527,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         <div><span class="eyebrow">${escapeHtml(patientLabel)}</span><h1 id="review-heading">Review Data / Draft Note</h1><p class="review-one-liner ${oneLiner ? "" : "is-empty"}">${escapeHtml(oneLiner || "One-liner not entered yet. You can continue and add it in the draft.")}</p></div>
         <label>Note packet<select id="reviewPacketSelect">${packets.map((packet) => `<option value="${escapeHtml(packet.id)}" ${packet.id === selectedPacketId ? "selected" : ""}>${escapeHtml(packet.label)}</option>`).join("")}</select></label>
       </header>
-      <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies })}${renderDraft({ draft, guidanceFor, differenceSelectionId })}</div>
+      <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId })}</div>
     </div>`;
   }
 
