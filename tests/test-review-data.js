@@ -565,4 +565,44 @@ assert.deepEqual(
   "study lines from the note become diagnostic candidates"
 );
 
+// MAP is computed from SBP/DBP; range falls back across readings without timestamps.
+{
+  const mapIndex = buildClinicalReviewIndex({
+    id: "map_vitals",
+    days: [{
+      id: "map_day",
+      date: "2026-09-21",
+      label: "HD1",
+      sourceCaptures: [{
+        id: "map_source",
+        sourceKind: "vital_signs",
+        label: "Vitals",
+        deidentifiedText: "Vitals\nBP 92/48\nHR 101"
+      }]
+    }]
+  });
+  const bp = mapIndex.vitals.find((c) => /blood pressure/i.test(c.name));
+  assert.ok(bp, "BP candidate exists");
+  assert.match(bp.insertionText, /\(MAP 63\)/, "MAP 63 computed from 92/48");
+}
+
+// Two same-day HR readings produce a 24-hour range (day-level timestamps apply).
+{
+  const rangeIndex = buildClinicalReviewIndex({
+    id: "range_vitals",
+    days: [{
+      id: "range_day",
+      date: "2026-09-21",
+      label: "HD1",
+      sourceCaptures: [
+        { id: "r1", sourceKind: "vital_signs", label: "AM vitals", deidentifiedText: "Vitals\nHR 110" },
+        { id: "r2", sourceKind: "vital_signs", label: "PM vitals", deidentifiedText: "Vitals\nHR 90" }
+      ]
+    }]
+  });
+  const hr = rangeIndex.vitals.find((c) => c.name === "Pulse");
+  assert.ok(hr, "Pulse candidate exists");
+  assert.match(hr.insertionText, /24-hour range 90–110 bpm/, "same-day readings show 24-hour range");
+}
+
 console.log("review data index tests passed");

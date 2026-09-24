@@ -260,24 +260,56 @@ function median(values) {
 }
 
 function vitalStatistics(candidate, latestVitalTime) {
-  if (!Number.isFinite(latestVitalTime)) return null;
-  const observations = candidate.observations.filter((observation) =>
+  const numericObservations = candidate.observations.filter((observation) =>
     Number.isFinite(observation.numericValue)
-    && Number.isFinite(observation.sortTime)
-    && observation.sortTime >= latestVitalTime - 24 * 60 * 60 * 1000
-    && observation.sortTime <= latestVitalTime
   );
-  if (!observations.length) return null;
+  if (!numericObservations.length) return null;
+
+  // Prefer a true 24-hour window when timestamps are available.
+  if (Number.isFinite(latestVitalTime)) {
+    const windowStart = latestVitalTime - 24 * 60 * 60 * 1000;
+    const windowed = numericObservations.filter((observation) =>
+      Number.isFinite(observation.sortTime)
+      && observation.sortTime >= windowStart
+      && observation.sortTime <= latestVitalTime
+    );
+    if (windowed.length) return statisticsFor(windowed, { is24h: true, windowStart, windowEnd: latestVitalTime });
+  }
+  // Fall back to the range across all available readings (e.g., HPI + vitals
+  // section) when timestamps are absent. Label it honestly.
+  if (numericObservations.length > 1) return statisticsFor(numericObservations, { is24h: false });
+  return null;
+}
+
+function statisticsFor(observations, { is24h, windowStart, windowEnd } = {}) {
   const values = observations.map((observation) => observation.numericValue);
-  return {
+  const stats = {
     count: values.length,
     minimum: Math.min(...values),
     maximum: Math.max(...values),
     mean: rounded(values.reduce((total, value) => total + value, 0) / values.length),
-    median: rounded(median(values)),
-    windowStart: latestVitalTime - 24 * 60 * 60 * 1000,
-    windowEnd: latestVitalTime
+    median: rounded(median(values))
   };
+  if (Number.isFinite(windowStart)) stats.windowStart = windowStart;
+  if (Number.isFinite(windowEnd)) stats.windowEnd = windowEnd;
+  // Only the timestamp-free fallback sets this; the 24h shape stays exactly
+  // as before for backward compatibility.
+  if (is24h === false) stats.is24h = false;
+  return stats;
+}
+
+function meanArterialPressure(bpValue) {
+  const match = clean(bpValue).match(/^(\d{2,3})\s*\/\s*(\d{2,3})$/);
+  if (!match) return null;
+  const sbp = Number(match[1]);
+  const dbp = Number(match[2]);
+  if (!Number.isFinite(sbp) || !Number.isFinite(dbp) || sbp <= dbp) return null;
+  return Math.round(dbp + (sbp - dbp) / 3);
+}
+
+function isBloodPressureCandidate(candidate) {
+  const name = clean(candidate.name).toLowerCase();
+  return name.includes("blood pressure") || name === "bp";
 }
 
 function vitalInsertionText(candidate, statistics24h) {
@@ -285,9 +317,19 @@ function vitalInsertionText(candidate, statistics24h) {
   if (!latest) return candidate.name;
   const latestValue = [latest.value, latest.unit].filter(Boolean).join(" ") || "No value recorded";
   const status = latest.status && !["normal", "unknown"].includes(latest.status) ? ` [${latest.status}]` : "";
-  if (!statistics24h) return `${candidate.name}: latest ${latestValue}${status}`;
+  let text = `${candidate.name}: latest ${latestValue}${status}`;
+  // Mean arterial pressure is standard for inpatient BP; compute it when the
+  // note gives SBP/DBP but not an explicit MAP.
+  if (isBloodPressureCandidate(candidate)) {
+    const map = meanArterialPressure(latest.value);
+    if (map) text += ` (MAP ${map})`;
+  }
+  if (!statistics24h) return text;
   const unit = candidate.unit ? ` ${candidate.unit}` : "";
-  return `${candidate.name}: latest ${latestValue}${status}; 24-hour range ${statistics24h.minimum}–${statistics24h.maximum}${unit}; median ${statistics24h.median}${unit}`;
+  const rangeLabel = statistics24h.is24h === false
+    ? `range across ${statistics24h.count} readings`
+    : "24-hour range";
+  return `${text}; ${rangeLabel} ${statistics24h.minimum}–${statistics24h.maximum}${unit}; median ${statistics24h.median}${unit}`;
 }
 
 function resultGroup(resultCategory) {
