@@ -4,7 +4,7 @@ import {
   normalizeTwoColumnEhrText,
   parseClinicalPlanProblems,
   splitTwoColumnEhrTables
-} from "./clinical-plan-parser.js?v=20260923-plan-problems-v1";
+} from "./clinical-plan-parser.js?v=20260924-assessment-plan-v1";
 
 const H_AND_P = "hp";
 const PROGRESS = "progress";
@@ -100,6 +100,19 @@ function fieldFor(definition, noteType, availableFields) {
 }
 
 const TEAM_PLAN_DEFINITION = heading([], "plan", true);
+
+// Headings that combine assessment reasoning and plan actions in one
+// section. When one of these is used and there is no separate Assessment
+// section, the assessment reasoning is split back out of the parsed
+// problems so sections.assessment is not left empty.
+const COMBINED_ASSESSMENT_PLAN_ALIASES = new Set([
+  "assessment and plan",
+  "assessment / plan",
+  "a and p",
+  "a p",
+  "ap",
+  "impression and plan"
+]);
 
 function definitionFor(candidate) {
   const normalized = normalizeHeading(candidate);
@@ -321,6 +334,7 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
   let activeField = fallbackField;
   let activeLines = [];
   let insideImagingBlock = false;
+  let combinedPlanHeading = false;
 
   const flush = () => {
     appendBlock(blocks, activeField, compactBlock(activeLines));
@@ -360,6 +374,9 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
         : match.definition.stayWithPlan && priorField === "plan"
           ? priorField
           : fieldFor(match.definition, noteType, availableFields) || fallbackField;
+    if (activeField === "plan" && COMBINED_ASSESSMENT_PLAN_ALIASES.has(normalizeHeading(match.heading))) {
+      combinedPlanHeading = true;
+    }
     detected.push({ fieldId: activeField, heading: match.heading });
     const preserveFallbackHeading = activeField === fallbackField;
     const preserveCombinedPatientHeading = noteType === PROGRESS
@@ -419,6 +436,26 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
   }
   const detectedFieldIds = [...new Set(detected.map(({ fieldId }) => fieldId).filter((fieldId) => transformedSections[fieldId]))];
   const parsedProblems = parseClinicalPlanProblems(transformedSections.plan || "");
+  // A combined "Assessment and Plan" heading parks all reasoning in the plan
+  // section. Split the assessment reasoning back out problem-by-problem so
+  // sections.assessment reflects the synthesis while sections.plan keeps the
+  // full problem-oriented text and its actions.
+  if (combinedPlanHeading && !String(transformedSections.assessment || "").trim() && parsedProblems.length > 0) {
+    const assessmentParts = [];
+    for (const problem of parsedProblems) {
+      const title = String(problem.problem || problem.title || "").trim();
+      const lines = [];
+      if (title) lines.push(title);
+      const context = String(problem.keyContext || "").trim();
+      if (context) lines.push(context);
+      const differentials = (problem.differentials || [])
+        .map((entry) => String(entry.diagnosis || "").trim())
+        .filter(Boolean);
+      if (differentials.length) lines.push(`Ranked differential: ${differentials.join("; ")}.`);
+      if (lines.length) assessmentParts.push(lines.join("\n"));
+    }
+    if (assessmentParts.length) transformedSections.assessment = assessmentParts.join("\n\n");
+  }
   return {
     recognized: detectedFieldIds.length > 0,
     rawCharacterCount: rawSource.length,

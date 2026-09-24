@@ -39,6 +39,7 @@ export const NOTE_TYPE_FIELDS = Object.freeze({
 
 export const CLOSING_SECTION_FIELDS = Object.freeze([
   Object.freeze({ id: "fen", label: "FEN", required: false }),
+  Object.freeze({ id: "ins_outs", label: "Ins/Outs", required: false }),
   Object.freeze({ id: "vte_prophylaxis", label: "VTE Prophylaxis", required: false }),
   Object.freeze({ id: "code_status", label: "Code Status", required: false }),
   Object.freeze({ id: "disposition", label: "Disposition", required: false }),
@@ -47,6 +48,57 @@ export const CLOSING_SECTION_FIELDS = Object.freeze([
 
 const OBJECTIVE_BLOCK_STATES = new Set(["synced", "edited", "stale"]);
 const ETIOLOGY_STATUSES = new Set(["known", "unknown"]);
+
+// Toggleable optional sections in the note editor. Every note needs the
+// core SOAP/H&P sections, so they are never toggleable — only these optional
+// closing sections can be switched on/off for the final note.
+export const SECTION_VISIBILITY_KEYS = Object.freeze([
+  Object.freeze({ id: "diet_and_exercise", label: "Diet and exercise" }),
+  Object.freeze({ id: "fen", label: "FEN" }),
+  Object.freeze({ id: "ins_outs", label: "Ins/Outs" }),
+  Object.freeze({ id: "vte_prophylaxis", label: "VTE Prophylaxis" }),
+  Object.freeze({ id: "code_status", label: "Code Status" }),
+  Object.freeze({ id: "disposition", label: "Disposition" }),
+  Object.freeze({ id: "medication_regimens", label: "Medication Regimens" })
+]);
+
+export function normalizeSectionVisibility(value) {
+  const input = value && typeof value === "object" ? value : {};
+  return Object.fromEntries(
+    SECTION_VISIBILITY_KEYS.map(({ id }) => [id, input[id] === undefined ? true : Boolean(input[id])])
+  );
+}
+
+export function setSectionVisibility(draft, sectionId, included, { now = timestampNow } = {}) {
+  if (!SECTION_VISIBILITY_KEYS.some(({ id }) => id === sectionId)) {
+    throw new TypeError(`Unknown note section: ${text(sectionId) || "(blank)"}`);
+  }
+  return touch(draft, {
+    sectionVisibility: { ...normalizeSectionVisibility(draft?.sectionVisibility), [sectionId]: Boolean(included) }
+  }, now);
+}
+
+// Vitals and medications are included in the note by default. Unchecking one
+// records its id here so the auto-include pass does not re-add it.
+export function deselectObjectiveBlockWithMemory(draft, selectionId, { now = timestampNow } = {}) {
+  const next = deselectObjectiveBlock(draft, selectionId, { now });
+  const deselectedIds = new Set(next.objective.deselectedIds || []);
+  deselectedIds.add(String(selectionId));
+  return touch(next, {
+    objective: { ...next.objective, deselectedIds: [...deselectedIds] }
+  }, now);
+}
+
+export function reselectObjectiveBlock(draft, selection, { now = timestampNow } = {}) {
+  const next = selectObjectiveBlock(draft, selection, { now });
+  const selectionId = String(selection?.selectionId || "");
+  return touch(next, {
+    objective: {
+      ...next.objective,
+      deselectedIds: (next.objective.deselectedIds || []).filter((id) => id !== selectionId)
+    }
+  }, now);
+}
 
 function timestampNow() {
   return new Date().toISOString();
@@ -195,8 +247,15 @@ export function normalizeNoteDraft(draft, { now = timestampNow, idFactory = loca
       manual: normalizeDraftText(draft?.objective?.manual ?? "", { timestamp }),
       selectedBlocks: (Array.isArray(draft?.objective?.selectedBlocks) ? draft.objective.selectedBlocks : [])
         .map(normalizeObjectiveBlock)
-        .filter((block) => block.selectionId)
+        .filter((block) => block.selectionId),
+      // Ids the user explicitly removed from the auto-included vitals and
+      // medications. The review controller re-applies auto-include on every
+      // render; this list stops it from resurrecting deselected rows.
+      deselectedIds: (Array.isArray(draft?.objective?.deselectedIds) ? draft.objective.deselectedIds : [])
+        .map((id) => String(id).trim())
+        .filter(Boolean)
     },
+    sectionVisibility: normalizeSectionVisibility(draft?.sectionVisibility),
     checklistFindings: {
       selectedBlocks: (Array.isArray(draft?.checklistFindings?.selectedBlocks) ? draft.checklistFindings.selectedBlocks : [])
         .map(normalizeChecklistFindingBlock)

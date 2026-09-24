@@ -762,5 +762,11 @@ assert.deepEqual(
 );
 const strokeProblem = strokeParsed.parsedProblems[0];
 assert.match(strokeProblem.therapeuticPlan || strokeParsed.sections.plan, /telemetry|stroke protocol/i, "bullets merge into the numbered problem's plan");
+// Combined "Assessment and Plan" heading: reasoning splits into assessment,
+// actions stay in plan.
+assert.match(strokeParsed.sections.assessment, /Acute left hemispheric stroke/, "combined A/P: problem title lands in assessment");
+assert.match(strokeParsed.sections.assessment, /History of pulmonary embolism \/ chronic anticoagulation/, "combined A/P: second problem lands in assessment");
+assert.doesNotMatch(strokeParsed.sections.assessment, /activate stroke protocol|hold apixaban/i, "combined A/P: actions stay out of assessment");
+assert.match(strokeParsed.sections.plan, /activate stroke protocol/i, "combined A/P: actions stay in plan");
 
 console.log("primary-team note parser tests passed");

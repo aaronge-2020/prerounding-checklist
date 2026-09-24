@@ -4,7 +4,7 @@ import {
   clinicalParseWarning,
   parseClinicalExport,
   prepareClinicalExportForSave
-} from "../../patient-context/clinical-export-parser.js?v=20260923-mar-grid-v7";
+} from "../../patient-context/clinical-export-parser.js?v=20260924-assessment-plan-v1";
 import {
   createEphemeralRedactionReview,
   reviewKey,
@@ -18,13 +18,13 @@ import {
   replaceSourceCapturesFromFormAsync,
   sourceCapturePacketCheck
 } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
-import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260924-note-grouping-v1";
+import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 import {
   createPrimaryTeamNote,
   primaryTeamNoteFields,
   updatePrimaryTeamNoteSection
 } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
-import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20260923-plan-problems-v1";
+import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20260924-assessment-plan-v1";
 
 export function createDailySourceController(deps) {
   function noteDraftSessionHasContent(draft) {

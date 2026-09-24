@@ -17,7 +17,7 @@ import {
   noteLabFamilyKey,
   pairBloodPressureCandidates,
   vitalNoteItem
-} from "./compact-summary.js?v=20260924-note-grouping-v1";
+} from "./compact-summary.js?v=20260924-optional-sections-v1";
 import {
   getLabBaseline,
   normalizeLabBaselines
@@ -695,6 +695,12 @@ function finalizeMedicationCandidate(candidate) {
     insertionText: latestSavedEntry
       ? `${candidate.name}${regimen ? ` — ${regimen}` : ""}${latestSavedEntry.rate ? ` · rate ${latestSavedEntry.rate}` : ""}${latestSavedEntry.latestAdministration ? `; latest listed administration ${latestSavedEntry.latestAdministration}` : "; no administration documented"}${prnDetails ? `; documented PRN use: ${prnDetails}` : ""}${observations.length > 1 ? `; saved history ${observations.map(describe).join(" | ")}` : ""}`
       : candidate.name,
+    // Final-note grouping: medications collapse into their own Medications
+    // section at the very end of the note, never into Objective.
+    noteGroupKey: "medications",
+    noteGroupLabel: "Medications",
+    noteLabel: candidate.name,
+    noteDetail: [regimen, latestSavedEntry?.latestAdministration ? `latest ${latestSavedEntry.latestAdministration}` : "", scheduleLabel !== "Order" ? scheduleLabel : ""].filter(Boolean).join(" · "),
     searchText: clean([candidate.name, ...observations.flatMap((entry) => [entry.dose, entry.rate, entry.route, entry.frequency, entry.administrationTimes, entry.prnReason, entry.prnComment, entry.savedSection, entry.dayLabel])].join(" ")).toLocaleLowerCase("en-US")
   };
   finalized.fingerprint = fingerprint({

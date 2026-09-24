@@ -371,8 +371,13 @@ export function parseClinicalPlanProblems(planText) {
     const theraLines = [];
     const differentials = [];
 
-    // Inline plan details from the title ("Problem — do X, Y") go to therapeutic plan.
-    if (inlinePlan) theraLines.push(inlinePlan);
+    // Inline plan details from the title ("Problem — do X, Y") go to the plan
+    // when they read as actions; fragments like "— improving" are assessment
+    // reasoning and stay with the problem's context.
+    if (inlinePlan) {
+      if (PLAN_ACTION_KEYWORDS.test(inlinePlan)) theraLines.push(inlinePlan);
+      else contextLines.push(inlinePlan);
+    }
 
     for (let j = startIndex; j < nonBlank.length; j++) {
       const line = nonBlank[j];

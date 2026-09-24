@@ -773,7 +773,11 @@ export function parseEpicClinicalExport(value) {
           usedSourceTextForCompactness: true
         };
       }
-      return result;
+      // The structured "Result." outputText is the human display format. Persist
+      // the canonical promptText ("Labs" representation) so saved sources can
+      // rebuild their display model and clinical data after de-identification —
+      // the display format alone cannot be reconstructed.
+      return { ...result, canonicalPromptText: result.promptText || result.outputText };
     }
   }
   return null;

@@ -1,6 +1,6 @@
 import { sortDays } from "../../daily-updates/days.js?v=20260921-medication-card-v4";
 import { updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
-import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20260922-readable-objective-v1&labs=analyte-selection-v3";
+import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20260924-optional-sections-v1&labs=analyte-selection-v3";
 import {
   addDifferential,
   addPlanProblem,
@@ -8,6 +8,7 @@ import {
   changeNoteDraftType,
   createNoteDraft,
   deselectObjectiveBlock,
+  deselectObjectiveBlockWithMemory,
   editObjectiveBlock,
   fieldsForNoteType,
   keepObjectiveBlock,
@@ -23,8 +24,10 @@ import {
   renderFinalNotePlainText,
   reorderDifferentials,
   reorderPlanProblems,
+  reselectObjectiveBlock,
   selectObjectiveBlock,
   selectChecklistFinding,
+  setSectionVisibility,
   studentGuidance,
   updateAssessment,
   updateClosingSection,
@@ -32,8 +35,8 @@ import {
   updateManualObjective,
   updateNoteSection,
   updatePlanProblem
-} from "../../note-drafts/index.js?v=20260924-note-grouping-v1";
-import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20260923-plan-problems-v1";
+} from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
+import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20260924-assessment-plan-v1";
 import {
   clearLabBaseline,
   setLabBaseline
@@ -93,6 +96,14 @@ function draftFromSource(patient, selectedPacketId) {
     }
   }
 
+  // Seed the draft assessment from the source note's own assessment section
+  // (including text split out of a combined "Assessment and Plan" heading),
+  // but never overwrite the student's own writing.
+  const sourceAssessment = source?.sections?.assessment?.deidentifiedText || source?.sections?.assessment || "";
+  if (String(sourceAssessment).trim() && !String(draft.assessment?.deidentifiedText || "").trim()) {
+    draft = updateAssessment(draft, String(sourceAssessment).trim());
+  }
+
   return draft;
 }
 
@@ -100,6 +111,29 @@ export function createReviewController(deps) {
   // Which lab row currently has its baseline editor open. Local UI state:
   // the saved baselines themselves live on the patient record in the vault.
   let baselineEditorId = "";
+  // Which lab families / flagged sections are collapsed on the data sheet.
+  // Local UI state only; it survives re-renders and the search-only DOM patch.
+  const collapsedFamilies = new Set();
+
+  // Vitals and medications are in the note by default: the editor auto-adds
+  // their candidates unless the student unchecked them (remembered in
+  // objective.deselectedIds). Labs and diagnostic results are never
+  // auto-added.
+  const isDefaultOn = (candidate) =>
+    candidate?.noteGroupKey === "vitals" || candidate?.noteGroupKey === "medications";
+
+  function selectionInputFor(candidate) {
+    return {
+      selectionId: candidate.id,
+      sourceFingerprint: candidate.fingerprint,
+      generatedText: candidate.insertionText,
+      kind: candidate.kind,
+      noteGroupKey: candidate.noteGroupKey,
+      noteGroupLabel: candidate.noteGroupLabel,
+      noteLabel: candidate.noteLabel,
+      noteDetail: candidate.noteDetail
+    };
+  }
 
   function packets(patient) {
     return [
@@ -159,6 +193,16 @@ export function createReviewController(deps) {
         }
       });
     }
+    // Auto-include every vital and medication candidate the student has not
+    // explicitly unchecked. Explicit deselections survive re-renders, packet
+    // switches, and saved-draft reloads through objective.deselectedIds.
+    const deselectedIds = new Set((draft.objective?.deselectedIds || []).map(String));
+    const alreadySelected = new Set(draft.objective.selectedBlocks.map((block) => block.selectionId));
+    for (const candidate of candidates.values()) {
+      if (!isDefaultOn(candidate)) continue;
+      if (deselectedIds.has(String(candidate.id)) || alreadySelected.has(candidate.id)) continue;
+      draft = selectObjectiveBlock(draft, selectionInputFor(candidate));
+    }
     deps.app.noteDraftSessions.set(key, draft);
     return draft;
   }
@@ -201,8 +245,25 @@ export function createReviewController(deps) {
       finalNote: renderFinalNote(current.draft),
       finalNoteHtml: renderFinalNoteHtml(current.draft),
       baselineEditorId,
+      collapsedFamilies,
       patientRequiredMessage: deps.patientRequiredMessage()
     };
+  }
+
+  // Patch only the clinical-data sheet (list + match summary) so typing in
+  // the search field or toggling a lab-family collapse does not lose focus.
+  function patchDataList() {
+    const current = model();
+    if (!current.patient) return;
+    const rendered = deps.presentation.renderReview(reviewViewModel(current));
+    const template = document.createElement("template");
+    template.innerHTML = rendered;
+    const nextList = template.content.querySelector(".review-data-list");
+    const nextSummary = template.content.querySelector(".review-filter-summary");
+    const wrapper = deps.byId("reviewContent")?.querySelector(".review-data-list");
+    const summary = deps.byId("reviewContent")?.querySelector(".review-filter-summary");
+    if (summary && nextSummary) summary.textContent = nextSummary.textContent;
+    if (wrapper && nextList) wrapper.replaceChildren(...nextList.childNodes);
   }
 
   function render() {
@@ -267,6 +328,11 @@ export function createReviewController(deps) {
       render();
       return true;
     }
+    if (target.matches("[data-section-visibility]")) {
+      setDraft(setSectionVisibility(current.draft, target.dataset.sectionVisibility, target.checked));
+      render();
+      return true;
+    }
     if (target.matches("[data-objective-selection-id]")) {
       const candidate = (current.index.objectiveCandidates || current.index.candidates).find((entry) => entry.id === target.dataset.objectiveSelectionId);
       if (!candidate) return true;
@@ -289,18 +355,13 @@ export function createReviewController(deps) {
           if (candidate.panelId) panelIds.add(candidate.panelId);
           for (const panelId of panelIds) draft = deselectObjectiveBlock(draft, panelId);
         }
-        draft = selectObjectiveBlock(draft, {
-          selectionId: candidate.id,
-          sourceFingerprint: candidate.fingerprint,
-          generatedText: candidate.insertionText,
-          kind: candidate.kind,
-          noteGroupKey: candidate.noteGroupKey,
-          noteGroupLabel: candidate.noteGroupLabel,
-          noteLabel: candidate.noteLabel,
-          noteDetail: candidate.noteDetail
-        });
+        draft = reselectObjectiveBlock(draft, selectionInputFor(candidate));
       } else {
-        draft = deselectObjectiveBlock(draft, candidate.id);
+        // Unchecking a default-on vital or medication remembers the choice so
+        // the auto-include pass does not silently re-add it.
+        draft = isDefaultOn(candidate)
+          ? deselectObjectiveBlockWithMemory(draft, candidate.id)
+          : deselectObjectiveBlock(draft, candidate.id);
       }
       setDraft(draft);
       render();
@@ -318,18 +379,7 @@ export function createReviewController(deps) {
   function input(target) {
     if (target.id === "reviewDataSearch") {
       deps.app.reviewSearchQuery = target.value;
-      const current = model();
-      if (!current.patient) return true;
-      const rendered = deps.presentation.renderReview(reviewViewModel(current));
-      // Patch only the clinical-data sheet so the search field keeps focus.
-      const template = document.createElement("template");
-      template.innerHTML = rendered;
-      const nextList = template.content.querySelector(".review-data-list");
-      const nextSummary = template.content.querySelector(".review-filter-summary");
-      const wrapper = deps.byId("reviewContent")?.querySelector(".review-data-list");
-      const summary = deps.byId("reviewContent")?.querySelector(".review-filter-summary");
-      if (summary && nextSummary) summary.textContent = nextSummary.textContent;
-      if (wrapper && nextList) wrapper.replaceChildren(...nextList.childNodes);
+      patchDataList();
       return true;
     }
     return updateInput(target);
@@ -420,13 +470,22 @@ export function createReviewController(deps) {
       render();
       return true;
     }
+    if (action === "toggle-lab-family") {
+      const family = button.dataset.family || "";
+      if (family) {
+        if (collapsedFamilies.has(family)) collapsedFamilies.delete(family);
+        else collapsedFamilies.add(family);
+      }
+      patchDataList();
+      return true;
+    }
     if (action === "baseline-cancel") {
       baselineEditorId = "";
       render();
       return true;
     }
     if (action === "baseline-save" || action === "baseline-clear") {
-      const editor = button.closest(".lab-cell")?.querySelector("[data-baseline-editor]");
+      const editor = button.closest(".lab-row")?.querySelector("[data-baseline-editor]");
       const analyte = editor?.dataset.baselineAnalyte || "";
       if (!editor || !analyte) return true;
       if (action === "baseline-clear") {
@@ -454,7 +513,14 @@ export function createReviewController(deps) {
     else if (action === "move-differential") {
       const problem = draft.problems.find((entry) => entry.id === button.dataset.problemId);
       draft = reorderDifferentials(draft, button.dataset.problemId, moveId(problem?.differentials.map((entry) => entry.id) || [], button.dataset.differentialId, button.dataset.direction));
-    } else if (action === "remove-objective-selection") draft = deselectObjectiveBlock(draft, button.dataset.selectionId);
+    } else if (action === "remove-objective-selection") {
+      const candidate = (current.index.objectiveCandidates || current.index.candidates).find((entry) => entry.id === button.dataset.selectionId);
+      // Removing a default-on vital or medication remembers the choice so the
+      // auto-include pass does not silently re-add it.
+      draft = isDefaultOn(candidate)
+        ? deselectObjectiveBlockWithMemory(draft, button.dataset.selectionId)
+        : deselectObjectiveBlock(draft, button.dataset.selectionId);
+    }
     else if (action === "refresh-objective-selection") draft = refreshObjectiveBlock(draft, button.dataset.selectionId);
     else if (action === "keep-objective-selection") draft = keepObjectiveBlock(draft, button.dataset.selectionId);
     else if (action === "review-objective-difference") {

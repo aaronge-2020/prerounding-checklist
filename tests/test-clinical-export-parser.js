@@ -13,11 +13,12 @@ import {
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
 const parserRevision = "20260921-medication-card-v4";
-const epicParserRevision = "20260923-mar-grid-v6";
-const clinicalParserRevision = "20260923-mar-grid-v7";
+const epicParserRevision = "20260924-assessment-plan-v1";
+const clinicalParserRevision = "20260924-assessment-plan-v1";
 const primaryNoteRevision = "20260921-medication-card-v4";
 const sourceControllerRevision = "20260923-plan-problems-v1";
-const appRevision = "20260923-mar-grid-v2";
+const appRevision = "20260924-assessment-plan-v1";
+const styleRevision = "20260924-optional-sections-v1";
 const runtimeSources = {
   index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
   app: readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8"),
@@ -38,7 +39,7 @@ const runtimeSources = {
   parser: readFileSync(new URL("../src/patient-context/clinical-export-parser.js", import.meta.url), "utf8"),
   epicParser: readFileSync(new URL("../src/patient-context/epic-clinical-export-parser.js", import.meta.url), "utf8")
 };
-assert.match(runtimeSources.index, new RegExp(`styles\\.css\\?v=${primaryNoteRevision}`));
+assert.match(runtimeSources.index, new RegExp(`styles\\.css\\?v=${styleRevision}`));
 assert.match(runtimeSources.index, new RegExp(`app\\.js\\?v=${appRevision}`));
 assert.match(runtimeSources.app, new RegExp(`daily/presentation\\.js\\?v=${primaryNoteRevision}`));
 assert.match(runtimeSources.app, new RegExp(`daily/source-controller\\.js\\?v=${sourceControllerRevision}`));
@@ -235,7 +236,8 @@ assert.ok(parsedEpicResults.parsedCharacterCount > 0, "Epic results produce outp
 
 const preparedEpicResults = prepareClinicalExportForSave(syntheticEpicResults);
 assert.equal(preparedEpicResults.parseResult.formatId, "epic_results");
-assert.equal(preparedEpicResults.sourceText, parsedEpicResults.outputText, "the save boundary must parse even when no textarea parse state is available");
+assert.equal(preparedEpicResults.sourceText, parsedEpicResults.canonicalPromptText, "the save boundary must persist the canonical representation so saved sources rebuild their display model");
+assert.ok(preparedEpicResults.sourceText.startsWith("Labs"), "persisted Epic results use the rebuildable canonical Labs format");
 assert.doesNotMatch(preparedEpicResults.sourceText, /Results from EPIC:/);
 const reviewedEpicResults = prepareClinicalExportForSave(syntheticEpicResults, {
   ...parsedEpicResults,
@@ -332,7 +334,12 @@ assert.equal(parsedEpicMarMetadata.displayModel.groups[0].rows[1].medication.prn
 assert.equal(parsedEpicMarMetadata.displayModel.groups[0].rows[1].medication.prnComment, "for ionized calcium below goal");
 assert.doesNotMatch(JSON.stringify(parsedEpicMarMetadata.displayModel), /Day 5/);
 assert.equal(parsedEpicMarMetadata.preservedUnparsedText, false);
-const savedEpicMarMetadata = clinicalDisplayModelFromPromptText("medication_activity", parsedEpicMarMetadata.canonicalPromptText || parsedEpicMarMetadata.outputText);
+// Real save/reparse lifecycle: the vault persists
+// prepareClinicalExportForSave(...).sourceText and reconstruction reads
+// that persisted text — not the parser's internal prompt text.
+const persistedEpicMarForSave = prepareClinicalExportForSave(epicMarWithRateAndMetadata, parsedEpicMarMetadata);
+const savedEpicMarMetadata = clinicalDisplayModelFromPromptText("medication_activity", persistedEpicMarForSave.sourceText);
+assert.ok(savedEpicMarMetadata, "the persisted Epic MAR text must rebuild a medication display model on reparse");
 assert.deepEqual(savedEpicMarMetadata.columns, ["Medication", "Current regimen", "Most recent administration", "Administration history"]);
 assert.deepEqual(savedEpicMarMetadata.groups[0].rows[0].cells, parsedEpicMarMetadata.displayModel.groups[0].rows[0].cells);
 assert.deepEqual(savedEpicMarMetadata.groups[0].rows[1].medication, {
@@ -533,7 +540,11 @@ assert.deepEqual(parsedWideEpicVitals.displayModel.series.find(({ name }) => nam
 ], "vital graphs must run chronologically even when Epic copies newest first");
 const temperatureSummary = parsedWideEpicVitals.displayModel.statistics24h.find(({ name }) => name === "Temperature");
 assert.deepEqual(temperatureSummary, { name: "Temperature", unit: "°C", count: 3, minimum: 35.6, maximum: 36.5, mean: 36.1, median: 36.3 });
-const savedWideEpicVitals = clinicalDisplayModelFromPromptText("vital_signs", parsedWideEpicVitals.outputText);
+// Real save/reparse lifecycle: reconstruction reads the persisted
+// prepareClinicalExportForSave(...).sourceText, not the parser output.
+const persistedWideEpicVitals = prepareClinicalExportForSave(wideEpicVitals, parsedWideEpicVitals);
+const savedWideEpicVitals = clinicalDisplayModelFromPromptText("vital_signs", persistedWideEpicVitals.sourceText);
+assert.ok(savedWideEpicVitals, "the persisted wide Epic vitals must rebuild a vital display model on reparse");
 assert.ok(savedWideEpicVitals.series.some(({ name }) => name === "Heart Rate (Monitored)"), "saved vital display must retain monitored heart rate");
 assert.ok(savedWideEpicVitals.series.some(({ name }) => name === "Systolic BP"), "saved vital display must retain separated blood pressure trends");
 assert.ok(savedWideEpicVitals.series.some(({ name }) => name === "FiO2"), "saved vital display must retain oxygen settings");
@@ -623,7 +634,7 @@ assert.deepEqual(
 );
 assert.equal(parsedFragmentedLabsAndVitals.sections[0].structuredData.groups[0].rows[0].unit, "10*3/uL");
 assert.equal(parsedFragmentedLabsAndVitals.sections[0].structuredData.groups[0].rows[1].flag, "LL");
-const deidentifiedWideEpicVitals = deidentifyTextStructuredOnly(parsedWideEpicVitals.outputText, new Date("2026-09-17T00:00:00")).text;
+const deidentifiedWideEpicVitals = deidentifyTextStructuredOnly(persistedWideEpicVitals.sourceText, new Date("2026-09-17T00:00:00")).text;
 const savedDeidentifiedWideEpicVitals = clinicalDisplayModelFromPromptText("vital_signs", deidentifiedWideEpicVitals);
 assert.deepEqual(savedDeidentifiedWideEpicVitals.series.find(({ name }) => name === "Temperature").points.map(({ timestamp }) => timestamp), [
   "[Hospital Day 4 at 23:00]",
@@ -632,7 +643,7 @@ assert.deepEqual(savedDeidentifiedWideEpicVitals.series.find(({ name }) => name 
 ], "de-identified hospital-day timestamps must remain chronological");
 assert.equal(savedDeidentifiedWideEpicVitals.series.find(({ name }) => name === "Temperature").unit, "°C");
 assert.equal(savedDeidentifiedWideEpicVitals.statistics24h.find(({ name }) => name === "Systolic BP").unit, "mmHg");
-const admissionDayDeidentifiedVitals = deidentifyTextStructuredOnly(parsedWideEpicVitals.outputText, new Date("2026-09-21T00:00:00")).text;
+const admissionDayDeidentifiedVitals = deidentifyTextStructuredOnly(persistedWideEpicVitals.sourceText, new Date("2026-09-21T00:00:00")).text;
 const admissionDaySavedVitals = clinicalDisplayModelFromPromptText("vital_signs", admissionDayDeidentifiedVitals);
 assert.match(admissionDayDeidentifiedVitals, /\[1 day prior to hospital admission at 23:00\]/);
 assert.deepEqual(admissionDaySavedVitals.statistics24h, parsedWideEpicVitals.displayModel.statistics24h, "pre-admission times within the latest 24 hours must remain in saved statistics");
@@ -669,9 +680,19 @@ assert.equal(splitUnitSeries.length, 2, "same-name observations with different u
 assert.deepEqual(splitUnitSeries.map((series) => series.unit).sort(), ["mg/dL", "mmol/L"]);
 assert.equal(splitUnitSeries.find((series) => series.unit === "mmol/L").points.length, 1, "comparator values are omitted from numeric trends");
 
-const savedLabDisplay = clinicalDisplayModelFromPromptText("laboratory_results", parsedEpicResults.promptText);
+// Real save/reparse lifecycle: reconstruction reads the persisted
+// prepareClinicalExportForSave(...).sourceText, not the parser's internal
+// prompt text.
+const persistedEpicResults = prepareClinicalExportForSave(syntheticEpicResults, parsedEpicResults);
+const savedLabDisplay = clinicalDisplayModelFromPromptText("laboratory_results", persistedEpicResults.sourceText);
+assert.ok(savedLabDisplay, "the persisted Epic lab text must rebuild a lab display model on reparse");
 assert.equal(savedLabDisplay.type, "labs");
 assert.equal(savedLabDisplay.groups[0].rows[0].emphasis, "low", "saved de-identified lab text reconstructs its clean display without retaining raw source data");
+// Full lifecycle: save preparation -> de-identification -> persisted safe
+// output -> reconstruction, the same path review-data takes.
+const deidentifiedPersistedEpicResults = deidentifyTextStructuredOnly(persistedEpicResults.sourceText, new Date("2026-09-17T00:00:00")).text;
+const rebuiltDeidentifiedLabDisplay = clinicalDisplayModelFromPromptText("laboratory_results", deidentifiedPersistedEpicResults);
+assert.ok(rebuiltDeidentifiedLabDisplay?.groups?.length, "de-identified persisted Epic labs must still rebuild their display model");
 const compactFallbackLabs = "Results\n9/20/26\nW: 1\n9/21/26\nW: 2";
 const parsedCompactFallbackLabs = parseClinicalExport(compactFallbackLabs);
 assert.equal(parsedCompactFallbackLabs.usedSourceTextForCompactness, true);
@@ -680,10 +701,12 @@ assert.match(parsedCompactFallbackLabs.canonicalPromptText, /^Labs\n@ 9\/20\/26/
 const preparedCompactFallbackLabs = prepareClinicalExportForSave(compactFallbackLabs);
 assert.equal(preparedCompactFallbackLabs.sourceText, parsedCompactFallbackLabs.canonicalPromptText, "recognized lab saves must use the canonical representation so collection navigation survives");
 assert.equal(clinicalDisplayModelFromPromptText("laboratory_results", preparedCompactFallbackLabs.sourceText).groups.length, 2);
-const savedVitalDisplay = clinicalDisplayModelFromPromptText("vital_signs", parsedEpicVitals.outputText);
+const persistedEpicVitals = prepareClinicalExportForSave(syntheticEpicVitals, parsedEpicVitals);
+const savedVitalDisplay = clinicalDisplayModelFromPromptText("vital_signs", persistedEpicVitals.sourceText);
 assert.equal(savedVitalDisplay.type, "vitals");
 assert.ok(savedVitalDisplay.groups[0].rows.some((row) => row.cells[1] === "Pulse"));
-const savedMedicationDisplay = clinicalDisplayModelFromPromptText("medication_activity", parsedEpicMar.outputText);
+const persistedEpicMar = prepareClinicalExportForSave(syntheticEpicMar, parsedEpicMar);
+const savedMedicationDisplay = clinicalDisplayModelFromPromptText("medication_activity", persistedEpicMar.sourceText);
 assert.equal(savedMedicationDisplay.type, "medications");
 assert.ok(savedMedicationDisplay.groups.some((group) => group.rows.some((row) => row.cells[0].includes("acetaminophen"))));
 

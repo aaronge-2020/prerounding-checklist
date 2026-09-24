@@ -4,7 +4,7 @@ import { CONTEXT_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRol
 import { migrateLegacyDailySections, normalizeDiagnosticResultCategory, normalizeSourceCapture, normalizeSourceKindForScope } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
 import { normalizePrimaryTeamNote } from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
 import { normalizeLabBaselines } from "../../patient-context/lab-baselines.js?v=20260924-lab-baselines-v1";
-import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260924-note-grouping-v1";
+import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 
 export const VAULT_SCHEMA_VERSION = 5;
 

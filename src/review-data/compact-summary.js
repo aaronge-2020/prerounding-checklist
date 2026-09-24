@@ -191,6 +191,7 @@ function findPressureIndex(list, pattern) {
 
 export function displayVitalName(name) {
   const text = cleanText(name);
+  if (/arterial/i.test(text) && /blood pressure/i.test(text)) return "Art BP";
   if (/blood pressure/i.test(text)) return "BP";
   return text;
 }
@@ -221,14 +222,37 @@ function worstStatus(...statuses) {
   return best;
 }
 
-// Merge separate systolic/diastolic vital candidates into one Blood Pressure
-// candidate. Candidates that already carry a combined "120/80" value are left
-// untouched; a lone systolic or diastolic row is also left as-is.
+// Merge separate systolic/diastolic vital candidates into single Blood
+// Pressure candidates — every pair, not just the first. Candidates that
+// already carry a combined "120/80" value are left untouched; a lone
+// systolic or diastolic row with no partner is also left as-is. Arterial-line
+// pressures pair only with each other and cuff pressures only with each
+// other: an arterial systolic never merges with a cuff diastolic, even when
+// one type has no partner at all.
 export function pairBloodPressureCandidates(vitals) {
-  const list = [...(vitals || [])];
-  const systolicIndex = findPressureIndex(list, SYSTOLIC_PATTERN);
-  const diastolicIndex = findPressureIndex(list, DIASTOLIC_PATTERN);
-  if (systolicIndex < 0 || diastolicIndex < 0) return list;
+  let list = [...(vitals || [])];
+  const skipped = new Set();
+  for (;;) {
+    const systolicIndex = list.findIndex((candidate, index) =>
+      !skipped.has(index) && SYSTOLIC_PATTERN.test(candidate?.name || ""));
+    if (systolicIndex < 0) return list;
+    const systolic = list[systolicIndex];
+    const arterial = /arterial/i.test(systolic?.name || "");
+    const diastolicIndex = list.findIndex((candidate, index) =>
+      index !== systolicIndex
+      && DIASTOLIC_PATTERN.test(candidate?.name || "")
+      && /arterial/i.test(candidate?.name || "") === arterial
+    );
+    if (diastolicIndex < 0) {
+      skipped.add(systolicIndex);
+      continue;
+    }
+    list = mergePressurePair(list, systolicIndex, diastolicIndex, arterial);
+    skipped.clear();
+  }
+}
+
+function mergePressurePair(list, systolicIndex, diastolicIndex, arterial) {
   const systolic = list[systolicIndex];
   const diastolic = list[diastolicIndex];
   const systolicLatest = systolic.latest;
@@ -249,7 +273,7 @@ export function pairBloodPressureCandidates(vitals) {
   const merged = {
     ...systolic,
     id: `bp_pair_${systolic.id}__${diastolic.id}`,
-    name: "Blood Pressure",
+    name: arterial ? "Arterial Blood Pressure" : "Blood Pressure",
     unit,
     latest: {
       ...(systolicLatest?.sortTime >= diastolicLatest?.sortTime ? systolicLatest : diastolicLatest),
@@ -259,7 +283,7 @@ export function pairBloodPressureCandidates(vitals) {
     observations,
     statistics24h: null,
     statisticsText: rangeText ? `${rangeText} (24h)` : "",
-    insertionText: `Blood Pressure: ${valueText}${latestLabel ? ` (latest ${latestLabel})` : ""}${rangeText ? `; 24-hour range ${rangeText}${unit ? ` ${unit}` : ""}` : ""}`,
+    insertionText: `${arterial ? "Arterial Blood Pressure" : "Blood Pressure"}: ${valueText}${latestLabel ? ` (latest ${latestLabel})` : ""}${rangeText ? `; 24-hour range ${rangeText}${unit ? ` ${unit}` : ""}` : ""}`,
     searchText: cleanText(`${systolic.searchText} ${diastolic.searchText} blood pressure bp`).toLowerCase(),
     fingerprint: `${systolic.fingerprint}|${diastolic.fingerprint}`,
     pairedFrom: [systolic.id, diastolic.id],
@@ -370,6 +394,7 @@ export function noteLabFamilyKey(analyteName) {
 }
 
 const SHORT_VITAL_NAME_PATTERNS = [
+  [/arterial.*blood pressure/i, "Art BP"],
   [/blood pressure/i, "BP"],
   [/heart rate/i, "HR"],
   [/^pulse$/i, "HR"],

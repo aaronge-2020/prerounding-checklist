@@ -25,12 +25,14 @@ import {
   removeDifferential,
   removePlanProblem,
   renderFinalNote,
-  renderFinalNoteHtml,
   renderFinalNotePlainText,
+  renderFinalNoteHtml,
   reorderDifferentials,
   reorderPlanProblems,
+  SECTION_VISIBILITY_KEYS,
   selectObjectiveBlock,
   selectChecklistFinding,
+  setSectionVisibility,
   studentGuidance,
   updateAssessment,
   updateClosingSection,
@@ -530,6 +532,38 @@ const options = { now: fixedNow, idFactory: fixedId };
   const evil = renderFinalNoteHtml(draft);
   assert.doesNotMatch(evil, /<script>/);
   assert.match(evil, /&lt;script&gt;/);
+}
+
+// Optional sections toggle individually; core sections can never be toggled.
+{
+  const draft = createNoteDraft(NOTE_TYPES.H_AND_P, { ...options, id: "hp_optional", patientId: "patient_1" });
+  const withDiet = updateNoteSection(draft, "diet_and_exercise", "Balanced diet, walks daily", { now: fixedNow });
+  const withInsOuts = updateClosingSection(withDiet, "ins_outs", "In 2.1 L, out 1.8 L", { now: fixedNow });
+  const markdown = renderFinalNote(withInsOuts);
+  assert.match(markdown, /Diet and Exercise/);
+  assert.match(markdown, /Balanced diet, walks daily/);
+  assert.match(markdown, /Ins\/Outs/);
+  assert.match(markdown, /In 2\.1 L, out 1\.8 L/);
+
+  const dietOff = setSectionVisibility(withInsOuts, "diet_and_exercise", false, { now: fixedNow });
+  const dietOffMarkdown = renderFinalNote(dietOff);
+  assert.doesNotMatch(dietOffMarkdown, /Diet and Exercise/);
+  assert.doesNotMatch(dietOffMarkdown, /Balanced diet/);
+  // Toggling is durable through normalization and the other optional
+  // sections are unaffected.
+  assert.equal(normalizeNoteDraft(dietOff, { now: fixedNow }).sectionVisibility.diet_and_exercise, false);
+  assert.match(dietOffMarkdown, /Ins\/Outs/);
+
+  const insOutsOff = setSectionVisibility(withInsOuts, "ins_outs", false, { now: fixedNow });
+  assert.doesNotMatch(renderFinalNote(insOutsOff), /Ins\/Outs/);
+
+  // Unknown keys — including every core section — are rejected, never
+  // silently stored.
+  for (const core of ["assessment", "plan", "objective", "one_liner"]) {
+    assert.throws(() => setSectionVisibility(withInsOuts, core, false, { now: fixedNow }), /Unknown note section/);
+  }
+  // Plain-text output honors the same visibility rules.
+  assert.doesNotMatch(renderFinalNotePlainText(dietOff), /Diet and Exercise/);
 }
 
 console.log("note draft model tests passed");

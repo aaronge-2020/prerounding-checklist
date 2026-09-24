@@ -1,10 +1,10 @@
-import { NOTE_TYPES } from "./model.js";
+import { NOTE_TYPES, normalizeSectionVisibility } from "./model.js";
 import {
   NOTE_LAB_FAMILY_LABELS,
   NOTE_LAB_FAMILY_ORDER,
   NOTE_VITALS_GROUP_KEY,
   NOTE_VITALS_GROUP_LABEL
-} from "../review-data/compact-summary.js?v=20260924-note-grouping-v1";
+} from "../review-data/compact-summary.js?v=20260924-optional-sections-v1";
 
 function valueText(value) {
   return String(value?.deidentifiedText || "").trim();
@@ -85,11 +85,18 @@ function objectiveModel(draft) {
     .filter((entry) => entry.text);
   const vitals = [];
   const labGroups = new Map();
+  const medications = [];
   const paragraphs = [];
   for (const entry of items) {
     const key = String(entry.block.noteGroupKey || "");
     if (key === NOTE_VITALS_GROUP_KEY && entry.text) {
       vitals.push({ label: entry.label, detail: entry.detail, text: entry.text, edited: entry.edited });
+      continue;
+    }
+    // Medication blocks never render under Objective; they collapse into
+    // their own Medications section at the very end of the final note.
+    if (key === "medications" && entry.text) {
+      medications.push({ label: entry.label, detail: entry.detail, text: entry.text, edited: entry.edited });
       continue;
     }
     if (key.startsWith("lab:") && entry.text) {
@@ -118,7 +125,7 @@ function objectiveModel(draft) {
   }
   const manual = valueText(draft.objective?.manual);
   if (manual) paragraphs.push(manual);
-  return { vitals, labFamilies, paragraphs };
+  return { vitals, labFamilies, medications, paragraphs };
 }
 
 function objectiveText(draft) {
@@ -200,18 +207,39 @@ function planText(draft) {
 
 function closingSectionList(draft) {
   return [
-    { heading: "FEN", body: valueText(draft.closing?.fen) },
-    { heading: "VTE Prophylaxis", body: valueText(draft.closing?.vte_prophylaxis) },
-    { heading: "Code Status", body: valueText(draft.closing?.code_status) },
-    { heading: "Disposition", body: valueText(draft.closing?.disposition) },
-    { heading: "Medication Regimens", body: valueText(draft.closing?.medication_regimens) }
+    { heading: "FEN", body: valueText(draft.closing?.fen), visibility: "fen" },
+    { heading: "Ins/Outs", body: valueText(draft.closing?.ins_outs), visibility: "ins_outs" },
+    { heading: "VTE Prophylaxis", body: valueText(draft.closing?.vte_prophylaxis), visibility: "vte_prophylaxis" },
+    { heading: "Code Status", body: valueText(draft.closing?.code_status), visibility: "code_status" },
+    { heading: "Disposition", body: valueText(draft.closing?.disposition), visibility: "disposition" },
+    { heading: "Medication Regimens", body: valueText(draft.closing?.medication_regimens), visibility: "medication_regimens" }
   ];
 }
 
+function medicationsText(draft) {
+  const model = objectiveModel(draft);
+  return model.medications
+    .map((item) => `- **${item.label || "Medication"}**${item.detail ? ` — ${item.detail}` : item.text ? ` — ${item.text}` : ""}`)
+    .join("\n");
+}
+
+function medicationsHtml(draft) {
+  const model = objectiveModel(draft);
+  if (!model.medications.length) return "";
+  const rows = model.medications.map((item) => item.edited
+    ? `<tr><td colspan="2">${inlineMarkdown(escapeHtml(item.text))}</td></tr>`
+    : `<tr><th scope="row">${escapeHtml(item.label || "Medication")}</th><td>${inlineMarkdown(escapeHtml(item.detail || item.text))}</td></tr>`
+  ).join("");
+  return `<table class="note-medications"><tbody>${rows}</tbody></table>`;
+}
+
 // Shared section order for the markdown, plain-text, and rich-HTML note.
-// Entries are { heading, body } with markdown bodies, except the Objective
-// entry which carries { heading, objective: true } and renders from the
-// structured objective model.
+// Entries are { heading, body, visibility } with markdown bodies, except the
+// Objective entry which carries { heading, objective: true } and the
+// Medications entry which carries { heading, medications: true } and renders
+// from the structured objective model. Only optional sections carry a
+// visibility key: core sections always appear, and toggled-off optional
+// sections are omitted.
 function finalNoteSectionList(draft) {
   const fields = draft.sections || {};
   const oneLiner = valueText(fields.one_liner);
@@ -222,20 +250,23 @@ function finalNoteSectionList(draft) {
         { heading: "HPI", body: dedupeOneLiner(oneLiner, valueText(fields.history_of_present_illness)) },
         { heading: "Review of Systems", body: checklistFindingText(draft, "history") },
         { heading: "Relevant History", body: relevantHistoryText(fields) },
-        { heading: "Diet and Exercise", body: valueText(fields.diet_and_exercise) }
+        { heading: "Diet and Exercise", body: valueText(fields.diet_and_exercise), visibility: "diet_and_exercise" }
       ]
     : [
         { heading: "One-Liner", body: oneLiner },
         { heading: "Subjective", body: appendChecklistFindings(subjectiveText(fields), checklistFindingText(draft, "history")) }
       ];
-  return [
+  const visibility = normalizeSectionVisibility(draft?.sectionVisibility);
+  const sections = [
     ...front,
     { heading: "Physical Exam", body: checklistFindingText(draft, "exam") },
     { heading: "Objective", objective: true },
     { heading: "Assessment", body: valueText(draft.assessment) },
     { heading: "Plan", body: planText(draft) },
-    ...closingSectionList(draft)
+    ...closingSectionList(draft),
+    { heading: "Medications", medications: true }
   ];
+  return sections.filter((section) => section.visibility === undefined || visibility[section.visibility] !== false);
 }
 
 function assertNoteType(draft) {
@@ -247,7 +278,10 @@ function assertNoteType(draft) {
 export function renderFinalNote(draft) {
   assertNoteType(draft);
   return finalNoteSectionList(draft)
-    .map(({ heading, body, objective }) => section(heading, objective ? objectiveText(draft) : body))
+    .map(({ heading, body, objective, medications }) => section(
+      heading,
+      objective ? objectiveText(draft) : medications ? medicationsText(draft) : body
+    ))
     .filter(Boolean)
     .join("\n\n");
 }
@@ -357,8 +391,8 @@ function objectiveHtml(draft) {
 export function renderFinalNoteHtml(draft) {
   assertNoteType(draft);
   const sections = finalNoteSectionList(draft)
-    .map(({ heading, body, objective }) => {
-      const bodyHtml = objective ? objectiveHtml(draft) : markdownBodyToHtml(body);
+    .map(({ heading, body, objective, medications }) => {
+      const bodyHtml = objective ? objectiveHtml(draft) : medications ? medicationsHtml(draft) : markdownBodyToHtml(body);
       if (!bodyHtml.trim()) return "";
       return `<section class="note-section"><h2>${escapeHtml(heading)}</h2>${bodyHtml}</section>`;
     })

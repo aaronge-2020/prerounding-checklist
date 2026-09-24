@@ -217,6 +217,10 @@ const PN_EXPECTATIONS = {
     vitals: ["126/78"],
     labs: ["WBC", "CRP"],
     studies: ["CXR"],
+    // Combined "Assessment and Plan" heading: reasoning must land in
+    // sections.assessment, actions must stay in sections.plan.
+    assessment: ["Community-acquired pneumonia", "improving"],
+    assessmentAbsent: ["Continue antibiotics", "Continue steroids"],
   },
   "pn-08.md": {
     problems: ["Cellulitis", "T2DM", "Discharge"],
@@ -336,6 +340,27 @@ function testFixture(dir, file, expectations, noteType) {
   }
   if (expectations.studies?.length) {
     checkContains(file, "studies", [studies], expectations.studies);
+  }
+
+  // Every fixture's note has an assessment (or a combined Assessment/Plan
+  // heading): the parser must never leave sections.assessment empty while
+  // sections.plan holds the content.
+  const assessmentText = String(parsed.sections.assessment || "");
+  const planText = String(parsed.sections.plan || "");
+  if (planText.trim() && !assessmentText.trim()) {
+    console.error(`FAIL ${file} assessment/plan split: plan is non-empty but assessment is empty`);
+    failures++;
+  }
+  if (expectations.assessment?.length) {
+    checkContains(file, "assessment", [assessmentText], expectations.assessment);
+  }
+  if (expectations.assessmentAbsent?.length) {
+    for (const absent of expectations.assessmentAbsent) {
+      if (assessmentText.toLowerCase().includes(String(absent).toLowerCase())) {
+        console.error(`FAIL ${file} assessment: should not contain "${absent}"`);
+        failures++;
+      }
+    }
   }
 }
 

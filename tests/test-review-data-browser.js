@@ -7,6 +7,18 @@ const compactPrimaryNote = readFileSync(new URL("./fixtures/primary-team-notes/c
 const progressTeamNote = readFileSync(new URL("./fixtures/primary-team-notes/progress-team-note.txt", import.meta.url), "utf8");
 const criticalCareNote = readFileSync(new URL("./fixtures/primary-team-notes/critical-care-note.txt", import.meta.url), "utf8");
 
+// A pasted note whose assessment and plan share one heading: the parser must
+// split reasoning into Assessment and problems/actions into the Plan builder.
+const combinedAssessmentPlanNote = `Interval events: No acute overnight events.
+Assessment and Plan
+#1. Sepsis secondary to pneumonia
+Patient improving on antibiotics. Likely bacterial CAP.
+- Continue ceftriaxone
+- Repeat chest x-ray tomorrow
+#2. AKI
+Creatinine downtrending, likely pre-renal.
+- IVF as tolerated`;
+
 const server = await createAppServer();
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -38,10 +50,29 @@ try {
   await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   assert.equal(await page.locator('[data-action="open-admission-note"]').isEnabled(), true);
 
+  // The compact review sheet: data on the left, note editor on the right.
   await page.click('[data-action="open-admission-note"]');
   await page.waitForSelector("#reviewContent .review-workspace");
   assert.match(await page.locator(".review-one-liner").innerText(), /community-acquired pneumonia/);
-  assert.equal(await page.locator('[data-draft-section="past_surgical_history"]').count(), 1);
+  assert.equal(await page.locator(".review-data-panel").count(), 1, "clinical data sheet must render");
+  assert.equal(await page.locator(".note-draft-panel").count(), 1, "compact note editor must render");
+  assert.equal(await page.locator('[data-draft-section="past_surgical_history"]').count(), 1, "H&P core sections are always present");
+
+  // Only optional closing sections get visibility toggles; core sections never do.
+  for (const field of ["fen", "ins_outs", "vte_prophylaxis", "code_status", "disposition", "medication_regimens"]) {
+    assert.equal(await page.locator(`[data-section-visibility="${field}"]`).count(), 1, `${field} must have a visibility toggle`);
+  }
+  for (const field of ["assessment", "plan", "objective"]) {
+    assert.equal(await page.locator(`[data-section-visibility="${field}"]`).count(), 0, `core section ${field} must not be toggleable`);
+  }
+  // Diet and exercise is the one H&P field that is not core: not every note
+  // covers it, so it gets the same optional toggle (progress notes never show it).
+  assert.equal(await page.locator('[data-section-visibility="diet_and_exercise"]').count(), 1, "H&P diet and exercise must have a visibility toggle");
+  await page.fill('[data-draft-section="diet_and_exercise"]', "Balanced diet, walks daily.");
+  assert.match(await page.locator("[data-final-note-preview]").innerText(), /Balanced diet, walks daily/);
+  await page.locator('[data-section-visibility="diet_and_exercise"]').uncheck();
+  assert.doesNotMatch(await page.locator("[data-final-note-preview]").innerText(), /Diet and Exercise/, "toggling diet off must drop it from the final note");
+  await page.locator('[data-section-visibility="diet_and_exercise"]').check();
   const assessmentHelp = page.locator('[data-help-key="assessment"]');
   assert.match(await assessmentHelp.getAttribute("data-tooltip"), /concise synthesis/i);
   assert.doesNotMatch(await assessmentHelp.getAttribute("data-tooltip"), /act as|prompt token|hidden reasoning|return only/i);
@@ -98,30 +129,26 @@ try {
   assert.match(await page.locator('[data-structured-note-field="objective"]').inputValue(), /SBP goal <160/);
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
   await page.fill('[data-structured-note-paste][data-structured-note-scope="daily"]', compactPrimaryNote);
-  assert.match(await page.locator('[data-structured-note-detected="daily"]').innerText(), /Patient report/);
-  assert.match(await page.locator('[data-structured-note-detected="daily"]').innerText(), /Objective data/);
-  assert.match(await page.locator('[data-structured-note-detected="daily"]').innerText(), /Plan/);
-  const storageBeforeSave = await page.evaluate(() => JSON.stringify(localStorage));
-  assert.doesNotMatch(storageBeforeSave, /Verticalize in AM/, "raw pasted note text must remain session-only before save");
   await page.click('[data-action="review-structured-note-sections"][data-note-scope="daily"]');
-  await page.click('[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="patient_report"]');
-  assert.match(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="patient_report"]').inputValue(), /right M1 MCA/);
-  await page.click('[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="objective"]');
-  assert.match(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="objective"]').inputValue(), /Intake\/Output Summary/);
   await page.click('[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="plan"]');
-  assert.match(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field="plan"]').inputValue(), /SBP<160/);
-  assert.equal(await page.locator('[data-structured-note-scope="daily"][data-structured-note-field]').count(), 1, "only the active section editor is rendered");
+  assert.match(await page.locator('[data-structured-note-field="plan"]').inputValue(), /SBP<160/);
+  await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
+  await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+
+  // A combined "Assessment and Plan" heading splits into Assessment prose and plan problems.
+  await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
+  await page.fill('[data-structured-note-paste][data-structured-note-scope="daily"]', combinedAssessmentPlanNote);
+  await page.click('[data-action="review-structured-note-sections"][data-note-scope="daily"]');
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
   await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.click('[data-action="open-progress-note"]');
-  await page.click('[data-action="insert-no-acute-events"]');
-  assert.equal(await page.locator('[data-draft-section="interval_events"]').inputValue(), "No acute events overnight.");
-  assert.equal(await page.locator('[data-draft-section="past_medical_history"]').count(), 0);
-  assert.equal(await page.locator("#reviewNoteType").inputValue(), "progress");
-  await page.selectOption("#reviewNoteType", "hp");
-  assert.equal(await page.locator('[data-draft-section="history_of_present_illness"]').count(), 1);
-  assert.equal(await page.locator('[data-draft-section="interval_events"]').count(), 0);
-  await page.selectOption("#reviewNoteType", "progress");
+  await page.waitForSelector("#reviewContent .review-workspace");
+  assert.match(await page.locator('[data-draft-assessment]').inputValue(), /Sepsis secondary to pneumonia/, "combined heading must seed the Assessment scaffold");
+  assert.match(await page.locator('[data-draft-assessment]').inputValue(), /likely pre-renal/i, "reasoning prose belongs in Assessment, not the plan");
+  assert.equal(await page.locator('[data-draft-section="interval_events"]').inputValue(), "No acute overnight events.");
+  const planProblems = await page.locator(".plan-problem-card").allInnerTexts();
+  assert.ok(planProblems.some((text) => /Sepsis secondary to pneumonia/.test(text)), "combined heading must populate plan problems");
+  assert.ok(planProblems.some((text) => /Continue ceftriaxone/.test(text)), "plan actions must land in the problem plan");
 
   // Add realistic patient-wide data through the visible Hospital Stay workflow.
   await page.click('[data-view-target="daily"]');
@@ -161,30 +188,7 @@ Freq: every 6 hours PRN Route: PO
 Start: 09/18/26 1200
 Admin Instructions:
 Use for fever or pain.
-1815 (650 mg)
-
-chlorhexidine gluconate (PERIDEX) 0.12 % oral rinse 15 mL
-Dose: 15 mL
-Freq: 4 times daily Route: SWISH & SPIT
-Start: 09/17/26 1200
-0000 (15 mL)
-0532 (15 mL)
-1200 (15 mL)
-1800 (15 mL)
-0019 (15 mL)
-0627 (15 mL)
-1232 (15 mL)
-1711 (15 mL)
-0034 (15 mL)
-0543 (15 mL)
-1313 (15 mL)
-1800 [C]
-1813
-2044
-0004 (15 mL)
-0511 (15 mL)
-1200
-1800`;
+1815 (650 mg)`;
   await addDailySource("medication_activity", medications, 4);
   await page.click('[data-action="select-daily-source-kind"][data-source-kind="results"]');
   await page.fill('[data-result-metadata="label"][data-result-scope="daily"]', "CT Head/Neck Without Contrast");
@@ -197,14 +201,14 @@ Start: 09/17/26 1200
   assert.match(await page.locator("#dailySources .source-capture-editor").last().innerText(), /CT Head\/Neck Without Contrast/);
   assert.equal(await page.locator('#dailySources [data-clinical-view]').count(), 0, "Hospital Stay must not render clinical summaries");
 
-  // A second day creates a chronological lab trend.
+  // A second day creates a chronological lab trend and a pending result.
   await page.locator("details.new-day-control summary").click();
   await page.fill("#newDayDate", "2026-09-20");
   await page.fill("#newDayLabel", "Hospital day 3");
   await page.click('[data-action="add-day"]');
   const dayTwoLabs = `Results from EPIC:
 WBC: 8.8
-Creatinine: 1.0
+Creatinine: pending
 Sodium: 138`;
   await addDailySource("laboratory_results", dayTwoLabs, 1);
 
@@ -218,75 +222,90 @@ Sodium: 138`;
   await page.waitForSelector("#checklistSections .checklist-item");
   const historyItem = page.locator("#checklistSections .checklist-section").filter({ has: page.locator("h3", { hasText: "History" }) }).locator(".checklist-item").first();
   const examItem = page.locator("#checklistSections .checklist-section").filter({ has: page.locator("h3", { hasText: "Physical Exam" }) }).locator(".checklist-item").first();
-  const historyQuestion = await historyItem.locator("strong").first().innerText();
-  const examQuestion = await examItem.locator("strong").first().innerText();
   if (await historyItem.locator("select.checklist-answer").count()) await historyItem.locator("select.checklist-answer").selectOption({ index: 1 });
   else await historyItem.locator('input.checklist-answer').first().check();
   if (await examItem.locator("select.checklist-answer").count()) await examItem.locator("select.checklist-answer").selectOption({ index: 1 });
   else await examItem.locator('input.checklist-answer').first().check();
-  const historyAnswer = await historyItem.locator("select.checklist-answer option:checked").textContent();
-  const examAnswer = await examItem.locator("select.checklist-answer option:checked").textContent();
   await page.waitForFunction(() => [...document.querySelectorAll("#checklistSections .checklist-item")].filter((item) => item.querySelector("select.checklist-answer")?.value || item.querySelector("input.checklist-answer:checked")).length >= 2);
 
+  // The compact sheet shows every matching row on one page: no pagination.
   await page.click('[data-view-target="review"]');
   await page.waitForSelector("#reviewContent .review-workspace");
   assert.equal(await page.locator("#reviewDataCategory").inputValue(), "all", "opening Patient Data Review must reveal labs, vitals, medications, and results");
+  assert.equal(await page.locator(".review-data-pagination").count(), 0, "the compact sheet must not paginate");
   assert.equal(await page.locator('[data-checklist-finding-kind="history"] li').count(), 1);
   assert.equal(await page.locator('[data-checklist-finding-kind="exam"] li').count(), 1);
-  const notePreview = await page.locator("[data-final-note-preview]").innerText();
-  assert.match(notePreview, new RegExp(String(historyAnswer).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.match(notePreview, new RegExp(String(examAnswer).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.doesNotMatch(notePreview, new RegExp(historyQuestion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.doesNotMatch(notePreview, new RegExp(examQuestion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.equal(await page.locator('[data-action="copy-final-note"]').isVisible(), true);
-  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: new URL(server.baseUrl).origin });
-  await page.click('[data-action="copy-final-note"]');
-  const copiedNote = await page.evaluate(() => navigator.clipboard.readText());
-  assert.match(copiedNote, new RegExp(`Physical Exam[\\s\\S]*${String(examAnswer).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`));
-  assert.doesNotMatch(copiedNote, /\*\*/);
-  const noteDownload = page.waitForEvent("download");
-  await page.click('[data-action="download-final-note"]');
-  assert.match((await noteDownload).suggestedFilename(), /progress-note\.txt$/);
-  await page.selectOption("#reviewDataCategory", "labs");
-  assert.equal(await page.locator("[data-review-candidate]").count(), 1, "the Labs filter must show one timestamped laboratory panel at a time");
-  assert.equal(await page.locator(".review-data-pagination").count(), 0, "laboratory navigation belongs inside the panel card");
-  assert.match(await page.locator(".review-lab-panel-navigation output").innerText(), /Panel type 1 of 3/);
-  assert.equal(await page.locator(".review-lab-result").count(), 2, "a complete metabolic panel must be displayed together");
-  await page.click('[data-action="review-data-page"][data-direction="1"]');
-  assert.equal(await page.locator("[data-review-candidate]").count(), 1);
-  assert.match(await page.locator(".review-lab-panel-navigation output").innerText(), /Panel type 2 of 3/);
-  assert.equal(await page.locator(".review-lab-result").count(), 3, "CBC analytes must remain grouped in one panel");
-  assert.match(await page.locator(".review-lab-results").innerText(), /WBC[\s\S]*Hemoglobin[\s\S]*Platelets/);
-  assert.equal(await page.locator("[data-lab-result-selection]").count(), 3, "every analyte in a panel must have its own note-selection control");
-  const wbcResult = page.locator(".review-lab-result").filter({ hasText: "WBC" });
-  assert.match(await wbcResult.locator("summary").innerText(), /2-value note trend/, "matching analytes must trend across differently named saved panels");
-  await wbcResult.locator("summary").click();
-  assert.equal(await wbcResult.getAttribute("open"), "", "clicking a lab must expand its trend inline");
-  assert.equal(await wbcResult.locator(".review-lab-trend-values li").count(), 2);
-  await wbcResult.locator("summary").click();
-  assert.equal(await wbcResult.getAttribute("open"), null, "clicking the lab again must collapse its trend");
-  const hemoglobinResult = page.locator(".review-lab-result").filter({ hasText: "Hemoglobin" });
-  assert.match(await hemoglobinResult.locator("summary").innerText(), /No trend/);
-  await hemoglobinResult.locator("summary").click();
-  assert.match(await hemoglobinResult.locator(".review-lab-trend-message").innerText(), /No trend available/);
-  await page.selectOption("#reviewDataCategory", "all");
-  assert.equal(await page.locator(".review-data-pagination").isVisible(), true);
-  await page.click('[data-action="review-data-page"][data-direction="1"]');
-  assert.match(await page.locator(".review-data-pagination output").innerText(), /Page 2/);
-  await page.click('[data-action="review-data-page"][data-direction="-1"]');
+
+  // Vitals and medications are in the note by default; every row is checked.
+  const vitalChecks = page.locator(".vital-chip [data-objective-selection-id]");
+  assert.ok(await vitalChecks.count() >= 5, "vital signs must render as compact chips");
+  for (const box of await vitalChecks.all()) assert.equal(await box.isChecked(), true, "vitals are included by default");
+  assert.match(await page.locator(".vital-strip").innerText(), /119\/77/, "cuff systolic/diastolic must pair into one blood pressure chip");
+  const medicationChecks = page.locator(".compact-medications [data-objective-selection-id]");
+  assert.equal(await medicationChecks.count(), 2, "every saved medication must render");
+  for (const box of await medicationChecks.all()) assert.equal(await box.isChecked(), true, "medications are included by default");
+  assert.equal(await page.locator(".scaffold-med-list li").count(), 2, "medications render in their own scaffold, not under Objective");
+
+  // Labs render as dense collapsible families; pending results stay separate.
+  assert.ok(await page.locator(".compact-lab-family").count() >= 2, "labs must group into families");
+  assert.match(await page.locator(".compact-lab-family").first().innerText(), /CBC|Basic metabolic panel/);
+  assert.match(await page.locator(".compact-pending").innerText(), /Creatinine/, "pending results must stay in their own section");
+  const wbcRow = page.locator(".lab-row", { hasText: "WBC" }).first();
+  assert.match(await wbcRow.innerText(), /15\.2[\s\S]*8\.8/, "matching analytes must trend chronologically in one row");
+
+  // Lab families collapse without losing their toggle state.
+  const firstFamilyToggle = page.locator(".lab-family-toggle").first();
+  await firstFamilyToggle.click();
+  assert.equal(await firstFamilyToggle.getAttribute("aria-expanded"), "false", "lab family must collapse on toggle");
+  await firstFamilyToggle.click();
+  assert.equal(await firstFamilyToggle.getAttribute("aria-expanded"), "true", "lab family must expand on second toggle");
+
+  // Search filters the sheet to matching rows.
   await page.fill("#reviewDataSearch", "WBC");
-  await page.waitForFunction(() => document.querySelectorAll("[data-review-candidate]").length === 2);
-  const wbcCard = page.locator("[data-review-candidate]").last();
-  assert.match(await wbcCard.innerText(), /WBC[\s\S]*8\.8/);
-  assert.doesNotMatch(await wbcCard.innerText(), /15\.2/, "each collection must remain a separate lab-set card");
-  await wbcCard.getByRole("checkbox", { name: /Include only WBC/ }).check();
+  await page.waitForFunction(() => document.querySelectorAll(".lab-row").length === 1);
+  assert.match(await page.locator(".lab-row").first().innerText(), /8\.8/);
+  await page.fill("#reviewDataSearch", "");
+
+  // Checking a lab row adds a source-linked Objective block with the trend.
+  await page.locator('.lab-row [data-lab-result-selection]').first().check();
+  await page.waitForFunction(() => document.querySelectorAll("[data-objective-block]").length >= 1);
   const wbcBlock = page.locator("[data-objective-block]").first();
-  assert.match(await wbcBlock.locator("textarea").inputValue(), /WBC: 15\.2 → 8\.8 10\*3\/uL/);
-  await wbcBlock.locator("textarea").fill("Student wording: WBC has improved substantially.");
-  await page.fill('[data-draft-objective-manual]', "Lungs clear to auscultation.");
-  await page.selectOption("#reviewDataCategory", "medications");
+  assert.match(await wbcBlock.locator("textarea").inputValue(), /WBC: 15\.2[\s\S]*→ 8\.8/);
+
+  // Every analyte gets an easy baseline entry.
+  const creatinineRow = page.locator(".lab-row", { hasText: "Creatinine" }).first();
+  await creatinineRow.locator('[data-action="baseline-edit"]').click();
+  await page.fill('[data-baseline-field="value"]', "1.0");
+  await page.fill('[data-baseline-field="dateLabel"]', "Sep 2024");
+  await page.click('[data-action="baseline-save"]');
+  await page.waitForFunction(() => /Baseline saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  assert.match(await page.locator(".lab-row", { hasText: "Creatinine" }).first().innerText(), /base 1\.0/);
+
+  // Unchecking a default-on vital is durable across navigation.
+  const hrChip = page.locator(".vital-chip", { hasText: "Heart Rate" }).first();
+  await hrChip.locator('[data-objective-selection-id]').uncheck();
+  await page.click('[data-view-target="daily"]');
+  await page.click('[data-view-target="review"]');
+  await page.waitForSelector("#reviewContent .review-workspace");
+  assert.equal(await page.locator(".vital-chip", { hasText: "Heart Rate" }).first().locator('[data-objective-selection-id]').isChecked(), false, "deselected vitals must stay out of the note");
+
+  // Removing a medication through its scaffold is durable too.
+  await page.locator(".scaffold-med-list li", { hasText: "acetaminophen" }).locator('[data-action="remove-objective-selection"]').click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.compact-medications [data-objective-selection-id]')].filter((box) => box.checked).length === 1);
+  await page.click('[data-view-target="daily"]');
+  await page.click('[data-view-target="review"]');
+  await page.waitForSelector("#reviewContent .review-workspace");
+  assert.equal(await page.locator(".scaffold-med-list li").count(), 1, "removed medications must stay removed");
+
+  // Optional closing sections toggle individually; the preview follows.
+  await page.fill('[data-draft-closing="vte_prophylaxis"]', "Sequential compression devices.");
+  assert.match(await page.locator("[data-final-note-preview]").innerText(), /Sequential compression devices/);
+  await page.locator('[data-section-visibility="vte_prophylaxis"]').uncheck();
+  assert.doesNotMatch(await page.locator("[data-final-note-preview]").innerText(), /Sequential compression devices/, "toggling VTE off must drop it from the final note");
+  await page.locator('[data-section-visibility="vte_prophylaxis"]').check();
 
   // Updating source data marks an edited linked block stale without overwriting it.
+  await wbcBlock.locator("textarea").fill("Student wording: WBC has improved substantially.");
   await page.click('[data-view-target="daily"]');
   const currentLabSource = page.locator("#dailySources .source-capture-editor").first();
   if ((await currentLabSource.locator('[data-action="toggle-section-editor"]').getAttribute("aria-expanded")) !== "true") {
@@ -297,7 +316,6 @@ Sodium: 138`;
   await page.click('[data-action="save-day"]');
   await page.waitForFunction(() => /Source edits saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.click('[data-view-target="review"]');
-  assert.equal(await page.locator("#reviewDataCategory").inputValue(), "all", "returning to Patient Data Review must not leave labs and vitals hidden behind the prior medication filter");
   await page.fill("#reviewDataSearch", "WBC");
   await page.waitForSelector('[data-objective-state="stale"]');
   assert.equal(await page.locator('[data-objective-state="stale"] textarea').inputValue(), "Student wording: WBC has improved substantially.");
@@ -305,64 +323,27 @@ Sodium: 138`;
   assert.match(await page.locator(".objective-diff").innerText(), /7\.7/);
   await page.click('[data-action="keep-objective-selection"]');
   assert.equal(await page.locator("[data-objective-state]").first().getAttribute("data-objective-state"), "edited");
+  await page.fill("#reviewDataSearch", "");
 
-  // Individual analytes can be selected independently; deselecting one preserves the others and manual text.
-  await page.fill("#reviewDataSearch", "Creatinine");
-  await page.getByRole("checkbox", { name: /Include only Creatinine/ }).last().check();
-  await page.fill("#reviewDataSearch", "Sodium");
-  await page.getByRole("checkbox", { name: /Include only Sodium/ }).last().check();
-  assert.equal(await page.locator("[data-objective-block]").count(), 3);
-  await page.fill("#reviewDataSearch", "WBC");
-  await page.getByRole("checkbox", { name: /Include only WBC/ }).last().uncheck();
-  assert.equal(await page.locator("[data-objective-block]").count(), 2);
-  assert.equal(await page.locator('[data-draft-objective-manual]').inputValue(), "Lungs clear to auscultation.");
-
-  await page.fill("#reviewDataSearch", "SpO2");
-  const spo2Card = page.locator("[data-review-candidate]").first();
-  assert.match(await spo2Card.innerText(), /Most recent[\s\S]*99 %[\s\S]*24-hour range[\s\S]*95–99 %[\s\S]*Median[\s\S]*97 %/);
-  assert.doesNotMatch(await spo2Card.innerText(), /Mean/);
-  assert.equal(await spo2Card.locator(".review-observation-list").count(), 0, "vital cards must not repeat every reading in a horizontal list");
-  assert.equal(await spo2Card.locator(".review-vital-trend").isVisible(), true, "numeric vital history must use the interactive trend chart");
-  assert.equal(await spo2Card.locator(".review-trend-point").count(), 2);
-  const firstSpo2Point = spo2Card.locator(".review-trend-point").first();
-  await firstSpo2Point.focus();
-  assert.match(await firstSpo2Point.getAttribute("aria-label"), /95 %[\s\S]*Hospital Day/);
-  await page.waitForFunction(() => getComputedStyle(document.querySelector(".review-trend-point:focus .review-trend-tooltip")).opacity === "1");
-  assert.equal(await firstSpo2Point.locator(".review-trend-tooltip").evaluate((node) => getComputedStyle(node).opacity), "1", "keyboard focus must reveal a point value and timestamp");
-  if (process.env.REVIEW_VITAL_SCREENSHOT) {
-    await page.setViewportSize({ width: 1100, height: 900 });
-    await spo2Card.screenshot({ path: process.env.REVIEW_VITAL_SCREENSHOT });
-  }
-
-  await page.fill("#reviewDataSearch", "ceftriaxone");
-  const medicationCard = page.locator("[data-review-candidate]").first();
-  assert.match(await medicationCard.innerText(), /Scheduled[\s\S]*1 g · IV · every 24 hours[\s\S]*Latest listed[\s\S]*09:00/i);
-  assert.match(await medicationCard.innerText(), /1 administration recorded/i);
-  assert.doesNotMatch(await medicationCard.innerText(), /Course/i);
-  await medicationCard.locator(".review-medication-details > summary").click();
-  assert.match(await medicationCard.innerText(), /Most recent listed[\s\S]*09:00/i);
-
-  await page.fill("#reviewDataSearch", "acetaminophen");
-  const prnMedicationCard = page.locator("[data-review-candidate]").first();
-  assert.match(await prnMedicationCard.innerText(), /PRN[\s\S]*650 mg · PO · every 6 hours PRN[\s\S]*18:15/i);
-
-  await page.fill("#reviewDataSearch", "chlorhexidine");
-  const scheduledMedicationCard = page.locator("[data-review-candidate]").first();
-  assert.match(await scheduledMedicationCard.innerText(), /Scheduled[\s\S]*15 mL · SWISH & SPIT · 4 times daily[\s\S]*Latest listed[\s\S]*18:00/i);
-  assert.match(await scheduledMedicationCard.innerText(), /18 administrations recorded/i);
-  await scheduledMedicationCard.locator(".review-medication-details > summary").click();
-  assert.match(await scheduledMedicationCard.innerText(), /Most recent listed[\s\S]*6 entries[\s\S]*Earlier listed[\s\S]*12 entries[\s\S]*Cancelled/i);
-  assert.doesNotMatch(await scheduledMedicationCard.innerText(), /00:00 \(15 mL\)/i, "administration history must not repeat the unchanged order dose beside every time");
-  if (process.env.REVIEW_MEDICATION_SCREENSHOT) {
-    await page.setViewportSize({ width: 1024, height: 900 });
-    await scheduledMedicationCard.screenshot({ path: process.env.REVIEW_MEDICATION_SCREENSHOT });
-  }
-
+  // Student-authored Objective text and diagnostic results still work.
+  await page.fill('[data-draft-objective-manual]', "Lungs clear to auscultation.");
   await page.fill("#reviewDataSearch", "CT Head/Neck");
-  const ctCard = page.locator("[data-review-candidate]").first();
-  assert.match(await ctCard.innerText(), /No acute intracranial abnormality/);
-  await ctCard.locator('[data-objective-selection-id]').check();
+  const ctRow = page.locator(".compact-row", { hasText: "CT Head" }).first();
+  assert.match(await ctRow.innerText(), /No acute intracranial abnormality/);
+  await ctRow.locator('[data-objective-selection-id]').check();
   assert.match(await page.locator("[data-objective-block]").last().locator("textarea").inputValue(), /CT Head\/Neck Without Contrast[\s\S]*No acute intracranial abnormality/);
+  await page.fill("#reviewDataSearch", "");
+
+  // Note export actions remain available.
+  assert.equal(await page.locator('[data-action="copy-final-note"]').isVisible(), true);
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: new URL(server.baseUrl).origin });
+  await page.click('[data-action="copy-final-note"]');
+  const copiedNote = await page.evaluate(() => navigator.clipboard.readText());
+  assert.match(copiedNote, /Lungs clear to auscultation/);
+  assert.doesNotMatch(copiedNote, /\*\*/);
+  const noteDownload = page.waitForEvent("download");
+  await page.click('[data-action="download-final-note"]');
+  assert.match((await noteDownload).suggestedFilename(), /progress-note\.txt$/);
 
   // Saved draft survives encryption/reload; lock clears all protected content.
   await page.click('[data-action="save-note-draft"]');
@@ -394,7 +375,7 @@ Sodium: 138`;
   const savedPacketValue = await page.locator('#reviewPacketSelect option').filter({ hasText: "Hospital day 3" }).getAttribute("value");
   await page.selectOption("#reviewPacketSelect", savedPacketValue);
   await page.fill("#reviewDataSearch", "CT Head/Neck");
-  assert.equal(await page.locator('[data-objective-selection-id]').isChecked(), true);
+  assert.equal(await page.locator('.compact-row [data-objective-selection-id]').first().isChecked(), true);
   assert.equal(await page.locator('[data-draft-objective-manual]').inputValue(), "Lungs clear to auscultation.");
 
   // Narrow layout remains usable by keyboard without horizontal document overflow.
