@@ -1006,7 +1006,21 @@ export function parseClinicalExport(value, { sourceKind = "" } = {}) {
   }
   const epicResult = parseEpicClinicalExport(value);
   if (epicResult) {
-    const compactResult = nonExpandingResult(epicResult, rawText);
+    // For Epic results, preserve the structured "Result." output format.
+    // Only fall back to raw text when the structured output is excessively
+    // longer (3x+) than the input — e.g., tiny test inputs where headers
+    // would dominate. Normal clinical pastes get the structured format.
+    const isEpicResults = epicResult.formatId === "epic_results" || epicResult.formatId === "epic_results_with_remainder";
+    const outputLen = String(epicResult.outputText || "").length;
+    const inputLen = rawText.length;
+    const useStructured = !isEpicResults || outputLen <= inputLen * 3;
+    const compactResult = useStructured ? epicResult : {
+      ...epicResult,
+      canonicalPromptText: epicResult.promptText || epicResult.outputText,
+      promptText: rawText,
+      outputText: rawText,
+      usedSourceTextForCompactness: true
+    };
     return {
       ...compactResult,
       rawCharacterCount: rawText.length,
