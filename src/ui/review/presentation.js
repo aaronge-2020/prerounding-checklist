@@ -376,7 +376,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return `<label class="ed-toggle" title="${included ? "Remove" : "Include"} ${escapeHtml(meta.label)} ${included ? "from" : "in"} the final note"><input type="checkbox" data-section-visibility="${escapeHtml(fieldId)}" ${included ? "checked" : ""}><span>${included ? "In note" : "Excluded"}</span></label>`;
   }
 
-  function renderObjectiveBlocksEditor(draft) {
+  function renderObjectiveBlocksEditor(draft, collapsedObjectiveGroups = new Set()) {
     // Medication blocks are managed in the Medications section, never here.
     // Vitals render as a clean scannable list (one vital per line, short labels,
     // no "latest"/timestamp clutter). Labs group by panel family. Everything is
@@ -387,7 +387,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       const isVitals = group.key === "vitals";
       let bodyHtml;
       if (isVitals) {
-        // One clean line per vital: "BP 92/48", "HR 101", not a semicolon wall.
+        // One clean line per vital: "BP 92/48" with subtle 24h range and mean.
         // Edited blocks show their edited text; otherwise use clean label+detail.
         const lines = group.blocks
           .map((block) => {
@@ -399,8 +399,17 @@ export function createReviewPresentation({ escapeHtml, icon }) {
             }
             const label = String(block.noteLabel || "").trim();
             const detail = String(block.noteDetail || "").trim();
-            const text = label && detail ? `${label} ${detail}` : (label || detail || String(block.generatedText || "").trim());
-            return text ? `<div class="ed-vital-line" data-vital-line="${escapeHtml(block.selectionId)}">${editorHtml(text)}</div>` : "";
+            const range = String(block.noteRange || "").trim();
+            const mean = String(block.noteMean || "").trim();
+            let text = label && detail ? `${label} ${detail}` : (label || detail || String(block.generatedText || "").trim());
+            // Append 24h range and mean as subtle secondary info.
+            const secondary = [];
+            if (range) secondary.push(`24h ${range}`);
+            if (mean) secondary.push(`mean ${mean}`);
+            const secondaryHtml = secondary.length
+              ? ` <span class="ed-vital-secondary">${escapeHtml(secondary.join(" · "))}</span>`
+              : "";
+            return text ? `<div class="ed-vital-line" data-vital-line="${escapeHtml(block.selectionId)}">${editorHtml(text)}${secondaryHtml}</div>` : "";
           })
           .filter(Boolean)
           .join("");
@@ -416,13 +425,17 @@ export function createReviewPresentation({ escapeHtml, icon }) {
           .join("; ");
         bodyHtml = `<div class="ed-body ed-body--inline" contenteditable="true" data-objective-group-text="${escapeHtml(group.key)}" data-placeholder="Optional" spellcheck="true">${editorHtml(combinedText)}</div>`;
       }
+      const isCollapsed = collapsedObjectiveGroups.has(group.key);
+      const toggleIcon = isCollapsed ? "▶" : "▼";
+      const toggleLabel = isCollapsed ? `Expand ${group.label || "group"}` : `Collapse ${group.label || "group"}`;
       const label = group.label
-        ? `<span class="ed-group-label">${escapeHtml(group.label)}:</span>`
+        ? `<button type="button" class="ed-group-toggle" data-action="toggle-objective-group" data-group="${escapeHtml(group.key)}" title="${toggleLabel}" aria-label="${toggleLabel}" aria-expanded="${!isCollapsed}">${toggleIcon}</button><span class="ed-group-label">${escapeHtml(group.label)}:</span>`
         : "";
       const staleButton = hasStale
         ? `<button type="button" class="ed-mini" data-action="refresh-objective-group" data-group="${escapeHtml(group.key)}" title="Source updated — refresh this line">↻</button>`
         : "";
-      return `<div class="ed-group" data-objective-group="${escapeHtml(group.key)}">${label}${bodyHtml}<span class="ed-mini-row">${staleButton}<button type="button" class="ed-mini ed-mini--danger" data-action="remove-objective-group" data-group="${escapeHtml(group.key)}" title="Remove ${escapeHtml(group.label || "item")}" aria-label="Remove ${escapeHtml(group.label || "item")}">×</button></span></div>`;
+      const bodyStyle = isCollapsed ? ' style="display:none"' : "";
+      return `<div class="ed-group" data-objective-group="${escapeHtml(group.key)}">${label}<div${bodyStyle}>${bodyHtml}</div><span class="ed-mini-row">${staleButton}<button type="button" class="ed-mini ed-mini--danger" data-action="remove-objective-group" data-group="${escapeHtml(group.key)}" title="Remove ${escapeHtml(group.label || "item")}" aria-label="Remove ${escapeHtml(group.label || "item")}">×</button></span></div>`;
     }).join("");
   }
 
@@ -468,7 +481,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     ["other", "Other relevant history"]
   ]);
 
-  function renderDraft({ draft, guidanceFor, differenceSelectionId }) {
+  function renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups }) {
     const visibility = draft.sectionVisibility || {};
     const isHP = draft.noteType === NOTE_TYPES.H_AND_P;
     const fields = draft.sections || {};
@@ -494,7 +507,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       ].join(""), { labelExtra: helpFor("interval_events", "Subjective") }),
     ];
 
-    const objectiveBlocks = renderObjectiveBlocksEditor(draft);
+    const objectiveBlocks = renderObjectiveBlocksEditor(draft, collapsedObjectiveGroups);
     const objectiveBody = `<p class="ed-hint">Vitals are in the note automatically. Check labs or diagnostic results under Clinical data to add them here.</p>`
       + (objectiveBlocks || `<p class="ed-empty">Choose items from Clinical data to add Objective content.</p>`)
       + `<div class="ed-sub"><span class="ed-sub-label">Student-authored Objective text</span>${editorRegion("data-draft-objective-manual", draft.objective?.manual, "Optional exam findings, intake/output, or other directly observed data")}</div>`;
@@ -519,7 +532,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     </section>`;
   }
 
-  function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, patientRequiredMessage }) {
+  function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, patientRequiredMessage }) {
     if (!draft) return patientRequiredMessage;
     const selectedIds = new Set((draft.objective?.selectedBlocks || []).map((block) => block.selectionId));
     return `<div class="review-workspace">
@@ -527,7 +540,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         <div><span class="eyebrow">${escapeHtml(patientLabel)}</span><h1 id="review-heading">Review Data / Draft Note</h1><p class="review-one-liner ${oneLiner ? "" : "is-empty"}">${escapeHtml(oneLiner || "One-liner not entered yet. You can continue and add it in the draft.")}</p></div>
         <label>Note packet<select id="reviewPacketSelect">${packets.map((packet) => `<option value="${escapeHtml(packet.id)}" ${packet.id === selectedPacketId ? "selected" : ""}>${escapeHtml(packet.label)}</option>`).join("")}</select></label>
       </header>
-      <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId })}</div>
+      <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups })}</div>
     </div>`;
   }
 

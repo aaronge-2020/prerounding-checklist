@@ -129,6 +129,10 @@ export function createReviewController(deps) {
   // Local UI state only; survives re-renders.
   let clinicalDataCollapsed = false;
 
+  // Which Objective editor groups are collapsed (vitals, lab families, etc.).
+  // Local UI state only; survives re-renders.
+  const collapsedObjectiveGroups = new Set();
+
   // Only the 5 core vitals are auto-selected: BP, SpO2, HR, RR, Temp.
   // Medications are also auto-added. Labs and other vitals (weight, MAP, etc.)
   // are never auto-added — the student selects them explicitly.
@@ -161,7 +165,9 @@ export function createReviewController(deps) {
       noteGroupKey: candidate.noteGroupKey,
       noteGroupLabel: candidate.noteGroupLabel,
       noteLabel: candidate.noteLabel,
-      noteDetail: candidate.noteDetail
+      noteDetail: candidate.noteDetail,
+      noteRange: candidate.noteRange,
+      noteMean: candidate.noteMean
     };
   }
 
@@ -280,6 +286,7 @@ export function createReviewController(deps) {
       baselineEditorId,
       collapsedFamilies,
       clinicalDataCollapsed,
+      collapsedObjectiveGroups,
       patientRequiredMessage: deps.patientRequiredMessage()
     };
   }
@@ -566,6 +573,15 @@ export function createReviewController(deps) {
     }
     if (action === "toggle-clinical-data") {
       clinicalDataCollapsed = !clinicalDataCollapsed;
+      render();
+      return true;
+    }
+    if (action === "toggle-objective-group") {
+      const group = button.dataset.group || "";
+      if (group) {
+        if (collapsedObjectiveGroups.has(group)) collapsedObjectiveGroups.delete(group);
+        else collapsedObjectiveGroups.add(group);
+      }
       render();
       return true;
     }

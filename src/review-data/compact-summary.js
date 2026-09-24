@@ -423,9 +423,17 @@ export function vitalNoteItem(candidate) {
   const latest = candidate?.latest;
   const detail = [cleanText(latest?.value), cleanText(latest?.unit)].filter(Boolean).join(" ") || "—";
   const range = vitalRangeText(candidate?.statistics24h) || cleanText(candidate?.statisticsText);
+  const stats = candidate?.statistics24h;
+  const mean = stats && Number.isFinite(stats.mean) ? String(stats.mean) : "";
+  // Range and mean are separate fields so the UI can render them subtly
+  // (e.g., gray secondary text) without cluttering the main value.
   return {
     label: shortVitalName(candidate?.name),
-    detail: `${detail}${range ? ` (${range})` : ""}${abnormalVitalFlag(candidate)}`
+    detail: `${detail}${abnormalVitalFlag(candidate)}`,
+    range: range || "",
+    mean: mean || "",
+    // Legacy combined format for backward compatibility.
+    combinedDetail: `${detail}${range ? ` (${range})` : ""}${abnormalVitalFlag(candidate)}`
   };
 }
 

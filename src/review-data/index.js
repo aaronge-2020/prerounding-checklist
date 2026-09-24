@@ -636,6 +636,7 @@ function lenientNoteDisplayModel(sourceKind, text) {
   }
   if (sourceKind === "laboratory_results") {
     const rows = [];
+    // First try line-based parsing (structured format).
     for (const line of bodyLines) {
       const match = line.match(/^([^:]+):\s*(.+)$/) || line.match(/^(\S+(?:\s+\S+)?)\s+(\S.*)$/);
       if (!match) continue;
@@ -647,6 +648,48 @@ function lenientNoteDisplayModel(sourceKind, text) {
         cells: [name, valueUnit ? valueUnit[1] : rest, valueUnit ? valueUnit[2] : "", "", ""],
         emphasis: "unknown"
       });
+    }
+    // If line-based parsing fails, try narrative patterns (e.g., "WBC is 9",
+    // "H&H 9.7/28.2", "platelet count 24,000").
+    if (!rows.length) {
+      const text = bodyLines.join(" ");
+      const patterns = [
+        // WBC - avoid matching dates like 01/08/09
+        [/\bwhite blood cell count(?: from \d+\/\d+\/\d+)? is (\d+\.?\d*)/i, "WBC"],
+        [/\bWBC (?:is )?(\d+\.?\d*)/i, "WBC"],
+        // H&H
+        [/\bH&H\s+(\d+\.?\d*)\s*\/\s*(\d+\.?\d*)/i, "Hgb", "Hct"],
+        [/\bhemoglobin[^\d]*?(\d+\.?\d*)/i, "Hgb"],
+        [/\bHgb[^\d]*?(\d+\.?\d*)/i, "Hgb"],
+        // Platelets
+        [/\bplatelet count[^\d]*?([\d,]+)/i, "Platelets"],
+        [/\bplatelets[^\d]*?([\d,]+)/i, "Platelets"],
+        // Coags
+        [/\bINR\s+(\d+\.?\d*)/i, "INR"],
+        [/\bPTT[^\d]*?(\d+)/i, "PTT"],
+        // Renal
+        [/\bBUN[^\d]*?(\d+\.?\d*)/i, "BUN"],
+        [/\bcreatinine[^\d]*?(\d+\.?\d*)/i, "Creatinine"],
+        [/\bBUN and creatinine\s+(\d+\.?\d*)\s*\/\s*(\d+\.?\d*)/i, "BUN", "Creatinine"],
+        // Liver
+        [/\bAST\s+(\d+)/i, "AST"],
+        [/\bALT\s+(\d+)/i, "ALT"],
+        [/\balkaline phosphatase\s+(\d+)/i, "Alk Phos"],
+        [/\btotal bilirubin\s+(\d+\.?\d*)/i, "Bilirubin"],
+        // Cardiac
+        [/\btroponin\s+(\d+\.?\d*)/i, "Troponin"],
+        [/\bCK\s+(\d+\.?\d*)/i, "CK"],
+        // Other
+        [/\bLDH\s+(\d+\.?\d*)/i, "LDH"],
+      ];
+      for (const [pattern, ...names] of patterns) {
+        const match = text.match(pattern);
+        if (!match) continue;
+        names.forEach((name, idx) => {
+          const value = (match[idx + 1] || "").replace(/,/g, "");
+          if (value) rows.push({ cells: [name, value, "", "", ""], emphasis: "unknown" });
+        });
+      }
     }
     if (!rows.length) return null;
     return { type: "labs", groups: [{ label: "Laboratory results", timestamp: "", rows }] };
@@ -1050,6 +1093,8 @@ export function buildClinicalReviewIndex(patient, options = {}) {
     const noteItem = vitalNoteItem(next);
     next.noteLabel = noteItem.label;
     next.noteDetail = noteItem.detail;
+    next.noteRange = noteItem.range;
+    next.noteMean = noteItem.mean;
     return next;
   });
   const medications = [...medicationMap.values()].map(finalizeMedicationCandidate);

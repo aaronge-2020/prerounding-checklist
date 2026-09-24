@@ -2730,6 +2730,20 @@ button.var-fill:focus-visible {
   flex: 0 0 auto;
 }
 
+.ed-group-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
+  color: var(--muted, #666);
+  padding: 2px 4px;
+  flex: 0 0 auto;
+}
+
+.ed-group-toggle:hover {
+  color: var(--text);
+}
+
 .ed-group .ed-body--inline {
   flex: 1 1 auto;
   min-width: 0;
@@ -2784,6 +2798,12 @@ button.var-fill:focus-visible {
 
 .ed-vital-line:last-child {
   border-bottom: none;
+}
+
+.ed-vital-secondary {
+  font-size: 11px;
+  color: var(--muted, #666);
+  margin-left: 8px;
 }
 
 .ed-block-bar,
