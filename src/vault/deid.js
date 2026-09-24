@@ -638,6 +638,12 @@ function isLikelyNonNamePhrase(rawText, start, end) {
     return true;
   }
 
+  // A span ending in a street suffix ("Main St", "Elm Avenue") is a street
+  // name, never a person's name - even without a house number.
+  if (/\b(?:street|st\.?|avenue|ave\.?|road|rd\.?|boulevard|blvd\.?|drive|dr\.?|lane|ln\.?|way|court|ct\.?|place|pl\.?|circle|cir\.?|terrace|ter\.?|parkway|pkwy\.?)$/i.test(span)) {
+    return true;
+  }
+
   // Capitalized eponyms and named teaching signs can parse exactly like a
   // two-part person name. Their immediately following clinical noun is the
   // disambiguating boundary; keep this generic rather than enumerating
@@ -852,6 +858,19 @@ function isLikelyOrganizationFalsePositive(rawText, start, end) {
     /\b(?:xr|xray|ct|cta|mr|mri|fl|ir|us|vas|echo|ekg|eeg|pocus)\b/i.test(line) && /\b(?:rpt|report|views?|con|w\/o|with|without|image|screening|clearance)\b/i.test(line) ||
     /^running hospital$/i.test(span) && /^\s+(?:course|stay|problems?)\b/i.test(after) ||
     /\bhospital$/i.test(span) && /^\s+(?:course|stay|problems?|day|progress note)\b/i.test(after);
+}
+
+// Bare street names have no house number to anchor them, so an all-caps
+// short suffix ("Retic CT", "Chest CT") is a medical abbreviation -
+// computed tomography - not a street suffix. Real street suffixes are
+// never written in all caps, so reject those matches outright.
+function isBareStreetAbbreviationFalsePositive(rawText, start, end) {
+  const span = rawText.slice(start, end).replace(/\s+/g, " ").trim();
+  const suffix = span.split(" ").pop() || "";
+  if (/^[A-Z]{2,3}$/.test(suffix)) {
+    return true;
+  }
+  return isLikelyAddressFalsePositive(rawText, start, end);
 }
 
 function isLikelyAddressFalsePositive(rawText, start, end) {
@@ -1397,6 +1416,13 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
     // separator be optional (zero-or-more, not one-or-more) means it still
     // matches even when the city group already ate the only space there.
     { label: "ADDRESS", regex: /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b(?:,?[ \t]+[A-Za-z .-]+)?(?:,?[ \t]+[A-Z]{2})?(?:[ \t]*\d{5}(?:-\d{4})?)?/gi, skip: isLikelyAddressFalsePositive },
+    // Bare street names without a house number ("Main St") are still address
+    // identifiers - and must never fall through to the person-name detector.
+    // The leading word stays case-sensitive so lowercase prose ("lives on
+    // Main St") cannot anchor a match; only the suffix is case-insensitive.
+    // Bare "Dr" is excluded: without a house number it overwhelmingly means
+    // a doctor title ("Provider Dr Chang"), not "Drive".
+    { label: "ADDRESS", regex: /\b[A-Z][A-Za-z0-9.'-]*(?:[ \t]+[A-Z][A-Za-z0-9.'-]+){0,2}[ \t]+(?i:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b/g, skip: isBareStreetAbbreviationFalsePositive },
     { label: "ROOM", regex: /\b(?:Room|Rm|Bed|ICU room|ED room)\b(?!\s*[:#])\s+[A-Z0-9-]*\d[A-Z0-9-]*\b/gi },
     { label: "LOCATION", regex: /\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/g },
     { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+[A-Z][A-Za-z&.'-]+){0,4}[ \t]+Laboratory,\s+(?:University|College|Institute) of [A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){0,4},\s+[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+)*,\s+[A-Z]{2}\b/g },
@@ -2235,19 +2261,19 @@ function addTemporalPatternEntities(rawText, entities, currentDate = null) {
   });
 }
 
-// Only used when chooseCurrentSourceDate has to guess an anchor with no
-// explicit admission/current-date signal in the text at all (see the final
-// fallback below) - how far back a date can be from the most recent one and
-// still plausibly belong to the same stay rather than to older history.
-const INFERRED_STAY_LOOKBACK_DAYS = 14;
-
 function chooseCurrentSourceDate(temporalEntities, currentDate = null) {
   if (currentDate) {
     const d = new Date(currentDate);
     // Use UTC getters, not local getters: a date-only string like
     // "2026-05-01" parses as UTC midnight, and reading it back with local
     // getters can roll it back a calendar day west of UTC.
-    return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+    // An explicit caller-supplied date is a user-labeled admission/day
+    // packet, so Hospital Day and "prior to hospital admission" phrasing are
+    // legitimate against it.
+    return {
+      date: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())),
+      admissionAnchored: true
+    };
   }
   const parsedEntities = temporalEntities
     .map((entity) => ({
@@ -2267,13 +2293,6 @@ function chooseCurrentSourceDate(temporalEntities, currentDate = null) {
       date: dateFromParts(info.temporal, info.temporal.year)
     }))
     .filter((info) => info.date);
-  const explicitCurrent = explicitDayEntities.filter((info) => isCurrentSourceDateContext(info.entity));
-  if (explicitCurrent.length) {
-    return explicitCurrent.reduce((latest, info) => (
-      !latest || info.date > latest ? info.date : latest
-    ), null);
-  }
-
   const explicitAnchor = explicitDayEntities.reduce((latest, info) => (
     !latest || info.date > latest ? info.date : latest
   ), null);
@@ -2291,57 +2310,75 @@ function chooseCurrentSourceDate(temporalEntities, currentDate = null) {
     }))
     .filter((info) => info.temporal?.kind === "day" && info.date);
   if (!dayEntities.length) {
-    return null;
+    return { date: null, admissionAnchored: false };
   }
 
   // "Admitted"/"admission" wording names the admission event directly - a
   // stronger, more specific anchor signal than the generic "current
   // labs"/"today" cues below, which just mark whichever date a note happens
-  // to be read as of. Without this, a later "current labs" mention could
-  // outrank the actual "Admitted ..." line for which date becomes Hospital
-  // Day 1, folding the true admission day into a "days prior" phrase instead.
-  const admissionContextEntities = dayEntities.filter((info) => /\badmit(?:ted)?\b|\badmission\b/i.test(info.entity.context || ""));
+  // to be read as of. Without this running first, a later "current labs"
+  // mention outranks the actual "Admitted ..." line, folding the true
+  // admission day into a "days prior" phrase instead. Mentions framed as
+  // history ("previously admitted", "last admission") name a prior stay,
+  // not this one, so they must not anchor.
+  const admissionContextEntities = dayEntities.filter((info) => (
+    /\badmit(?:ted)?\b|\badmission\b/i.test(info.entity.context || "") &&
+    !isHistoricalTemporalContext(info.entity)
+  ));
   if (admissionContextEntities.length) {
-    return admissionContextEntities.reduce((earliest, info) => (
-      !earliest || info.date < earliest ? info.date : earliest
-    ), null);
+    // The note itself names the admission event, so Hospital Day phrasing
+    // is legitimate against this anchor.
+    return {
+      date: admissionContextEntities.reduce((earliest, info) => (
+        !earliest || info.date < earliest ? info.date : earliest
+      ), null),
+      admissionAnchored: true
+    };
+  }
+
+  const explicitCurrent = explicitDayEntities.filter((info) => isCurrentSourceDateContext(info.entity));
+  if (explicitCurrent.length) {
+    // A "current labs"/"today" cue marks the note's reading date, not an
+    // admission event. It may still resolve relative phrases and infer
+    // missing years, but it must never produce "Hospital Day N" or "N
+    // prior to hospital admission" phrasing - inventing an admission
+    // timeline from a reading-date cue is exactly the clinical-timeline
+    // inference this app refuses to do.
+    return {
+      date: explicitCurrent.reduce((latest, info) => (
+        !latest || info.date > latest ? info.date : latest
+      ), null),
+      admissionAnchored: false
+    };
   }
 
   const prioritized = dayEntities.filter((info) => isCurrentSourceDateContext(info.entity));
   if (prioritized.length) {
-    return prioritized.reduce((latest, info) => (
-      !latest || info.date > latest ? info.date : latest
-    ), null);
+    return {
+      date: prioritized.reduce((latest, info) => (
+        !latest || info.date > latest ? info.date : latest
+      ), null),
+      admissionAnchored: false
+    };
   }
 
   if (!explicitAnchor && dayEntities.some((info) => !info.temporal.hasExplicitYear)) {
-    return dayEntities.reduce((latest, info) => (
-      !latest || info.entity.start > latest.entity.start ? info : latest
-    ), null).date;
+    return {
+      date: dayEntities.reduce((latest, info) => (
+        !latest || info.entity.start > latest.entity.start ? info : latest
+      ), null).date,
+      admissionAnchored: false
+    };
   }
 
-  // Last resort, no explicit "current"/"admitted" signal anywhere: a
-  // Results Review-style panel routinely mixes a run of recent, same-stay
-  // labs/imaging with much older outpatient history pulled into the same
-  // list. The most recent date in the set is the best available stand-in
-  // for "now"; anchoring Hospital Day 1 to the latest date itself (the old
-  // behavior) forces every earlier row - including ones from the same
-  // several-day stay - into "prior to hospital admission" phrasing. Anchoring
-  // to the earliest date in the *entire* set is just as wrong the other way,
-  // dragging genuinely old history into the current stay's day count. So the
-  // anchor is the earliest date that's still within a plausible single stay
-  // (INFERRED_STAY_LOOKBACK_DAYS) of the most recent one - the recent run
-  // gets sequenced from its own start, and anything older stays historical.
-  const mostRecentDate = dayEntities.reduce((latest, info) => (
-    !latest || info.date > latest ? info.date : latest
-  ), null);
-  const recentCluster = dayEntities.filter((info) => (
-    mostRecentDate.getTime() - info.date.getTime() <= INFERRED_STAY_LOOKBACK_DAYS * 86400000
-  ));
-  const pool = recentCluster.length ? recentCluster : dayEntities;
-  return pool.reduce((earliest, info) => (
-    !earliest || info.date < earliest ? info.date : earliest
-  ), null);
+  // No admission signal anywhere in the text and no explicit anchor: never
+  // invent a multi-day admission timeline - an unanchored "09/20/2026" must
+  // not become a fictitious "Hospital Day". The old single-calendar-day
+  // cluster exception (a lone timestamped lab panel anchoring itself to
+  // "Hospital Day 1") was the same fabrication on a smaller scale: a lab
+  // panel with no admission context gets generic historical semantics
+  // ("[Historical: 2026 at 04:02]") with its exact clock time preserved.
+  return { date: null, admissionAnchored: false };
 }
 
 // True calendar history (a prior encounter, PMH, an old diagnosis) — as
@@ -2432,7 +2469,7 @@ function historicalDurationBeforeAdmission(date, admissionDate, { hasDayPrecisio
   return formatDurationPhrase(duration);
 }
 
-function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYear = null) {
+function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYear = null, admissionAnchored = false) {
   const span = entity.span || "";
   const temporal = entity.temporal || parseTemporalSpan(span, entity, currentSourceDate);
   if (!temporal) {
@@ -2440,27 +2477,37 @@ function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYe
   }
   const year = temporal.year || fallbackYear || currentSourceDate?.getUTCFullYear() || null;
   const date = dateFromParts(temporal, year, currentSourceDate, temporalContextDirection(entity));
-  const placement = classifyTemporalPlacement(temporal, date, currentSourceDate, entity);
+  // Hospital Day and "N prior to hospital admission" phrasing are only
+  // legitimate against a genuine admission anchor (an explicit caller
+  // date or the note itself naming the admission event). A reading-date
+  // cue ("current labs") or no anchor at all degrades to generic
+  // historical semantics - never an invented hospital timeline.
+  const placement = classifyTemporalPlacement(temporal, date, admissionAnchored ? currentSourceDate : null, entity);
   const clockTime = temporal.clockTime || "";
   if (placement.historical) {
     const isDob = entity.label === "DOB";
-    const duration = historicalDurationBeforeAdmission(date, currentSourceDate, {
-      hasDayPrecision: !isDob && temporal.kind !== "month",
-      // A DOB rendered as "78 years, 5 months, and 24 days" preserves the
-      // exact birth date in duration form. Coarsen to whole years only.
-      yearPrecisionOnly: isDob
-    });
+    const duration = admissionAnchored
+      ? historicalDurationBeforeAdmission(date, currentSourceDate, {
+        hasDayPrecision: !isDob && temporal.kind !== "month",
+        // A DOB rendered as "78 years, 5 months, and 24 days" preserves the
+        // exact birth date in duration form. Coarsen to whole years only.
+        yearPrecisionOnly: isDob
+      })
+      : null;
     if (duration) {
       return `[${duration} prior to hospital admission${clockTime && duration === "1 day" ? ` at ${clockTime}` : ""}]`;
     }
     // Without an admission date to measure against, a birth date can't be
     // turned into an age/duration - and unlike an arbitrary historical lab
-    // or note date, falling back to "[Historical: <year>]" would leak the
+    // or note date, falling back to "[Historical: <year>] would leak the
     // patient's literal birth year. Degrade to a plain, generic marker instead.
     if (entity.label === "DOB") {
       return "[DOB]";
     }
-    return placement.year ? `[Historical: ${placement.year}]` : "[Historical date]";
+    // Preserve an exact clock time next to the generic historical marker -
+    // the time is real chart data, and keeping it (as the "1 day" duration
+    // case already does) costs no timeline inference.
+    return placement.year ? `[Historical: ${placement.year}${clockTime ? ` at ${clockTime}` : ""}]` : "[Historical date]";
   }
   // "Yesterday morning" and similar relative phrases identify a calendar
   // day, but the time-of-day wording is clinically meaningful and not an
@@ -2503,11 +2550,12 @@ function buildDateTimeline(rawText, entities, currentDate = null, { includeTempo
   // birth date. It still gets formatted below against whatever anchor the
   // *other* dates in the note establish - it just can't supply that anchor.
   const anchorCandidates = dateEntities.filter((info) => info.entity.label !== "DOB");
-  const currentSourceDate = chooseCurrentSourceDate(anchorCandidates.map((info) => ({
+  const dateAnchor = chooseCurrentSourceDate(anchorCandidates.map((info) => ({
     ...info.entity,
     span: info.span,
     temporal: info.temporal
   })), currentDate);
+  const currentSourceDate = dateAnchor.date;
   const fallbackYear = currentSourceDate ? currentSourceDate.getUTCFullYear() : new Date().getFullYear();
   const placeholdersByEntity = new Map();
 
@@ -2518,7 +2566,7 @@ function buildDateTimeline(rawText, entities, currentDate = null, { includeTempo
       span: info.span,
       temporal: info.temporal,
       rawText
-    }, currentSourceDate, fallbackYear));
+    }, currentSourceDate, fallbackYear, dateAnchor.admissionAnchored));
   });
 
   return placeholdersByEntity;
@@ -2574,6 +2622,12 @@ function applyLabOrdinalTags(text) {
     // keys off of; after redaction it starts with our placeholder instead, so
     // only clinicalResultLabelFromLine's own name/header exclusions gate this.
     if (!parsed || !/\[(?:Hospital Day|Historical)/.test(parsed.value)) {
+      return;
+    }
+    // Medication-order annotations (PRN comments/reasons, order instructions)
+    // are not lab results: never tag them with lab ordinals, even when their
+    // conditional text mentions lab values (e.g. "for phosphorus <=2 mg/dL").
+    if (/\bmedications?\b/i.test(parsed.label) || /\bPRN\s+(?:Comment|Reasons?)\b/i.test(parsed.label)) {
       return;
     }
     const key = normalizePhrase(parsed.label);
@@ -2641,7 +2695,8 @@ function replaceTemporalEntitiesWithRelativeText(text, currentDate = null) {
     return sourceText;
   }
 
-  const currentSourceDate = chooseCurrentSourceDate(entities, currentDate);
+  const dateAnchor = chooseCurrentSourceDate(entities, currentDate);
+  const currentSourceDate = dateAnchor.date;
   const fallbackYear = currentSourceDate ? currentSourceDate.getUTCFullYear() : new Date().getFullYear();
   let cursor = 0;
   let output = "";
@@ -2652,7 +2707,7 @@ function replaceTemporalEntitiesWithRelativeText(text, currentDate = null) {
       ...entity,
       span: sourceText.slice(entity.start, entity.end),
       rawText: sourceText
-    }, currentSourceDate, fallbackYear);
+    }, currentSourceDate, fallbackYear, dateAnchor.admissionAnchored);
     cursor = entity.end;
   });
 

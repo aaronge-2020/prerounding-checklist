@@ -19,7 +19,6 @@ import {
   refreshObjectiveBlock,
   removeDifferential,
   removePlanProblem,
-  renderFinalNote,
   renderFinalNoteHtml,
   renderFinalNotePlainText,
   reorderDifferentials,
@@ -196,10 +195,13 @@ export function createReviewController(deps) {
     // Auto-include every vital and medication candidate the student has not
     // explicitly unchecked. Explicit deselections survive re-renders, packet
     // switches, and saved-draft reloads through objective.deselectedIds.
+    // A temperature whose source never stated a unit is never auto-included:
+    // the student must confirm °F/°C on the review sheet first.
     const deselectedIds = new Set((draft.objective?.deselectedIds || []).map(String));
     const alreadySelected = new Set(draft.objective.selectedBlocks.map((block) => block.selectionId));
     for (const candidate of candidates.values()) {
       if (!isDefaultOn(candidate)) continue;
+      if (candidate.unitUnmarked) continue;
       if (deselectedIds.has(String(candidate.id)) || alreadySelected.has(candidate.id)) continue;
       draft = selectObjectiveBlock(draft, selectionInputFor(candidate));
     }
@@ -215,7 +217,9 @@ export function createReviewController(deps) {
     const patient = deps.active();
     if (!patient) return { patient: null };
     const packet = selectedPacket(patient);
-    const index = buildClinicalReviewIndex(patient);
+    // Explicit student confirmations for unmarked temperature units live on
+    // the patient record and resolve the ambiguity at the review boundary.
+    const index = buildClinicalReviewIndex(patient, { temperatureUnits: patient?.temperatureUnits });
     const checklistCandidates = buildChecklistNoteCandidates(patient, packet.id);
     const draft = reviewDraft(patient, packet.id, index, checklistCandidates);
     return {
@@ -242,8 +246,6 @@ export function createReviewController(deps) {
       draft: current.draft,
       guidanceFor: (sectionId) => studentGuidance(current.draft.noteType, sectionId),
       differenceSelectionId: deps.app.reviewDifferenceSelectionId,
-      finalNote: renderFinalNote(current.draft),
-      finalNoteHtml: renderFinalNoteHtml(current.draft),
       baselineEditorId,
       collapsedFamilies,
       patientRequiredMessage: deps.patientRequiredMessage()
@@ -285,27 +287,34 @@ export function createReviewController(deps) {
     deps.render();
   }
 
+  // The note editor's editable regions are contenteditable elements, not
+  // form fields: read their text via innerText (trailing whitespace trimmed
+  // so <br>-rendered newlines round-trip cleanly). Plain inputs/textareas
+  // and non-DOM test fakes keep using .value.
+  function editableText(target) {
+    if (target.isContentEditable) return String(target.innerText || "").replace(/[\s\uFEFF]+$/, "");
+    return target.value;
+  }
+
   function updateInput(target) {
     const current = model();
     if (!current.patient) return false;
     let draft = current.draft;
-    if (target.matches("[data-draft-section]")) draft = updateNoteSection(draft, target.dataset.draftSection, target.value);
-    else if (target.matches("[data-draft-objective-manual]")) draft = updateManualObjective(draft, target.value);
-    else if (target.matches("[data-objective-block-text]")) draft = editObjectiveBlock(draft, target.dataset.objectiveBlockText, target.value);
-    else if (target.matches("[data-draft-assessment]")) draft = updateAssessment(draft, target.value);
-    else if (target.matches("[data-draft-closing]")) draft = updateClosingSection(draft, target.dataset.draftClosing, target.value);
+    if (target.matches("[data-draft-section]")) draft = updateNoteSection(draft, target.dataset.draftSection, editableText(target));
+    else if (target.matches("[data-draft-objective-manual]")) draft = updateManualObjective(draft, editableText(target));
+    else if (target.matches("[data-objective-block-text]")) draft = editObjectiveBlock(draft, target.dataset.objectiveBlockText, editableText(target));
+    else if (target.matches("[data-draft-assessment]")) draft = updateAssessment(draft, editableText(target));
+    else if (target.matches("[data-draft-closing]")) draft = updateClosingSection(draft, target.dataset.draftClosing, editableText(target));
     else {
       const problemCard = target.closest("[data-problem-id]");
       const differentialCard = target.closest("[data-differential-id]");
       if (target.matches("[data-differential-field]") && problemCard && differentialCard) {
-        draft = updateDifferential(draft, problemCard.dataset.problemId, differentialCard.dataset.differentialId, { [target.dataset.differentialField]: target.value });
+        draft = updateDifferential(draft, problemCard.dataset.problemId, differentialCard.dataset.differentialId, { [target.dataset.differentialField]: editableText(target) });
       } else if (target.matches("[data-problem-field]") && problemCard) {
-        draft = updatePlanProblem(draft, problemCard.dataset.problemId, { [target.dataset.problemField]: target.value });
+        draft = updatePlanProblem(draft, problemCard.dataset.problemId, { [target.dataset.problemField]: editableText(target) });
       } else return false;
     }
     setDraft(draft);
-    const preview = deps.byId("reviewContent")?.querySelector("[data-final-note-preview]");
-    if (preview) preview.innerHTML = renderFinalNoteHtml(draft) || `<p class="muted">Start writing to build the note preview.</p>`;
     return true;
   }
 
@@ -336,6 +345,13 @@ export function createReviewController(deps) {
     if (target.matches("[data-objective-selection-id]")) {
       const candidate = (current.index.objectiveCandidates || current.index.candidates).find((entry) => entry.id === target.dataset.objectiveSelectionId);
       if (!candidate) return true;
+      // An unmarked temperature can only enter the note through explicit
+      // °F/°C confirmation — never through the checkbox alone.
+      if (candidate.unitUnmarked && target.checked) {
+        deps.setStatus("Confirm °F or °C for this temperature before adding it to the note.");
+        render();
+        return true;
+      }
       let draft = current.draft;
       if (target.checked) {
         if (target.matches("[data-lab-panel-selection]")) {
@@ -402,6 +418,24 @@ export function createReviewController(deps) {
     deps.render();
   }
 
+  async function confirmTemperatureUnit(candidateId, unit) {
+    const current = model();
+    if (!current.patient) return;
+    if ((unit !== "°F" && unit !== "°C") || !candidateId) return;
+    deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({
+      ...patient,
+      temperatureUnits: { ...(patient.temperatureUnits || {}), [String(candidateId)]: unit }
+    }));
+    // Confirming resolves the ambiguity, so the default-on pass picks the
+    // temperature up on the next render with the confirmed unit attached.
+    const ephemeralDemo = deps.isEphemeralDemo?.();
+    if (!ephemeralDemo) await deps.persistVault("Temperature unit confirmed.");
+    deps.setStatus(ephemeralDemo
+      ? "Temperature unit confirmed for this temporary walkthrough."
+      : `Temperature unit confirmed as ${unit} — saved to the encrypted vault.`);
+    render();
+  }
+
   async function saveLabBaseline(analyte, fields, { clear = false } = {}) {
     const current = model();
     if (!current.patient) return;
@@ -453,7 +487,7 @@ export function createReviewController(deps) {
             await deps.copyText(plain);
             deps.setStatus("Rich copy was unavailable; plain-text note copied instead.");
           } catch {
-            deps.setStatus("Copy failed. Select the preview text manually.");
+            deps.setStatus("Copy failed. Use Download .txt instead.");
           }
         }
       })();
@@ -468,6 +502,10 @@ export function createReviewController(deps) {
     if (action === "baseline-edit") {
       baselineEditorId = button.dataset.baselineResultId || "";
       render();
+      return true;
+    }
+    if (action === "confirm-temperature-unit") {
+      void confirmTemperatureUnit(button.dataset.candidateId, button.dataset.unit);
       return true;
     }
     if (action === "toggle-lab-family") {

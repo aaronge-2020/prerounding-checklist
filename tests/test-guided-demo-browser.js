@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
 import { createReadStream, existsSync, statSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { dirname, extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { fileAppUrl } from "./browser/app-harness.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const mime = new Map([
@@ -17,27 +19,11 @@ const mime = new Map([
   [".wasm", "application/wasm"]
 ]);
 
-const server = createServer((request, response) => {
-  const url = new URL(request.url, "http://127.0.0.1");
-  const relative = url.pathname === "/" ? "index.html" : url.pathname.slice(1);
-  const file = normalize(join(root, relative));
-  if (!file.startsWith(root) || !existsSync(file) || !statSync(file).isFile()) {
-    response.writeHead(404);
-    response.end("not found");
-    return;
-  }
-  response.writeHead(200, { "content-type": mime.get(extname(file)) || "application/octet-stream" });
-  createReadStream(file).pipe(response);
-});
-
-await new Promise((resolve, reject) => {
-  server.once("error", reject);
-  server.listen(0, "127.0.0.1", () => {
-    server.removeListener("error", reject);
-    resolve();
+const appUrl = fileAppUrl();
+const browser = await chromium.launch({
+    executablePath: "/opt/meta-chromium/chrome",
+    args: ["--allow-file-access-from-files", "--disable-features=LocalNetworkAccessChecks", "--no-proxy-server"]
   });
-});
-const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
 const consoleErrors = [];
 page.on("console", (message) => {
@@ -45,10 +31,8 @@ page.on("console", (message) => {
 });
 
 try {
-  const appUrl = `http://127.0.0.1:${server.address().port}/`;
-  await page.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: new URL(appUrl).origin });
-  const response = await page.goto(appUrl);
-  assert.equal(response?.status(), 200);
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto(appUrl);
   await page.waitForSelector("#vaultPassphrase", { timeout: 60000 });
   await page.waitForFunction(() => document.querySelectorAll('.primary-nav [data-view-target]').length === 8);
   assert.deepEqual(
@@ -81,7 +65,7 @@ try {
 
   await page.click('.section-editor.is-expanded [data-action="confirm-all-section-redactions"]');
   await page.waitForFunction(() => document.querySelector("[data-demo-guide]")?.textContent.includes("Add the day-one update"));
-  assert.equal(await page.locator('[data-action="add-daily-source"]').isVisible(), true, "Confirm rest must remain usable after individual accepts");
+  assert.equal(await page.locator('[data-action="add-daily-source"]').isVisible(), true, "Confirm all must remain usable after individual accepts");
 
   await page.click('[data-action="add-daily-source"]');
   await page.waitForFunction(() => /Check the day-one changes|Choose checklist questions/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
@@ -104,13 +88,20 @@ try {
   await page.click('[data-view-target="review"]');
   await page.waitForSelector('[data-checklist-finding-kind="history"] li');
   assert.match(await page.locator('[data-checklist-finding-kind="history"]').innerText(), /No chest discomfort now/);
-  assert.doesNotMatch(await page.locator("[data-final-note-preview]").innerText(), /Do you have chest pressure or pain now/);
+  // The right side is a single editor now (no separate preview pane): verify
+  // the final note through the same Download .txt action the student uses.
+  const [download] = await Promise.all([
+    page.waitForEvent("download"),
+    page.click('[data-action="download-final-note"]')
+  ]);
+  assert.doesNotMatch(await readFile(await download.path(), "utf8"), /Do you have chest pressure or pain now/);
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Review the complete assessment and plan/);
-  assert.match(await page.locator("[data-draft-assessment]").inputValue(), /high-risk NSTEMI/i);
+  assert.match(await page.locator("[data-draft-assessment]").innerText(), /high-risk NSTEMI/i);
   assert.equal(await page.locator(".plan-problem-card").count(), 3);
-  assert.match(await page.locator('.plan-problem-card').first().locator('[data-problem-field="diagnosticPlan"]').inputValue(), /Coronary angiography is planned today/i);
+  assert.match(await page.locator('.plan-problem-card').first().locator('[data-problem-field="diagnosticPlan"]').innerText(), /Coronary angiography is planned today/i);
   await page.selectOption("#reviewDataCategory", "vitals");
-  assert.match(await page.locator(".review-data-list").innerText(), /Most recent[\s\S]*24-hour range[\s\S]*Median/);
+  // Vitals render as compact chips in the redesigned review UI.
+  assert.match(await page.locator(".review-data-list").innerText(), /Vital signs[\s\S]*saved/);
   await page.selectOption("#reviewDataCategory", "labs");
   await page.fill("#reviewDataSearch", "troponin");
   assert.match(await page.locator(".review-data-list").innerText(), /High-sensitivity troponin/i);
@@ -142,7 +133,6 @@ try {
   assert.deepEqual(consoleErrors, []);
 } finally {
   await browser.close();
-  await new Promise((resolve) => server.close(resolve));
 }
 
 console.log("Guided demo browser regression tests passed");

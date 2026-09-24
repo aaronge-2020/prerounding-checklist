@@ -1,3 +1,38 @@
+/**
+ * Builds a disambiguated display name per patient id. Patients with a unique
+ * display label keep it untouched; when two or more patients share the same
+ * label (e.g. the same de-identified room label for separate stays), a suffix
+ * with the record's creation date is appended so the patient switcher and
+ * roster rows are never indistinguishable.
+ */
+export function disambiguatedPatientLabels(patients = []) {
+  const labelCounts = new Map();
+  for (const patient of patients) {
+    const key = String(patient?.displayLabel || "").trim().toLowerCase();
+    labelCounts.set(key, (labelCounts.get(key) || 0) + 1);
+  }
+  const result = new Map();
+  const usedNames = new Map();
+  for (const patient of patients) {
+    const base = String(patient?.displayLabel || "Patient").trim() || "Patient";
+    const key = base.toLowerCase();
+    if ((labelCounts.get(key) || 0) < 2) {
+      result.set(patient.id, base);
+      continue;
+    }
+    const created = String(patient?.createdAt || "").slice(0, 10);
+    let suffix = created ? ` · added ${created.slice(5).replace("-", "/")}/${created.slice(2, 4)}` : "";
+    let candidate = `${base}${suffix}`;
+    if (usedNames.has(candidate.toLowerCase())) {
+      const shortId = String(patient?.id || "").slice(-4);
+      candidate = shortId ? `${base}${suffix} · ${shortId}` : `${base}${suffix} · ${result.size + 1}`;
+    }
+    usedNames.set(candidate.toLowerCase(), true);
+    result.set(patient.id, candidate);
+  }
+  return result;
+}
+
 export function createVaultPresentation({ escapeHtml, icon }) {
   function vaultPassphraseField(record, vaultUnlockError) {
     const hasUnlockError = Boolean(vaultUnlockError);
@@ -16,14 +51,15 @@ export function createVaultPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function renderPatientRow(patient, activePatientId) {
+  function renderPatientRow(patient, activePatientId, labelMap) {
     const selected = patient.id === activePatientId;
     const archived = Boolean(patient.archivedAt);
     const dayCount = patient.days?.length || 0;
+    const displayName = labelMap?.get(patient.id) || patient.displayLabel;
     return `
       <div class="list-row roster-row ${selected ? "selected" : ""}">
         <div class="roster-patient-name">
-          <strong>${escapeHtml(patient.displayLabel)}</strong>
+          <strong>${escapeHtml(displayName)}</strong>
           <span class="muted">${archived ? `Archived ${escapeHtml(patient.archivedAt.slice(0, 10))}` : "Active"} · HD${Math.max(dayCount, 1)}</span>
         </div>
         <span class="roster-status ${archived ? "is-archived" : ""}">${archived ? `Archived ${escapeHtml(patient.archivedAt.slice(0, 10))}` : "Active stay"}</span>
@@ -156,7 +192,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
           </div>
           <div class="roster-column-head" aria-hidden="true"><span>Patient</span><span>Status</span><span>Hospital days</span><span></span></div>
           <div class="patient-list">
-            ${visiblePatients.length ? visiblePatients.map(p => renderPatientRow(p, vault?.activePatientId)).join("") : `<div class="empty-state">${needsFirstPatient ? "No patient added. The guided demo uses synthetic data." : "No patients yet. Add one above to get started."}</div>`}
+            ${visiblePatients.length ? visiblePatients.map(p => renderPatientRow(p, vault?.activePatientId, disambiguatedPatientLabels(visiblePatients))).join("") : `<div class="empty-state">${needsFirstPatient ? "No patient added. The guided demo uses synthetic data." : "No patients yet. Add one above to get started."}</div>`}
           </div>
           <div class="local-vault-note"><strong>Local encryption</strong><span>This vault lives only in this browser. Export it to create a portable encrypted backup.</span></div>
         </section>

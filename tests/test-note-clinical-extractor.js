@@ -38,7 +38,7 @@ import { clinicalDisplayModelFromPromptText } from "../src/patient-context/struc
   const vitals = extractNoteVitals(
     "Gen: NAD. Vitals: BP 142/88, HR 94, T 98.6 F, RR 18, SpO2 96% on RA. Weight 82 kg. Pain 3/10."
   );
-  assert.equal(vitals, "Vitals\nBP 142/88; HR 94; Temp 37; RR 18; SpO2 96; Weight 82; Pain 3");
+  assert.equal(vitals, "Vitals\nBP 142/88; HR 94; Temp 37 °C; RR 18; SpO2 96; Weight 82; Pain 3");
   const model = clinicalDisplayModelFromPromptText("vital_signs", vitals);
   assert.equal(model?.type, "vitals");
   const byName = Object.fromEntries(
@@ -47,6 +47,8 @@ import { clinicalDisplayModelFromPromptText } from "../src/patient-context/struc
   assert.equal(byName["Blood Pressure (cuff)"], "142/88");
   assert.equal(byName["Pulse"], "94");
   assert.equal(byName["Temperature"], "37");
+  const tempRow = model.groups.flatMap((group) => group.rows).find((row) => row.cells[1] === "Temperature");
+  assert.equal(tempRow?.unitUnmarked, false, "extractor-labeled Celsius temps are not unit-unmarked");
   assert.equal(byName["Respirations"], "18");
   assert.equal(byName["SpO2"], "96");
   assert.equal(byName["Weight"], "82");

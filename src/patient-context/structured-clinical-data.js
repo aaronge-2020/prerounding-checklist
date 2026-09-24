@@ -131,6 +131,7 @@ function vitalDisplay(model) {
         id: row.id,
         cells: [group.timestamp, row.name, row.value],
         emphasis: "unknown",
+        unitUnmarked: Boolean(row.unitUnmarked),
         provenance: row.provenance
       }))
     })),
@@ -300,7 +301,9 @@ function vitalPrompt(model) {
   const lines = ["Vitals"];
   for (const group of model.groups) {
     const prefix = group.timestamp ? `@ ${group.timestamp}: ` : "";
-    lines.push(`${prefix}${group.rows.map((row) => `${abbreviations.get(row.name) || row.name} ${row.value}`).join("; ")}`);
+    // Units are part of the saved record: an explicit °F/°C marker survives
+    // the round trip instead of being re-derived (or fabricated) on load.
+    lines.push(`${prefix}${group.rows.map((row) => `${abbreviations.get(row.name) || row.name} ${row.value}${row.unit ? ` ${row.unit}` : ""}`).join("; ")}`);
   }
   return lines.filter(Boolean).join("\n");
 }
@@ -380,7 +383,9 @@ const SAVED_VITAL_LABELS = new Map([
 ]);
 
 const SAVED_VITAL_UNITS = new Map([
-  ["Temperature", "°C"],
+  // NOTE: Temperature is intentionally absent. An unmarked temperature must
+  // never be assigned a unit by the loader; ambiguity is carried explicitly
+  // via unitUnmarked and resolved by the student at the review boundary.
   ["Pulse", "bpm"],
   ["Heart Rate (Monitored)", "bpm"],
   ["Respirations", "breaths/min"],
@@ -436,6 +441,17 @@ function savedLaboratoryModel(lines) {
     : null;
 }
 
+// Explicit unit tokens the saved "Vitals" text may carry. Parsed back
+// verbatim so an explicit °F never degrades into the legacy °C assumption.
+const EXPLICIT_VITAL_UNIT_PATTERN = /(°F|°C|breaths\/min|L\/min|mmHg|bpm|kg|%)(?=\s*$)/i;
+
+function splitSavedVitalValue(text) {
+  const remainder = clean(text);
+  const match = remainder.match(EXPLICIT_VITAL_UNIT_PATTERN);
+  if (!match) return { value: remainder, unit: "" };
+  return { value: clean(remainder.slice(0, match.index)), unit: match[1] };
+}
+
 function savedVitalModel(lines) {
   const groups = [];
   for (const line of lines.slice(1)) {
@@ -454,11 +470,18 @@ function savedVitalModel(lines) {
       const name = SAVED_VITAL_NAMES.find((candidate) => measurement === candidate || measurement.startsWith(`${candidate} `));
       if (!name) return null;
       const normalizedName = SAVED_VITAL_LABELS.get(name) || name;
+      const parsed = splitSavedVitalValue(measurement.slice(name.length));
+      // Legacy saved text wrote temperatures without a unit; the old loader
+      // fabricated °C. Keep that ambiguity visible instead of re-fabricating
+      // it: an unmarked temperature carries no unit at all.
+      const unitUnmarked = !parsed.unit && normalizedName === "Temperature";
+      const unit = unitUnmarked ? "" : (parsed.unit || SAVED_VITAL_UNITS.get(normalizedName) || "");
       return {
         id: `saved_vital_${groups.length + 1}_${rowIndex + 1}`,
         name: normalizedName,
-        value: clean(measurement.slice(name.length)),
-        unit: SAVED_VITAL_UNITS.get(normalizedName) || ""
+        value: parsed.value,
+        unit,
+        unitUnmarked
       };
     }).filter(Boolean);
     if (rows.length) groups.push({ id: `saved_vitals_${groups.length + 1}`, label: "Vital signs", timestamp, rows });
@@ -474,7 +497,7 @@ function savedMedicationDisplay(lines) {
     const match = clean(line).match(/^(?:\[([^\]]+)\]\s*)?(.+?)(?:\s+—\s+(.+))?$/);
     if (!match) continue;
     const groupLabel = clean(match[1]) || "Medication activity";
-    const name = clean(match[2]).replace(/^(?:\[[^\]]+\]\s*)+/, "");
+    const name = clean(match[2]).replace(/\*\*/g, "").replace(/^(?:\[[^\]]+\]\s*)+/, "");
     if (!name || /^(?:Rate|Dose|Freq(?:uency)?|Route|Start|End|PRN Reasons?|PRN Comment|Weight Dosing Info|Admin(?:istration)? Instructions?|Order specific questions?|\d{3,4}(?:-See Alt)?)(?:\s*:|$)/i.test(name)) continue;
     const details = clean(match[3]);
     const detailParts = details.split(/\s+\|\s+/).filter(Boolean);
@@ -539,7 +562,11 @@ function savedMedicationDisplay(lines) {
 }
 
 export function clinicalDisplayModelFromPromptText(sourceKind, value) {
-  const lines = String(value || "").split(/\r?\n/).map(clean).filter(Boolean);
+  // Quick De-ID review artifacts (latest-result / lab ordinal tags) must never
+  // leak into clinical parsing: strip them from every line before dispatching
+  // to the vitals / labs / medication parsers.
+  const deidLabTagPattern = /\*\*\[LATEST_RESULT\]\*\*\s*|\[Lab\s+\d+\/\d+\]\s*/gi;
+  const lines = String(value || "").split(/\r?\n/).map((line) => clean(line).replace(deidLabTagPattern, "").trim()).filter(Boolean);
   if (!lines.length) return null;
   if (sourceKind === "laboratory_results" && lines[0] === "Labs") {
     const model = savedLaboratoryModel(lines);

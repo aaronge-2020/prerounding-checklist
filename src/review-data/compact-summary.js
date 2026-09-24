@@ -259,7 +259,7 @@ function mergePressurePair(list, systolicIndex, diastolicIndex, arterial) {
   const diastolicLatest = diastolic.latest;
   const systolicValue = cleanText(systolicLatest?.value) || "—";
   const diastolicValue = cleanText(diastolicLatest?.value) || "—";
-  const unit = cleanText(systolicLatest?.unit || diastolicLatest?.unit);
+  const unit = cleanText(systolicLatest?.unit || diastolicLatest?.unit) || "mmHg";
   const latestLabel = vitalLatestLabel(systolicLatest) || vitalLatestLabel(diastolicLatest);
   const observations = [...(systolic.observations || []), ...(diastolic.observations || [])]
     .sort((left, right) => (left.sortTime || 0) - (right.sortTime || 0));

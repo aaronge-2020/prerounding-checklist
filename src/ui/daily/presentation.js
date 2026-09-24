@@ -9,7 +9,8 @@ export function createDailyPresentation({ escapeHtml, icon }) {
   function renderRowReviewStatus(completeness) {
     const missingCount = completeness.missingRequired.length;
     if (missingCount) {
-      return `<span class="day-row-review day-row-review--attention" data-required-missing="${missingCount}" aria-label="${missingCount} required source${missingCount === 1 ? "" : "s"} ${missingCount === 1 ? "is" : "are"} not saved"><span aria-hidden="true">!</span> ${missingCount} required</span>`;
+      const missingNames = completeness.missingRequired.map((item) => item.label).join(", ");
+      return `<span class="day-row-review day-row-review--attention" data-required-missing="${missingCount}" title="Add a ${missingNames} source to complete this hospital day" aria-label="${missingCount} required source${missingCount === 1 ? "" : "s"} ${missingCount === 1 ? "is" : "are"} not saved: ${escapeHtml(missingNames)}"><span aria-hidden="true">!</span> ${missingCount} required: ${escapeHtml(missingNames)}</span>`;
     }
     return `<span class="day-row-review day-row-review--complete" data-required-missing="0">Required saved</span>`;
   }
@@ -360,7 +361,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
             <div class="structured-note-editor-actions"><button type="button" class="button--quiet" data-action="clear-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-note-field="${escapeHtml(activeField?.id || "")}">Clear section</button><div class="button-row"><button type="button" class="button--secondary" data-action="move-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-direction="-1" ${activeIndex === 0 ? "disabled" : ""}>Previous</button><button type="button" class="button--primary" data-action="move-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-direction="1" ${activeIndex === fields.length - 1 ? "disabled" : ""}>Next section</button></div></div>
           </div>
         </div>
-        <div class="structured-note-actions structured-note-actions--save"><span></span><div class="button-row"><button type="button" class="button--secondary" data-action="select-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-note-field="${escapeHtml(fields[0]?.id || "")}">Review all sections</button><button type="button" class="button--primary" data-action="save-structured-primary-note" data-note-scope="${escapeHtml(scope)}" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Review and de-identify"}</button></div></div>
+        <div class="structured-note-actions structured-note-actions--save"><span></span><div class="button-row"><button type="button" class="button--secondary" data-action="select-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-note-field="${escapeHtml(fields[0]?.id || "")}">Review sections</button><button type="button" class="button--primary" data-action="save-structured-primary-note" data-note-scope="${escapeHtml(scope)}" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save note"}</button></div></div>
       `}
       <div class="structured-note-privacy"><span aria-hidden="true">${icon("shield")}</span><span>Text stays in this tab until it is de-identified and saved.</span></div>
     </section>`;

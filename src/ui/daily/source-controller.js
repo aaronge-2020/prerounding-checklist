@@ -114,8 +114,10 @@ export function createDailySourceController(deps) {
     const drafts = deps.app.structuredNoteDrafts.get(structuredNoteKey(scope)) || {};
     const fields = primaryTeamNoteFields(structuredNoteType(scope));
     const detected = new Set(composer?.parseResult?.detectedFieldIds || []);
-    const firstDetected = fields.find((field) => detected.has(field.id) && String(drafts[field.id] || "").trim())?.id;
-    const firstPopulated = fields.find((field) => String(drafts[field.id] || "").trim())?.id;
+    // The one-liner is a summary, not a clinical section to review. Open on
+    // the first detected clinical section with content.
+    const firstDetected = fields.find((field) => field.id !== "one_liner" && detected.has(field.id) && String(drafts[field.id] || "").trim())?.id;
+    const firstPopulated = fields.find((field) => field.id !== "one_liner" && String(drafts[field.id] || "").trim())?.id;
     setStructuredNoteComposer(scope, {
       mode: "sections",
       activeFieldId: firstDetected || firstPopulated || composer?.activeFieldId

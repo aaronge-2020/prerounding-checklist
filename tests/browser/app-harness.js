@@ -41,13 +41,22 @@ export async function createAppServer() {
 }
 
 export async function openRealApp(page, baseUrl) {
-  const response = await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
-  assert.ok(response, "the app navigation must return an HTTP response");
-  assert.equal(response.status(), 200, `expected the real app HTML at ${page.url()}`);
-  assert.match(response.headers()["content-type"] || "", /text\/html/);
-  assert.equal(page.url(), baseUrl);
+  if (baseUrl.startsWith("file://")) {
+    await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
+    assert.equal(page.url(), baseUrl);
+  } else {
+    const response = await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
+    assert.ok(response, "the app navigation must return an HTTP response");
+    assert.equal(response.status(), 200, `expected the real app HTML at ${page.url()}`);
+    assert.match(response.headers()["content-type"] || "", /text\/html/);
+    assert.equal(page.url(), baseUrl);
+  }
   await page.waitForSelector("#vaultPassphrase");
   assert.equal(await page.title(), "Preround");
+}
+
+export function fileAppUrl() {
+  return `file://${join(root, "index.html")}`;
 }
 
 export async function unlockAndCreatePatient(page, { passphrase = "clinical review test passphrase", label = "Synthetic Room" } = {}) {

@@ -73,7 +73,7 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
             <span class="muted">${pendingRedactions.length} unconfirmed redaction${pendingRedactions.length === 1 ? "" : "s"}, ${activeWarnings.length} remaining flag${activeWarnings.length === 1 ? "" : "s"}. Originals disappear when you close this tab or leave this tool.</span>
           </div>
           <div class="button-row">
-            ${pendingRedactions.length ? `<button class="button--quiet" type="button" data-action="confirm-all-quick-redactions">Confirm rest (${pendingRedactions.length})</button><button class="button--quiet" type="button" data-action="reject-all-quick-redactions">Reject rest (${pendingRedactions.length})</button>` : ""}
+            ${pendingRedactions.length ? `<button class="button--quiet" type="button" data-action="confirm-all-quick-redactions">Confirm all (${pendingRedactions.length})</button><button class="button--quiet" type="button" data-action="reject-all-quick-redactions">Reject all (${pendingRedactions.length})</button>` : ""}
             <button class="button--quiet" type="button" data-action="manual-redact-quick-selection">${icon("wand")} Redact highlighted text</button>
           </div>
         </div>

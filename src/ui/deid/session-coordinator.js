@@ -24,11 +24,20 @@ export function createDeidSessionCoordinator({
         admissionDateAnchor.remember();
       }
     }
-    const effectiveAdmissionDate = sessionDate || state.admissionDate;
+    // Quick De-ID pastes arbitrary standalone text: when its gate is skipped
+    // and no session date was entered, the current patient's admission date
+    // is not a valid anchor for that text. Fall back to null so dates are
+    // evaluated on the text's own merits instead of inheriting an unrelated
+    // patient's timeline.
+    const effectiveAdmissionDate = sessionDate || (skipAdmissionGate ? null : state.admissionDate);
+    // Same boundary for relative-date resolution: "2 days ago" in standalone
+    // Quick De-ID text must not resolve against the patient's admission date,
+    // and an explicit session date is the reference when one was entered.
+    const effectiveReferenceDate = sessionDate || (skipAdmissionGate ? null : (referenceDate || effectiveAdmissionDate));
     return deidentifyText(rawText, {
       mode: state.deidMode,
       admissionDate: effectiveAdmissionDate,
-      relativeDate: referenceDate || effectiveAdmissionDate,
+      relativeDate: effectiveReferenceDate,
       onStatus: updateDeidStatus,
       onProgress: (progress) => {
         if (progress?.message) {

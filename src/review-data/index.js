@@ -48,18 +48,27 @@ function normalizedExact(value) {
 }
 
 function isMedicationName(value) {
-  const name = clean(value).replace(/^(?:\[[^\]]+\]\s*)+/, "");
+  const name = clean(value).replace(/\*\*/g, "").replace(/^(?:\[[^\]]+\]\s*)+/, "");
   return Boolean(name) && !/^(?:Rate|Dose|Freq(?:uency)?|Route|Start|End|PRN Reasons?|PRN Comment|Weight Dosing Info|Admin(?:istration)? Instructions?|Order specific questions?|\d{3,4}(?:-See Alt)?)(?:\s*:|$)/i.test(name);
 }
 
-function medicationScheduleLabel(entry) {
-  const section = clean(entry.savedSection);
+// MAR administration times arrive as bare military times ("2044"); render
+// them readably ("20:44") instead of leaking the raw digits into the UI.
+function formatAdministrationTime(value) {
+  const text = clean(value);
+  const match = text.match(/^([01]\d|2[0-3])([0-5]\d)$/);
+  return match ? `${match[1]}:${match[2]}` : text;
+}
+
+function medicationScheduleLabel(entry) {  const section = clean(entry.savedSection);
   const frequency = clean(entry.frequency);
   if (/completed|discontinued/i.test(section)) return "Completed";
   if (/\bPRN\b/i.test(frequency)) return "PRN";
   if (/continuous|titrated/i.test(frequency) || entry.rate) return "Continuous";
   if (/on call/i.test(frequency)) return "On call";
-  return frequency ? "Scheduled" : "Order";
+  // No honest schedule label when neither section nor frequency says anything:
+  // returning "" keeps the row meta clean instead of showing jargon.
+  return frequency ? "Scheduled" : "";
 }
 
 function stableHash(value) {
@@ -528,10 +537,61 @@ function latestLaboratoryPanels(laboratoryPanels, { baselines } = {}) {
   });
 }
 
+// A saved vitals / labs / medications source whose narrative the structured
+// parsers cannot turn into rows must not vanish from review ("Vital signs
+// (0)" with nothing to inspect). Keep it as an explicit opt-in narrative
+// candidate carrying the original de-identified text.
+const NARRATIVE_SOURCE_KINDS = Object.freeze({
+  vital_signs: { group: "vitals", label: "vital signs", noteGroupKey: "narrative_vitals" },
+  laboratory_results: { group: "labs", label: "laboratory results", noteGroupKey: "narrative_labs" },
+  medication_activity: { group: "medications", label: "medications", noteGroupKey: "narrative_medications" }
+});
+
+function narrativeFallbackCandidate(source, sourceOrder, provenance) {
+  const config = NARRATIVE_SOURCE_KINDS[source.sourceKind];
+  if (!config) return null;
+  const rawText = clean(source.record.deidentifiedText);
+  if (!rawText) return null;
+  // Drop the "Vitals"/"Labs"/"Medications" kind header when present so the
+  // card shows the actual narrative.
+  const narrativeText = rawText.split(/\r?\n/).filter((line, index) => index > 0 || !/^(vitals|labs?|medications)\s*$/i.test(clean(line))).join("\n").trim() || rawText;
+  const identity = `${source.scope}\u0000${source.dayId}\u0000${source.sourceId}\u0000narrative`;
+  const name = `Unparsed ${config.label}`;
+  const context = [source.dayLabel, source.sourceLabel].filter(Boolean).join(" · ");
+  const candidate = {
+    id: stableId("narrative", identity, name),
+    kind: "narrative",
+    name,
+    group: config.group,
+    narrativeText,
+    observations: [],
+    dayLabel: source.dayLabel,
+    dayDate: source.dayDate,
+    dayIndex: source.dayIndex,
+    sourceOrder,
+    source: provenance,
+    insertionText: narrativeText,
+    noteGroupKey: config.noteGroupKey,
+    noteGroupLabel: "Narrative source",
+    noteLabel: name,
+    noteDetail: context,
+    searchText: clean(`${name} ${narrativeText} ${context}`).toLocaleLowerCase("en-US")
+  };
+  candidate.fingerprint = fingerprint({ id: candidate.id, text: narrativeText, dayLabel: source.dayLabel });
+  return candidate;
+}
+
 function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap) {
   const display = clinicalDisplayModelFromPromptText(source.sourceKind, source.record.deidentifiedText);
-  if (!display?.groups?.length) return;
   const provenance = sourceProvenance(source);
+  // Count structured candidates actually produced: rows can merge into an
+  // existing candidate (same vital name/unit), so map size alone cannot tell
+  // "parsed nothing" from "parsed into existing rows".
+  let added = 0;
+  if (!display?.groups?.length) {
+    const fallback = narrativeFallbackCandidate(source, sourceOrder, provenance);
+    return fallback ? [fallback] : [];
+  }
 
   if (display.type === "labs") {
     display.groups.forEach((group, groupOrder) => {
@@ -570,9 +630,11 @@ function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap)
         });
       });
       if (candidate.name === "Laboratory results") candidate.name = laboratoryPanelLabel(candidate.results);
-      if (candidate.results.length) labMap.set(identity, candidate);
+      if (candidate.results.length) {
+        labMap.set(identity, candidate);
+        added += candidate.results.length;
+      }
     });
-    return;
   }
 
   if (display.type === "vitals") {
@@ -600,6 +662,7 @@ function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap)
         name: clean(name),
         value: clean(value),
         unit,
+        unitUnmarked: Boolean(row.unitUnmarked),
         status: clean(row.emphasis) || "unknown",
         timestamp: clean(group.timestamp),
         dayLabel: source.dayLabel,
@@ -613,19 +676,20 @@ function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap)
         source: provenance,
         parserProvenance: row.provenance || null
       });
+      added += 1;
     }));
-    return;
   }
 
   if (display.type === "medications") {
     display.groups.forEach((group, groupOrder) => group.rows.forEach((row, rowOrder) => {
       const [legacyName = "", legacyDose = "", legacyRoute = "", legacyAdministrations = ""] = row.cells || [];
       const medication = row.medication || {};
-      const name = clean(medication.name || legacyName).replace(/^(?:\[[^\]]+\]\s*)+/, "");
+      const name = clean(medication.name || legacyName).replace(/\*\*/g, "").replace(/^(?:\[[^\]]+\]\s*)+/, "");
       if (!isMedicationName(name)) return;
-      const administrations = Array.isArray(medication.administrations)
+      const administrations = (Array.isArray(medication.administrations)
         ? medication.administrations.map(clean).filter(Boolean)
-        : clean(legacyAdministrations).split(/\s*(?:·|;)\s*/).filter(Boolean);
+        : clean(legacyAdministrations).split(/\s*(?:·|;)\s*/).filter(Boolean)
+      ).map(formatAdministrationTime);
       const key = normalizedExact(name);
       if (!key) return;
       if (!medicationMap.has(key)) medicationMap.set(key, {
@@ -660,8 +724,17 @@ function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap)
         source: provenance,
         parserProvenance: row.provenance || null
       });
+      added += 1;
     }));
   }
+
+  // The source parsed into zero structured candidates: keep the narrative
+  // visible instead of dropping it silently.
+  if (!added) {
+    const fallback = narrativeFallbackCandidate(source, sourceOrder, provenance);
+    return fallback ? [fallback] : [];
+  }
+  return [];
 }
 
 function finalizeMedicationCandidate(candidate) {
@@ -672,7 +745,7 @@ function finalizeMedicationCandidate(candidate) {
     const details = [regimen, entry.rate && `rate ${entry.rate}`, entry.latestAdministration && `last listed ${entry.latestAdministration}`].filter(Boolean).join(" · ");
     return `${entry.dayLabel}${details ? `: ${details}` : ""}`;
   };
-  const scheduleLabel = latestSavedEntry ? medicationScheduleLabel(latestSavedEntry) : "Order";
+  const scheduleLabel = latestSavedEntry ? medicationScheduleLabel(latestSavedEntry) : "";
   const regimen = latestSavedEntry ? [latestSavedEntry.dose, latestSavedEntry.route, latestSavedEntry.frequency].filter(Boolean).join(" · ") : "";
   const prnDetails = latestSavedEntry ? [latestSavedEntry.prnReason, latestSavedEntry.prnComment].filter(Boolean).join(" — ") : "";
   const finalized = {
@@ -700,7 +773,7 @@ function finalizeMedicationCandidate(candidate) {
     noteGroupKey: "medications",
     noteGroupLabel: "Medications",
     noteLabel: candidate.name,
-    noteDetail: [regimen, latestSavedEntry?.latestAdministration ? `latest ${latestSavedEntry.latestAdministration}` : "", scheduleLabel !== "Order" ? scheduleLabel : ""].filter(Boolean).join(" · "),
+    noteDetail: [regimen, latestSavedEntry?.latestAdministration ? `latest ${latestSavedEntry.latestAdministration}` : "", scheduleLabel].filter(Boolean).join(" · "),
     searchText: clean([candidate.name, ...observations.flatMap((entry) => [entry.dose, entry.rate, entry.route, entry.frequency, entry.administrationTimes, entry.prnReason, entry.prnComment, entry.savedSection, entry.dayLabel])].join(" ")).toLocaleLowerCase("en-US")
   };
   finalized.fingerprint = fingerprint({
@@ -823,16 +896,40 @@ function noteClinicalSources(patient) {
   return synthetic;
 }
 
-export function buildClinicalReviewIndex(patient) {
+// Explicit student confirmations for temperature readings whose source never
+// stated a unit. The override resolves the ambiguity at the review boundary:
+// every observation (and the note text built from it) carries the confirmed
+// unit instead of a fabricated one.
+function applyTemperatureUnitOverrides(candidates, overrides) {
+  const confirmed = overrides && typeof overrides === "object" ? overrides : {};
+  return (candidates || []).map((candidate) => {
+    const unit = confirmed[candidate.id];
+    if (!candidate.unitUnmarked || (unit !== "°F" && unit !== "°C")) return candidate;
+    const observations = candidate.observations.map((observation) => ({ ...observation, unit, unitUnmarked: false }));
+    const latest = observations.at(-1) || null;
+    return {
+      ...candidate,
+      unit,
+      unitUnmarked: false,
+      observations,
+      latest,
+      insertionText: latest ? displayedObservation({ ...latest, unit }, { includeName: true }) : candidate.name,
+      searchText: clean([candidate.name, unit, ...observations.flatMap((observation) => [observation.value, observation.status, observation.flag, observation.dayLabel, observation.timestamp, observation.source.sourceLabel])].join(" ")).toLocaleLowerCase("en-US")
+    };
+  });
+}
+
+export function buildClinicalReviewIndex(patient, options = {}) {
   const labMap = new Map();
   const vitalMap = new Map();
   const medicationMap = new Map();
   const diagnostics = [];
+  const narratives = [];
   const sources = [...sourcesForPatient(patient), ...noteClinicalSources(patient)];
 
   sources.forEach((source, sourceOrder) => {
     if (source.sourceKind === "results") diagnostics.push(diagnosticCandidate(source));
-    else addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap);
+    else narratives.push(...addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap));
   });
 
   coalesceUnitlessObservations(vitalMap);
@@ -840,7 +937,11 @@ export function buildClinicalReviewIndex(patient) {
   const labs = latestLaboratoryPanels(attachLaboratoryTrends(laboratoryPanels), {
     baselines: normalizeLabBaselines(patient?.labBaselines)
   });
-  let vitals = [...vitalMap.values()].map((candidate) => finalizeObservationCandidate(candidate, "vitals"));
+  let vitals = [...vitalMap.values()].map((candidate) => {
+    const finalized = finalizeObservationCandidate(candidate, "vitals");
+    return { ...finalized, unitUnmarked: finalized.observations.some((observation) => observation.unitUnmarked) };
+  });
+  vitals = applyTemperatureUnitOverrides(vitals, options?.temperatureUnits);
   const latestVitalTime = vitals.flatMap((candidate) => candidate.observations)
     .filter((observation) => Number.isFinite(observation.numericValue) && Number.isFinite(observation.sortTime))
     .reduce((latest, observation) => Math.max(latest, observation.sortTime), Number.NEGATIVE_INFINITY);
@@ -874,7 +975,7 @@ export function buildClinicalReviewIndex(patient) {
   const labFamilies = labFamilySections(labs);
 
   const byGroup = new Map(GROUP_DEFINITIONS.map(({ id }) => [id, []]));
-  for (const candidate of [...vitals, ...labs, ...medications, ...diagnostics]) byGroup.get(candidate.group)?.push(candidate);
+  for (const candidate of [...vitals, ...labs, ...medications, ...diagnostics, ...narratives]) byGroup.get(candidate.group)?.push(candidate);
   for (const candidates of byGroup.values()) candidates.sort((left, right) => left.name.localeCompare(right.name) || left.id.localeCompare(right.id));
 
   const groups = GROUP_DEFINITIONS.map((definition) => ({ ...definition, candidates: byGroup.get(definition.id) }));

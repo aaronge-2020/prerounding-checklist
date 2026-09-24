@@ -121,7 +121,9 @@ const VITAL_PATTERNS = [
       let value = Number(m[1]);
       const scale = (m[2] || "").toUpperCase();
       if (scale === "F" || (!scale && value >= 90)) value = (value - 32) * 5 / 9;
-      return String(Math.round(value * 10) / 10);
+      // The extractor normalizes to Celsius, so it must say so explicitly:
+      // an unlabeled value would be treated as unit-unmarked downstream.
+      return `${Math.round(value * 10) / 10} °C`;
     }
   },
   { name: "RR", regex: /\b(?:RR|Resp(?:irations|\.|atory)?)\b\.?\s*(\d{1,2})\b/i, format: (m) => m[1] },

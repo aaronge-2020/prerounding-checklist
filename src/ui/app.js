@@ -177,7 +177,7 @@ import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-medication-card-v4";
 import { preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20260921-preserve-view-scroll";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-medication-card-v4";
-import { createVaultPresentation } from "./vault/presentation.js?v=20260718-vault-safety";
+import { createVaultPresentation, disambiguatedPatientLabels } from "./vault/presentation.js?v=20260718-vault-safety";
 import { createVaultSessionGuards } from "./vault/session-guards.js?v=20260922-vault-guards";
 import { createClipboard } from "./clipboard.js?v=20260922-clipboard";
 import { createVaultPassphraseController } from "./vault/passphrase-controller.js?v=20260921-landing-onboarding";
@@ -1021,11 +1021,12 @@ function renderStatusBar() {
   if (!switcher) return;
   const patients = visiblePatients(app.vault);
   switcher.disabled = !app.vault || !patients.length;
+  const switcherLabels = disambiguatedPatientLabels(patients);
   switcher.innerHTML = patients.length
     ? patients
         .map(
           (entry) =>
-            `<option value="${escapeHtml(entry.id)}" ${entry.id === patient?.id ? "selected" : ""}>${escapeHtml(entry.displayLabel)}</option>`
+            `<option value="${escapeHtml(entry.id)}" ${entry.id === patient?.id ? "selected" : ""}>${escapeHtml(switcherLabels.get(entry.id) || entry.displayLabel)}</option>`
         )
         .join("")
     : `<option>No patient selected</option>`;

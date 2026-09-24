@@ -529,7 +529,7 @@ function vitalRowsForCell(name, rawValue, sourceIndex) {
     return [row(`${prefix}Systolic BP`, match[1], "mmHg"), row(`${prefix}Diastolic BP`, match[2], "mmHg")];
   }
   const definitions = [
-    [["temp", "temperature"], "Temperature", temperatureUnit ? `°${temperatureUnit}` : "°C"],
+    [["temp", "temperature"], "Temperature", temperatureUnit ? `°${temperatureUnit}` : ""],
     [["pulse"], "Pulse", "bpm"],
     [["hr", "heartrate"], "Heart Rate", "bpm"],
     [["heartratemonitored", "monitoredheartrate"], "Heart Rate (Monitored)", "bpm"],
@@ -544,7 +544,17 @@ function vitalRowsForCell(name, rawValue, sourceIndex) {
   const definition = definitions.find(([keys]) => keys.includes(headerKey));
   if (!definition) return [row(name.replace(/^\$\s*/, ""), value)];
   const numeric = numberAndUnit(value, definition[2]);
-  return numeric ? [row(definition[1], numeric.value, numeric.unit)] : [row(definition[1], value)];
+  const rows = numeric ? [row(definition[1], numeric.value, numeric.unit)] : [row(definition[1], value)];
+  // A temperature reading without an explicit °F/°C marker must never be
+  // silently labeled: flag the unit as unmarked so the review sheet asks the
+  // student to confirm it instead of the parser guessing.
+  if (!temperatureUnit && (headerKey === "temp" || headerKey === "temperature")) {
+    rows.forEach((entry) => {
+      entry.unit = "";
+      entry.unitUnmarked = true;
+    });
+  }
+  return rows;
 }
 
 function renderWideVitalTable(lines = []) {

@@ -11,9 +11,9 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "daily",
     targetSelector: '[data-action="keep-reviewed-redaction"]',
     title: "Check the highlighted changes",
-    instruction: "Review the current highlighted change, then click Accept. Continue one change at a time, or use Confirm rest when the remaining suggestions are correct.",
+    instruction: "Review the current highlighted change, then click Accept. Continue one change at a time, or use Confirm all when the remaining suggestions are correct.",
     calloutTitle: "What you are reviewing",
-    callout: "Crossed-out text is a possible identifier. The label beside it is the replacement. Accept moves to the next suggestion without losing your place; Confirm rest accepts every remaining suggestion in the field."
+    callout: "Crossed-out text is a possible identifier. The label beside it is the replacement. Accept moves to the next suggestion without losing your place; Confirm all accepts every remaining suggestion in the field."
   },
   "save-day": {
     view: "daily",
@@ -27,7 +27,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "daily",
     targetSelector: '[data-action="keep-reviewed-redaction"]',
     title: "Check the day-one changes",
-    instruction: "Accept the current highlighted change, then continue through the fields. Use Confirm rest only when the remaining suggestions are correct.",
+    instruction: "Accept the current highlighted change, then continue through the fields. Use Confirm all only when the remaining suggestions are correct.",
     calloutTitle: "Review this update separately",
     callout: "The same review process applies to each hospital day. Keeping this update separate lets a progress-note prompt focus on today’s clinical decisions."
   },

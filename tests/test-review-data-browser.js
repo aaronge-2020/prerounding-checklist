@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { chromium } from "playwright";
-import { createAppServer, openRealApp, unlockAndCreatePatient } from "./browser/app-harness.js";
+import { fileAppUrl, openRealApp, unlockAndCreatePatient } from "./browser/app-harness.js";
 
 const compactPrimaryNote = readFileSync(new URL("./fixtures/primary-team-notes/compact-soap-note.txt", import.meta.url), "utf8");
 const progressTeamNote = readFileSync(new URL("./fixtures/primary-team-notes/progress-team-note.txt", import.meta.url), "utf8");
@@ -19,8 +20,11 @@ Patient improving on antibiotics. Likely bacterial CAP.
 Creatinine downtrending, likely pre-renal.
 - IVF as tolerated`;
 
-const server = await createAppServer();
-const browser = await chromium.launch();
+const appUrl = fileAppUrl();
+const browser = await chromium.launch({
+    executablePath: "/opt/meta-chromium/chrome",
+    args: ["--allow-file-access-from-files", "--disable-features=LocalNetworkAccessChecks", "--no-proxy-server"]
+  });
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
 const page = await context.newPage();
 const consoleErrors = [];
@@ -35,8 +39,21 @@ async function addDailySource(kind, text, expectedCount) {
   await page.waitForFunction((count) => document.querySelectorAll("#dailySources .source-capture-editor").length === count, expectedCount);
 }
 
+// The right side is a single editor now (no separate preview pane): verify
+// final-note content through the same Download .txt action the student uses.
+async function downloadFinalNoteText() {
+  const [download] = await Promise.all([
+    page.waitForEvent("download"),
+    page.click('[data-action="download-final-note"]')
+  ]);
+  return readFile(await download.path(), "utf8");
+}
+
+// contenteditable editor regions have no inputValue(); read rendered text.
+const editorText = (locator) => locator.innerText();
+
 try {
-  await openRealApp(page, server.baseUrl);
+  await openRealApp(page, appUrl);
   await unlockAndCreatePatient(page);
 
   // Section entry uses one reusable editor; every other field remains optional.
@@ -69,9 +86,9 @@ try {
   // covers it, so it gets the same optional toggle (progress notes never show it).
   assert.equal(await page.locator('[data-section-visibility="diet_and_exercise"]').count(), 1, "H&P diet and exercise must have a visibility toggle");
   await page.fill('[data-draft-section="diet_and_exercise"]', "Balanced diet, walks daily.");
-  assert.match(await page.locator("[data-final-note-preview]").innerText(), /Balanced diet, walks daily/);
+  assert.match(await downloadFinalNoteText(), /Balanced diet, walks daily/);
   await page.locator('[data-section-visibility="diet_and_exercise"]').uncheck();
-  assert.doesNotMatch(await page.locator("[data-final-note-preview]").innerText(), /Diet and Exercise/, "toggling diet off must drop it from the final note");
+  assert.doesNotMatch(await downloadFinalNoteText(), /Diet and Exercise/, "toggling diet off must drop it from the final note");
   await page.locator('[data-section-visibility="diet_and_exercise"]').check();
   const assessmentHelp = page.locator('[data-help-key="assessment"]');
   assert.match(await assessmentHelp.getAttribute("data-tooltip"), /concise synthesis/i);
@@ -92,19 +109,19 @@ try {
   await secondProblem.locator('[data-action="add-differential"]').click();
   await secondProblem.locator('[data-differential-field="diagnosis"]').fill("Prerenal azotemia");
   await secondProblem.locator('[data-differential-field="cluesFor"]').fill("Reduced intake");
-  assert.equal(await secondProblem.locator('[data-differential-field="cluesAgainst"]').inputValue(), "");
+  assert.equal((await editorText(secondProblem.locator('[data-differential-field="cluesAgainst"]'))).trim(), "");
   await secondProblem.locator('[data-action="add-differential"]').click();
   await secondProblem.locator(".differential-card").nth(1).locator('[data-differential-field="diagnosis"]').fill("Acute tubular injury");
   await secondProblem.locator(".differential-card").nth(1).locator('[data-action="move-differential"][data-direction="-1"]').click();
-  assert.equal(await secondProblem.locator(".differential-card").first().locator('[data-differential-field="diagnosis"]').inputValue(), "Acute tubular injury");
+  assert.equal((await editorText(secondProblem.locator(".differential-card").first().locator('[data-differential-field="diagnosis"]'))).trim(), "Acute tubular injury");
   await secondProblem.locator('[data-action="move-plan-problem"][data-direction="-1"]').click();
-  assert.equal(await page.locator(".plan-problem-card").first().locator('[data-problem-field="problem"]').inputValue(), "Acute kidney injury");
+  assert.equal((await editorText(page.locator(".plan-problem-card").first().locator('[data-problem-field="problem"]'))).trim(), "Acute kidney injury");
   await page.click('[data-action="add-plan-problem"]');
   assert.equal(await page.locator(".plan-problem-card").count(), 3);
   await page.locator(".plan-problem-card").last().locator('[data-action="remove-plan-problem"]').click();
   assert.equal(await page.locator(".plan-problem-card").count(), 2);
-  assert.match(await page.locator("[data-final-note-preview]").innerText(), /Documented pneumococcal infection/);
-  assert.match(await page.locator("[data-final-note-preview]").innerText(), /Differential \| Clues for this differential \| Clues against this differential/);
+  assert.match(await downloadFinalNoteText(), /Documented pneumococcal infection/);
+  assert.match(await downloadFinalNoteText(), /Differential \| Clues for this differential \| Clues against this differential/);
 
   // A pasted prior progress note is parsed through the same visible workflow used by the app.
   await page.click('[data-view-target="daily"]');
@@ -143,9 +160,9 @@ try {
   await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.click('[data-action="open-progress-note"]');
   await page.waitForSelector("#reviewContent .review-workspace");
-  assert.match(await page.locator('[data-draft-assessment]').inputValue(), /Sepsis secondary to pneumonia/, "combined heading must seed the Assessment scaffold");
-  assert.match(await page.locator('[data-draft-assessment]').inputValue(), /likely pre-renal/i, "reasoning prose belongs in Assessment, not the plan");
-  assert.equal(await page.locator('[data-draft-section="interval_events"]').inputValue(), "No acute overnight events.");
+  assert.match(await editorText(page.locator('[data-draft-assessment]')), /Sepsis secondary to pneumonia/, "combined heading must seed the Assessment editor");
+  assert.match(await editorText(page.locator('[data-draft-assessment]')), /likely pre-renal/i, "reasoning prose belongs in Assessment, not the plan");
+  assert.equal((await editorText(page.locator('[data-draft-section="interval_events"]'))).trim(), "No acute overnight events.");
   const planProblems = await page.locator(".plan-problem-card").allInnerTexts();
   assert.ok(planProblems.some((text) => /Sepsis secondary to pneumonia/.test(text)), "combined heading must populate plan problems");
   assert.ok(planProblems.some((text) => /Continue ceftriaxone/.test(text)), "plan actions must land in the problem plan");
@@ -267,10 +284,10 @@ Sodium: 138`;
   await page.fill("#reviewDataSearch", "");
 
   // Checking a lab row adds a source-linked Objective block with the trend.
-  await page.locator('.lab-row [data-lab-result-selection]').first().check();
+  await page.locator('.lab-row', { hasText: "WBC" }).first().locator('[data-lab-result-selection]').check();
   await page.waitForFunction(() => document.querySelectorAll("[data-objective-block]").length >= 1);
-  const wbcBlock = page.locator("[data-objective-block]").first();
-  assert.match(await wbcBlock.locator("textarea").inputValue(), /WBC: 15\.2[\s\S]*→ 8\.8/);
+  const wbcBlock = page.locator("[data-objective-block]", { hasText: "WBC" }).first();
+  assert.match(await editorText(wbcBlock.locator("[data-objective-block-text]")), /WBC: 15\.2[\s\S]*8\.8/, "the WBC objective block must carry the chronological trend");
 
   // Every analyte gets an easy baseline entry.
   const creatinineRow = page.locator(".lab-row", { hasText: "Creatinine" }).first();
@@ -297,15 +314,15 @@ Sodium: 138`;
   await page.waitForSelector("#reviewContent .review-workspace");
   assert.equal(await page.locator(".scaffold-med-list li").count(), 1, "removed medications must stay removed");
 
-  // Optional closing sections toggle individually; the preview follows.
+  // Optional closing sections toggle individually; the downloaded note follows.
   await page.fill('[data-draft-closing="vte_prophylaxis"]', "Sequential compression devices.");
-  assert.match(await page.locator("[data-final-note-preview]").innerText(), /Sequential compression devices/);
+  assert.match(await downloadFinalNoteText(), /Sequential compression devices/);
   await page.locator('[data-section-visibility="vte_prophylaxis"]').uncheck();
-  assert.doesNotMatch(await page.locator("[data-final-note-preview]").innerText(), /Sequential compression devices/, "toggling VTE off must drop it from the final note");
+  assert.doesNotMatch(await downloadFinalNoteText(), /Sequential compression devices/, "toggling VTE off must drop it from the final note");
   await page.locator('[data-section-visibility="vte_prophylaxis"]').check();
 
   // Updating source data marks an edited linked block stale without overwriting it.
-  await wbcBlock.locator("textarea").fill("Student wording: WBC has improved substantially.");
+  await wbcBlock.locator("[data-objective-block-text]").fill("Student wording: WBC has improved substantially.");
   await page.click('[data-view-target="daily"]');
   const currentLabSource = page.locator("#dailySources .source-capture-editor").first();
   if ((await currentLabSource.locator('[data-action="toggle-section-editor"]').getAttribute("aria-expanded")) !== "true") {
@@ -318,11 +335,11 @@ Sodium: 138`;
   await page.click('[data-view-target="review"]');
   await page.fill("#reviewDataSearch", "WBC");
   await page.waitForSelector('[data-objective-state="stale"]');
-  assert.equal(await page.locator('[data-objective-state="stale"] textarea').inputValue(), "Student wording: WBC has improved substantially.");
+  assert.equal((await editorText(page.locator('[data-objective-state="stale"] [data-objective-block-text]'))).trim(), "Student wording: WBC has improved substantially.");
   await page.click('[data-action="review-objective-difference"]');
   assert.match(await page.locator(".objective-diff").innerText(), /7\.7/);
   await page.click('[data-action="keep-objective-selection"]');
-  assert.equal(await page.locator("[data-objective-state]").first().getAttribute("data-objective-state"), "edited");
+  assert.equal(await page.locator('[data-objective-state]', { hasText: "WBC" }).first().getAttribute("data-objective-state"), "edited");
   await page.fill("#reviewDataSearch", "");
 
   // Student-authored Objective text and diagnostic results still work.
@@ -331,12 +348,12 @@ Sodium: 138`;
   const ctRow = page.locator(".compact-row", { hasText: "CT Head" }).first();
   assert.match(await ctRow.innerText(), /No acute intracranial abnormality/);
   await ctRow.locator('[data-objective-selection-id]').check();
-  assert.match(await page.locator("[data-objective-block]").last().locator("textarea").inputValue(), /CT Head\/Neck Without Contrast[\s\S]*No acute intracranial abnormality/);
+  assert.match(await editorText(page.locator("[data-objective-block]").last().locator("[data-objective-block-text]")), /CT Head\/Neck Without Contrast[\s\S]*No acute intracranial abnormality/);
   await page.fill("#reviewDataSearch", "");
 
   // Note export actions remain available.
   assert.equal(await page.locator('[data-action="copy-final-note"]').isVisible(), true);
-  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: new URL(server.baseUrl).origin });
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.click('[data-action="copy-final-note"]');
   const copiedNote = await page.evaluate(() => navigator.clipboard.readText());
   assert.match(copiedNote, /Lungs clear to auscultation/);
@@ -376,7 +393,7 @@ Sodium: 138`;
   await page.selectOption("#reviewPacketSelect", savedPacketValue);
   await page.fill("#reviewDataSearch", "CT Head/Neck");
   assert.equal(await page.locator('.compact-row [data-objective-selection-id]').first().isChecked(), true);
-  assert.equal(await page.locator('[data-draft-objective-manual]').inputValue(), "Lungs clear to auscultation.");
+  assert.equal((await editorText(page.locator('[data-draft-objective-manual]'))).trim(), "Lungs clear to auscultation.");
 
   // Narrow layout remains usable by keyboard without horizontal document overflow.
   await page.setViewportSize({ width: 390, height: 844 });
@@ -392,5 +409,4 @@ Sodium: 138`;
 } finally {
   await context.close();
   await browser.close();
-  await server.close();
 }

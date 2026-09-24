@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { createReviewPresentation } from "../src/ui/review/presentation.js";
 import { createReviewController } from "../src/ui/review/controller.js";
 import { parsePrimaryTeamNote } from "../src/patient-context/primary-team-note-parser.js";
+import { renderFinalNotePlainText } from "../src/note-drafts/render.js";
 
 // Regression coverage for the compact review sheet interactions:
 // default-on vitals/medications, durable deselection (checkbox and scaffold
@@ -86,6 +87,9 @@ const fakeTarget = ({ action, dataset = {}, checked = false, matchesSel = [], va
 });
 
 const sessionDraft = () => app.noteDraftSessions.get([...app.noteDraftSessions.keys()][0]);
+// Draft for the currently selected packet (sessionDraft() only sees the first
+// session, which goes stale once the test switches packets).
+const currentDraft = () => app.noteDraftSessions.get(String(app.reviewPacketId || "admission")) || sessionDraft();
 
 controller.render();
 let draft = sessionDraft();
@@ -162,12 +166,13 @@ controller.input(fakeTarget({
   value: "Balanced diet, walks daily"
 }));
 controller.render();
-assert.match(reviewContent.innerHTML, /Balanced diet, walks daily/, "diet text reaches the preview");
+assert.match(reviewContent.innerHTML, /Balanced diet, walks daily/, "diet text reaches the editor");
+assert.match(renderFinalNotePlainText(currentDraft()), /Balanced diet, walks daily/, "diet text reaches the final note");
 controller.change(fakeTarget({
   dataset: { sectionVisibility: "diet_and_exercise" },
   checked: false,
   matchesSel: ["[data-section-visibility]"]
 }));
-assert.doesNotMatch(reviewContent.innerHTML, /Diet and Exercise/, "toggling diet off removes it from the preview");
+assert.doesNotMatch(renderFinalNotePlainText(currentDraft()), /Diet and Exercise/, "toggling diet off removes it from the final note");
 
 console.log("review interaction tests passed");

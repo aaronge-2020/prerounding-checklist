@@ -74,7 +74,7 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
 
   function renderChecklistSection(title, items, answers, { showBulkControls = true, openNoteIds = new Set() } = {}) {
     const kind = items[0]?.kind || (title === "Physical Exam" ? "exam" : "history");
-    const fillLabel = kind === "exam" ? "Fill remaining normal" : "Fill remaining negative";
+    const fillLabel = kind === "exam" ? "Mark remaining normal" : "Mark remaining negative";
     return `
       <section class="checklist-section">
         <div class="checklist-section-header">
