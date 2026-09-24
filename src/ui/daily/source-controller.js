@@ -312,7 +312,7 @@ export function createDailySourceController(deps) {
       _rawTextWarning: "This draft contains text that has not been de-identified."
     };
     deps.app.noteDraftSessions.set(key, draft);
-    deps.setStatus("Note saved to draft (not de-identified). Use 'Save note' to de-identify and save to vault.");
+    deps.setStatus("Note saved to draft (not de-identified). Use 'De-identify & save' to de-identify and save to vault.");
     deps.render();
   }
 

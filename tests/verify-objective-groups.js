@@ -22,8 +22,9 @@ try {
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="admission"][data-note-mode="paste"]');
   await page.fill('[data-structured-note-paste][data-structured-note-scope="admission"]', sepsisNote);
   await page.click('[data-action="review-structured-note-sections"][data-note-scope="admission"]');
-  await page.click('[data-action="save-structured-primary-note"][data-note-scope="admission"]');
-  await page.waitForFunction(() => /Primary-team note saved|Structured note saved/i.test(document.querySelector("#statusLine")?.textContent || ""));
+  // Use "Save to Draft" (no de-identification) for faster testing.
+  await page.click('[data-action="save-structured-note-to-draft"][data-note-scope="admission"]');
+  await page.waitForFunction(() => /saved to draft/i.test(document.querySelector("#statusLine")?.textContent || ""));
 
   // Open the review / note editor.
   await page.click('[data-action="open-admission-note"]');
