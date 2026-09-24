@@ -59,6 +59,17 @@ function sourceNoteForPacket(patient, selectedPacketId) {
   return patient?.days?.find((day) => day.id === selectedPacketId)?.primaryTeamNote || null;
 }
 
+// Saved note sections cross a state boundary: a fresh parse stores plain
+// strings, while the vault stores { deidentifiedText } objects. Read the text
+// without falling through to the raw object — an empty-but-present object is
+// truthy, and String(object) renders "[object Object]", which would seed the
+// draft (or the plan parser) with literal garbage text.
+function sourceSectionText(section) {
+  if (typeof section === "string") return section;
+  if (section && typeof section === "object") return String(section.deidentifiedText ?? "");
+  return "";
+}
+
 function draftFromSource(patient, selectedPacketId) {
   const noteType = selectedPacketId === "admission" ? NOTE_TYPES.H_AND_P : NOTE_TYPES.PROGRESS;
   let draft = createNoteDraft(noteType, {
@@ -80,7 +91,7 @@ function draftFromSource(patient, selectedPacketId) {
     }
   }
 
-  const rawPlan = source?.sections?.plan?.deidentifiedText || source?.sections?.plan || "";
+  const rawPlan = sourceSectionText(source?.sections?.plan);
   const problems = source?.parsedProblems || (rawPlan ? parseClinicalPlanProblems(rawPlan) : []);
   if (Array.isArray(problems) && problems.length > 0 && (!draft.problems || draft.problems.length === 0)) {
     for (const p of problems) {
@@ -98,7 +109,7 @@ function draftFromSource(patient, selectedPacketId) {
   // Seed the draft assessment from the source note's own assessment section
   // (including text split out of a combined "Assessment and Plan" heading),
   // but never overwrite the student's own writing.
-  const sourceAssessment = source?.sections?.assessment?.deidentifiedText || source?.sections?.assessment || "";
+  const sourceAssessment = sourceSectionText(source?.sections?.assessment);
   if (String(sourceAssessment).trim() && !String(draft.assessment?.deidentifiedText || "").trim()) {
     draft = updateAssessment(draft, String(sourceAssessment).trim());
   }
@@ -155,7 +166,7 @@ export function createReviewController(deps) {
 
     if (!draft.problems || draft.problems.length === 0) {
       const source = sourceNoteForPacket(patient, selectedPacketId);
-      const rawPlan = source?.sections?.plan?.deidentifiedText || source?.sections?.plan || "";
+      const rawPlan = sourceSectionText(source?.sections?.plan);
       const problems = source?.parsedProblems || (rawPlan ? parseClinicalPlanProblems(rawPlan) : []);
       if (Array.isArray(problems) && problems.length > 0) {
         for (const p of problems) {
