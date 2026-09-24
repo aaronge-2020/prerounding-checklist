@@ -13,11 +13,17 @@ import {
   deselectChecklistFinding,
   deselectObjectiveBlock,
   editObjectiveBlock,
+  editObjectiveGroup,
   editChecklistFinding,
   fieldsForNoteType,
   keepChecklistFinding,
   keepObjectiveBlock,
   normalizeNoteDraft,
+  objectiveEditorGroups,
+  objectiveGroupKeyFor,
+  refreshObjectiveGroup,
+  removeObjectiveGroup,
+  removeObjectiveGroupWithMemory,
   refreshChecklistFinding,
   refreshObjectiveBlock,
   reconcileChecklistFinding,
@@ -564,6 +570,81 @@ const options = { now: fixedNow, idFactory: fixedId };
   }
   // Plain-text output honors the same visibility rules.
   assert.doesNotMatch(renderFinalNotePlainText(dietOff), /Diet and Exercise/);
+}
+
+{
+  // Objective editor groups: vitals collapse to one group, labs by family.
+  const mkBlock = (selectionId, noteGroupKey, editedText) => ({
+    selectionId,
+    sourceFingerprint: "fp",
+    generatedText: editedText,
+    editedText,
+    state: "synced",
+    kind: "vital_sign",
+    noteGroupKey,
+    noteGroupLabel: noteGroupKey === "vitals" ? "Vital signs" : "CBC",
+    noteLabel: "",
+    noteDetail: ""
+  });
+  const draft = normalizeNoteDraft({
+    noteType: "progress",
+    objective: {
+      selectedBlocks: [
+        mkBlock("v1", "vitals", "BP 120/80"),
+        mkBlock("v2", "vitals", "HR 72"),
+        mkBlock("v3", "vitals", "SpO2 96%"),
+        mkBlock("l1", "lab:cbc", "WBC 12.3"),
+        mkBlock("l2", "lab:cbc", "Hgb 9.1")
+      ]
+    }
+  }, { now: fixedNow });
+  const groups = objectiveEditorGroups(draft);
+  assert.equal(groups.length, 2);
+  assert.equal(groups[0].key, "vitals");
+  assert.equal(groups[0].label, "Vital signs");
+  assert.equal(groups[0].blocks.length, 3);
+  assert.equal(groups[1].key, "lab:cbc");
+  assert.equal(groups[1].blocks.length, 2);
+  assert.equal(objectiveGroupKeyFor({ noteGroupKey: "vitals" }), "vitals");
+  assert.equal(objectiveGroupKeyFor({ noteGroupKey: "lab:cmp" }), "lab:cmp");
+  assert.equal(objectiveGroupKeyFor({ noteGroupKey: "", selectionId: "abc" }), "abc");
+
+  // Editing a group's combined text collapses its members into one block.
+  const edited = editObjectiveGroup(draft, "vitals", "BP 120/80; HR 72; SpO2 96% on RA", { now: fixedNow });
+  const vitalsBlocks = edited.objective.selectedBlocks.filter((b) => b.noteGroupKey === "vitals");
+  assert.equal(vitalsBlocks.length, 1);
+  assert.equal(vitalsBlocks[0].editedText, "BP 120/80; HR 72; SpO2 96% on RA");
+  assert.equal(vitalsBlocks[0].state, "edited");
+  assert.equal(edited.objective.selectedBlocks.length, 3); // 1 vitals + 2 labs
+  // The collapsed group still renders as one group.
+  assert.equal(objectiveEditorGroups(edited).length, 2);
+
+  // Removing a group drops every member block.
+  const removed = removeObjectiveGroup(draft, "lab:cbc", { now: fixedNow });
+  assert.equal(removed.objective.selectedBlocks.length, 3);
+  assert.ok(removed.objective.selectedBlocks.every((b) => b.noteGroupKey === "vitals"));
+
+  // Removing with memory records each member id so auto-include stays off.
+  const removedMem = removeObjectiveGroupWithMemory(draft, "vitals", { now: fixedNow });
+  assert.equal(removedMem.objective.selectedBlocks.length, 2);
+  assert.deepEqual([...removedMem.objective.deselectedIds].sort(), ["v1", "v2", "v3"]);
+
+  // Refreshing a group refreshes only its stale members.
+  const stale = {
+    ...draft,
+    objective: {
+      ...draft.objective,
+      selectedBlocks: draft.objective.selectedBlocks.map((b) =>
+        b.selectionId === "v1"
+          ? { ...b, state: "stale", pendingSourceFingerprint: "fp2", pendingGeneratedText: "BP 122/81" }
+          : b
+      )
+    }
+  };
+  const refreshed = refreshObjectiveGroup(stale, "vitals", { now: fixedNow });
+  const v1 = refreshed.objective.selectedBlocks.find((b) => b.selectionId === "v1");
+  assert.equal(v1.editedText, "BP 122/81");
+  assert.equal(v1.state, "synced");
 }
 
 console.log("note draft model tests passed");

@@ -2711,6 +2711,50 @@ button.var-fill:focus-visible {
   background: color-mix(in srgb, var(--panel) 60%, var(--background, #fff));
 }
 
+/* Compact inline objective groups (Epic smart-phrase style): one line per
+   category — "Vital signs: BP 120/80; HR 72" — with the text editable inline
+   and no per-finding card chrome. */
+.ed-group {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 4px 0;
+  padding: 2px 0;
+}
+
+.ed-group-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.ed-group .ed-body--inline {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.ed-group .ed-body--inline:hover {
+  background: color-mix(in srgb, var(--panel) 50%, transparent);
+}
+
+.ed-group .ed-body--inline:focus {
+  outline: 1px solid var(--accent);
+  background: var(--background, #fff);
+}
+
+.ed-group .ed-mini-row {
+  flex: 0 0 auto;
+  opacity: 0.55;
+}
+
+.ed-group:hover .ed-mini-row {
+  opacity: 1;
+}
+
 .ed-block-bar,
 .ed-problem-bar,
 .ed-diff-bar {

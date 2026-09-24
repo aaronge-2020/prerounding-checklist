@@ -563,6 +563,113 @@ export function keepObjectiveBlock(draft, selectionId, { now = timestampNow } = 
   }, now);
 }
 
+// Groups selected objective blocks for compact inline rendering: all vitals
+// share one "vitals" group, labs group by panel family, everything else
+// renders as its own single-block group.
+export function objectiveGroupKeyFor(block) {
+  const groupKey = text(block?.noteGroupKey);
+  if (groupKey === "vitals") return "vitals";
+  if (groupKey.startsWith("lab:")) return groupKey;
+  return text(block?.selectionId);
+}
+
+export function objectiveEditorGroups(draft) {
+  const blocks = (draft.objective?.selectedBlocks || []).filter((block) => block.noteGroupKey !== "medications");
+  const groups = [];
+  const byKey = new Map();
+  for (const block of blocks) {
+    const key = objectiveGroupKeyFor(block);
+    if (!byKey.has(key)) {
+      const isLab = key.startsWith("lab:");
+      byKey.set(key, {
+        key,
+        label: key === "vitals"
+          ? "Vital signs"
+          : isLab
+            ? text(block.noteGroupLabel) || key.slice(4)
+            : "",
+        blocks: []
+      });
+      groups.push(byKey.get(key));
+    }
+    byKey.get(key).blocks.push(block);
+  }
+  return groups;
+}
+
+// Editing a group's combined inline text collapses its member blocks into a
+// single block holding that text: the group is now the student's own words,
+// and source reconciliation treats it like any other edited block.
+export function editObjectiveGroup(draft, groupKey, editedText, { now = timestampNow } = {}) {
+  const key = text(groupKey);
+  if (!key) return draft;
+  const members = (draft.objective?.selectedBlocks || []).filter((block) => objectiveGroupKeyFor(block) === key);
+  if (!members.length) return draft;
+  const nextText = text(editedText);
+  if (members.length === 1) return editObjectiveBlock(draft, members[0].selectionId, nextText, { now });
+  const [first, ...rest] = members;
+  const restIds = new Set(rest.map((block) => block.selectionId));
+  const collapsed = normalizeObjectiveBlock({
+    ...first,
+    editedText: nextText,
+    state: first.state === "stale" ? "stale" : "edited"
+  });
+  return touch(draft, {
+    objective: {
+      ...draft.objective,
+      selectedBlocks: draft.objective.selectedBlocks.map((block) =>
+        block.selectionId === first.selectionId ? collapsed : block
+      ).filter((block) => !restIds.has(block.selectionId))
+    }
+  }, now);
+}
+
+export function removeObjectiveGroup(draft, groupKey, { now = timestampNow } = {}) {
+  const key = text(groupKey);
+  if (!key) return draft;
+  const ids = new Set(
+    (draft.objective?.selectedBlocks || [])
+      .filter((block) => objectiveGroupKeyFor(block) === key)
+      .map((block) => block.selectionId)
+  );
+  if (!ids.size) return draft;
+  return touch(draft, {
+    objective: {
+      ...draft.objective,
+      selectedBlocks: draft.objective.selectedBlocks.filter((block) => !ids.has(block.selectionId))
+    }
+  }, now);
+}
+
+export function refreshObjectiveGroup(draft, groupKey, { now = timestampNow } = {}) {
+  const key = text(groupKey);
+  if (!key) return draft;
+  let next = draft;
+  for (const block of draft.objective?.selectedBlocks || []) {
+    if (objectiveGroupKeyFor(block) === key && block.state === "stale") {
+      next = refreshObjectiveBlock(next, block.selectionId, { now });
+    }
+  }
+  return next;
+}
+
+// Removing a group of default-on vitals remembers each member id so the
+// auto-include pass does not silently re-add them.
+export function removeObjectiveGroupWithMemory(draft, groupKey, { now = timestampNow } = {}) {
+  const key = text(groupKey);
+  if (!key) return draft;
+  const ids = (draft.objective?.selectedBlocks || [])
+    .filter((block) => objectiveGroupKeyFor(block) === key)
+    .map((block) => String(block.selectionId));
+  let next = removeObjectiveGroup(draft, key, { now });
+  if (!ids.length) return next;
+  const deselectedIds = new Set(next.objective.deselectedIds || []);
+  for (const id of ids) deselectedIds.add(id);
+  return touch(next, {
+    objective: { ...next.objective, deselectedIds: [...deselectedIds] }
+  }, now);
+}
+
 function normalizedChecklistFindingInput(selection) {
   return {
     ...normalizedSelectionInput(selection),

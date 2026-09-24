@@ -770,3 +770,50 @@ assert.doesNotMatch(strokeParsed.sections.assessment, /activate stroke protocol|
 assert.match(strokeParsed.sections.plan, /activate stroke protocol/i, "combined A/P: actions stay in plan");
 
 console.log("primary-team note parser tests passed");
+
+// Regression: assessment/plan pairing from real-note corpus (2026-09-24).
+{
+  // Numbered assessment + numbered bare recommendations pair by index.
+  const sepsisNote = `IMPRESSION:
+1. Septic shock.
+2. Possible urinary tract infection.
+
+RECOMMENDATIONS:
+1. Continue with vancomycin and doripenem at this point.
+2. Agree with paracentesis.`;
+  const sepsisParsed = parsePrimaryTeamNote(sepsisNote, "progress");
+  const sepsisTitles = sepsisParsed.parsedProblems.map((p) => p.problem);
+  assert.deepEqual(sepsisTitles, ["Septic shock.", "Possible urinary tract infection."], "numbered A/P pairs by index");
+  assert.match(sepsisParsed.parsedProblems[0].therapeuticPlan, /vancomycin/, "recommendation lands on its problem");
+  assert.match(sepsisParsed.parsedProblems[1].therapeuticPlan, /paracentesis/, "second recommendation lands on its problem");
+
+  // Single assessment paragraph + numbered bare plan: one problem.
+  const ankleNote = `ASSESSMENT:
+Right ankle sprain.
+
+PLAN:
+1. Motrin 800 mg t.i.d.
+2. Tylenol 1 gm q.i.d. as needed.`;
+  const ankleParsed = parsePrimaryTeamNote(ankleNote, "progress");
+  assert.equal(ankleParsed.parsedProblems.length, 1, "single assessment + numbered plan is one problem");
+  assert.match(ankleParsed.parsedProblems[0].problem, /Right ankle sprain/, "assessment is the problem title");
+  assert.match(ankleParsed.parsedProblems[0].therapeuticPlan, /Motrin/, "plan actions join the problem");
+  assert.match(ankleParsed.parsedProblems[0].therapeuticPlan, /Tylenol/, "all plan actions join the problem");
+
+  // Titled plan + numbered assessment: unmatched assessment items are preserved.
+  const diabetesNote = `ASSESSMENT:
+1. Diabetes mellitus type 1
+2. Followup scooter accident.
+3. Elevated Alk Phos, etiology unclear.
+
+PLAN:
+1. Diabetes mellitus type 1: Continue insulin.
+2. Followup scooter accident. Lacerations healing.`;
+  const diabetesParsed = parsePrimaryTeamNote(diabetesNote, "progress");
+  const diabetesTitles = diabetesParsed.parsedProblems.map((p) => p.problem);
+  assert.ok(diabetesTitles.includes("Diabetes mellitus type 1"), "titled plan problem kept");
+  assert.ok(diabetesTitles.some((t) => /Alk Phos/i.test(t)), "unmatched assessment item preserved");
+  assert.equal(diabetesTitles.length, 3, "exactly three problems");
+}
+
+console.log("primary-team note parser A/P pairing regression tests passed");

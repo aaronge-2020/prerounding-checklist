@@ -1,4 +1,4 @@
-import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES, SECTION_VISIBILITY_KEYS } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
+import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES, objectiveEditorGroups, SECTION_VISIBILITY_KEYS } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 import {
   abnormalTone,
   compactLabTrendLine,
@@ -372,19 +372,25 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return `<label class="ed-toggle" title="${included ? "Remove" : "Include"} ${escapeHtml(meta.label)} ${included ? "from" : "in"} the final note"><input type="checkbox" data-section-visibility="${escapeHtml(fieldId)}" ${included ? "checked" : ""}><span>${included ? "In note" : "Excluded"}</span></label>`;
   }
 
-  function renderObjectiveBlocksEditor(draft, differenceSelectionId) {
+  function renderObjectiveBlocksEditor(draft) {
     // Medication blocks are managed in the Medications section, never here.
-    const blocks = (draft.objective?.selectedBlocks || []).filter((block) => block.noteGroupKey !== "medications");
-    return blocks.map((block) => {
-      const stateLabel = block.state === "stale" ? "Source changed — your edit was kept" : block.state === "edited" ? "Edited source-linked block" : "Source-linked block";
-      const staleActions = block.state === "stale"
-        ? `<button type="button" class="ed-mini" data-action="refresh-objective-selection" data-selection-id="${escapeHtml(block.selectionId)}">Refresh</button><button type="button" class="ed-mini" data-action="keep-objective-selection" data-selection-id="${escapeHtml(block.selectionId)}">Keep mine</button><button type="button" class="ed-mini" data-action="review-objective-difference" data-selection-id="${escapeHtml(block.selectionId)}">Diff</button>`
+    // Blocks group by category (all vitals under one "Vital signs" line, labs
+    // by panel family) and render as compact inline text — Epic smart-phrase
+    // style — not as one chunky card per finding.
+    const groups = objectiveEditorGroups(draft);
+    return groups.map((group) => {
+      const hasStale = group.blocks.some((block) => block.state === "stale");
+      const combinedText = group.blocks
+        .map((block) => String(block.editedText || block.generatedText || "").trim())
+        .filter(Boolean)
+        .join("; ");
+      const label = group.label
+        ? `<span class="ed-group-label">${escapeHtml(group.label)}:</span>`
         : "";
-      return `<div class="ed-block" data-objective-block="${escapeHtml(block.selectionId)}" data-objective-state="${escapeHtml(block.state)}">
-        <div class="ed-block-bar"><span class="ed-block-state">${escapeHtml(stateLabel)}</span><span class="ed-mini-row">${staleActions}<button type="button" class="ed-mini ed-mini--danger" data-action="remove-objective-selection" data-selection-id="${escapeHtml(block.selectionId)}">Remove</button></span></div>
-        <div class="ed-body" contenteditable="true" data-objective-block-text="${escapeHtml(block.selectionId)}" data-placeholder="Optional" spellcheck="true">${editorHtml(block.editedText)}</div>
-        ${block.state === "stale" && differenceSelectionId === block.selectionId ? `<div class="objective-diff"><div><strong>Your text</strong><pre>${escapeHtml(block.editedText)}</pre></div><div><strong>Updated source preview</strong><pre>${escapeHtml(block.pendingGeneratedText || "")}</pre></div></div>` : ""}
-      </div>`;
+      const staleButton = hasStale
+        ? `<button type="button" class="ed-mini" data-action="refresh-objective-group" data-group="${escapeHtml(group.key)}" title="Source updated — refresh this line">↻</button>`
+        : "";
+      return `<div class="ed-group" data-objective-group="${escapeHtml(group.key)}">${label}<div class="ed-body ed-body--inline" contenteditable="true" data-objective-group-text="${escapeHtml(group.key)}" data-placeholder="Optional" spellcheck="true">${editorHtml(combinedText)}</div><span class="ed-mini-row">${staleButton}<button type="button" class="ed-mini ed-mini--danger" data-action="remove-objective-group" data-group="${escapeHtml(group.key)}" title="Remove ${escapeHtml(group.label || "item")}" aria-label="Remove ${escapeHtml(group.label || "item")}">×</button></span></div>`;
     }).join("");
   }
 
@@ -456,9 +462,9 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       ].join(""), { labelExtra: helpFor("interval_events", "Subjective") }),
     ];
 
-    const objectiveBlocks = renderObjectiveBlocksEditor(draft, differenceSelectionId);
+    const objectiveBlocks = renderObjectiveBlocksEditor(draft);
     const objectiveBody = `<p class="ed-hint">Vitals are in the note automatically. Check labs or diagnostic results under Clinical data to add them here.</p>`
-      + (objectiveBlocks || `<p class="ed-empty">Choose items from Clinical data to add source-linked Objective content.</p>`)
+      + (objectiveBlocks || `<p class="ed-empty">Choose items from Clinical data to add Objective content.</p>`)
       + `<div class="ed-sub"><span class="ed-sub-label">Student-authored Objective text</span>${editorRegion("data-draft-objective-manual", draft.objective?.manual, "Optional exam findings, intake/output, or other directly observed data")}</div>`;
 
     const planBody = `<p class="ed-hint">Order problems by decisional importance. Add only reasoning and actions you support.</p><div class="plan-problem-list">${draft.problems.map((problem, index) => renderProblemEditor(problem, index, guidanceFor)).join("") || `<p class="ed-empty">No problems added yet.</p>`}</div>`;

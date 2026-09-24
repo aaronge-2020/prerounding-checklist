@@ -581,16 +581,87 @@ function narrativeFallbackCandidate(source, sourceOrder, provenance) {
   return candidate;
 }
 
+// Lenient parser for note-extracted sources. The note extractor just produced
+// this text from real parsed rows, so the strict display model must never
+// reduce it to an "Unparsed X" card. This parser accepts the extractor's
+// canonical "Header\n..." format directly and always yields rows.
+function lenientNoteDisplayModel(sourceKind, text) {
+  const lines = String(text || "").split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  if (!lines.length) return null;
+  const bodyLines = lines.slice(1); // drop the "Vitals"/"Labs"/"Medications" header
+  if (sourceKind === "vital_signs") {
+    const rows = [];
+    for (const part of bodyLines.join(" ").split(/\s*;\s*/)) {
+      const match = part.match(/^(.+?)\s+(\S.*)$/);
+      if (!match) continue;
+      const name = match[1].trim();
+      const value = match[2].trim();
+      if (!name || !value) continue;
+      rows.push({
+        cells: ["", name, value],
+        emphasis: "unknown",
+        unitUnmarked: /temp/i.test(name) && !/[°CF]\b/i.test(value)
+      });
+    }
+    if (!rows.length) return null;
+    return {
+      type: "vitals",
+      groups: [{ label: "Vital signs", timestamp: "", rows }],
+      series: []
+    };
+  }
+  if (sourceKind === "laboratory_results") {
+    const rows = [];
+    for (const line of bodyLines) {
+      const match = line.match(/^([^:]+):\s*(.+)$/) || line.match(/^(\S+(?:\s+\S+)?)\s+(\S.*)$/);
+      if (!match) continue;
+      const name = match[1].trim();
+      const rest = match[2].trim();
+      if (!name || !rest) continue;
+      const valueUnit = rest.match(/^(\S+(?:\s*\S+)?)\s+([a-zA-Z/%µμ]+(?:\/[a-zA-Z]+)?)$/);
+      rows.push({
+        cells: [name, valueUnit ? valueUnit[1] : rest, valueUnit ? valueUnit[2] : "", "", ""],
+        emphasis: "unknown"
+      });
+    }
+    if (!rows.length) return null;
+    return { type: "labs", groups: [{ label: "Laboratory results", timestamp: "", rows }] };
+  }
+  if (sourceKind === "medication_activity") {
+    const rows = [];
+    for (const line of bodyLines) {
+      const name = line.split(/\s+[—–-]\s+/)[0].trim() || line.trim();
+      if (!name) continue;
+      rows.push({
+        cells: [name, line.trim(), "", ""],
+        medication: { name, dose: "", route: "", frequency: "", administrations: [] },
+        emphasis: "unknown"
+      });
+    }
+    if (!rows.length) return null;
+    return { type: "medications", groups: [{ label: "Medications", timestamp: "", rows }] };
+  }
+  return null;
+}
+
 function addClinicalSource(source, sourceOrder, labMap, vitalMap, medicationMap) {
-  const display = clinicalDisplayModelFromPromptText(source.sourceKind, source.record.deidentifiedText);
+  let display = clinicalDisplayModelFromPromptText(source.sourceKind, source.record.deidentifiedText);
   const provenance = sourceProvenance(source);
   // Count structured candidates actually produced: rows can merge into an
   // existing candidate (same vital name/unit), so map size alone cannot tell
   // "parsed nothing" from "parsed into existing rows".
   let added = 0;
   if (!display?.groups?.length) {
-    const fallback = narrativeFallbackCandidate(source, sourceOrder, provenance);
-    return fallback ? [fallback] : [];
+    // Note-extracted sources carry text our own extractor just produced from
+    // real parsed rows: the strict display model must never reduce them to an
+    // "Unparsed X" card. Parse leniently so every extracted finding survives.
+    if (String(source.sourceId || "").startsWith("note_")) {
+      display = lenientNoteDisplayModel(source.sourceKind, source.record.deidentifiedText);
+    }
+    if (!display?.groups?.length) {
+      const fallback = narrativeFallbackCandidate(source, sourceOrder, provenance);
+      return fallback ? [fallback] : [];
+    }
   }
 
   if (display.type === "labs") {

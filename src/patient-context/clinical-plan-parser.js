@@ -31,6 +31,98 @@ const NOT_PLAN_TEXT = /^(?:none|no data recorded|no active orders?|\[lab\s*\d+\/
 const SPECIALTY_PLAN_HEADER = /^[A-Za-z\s/]+plan\s*:?$/i;
 const LDA_START_REGEX = /^(?:patient\s+)?lines[\s/]+drains[\s/]+airways|active\s+(?:active\s+)?ldas/i;
 
+// Verbs (and verb-led phrases) that open an action/recommendation sentence
+// rather than a problem title: "Continue vancomycin", "We will obtain...",
+// "The patient needs...". Used to tell a bare numbered recommendation list
+// ("1. Continue with vancomycin...") apart from a problem list whose items
+// carry their own titles ("1. Diabetes mellitus type 1: We will...").
+const ACTION_LEAD = /^(?:continue|resume|re-?start|begin|stop|hold|withhold|discontinue|d\/c|wean|titrate|increase|decrease|adjust|monitor|watch|check|obtain|get|order|send|repeat|recheck|follow|reassess|re-?evaluate|evaluate|assess|consult|refer|recommend|advise|counsel|educate|encourage|discuss|review|ensure|provide|give|administer|prescribe|add|change|switch|maintain|avoid|consider|plan|schedule|arrange|admit|discharge|transfer|agree|we\s+will|i\s+will|the\s+patient\s+(?:needs|requires|should|will))\b/i;
+
+// Labels that look like "Title: ..." but are not problems ("Differential:
+// ...", "Assessment: ...").
+const NON_PROBLEM_LABEL = /^(?:differential|differentials|ddx|assessment|plan|impression|recommendations?|diagnos[ie]s|treatments?)$/i;
+
+// Professional sign-off paragraphs ("As always, we greatly appreciate...")
+// that close consult notes. They are courtesy text, never problems or plans.
+const SIGNOFF_LEAD = /^(?:as\s+always[\s,]|we\s+(?:greatly\s+)?appreciate|thank\s+you\s+for|please\s+(?:do\s+not\s+hesitate|feel\s+free|contact)|sincerely|respectfully)[\s,]/i;
+
+function firstSentence(text) {
+  const match = String(text || "").match(/^[^.!?]+[.!?]/);
+  return (match ? match[0] : String(text || "")).trim();
+}
+
+/** Drops professional sign-off paragraphs from plan/consult text. */
+export function stripSignoffParagraphs(text) {
+  return String(text || "")
+    .split(/\n\s*\n/)
+    .filter((para) => {
+      const first = para.split("\n").map((l) => l.trim()).filter(Boolean)[0] || "";
+      return !SIGNOFF_LEAD.test(first);
+    })
+    .join("\n\n");
+}
+
+/**
+ * Splits plan/assessment text into top-level numbered items
+ * ("1. ...", "2. ..."). Non-numbered lines attach to the current item;
+ * text before the first number is ignored.
+ */
+export function extractNumberedPlanItems(text) {
+  const items = [];
+  let current = null;
+  for (const raw of String(text || "").split("\n")) {
+    const line = raw.trim();
+    if (!line) continue;
+    const marker = line.match(/^(\d{1,2}[.:])\s*(\S[\s\S]*)$/);
+    if (marker) {
+      current = { marker: marker[1], text: marker[2].trim() };
+      items.push(current);
+    } else if (current) {
+      current.text = `${current.text}\n${line}`.trim();
+    }
+  }
+  return items;
+}
+
+/**
+ * True when a numbered plan item is a bare recommendation/action rather than
+ * a problem carrying its own title. "1. Continue with vancomycin..." is a
+ * bare action; "1. Diabetes mellitus type 1: We will..." and "2. Followup
+ * scooter accident. Lacerations..." are problem-titled.
+ */
+export function isBareActionItem(itemText) {
+  const text = String(itemText || "").trim();
+  if (!text) return true;
+  const colon = text.match(/^([^:]{3,60}):\s*\S/);
+  if (colon && !NON_PROBLEM_LABEL.test(colon[1].trim())) return false;
+  const first = firstSentence(text);
+  const rest = text.slice(first.length).trim();
+  if (rest && first.length <= 60 && !ACTION_LEAD.test(first)) return false;
+  return true;
+}
+
+/**
+ * True when the first line of a raw plan block opens a new problem entry:
+ * a number/hash/system marker, a "Problem: details" colon title, or a short
+ * noun-led first sentence followed by more text.
+ */
+function blockOpensProblem(firstLine) {
+  const line = String(firstLine || "").trim();
+  if (!line) return false;
+  if (/^(?:#+\s*|(?:problem\s*\d+\s*[:.]|\d{1,2}[.:])\s*[a-zA-Z])/i.test(line)) return true;
+  const clean = line.replace(/^#+\s*/, "").replace(/^(?:problem\s*\d+[:.]|\d{1,2}[.:])\s*/i, "").trim();
+  const cleanNoColon = clean.replace(/[:\s]+$/, "");
+  if (KNOWN_SYSTEMS.has(cleanNoColon.replace(/\s+plan$/i, "").toLowerCase())) return true;
+  if (SPECIALTY_PLAN_HEADER.test(clean)) return true;
+  if (PROBLEM_LIST_HEADERS.has(cleanNoColon.toLowerCase())) return true;
+  const colon = clean.match(/^([^:]{3,60}):\s*\S/);
+  if (colon && !NON_PROBLEM_LABEL.test(colon[1].trim())) return true;
+  const first = firstSentence(clean);
+  const rest = clean.slice(first.length).trim();
+  if (rest && first.length <= 60 && !ACTION_LEAD.test(first)) return true;
+  return false;
+}
+
 /**
  * Normalizes two-column EHR table formats (such as Epic's Diagnostic and Objective Findings / Assessment and Plan)
  * into cleanly separated clinical sections with standard headings.
@@ -256,17 +348,20 @@ export function parseClinicalPlanProblems(planText) {
 
   // Bullets separated from their numbered problem by a blank line belong to
   // that problem's plan ("1. Stroke\n\n- telemetry"), not to phantom
-  // problems of their own. Merge a bullet-only block into the previous block
-  // when the previous block opens with a numbered or hash problem marker.
+  // problems of their own. More generally, a block that does not open a new
+  // problem (a continuation paragraph, a trailing "Additional ...
+  // recommendations" line) merges into the previous problem block instead of
+  // becoming a bogus problem entry. Professional sign-off paragraphs are
+  // dropped outright: they are courtesy text, never problems.
   const mergedBlocks = [];
   for (const block of blocks) {
-    const previous = mergedBlocks.at(-1);
     const lines = block.map((line) => line.trim()).filter(Boolean);
+    if (lines.length > 0 && SIGNOFF_LEAD.test(lines[0])) continue;
+    const previous = mergedBlocks.at(-1);
     const previousLines = previous ? previous.map((line) => line.trim()).filter(Boolean) : [];
-    const previousOpensProblem = previousLines.length > 0
-      && /^(?:#+\s*|(?:problem\s*\d+\s*[:.]|\d{1,2}[.:])\s*[a-zA-Z])/i.test(previousLines[0]);
+    const previousOpensProblem = previousLines.length > 0 && blockOpensProblem(previousLines[0]);
     const bulletOnly = lines.length > 0 && lines.every((line) => /^(?:[-•*>—–]|>>)/.test(line));
-    if (previous && previousOpensProblem && bulletOnly) {
+    if (previous && previousOpensProblem && (bulletOnly || !blockOpensProblem(lines[0] || ""))) {
       previous.push(...block);
     } else {
       mergedBlocks.push([...block]);
@@ -304,9 +399,13 @@ export function parseClinicalPlanProblems(planText) {
 
     // A leading assessment narrative ("74 y.o. with ... s/p HBOT.") is not a
     // problem entry; it stays in the plan section text and must not become a
-    // problem with the whole paragraph as its title.
+    // problem with the whole paragraph as its title. But when the entire plan
+    // section is one unmarked paragraph (a combined Assessment/Plan note),
+    // that paragraph IS the problem entry: fall through and title it with
+    // its first sentence below.
     const hasProblemMarker = nonBlank.some((line) => /^#+\s*[a-zA-Z0-9]|^[-•*>—–]|^>>|^\d+[.)]/.test(line));
-    if (isFirstBlock && firstLine.length > 200 && !hasProblemMarker) continue;
+    const isSingleBlock = mergedBlocks.length === 1;
+    if (isFirstBlock && firstLine.length > 200 && !hasProblemMarker && !isSingleBlock) continue;
 
     const cleanSystemCandidate = strippedFirst.replace(/\s+plan$/i, "").toLowerCase();
     if (KNOWN_SYSTEMS.has(cleanSystemCandidate)) {
@@ -358,10 +457,33 @@ export function parseClinicalPlanProblems(planText) {
     // "Neurologic: Sedation vacation..." — system header with inline details.
     // Split into title "Neurologic" and plan details.
     const systemInlineSplit = problemTitle.match(/^([a-zA-Z\/\s]+?):\s*(.+)$/);
+    let colonRest = "";
     if (systemInlineSplit && KNOWN_SYSTEMS.has(systemInlineSplit[1].trim().toLowerCase())) {
       problemTitle = systemInlineSplit[1].trim();
       const systemDetails = systemInlineSplit[2].trim();
       if (systemDetails) inlinePlan = inlinePlan ? `${inlinePlan}\n${systemDetails}` : systemDetails;
+    } else {
+      // "Diabetes mellitus type 1: We will follow up ..." — a problem title
+      // followed by its plan after a colon. Split the title from the plan.
+      const colonTitleSplit = problemTitle.match(/^([^:]{3,60}):\s*(\S[\s\S]*)$/);
+      if (colonTitleSplit && !NON_PROBLEM_LABEL.test(colonTitleSplit[1].trim())) {
+        problemTitle = colonTitleSplit[1].trim();
+        colonRest = colonTitleSplit[2].trim();
+      } else if (!hasProblemMarker || /^\d{1,2}[.:]/.test(firstLine)) {
+        // "Followup scooter accident. Lacerations on scalp and shin appear
+        // to be healing. ..." — a numbered item whose first sentence is a
+        // short noun-led problem title followed by its plan. Split it so the
+        // whole paragraph does not become an oversized title. A lone
+        // unmarked paragraph (one combined Assessment/Plan section) gets a
+        // generous limit: its first sentence is the best available title.
+        const first = firstSentence(problemTitle);
+        const rest = problemTitle.slice(first.length).trim();
+        const titleLimit = isSingleBlock && !hasProblemMarker ? 200 : 60;
+        if (rest && first.length <= titleLimit && !ACTION_LEAD.test(first)) {
+          problemTitle = first;
+          colonRest = rest;
+        }
+      }
     }
 
     if (!problemTitle) continue;
@@ -379,8 +501,16 @@ export function parseClinicalPlanProblems(planText) {
       else contextLines.push(inlinePlan);
     }
 
+    // Text split off a "Problem: details" title or a first-sentence title is
+    // classified like any other content line below.
+    const contentLines = colonRest ? [colonRest] : [];
     for (let j = startIndex; j < nonBlank.length; j++) {
       const line = nonBlank[j];
+      if (j === startIndex && colonRest && line === firstLine) continue;
+      contentLines.push(line);
+    }
+
+    for (const line of contentLines) {
       const isBullet = /^[-•*>—–]|^>>|^\d+[.)]/.test(line);
       const cleanLine = line.replace(/^[-•*>—–\s]+|^>>\s*|^\d+[.)]\s*/, "").trim();
       if (!cleanLine) continue;

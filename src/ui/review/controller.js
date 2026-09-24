@@ -9,15 +9,15 @@ import {
   createNoteDraft,
   deselectObjectiveBlock,
   deselectObjectiveBlockWithMemory,
-  editObjectiveBlock,
+  editObjectiveGroup,
   fieldsForNoteType,
-  keepObjectiveBlock,
   NOTE_TYPES,
   normalizeNoteDraft,
   reconcileObjectiveBlock,
   reconcileChecklistFinding,
-  refreshObjectiveBlock,
+  refreshObjectiveGroup,
   removeDifferential,
+  removeObjectiveGroupWithMemory,
   removePlanProblem,
   renderFinalNoteHtml,
   renderFinalNotePlainText,
@@ -35,7 +35,7 @@ import {
   updateNoteSection,
   updatePlanProblem
 } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
-import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20260924-assessment-plan-v1";
+import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20260924-plan-pairing-v2";
 import {
   clearLabBaseline,
   setLabBaseline
@@ -313,7 +313,7 @@ export function createReviewController(deps) {
     let draft = current.draft;
     if (target.matches("[data-draft-section]")) draft = updateNoteSection(draft, target.dataset.draftSection, editableText(target));
     else if (target.matches("[data-draft-objective-manual]")) draft = updateManualObjective(draft, editableText(target));
-    else if (target.matches("[data-objective-block-text]")) draft = editObjectiveBlock(draft, target.dataset.objectiveBlockText, editableText(target));
+    else if (target.matches("[data-objective-group-text]")) draft = editObjectiveGroup(draft, target.dataset.objectiveGroupText, editableText(target));
     else if (target.matches("[data-draft-assessment]")) draft = updateAssessment(draft, editableText(target));
     else if (target.matches("[data-draft-closing]")) draft = updateClosingSection(draft, target.dataset.draftClosing, editableText(target));
     else {
@@ -569,13 +569,10 @@ export function createReviewController(deps) {
       draft = isDefaultOn(candidate)
         ? deselectObjectiveBlockWithMemory(draft, button.dataset.selectionId)
         : deselectObjectiveBlock(draft, button.dataset.selectionId);
-    }
-    else if (action === "refresh-objective-selection") draft = refreshObjectiveBlock(draft, button.dataset.selectionId);
-    else if (action === "keep-objective-selection") draft = keepObjectiveBlock(draft, button.dataset.selectionId);
-    else if (action === "review-objective-difference") {
-      deps.app.reviewDifferenceSelectionId = deps.app.reviewDifferenceSelectionId === button.dataset.selectionId ? "" : button.dataset.selectionId;
-      render();
-      return true;
+    } else if (action === "remove-objective-group") {
+      draft = removeObjectiveGroupWithMemory(draft, button.dataset.group);
+    } else if (action === "refresh-objective-group") {
+      draft = refreshObjectiveGroup(draft, button.dataset.group);
     } else return false;
     setDraft(draft);
     render();

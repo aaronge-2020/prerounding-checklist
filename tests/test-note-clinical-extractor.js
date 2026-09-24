@@ -129,3 +129,29 @@ import { clinicalDisplayModelFromPromptText } from "../src/patient-context/struc
 }
 
 console.log("note-clinical-extractor tests passed");
+
+// Regression: real-note corpus defects (2026-09-24).
+{
+  // "alk-phos 138" is alkaline phosphatase, not phosphorus.
+  const alkPhos = extractNoteLabs("STUDIES: His AST 349, ALT 186, alk-phos 138 and lipase is normal at 239.");
+  assert.ok(alkPhos.includes("Alkaline phosphatase: 138"), `alk-phos misclassified: ${alkPhos}`);
+  assert.ok(!alkPhos.includes("Phosphorus: 138"), `alk-phos misclassified as phosphorus: ${alkPhos}`);
+
+  // "White blood cell count from 01/08/09 is 9": the date must not become the value.
+  const wbcDate = extractNoteLabs("LABORATORY DATA: White blood cell count from 01/08/09 is 9 with 68% neutrophils.");
+  assert.ok(wbcDate.includes("WBC: 9"), `date parsed as WBC value: ${wbcDate}`);
+
+  // "potassium chloride p.r.n.": "potassium" must not match the "po" continuation keyword.
+  const kcl = extractNoteMedications("CURRENT MEDICATIONS: Vancomycin, Protonix, potassium chloride p.r.n., magnesium p.r.n.");
+  assert.ok(kcl.includes("Protonix\n"), `Protonix missing: ${kcl}`);
+  assert.ok(kcl.includes("potassium chloride p.r.n"), `potassium chloride glued: ${kcl}`);
+  assert.ok(kcl.includes("magnesium p.r.n"), `magnesium missing: ${kcl}`);
+  assert.ok(!kcl.includes("Protonix —"), `Protonix glued to next med: ${kcl}`);
+
+  // "norepinephrine drip, and vitamin K.": "vitamin K." is its own med, not a sig continuation.
+  const norepi = extractNoteMedications("Meds: norepinephrine drip, and vitamin K.");
+  assert.ok(norepi.includes("norepinephrine drip\n"), `norepi missing: ${norepi}`);
+  assert.ok(norepi.includes("vitamin K"), `vitamin K glued: ${norepi}`);
+}
+
+console.log("note-clinical-extractor regression tests passed");

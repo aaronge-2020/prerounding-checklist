@@ -3,17 +3,20 @@ import { transformClinicalTablesInText } from "./clinical-table-parser.js";
 import {
   normalizeTwoColumnEhrText,
   parseClinicalPlanProblems,
-  splitTwoColumnEhrTables
-} from "./clinical-plan-parser.js?v=20260924-assessment-plan-v1";
+  splitTwoColumnEhrTables,
+  extractNumberedPlanItems,
+  isBareActionItem,
+  stripSignoffParagraphs
+} from "./clinical-plan-parser.js?v=20260924-plan-pairing-v2";
 
 const H_AND_P = "hp";
 const PROGRESS = "progress";
 
 const HEADING_DEFINITIONS = Object.freeze([
   heading(["one liner", "one-liner", "source summary", "brief summary"], "one_liner"),
-  heading(["chief complaint", "cc", "reason for admission", "reason for consultation", "chief concern", "presenting complaint", "reason for visit", "reason for encounter"], { [H_AND_P]: "chief_complaint", [PROGRESS]: "patient_report" }),
-  heading(["history of present illness", "hpi", "history", "presenting history", "present illness"], { [H_AND_P]: "history_of_present_illness", [PROGRESS]: "patient_report" }),
-  heading(["stay summary", "hospital course", "brief hospital course"], {
+  heading(["chief complaint", "cc", "reason for admission", "reason for consultation", "reason for the consult", "reason for consult", "chief concern", "presenting complaint", "reason for visit", "reason for encounter"], { [H_AND_P]: "chief_complaint", [PROGRESS]: "patient_report" }),
+  heading(["history of present illness", "hpi", "history", "presenting history", "present illness", "history and physical"], { [H_AND_P]: "history_of_present_illness", [PROGRESS]: "patient_report" }),
+  heading(["stay summary", "hospital course", "brief hospital course", "hospital course per problem list", "hospital course by problem"], {
     [H_AND_P]: "history_of_present_illness",
     [PROGRESS]: "interval_events"
   }, true),
@@ -25,11 +28,14 @@ const HEADING_DEFINITIONS = Object.freeze([
   heading(["nursing report"], { [H_AND_P]: "other", [PROGRESS]: "nursing_report" }),
   heading(["pertinent symptoms"], { [H_AND_P]: "history_of_present_illness", [PROGRESS]: "pertinent_symptoms" }),
   heading(["review of systems", "ros", "systems review"], { [H_AND_P]: "review_of_systems", [PROGRESS]: "pertinent_symptoms" }),
-  heading(["medications", "meds", "medication list", "current medications", "current meds", "current rx", "home medications", "home meds", "med list", "prescriptions", "medication changes", "current facility-administered medications"], "medications"),
+  heading(["medications", "meds", "medication list", "current medications", "current meds", "current rx", "home medications", "home meds", "med list", "prescriptions", "medication changes", "discharge medications", "discharge meds", "current facility-administered medications"], "medications"),
   heading(["allergies", "allergy", "nkda"], { [H_AND_P]: "allergies", [PROGRESS]: "other" }),
   heading(["past medical history", "medical history", "pmh", "pmhx", "past history"], { [H_AND_P]: "past_medical_history", [PROGRESS]: "other" }),
   heading(["past surgical history", "surgical history", "psh", "pshx"], { [H_AND_P]: "past_surgical_history", [PROGRESS]: "other" }),
   heading(["family history", "family hx", "fhx", "fh"], { [H_AND_P]: "family_history", [PROGRESS]: "other" }),
+  // Combined "FAMILY, SOCIAL, AND ALLERGY HISTORY" cannot be split back into
+  // its parts structurally, so it stays out of the individual fields.
+  heading(["family social and allergy history"], { [H_AND_P]: "other", [PROGRESS]: "other" }),
   heading(["social history", "social hx", "soc hx", "sh", "social", "habits"], { [H_AND_P]: "social_history", [PROGRESS]: "other" }),
   heading(["diet and exercise", "diet exercise"], { [H_AND_P]: "diet_and_exercise", [PROGRESS]: "other" }),
   heading(["physical exam", "physical examination", "exam", "examination", "pe", "exam findings", "neurological examination", "neurologic examination"], "physical_exam"),
@@ -42,10 +48,12 @@ const HEADING_DEFINITIONS = Object.freeze([
     "studies", "study results", "studies reviewed", "test results", "results review", "data review",
     "imaging", "x ray", "xray", "xr", "electrocardiogram", "diagnostic studies", "diagnostic studies review management",
     "diagnostic studies / review management", "diagnostic and objective findings",
-    "objective diagnostic studies", "objective / diagnostic studies", "results", "data"
+    "objective diagnostic studies", "objective / diagnostic studies", "results", "data", "radiology"
   ], "objective", true),
   heading(["assessment", "impression", "clinical impression", "a"], "assessment"),
-  heading(["assessment and plan", "assessment / plan", "a and p", "a p", "ap", "impression and plan", "plan", "p", "plans", "plan by system", "systems plan", "recommendations", "recs", "next steps"], "plan"),
+  heading(["assessment and plan", "assessment / plan", "a and p", "a p", "ap", "impression and plan", "plan", "p", "plans", "plan by system", "systems plan", "recommendations", "recs", "treatment", "treatments", "next steps"], "plan"),
+  heading(["discharge instructions", "discharge instruction"], "plan"),
+  heading(["discharge diagnosis", "discharge diagnoses", "additional discharge diagnoses", "discharge dx"], "assessment", true, true),
   heading(["fen", "fluids electrolytes nutrition"], "fen"),
   heading([
     "lda", "ldas", "lines drains airways", "lines drains and airways",
@@ -55,7 +63,7 @@ const HEADING_DEFINITIONS = Object.freeze([
   ], "lda", true),
   heading(["vte prophylaxis", "dvt prophylaxis", "venous thromboembolism prophylaxis", "prophylaxis"], "vte_prophylaxis"),
   heading(["code status"], "code_status"),
-  heading(["disposition", "dispo", "discharge planning", "education discharge planning and follow up"], "disposition"),
+  heading(["disposition", "dispo", "discharge planning", "discharge disposition", "condition on discharge", "condition at discharge", "discharge condition", "education discharge planning and follow up"], "disposition"),
   heading(["principal problem", "active problems", "resolved problems", "active hospital problems"], "assessment", true, true),
   heading(["basic information", "premorbid mrs"], {
     [H_AND_P]: "other",
@@ -113,6 +121,111 @@ const COMBINED_ASSESSMENT_PLAN_ALIASES = new Set([
   "ap",
   "impression and plan"
 ]);
+
+function assessmentItemTitle(text) {
+  const clean = String(text || "").trim();
+  const firstLine = clean.split("\n").map((line) => line.trim()).filter(Boolean)[0] || "";
+  const sentence = (firstLine.match(/^[^.!?]+[.!?]/)?.[0] || firstLine).trim();
+  if (sentence.length <= 100 && clean.length > sentence.length) return sentence;
+  return firstLine;
+}
+
+// True when a plan item carries its own problem title ("Diabetes mellitus
+// type 1: ..."). Used for the single-assessment case, where a colon title is
+// the reliable signal that the plan item is a problem rather than an action
+// on the assessment.
+function planItemHasProblemTitle(itemText) {
+  const text = String(itemText || "").trim();
+  const colon = text.match(/^([^:]{3,60}):\s*\S/);
+  return !!(colon && !NON_PROBLEM_LABEL.test(colon[1].trim()));
+}
+
+function makePairedProblem(assessmentItemText, planItemText) {
+  const assessment = String(assessmentItemText || "").trim();
+  const plan = String(planItemText || "").trim();
+  const title = assessmentItemTitle(assessment) || "Assessment";
+  return {
+    id: `problem_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`,
+    system: "",
+    title,
+    problem: title,
+    keyContext: assessment,
+    differentials: [],
+    diagnosticPlan: "",
+    therapeuticPlan: plan
+  };
+}
+
+// Consult notes often number the assessment ("IMPRESSION:\n1. Septic
+// shock...") and separately number the recommendations ("RECOMMENDATIONS:\n1.
+// Continue with vancomycin..."). The plan parser sees only bare actions with
+// no problem titles; pair them back to the assessment items by index so each
+// recommendation lands on its problem instead of becoming a bogus problem of
+// its own. A single assessment paragraph with a single plan paragraph pairs
+// the same way. Anything else keeps the plan's own parse.
+function pairAssessmentPlanProblems(assessmentText, planText, parsedProblems) {
+  const assessment = String(assessmentText || "").trim();
+  const plan = stripSignoffParagraphs(planText).trim();
+  if (!assessment || !plan) return parsedProblems;
+
+  const assessmentItems = extractNumberedPlanItems(assessment);
+  const planItems = extractNumberedPlanItems(plan);
+
+  if (assessmentItems.length > 0 && planItems.length > 0) {
+    // Only pair when the plan items are bare actions. When they carry their
+    // own problem titles ("1. Diabetes mellitus type 1: ...") the plan's own
+    // parse is the honest problem list.
+    if (planItems.every((item) => isBareActionItem(item.text))) {
+      const paired = [];
+      const count = Math.min(assessmentItems.length, planItems.length);
+      for (let i = 0; i < count; i++) {
+        paired.push(makePairedProblem(assessmentItems[i].text, planItems[i].text));
+      }
+      // Extra assessment items still become problems, just without a plan.
+      for (let i = count; i < assessmentItems.length; i++) {
+        paired.push(makePairedProblem(assessmentItems[i].text, ""));
+      }
+      // Extra plan actions (more actions than problems) join the last problem
+      // rather than becoming problems of their own.
+      for (let i = count; i < planItems.length; i++) {
+        const last = paired[paired.length - 1];
+        if (last) last.therapeuticPlan = [last.therapeuticPlan, planItems[i].text].filter(Boolean).join("\n");
+      }
+      return paired;
+    }
+    // The plan carries its own problem titles: keep the plan's parse, but
+    // preserve assessment items the plan never addresses.
+    const norm = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    const planTitles = parsedProblems.map((p) => norm(p.title || p.problem));
+    const extra = [];
+    for (const item of assessmentItems) {
+      const title = norm(assessmentItemTitle(item.text)).slice(0, 60);
+      if (!title) continue;
+      const covered = planTitles.some(
+        (pt) => (pt && title && (pt.includes(title.slice(0, 30)) || title.includes(pt.slice(0, 30))))
+      );
+      if (!covered) extra.push(makePairedProblem(item.text, ""));
+    }
+    return [...parsedProblems, ...extra];
+  }
+
+  if (assessmentItems.length === 0 && planItems.length === 0) {
+    return [makePairedProblem(assessment, plan)];
+  }
+
+  // Single assessment paragraph ("Right ankle sprain.") with a numbered
+  // plan: one problem carrying all the plan items, unless the plan items
+  // carry their own problem titles.
+  if (
+    assessmentItems.length === 0 &&
+    planItems.length > 0 &&
+    !planItems.some((item) => planItemHasProblemTitle(item.text))
+  ) {
+    return [makePairedProblem(assessment, planItems.map((item) => item.text).join("\n"))];
+  }
+
+  return parsedProblems;
+}
 
 function definitionFor(candidate) {
   const normalized = normalizeHeading(candidate);
@@ -435,7 +548,8 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
     }
   }
   const detectedFieldIds = [...new Set(detected.map(({ fieldId }) => fieldId).filter((fieldId) => transformedSections[fieldId]))];
-  const parsedProblems = parseClinicalPlanProblems(transformedSections.plan || "");
+  const planProblems = parseClinicalPlanProblems(transformedSections.plan || "");
+  const parsedProblems = pairAssessmentPlanProblems(transformedSections.assessment, transformedSections.plan, planProblems);
   // A combined "Assessment and Plan" heading parks all reasoning in the plan
   // section. Split the assessment reasoning back out problem-by-problem so
   // sections.assessment reflects the synthesis while sections.plan keeps the
