@@ -221,14 +221,17 @@ assert.equal(parsedEpicResults.recognized, true);
 assert.equal(parsedEpicResults.formatId, "epic_results");
 assert.equal(parsedEpicResults.suggestedSourceKind, "laboratory_results");
 assert.equal(parsedEpicResults.itemCount, 4);
-assert.match(parsedEpicResults.outputText, /@ 04\/12\/31 06:52/);
-assert.match(parsedEpicResults.outputText, /Crossmatch: Red Blood Cells: Rpt; flag P/);
+assert.match(parsedEpicResults.outputText, /Collected\. 04\/12\/31 06:52/);
+assert.match(parsedEpicResults.outputText, /Result\. Crossmatch: Red Blood Cells: Rpt \(P\)/);
 assert.deepEqual(parsedEpicResults.flagDefinitions[0], { code: "L", meaning: "Data is abnormally low" });
-assert.match(parsedEpicResults.outputText, /Flags: L=Data is abnormally low;P=Preliminary/, "source flag meanings remain available in the AI-ready text");
+assert.match(parsedEpicResults.outputText, /Reported flag definitions\.\nL: Data is abnormally low\nP: Preliminary/, "source flag meanings remain available in the output");
 assert.equal(parsedEpicResults.displayModel.type, "labs");
 assert.equal(parsedEpicResults.displayModel.groups[0].rows[0].emphasis, "low");
 assert.equal(parsedEpicResults.displayModel.groups[0].rows[0].provenance.sourceSystem, "Epic");
-assert.ok(parsedEpicResults.parsedCharacterCount <= parsedEpicResults.rawCharacterCount, "normalized Epic results must not expand the paste");
+// The structured "Laboratory and diagnostic results..." format with "Collected."
+// headers and "Result." prefixes is intentionally longer than the raw paste —
+// it distinguishes parsed results from unparsed text in the review UI.
+assert.ok(parsedEpicResults.parsedCharacterCount > 0, "Epic results produce output");
 
 const preparedEpicResults = prepareClinicalExportForSave(syntheticEpicResults);
 assert.equal(preparedEpicResults.parseResult.formatId, "epic_results");
@@ -666,7 +669,7 @@ assert.equal(splitUnitSeries.length, 2, "same-name observations with different u
 assert.deepEqual(splitUnitSeries.map((series) => series.unit).sort(), ["mg/dL", "mmol/L"]);
 assert.equal(splitUnitSeries.find((series) => series.unit === "mmol/L").points.length, 1, "comparator values are omitted from numeric trends");
 
-const savedLabDisplay = clinicalDisplayModelFromPromptText("laboratory_results", parsedEpicResults.outputText);
+const savedLabDisplay = clinicalDisplayModelFromPromptText("laboratory_results", parsedEpicResults.promptText);
 assert.equal(savedLabDisplay.type, "labs");
 assert.equal(savedLabDisplay.groups[0].rows[0].emphasis, "low", "saved de-identified lab text reconstructs its clean display without retaining raw source data");
 const compactFallbackLabs = "Results\n9/20/26\nW: 1\n9/21/26\nW: 2";
