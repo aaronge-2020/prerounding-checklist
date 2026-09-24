@@ -222,13 +222,17 @@ function renderEpicResults(value) {
     unparsedText: remainder,
     flagDefinitions: legends.map(({ code, meaning }) => ({ code, meaning }))
   }, model);
+  // Use the "Laboratory and diagnostic results parsed from Epic export." format
+  // with "Collected." headers and "Result." prefixes — this is the intended
+  // output that distinguishes parsed results from unparsed text.
+  const outputText = parts.join("\n\n");
   const flagText = legends.length ? `\nFlags: ${legends.map(({ code, meaning }) => `${code}=${meaning}`).join(";")}` : "";
   if (!remainder) {
     const promptText = `${represented.promptText}${flagText}`;
-    return { ...represented, promptText, outputText: promptText };
+    return { ...represented, promptText, outputText };
   }
   const promptText = `${represented.promptText}${flagText}\n${remainder}`;
-  return { ...represented, promptText, outputText: promptText };
+  return { ...represented, promptText, outputText };
 }
 
 function marSection(text) {
@@ -754,14 +758,22 @@ export function parseEpicClinicalExport(value) {
     const result = parser(value);
     if (result) {
       const rawText = decodeClinicalClipboardText(value).trim();
-      if (String(result.outputText || "").length <= rawText.length) return result;
-      return {
-        ...result,
-        canonicalPromptText: result.promptText || result.outputText,
-        promptText: rawText,
-        outputText: rawText,
-        usedSourceTextForCompactness: true
-      };
+      const outputLen = String(result.outputText || "").length;
+      // For Epic results, preserve the structured "Result." format unless the
+      // output is excessively longer (3x+) than input — tiny inputs get the
+      // compact fallback, normal clinical pastes get structured output.
+      const isEpicResults = parser === renderEpicResults;
+      if (!isEpicResults || outputLen > rawText.length * 3) {
+        if (outputLen <= rawText.length) return result;
+        return {
+          ...result,
+          canonicalPromptText: result.promptText || result.outputText,
+          promptText: rawText,
+          outputText: rawText,
+          usedSourceTextForCompactness: true
+        };
+      }
+      return result;
     }
   }
   return null;
