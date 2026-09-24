@@ -3824,10 +3824,10 @@ button.var-fill:focus-visible {
 .note-help-button::after {
   position: absolute;
   z-index: 40;
-  right: -4px;
+  left: -4px;
   bottom: calc(100% + 8px);
-  width: max-content;
-  max-width: min(300px, 70vw);
+  width: var(--help-tip-width, max-content);
+  max-width: var(--help-tip-width, min(300px, calc(100vw - 32px)));
   border: 1px solid var(--border);
   border-radius: 7px;
   background: var(--ink);
@@ -3852,6 +3852,24 @@ button.var-fill:focus-visible {
   opacity: 1;
   transform: translateY(0);
   visibility: visible;
+}
+
+/* Flipped by positionHelpTooltip() when the popup would overflow the note
+   editor: grow leftward instead of rightward, or drop below the button. */
+.note-help-button.note-help-flip::after {
+  left: auto;
+  right: -4px;
+}
+
+.note-help-button.note-help-below::after {
+  bottom: auto;
+  top: calc(100% + 8px);
+  transform: translateY(-4px);
+}
+
+.note-help-button.note-help-below:hover::after,
+.note-help-button.note-help-below:focus-visible::after {
+  transform: translateY(0);
 }
 
 .etiology-control {

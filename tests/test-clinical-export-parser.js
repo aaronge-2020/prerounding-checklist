@@ -17,8 +17,8 @@ const epicParserRevision = "20260924-assessment-plan-v1";
 const clinicalParserRevision = "20260924-assessment-plan-v1";
 const primaryNoteRevision = "20260921-medication-card-v4";
 const sourceControllerRevision = "20260923-plan-problems-v1";
-const appRevision = "20260924-quickdeid-anchor-v1";
-const styleRevision = "20260924-viewport-editor-v1";
+const appRevision = "20260924-helptip-position-v1";
+const styleRevision = "20260924-helptip-position-v1";
 const runtimeSources = {
   index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
   app: readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8"),

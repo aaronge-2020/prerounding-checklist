@@ -4121,6 +4121,33 @@ function handleToggle(event) {
   }
 }
 
+function positionHelpTooltip(event) {
+  const button = event.target?.closest?.(".note-help-button");
+  if (!button) return;
+  const container = button.closest(".note-editor") || document.documentElement;
+  const box = container.getBoundingClientRect();
+  const btn = button.getBoundingClientRect();
+  const roomRight = box.right - btn.left - 8;
+  const roomLeft = btn.right - box.left - 8;
+  const maxAllowed = Math.max(160, Math.min(300, box.width - 32));
+  let width = Math.min(maxAllowed, roomRight);
+  let flip = false;
+  if (width < 200 && roomLeft > roomRight) {
+    flip = true;
+    width = Math.min(maxAllowed, roomLeft);
+  }
+  width = Math.max(160, width);
+  button.style.setProperty("--help-tip-width", `${Math.round(width)}px`);
+  button.classList.toggle("note-help-flip", flip);
+  // Rough height estimate (12px font, ~1.4 line-height, ~6px per char) so the
+  // popup drops below the button when there is no room above it.
+  const charsPerLine = Math.max(20, width / 6.2);
+  const estHeight = Math.ceil((button.dataset.tooltip || "").length / charsPerLine) * 17 + 18;
+  const roomAbove = btn.top - box.top - 8;
+  const roomBelow = box.bottom - btn.bottom - 8;
+  button.classList.toggle("note-help-below", roomAbove < estHeight && roomBelow > roomAbove);
+}
+
 function bindEvents() {
   decorateNavigation();
   tokenColorPicker.init();
@@ -4128,6 +4155,11 @@ function bindEvents() {
   document.addEventListener("change", handleChange);
   document.addEventListener("input", handleInput);
   document.addEventListener("toggle", handleToggle, true);
+  // Question-mark hint tooltips are CSS ::after popups anchored to their
+  // button. Measure the room inside the scrolling note editor on hover/focus
+  // and flip/shrink the popup so its text always renders fully inside the box.
+  document.addEventListener("mouseover", positionHelpTooltip);
+  document.addEventListener("focusin", positionHelpTooltip);
   ["pointerdown", "keydown", "touchstart"].forEach((eventName) => {
     document.addEventListener(eventName, recordVaultActivity, { passive: true });
   });
