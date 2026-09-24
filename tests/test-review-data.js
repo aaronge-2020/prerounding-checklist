@@ -402,4 +402,167 @@ for (const [day, stamp] of [["HD3", "09/19/26 0600"], ["HD4", "09/20/26 0600"], 
 }
 assert.ok(!sodiumInsertion.includes("HD1") && !sodiumInsertion.includes("HD2"), "unselected trend points stay out of the note");
 
+// Compact sheet: report-only placeholders group together, pending results are
+// lifted out, labs regroup by source panel family, and separate
+// systolic/diastolic readings pair into one Blood Pressure candidate.
+const compactPatient = {
+  id: "compact_sheet",
+  days: [{
+    id: "compact_day",
+    date: "2026-09-23",
+    label: "HD1",
+    createdAt: "2026-09-23T06:00:00.000Z",
+    sourceCaptures: [
+      {
+        id: "compact_labs",
+        sourceKind: "laboratory_results",
+        label: "Morning labs",
+        deidentifiedText: `Labs
+@ 09/23/26 11:50
+CTA Head-Neck with Perfusion (Brain Attack): Rpt
+@ 09/23/26 12:59
+EKG 12 Lead: Rpt
+@ 09/23/26 13:05
+XR Chest AP (Portable): Rpt
+@ 09/23/26 16:26
+CAR Echo 2D Complete w Contrast: Rpt
+@ 09/23/26 21:52
+MR Brain W/O Con: Rpt
+WBC: 9.1 K/uL; ref 4.0-11.0
+Hemoglobin: 13.2 g/dL; ref 11.2-15.7
+Sodium: 139 mmol/L; ref 136-145
+Creatinine: 1.0 mg/dL; ref 0.6-1.3
+
+Labs
+@ 09/24/26 04:13
+Factor V Leiden Mutation: Rpt (IP)
+Magnesium: pending`
+      },
+      {
+        id: "compact_vitals",
+        sourceKind: "vital_signs",
+        label: "Vital signs",
+        deidentifiedText: `Vitals
+@ 09/23/26 0600: SBP 142; DBP 88; HR 96
+@ 09/23/26 1200: SBP 138; DBP 84; HR 92`
+      }
+    ]
+  }]
+};
+const compactIndex = buildClinicalReviewIndex(compactPatient);
+
+// Every Rpt placeholder lands in one reports collection, individually
+// selectable, and never treated as copyable report content. Aaron's exact
+// six-report mixed-results case: five plain "Rpt" placeholders at different
+// timestamps plus one "Rpt (IP)" that keeps its In Process badge.
+assert.equal(compactIndex.reportItems.length, 6, "all six Rpt placeholders must be collected into the reports section");
+assert.deepEqual(
+  compactIndex.reportItems.map((item) => item.result.name).sort(),
+  ["CAR Echo 2D Complete w Contrast", "CTA Head-Neck with Perfusion (Brain Attack)", "EKG 12 Lead", "Factor V Leiden Mutation", "MR Brain W/O Con", "XR Chest AP (Portable)"].sort(),
+  "all report-only rows group together regardless of timestamp"
+);
+const factorV = compactIndex.reportItems.find((item) => item.result.name === "Factor V Leiden Mutation");
+assert.equal(factorV.pendingLabel, "In Process", "Rpt (IP) keeps its in-process status inside the reports section");
+assert.match(factorV.selectionCandidate.insertionText, /In Process/, "the in-process badge survives into the note insertion");
+assert.match(factorV.selectionCandidate.insertionText, /not the report content/, "report placeholders must never copy report text into the note");
+for (const item of compactIndex.reportItems) {
+  assert.ok(compactIndex.objectiveCandidates.some(({ id }) => id === item.selectionCandidate.id), `${item.result.name} must stay individually selectable`);
+}
+
+// Explicitly pending results surface separately from reports and panels.
+assert.equal(compactIndex.pendingItems.length, 1, "plain pending values must be detected");
+assert.equal(compactIndex.pendingItems[0].result.name, "Magnesium");
+assert.equal(compactIndex.pendingItems[0].pendingLabel, "Pending");
+assert.match(compactIndex.pendingItems[0].selectionCandidate.insertionText, /no result available yet/);
+
+// Report-only and pending rows leave the panel family grids.
+const familyLabels = compactIndex.labFamilies.map((section) => section.label);
+assert.ok(familyLabels.includes("CBC"), `CBC family must exist (found: ${familyLabels.join(", ")})`);
+assert.ok(familyLabels.includes("Basic metabolic panel"), `metabolic family must exist (found: ${familyLabels.join(", ")})`);
+const cbcSection = compactIndex.labFamilies.find((section) => section.label === "CBC");
+assert.deepEqual(cbcSection.rows.map(({ result }) => result.name).sort(), ["Hemoglobin", "WBC"], "CBC rows stay together without report or pending rows");
+const metabolicSection = compactIndex.labFamilies.find((section) => section.label === "Basic metabolic panel");
+assert.deepEqual(metabolicSection.rows.map(({ result }) => result.name).sort(), ["Creatinine", "Sodium"]);
+assert.ok(cbcSection.rows.every(({ result }) => result.selectionCandidate), "family rows keep their analyte selection candidates");
+
+// Separate systolic/diastolic readings become one Blood Pressure candidate;
+// already-combined readings are untouched.
+assert.deepEqual(compactIndex.vitals.map((candidate) => candidate.name), ["Blood Pressure", "Pulse"], "systolic and diastolic must pair into one candidate");
+const pairedBp = compactIndex.vitals[0];
+assert.equal(pairedBp.latest.value, "138/84", "the paired candidate shows the latest systolic/diastolic together");
+assert.equal(pairedBp.latest.unit, "mmHg");
+assert.match(pairedBp.insertionText, /^Blood Pressure: 138\/84 mmHg/, "paired insertion text reads as one blood pressure");
+assert.match(pairedBp.insertionText, /SBP 138–142/, "paired insertion keeps the systolic 24-hour range");
+assert.match(pairedBp.insertionText, /DBP 84–88/, "paired insertion keeps the diastolic 24-hour range");
+assert.ok(pairedBp.searchText.includes("systolic"), "searching systolic still finds the paired candidate");
+assert.ok(compactIndex.objectiveCandidates.some(({ id }) => id === pairedBp.id), "the paired candidate must be selectable for Objective");
+
+const alreadyPairedIndex = buildClinicalReviewIndex({
+  id: "already_paired_bp",
+  days: [{
+    id: "paired_day",
+    date: "2026-09-23",
+    label: "HD1",
+    sourceCaptures: [{
+      id: "paired_vitals",
+      sourceKind: "vital_signs",
+      label: "Vital signs",
+      deidentifiedText: `Vitals
+@ 09/23/26 0600: BP 118/76; HR 80`
+    }]
+  }]
+});
+assert.deepEqual(alreadyPairedIndex.vitals.map((candidate) => candidate.name), ["Blood Pressure (cuff)", "Pulse"], "already-combined readings must not be re-paired");
+
+// Narrative primary-team notes feed the review sheet through the same
+// canonical pipeline: home meds, exam vitals, narrative labs, and study
+// results from the note's prose become selectable candidates.
+const notePatient = {
+  id: "note_wired",
+  contextSections: [],
+  admissionPrimaryTeamNote: null,
+  days: [{
+    id: "note_day",
+    date: "2026-09-24",
+    label: "Hospital day 1",
+    sourceCaptures: [],
+    primaryTeamNote: {
+      id: "note_progress_1",
+      noteType: "progress",
+      createdAt: "2026-09-24T08:00:00.000Z",
+      updatedAt: "2026-09-24T08:00:00.000Z",
+      sections: {
+        medications: { deidentifiedText: "- Lisinopril 10 mg PO daily\n- Xarelto, dose unknown" },
+        physical_exam: { deidentifiedText: "Gen: NAD. Vitals: BP 142/88, HR 94, T 98.6 F, RR 18, SpO2 96% on RA." },
+        objective: { deidentifiedText: "Labs: WBC 12.3 (H), Hgb 9.1 (L), Creatinine 1.6 (H), Troponin rpt.\nEKG 12 Lead: sinus tach.\nCT head: no acute bleed." },
+        plan: { deidentifiedText: "1. Stroke\n- telemetry" }
+      }
+    }
+  }]
+};
+const noteIndex = buildClinicalReviewIndex(notePatient);
+assert.deepEqual(
+  noteIndex.vitals.map((candidate) => candidate.name),
+  ["Blood Pressure (cuff)", "Pulse", "Respirations", "SpO2", "Temperature"],
+  "exam vitals from note prose become vital candidates"
+);
+assert.deepEqual(
+  noteIndex.medications.map((candidate) => candidate.name).sort(),
+  ["Lisinopril", "Xarelto"],
+  "home meds from the note become medication candidates"
+);
+assert.ok(
+  noteIndex.labs.some((panel) => panel.results.some((result) => result.name === "WBC" && result.value === "12.3" && result.flag === "H")),
+  "narrative labs from the note become lab results"
+);
+assert.ok(
+  noteIndex.reportItems.some((item) => item.result.name === "Troponin"),
+  "narrative rpt values land in the reports section"
+);
+assert.deepEqual(
+  noteIndex.diagnosticResults.map((candidate) => [candidate.name, candidate.group]).sort(),
+  [["CT head", "imaging"], ["EKG 12 Lead", "other_results"]],
+  "study lines from the note become diagnostic candidates"
+);
+
 console.log("review data index tests passed");

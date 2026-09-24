@@ -3,7 +3,8 @@ import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js
 import { CONTEXT_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRoleLabel } from "../../patient-context/packet-roles.js";
 import { migrateLegacyDailySections, normalizeDiagnosticResultCategory, normalizeSourceCapture, normalizeSourceKindForScope } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
 import { normalizePrimaryTeamNote } from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
-import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260921-medication-card-v4";
+import { normalizeLabBaselines } from "../../patient-context/lab-baselines.js?v=20260924-lab-baselines-v1";
+import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260924-note-grouping-v1";
 
 export const VAULT_SCHEMA_VERSION = 5;
 
@@ -71,6 +72,7 @@ export function createPatientRecord(
     metadata: { ...metadata },
     contextSections,
     days,
+    labBaselines: {},
     archivedAt: "",
     createdAt: timestamp,
     updatedAt: timestamp
@@ -163,6 +165,7 @@ export function normalizePatient(patient, index = 0, { now = timestampNow } = {}
     contextSections,
     admissionPrimaryTeamNote: normalizeOptionalPrimaryTeamNote(patient?.admissionPrimaryTeamNote, NOTE_TYPES.H_AND_P, { now, patientId: id }),
     noteDrafts: normalizeSavedNoteDrafts(patient?.noteDrafts, { ...patient, id }, { now }),
+    labBaselines: normalizeLabBaselines(patient?.labBaselines),
     days: Array.isArray(patient?.days)
       ? patient.days.map((day, dayIndex) => {
           const normalized = normalizeDay(day, dayIndex, { now });

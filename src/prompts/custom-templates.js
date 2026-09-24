@@ -6,7 +6,7 @@ import { buildTeamPreferencesPromptBlock } from "../app/preferences.js?v=2026072
 import { attendingPromptForTask, includesRequiredAttendingPersona, promptPersonaForTask, stripConflictingAttendingPersonas } from "./natural-language.js?v=20260910-pre-op-prep";
 import { buildProgressNotePacket } from "./progress-note-packet.js?v=20260921-medication-card-v4";
 import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20260910-pre-op-prep";
-import { renderFinalNote } from "../note-drafts/index.js?v=20260921-medication-card-v4";
+import { renderFinalNote } from "../note-drafts/index.js?v=20260924-note-grouping-v1";
 import { renderPrimaryTeamNote } from "../patient-context/primary-team-note.js?v=20260921-primary-note-source";
 
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";

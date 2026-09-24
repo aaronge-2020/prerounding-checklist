@@ -25,6 +25,7 @@ import {
   removeDifferential,
   removePlanProblem,
   renderFinalNote,
+  renderFinalNoteHtml,
   renderFinalNotePlainText,
   reorderDifferentials,
   reorderPlanProblems,
@@ -259,7 +260,12 @@ const options = { now: fixedNow, idFactory: fixedId };
     sourceFingerprint: "v2",
     generatedText: "WBC 14.2 → 11.0 K/uL.",
     editedText: "WBC 14.2 → 11.0 K/uL.",
-    state: "synced"
+    state: "synced",
+    kind: "",
+    noteGroupKey: "",
+    noteGroupLabel: "",
+    noteLabel: "",
+    noteDetail: ""
   });
 
   draft = editObjectiveBlock(draft, "lab:wbc", "WBC improving to 11.0 K/uL.", { now: fixedNow });
@@ -403,6 +409,127 @@ const options = { now: fixedNow, idFactory: fixedId };
   assert.ok(allGuidance.every((entry) => !containsExcludedGuidanceLanguage(entry)));
   assert.ok(allGuidance.every((entry) => !/@[a-z]/i.test(entry)), "student help must not expose prompt variables");
   assert.ok(allGuidance.every((entry) => !/token|persona|closure table|ledger/i.test(entry)), "student help must not expose internal prompt machinery");
+}
+
+// Objective selections group in the final note: one Vitals line, one line
+// per laboratory panel family, everything else in selection order.
+{
+  let draft = createNoteDraft(NOTE_TYPES.H_AND_P, { ...options, id: "objective_grouping" });
+  const select = (selectionId, fields) => {
+    draft = selectObjectiveBlock(draft, {
+      selectionId,
+      sourceFingerprint: `fp:${selectionId}`,
+      generatedText: `${selectionId} verbose insertion text`,
+      ...fields
+    }, { now: fixedNow });
+  };
+  select("vital:hr", { kind: "vital_sign", noteGroupKey: "vitals", noteGroupLabel: "Vitals", noteLabel: "HR", noteDetail: "75 bpm (59–77)" });
+  select("vital:bp", { kind: "vital_sign", noteGroupKey: "vitals", noteGroupLabel: "Vitals", noteLabel: "BP", noteDetail: "128/78 mmHg" });
+  select("lab:wbc", { kind: "laboratory_result", noteGroupKey: "lab:cbc", noteGroupLabel: "CBC", noteLabel: "WBC", noteDetail: "8.8 K/uL" });
+  select("lab:bun", { kind: "laboratory_result", noteGroupKey: "lab:metabolic", noteGroupLabel: "Basic metabolic panel", noteLabel: "BUN", noteDetail: "28 mg/dL [H] (23 → 28)" });
+  select("lab:alt", { kind: "laboratory_result", noteGroupKey: "lab:hepatic", noteGroupLabel: "Hepatic function panel", noteLabel: "ALT", noteDetail: "45 U/L [H]" });
+  select("report:cta", { kind: "laboratory_result", generatedText: "CTA Head-Neck: report filed — review the full report in Results Review" });
+
+  const note = renderFinalNote(draft);
+  const objective = note.split("**Objective**")[1].split("**Assessment**")[0];
+  assert.match(objective, /\*\*Vitals:\*\* HR 75 bpm \(59–77\); BP 128\/78 mmHg/);
+  assert.match(objective, /\*\*CBC:\*\* WBC 8\.8 K\/uL/);
+  assert.match(objective, /\*\*Comprehensive metabolic panel:\*\* BUN 28 mg\/dL \[H\] \(23 → 28\); ALT 45 U\/L \[H\]/);
+  assert.match(objective, /CTA Head-Neck: report filed/);
+  assert.ok(objective.indexOf("**Vitals:**") < objective.indexOf("**CBC:**"), "vitals render before labs");
+
+  const html = renderFinalNoteHtml(draft);
+  assert.match(html, /<h2>Objective<\/h2>/);
+  assert.match(html, /<table class="note-vitals">/);
+  assert.match(html, /<th scope="row">HR<\/th><td>75 bpm \(59–77\)<\/td>/);
+  assert.match(html, /<h3>Comprehensive metabolic panel<\/h3>/);
+  assert.match(html, /<th scope="row">BUN<\/th><td>28 mg\/dL \[H\] \(23 → 28\)<\/td>/);
+  assert.match(html, /<p>CTA Head-Neck: report filed/);
+  assert.doesNotMatch(html, /&lt;table/);
+
+  const plain = renderFinalNotePlainText(draft);
+  assert.match(plain, /Vitals: HR 75 bpm/);
+  assert.doesNotMatch(plain, /\*\*/);
+}
+
+// Edited objective blocks keep the student's wording inside their group.
+{
+  let draft = createNoteDraft(NOTE_TYPES.H_AND_P, { ...options, id: "objective_grouping_edited" });
+  draft = selectObjectiveBlock(draft, {
+    selectionId: "vital:hr",
+    sourceFingerprint: "fp1",
+    generatedText: "Heart Rate (Monitored): latest 75 bpm",
+    kind: "vital_sign",
+    noteGroupKey: "vitals",
+    noteGroupLabel: "Vitals",
+    noteLabel: "HR",
+    noteDetail: "75 bpm (59–77)"
+  }, { now: fixedNow });
+  draft = editObjectiveBlock(draft, "vital:hr", "HR 75, bradycardic overnight per telemetry", { now: fixedNow });
+  const note = renderFinalNote(draft);
+  assert.match(note, /\*\*Vitals:\*\* HR 75, bradycardic overnight per telemetry/);
+}
+
+// The HPI must not repeat the one-liner.
+{
+  let draft = createNoteDraft(NOTE_TYPES.H_AND_P, { ...options, id: "oneliner_dedupe" });
+  draft = updateNoteSection(draft, "one_liner", "68-year-old man with acute left hemispheric stroke.", { now: fixedNow });
+  draft = updateNoteSection(draft, "history_of_present_illness",
+    "68-year-old man with acute left hemispheric stroke. He presented with aphasia and right-sided weakness. Symptoms began this morning.",
+    { now: fixedNow });
+  let note = renderFinalNote(draft);
+  const hpi = note.split("**HPI**")[1].split("**Review of Systems**")[0];
+  assert.doesNotMatch(hpi, /68-year-old man with acute left hemispheric stroke\./);
+  assert.match(hpi, /He presented with aphasia/);
+
+  // A standalone one-liner paragraph inside a longer HPI is also dropped.
+  draft = updateNoteSection(draft, "history_of_present_illness",
+    "68-year-old man with acute left hemispheric stroke.\n\nHe presented with aphasia and right-sided weakness.",
+    { now: fixedNow });
+  note = renderFinalNote(draft);
+  const hpi2 = note.split("**HPI**")[1].split("**Review of Systems**")[0];
+  assert.doesNotMatch(hpi2, /68-year-old man with acute left hemispheric stroke\./);
+  assert.match(hpi2, /He presented with aphasia/);
+
+  // An HPI that does not repeat the one-liner is left untouched.
+  draft = updateNoteSection(draft, "history_of_present_illness",
+    "Patient reports sudden onset aphasia and right-sided weakness this morning while eating breakfast.",
+    { now: fixedNow });
+  note = renderFinalNote(draft);
+  const hpi3 = note.split("**HPI**")[1].split("**Review of Systems**")[0];
+  assert.match(hpi3, /sudden onset aphasia/);
+}
+
+// Rich HTML renders headings, lists, bold labels, and differential tables.
+{
+  let draft = createNoteDraft(NOTE_TYPES.H_AND_P, { ...options, id: "rich_html" });
+  draft = updateNoteSection(draft, "chief_complaint", "Aphasia and weakness", { now: fixedNow });
+  draft = addPlanProblem(draft, { now: fixedNow });
+  const problemId = draft.problems[0].id;
+  draft = updatePlanProblem(draft, problemId, {
+    problem: { deidentifiedText: "Acute ischemic stroke", lastModified: fixedNow },
+    etiologyStatus: "unknown",
+    diagnosticPlan: { deidentifiedText: "MRI brain", lastModified: fixedNow }
+  }, { now: fixedNow });
+  draft = addDifferential(draft, problemId, { now: fixedNow });
+  const diffId = draft.problems[0].differentials[0].id;
+  draft = updateDifferential(draft, problemId, diffId, {
+    diagnosis: { deidentifiedText: "Hemorrhage", lastModified: fixedNow },
+    cluesFor: { deidentifiedText: "On anticoagulation", lastModified: fixedNow },
+    cluesAgainst: { deidentifiedText: "CT negative", lastModified: fixedNow }
+  }, { now: fixedNow });
+  const html = renderFinalNoteHtml(draft);
+  assert.match(html, /<div class="rich-note">/);
+  assert.match(html, /<section class="note-section"><h2>Chief Complaint<\/h2><p>Aphasia and weakness<\/p><\/section>/);
+  assert.match(html, /<h2>Plan<\/h2>/);
+  assert.match(html, /<table><thead><tr><th>Differential<\/th><th>Clues for this differential<\/th><th>Clues against this differential<\/th><\/tr><\/thead>/);
+  assert.match(html, /<td>Hemorrhage<\/td><td>On anticoagulation<\/td><td>CT negative<\/td>/);
+  assert.match(html, /<ul><li>Diagnostic plan — MRI brain<\/li><\/ul>/);
+  // Note content is escaped: no markup injection.
+  draft = updateNoteSection(draft, "chief_complaint", "<script>alert(1)</script>", { now: fixedNow });
+  const evil = renderFinalNoteHtml(draft);
+  assert.doesNotMatch(evil, /<script>/);
+  assert.match(evil, /&lt;script&gt;/);
 }
 
 console.log("note draft model tests passed");

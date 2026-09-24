@@ -709,4 +709,58 @@ assert.match(dvtProblem.therapeuticPlan, /heparin TID/);
 assert.ok(theftTitles.includes("Dysphagia"), "sections after the hash problem are retained");
 assert.ok(!theftTitles.includes("NAI"), "NAI must not become a problem");
 
+// Stroke H&P regression: "Vitals: Not obtained..." must not become an
+// objective heading, "Labs/Imaging" must map to the objective section, and
+// bullets separated from their numbered plan problem by blank lines must
+// merge into that problem instead of becoming phantom problems.
+const strokeHpNote = `Chief Complaint: left-sided weakness
+
+History of Present Illness: 68-year-old man with atrial fibrillation not on anticoagulation who awoke with left facial droop, left arm drift, and slurred speech. Last known well 6 hours prior.
+
+Past Medical History: atrial fibrillation, hypertension, heart failure, prior pulmonary embolism on apixaban (held for 2 days for dental procedure).
+
+Medications:
+- Apixaban 5 mg BID (held)
+- Metoprolol 50 mg daily
+- Lisinopril 10 mg daily
+
+Physical Exam:
+Gen: alert, mild distress.
+Neuro: left facial droop, left upper extremity drift, dysarthria. NIHSS 8.
+Vitals: Not obtained during this encounter.
+CV: irregularly irregular rhythm.
+
+Labs/Imaging:
+Labs: Na 140, K 4.1, Creatinine 1.2, Glucose 180 (H).
+CTA Head-Neck with Perfusion (Brain Attack): Rpt
+EKG 12 Lead: atrial fibrillation with rapid ventricular response.
+
+Assessment and Plan:
+1. Acute left hemispheric stroke
+
+- activate stroke protocol, neurology consult
+- tPA evaluation
+
+2. History of pulmonary embolism / chronic anticoagulation
+
+- hold apixaban, heparin bridge per protocol
+
+3. Heart failure
+
+- daily weights, monitor volume status`;
+
+const strokeParsed = parsePrimaryTeamNote(strokeHpNote, "hp");
+assert.match(strokeParsed.sections.physical_exam, /Vitals: Not obtained during this encounter/, "no-data vitals stay inside the physical exam");
+assert.match(strokeParsed.sections.physical_exam, /irregularly irregular rhythm/, "the exam is not swallowed by a phantom objective heading");
+assert.match(strokeParsed.sections.objective, /Creatinine 1\.2/, "Labs/Imaging maps to the objective section");
+assert.match(strokeParsed.sections.objective, /atrial fibrillation with rapid ventricular response/, "study lines stay in objective");
+const strokeTitles = strokeParsed.parsedProblems.map((problem) => problem.problem);
+assert.deepEqual(
+  strokeTitles,
+  ["Acute left hemispheric stroke", "History of pulmonary embolism / chronic anticoagulation", "Heart failure"],
+  "exactly three plan problems; blank-line bullets must not become phantom problems"
+);
+const strokeProblem = strokeParsed.parsedProblems[0];
+assert.match(strokeProblem.therapeuticPlan || strokeParsed.sections.plan, /telemetry|stroke protocol/i, "bullets merge into the numbered problem's plan");
+
 console.log("primary-team note parser tests passed");

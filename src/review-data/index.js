@@ -6,6 +6,28 @@ import {
   laboratoryAnalyteKey,
   laboratoryPanelLabel
 } from "../patient-context/laboratory-panels.js?v=20260921-medication-card-v4";
+import {
+  extractPendingItems,
+  extractReportItems,
+  labFamilySections,
+  labNoteItem,
+  NOTE_LAB_FAMILY_LABELS,
+  NOTE_VITALS_GROUP_KEY,
+  NOTE_VITALS_GROUP_LABEL,
+  noteLabFamilyKey,
+  pairBloodPressureCandidates,
+  vitalNoteItem
+} from "./compact-summary.js?v=20260924-note-grouping-v1";
+import {
+  getLabBaseline,
+  normalizeLabBaselines
+} from "../patient-context/lab-baselines.js?v=20260924-lab-baselines-v1";
+import {
+  extractNoteClinicalData
+} from "../patient-context/note-clinical-extractor.js?v=20260924-note-extractor-v1";
+import {
+  primaryTeamNoteHasContent
+} from "../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
 
 const GROUP_DEFINITIONS = Object.freeze([
   Object.freeze({ id: "vitals", label: "Vital signs" }),
@@ -325,6 +347,30 @@ function finalizeLaboratoryPanel(candidate) {
   return finalized;
 }
 
+// Selection candidates for the compact sheet's report-only and pending rows.
+// Each stays individually selectable; the generated note text never copies
+// report content from a placeholder.
+function flaggedItemSelectionCandidate(kind, item) {
+  const name = clean(item.result.name);
+  const context = item.contextLabel ? ` (${item.contextLabel})` : "";
+  const statusNote = item.pendingLabel ? ` — ${item.pendingLabel}` : "";
+  const insertionText = kind === "report"
+    ? `${name}${context}: report filed${statusNote} — review the full report in Results Review; this placeholder is not the report content`
+    : `${name}${context}: ${item.pendingLabel || "Pending"} — no result available yet`;
+  const candidate = {
+    id: stableId(kind === "report" ? "report_item" : "pending_item", `${item.panelId}\u0000${item.result.id}`, name),
+    kind: "laboratory_result",
+    group: "labs",
+    name,
+    panelName: item.panelName,
+    panelId: item.panelId,
+    insertionText,
+    searchText: clean([name, item.panelName, item.contextLabel, item.sourceLabel, kind === "report" ? "report rpt" : "pending", item.pendingLabel].join(" ")).toLocaleLowerCase("en-US")
+  };
+  candidate.fingerprint = fingerprint({ id: candidate.id, insertionText });
+  return candidate;
+}
+
 // At most three points are shown per lab trend. The latest observation always
 // anchors the trend; the remaining slots go to the most clinically
 // informative earlier points: abnormal results first, then the most recent
@@ -348,7 +394,11 @@ function compactLaboratoryTrend(result) {
   });
   const latest = observations.at(-1);
   const flag = latest?.flag ? ` [${latest.flag}]` : latest?.status && !["normal", "unknown"].includes(latest.status) ? ` [${latest.status}]` : "";
-  return `${result.name}: ${values.join(" → ")}${sharedUnit ? ` ${sharedUnit}` : ""}${flag}`;
+  const baselineValue = [clean(result?.baseline?.value), clean(result?.baseline?.unit)].filter(Boolean).join(" ");
+  const baseline = baselineValue
+    ? ` (baseline ${baselineValue}${clean(result?.baseline?.dateLabel) ? ` · ${clean(result?.baseline?.dateLabel)}` : ""})`
+    : "";
+  return `${result.name}: ${values.join(" → ")}${sharedUnit ? ` ${sharedUnit}` : ""}${flag}${baseline}`;
 }
 
 function selectLaboratoryTrendPoints(observations, maxPoints = MAX_LABORATORY_TREND_POINTS) {
@@ -419,7 +469,7 @@ function attachLaboratoryTrends(laboratoryPanels) {
   }));
 }
 
-function latestLaboratoryPanels(laboratoryPanels) {
+function latestLaboratoryPanels(laboratoryPanels, { baselines } = {}) {
   const latestByType = new Map();
   const compareRecency = (left, right) => {
     if (Number.isFinite(left.sortTime) && Number.isFinite(right.sortTime) && left.sortTime !== right.sortTime) return left.sortTime - right.sortTime;
@@ -435,8 +485,14 @@ function latestLaboratoryPanels(laboratoryPanels) {
     const id = stableId("lab_panel", `latest\u0000${key}`, panel.name);
     const trendSearchText = panel.results.flatMap((result) => result.trend || []).flatMap((entry) => [entry.value, entry.unit, entry.flag, entry.status, entry.dayLabel, entry.timestamp]);
     const results = panel.results.map((result) => {
+      // Patient-entered baselines ride along so the sheet, the note line,
+      // and the editor all read the same value.
+      const baseline = getLabBaseline(baselines, result.name);
+      const row = baseline ? { ...result, baseline } : result;
       const resultId = stableId("lab_result", `latest\u0000${normalizedExact(panel.name)}\u0000${laboratoryAnalyteKey(result.name)}`, result.name);
-      const insertionText = compactLaboratoryTrend(result);
+      const insertionText = compactLaboratoryTrend(row);
+      const familyKey = noteLabFamilyKey(result.name);
+      const noteItem = labNoteItem(row);
       const selectionCandidate = {
         id: resultId,
         kind: "laboratory_result",
@@ -444,10 +500,15 @@ function latestLaboratoryPanels(laboratoryPanels) {
         name: result.name,
         panelName: panel.name,
         insertionText,
+        // Final-note grouping: rows collapse into one line/table per panel family.
+        noteGroupKey: `lab:${familyKey}`,
+        noteGroupLabel: NOTE_LAB_FAMILY_LABELS[familyKey] || familyKey,
+        noteLabel: noteItem.label,
+        noteDetail: noteItem.detail,
         searchText: clean([panel.name, result.name, result.value, result.unit, result.referenceRange, result.flag, result.status, ...(result.trend || []).flatMap((entry) => [entry.value, entry.unit, entry.flag, entry.status])].join(" ")).toLocaleLowerCase("en-US")
       };
       selectionCandidate.fingerprint = fingerprint({ id: resultId, insertionText });
-      return { ...result, selectionCandidate };
+      return { ...row, selectionCandidate };
     });
     const context = [panel.dayLabel, panel.timestamp].filter(Boolean).join(" · ");
     const next = {
@@ -655,12 +716,113 @@ function coalesceUnitlessObservations(candidateMap) {
   }
 }
 
+// Narrative notes (admission H&P, daily progress notes) embed the same clinical
+// data the compact sheet shows — home meds, exam vitals, narrative labs, and
+// study results — in prose. The extractor re-emits them in the canonical
+// prompt-text formats, so they flow through the exact same display-model
+// pipeline as pasted Epic/CPRS exports instead of a parallel candidate path.
+const NOTE_CANONICAL_TEXTS = Object.freeze([
+  Object.freeze({ key: "medications", sourceKind: "medication_activity", sectionLabel: "Medications" }),
+  Object.freeze({ key: "vitals", sourceKind: "vital_signs", sectionLabel: "Vitals" }),
+  Object.freeze({ key: "labs", sourceKind: "laboratory_results", sectionLabel: "Labs" })
+]);
+
+function studyResultCategory(label) {
+  const normalized = normalizedExact(label);
+  if (/\b(?:ct|cta|mri|mra|cxr|xr|x-?ray|us|ultrasound|echo|tte|tee|pet|kub|dexa)\b/.test(normalized)) return "imaging";
+  if (/\bcultures?\b/.test(normalized) || /^(?:blood|sputum|urine|wound|csf)\b/.test(normalized)) return "microbiology";
+  if (/\bpath(?:ology)?\b|\bbiopsy\b/.test(normalized)) return "pathology";
+  return "other_results";
+}
+
+function noteClinicalSources(patient) {
+  const notes = [];
+  if (patient?.admissionPrimaryTeamNote) {
+    notes.push({
+      note: patient.admissionPrimaryTeamNote,
+      label: "Admission H&P",
+      scope: "admission",
+      dayId: "admission",
+      dayDate: "",
+      dayLabel: "Admission",
+      dayIndex: -1
+    });
+  }
+  sortedDays(patient?.days || []).forEach((day, dayIndex) => {
+    if (!day?.primaryTeamNote) return;
+    notes.push({
+      note: day.primaryTeamNote,
+      label: `${clean(day.label) || `Hospital day ${dayIndex + 1}`} progress note`,
+      scope: "daily",
+      dayId: clean(day.id),
+      dayDate: clean(day.date),
+      dayLabel: clean(day.label) || `Hospital day ${dayIndex + 1}`,
+      dayIndex
+    });
+  });
+  const synthetic = [];
+  notes.forEach((entry, noteOrder) => {
+    const { note } = entry;
+    if (!primaryTeamNoteHasContent(note)) return;
+    const sections = {};
+    for (const [fieldId, section] of Object.entries(note.sections || {})) {
+      sections[fieldId] = section?.deidentifiedText || "";
+    }
+    const extracted = extractNoteClinicalData(sections, { noteType: note.noteType });
+    const noteKey = clean(note.id) || `note_${noteOrder}`;
+    for (const { key, sourceKind, sectionLabel } of NOTE_CANONICAL_TEXTS) {
+      const text = extracted[`${key}Text`];
+      if (!clean(text)) continue;
+      synthetic.push({
+        record: {
+          id: `note_${noteKey}_${key}`,
+          label: `${entry.label} ${sectionLabel}`,
+          sourceKind,
+          deidentifiedText: text
+        },
+        scope: entry.scope,
+        sourceId: `note_${noteKey}_${key}`,
+        sourceKind,
+        sourceLabel: entry.label,
+        dayId: entry.dayId,
+        dayDate: entry.dayDate,
+        dayLabel: entry.dayLabel,
+        dayIndex: entry.dayIndex,
+        capturedAt: clean(note.updatedAt || note.createdAt)
+      });
+    }
+    extracted.studies.forEach((study, studyIndex) => {
+      synthetic.push({
+        record: {
+          id: `note_${noteKey}_study_${studyIndex}`,
+          label: study.label,
+          sourceKind: "results",
+          resultCategory: studyResultCategory(study.label),
+          resultContext: entry.label,
+          resultDate: "",
+          deidentifiedText: study.text
+        },
+        scope: entry.scope,
+        sourceId: `note_${noteKey}_study_${studyIndex}`,
+        sourceKind: "results",
+        sourceLabel: entry.label,
+        dayId: entry.dayId,
+        dayDate: entry.dayDate,
+        dayLabel: entry.dayLabel,
+        dayIndex: entry.dayIndex,
+        capturedAt: clean(note.updatedAt || note.createdAt)
+      });
+    });
+  });
+  return synthetic;
+}
+
 export function buildClinicalReviewIndex(patient) {
   const labMap = new Map();
   const vitalMap = new Map();
   const medicationMap = new Map();
   const diagnostics = [];
-  const sources = sourcesForPatient(patient);
+  const sources = [...sourcesForPatient(patient), ...noteClinicalSources(patient)];
 
   sources.forEach((source, sourceOrder) => {
     if (source.sourceKind === "results") diagnostics.push(diagnosticCandidate(source));
@@ -668,7 +830,10 @@ export function buildClinicalReviewIndex(patient) {
   });
 
   coalesceUnitlessObservations(vitalMap);
-  const labs = latestLaboratoryPanels(attachLaboratoryTrends([...labMap.values()].map(finalizeLaboratoryPanel)));
+  const laboratoryPanels = [...labMap.values()].map(finalizeLaboratoryPanel);
+  const labs = latestLaboratoryPanels(attachLaboratoryTrends(laboratoryPanels), {
+    baselines: normalizeLabBaselines(patient?.labBaselines)
+  });
   let vitals = [...vitalMap.values()].map((candidate) => finalizeObservationCandidate(candidate, "vitals"));
   const latestVitalTime = vitals.flatMap((candidate) => candidate.observations)
     .filter((observation) => Number.isFinite(observation.numericValue) && Number.isFinite(observation.sortTime))
@@ -677,9 +842,30 @@ export function buildClinicalReviewIndex(patient) {
     const statistics24h = vitalStatistics(candidate, latestVitalTime);
     const next = { ...candidate, statistics24h, insertionText: vitalInsertionText(candidate, statistics24h) };
     next.fingerprint = fingerprint({ id: next.id, observations: next.observations.map(({ id, value, unit, timestamp, dayLabel }) => ({ id, value, unit, timestamp, dayLabel })), statistics24h });
+    // Final-note grouping: all vitals collapse into one Vitals table/line.
+    next.noteGroupKey = NOTE_VITALS_GROUP_KEY;
+    next.noteGroupLabel = NOTE_VITALS_GROUP_LABEL;
+    const noteItem = vitalNoteItem(next);
+    next.noteLabel = noteItem.label;
+    next.noteDetail = noteItem.detail;
     return next;
   });
   const medications = [...medicationMap.values()].map(finalizeMedicationCandidate);
+
+  // Compact-sheet groupings. Systolic/diastolic pairs merge into one Blood
+  // Pressure candidate; report-only placeholders and explicitly pending
+  // results are lifted out of the panels into their own selectable lists;
+  // laboratory rows are regrouped by source panel family (CBC, metabolic, ...).
+  vitals = pairBloodPressureCandidates(vitals);
+  const reportItems = extractReportItems(laboratoryPanels).map((item) => ({
+    ...item,
+    selectionCandidate: flaggedItemSelectionCandidate("report", item)
+  }));
+  const pendingItems = extractPendingItems(laboratoryPanels).map((item) => ({
+    ...item,
+    selectionCandidate: flaggedItemSelectionCandidate("pending", item)
+  }));
+  const labFamilies = labFamilySections(labs);
 
   const byGroup = new Map(GROUP_DEFINITIONS.map(({ id }) => [id, []]));
   for (const candidate of [...vitals, ...labs, ...medications, ...diagnostics]) byGroup.get(candidate.group)?.push(candidate);
@@ -691,6 +877,9 @@ export function buildClinicalReviewIndex(patient) {
   for (const panel of labs) {
     for (const result of panel.results) objectiveCandidateMap.set(result.selectionCandidate.id, result.selectionCandidate);
   }
+  for (const item of [...reportItems, ...pendingItems]) {
+    objectiveCandidateMap.set(item.selectionCandidate.id, item.selectionCandidate);
+  }
   const objectiveCandidates = [...objectiveCandidateMap.values()];
   return {
     patientId: clean(patient?.id),
@@ -700,7 +889,10 @@ export function buildClinicalReviewIndex(patient) {
     vitals: byGroup.get("vitals"),
     labs: byGroup.get("labs"),
     medications: byGroup.get("medications"),
-    diagnosticResults: diagnostics.sort((left, right) => left.name.localeCompare(right.name) || left.id.localeCompare(right.id))
+    diagnosticResults: diagnostics.sort((left, right) => left.name.localeCompare(right.name) || left.id.localeCompare(right.id)),
+    reportItems,
+    pendingItems,
+    labFamilies
   };
 }
 

@@ -3605,10 +3605,509 @@ button.var-fill:focus-visible {
   overflow-wrap: anywhere;
 }
 
+/* Compact clinical-data sheet (2026-09-24): dense one-page review layout.
+   Vitals strip, pending/report rows, and panel-family lab grids replace the
+   old giant per-vital/per-panel cards. No pagination. */
+.compact-section {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  padding: 10px 12px;
+}
+
+.compact-section + .compact-section {
+  margin-top: 10px;
+}
+
+.compact-section-heading {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-bottom: 8px;
+}
+
+.compact-section-heading h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+.compact-section-meta {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.compact-section-meta strong {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.compact-section-note {
+  margin: -4px 0 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.compact-panel-selects {
+  margin-left: auto;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+
+.compact-panel-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted-strong);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.compact-panel-select input {
+  margin: 0;
+}
+
+/* Vitals strip: one horizontal row of compact selectable chips. */
+.vital-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.vital-chip {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 7px 12px;
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  min-width: 0;
+}
+
+.vital-chip:last-child {
+  border-right: 0;
+}
+
+.vital-chip input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.vital-chip.is-selected {
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
+.vital-chip:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.vital-chip-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted-strong);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.vital-chip-value {
+  font-size: 1.02rem;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.vital-chip-value strong {
+  font-weight: 750;
+}
+
+.vital-chip[data-clinical-emphasis="high"] .vital-chip-value strong,
+.vital-chip[data-clinical-emphasis="low"] .vital-chip-value strong,
+.vital-chip[data-clinical-emphasis="abnormal"] .vital-chip-value strong,
+.vital-chip[data-clinical-emphasis="critical"] .vital-chip-value strong {
+  color: var(--danger);
+}
+
+.vital-chip-when,
+.vital-chip-trend,
+.vital-chip-stats {
+  color: var(--faint);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.vital-chip-trend {
+  color: var(--muted-strong);
+}
+
+/* Small abnormal flag pills used across the compact sheet. */
+.flag-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.05em;
+  height: 1.05em;
+  padding: 0 0.25em;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.flag-high,
+.flag-abnormal {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+.flag-low {
+  background: var(--surface-blue);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.status-pending {
+  background: var(--warning-bg);
+  color: var(--warning);
+  border: 1px solid var(--warning);
+}
+
+.status-report {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+/* Dense one-line rows for pending, reports, medications, diagnostics. */
+.compact-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.compact-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.compact-row:nth-child(odd) {
+  background: var(--surface-subtle);
+}
+
+.compact-row.is-selected {
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
+.compact-row-check {
+  display: inline-flex;
+  margin: 0;
+}
+
+.compact-row-check input {
+  margin: 0;
+}
+
+.compact-row-name {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  min-width: 0;
+  font-size: 0.86rem;
+}
+
+.compact-row-name strong {
+  font-weight: 650;
+}
+
+.compact-row-name small {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.compact-row-excerpt {
+  flex-basis: 100%;
+  color: var(--faint);
+  font-size: 0.75rem;
+}
+
+.compact-row-meta {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.compact-row .status-pill {
+  margin-left: auto;
+}
+
+.compact-row .status-pill + .status-pill {
+  margin-left: 0;
+}
+
+.compact-row-name + .compact-row-meta {
+  margin-left: auto;
+}
+
+/* Laboratory family grids: dense multi-column analyte cells. */
+.lab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 2px 10px;
+}
+
+.lab-cell {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "check name"
+    "check value"
+    "check sub";
+  column-gap: 7px;
+  align-items: baseline;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.lab-cell:nth-child(odd) {
+  background: var(--surface-subtle);
+}
+
+.lab-cell.is-selected {
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
+.lab-cell-check {
+  grid-area: check;
+  display: inline-flex;
+  margin: 0;
+}
+
+.lab-cell-check input {
+  margin: 0;
+}
+
+.lab-cell-name {
+  grid-area: name;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: var(--muted-strong);
+  min-width: 0;
+}
+
+.lab-cell-value {
+  grid-area: value;
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.lab-cell-value strong {
+  font-weight: 750;
+}
+
+.lab-cell[data-clinical-emphasis="high"] .lab-cell-value strong,
+.lab-cell[data-clinical-emphasis="low"] .lab-cell-value strong,
+.lab-cell[data-clinical-emphasis="abnormal"] .lab-cell-value strong,
+.lab-cell[data-clinical-emphasis="critical"] .lab-cell-value strong {
+  color: var(--danger);
+}
+
+.lab-cell-flag {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.lab-cell-sub {
+  grid-area: sub;
+  color: var(--faint);
+  font-size: 0.72rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Patient-entered lab baselines: one toggle per row, inline editor. */
+.lab-cell-baseline-row {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+.lab-cell-baseline {
+  color: var(--muted);
+  font-size: 0.72rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lab-baseline-toggle {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--accent, #2563eb);
+  font-size: 0.72rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+.lab-baseline-toggle:hover {
+  color: var(--accent-strong, #1d4ed8);
+}
+.lab-baseline-editor {
+  grid-column: 1 / -1;
+  border-top: 1px dashed var(--border);
+  margin-top: 6px;
+  padding-top: 8px;
+}
+.lab-baseline-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 8px;
+}
+.lab-baseline-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.lab-baseline-field input {
+  font-size: 0.8rem;
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--background, #fff);
+  color: inherit;
+  width: 100%;
+}
+.lab-baseline-actions {
+  margin-top: 8px;
+  gap: 6px;
+}
+.lab-baseline-actions .button--primary {
+  padding: 4px 10px;
+  font-size: 0.78rem;
+}
+.lab-baseline-actions button:not(.button--primary) {
+  padding: 4px 10px;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 680px) {
+  .lab-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .vital-strip {
+    flex-direction: column;
+  }
+
+  .vital-chip {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .vital-chip:last-child {
+    border-bottom: 0;
+  }
+}
 .final-note-preview {
   margin-top: 18px;
   border-top: 1px solid var(--border);
   padding-top: 14px;
+}
+
+/* Rich final-note preview: real headings, tables, and lists instead of a
+   plain-text <pre> dump. */
+.rich-note-preview {
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  padding: 14px 16px;
+  max-height: 70vh;
+  overflow: auto;
+}
+.rich-note .note-section + .note-section {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.rich-note h2 {
+  font-size: 1.02rem;
+  margin: 0 0 8px;
+  letter-spacing: 0.01em;
+}
+.rich-note h3 {
+  font-size: 0.92rem;
+  margin: 12px 0 6px;
+  color: var(--text-strong, inherit);
+}
+.rich-note p {
+  margin: 6px 0;
+  line-height: 1.45;
+}
+.rich-note ul {
+  margin: 6px 0;
+  padding-left: 1.25rem;
+}
+.rich-note li {
+  margin: 3px 0;
+  line-height: 1.4;
+}
+.rich-note table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6px 0 10px;
+  font-size: 0.92rem;
+}
+.rich-note th,
+.rich-note td {
+  border: 1px solid var(--border);
+  padding: 5px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+.rich-note thead th {
+  background: var(--surface-strong, rgba(0, 0, 0, 0.04));
+}
+.rich-note .note-vitals th,
+.rich-note .note-labs th {
+  width: 34%;
 }
 
 @media (max-width: 1100px) {

@@ -126,11 +126,21 @@ export function normalizeObjectiveBlock(block) {
     sourceFingerprint: text(block?.sourceFingerprint),
     generatedText,
     editedText,
-    state
+    state,
+    // Final-note grouping metadata: which "Vitals:" / panel-family line this
+    // block collapses into, and its compact single-line form. Blocks without
+    // a noteGroupKey render as their own paragraph.
+    kind: text(block?.kind),
+    noteGroupKey: text(block?.noteGroupKey),
+    noteGroupLabel: text(block?.noteGroupLabel),
+    noteLabel: text(block?.noteLabel),
+    noteDetail: text(block?.noteDetail)
   };
   if (state === "stale") {
     normalized.pendingSourceFingerprint = text(block?.pendingSourceFingerprint);
     normalized.pendingGeneratedText = text(block?.pendingGeneratedText);
+    normalized.pendingNoteLabel = text(block?.pendingNoteLabel);
+    normalized.pendingNoteDetail = text(block?.pendingNoteDetail);
   }
   return normalized;
 }
@@ -380,7 +390,16 @@ function normalizedSelectionInput(selection) {
   if (!selectionId) throw new TypeError("Objective selections require a selectionId.");
   const sourceFingerprint = text(selection?.sourceFingerprint);
   if (!sourceFingerprint) throw new TypeError("Objective selections require a sourceFingerprint.");
-  return { selectionId, sourceFingerprint, generatedText: text(selection?.generatedText) };
+  return {
+    selectionId,
+    sourceFingerprint,
+    generatedText: text(selection?.generatedText),
+    kind: text(selection?.kind),
+    noteGroupKey: text(selection?.noteGroupKey),
+    noteGroupLabel: text(selection?.noteGroupLabel),
+    noteLabel: text(selection?.noteLabel),
+    noteDetail: text(selection?.noteDetail)
+  };
 }
 
 export function selectObjectiveBlock(draft, selection, { now = timestampNow } = {}) {
@@ -434,7 +453,9 @@ export function reconcileObjectiveBlock(draft, selection, { now = timestampNow }
           ...block,
           state: "stale",
           pendingSourceFingerprint: input.sourceFingerprint,
-          pendingGeneratedText: input.generatedText
+          pendingGeneratedText: input.generatedText,
+          pendingNoteLabel: input.noteLabel,
+          pendingNoteDetail: input.noteDetail
         });
       })
     }
@@ -452,6 +473,11 @@ export function refreshObjectiveBlock(draft, selectionId, { now = timestampNow }
           sourceFingerprint: block.pendingSourceFingerprint,
           generatedText: block.pendingGeneratedText,
           editedText: block.pendingGeneratedText,
+          kind: block.kind,
+          noteGroupKey: block.noteGroupKey,
+          noteGroupLabel: block.noteGroupLabel,
+          noteLabel: block.pendingNoteLabel || block.noteLabel,
+          noteDetail: block.pendingNoteDetail || block.noteDetail,
           state: "synced"
         });
       })

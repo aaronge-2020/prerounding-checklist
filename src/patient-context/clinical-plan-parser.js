@@ -1,9 +1,9 @@
 const TWO_COLUMN_HEADER_REGEX = /Diagnostic and Objective Findings\s*[\t|]\s*Assessment and Plan/i;
 
 const KNOWN_SYSTEMS = new Set([
-  "neuro", "neurology", "neurosurgery", "cv", "cardiovascular", "cardiology", "cardio", "cards",
+  "neuro", "neurologic", "neurology", "neurosurgery", "cv", "cardiovascular", "cardiology", "cardio", "cards",
   "pulm", "pulmonary", "pulmonology", "renal", "nephrology", "heme",
-  "hematology", "heme / onc", "heme/onc", "oncology", "id", "infectious disease",
+  "hematology", "heme / onc", "heme/onc", "oncology", "id", "infectious", "infectious disease",
   "gi / nutrition", "gi/nutrition", "gi", "gastrointestinal", "endo",
   "endocrine", "endocrinology", "msk / derm", "msk/derm", "msk", "derm",
   "dermatology", "prophylaxis", "fen"
@@ -229,11 +229,20 @@ export function parseClinicalPlanProblems(planText) {
     const isHashProblem = /^#\s*[a-zA-Z0-9]/.test(trimmed);
     const isNumberedProblem = /^(?:problem\s*\d+[:.]|\d{1,2}[.:])\s*[a-zA-Z]/i.test(trimmed);
     const isTeamPlan = SPECIALTY_PLAN_HEADER.test(trimmed);
-    const isSystemHeader = KNOWN_SYSTEMS.has(trimmed.replace(/[:\s]+$/, "").toLowerCase());
+    // System header: "Neurologic:" or "Neurologic: details" (inline details).
+    const systemHeaderMatch = trimmed.match(/^([a-zA-Z\/\s]+?):\s*(.+)?$/);
+    const isSystemHeader = KNOWN_SYSTEMS.has(trimmed.replace(/[:\s]+$/, "").toLowerCase()) ||
+      (systemHeaderMatch && KNOWN_SYSTEMS.has(systemHeaderMatch[1].trim().toLowerCase()));
 
     if ((isHashProblem || isNumberedProblem || isTeamPlan || isSystemHeader) && currentBlock.length > 0) {
       const nonBlank = currentBlock.map((l) => l.trim()).filter(Boolean);
-      if (nonBlank.length > 1 || (!isTeamPlan && !isSystemHeader)) {
+      // Push the block if it has content. For system headers, a single line
+      // like "Neurologic: details" still contains a valid problem (the system
+      // name) with inline plan details, so it must not be discarded.
+      const hasInlineSystemDetails = nonBlank.length === 1 &&
+        isSystemHeader &&
+        /^([a-zA-Z\/\s]+?):\s*.+$/s.test(nonBlank[0]);
+      if (nonBlank.length > 1 || (!isTeamPlan && !isSystemHeader) || hasInlineSystemDetails) {
         blocks.push(currentBlock);
         currentBlock = [];
       }
@@ -243,6 +252,25 @@ export function parseClinicalPlanProblems(planText) {
   }
   if (currentBlock.length > 0) {
     blocks.push(currentBlock);
+  }
+
+  // Bullets separated from their numbered problem by a blank line belong to
+  // that problem's plan ("1. Stroke\n\n- telemetry"), not to phantom
+  // problems of their own. Merge a bullet-only block into the previous block
+  // when the previous block opens with a numbered or hash problem marker.
+  const mergedBlocks = [];
+  for (const block of blocks) {
+    const previous = mergedBlocks.at(-1);
+    const lines = block.map((line) => line.trim()).filter(Boolean);
+    const previousLines = previous ? previous.map((line) => line.trim()).filter(Boolean) : [];
+    const previousOpensProblem = previousLines.length > 0
+      && /^(?:#+\s*|(?:problem\s*\d+\s*[:.]|\d{1,2}[.:])\s*[a-zA-Z])/i.test(previousLines[0]);
+    const bulletOnly = lines.length > 0 && lines.every((line) => /^(?:[-•*>—–]|>>)/.test(line));
+    if (previous && previousOpensProblem && bulletOnly) {
+      previous.push(...block);
+    } else {
+      mergedBlocks.push([...block]);
+    }
   }
 
   const problems = [];
@@ -264,7 +292,7 @@ export function parseClinicalPlanProblems(planText) {
     });
   };
 
-  for (const block of blocks) {
+  for (const block of mergedBlocks) {
     const isFirstBlock = blockIndex === 0;
     blockIndex += 1;
     const nonBlank = block.map((l) => l.trim()).filter(Boolean);
@@ -272,7 +300,7 @@ export function parseClinicalPlanProblems(planText) {
 
     const firstLine = nonBlank[0];
     const cleanFirst = firstLine.replace(/^#+\s*/, "").replace(/[:\s]+$/, "");
-    const strippedFirst = cleanFirst.replace(/^[-•*>—–\s]+|^>>\s*/, "").trim();
+    const strippedFirst = cleanFirst.replace(/^[-•*>—–\s]+|^>>\s*|^\d+[.)]?\s+/, "").trim();
 
     // A leading assessment narrative ("74 y.o. with ... s/p HBOT.") is not a
     // problem entry; it stays in the plan section text and must not become a
@@ -316,7 +344,25 @@ export function parseClinicalPlanProblems(planText) {
     }
 
     // Strip leading dashes or bullets from problem title
-    problemTitle = problemTitle.replace(/^[-•*>—–\s]+|^>>\s*|^\d+[.)]\s*/, "").trim();
+    problemTitle = problemTitle.replace(/^[-•*>—–\s]+|^>>\s*|^\d+[.)]?\s+/, "").trim();
+
+    // "Upper GI bleed on apixaban — hold apixaban, ..." — split the inline
+    // plan details (after " — " or " - ") from the problem title.
+    const inlinePlanSplit = problemTitle.match(/^(.*?)\s+[—–-]\s+(.+)$/);
+    let inlinePlan = "";
+    if (inlinePlanSplit && inlinePlanSplit[1].trim().length >= 3) {
+      problemTitle = inlinePlanSplit[1].trim();
+      inlinePlan = inlinePlanSplit[2].trim();
+    }
+
+    // "Neurologic: Sedation vacation..." — system header with inline details.
+    // Split into title "Neurologic" and plan details.
+    const systemInlineSplit = problemTitle.match(/^([a-zA-Z\/\s]+?):\s*(.+)$/);
+    if (systemInlineSplit && KNOWN_SYSTEMS.has(systemInlineSplit[1].trim().toLowerCase())) {
+      problemTitle = systemInlineSplit[1].trim();
+      const systemDetails = systemInlineSplit[2].trim();
+      if (systemDetails) inlinePlan = inlinePlan ? `${inlinePlan}\n${systemDetails}` : systemDetails;
+    }
 
     if (!problemTitle) continue;
 
@@ -324,6 +370,9 @@ export function parseClinicalPlanProblems(planText) {
     const diagLines = [];
     const theraLines = [];
     const differentials = [];
+
+    // Inline plan details from the title ("Problem — do X, Y") go to therapeutic plan.
+    if (inlinePlan) theraLines.push(inlinePlan);
 
     for (let j = startIndex; j < nonBlank.length; j++) {
       const line = nonBlank[j];

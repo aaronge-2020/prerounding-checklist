@@ -11,8 +11,8 @@ const PROGRESS = "progress";
 
 const HEADING_DEFINITIONS = Object.freeze([
   heading(["one liner", "one-liner", "source summary", "brief summary"], "one_liner"),
-  heading(["chief complaint", "cc", "reason for admission"], { [H_AND_P]: "chief_complaint", [PROGRESS]: "patient_report" }),
-  heading(["history of present illness", "hpi"], { [H_AND_P]: "history_of_present_illness", [PROGRESS]: "patient_report" }),
+  heading(["chief complaint", "cc", "reason for admission", "reason for consultation", "chief concern", "presenting complaint", "reason for visit", "reason for encounter"], { [H_AND_P]: "chief_complaint", [PROGRESS]: "patient_report" }),
+  heading(["history of present illness", "hpi", "history", "presenting history", "present illness"], { [H_AND_P]: "history_of_present_illness", [PROGRESS]: "patient_report" }),
   heading(["stay summary", "hospital course", "brief hospital course"], {
     [H_AND_P]: "history_of_present_illness",
     [PROGRESS]: "interval_events"
@@ -21,29 +21,31 @@ const HEADING_DEFINITIONS = Object.freeze([
     [H_AND_P]: "history_of_present_illness",
     [PROGRESS]: "interval_events"
   }),
-  heading(["subjective", "patient report", "s"], { [H_AND_P]: "history_of_present_illness", [PROGRESS]: "patient_report" }),
+  heading(["subjective", "patient report", "patient reports", "s"], { [H_AND_P]: "history_of_present_illness", [PROGRESS]: "patient_report" }),
   heading(["nursing report"], { [H_AND_P]: "other", [PROGRESS]: "nursing_report" }),
   heading(["pertinent symptoms"], { [H_AND_P]: "history_of_present_illness", [PROGRESS]: "pertinent_symptoms" }),
-  heading(["review of systems", "ros"], { [H_AND_P]: "review_of_systems", [PROGRESS]: "pertinent_symptoms" }),
-  heading(["medications", "meds", "medication list", "current medications", "current meds", "current rx", "home medications", "medication changes", "current facility-administered medications"], "medications"),
-  heading(["allergies"], { [H_AND_P]: "allergies", [PROGRESS]: "other" }),
-  heading(["past medical history", "medical history", "pmh", "pmhx"], { [H_AND_P]: "past_medical_history", [PROGRESS]: "other" }),
+  heading(["review of systems", "ros", "systems review"], { [H_AND_P]: "review_of_systems", [PROGRESS]: "pertinent_symptoms" }),
+  heading(["medications", "meds", "medication list", "current medications", "current meds", "current rx", "home medications", "home meds", "med list", "prescriptions", "medication changes", "current facility-administered medications"], "medications"),
+  heading(["allergies", "allergy", "nkda"], { [H_AND_P]: "allergies", [PROGRESS]: "other" }),
+  heading(["past medical history", "medical history", "pmh", "pmhx", "past history"], { [H_AND_P]: "past_medical_history", [PROGRESS]: "other" }),
   heading(["past surgical history", "surgical history", "psh", "pshx"], { [H_AND_P]: "past_surgical_history", [PROGRESS]: "other" }),
   heading(["family history", "family hx", "fhx", "fh"], { [H_AND_P]: "family_history", [PROGRESS]: "other" }),
-  heading(["social history", "social hx", "soc hx", "sh"], { [H_AND_P]: "social_history", [PROGRESS]: "other" }),
+  heading(["social history", "social hx", "soc hx", "sh", "social", "habits"], { [H_AND_P]: "social_history", [PROGRESS]: "other" }),
   heading(["diet and exercise", "diet exercise"], { [H_AND_P]: "diet_and_exercise", [PROGRESS]: "other" }),
-  heading(["physical exam", "physical examination", "exam", "examination", "neurological examination", "neurologic examination"], "physical_exam"),
+  heading(["physical exam", "physical examination", "exam", "examination", "pe", "exam findings", "neurological examination", "neurologic examination"], "physical_exam"),
   heading(["objective", "objective data", "objective findings", "o"], "objective"),
   heading([
     "vital signs", "vitals", "encounter vitals stats", "encounter vitals stats last 24 hours",
     "encounter vitals", "vitals stats", "vital signs stats", "encounter vitals summary",
-    "intake output", "i o", "laboratory data", "laboratory results", "labs",
-    "imaging", "diagnostic studies", "diagnostic studies review management",
+    "intake output", "i o", "ins and outs", "i/o", "laboratory data", "laboratory results", "laboratory", "labs", "labs reviewed",
+    "labs/imaging", "lab/imaging", "labs and imaging", "labs & imaging", "lab data",
+    "studies", "study results", "studies reviewed", "test results", "results review", "data review",
+    "imaging", "x ray", "xray", "xr", "electrocardiogram", "diagnostic studies", "diagnostic studies review management",
     "diagnostic studies / review management", "diagnostic and objective findings",
-    "objective diagnostic studies", "objective / diagnostic studies", "results"
+    "objective diagnostic studies", "objective / diagnostic studies", "results", "data"
   ], "objective", true),
-  heading(["assessment", "impression", "a"], "assessment"),
-  heading(["assessment and plan", "assessment / plan", "a and p", "a p", "ap", "impression and plan", "plan", "p"], "plan"),
+  heading(["assessment", "impression", "clinical impression", "a"], "assessment"),
+  heading(["assessment and plan", "assessment / plan", "a and p", "a p", "ap", "impression and plan", "plan", "p", "plans", "plan by system", "systems plan", "recommendations", "recs", "next steps"], "plan"),
   heading(["fen", "fluids electrolytes nutrition"], "fen"),
   heading([
     "lda", "ldas", "lines drains airways", "lines drains and airways",
@@ -69,6 +71,13 @@ function normalizeHeading(value) {
   return String(value || "").normalize("NFKC")
     .replace(/^\s{0,3}#{1,6}\s*/, "")
     .replace(/^\*\*(.*?)\*\*$/, "$1")
+    // Numbered section headers: "1. Chief Complaint" -> "Chief Complaint"
+    .replace(/^\d{1,2}[.)]\s*/, "")
+    // Dash-wrapped headers: "--- Chief Complaint ---" -> "Chief Complaint"
+    .replace(/^[-—–]+\s*/, "")
+    .replace(/\s*[-—–]+$/, "")
+    // Parenthetical qualifiers: "Vitals (per patient home cuff)" -> "Vitals"
+    .replace(/\s*\([^)]*\)\s*/g, " ")
     .replace(/[\\:;,.\s]+$/g, "")
     .replace(/&/g, " and ")
     .replace(/[^a-zA-Z0-9]+/g, " ")
@@ -116,11 +125,25 @@ function permitsBulletHeading(definition) {
   return fields.some((field) => ["code_status", "disposition", "fen", "vte_prophylaxis", "plan", "lda"].includes(field));
 }
 
+// A data-header line that explicitly reports no data ("Vitals: Not obtained
+// during this encounter.") is a finding, not a section boundary. Letting it
+// open a new objective block would swallow the rest of the physical exam into
+// the wrong section, so the line stays where it is.
+const NO_DATA_INLINE = /^(?:not\s+(?:obtained|done|recorded|available|documented|assessed|performed)|none|n\/?a|unknown|deferred|not\s+applicable)\b/i;
+
+function isNoDataHeader(match) {
+  if (!match?.inlineText) return false;
+  const fields = typeof match.definition.field === "string" ? [match.definition.field] : Object.values(match.definition.field);
+  return fields.includes("objective") && NO_DATA_INLINE.test(match.inlineText.trim());
+}
+
 function headingMatch(line) {
   const trimmed = String(line || "").trim();
   if (!trimmed) return null;
-  const bulletMatch = trimmed.match(/^[-•>]\s*(.+)$/);
-  const headingText = bulletMatch ? bulletMatch[1] : trimmed;
+  // Dash-wrapped headers: "--- Chief Complaint ---" is a heading, not a bullet.
+  const dashWrapped = trimmed.match(/^[-—–]{2,}\s*(.+?)\s*[-—–]{2,}$/);
+  const bulletMatch = dashWrapped ? null : trimmed.match(/^[-•>]\s*(.+)$/);
+  const headingText = dashWrapped ? dashWrapped[1] : bulletMatch ? bulletMatch[1] : trimmed;
 
   const exact = headingText.length <= 180 ? definitionFor(headingText) : null;
   if (exact && (!bulletMatch || permitsBulletHeading(exact))) {
@@ -305,12 +328,16 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
   };
 
   for (const line of source.split("\n")) {
+    // Setext/markdown underline rows ("===", "~~~") are formatting, not content.
+    // ("---" alone is not skipped: it may wrap a header like "--- Chief Complaint ---".)
+    if (/^[=~]{3,}\s*$/.test(line.trim())) continue;
     // Inside an Assessment/Plan section, "#..." lines are problem entries for
     // parseClinicalPlanProblems, not markdown headings. Without this guard a
     // line like "#DVT prophylaxis" is stolen as a VTE-prophylaxis section
     // heading and everything after it is swallowed into the wrong field.
     const inPlanSection = activeField === "plan";
-    const match = inPlanSection && /^#/.test(line.trim()) ? null : headingMatch(line);
+    const rawMatch = inPlanSection && /^#/.test(line.trim()) ? null : headingMatch(line);
+    const match = rawMatch && isNoDataHeader(rawMatch) ? null : rawMatch;
     if (!match) {
       activeLines.push(line);
       continue;
@@ -321,11 +348,18 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
     if (match.prefixText) appendBlock(blocks, fallbackField, match.prefixText);
     const normalizedMatchHeading = normalizeHeading(match.heading);
     const imagingSubheading = insideImagingBlock && ["exam", "examination", "impression"].includes(normalizedMatchHeading);
+    // "Vitals:" at the start of a Physical Exam belongs to the exam, not a
+    // new Objective section. Without this guard the exam section ends up
+    // empty and vitals are orphaned into objective.
+    const vitalsInExam = priorField === "physical_exam"
+      && ["vital signs", "vitals"].includes(normalizedMatchHeading);
     activeField = imagingSubheading
       ? "objective"
-      : match.definition.stayWithPlan && priorField === "plan"
+      : vitalsInExam
         ? priorField
-        : fieldFor(match.definition, noteType, availableFields) || fallbackField;
+        : match.definition.stayWithPlan && priorField === "plan"
+          ? priorField
+          : fieldFor(match.definition, noteType, availableFields) || fallbackField;
     detected.push({ fieldId: activeField, heading: match.heading });
     const preserveFallbackHeading = activeField === fallbackField;
     const preserveCombinedPatientHeading = noteType === PROGRESS
