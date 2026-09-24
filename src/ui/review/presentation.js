@@ -386,8 +386,9 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       const hasStale = group.blocks.some((block) => block.state === "stale");
       const isVitals = group.key === "vitals";
       let bodyHtml;
-      if (isVitals) {
-        // One clean line per vital: "BP 92/48" with subtle 24h range and mean.
+      {
+        // One clean line per item: "BP 92/48", "WBC 9" — easy to scan.
+        // Vitals also get subtle 24h range and mean as secondary text.
         // Edited blocks show their edited text; otherwise use clean label+detail.
         const lines = group.blocks
           .map((block) => {
@@ -399,31 +400,24 @@ export function createReviewPresentation({ escapeHtml, icon }) {
             }
             const label = String(block.noteLabel || "").trim();
             const detail = String(block.noteDetail || "").trim();
-            const range = String(block.noteRange || "").trim();
-            const mean = String(block.noteMean || "").trim();
-            let text = label && detail ? `${label} ${detail}` : (label || detail || String(block.generatedText || "").trim());
-            // Append 24h range and mean as subtle secondary info.
-            const secondary = [];
-            if (range) secondary.push(`24h ${range}`);
-            if (mean) secondary.push(`mean ${mean}`);
-            const secondaryHtml = secondary.length
-              ? ` <span class="ed-vital-secondary">${escapeHtml(secondary.join(" · "))}</span>`
-              : "";
+            const text = label && detail ? `${label} ${detail}` : (label || detail || String(block.generatedText || "").trim());
+            // Vitals only: append 24h range and mean as subtle secondary info.
+            let secondaryHtml = "";
+            if (isVitals) {
+              const range = String(block.noteRange || "").trim();
+              const mean = String(block.noteMean || "").trim();
+              const secondary = [];
+              if (range) secondary.push(`24h ${range}`);
+              if (mean) secondary.push(`mean ${mean}`);
+              secondaryHtml = secondary.length
+                ? ` <span class="ed-vital-secondary">${escapeHtml(secondary.join(" · "))}</span>`
+                : "";
+            }
             return text ? `<div class="ed-vital-line" data-vital-line="${escapeHtml(block.selectionId)}">${editorHtml(text)}${secondaryHtml}</div>` : "";
           })
           .filter(Boolean)
           .join("");
         bodyHtml = `<div class="ed-vitals-list" contenteditable="true" data-objective-group-text="${escapeHtml(group.key)}" data-placeholder="Optional" spellcheck="true">${lines}</div>`;
-      } else {
-        const combinedText = group.blocks
-          .map((block) => {
-            const label = String(block.noteLabel || "").trim();
-            const detail = String(block.noteDetail || "").trim();
-            return label && detail ? `${label} ${detail}` : (label || detail || String(block.editedText || block.generatedText || "").trim());
-          })
-          .filter(Boolean)
-          .join("; ");
-        bodyHtml = `<div class="ed-body ed-body--inline" contenteditable="true" data-objective-group-text="${escapeHtml(group.key)}" data-placeholder="Optional" spellcheck="true">${editorHtml(combinedText)}</div>`;
       }
       const isCollapsed = collapsedObjectiveGroups.has(group.key);
       const toggleIcon = isCollapsed ? "▶" : "▼";
