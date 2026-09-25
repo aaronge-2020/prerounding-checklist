@@ -2398,6 +2398,99 @@ button.var-fill:focus-visible {
   flex-shrink: 0;
 }
 
+/* Horizontal collapse for the clinical data panel: when collapsed it becomes
+   a slim rail, giving the draft note the full horizontal width. */
+.review-columns:has(.review-data-panel.is-collapsed) {
+  grid-template-columns: 52px minmax(0, 1fr);
+}
+
+.review-data-panel.is-collapsed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 6px;
+  position: sticky;
+  top: 0;
+  max-height: calc(100vh - 140px);
+}
+
+.clinical-data-rail-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clinical-data-rail-toggle:hover {
+  background: var(--surface-hover);
+}
+
+.clinical-data-rail-label {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Smart `$` lab autocomplete dropdown in the draft note editor. */
+.lab-autocomplete-dropdown {
+  position: absolute;
+  z-index: 1000;
+  min-width: 280px;
+  max-width: 420px;
+  max-height: 320px;
+  overflow-y: auto;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, #d0d7de);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 4px;
+}
+
+.lab-autocomplete-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.lab-autocomplete-item:hover,
+.lab-autocomplete-item.is-selected {
+  background: var(--surface-hover, #f0f4f8);
+}
+
+.lab-autocomplete-name {
+  font-weight: 600;
+  color: var(--ink, #1a1a1a);
+  white-space: nowrap;
+}
+
+.lab-autocomplete-value {
+  color: var(--muted, #666);
+  font-size: 12px;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+
 .note-draft-panel .note-editor {
   flex: 1;
   min-height: 0;

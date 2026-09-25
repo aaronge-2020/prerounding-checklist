@@ -330,6 +330,14 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       </div>
       <p class="review-filter-summary" aria-live="polite">${matchCount} matching item${matchCount === 1 ? "" : "s"}</p>
       <div class="review-data-list">${sections.length ? sections.join("") : `<div class="empty-state">No saved clinical data match this search.</div>`}</div>`;
+    if (clinicalDataCollapsed) {
+      // Horizontal collapse: slim rail with just an expand button, so the
+      // draft note takes the full width.
+      return `<section class="review-data-panel panel is-collapsed" aria-labelledby="reviewDataHeading">
+      <button type="button" class="clinical-data-rail-toggle" data-action="toggle-clinical-data" title="Show clinical data" aria-label="Show clinical data" aria-expanded="false">▶</button>
+      <span class="clinical-data-rail-label" aria-hidden="true">Clinical data</span>
+    </section>`;
+    }
     return `<section class="review-data-panel panel" aria-labelledby="reviewDataHeading">
       <div class="section-heading"><div><h2 id="reviewDataHeading">Clinical data</h2><p class="muted">Vitals and medications are in the note automatically — uncheck to remove. Check labs or results to add them.</p></div><button type="button" class="ed-mini" data-action="toggle-clinical-data" title="${toggleLabel}" aria-label="${toggleLabel}" aria-expanded="${!clinicalDataCollapsed}">${toggleIcon}</button></div>
       ${bodyHtml}
@@ -527,7 +535,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         <div class="note-editor-title"><h2 id="draftNoteHeading">Draft note</h2><label class="note-type-control"><span>Format</span><select id="reviewNoteType"><option value="${NOTE_TYPES.PROGRESS}" ${draft.noteType === NOTE_TYPES.PROGRESS ? "selected" : ""}>Progress note</option><option value="${NOTE_TYPES.H_AND_P}" ${draft.noteType === NOTE_TYPES.H_AND_P ? "selected" : ""}>H&amp;P</option></select></label></div>
         <div class="note-editor-actions"><button type="button" class="button--primary button--small" data-action="save-note-draft">Save draft</button><button type="button" class="button--secondary button--small" data-action="copy-final-note">Copy for Epic</button><button type="button" class="button--secondary button--small" data-action="copy-rich-note">Copy rich text</button><button type="button" class="button--secondary button--small" data-action="download-final-note">${icon("download")} .txt</button></div>
       </div>
-      <p class="ed-toolbar-note">One editor for the whole note — section labels included. Saving encrypts the draft without running de-identification.</p>
+      <p class="ed-toolbar-note">One editor for the whole note — section labels included. Type <kbd>$</kbd> to pull a lab or vital into the note. Saving encrypts the draft without running de-identification.</p>
       <div class="note-editor" id="noteEditor" role="group" aria-label="Note editor">
         ${frontSections.join("")}
         ${editorSection("Physical Exam", checklistFindingsEditor(draft, "exam", "Complete the physical-exam checklist to populate this section."), { labelExtra: checklistTag, sectionAttr: ` data-checklist-finding-kind="exam"` })}

@@ -1,6 +1,7 @@
 import { sortDays } from "../../daily-updates/days.js?v=20260921-medication-card-v4";
 import { updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20260924-optional-sections-v1&labs=analyte-selection-v3";
+import { createLabAutocomplete } from "./lab-autocomplete.js?v=20260924-dollar-autocomplete-v1";
 import {
   addDifferential,
   addPlanProblem,
@@ -133,6 +134,20 @@ export function createReviewController(deps) {
   // Local UI state only; survives re-renders.
   const collapsedObjectiveGroups = new Set();
 
+  // Latest clinical review index, cached for the `$` lab autocomplete.
+  // Rebuilt on every model() call; the autocomplete reads from here.
+  let latestIndex = null;
+
+  // Smart `$` autocomplete for pulling labs/vitals into the draft note.
+  // Attaches via event delegation so it survives full re-renders.
+  const labAutocomplete = createLabAutocomplete({
+    getCandidates: () => {
+      if (!latestIndex) return [];
+      // Labs and vitals are the most useful for inline insertion.
+      return [...(latestIndex.labs || []), ...(latestIndex.vitals || [])];
+    }
+  });
+
   // Only the 5 core vitals are auto-selected: BP, SpO2, HR, RR, Temp.
   // Medications are also auto-added. Labs and other vitals (weight, MAP, etc.)
   // are never auto-added — the student selects them explicitly.
@@ -256,6 +271,7 @@ export function createReviewController(deps) {
     // Explicit student confirmations for unmarked temperature units live on
     // the patient record and resolve the ambiguity at the review boundary.
     const index = buildClinicalReviewIndex(patient, { temperatureUnits: patient?.temperatureUnits });
+    latestIndex = index;
     const checklistCandidates = buildChecklistNoteCandidates(patient, packet.id);
     const draft = reviewDraft(patient, packet.id, index, checklistCandidates);
     return {
@@ -338,6 +354,9 @@ export function createReviewController(deps) {
       const restored = document.getElementById(activeId);
       if (restored) restored.focus({ preventScroll: true });
     }
+    // Attach the `$` lab autocomplete via event delegation. Safe to call on
+    // every render; it no-ops if already attached to this container.
+    if (container) labAutocomplete.attach(container);
   }
 
   function prepare(selectedPacketId = "admission") {

@@ -194,7 +194,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
             ${sourceOptions.map((option) => `<option value="${escapeHtml(option.id)}" ${option.id === capture.sourceKind ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
           </select>
         </label>
-        ${capture.sourceKind === "results" ? `<div class="structured-result-fields saved-result-fields">
+        ${capture.sourceKind === "results" && isExpanded ? `<div class="structured-result-fields saved-result-fields">
           <label>Result label<input data-saved-result-label value="${escapeHtml(capture.label || "")}"></label>
           <label>Result type<select data-saved-result-category>${DIAGNOSTIC_RESULT_CATEGORIES.map((entry) => `<option value="${escapeHtml(entry.id)}" ${entry.id === capture.resultCategory ? "selected" : ""}>${escapeHtml(entry.label)}</option>`).join("")}</select></label>
           <label>Result date<input type="date" data-saved-result-date value="${escapeHtml(capture.resultDate || "")}"></label>

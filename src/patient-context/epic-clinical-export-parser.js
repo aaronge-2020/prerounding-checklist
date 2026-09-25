@@ -9,6 +9,18 @@ import {
 } from "./free-text-results.js";
 
 const EPIC_RESULT_TIMESTAMP = /^(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})(?:[ T,]+(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?|\d{4}))?$/i;
+
+// Convert an Epic collection timestamp ("09/24/26 04:13", "09-24-2026") to
+// ISO YYYY-MM-DD for the HTML date input. Returns "" when unparseable.
+function epicCollectedDateToIso(collected) {
+  const match = String(collected || "").trim().match(EPIC_RESULT_TIMESTAMP);
+  if (!match) return "";
+  const [month, day, year] = match[1].split(/[/-]/).map((part) => part.trim());
+  if (!month || !day || !year) return "";
+  const fullYear = year.length === 2 ? `20${year}` : year.padStart(4, "0");
+  const iso = `${fullYear}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  return /^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso : "";
+}
 const RESULT_VALUE = /^(?:[-+]?\d|[<>]=?\s*[-+]?\d|positive\b|negative\b|detected\b|not detected\b|reactive\b|nonreactive\b|pending\b|present\b|absent\b|rpt\b)/i;
 const RESULT_LEGEND = /^\(([A-Z]{1,4})\)\s*:\s*(.+)$/i;
 const REPORT_LEGEND = /^(Rpt)\s*:\s*(View report\b.*)$/i;
@@ -188,7 +200,8 @@ function renderEpicResults(value) {
     .map((group) => {
       const labResults = [];
       for (const result of group.results) {
-        if (needsFreeTextResult(result.label, result.value)) flaggedPairs.push(result);
+        // Carry the collection timestamp so the saved source retains its date.
+        if (needsFreeTextResult(result.label, result.value)) flaggedPairs.push({ ...result, collected: group.collected || "" });
         else labResults.push(result);
       }
       return { ...group, results: labResults };
@@ -278,6 +291,8 @@ function renderEpicResults(value) {
       sourceKind: "results",
       resultCategory: freeTextResultCategory(studyLabel),
       resultLabel: studyLabel,
+      // Retain the collection date so the saved source shows when it was drawn.
+      resultDate: epicCollectedDateToIso(pair.collected || ""),
       needsFreeText: true,
       outputText: pairText,
       canonicalPromptText: pairText,
