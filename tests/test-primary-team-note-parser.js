@@ -924,3 +924,38 @@ PLAN:
 }
 
 console.log("primary-team note parser A/P pairing regression tests passed");
+
+// Regression: "Active Hospital Problems" with CMS/HHS-HCC billing codes must
+// not leak into the narrative assessment when a combined "Assessment and
+// Plan" heading is used. The synthesis paragraph at the top is the assessment;
+// the structured problem list is parsed as problems.
+{
+  const note = `Assessment and Plan
+46 y.o. male with recurrent DVT/PE admitted for stroke workup. He presented with acute findings.
+
+Active Hospital Problems
+Diagnosis
+•\tAcute ischemic stroke (CMS/HHS-HCC)
+•\tMixed hyperlipidemia
+•\tEssential hypertension
+
+Neuro
+#Acute ischemic stroke
+Date of Stroke: 9/23/2026
+- MRI brain without contrast
+
+Cardiovascular
+#HFrEF
+- Continous telemetry
+`;
+  const parsed = parsePrimaryTeamNote(note, "progress");
+  const assessment = parsed.sections.assessment || "";
+  // The synthesis paragraph should be the assessment.
+  assert.match(assessment, /46 y\.o\. male with recurrent DVT\/PE admitted for stroke workup/, "synthesis paragraph should be the assessment");
+  // The billing-coded problem list must NOT appear in the assessment.
+  assert.doesNotMatch(assessment, /CMS\/HHS-HCC/, "HCC-coded problem list must not leak into assessment");
+  assert.doesNotMatch(assessment, /Mixed hyperlipidemia/, "problem-list entries must not leak into assessment");
+  // The problem list should still be parsed as problems (for problem cards).
+  const problemTitles = (parsed.parsedProblems || []).map(p => p.title || p.problem || "");
+  assert.ok(problemTitles.some(t => t.includes("Acute ischemic stroke (CMS/HHS-HCC)")), "HCC-coded problems should still be parsed as problems");
+}

@@ -387,16 +387,60 @@ export function createReviewController(deps) {
   // Guard for non-browser environments (tests).
   function withPreservedViewScroll(container, update) {
     const canPreserve = typeof window !== "undefined" && typeof document !== "undefined";
-    const view = canPreserve ? container?.closest?.(".view") : null;
-    const top = view ? view.scrollTop : 0;
-    const left = view ? view.scrollLeft : 0;
-    update();
-    if (view) {
-      view.scrollTop = top;
-      view.scrollLeft = left;
+    if (!canPreserve) { update(); return; }
+    // Snapshot every scrollable ancestor, not just .view: below the 1040px
+    // breakpoint the .view is overflow:visible and the document itself is the
+    // scroller, so preserving only .view.scrollTop loses the position.
+    // Also snapshot all scrollable descendants of the container's parent —
+    // a nested scroller inside the review content (e.g. a scrollable sheet)
+    // would otherwise be missed.
+    const owners = [];
+    const seen = new Set();
+    const consider = (el) => {
+      if (!el || seen.has(el)) return;
+      seen.add(el);
+      let overflowY = "";
+      try { overflowY = window.getComputedStyle(el).overflowY; } catch { return; }
+      const isDocScroller = el === document.scrollingElement || el === document.documentElement;
+      if ((/(auto|scroll|overlay)/.test(overflowY) || isDocScroller) && el.scrollHeight > el.clientHeight + 1) {
+        owners.push(el);
+      }
+    };
+    // Ancestors of the container.
+    for (let current = container; current; current = current.parentElement) consider(current);
+    // Document scroller (covers the narrow-viewport case).
+    consider(document.scrollingElement);
+    consider(document.documentElement);
+    // Scrollable descendants within the container's parent subtree — catches
+    // nested scrollers that are siblings or children of the container.
+    const scope = container?.parentElement || document.body;
+    if (scope?.querySelectorAll) {
+      for (const el of scope.querySelectorAll("*")) consider(el);
     }
+    const snapshot = owners.map((owner) => ({ owner, top: owner.scrollTop, left: owner.scrollLeft }));
+    // Blur the focused control before replacing DOM: when a checkbox is
+    // removed mid-focus the browser can reset scroll as focus falls back.
+    const active = document.activeElement;
+    if (active && active !== document.body && container?.contains(active)) {
+      try { active.blur(); } catch { /* ignore */ }
+    }
+    update();
+    const restore = () => {
+      for (const { owner, top, left } of snapshot) {
+        if (!owner.isConnected && owner !== document.scrollingElement && owner !== document.documentElement) continue;
+        try {
+          if (owner.scrollHeight > owner.clientHeight) owner.scrollTop = top;
+          if (owner.scrollWidth > owner.clientWidth) owner.scrollLeft = left;
+        } catch { /* ignore */ }
+      }
+    };
+    restore();
+    // Layout can settle after paint; restore on the next frame and again
+    // after a tick to beat late browser scroll adjustments.
+    window.requestAnimationFrame(restore);
+    setTimeout(restore, 0);
+    setTimeout(restore, 60);
   }
-
   // Patch only the clinical-data sheet (list + match summary) so typing in
   // the search field or toggling a lab-family collapse does not lose focus.
   function patchDataList() {

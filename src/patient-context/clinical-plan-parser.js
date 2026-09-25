@@ -531,7 +531,7 @@ export function parseClinicalPlanProblems(planText) {
   // held here and prepended to the next problem's buckets.
   const orphanLabeled = { diagnostic: [], therapeutic: [], context: [] };
 
-  const pushProblem = ({ title, system, keyContext = "", diagnosticPlan = "", therapeuticPlan = "", differentials = [] }) => {
+  const pushProblem = ({ title, system, keyContext = "", diagnosticPlan = "", therapeuticPlan = "", differentials = [], fromProblemList = false }) => {
     const cleanTitle = String(title || "").replace(/[:\s]+$/, "").trim();
     if (!cleanTitle || NEGATED_PROBLEM_TITLE.test(cleanTitle)) return;
     problems.push({
@@ -542,7 +542,12 @@ export function parseClinicalPlanProblems(planText) {
       keyContext: String(keyContext || "").trim(),
       differentials,
       diagnosticPlan: String(diagnosticPlan || "").trim(),
-      therapeuticPlan: String(therapeuticPlan || "").trim()
+      therapeuticPlan: String(therapeuticPlan || "").trim(),
+      // Structured EHR problem lists (e.g. "Active Hospital Problems" with
+      // CMS/HHS-HCC billing codes) are problem entries, not assessment
+      // reasoning. Tag them so the combined "Assessment and Plan" fallback
+      // doesn't copy billing-coded titles into the narrative assessment.
+      fromProblemList
     });
   };
 
@@ -580,7 +585,7 @@ export function parseClinicalPlanProblems(planText) {
         if (!/^(?:[-•*>—–]|>>|\d+[.)])/.test(line)) continue;
         const bulletText = line.replace(/^[-•*>—–\s]+|^>>\s*|^\d+[.)]\s*/, "").trim();
         if (!bulletText) continue;
-        pushProblem({ title: bulletText, system: "", differentials: [] });
+        pushProblem({ title: bulletText, system: "", differentials: [], fromProblemList: true });
       }
       continue;
     }

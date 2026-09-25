@@ -593,24 +593,59 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
   const planProblems = parseClinicalPlanProblems(transformedSections.plan || "");
   const parsedProblems = pairAssessmentPlanProblems(transformedSections.assessment, transformedSections.plan, planProblems);
   // A combined "Assessment and Plan" heading parks all reasoning in the plan
-  // section. Split the assessment reasoning back out problem-by-problem so
-  // sections.assessment reflects the synthesis while sections.plan keeps the
-  // full problem-oriented text and its actions.
-  if (combinedPlanHeading && !String(transformedSections.assessment || "").trim() && parsedProblems.length > 0) {
-    const assessmentParts = [];
-    for (const problem of parsedProblems) {
-      const title = String(problem.problem || problem.title || "").trim();
-      const lines = [];
-      if (title) lines.push(title);
-      const context = String(problem.keyContext || "").trim();
-      if (context) lines.push(context);
-      const differentials = (problem.differentials || [])
-        .map((entry) => String(entry.diagnosis || "").trim())
-        .filter(Boolean);
-      if (differentials.length) lines.push(`Ranked differential: ${differentials.join("; ")}.`);
-      if (lines.length) assessmentParts.push(lines.join("\n"));
+  // section. The synthesis paragraph(s) at the top — before the first
+  // problem list, system section, or #problem — are the assessment narrative.
+  // Extract them so sections.assessment reflects the synthesis while
+  // sections.plan keeps the full problem-oriented text and its actions.
+  // If there is no synthesis (the section starts directly with problems),
+  // fall back to listing the problem titles so the assessment is not empty.
+  // Structured EHR problem lists (fromProblemList) are excluded from the
+  // fallback: their billing-coded titles are problem entries, not assessment
+  // reasoning.
+  if (combinedPlanHeading && !String(transformedSections.assessment || "").trim()) {
+    const planText = String(transformedSections.plan || "");
+    const problemListHeaders = new Set([
+      "active hospital problems", "active problems", "hospital problems",
+      "principal problems", "principal problem", "problem list", "problems",
+      "diagnosis", "diagnoses"
+    ]);
+    const lines = planText.split(/\r?\n/);
+    let splitIndex = lines.length;
+    for (let i = 0; i < lines.length; i++) {
+      const trimmed = lines[i].trim();
+      const lower = trimmed.toLowerCase().replace(/[:\s]+$/, "");
+      // Problem list header, #problem line, or numbered problem marks the
+      // end of the synthesis and the start of problem-oriented content.
+      if (problemListHeaders.has(lower) || /^#\s*[a-zA-Z0-9]/.test(trimmed) ||
+          /^(?:problem\s*\d+[:.]|\d{1,2}[.:])\s*[a-zA-Z]/i.test(trimmed)) {
+        splitIndex = i;
+        break;
+      }
     }
-    if (assessmentParts.length) transformedSections.assessment = assessmentParts.join("\n\n");
+    const synthesis = lines.slice(0, splitIndex).join("\n").trim();
+    // Only use the synthesis if it's substantive (not just a heading remnant).
+    // It should contain sentence-like content, not just a single short label.
+    if (synthesis && /[.!?]/.test(synthesis) && synthesis.length > 40) {
+      transformedSections.assessment = synthesis;
+    } else if (parsedProblems.length > 0) {
+      // Fallback: no synthesis paragraph; list the problem titles so the
+      // assessment is not empty. Excludes structured problem-list entries.
+      const assessmentParts = [];
+      for (const problem of parsedProblems) {
+        if (problem.fromProblemList) continue;
+        const title = String(problem.problem || problem.title || "").trim();
+        const linesOut = [];
+        if (title) linesOut.push(title);
+        const context = String(problem.keyContext || "").trim();
+        if (context) linesOut.push(context);
+        const differentials = (problem.differentials || [])
+          .map((entry) => String(entry.diagnosis || "").trim())
+          .filter(Boolean);
+        if (differentials.length) linesOut.push(`Ranked differential: ${differentials.join("; ")}.`);
+        if (linesOut.length) assessmentParts.push(linesOut.join("\n"));
+      }
+      if (assessmentParts.length) transformedSections.assessment = assessmentParts.join("\n\n");
+    }
   }
   return {
     recognized: detectedFieldIds.length > 0,
