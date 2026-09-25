@@ -473,7 +473,14 @@ export function createReviewController(deps) {
     if (wrapper && nextList) withPreservedViewScroll(wrapper, () => wrapper.replaceChildren(...nextList.childNodes));
   }
 
+  // DEBUG INSTRUMENTATION (remove after root cause found)
+  let renderCount = 0;
+
   function render() {
+    renderCount++;
+    if (typeof document !== "undefined") {
+      document.documentElement.dataset.reviewRenderCount = String(renderCount);
+    }
     const current = model();
     const container = deps.byId("reviewContent");
     const canPreserveScroll = typeof window !== "undefined" && typeof document !== "undefined";
@@ -619,6 +626,11 @@ export function createReviewController(deps) {
   }
 
   function renderDraftPanelOnly() {
+    renderCount++;
+    if (typeof document !== "undefined") {
+      document.documentElement.dataset.reviewRenderCount = String(renderCount);
+      document.documentElement.dataset.lastDraftOnly = String(Date.now());
+    }
     const current = model();
     if (!current.patient) return;
     const container = deps.byId("reviewContent");
@@ -1711,6 +1723,10 @@ export function createReviewController(deps) {
       return true;
     }
     if (action === "toggle-clinical-data") {
+      // DEBUG: mark that toggle ran
+      if (typeof document !== "undefined") {
+        document.documentElement.dataset.toggleCount = String(Number(document.documentElement.dataset.toggleCount || 0) + 1);
+      }
       // True surgical toggle: both the rail and the full content are
       // always in the DOM (see renderDataExplorer). Flipping `hidden`
       // never destroys the search input, the data list, or their state.
