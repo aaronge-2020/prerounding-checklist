@@ -1721,6 +1721,10 @@ async function handleClick(event) {
     if (token) requestAnimationFrame(() => scrollPromptOutputToVariable(byId("promptOutputHighlighted"), token));
     return;
   }
+  // The review controller handles pull-from-primary buttons, which carry
+  // data-pull-section but no data-action. Check before the data-action
+  // early return below, otherwise these clicks are silently dropped.
+  if (app.view === "review" && reviewController.click(event.target)) return;
   const target = event.target.closest("[data-action]");
   if (!target) return;
   const action = target.dataset.action;
@@ -1733,7 +1737,6 @@ async function handleClick(event) {
     ) {
       throw new Error("Unlock the local vault before using workspace tools.");
     }
-    if (app.view === "review" && reviewController.click(target)) return;
     if (action === "unlock-vault") await unlockVault();
     if (action === "start-guided-demo" || action === "restart-guided-demo") {
       if (!vaultIsUnlocked() && !app.demoSession) {
