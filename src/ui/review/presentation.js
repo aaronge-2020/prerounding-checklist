@@ -538,7 +538,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       <p class="ed-toolbar-note">One editor for the whole note — section labels included. Type <kbd>$</kbd> to pull a lab or vital into the note. Saving encrypts the draft without running de-identification.</p>
       <div class="note-editor" id="noteEditor" role="group" aria-label="Note editor">
         ${frontSections.join("")}
-        ${editorSection("Physical Exam", checklistFindingsEditor(draft, "exam", "Complete the physical-exam checklist to populate this section."), { labelExtra: checklistTag, sectionAttr: ` data-checklist-finding-kind="exam"` })}
+        ${editorSection("Physical Exam", `${editorRegion("data-draft-section=\"physical_exam\"", draft.sections?.physical_exam, "Document your physical exam findings")}<div class="ed-sub"><span class="ed-sub-label">From checklist ${checklistTag}</span><div class="ed-readonly" data-checklist-finding-kind="exam">${checklistFindingsEditor(draft, "exam", "Complete the physical-exam checklist to populate this section.")}</div></div>`, { labelExtra: helpFor("physical_exam", "Physical Exam"), sectionAttr: ` data-checklist-finding-kind="exam"` })}
         ${editorSection("Objective", objectiveBody, { labelExtra: helpFor("objective", "Objective") })}
         ${editorSection("Assessment", editorRegion("data-draft-assessment", draft.assessment, "Your concise synthesis"), { labelExtra: helpFor("assessment", "Assessment") })}
         ${editorSection("Plan", planBody, { labelExtra: `${helpFor("plan", "Plan")}<button type="button" class="ed-mini" data-action="add-plan-problem">${icon("plus")} Add problem</button>` })}

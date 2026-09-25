@@ -958,10 +958,25 @@ function clearSensitiveSession() {
 }
 
 function render() {
+  // Preserve scroll position of the active view across re-renders.
+  // Buttons like "De-identify & save" or "Save to draft" trigger full
+  // re-renders; without this the view jumps back to the top.
+  const activeView = document.querySelector(".view.active");
+  const scrollTop = activeView?.scrollTop || 0;
+  const scrollLeft = activeView?.scrollLeft || 0;
+  const restoreScroll = () => {
+    const view = document.querySelector(".view.active");
+    if (view) {
+      view.scrollTop = scrollTop;
+      view.scrollLeft = scrollLeft;
+    }
+  };
+
   if (app.phoneBundle) {
     document.body.classList.remove("vault-locked");
     document.body.classList.add("phone-mode");
     renderPhoneChecklist();
+    restoreScroll();
     return;
   }
   const unlocked = vaultIsUnlocked();
@@ -982,6 +997,7 @@ function render() {
     }
     renderVault();
     renderStatusBar();
+    restoreScroll();
     return;
   }
   if (!app.phoneBundle && app.view !== "daily" && app.phiReviews.size) clearPhiReviews();
@@ -1005,6 +1021,7 @@ function render() {
   }
   demoController.render();
   renderStatusBar();
+  restoreScroll();
   if (app.view === "daily" && app.pendingSectionReviewFocus) requestAnimationFrame(focusPendingSectionReview);
 }
 

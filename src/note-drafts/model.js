@@ -154,10 +154,20 @@ function updateDraftText(existing, value, timestamp) {
 
 function normalizeSections(noteType, sections, timestamp) {
   const source = sections && typeof sections === "object" ? sections : {};
-  return Object.fromEntries(fieldsForNoteType(noteType).map(({ id }) => [
-    id,
-    normalizeDraftText(source[id] ?? "", { timestamp })
-  ]));
+  // Preserve all input sections (e.g. physical_exam, plan from primary-team
+  // notes), not just the core NOTE_TYPE_FIELDS. This ensures pasted note
+  // content survives the round-trip to the draft.
+  const normalized = {};
+  for (const [id, value] of Object.entries(source)) {
+    normalized[id] = normalizeDraftText(value ?? "", { timestamp });
+  }
+  // Ensure all expected fields exist even if not in the source.
+  for (const { id } of fieldsForNoteType(noteType)) {
+    if (!Object.hasOwn(normalized, id)) {
+      normalized[id] = normalizeDraftText("", { timestamp });
+    }
+  }
+  return normalized;
 }
 
 function normalizeClosingSections(closing, timestamp) {
