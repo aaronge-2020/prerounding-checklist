@@ -190,7 +190,6 @@ export function createReviewController(deps) {
   // Whether the Clinical Data panel is collapsed (user can focus on the note).
   // Local UI state only; survives re-renders.
   let clinicalDataCollapsed = false;
-  let clinicalDataScrollBeforeCollapse = 0;
 
   // Which Objective editor groups are collapsed (vitals, lab families, etc.).
   // Local UI state only; survives re-renders.
@@ -474,13 +473,7 @@ export function createReviewController(deps) {
   }
 
   // DEBUG INSTRUMENTATION (remove after root cause found)
-  let renderCount = 0;
-
   function render() {
-    renderCount++;
-    if (typeof document !== "undefined") {
-      document.documentElement.dataset.reviewRenderCount = String(renderCount);
-    }
     const current = model();
     const container = deps.byId("reviewContent");
     const canPreserveScroll = typeof window !== "undefined" && typeof document !== "undefined";
@@ -626,11 +619,6 @@ export function createReviewController(deps) {
   }
 
   function renderDraftPanelOnly() {
-    renderCount++;
-    if (typeof document !== "undefined") {
-      document.documentElement.dataset.reviewRenderCount = String(renderCount);
-      document.documentElement.dataset.lastDraftOnly = String(Date.now());
-    }
     const current = model();
     if (!current.patient) return;
     const container = deps.byId("reviewContent");
@@ -1726,47 +1714,37 @@ export function createReviewController(deps) {
       // True surgical toggle: both the rail and the full content are
       // always in the DOM (see renderDataExplorer). Flipping `hidden`
       // never destroys the search input, the data list, or their state.
-      // The panel itself is the scroller (overflow:auto). Save its scrollTop
-      // when collapsing; restore it when expanding, after layout settles.
+      // The panel itself is the scroller (overflow:auto). Persist the
+      // scrollTop on the panel's dataset (not a JS variable) so it
+      // survives across handler invocations; restore after layout.
       const panel = target.closest(".review-data-panel");
       const rail = panel?.querySelector("[data-clinical-data-rail]");
       const full = panel?.querySelector("[data-clinical-data-full]");
-      if (!clinicalDataCollapsed && panel) {
-        clinicalDataScrollBeforeCollapse = panel.scrollTop;
-        // DEBUG: expose saved value
-        if (typeof document !== "undefined") {
-          document.documentElement.dataset.savedScroll = String(clinicalDataScrollBeforeCollapse);
-        }
+      const wasCollapsed = panel?.dataset.clinicalDataCollapsed === "true";
+      if (!wasCollapsed && panel) {
+        panel.dataset.savedScrollTop = String(panel.scrollTop);
       }
-      clinicalDataCollapsed = !clinicalDataCollapsed;
+      const nowCollapsed = !wasCollapsed;
+      // Keep the module variable in sync for the view model (initial render).
+      clinicalDataCollapsed = nowCollapsed;
       // Blur the clicked toggle button: when its container hides, the
       // browser may scroll the panel to keep the focused (now hidden)
       // button in view, clobbering our restore.
       if (typeof document !== "undefined" && document.activeElement instanceof HTMLElement) {
         document.activeElement.blur();
       }
-      if (rail) rail.hidden = !clinicalDataCollapsed;
-      if (full) full.hidden = clinicalDataCollapsed;
-      panel?.classList.toggle("is-collapsed", clinicalDataCollapsed);
-      if (panel) panel.dataset.clinicalDataCollapsed = String(clinicalDataCollapsed);
+      if (rail) rail.hidden = nowCollapsed;
+      if (full) full.hidden = !nowCollapsed;
+      panel?.classList.toggle("is-collapsed", nowCollapsed);
+      if (panel) panel.dataset.clinicalDataCollapsed = String(nowCollapsed);
       panel?.querySelectorAll('[data-action="toggle-clinical-data"]').forEach((btn) => {
-        btn.setAttribute("aria-expanded", String(!clinicalDataCollapsed));
+        btn.setAttribute("aria-expanded", String(!nowCollapsed));
       });
-      if (panel && !clinicalDataCollapsed) {
-        const restoreTo = clinicalDataScrollBeforeCollapse;
-        // DEBUG: expose restore target and actual after restore
-        if (typeof document !== "undefined") {
-          document.documentElement.dataset.restoreTarget = String(restoreTo);
-        }
+      if (panel && !nowCollapsed) {
+        const restoreTo = Number(panel.dataset.savedScrollTop || 0);
         const doRestore = () => {
-          // Force synchronous layout so scrollHeight reflects the
-          // un-hidden content before we set scrollTop.
           void panel.scrollHeight;
           panel.scrollTop = restoreTo;
-          if (typeof document !== "undefined") {
-            document.documentElement.dataset.restoreActual = String(panel.scrollTop);
-            document.documentElement.dataset.scrollHeight = String(panel.scrollHeight);
-          }
         };
         if (typeof requestAnimationFrame !== "undefined") {
           requestAnimationFrame(() => requestAnimationFrame(doRestore));
@@ -1903,8 +1881,12 @@ export function createReviewController(deps) {
       if (list) {
         // Save the editor scroll position — reordering nodes can shift
         // content and the browser may adjust scroll unexpectedly.
+        // Blur the clicked button so focus doesn't pull scroll.
         const scroller = panel?.querySelector(".note-editor");
         const savedScroll = scroller ? scroller.scrollTop : 0;
+        if (typeof document !== "undefined" && document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
         // Reorder the live nodes to match the model order — a true DOM move.
         // No scrollIntoView: the user just clicked this card, it's already
         // in view, and forcing scroll resets the panel position.
@@ -1913,7 +1895,19 @@ export function createReviewController(deps) {
           if (node) list.appendChild(node);
         }
         renumberProblemCards(panel);
-        if (scroller) scroller.scrollTop = savedScroll;
+        // Restore in rAF so the browser's post-mutation scroll adjustment
+        // settles first; force layout before setting.
+        if (scroller) {
+          const doRestore = () => {
+            void scroller.scrollHeight;
+            scroller.scrollTop = savedScroll;
+          };
+          if (typeof requestAnimationFrame !== "undefined") {
+            requestAnimationFrame(() => requestAnimationFrame(doRestore));
+          } else {
+            doRestore();
+          }
+        }
       }
       return true;
     }
