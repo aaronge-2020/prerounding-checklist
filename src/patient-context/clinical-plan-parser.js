@@ -40,7 +40,7 @@ const ACTION_LEAD = /^(?:continue|resume|re-?start|begin|stop|hold|withhold|disc
 
 // Labels that look like "Title: ..." but are not problems ("Differential:
 // ...", "Assessment: ...").
-const NON_PROBLEM_LABEL = /^(?:differential|differentials|ddx|assessment|plan|impression|recommendations?|diagnos[ie]s|treatments?)$/i;
+export const NON_PROBLEM_LABEL = /^(?:differential|differentials|ddx|assessment|plan|impression|recommendations?|diagnos[ie]s|treatments?)$/i;
 
 // Professional sign-off paragraphs ("As always, we greatly appreciate...")
 // that close consult notes. They are courtesy text, never problems or plans.
@@ -227,6 +227,49 @@ export function normalizeTwoColumnEhrText(fullText) {
       continue;
     }
 
+    // Problem-titled row: "Acute decompensated HFrEF\tJVP elevated, crackles\t- Lasix 40mg IV BID"
+    // or the two-column shape "Acute decompensated HFrEF: JVP elevated, crackles\tLasix 40mg IV BID".
+    // The first column names the problem (not a system); middle columns are
+    // objective findings and the last column is the plan. Without this the
+    // whole row collapses into Objective and no Plan is produced.
+    if (!LAB_OR_LDA_ROW.test(rawLine)) {
+      const cells = rawLine.split("\t").map((cell) => cell.trim());
+      const firstCellText = cells[0] || "";
+      if (cells.length >= 2 && firstCellText && !KNOWN_SYSTEMS.has(firstCellText.toLowerCase())) {
+        const lastCell = cells[cells.length - 1];
+        const lastIsPlan = /^(?:[-•*>—–]|>>)/.test(lastCell) || ACTION_LEAD.test(lastCell);
+        // A "Problem: findings" first cell ("Acute decompensated HFrEF: JVP
+        // elevated, crackles") names the problem explicitly; split the title
+        // from its findings so the "#Problem" plan marker stays clean.
+        const titleSplit = firstCellText.match(/^([^:]{2,80}?):\s*(\S.*)$/);
+        const problem = (titleSplit ? titleSplit[1] : firstCellText).trim();
+        const firstFindings = titleSplit ? titleSplit[2].trim() : "";
+        // In a two-column table the last column is the Assessment/Plan
+        // column, so a problem-titled row's second cell is its plan even
+        // when it does not start with an action verb ("Lasix 40mg IV BID").
+        const takesPlanFromLastCell = cells.length >= 3 ? lastIsPlan : (lastIsPlan || !!titleSplit);
+        if (cells.length >= 3 || takesPlanFromLastCell) {
+          const middle = [
+            firstFindings,
+            ...cells.slice(1, cells.length - (takesPlanFromLastCell ? 1 : 0))
+          ].map((part) => part.trim()).filter(Boolean);
+          const planPart = takesPlanFromLastCell ? lastCell : "";
+          currentSystem = "";
+          if (middle.length) objectiveLines.push(`${problem}: ${middle.join("; ")}`);
+          else objectiveLines.push(`${problem}:`);
+          if (planPart && !NOT_PLAN_TEXT.test(planPart)) {
+            // "#Problem" markers become problem entries in parseClinicalPlanProblems.
+            planLines.push(`#${problem}`);
+            planLines.push(planPart);
+            currentColumn = "plan";
+          } else {
+            currentColumn = "objective";
+          }
+          continue;
+        }
+      }
+    }
+
     // If currently in LDA mode:
     if (currentColumn === "lda") {
       if (/^\s*(?:--\s*s\/p PEG|Central Line indication:)/i.test(rawLine)) {
@@ -282,7 +325,118 @@ const DIAGNOSTIC_KEYWORDS = /\b(?:work\s*up|workup|mri|ct|cth|cta|dect|eeg|cveeg
 
 const CONTEXT_START_KEYWORDS = /^(?:date of|acute revascularization|stroke type|stroke risk|stroke etiology|etiology|history of|premorbid|last pain|last rass|rass goal|icdsc|braden|indication|site checks?|differential|ddx|possible causes?|r\/o|rule out|due to|patient|intubated|s\/p|loaded|continued|evolving|repeat|no active bleeding|utox|findings|imaging|sedation|subclinical)\b/i;
 
-const PLAN_ACTION_KEYWORDS = /^(?:continue|resume|start|hold|discontinue|wean|give|administer|infuse|transfuse|consult|pt\/ot|slp|neurosurgery|heme\s*onc|sbp|map|na\s*goal|transfusion|maintain|nursing|turn|reposition|elevate|hob|ngt|tf|scd|sqh|iv|prn|poct|ldssi|dressing|cdi|pursue|recommend|schedule|call|contact|follow|assess|wound|staples|closed|bulb|suction|dvt|vte|prbc|diet)\b/i;
+const PLAN_ACTION_KEYWORDS = /^(?:continue|continued|resume|resumed|start|started|hold|held|discontinue|discontinued|wean|weaned|give|gave|administer|administered|infuse|infused|transfuse|transfused|consult|pt\/ot|slp|neurosurgery|heme\s*onc|sbp|map|na\s*goal|transfusion|maintain|maintained|nursing|turn|reposition|elevate|hob|ngt|tf|scd|sqh|iv|prn|poct|ldssi|dressing|cdi|pursue|recommend|recommended|schedule|scheduled|call|contact|follow|assess|wound|staples|closed|bulb|suction|dvt|vte|prbc|diet|initiate|initiated)\b/i;
+
+// A leading chart-date stamp ("09/24/2026: started heparin") is metadata,
+// not content; strip it before classification so the action is recognized.
+const DATE_PREFIX = /^\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\s*:\s*/;
+
+// Explicit plan labels ("Diagnostic plan", "Therapeutic plan") are section
+// labels, never problem titles.
+const PLAN_SECTION_LABEL = /^(?:diagnostic|therapeutic|treatment|management)(?:\s+plan)?\s*:?$/i;
+
+// A therapeutic action (dosed medication, IV fluids, bolus/infusion,
+// transfusion) outranks an incidental diagnostic word like "monitor":
+// "Aggressive IV fluids, monitor I/O hourly" is primarily therapeutic.
+const THERAPEUTIC_ACTION = /\b\d+(?:\.\d+)?\s*(?:mg|mcg|g|units?|u|ml|l)\b(?!\/)|\biv\s+fluids?\b|\bfluid\s+(?:bolus|challenge|resuscitation)\b|\b(?:bolus|infusion|drip|transfus\w+)\b/i;
+
+function classifyLabeledPlanItem(kind, item) {
+  // A strong therapeutic action ("Aggressive IV fluids", a transfusion, a
+  // dosed medication order) keeps its therapeutic meaning even under a
+  // "Diagnostic plan" label. Weaker signals do not override the label:
+  // incidental verbs such as "monitor" stay diagnostic under a diagnostic
+  // label, and non-action reasoning under a therapeutic label stays context.
+  if (THERAPEUTIC_ACTION.test(item)) return "therapeutic";
+  if (kind === "diagnostic") return "diagnostic";
+  if (PLAN_ACTION_KEYWORDS.test(item) || ACTION_LEAD.test(item)) return "therapeutic";
+  // Assessment reasoning under a "Therapeutic plan" label ("Anion gap still
+  // open at 24; not ready to transition to subQ") is not an action: it stays
+  // in context instead of being forced into therapeutic actions.
+  return "context";
+}
+
+// Markdown assessment/plan tables ("| Problem | Assessment | Plan |").
+// Without normalization the header row becomes a bogus problem titled
+// "| Problem | Assessment | Plan |". Convert them into "#Problem" blocks
+// before problem parsing.
+const AP_TABLE_PLAN_COLUMN = /^(?:plan|treatment plan|management plan|management|interventions?|actions?)$/i;
+const AP_TABLE_PROBLEM_COLUMN = /^(?:problem|problems|diagnos[ei]s|system|systems|issue|issues|condition)$/i;
+const AP_TABLE_ASSESSMENT_COLUMN = /^(?:assessment|findings|diagnostic(?:\s+workup|\s+findings)?|objective(?:\s+findings)?|workup|evaluation)$/i;
+
+function splitMarkdownTableRow(line) {
+  let cells = String(line || "").split("|").map((cell) => cell.trim());
+  if (cells.length && !cells[0]) cells = cells.slice(1);
+  if (cells.length && !cells.at(-1)) cells = cells.slice(0, -1);
+  return cells;
+}
+
+function isMarkdownDelimiterRow(line) {
+  const cells = splitMarkdownTableRow(line);
+  return cells.length >= 2 && cells.every((cell) => /^:?-+:?$/.test(cell));
+}
+
+function tryParseAssessmentPlanTable(lines, startIndex) {
+  const headerCells = splitMarkdownTableRow(lines[startIndex]);
+  if (headerCells.length < 2 || !lines[startIndex].includes("|")) return null;
+  if (!isMarkdownDelimiterRow(lines[startIndex + 1] || "")) return null;
+  const roles = headerCells.map((cell) => {
+    if (AP_TABLE_PLAN_COLUMN.test(cell)) return "plan";
+    if (AP_TABLE_PROBLEM_COLUMN.test(cell)) return "problem";
+    if (AP_TABLE_ASSESSMENT_COLUMN.test(cell)) return "assessment";
+    return "other";
+  });
+  if (!roles.includes("plan") || !roles.includes("problem")) return null;
+  const problemIndex = roles.indexOf("problem");
+  const planIndex = roles.indexOf("plan");
+  const output = [];
+  let current = null;
+  let index = startIndex + 2;
+  for (; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (!line.includes("|")) break;
+    const cells = splitMarkdownTableRow(line);
+    if (!cells.length || cells.every((cell) => !cell)) break;
+    const problem = (cells[problemIndex] || "").trim();
+    const plan = (cells[planIndex] || "").trim();
+    const assessment = cells
+      .filter((_, cellIndex) => cellIndex !== problemIndex && cellIndex !== planIndex)
+      .map((cell) => cell.trim())
+      .filter(Boolean);
+    if (!problem && !plan && !assessment.length) continue;
+    if (!problem && current) {
+      // Continuation row: the problem cell is empty, so the content belongs
+      // to the previous problem instead of opening a nameless one.
+      current.push(...assessment);
+      if (plan) current.push(/^(?:[-•*>—–]|>>)/.test(plan) ? plan : `- ${plan}`);
+      continue;
+    }
+    if (current) output.push(...current, "");
+    current = [`#${problem || "Unspecified problem"}`];
+    current.push(...assessment);
+    if (plan) current.push(/^(?:[-•*>—–]|>>)/.test(plan) ? plan : `- ${plan}`);
+  }
+  if (current) output.push(...current);
+  if (!output.length) return null;
+  return { text: output, nextIndex: index };
+}
+
+export function normalizeMarkdownAssessmentPlanTable(fullText) {
+  if (!fullText || typeof fullText !== "string" || !fullText.includes("|")) return fullText;
+  const lines = fullText.split(/\r?\n/);
+  const output = [];
+  let index = 0;
+  while (index < lines.length) {
+    const parsed = tryParseAssessmentPlanTable(lines, index);
+    if (parsed) {
+      output.push(...parsed.text, "");
+      index = parsed.nextIndex;
+    } else {
+      output.push(lines[index]);
+      index += 1;
+    }
+  }
+  return output.join("\n");
+}
 
 /**
  * Parses clinical plan text into structured problems with:
@@ -294,7 +448,9 @@ const PLAN_ACTION_KEYWORDS = /^(?:continue|resume|start|hold|discontinue|wean|gi
 export function parseClinicalPlanProblems(planText) {
   if (!planText || typeof planText !== "string") return [];
 
-  const rawLines = planText.split(/\r?\n/);
+  // Markdown assessment/plan tables normalize into "#Problem" blocks first;
+  // otherwise the header row becomes a bogus problem title.
+  const rawLines = normalizeMarkdownAssessmentPlanTable(planText).split(/\r?\n/);
   const blocks = [];
   let currentBlock = [];
 
@@ -371,6 +527,9 @@ export function parseClinicalPlanProblems(planText) {
   const problems = [];
   let currentSystemContext = "";
   let blockIndex = 0;
+  // Plan-label blocks ("Diagnostic plan — ...") seen before any problem are
+  // held here and prepended to the next problem's buckets.
+  const orphanLabeled = { diagnostic: [], therapeutic: [], context: [] };
 
   const pushProblem = ({ title, system, keyContext = "", diagnosticPlan = "", therapeuticPlan = "", differentials = [] }) => {
     const cleanTitle = String(title || "").replace(/[:\s]+$/, "").trim();
@@ -414,10 +573,15 @@ export function parseClinicalPlanProblems(planText) {
     }
 
     if (PROBLEM_LIST_HEADERS.has(strippedFirst.toLowerCase())) {
-      // "Active Hospital Problems" is a problem LIST, not individual problems.
-      // Skip it entirely — the real problems begin with # headers (e.g.
-      // "#Acute ischemic stroke"). Creating a separate problem entry for
-      // each bulleted diagnosis was incorrect.
+      // Flat problem list: every bullet underneath becomes its own problem,
+      // while non-bullet lines (for example a "Diagnosis" subheader) are
+      // skipped instead of turning into context or plans.
+      for (const line of nonBlank.slice(1)) {
+        if (!/^(?:[-•*>—–]|>>|\d+[.)])/.test(line)) continue;
+        const bulletText = line.replace(/^[-•*>—–\s]+|^>>\s*|^\d+[.)]\s*/, "").trim();
+        if (!bulletText) continue;
+        pushProblem({ title: bulletText, system: "", differentials: [] });
+      }
       continue;
     }
 
@@ -428,9 +592,20 @@ export function parseClinicalPlanProblems(planText) {
       problemTitle = cleanFirst;
       startIndex = 1;
     } else if (KNOWN_SYSTEMS.has(strippedFirst.toLowerCase()) && nonBlank.length > 1) {
-      currentSystemContext = strippedFirst;
-      problemTitle = nonBlank[1].replace(/^#+\s*/, "").replace(/^(?:problem\s*\d+[:.]|\d{1,2}[.:])\s*/i, "");
-      startIndex = 2;
+      const nextLine = nonBlank[1];
+      // "Neuro:\n- Continue keppra": the bullets are plan content, not a new
+      // problem title. The system itself is the problem; an action-led or
+      // bulleted next line never becomes the title.
+      const nextIsPlanContent = /^(?:[-•*>—–]|>>|\d+[.)])/.test(nextLine) || ACTION_LEAD.test(nextLine);
+      if (nextIsPlanContent) {
+        currentSystemContext = strippedFirst;
+        problemTitle = strippedFirst;
+        startIndex = 1;
+      } else {
+        currentSystemContext = strippedFirst;
+        problemTitle = nonBlank[1].replace(/^#+\s*/, "").replace(/^(?:problem\s*\d+[:.]|\d{1,2}[.:])\s*/i, "");
+        startIndex = 2;
+      }
     } else {
       problemTitle = firstLine.replace(/^#+\s*/, "").replace(/^(?:problem\s*\d+[:.]|\d{1,2}[.:])\s*/i, "");
       startIndex = 1;
@@ -486,16 +661,63 @@ export function parseClinicalPlanProblems(planText) {
 
     if (!problemTitle) continue;
 
+    // "Diagnostic plan — ..." / "Therapeutic plan — ..." are plan labels,
+    // never problem titles. Fold the labeled content into the previous
+    // problem; when this block opens the section (no previous problem yet),
+    // hold the labeled content for the next problem instead of inventing a
+    // problem called "Diagnostic plan".
+    const planLabelKind = PLAN_SECTION_LABEL.test(problemTitle)
+      ? (/diagnostic/i.test(problemTitle) ? "diagnostic" : "therapeutic")
+      : "";
+    if (planLabelKind) {
+      const labeledItems = [];
+      if (inlinePlan) labeledItems.push(inlinePlan);
+      if (colonRest) labeledItems.push(colonRest);
+      for (let j = startIndex; j < nonBlank.length; j++) {
+        if (nonBlank[j] === firstLine) continue;
+        labeledItems.push(nonBlank[j]);
+      }
+      const appendLabeled = (target, asBuckets) => {
+        for (const item of labeledItems) {
+          const bucket = classifyLabeledPlanItem(planLabelKind, item);
+          if (asBuckets) {
+            asBuckets[bucket].push(item);
+          } else {
+            if (bucket === "diagnostic") target.diagnosticPlan = [target.diagnosticPlan, item].filter(Boolean).join("\n");
+            else if (bucket === "therapeutic") target.therapeuticPlan = [target.therapeuticPlan, item].filter(Boolean).join("\n");
+            else target.keyContext = [target.keyContext, item].filter(Boolean).join("\n");
+          }
+        }
+      };
+      const previous = problems.at(-1);
+      if (previous) appendLabeled(previous, null);
+      else {
+        appendLabeled(null, orphanLabeled);
+      }
+      continue;
+    }
+
     const contextLines = [];
     const diagLines = [];
     const theraLines = [];
     const differentials = [];
 
+    // Orphaned plan-label content collected before the first problem belongs
+    // to this problem.
+    if (orphanLabeled.diagnostic.length || orphanLabeled.therapeutic.length || orphanLabeled.context.length) {
+      diagLines.push(...orphanLabeled.diagnostic);
+      theraLines.push(...orphanLabeled.therapeutic);
+      contextLines.push(...orphanLabeled.context);
+      orphanLabeled.diagnostic = [];
+      orphanLabeled.therapeutic = [];
+      orphanLabeled.context = [];
+    }
+
     // Inline plan details from the title ("Problem — do X, Y") go to the plan
     // when they read as actions; fragments like "— improving" are assessment
     // reasoning and stay with the problem's context.
     if (inlinePlan) {
-      if (PLAN_ACTION_KEYWORDS.test(inlinePlan)) theraLines.push(inlinePlan);
+      if (PLAN_ACTION_KEYWORDS.test(inlinePlan) || THERAPEUTIC_ACTION.test(inlinePlan)) theraLines.push(inlinePlan);
       else contextLines.push(inlinePlan);
     }
 
@@ -510,8 +732,22 @@ export function parseClinicalPlanProblems(planText) {
 
     for (const line of contentLines) {
       const isBullet = /^[-•*>—–]|^>>|^\d+[.)]/.test(line);
-      const cleanLine = line.replace(/^[-•*>—–\s]+|^>>\s*|^\d+[.)]\s*/, "").trim();
+      const cleanLine = line.replace(/^[-•*>—–\s]+|^>>\s*|^\d+[.)]\s*/, "").replace(DATE_PREFIX, "").trim();
       if (!cleanLine) continue;
+
+      // Explicit plan labels mid-block ("Diagnostic plan — ...",
+      // "Therapeutic plan: ..."): the label is never content; the remainder
+      // is bucketed by label kind with label-aware classification.
+      const planLabelMatch = cleanLine.match(/^(diagnostic|therapeutic|treatment|management)(?:\s+plan)?\s*[—–:\-]\s*(.+)$/i);
+      if (planLabelMatch && planLabelMatch[2].trim()) {
+        const labeledKind = /diagnostic/i.test(planLabelMatch[1]) ? "diagnostic" : "therapeutic";
+        const labeledItem = planLabelMatch[2].trim();
+        const labeledBucket = classifyLabeledPlanItem(labeledKind, labeledItem);
+        if (labeledBucket === "diagnostic") diagLines.push(labeledItem);
+        else if (labeledBucket === "therapeutic") theraLines.push(labeledItem);
+        else contextLines.push(labeledItem);
+        continue;
+      }
 
       // Check for differential diagnosis line
       const diffMatch = cleanLine.match(/^(?:differential|ddx|r\/o|rule out)\s*[:—–-]\s*(.+)$/i);
@@ -530,12 +766,20 @@ export function parseClinicalPlanProblems(planText) {
       }
 
       const isContext = !isBullet && CONTEXT_START_KEYWORDS.test(cleanLine);
-      const isAction = isBullet || PLAN_ACTION_KEYWORDS.test(cleanLine);
+      // A dosed medication order ("Lasix 40mg IV BID") is a therapeutic
+      // action even when it opens with the drug name instead of an action
+      // verb. Context still wins first ("Loaded w/ 500ml NS" stays context).
+      const isAction = isBullet || PLAN_ACTION_KEYWORDS.test(cleanLine) || THERAPEUTIC_ACTION.test(cleanLine);
 
       if (isContext) {
         contextLines.push(line);
       } else if (isAction) {
-        if (DIAGNOSTIC_KEYWORDS.test(cleanLine)) {
+        // A therapeutic action outranks an incidental diagnostic word:
+        // "Aggressive IV fluids, monitor I/O hourly" is therapeutic even
+        // though it mentions monitoring.
+        if (THERAPEUTIC_ACTION.test(cleanLine)) {
+          theraLines.push(line);
+        } else if (DIAGNOSTIC_KEYWORDS.test(cleanLine)) {
           diagLines.push(line);
         } else {
           theraLines.push(line);
@@ -552,6 +796,19 @@ export function parseClinicalPlanProblems(planText) {
       differentials,
       diagnosticPlan: diagLines.join("\n"),
       therapeuticPlan: theraLines.join("\n")
+    });
+  }
+
+  // Plan-label content with no problem anywhere in the section is preserved
+  // under an honest "Unspecified problem" title rather than dropped.
+  if (orphanLabeled.diagnostic.length || orphanLabeled.therapeutic.length || orphanLabeled.context.length) {
+    pushProblem({
+      title: "Unspecified problem",
+      system: "",
+      keyContext: orphanLabeled.context.join("\n"),
+      differentials: [],
+      diagnosticPlan: orphanLabeled.diagnostic.join("\n"),
+      therapeuticPlan: orphanLabeled.therapeutic.join("\n")
     });
   }
 

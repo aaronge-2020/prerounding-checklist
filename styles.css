@@ -1905,6 +1905,12 @@ button.var-fill:focus-visible {
     display: flex;
     overflow-x: auto;
     padding: 8px 10px;
+    /* U8: keep the mobile nav usable at 390px — full-bleed scroll with a
+       stable scrollbar gutter and visible scroll affordance. */
+    max-width: 100vw;
+    overscroll-behavior-inline: contain;
+    scrollbar-gutter: stable;
+    -webkit-overflow-scrolling: touch;
   }
 
   .primary-nav button {
@@ -2347,6 +2353,34 @@ button.var-fill:focus-visible {
 
 .review-hero h1 {
   margin: 4px 0 8px;
+}
+
+/* U6: the packet selector must never truncate its label. */
+.review-packet-label {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.review-packet-label select {
+  min-width: 200px;
+  max-width: min(48vw, 360px);
+}
+
+@media (max-width: 640px) {
+  /* U6: on narrow screens the packet selector gets the full row so its
+     label never truncates. */
+  .review-packet-label {
+    width: 100%;
+  }
+
+  .review-packet-label select {
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+  }
 }
 
 .review-one-liner {
@@ -2986,6 +3020,63 @@ button.var-fill:focus-visible {
 .ed-mini--danger:hover {
   border-color: var(--danger, #c0392b);
   color: var(--danger, #c0392b);
+}
+
+/* U11: text-insertion chips look like actions (dashed, with an affordance),
+   never like clinical assertions. */
+.ed-insert-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  line-height: 1.2;
+  padding: 2px 8px;
+  border: 1px dashed var(--accent, #2f6fed);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent, #2f6fed);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ed-insert-chip:hover {
+  background: var(--accent-soft, rgba(47, 111, 237, 0.08));
+}
+
+.ed-insert-chip .icon {
+  width: 12px;
+  height: 12px;
+}
+
+/* U4: zero-parse guidance banner. */
+.review-zero-yield-hint {
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  border: 1px solid var(--warning, #b7791f);
+  border-left-width: 4px;
+  border-radius: 6px;
+  background: var(--warning-bg, #fef6e7);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.review-zero-yield-hint code {
+  font-size: 11px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* U17: warning marker for detected headings with zero parsed rows. */
+.detected-warning {
+  color: var(--warning, #b7791f);
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.detected-warning-text {
+  color: var(--warning, #b7791f);
+  font-style: italic;
 }
 
 /* Problem cards stay recognizable to existing tests but render compactly
@@ -4849,6 +4940,45 @@ button.var-fill:focus-visible {
 }
 .lab-baseline-toggle:hover {
   color: var(--accent-strong, #1d4ed8);
+}
+/* Baseline-priority labs (creatinine, troponin, hemoglobin, ...) with no
+   baseline recorded: the "!" badge and the warning button prompt the
+   student to enter a baseline, since interpretation depends on change from
+   the patient's own steady state. */
+.lab-baseline-needed {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.05em;
+  height: 1.05em;
+  margin-left: 4px;
+  padding: 0 2px;
+  border-radius: 999px;
+  background: #b45309;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: 1px;
+}
+.lab-baseline-toggle.lab-baseline-warning {
+  color: #b45309;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid #b45309;
+  border-radius: 6px;
+  padding: 2px 7px;
+  background: #fffbeb;
+}
+.lab-baseline-toggle.lab-baseline-warning:hover {
+  color: #92400e;
+  background: #fef3c7;
+}
+.lab-baseline-warning-icon {
+  margin-right: 3px;
+}
+.lab-row-needs-baseline.is-selected {
+  background: #fffbeb;
 }
 .lab-baseline-editor {
   grid-column: 1 / -1;
@@ -10604,6 +10734,9 @@ body.vault-locked .vault-access {
   border: 1px solid var(--border);
   background: var(--surface-subtle);
   padding: 7px 8px;
+  /* U1: equal card heights in the summary grid. */
+  height: 100%;
+  align-content: start;
 }
 
 .clinical-vital-stat strong { color: var(--ink); font-size: 10px; }
@@ -11641,3 +11774,318 @@ body.vault-locked .vault-access {
   border-radius: 4px;
 }
 .toast-dismiss:hover { opacity: 1; }
+
+/* ─── Structured exam-findings picker ─────────────────────────────── */
+.exam-findings-picker {
+  margin: 8px 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 8px 10px;
+  font-size: 12px;
+}
+.ef-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.ef-toolbar-label {
+  font-weight: 700;
+  color: var(--text);
+}
+.ef-all-normal {
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+.ef-count {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 11px;
+}
+.ef-systems {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ef-system {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--background, transparent);
+}
+.ef-system > summary {
+  cursor: pointer;
+  padding: 5px 8px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+}
+.ef-system > summary::-webkit-details-marker { display: none; }
+.ef-system > summary::before {
+  content: "▸";
+  color: var(--muted);
+  font-size: 10px;
+}
+.ef-system[open] > summary::before { content: "▾"; }
+.ef-system-name { flex: none; }
+.ef-system-count {
+  margin-left: auto;
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 11px;
+}
+.ef-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 4px 12px;
+  padding: 6px 8px 8px;
+}
+.ef-finding {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  position: relative;
+}
+.ef-label {
+  flex: none;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 11px;
+}
+.ef-pill-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.ef-pill {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  padding: 3px 8px;
+  border: 1px dashed var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ef-pill.is-empty:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.ef-pill.is-filled {
+  border-style: solid;
+  border-color: var(--accent);
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.ef-pill:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.ef-clear {
+  flex: none;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+.ef-clear:hover { color: var(--danger, #c0392b); }
+.ef-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 100px;
+  z-index: 60;
+  min-width: 240px;
+  max-width: 320px;
+  margin-top: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+.ef-dropdown-scroll {
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 4px;
+}
+.ef-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 5px 8px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: normal;
+}
+.ef-option:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.ef-option.is-normal { font-weight: 600; }
+.ef-option.is-selected {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.ef-option-custom {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 6px 8px;
+  border: none;
+  border-top: 1px solid var(--border);
+  background: transparent;
+  color: var(--accent);
+  font-size: 12px;
+  cursor: pointer;
+}
+.ef-option-custom:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.ef-custom-wrap { flex: 1; min-width: 0; display: flex; }
+.ef-custom-input {
+  flex: 1;
+  min-width: 0;
+  padding: 3px 8px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 11px;
+}
+.ef-sources {
+  margin: 6px 0 0;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* ─── Collapsible draft-note sections (I1) ─────────────────────────── */
+details.ed-section > summary.ed-section-summary {
+  cursor: pointer;
+  list-style: none;
+  display: block;
+}
+details.ed-section > summary.ed-section-summary::-webkit-details-marker { display: none; }
+details.ed-section > summary.ed-section-summary::before {
+  content: "▾";
+  display: inline-block;
+  width: 14px;
+  color: var(--muted);
+  font-size: 10px;
+  margin-right: 2px;
+}
+details.ed-section:not([open]) > summary.ed-section-summary::before { content: "▸"; }
+details.ed-section > summary.ed-section-summary .ed-label { display: inline-flex; }
+details.ed-section:not([open]) > summary.ed-section-summary { margin-bottom: 0; }
+
+/* ─── Persistent patient identity bar (NIST S1) ────────────────────── */
+/* Patient identifiers in a reserved area at the top, persisting regardless
+   of scrolling or navigation — the passive wrong-patient safeguard. */
+.patient-identity-bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 12px;
+  margin: 0 -12px 8px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+  font-size: 13px;
+}
+.patient-identity-bar-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---- Per-problem AI Assessment & Plan generation ---- */
+.ap-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 80;
+  padding: 1rem;
+}
+.ap-confirm-modal {
+  background: var(--panel, #fff);
+  border-radius: 12px;
+  max-width: 640px;
+  width: 100%;
+  max-height: 85vh;
+  overflow: auto;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+.ap-confirm-modal h3 {
+  margin: 0 0 0.5rem;
+}
+.ap-confirm-context {
+  background: var(--input-bg, #f8fafc);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  max-height: 300px;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-size: 0.85rem;
+  font-family: ui-monospace, monospace;
+}
+.ap-confirm-note {
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+/* AI-generated plan content inside the note editors */
+.ap-plan-list {
+  margin: 0.25rem 0 0.5rem;
+  padding-left: 1.25rem;
+}
+.ap-plan-list li {
+  margin-bottom: 0.3rem;
+}
+.ap-rationale {
+  color: var(--muted);
+}
+.ap-cite sup, sup.ap-cite {
+  font-size: 0.7em;
+}
+.ap-cite a {
+  text-decoration: none;
+}
+.ap-refs-head {
+  font-weight: 700;
+  margin: 0.75rem 0 0.25rem;
+  font-size: 0.9rem;
+}
+.ap-refs {
+  margin: 0 0 0.5rem;
+  padding-left: 1.5rem;
+  font-size: 0.85rem;
+}
+.ap-refs li {
+  margin-bottom: 0.2rem;
+}

@@ -13,8 +13,8 @@ import {
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
 const parserRevision = "20260921-medication-card-v4";
-const epicParserRevision = "20260924-assessment-plan-v1";
-const clinicalParserRevision = "20260924-assessment-plan-v1";
+const epicParserRevision = "20260925-mixed-unparsed-v1";
+const clinicalParserRevision = "20260925-negative-lab-v1";
 const primaryNoteRevision = "20260921-medication-card-v4";
 const sourceControllerRevision = "20260923-plan-problems-v1";
 const appRevision = "20260924-helptip-position-v1";
@@ -738,5 +738,52 @@ assert.equal(parsedMixedEpicMissingHeadings.sections[0].outputText, "Sodium: 137
 const preparedMixedEpic = prepareClinicalExportForSave(syntheticMixedEpic);
 assert.equal(preparedMixedEpic.parseResult.sections.length, 3, "the submit boundary must retain all typed sections without relying on an input event");
 assert.equal(preparedMixedEpic.sourceText, parsedMixedEpic.outputText);
+
+// P6: strict source-aware plain-line labs — known analytes with numeric
+// values parse; colon-form narrative lines stay plain text.
+{
+  const plainLabs = parseClinicalExport("K 5.8 (H)\nWBC 14.2\nHgb 9.8 (L)\nNa 140\nCr 2.1 (H)", { sourceKind: "laboratory_results" });
+  assert.equal(plainLabs.formatId, "plain_line_labs");
+  const labRows = clinicalDisplayModelFromPromptText("laboratory_results", plainLabs.canonicalPromptText || plainLabs.outputText).groups[0].rows;
+  const rowNames = labRows.map((row) => row.cells[0]);
+  for (const expected of ["Potassium", "WBC", "Hgb", "Sodium", "Creatinine"]) {
+    assert.ok(rowNames.some((name) => new RegExp(expected, "i").test(name)), `plain-line lab parsed: ${expected}`);
+  }
+  const colonForm = parseClinicalExport("Sodium: 137\nCreatinine: 0.9", { sourceKind: "laboratory_results" });
+  assert.notEqual(colonForm.formatId, "plain_line_labs", "colon-form narrative lines must stay plain text");
+}
+
+// P7: blood-gas analytes including a negative base excess.
+{
+  const abg = parseClinicalExport("pH 7.28\npCO2 48\npO2 82\nbase excess -4.2\nlactate 2.0", { sourceKind: "laboratory_results" });
+  assert.equal(abg.formatId, "plain_line_labs");
+  const abgRows = clinicalDisplayModelFromPromptText("laboratory_results", abg.canonicalPromptText || abg.outputText).groups[0].rows;
+  const abgByName = Object.fromEntries(abgRows.map((row) => [row.cells[0].toLowerCase(), row.cells[1]]));
+  assert.equal(abgByName["ph"], "7.28");
+  assert.equal(abgByName["pco2"], "48");
+  assert.equal(abgByName["po2"], "82");
+  assert.equal(abgByName["base excess"], "-4.2", "a negative base excess must survive parsing");
+  assert.ok(Object.keys(abgByName).some((name) => /lactate/i.test(name)));
+}
+
+// P8: inline units and flags parse; a bare "Reference"/"Ref" header line is
+// tolerated, not parsed as a lab.
+{
+  const inlineUnits = parseClinicalExport("K 5.8 mmol/L (H)\nNa 140\nReference\nWBC 14.2", { sourceKind: "laboratory_results" });
+  assert.equal(inlineUnits.formatId, "plain_line_labs");
+  const inlineRows = clinicalDisplayModelFromPromptText("laboratory_results", inlineUnits.canonicalPromptText || inlineUnits.outputText).groups[0].rows;
+  assert.equal(inlineRows.length, 3, "the Reference header must not become a lab row");
+  const potassium = inlineRows.find((row) => /potassium/i.test(row.cells[0]));
+  assert.ok(potassium, "potassium row present");
+  assert.match(potassium.cells[1], /5\.8 mmol\/L/, "inline unit captured");
+}
+
+// P9: strict plain-line medications only for medication_activity sources.
+{
+  const medKind = parseClinicalExport("Lisinopril 10mg PO daily\nMetoprolol 25mg PO BID", { sourceKind: "medication_activity" });
+  assert.equal(medKind.formatId, "plain_line_medications");
+  const labKind = parseClinicalExport("Lisinopril 10mg PO daily\nMetoprolol 25mg PO BID", { sourceKind: "laboratory_results" });
+  assert.notEqual(labKind.formatId, "plain_line_medications", "medication lines must not parse as labs under a lab sourceKind");
+}
 
 console.log("clinical export parser tests passed");

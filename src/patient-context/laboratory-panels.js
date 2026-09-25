@@ -71,3 +71,20 @@ export function laboratoryPanelLabel(rows = []) {
   const panels = splitLaboratoryRowsByPanel(rows);
   return panels.length === 1 ? panels[0].label : "Laboratory results";
 }
+
+// True when a source *label* identifies a blood-gas specimen ("ABG",
+// "Blood gas", "VBG"). The same analyte name can be drawn as serum chemistry
+// or as a blood gas (lactate, glucose, sodium, hemoglobin); the specimen
+// types are different tests and must never share a trend. Every other
+// label — named chemistry/hematology panels and generic collections
+// ("Laboratory results", "Morning labs", "Epic results") — is treated as a
+// systemic specimen so one analyte trends chronologically in one row
+// instead of fragmenting per presentation label. The panel *name* is
+// deliberately not used: a lone serum lactate in a generic collection is
+// named "Blood gas" from its analyte family, so the name cannot tell serum
+// from blood gas.
+const BLOOD_GAS_PANEL_NAME = /blood gas|\babg\b|\bvbg\b|arterial blood gas|venous blood gas/;
+
+export function isBloodGasPanelName(name) {
+  return BLOOD_GAS_PANEL_NAME.test(normalizedLaboratoryName(name));
+}

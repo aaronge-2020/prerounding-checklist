@@ -25,8 +25,24 @@ function stripBullet(line) {
   return clean(line).replace(/^(?:[-*•>▪]|\d{1,2}[.)])\s+/, "");
 }
 
-const NO_MEDS = /^(?:none|no\s+(?:known\s+)?(?:home\s+)?med(?:ication)?s|no\s+meds|denies|n\/?a|not\s+(?:currently\s+)?(?:on|taking)|nkda\b)/i;
+const NO_MEDS = /^(?:none|no\s+(?:known\s+)?(?:home\s+)?med(?:ication)?s|no\s+meds|denies|n\/?a\b|not\s+(?:currently\s+)?(?:on|taking)|nkda\b)/i;
 const SENTENCE_SUBJECT = /^(?:wife|husband|patient|family|he|she|they|note|pharmacy|nursing|mother|father|daughter|son)\b/i;
+// MAR annotation labels ("PRN Reasons: Nausea,Vomiting") are metadata, never
+// medications. Blood-product orders are not medications either.
+export const MED_METADATA_LABEL = /^(?:PRN Reasons?|PRN Comment|Weight Dosing Info)\s*:/i;
+export const TRANSFUSION_ORDER = /^\s*transfus(?:e|ion)\b/i;
+// Vital-sign goals ("SBP goal <=130 mmHg") are targets, never medications.
+const VITAL_GOAL_LINE = /\b(?:sbp|dbp|map|bp|hr|rr|spo2|fio2|temp(?:erature)?)\s+goals?\b/i;
+// Section headings ("Medications:", "Inpatient orders:") that leak into the
+// medication section text.
+export const MED_LIST_HEADING = /^(?:(?:home|inpatient|outpatient|active|current)\s+)?(?:medications?|meds?|rx|prescriptions?|orders)(?:\s+list)?\s*[:—–-]\s*$/i;
+
+// True for lines that are never medications (metadata labels, headings,
+// transfusion orders) so list parsers can drop them before parsing.
+export function isNonMedicationLine(rawLine) {
+  const stripped = stripBullet(rawLine);
+  return MED_METADATA_LABEL.test(stripped) || MED_LIST_HEADING.test(stripped) || TRANSFUSION_ORDER.test(stripped) || VITAL_GOAL_LINE.test(stripped);
+}
 
 function looksLikeSentence(line) {
   return SENTENCE_SUBJECT.test(line) || /assists with|manages (?:his|her|their) medications/i.test(line);
@@ -34,9 +50,9 @@ function looksLikeSentence(line) {
 
 // Splits "Xarelto, dose unknown" into a name and detail text. The emitted
 // canonical line is `Name — details`, which savedMedicationDisplay parses.
-function splitMedicationLine(rawLine) {
+export function splitMedicationLine(rawLine) {
   let line = stripBullet(rawLine);
-  if (!line || NO_MEDS.test(line) || looksLikeSentence(line)) return null;
+  if (!line || NO_MEDS.test(line) || isNonMedicationLine(rawLine) || looksLikeSentence(line)) return null;
   // "She takes Lexapro", "He is on lisinopril": strip the verb phrase so the
   // drug name leads.
   line = line.replace(/^(?:(?:she|he|they|the patient|patient|pt)\s+)?(?:takes?|taking|is\s+(?:on|taking))\s+/i, "");
@@ -55,7 +71,17 @@ function splitMedicationLine(rawLine) {
       name = ratioSeparator[1].trim();
       details = ratioSeparator[2].trim();
     } else {
-      const doseAt = line.search(/\b\d+(?:\.\d+)?\s*(?:mg|mcg|g|units?|u|%|ml|tablets?|capsules?|puffs?)\b/i);
+      // A dose that belongs to a PRN condition ("phosphorus <= 2.5 mg/dL")
+      // must not split the medication name from its sig: skip dose matches
+      // preceded by a comparator and split at the medication's own dose.
+      const doseFinder = new RegExp(DOSE_PATTERN.source, "gi");
+      let doseAt = -1;
+      let doseMatch;
+      while ((doseMatch = doseFinder.exec(line))) {
+        if (COMPARATOR_BEFORE.test(line.slice(0, doseMatch.index))) continue;
+        doseAt = doseMatch.index;
+        break;
+      }
       if (doseAt > 2) {
         name = line.slice(0, doseAt).trim();
         details = line.slice(doseAt).trim();
@@ -77,7 +103,8 @@ function splitMedicationLine(rawLine) {
 // with periods, e.g. "q.a.m."); a lowercase drug name ("metformin",
 // "folic acid") is its own medication and is never glued onto the prior.
 const INLINE_MED_LABEL = /^(?:home\s+)?(?:medications?|meds?|rx|prescriptions?)(?:\s+list)?\s*[:—–-]\s*/i;
-const DOSE_PATTERN = /\b\d+(?:\.\d+)?\s*(?:mg|mcg|g|units?|u|%|ml|tablets?|capsules?|puffs?)\b/i;
+const DOSE_PATTERN = /\b\d+(?:\.\d+)?\s*(?:mg|mcg|g|mmol|meq|units?|u|%|ml|tablets?|capsules?|puffs?)\b/i;
+const COMPARATOR_BEFORE = /(?:<=|>=|<|>|≤|≥)\s*$/;
 const CONTINUATION_KEYWORDS = /^(?:dose|unknown|daily|bid|tid|qid|qhs|qday|prn|mg|mcg|g|ml|units?|po|iv|im|sc|sq|sl|as directed|extended|sustained|twice|once|thrice|every)\b/i;
 
 function splitInlineMedList(text) {
@@ -125,16 +152,42 @@ export function extractNoteMedications(medicationsText) {
   const lines = linesOf(medicationsText);
   if (!lines.length) return "";
   if (lines.length === 1 && NO_MEDS.test(stripBullet(lines[0]))) return "";
-  const hasBullets = lines.some((line) => /^(?:[-*•>▪]|\d{1,2}[.)])\s+/.test(line));
-  // Dictated prose packs several sentences into one "line"; split sentences
-  // first so "Claritin and Zyrtec p.r.n." never inherits the prior sentence.
-  const rawLines = hasBullets
-    ? lines
-    : lines.join(" ").split(/(?<=[.!?])\s+(?=[A-Z0-9])/).flatMap((sentence) => splitInlineMedList(sentence));
+  // MAR annotations, pasted section headings, and blood-product orders are
+  // never medications; drop them before parsing so they cannot glue onto a
+  // neighboring drug line.
+  const contentLines = lines.filter((line) => !isNonMedicationLine(line));
+  if (!contentLines.length) return "";
+  const hasBullets = contentLines.some((line) => /^(?:[-*•>▪]|\d{1,2}[.)])\s+/.test(line));
+  // An unbulleted list whose every physical line parses as a medication is a
+  // plain med list ("Lisinopril 10 mg PO daily\nMetoprolol 25 mg PO BID"):
+  // parse lines independently so distinct same-name orders (bolus vs
+  // infusion) survive. Dictated prose falls back to sentence splitting.
+  const independent = !hasBullets && contentLines.length >= 2
+    ? contentLines.map((line) => splitMedicationLine(line))
+    : null;
+  let rawLines;
+  if (independent && independent.every(Boolean)) {
+    rawLines = independent;
+  } else if (hasBullets) {
+    rawLines = contentLines.map((line) => splitMedicationLine(line));
+  } else {
+    // Dictated prose packs several sentences into one "line"; split sentences
+    // first so "Claritin and Zyrtec p.r.n." never inherits the prior sentence.
+    rawLines = contentLines
+      .join(" ")
+      .split(/(?<=[.!?])\s+(?=[A-Z0-9])/)
+      .flatMap((sentence) => splitInlineMedList(sentence))
+      .map((fragment) => splitMedicationLine(fragment));
+  }
   const meds = [];
-  for (const rawLine of rawLines) {
-    const parsed = splitMedicationLine(rawLine);
-    if (parsed && !meds.some((med) => med.name.toLowerCase() === parsed.name.toLowerCase())) meds.push(parsed);
+  for (const parsed of rawLines) {
+    if (!parsed) continue;
+    // Same-name orders with different sigs (inpatient bolus vs infusion) are
+    // distinct administrations; only exact name+sig duplicates collapse.
+    const duplicate = meds.some((med) =>
+      med.name.toLowerCase() === parsed.name.toLowerCase() &&
+      med.details.toLowerCase() === parsed.details.toLowerCase());
+    if (!duplicate) meds.push(parsed);
   }
   if (!meds.length) return "";
   return ["Medications", ...meds.map((med) => (med.details ? `${med.name} ${EM_DASH} ${med.details}` : med.name))].join("\n");
@@ -253,6 +306,10 @@ const NARRATIVE_ANALYTES = [
   ["ammonia", "Ammonia", ""],
   ["inr", "INR", ""],
   ["lactate|lactic acid", "Lactate", "mmol/L"],
+  ["ph", "pH", ""],
+  ["pco2", "pCO2", "mmHg"],
+  ["po2", "pO2", "mmHg"],
+  ["base excess", "Base excess", "mmol/L"],
   ["bnp", "BNP", "pg/mL"],
   ["troponin|trop|hs-trop", "Troponin", "ng/mL"],
   ["crp", "CRP", "mg/L"],
@@ -282,7 +339,8 @@ const PLACEHOLDER_VALUE_SOURCE = "(?:rpt(?:\\s*\\(ip\\))?|pending|in\\s+process)
 // Words allowed between an analyte name and its value in dictated prose
 // ("calcium was slightly low at 7.8", "white blood cell count is 5.3").
 const LAB_FILLER = String.raw`(?:[a-z]+\s+){0,8}?`;
-const LAB_VALUE_SOURCE = String.raw`(\d[\d,]*(?::\d+)?(?:\.\d+)?)(\s*\((H|L|HH|LL)\))?`;
+// Leading minus for genuinely negative results (base excess -4.2).
+const LAB_VALUE_SOURCE = String.raw`(-?\d[\d,]*(?::\d+)?(?:\.\d+)?)(\s*\((H|L|HH|LL)\))?`;
 
 const ANALYTE_UNIT_BY_NAME = new Map(NARRATIVE_ANALYTES.map(([, canonical, unit]) => [canonical, unit]));
 

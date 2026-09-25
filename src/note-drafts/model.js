@@ -285,6 +285,9 @@ export function normalizeNoteDraft(draft, { now = timestampNow, idFactory = loca
       normalizePlanProblem(problem, { timestamp, idFactory })
     ),
     closing: normalizeClosingSections(draft?.closing, timestamp),
+    // Structured physical-exam finding selections (finding id -> text).
+    // Rendered by the exam findings picker; compiled into the note on insert.
+    examSelections: normalizeExamSelections(draft?.examSelections),
     createdAt,
     updatedAt: timestampFrom(draft?.updatedAt, createdAt)
   };
@@ -348,6 +351,21 @@ function normalizeGroupEdits(value) {
   return out;
 }
 
+// Structured physical-exam finding selections, keyed by finding id from
+// src/clinical/exam-findings.js. Only non-empty string values survive;
+// unknown ids are dropped so a stale catalog cannot pollute the draft.
+function normalizeExamSelections(value) {
+  const out = {};
+  if (value && typeof value === "object") {
+    for (const [key, val] of Object.entries(value)) {
+      const k = text(key).trim();
+      const v = text(val).trim();
+      if (k && v) out[k] = v;
+    }
+  }
+  return out;
+}
+
 function touch(draft, changes, now) {
   return { ...draft, ...changes, updatedAt: now() };
 }
@@ -370,6 +388,26 @@ export function updateManualObjective(draft, value, { now = timestampNow } = {})
     objective: { ...draft.objective, manual: updateDraftText(draft.objective?.manual, value, timestamp) },
     updatedAt: timestamp
   };
+}
+
+/**
+ * Update structured physical-exam finding selections.
+ * `changes` is an object of findingId -> text. Empty/blank values remove
+ * the selection for that finding. Unknown finding ids are ignored.
+ */
+export function updateExamSelections(draft, changes, { now = timestampNow } = {}) {
+  const timestamp = now();
+  const next = { ...(draft.examSelections || {}) };
+  if (changes && typeof changes === "object") {
+    for (const [key, val] of Object.entries(changes)) {
+      const k = String(key).trim();
+      const v = String(val ?? "").trim();
+      if (!k) continue;
+      if (v) next[k] = v;
+      else delete next[k];
+    }
+  }
+  return { ...draft, examSelections: next, updatedAt: timestamp };
 }
 
 export function updateAssessment(draft, value, { now = timestampNow } = {}) {

@@ -6,9 +6,10 @@ import {
   needsFreeTextResultText
 } from "../patient-context/free-text-results.js";
 import {
+  isBloodGasPanelName,
   laboratoryAnalyteKey,
   laboratoryPanelLabel
-} from "../patient-context/laboratory-panels.js?v=20260921-medication-card-v4";
+} from "../patient-context/laboratory-panels.js?v=20260925-blood-gas-v1";
 import {
   extractPendingItems,
   extractReportItems,
@@ -17,6 +18,7 @@ import {
   NOTE_LAB_FAMILY_LABELS,
   NOTE_VITALS_GROUP_KEY,
   NOTE_VITALS_GROUP_LABEL,
+  joinValueUnit,
   noteLabFamilyKey,
   pairBloodPressureCandidates,
   vitalNoteItem
@@ -24,10 +26,10 @@ import {
 import {
   getLabBaseline,
   normalizeLabBaselines
-} from "../patient-context/lab-baselines.js?v=20260924-lab-baselines-v1";
+} from "../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import {
   extractNoteClinicalData
-} from "../patient-context/note-clinical-extractor.js?v=20260924-note-extractor-v1";
+} from "../patient-context/note-clinical-extractor.js?v=20260925-med-filters-v1";
 import {
   primaryTeamNoteHasContent
 } from "../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
@@ -304,12 +306,15 @@ function statisticsFor(observations, { is24h, windowStart, windowEnd } = {}) {
 function vitalInsertionText(candidate, statistics24h) {
   const latest = candidate.latest;
   if (!latest) return candidate.name;
-  const latestValue = [latest.value, latest.unit].filter(Boolean).join(" ") || "No value recorded";
+  // U16: no space before % or ° ("97%", "37.3°C").
+  const latestValue = joinValueUnit(latest.value, latest.unit) || "No value recorded";
   const status = latest.status && !["normal", "unknown"].includes(latest.status) ? ` [${latest.status}]` : "";
   // Clean format: "BP: latest 92/48", not "Blood Pressure (cuff): latest 92/48 (MAP 63)".
   // MAP is only shown when explicitly documented in the note, never auto-computed.
-  let text = `${candidate.name}: latest ${latestValue}${status}`;
+  const text = `${candidate.name}: latest ${latestValue}${status}`;
   if (!statistics24h) return text;
+  // U2: a single observation has no range — skip the redundant "122–122".
+  if (statistics24h.minimum === statistics24h.maximum) return text;
   const unit = candidate.unit ? ` ${candidate.unit}` : "";
   const rangeLabel = statistics24h.is24h === false
     ? `range across ${statistics24h.count} readings`
@@ -478,11 +483,22 @@ function selectLaboratoryTrendPoints(observations, maxPoints = MAX_LABORATORY_TR
 }
 
 function laboratoryTrendKey(panel, analyteName) {
-  // The same analyte name can come from different panel types (for example
-  // lactate drawn as a serum chemistry versus lactate from a blood gas).
-  // Those are different tests and must keep separate trends, so the trend
-  // key includes the panel name and not just the analyte.
-  return `${laboratoryAnalyteKey(analyteName)}\u0000${normalizedExact(panel?.name)}`;
+  // The same analyte name can be drawn as a systemic specimen or as a blood
+  // gas (lactate, glucose, sodium, hemoglobin). Those are different tests
+  // and must keep separate trends, so the trend key includes the specimen
+  // type and not just the analyte.
+  //
+  // The specimen comes from the source label ("ABG", "Morning labs"), never
+  // the panel name: a lone serum lactate in a generic collection is *named*
+  // "Blood gas" from its analyte family, so the panel name cannot tell
+  // serum from blood gas. Specimens are compatible across presentation
+  // labels: a "CBC" panel and a generic "Laboratory results" collection are
+  // both systemic, so WBC trends chronologically in one row instead of
+  // fragmenting per panel label. Pending values stay in the trend (the
+  // newer pending never erases the prior actual value) while the compact
+  // sheet keeps them in their own pending section.
+  const specimen = isBloodGasPanelName(panel?.source?.sourceLabel) ? "blood_gas" : "systemic";
+  return `${laboratoryAnalyteKey(analyteName)}\u0000${specimen}`;
 }
 
 function attachLaboratoryTrends(laboratoryPanels) {

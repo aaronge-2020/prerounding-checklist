@@ -4,7 +4,7 @@ import {
   clinicalParseWarning,
   parseClinicalExport,
   prepareClinicalExportForSave
-} from "../../patient-context/clinical-export-parser.js?v=20260924-assessment-plan-v1";
+} from "../../patient-context/clinical-export-parser.js?v=20260925-negative-lab-v1";
 import {
   createEphemeralRedactionReview,
   reviewKey,
@@ -24,7 +24,7 @@ import {
   primaryTeamNoteFields,
   updatePrimaryTeamNoteSection
 } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
-import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20260924-assessment-plan-v1";
+import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20260925-one-liner-v1";
 
 export function createDailySourceController(deps) {
   function noteDraftSessionHasContent(draft) {

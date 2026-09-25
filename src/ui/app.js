@@ -38,7 +38,7 @@ import {
   reorderSectionsById,
   replaceSectionsFromFormAsync
 } from "../patient-context/sections.js?v=20260921-medication-card-v4";
-import { clinicalParseWarning } from "../patient-context/clinical-export-parser.js?v=20260924-assessment-plan-v1";
+import { clinicalParseWarning } from "../patient-context/clinical-export-parser.js?v=20260925-negative-lab-v1";
 import {
   createEphemeralRedactionReview,
   refreshEphemeralRedactionReview,
@@ -334,7 +334,7 @@ const demoController = createDemoController({
     app.dailySourceKind = "other_chart_text"; app.dailySourceDraft = DEMO_DAILY_TEXTS.join("\n\n");
   }
 });
-const reviewController = createReviewController({ app, active, byId, presentation: reviewPresentation, patientRequiredMessage, persistVault, render, setStatus, showToast, copyText: clipboard.copyText, downloadText, isEphemeralDemo: () => Boolean(app.demoSession), onDraftSaved: () => demoController.observeDraftSaved() });
+const reviewController = createReviewController({ app, active, byId, presentation: reviewPresentation, patientRequiredMessage, persistVault, render, setStatus, showToast, copyText: clipboard.copyText, downloadText, isEphemeralDemo: () => Boolean(app.demoSession), onDraftSaved: () => demoController.observeDraftSaved(), currentPreferences });
 const demoSessionController = createDemoSessionController({
   app,
   createDemoPatient,
@@ -4203,6 +4203,8 @@ function handleToggle(event) {
   if (event.target.matches?.(".workup-import")) {
     app.workupImportPanelOpen = event.target.open;
   }
+  // Exam-findings picker: preserve expanded systems across re-renders.
+  if (app.view === "review" && reviewController.toggle(event)) return;
 }
 
 function positionHelpTooltip(event) {
@@ -4264,6 +4266,8 @@ function bindEvents() {
       event.preventDefault();
       void phoneSession.addQuickNoteText(event.target.value);
     }
+    // Structured exam-findings custom input: Enter commits, Escape cancels.
+    if (app.view === "review" && reviewController.keydown(event)) return;
   });
   document.querySelectorAll("[data-view-target]").forEach((button) => {
     button.addEventListener("click", () => {

@@ -24,11 +24,105 @@ function markdownTableCell(value) {
   return String(value || "").trim().replace(/\|/g, "\\|").replace(/\r?\n/g, "<br>");
 }
 
-function actionBullets(label, value) {
+function bulletLines(value) {
   const content = valueText(value);
   if (!content) return [];
-  const lines = content.split(/\r?\n/).map((line) => line.trim().replace(/^[-*]\s+/, "")).filter(Boolean);
-  return lines.map((line) => `- ${label} — ${line}`);
+  return content.split(/\r?\n/).map((line) => line.trim().replace(/^[-*]\s+/, "")).filter(Boolean);
+}
+
+// U3: plan bullets render WITHOUT the verbose per-bullet "Diagnostic plan —"
+// / "Therapeutic plan —" prefixes. When a problem has both kinds, short
+// group subheads keep the dx/tx distinction without repeating it on every
+// line; otherwise plain bullets.
+function planBullets(problem) {
+  const dx = bulletLines(problem.diagnosticPlan);
+  const tx = bulletLines(problem.therapeuticPlan);
+  const bullets = (lines) => lines.map((line) => `- ${line}`);
+  if (dx.length && tx.length) {
+    return ["**Diagnostics**", ...bullets(dx), "**Therapeutics**", ...bullets(tx)];
+  }
+  return [...bullets(dx), ...bullets(tx)];
+}
+
+// U9 (defense in depth): a problem title that is really a raw markdown table
+// header/row from a failed A&P table parse must never render raw pipes. When a
+// separator line is present the problem is the first cell of the first data
+// row (never the header text); otherwise separator-only lines are dropped and
+// remaining pipes become spaces.
+export function sanitizeProblemTitle(name) {
+  const lines = String(name || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line);
+  const isSeparator = (line) => /^\|?[\s:|\-]+\|?$/.test(line) && /[-:]/.test(line);
+  const firstCell = (line) =>
+    line.split("|").map((cell) => cell.trim()).filter((cell) => cell)[0] || "";
+  if (lines.some(isSeparator)) {
+    const separatorIndex = lines.findIndex(isSeparator);
+    const dataTitle = lines
+      .slice(separatorIndex + 1)
+      .filter((line) => !isSeparator(line))
+      .map(firstCell)
+      .find((cell) => cell);
+    if (dataTitle) return dataTitle;
+    const headerTitle = lines.slice(0, separatorIndex).map(firstCell).find((cell) => cell);
+    if (headerTitle) return headerTitle;
+  }
+  return lines
+    .filter((line) => !isSeparator(line))
+    .join(" ")
+    .replace(/\|/g, " ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+// U12: the copied note must not list every problem twice. When the Assessment
+// section is nothing but the plan's own problem titles (bare, one per line),
+// drop it from the copy — the Plan section carries the titles with content.
+// Partial matches are left untouched (never mangle real assessment prose).
+function assessmentWithoutDuplicateProblems(assessmentText, problems) {
+  const text = String(assessmentText || "").trim();
+  if (!text || !Array.isArray(problems) || !problems.length) return text;
+  const normalize = (value) => String(value).toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+  const titles = new Set(
+    problems.map((problem) => normalize(sanitizeProblemTitle(valueText(problem.problem)))).filter(Boolean)
+  );
+  if (!titles.size) return text;
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trim().replace(/^[-*•\d.)\s]+/, "").trim())
+    .filter(Boolean);
+  if (!lines.length) return text;
+  return lines.every((line) => titles.has(normalize(line))) ? "" : text;
+}
+
+// U13 (defense in depth): pulled Subjective text sometimes opens with the
+// source note's header block ("PROGRESS NOTE - HD 2", "[NAME], 54F",
+// "H&P - Admission Note"). Strip leading header-like lines so they never
+// reach the copied note. Only the first few lines are considered.
+const NOTE_HEADER_PATTERNS = [
+  /^(progress|h\s*&\s*p|admission|discharge|consult|operative|clinic|ed)\b.{0,50}\bnote\b/i,
+  /\badmitted\s*[[(]/i,
+  /^\[?[A-Z][A-Z'.\- ]{1,}\]?,\s*\d{1,3}\s*[MF]\b/,
+  /^\[.*(patient name|mrn|dob).*\]$/i
+];
+
+function stripNoteHeaderLines(text) {
+  const lines = String(text || "").split(/\r?\n/);
+  let index = 0;
+  while (index < lines.length && index < 4) {
+    const line = lines[index].trim();
+    if (!line) { index += 1; continue; }
+    if (!NOTE_HEADER_PATTERNS.some((pattern) => pattern.test(line))) break;
+    index += 1;
+  }
+  return lines.slice(index).join("\n").trim();
+}
+
+// U15 (defense in depth): sanitize em-dash artifacts the medication parser
+// can leave around comparison operators ("phosphorus <= — 2.5 mg/dL").
+function sanitizeMedicationText(text) {
+  return String(text || "").replace(/([<>=!]=?)\s*—\s*/g, "$1 ");
 }
 
 // The HPI often opens by restating the one-liner verbatim. The note should
@@ -208,17 +302,20 @@ function relevantHistoryText(sections) {
 }
 
 function subjectiveText(sections) {
+  // U13: strip leaked source-note header lines from each pulled field before
+  // it reaches the copied note.
+  const cleanField = (value) => ({ deidentifiedText: stripNoteHeaderLines(valueText(value)) });
   return [
-    labeledLine("Interval events", sections.interval_events),
-    labeledLine("Patient report", sections.patient_report),
-    labeledLine("Nursing report", sections.nursing_report),
-    labeledLine("Pertinent symptoms", sections.pertinent_symptoms),
-    labeledLine("Other", sections.other)
+    labeledLine("Interval events", cleanField(sections.interval_events)),
+    labeledLine("Patient report", cleanField(sections.patient_report)),
+    labeledLine("Nursing report", cleanField(sections.nursing_report)),
+    labeledLine("Pertinent symptoms", cleanField(sections.pertinent_symptoms)),
+    labeledLine("Other", cleanField(sections.other))
   ].filter(Boolean).join("\n\n");
 }
 
 function renderProblem(problem) {
-  const problemName = valueText(problem.problem);
+  const problemName = sanitizeProblemTitle(valueText(problem.problem));
   if (!problemName) return "";
   const parts = [`**${problemName}**`];
   const keyContext = valueText(problem.keyContext);
@@ -239,8 +336,7 @@ function renderProblem(problem) {
     }
   }
 
-  parts.push(...actionBullets("Diagnostic plan", problem.diagnosticPlan));
-  parts.push(...actionBullets("Therapeutic plan", problem.therapeuticPlan));
+  parts.push(...planBullets(problem));
   return parts.join("\n\n");
 }
 
@@ -262,7 +358,7 @@ function closingSectionList(draft) {
 function medicationsText(draft) {
   const model = objectiveModel(draft);
   return model.medications
-    .map((item) => `- **${item.label || "Medication"}**${item.detail ? ` — ${item.detail}` : item.text ? ` — ${item.text}` : ""}`)
+    .map((item) => `- **${sanitizeMedicationText(item.label) || "Medication"}**${item.detail ? ` — ${sanitizeMedicationText(item.detail)}` : item.text ? ` — ${sanitizeMedicationText(item.text)}` : ""}`)
     .join("\n");
 }
 
@@ -285,7 +381,8 @@ function medicationsHtml(draft) {
 // sections are omitted.
 function finalNoteSectionList(draft) {
   const fields = draft.sections || {};
-  const oneLiner = valueText(fields.one_liner);
+  // U14: the copied one-liner must not retain the source "CC:" label.
+  const oneLiner = valueText(fields.one_liner).replace(/^(cc|chief complaint)\s*:\s*/i, "");
   const front = draft.noteType === NOTE_TYPES.H_AND_P
     ? [
         { heading: "One-Liner", body: oneLiner },
@@ -304,7 +401,8 @@ function finalNoteSectionList(draft) {
     ...front,
     { heading: "Physical Exam", body: checklistFindingText(draft, "exam") },
     { heading: "Objective", objective: true },
-    { heading: "Assessment", body: valueText(draft.assessment) },
+    // U12: drop an Assessment that merely repeats the plan's problem titles.
+    { heading: "Assessment", body: assessmentWithoutDuplicateProblems(valueText(draft.assessment), draft.problems) },
     { heading: "Plan", body: planText(draft) },
     ...closingSectionList(draft),
     { heading: "Medications", medications: true }

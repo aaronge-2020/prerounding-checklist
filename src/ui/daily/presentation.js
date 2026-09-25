@@ -1,9 +1,10 @@
 import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-medication-card-v4";
-import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260924-assessment-plan-v1";
+import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260925-negative-lab-v1";
 import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-medication-card-v4";
 import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 import { primaryTeamNoteFields, primaryTeamNoteHasContent } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
 import { DIAGNOSTIC_RESULT_CATEGORIES, sourceCapturePacketCheck } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
+import { joinValueUnit } from "../../review-data/compact-summary.js?v=20260924-optional-sections-v1";
 
 export function createDailyPresentation({ escapeHtml, icon }) {
   function renderRowReviewStatus(completeness) {
@@ -82,13 +83,20 @@ export function createDailyPresentation({ escapeHtml, icon }) {
       <section class="clinical-vital-summary" aria-label="24-hour vital-sign summary">
         <div class="clinical-vital-summary__heading"><strong>24-hour summary</strong><span>Range, mean, and median through the latest recorded time</span></div>
         <div class="clinical-vital-summary__grid">
-          ${statistics.map((statistic) => `
+          ${statistics.map((statistic) => {
+            // U2: a single observation has no range — never render "122–122".
+            // U16: unit joins with no space before % or ° ("97%", "37.3°C").
+            const hasRange = statistic.minimum !== statistic.maximum;
+            const headline = hasRange
+              ? `<b>${escapeHtml(String(statistic.minimum))}–${escapeHtml(String(statistic.maximum))}</b> ${escapeHtml(statistic.unit || "")}`
+              : `<b>${escapeHtml(joinValueUnit(statistic.minimum ?? statistic.maximum, statistic.unit) || "—")}</b>`;
+            return `
             <article class="clinical-vital-stat">
               <strong>${escapeHtml(statistic.name)}</strong>
-              <span><b>${escapeHtml(String(statistic.minimum))}–${escapeHtml(String(statistic.maximum))}</b> ${escapeHtml(statistic.unit || "")}</span>
+              <span>${headline}</span>
               <small>Mean ${escapeHtml(String(statistic.mean))} · Median ${escapeHtml(String(statistic.median))} · n=${statistic.count}</small>
             </article>
-          `).join("")}
+          `;}).join("")}
         </div>
       </section>
     `;
@@ -288,7 +296,15 @@ export function createDailyPresentation({ escapeHtml, icon }) {
         ${detectedFields.map((field) => {
           const tables = fieldTables(field.id);
           const tableNote = tables.length ? ` <small class="muted">(${tables.map((t) => `${t.rowCount} ${tableBadge(t.type)}`).join(", ")})</small>` : "";
-          return `<li><span aria-hidden="true">✓</span>${escapeHtml(field.label)}${tableNote}</li>`;
+          // U17: a detected heading whose tables parsed zero rows gets a
+          // warning marker, not a ✓ — the check must mean "content
+          // extracted", never just "heading seen".
+          const hasContent = tables.length ? tables.some((table) => (table.rowCount || 0) > 0) : true;
+          const marker = hasContent
+            ? `<span aria-hidden="true">✓</span>`
+            : `<span class="detected-warning" aria-hidden="true" title="Heading found; no rows parsed">⚠</span>`;
+          const emptyNote = hasContent ? "" : ` <small class="detected-warning-text">heading found; no rows parsed</small>`;
+          return `<li>${marker}${escapeHtml(field.label)}${tableNote}${emptyNote}</li>`;
         }).join("")}
       </ul>
       <button type="button" class="button--quiet structured-note-review-mapping" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}">Review section mapping →</button>
@@ -558,7 +574,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
               ? `<section class="panel admission-packet packet-surface hospital-day-packet">
               <div class="admission-packet-body">
                 <div class="section-heading source-day-heading"><div><h2>Admission</h2><p class="muted">Paste broad chart blocks. The app preserves the source and includes every saved capture.</p></div></div>
-                ${renderSourceWorkspace({ scope: "admission", sources: admissionSections, sourceOptions: admissionSourceOptions, selectedSourceKind: admissionSourceKind, sourceDraft: admissionSourceDraft, sourceParse: admissionSourceParse, renderSourceCaptureEditor: (section) => renderSectionEditor(section, "context"), renderWarnings, packetCheck: admissionPacketCheck, deidBusy, renderDeidStrip, generateAction: "open-admission-note", generateLabel: "Review data / draft H&P", primaryTeamNote: patient.admissionPrimaryTeamNote, structuredNoteDraft: structuredNoteDrafts?.admission || {}, structuredNoteComposer: structuredNoteComposers?.admission || {}, noteType: NOTE_TYPES.H_AND_P, resultMetadata: admissionResultMetadata })}
+                ${renderSourceWorkspace({ scope: "admission", sources: admissionSections, sourceOptions: admissionSourceOptions, selectedSourceKind: admissionSourceKind, sourceDraft: admissionSourceDraft, sourceParse: admissionSourceParse, renderSourceCaptureEditor: (section) => renderSectionEditor(section, "context"), renderWarnings, packetCheck: admissionPacketCheck, deidBusy, renderDeidStrip, generateAction: "open-admission-note", generateLabel: "Draft H&P →", primaryTeamNote: patient.admissionPrimaryTeamNote, structuredNoteDraft: structuredNoteDrafts?.admission || {}, structuredNoteComposer: structuredNoteComposers?.admission || {}, noteType: NOTE_TYPES.H_AND_P, resultMetadata: admissionResultMetadata })}
               </div>
           </section>`
               : ""
@@ -576,7 +592,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
                   <button class="button--secondary" type="button" data-action="save-day" ${deidBusy || !selected.sourceCaptures.length ? "disabled" : ""}>Save source edits</button>
                 </div>
               </div>
-              ${renderSourceWorkspace({ scope: "daily", sources: selected.sourceCaptures, sourceOptions, selectedSourceKind, sourceDraft, sourceParse, renderSourceCaptureEditor, renderWarnings, packetCheck, deidBusy, renderDeidStrip, generateAction: "open-progress-note", generateLabel: "Review data / draft progress note", primaryTeamNote: selected.primaryTeamNote, structuredNoteDraft: structuredNoteDrafts?.[selected.id] || {}, structuredNoteComposer: structuredNoteComposers?.[selected.id] || {}, noteType: NOTE_TYPES.PROGRESS, resultMetadata: dailyResultMetadata })}
+              ${renderSourceWorkspace({ scope: "daily", sources: selected.sourceCaptures, sourceOptions, selectedSourceKind, sourceDraft, sourceParse, renderSourceCaptureEditor, renderWarnings, packetCheck, deidBusy, renderDeidStrip, generateAction: "open-progress-note", generateLabel: "Draft progress note →", primaryTeamNote: selected.primaryTeamNote, structuredNoteDraft: structuredNoteDrafts?.[selected.id] || {}, structuredNoteComposer: structuredNoteComposers?.[selected.id] || {}, noteType: NOTE_TYPES.PROGRESS, resultMetadata: dailyResultMetadata })}
             `
                 : `<div class="empty-state">Add a hospital day to begin capturing selected-day sources.</div>`
             }

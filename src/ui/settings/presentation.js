@@ -22,7 +22,7 @@ export function createSettingsPresentation({ escapeHtml }) {
           <div class="section-heading">
             <div>
               <h2>Bring your own OpenAI key</h2>
-              <p class="muted">Use your own key to format a reviewed, de-identified OpenEvidence workup draft, or to fill checklist answers from a de-identified OpenEvidence note.</p>
+              <p class="muted">Use your own key to format a reviewed, de-identified OpenEvidence workup draft, to fill checklist answers from a de-identified OpenEvidence note, or to generate per-problem assessment &amp; plans (differential, diagnostic and therapeutic plans with citations) from de-identified draft context.</p>
             </div>
           </div>
           <div class="notice settings-security-note">

@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import {
   parsePrimaryTeamNote,
   extractFirstSentence,
+  extractSubstantiveOneLiner,
   parseClinicalPlanProblems
 } from "../src/patient-context/primary-team-note-parser.js";
 
@@ -634,6 +635,16 @@ assert.equal(hashProblems[1].problem, "Hypotension");
 assert.match(hashProblems[1].keyContext, /Loaded w\/ 500ml NS/);
 assert.match(hashProblems[1].therapeuticPlan, /Wean levophed/);
 
+// B7: date-prefixed past-tense actions ("09/24/2026: started heparin") are
+// therapeutic, not context.
+const datePrefixedPlan = `#DVT
+09/24/2026: started heparin
+- Continue heparin drip`;
+const datePrefixedProblems = parseClinicalPlanProblems(datePrefixedPlan);
+assert.equal(datePrefixedProblems.length, 1);
+assert.match(datePrefixedProblems[0].therapeuticPlan, /started heparin/);
+assert.doesNotMatch(datePrefixedProblems[0].keyContext || "", /started heparin/);
+
 // Numbered plan items
 const numberedPlan = `1. Acute Stroke
 Etiology: RT ICA occlusion
@@ -814,6 +825,102 @@ PLAN:
   assert.ok(diabetesTitles.includes("Diabetes mellitus type 1"), "titled plan problem kept");
   assert.ok(diabetesTitles.some((t) => /Alk Phos/i.test(t)), "unmatched assessment item preserved");
   assert.equal(diabetesTitles.length, 3, "exactly three problems");
+}
+
+// P1: two-column EHR rows with arbitrary (non-system) problem titles must
+// become individual problems with their plan column as the therapeutic plan.
+{
+  const arbitraryRows = parsePrimaryTeamNote(
+    "Diagnostic and Objective Findings\tAssessment and Plan\n" +
+    "Acute decompensated HFrEF: JVP elevated, crackles\tLasix 40mg IV BID\n" +
+    "Hyperkalemia: K 5.8 (H)\tKayexalate 15g PO\n" +
+    "AKI: Cr 2.1 (H)\tHold ACE inhibitor",
+    "progress"
+  );
+  const titles = arbitraryRows.parsedProblems.map((p) => p.problem);
+  assert.deepEqual(titles, ["Acute decompensated HFrEF", "Hyperkalemia", "AKI"], "each tabular row must become its own problem with a clean title");
+  const hfref = arbitraryRows.parsedProblems[0];
+  assert.match(hfref.therapeuticPlan, /Lasix 40mg IV BID/, "the row's plan column must become the therapeutic plan");
+  assert.match(arbitraryRows.sections.objective, /Acute decompensated HFrEF: JVP elevated, crackles/, "findings stay in objective");
+}
+
+// P2/P3: markdown A&P tables parse into problems; headers never become
+// problem titles and empty problem cells continue the preceding problem.
+{
+  const markdownTable = parseClinicalPlanProblems(
+    "| Problem | Assessment | Plan |\n" +
+    "|---|---|---|\n" +
+    "| Upper GI bleed | Hgb 6.8, tachycardic | Transfuse 2U PRBC |\n" +
+    "| Hemorrhagic shock | BP 85/50, lactate 4.2 | IVF resuscitation |"
+  );
+  assert.equal(markdownTable.length, 2);
+  assert.equal(markdownTable[0].problem, "Upper GI bleed");
+  assert.match(markdownTable[0].therapeuticPlan, /Transfuse 2U PRBC/);
+  assert.equal(markdownTable[1].problem, "Hemorrhagic shock");
+  assert.ok(!markdownTable.some((p) => /Problem/i.test(p.problem) && p.problem.length < 10), "the markdown header row must not become a problem");
+  const continued = parseClinicalPlanProblems(
+    "| Problem | Assessment | Plan |\n" +
+    "|---|---|---|\n" +
+    "| Sepsis | febrile, hypotensive | Broad-spectrum abx |\n" +
+    "|  | lactate 4.0 | repeat lactate |"
+  );
+  assert.equal(continued.length, 1, "an empty problem cell continues the preceding problem");
+  assert.match(continued[0].therapeuticPlan, /repeat lactate/);
+}
+
+// P4: a strong therapeutic action keeps its meaning under a "Diagnostic
+// plan" label; incidental "monitor" does not flip it, and pure diagnostic
+// items stay diagnostic.
+{
+  const labeled = parseClinicalPlanProblems(
+    "#AKI\nDiagnostic plan: Aggressive IV fluids, monitor I/O hourly\nTherapeutic plan: anion gap still open at 24, not ready for subQ"
+  );
+  assert.match(labeled[0].therapeuticPlan, /Aggressive IV fluids/, "IV fluids are therapeutic despite the diagnostic label");
+  assert.equal(labeled[0].diagnosticPlan, "", "nothing diagnostic should remain");
+  assert.match(labeled[0].keyContext, /anion gap still open/, "non-action reasoning under a therapeutic label stays context");
+  const pureDiagnostic = parseClinicalPlanProblems("#AKI\nDiagnostic plan: check BMP in AM, repeat lactate");
+  assert.match(pureDiagnostic[0].diagnosticPlan, /check BMP in AM/, "pure diagnostic items stay diagnostic");
+}
+
+// P5: a standalone plan label with no problem becomes "Unspecified problem"
+// and its content is retained, not dropped.
+{
+  const orphan = parseClinicalPlanProblems("Therapeutic plan: continue home metoprolol");
+  assert.equal(orphan.length, 1);
+  assert.equal(orphan[0].problem, "Unspecified problem");
+  assert.match(orphan[0].therapeuticPlan, /continue home metoprolol/);
+}
+
+// P17/P19: synthesized one-liners strip CC labels, prefer the longer
+// substantive sentence, and never invent demographics or diagnoses.
+{
+  assert.equal(
+    extractSubstantiveOneLiner("Subjective: CC: chest pain. Patient reports 3 days of pressure-like chest pain."),
+    "Patient reports 3 days of pressure-like chest pain.",
+    "the CC label is stripped and the substantive sentence wins"
+  );
+  assert.equal(
+    extractSubstantiveOneLiner("Chief Complaint: Shortness of breath"),
+    "Shortness of breath",
+    "a bare chief complaint is used verbatim, not synthesized"
+  );
+  assert.equal(
+    extractSubstantiveOneLiner("Patient reports 3 days of pain."),
+    "Patient reports 3 days of pain.",
+    "label stripping must not mangle 'Patient reports' into 's 3 days of pain.'"
+  );
+}
+
+// P18: note-header metadata before the first heading is dropped, not parsed
+// as clinical content.
+{
+  const headerNote = parsePrimaryTeamNote(
+    "Date: 09/20/2026 Author: J. Smith, MD Pager: 1234\n\nSubjective: Patient feels better.",
+    "progress"
+  );
+  assert.equal(headerNote.sections.other, "", "header metadata must not leak into other");
+  assert.doesNotMatch(headerNote.sections.one_liner || "", /J\. Smith|Pager|09\/20\/2026/, "header metadata must not leak into the one-liner");
+  assert.match(headerNote.sections.one_liner || "", /Patient feels better/);
 }
 
 console.log("primary-team note parser A/P pairing regression tests passed");

@@ -3,10 +3,13 @@ import {
   abnormalTone,
   compactLabTrendLine,
   compactVitalTrendLine,
-  displayVitalName
+  displayVitalName,
+  joinValueUnit
 } from "../../review-data/compact-summary.js?v=20260924-optional-sections-v1";
-import { baselineDisplayText } from "../../patient-context/lab-baselines.js?v=20260924-lab-baselines-v1";
+import { sanitizeProblemTitle } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
+import { baselineDisplayText, baselinePriorityFor } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import { EXAM_TEMPLATES, EXAM_TEMPLATE_IDS } from "../../clinical/exam-templates.js?v=20260925-exam-templates-v1";
+import { EXAM_FINDINGS, EXAM_FINDING_SOURCES } from "../../clinical/exam-findings.js?v=20260925-exam-findings-v1";
 
 function valueText(value) {
   if (value && typeof value === "object") return String(value.deidentifiedText || "");
@@ -14,6 +17,9 @@ function valueText(value) {
 }
 
 export function createReviewPresentation({ escapeHtml, icon }) {
+  // Collapse state for draft sections, set by renderDraft before rendering.
+  // editorSection reads it so every call site gets collapsibility for free.
+  let activeCollapsedSections = null;
   const helpButton = (key, label, guidance) => `<button type="button" class="note-help-button" data-help-key="${escapeHtml(key)}" data-tooltip="${escapeHtml(guidance || "No additional guidance.")}" aria-label="Help for ${escapeHtml(label)}">?</button>`;
   // Pull button: copies the corresponding section text from the primary team
   // note (for the current hospital day) into this draft section as a starting point.
@@ -41,11 +47,18 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   function renderVitalChip(candidate, selected, query) {
     if (!matchesQuery(candidate.searchText, query)) return "";
     const displayName = displayVitalName(candidate.name);
-    const value = [candidate.latest?.value, candidate.latest?.unit].filter(Boolean).join(" ") || "—";
+    // U16: no space before % or ° ("97%", "37.3°C").
+    const value = joinValueUnit(candidate.latest?.value, candidate.latest?.unit) || "—";
     const tone = vitalStatus(candidate) === "unknown" ? "" : vitalStatus(candidate);
+    // U2: a single observation has no range — never render "122–122".
+    const stats24h = candidate.statistics24h;
+    const hasRange = stats24h
+      && Number.isFinite(stats24h.minimum)
+      && Number.isFinite(stats24h.maximum)
+      && stats24h.minimum !== stats24h.maximum;
     const stats = candidate.statisticsText
-      || (candidate.statistics24h && Number.isFinite(candidate.statistics24h.minimum)
-        ? `${candidate.statistics24h.minimum}–${candidate.statistics24h.maximum}${candidate.unit ? ` ${candidate.unit}` : ""} (24h)`
+      || (hasRange
+        ? `${stats24h.minimum}–${stats24h.maximum}${candidate.unit ? ` ${candidate.unit}` : ""} (24h)`
         : "");
     const trend = compactVitalTrendLine(candidate.displayTrend);
     const when = [candidate.latest?.dayLabel, candidate.latest?.timestamp].filter(Boolean).join(" · ");
@@ -175,12 +188,22 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     const baseline = result.baseline?.value ? baselineDisplayText(result.baseline) : "";
     const meta = [trend, result.referenceRange ? `Ref ${result.referenceRange}` : "", baseline ? `base ${baseline}` : ""].filter(Boolean).join(" · ");
     const editing = options.baselineEditorId === selection.id;
-    return `<div class="lab-row ${selected ? "is-selected" : ""}" data-review-candidate="${escapeHtml(selection.id)}" data-clinical-emphasis="${escapeHtml(tone || "unknown")}">
+    // Baseline-priority analytes (creatinine, troponin, hemoglobin, ...):
+    // when no baseline exists, show a prominent warning that prompts the
+    // student to enter one. Interpretation of these labs depends on change
+    // from the patient's own baseline, not just the reference range.
+    const priority = !result.baseline?.value ? baselinePriorityFor(result.name) : null;
+    const baselineButton = baseline
+      ? `<button type="button" class="lab-baseline-toggle" data-action="baseline-edit" data-baseline-result-id="${escapeHtml(selection.id)}" title="${escapeHtml(result.baseline?.note || "Edit the patient baseline for this analyte")}">Edit base</button>`
+      : priority
+        ? `<button type="button" class="lab-baseline-toggle lab-baseline-warning" data-action="baseline-edit" data-baseline-result-id="${escapeHtml(selection.id)}" title="${escapeHtml(`Baseline recommended — ${priority.rationale} (${priority.source})`)}"><span class="lab-baseline-warning-icon" aria-hidden="true">⚠️</span>Set baseline</button>`
+        : `<button type="button" class="lab-baseline-toggle" data-action="baseline-edit" data-baseline-result-id="${escapeHtml(selection.id)}" title="Set a patient baseline for this analyte">Set base</button>`;
+    return `<div class="lab-row ${selected ? "is-selected" : ""}${priority ? " lab-row-needs-baseline" : ""}" data-review-candidate="${escapeHtml(selection.id)}" data-clinical-emphasis="${escapeHtml(tone || "unknown")}">
       <label class="lab-row-check"><input type="checkbox" data-objective-selection-id="${escapeHtml(selection.id)}" data-lab-result-selection="${escapeHtml(panel.id)}" aria-label="Include only ${escapeHtml(result.name)} from ${escapeHtml(panel.name)} in the note" ${selected ? "checked" : ""}></label>
-      <span class="lab-row-name">${escapeHtml(result.name)}${flagPill(tone)}${result.flag ? `<span class="lab-row-flag">${escapeHtml(result.flag)}</span>` : ""}</span>
+      <span class="lab-row-name">${escapeHtml(result.name)}${flagPill(tone)}${result.flag ? `<span class="lab-row-flag">${escapeHtml(result.flag)}</span>` : ""}${priority ? `<span class="lab-baseline-needed" title="${escapeHtml(`Baseline recommended — ${priority.rationale}`)}">!</span>` : ""}</span>
       <span class="lab-row-value"><strong>${escapeHtml(value)}</strong></span>
       ${meta ? `<span class="lab-row-meta">${escapeHtml(meta)}</span>` : ""}
-      <button type="button" class="lab-baseline-toggle" data-action="baseline-edit" data-baseline-result-id="${escapeHtml(selection.id)}" title="${escapeHtml(result.baseline?.note || "Set a patient baseline for this analyte")}">${baseline ? "Edit base" : "Set base"}</button>
+      ${baselineButton}
       ${editing ? renderBaselineEditor(result, selection) : ""}
     </div>`;
   }
@@ -327,12 +350,32 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       + (showDiagnostics ? (index.diagnosticResults || []).filter((candidate) => (!category || category === "all" || candidate.group === category) && matchesQuery(candidate.searchText, q)).length : 0);
     const toggleLabel = clinicalDataCollapsed ? "Show clinical data" : "Hide clinical data";
     const toggleIcon = clinicalDataCollapsed ? "▶" : "◀";
+    // U4: when pasted text produced zero structured rows, say exactly what the
+    // parser accepts so the student can re-paste in a supported format —
+    // never claim parsing succeeded.
+    const zeroYieldHint = (() => {
+      const hints = [];
+      const labNarratives = (index.labs || []).filter((candidate) => candidate.kind === "narrative").length;
+      const labRows = (index.pendingItems || []).length
+        + (index.reportItems || []).length
+        + (index.labFamilies || []).reduce((total, section) => total + (section.rows || []).length, 0);
+      if (labNarratives > 0 && labRows === 0) {
+        hints.push(`<p class="review-zero-yield-hint"><strong>No structured labs parsed.</strong> The lab parser reads result <em>tables</em> — Epic-style laboratory tables, CPRS tables, or tab/CSV clipboard tables with test, value, units, and reference-range columns. Plain result lines (e.g. <code>K 4.1</code>) are not parsed. The pasted text is kept under “Unparsed lab sources” below.</p>`);
+      }
+      const medStructured = (index.medications || []).filter((candidate) => candidate.kind !== "narrative").length;
+      const medNarratives = (index.medications || []).filter((candidate) => candidate.kind === "narrative").length;
+      if (medNarratives > 0 && medStructured === 0) {
+        hints.push(`<p class="review-zero-yield-hint"><strong>No structured medications parsed.</strong> The medication parser reads inpatient medication <em>table</em> rows (starting with “INPATIENT | …”). Plain medication lines are not parsed; the pasted text is kept below.</p>`);
+      }
+      return hints.join("");
+    })();
     const bodyHtml = clinicalDataCollapsed ? "" : `
       <div class="review-filter-row">
         <label>Search patient data<input type="search" id="reviewDataSearch" value="${escapeHtml(query)}" placeholder="${category === "labs" ? "WBC, CBC, metabolic panel…" : "WBC, ceftriaxone, CT Head…"}" autocomplete="off"></label>
         <label>Show<select id="reviewDataCategory"><option value="all">All clinical data</option>${index.groups.map((group) => `<option value="${escapeHtml(group.id)}" ${category === group.id ? "selected" : ""}>${escapeHtml(group.label)} (${groupCount(index, group.id)})</option>`).join("")}</select></label>
       </div>
       <p class="review-filter-summary" aria-live="polite">${matchCount} matching item${matchCount === 1 ? "" : "s"}</p>
+      ${zeroYieldHint}
       <div class="review-data-list">${sections.length ? sections.join("") : `<div class="empty-state">No saved clinical data match this search.</div>`}</div>`;
     if (clinicalDataCollapsed) {
       // Horizontal collapse: slim rail with just an expand button, so the
@@ -370,8 +413,13 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return `<div class="ed-label"><span class="ed-label-text">${escapeHtml(labelText)}</span>${extra}</div>`;
   }
 
-  function editorSection(labelText, bodyHtml, { labelExtra = "", sectionAttr = "" } = {}) {
-    return `<div class="ed-section"${sectionAttr}>${editorLabel(labelText, labelExtra)}<div class="ed-section-body">${bodyHtml}</div></div>`;
+  function editorSection(labelText, bodyHtml, { labelExtra = "", sectionAttr = "", sectionId = "" } = {}) {
+    // Every draft section is collapsible (I1): keeps the note scannable on
+    // rounds. Collapse state is tracked by the controller so re-renders
+    // preserve which sections the student opened/closed.
+    const id = sectionId || String(labelText).toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    const isCollapsed = activeCollapsedSections instanceof Set ? activeCollapsedSections.has(id) : false;
+    return `<details class="ed-section"${isCollapsed ? "" : " open"}${sectionAttr} data-draft-section-id="${escapeHtml(id)}"><summary class="ed-section-summary">${editorLabel(labelText, labelExtra)}</summary><div class="ed-section-body">${bodyHtml}</div></details>`;
   }
 
   function editorSubRegion(fieldAttr, subLabel, value, placeholder) {
@@ -477,11 +525,30 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     </div>`;
   }
 
-  function renderProblemEditor(problem, index, guidanceFor) {
+  // Confirmation modal shown before any patient context leaves the browser.
+  // apConfirm = { problemId, problemName, contextText }. The student reviews
+  // the exact de-identified text that will be sent to the AI provider.
+  function renderApConfirmModal(apConfirm) {
+    return `<div class="ap-confirm-overlay" data-ap-confirm-overlay>
+      <div class="ap-confirm-modal" role="dialog" aria-modal="true" aria-label="Confirm AI plan generation">
+        <h3>Generate assessment &amp; plan with AI?</h3>
+        <p class="muted">The text below — and only this text — will be sent to OpenAI using your saved API key. Confirm it contains <strong>no protected health information</strong> (no names, dates, MRNs, locations).</p>
+        <div class="ap-confirm-context" tabindex="0">${escapeHtml(apConfirm.contextText) || "<span class=\"muted\">(no context)</span>"}</div>
+        <p class="muted ap-confirm-note">The AI drafts a ranked differential, diagnostic plan, and order-level therapeutic plan with citations. You review and edit everything before it enters your note.</p>
+        <div class="button-row">
+          <button type="button" class="button--primary button--small" data-action="ap-confirm-generate" data-problem-id="${escapeHtml(apConfirm.problemId)}">Confirm — generate plan</button>
+          <button type="button" class="button--secondary button--small" data-action="ap-confirm-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderProblemEditor(problem, index, guidanceFor, options = {}) {
     const known = problem.etiologyStatus === "known";
+    const generating = options.generatingApProblemId === problem.id;
     return `<article class="plan-problem-card" data-problem-id="${escapeHtml(problem.id)}">
-      <div class="ed-problem-bar"><strong>Problem ${index + 1}</strong><span class="ed-mini-row"><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="-1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem up">↑</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-plan-problem" data-problem-id="${escapeHtml(problem.id)}">Remove</button></span></div>
-      <div class="ed-sub"><span class="ed-sub-label">Clinical problem</span><div class="ed-body ed-body--strong" contenteditable="true" data-problem-field="problem" data-placeholder="Name the clinical problem, not a test or treatment" spellcheck="true">${editorHtml(problem.problem)}</div></div>
+      <div class="ed-problem-bar"><strong>Problem ${index + 1}</strong><span class="ed-mini-row"><button type="button" class="ed-mini" data-action="generate-ap" data-problem-id="${escapeHtml(problem.id)}" ${generating ? "disabled" : ""} title="${escapeHtml(generating ? "Generating assessment and plan…" : "Generate differential, diagnostic plan, and therapeutic plan with citations (uses your saved OpenAI key; only de-identified context is sent)")}">${icon("wand")} ${generating ? "Generating…" : "Generate"}</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="-1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem up">↑</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-plan-problem" data-problem-id="${escapeHtml(problem.id)}">Remove</button></span></div>
+      <div class="ed-sub"><span class="ed-sub-label">Clinical problem</span><div class="ed-body ed-body--strong" contenteditable="true" data-problem-field="problem" data-placeholder="Name the clinical problem, not a test or treatment" spellcheck="true">${editorHtml(sanitizeProblemTitle(valueText(problem.problem)))}</div></div>
       <div class="ed-sub"><span class="ed-sub-label">Key context</span><div class="ed-body" contenteditable="true" data-problem-field="keyContext" data-placeholder="Optional concise context" spellcheck="true">${editorHtml(problem.keyContext)}</div></div>
       <div class="ed-etiology"><span class="ed-sub-label">Etiology</span>${helpButton(known ? "etiology_known" : "etiology_unknown", "Etiology status", guidanceFor(known ? "etiology_known" : "etiology_unknown"))}<div class="segmented-options"><label><input type="radio" name="etiology_${escapeHtml(problem.id)}" data-problem-etiology value="known" ${known ? "checked" : ""}> <span>Known</span></label><label><input type="radio" name="etiology_${escapeHtml(problem.id)}" data-problem-etiology value="unknown" ${known ? "" : "checked"}> <span>Unknown</span></label></div></div>
       ${known
@@ -501,7 +568,9 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     ["other", "Other relevant history"]
   ]);
 
-  function renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups }) {
+  function renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, examFindingsUi, collapsedDraftSections, generatingApProblemId, apConfirm }) {
+    // Make the collapse set visible to editorSection for this render.
+    activeCollapsedSections = collapsedDraftSections instanceof Set ? collapsedDraftSections : new Set();
     const visibility = draft.sectionVisibility || {};
     const isHP = draft.noteType === NOTE_TYPES.H_AND_P;
     const fields = draft.sections || {};
@@ -519,6 +588,79 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       ).join("");
       return `<span class="exam-template-picker"><label for="examTemplateSelect">Template:</label><select id="examTemplateSelect" data-exam-template-select><option value="">Select exam…</option>${options}</select><button type="button" class="ed-mini" data-action="insert-exam-template">Insert</button></span>`;
     };
+
+    // Structured physical-exam findings picker. Every finding gets a
+    // clickable pill; clicking opens a dropdown of standard options drawn
+    // from established references (Bates', DeGowin, AAN, UpToDate). "All
+    // normal" fills every finding in one click; a custom-text escape hatch
+    // covers anything not in the lists. Selections compile into note prose.
+    const examFindingsPicker = (draft, uiState = {}) => {
+      const selections = draft?.examSelections || {};
+      const openId = uiState.openDropdownId || null;
+      const customId = uiState.customInputId || null;
+      const expandedSystems = new Set(uiState.expandedSystems || ["General"]);
+      const filledCount = EXAM_FINDINGS.filter((f) => String(selections[f.id] || "").trim()).length;
+
+      // Group findings by system, preserving catalog order.
+      const systems = [];
+      const systemIndex = new Map();
+      for (const finding of EXAM_FINDINGS) {
+        if (!systemIndex.has(finding.system)) {
+          systemIndex.set(finding.system, systems.length);
+          systems.push({ name: finding.system, findings: [] });
+        }
+        systems[systems.length - 1].findings.push(finding);
+      }
+
+      const renderPill = (finding) => {
+        const value = String(selections[finding.id] || "").trim();
+        const isOpen = openId === finding.id;
+        const isCustom = customId === finding.id;
+        if (isCustom) {
+          return `<span class="ef-custom-wrap"><input type="text" class="ef-custom-input" data-exam-finding-input="${escapeHtml(finding.id)}" value="${escapeHtml(value)}" placeholder="Type finding, Enter to save" aria-label="Custom finding for ${escapeHtml(finding.label)}"></span>`;
+        }
+        const pillClass = value ? "ef-pill is-filled" : "ef-pill is-empty";
+        const pillText = value || "select…";
+        const title = value ? `${finding.label}: ${value} — click to change` : `${finding.label} — click to select`;
+        let html = `<span class="ef-pill-wrap"><button type="button" class="${pillClass}" data-action="exam-finding-open" data-finding-id="${escapeHtml(finding.id)}" title="${escapeHtml(title)}" aria-haspopup="listbox" aria-expanded="${isOpen ? "true" : "false"}">${escapeHtml(pillText)}</button>`;
+        if (value) {
+          html += `<button type="button" class="ef-clear" data-action="exam-finding-clear" data-finding-id="${escapeHtml(finding.id)}" title="Clear ${escapeHtml(finding.label)}" aria-label="Clear ${escapeHtml(finding.label)}">×</button>`;
+        }
+        html += `</span>`;
+        if (isOpen) {
+          const optionButtons = finding.options.map((opt, idx) => {
+            const isNormal = idx === 0;
+            const isSelected = value === opt;
+            return `<button type="button" role="option" aria-selected="${isSelected ? "true" : "false"}" class="ef-option${isNormal ? " is-normal" : ""}${isSelected ? " is-selected" : ""}" data-action="exam-finding-select" data-finding-id="${escapeHtml(finding.id)}" data-option-index="${idx}" title="${escapeHtml(opt)}">${isNormal ? "✓ " : ""}${escapeHtml(opt)}</button>`;
+          }).join("");
+          html += `<div class="ef-dropdown" role="listbox" aria-label="${escapeHtml(finding.label)} options"><div class="ef-dropdown-scroll">${optionButtons}</div><button type="button" class="ef-option-custom" data-action="exam-finding-custom" data-finding-id="${escapeHtml(finding.id)}">✎ Type custom finding…</button></div>`;
+        }
+        return html;
+      };
+
+      const systemsHtml = systems.map((system) => {
+        const sysFilled = system.findings.filter((f) => String(selections[f.id] || "").trim()).length;
+        const isOpen = expandedSystems.has(system.name);
+        const findingsHtml = system.findings.map((finding) =>
+          `<div class="ef-finding" data-finding-row="${escapeHtml(finding.id)}"><span class="ef-label" title="${escapeHtml(finding.label)}">${escapeHtml(finding.label)}</span>${renderPill(finding)}</div>`
+        ).join("");
+        return `<details class="ef-system"${isOpen ? " open" : ""}><summary><span class="ef-system-name">${escapeHtml(system.name)}</span><span class="ef-system-count">${sysFilled}/${system.findings.length}</span></summary><div class="ef-grid">${findingsHtml}</div></details>`;
+      }).join("");
+
+      const sources = [...new Set(EXAM_FINDINGS.map((f) => EXAM_FINDING_SOURCES[f.source] || f.source))].join("; ");
+
+      return `<div class="exam-findings-picker" data-exam-findings>
+        <div class="ef-toolbar">
+          <span class="ef-toolbar-label">Structured findings</span>
+          <button type="button" class="ed-mini ef-all-normal" data-action="exam-findings-all-normal" title="Fill every finding with its normal option">✓ All normal</button>
+          <button type="button" class="ed-mini" data-action="exam-findings-insert" title="Compile selections into the Physical Exam text">Insert into note</button>
+          <button type="button" class="ed-mini ed-mini--danger" data-action="exam-findings-clear-all" title="Clear all finding selections">Clear</button>
+          <span class="ef-count">${filledCount}/${EXAM_FINDINGS.length} filled</span>
+        </div>
+        <div class="ef-systems">${systemsHtml}</div>
+        <p class="ef-sources">Finding options: ${escapeHtml(sources)}.</p>
+      </div>`;
+    };
     const checklistTag = `<span class="ed-tag">from Checklist</span>`;
 
     const frontSections = isHP ? [
@@ -531,7 +673,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     ] : [
       editorSection("One-Liner", editorRegion(`data-draft-section="one_liner"`, fields.one_liner, "One-sentence summary"), { labelExtra: helpFor("one_liner", "One-Liner") }),
       editorSection("Subjective", [
-        `<div class="ed-sub"><span class="ed-sub-label">Events ${draft.noteType === NOTE_TYPES.PROGRESS ? `<button type="button" class="ed-mini" data-action="insert-no-acute-events">No acute events overnight</button>` : ""}</span>${editorRegion(`data-draft-section="interval_events"`, fields.interval_events)}</div>`,
+        `<div class="ed-sub"><span class="ed-sub-label">Events ${draft.noteType === NOTE_TYPES.PROGRESS ? `<button type="button" class="ed-insert-chip" data-action="insert-no-acute-events" title="Insert the text “No acute events overnight.” into Events">${icon("plus")} Insert: No acute events overnight</button>` : ""}</span>${editorRegion(`data-draft-section="interval_events"`, fields.interval_events)}</div>`,
         editorSubRegion(`data-draft-section="patient_report"`, "Patient report", fields.patient_report),
         editorSubRegion(`data-draft-section="nursing_report"`, "Nursing report", fields.nursing_report),
         editorSubRegion(`data-draft-section="pertinent_symptoms"`, "Pertinent symptoms", fields.pertinent_symptoms),
@@ -545,17 +687,17 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       + (objectiveBlocks || `<p class="ed-empty">Choose items from Clinical data to add Objective content.</p>`)
       + `<div class="ed-sub"><span class="ed-sub-label">Student-authored Objective text</span>${editorRegion("data-draft-objective-manual", draft.objective?.manual, "Optional exam findings, intake/output, or other directly observed data")}</div>`;
 
-    const planBody = `<p class="ed-hint">Order problems by decisional importance. Add only reasoning and actions you support.</p><div class="plan-problem-list">${draft.problems.map((problem, index) => renderProblemEditor(problem, index, guidanceFor)).join("") || `<p class="ed-empty">No problems added yet.</p>`}</div>`;
+    const planBody = `<p class="ed-hint">Order problems by decisional importance. Add only reasoning and actions you support.</p><div class="plan-problem-list">${draft.problems.map((problem, index) => renderProblemEditor(problem, index, guidanceFor, { generatingApProblemId })).join("") || `<p class="ed-empty">No problems added yet.</p><p class="ed-hint">If you pulled from the primary note and expected problems here, the Assessment &amp; Plan may not have parsed — use the ⤓ pull button on the Plan section header or add a problem manually.</p>`}</div>${apConfirm ? renderApConfirmModal(apConfirm) : ""}`;
 
     return `<section class="note-draft-panel panel" aria-labelledby="draftNoteHeading">
       <div class="note-editor-toolbar">
         <div class="note-editor-title"><h2 id="draftNoteHeading">Draft note</h2><label class="note-type-control"><span>Format</span><select id="reviewNoteType"><option value="${NOTE_TYPES.PROGRESS}" ${draft.noteType === NOTE_TYPES.PROGRESS ? "selected" : ""}>Progress note</option><option value="${NOTE_TYPES.H_AND_P}" ${draft.noteType === NOTE_TYPES.H_AND_P ? "selected" : ""}>H&amp;P</option></select></label></div>
-        <div class="note-editor-actions"><button type="button" class="button--primary button--small" data-action="save-note-draft">Save draft</button><button type="button" class="button--secondary button--small" data-action="copy-final-note">Copy for Epic</button><button type="button" class="button--secondary button--small" data-action="copy-rich-note">Copy rich text</button><button type="button" class="button--secondary button--small" data-action="download-final-note">${icon("download")} .txt</button></div>
+        <div class="note-editor-actions"><button type="button" class="button--primary button--small" data-action="save-note-draft">Save draft</button><button type="button" class="button--secondary button--small" data-action="copy-final-note">Copy for Epic</button><button type="button" class="button--secondary button--small" data-action="copy-rich-note">Copy rich text</button><button type="button" class="button--secondary button--small" data-action="download-final-note">${icon("download")} Download .txt</button></div>
       </div>
       <p class="ed-toolbar-note">One editor for the whole note — section labels included. Type <kbd>$</kbd> to pull a lab or vital into the note. Saving encrypts the draft without running de-identification.</p>
       <div class="note-editor" id="noteEditor" role="group" aria-label="Note editor">
         ${frontSections.join("")}
-        ${editorSection("Physical Exam", `${examTemplateSelector()}${editorRegion("data-draft-section=\"physical_exam\"", draft.sections?.physical_exam, "Document your physical exam findings")}<div class="ed-sub"><span class="ed-sub-label">From checklist ${checklistTag}</span><div class="ed-readonly" data-checklist-finding-kind="exam">${checklistFindingsEditor(draft, "exam", "Complete the physical-exam checklist to populate this section.")}</div></div>`, { labelExtra: helpFor("physical_exam", "Physical Exam"), sectionAttr: ` data-checklist-finding-kind="exam"` })}
+        ${editorSection("Physical Exam", `${examTemplateSelector()}${examFindingsPicker(draft, examFindingsUi)}${editorRegion("data-draft-section=\"physical_exam\"", draft.sections?.physical_exam, "Document your physical exam findings")}<div class="ed-sub"><span class="ed-sub-label">From checklist ${checklistTag}</span><div class="ed-readonly" data-checklist-finding-kind="exam">${checklistFindingsEditor(draft, "exam", "Complete the physical-exam checklist to populate this section.")}</div></div>`, { labelExtra: helpFor("physical_exam", "Physical Exam"), sectionAttr: ` data-checklist-finding-kind="exam"` })}
         ${editorSection("Objective", objectiveBody, { labelExtra: helpFor("objective", "Objective") })}
         ${editorSection("Assessment", editorRegion("data-draft-assessment", draft.assessment, "Your concise synthesis"), { labelExtra: helpFor("assessment", "Assessment") })}
         ${editorSection("Plan", planBody, { labelExtra: `${helpFor("plan", "Plan")}<button type="button" class="ed-mini" data-action="add-plan-problem">${icon("plus")} Add problem</button>` })}
@@ -565,7 +707,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     </section>`;
   }
 
-  function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, patientRequiredMessage }) {
+  function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, examFindingsUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm }) {
     if (!draft) return patientRequiredMessage;
     const selectedIds = new Set((draft.objective?.selectedBlocks || []).map((block) => block.selectionId));
     // Banner calling out free-text results that pasted as a status only —
@@ -575,12 +717,13 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       ? `<div class="review-flag-banner" role="alert"><strong>⚠️ ${flaggedResults.length} result${flaggedResults.length === 1 ? "" : "s"} need${flaggedResults.length === 1 ? "s" : ""} report text:</strong> ${flaggedResults.map((candidate) => escapeHtml(candidate.name)).join(", ")}. <span class="muted">Open each in the admissions tab and paste the full report.</span></div>`
       : "";
     return `<div class="review-workspace">
+      <div class="patient-identity-bar" role="status" aria-label="Active patient"><span class="patient-identity-bar-label">Patient</span><strong>${escapeHtml(patientLabel)}</strong></div>
       <header class="review-hero panel">
         <div><span class="eyebrow">${escapeHtml(patientLabel)}</span><h1 id="review-heading">Review Data / Draft Note</h1><p class="review-one-liner ${oneLiner ? "" : "is-empty"}">${escapeHtml(oneLiner || "One-liner not entered yet. You can continue and add it in the draft.")}</p></div>
-        <label>Note packet<select id="reviewPacketSelect">${packets.map((packet) => `<option value="${escapeHtml(packet.id)}" ${packet.id === selectedPacketId ? "selected" : ""}>${escapeHtml(packet.label)}</option>`).join("")}</select></label>
+        <label class="review-packet-label">Note packet<select id="reviewPacketSelect">${packets.map((packet) => `<option value="${escapeHtml(packet.id)}" ${packet.id === selectedPacketId ? "selected" : ""}>${escapeHtml(packet.label)}</option>`).join("")}</select></label>
       </header>
       ${flaggedBanner}
-      <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups })}</div>
+      <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, examFindingsUi, collapsedDraftSections, generatingApProblemId, apConfirm })}</div>
     </div>`;
   }
 

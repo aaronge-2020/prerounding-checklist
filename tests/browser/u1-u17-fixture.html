@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>U1–U17 fixture</title>
+<link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+<div id="fixture"></div>
+<script type="module">
+  import { createDailyPresentation } from "../../src/ui/daily/presentation.js";
+  import { createReviewPresentation } from "../../src/ui/review/presentation.js";
+  import { resolveDefaultPacket, packetsForPatient } from "../../src/ui/review/controller.js";
+  import * as notes from "../../src/note-drafts/index.js";
+  window.__modules = { createDailyPresentation, createReviewPresentation, resolveDefaultPacket, packetsForPatient, notes };
+  window.__ready = true;
+</script>
+</body>
+</html>

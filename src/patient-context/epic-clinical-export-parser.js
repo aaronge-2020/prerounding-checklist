@@ -804,11 +804,10 @@ function renderMixedEpicExport(value) {
       const text = allLines.slice(segment.start, segment.end).join("\n").trim();
       if (!text) return null;
       const inner = parsers[segment.kind](text);
-      if (!inner) return null;
-      // An inner parser may split its segment into sub-sections (e.g. Epic
-      // results pulls free-text studies out as their own "Other results"
-      // sections). Expand each as its own source section.
-      if (Array.isArray(inner.sections) && inner.sections.length) {
+      // An unrecognized segment is preserved as an opaque "other chart text"
+      // section (mixedSection builds the unparsed section when result is
+      // null) — it must never be silently dropped from the paste.
+      if (inner && Array.isArray(inner.sections) && inner.sections.length) {
         return inner.sections.map((sub, subIndex) =>
           mixedSection({ kind: segment.kind, text: sub.outputText || text, result: sub, index: `${index}_${subIndex}` })
         );

@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../src/review-data/index.js";
+import { labFamilySections, extractPendingItems } from "../src/review-data/compact-summary.js";
 import { createReviewController } from "../src/ui/review/controller.js";
+
+// Node has no DOM; the controller's lab-autocomplete touches document only at
+// render time. A minimal stub keeps this suite runnable outside the browser.
+if (typeof document === "undefined") {
+  globalThis.document = { addEventListener() {}, removeEventListener() {} };
+}
 
 const patient = {
   id: "patient_review",
@@ -301,7 +308,7 @@ assert.doesNotMatch(serialized, /originalText|rawText/, "the review index must d
       reviewPage: 0
     },
     active: () => patientWithPrimaryNote,
-    byId: () => ({ innerHTML: "" }),
+    byId: () => ({ innerHTML: "", addEventListener() {}, removeEventListener() {}, closest: () => null, querySelector: () => null }),
     presentation: {
       renderReview: (data) => {
         capturedModel = data;
@@ -368,6 +375,47 @@ const abgLactate = lactatePanels.find((panel) => panel.source.sourceLabel === "A
 assert.deepEqual(serumLactate.trend.map(({ value }) => value), ["3.1"], "serum lactate trend must not include the ABG lactate value");
 assert.deepEqual(abgLactate.trend.map(({ value }) => value), ["1.9"], "ABG lactate trend must not include the serum lactate value");
 assert.notEqual(serumLactate.selectionCandidate.id, abgLactate.selectionCandidate.id, "lactate results from different sources must be independently selectable");
+
+// Pending shadowing: a newer pending result must not erase the prior actual
+// value from the trend row, the pending item must stay in its own section,
+// and one analyte must trend chronologically in one row even when the two
+// collections carry different panel labels ("CBC" vs a generic collection).
+{
+  const shadowingIndex = buildClinicalReviewIndex({
+    id: "pending_shadow",
+    days: [
+      {
+        id: "shadow_day_two",
+        date: "2026-09-19",
+        label: "Hospital Day 2",
+        sourceCaptures: [
+          { id: "shadow_cbc", sourceKind: "laboratory_results", label: "CBC", deidentifiedText: "Labs\n@ 09/19/26 0600\nWBC: 15.2 K/uL; ref 4.0-11.0" },
+          { id: "shadow_bmp", sourceKind: "laboratory_results", label: "Basic metabolic panel", deidentifiedText: "Labs\n@ 09/19/26 0600\nCreatinine: 1.4 mg/dL; ref 0.5-1.0\nSodium: 137 mmol/L; ref 136-145" }
+        ]
+      },
+      {
+        id: "shadow_day_three",
+        date: "2026-09-20",
+        label: "Hospital Day 3",
+        sourceCaptures: [
+          { id: "shadow_generic", sourceKind: "laboratory_results", label: "Epic results", deidentifiedText: "Labs\nWBC: 8.8\nCreatinine: pending\nSodium: 138" }
+        ]
+      }
+    ]
+  });
+  const wbcRows = labFamilySections(shadowingIndex.labs)
+    .flatMap((section) => section.rows)
+    .filter(({ result }) => result.name === "WBC");
+  assert.equal(wbcRows.length, 1, "WBC from differently-labeled panels must collapse to one compact row");
+  assert.deepEqual(wbcRows[0].result.trend.map(({ value }) => value), ["15.2", "8.8"], "WBC must trend chronologically across differently-labeled panels");
+  const creatinineTrends = shadowingIndex.labs
+    .flatMap((panel) => panel.results || [])
+    .filter((result) => result.name === "Creatinine")
+    .map((result) => (result.trend || []).map(({ value }) => value));
+  assert.ok(creatinineTrends.some((trend) => trend.includes("1.4") && trend.includes("pending")), "the pending creatinine must not erase the prior 1.4 from its trend");
+  const pendingNames = extractPendingItems(shadowingIndex.labs).map((item) => item.result.name);
+  assert.ok(pendingNames.includes("Creatinine"), "the pending creatinine must surface in the pending section");
+}
 
 // Lab trends show at most three points, each labeled with its hospital day and
 // timestamp. The latest value always anchors the trend; abnormal values are
@@ -610,6 +658,34 @@ assert.deepEqual(
   const hr = rangeIndex.vitals.find((c) => c.name === "Pulse");
   assert.ok(hr, "Pulse candidate exists");
   assert.match(hr.insertionText, /24-hour range 90–110 bpm/, "same-day readings show 24-hour range");
+}
+
+// P16: an unmarked temperature ("Temp 99.1") must never be silently labeled —
+// the observation carries no unit and unitUnmarked so the review sheet asks
+// the student to confirm °F/°C. A marked temperature keeps its unit.
+{
+  const tempIndex = buildClinicalReviewIndex({
+    id: "temp_unit",
+    days: [{
+      id: "temp_day",
+      date: "2026-09-21",
+      label: "HD1",
+      sourceCaptures: [
+        { id: "t1", sourceKind: "vital_signs", label: "AM vitals", deidentifiedText: "Vitals\nTemp 99.1\nHR 92" },
+        { id: "t2", sourceKind: "vital_signs", label: "PM vitals", deidentifiedText: "Vitals\nTemp 98.6°F\nHR 88" }
+      ]
+    }]
+  });
+  const temperature = tempIndex.vitals.find((c) => c.name === "Temperature");
+  assert.ok(temperature, "Temperature candidate exists");
+  const unmarked = temperature.observations.find((o) => o.value === "99.1");
+  assert.ok(unmarked, "unmarked Temp 99.1 observation exists");
+  assert.equal(unmarked.unit, "", "unmarked temperature must carry no unit");
+  assert.equal(unmarked.unitUnmarked, true, "unmarked temperature must be flagged for unit confirmation");
+  const marked = temperature.observations.find((o) => o.value === "98.6");
+  assert.ok(marked, "marked Temp 98.6°F observation exists");
+  assert.equal(marked.unit, "°F", "marked temperature keeps its documented unit");
+  assert.equal(marked.unitUnmarked, false, "marked temperature needs no confirmation");
 }
 
 console.log("review data index tests passed");

@@ -1,13 +1,14 @@
 import { primaryTeamNoteFields } from "./primary-team-note.js?v=20260921-medication-card-v4";
 import { transformClinicalTablesInText } from "./clinical-table-parser.js";
 import {
+  NON_PROBLEM_LABEL,
   normalizeTwoColumnEhrText,
   parseClinicalPlanProblems,
   splitTwoColumnEhrTables,
   extractNumberedPlanItems,
   isBareActionItem,
   stripSignoffParagraphs
-} from "./clinical-plan-parser.js?v=20260924-plan-pairing-v2";
+} from "./clinical-plan-parser.js?v=20260925-plan-rows-v1";
 
 const H_AND_P = "hp";
 const PROGRESS = "progress";
@@ -96,6 +97,36 @@ function normalizeHeading(value) {
 
 function normalizedSource(value) {
   return String(value ?? "").replace(/\r\n?/g, "\n");
+}
+
+// Note-header chrome ("Date: 09/20/2026 Author: J. Smith, MD Pager: 1234")
+// is metadata, not clinical content: drop it before it lands in
+// Subjective/Other. Kept narrow on purpose: "Room:"/"Treatment Team:" lines
+// are asserted to survive in Other by the tabbed-metadata test.
+const NOTE_HEADER_METADATA = /^(?:date|author(?:ed by)?|pager|mrn|dob|dictated by|transcribed by|electronically signed(?: by)?)\s*:/i;
+
+// Chief-complaint labels stripped from one-liner synthesis.
+const CC_LABEL = /^(?:chief complaint|cc|reason for admission)\s*[:—–-]\s*/i;
+
+// One-liner synthesis from source text only: strip CC/chief-complaint labels
+// and prefer the first substantive sentence. "CC: chest pain. Patient
+// reports 3 days of pressure-like chest pain." yields the patient-report
+// sentence, never "CC: chest pain." A bare complaint fragment with nothing
+// after it ("Shortness of breath") is the honest fallback. No demographics,
+// diagnoses, or chronology are ever invented.
+export function extractSubstantiveOneLiner(text) {
+  if (!text || typeof text !== "string") return "";
+  const narrative = text.trim().replace(CC_LABEL, "");
+  if (!narrative) return "";
+  const first = extractFirstSentence(narrative);
+  if (!first) return "";
+  const rest = narrative.slice(narrative.indexOf(first) + first.length).trim().replace(/^[:—–-]\s*/, "");
+  const firstCore = first.replace(/[.\s]+$/, "");
+  if (firstCore.length <= 24 && rest) {
+    const next = extractFirstSentence(rest);
+    if (next && next.replace(/[.\s]+$/, "").length > firstCore.length) return next;
+  }
+  return first;
 }
 
 function configuredFieldFor(definition, noteType) {
@@ -388,7 +419,10 @@ export function extractFirstSentence(text) {
     narrative = hpiMatch[1].trim();
   } else {
     narrative = narrative.replace(/^[-*•>]\s*/, "");
-    narrative = narrative.replace(/^(?:subjective(?:\s*\/\s*interval history)?|patient report|hpi|history of present illness)\s*[:—–-]?\s*/i, "");
+    // Section labels are stripped only when followed by a colon/dash
+    // delimiter (or end of text). Without the delimiter guard, a sentence
+    // like "Patient reports 3 days of pain." loses its subject.
+    narrative = narrative.replace(/^(?:subjective(?:\s*\/\s*interval history)?|patient report|hpi|history of present illness)(?:\s*[:—–-]\s*|\s*$)/i, "");
   }
 
   if (!narrative.trim()) return "";
@@ -458,6 +492,10 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
     // Setext/markdown underline rows ("===", "~~~") are formatting, not content.
     // ("---" alone is not skipped: it may wrap a header like "--- Chief Complaint ---".)
     if (/^[=~]{3,}\s*$/.test(line.trim())) continue;
+    // Note-header metadata before the first recognized heading is chart
+    // chrome ("Date: 09/20/2026 Author: J. Smith, MD Pager: 1234"), never
+    // Subjective/Other content.
+    if (activeField === fallbackField && NOTE_HEADER_METADATA.test(line.trim())) continue;
     // Inside an Assessment/Plan section, "#..." lines are problem entries for
     // parseClinicalPlanProblems, not markdown headings. Without this guard a
     // line like "#DVT prophylaxis" is stolen as a VTE-prophylaxis section
@@ -527,10 +565,14 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
     } else {
       const patientReport = transformedSections.patient_report || "";
       const intervalEvents = transformedSections.interval_events || "";
+      // A leading "CC:"/"Chief Complaint:" label is not one-liner content:
+      // strip it and prefer the substantive remainder of the patient report
+      // over interval events.
+      const reportBody = patientReport.replace(CC_LABEL, "").trim();
       if (/(?:^|\n)\s*(?:hpi|history of present illness)\s*[:—–-]/i.test(patientReport)) {
         candidateText = patientReport;
-      } else if (patientReport && !/^\s*(?:chief complaint|cc|reason for admission)\s*[:—–-]/i.test(patientReport)) {
-        candidateText = patientReport;
+      } else if (reportBody) {
+        candidateText = reportBody;
       } else if (intervalEvents) {
         candidateText = intervalEvents;
       } else {
@@ -538,7 +580,7 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
       }
     }
     if (candidateText) {
-      const extracted = extractFirstSentence(candidateText);
+      const extracted = extractSubstantiveOneLiner(candidateText);
       if (extracted) {
         transformedSections.one_liner = extracted;
         if (!detected.some((d) => d.fieldId === "one_liner")) {

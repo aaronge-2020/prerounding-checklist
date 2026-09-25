@@ -3,7 +3,7 @@ import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js
 import { CONTEXT_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRoleLabel } from "../../patient-context/packet-roles.js";
 import { migrateLegacyDailySections, normalizeDiagnosticResultCategory, normalizeSourceCapture, normalizeSourceKindForScope } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
 import { normalizePrimaryTeamNote } from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
-import { normalizeLabBaselines } from "../../patient-context/lab-baselines.js?v=20260924-lab-baselines-v1";
+import { normalizeLabBaselines } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 
 export const VAULT_SCHEMA_VERSION = 5;
@@ -151,6 +151,17 @@ function normalizeSavedNoteDrafts(value, patient, { now = timestampNow } = {}) {
   );
 }
 
+export function normalizeTemperatureUnits(value) {
+  const entries = value && typeof value === "object" ? Object.entries(value) : [];
+  const next = {};
+  for (const [key, unit] of entries) {
+    const candidateId = String(key || "").trim();
+    if (!candidateId) continue;
+    if (unit === "°F" || unit === "°C") next[candidateId] = unit;
+  }
+  return next;
+}
+
 export function normalizePatient(patient, index = 0, { now = timestampNow } = {}) {
   const timestamp = now();
   const labels = DEFAULT_CONTEXT_SECTION_LABELS;
@@ -166,6 +177,7 @@ export function normalizePatient(patient, index = 0, { now = timestampNow } = {}
     admissionPrimaryTeamNote: normalizeOptionalPrimaryTeamNote(patient?.admissionPrimaryTeamNote, NOTE_TYPES.H_AND_P, { now, patientId: id }),
     noteDrafts: normalizeSavedNoteDrafts(patient?.noteDrafts, { ...patient, id }, { now }),
     labBaselines: normalizeLabBaselines(patient?.labBaselines),
+    temperatureUnits: normalizeTemperatureUnits(patient?.temperatureUnits),
     days: Array.isArray(patient?.days)
       ? patient.days.map((day, dayIndex) => {
           const normalized = normalizeDay(day, dayIndex, { now });

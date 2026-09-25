@@ -154,4 +154,42 @@ console.log("note-clinical-extractor tests passed");
   assert.ok(norepi.includes("vitamin K"), `vitamin K glued: ${norepi}`);
 }
 
+// P10: unbulleted medication lists parse line-by-line, no bullets required.
+{
+  const unbulleted = extractNoteMedications("Lisinopril 10mg PO daily\nMetoprolol 25mg PO BID");
+  assert.equal(unbulleted, "Medications\nLisinopril — 10mg PO daily\nMetoprolol — 25mg PO BID");
+}
+
+// P11: comparator-safe parsing — "<=" is preserved and never splits a
+// medication from its sig; a vital-sign goal is not a medication.
+{
+  const comparator = extractNoteMedications("Zofran 4mg IV q6h PRN if phosphorus <= 2.5 mg/dL\nSBP goal <=130 mmHg");
+  assert.equal(comparator, "Medications\nZofran — 4mg IV q6h PRN if phosphorus <= 2.5 mg/dL");
+}
+
+// P12: mmol and mEq units parse; exact name+sig duplicates collapse while
+// differing sigs survive.
+{
+  const electrolytes = extractNoteMedications(
+    "KCl 20 mmol PO daily\nNaCl 15 mEq PO daily\nLisinopril 10mg daily\nLisinopril 10mg daily\nLisinopril 20mg daily"
+  );
+  assert.equal(
+    electrolytes,
+    "Medications\nKCl — 20 mmol PO daily\nNaCl — 15 mEq PO daily\nLisinopril — 10mg daily\nLisinopril — 20mg daily"
+  );
+}
+
+// P13/P14: order headings, transfusion commands, and PRN metadata labels are
+// dropped; only real medications survive.
+{
+  const withNoise = extractNoteMedications("Home Medications:\nLisinopril 10mg daily\nTransfuse 2U PRBC\nPRN Reasons: nausea");
+  assert.equal(withNoise, "Medications\nLisinopril — 10mg daily");
+}
+
+// P15: PRN comments are metadata, not medications.
+{
+  const prnComment = extractNoteMedications("Zofran 4mg IV q6h PRN\nPRN Comment: for nausea");
+  assert.equal(prnComment, "Medications\nZofran — 4mg IV q6h PRN");
+}
+
 console.log("note-clinical-extractor regression tests passed");

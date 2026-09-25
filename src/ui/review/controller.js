@@ -1,8 +1,9 @@
 import { sortDays } from "../../daily-updates/days.js?v=20260921-medication-card-v4";
 import { updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
-import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20260924-optional-sections-v1&labs=analyte-selection-v3";
+import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20260924-optional-sections-v1&labs=20260925-trend-specimen-v1";
 import { createLabAutocomplete } from "./lab-autocomplete.js?v=20260924-dollar-autocomplete-v1";
 import { renderExamTemplate } from "../../clinical/exam-templates.js?v=20260925-exam-templates-v1";
+import { EXAM_FINDINGS, compileExamFindings } from "../../clinical/exam-findings.js?v=20260925-exam-findings-v1";
 import {
   addDifferential,
   addPlanProblem,
@@ -34,18 +35,63 @@ import {
   updateAssessment,
   updateClosingSection,
   updateDifferential,
+  updateExamSelections,
   updateManualObjective,
   updateNoteSection,
   updatePlanProblem
 } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
-import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20260924-plan-pairing-v2";
+import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20260925-plan-rows-v1";
 import {
   clearLabBaseline,
   setLabBaseline
-} from "../../patient-context/lab-baselines.js?v=20260924-lab-baselines-v1";
+} from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
+import {
+  apResultToHtml,
+  buildApContextText
+} from "../../ai/ap-generator.js?v=20260925-ap-generator-v1";
+import { generateProblemApWithOpenAi } from "../openai-ap-api.js?v=20260925-ap-generator-v1";
+import { createDifferential } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 
 function packetKey(value) {
   return String(value || "admission");
+}
+
+// U5: a packet counts as populated when it has a primary team note with any
+// section text or a saved note draft with content.
+function noteDraftHasContent(draft) {
+  if (!draft) return false;
+  const text = (value) => {
+    if (typeof value === "string") return value.trim();
+    if (value && typeof value === "object") return String(value.deidentifiedText || "").trim();
+    return "";
+  };
+  if (Object.values(draft.sections || {}).some((section) => text(section))) return true;
+  if (text(draft.assessment)) return true;
+  if ((draft.problems || []).some((problem) => text(problem.problem))) return true;
+  return (draft.objective?.selectedBlocks || []).length > 0;
+}
+
+function packetHasData(patient, packetId) {
+  const source = sourceNoteForPacket(patient, packetId);
+  if (source && Object.values(source.sections || {}).some((section) => sourceSectionText(section).trim())) return true;
+  return noteDraftHasContent(patient?.noteDrafts?.[packetKey(packetId)]);
+}
+
+// U5: when entering review without an explicit packet choice, prefer the
+// latest populated packet over an empty Admission H&P. An explicitly
+// requested packet that has data is always kept.
+// Exported for targeted testing; pure derivation, no DOM or vault access.
+export function resolveDefaultPacket(patient, requestedId) {
+  if (packetHasData(patient, requestedId)) return requestedId;
+  const populated = packetsForPatient(patient).filter((entry) => packetHasData(patient, entry.id)).at(-1);
+  return populated?.id || requestedId;
+}
+
+export function packetsForPatient(patient) {
+  return [
+    { id: "admission", label: "Admission H&P", date: "" },
+    ...sortDays(patient?.days || []).map((day, index) => ({ id: day.id, label: `${day.label || `Hospital day ${index + 1}`} · Progress note`, date: day.date }))
+  ];
 }
 
 function moveId(ids, id, direction) {
@@ -124,6 +170,12 @@ export function createReviewController(deps) {
   // Which lab row currently has its baseline editor open. Local UI state:
   // the saved baselines themselves live on the patient record in the vault.
   let baselineEditorId = "";
+  // Per-problem AI Assessment & Plan generation state. Local UI state only:
+  // which problem is awaiting generation, and the pending de-identification
+  // confirmation ({ problemId, problemName, contextText }) shown in the modal.
+  // Nothing here is persisted; generated content lands in the draft on success.
+  let generatingApProblemId = "";
+  let apConfirmState = null;
   // Which lab families / flagged sections are collapsed on the data sheet.
   // Local UI state only; it survives re-renders and the search-only DOM patch.
   const collapsedFamilies = new Set();
@@ -135,6 +187,20 @@ export function createReviewController(deps) {
   // Which Objective editor groups are collapsed (vitals, lab families, etc.).
   // Local UI state only; survives re-renders.
   const collapsedObjectiveGroups = new Set();
+
+  // Which draft-note sections are collapsed (One-Liner, HPI, Physical Exam,
+  // Objective, Assessment, Plan, closing sections, Medications). Local UI
+  // state only; survives re-renders.
+  const collapsedDraftSections = new Set();
+
+  // Structured exam-findings picker UI state. Transient only (not persisted):
+  // which finding's dropdown is open, and which is in custom-text mode.
+  // The selections themselves live on draft.examSelections and are saved.
+  const examFindingsUi = { openDropdownId: null, customInputId: null };
+  // Which exam-finding systems are expanded. Native <details> open state is
+  // lost on re-render (innerHTML replacement), so track it here and render
+  // the `open` attribute from this set.
+  const expandedExamSystems = new Set(["General"]);
 
   // Latest clinical review index, cached for the `$` lab autocomplete.
   // Rebuilt on every model() call; the autocomplete reads from here.
@@ -192,10 +258,7 @@ export function createReviewController(deps) {
   }
 
   function packets(patient) {
-    return [
-      { id: "admission", label: "Admission H&P", date: "" },
-      ...sortDays(patient?.days || []).map((day, index) => ({ id: day.id, label: `${day.label || `Hospital day ${index + 1}`} · Progress note`, date: day.date }))
-    ];
+    return packetsForPatient(patient);
   }
 
   function selectedPacket(patient) {
@@ -304,7 +367,11 @@ export function createReviewController(deps) {
       collapsedFamilies,
       clinicalDataCollapsed,
       collapsedObjectiveGroups,
-      patientRequiredMessage: deps.patientRequiredMessage()
+      collapsedDraftSections,
+      examFindingsUi: { ...examFindingsUi, expandedSystems: [...expandedExamSystems] },
+      patientRequiredMessage: deps.patientRequiredMessage(),
+      generatingApProblemId,
+      apConfirm: apConfirmState
     };
   }
 
@@ -361,14 +428,18 @@ export function createReviewController(deps) {
     if (container) labAutocomplete.attach(container);
   }
 
-  function prepare(selectedPacketId = "admission") {
-    deps.app.reviewPacketId = selectedPacketId || "admission";
+  function prepare(selectedPacketId = "admission", { preferPopulated = true } = {}) {
+    const requested = selectedPacketId || "admission";
+    // U5: default navigation prefers the latest populated packet over an
+    // empty Admission H&P; explicit opens (open-progress-note,
+    // open-admission-note) keep the requested packet untouched.
+    deps.app.reviewPacketId = preferPopulated ? resolveDefaultPacket(deps.active(), requested) : requested;
     deps.app.reviewSearchQuery = "";
     deps.app.reviewCategory = "all";
   }
 
   function open(selectedPacketId = "admission") {
-    prepare(selectedPacketId);
+    prepare(selectedPacketId, { preferPopulated: false });
     deps.app.view = "review";
     deps.render();
   }
@@ -536,8 +607,115 @@ export function createReviewController(deps) {
     }
   }
 
-  async function saveLabBaseline(analyte, fields, { clear = false } = {}) {
+  // --- Per-problem AI Assessment & Plan generation ---
+  // Extract plain text from a draft field (string or { deidentifiedText }).
+  function apDraftText(value) {
+    if (typeof value === "string") return value;
+    if (value && typeof value === "object") return String(value.deidentifiedText ?? "");
+    return "";
+  }
+
+  // Assemble the de-identified context for one problem. Only draft text is
+  // used — the draft is built from de-identified sources by construction.
+  // The student confirms the exact text in the modal before anything is sent.
+  function buildApContextForProblem(draft, problem) {
+    const sections = draft.sections || {};
+    const differentials = (problem.differentials || []).map((d) => apDraftText(d.diagnosis)).filter(Boolean);
+    return {
+      problem: apDraftText(problem.problem),
+      keyContext: apDraftText(problem.keyContext),
+      existingDifferentials: differentials,
+      contextText: buildApContextText({
+        oneLiner: apDraftText(draft.oneLiner) || apDraftText(sections.one_liner),
+        hpi: apDraftText(sections.history_of_present_illness),
+        pastMedicalHistory: apDraftText(sections.past_medical_history),
+        medications: apDraftText(sections.medications),
+        allergies: apDraftText(sections.allergies),
+        vitals: apDraftText(draft.vitalsSummary),
+        keyLabs: apDraftText(draft.keyLabsSummary),
+        assessment: apDraftText(draft.assessment)
+      })
+    };
+  }
+
+  function openApConfirm(problemId) {
     const current = model();
+    const draft = current.draft;
+    const problem = (draft.problems || []).find((p) => p.id === problemId);
+    if (!problem) return;
+    const built = buildApContextForProblem(draft, problem);
+    if (!built.problem && !built.keyContext) {
+      deps.setStatus("Name the clinical problem (or add key context) before generating a plan.");
+      return;
+    }
+    const preferences = deps.currentPreferences ? deps.currentPreferences() : {};
+    if (!preferences.openAiApiKey) {
+      deps.setStatus("Save an OpenAI API key in Settings before generating a plan.");
+      return;
+    }
+    apConfirmState = {
+      problemId,
+      problemName: built.problem || "(unnamed problem)",
+      contextText: [
+        `Problem: ${built.problem || "(not named)"}`,
+        built.keyContext ? `Key context: ${built.keyContext}` : null,
+        built.existingDifferentials.length ? `Existing differential: ${built.existingDifferentials.join("; ")}` : null,
+        "",
+        "--- De-identified patient context ---",
+        built.contextText || "(no additional context in the draft)"
+      ].filter((line) => line !== null).join("\n"),
+      payload: built
+    };
+    render();
+  }
+
+  async function runApGeneration(problemId) {
+    const pending = apConfirmState;
+    if (!pending || pending.problemId !== problemId) return;
+    apConfirmState = null;
+    generatingApProblemId = problemId;
+    render();
+    deps.setStatus(`Generating assessment and plan for "${pending.problemName}"…`);
+    try {
+      const preferences = deps.currentPreferences ? deps.currentPreferences() : {};
+      const result = await generateProblemApWithOpenAi({
+        apiKey: preferences.openAiApiKey,
+        model: preferences.openAiModel,
+        problem: pending.payload.problem,
+        keyContext: pending.payload.keyContext,
+        existingDifferentials: pending.payload.existingDifferentials,
+        contextText: pending.payload.contextText
+      });
+      const html = apResultToHtml(result);
+      const current = model();
+      let draft = current.draft;
+      const problems = (draft.problems || []).map((p) => {
+        if (p.id !== problemId) return p;
+        return {
+          ...p,
+          differentials: result.differentials.map((d) => createDifferential({
+            diagnosis: d.diagnosis,
+            cluesFor: `${d.likelihood}${d.reasoning ? ` — ${d.reasoning}` : ""}`,
+            cluesAgainst: ""
+          })),
+          diagnosticPlan: html.diagnosticPlanHtml || p.diagnosticPlan,
+          therapeuticPlan: html.therapeuticPlanHtml || p.therapeuticPlan
+        };
+      });
+      draft = { ...draft, problems };
+      setDraft(draft);
+      generatingApProblemId = "";
+      render();
+      deps.setStatus(`Plan generated for "${pending.problemName}" — review and edit before using. Verify every citation.`);
+    } catch (error) {
+      generatingApProblemId = "";
+      render();
+      const message = error instanceof Error ? error.message : "Plan generation failed.";
+      deps.setStatus(message);
+    }
+  }
+
+  async function saveLabBaseline(analyte, fields, { clear = false } = {}) {    const current = model();
     if (!current.patient) return;
     deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({
       ...patient,
@@ -568,7 +746,12 @@ export function createReviewController(deps) {
       deps.showToast?.(message, { type: "warning" });
       return;
     }
-    const text = sourceSectionText(source?.sections?.[fieldId]).trim();
+    let text = sourceSectionText(source?.sections?.[fieldId]).trim();
+    if (!text && fieldId === "plan") {
+      // Bare-"Assessment:" notes keep numbered problems in the assessment
+      // section with no separate Plan — pull from there instead.
+      text = sourceSectionText(source?.sections?.assessment).trim();
+    }
     if (!text) {
       const message = `The primary note has no "${fieldLabel}" text to pull.`;
       deps.setStatus(message);
@@ -600,10 +783,33 @@ export function createReviewController(deps) {
         draft = updateClosingSection(draft, fieldId, text);
       } else if (fieldId === "plan") {
         // Plan is structured (draft.problems), not free text. Parse the
-        // primary note's plan text into problems.
-        const problems = parseClinicalPlanProblems(text);
+        // primary note's plan text into problems. Many Epic notes put numbered
+        // problems under a bare "Assessment:" heading with no separate Plan
+        // section — fall back to the assessment text when the plan yields
+        // nothing.
+        let problems = parseClinicalPlanProblems(text);
+        if (problems.length === 0) {
+          const assessmentText = sourceSectionText(source?.sections?.assessment).trim();
+          if (assessmentText) problems = parseClinicalPlanProblems(assessmentText);
+        }
         if (problems.length > 0) {
+          // B1 fix: skip problems that already exist (normalized text match)
+          // so pulling twice doesn't create duplicates. Draft problems store
+          // the title as a { deidentifiedText } object (or a plain string for
+          // fresh parses) — read the text, never String(object).
+          const titleText = (value) => {
+            if (typeof value === "string") return value;
+            if (value && typeof value === "object") return String(value.deidentifiedText ?? "");
+            return "";
+          };
+          const existingTitles = new Set(
+            (draft.problems || []).map((p) => titleText(p.problem).trim().toLowerCase())
+          );
+          let added = 0;
           for (const p of problems) {
+            const title = String(p.problem || p.title || "").trim();
+            if (!title || existingTitles.has(title.toLowerCase())) continue;
+            existingTitles.add(title.toLowerCase());
             draft = addPlanProblem(draft, {
               problem: p.problem || p.title || "",
               keyContext: p.keyContext || "",
@@ -612,6 +818,13 @@ export function createReviewController(deps) {
               diagnosticPlan: p.diagnosticPlan || "",
               therapeuticPlan: p.therapeuticPlan || ""
             });
+            added++;
+          }
+          if (added === 0) {
+            const message = "Plan already pulled — no new problems to add.";
+            deps.setStatus(message);
+            deps.showToast?.(message, { type: "warning" });
+            return;
           }
         } else {
           const message = "Could not parse plan from primary note.";
@@ -629,6 +842,20 @@ export function createReviewController(deps) {
       return;
     }
     deps.app.noteDraftSessions.set(packetKey(current.packet.id), draft);
+    // B2 fix: pulling writes through to the persisted vault (not just the
+    // in-memory session) so the pulled content survives a page reload.
+    // Normalize first so the saved shape matches saveDraft().
+    const normalizedPull = normalizeNoteDraft(draft);
+    deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({
+      ...patient,
+      noteDrafts: { ...(patient.noteDrafts || {}), [current.packet.id]: normalizedPull }
+    }));
+    setDraft(normalizedPull);
+    if (!deps.isEphemeralDemo?.()) {
+      void deps.persistVault("Pulled section saved.").catch(() => {
+        deps.showToast?.("Pulled content is shown, but the vault save failed — click Save draft to be safe.", { type: "error" });
+      });
+    }
     const successMessage = `Pulled ${fieldLabel} from primary note.`;
     deps.setStatus(successMessage);
     deps.showToast?.(successMessage, { type: "success", durationMs: 2500 });
@@ -669,7 +896,191 @@ export function createReviewController(deps) {
     deps.render();
   }
 
+  // ─── Structured exam-findings picker ────────────────────────────────
+  // Every finding gets a pill; clicking opens a dropdown of standard
+  // textbook options. "All normal" fills everything in one click; custom
+  // text covers anything not in the lists.
+
+  function findExamFinding(id) {
+    return EXAM_FINDINGS.find((f) => f.id === id) || null;
+  }
+
+  function toggleExamFindingDropdown(findingId) {
+    if (!findExamFinding(findingId)) return;
+    examFindingsUi.customInputId = null;
+    examFindingsUi.openDropdownId = examFindingsUi.openDropdownId === findingId ? null : findingId;
+    deps.render();
+  }
+
+  function selectExamFinding(findingId, optionIndex) {
+    const finding = findExamFinding(findingId);
+    if (!finding) return;
+    const value = finding.options[optionIndex];
+    if (typeof value !== "string") return;
+    const current = model();
+    if (!current.patient) return;
+    const draft = updateExamSelections(current.draft, { [findingId]: value });
+    setDraft(draft);
+    examFindingsUi.openDropdownId = null;
+    examFindingsUi.customInputId = null;
+    deps.render();
+    // Ward speed: advance focus to the next unfilled finding so the student
+    // can hammer through the exam with keyboard + Enter.
+    focusNextUnfilledFinding(findingId);
+    deps.setStatus(`${finding.label}: ${value}`);
+  }
+
+  function clearExamFinding(findingId) {
+    if (!findExamFinding(findingId)) return;
+    const current = model();
+    if (!current.patient) return;
+    setDraft(updateExamSelections(current.draft, { [findingId]: "" }));
+    examFindingsUi.openDropdownId = null;
+    examFindingsUi.customInputId = null;
+    deps.render();
+  }
+
+  function markAllExamFindingsNormal() {
+    const current = model();
+    if (!current.patient) return;
+    const changes = {};
+    for (const finding of EXAM_FINDINGS) changes[finding.id] = finding.normal;
+    setDraft(updateExamSelections(current.draft, changes));
+    examFindingsUi.openDropdownId = null;
+    examFindingsUi.customInputId = null;
+    deps.render();
+    deps.setStatus(`Marked all ${EXAM_FINDINGS.length} exam findings normal — change any abnormal ones.`);
+  }
+
+  function clearAllExamFindings() {
+    const current = model();
+    if (!current.patient) return;
+    setDraft({ ...current.draft, examSelections: {}, updatedAt: new Date().toISOString() });
+    examFindingsUi.openDropdownId = null;
+    examFindingsUi.customInputId = null;
+    deps.render();
+    deps.setStatus("Cleared all structured exam findings.");
+  }
+
+  function insertExamFindingsIntoNote() {
+    const current = model();
+    if (!current.patient) return;
+    const prose = compileExamFindings(current.draft?.examSelections);
+    if (!prose) {
+      deps.setStatus("No structured findings selected yet — pick findings or use “All normal” first.");
+      return;
+    }
+    let draft = current.draft;
+    const existing = String(draft?.sections?.physical_exam?.deidentifiedText || "").trim();
+    const combined = existing ? `${existing}\n\n${prose}` : prose;
+    const timestamp = new Date().toISOString();
+    draft = {
+      ...draft,
+      sections: {
+        ...draft.sections,
+        physical_exam: { deidentifiedText: combined, createdAt: timestamp, updatedAt: timestamp }
+      },
+      updatedAt: timestamp
+    };
+    setDraft(draft);
+    deps.render();
+    deps.setStatus("Structured findings inserted into the Physical Exam note text.");
+  }
+
+  function focusExamFindingInput(findingId) {
+    if (!findingId || typeof document === "undefined") return;
+    requestAnimationFrame(() => {
+      const input = document.querySelector(`[data-exam-finding-input="${CSS.escape(findingId)}"]`);
+      if (input) {
+        input.focus();
+        input.select();
+      }
+    });
+  }
+
+  function focusNextUnfilledFinding(afterId) {
+    if (typeof document === "undefined") return;
+    const current = model();
+    const selections = current.draft?.examSelections || {};
+    const ids = EXAM_FINDINGS.map((f) => f.id);
+    const startIdx = ids.indexOf(afterId);
+    // Search forward from the next finding, wrapping around once.
+    for (let step = 1; step <= ids.length; step++) {
+      const id = ids[(startIdx + step) % ids.length];
+      if (!String(selections[id] || "").trim()) {
+        requestAnimationFrame(() => {
+          const pill = document.querySelector(`[data-finding-row="${CSS.escape(id)}"] [data-action="exam-finding-open"]`);
+          if (pill) pill.focus({ preventScroll: true });
+        });
+        return;
+      }
+    }
+  }
+
+  function commitCustomExamFinding(findingId, value) {
+    const finding = findExamFinding(findingId);
+    if (!finding) return;
+    const current = model();
+    if (!current.patient) return;
+    const text = String(value || "").trim();
+    setDraft(updateExamSelections(current.draft, { [findingId]: text }));
+    examFindingsUi.customInputId = null;
+    examFindingsUi.openDropdownId = null;
+    deps.render();
+    if (text) {
+      focusNextUnfilledFinding(findingId);
+      deps.setStatus(`${finding.label}: ${text}`);
+    }
+  }
+
+  // Keyboard: Enter commits a custom finding, Escape cancels back to the pill.
+  function keydown(event) {    const input = event.target?.closest?.("[data-exam-finding-input]");
+    if (!input) return false;
+    if (event.key === "Enter") {
+      event.preventDefault();
+      commitCustomExamFinding(input.dataset.examFindingInput, input.value);
+      return true;
+    }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      examFindingsUi.customInputId = null;
+      deps.render();
+      return true;
+    }
+    return false;
+  }
+
+  // Native <details> toggle for exam-finding systems: sync the expanded set
+  // so re-renders preserve which systems the student opened.
+  function toggle(event) {
+    const systemDetails = event.target?.closest?.(".ef-system");
+    if (systemDetails) {
+      const name = systemDetails.querySelector(".ef-system-name")?.textContent?.trim();
+      if (!name) return false;
+      if (systemDetails.open) expandedExamSystems.add(name);
+      else expandedExamSystems.delete(name);
+      return true;
+    }
+    // Draft-note section collapse: track by section id so re-renders keep
+    // the student's open/closed choices.
+    const sectionDetails = event.target?.closest?.("details.ed-section");
+    if (sectionDetails) {
+      const id = sectionDetails.dataset.draftSectionId;
+      if (!id) return false;
+      if (sectionDetails.open) collapsedDraftSections.delete(id);
+      else collapsedDraftSections.add(id);
+      return true;
+    }
+    return false;
+  }
+
   function click(target) {
+    // Clicking outside the findings picker closes an open dropdown.
+    if (examFindingsUi.openDropdownId && !target.closest?.("[data-exam-findings]")) {
+      examFindingsUi.openDropdownId = null;
+      deps.render();
+      return true;
+    }
     // Pull-from-primary-note button (not a data-action; handled separately).
     const pullButton = target.closest("[data-pull-section]");
     if (pullButton) {
@@ -692,6 +1103,37 @@ export function createReviewController(deps) {
     }
     if (action === "insert-exam-template") {
       insertExamTemplate();
+      return true;
+    }
+    if (action === "exam-finding-open") {
+      toggleExamFindingDropdown(button.dataset.findingId);
+      return true;
+    }
+    if (action === "exam-finding-select") {
+      selectExamFinding(button.dataset.findingId, Number(button.dataset.optionIndex));
+      return true;
+    }
+    if (action === "exam-finding-clear") {
+      clearExamFinding(button.dataset.findingId);
+      return true;
+    }
+    if (action === "exam-finding-custom") {
+      examFindingsUi.openDropdownId = null;
+      examFindingsUi.customInputId = button.dataset.findingId || null;
+      deps.render();
+      focusExamFindingInput(examFindingsUi.customInputId);
+      return true;
+    }
+    if (action === "exam-findings-all-normal") {
+      markAllExamFindingsNormal();
+      return true;
+    }
+    if (action === "exam-findings-clear-all") {
+      clearAllExamFindings();
+      return true;
+    }
+    if (action === "exam-findings-insert") {
+      insertExamFindingsIntoNote();
       return true;
     }
     if (action === "copy-final-note") {
@@ -787,6 +1229,17 @@ export function createReviewController(deps) {
     if (action === "insert-no-acute-events") {
       draft = updateNoteSection(draft, "interval_events", "No acute events overnight.");
     } else if (action === "add-plan-problem") draft = addPlanProblem(draft);
+    else if (action === "generate-ap") {
+      openApConfirm(button.dataset.problemId);
+      return true;
+    } else if (action === "ap-confirm-cancel") {
+      apConfirmState = null;
+      render();
+      return true;
+    } else if (action === "ap-confirm-generate") {
+      void runApGeneration(button.dataset.problemId);
+      return true;
+    }
     else if (action === "remove-plan-problem") draft = removePlanProblem(draft, button.dataset.problemId);
     else if (action === "move-plan-problem") draft = reorderPlanProblems(draft, moveId(draft.problems.map((entry) => entry.id), button.dataset.problemId, button.dataset.direction));
     else if (action === "add-differential") draft = addDifferential(draft, button.dataset.problemId);
@@ -811,5 +1264,5 @@ export function createReviewController(deps) {
     return true;
   }
 
-  return Object.freeze({ change, click, input, open, prepare, render, saveDraft });
+  return Object.freeze({ change, click, input, keydown, open, prepare, render, saveDraft, toggle });
 }

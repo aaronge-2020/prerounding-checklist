@@ -17,6 +17,16 @@ function cleanText(value) {
   return String(value ?? "").trim();
 }
 
+// U16: join a value and unit with no space before % or ° (clinical
+// convention: "97%", "37.3°C") and a space otherwise ("122 bpm", "6.8 g/dL").
+export function joinValueUnit(value, unit) {
+  const text = cleanText(value);
+  const unitText = cleanText(unit);
+  if (!text) return unitText;
+  if (!unitText) return text;
+  return /^[%°]/.test(unitText) ? `${text}${unitText}` : `${text} ${unitText}`;
+}
+
 function normalizedFlag(value) {
   return cleanText(value).toUpperCase();
 }
@@ -209,6 +219,8 @@ function vitalLatestLabel(latest) {
 
 function vitalRangeText(statistics) {
   if (!statistics || !Number.isFinite(statistics.minimum) || !Number.isFinite(statistics.maximum)) return "";
+  // U2: a single observation has no range — "122–122" adds nothing.
+  if (statistics.minimum === statistics.maximum) return "";
   return `${statistics.minimum}–${statistics.maximum}`;
 }
 
@@ -427,7 +439,7 @@ function abnormalVitalFlag(candidate) {
 // table. Markdown joins label and detail; rich HTML renders two columns.
 export function vitalNoteItem(candidate) {
   const latest = candidate?.latest;
-  const detail = [cleanText(latest?.value), cleanText(latest?.unit)].filter(Boolean).join(" ") || "—";
+  const detail = joinValueUnit(latest?.value, latest?.unit) || "—";
   const range = vitalRangeText(candidate?.statistics24h) || cleanText(candidate?.statisticsText);
   const stats = candidate?.statistics24h;
   const mean = stats && Number.isFinite(stats.mean) ? String(stats.mean) : "";
@@ -448,7 +460,7 @@ export function vitalNoteItem(candidate) {
 // table. The trend suffix only appears when the earliest shown point differs
 // from the latest; a patient-entered baseline is appended after it.
 export function labNoteItem(result) {
-  const detail = [cleanText(result?.value), cleanText(result?.unit)].filter(Boolean).join(" ") || "—";
+  const detail = joinValueUnit(result?.value, result?.unit) || "—";
   const flag = cleanText(result?.flag) ? ` [${cleanText(result.flag)}]` : "";
   const points = (result?.displayTrend || result?.trend || [])
     .map((point) => cleanText(point?.value))

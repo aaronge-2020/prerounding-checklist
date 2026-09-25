@@ -1,11 +1,12 @@
-import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260924-assessment-plan-v1";
+import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260925-mixed-unparsed-v1";
 import {
   clinicalDataModel,
   clinicalDisplayModelFromPromptText,
   laboratoryAbnormality,
   withClinicalRepresentations
 } from "./structured-clinical-data.js?v=20260921-medication-card-v4";
-import { splitLaboratoryRowsByPanel } from "./laboratory-panels.js?v=20260921-medication-card-v4";
+import { normalizedLaboratoryName, laboratoryPanelFamily, splitLaboratoryRowsByPanel } from "./laboratory-panels.js?v=20260925-blood-gas-v1";
+import { isNonMedicationLine, splitMedicationLine } from "./note-clinical-extractor.js?v=20260925-med-filters-v1";
 
 const REPORT_SEPARATOR = /^\s*[-=]{20,}\s*$/;
 const MEDICATION_STATUS = /\b(?:ADMINISTERED|CANCELLED|CANCELED|DISCONTINUED|GIVEN|HELD|MISSED|NOT GIVEN|REFUSED|STOPPED|BCMA EXPIRED)\b/i;
@@ -864,6 +865,31 @@ function renderFragmentedLabsWithWideVitals(lines = []) {
   };
 }
 
+// Inline value/unit/flag cells ("6.8 (L) g/dL", "6.8 g/dL (L)") from compact
+// markdown tables that lack dedicated Units/Flag columns. Only splits when
+// the remainder is numeric (or a comparator/pending-style token), so titers
+// ("1:640") and qualitative results ("Negative") pass through untouched.
+function splitInlineLabValue(raw) {
+  let text = compactLine(raw);
+  let flag = "";
+  // Flag in parentheses anywhere in the cell: "6.8 (L) g/dL", "6.8 g/dL (L)".
+  const flagMatch = text.match(/\(\s*(HH|H|L|LL|H\*|L\*|CRITICAL|HIGH|LOW)\s*\)/i);
+  if (flagMatch) {
+    flag = flagMatch[1].toUpperCase();
+    text = compactLine(text.replace(flagMatch[0], ""));
+  }
+  let unit = "";
+  const unitMatch = text.match(/\s+([A-Za-z%μµ][A-Za-z0-9%μµ/^°.\-]*)$/);
+  if (unitMatch) {
+    const head = compactLine(text.slice(0, unitMatch.index));
+    if (/^[<>≤≥]?\s*-?(\d+(?:\.\d+)?|\.\d+)$/.test(head) || /^(?:pending|rpt(?:\s*\(ip\))?|in\s+process|not\s+done|n\/?a|none)$/i.test(head)) {
+      unit = unitMatch[1];
+      text = head;
+    }
+  }
+  return { value: text, unit, flag };
+}
+
 function renderDelimitedClipboardTable(lines = []) {
   const headerCandidates = lines.slice(0, 12).map((line, index) => {
     const cells = delimitedCells(line);
@@ -874,7 +900,7 @@ function renderDelimitedClipboardTable(lines = []) {
       if (["component", "test", "testname", "testdescription", "analyte", "laboratorytest", "labtest"].includes(key)) return "name";
       if (["result", "value"].includes(key)) return "value";
       if (["unit", "units", "uom"].includes(key)) return "unit";
-      if (["referencerange", "referenceinterval", "refrange", "refinterval", "range"].includes(key)) return "reference_range";
+      if (["referencerange", "referenceinterval", "refrange", "refinterval", "range", "reference", "ref"].includes(key)) return "reference_range";
       if (["flag", "abnormal", "abnormality"].includes(key)) return "flag";
       if (["collected", "collection", "collectiondatetime", "collecteddatetime", "datetime"].includes(key)) return "collected";
       if (["medication", "medicationname", "drug", "drugname", "ordername"].includes(key)) return "name";
@@ -943,14 +969,19 @@ function renderDelimitedClipboardTable(lines = []) {
         label: "Laboratory results",
         timestamp,
         rows: rows.filter((row) => valueFor(row, [/^collected$/]) === timestamp).map((row, rowIndex) => {
-          const value = valueFor(row, [/^value$/]);
-          const flag = valueFor(row, [/^flag$/]);
+          const rawValue = valueFor(row, [/^value$/]);
+          const inline = splitInlineLabValue(rawValue);
+          const value = inline.value;
+          // Dedicated Units/Flag/Reference columns win; inline parsing only
+          // fills what the table did not spell out.
+          const unit = valueFor(row, [/^unit$/]) || inline.unit;
+          const flag = valueFor(row, [/^flag$/]) || inline.flag;
           const referenceRange = valueFor(row, [/^reference_range$/]);
           return {
             id: `lab_${groupIndex + 1}_${rowIndex + 1}`,
             name: valueFor(row, [/^name$/]),
             value,
-            unit: valueFor(row, [/^unit$/]),
+            unit,
             referenceRange,
             flag,
             abnormality: laboratoryAbnormality({ value, flag, referenceRange }),
@@ -966,6 +997,186 @@ function renderDelimitedClipboardTable(lines = []) {
     suggestedSourceKind: kind,
     itemCount: rows.length,
     summary: `${rows.length} ${noun} ${rows.length === 1 ? "row" : "rows"}; empty clipboard columns removed.`,
+    preservedUnparsedText: false
+  }, model);
+}
+
+// Plain-line laboratory results ("K 5.8 (H)\nWBC 14.2"): no table, no Epic
+// markers, no "Name: value" colons. Conservative by design: the analyte must
+// resolve to a known laboratory panel family (via laboratory-panels.js plus
+// common abbreviations), the remainder must start with a numeric value, and
+// dispatch requires either the laboratory_results source kind or text that is
+// entirely convincing lab lines — narrative prose is never reorganized.
+const PLAIN_LAB_ANALYTE_ALIASES = {
+  k: "potassium",
+  na: "sodium",
+  cl: "chloride",
+  co2: "co2 total",
+  hco3: "co2 total",
+  bun: "bun",
+  cr: "creatinine",
+  creat: "creatinine",
+  glu: "glucose",
+  gluc: "glucose",
+  ca: "calcium",
+  mg: "magnesium",
+  phos: "phosphorus",
+  wbc: "wbc",
+  rbc: "rbc",
+  hgb: "hgb",
+  hct: "hct",
+  plt: "platelets",
+  plts: "platelets",
+  inr: "inr",
+  ptt: "ptt",
+  aptt: "aptt",
+  lac: "lactate",
+  ph: "ph",
+  pco2: "pco2",
+  po2: "po2"
+};
+
+const PLAIN_LAB_LINE = /^([A-Za-z][^:=<>]*?)\s+([<>≤≥]=?\s*)?([+-]?(?:\d+(?:\.\d+)?|\.\d+))(\s+[A-Za-z%μµ][A-Za-z0-9%μµ/^°.\-]*)?\s*(\(\s*(?:HH|H|L|LL|H\*|L\*|CRITICAL|HIGH|LOW)\s*\))?\s*$/i;
+
+// Display names for abbreviated analytes so "K" groups with the metabolic
+// panel instead of "Other laboratory results".
+const PLAIN_LAB_DISPLAY_NAMES = {
+  potassium: "Potassium",
+  sodium: "Sodium",
+  chloride: "Chloride",
+  "co2 total": "Bicarbonate",
+  bun: "BUN",
+  creatinine: "Creatinine",
+  glucose: "Glucose",
+  calcium: "Calcium",
+  magnesium: "Magnesium",
+  phosphorus: "Phosphorus",
+  wbc: "WBC",
+  rbc: "RBC",
+  hgb: "Hgb",
+  hct: "Hct",
+  platelets: "Platelets",
+  inr: "INR",
+  ptt: "PTT",
+  aptt: "aPTT",
+  lactate: "Lactate",
+  ph: "pH",
+  pco2: "pCO2",
+  po2: "pO2"
+};
+
+function parsePlainLabLine(line, sourceIndex) {
+  const text = compactLine(line);
+  if (!text || text.length > 80) return null;
+  const match = text.match(PLAIN_LAB_LINE);
+  if (!match) return null;
+  const name = compactLine(match[1]);
+  const normalized = normalizedLaboratoryName(name);
+  const resolved = PLAIN_LAB_ANALYTE_ALIASES[normalized] || normalized;
+  if (laboratoryPanelFamily(resolved) === "other") return null;
+  const comparator = compactLine(match[2] || "");
+  const value = `${comparator ? `${comparator} ` : ""}${match[3]}`;
+  const unit = compactLine(match[4] || "");
+  const flag = compactLine(match[5] || "").replace(/[()]/g, "").trim().toUpperCase();
+  return { name: PLAIN_LAB_DISPLAY_NAMES[resolved] || name, value, unit, referenceRange: "", flag, sourceIndex };
+}
+
+function renderPlainLineLaboratoryResults(lines = [], sourceKind = "") {
+  const candidates = lines.map((line) => compactLine(line)).filter(Boolean);
+  if (candidates.length < 2) return null;
+  // "Name: value" lines belong to the Epic/narrative paths, never here.
+  if (candidates.some((line) => /^\s*[A-Za-z][^:\n]*:\s*\S/.test(line) && !/^\d{1,2}:\d{2}/.test(line))) return null;
+  const parsed = candidates.map((line, index) => parsePlainLabLine(line, index));
+  const good = parsed.filter(Boolean);
+  const convincing = sourceKind === "laboratory_results"
+    ? good.length >= 2 && good.length / candidates.length >= 0.6
+    : good.length >= 3 && good.length === candidates.length;
+  if (!convincing) return null;
+  const rows = good.map((row, index) => ({
+    id: `lab_plain_${index + 1}`,
+    name: row.name,
+    value: row.value,
+    unit: row.unit,
+    referenceRange: row.referenceRange,
+    flag: row.flag,
+    abnormality: laboratoryAbnormality({ value: row.value, flag: row.flag, referenceRange: row.referenceRange }),
+    sourceIndex: row.sourceIndex
+  }));
+  const groups = splitLaboratoryRowsByPanel(rows).map((panel, panelIndex) => ({
+    id: `labs_plain_${panelIndex + 1}`,
+    label: panel.label,
+    timestamp: "",
+    rows: panel.rows
+  }));
+  const formatId = "plain_line_labs";
+  const formatLabel = "Plain-line laboratory results";
+  const model = clinicalDataModel({ kind: "laboratory_results", sourceSystem: "Plain text", formatId, formatLabel, groups });
+  return withClinicalRepresentations({
+    recognized: true,
+    formatId,
+    formatLabel,
+    suggestedSourceKind: "laboratory_results",
+    itemCount: rows.length,
+    summary: `${rows.length} laboratory result${rows.length === 1 ? "" : "s"} parsed from plain analyte lines; empty lines removed.`,
+    preservedUnparsedText: false
+  }, model);
+}
+
+// Splits a plain sig ("10 mg PO daily") into the medication row's dose /
+// route / frequency fields so the canonical "Dose: … | Route: …" rendering
+// survives. The full sig is also kept in instructions.
+function parsePlainMedDetails(details) {
+  const text = String(details || "");
+  const dose = (text.match(/\b\d+(?:\.\d+)?\s*(?:mg|mcg|g|mmol|meq|units?|u|%|ml|tablets?|capsules?|puffs?|drops?)\b/i) || [""])[0].trim();
+  const route = (text.match(/\b(PO|IV|IM|SC|SQ|SL|TD|INH|per\s+(?:G|NG|NJ|PEG)\s+tube)\b/i) || [""])[1] || "";
+  const frequency = (text.match(/\b(daily|nightly|BID|TID|QID|QHS|q\s*\d+\s*h|weekly|monthly|once(?:\s+daily)?|twice\s+daily|every\s+\d+\s*h(?:ours?)?|PRN|as\s+needed)\b/i) || [""])[0] || "";
+  return { dose, route: route.toUpperCase().replace(/\s+/g, " "), frequency };
+}
+
+// Plain-line medication lists ("Lisinopril 10 mg PO daily") pasted as a
+// medication_activity source. Strict: only for that source kind, and every
+// surviving line must parse as a medication — anything else falls through to
+// plain text so prose is never reorganized.
+function renderPlainLineMedications(lines = [], sourceKind = "") {
+  if (sourceKind !== "medication_activity") return null;
+  const candidates = lines.map((line) => String(line || "").trim()).filter((line) => line && !isNonMedicationLine(line));
+  if (!candidates.length) return null;
+  const meds = [];
+  for (const [index, line] of candidates.entries()) {
+    const parsed = splitMedicationLine(line);
+    if (!parsed) return null;
+    meds.push({ ...parsed, sourceIndex: index });
+  }
+  const groups = [{
+    id: "medications_plain_1",
+    label: "Medication activity",
+    timestamp: "",
+    rows: meds.map((med, index) => {
+      const sig = parsePlainMedDetails(med.details);
+      return {
+        id: `medication_plain_${index + 1}`,
+        name: med.name,
+        dose: sig.dose,
+        frequency: sig.frequency,
+        route: sig.route,
+        timing: "",
+        status: [],
+        administrations: [],
+        instructions: med.details,
+        sourceIndex: med.sourceIndex
+      };
+    })
+  }];
+  const formatId = "plain_line_medications";
+  const formatLabel = "Plain-line medication list";
+  const model = clinicalDataModel({ kind: "medication_activity", sourceSystem: "Plain text", formatId, formatLabel, groups });
+  return withClinicalRepresentations({
+    recognized: true,
+    formatId,
+    formatLabel,
+    suggestedSourceKind: "medication_activity",
+    itemCount: meds.length,
+    summary: `${meds.length} medication${meds.length === 1 ? "" : "s"} parsed from plain medication lines.`,
     preservedUnparsedText: false
   }, model);
 }
@@ -1048,6 +1259,28 @@ export function parseClinicalExport(value, { sourceKind = "" } = {}) {
         parsedCharacterCount: compactResult.outputText.length
       };
     }
+  }
+  // Plain analyte/value lines ("K 5.8 (H)") are only a laboratory source when
+  // the source kind says so or the text is unambiguously lab lines.
+  const plainLabResult = renderPlainLineLaboratoryResults(lines, sourceKind);
+  if (plainLabResult) {
+    const compactResult = nonExpandingResult(plainLabResult, rawText);
+    return {
+      ...compactResult,
+      rawCharacterCount: rawText.length,
+      parsedCharacterCount: compactResult.outputText.length
+    };
+  }
+  // Plain medication lines ("Lisinopril 10 mg PO daily") only for the
+  // medication_activity source kind.
+  const plainMedResult = renderPlainLineMedications(lines, sourceKind);
+  if (plainMedResult) {
+    const compactResult = nonExpandingResult(plainMedResult, rawText);
+    return {
+      ...compactResult,
+      rawCharacterCount: rawText.length,
+      parsedCharacterCount: compactResult.outputText.length
+    };
   }
   return {
     ...plainTextResult(rawText),

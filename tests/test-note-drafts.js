@@ -393,8 +393,10 @@ const options = { now: fixedNow, idFactory: fixedId };
   assert.match(note, /\*\*Objective\*\*[\s\S]*SpO2 92–98%[\s\S]*bibasilar crackles/);
   assert.match(note, /\| Differential \| Clues for this differential \| Clues against this differential \|/);
   assert.match(note, /\| Pulmonary edema \| Bibasilar crackles\. \|  \|/);
-  assert.match(note, /- Diagnostic plan — Obtain a chest radiograph\./);
-  assert.match(note, /- Therapeutic plan — Titrate oxygen/);
+  assert.match(note, /\*\*Diagnostics\*\*[\s\S]*- Obtain a chest radiograph\./);
+  assert.match(note, /\*\*Therapeutics\*\*[\s\S]*- Titrate oxygen/);
+  assert.doesNotMatch(note, /Diagnostic plan —/);
+  assert.doesNotMatch(note, /Therapeutic plan —/);
   assert.match(note, /\*\*Disposition\*\*[\s\S]*Home when oxygen/);
   assert.doesNotMatch(note, /not documented|unknown etiology|No acute events overnight/, "the renderer must not fabricate optional content");
 }
@@ -536,7 +538,8 @@ const options = { now: fixedNow, idFactory: fixedId };
   assert.match(html, /<h2>Plan<\/h2>/);
   assert.match(html, /<table><thead><tr><th>Differential<\/th><th>Clues for this differential<\/th><th>Clues against this differential<\/th><\/tr><\/thead>/);
   assert.match(html, /<td>Hemorrhage<\/td><td>On anticoagulation<\/td><td>CT negative<\/td>/);
-  assert.match(html, /<ul><li>Diagnostic plan — MRI brain<\/li><\/ul>/);
+  assert.match(html, /<ul><li>MRI brain<\/li><\/ul>/);
+  assert.doesNotMatch(html, /Diagnostic plan —/);
   // Note content is escaped: no markup injection.
   draft = updateNoteSection(draft, "chief_complaint", "<script>alert(1)</script>", { now: fixedNow });
   const evil = renderFinalNoteHtml(draft);

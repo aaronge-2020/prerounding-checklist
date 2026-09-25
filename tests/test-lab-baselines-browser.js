@@ -44,10 +44,10 @@ try {
   await page.fill("#reviewDataSearch", "Creatinine");
   await page.waitForFunction(() => document.querySelectorAll(".lab-row").length >= 1);
   assert.equal(await baselineBadge().count(), 0, "no baseline badge before one is set");
-  assert.equal(await creatinineCell().getByRole("button", { name: "Set base" }).count(), 1);
+  assert.equal(await creatinineCell().getByRole("button", { name: "Set baseline" }).count(), 1);
 
   // Open the editor, save a baseline, and see it on the review sheet.
-  await creatinineCell().getByRole("button", { name: "Set base" }).click();
+  await creatinineCell().getByRole("button", { name: "Set baseline" }).click();
   await page.waitForSelector("[data-baseline-editor]");
   await creatinineCell().locator('[data-baseline-field="value"]').fill("0.9");
   await creatinineCell().locator('[data-baseline-field="unit"]').fill("mg/dL");
@@ -95,17 +95,17 @@ try {
   await creatinineCell().getByRole("button", { name: "Clear" }).click();
   await page.waitForFunction(() => /Baseline cleared/.test(document.querySelector("#statusLine")?.textContent || ""));
   assert.equal(await baselineBadge().count(), 0);
-  assert.equal(await creatinineCell().getByRole("button", { name: "Set base" }).count(), 1);
+  assert.equal(await creatinineCell().getByRole("button", { name: "Set baseline" }).count(), 1);
 
   // Saving without a value is rejected with a status message.
-  await creatinineCell().getByRole("button", { name: "Set base" }).click();
+  await creatinineCell().getByRole("button", { name: "Set baseline" }).click();
   await page.waitForSelector("[data-baseline-editor]");
   await creatinineCell().getByRole("button", { name: "Save baseline" }).click();
   await page.waitForFunction(() => /Enter a baseline value/.test(document.querySelector("#statusLine")?.textContent || ""));
   await creatinineCell().getByRole("button", { name: "Cancel" }).click();
 
   // Baselines persist across a vault lock/reload cycle.
-  await creatinineCell().getByRole("button", { name: "Set base" }).click();
+  await creatinineCell().getByRole("button", { name: "Set baseline" }).click();
   await page.waitForSelector("[data-baseline-editor]");
   await creatinineCell().locator('[data-baseline-field="value"]').fill("0.9");
   await creatinineCell().locator('[data-baseline-field="unit"]').fill("mg/dL");

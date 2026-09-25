@@ -28,8 +28,21 @@ function apiError(response, payload) {
     : `OpenAI API request failed (${response.status}).`;
 }
 
-export async function requestOpenAiStructuredJson({ apiKey, model, input, schemaName, schema, fetchImpl = fetch } = {}) {
+export async function requestOpenAiStructuredJson({ apiKey, model, input, schemaName, schema, tools, fetchImpl = fetch } = {}) {
   let response;
+  const body = {
+    model,
+    input,
+    text: {
+      format: {
+        type: "json_schema",
+        name: schemaName,
+        strict: true,
+        schema
+      }
+    }
+  };
+  if (Array.isArray(tools) && tools.length) body.tools = tools;
   try {
     response = await fetchImpl("https://api.openai.com/v1/responses", {
       method: "POST",
@@ -37,18 +50,7 @@ export async function requestOpenAiStructuredJson({ apiKey, model, input, schema
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        model,
-        input,
-        text: {
-          format: {
-            type: "json_schema",
-            name: schemaName,
-            strict: true,
-            schema
-          }
-        }
-      })
+      body: JSON.stringify(body)
     });
   } catch {
     throw new Error("Unable to reach the OpenAI API from this browser. Check the network connection and try again.");
