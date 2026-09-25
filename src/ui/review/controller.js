@@ -489,6 +489,43 @@ export function createReviewController(deps) {
     if (container) labAutocomplete.attach(container);
   }
 
+  // Surgical update: refresh ONLY the draft note panel (right column),
+  // leaving the clinical data panel (left column) completely untouched.
+  // Used for checkbox toggles where the clicked checkbox is already in the
+  // correct visual state — no re-render of the interaction panel needed.
+  function renderDraftPanelOnly() {
+    const current = model();
+    if (!current.patient) return;
+    const container = deps.byId("reviewContent");
+    if (!container) return;
+    const draftPanel = container.querySelector(".note-draft-panel");
+    if (!draftPanel) {
+      // Fallback to full render if the draft panel isn't found.
+      render();
+      return;
+    }
+    const vm = reviewViewModel(current);
+    const draftHtml = deps.presentation.renderDraft({
+      draft: vm.draft,
+      guidanceFor: vm.guidanceFor,
+      differenceSelectionId: vm.differenceSelectionId,
+      collapsedObjectiveGroups: vm.collapsedObjectiveGroups,
+      smartExamUi: vm.smartExamUi,
+      collapsedDraftSections: vm.collapsedDraftSections,
+      generatingApProblemId: vm.generatingApProblemId,
+      apConfirm: vm.apConfirm
+    });
+    // Preserve the draft panel's own scroll position across the update.
+    const scrollTop = draftPanel.scrollTop;
+    const scrollLeft = draftPanel.scrollLeft;
+    draftPanel.outerHTML = draftHtml;
+    const newPanel = container.querySelector(".note-draft-panel");
+    if (newPanel) {
+      newPanel.scrollTop = scrollTop;
+      newPanel.scrollLeft = scrollLeft;
+    }
+  }
+
   function prepare(selectedPacketId = "admission", { preferPopulated = true } = {}) {
     const requested = selectedPacketId || "admission";
     // U5: default navigation prefers the latest populated packet over an
@@ -571,19 +608,32 @@ export function createReviewController(deps) {
       // °F/°C confirmation — never through the checkbox alone.
       if (candidate.unitUnmarked && target.checked) {
         deps.setStatus("Confirm °F or °C for this temperature before adding it to the note.");
-        render();
+        // Surgical: just uncheck the box the user clicked; no panel re-render.
+        target.checked = false;
         return true;
       }
+      // Track checkbox IDs that need surgical DOM updates (besides the
+      // clicked target, which is already in the correct visual state).
+      const checkboxesToUncheck = new Set();
       let draft = current.draft;
       if (target.checked) {
         if (target.matches("[data-lab-panel-selection]")) {
           const panel = current.index.labs.find((entry) => entry.id === candidate.id);
-          for (const result of panel?.results || []) draft = deselectObjectiveBlock(draft, result.selectionCandidate?.id);
+          for (const result of panel?.results || []) {
+            const selId = result.selectionCandidate?.id;
+            if (selId) {
+              draft = deselectObjectiveBlock(draft, selId);
+              checkboxesToUncheck.add(selId);
+            }
+          }
           // Report-only and pending rows lifted out of the panel into the
           // compact sheet still belong to it: selecting the whole panel
           // replaces their individual selections.
           for (const item of [...(current.index.reportItems || []), ...(current.index.pendingItems || [])]) {
-            if (item.panelId === candidate.id) draft = deselectObjectiveBlock(draft, item.selectionCandidate.id);
+            if (item.panelId === candidate.id) {
+              draft = deselectObjectiveBlock(draft, item.selectionCandidate.id);
+              checkboxesToUncheck.add(item.selectionCandidate.id);
+            }
           }
         } else if (target.matches("[data-lab-result-selection]")) {
           const panelIds = new Set();
@@ -591,7 +641,10 @@ export function createReviewController(deps) {
             if (panel.results.some((result) => result.selectionCandidate?.id === candidate.id)) panelIds.add(panel.id);
           }
           if (candidate.panelId) panelIds.add(candidate.panelId);
-          for (const panelId of panelIds) draft = deselectObjectiveBlock(draft, panelId);
+          for (const panelId of panelIds) {
+            draft = deselectObjectiveBlock(draft, panelId);
+            checkboxesToUncheck.add(panelId);
+          }
         }
         draft = reselectObjectiveBlock(draft, selectionInputFor(candidate));
       } else {
@@ -602,7 +655,21 @@ export function createReviewController(deps) {
           : deselectObjectiveBlock(draft, candidate.id);
       }
       setDraft(draft);
-      render();
+      // SURGICAL UPDATE (root fix): Do NOT re-render the clinical data panel.
+      // The clicked checkbox is already in the correct state. Only:
+      // 1. Uncheck any other affected checkboxes directly in the DOM.
+      // 2. Refresh the draft note panel (right column) only.
+      // The clinical data panel's DOM — and its scroll position — is untouched.
+      if (typeof document !== "undefined") {
+        const container = deps.byId("reviewContent");
+        if (container) {
+          for (const selId of checkboxesToUncheck) {
+            const box = container.querySelector(`[data-objective-selection-id="${selId}"]`);
+            if (box && box !== target) box.checked = false;
+          }
+        }
+      }
+      renderDraftPanelOnly();
       return true;
     }
     if (target.matches("[data-problem-etiology]")) {

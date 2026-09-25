@@ -730,5 +730,5 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     </div>`;
   }
 
-  return Object.freeze({ renderReview });
+  return Object.freeze({ renderReview, renderDraft });
 }
