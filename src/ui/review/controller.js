@@ -1733,6 +1733,10 @@ export function createReviewController(deps) {
       const full = panel?.querySelector("[data-clinical-data-full]");
       if (!clinicalDataCollapsed && panel) {
         clinicalDataScrollBeforeCollapse = panel.scrollTop;
+        // DEBUG: expose saved value
+        if (typeof document !== "undefined") {
+          document.documentElement.dataset.savedScroll = String(clinicalDataScrollBeforeCollapse);
+        }
       }
       clinicalDataCollapsed = !clinicalDataCollapsed;
       // Blur the clicked toggle button: when its container hides, the
@@ -1750,11 +1754,19 @@ export function createReviewController(deps) {
       });
       if (panel && !clinicalDataCollapsed) {
         const restoreTo = clinicalDataScrollBeforeCollapse;
+        // DEBUG: expose restore target and actual after restore
+        if (typeof document !== "undefined") {
+          document.documentElement.dataset.restoreTarget = String(restoreTo);
+        }
         const doRestore = () => {
           // Force synchronous layout so scrollHeight reflects the
           // un-hidden content before we set scrollTop.
           void panel.scrollHeight;
           panel.scrollTop = restoreTo;
+          if (typeof document !== "undefined") {
+            document.documentElement.dataset.restoreActual = String(panel.scrollTop);
+            document.documentElement.dataset.scrollHeight = String(panel.scrollHeight);
+          }
         };
         if (typeof requestAnimationFrame !== "undefined") {
           requestAnimationFrame(() => requestAnimationFrame(doRestore));
