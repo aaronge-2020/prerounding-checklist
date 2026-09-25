@@ -211,11 +211,31 @@ export function createDailyPresentation({ escapeHtml, icon }) {
           <p class="source-parse-help">Each section below will be de-identified and saved as its own typed source. Review or edit any section before continuing.</p>
           <div class="source-parse-sections">
             ${parsedSections.map((section, index) => {
+              // Free-text report placeholders get a dedicated, sleek UI: the
+              // study name as the header (never "Other results") and an
+              // always-visible textarea for pasting the full report — no
+              // disclosure to open, no hunting for where to paste.
+              if (section.needsFreeText) {
+                const studyName = section.formatLabel || section.resultLabel || "Result";
+                const currentText = section.canonicalPromptText || section.outputText || "";
+                return `
+                <section class="source-parse-section source-parse-section--needs-report" aria-labelledby="${prefix}ParsedSourceTitle${index}">
+                  <div class="source-parse-section-heading">
+                    <strong id="${prefix}ParsedSourceTitle${index}">${escapeHtml(studyName)}</strong>
+                    <span class="needs-report-pill">needs report text</span>
+                  </div>
+                  <p class="muted">Pasted as a status only. Paste the full report text below — it replaces the placeholder.</p>
+                  <label class="source-draft-label" for="${prefix}ParsedSourceDraft${index}">Full report text
+                    <textarea id="${prefix}ParsedSourceDraft${index}" rows="5" data-source-parsed-draft data-source-scope="${prefix}" data-source-section-index="${index}">${escapeHtml(currentText)}</textarea>
+                  </label>
+                </section>
+              `;
+              }
               const sourceLabel = {
                 vital_signs: "Vital signs",
                 laboratory_results: "Laboratory results",
                 medication_activity: "Medication activity",
-                results: "Other results"
+                results: section.formatLabel || "Other results"
               }[section.sourceKind] || "Other chart text";
               return `
                 <section class="source-parse-section" aria-labelledby="${prefix}ParsedSourceTitle${index}">

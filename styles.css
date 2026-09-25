@@ -10258,6 +10258,47 @@ body.vault-locked .vault-access {
   min-height: 140px;
 }
 
+/* Free-text report placeholders: study name header + always-visible paste
+   box. Sleek and scannable — no disclosure to open. */
+.source-parse-section--needs-report {
+  background: #fffdf5;
+  border: 1px solid #e8dcc0;
+  border-radius: 8px;
+  padding: 12px;
+  margin-block: 8px;
+}
+
+.source-parse-section--needs-report .source-parse-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.source-parse-section--needs-report .source-parse-section-heading strong {
+  font-size: 14px;
+}
+
+.needs-report-pill {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8a6d1b;
+  background: #fef3d6;
+  border: 1px solid #e8dcc0;
+  border-radius: 999px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.source-parse-section--needs-report .muted {
+  font-size: 12px;
+  margin: 0;
+}
+
+.source-parse-section--needs-report textarea {
+  min-height: 90px;
+  font-size: 13px;
+}
+
 .clinical-data-view {
   display: grid;
   gap: 10px;
