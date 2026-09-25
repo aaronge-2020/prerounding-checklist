@@ -808,7 +808,24 @@ export function createReviewController(deps) {
             if (box && box !== target) box.checked = false;
           }
         }
+        // Preserve the clinical-data panel scroll across the draft DOM
+        // patch — layout changes can make the browser reset it.
+        const dataPanel = typeof document !== "undefined"
+          ? target.closest?.(".review-data-panel") : null;
+        const dataScroller = dataPanel ? findScroller(dataPanel) : null;
+        const savedDataScroll = dataScroller ? dataScroller.scrollTop : 0;
         syncObjectiveDom(draft, addedIds, removedIds);
+        if (dataScroller && dataScroller.scrollTop !== savedDataScroll) {
+          const restoreDataScroll = () => {
+            void dataScroller.scrollHeight;
+            dataScroller.scrollTop = savedDataScroll;
+          };
+          if (typeof requestAnimationFrame !== "undefined") {
+            requestAnimationFrame(() => requestAnimationFrame(restoreDataScroll));
+          } else {
+            restoreDataScroll();
+          }
+        }
       }
       return true;
     }
@@ -1710,19 +1727,38 @@ export function createReviewController(deps) {
       patchDataList();
       return true;
     }
+  // Find the nearest ancestor (or self) that is actually scrolled —
+  // the element whose scrollTop reflects the user's scroll position.
+  // Falls back to the given element.
+  function findScroller(startEl) {
+    let el = startEl;
+    while (el && el !== document.documentElement) {
+      if (el.scrollTop > 0 || el.scrollHeight > el.clientHeight + 1) {
+        return el;
+      }
+      el = el.parentElement;
+    }
+    return startEl;
+  }
+
     if (action === "toggle-clinical-data") {
       // True surgical toggle: both the rail and the full content are
       // always in the DOM (see renderDataExplorer). Flipping `hidden`
       // never destroys the search input, the data list, or their state.
-      // The panel itself is the scroller (overflow:auto). Persist the
-      // scrollTop on the panel's dataset (not a JS variable) so it
-      // survives across handler invocations; restore after layout.
+      // Persist the scrollTop on the panel's dataset (not a JS variable)
+      // so it survives across handler invocations; restore after layout.
       const panel = target.closest(".review-data-panel");
       const rail = panel?.querySelector("[data-clinical-data-rail]");
       const full = panel?.querySelector("[data-clinical-data-full]");
       const wasCollapsed = panel?.dataset.clinicalDataCollapsed === "true";
-      if (!wasCollapsed && panel) {
-        panel.dataset.savedScrollTop = String(panel.scrollTop);
+      // Find the actual scroller — it may be the panel or an inner element.
+      const scroller = panel ? findScroller(full || panel) : null;
+      if (!wasCollapsed && scroller) {
+        panel.dataset.savedScrollTop = String(scroller.scrollTop);
+        // Remember which element scrolled, by a simple identifier.
+        panel.dataset.scrollerSelector = scroller === panel ? ".review-data-panel"
+          : scroller === full ? "[data-clinical-data-full]"
+          : scroller.className ? "." + String(scroller.className).split(" ")[0] : "";
       }
       const nowCollapsed = !wasCollapsed;
       // Keep the module variable in sync for the view model (initial render).
@@ -1742,9 +1778,15 @@ export function createReviewController(deps) {
       });
       if (panel && !nowCollapsed) {
         const restoreTo = Number(panel.dataset.savedScrollTop || 0);
+        const selector = panel.dataset.scrollerSelector || ".review-data-panel";
         const doRestore = () => {
-          void panel.scrollHeight;
-          panel.scrollTop = restoreTo;
+          // Find the scroller again (it may be the panel or inner element).
+          const target = selector === ".review-data-panel" ? panel
+            : selector === "[data-clinical-data-full]" ? full
+            : panel.querySelector(selector) || panel;
+          if (!target) return;
+          void target.scrollHeight;
+          target.scrollTop = restoreTo;
         };
         if (typeof requestAnimationFrame !== "undefined") {
           requestAnimationFrame(() => requestAnimationFrame(doRestore));
