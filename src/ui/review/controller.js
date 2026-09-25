@@ -8,6 +8,7 @@ import {
   addPlanProblem,
   buildChecklistNoteCandidates,
   changeNoteDraftType,
+  CLOSING_SECTION_FIELDS,
   createNoteDraft,
   deselectObjectiveBlock,
   deselectObjectiveBlockWithMemory,
@@ -556,7 +557,54 @@ export function createReviewController(deps) {
       return;
     }
     let draft = current.draft;
-    draft = updateNoteSection(draft, fieldId, text);
+    try {
+      // Route to the correct update function based on field type.
+      // Standard sections use updateNoteSection; special sections have
+      // their own update functions; closing sections use updateClosingSection.
+      if (fieldId === "objective") {
+        draft = updateManualObjective(draft, text);
+      } else if (fieldId === "assessment") {
+        draft = updateAssessment(draft, text);
+      } else if (fieldId === "physical_exam") {
+        // physical_exam is stored in sections but not in NOTE_TYPE_FIELDS;
+        // update it directly to avoid the field validation throw.
+        const timestamp = new Date().toISOString();
+        draft = {
+          ...draft,
+          sections: {
+            ...draft.sections,
+            physical_exam: { deidentifiedText: text, createdAt: timestamp, updatedAt: timestamp }
+          },
+          updatedAt: timestamp
+        };
+      } else if (CLOSING_SECTION_FIELDS.some((field) => field.id === fieldId)) {
+        draft = updateClosingSection(draft, fieldId, text);
+      } else if (fieldId === "plan") {
+        // Plan is structured (draft.problems), not free text. Parse the
+        // primary note's plan text into problems.
+        const problems = parseClinicalPlanProblems(text);
+        if (problems.length > 0) {
+          for (const p of problems) {
+            draft = addPlanProblem(draft, {
+              problem: p.problem || p.title || "",
+              keyContext: p.keyContext || "",
+              knownEtiology: p.knownEtiology || "",
+              differentials: p.differentials || [],
+              diagnosticPlan: p.diagnosticPlan || "",
+              therapeuticPlan: p.therapeuticPlan || ""
+            });
+          }
+        } else {
+          deps.setStatus("Could not parse plan from primary note.");
+          return;
+        }
+      } else {
+        draft = updateNoteSection(draft, fieldId, text);
+      }
+    } catch (error) {
+      deps.setStatus(`Cannot pull ${fieldId.replace(/_/g, " ")}: ${error.message}`);
+      return;
+    }
     deps.app.noteDraftSessions.set(packetKey(current.packet.id), draft);
     deps.setStatus(`Pulled ${fieldId.replace(/_/g, " ")} from primary note.`);
     deps.render();

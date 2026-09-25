@@ -326,7 +326,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       + (showMeds ? (index.medications || []).filter((candidate) => matchesQuery(candidate.searchText, q)).length : 0)
       + (showDiagnostics ? (index.diagnosticResults || []).filter((candidate) => (!category || category === "all" || candidate.group === category) && matchesQuery(candidate.searchText, q)).length : 0);
     const toggleLabel = clinicalDataCollapsed ? "Show clinical data" : "Hide clinical data";
-    const toggleIcon = clinicalDataCollapsed ? "▶" : "▼";
+    const toggleIcon = clinicalDataCollapsed ? "▶" : "◀";
     const bodyHtml = clinicalDataCollapsed ? "" : `
       <div class="review-filter-row">
         <label>Search patient data<input type="search" id="reviewDataSearch" value="${escapeHtml(query)}" placeholder="${category === "labs" ? "WBC, CBC, metabolic panel…" : "WBC, ceftriaxone, CT Head…"}" autocomplete="off"></label>

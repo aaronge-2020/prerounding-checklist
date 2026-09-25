@@ -286,6 +286,7 @@ export function createDailySourceController(deps) {
     const patient = deps.active();
     if (!patient) throw new Error("Select a patient first.");
     const key = structuredNoteKey(scope);
+    if (!key) throw new Error("Select a hospital day first.");
     const draftValues = deps.app.structuredNoteDrafts.get(key) || {};
     const noteType = structuredNoteType(scope);
     const fields = primaryTeamNoteFields(noteType);
@@ -297,6 +298,10 @@ export function createDailySourceController(deps) {
       if (rawText?.trim()) {
         sections[field.id] = { deidentifiedText: rawText.trim(), notDeidentified: true };
       }
+    }
+
+    if (Object.keys(sections).length === 0) {
+      throw new Error("No note content to save. Type or paste note text first.");
     }
 
     // Get or create the draft session, update with the raw sections.
@@ -312,6 +317,9 @@ export function createDailySourceController(deps) {
       _rawTextWarning: "This draft contains text that has not been de-identified."
     };
     deps.app.noteDraftSessions.set(key, draft);
+    // Sync the Review tab's selected packet to this day so the saved draft
+    // is visible when the user navigates to Review Data / Draft Note.
+    deps.app.reviewPacketId = key;
     deps.setStatus("Note saved to draft (not de-identified). Use 'De-identify & save' to de-identify and save to vault.");
     deps.render();
   }

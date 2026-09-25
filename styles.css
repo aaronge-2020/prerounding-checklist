@@ -2364,9 +2364,11 @@ button.var-fill:focus-visible {
 
 .review-columns {
   display: grid;
-  grid-template-columns: minmax(320px, 0.85fr) minmax(460px, 1.4fr);
+  grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1.4fr);
   align-items: start;
   gap: 16px;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .review-data-panel,
