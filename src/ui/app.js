@@ -1007,6 +1007,17 @@ function render() {
     if (view && view.id === activeViewId) {
       view.scrollTop = scrollTop;
       view.scrollLeft = scrollLeft;
+      // If layout hasn't settled yet (async content, fonts, images), the
+      // synchronous restore may be clamped. Re-assert on the next frame.
+      if (Math.abs(view.scrollTop - scrollTop) > 2) {
+        requestAnimationFrame(() => {
+          const v = document.querySelector(".view.active");
+          if (v && v.id === activeViewId) {
+            v.scrollTop = scrollTop;
+            v.scrollLeft = scrollLeft;
+          }
+        });
+      }
     }
   };
 
@@ -4213,6 +4224,16 @@ function bindEvents() {
   document.addEventListener("click", handleClick);
   document.addEventListener("change", handleChange);
   document.addEventListener("input", handleInput);
+  // Prevent action buttons from stealing focus on mousedown. When a button
+  // receives focus, the browser scrolls it into view — clicking a button at
+  // the top while scrolled down yanks the view to the top. Preventing the
+  // default mousedown behavior stops the focus (and the scroll) without
+  // affecting the click event itself.
+  document.addEventListener("mousedown", (event) => {
+    if (event.target.closest("button[data-action], button[data-pull-section]")) {
+      event.preventDefault();
+    }
+  });
   document.addEventListener("toggle", handleToggle, true);
   // Question-mark hint tooltips are CSS ::after popups anchored to their
   // button. Measure the room inside the scrolling note editor on hover/focus

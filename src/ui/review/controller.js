@@ -505,21 +505,35 @@ export function createReviewController(deps) {
   }
 
   async function confirmTemperatureUnit(candidateId, unit) {
-    const current = model();
-    if (!current.patient) return;
-    if ((unit !== "°F" && unit !== "°C") || !candidateId) return;
-    deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({
-      ...patient,
-      temperatureUnits: { ...(patient.temperatureUnits || {}), [String(candidateId)]: unit }
-    }));
-    // Confirming resolves the ambiguity, so the default-on pass picks the
-    // temperature up on the next render with the confirmed unit attached.
-    const ephemeralDemo = deps.isEphemeralDemo?.();
-    if (!ephemeralDemo) await deps.persistVault("Temperature unit confirmed.");
-    deps.setStatus(ephemeralDemo
-      ? "Temperature unit confirmed for this temporary walkthrough."
-      : `Temperature unit confirmed as ${unit} — saved to the encrypted vault.`);
-    render();
+    try {
+      const current = model();
+      if (!current.patient) return;
+      if ((unit !== "°F" && unit !== "°C") || !candidateId) return;
+      deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({
+        ...patient,
+        temperatureUnits: { ...(patient.temperatureUnits || {}), [String(candidateId)]: unit }
+      }));
+      // Confirming resolves the ambiguity, so the default-on pass picks the
+      // temperature up on the next render with the confirmed unit attached.
+      // Update the UI first so the user gets immediate feedback even if the
+      // vault write fails; persist in the background with error reporting.
+      const ephemeralDemo = deps.isEphemeralDemo?.();
+      deps.setStatus(ephemeralDemo
+        ? "Temperature unit confirmed for this temporary walkthrough."
+        : `Temperature unit confirmed as ${unit} — saved to the encrypted vault.`);
+      render();
+      if (!ephemeralDemo) {
+        try {
+          await deps.persistVault("Temperature unit confirmed.");
+        } catch (error) {
+          deps.showToast?.("Unit confirmed on screen, but the vault save failed — your change may not persist after reload.", { type: "error" });
+          deps.setStatus("Temperature unit confirmed on screen; vault save failed.");
+        }
+      }
+    } catch (error) {
+      deps.showToast?.("Could not confirm the temperature unit. Please try again.", { type: "error" });
+      deps.setStatus("Temperature unit confirmation failed.");
+    }
   }
 
   async function saveLabBaseline(analyte, fields, { clear = false } = {}) {
