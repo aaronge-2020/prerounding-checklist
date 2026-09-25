@@ -4052,6 +4052,84 @@ button.var-fill:focus-visible {
   font-weight: 800;
 }
 
+/* Pull-from-primary-note button: sits next to the help (?) icon. */
+.note-pull-button {
+  position: relative;
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  min-height: 22px;
+  flex: 0 0 22px;
+  padding: 0;
+  margin-left: 4px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  place-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.note-pull-button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.note-pull-button::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  min-width: 140px;
+  max-width: 220px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: center;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 50;
+}
+
+.note-pull-button:hover::after,
+.note-pull-button:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Compact exam template picker in the Physical Exam section. */
+.exam-template-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.exam-template-picker label {
+  font-weight: 600;
+}
+
+.exam-template-picker select {
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+}
+
 .note-help-button::after {
   position: absolute;
   z-index: 40;

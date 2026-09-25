@@ -2,6 +2,7 @@ import { sortDays } from "../../daily-updates/days.js?v=20260921-medication-card
 import { updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20260924-optional-sections-v1&labs=analyte-selection-v3";
 import { createLabAutocomplete } from "./lab-autocomplete.js?v=20260924-dollar-autocomplete-v1";
+import { renderExamTemplate } from "../../clinical/exam-templates.js?v=20260925-exam-templates-v1";
 import {
   addDifferential,
   addPlanProblem,
@@ -538,7 +539,64 @@ export function createReviewController(deps) {
       : clear ? "Baseline cleared." : "Baseline saved — the review sheet and note now show it.");
   }
 
+  // Pull the corresponding section text from the primary team note (for the
+  // current hospital day) into the draft as a starting point. This lets the
+  // student start from yesterday's primary note text when writing their own.
+  function pullFromPrimaryNote(fieldId) {
+    const current = model();
+    if (!current.patient) return;
+    const source = sourceNoteForPacket(current.patient, current.packet.id);
+    if (!source) {
+      deps.setStatus("No primary team note found for this day.");
+      return;
+    }
+    const text = sourceSectionText(source?.sections?.[fieldId]).trim();
+    if (!text) {
+      deps.setStatus("Primary note has no text for this section.");
+      return;
+    }
+    let draft = current.draft;
+    draft = updateNoteSection(draft, fieldId, text);
+    deps.app.noteDraftSessions.set(packetKey(current.packet.id), draft);
+    deps.setStatus(`Pulled ${fieldId.replace(/_/g, " ")} from primary note.`);
+    deps.render();
+  }
+
+  // Insert the selected exam template skeleton into the physical exam text box.
+  function insertExamTemplate() {
+    const select = document.querySelector("[data-exam-template-select]");
+    const templateId = select?.value;
+    if (!templateId) {
+      deps.setStatus("Select an exam template first.");
+      return;
+    }
+    const skeleton = renderExamTemplate(templateId);
+    if (!skeleton) {
+      deps.setStatus("Unknown exam template.");
+      return;
+    }
+    const current = model();
+    if (!current.patient) return;
+    let draft = current.draft;
+    const existing = sourceSectionText(draft?.sections?.physical_exam).trim();
+    const combined = existing ? `${existing}\n\n${skeleton}` : skeleton;
+    draft = updateNoteSection(draft, "physical_exam", combined);
+    deps.app.noteDraftSessions.set(packetKey(current.packet.id), draft);
+    deps.setStatus(`Inserted ${templateId} exam template.`);
+    deps.render();
+  }
+
   function click(target) {
+    // Pull-from-primary-note button (not a data-action; handled separately).
+    const pullButton = target.closest("[data-pull-section]");
+    if (pullButton) {
+      const fieldId = pullButton.dataset.pullSection;
+      if (fieldId) {
+        pullFromPrimaryNote(fieldId);
+        return true;
+      }
+    }
+
     const action = target.closest("[data-action]")?.dataset.action;
     const button = target.closest("[data-action]");
     if (!action || !button) return false;
@@ -547,6 +605,10 @@ export function createReviewController(deps) {
     let draft = current.draft;
     if (action === "save-note-draft") {
       void saveDraft();
+      return true;
+    }
+    if (action === "insert-exam-template") {
+      insertExamTemplate();
       return true;
     }
     if (action === "copy-final-note") {

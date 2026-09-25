@@ -414,12 +414,10 @@ export function parseClinicalPlanProblems(planText) {
     }
 
     if (PROBLEM_LIST_HEADERS.has(strippedFirst.toLowerCase())) {
-      for (let j = 1; j < nonBlank.length; j++) {
-        const line = nonBlank[j];
-        if (!/^[-•*>—–]|^>>|^\d+[.)]/.test(line)) continue;
-        const title = line.replace(/^[-•*>—–\s]+|^>>\s*|^\d+[.)]\s*/, "").trim();
-        pushProblem({ title, system: currentSystemContext });
-      }
+      // "Active Hospital Problems" is a problem LIST, not individual problems.
+      // Skip it entirely — the real problems begin with # headers (e.g.
+      // "#Acute ischemic stroke"). Creating a separate problem entry for
+      // each bulleted diagnosis was incorrect.
       continue;
     }
 

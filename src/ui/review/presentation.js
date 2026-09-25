@@ -6,6 +6,7 @@ import {
   displayVitalName
 } from "../../review-data/compact-summary.js?v=20260924-optional-sections-v1";
 import { baselineDisplayText } from "../../patient-context/lab-baselines.js?v=20260924-lab-baselines-v1";
+import { EXAM_TEMPLATES, EXAM_TEMPLATE_IDS } from "../../clinical/exam-templates.js?v=20260925-exam-templates-v1";
 
 function valueText(value) {
   if (value && typeof value === "object") return String(value.deidentifiedText || "");
@@ -14,6 +15,9 @@ function valueText(value) {
 
 export function createReviewPresentation({ escapeHtml, icon }) {
   const helpButton = (key, label, guidance) => `<button type="button" class="note-help-button" data-help-key="${escapeHtml(key)}" data-tooltip="${escapeHtml(guidance || "No additional guidance.")}" aria-label="Help for ${escapeHtml(label)}">?</button>`;
+  // Pull button: copies the corresponding section text from the primary team
+  // note (for the current hospital day) into this draft section as a starting point.
+  const pullButton = (fieldId, label) => `<button type="button" class="note-pull-button" data-pull-section="${escapeHtml(fieldId)}" data-tooltip="Pull from primary team note" aria-label="Pull ${escapeHtml(label)} from primary note">⤓</button>`;
 
   // Compact clinical-data sheet: vitals strip, pending + report-only rows, and
   // laboratory rows regrouped by source panel family. No pagination: every
@@ -501,7 +505,17 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     const visibility = draft.sectionVisibility || {};
     const isHP = draft.noteType === NOTE_TYPES.H_AND_P;
     const fields = draft.sections || {};
-    const helpFor = (key, label) => helpButton(key, label, guidanceFor(key));
+    const helpFor = (key, label) => `${helpButton(key, label, guidanceFor(key))}${pullButton(key, label)}`;
+
+    // Compact exam template selector for the Physical Exam section.
+    // Dropdown lists the 8 standard exams; selecting one inserts its
+    // skeleton into the physical exam text box.
+    const examTemplateSelector = () => {
+      const options = EXAM_TEMPLATE_IDS.map((id) =>
+        `<option value="${escapeHtml(id)}">${escapeHtml(EXAM_TEMPLATES[id].label)}</option>`
+      ).join("");
+      return `<span class="exam-template-picker"><label for="examTemplateSelect">Template:</label><select id="examTemplateSelect" data-exam-template-select><option value="">Select exam…</option>${options}</select><button type="button" class="ed-mini" data-action="insert-exam-template">Insert</button></span>`;
+    };
     const checklistTag = `<span class="ed-tag">from Checklist</span>`;
 
     const frontSections = isHP ? [
@@ -538,7 +552,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       <p class="ed-toolbar-note">One editor for the whole note — section labels included. Type <kbd>$</kbd> to pull a lab or vital into the note. Saving encrypts the draft without running de-identification.</p>
       <div class="note-editor" id="noteEditor" role="group" aria-label="Note editor">
         ${frontSections.join("")}
-        ${editorSection("Physical Exam", `${editorRegion("data-draft-section=\"physical_exam\"", draft.sections?.physical_exam, "Document your physical exam findings")}<div class="ed-sub"><span class="ed-sub-label">From checklist ${checklistTag}</span><div class="ed-readonly" data-checklist-finding-kind="exam">${checklistFindingsEditor(draft, "exam", "Complete the physical-exam checklist to populate this section.")}</div></div>`, { labelExtra: helpFor("physical_exam", "Physical Exam"), sectionAttr: ` data-checklist-finding-kind="exam"` })}
+        ${editorSection("Physical Exam", `${examTemplateSelector()}${editorRegion("data-draft-section=\"physical_exam\"", draft.sections?.physical_exam, "Document your physical exam findings")}<div class="ed-sub"><span class="ed-sub-label">From checklist ${checklistTag}</span><div class="ed-readonly" data-checklist-finding-kind="exam">${checklistFindingsEditor(draft, "exam", "Complete the physical-exam checklist to populate this section.")}</div></div>`, { labelExtra: helpFor("physical_exam", "Physical Exam"), sectionAttr: ` data-checklist-finding-kind="exam"` })}
         ${editorSection("Objective", objectiveBody, { labelExtra: helpFor("objective", "Objective") })}
         ${editorSection("Assessment", editorRegion("data-draft-assessment", draft.assessment, "Your concise synthesis"), { labelExtra: helpFor("assessment", "Assessment") })}
         ${editorSection("Plan", planBody, { labelExtra: `${helpFor("plan", "Plan")}<button type="button" class="ed-mini" data-action="add-plan-problem">${icon("plus")} Add problem</button>` })}
