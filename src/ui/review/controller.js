@@ -190,6 +190,7 @@ export function createReviewController(deps) {
   // Whether the Clinical Data panel is collapsed (user can focus on the note).
   // Local UI state only; survives re-renders.
   let clinicalDataCollapsed = false;
+  let clinicalDataScrollBeforeCollapse = 0;
 
   // Which Objective editor groups are collapsed (vitals, lab families, etc.).
   // Local UI state only; survives re-renders.
@@ -1713,14 +1714,15 @@ export function createReviewController(deps) {
       // True surgical toggle: both the rail and the full content are
       // always in the DOM (see renderDataExplorer). Flipping `hidden`
       // never destroys the search input, the data list, or their state.
-      // The panel itself is the scroller (overflow:auto), so save/restore
-      // its scrollTop across the toggle. Restore in rAF so the browser
-      // has laid out the restored content before we set scrollTop.
-      clinicalDataCollapsed = !clinicalDataCollapsed;
+      // The panel itself is the scroller (overflow:auto). Save its scrollTop
+      // when collapsing; restore it (in rAF, after layout) when expanding.
       const panel = target.closest(".review-data-panel");
       const rail = panel?.querySelector("[data-clinical-data-rail]");
       const full = panel?.querySelector("[data-clinical-data-full]");
-      const savedScroll = panel ? panel.scrollTop : 0;
+      if (!clinicalDataCollapsed && panel) {
+        clinicalDataScrollBeforeCollapse = panel.scrollTop;
+      }
+      clinicalDataCollapsed = !clinicalDataCollapsed;
       if (rail) rail.hidden = !clinicalDataCollapsed;
       if (full) full.hidden = clinicalDataCollapsed;
       panel?.classList.toggle("is-collapsed", clinicalDataCollapsed);
@@ -1728,10 +1730,13 @@ export function createReviewController(deps) {
       panel?.querySelectorAll('[data-action="toggle-clinical-data"]').forEach((btn) => {
         btn.setAttribute("aria-expanded", String(!clinicalDataCollapsed));
       });
-      if (panel && !clinicalDataCollapsed && typeof requestAnimationFrame !== "undefined") {
-        requestAnimationFrame(() => { panel.scrollTop = savedScroll; });
-      } else if (panel && !clinicalDataCollapsed) {
-        panel.scrollTop = savedScroll;
+      if (panel && !clinicalDataCollapsed) {
+        const restoreTo = clinicalDataScrollBeforeCollapse;
+        if (typeof requestAnimationFrame !== "undefined") {
+          requestAnimationFrame(() => { panel.scrollTop = restoreTo; });
+        } else {
+          panel.scrollTop = restoreTo;
+        }
       }
       return true;
     }
@@ -1860,6 +1865,10 @@ export function createReviewController(deps) {
       const panel = draftPanelNode();
       const list = panel?.querySelector(".plan-problem-list");
       if (list) {
+        // Save the editor scroll position — reordering nodes can shift
+        // content and the browser may adjust scroll unexpectedly.
+        const scroller = panel?.querySelector(".note-editor");
+        const savedScroll = scroller ? scroller.scrollTop : 0;
         // Reorder the live nodes to match the model order — a true DOM move.
         // No scrollIntoView: the user just clicked this card, it's already
         // in view, and forcing scroll resets the panel position.
@@ -1868,6 +1877,7 @@ export function createReviewController(deps) {
           if (node) list.appendChild(node);
         }
         renumberProblemCards(panel);
+        if (scroller) scroller.scrollTop = savedScroll;
       }
       return true;
     }
@@ -1911,6 +1921,8 @@ export function createReviewController(deps) {
       const box = problemCardEl(panel, problemId)?.querySelector(".ed-differentials");
       const node = box?.querySelector(`:scope > [data-differential-id="${escId(differentialId)}"]`);
       if (box && node) {
+        const scroller = panel?.querySelector(".note-editor");
+        const savedScroll = scroller ? scroller.scrollTop : 0;
         for (const id of newOrder) {
           const entry = box.querySelector(`:scope > [data-differential-id="${escId(id)}"]`);
           if (entry) box.appendChild(entry);
@@ -1920,7 +1932,8 @@ export function createReviewController(deps) {
           if (strong) strong.textContent = `#${i + 1}`;
         });
         // No scrollIntoView: the user just clicked this differential, it's
-        // already in view.
+        // already in view. Restore scroll in case reordering shifted content.
+        if (scroller) scroller.scrollTop = savedScroll;
       }
       return true;
     }
