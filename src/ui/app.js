@@ -1892,11 +1892,13 @@ async function handleClick(event) {
     if (action === "clinical-medication-page") updateClinicalMedicationPage(target.closest('[data-clinical-view="medications"]'), { direction: Number(target.dataset.direction || 0) });
     if (action === "select-daily-source-kind") {
       dailySourceController.selectSourceKind("daily", target.dataset.sourceKind || DEFAULT_DAILY_SOURCE_KIND);
-      renderDaily();
+      // Surgical: selectSourceKind already updates the data model, toggles
+      // button states, and refreshes the preview panel. No full re-render
+      // needed — renderDaily() would destroy scroll position.
     }
     if (action === "select-admission-source-kind") {
       dailySourceController.selectSourceKind("admission", target.dataset.sourceKind || DEFAULT_DAILY_SOURCE_KIND);
-      renderDaily();
+      // Surgical: see above.
     }
     if (dailySourceController.handleStructuredNoteAction(target)) return;
     if (action === "move-section-up")
