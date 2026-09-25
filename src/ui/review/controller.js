@@ -628,7 +628,17 @@ export function createReviewController(deps) {
     let draft = current.draft;
     const existing = sourceSectionText(draft?.sections?.physical_exam).trim();
     const combined = existing ? `${existing}\n\n${skeleton}` : skeleton;
-    draft = updateNoteSection(draft, "physical_exam", combined);
+    // physical_exam is stored in sections but not in NOTE_TYPE_FIELDS;
+    // update it directly to avoid the field validation throw.
+    const timestamp = new Date().toISOString();
+    draft = {
+      ...draft,
+      sections: {
+        ...draft.sections,
+        physical_exam: { deidentifiedText: combined, createdAt: timestamp, updatedAt: timestamp }
+      },
+      updatedAt: timestamp
+    };
     deps.app.noteDraftSessions.set(packetKey(current.packet.id), draft);
     deps.setStatus(`Inserted ${templateId} exam template.`);
     deps.render();

@@ -506,6 +506,9 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     const isHP = draft.noteType === NOTE_TYPES.H_AND_P;
     const fields = draft.sections || {};
     const helpFor = (key, label) => `${helpButton(key, label, guidanceFor(key))}${pullButton(key, label)}`;
+    // Medications for progress notes are checkbox-selected from Clinical Data,
+    // not free text — no pull button (there's no text field to pull into).
+    const helpOnly = (key, label) => helpButton(key, label, guidanceFor(key));
 
     // Compact exam template selector for the Physical Exam section.
     // Dropdown lists the 8 standard exams; selecting one inserts its
@@ -557,7 +560,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         ${editorSection("Assessment", editorRegion("data-draft-assessment", draft.assessment, "Your concise synthesis"), { labelExtra: helpFor("assessment", "Assessment") })}
         ${editorSection("Plan", planBody, { labelExtra: `${helpFor("plan", "Plan")}<button type="button" class="ed-mini" data-action="add-plan-problem">${icon("plus")} Add problem</button>` })}
         ${CLOSING_SECTION_FIELDS.map((field) => editorSection(field.label, editorRegion(`data-draft-closing="${field.id}"`, draft.closing?.[field.id]), { labelExtra: `${helpFor(field.id, field.label)}${optionalSectionToggle(field.id, visibility)}` })).join("")}
-        ${editorSection("Medications", renderMedicationsEditor(draft), { labelExtra: helpFor("medications", "Medications") })}
+        ${editorSection("Medications", renderMedicationsEditor(draft), { labelExtra: helpOnly("medications", "Medications") })}
       </div>
     </section>`;
   }

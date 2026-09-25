@@ -961,12 +961,16 @@ function render() {
   // Preserve scroll position of the active view across re-renders.
   // Buttons like "De-identify & save" or "Save to draft" trigger full
   // re-renders; without this the view jumps back to the top.
+  // Only restore if the view didn't change — a real navigation should
+  // start at the top, not inherit the previous view's scroll position.
   const activeView = document.querySelector(".view.active");
+  const activeViewId = activeView?.id || "";
   const scrollTop = activeView?.scrollTop || 0;
   const scrollLeft = activeView?.scrollLeft || 0;
   const restoreScroll = () => {
     const view = document.querySelector(".view.active");
-    if (view) {
+    // Only restore if we're still on the same view that we captured from.
+    if (view && view.id === activeViewId) {
       view.scrollTop = scrollTop;
       view.scrollLeft = scrollLeft;
     }
