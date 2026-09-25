@@ -155,6 +155,7 @@ export function createReviewController(deps) {
   };
   const isDefaultOn = (candidate) =>
     isCoreVital(candidate) || candidate?.noteGroupKey === "medications" ||
+    candidate?.pendingLab === true ||
     (candidate?.kind === "diagnostic_result" && candidate?.needsFreeText === true);
 
   function selectionInputFor(candidate) {
@@ -289,6 +290,24 @@ export function createReviewController(deps) {
     };
   }
 
+  // Preserve scroll position across re-renders: selecting a vital or toggling
+  // a candidate must not yank the user back to the top of the page.
+  // `.view` owns route scrolling in this app (window.scrollY stays zero), and
+  // replacing innerHTML briefly empties the scrollable area, which clamps the
+  // view's scrollTop to zero — so capture the real scroll owner, not window.
+  // Guard for non-browser environments (tests).
+  function withPreservedViewScroll(container, update) {
+    const canPreserve = typeof window !== "undefined" && typeof document !== "undefined";
+    const view = canPreserve ? container?.closest?.(".view") : null;
+    const top = view ? view.scrollTop : 0;
+    const left = view ? view.scrollLeft : 0;
+    update();
+    if (view) {
+      view.scrollTop = top;
+      view.scrollLeft = left;
+    }
+  }
+
   // Patch only the clinical-data sheet (list + match summary) so typing in
   // the search field or toggling a lab-family collapse does not lose focus.
   function patchDataList() {
@@ -302,28 +321,22 @@ export function createReviewController(deps) {
     const wrapper = deps.byId("reviewContent")?.querySelector(".review-data-list");
     const summary = deps.byId("reviewContent")?.querySelector(".review-filter-summary");
     if (summary && nextSummary) summary.textContent = nextSummary.textContent;
-    if (wrapper && nextList) wrapper.replaceChildren(...nextList.childNodes);
+    if (wrapper && nextList) withPreservedViewScroll(wrapper, () => wrapper.replaceChildren(...nextList.childNodes));
   }
 
   function render() {
     const current = model();
     const container = deps.byId("reviewContent");
-    // Preserve scroll position across re-renders: selecting a vital or toggling
-    // a candidate must not yank the user back to the top of the page.
-    // Guard for non-browser environments (tests).
     const canPreserveScroll = typeof window !== "undefined" && typeof document !== "undefined";
-    const scrollX = canPreserveScroll ? window.scrollX : 0;
-    const scrollY = canPreserveScroll ? window.scrollY : 0;
     const activeId = canPreserveScroll ? (document.activeElement?.id || null) : null;
-    container.innerHTML = current.patient
-      ? deps.presentation.renderReview(reviewViewModel(current))
-      : deps.patientRequiredMessage();
-    if (canPreserveScroll) {
-      window.scrollTo(scrollX, scrollY);
-      if (activeId) {
-        const restored = document.getElementById(activeId);
-        if (restored) restored.focus({ preventScroll: true });
-      }
+    withPreservedViewScroll(container, () => {
+      container.innerHTML = current.patient
+        ? deps.presentation.renderReview(reviewViewModel(current))
+        : deps.patientRequiredMessage();
+    });
+    if (canPreserveScroll && activeId) {
+      const restored = document.getElementById(activeId);
+      if (restored) restored.focus({ preventScroll: true });
     }
   }
 

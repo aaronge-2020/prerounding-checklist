@@ -32,6 +32,8 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return String(candidate.status || candidate.latest?.status || "unknown").toLowerCase();
   }
 
+  // Vitals render as dense lab-style rows (checkbox, name, value, meta) —
+  // the same compact treatment as the laboratory rows below them.
   function renderVitalChip(candidate, selected, query) {
     if (!matchesQuery(candidate.searchText, query)) return "";
     const displayName = displayVitalName(candidate.name);
@@ -43,19 +45,18 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         : "");
     const trend = compactVitalTrendLine(candidate.displayTrend);
     const when = [candidate.latest?.dayLabel, candidate.latest?.timestamp].filter(Boolean).join(" · ");
+    const meta = [trend, stats, when].filter(Boolean).join(" · ");
     // A temperature whose source never stated a unit has no checkbox: the
     // only way into the note is explicit °F/°C confirmation in the banner.
     const selectionControl = candidate.unitUnmarked
       ? `<span class="vital-chip-confirm-hint" title="Confirm the unit before adding this temperature to the note">confirm unit ↓</span>`
-      : `<input type="checkbox" data-objective-selection-id="${escapeHtml(candidate.id)}" aria-label="Include ${escapeHtml(candidate.name)} in the note" ${selected ? "checked" : ""}>`;
-    return `<label class="vital-chip ${selected ? "is-selected" : ""} ${candidate.unitUnmarked ? "is-unit-unmarked" : ""}" data-review-candidate="${escapeHtml(candidate.id)}" data-clinical-emphasis="${escapeHtml(tone || "unknown")}">
+      : `<label class="lab-row-check"><input type="checkbox" data-objective-selection-id="${escapeHtml(candidate.id)}" aria-label="Include ${escapeHtml(candidate.name)} in the note" ${selected ? "checked" : ""}></label>`;
+    return `<div class="lab-row vital-row ${selected ? "is-selected" : ""} ${candidate.unitUnmarked ? "is-unit-unmarked" : ""}" data-review-candidate="${escapeHtml(candidate.id)}" data-clinical-emphasis="${escapeHtml(tone || "unknown")}">
       ${selectionControl}
-      <span class="vital-chip-name">${escapeHtml(displayName)}${flagPill(tone)}</span>
-      <span class="vital-chip-value"><strong>${escapeHtml(value)}</strong>${candidate.unitUnmarked ? ` <span class="unit-unmarked-flag" title="The source never stated this unit">unit not stated</span>` : ""}</span>
-      ${when ? `<span class="vital-chip-when">${escapeHtml(when)}</span>` : ""}
-      ${trend ? `<span class="vital-chip-trend">${escapeHtml(trend)}</span>` : ""}
-      ${stats ? `<span class="vital-chip-stats">${escapeHtml(stats)}</span>` : ""}
-    </label>`;
+      <span class="lab-row-name">${escapeHtml(displayName)}${flagPill(tone)}</span>
+      <span class="lab-row-value"><strong>${escapeHtml(value)}</strong>${candidate.unitUnmarked ? ` <span class="unit-unmarked-flag" title="The source never stated this unit">unit not stated</span>` : ""}</span>
+      ${meta ? `<span class="lab-row-meta">${escapeHtml(meta)}</span>` : ""}
+    </div>`;
   }
 
   function renderTemperatureUnitBanner(vitals) {
@@ -108,7 +109,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       <div class="compact-section-heading"><h3>Vital signs</h3><span class="compact-section-meta">${chips.length} saved · included automatically</span></div>
       ${renderTemperatureUnitBanner(structured)}
       <p class="compact-section-note">All vitals flow into the note by default. Uncheck any row to leave it out.</p>
-      ${chips.length ? `<div class="vital-strip">${chips.join("")}</div>` : ""}
+      ${chips.length ? `<div class="lab-rows vital-rows">${chips.join("")}</div>` : ""}
       ${narratives}
     </section>`;
   }
@@ -393,7 +394,14 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         // One clean line per item: "BP 92/48", "WBC 9" — easy to scan.
         // Vitals also get subtle 24h range and mean as secondary text.
         // Edited blocks show their edited text; otherwise use clean label+detail.
-        const lines = group.blocks
+        // A group-level text override replaces the generated lines entirely;
+        // the member blocks underneath keep their identities.
+        const groupOverride = String(draft.objective?.groupEdits?.[group.key] || "").trim();
+        const lines = groupOverride
+          ? groupOverride.split("\n").map((line) =>
+              line.trim() ? `<div class="ed-vital-line">${editorHtml(line.trim())}</div>` : ""
+            ).filter(Boolean).join("")
+          : group.blocks
           .map((block) => {
             if (block.state === "edited" && block.editedText) {
               // Multi-line edited text: split into per-line divs.

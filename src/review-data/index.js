@@ -412,7 +412,12 @@ function flaggedItemSelectionCandidate(kind, item) {
     panelName: item.panelName,
     panelId: item.panelId,
     insertionText,
-    searchText: clean([name, item.panelName, item.contextLabel, item.sourceLabel, kind === "report" ? "report rpt" : "pending", item.pendingLabel].join(" ")).toLocaleLowerCase("en-US")
+    searchText: clean([name, item.panelName, item.contextLabel, item.sourceLabel, kind === "report" ? "report rpt" : "pending", item.pendingLabel].join(" ")).toLocaleLowerCase("en-US"),
+    // Pending results auto-select into their own "Pending labs" group at the
+    // bottom of Objective so nothing still in process is silently dropped.
+    ...(kind === "pending"
+      ? { pendingLab: true, noteGroupKey: "pending-labs", noteGroupLabel: "Pending labs" }
+      : {})
   };
   candidate.fingerprint = fingerprint({ id: candidate.id, insertionText });
   return candidate;

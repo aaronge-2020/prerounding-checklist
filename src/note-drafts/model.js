@@ -257,7 +257,12 @@ export function normalizeNoteDraft(draft, { now = timestampNow, idFactory = loca
       // render; this list stops it from resurrecting deselected rows.
       deselectedIds: (Array.isArray(draft?.objective?.deselectedIds) ? draft.objective.deselectedIds : [])
         .map((id) => String(id).trim())
-        .filter(Boolean)
+        .filter(Boolean),
+      // Group-level text overrides from the inline Objective editor, keyed by
+      // editor group key. A group edit replaces the generated lines for
+      // display and the final note, but member blocks keep their identities
+      // so individual selection, staleness, and reconciliation keep working.
+      groupEdits: normalizeGroupEdits(draft?.objective?.groupEdits)
     },
     sectionVisibility: normalizeSectionVisibility(draft?.sectionVisibility),
     checklistFindings: {
@@ -319,6 +324,18 @@ export function changeNoteDraftType(draft, noteType, { now = timestampNow } = {}
     sections: mappedSections,
     updatedAt: timestamp
   }, { now: () => timestamp });
+}
+
+function normalizeGroupEdits(value) {
+  const out = {};
+  if (value && typeof value === "object") {
+    for (const [key, val] of Object.entries(value)) {
+      const k = text(key).trim();
+      const v = text(val).trim();
+      if (k && v) out[k] = v;
+    }
+  }
+  return out;
 }
 
 function touch(draft, changes, now) {
@@ -473,16 +490,21 @@ export function selectObjectiveBlock(draft, selection, { now = timestampNow } = 
   const existing = draft.objective.selectedBlocks.find((block) => block.selectionId === input.selectionId);
   if (existing) return reconcileObjectiveBlock(draft, input, { now });
   const block = normalizeObjectiveBlock({ ...input, editedText: input.generatedText, state: "synced" });
-  return touch(draft, {
-    objective: { ...draft.objective, selectedBlocks: [...draft.objective.selectedBlocks, block] }
+  // A new member changes what the group holds: any group-level text override
+  // described the old membership and no longer applies.
+  const next = withoutGroupEdit(draft, objectiveGroupKeyFor(block));
+  return touch(next, {
+    objective: { ...next.objective, selectedBlocks: [...next.objective.selectedBlocks, block] }
   }, now);
 }
 
 export function deselectObjectiveBlock(draft, selectionId, { now = timestampNow } = {}) {
-  return touch(draft, {
+  const block = draft.objective.selectedBlocks.find((b) => b.selectionId === selectionId);
+  const next = block ? withoutGroupEdit(draft, objectiveGroupKeyFor(block)) : draft;
+  return touch(next, {
     objective: {
-      ...draft.objective,
-      selectedBlocks: draft.objective.selectedBlocks.filter((block) => block.selectionId !== selectionId)
+      ...next.objective,
+      selectedBlocks: next.objective.selectedBlocks.filter((b) => b.selectionId !== selectionId)
     }
   }, now);
 }
@@ -578,9 +600,51 @@ export function keepObjectiveBlock(draft, selectionId, { now = timestampNow } = 
 export function objectiveGroupKeyFor(block) {
   const groupKey = text(block?.noteGroupKey);
   if (groupKey === "vitals") return "vitals";
+  if (groupKey === "pending-labs") return "pending-labs";
   if (groupKey.startsWith("lab:")) return groupKey;
   if (groupKey.startsWith("result:")) return groupKey;
   return text(block?.selectionId);
+}
+
+// The plain text the inline Objective editor shows for a group, one line per
+// member, including the secondary hints (report prompts, vital ranges). Used
+// to tell a real group edit apart from untouched text.
+export function objectiveGroupRenderedText(draft, groupKey) {
+  const key = text(groupKey);
+  const isVitals = key === "vitals";
+  const lines = [];
+  for (const block of draft.objective?.selectedBlocks || []) {
+    if (objectiveGroupKeyFor(block) !== key) continue;
+    if (block.state === "edited" && block.editedText) {
+      String(block.editedText).split("\n").map((line) => line.trim()).filter(Boolean).forEach((line) => lines.push(line));
+      continue;
+    }
+    const label = String(block.noteLabel || "").trim();
+    const detail = String(block.noteDetail || "").trim();
+    let line = label && detail ? `${label} ${detail}` : (label || detail || String(block.generatedText || "").trim());
+    if (line) {
+      if (block.needsFreeText && block.state !== "edited") line += " ⚠️ paste report text";
+      else if (isVitals) {
+        const range = String(block.noteRange || "").trim();
+        const mean = String(block.noteMean || "").trim();
+        const secondary = [];
+        if (range) secondary.push(`24h ${range}`);
+        if (mean) secondary.push(`mean ${mean}`);
+        if (secondary.length) line += ` ${secondary.join(" · ")}`;
+      }
+      lines.push(line.trim());
+    }
+  }
+  return lines.join("\n");
+}
+
+// Drop the group-level override for one editor group key.
+function withoutGroupEdit(draft, groupKey) {
+  const key = text(groupKey);
+  if (!key || !draft.objective?.groupEdits?.[key]) return draft;
+  const groupEdits = { ...draft.objective.groupEdits };
+  delete groupEdits[key];
+  return { ...draft, objective: { ...draft.objective, groupEdits } };
 }
 
 export function objectiveEditorGroups(draft) {
@@ -596,45 +660,48 @@ export function objectiveEditorGroups(draft) {
         key,
         label: key === "vitals"
           ? "Vital signs"
-          : isLab
-            ? text(block.noteGroupLabel) || key.slice(4)
-            : isResult
-              ? text(block.noteGroupLabel) || "Other results"
-              : "",
+          : key === "pending-labs"
+            ? "Pending labs"
+            : isLab
+              ? text(block.noteGroupLabel) || key.slice(4)
+              : isResult
+                ? text(block.noteGroupLabel) || "Other results"
+                : "",
         blocks: []
       });
       groups.push(byKey.get(key));
     }
     byKey.get(key).blocks.push(block);
   }
+  // Pending labs always render last: they are follow-up items, not results.
+  groups.sort((a, b) => (a.key === "pending-labs" ? 1 : 0) - (b.key === "pending-labs" ? 1 : 0));
   return groups;
 }
 
-// Editing a group's combined inline text collapses its member blocks into a
-// single block holding that text: the group is now the student's own words,
-// and source reconciliation treats it like any other edited block.
+// Editing a group's combined inline text stores a group-level override: the
+// student's own words replace the generated lines for display and the final
+// note, but the member blocks keep their identities, so individual
+// selection, staleness, and source reconciliation keep working. Clearing the
+// text removes the group (like the × button). Changing the group's
+// membership — adding, removing, or refreshing a member — drops the
+// override, because it described a different set of members.
 export function editObjectiveGroup(draft, groupKey, editedText, { now = timestampNow } = {}) {
   const key = text(groupKey);
   if (!key) return draft;
   const members = (draft.objective?.selectedBlocks || []).filter((block) => objectiveGroupKeyFor(block) === key);
   if (!members.length) return draft;
   const nextText = text(editedText);
-  if (members.length === 1) return editObjectiveBlock(draft, members[0].selectionId, nextText, { now });
-  const [first, ...rest] = members;
-  const restIds = new Set(rest.map((block) => block.selectionId));
-  const collapsed = normalizeObjectiveBlock({
-    ...first,
-    editedText: nextText,
-    state: first.state === "stale" ? "stale" : "edited"
-  });
-  return touch(draft, {
-    objective: {
-      ...draft.objective,
-      selectedBlocks: draft.objective.selectedBlocks.map((block) =>
-        block.selectionId === first.selectionId ? collapsed : block
-      ).filter((block) => !restIds.has(block.selectionId))
-    }
-  }, now);
+  if (!nextText.trim()) return removeObjectiveGroup(draft, key, { now });
+  const normalizeLines = (value) => String(value).split("\n").map((line) => line.trim()).filter(Boolean).join("\n");
+  const groupEdits = { ...(draft.objective?.groupEdits || {}) };
+  if (normalizeLines(nextText) === normalizeLines(objectiveGroupRenderedText(draft, key))) {
+    // Untouched text: no override needed.
+    if (!(key in groupEdits)) return draft;
+    delete groupEdits[key];
+  } else {
+    groupEdits[key] = nextText.trim();
+  }
+  return touch(draft, { objective: { ...draft.objective, groupEdits } }, now);
 }
 
 export function removeObjectiveGroup(draft, groupKey, { now = timestampNow } = {}) {
@@ -646,10 +713,11 @@ export function removeObjectiveGroup(draft, groupKey, { now = timestampNow } = {
       .map((block) => block.selectionId)
   );
   if (!ids.size) return draft;
-  return touch(draft, {
+  const next = withoutGroupEdit(draft, key);
+  return touch(next, {
     objective: {
-      ...draft.objective,
-      selectedBlocks: draft.objective.selectedBlocks.filter((block) => !ids.has(block.selectionId))
+      ...next.objective,
+      selectedBlocks: next.objective.selectedBlocks.filter((block) => !ids.has(block.selectionId))
     }
   }, now);
 }
@@ -657,7 +725,9 @@ export function removeObjectiveGroup(draft, groupKey, { now = timestampNow } = {
 export function refreshObjectiveGroup(draft, groupKey, { now = timestampNow } = {}) {
   const key = text(groupKey);
   if (!key) return draft;
-  let next = draft;
+  // Refreshed members carry new source text: a group-level override written
+  // against the old text no longer applies.
+  let next = withoutGroupEdit(draft, key);
   for (const block of draft.objective?.selectedBlocks || []) {
     if (objectiveGroupKeyFor(block) === key && block.state === "stale") {
       next = refreshObjectiveBlock(next, block.selectionId, { now });

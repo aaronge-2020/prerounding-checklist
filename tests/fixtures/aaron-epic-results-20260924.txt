@@ -1,0 +1,147 @@
+09/23/26 10:57
+WBC: 5.2
+Hemoglobin: 14.8
+Hematocrit (HCT): 43.7
+Platelets: 133 (L)
+Reticulated Platelets%: 7.5
+Neutros Abs: 2.56
+Neutros %: 49.2
+Lymphocytes Absolute: 1.84
+Lymphs %: 35.5
+Monocytes Absolute: 0.53
+Monos %: 10.2
+Basophil Abs: 0.05
+Basophil %: 1.0
+Eosinophils Absolute: 0.19
+Eos %: 3.7
+Nucleated RBC Abs: 0.00
+Nucleated RBC %: 0.0
+MCH: 30.4
+MCHC: 33.9
+MCV: 89.7
+MPV: 11.1
+RBC: 4.87
+RDW: 13.1
+Immature Grans (Abs): 0.02
+Immature Grans %: 0.4
+Sodium: 139
+Potassium: 3.8
+Chloride: 108 (H)
+CO2 Total: 19 (L)
+Anion Gap: 12
+BUN: 23 (H)
+Creatinine: 1.6 (H)
+EGFR: 53 (L)
+Glucose, Bld: 125 (H)
+Calcium: 9.6
+Magnesium: 2.2
+Total Protein: 7.4
+Albumin: 4.7
+Globulin: 2.7
+AST: 28
+ALT: 29
+Bilirubin Total: 1.7 (H)
+Alk Phos: 86
+Cholesterol: 125
+Triglycerides: 120
+HDL: 33 (L)
+LDL Calculated: 68
+Protime: 17.8 (H)
+INR: 1.5
+PTT: 34.2
+
+09/23/26 11:01
+POC Glucose: 106 !
+
+09/23/26 11:50
+CTA Head-Neck with Perfusion (Brain Attack): Rpt
+
+09/23/26 12:59
+EKG 12 Lead: Rpt
+Ventricular Rate: 59
+Atrial Rate: 59
+QRS Duration: 98
+Q-T Interval: 416
+QTC Calculation (Bazett): 411
+R Axis: -25
+T Axis: 114
+P-R Interval: 216
+P Axis: 30
+
+09/23/26 13:05
+XR Chest AP (Portable): Rpt
+
+09/23/26 16:26
+EF ADEcho_222: 20-25
+IVS/LVPW: 0.97
+LAV(MOD-sp2): 83.6
+LAV(MOD-sp4): 36.1
+LV mass(C)d: 337.9
+LV mass(C)dI: 130.3
+LVIDd: 6.9
+LVIDs: 6.5
+LVOT area: 4.4
+LVOT area (M): 4.5
+LVOT diam: 2.4
+LVPWd: 1.1
+RA A4Cs_phl : 12.8
+CAR Echo 2D Complete w Contrast: Rpt
+
+09/23/26 21:52
+MR Brain W/O Con: Rpt
+
+09/24/26 04:13
+WBC: 6.5
+Hemoglobin: 14.6
+Hematocrit (HCT): 42.2
+Platelets: 124 (L)
+Reticulated Platelets%: 6.2
+Neutros Abs: 2.92
+Neutros %: 44.9
+Lymphocytes Absolute: 2.61
+Lymphs %: 40.0
+Monocytes Absolute: 0.62
+Monos %: 9.5
+Basophil Abs: 0.08
+Basophil %: 1.2
+Eosinophils Absolute: 0.27
+Eos %: 4.1
+Nucleated RBC Abs: 0.00
+Nucleated RBC %: 0.0
+MCH: 31.1
+MCHC: 34.6
+MCV: 89.8
+MPV: 11.1
+RBC: 4.70
+RDW: 13.2
+Immature Grans (Abs): 0.02
+Immature Grans %: 0.3
+Sodium: 137
+Potassium: 4.3
+Chloride: 107
+CO2 Total: 19 (L)
+Anion Gap: 11
+BUN: 28 (H)
+Creatinine: 1.6 (H)
+EGFR: 53 (L)
+Glucose, Bld: 115 (H)
+Calcium: 9.5
+Magnesium: 2.2
+Phosphorus: 4.7 (H)
+Total Protein: 7.1
+Albumin: 4.5
+Globulin: 2.6
+AST: 27
+ALT: 28
+Bilirubin Total: 1.3 (H)
+Alk Phos: 88
+Antithrombin III Activity: 108
+TSH: 3.350
+Factor V Leiden Mutation: Rpt (IP)
+
+
+(L): Data is abnormally low
+(H): Data is abnormally high
+!: Data is abnormal
+(IP): In Process
+Rpt: View report in Results Review for more information

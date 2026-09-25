@@ -11173,6 +11173,13 @@ body.vault-locked .vault-access {
   box-shadow: inset 0 0 0 1.5px var(--accent);
 }
 
+/* A temperature whose unit was never stated cannot be checked into the note
+   until the student confirms °F/°C in the banner above. */
+.lab-row.is-unit-unmarked {
+  background: #fffbeb;
+  box-shadow: inset 0 0 0 1.5px #d97706;
+}
+
 .lab-row-check {
   display: inline-flex;
   margin: 0;

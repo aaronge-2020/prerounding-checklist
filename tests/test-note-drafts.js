@@ -21,6 +21,7 @@ import {
   normalizeNoteDraft,
   objectiveEditorGroups,
   objectiveGroupKeyFor,
+  objectiveGroupRenderedText,
   refreshObjectiveGroup,
   removeObjectiveGroup,
   removeObjectiveGroupWithMemory,
@@ -610,17 +611,63 @@ const options = { now: fixedNow, idFactory: fixedId };
   assert.equal(groups[1].blocks.length, 2);
   assert.equal(objectiveGroupKeyFor({ noteGroupKey: "vitals" }), "vitals");
   assert.equal(objectiveGroupKeyFor({ noteGroupKey: "lab:cmp" }), "lab:cmp");
+  assert.equal(objectiveGroupKeyFor({ noteGroupKey: "pending-labs" }), "pending-labs");
   assert.equal(objectiveGroupKeyFor({ noteGroupKey: "", selectionId: "abc" }), "abc");
 
-  // Editing a group's combined text collapses its members into one block.
+  // Pending labs group together under their own label and always sort last.
+  const pendingDraft = normalizeNoteDraft({
+    noteType: "progress",
+    objective: {
+      selectedBlocks: [
+        mkBlock("p1", "pending-labs", "Factor V Leiden Mutation: In Process"),
+        mkBlock("v1", "vitals", "BP 120/80"),
+        mkBlock("l1", "lab:cbc", "WBC 12.3"),
+        mkBlock("p2", "pending-labs", "Magnesium: Pending")
+      ]
+    }
+  }, { now: fixedNow });
+  const pendingGroups = objectiveEditorGroups(pendingDraft);
+  assert.equal(pendingGroups.length, 3);
+  assert.equal(pendingGroups[2].key, "pending-labs", "pending labs must render last");
+  assert.equal(pendingGroups[2].label, "Pending labs");
+  assert.equal(pendingGroups[2].blocks.length, 2);
+
+  // Editing a group's combined text stores a group-level override: the
+  // student's words replace the generated lines, but every member block
+  // keeps its identity (no collapsing, no deleted selections).
   const edited = editObjectiveGroup(draft, "vitals", "BP 120/80; HR 72; SpO2 96% on RA", { now: fixedNow });
   const vitalsBlocks = edited.objective.selectedBlocks.filter((b) => b.noteGroupKey === "vitals");
-  assert.equal(vitalsBlocks.length, 1);
-  assert.equal(vitalsBlocks[0].editedText, "BP 120/80; HR 72; SpO2 96% on RA");
-  assert.equal(vitalsBlocks[0].state, "edited");
-  assert.equal(edited.objective.selectedBlocks.length, 3); // 1 vitals + 2 labs
-  // The collapsed group still renders as one group.
+  assert.equal(vitalsBlocks.length, 3, "group edit must not delete member blocks");
+  assert.deepEqual(
+    vitalsBlocks.map((b) => b.selectionId).sort(),
+    ["v1", "v2", "v3"],
+    "member identities survive a group edit"
+  );
+  assert.equal(edited.objective.groupEdits.vitals, "BP 120/80; HR 72; SpO2 96% on RA");
+  assert.equal(edited.objective.selectedBlocks.length, 5, "no blocks added or removed");
+  // The edited group still renders as one group.
   assert.equal(objectiveEditorGroups(edited).length, 2);
+  // The final note shows the student's words for that group.
+  assert.match(renderFinalNotePlainText(edited), /BP 120\/80; HR 72; SpO2 96% on RA/);
+  assert.doesNotMatch(renderFinalNotePlainText(edited), /BP 120\/80\n/);
+  // Saving untouched text stores no override.
+  const untouched = editObjectiveGroup(draft, "vitals", objectiveGroupRenderedText(draft, "vitals"), { now: fixedNow });
+  assert.deepEqual(untouched.objective.groupEdits, {}, "untouched text must not create an override");
+  // Adding a member drops the override: it described the old membership.
+  const added = selectObjectiveBlock(edited, {
+    selectionId: "v4", sourceFingerprint: "fp", generatedText: "Temp 98.6 F",
+    kind: "vital_sign", noteGroupKey: "vitals", noteLabel: "Temp", noteDetail: "98.6 F"
+  }, { now: fixedNow });
+  assert.deepEqual(added.objective.groupEdits, {}, "adding a member clears the group override");
+  assert.equal(added.objective.selectedBlocks.filter((b) => b.noteGroupKey === "vitals").length, 4);
+  // Removing a member drops the override too.
+  const deselected = deselectObjectiveBlock(edited, "v3", { now: fixedNow });
+  assert.deepEqual(deselected.objective.groupEdits, {}, "removing a member clears the group override");
+  assert.equal(deselected.objective.selectedBlocks.filter((b) => b.noteGroupKey === "vitals").length, 2);
+  // Clearing the group's text removes the group, like the × button.
+  const cleared = editObjectiveGroup(draft, "vitals", "   ", { now: fixedNow });
+  assert.equal(cleared.objective.selectedBlocks.filter((b) => b.noteGroupKey === "vitals").length, 0);
+  assert.equal(cleared.objective.selectedBlocks.length, 2); // only the labs remain
 
   // Removing a group drops every member block.
   const removed = removeObjectiveGroup(draft, "lab:cbc", { now: fixedNow });

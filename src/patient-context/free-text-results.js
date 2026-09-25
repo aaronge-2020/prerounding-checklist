@@ -59,9 +59,10 @@ const FREE_TEXT_LABEL_PATTERNS = [
 const PLACEHOLDER_VALUE_PATTERNS = [
   // Epic result statuses — the report text is behind a link, not in the paste
   /^(?:final|preliminary|corrected|amended|addendum|pending|in[\s-]?process|in[\s-]?progress|collected|received|ordered|scheduled|cancelled|canceled|complete[ds]?|completed|verified|signed|resulted| resulted|released|posted|see[\s-]?report|see[\s-]?note|see[\s-]?scanned|see[\s-]?addendum|available)\b/i,
-  // Short all-caps status codes like "RCT", "R*T", "F", "P" — placeholder,
-  // not report text. Real interpretations are never 1-4 bare capitals.
-  /^[A-Z*]{1,4}$/,
+  // Short status codes like "RCT", "R*T", "F", "P" — placeholder, not report
+  // text. Real interpretations are never 1-4 bare letters. Case-insensitive
+  // because Epic writes its report indicator as mixed-case "Rpt".
+  /^[A-Za-z*]{1,4}$/,
   // A bare date/datetime is a collection stamp, not a result
   /^\d{1,2}\/\d{1,2}\/\d{2,4}(?:\s+\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M?)?)?$/,
   /^\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2}(:\d{2})?)?$/,
@@ -82,8 +83,10 @@ export function isFreeTextResultLabel(label) {
 // True when the pasted value looks like a status/placeholder rather than
 // actual report content. Conservative: real results like "Negative" or
 // "No growth to date" do NOT match — only statuses, short codes, and dates.
+// A trailing Epic flag such as " (IP)" or " [H]" describes result status, so
+// it is stripped before testing: "Rpt (IP)" is still just a placeholder.
 export function isPlaceholderResultValue(value) {
-  const text = compact(value);
+  const text = compact(value).replace(/\s*[\(\[]\s*[A-Za-z]{1,4}\s*[\)\]]$/, "");
   if (!text) return true;
   return PLACEHOLDER_VALUE_PATTERNS.some((pattern) => pattern.test(text));
 }
@@ -108,7 +111,7 @@ export function needsFreeTextResultText(label, text) {
 
 export function freeTextResultCategory(label) {
   const text = compact(label);
-  if (/\b(?:ct|cta|mri|mra|cxr|xr|x-?ray|us|ultrasound|echo|tte|tee|pet|kub|dexa|doppler|nuclear|mammogram)\b/i.test(text)) return "imaging";
+  if (/\b(?:ct|cta|mr|mri|mra|cxr|xr|x-?ray|us|ultrasound|echo|tte|tee|pet|kub|dexa|doppler|nuclear|mammogram)\b/i.test(text)) return "imaging";
   if (/\bcultures?\b/i.test(text) || /^(?:blood|sputum|urine|wound|csf|stool)/i.test(text)) return "microbiology";
   if (/\bpath(?:ology)?\b|\bbiopsy\b|\bcytology\b|\bfna\b/i.test(text)) return "pathology";
   return "other";

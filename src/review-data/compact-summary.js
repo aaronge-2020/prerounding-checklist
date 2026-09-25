@@ -21,7 +21,7 @@ function normalizedFlag(value) {
   return cleanText(value).toUpperCase();
 }
 
-const REPORT_VALUE_PATTERN = /^rpt(?:\s*\((?:ip|p)\))?$/i;
+const REPORT_VALUE_PATTERN = /^rpt$/i;
 
 // Values that explicitly mean "no result yet". Deliberately narrow: numeric
 // placeholders such as "see comment" or "TNP" are not pending.
@@ -33,7 +33,12 @@ const PENDING_FLAG_LABELS = {
 };
 
 export function isReportResult(result) {
-  return REPORT_VALUE_PATTERN.test(cleanText(result?.value));
+  if (!REPORT_VALUE_PATTERN.test(cleanText(result?.value))) return false;
+  // "Rpt" with an explicit in-process/pending flag means the report has not
+  // resulted yet — it is pending, not a filed report. (The parser stores the
+  // flag separately from the value, so check both.)
+  const flag = normalizedFlag(result?.flag);
+  return flag !== "IP" && flag !== "P";
 }
 
 export function pendingStatusLabel(result) {
@@ -42,7 +47,8 @@ export function pendingStatusLabel(result) {
   if (flagLabel) return flagLabel;
   const value = cleanText(result.value);
   // A report placeholder that carries its own in-process marker ("Rpt (IP)")
-  // keeps the badge inside the reports section.
+  // is pending, not a filed report — the badge travels with it to the
+  // pending section.
   const reportMarker = value.match(/^rpt\s*\((ip|p)\)$/i);
   if (reportMarker) return reportMarker[1].toLowerCase() === "ip" ? "In Process" : "Pending";
   if (PENDING_VALUE_PATTERN.test(value)) {
@@ -52,9 +58,9 @@ export function pendingStatusLabel(result) {
 }
 
 export function isPendingResult(result) {
-  // Report-only rows keep their report identity even when flagged in process
-  // (for example "Rpt (IP)"): they belong with the other reports, with the
-  // in-process status shown as a badge.
+  // A report placeholder that is still in process ("Rpt (IP)") is pending,
+  // not a filed report: the result has not come back yet, so it belongs with
+  // the pending labs. pendingStatusLabel already reports "In Process" for it.
   return !isReportResult(result) && pendingStatusLabel(result) !== "";
 }
 

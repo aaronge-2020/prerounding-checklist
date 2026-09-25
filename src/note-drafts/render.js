@@ -1,4 +1,4 @@
-import { NOTE_TYPES, normalizeSectionVisibility } from "./model.js";
+import { NOTE_TYPES, normalizeSectionVisibility, objectiveGroupKeyFor } from "./model.js";
 import {
   NOTE_LAB_FAMILY_LABELS,
   NOTE_LAB_FAMILY_ORDER,
@@ -78,17 +78,53 @@ function mergeMetabolicFamilies(groups) {
 
 // The Objective section groups selections instead of concatenating one
 // paragraph per block: a Vitals group, one group per laboratory panel family
-// (CBC, metabolic, ...), then everything else in selection order.
+// (CBC, metabolic, ...), then everything else in selection order. A
+// group-level text override from the inline editor replaces that group's
+// generated lines; the member blocks underneath keep their identities.
 function objectiveModel(draft) {
   const items = (draft.objective?.selectedBlocks || [])
     .map((block) => ({ block, ...objectiveItem(block) }))
     .filter((entry) => entry.text);
+  const groupEdits = draft.objective?.groupEdits || {};
+  const overriddenGroups = new Set();
   const vitals = [];
   const labGroups = new Map();
   const medications = [];
+  const pendingLabs = [];
   const paragraphs = [];
+  // A group edit replaces the whole group's lines with the student's own
+  // words, pushed once into whichever bucket the group renders in.
+  const pushGroupOverride = (groupKey, entry) => {
+    const override = String(groupEdits[groupKey] || "").trim();
+    if (!override || overriddenGroups.has(groupKey)) return false;
+    overriddenGroups.add(groupKey);
+    const key = String(entry.block.noteGroupKey || "");
+    const lines = override.split("\n").map((line) => line.trim()).filter(Boolean);
+    if (key === NOTE_VITALS_GROUP_KEY) {
+      for (const line of lines) vitals.push({ label: "", detail: "", text: line, edited: true });
+    } else if (key === "medications") {
+      for (const line of lines) medications.push({ label: "", detail: "", text: line, edited: true });
+    } else if (key === "pending-labs") {
+      for (const line of lines) pendingLabs.push(line);
+    } else if (key.startsWith("lab:")) {
+      const familyKey = key.slice(4);
+      if (!labGroups.has(familyKey)) {
+        labGroups.set(familyKey, {
+          label: String(entry.block.noteGroupLabel || "").trim() || NOTE_LAB_FAMILY_LABELS[familyKey] || familyKey,
+          items: []
+        });
+      }
+      for (const line of lines) labGroups.get(familyKey).items.push({ label: "", detail: "", text: line, edited: true });
+    } else {
+      for (const line of lines) paragraphs.push(line);
+    }
+    return true;
+  };
   for (const entry of items) {
     const key = String(entry.block.noteGroupKey || "");
+    const groupKey = objectiveGroupKeyFor(entry.block);
+    if (pushGroupOverride(groupKey, entry)) continue;
+    if (String(groupEdits[groupKey] || "").trim()) continue; // remaining members of an overridden group
     if (key === NOTE_VITALS_GROUP_KEY && entry.text) {
       vitals.push({ label: entry.label, detail: entry.detail, text: entry.text, edited: entry.edited });
       continue;
@@ -97,6 +133,12 @@ function objectiveModel(draft) {
     // their own Medications section at the very end of the final note.
     if (key === "medications" && entry.text) {
       medications.push({ label: entry.label, detail: entry.detail, text: entry.text, edited: entry.edited });
+      continue;
+    }
+    // Pending results render as their own group at the very bottom of
+    // Objective so nothing still in process is silently dropped.
+    if (key === "pending-labs" && entry.text) {
+      pendingLabs.push(entry.text);
       continue;
     }
     if (key.startsWith("lab:") && entry.text) {
@@ -125,7 +167,7 @@ function objectiveModel(draft) {
   }
   const manual = valueText(draft.objective?.manual);
   if (manual) paragraphs.push(manual);
-  return { vitals, labFamilies, medications, paragraphs };
+  return { vitals, labFamilies, medications, pendingLabs, paragraphs };
 }
 
 function objectiveText(draft) {
@@ -136,6 +178,7 @@ function objectiveText(draft) {
     parts.push(`**${family.label}:** ${family.items.map((item) => item.text).join("; ")}`);
   }
   parts.push(...model.paragraphs);
+  if (model.pendingLabs.length) parts.push(`**Pending labs:** ${model.pendingLabs.join("; ")}`);
   return parts.join("\n\n");
 }
 

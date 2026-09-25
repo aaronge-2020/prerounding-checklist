@@ -451,29 +451,36 @@ Magnesium: pending`
 };
 const compactIndex = buildClinicalReviewIndex(compactPatient);
 
-// Every Rpt placeholder lands in one reports collection, individually
+// Every plain "Rpt" placeholder lands in one reports collection, individually
 // selectable, and never treated as copyable report content. Aaron's exact
-// six-report mixed-results case: five plain "Rpt" placeholders at different
-// timestamps plus one "Rpt (IP)" that keeps its In Process badge.
-assert.equal(compactIndex.reportItems.length, 6, "all six Rpt placeholders must be collected into the reports section");
+// mixed-results case: five plain "Rpt" placeholders at different timestamps,
+// while "Rpt (IP)" is pending (In Process) — the result has not come back
+// yet, so it belongs with the pending labs, not the filed reports.
+assert.equal(compactIndex.reportItems.length, 5, "all five plain Rpt placeholders must be collected into the reports section");
 assert.deepEqual(
   compactIndex.reportItems.map((item) => item.result.name).sort(),
-  ["CAR Echo 2D Complete w Contrast", "CTA Head-Neck with Perfusion (Brain Attack)", "EKG 12 Lead", "Factor V Leiden Mutation", "MR Brain W/O Con", "XR Chest AP (Portable)"].sort(),
+  ["CAR Echo 2D Complete w Contrast", "CTA Head-Neck with Perfusion (Brain Attack)", "EKG 12 Lead", "MR Brain W/O Con", "XR Chest AP (Portable)"].sort(),
   "all report-only rows group together regardless of timestamp"
 );
-const factorV = compactIndex.reportItems.find((item) => item.result.name === "Factor V Leiden Mutation");
-assert.equal(factorV.pendingLabel, "In Process", "Rpt (IP) keeps its in-process status inside the reports section");
-assert.match(factorV.selectionCandidate.insertionText, /In Process/, "the in-process badge survives into the note insertion");
-assert.match(factorV.selectionCandidate.insertionText, /not the report content/, "report placeholders must never copy report text into the note");
 for (const item of compactIndex.reportItems) {
+  assert.match(item.selectionCandidate.insertionText, /not the report content/, "report placeholders must never copy report text into the note");
   assert.ok(compactIndex.objectiveCandidates.some(({ id }) => id === item.selectionCandidate.id), `${item.result.name} must stay individually selectable`);
 }
 
-// Explicitly pending results surface separately from reports and panels.
-assert.equal(compactIndex.pendingItems.length, 1, "plain pending values must be detected");
-assert.equal(compactIndex.pendingItems[0].result.name, "Magnesium");
-assert.equal(compactIndex.pendingItems[0].pendingLabel, "Pending");
-assert.match(compactIndex.pendingItems[0].selectionCandidate.insertionText, /no result available yet/);
+// Explicitly pending results surface separately from reports and panels —
+// including "Rpt (IP)": the report has not resulted yet.
+assert.equal(compactIndex.pendingItems.length, 2, "plain pending values and Rpt (IP) must be detected as pending");
+const pendingNames = compactIndex.pendingItems.map((item) => item.result.name).sort();
+assert.deepEqual(pendingNames, ["Factor V Leiden Mutation", "Magnesium"], "pending items are Magnesium and Factor V Leiden");
+const factorV = compactIndex.pendingItems.find((item) => item.result.name === "Factor V Leiden Mutation");
+assert.equal(factorV.pendingLabel, "In Process", "Rpt (IP) keeps its In Process label in the pending section");
+assert.match(factorV.selectionCandidate.insertionText, /In Process/, "the in-process badge survives into the note insertion");
+assert.match(factorV.selectionCandidate.insertionText, /no result available yet/, "pending insertion never copies a result");
+assert.equal(factorV.selectionCandidate.pendingLab, true, "pending candidates are marked for the Pending labs group");
+assert.equal(factorV.selectionCandidate.noteGroupKey, "pending-labs", "pending candidates carry the pending-labs group key");
+for (const item of compactIndex.pendingItems) {
+  assert.ok(compactIndex.objectiveCandidates.some(({ id }) => id === item.selectionCandidate.id), `${item.result.name} must stay individually selectable`);
+}
 
 // Report-only and pending rows leave the panel family grids.
 const familyLabels = compactIndex.labFamilies.map((section) => section.label);
