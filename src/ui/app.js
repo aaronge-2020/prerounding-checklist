@@ -175,7 +175,7 @@ import { createGuidelineSetsController } from "./settings/guidelines-controller.
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-medication-card-v4";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-medication-card-v4";
-import { preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20260921-preserve-view-scroll";
+import { preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20260925-preserve-view-scroll-v2";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-medication-card-v4";
 import { createVaultPresentation, disambiguatedPatientLabels } from "./vault/presentation.js?v=20260718-vault-safety";
 import { createVaultSessionGuards } from "./vault/session-guards.js?v=20260922-vault-guards";
@@ -1006,32 +1006,78 @@ function clearSensitiveSession() {
 }
 
 function render() {
-  // Preserve scroll position of the active view across re-renders.
-  // Buttons like "De-identify & save" or "Save to draft" trigger full
-  // re-renders; without this the view jumps back to the top.
+  // Preserve scroll positions across re-renders. Buttons like
+  // "De-identify & save" or "Save to draft" trigger full re-renders;
+  // without this the view jumps back to the top.
   // Only restore if the view didn't change — a real navigation should
   // start at the top, not inherit the previous view's scroll position.
+  // NOTE: the scroll container is not always .view.active itself. In the
+  // review view the note editor (#noteEditor) is a nested scroller that
+  // holds the real scroll offset, so capture every scrolled container
+  // inside the active view, keyed by a stable selector, and restore them
+  // all. Capturing only .view.active used to yank the exam picker back
+  // to the top on every click.
   const activeView = document.querySelector(".view.active");
   const activeViewId = activeView?.id || "";
-  const scrollTop = activeView?.scrollTop || 0;
-  const scrollLeft = activeView?.scrollLeft || 0;
+  const scrollerSelector = (el) => {
+    if (el.id) return `#${CSS.escape(el.id)}`;
+    const parts = [];
+    let node = el;
+    while (node && node !== activeView && node !== document.body) {
+      const parent = node.parentElement;
+      const tag = node.tagName.toLowerCase();
+      let nth = "";
+      if (parent) {
+        const siblings = Array.from(parent.children).filter((s) => s.tagName === node.tagName);
+        if (siblings.length > 1) nth = `:nth-of-type(${siblings.indexOf(node) + 1})`;
+      }
+      parts.unshift(`${tag}${nth}`);
+      node = parent;
+    }
+    return `#${CSS.escape(activeViewId)}${parts.length ? " > " + parts.join(" > ") : ""}`;
+  };
+  const scrollers = [];
+  if (activeView) {
+    // Read scrollTop first (cheap when layout is clean); only confirm
+    // scrollability for elements that are actually scrolled.
+    const candidates = [activeView, ...activeView.querySelectorAll("*")];
+    for (const el of candidates) {
+      const top = el.scrollTop || 0;
+      const left = el.scrollLeft || 0;
+      if (top > 0 || left > 0) {
+        if (el.scrollHeight > el.clientHeight + 4 || el.scrollWidth > el.clientWidth + 4) {
+          scrollers.push({ selector: scrollerSelector(el), top, left });
+        }
+      }
+    }
+  }
   const restoreScroll = () => {
     const view = document.querySelector(".view.active");
     // Only restore if we're still on the same view that we captured from.
-    if (view && view.id === activeViewId) {
-      view.scrollTop = scrollTop;
-      view.scrollLeft = scrollLeft;
-      // If layout hasn't settled yet (async content, fonts, images), the
-      // synchronous restore may be clamped. Re-assert on the next frame.
-      if (Math.abs(view.scrollTop - scrollTop) > 2) {
-        requestAnimationFrame(() => {
-          const v = document.querySelector(".view.active");
-          if (v && v.id === activeViewId) {
-            v.scrollTop = scrollTop;
-            v.scrollLeft = scrollLeft;
-          }
-        });
+    if (!view || view.id !== activeViewId) return;
+    let needsReassert = false;
+    for (const { selector, top, left } of scrollers) {
+      const target = document.querySelector(selector);
+      if (!target) continue;
+      target.scrollTop = top;
+      target.scrollLeft = left;
+      if (Math.abs(target.scrollTop - top) > 2 || Math.abs(target.scrollLeft - left) > 2) {
+        needsReassert = true;
       }
+    }
+    // If layout hasn't settled yet (async content, fonts, images), the
+    // synchronous restore may be clamped. Re-assert on the next frame.
+    if (needsReassert) {
+      requestAnimationFrame(() => {
+        const v = document.querySelector(".view.active");
+        if (!v || v.id !== activeViewId) return;
+        for (const { selector, top, left } of scrollers) {
+          const el = document.querySelector(selector);
+          if (!el) continue;
+          el.scrollTop = top;
+          el.scrollLeft = left;
+        }
+      });
     }
   };
 

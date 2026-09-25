@@ -30,7 +30,7 @@
     "test:standalone-ap": "node tests/test-standalone-ap-contract.js",
     "test:progress-note-packet": "node tests/test-progress-note-packet.js",
     "test:workups": "node tests/test-local-first-workups.js",
-    "test:ui-features": "node tests/test-ui-feature-modules.js && node tests/test-duplicate-labels-source-badge.js",
+    "test:ui-features": "node tests/test-ui-feature-modules.js && node tests/test-view-scroll.js && node tests/test-duplicate-labels-source-badge.js",
     "test:guided-demo": "node tests/test-guided-demo.js",
     "test:guided-demo-browser": "node tests/test-guided-demo-browser.js",
     "test:workup-systems": "node tests/test-workup-systems.js",
@@ -54,7 +54,9 @@
     "test:syntax": "node scripts/check-syntax.js",
     "test:ui-boundaries": "node scripts/check-ui-module-boundaries.js",
     "test:review-interactions": "node tests/test-review-interactions.js",
-    "test:review-section-text-boundary": "node tests/test-review-section-text-boundary.js"
+    "test:review-section-text-boundary": "node tests/test-review-section-text-boundary.js",
+    "test:view-scroll": "node tests/test-view-scroll.js",
+    "test:structured-note-scroll": "node tests/test-structured-note-scroll-browser.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",

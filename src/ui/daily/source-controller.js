@@ -1,4 +1,5 @@
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-medication-card-v4";
+import { captureScrollPositions, restoreScrollPositions } from "../view-scroll.js?v=20260925-preserve-view-scroll-v2";
 import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 import {
   clinicalParseWarning,
@@ -131,9 +132,13 @@ export function createDailySourceController(deps) {
       deps.render();
       return;
     }
+    // The replaced subtree can contain its own scrollers (e.g. the section
+    // nav list). Snapshot all of them — restoring only the outer view's
+    // scrollTop used to yank the inner list back to the top on every click.
     const view = current.closest(".view");
-    const scrollTop = view?.scrollTop || 0;
-    const scrollLeft = view?.scrollLeft || 0;
+    const viewTop = view?.scrollTop || 0;
+    const viewLeft = view?.scrollLeft || 0;
+    const innerScroll = captureScrollPositions(current);
     current.outerHTML = deps.dailyPresentation.renderStructuredPrimaryNote({
       noteType: structuredNoteType(scope),
       note: existingStructuredNote(scope),
@@ -142,11 +147,13 @@ export function createDailySourceController(deps) {
       scope,
       deidBusy: deps.app.deidOperation.active
     });
+    const next = document.querySelector(`[data-structured-primary-note-scope="${scope}"]`);
     const restore = () => {
       if (view) {
-        view.scrollTop = scrollTop;
-        view.scrollLeft = scrollLeft;
+        view.scrollTop = viewTop;
+        view.scrollLeft = viewLeft;
       }
+      if (next) restoreScrollPositions(next, innerScroll);
     };
     restore();
     requestAnimationFrame(() => {
