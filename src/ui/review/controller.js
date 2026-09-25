@@ -1714,8 +1714,8 @@ export function createReviewController(deps) {
       // always in the DOM (see renderDataExplorer). Flipping `hidden`
       // never destroys the search input, the data list, or their state.
       // The panel itself is the scroller (overflow:auto), so save/restore
-      // its scrollTop across the toggle — collapsing changes content height
-      // dramatically, which would otherwise clamp scrollTop to 0.
+      // its scrollTop across the toggle. Restore in rAF so the browser
+      // has laid out the restored content before we set scrollTop.
       clinicalDataCollapsed = !clinicalDataCollapsed;
       const panel = target.closest(".review-data-panel");
       const rail = panel?.querySelector("[data-clinical-data-rail]");
@@ -1728,7 +1728,11 @@ export function createReviewController(deps) {
       panel?.querySelectorAll('[data-action="toggle-clinical-data"]').forEach((btn) => {
         btn.setAttribute("aria-expanded", String(!clinicalDataCollapsed));
       });
-      if (panel && !clinicalDataCollapsed) panel.scrollTop = savedScroll;
+      if (panel && !clinicalDataCollapsed && typeof requestAnimationFrame !== "undefined") {
+        requestAnimationFrame(() => { panel.scrollTop = savedScroll; });
+      } else if (panel && !clinicalDataCollapsed) {
+        panel.scrollTop = savedScroll;
+      }
       return true;
     }
     if (action === "toggle-objective-group") {
