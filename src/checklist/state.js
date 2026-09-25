@@ -88,6 +88,7 @@ export function negativeChoiceForItem(item) {
 
 export function fillNegativeChecklistAnswers(answers, items = []) {
   let changed = 0;
+  const changedIds = [];
   const next = { ...(answers || {}) };
   for (const item of items) {
     const current = next[item.id] || { selected: [], note: "" };
@@ -95,8 +96,9 @@ export function fillNegativeChecklistAnswers(answers, items = []) {
     if (current.selected?.length || !negative) continue;
     next[item.id] = { ...current, selected: [negative] };
     changed += 1;
+    changedIds.push(item.id);
   }
-  return { answers: next, changed };
+  return { answers: next, changed, changedIds };
 }
 
 function meaningfulSelectedChoices(selected = []) {

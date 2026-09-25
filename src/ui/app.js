@@ -4103,7 +4103,45 @@ async function fillChecklistNegatives({ kind = "", system = "" } = {}) {
   const nextDay = { ...day, answers: result.answers, updatedAt: new Date().toISOString() };
   app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
   await persistVault(`${result.changed} checklist item${result.changed === 1 ? "" : "s"} filled.`);
-  renderChecklist();
+  // SURGICAL UPDATE (root fix): Update only the changed question elements in
+  // the DOM directly. Do NOT re-render the entire checklist (which destroys
+  // scroll position). The data model is already updated above.
+  const container = byId("checklistContent");
+  if (container && result.changedIds) {
+    for (const itemId of result.changedIds) {
+      const article = container.querySelector(`[data-item-id="${CSS.escape(itemId)}"]`);
+      if (!article) continue;
+      const answer = result.answers[itemId];
+      const selectedValue = answer?.selected?.[0] || "";
+      // Update checkbox or select to reflect the new answer.
+      const checkbox = article.querySelector(`input.checklist-answer[type="checkbox"][value="${CSS.escape(selectedValue)}"]`);
+      if (checkbox) {
+        checkbox.checked = true;
+      } else {
+        const select = article.querySelector("select.checklist-answer");
+        if (select) select.value = selectedValue;
+      }
+      // Update the completed count in the section header.
+      const section = article.closest(".checklist-system");
+      if (section) {
+        const countSpan = section.querySelector(".checklist-system-header .muted");
+        if (countSpan) {
+          // Recompute from current DOM state.
+          const items = section.querySelectorAll("[data-item-id]");
+          let completed = 0;
+          for (const el of items) {
+            const id = el.dataset.itemId;
+            const ans = result.answers[id];
+            if (ans?.selected?.length) completed++;
+          }
+          countSpan.textContent = `${completed} / ${items.length}`;
+        }
+      }
+    }
+  } else {
+    // Fallback to full render if container not found (should not happen).
+    renderChecklist();
+  }
 }
 
 function showPhoneReturn() {

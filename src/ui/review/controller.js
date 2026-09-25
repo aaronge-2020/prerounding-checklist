@@ -189,6 +189,10 @@ export function createReviewController(deps) {
   // Local UI state only; survives re-renders.
   let clinicalDataCollapsed = false;
 
+  // Scroll position of the clinical data list, preserved across collapse/expand.
+  // Stored when collapsing, restored when expanding.
+  let clinicalDataScrollTop = 0;
+
   // Which Objective editor groups are collapsed (vitals, lab families, etc.).
   // Local UI state only; survives re-renders.
   const collapsedObjectiveGroups = new Set();
@@ -598,7 +602,8 @@ export function createReviewController(deps) {
     }
     if (target.matches("[data-section-visibility]")) {
       setDraft(setSectionVisibility(current.draft, target.dataset.sectionVisibility, target.checked));
-      render();
+      // Surgical: section visibility only affects the draft panel.
+      renderDraftPanelOnly();
       return true;
     }
     if (target.matches("[data-objective-selection-id]")) {
@@ -675,7 +680,8 @@ export function createReviewController(deps) {
     if (target.matches("[data-problem-etiology]")) {
       const problemId = target.closest("[data-problem-id]")?.dataset.problemId;
       if (problemId) setDraft(updatePlanProblem(current.draft, problemId, { etiologyStatus: target.value }));
-      render();
+      // Surgical: etiology radio only affects the draft panel.
+      renderDraftPanelOnly();
       return true;
     }
     return false;
@@ -1343,8 +1349,24 @@ export function createReviewController(deps) {
       return true;
     }
     if (action === "toggle-clinical-data") {
+      const container = deps.byId("reviewContent");
+      // Store scroll position before collapsing; restore after expanding.
+      if (!clinicalDataCollapsed) {
+        // Currently expanded, about to collapse: save scroll position.
+        const dataList = container?.querySelector(".review-data-panel .review-data-list");
+        if (dataList) clinicalDataScrollTop = dataList.scrollTop;
+      }
       clinicalDataCollapsed = !clinicalDataCollapsed;
       render();
+      // Restore scroll position after expanding.
+      if (!clinicalDataCollapsed && container) {
+        const dataList = container.querySelector(".review-data-panel .review-data-list");
+        if (dataList) {
+          dataList.scrollTop = clinicalDataScrollTop;
+          // Also restore on next frame in case layout isn't complete.
+          requestAnimationFrame(() => { dataList.scrollTop = clinicalDataScrollTop; });
+        }
+      }
       return true;
     }
     if (action === "toggle-objective-group") {
@@ -1353,7 +1375,8 @@ export function createReviewController(deps) {
         if (collapsedObjectiveGroups.has(group)) collapsedObjectiveGroups.delete(group);
         else collapsedObjectiveGroups.add(group);
       }
-      render();
+      // Surgical: objective groups are in the draft panel only.
+      renderDraftPanelOnly();
       return true;
     }
     if (action === "baseline-cancel") {
@@ -1414,7 +1437,10 @@ export function createReviewController(deps) {
       draft = refreshObjectiveGroup(draft, button.dataset.group);
     } else return false;
     setDraft(draft);
-    render();
+    // Surgical: all these actions (move/remove problem, differentials,
+    // objective groups) only affect the draft panel. The clinical data
+    // panel is untouched, preserving its scroll position.
+    renderDraftPanelOnly();
     return true;
   }
 
