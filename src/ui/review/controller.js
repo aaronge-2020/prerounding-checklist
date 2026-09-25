@@ -1723,15 +1723,11 @@ export function createReviewController(deps) {
       return true;
     }
     if (action === "toggle-clinical-data") {
-      // DEBUG: mark that toggle ran
-      if (typeof document !== "undefined") {
-        document.documentElement.dataset.toggleCount = String(Number(document.documentElement.dataset.toggleCount || 0) + 1);
-      }
       // True surgical toggle: both the rail and the full content are
       // always in the DOM (see renderDataExplorer). Flipping `hidden`
       // never destroys the search input, the data list, or their state.
       // The panel itself is the scroller (overflow:auto). Save its scrollTop
-      // when collapsing; restore it (in rAF, after layout) when expanding.
+      // when collapsing; restore it when expanding, after layout settles.
       const panel = target.closest(".review-data-panel");
       const rail = panel?.querySelector("[data-clinical-data-rail]");
       const full = panel?.querySelector("[data-clinical-data-full]");
@@ -1739,6 +1735,12 @@ export function createReviewController(deps) {
         clinicalDataScrollBeforeCollapse = panel.scrollTop;
       }
       clinicalDataCollapsed = !clinicalDataCollapsed;
+      // Blur the clicked toggle button: when its container hides, the
+      // browser may scroll the panel to keep the focused (now hidden)
+      // button in view, clobbering our restore.
+      if (typeof document !== "undefined" && document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
       if (rail) rail.hidden = !clinicalDataCollapsed;
       if (full) full.hidden = clinicalDataCollapsed;
       panel?.classList.toggle("is-collapsed", clinicalDataCollapsed);
@@ -1748,10 +1750,16 @@ export function createReviewController(deps) {
       });
       if (panel && !clinicalDataCollapsed) {
         const restoreTo = clinicalDataScrollBeforeCollapse;
-        if (typeof requestAnimationFrame !== "undefined") {
-          requestAnimationFrame(() => { panel.scrollTop = restoreTo; });
-        } else {
+        const doRestore = () => {
+          // Force synchronous layout so scrollHeight reflects the
+          // un-hidden content before we set scrollTop.
+          void panel.scrollHeight;
           panel.scrollTop = restoreTo;
+        };
+        if (typeof requestAnimationFrame !== "undefined") {
+          requestAnimationFrame(() => requestAnimationFrame(doRestore));
+        } else {
+          doRestore();
         }
       }
       return true;
