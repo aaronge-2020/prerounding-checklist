@@ -803,12 +803,26 @@ function visiblePatients(vault) {
   return (vault?.patients || []).filter((patient) => !patient.archivedAt);
 }
 
+let lastToastedStatus = "";
 function setStatus(message, { icon: iconName } = {}) {
   app.status = message;
   const status = byId("statusLine");
   if (!status) return;
   if (iconName) status.innerHTML = `${icon(iconName)}${escapeHtml(message)}`;
   else status.textContent = message;
+  // Every action outcome also gets an auto-dismissing toast so feedback is
+  // impossible to miss. Skip in-progress ("...") messages, the idle default,
+  // and repeats caused by re-renders restoring the same status.
+  const text = String(message || "").trim();
+  const idleDefault = "All data is encrypted and stays on this device. Nothing leaves without your explicit action.";
+  if (text && !text.endsWith("...") && text !== idleDefault && text !== lastToastedStatus) {
+    lastToastedStatus = text;
+    const lower = text.toLowerCase();
+    let type = "success";
+    if (/fail|error|could not|unable|invalid|not saved|not found/.test(lower)) type = "error";
+    else if (/select|choose|please|required|first|confirm|warning|missing|no .* found/.test(lower)) type = "warning";
+    showToast(text, { type });
+  }
 }
 
 // Brief auto-dismissing toast warning/success. Used for pull-from-primary
