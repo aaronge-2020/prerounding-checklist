@@ -22,6 +22,8 @@ import {
   fieldsForNoteType,
   NOTE_TYPES,
   normalizeNoteDraft,
+  objectiveEditorGroups,
+  objectiveGroupKeyFor,
   reconcileObjectiveBlock,
   reconcileChecklistFinding,
   refreshObjectiveGroup,
@@ -188,10 +190,6 @@ export function createReviewController(deps) {
   // Whether the Clinical Data panel is collapsed (user can focus on the note).
   // Local UI state only; survives re-renders.
   let clinicalDataCollapsed = false;
-
-  // Scroll position of the clinical data list, preserved across collapse/expand.
-  // Stored when collapsing, restored when expanding.
-  let clinicalDataScrollTop = 0;
 
   // Which Objective editor groups are collapsed (vitals, lab families, etc.).
   // Local UI state only; survives re-renders.
@@ -497,6 +495,128 @@ export function createReviewController(deps) {
   // leaving the clinical data panel (left column) completely untouched.
   // Used for checkbox toggles where the clicked checkbox is already in the
   // correct visual state — no re-render of the interaction panel needed.
+  // ---- Surgical region updates ----
+  // The review view mounts its skeleton ONCE per route entry (render()).
+  // Every interaction below updates the data model first, then patches
+  // only the affected DOM nodes — never replacing a scroll owner, a
+  // focused element, or a contenteditable being edited. This is the
+  // architectural fix: scroll/focus loss is impossible by construction
+  // because the nodes that own them are never destroyed.
+
+  // Render the current draft to an in-memory template and return the
+  // element matching `selector` from the fresh render (or null). Pure
+  // string building — no live DOM is touched.
+  function freshDraftNode(selector) {
+    const current = model();
+    if (!current.patient) return null;
+    const vm = reviewViewModel(current);
+    const draftHtml = deps.presentation.renderDraft({
+      draft: vm.draft,
+      guidanceFor: vm.guidanceFor,
+      differenceSelectionId: vm.differenceSelectionId,
+      collapsedObjectiveGroups: vm.collapsedObjectiveGroups,
+      smartExamUi: vm.smartExamUi,
+      collapsedDraftSections: vm.collapsedDraftSections,
+      generatingApProblemId: vm.generatingApProblemId,
+      apConfirm: vm.apConfirm
+    });
+    const template = document.createElement("template");
+    template.innerHTML = draftHtml;
+    return template.content.querySelector(selector);
+  }
+
+  // Replace one draft-panel region's node with its freshly rendered
+  // equivalent. Only for regions that own no scroll and contain no focus.
+  function patchDraftRegion(selector) {
+    const container = deps.byId("reviewContent");
+    const current = container?.querySelector(`.note-draft-panel ${selector}`);
+    const next = freshDraftNode(selector);
+    if (current && next) current.replaceWith(next);
+  }
+
+  // Sync the Objective editor DOM after objective-block model changes —
+  // the root fix for checkbox scroll jumps. `addedSelectionIds` are blocks
+  // just selected (their lines are appended); `removedSelectionIds` are
+  // blocks just deselected (their lines are removed). Medications live in
+  // their own section and are patched as a region (no contenteditable
+  // inside). Group membership changes drop group text overrides in the
+  // model, so lines always render individually after this point.
+  function syncObjectiveDom(draft, addedSelectionIds, removedSelectionIds) {
+    const container = deps.byId("reviewContent");
+    if (!container || typeof document === "undefined") return;
+    const draftPanel = container.querySelector(".note-draft-panel");
+    if (!draftPanel) return;
+    const blocks = draft.objective?.selectedBlocks || [];
+    const blockById = new Map(blocks.map((entry) => [entry.selectionId, entry]));
+    const esc = (value) => CSS.escape(String(value ?? ""));
+
+    // Removals first.
+    for (const selId of removedSelectionIds) {
+      const medRemove = draftPanel.querySelector(`[data-draft-section-id="medications"] [data-selection-id="${esc(selId)}"]`);
+      if (medRemove) {
+        medRemove.closest("li")?.remove();
+        continue;
+      }
+      const line = draftPanel.querySelector(`[data-vital-line="${esc(selId)}"]`);
+      const groupEl = line?.closest("[data-objective-group]");
+      line?.remove();
+      // Drop the group node when the model holds no blocks for it anymore.
+      if (groupEl) {
+        const key = groupEl.dataset.objectiveGroup;
+        const stillHas = blocks.some((entry) => entry.noteGroupKey !== "medications" && objectiveGroupKeyFor(entry) === key);
+        if (!stillHas) groupEl.remove();
+      }
+    }
+
+    // Additions.
+    let medsChanged = false;
+    for (const selId of addedSelectionIds) {
+      const block = blockById.get(selId);
+      if (!block) continue;
+      if (block.noteGroupKey === "medications") {
+        medsChanged = true;
+        continue;
+      }
+      if (draftPanel.querySelector(`[data-vital-line="${esc(selId)}"]`)) continue;
+      const key = objectiveGroupKeyFor(block);
+      let groupEl = draftPanel.querySelector(`[data-objective-group="${esc(key)}"]`);
+      if (!groupEl) {
+        // New group: lift it from a fresh in-memory render and insert it
+        // in group order.
+        const freshGroup = freshDraftNode(`[data-objective-group="${esc(key)}"]`);
+        const sectionBody = draftPanel.querySelector('[data-draft-section-id="objective"] .ed-section-body');
+        if (!freshGroup || !sectionBody) continue;
+        const orderedKeys = objectiveEditorGroups(draft).map((group) => group.key);
+        const idx = orderedKeys.indexOf(key);
+        let inserted = false;
+        for (let i = idx + 1; i < orderedKeys.length; i++) {
+          const nextEl = draftPanel.querySelector(`[data-objective-group="${esc(orderedKeys[i])}"]`);
+          if (nextEl) {
+            sectionBody.insertBefore(freshGroup, nextEl);
+            inserted = true;
+            break;
+          }
+        }
+        if (!inserted) {
+          const manualBlock = sectionBody.querySelector(":scope > .ed-sub");
+          if (manualBlock) sectionBody.insertBefore(freshGroup, manualBlock);
+          else sectionBody.appendChild(freshGroup);
+        }
+        continue;
+      }
+      // Existing group: append just the new line.
+      const list = groupEl.querySelector(".ed-vitals-list");
+      if (!list) continue;
+      const freshLine = freshDraftNode(`[data-objective-group="${esc(key)}"] [data-vital-line="${esc(selId)}"]`);
+      if (freshLine) list.appendChild(freshLine);
+    }
+
+    if (medsChanged) {
+      // The Medications section body holds no contenteditable — safe region patch.
+      patchDraftRegion('[data-draft-section-id="medications"] .ed-section-body');
+    }
+  }
+
   function renderDraftPanelOnly() {
     const current = model();
     if (!current.patient) return;
@@ -587,23 +707,34 @@ export function createReviewController(deps) {
     if (target.id === "reviewPacketSelect") {
       deps.app.reviewPacketId = target.value || "admission";
       deps.app.reviewDifferenceSelectionId = "";
+      // Packet switch = different underlying data (route-level change).
+      // Full render is correct here; scroll resets for the new content.
       deps.render();
       return true;
     }
     if (target.id === "reviewNoteType") {
       setDraft(changeNoteDraftType(current.draft, target.value));
-      render();
+      // Structural change (H&P vs progress sections differ entirely), so
+      // the draft panel is re-rendered — but with scroll preserved, not
+      // a full route render.
+      renderDraftPanelOnly();
       return true;
     }
     if (target.id === "reviewDataCategory") {
       deps.app.reviewCategory = target.value || "all";
-      render();
+      // Filter only the data list in place (children replacement keeps
+      // the list's scrollTop). The category select is in the toolbar,
+      // outside the list, so it is never destroyed.
+      patchDataList();
       return true;
     }
     if (target.matches("[data-section-visibility]")) {
       setDraft(setSectionVisibility(current.draft, target.dataset.sectionVisibility, target.checked));
-      // Surgical: section visibility only affects the draft panel.
-      renderDraftPanelOnly();
+      // True surgical update: visibility only affects the FINAL note, not
+      // the editor — the section stays in place. Just flip the label text.
+      // No re-render, so nothing else in the draft panel is disturbed.
+      const label = target.closest("label")?.querySelector("span");
+      if (label) label.textContent = target.checked ? "In note" : "Excluded";
       return true;
     }
     if (target.matches("[data-objective-selection-id]")) {
@@ -660,28 +791,32 @@ export function createReviewController(deps) {
           : deselectObjectiveBlock(draft, candidate.id);
       }
       setDraft(draft);
-      // SURGICAL UPDATE (root fix): Do NOT re-render the clinical data panel.
-      // The clicked checkbox is already in the correct state. Only:
-      // 1. Uncheck any other affected checkboxes directly in the DOM.
-      // 2. Refresh the draft note panel (right column) only.
-      // The clinical data panel's DOM — and its scroll position — is untouched.
+      // ROOT FIX: the model is updated first, then only the affected DOM
+      // nodes are patched. The clinical data panel is untouched (the
+      // clicked checkbox is already correct; related boxes are unchecked
+      // directly). The draft panel gets group-scoped line add/remove —
+      // no panel re-render, so scroll position and contenteditable state
+      // (including undo history) survive every checkbox toggle.
+      const addedIds = target.checked ? [candidate.id] : [];
+      const removedIds = target.checked ? [...checkboxesToUncheck] : [candidate.id];
       if (typeof document !== "undefined") {
         const container = deps.byId("reviewContent");
         if (container) {
           for (const selId of checkboxesToUncheck) {
-            const box = container.querySelector(`[data-objective-selection-id="${selId}"]`);
+            const box = container.querySelector(`[data-objective-selection-id="${CSS.escape(selId)}"]`);
             if (box && box !== target) box.checked = false;
           }
         }
+        syncObjectiveDom(draft, addedIds, removedIds);
       }
-      renderDraftPanelOnly();
       return true;
     }
     if (target.matches("[data-problem-etiology]")) {
       const problemId = target.closest("[data-problem-id]")?.dataset.problemId;
       if (problemId) setDraft(updatePlanProblem(current.draft, problemId, { etiologyStatus: target.value }));
-      // Surgical: etiology radio only affects the draft panel.
-      renderDraftPanelOnly();
+      // Surgical: etiology only affects its own problem card. Swap just
+      // the card node; the rest of the draft panel is untouched.
+      patchDraftRegion(`[data-problem-id="${CSS.escape(problemId)}"]`);
       return true;
     }
     return false;
@@ -714,7 +849,9 @@ export function createReviewController(deps) {
     const savedMessage = ephemeralDemo ? "Demo note kept only for this temporary walkthrough." : "Encrypted note draft saved.";
     deps.setStatus(savedMessage);
     deps.onDraftSaved?.();
-    deps.render();
+    // No re-render: the draft was already in sync with the DOM (every
+    // input syncs to the model on each keystroke), and saving must not
+    // move the student's scroll or focus.
   }
 
   async function confirmTemperatureUnit(candidateId, unit) {
@@ -734,7 +871,21 @@ export function createReviewController(deps) {
       deps.setStatus(ephemeralDemo
         ? "Temperature unit confirmed for this temporary walkthrough."
         : `Temperature unit confirmed as ${unit} — saved to the encrypted vault.`);
-      render();
+      // Surgical: the default-on pass picks the temperature up now that
+      // the unit is confirmed. Update the banner, check the box, and add
+      // the objective line — no re-render, so list scroll survives.
+      const fresh = model();
+      if (fresh.patient) {
+        setDraft(fresh.draft);
+        const panel = deps.byId("reviewContent");
+        const liveBanner = panel?.querySelector(".review-data-panel .unit-confirm-banner");
+        const freshBanner = freshReviewNode(".unit-confirm-banner");
+        if (liveBanner && freshBanner) liveBanner.replaceWith(freshBanner);
+        else if (liveBanner) liveBanner.remove();
+        const box = panel?.querySelector(`[data-objective-selection-id="${CSS.escape(candidateId)}"]`);
+        if (box) box.checked = true;
+        if (typeof document !== "undefined") syncObjectiveDom(fresh.draft, [candidateId], []);
+      }
       if (!ephemeralDemo) {
         try {
           await deps.persistVault("Temperature unit confirmed.");
@@ -808,7 +959,16 @@ export function createReviewController(deps) {
       ].filter((line) => line !== null).join("\n"),
       payload: built
     };
-    render();
+    // Insert just the modal node — no re-render. The modal lives at the end
+    // of the Plan section body.
+    const panel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
+    const planBody = panel?.querySelector('[data-draft-section-id="plan"] .ed-section-body');
+    const freshModal = freshDraftNode("[data-ap-confirm-overlay]");
+    if (planBody && freshModal && !panel.querySelector("[data-ap-confirm-overlay]")) {
+      planBody.appendChild(freshModal);
+      freshModal.querySelector(".ap-confirm-modal")?.setAttribute("tabindex", "-1");
+      freshModal.querySelector('[data-action="ap-confirm-cancel"]')?.focus({ preventScroll: true });
+    }
   }
 
   async function runApGeneration(problemId) {
@@ -816,7 +976,16 @@ export function createReviewController(deps) {
     if (!pending || pending.problemId !== problemId) return;
     apConfirmState = null;
     generatingApProblemId = problemId;
-    render();
+    // Remove the modal node and flip just the Generate button to its
+    // generating state — no re-render.
+    const panel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
+    panel?.querySelector("[data-ap-confirm-overlay]")?.remove();
+    const generateBtn = panel?.querySelector(`[data-problem-id="${CSS.escape(problemId)}"] [data-action="generate-ap"]`);
+    if (generateBtn) {
+      generateBtn.disabled = true;
+      const svg = generateBtn.querySelector("svg")?.outerHTML || "";
+      generateBtn.innerHTML = `${svg} Generating…`;
+    }
     deps.setStatus(`Generating assessment and plan for "${pending.problemName}"…`);
     try {
       const preferences = deps.currentPreferences ? deps.currentPreferences() : {};
@@ -847,11 +1016,22 @@ export function createReviewController(deps) {
       draft = { ...draft, problems };
       setDraft(draft);
       generatingApProblemId = "";
-      render();
+      // The generated differentials/plans changed this card's content:
+      // swap just this card's node with its fresh render. Input events
+      // sync edits to the model on every keystroke, so the fresh render
+      // already includes the student's latest text.
+      const livePanel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
+      const liveCard = livePanel?.querySelector(`[data-problem-id="${CSS.escape(problemId)}"]`);
+      const freshCard = freshDraftNode(`[data-problem-id="${CSS.escape(problemId)}"]`);
+      if (liveCard && freshCard) liveCard.replaceWith(freshCard);
       deps.setStatus(`Plan generated for "${pending.problemName}" — review and edit before using. Verify every citation.`);
     } catch (error) {
       generatingApProblemId = "";
-      render();
+      // Restore the Generate button from a fresh render of just the card.
+      const errPanel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
+      const errCard = errPanel?.querySelector(`[data-problem-id="${CSS.escape(problemId)}"]`);
+      const errFresh = freshDraftNode(`[data-problem-id="${CSS.escape(problemId)}"]`);
+      if (errCard && errFresh) errCard.replaceWith(errFresh);
       const message = error instanceof Error ? error.message : "Plan generation failed.";
       deps.setStatus(message);
     }
@@ -866,7 +1046,9 @@ export function createReviewController(deps) {
         : setLabBaseline(patient.labBaselines, analyte, fields)
     }));
     baselineEditorId = "";
-    render();
+    // Refresh just the data list (children replacement preserves the
+    // list's own scrollTop). The saved baseline now shows on the row.
+    patchDataList();
     const ephemeralDemo = deps.isEphemeralDemo?.();
     if (!ephemeralDemo) await deps.persistVault(clear ? "Baseline cleared." : "Baseline saved.");
     deps.setStatus(ephemeralDemo
@@ -901,6 +1083,8 @@ export function createReviewController(deps) {
       return;
     }
     let draft = current.draft;
+    // Problems added by a plan pull (for surgical card insertion below).
+    let pulledPlanProblems = [];
     try {
       // Route to the correct update function based on field type.
       // Standard sections use updateNoteSection; special sections have
@@ -956,6 +1140,7 @@ export function createReviewController(deps) {
               therapeuticPlan: p.therapeuticPlan || ""
             });
             added++;
+            pulledPlanProblems.push(draft.problems[draft.problems.length - 1]);
           }
           if (added === 0) {
             const message = "Plan already pulled — no new problems to add.";
@@ -996,7 +1181,134 @@ export function createReviewController(deps) {
     const successMessage = `Pulled ${fieldLabel} from primary note.`;
     deps.setStatus(successMessage);
     deps.showToast?.(successMessage, { type: "success", durationMs: 2500 });
-    deps.render();
+    // Surgical: refresh only the affected region(s) — no re-render, so
+    // both the clinical-data list and the draft panel keep their scroll.
+    const livePanel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
+    if (livePanel) {
+      if (fieldId === "plan" && pulledPlanProblems.length) {
+        const list = livePanel.querySelector("[data-plan-problem-list]");
+        if (list) {
+          list.querySelectorAll(":scope > .ed-empty, :scope > .ed-hint").forEach((node) => node.remove());
+          for (const problem of pulledPlanProblems) {
+            const freshCard = freshDraftNode(`[data-problem-id="${CSS.escape(problem.id)}"]`);
+            if (freshCard && !list.querySelector(`[data-problem-id="${CSS.escape(problem.id)}"]`)) {
+              list.appendChild(freshCard);
+              freshCard.scrollIntoView({ block: "nearest" });
+            }
+          }
+        }
+      } else if (fieldId === "physical_exam") {
+        patchDraftRegion("[data-smart-exam]");
+      } else {
+        const sectionSelector = fieldId === "objective"
+          ? "[data-draft-objective-manual]"
+          : fieldId === "assessment"
+            ? "[data-draft-assessment]"
+            : CLOSING_SECTION_FIELDS.some((entry) => entry.id === fieldId)
+              ? `[data-draft-closing="${CSS.escape(fieldId)}"]`
+              : `[data-draft-section="${CSS.escape(fieldId)}"]`;
+        patchDraftRegion(sectionSelector);
+      }
+    }
+  }
+
+  // Render the full review view to an in-memory template and return the
+  // element matching `selector` (for clinical-data-panel regions).
+  function freshReviewNode(selector) {
+    const current = model();
+    if (!current.patient) return null;
+    const template = document.createElement("template");
+    template.innerHTML = deps.presentation.renderReview(reviewViewModel(current));
+    return template.content.querySelector(selector);
+  }
+
+  // Patch just the smart-exam region from a fresh in-memory render.
+  // The region owns no scroll; the notes textarea syncs to the model on
+  // every keystroke, so its value survives the patch.
+  function syncSmartExamRegion() {
+    patchDraftRegion("[data-smart-exam]");
+  }
+
+  // Sync one smart-var pill + its open dropdown after a selection change.
+  // The dropdown stays open and the focused checkbox is never destroyed:
+  // only the pill text, conflicting checkbox states, and custom picks
+  // update. This is the root fix for smart-var scroll/focus jumps.
+  function syncSmartVarDropdown(systemId, varId) {
+    const current = model();
+    if (!current.patient || typeof document === "undefined") return;
+    const variable = getExamVar(systemId, varId);
+    if (!variable) return;
+    const state = getSmartExam(current.draft);
+    const selected = state.selections?.[systemId]?.[varId] || [];
+    const selectedSet = new Set(selected);
+    const listedSet = new Set(variable.options || []);
+    const exam = deps.byId("reviewContent")?.querySelector(".note-draft-panel [data-smart-exam]");
+    if (!exam) return;
+    const btn = exam.querySelector(`button[data-action="smart-var-open"][data-system="${CSS.escape(systemId)}"][data-var="${CSS.escape(varId)}"]`);
+    const wrap = btn?.closest("[data-smart-var-wrap]");
+    // Pill text + style reflect the selection.
+    if (btn) {
+      const pillText = selected.length ? selected.join(", ") : variable.label;
+      if (btn.firstChild && btn.firstChild.nodeType === 3) btn.firstChild.textContent = `${pillText} ▾`;
+      else btn.textContent = `${pillText} ▾`;
+      btn.classList.toggle("is-filled", selected.length > 0);
+      btn.classList.toggle("is-empty", selected.length === 0);
+      btn.title = selected.length
+        ? `${variable.label}: ${selected.join(", ")} — click to change`
+        : `${variable.label} — click to select`;
+    }
+    const dropdown = wrap?.querySelector(":scope > .se-dropdown");
+    if (!dropdown) return;
+    // Checkbox states: mutual exclusivity may have unchecked others.
+    dropdown.querySelectorAll('input[data-smart-var-option]').forEach((input) => {
+      if (input.dataset.system === systemId && input.dataset.var === varId) {
+        const shouldBe = selectedSet.has(input.dataset.option);
+        if (input.checked !== shouldBe) input.checked = shouldBe;
+      }
+    });
+    // Custom picks: drop those no longer selected; insert new ones.
+    const customsInModel = selected.filter((value) => !listedSet.has(value));
+    const modelCustomSet = new Set(customsInModel);
+    for (const pick of [...dropdown.querySelectorAll(".se-custom-pick")]) {
+      if (!modelCustomSet.has(pick.querySelector("button")?.dataset.option)) pick.remove();
+    }
+    const domCustomValues = new Set(
+      [...dropdown.querySelectorAll(".se-custom-pick")].map((pick) => pick.querySelector("button")?.dataset.option)
+    );
+    const missing = customsInModel.filter((value) => !domCustomValues.has(value));
+    if (missing.length) {
+      const freshDropdown = freshDraftNode("[data-smart-exam]")
+        ?.querySelector(`button[data-action="smart-var-open"][data-system="${CSS.escape(systemId)}"][data-var="${CSS.escape(varId)}"]`)
+        ?.closest("[data-smart-var-wrap]")?.querySelector(":scope > .se-dropdown");
+      const freshPicks = new Map(
+        [...(freshDropdown?.querySelectorAll(".se-custom-pick") || [])]
+          .map((pick) => [pick.querySelector("button")?.dataset.option, pick])
+      );
+      const scroll = dropdown.querySelector(".se-dropdown-scroll");
+      let anchor = [...dropdown.querySelectorAll(".se-custom-pick")].pop()
+        || [...dropdown.querySelectorAll(".se-opt-group")].find((el) => el.textContent === "Custom");
+      if (!anchor && scroll) {
+        anchor = document.createElement("span");
+        anchor.className = "se-opt-group";
+        anchor.textContent = "Custom";
+        scroll.appendChild(anchor);
+      }
+      for (const value of missing) {
+        const freshPick = freshPicks.get(value);
+        if (freshPick && anchor) {
+          anchor.after(freshPick);
+          anchor = freshPick;
+        }
+      }
+    } else if (!customsInModel.length) {
+      // No customs left: drop the orphaned "Custom" group label.
+      for (const label of [...dropdown.querySelectorAll(".se-opt-group")]) {
+        if (label.textContent === "Custom") label.remove();
+      }
+    }
+    // Clear the custom text input after an add (keep focus for rapid entry).
+    const customInput = dropdown.querySelector("[data-smart-var-custom]");
+    if (customInput && document.activeElement !== customInput) customInput.value = "";
   }
 
   // Insert the selected exam system into the smart physical-exam editor.
@@ -1014,7 +1326,7 @@ export function createReviewController(deps) {
     const state = getSmartExam(current.draft);
     if (!state.systems.includes(system.id)) state.systems.push(system.id);
     setSmartExam(current.draft, state);
-    deps.render();
+    syncSmartExamRegion();
     deps.setStatus(`Inserted ${system.name} exam — click any pill to document findings.`);
   }
 
@@ -1068,7 +1380,7 @@ export function createReviewController(deps) {
     delete state.selections[systemId];
     smartExamUi.openVar = null;
     setSmartExam(current.draft, state);
-    deps.render();
+    syncSmartExamRegion();
   }
 
   function markSmartExamNormal(systemIds) {
@@ -1089,7 +1401,7 @@ export function createReviewController(deps) {
     }
     smartExamUi.openVar = null;
     setSmartExam(current.draft, state);
-    deps.render();
+    syncSmartExamRegion();
     deps.setStatus(names.length
       ? `Marked ${names.join(", ")} normal — change any abnormal findings.`
       : "Insert an exam system first.");
@@ -1100,15 +1412,40 @@ export function createReviewController(deps) {
     if (!current.patient) return;
     smartExamUi.openVar = null;
     setSmartExam(current.draft, { systems: [], selections: {}, freeText: "" });
-    deps.render();
+    syncSmartExamRegion();
     deps.setStatus("Cleared the smart exam.");
   }
 
   function toggleSmartVarDropdown(systemId, varId) {
     if (!getExamVar(systemId, varId)) return;
     const key = `${systemId}:${varId}`;
-    smartExamUi.openVar = smartExamUi.openVar === key ? null : key;
-    deps.render();
+    const opening = smartExamUi.openVar !== key;
+    smartExamUi.openVar = opening ? key : null;
+    // True surgical toggle: add/remove just the dropdown node inside the
+    // pill wrap. The pill button itself is never destroyed, so focus stays.
+    const exam = deps.byId("reviewContent")?.querySelector(".note-draft-panel [data-smart-exam]");
+    if (!exam) return;
+    const btn = exam.querySelector(`button[data-action="smart-var-open"][data-system="${CSS.escape(systemId)}"][data-var="${CSS.escape(varId)}"]`);
+    const wrap = btn?.closest("[data-smart-var-wrap]");
+    // Close any other open dropdown.
+    exam.querySelectorAll(":scope .se-dropdown").forEach((dd) => {
+      if (!wrap || !wrap.contains(dd)) dd.remove();
+    });
+    exam.querySelectorAll('button[data-action="smart-var-open"]').forEach((pill) => {
+      pill.setAttribute("aria-expanded", String(smartExamUi.openVar === `${pill.dataset.system}:${pill.dataset.var}`));
+    });
+    if (wrap) {
+      wrap.querySelector(":scope > .se-dropdown")?.remove();
+      if (opening) {
+        const freshDropdown = freshDraftNode("[data-smart-exam]")
+          ?.querySelector(`button[data-action="smart-var-open"][data-system="${CSS.escape(systemId)}"][data-var="${CSS.escape(varId)}"]`)
+          ?.closest("[data-smart-var-wrap]")?.querySelector(":scope > .se-dropdown");
+        if (freshDropdown) {
+          wrap.appendChild(freshDropdown);
+          freshDropdown.querySelector("[data-smart-var-custom]")?.focus({ preventScroll: true });
+        }
+      }
+    }
   }
 
   function setSmartVarSelections(systemId, varId, values) {
@@ -1121,7 +1458,9 @@ export function createReviewController(deps) {
     if (clean.length) state.selections[systemId][varId] = clean;
     else delete state.selections[systemId][varId];
     setSmartExam(current.draft, state);
-    deps.render();
+    // Surgical: sync the pill + open dropdown in place. The focused
+    // checkbox is never destroyed.
+    syncSmartVarDropdown(systemId, varId);
   }
 
   function toggleSmartVarOption(systemId, varId, option, checked) {
@@ -1193,6 +1532,22 @@ export function createReviewController(deps) {
     setDraft(withSmartExam(current.draft, state));
   }
 
+  // Close the open smart-var dropdown by removing its node — no re-render.
+  // Returns the pill button that owned the dropdown (for focus restore).
+  function closeSmartVarDropdown() {
+    smartExamUi.openVar = null;
+    const exam = deps.byId("reviewContent")?.querySelector(".note-draft-panel [data-smart-exam]");
+    let owner = null;
+    exam?.querySelectorAll(":scope .se-dropdown").forEach((dd) => {
+      owner = dd.closest("[data-smart-var-wrap]")?.querySelector('button[data-action="smart-var-open"]') || owner;
+      dd.remove();
+    });
+    exam?.querySelectorAll('button[data-action="smart-var-open"]').forEach((pill) => {
+      pill.setAttribute("aria-expanded", "false");
+    });
+    return owner;
+  }
+
   // Keyboard: Enter commits a smart-variable custom entry; Escape closes
   // the open inline dropdown.
   function keydown(event) {
@@ -1205,16 +1560,16 @@ export function createReviewController(deps) {
       }
       if (event.key === "Escape") {
         event.preventDefault();
-        smartExamUi.openVar = null;
-        deps.render();
+        const owner = closeSmartVarDropdown();
+        owner?.focus({ preventScroll: true });
         return true;
       }
       return false;
     }
     if (event.key === "Escape" && smartExamUi.openVar) {
       event.preventDefault();
-      smartExamUi.openVar = null;
-      deps.render();
+      const owner = closeSmartVarDropdown();
+      owner?.focus({ preventScroll: true });
       return true;
     }
     return false;
@@ -1237,8 +1592,7 @@ export function createReviewController(deps) {
   function click(target) {
     // Clicking outside the smart-exam editor closes an open inline dropdown.
     if (smartExamUi.openVar && !target.closest?.("[data-smart-exam]")) {
-      smartExamUi.openVar = null;
-      deps.render();
+      closeSmartVarDropdown();
       return true;
     }
     // Pull-from-primary-note button (not a data-action; handled separately).
@@ -1332,7 +1686,14 @@ export function createReviewController(deps) {
     }
     if (action === "baseline-edit") {
       baselineEditorId = button.dataset.baselineResultId || "";
-      render();
+      // Insert just the editor node into the lab row — no re-render.
+      // The row, its checkbox, and the list's scroll position are untouched.
+      const row = button.closest(".lab-row");
+      const freshEditor = freshReviewNode(`[data-baseline-editor="${CSS.escape(baselineEditorId)}"]`);
+      if (row && freshEditor && !row.querySelector("[data-baseline-editor]")) {
+        row.appendChild(freshEditor);
+        freshEditor.querySelector("[data-baseline-field]")?.focus({ preventScroll: true });
+      }
       return true;
     }
     if (action === "confirm-temperature-unit") {
@@ -1349,24 +1710,21 @@ export function createReviewController(deps) {
       return true;
     }
     if (action === "toggle-clinical-data") {
-      const container = deps.byId("reviewContent");
-      // Store scroll position before collapsing; restore after expanding.
-      if (!clinicalDataCollapsed) {
-        // Currently expanded, about to collapse: save scroll position.
-        const dataList = container?.querySelector(".review-data-panel .review-data-list");
-        if (dataList) clinicalDataScrollTop = dataList.scrollTop;
-      }
+      // True surgical toggle: both the rail and the full content are
+      // always in the DOM (see renderDataExplorer). Flipping `hidden`
+      // never destroys the search input, the data list, or their state —
+      // scroll position and the search query survive the toggle.
       clinicalDataCollapsed = !clinicalDataCollapsed;
-      render();
-      // Restore scroll position after expanding.
-      if (!clinicalDataCollapsed && container) {
-        const dataList = container.querySelector(".review-data-panel .review-data-list");
-        if (dataList) {
-          dataList.scrollTop = clinicalDataScrollTop;
-          // Also restore on next frame in case layout isn't complete.
-          requestAnimationFrame(() => { dataList.scrollTop = clinicalDataScrollTop; });
-        }
-      }
+      const panel = target.closest(".review-data-panel");
+      const rail = panel?.querySelector("[data-clinical-data-rail]");
+      const full = panel?.querySelector("[data-clinical-data-full]");
+      if (rail) rail.hidden = !clinicalDataCollapsed;
+      if (full) full.hidden = clinicalDataCollapsed;
+      panel?.classList.toggle("is-collapsed", clinicalDataCollapsed);
+      if (panel) panel.dataset.clinicalDataCollapsed = String(clinicalDataCollapsed);
+      panel?.querySelectorAll('[data-action="toggle-clinical-data"]').forEach((btn) => {
+        btn.setAttribute("aria-expanded", String(!clinicalDataCollapsed));
+      });
       return true;
     }
     if (action === "toggle-objective-group") {
@@ -1375,13 +1733,25 @@ export function createReviewController(deps) {
         if (collapsedObjectiveGroups.has(group)) collapsedObjectiveGroups.delete(group);
         else collapsedObjectiveGroups.add(group);
       }
-      // Surgical: objective groups are in the draft panel only.
-      renderDraftPanelOnly();
+      // True surgical toggle: flip the existing group body's display and
+      // update the toggle button. No re-render — the contenteditable group
+      // text and its undo history survive.
+      const groupEl = button.closest('[data-objective-group]');
+      const body = groupEl?.querySelector(":scope > div");
+      const isCollapsed = collapsedObjectiveGroups.has(group);
+      if (body) body.style.display = isCollapsed ? "none" : "";
+      button.textContent = isCollapsed ? "▶" : "▼";
+      const label = groupEl?.querySelector(".ed-group-label")?.textContent?.replace(/:$/, "") || "group";
+      const toggleLabel = isCollapsed ? `Expand ${label}` : `Collapse ${label}`;
+      button.setAttribute("title", toggleLabel);
+      button.setAttribute("aria-label", toggleLabel);
+      button.setAttribute("aria-expanded", String(!isCollapsed));
       return true;
     }
     if (action === "baseline-cancel") {
       baselineEditorId = "";
-      render();
+      // Remove just the editor node — the row and list are untouched.
+      button.closest("[data-baseline-editor]")?.remove();
       return true;
     }
     if (action === "baseline-save" || action === "baseline-clear") {
@@ -1403,45 +1773,180 @@ export function createReviewController(deps) {
       void saveLabBaseline(analyte, fields);
       return true;
     }
+    // ---- Plan problems, differentials, objective groups: true DOM ops ----
+    // The model updates first; then only the affected nodes are moved,
+    // removed, or inserted. Other cards' contenteditable regions are never
+    // touched, so unsaved edits elsewhere in the note survive every action.
+    // Nothing here re-renders any panel — scroll position is preserved by
+    // construction because scroll owners are never destroyed.
+    const draftPanelNode = () => deps.byId("reviewContent")?.querySelector(".note-draft-panel");
+    const escId = (id) => CSS.escape(String(id ?? ""));
+    const problemCardEl = (panel, id) => panel?.querySelector(`[data-problem-id="${escId(id)}"]`);
+    // Renumber "Problem N" headings after add/remove/move.
+    const renumberProblemCards = (panel) => {
+      panel?.querySelectorAll(".plan-problem-list > [data-problem-id]").forEach((card, i) => {
+        const strong = card.querySelector(".ed-problem-bar > strong");
+        if (strong) strong.textContent = `Problem ${i + 1}`;
+      });
+    };
+
     if (action === "insert-no-acute-events") {
       draft = updateNoteSection(draft, "interval_events", "No acute events overnight.");
-    } else if (action === "add-plan-problem") draft = addPlanProblem(draft);
-    else if (action === "generate-ap") {
+      setDraft(draft);
+      // Refresh just this section's editable region from the model.
+      const region = draftPanelNode()?.querySelector('[data-draft-section="interval_events"]');
+      const fresh = freshDraftNode('[data-draft-section="interval_events"]');
+      if (region && fresh) region.innerHTML = fresh.innerHTML;
+      return true;
+    }
+    if (action === "add-plan-problem") {
+      draft = addPlanProblem(draft);
+      const newProblem = draft.problems[draft.problems.length - 1];
+      setDraft(draft);
+      const panel = draftPanelNode();
+      const list = panel?.querySelector(".plan-problem-list");
+      const freshCard = newProblem && freshDraftNode(`[data-problem-id="${escId(newProblem.id)}"]`);
+      if (list && freshCard) {
+        list.querySelectorAll(":scope > .ed-empty, :scope > .ed-hint").forEach((node) => node.remove());
+        list.appendChild(freshCard);
+        renumberProblemCards(panel);
+        freshCard.scrollIntoView({ block: "nearest" });
+      }
+      return true;
+    }
+    if (action === "generate-ap") {
       openApConfirm(button.dataset.problemId);
       return true;
-    } else if (action === "ap-confirm-cancel") {
+    }
+    if (action === "ap-confirm-cancel") {
       apConfirmState = null;
-      render();
+      // Remove just the modal node — no re-render.
+      draftPanelNode()?.querySelector("[data-ap-confirm-overlay]")?.remove();
       return true;
-    } else if (action === "ap-confirm-generate") {
+    }
+    if (action === "ap-confirm-generate") {
       void runApGeneration(button.dataset.problemId);
       return true;
     }
-    else if (action === "remove-plan-problem") draft = removePlanProblem(draft, button.dataset.problemId);
-    else if (action === "move-plan-problem") draft = reorderPlanProblems(draft, moveId(draft.problems.map((entry) => entry.id), button.dataset.problemId, button.dataset.direction));
-    else if (action === "add-differential") draft = addDifferential(draft, button.dataset.problemId);
-    else if (action === "remove-differential") draft = removeDifferential(draft, button.dataset.problemId, button.dataset.differentialId);
-    else if (action === "move-differential") {
-      const problem = draft.problems.find((entry) => entry.id === button.dataset.problemId);
-      draft = reorderDifferentials(draft, button.dataset.problemId, moveId(problem?.differentials.map((entry) => entry.id) || [], button.dataset.differentialId, button.dataset.direction));
-    } else if (action === "remove-objective-selection") {
-      const candidate = (current.index.objectiveCandidates || current.index.candidates).find((entry) => entry.id === button.dataset.selectionId);
+    if (action === "remove-plan-problem") {
+      const problemId = button.dataset.problemId;
+      draft = removePlanProblem(draft, problemId);
+      setDraft(draft);
+      const panel = draftPanelNode();
+      problemCardEl(panel, problemId)?.remove();
+      const list = panel?.querySelector(".plan-problem-list");
+      if (list && !list.querySelector(":scope > [data-problem-id]")) {
+        // Last problem removed: restore the empty state from a fresh render.
+        const freshList = freshDraftNode(".plan-problem-list");
+        if (freshList) list.replaceWith(freshList);
+      } else if (panel) {
+        renumberProblemCards(panel);
+      }
+      return true;
+    }
+    if (action === "move-plan-problem") {
+      const problemId = button.dataset.problemId;
+      const newOrder = moveId(draft.problems.map((entry) => entry.id), problemId, button.dataset.direction);
+      draft = reorderPlanProblems(draft, newOrder);
+      setDraft(draft);
+      const panel = draftPanelNode();
+      const list = panel?.querySelector(".plan-problem-list");
+      const card = problemCardEl(panel, problemId);
+      if (list && card) {
+        // Reorder the live nodes to match the model order — a true DOM move.
+        for (const id of newOrder) {
+          const node = list.querySelector(`:scope > [data-problem-id="${escId(id)}"]`);
+          if (node) list.appendChild(node);
+        }
+        renumberProblemCards(panel);
+        card.scrollIntoView({ block: "nearest" });
+      }
+      return true;
+    }
+    if (action === "add-differential") {
+      const problemId = button.dataset.problemId;
+      draft = addDifferential(draft, problemId);
+      const problem = draft.problems.find((entry) => entry.id === problemId);
+      const newDiff = problem?.differentials[problem.differentials.length - 1];
+      setDraft(draft);
+      const panel = draftPanelNode();
+      const box = problemCardEl(panel, problemId)?.querySelector(".ed-differentials");
+      const freshDiff = newDiff && freshDraftNode(`[data-differential-id="${escId(newDiff.id)}"]`);
+      if (box && freshDiff) {
+        box.querySelector(":scope > .ed-empty")?.remove();
+        box.appendChild(freshDiff);
+        freshDiff.scrollIntoView({ block: "nearest" });
+      }
+      return true;
+    }
+    if (action === "remove-differential") {
+      const { problemId, differentialId } = button.dataset;
+      draft = removeDifferential(draft, problemId, differentialId);
+      setDraft(draft);
+      const panel = draftPanelNode();
+      const card = problemCardEl(panel, problemId);
+      card?.querySelector(`.ed-differentials [data-differential-id="${escId(differentialId)}"]`)?.remove();
+      const box = card?.querySelector(".ed-differentials");
+      if (box && !box.querySelector(":scope > [data-differential-id]")) {
+        const freshBox = freshDraftNode(`[data-problem-id="${escId(problemId)}"] .ed-differentials`);
+        if (freshBox) box.replaceWith(freshBox);
+      }
+      return true;
+    }
+    if (action === "move-differential") {
+      const { problemId, differentialId, direction } = button.dataset;
+      const problem = draft.problems.find((entry) => entry.id === problemId);
+      const newOrder = moveId(problem?.differentials.map((entry) => entry.id) || [], differentialId, direction);
+      draft = reorderDifferentials(draft, problemId, newOrder);
+      setDraft(draft);
+      const panel = draftPanelNode();
+      const box = problemCardEl(panel, problemId)?.querySelector(".ed-differentials");
+      const node = box?.querySelector(`:scope > [data-differential-id="${escId(differentialId)}"]`);
+      if (box && node) {
+        for (const id of newOrder) {
+          const entry = box.querySelector(`:scope > [data-differential-id="${escId(id)}"]`);
+          if (entry) box.appendChild(entry);
+        }
+        box.querySelectorAll(":scope > [data-differential-id]").forEach((diffNode, i) => {
+          const strong = diffNode.querySelector(".ed-diff-bar > strong");
+          if (strong) strong.textContent = `#${i + 1}`;
+        });
+        node.scrollIntoView({ block: "nearest" });
+      }
+      return true;
+    }
+    if (action === "remove-objective-selection") {
+      const selectionId = button.dataset.selectionId;
+      const candidate = (current.index.objectiveCandidates || current.index.candidates).find((entry) => entry.id === selectionId);
       // Removing a default-on vital or medication remembers the choice so the
       // auto-include pass does not silently re-add it.
       draft = isDefaultOn(candidate)
-        ? deselectObjectiveBlockWithMemory(draft, button.dataset.selectionId)
-        : deselectObjectiveBlock(draft, button.dataset.selectionId);
-    } else if (action === "remove-objective-group") {
-      draft = removeObjectiveGroupWithMemory(draft, button.dataset.group);
-    } else if (action === "refresh-objective-group") {
-      draft = refreshObjectiveGroup(draft, button.dataset.group);
-    } else return false;
-    setDraft(draft);
-    // Surgical: all these actions (move/remove problem, differentials,
-    // objective groups) only affect the draft panel. The clinical data
-    // panel is untouched, preserving its scroll position.
-    renderDraftPanelOnly();
-    return true;
+        ? deselectObjectiveBlockWithMemory(draft, selectionId)
+        : deselectObjectiveBlock(draft, selectionId);
+      setDraft(draft);
+      // Uncheck the corresponding clinical-data checkbox directly.
+      const box = deps.byId("reviewContent")?.querySelector(`[data-objective-selection-id="${escId(selectionId)}"]`);
+      if (box) box.checked = false;
+      syncObjectiveDom(draft, [], [selectionId]);
+      return true;
+    }
+    if (action === "remove-objective-group") {
+      const group = button.dataset.group;
+      draft = removeObjectiveGroupWithMemory(draft, group);
+      setDraft(draft);
+      // The group is deleted in the model — remove its node directly.
+      draftPanelNode()?.querySelector(`[data-objective-group="${escId(group)}"]`)?.remove();
+      return true;
+    }
+    if (action === "refresh-objective-group") {
+      const group = button.dataset.group;
+      draft = refreshObjectiveGroup(draft, group);
+      setDraft(draft);
+      // Patch just this group's node from a fresh in-memory render.
+      patchDraftRegion(`[data-objective-group="${escId(group)}"]`);
+      return true;
+    }
+    return false;
   }
 
   return Object.freeze({ change, click, input, keydown, open, prepare, render, saveDraft, toggle });

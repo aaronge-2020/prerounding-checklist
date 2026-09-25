@@ -158,7 +158,7 @@ import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./
 import { createReviewPresentation } from "./review/presentation.js?v=20260924-assessment-plan-v1&trend=concise-v3";
 import { createReviewController } from "./review/controller.js?v=20260924-assessment-plan-v1&labs=analyte-selection-v3";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
-import { createChecklistSearchController, preserveChecklistScrollOnRender, toggleItemNote } from "./checklist/search.js?v=20260921-checklist-scroll-position&focus=prevent-scroll-v2";
+import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260921-checklist-scroll-position&focus=prevent-scroll-v2";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260921-medication-card-v4";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
@@ -4054,21 +4054,24 @@ function handleChange(event) {
 }
 
 async function updateChecklistAnswer(input) {
-  const rerenderAtCurrentPosition = preserveChecklistScrollOnRender(input);
+  const itemId = input.name;
   if (app.phoneBundle) {
-    const item = app.phoneBundle.checklist.items.find((entry) => entry.id === input.name);
+    const item = app.phoneBundle.checklist.items.find((entry) => entry.id === itemId);
     app.phoneAnswers = setChecklistChoice(
       app.phoneAnswers,
       item,
       input.value,
       input.tagName === "SELECT" ? Boolean(input.value) : input.checked
     );
-    phoneSession.saveAutosave(); rerenderAtCurrentPosition(renderPhoneChecklist);
+    phoneSession.saveAutosave();
+    // Surgical: the input is already in the correct visual state.
+    // Update only the status dot — no re-render, no scroll loss.
+    updateChecklistItemStatus(itemId, app.phoneAnswers[itemId]);
     return;
   }
   const patient = active();
   const day = selectedChecklistDay(patient);
-  const item = day?.checklistSnapshot?.items.find((entry) => entry.id === input.name);
+  const item = day?.checklistSnapshot?.items.find((entry) => entry.id === itemId);
   if (!item) return;
   const answers = setChecklistChoice(
     day.answers || {},
@@ -4079,7 +4082,38 @@ async function updateChecklistAnswer(input) {
   const nextDay = { ...day, answers, updatedAt: new Date().toISOString() };
   app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
   await persistVault("Checklist answer saved.");
-  rerenderAtCurrentPosition(renderChecklist);
+  // ROOT FIX: Update only the answered item's status dot and the section
+  // count directly. Do NOT re-render the checklist (which destroys the
+  // inner .checklist-scroll scroller and loses its position). The model
+  // is already updated above; the input itself is already correct.
+  updateChecklistItemStatus(itemId, answers[itemId]);
+}
+
+// Update a checklist item's status dot and its section's completed count
+// after an answer change — no re-render.
+function updateChecklistItemStatus(itemId, answer) {
+  const container = byId("checklistContent");
+  if (!container) return;
+  const article = container.querySelector(`[data-item-id="${CSS.escape(itemId)}"]`);
+  if (!article) return;
+  const dot = article.querySelector(".status-dot");
+  if (dot) dot.textContent = answer?.selected?.length || answer?.note ? "✓" : "○";
+  const section = article.closest(".checklist-system");
+  if (section) {
+    const countSpan = section.querySelector(".checklist-system-header .muted");
+    if (countSpan) {
+      const items = section.querySelectorAll("[data-item-id]");
+      // Recompute from the vault (source of truth), not the DOM.
+      const day = selectedChecklistDay(active());
+      const answers = app.phoneBundle ? app.phoneAnswers : day?.answers || {};
+      let completed = 0;
+      for (const el of items) {
+        const ans = answers[el.dataset.itemId];
+        if (ans?.selected?.length || ans?.note) completed++;
+      }
+      countSpan.textContent = `${completed} / ${items.length}`;
+    }
+  }
 }
 
 async function fillChecklistNegatives({ kind = "", system = "" } = {}) {
@@ -4265,18 +4299,22 @@ function handleInput(event) {
     phoneSession.saveAutosave();
     const returnBundle = byId("phoneReturnBundle");
     if (returnBundle) returnBundle.value = phoneTransfer.currentReturnCode();
+    updateChecklistItemStatus(itemId, app.phoneAnswers[itemId]);
     return;
   }
   const patient = active();
   const day = selectedChecklistDay(patient);
   if (!day) return;
+  const answers = setChecklistNote(day.answers || {}, itemId, event.target.value);
   const nextDay = {
     ...day,
-    answers: setChecklistNote(day.answers || {}, itemId, event.target.value),
+    answers,
     updatedAt: new Date().toISOString()
   };
   app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
   void persistVault("Checklist note saved.");
+  // Update the status dot (a note counts as "answered") — no re-render.
+  updateChecklistItemStatus(itemId, answers[itemId]);
 }
 
 function handleToggle(event) {

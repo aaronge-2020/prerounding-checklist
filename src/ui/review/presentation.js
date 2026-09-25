@@ -373,7 +373,9 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       }
       return hints.join("");
     })();
-    const bodyHtml = clinicalDataCollapsed ? "" : `
+    // Built unconditionally: the collapsed rail and the full content are
+    // both rendered so the collapse toggle never needs a re-render.
+    const bodyHtml = `
       <div class="review-filter-row">
         <label>Search patient data<input type="search" id="reviewDataSearch" value="${escapeHtml(query)}" placeholder="${category === "labs" ? "WBC, CBC, metabolic panel…" : "WBC, ceftriaxone, CT Head…"}" autocomplete="off"></label>
         <label>Show<select id="reviewDataCategory"><option value="all">All clinical data</option>${index.groups.map((group) => `<option value="${escapeHtml(group.id)}" ${category === group.id ? "selected" : ""}>${escapeHtml(group.label)} (${groupCount(index, group.id)})</option>`).join("")}</select></label>
@@ -381,17 +383,22 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       <p class="review-filter-summary" aria-live="polite">${matchCount} matching item${matchCount === 1 ? "" : "s"}</p>
       ${zeroYieldHint}
       <div class="review-data-list">${sections.length ? sections.join("") : `<div class="empty-state">No saved clinical data match this search.</div>`}</div>`;
-    if (clinicalDataCollapsed) {
-      // Horizontal collapse: slim rail with just an expand button, so the
-      // draft note takes the full width.
-      return `<section class="review-data-panel panel is-collapsed" aria-labelledby="reviewDataHeading">
-      <button type="button" class="clinical-data-rail-toggle" data-action="toggle-clinical-data" title="Show clinical data" aria-label="Show clinical data" aria-expanded="false">▶</button>
-      <span class="clinical-data-rail-label" aria-hidden="true">Clinical data</span>
-    </section>`;
-    }
-    return `<section class="review-data-panel panel" aria-labelledby="reviewDataHeading">
+    // Both the collapsed rail and the full content are always rendered;
+    // the controller toggles `hidden` between them. Collapsing never
+    // re-renders, so scroll position and focus survive the toggle.
+    // (bodyHtml is built unconditionally above for this reason.)
+    const railHtml = `
+      <div class="clinical-data-rail" data-clinical-data-rail${clinicalDataCollapsed ? "" : " hidden"}>
+        <button type="button" class="clinical-data-rail-toggle" data-action="toggle-clinical-data" title="Show clinical data" aria-label="Show clinical data" aria-expanded="false">▶</button>
+        <span class="clinical-data-rail-label" aria-hidden="true">Clinical data</span>
+      </div>`;
+    const fullHtml = `
+      <div class="clinical-data-full" data-clinical-data-full${clinicalDataCollapsed ? " hidden" : ""}>
       <div class="section-heading"><div><h2 id="reviewDataHeading">Clinical data</h2><p class="muted">Vitals and medications are in the note automatically — uncheck to remove. Check labs or results to add them.</p></div><button type="button" class="ed-mini" data-action="toggle-clinical-data" title="${toggleLabel}" aria-label="${toggleLabel}" aria-expanded="${!clinicalDataCollapsed}">${toggleIcon}</button></div>
       ${bodyHtml}
+      </div>`;
+    return `<section class="review-data-panel panel${clinicalDataCollapsed ? " is-collapsed" : ""}" aria-labelledby="reviewDataHeading" data-clinical-data-collapsed="${clinicalDataCollapsed ? "true" : "false"}">
+      ${railHtml}${fullHtml}
     </section>`;
   }
 
@@ -690,7 +697,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       + (objectiveBlocks || `<p class="ed-empty">Choose items from Clinical data to add Objective content.</p>`)
       + `<div class="ed-sub"><span class="ed-sub-label">Student-authored Objective text</span>${editorRegion("data-draft-objective-manual", draft.objective?.manual, "Optional exam findings, intake/output, or other directly observed data")}</div>`;
 
-    const planBody = `<p class="ed-hint">Order problems by decisional importance. Add only reasoning and actions you support.</p><div class="plan-problem-list">${draft.problems.map((problem, index) => renderProblemEditor(problem, index, guidanceFor, { generatingApProblemId })).join("") || `<p class="ed-empty">No problems added yet.</p><p class="ed-hint">If you pulled from the primary note and expected problems here, the Assessment &amp; Plan may not have parsed — use the ⤓ pull button on the Plan section header or add a problem manually.</p>`}</div>${apConfirm ? renderApConfirmModal(apConfirm) : ""}`;
+    const planBody = `<p class="ed-hint">Order problems by decisional importance. Add only reasoning and actions you support.</p><div class="plan-problem-list" data-plan-problem-list>${draft.problems.map((problem, index) => renderProblemEditor(problem, index, guidanceFor, { generatingApProblemId })).join("") || `<p class="ed-empty">No problems added yet.</p><p class="ed-hint">If you pulled from the primary note and expected problems here, the Assessment &amp; Plan may not have parsed — use the ⤓ pull button on the Plan section header or add a problem manually.</p>`}</div>${apConfirm ? renderApConfirmModal(apConfirm) : ""}`;
 
     return `<section class="note-draft-panel panel" aria-labelledby="draftNoteHeading">
       <div class="note-editor-toolbar">
