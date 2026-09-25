@@ -1712,12 +1712,15 @@ export function createReviewController(deps) {
     if (action === "toggle-clinical-data") {
       // True surgical toggle: both the rail and the full content are
       // always in the DOM (see renderDataExplorer). Flipping `hidden`
-      // never destroys the search input, the data list, or their state —
-      // scroll position and the search query survive the toggle.
+      // never destroys the search input, the data list, or their state.
+      // Save/restore scrollTop across the toggle since collapsing changes
+      // the panel height dramatically.
       clinicalDataCollapsed = !clinicalDataCollapsed;
       const panel = target.closest(".review-data-panel");
       const rail = panel?.querySelector("[data-clinical-data-rail]");
       const full = panel?.querySelector("[data-clinical-data-full]");
+      const scroller = panel?.querySelector(".review-data-list");
+      const savedScroll = scroller ? scroller.scrollTop : 0;
       if (rail) rail.hidden = !clinicalDataCollapsed;
       if (full) full.hidden = clinicalDataCollapsed;
       panel?.classList.toggle("is-collapsed", clinicalDataCollapsed);
@@ -1725,6 +1728,7 @@ export function createReviewController(deps) {
       panel?.querySelectorAll('[data-action="toggle-clinical-data"]').forEach((btn) => {
         btn.setAttribute("aria-expanded", String(!clinicalDataCollapsed));
       });
+      if (scroller && !clinicalDataCollapsed) scroller.scrollTop = savedScroll;
       return true;
     }
     if (action === "toggle-objective-group") {
@@ -1851,15 +1855,15 @@ export function createReviewController(deps) {
       setDraft(draft);
       const panel = draftPanelNode();
       const list = panel?.querySelector(".plan-problem-list");
-      const card = problemCardEl(panel, problemId);
-      if (list && card) {
+      if (list) {
         // Reorder the live nodes to match the model order — a true DOM move.
+        // No scrollIntoView: the user just clicked this card, it's already
+        // in view, and forcing scroll resets the panel position.
         for (const id of newOrder) {
           const node = list.querySelector(`:scope > [data-problem-id="${escId(id)}"]`);
           if (node) list.appendChild(node);
         }
         renumberProblemCards(panel);
-        card.scrollIntoView({ block: "nearest" });
       }
       return true;
     }
@@ -1911,7 +1915,8 @@ export function createReviewController(deps) {
           const strong = diffNode.querySelector(".ed-diff-bar > strong");
           if (strong) strong.textContent = `#${i + 1}`;
         });
-        node.scrollIntoView({ block: "nearest" });
+        // No scrollIntoView: the user just clicked this differential, it's
+        // already in view.
       }
       return true;
     }
