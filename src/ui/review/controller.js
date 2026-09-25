@@ -388,36 +388,41 @@ export function createReviewController(deps) {
   function withPreservedViewScroll(container, update) {
     const canPreserve = typeof window !== "undefined" && typeof document !== "undefined";
     if (!canPreserve) { update(); return; }
-    // Snapshot every scrollable ancestor, not just .view: below the 1040px
-    // breakpoint the .view is overflow:visible and the document itself is the
-    // scroller, so preserving only .view.scrollTop loses the position.
-    // Also snapshot all scrollable descendants of the container's parent —
-    // a nested scroller inside the review content (e.g. a scrollable sheet)
-    // would otherwise be missed.
-    const owners = [];
+    // Snapshot scroll positions by SELECTOR, not element reference: update()
+    // does container.innerHTML = ..., which destroys all inner elements.
+    // Holding old element references would restore to disconnected nodes.
+    const snapshot = [];
     const seen = new Set();
+    const selectorFor = (el) => {
+      if (el === document.scrollingElement || el === document.documentElement) return ":root-scroller";
+      if (el.id) return "#" + el.id;
+      // Use class-based selector; prefer the most specific stable class
+      const cls = (el.className?.baseVal ?? el.className ?? "").toString().trim().split(/\s+/).filter(Boolean);
+      if (cls.length) return el.tagName.toLowerCase() + "." + cls.slice(0, 3).join(".");
+      return null;
+    };
     const consider = (el) => {
       if (!el || seen.has(el)) return;
       seen.add(el);
       let overflowY = "";
       try { overflowY = window.getComputedStyle(el).overflowY; } catch { return; }
       const isDocScroller = el === document.scrollingElement || el === document.documentElement;
-      if ((/(auto|scroll|overlay)/.test(overflowY) || isDocScroller) && el.scrollHeight > el.clientHeight + 1) {
-        owners.push(el);
+      const isScrollable = /(auto|scroll|overlay)/.test(overflowY) || isDocScroller;
+      if (isScrollable && el.scrollHeight > el.clientHeight + 1) {
+        const sel = selectorFor(el);
+        if (sel) snapshot.push({ sel, top: el.scrollTop, left: el.scrollLeft });
       }
     };
-    // Ancestors of the container.
+    // Ancestors of the container (including container itself).
     for (let current = container; current; current = current.parentElement) consider(current);
     // Document scroller (covers the narrow-viewport case).
     consider(document.scrollingElement);
     consider(document.documentElement);
-    // Scrollable descendants within the container's parent subtree — catches
-    // nested scrollers that are siblings or children of the container.
-    const scope = container?.parentElement || document.body;
-    if (scope?.querySelectorAll) {
-      for (const el of scope.querySelectorAll("*")) consider(el);
+    // Scrollable descendants within the container subtree — catches nested
+    // scrollers like the clinical-data list.
+    if (container?.querySelectorAll) {
+      for (const el of container.querySelectorAll("*")) consider(el);
     }
-    const snapshot = owners.map((owner) => ({ owner, top: owner.scrollTop, left: owner.scrollLeft }));
     // Blur the focused control before replacing DOM: when a checkbox is
     // removed mid-focus the browser can reset scroll as focus falls back.
     const active = document.activeElement;
@@ -426,11 +431,19 @@ export function createReviewController(deps) {
     }
     update();
     const restore = () => {
-      for (const { owner, top, left } of snapshot) {
-        if (!owner.isConnected && owner !== document.scrollingElement && owner !== document.documentElement) continue;
+      for (const { sel, top, left } of snapshot) {
         try {
-          if (owner.scrollHeight > owner.clientHeight) owner.scrollTop = top;
-          if (owner.scrollWidth > owner.clientWidth) owner.scrollLeft = left;
+          let target = null;
+          if (sel === ":root-scroller") {
+            target = document.scrollingElement || document.documentElement;
+          } else if (sel.startsWith("#")) {
+            target = document.getElementById(sel.slice(1));
+          } else {
+            target = document.querySelector(sel);
+          }
+          if (!target) continue;
+          if (target.scrollHeight > target.clientHeight) target.scrollTop = top;
+          if (target.scrollWidth > target.clientWidth) target.scrollLeft = left;
         } catch { /* ignore */ }
       }
     };
