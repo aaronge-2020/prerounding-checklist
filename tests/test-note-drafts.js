@@ -273,7 +273,10 @@ const options = { now: fixedNow, idFactory: fixedId };
     noteGroupKey: "",
     noteGroupLabel: "",
     noteLabel: "",
-    noteDetail: ""
+    noteDetail: "",
+    noteRange: "",
+    noteMean: "",
+    needsFreeText: false
   });
 
   draft = editObjectiveBlock(draft, "lab:wbc", "WBC improving to 11.0 K/uL.", { now: fixedNow });

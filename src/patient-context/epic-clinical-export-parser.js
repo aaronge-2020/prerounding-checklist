@@ -3,6 +3,10 @@ import {
   laboratoryAbnormality,
   withClinicalRepresentations
 } from "./structured-clinical-data.js?v=20260921-medication-card-v4";
+import {
+  needsFreeTextResult,
+  freeTextResultCategory
+} from "./free-text-results.js";
 
 const EPIC_RESULT_TIMESTAMP = /^(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})(?:[ T,]+(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?|\d{4}))?$/i;
 const RESULT_VALUE = /^(?:[-+]?\d|[<>]=?\s*[-+]?\d|positive\b|negative\b|detected\b|not detected\b|reactive\b|nonreactive\b|pending\b|present\b|absent\b|rpt\b)/i;
@@ -174,13 +178,33 @@ function renderEpicResults(value) {
   }
   legends.forEach((legend) => consumed.add(legend.index));
 
-  const renderedGroups = groups
-    .filter((group) => group.results.length)
+  // Free-text studies whose pasted value is just a status/placeholder (e.g.
+  // "CT Abdomen/Pelvis: RCT") are split out of the laboratory table. Each
+  // becomes its own "Other results" source section — pre-labeled and flagged —
+  // so the student pastes the actual report text into a ready-made slot
+  // instead of manually creating a new source.
+  const flaggedPairs = [];
+  const labGroups = groups
+    .map((group) => {
+      const labResults = [];
+      for (const result of group.results) {
+        if (needsFreeTextResult(result.label, result.value)) flaggedPairs.push(result);
+        else labResults.push(result);
+      }
+      return { ...group, results: labResults };
+    })
+    .filter((group) => group.results.length);
+  const labResultCount = labGroups.reduce((total, group) => total + group.results.length, 0);
+
+  const renderedGroups = labGroups
     .map((group) => {
       const rows = group.results.map((result) => `Result. ${result.label}: ${result.value}`);
       return [`Collected. ${group.collected || "Not included in pasted source."}`, ...rows].join("\n");
     });
-  const parts = [`Laboratory and diagnostic results parsed from Epic export.\n\n${renderedGroups.join("\n\n")}`];
+  const parts = [];
+  if (renderedGroups.length) {
+    parts.push(`Laboratory and diagnostic results parsed from Epic export.\n\n${renderedGroups.join("\n\n")}`);
+  }
   if (legends.length) parts.push(`Reported flag definitions.\n${legends.map((legend) => `${legend.code}: ${legend.meaning}`).join("\n")}`);
   const remainder = unconsumedText(lines, consumed);
   addUnparsedSection(parts, "Unparsed Epic result text preserved as pasted.", remainder);
@@ -192,7 +216,7 @@ function renderEpicResults(value) {
     sourceSystem: "Epic",
     formatId,
     formatLabel,
-    groups: groups.filter((group) => group.results.length).map((group, groupIndex) => ({
+    groups: labGroups.map((group, groupIndex) => ({
       id: `collection_${groupIndex + 1}`,
       label: "Laboratory results",
       timestamp: group.collected,
@@ -217,7 +241,7 @@ function renderEpicResults(value) {
     formatLabel,
     suggestedSourceKind: remainder ? "" : "laboratory_results",
     itemCount: results.length,
-    summary: `${plural(results.length, "result")} across ${plural(renderedGroups.length, "collection group")}${legends.length ? `; ${plural(legends.length, "flag definition")}` : ""}${remainder ? "; unrecognized text preserved" : ""}.`,
+    summary: `${plural(results.length, "result")} across ${plural(renderedGroups.length, "collection group")}${legends.length ? `; ${plural(legends.length, "flag definition")}` : ""}${flaggedPairs.length ? `; ${plural(flaggedPairs.length, "free-text result")} split out for report paste` : ""}${remainder ? "; unrecognized text preserved" : ""}.`,
     preservedUnparsedText: Boolean(remainder),
     unparsedText: remainder,
     flagDefinitions: legends.map(({ code, meaning }) => ({ code, meaning }))
@@ -227,12 +251,47 @@ function renderEpicResults(value) {
   // output that distinguishes parsed results from unparsed text.
   const outputText = parts.join("\n\n");
   const flagText = legends.length ? `\nFlags: ${legends.map(({ code, meaning }) => `${code}=${meaning}`).join(";")}` : "";
+  // Sections: the laboratory table (when any true labs exist) plus one
+  // "Other results" section per flagged free-text study. The admissions tab
+  // saves each section as its own source, so flagged studies arrive
+  // pre-labeled and flagged — the student only pastes the report text.
+  const sections = [];
+  if (labResultCount) {
+    sections.push({
+      id: "laboratory_results_1",
+      formatId,
+      formatLabel,
+      sourceKind: "laboratory_results",
+      outputText,
+      canonicalPromptText: `${represented.promptText}${flagText}`,
+      summary: `${plural(labResultCount, "laboratory result")} across ${plural(renderedGroups.length, "collection group")}.`,
+      itemCount: labResultCount
+    });
+  }
+  flaggedPairs.forEach((pair, index) => {
+    const studyLabel = pair.label;
+    const pairText = `${studyLabel}: ${pair.value}`;
+    sections.push({
+      id: `free_text_result_${index + 1}`,
+      formatId: "epic_free_text_result",
+      formatLabel: studyLabel,
+      sourceKind: "results",
+      resultCategory: freeTextResultCategory(studyLabel),
+      resultLabel: studyLabel,
+      needsFreeText: true,
+      outputText: pairText,
+      canonicalPromptText: pairText,
+      summary: "Pasted as a status only — paste the full report text.",
+      itemCount: 1
+    });
+  });
+  const sectioned = sections.length > 1 || (sections.length === 1 && flaggedPairs.length) ? { sections } : {};
   if (!remainder) {
     const promptText = `${represented.promptText}${flagText}`;
-    return { ...represented, promptText, outputText };
+    return { ...represented, promptText, outputText, ...sectioned };
   }
   const promptText = `${represented.promptText}${flagText}\n${remainder}`;
-  return { ...represented, promptText, outputText };
+  return { ...represented, promptText, outputText, ...sectioned };
 }
 
 function marSection(text) {
@@ -688,11 +747,14 @@ function mixedSection({ kind, text, result, index }) {
       preservedUnparsedText: true
     };
   }
-  const sourceKind = kind === "mar" ? "medication_activity" : kind === "vitals" ? "vital_signs" : "laboratory_results";
+  // A sub-section produced by an inner parser (e.g. a free-text result split
+  // out of Epic results) carries its own sourceKind — honor it instead of
+  // the segment-level default.
+  const sourceKind = result.sourceKind || (kind === "mar" ? "medication_activity" : kind === "vitals" ? "vital_signs" : "laboratory_results");
   const compactSource = text.trim();
   const promptText = String(result.outputText || "").length <= compactSource.length ? result.outputText : compactSource;
   return {
-    id: `${kind}_${index + 1}`,
+    id: typeof index === "string" ? `${kind}_${index}` : `${kind}_${index + 1}`,
     ...result,
     sourceKind,
     promptText,
@@ -725,8 +787,20 @@ function renderMixedEpicExport(value) {
   const sections = segments
     .map((segment, index) => {
       const text = allLines.slice(segment.start, segment.end).join("\n").trim();
-      return text ? mixedSection({ kind: segment.kind, text, result: parsers[segment.kind](text), index }) : null;
+      if (!text) return null;
+      const inner = parsers[segment.kind](text);
+      if (!inner) return null;
+      // An inner parser may split its segment into sub-sections (e.g. Epic
+      // results pulls free-text studies out as their own "Other results"
+      // sections). Expand each as its own source section.
+      if (Array.isArray(inner.sections) && inner.sections.length) {
+        return inner.sections.map((sub, subIndex) =>
+          mixedSection({ kind: segment.kind, text: sub.outputText || text, result: sub, index: `${index}_${subIndex}` })
+        );
+      }
+      return mixedSection({ kind: segment.kind, text, result: inner, index });
     })
+    .flat()
     .filter(Boolean);
   const recognizedSections = sections.filter((section) => section.formatId !== "unparsed_epic_section");
   if (sections.length < 2 || recognizedSections.length < 2) return null;

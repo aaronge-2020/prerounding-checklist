@@ -265,9 +265,12 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     if (!matchesQuery(candidate.searchText, query)) return "";
     const meta = [candidate.resultCategory, candidate.resultDate, candidate.source?.dayLabel, candidate.context].filter(Boolean).join(" · ");
     const excerpt = String(candidate.text || "").replace(/\s+/g, " ").trim().slice(0, 140);
-    return `<li class="compact-row ${selected ? "is-selected" : ""}" data-review-candidate="${escapeHtml(candidate.id)}">
+    const needsFlag = candidate.needsFreeText
+      ? `<span class="compact-flag" title="Only a status was pasted — open this source in the admissions tab and paste the full report text.">⚠️ needs report text</span>`
+      : "";
+    return `<li class="compact-row ${selected ? "is-selected" : ""} ${candidate.needsFreeText ? "needs-free-text" : ""}" data-review-candidate="${escapeHtml(candidate.id)}">
       <label class="compact-row-check"><input type="checkbox" data-objective-selection-id="${escapeHtml(candidate.id)}" aria-label="Include ${escapeHtml(candidate.name)} in the note" ${selected ? "checked" : ""}></label>
-      <span class="compact-row-name"><strong>${escapeHtml(candidate.name)}</strong>${meta ? `<small>${escapeHtml(meta)}</small>` : ""}${excerpt ? `<small class="compact-row-excerpt">${escapeHtml(excerpt)}${candidate.text.length > 140 ? "…" : ""}</small>` : ""}</span>
+      <span class="compact-row-name"><strong>${escapeHtml(candidate.name)}</strong>${needsFlag}${meta ? `<small>${escapeHtml(meta)}</small>` : ""}${excerpt ? `<small class="compact-row-excerpt">${escapeHtml(excerpt)}${candidate.text.length > 140 ? "…" : ""}</small>` : ""}</span>
     </li>`;
   }
 
@@ -401,9 +404,12 @@ export function createReviewPresentation({ escapeHtml, icon }) {
             const label = String(block.noteLabel || "").trim();
             const detail = String(block.noteDetail || "").trim();
             const text = label && detail ? `${label} ${detail}` : (label || detail || String(block.generatedText || "").trim());
-            // Vitals only: append 24h range and mean as subtle secondary info.
+            // Flagged free-text results show a paste prompt until the report
+            // text is added; vitals show 24h range and mean as secondary info.
             let secondaryHtml = "";
-            if (isVitals) {
+            if (block.needsFreeText && block.state !== "edited") {
+              secondaryHtml = ` <span class="ed-flag-inline" title="Only a status was pasted — open this source in the admissions tab and paste the full report text.">⚠️ paste report text</span>`;
+            } else if (isVitals) {
               const range = String(block.noteRange || "").trim();
               const mean = String(block.noteMean || "").trim();
               const secondary = [];
@@ -529,11 +535,18 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, patientRequiredMessage }) {
     if (!draft) return patientRequiredMessage;
     const selectedIds = new Set((draft.objective?.selectedBlocks || []).map((block) => block.selectionId));
+    // Banner calling out free-text results that pasted as a status only —
+    // the student needs to paste the actual report text for these.
+    const flaggedResults = (index.diagnosticResults || []).filter((candidate) => candidate.needsFreeText);
+    const flaggedBanner = flaggedResults.length
+      ? `<div class="review-flag-banner" role="alert"><strong>⚠️ ${flaggedResults.length} result${flaggedResults.length === 1 ? "" : "s"} need${flaggedResults.length === 1 ? "s" : ""} report text:</strong> ${flaggedResults.map((candidate) => escapeHtml(candidate.name)).join(", ")}. <span class="muted">Open each in the admissions tab and paste the full report.</span></div>`
+      : "";
     return `<div class="review-workspace">
       <header class="review-hero panel">
         <div><span class="eyebrow">${escapeHtml(patientLabel)}</span><h1 id="review-heading">Review Data / Draft Note</h1><p class="review-one-liner ${oneLiner ? "" : "is-empty"}">${escapeHtml(oneLiner || "One-liner not entered yet. You can continue and add it in the draft.")}</p></div>
         <label>Note packet<select id="reviewPacketSelect">${packets.map((packet) => `<option value="${escapeHtml(packet.id)}" ${packet.id === selectedPacketId ? "selected" : ""}>${escapeHtml(packet.label)}</option>`).join("")}</select></label>
       </header>
+      ${flaggedBanner}
       <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups })}</div>
     </div>`;
   }

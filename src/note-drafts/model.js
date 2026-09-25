@@ -186,13 +186,17 @@ export function normalizeObjectiveBlock(block) {
     noteGroupKey: text(block?.noteGroupKey),
     noteGroupLabel: text(block?.noteGroupLabel),
     noteLabel: text(block?.noteLabel),
-    noteDetail: text(block?.noteDetail)
+    noteDetail: text(block?.noteDetail),
+    noteRange: text(block?.noteRange),
+    noteMean: text(block?.noteMean),
+    needsFreeText: block?.needsFreeText === true
   };
   if (state === "stale") {
     normalized.pendingSourceFingerprint = text(block?.pendingSourceFingerprint);
     normalized.pendingGeneratedText = text(block?.pendingGeneratedText);
     normalized.pendingNoteLabel = text(block?.pendingNoteLabel);
     normalized.pendingNoteDetail = text(block?.pendingNoteDetail);
+    normalized.pendingNeedsFreeText = block?.pendingNeedsFreeText === true;
   }
   return normalized;
 }
@@ -457,7 +461,10 @@ function normalizedSelectionInput(selection) {
     noteGroupKey: text(selection?.noteGroupKey),
     noteGroupLabel: text(selection?.noteGroupLabel),
     noteLabel: text(selection?.noteLabel),
-    noteDetail: text(selection?.noteDetail)
+    noteDetail: text(selection?.noteDetail),
+    noteRange: text(selection?.noteRange),
+    noteMean: text(selection?.noteMean),
+    needsFreeText: selection?.needsFreeText === true
   };
 }
 
@@ -514,7 +521,8 @@ export function reconcileObjectiveBlock(draft, selection, { now = timestampNow }
           pendingSourceFingerprint: input.sourceFingerprint,
           pendingGeneratedText: input.generatedText,
           pendingNoteLabel: input.noteLabel,
-          pendingNoteDetail: input.noteDetail
+          pendingNoteDetail: input.noteDetail,
+          pendingNeedsFreeText: input.needsFreeText === true
         });
       })
     }
@@ -537,6 +545,7 @@ export function refreshObjectiveBlock(draft, selectionId, { now = timestampNow }
           noteGroupLabel: block.noteGroupLabel,
           noteLabel: block.pendingNoteLabel || block.noteLabel,
           noteDetail: block.pendingNoteDetail || block.noteDetail,
+          needsFreeText: block.pendingNeedsFreeText === true,
           state: "synced"
         });
       })
@@ -564,12 +573,13 @@ export function keepObjectiveBlock(draft, selectionId, { now = timestampNow } = 
 }
 
 // Groups selected objective blocks for compact inline rendering: all vitals
-// share one "vitals" group, labs group by panel family, everything else
-// renders as its own single-block group.
+// share one "vitals" group, labs group by panel family, diagnostic results
+// group by category, everything else renders as its own single-block group.
 export function objectiveGroupKeyFor(block) {
   const groupKey = text(block?.noteGroupKey);
   if (groupKey === "vitals") return "vitals";
   if (groupKey.startsWith("lab:")) return groupKey;
+  if (groupKey.startsWith("result:")) return groupKey;
   return text(block?.selectionId);
 }
 
@@ -581,13 +591,16 @@ export function objectiveEditorGroups(draft) {
     const key = objectiveGroupKeyFor(block);
     if (!byKey.has(key)) {
       const isLab = key.startsWith("lab:");
+      const isResult = key.startsWith("result:");
       byKey.set(key, {
         key,
         label: key === "vitals"
           ? "Vital signs"
           : isLab
             ? text(block.noteGroupLabel) || key.slice(4)
-            : "",
+            : isResult
+              ? text(block.noteGroupLabel) || "Other results"
+              : "",
         blocks: []
       });
       groups.push(byKey.get(key));

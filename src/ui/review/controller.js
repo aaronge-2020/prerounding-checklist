@@ -154,7 +154,8 @@ export function createReviewController(deps) {
     return false;
   };
   const isDefaultOn = (candidate) =>
-    isCoreVital(candidate) || candidate?.noteGroupKey === "medications";
+    isCoreVital(candidate) || candidate?.noteGroupKey === "medications" ||
+    (candidate?.kind === "diagnostic_result" && candidate?.needsFreeText === true);
 
   function selectionInputFor(candidate) {
     return {
@@ -167,7 +168,8 @@ export function createReviewController(deps) {
       noteLabel: candidate.noteLabel,
       noteDetail: candidate.noteDetail,
       noteRange: candidate.noteRange,
-      noteMean: candidate.noteMean
+      noteMean: candidate.noteMean,
+      needsFreeText: candidate.needsFreeText === true
     };
   }
 
@@ -210,11 +212,7 @@ export function createReviewController(deps) {
     const candidates = new Map((index.objectiveCandidates || index.candidates).map((candidate) => [candidate.id, candidate]));
     for (const block of draft.objective.selectedBlocks) {
       const candidate = candidates.get(block.selectionId);
-      if (candidate) draft = reconcileObjectiveBlock(draft, {
-        selectionId: candidate.id,
-        sourceFingerprint: candidate.fingerprint,
-        generatedText: candidate.insertionText
-      });
+      if (candidate) draft = reconcileObjectiveBlock(draft, selectionInputFor(candidate));
     }
     const checklistById = new Map(checklistCandidates.map((candidate) => [candidate.id, candidate]));
     for (const candidate of checklistCandidates) {

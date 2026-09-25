@@ -355,9 +355,9 @@ export function createDailySourceController(deps) {
           sourceKind: section.sourceKind || "other_chart_text",
           label: section.formatLabel || "Parsed chart source",
           panelLabel: section.panelLabel || "",
-          resultCategory: section.sourceKind === "results" ? resultMetadata.category : "",
-          resultDate: section.sourceKind === "results" ? resultMetadata.date : "",
-          resultContext: section.sourceKind === "results" ? resultMetadata.context : "",
+          resultCategory: section.sourceKind === "results" ? (section.resultCategory || resultMetadata.category || "") : "",
+          resultDate: section.sourceKind === "results" ? (section.resultDate || resultMetadata.date || "") : "",
+          resultContext: section.sourceKind === "results" ? (section.resultContext || resultMetadata.context || "") : "",
           sourceText: String(section.edited ? section.outputText : section.canonicalPromptText || section.outputText || "").trim()
         }))
         .filter((section) => section.sourceText);

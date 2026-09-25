@@ -3,6 +3,9 @@ import {
   laboratoryAbnormality
 } from "../patient-context/structured-clinical-data.js?v=20260921-medication-card-v4";
 import {
+  needsFreeTextResultText
+} from "../patient-context/free-text-results.js";
+import {
   laboratoryAnalyteKey,
   laboratoryPanelLabel
 } from "../patient-context/laboratory-panels.js?v=20260921-medication-card-v4";
@@ -330,17 +333,28 @@ function diagnosticCandidate(source) {
   const resultDate = clean(record.resultDate);
   const text = String(record.deidentifiedText || "").trim();
   const sourceIdentity = `${source.scope}\u0000${source.dayId}\u0000${source.sourceId}`;
+  const groupKey = resultGroup(category);
+  const needsFreeText = needsFreeTextResultText(label, text);
   const candidate = {
     id: stableId("result", sourceIdentity, label),
     kind: "diagnostic_result",
-    group: resultGroup(category),
+    group: groupKey,
     name: label,
     label,
     resultCategory: category,
     text,
     context,
     resultDate,
-    source: sourceProvenance(source)
+    source: sourceProvenance(source),
+    // Note-draft grouping: diagnostics group by category (Imaging,
+    // Microbiology, ...) in the Objective editor.
+    noteGroupKey: `result:${groupKey}`,
+    noteGroupLabel: { imaging: "Imaging", microbiology: "Microbiology", pathology: "Pathology" }[groupKey] || "Other results",
+    noteLabel: label,
+    noteDetail: needsFreeText ? "" : text.split("\n")[0].slice(0, 120),
+    // Flag free-text studies (EKG, echo, CT/MRI, cultures, ...) whose pasted
+    // value is just a status/placeholder — the student must paste the report.
+    needsFreeText
   };
   const details = [category, resultDate, source.dayLabel, context].filter(Boolean).join(" · ");
   candidate.insertionText = `${label}${details ? ` (${details})` : ""}\n${text}`;
