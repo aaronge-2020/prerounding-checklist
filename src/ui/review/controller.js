@@ -547,13 +547,18 @@ export function createReviewController(deps) {
     const current = model();
     if (!current.patient) return;
     const source = sourceNoteForPacket(current.patient, current.packet.id);
+    const fieldLabel = fieldId.replace(/_/g, " ");
     if (!source) {
-      deps.setStatus("No primary team note found for this day.");
+      const message = "No primary team note for this day — paste one under Hospital Stay first, then pull.";
+      deps.setStatus(message);
+      deps.showToast?.(message, { type: "warning" });
       return;
     }
     const text = sourceSectionText(source?.sections?.[fieldId]).trim();
     if (!text) {
-      deps.setStatus("Primary note has no text for this section.");
+      const message = `The primary note has no "${fieldLabel}" text to pull.`;
+      deps.setStatus(message);
+      deps.showToast?.(message, { type: "warning" });
       return;
     }
     let draft = current.draft;
@@ -595,18 +600,24 @@ export function createReviewController(deps) {
             });
           }
         } else {
-          deps.setStatus("Could not parse plan from primary note.");
+          const message = "Could not parse plan from primary note.";
+          deps.setStatus(message);
+          deps.showToast?.(message, { type: "warning" });
           return;
         }
       } else {
         draft = updateNoteSection(draft, fieldId, text);
       }
     } catch (error) {
-      deps.setStatus(`Cannot pull ${fieldId.replace(/_/g, " ")}: ${error.message}`);
+      const message = `Cannot pull ${fieldLabel}: ${error.message}`;
+      deps.setStatus(message);
+      deps.showToast?.(message, { type: "error" });
       return;
     }
     deps.app.noteDraftSessions.set(packetKey(current.packet.id), draft);
-    deps.setStatus(`Pulled ${fieldId.replace(/_/g, " ")} from primary note.`);
+    const successMessage = `Pulled ${fieldLabel} from primary note.`;
+    deps.setStatus(successMessage);
+    deps.showToast?.(successMessage, { type: "success", durationMs: 2500 });
     deps.render();
   }
 

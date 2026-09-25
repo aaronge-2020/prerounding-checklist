@@ -334,7 +334,7 @@ const demoController = createDemoController({
     app.dailySourceKind = "other_chart_text"; app.dailySourceDraft = DEMO_DAILY_TEXTS.join("\n\n");
   }
 });
-const reviewController = createReviewController({ app, active, byId, presentation: reviewPresentation, patientRequiredMessage, persistVault, render, setStatus, copyText: clipboard.copyText, downloadText, isEphemeralDemo: () => Boolean(app.demoSession), onDraftSaved: () => demoController.observeDraftSaved() });
+const reviewController = createReviewController({ app, active, byId, presentation: reviewPresentation, patientRequiredMessage, persistVault, render, setStatus, showToast, copyText: clipboard.copyText, downloadText, isEphemeralDemo: () => Boolean(app.demoSession), onDraftSaved: () => demoController.observeDraftSaved() });
 const demoSessionController = createDemoSessionController({
   app,
   createDemoPatient,
@@ -809,6 +809,40 @@ function setStatus(message, { icon: iconName } = {}) {
   if (!status) return;
   if (iconName) status.innerHTML = `${icon(iconName)}${escapeHtml(message)}`;
   else status.textContent = message;
+}
+
+// Brief auto-dismissing toast warning/success. Used for pull-from-primary
+// feedback and other transient notices the student must not miss — the
+// status line is persistent but easy to overlook.
+let toastTimer = null;
+function showToast(message, { type = "warning", durationMs = 3500 } = {}) {
+  let container = byId("toastContainer");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "toastContainer";
+    container.setAttribute("role", "status");
+    container.setAttribute("aria-live", "polite");
+    document.body.appendChild(container);
+  }
+  container.innerHTML = "";
+  const toast = document.createElement("div");
+  toast.className = `toast toast--${type}`;
+  toast.textContent = message;
+  const dismiss = document.createElement("button");
+  dismiss.type = "button";
+  dismiss.className = "toast-dismiss";
+  dismiss.setAttribute("aria-label", "Dismiss");
+  dismiss.textContent = "✕";
+  dismiss.addEventListener("click", () => container.innerHTML = "");
+  toast.appendChild(dismiss);
+  container.appendChild(toast);
+  // Trigger the entrance animation on the next frame.
+  requestAnimationFrame(() => toast.classList.add("toast--visible"));
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("toast--visible");
+    setTimeout(() => { if (toast.parentNode === container) container.innerHTML = ""; }, 300);
+  }, durationMs);
 }
 
 function actionFeedback(target, action) {

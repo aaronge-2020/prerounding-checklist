@@ -11580,3 +11580,64 @@ body.vault-locked .vault-access {
     overflow: visible;
   }
 }
+
+/* Auto-dismissing toast notifications (pull-from-primary feedback, etc.).
+   Fixed top-center so the message is unmissable; slides down, then out. */
+#toastContainer {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  max-width: min(92vw, 560px);
+}
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.4;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  max-width: 100%;
+}
+.toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.toast--warning {
+  background: #fff7e6;
+  border: 1px solid #e8a13d;
+  color: #7a4a00;
+}
+.toast--success {
+  background: #eefbf1;
+  border: 1px solid #3da35d;
+  color: #14532d;
+}
+.toast--error {
+  background: #fdeeee;
+  border: 1px solid #d64545;
+  color: #7a1f1f;
+}
+.toast-dismiss {
+  flex: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  color: inherit;
+  opacity: 0.6;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+.toast-dismiss:hover { opacity: 1; }
