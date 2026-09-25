@@ -8,8 +8,12 @@ import {
 } from "../../review-data/compact-summary.js?v=20260924-optional-sections-v1";
 import { sanitizeProblemTitle } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 import { baselineDisplayText, baselinePriorityFor } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
-import { EXAM_TEMPLATES, EXAM_TEMPLATE_IDS } from "../../clinical/exam-templates.js?v=20260925-exam-templates-v1";
-import { EXAM_FINDINGS, EXAM_FINDING_SOURCES } from "../../clinical/exam-findings.js?v=20260925-exam-findings-v1";
+import {
+  EXAM_SYSTEMS,
+  getExamSystem,
+  normalizeSmartExam,
+  SMART_EXAM_EMPTY,
+} from "../../clinical/exam-templates.js?v=20260925-exam-templates-v1";
 
 function valueText(value) {
   if (value && typeof value === "object") return String(value.deidentifiedText || "");
@@ -568,7 +572,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     ["other", "Other relevant history"]
   ]);
 
-  function renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, examFindingsUi, collapsedDraftSections, generatingApProblemId, apConfirm }) {
+  function renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm }) {
     // Make the collapse set visible to editorSection for this render.
     activeCollapsedSections = collapsedDraftSections instanceof Set ? collapsedDraftSections : new Set();
     const visibility = draft.sectionVisibility || {};
@@ -579,86 +583,85 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     // not free text — no pull button (there's no text field to pull into).
     const helpOnly = (key, label) => helpButton(key, label, guidanceFor(key));
 
-    // Compact exam template selector for the Physical Exam section.
-    // Dropdown lists the 8 standard exams; selecting one inserts its
-    // skeleton into the physical exam text box.
-    const examTemplateSelector = () => {
-      const options = EXAM_TEMPLATE_IDS.map((id) =>
-        `<option value="${escapeHtml(id)}">${escapeHtml(EXAM_TEMPLATES[id].label)}</option>`
-      ).join("");
-      return `<span class="exam-template-picker"><label for="examTemplateSelect">Template:</label><select id="examTemplateSelect" data-exam-template-select><option value="">Select exam…</option>${options}</select><button type="button" class="ed-mini" data-action="insert-exam-template">Insert</button></span>`;
-    };
-
-    // Structured physical-exam findings picker. Every finding gets a
-    // clickable pill; clicking opens a dropdown of standard options drawn
-    // from established references (Bates', DeGowin, AAN, UpToDate). "All
-    // normal" fills every finding in one click; a custom-text escape hatch
-    // covers anything not in the lists. Selections compile into note prose.
-    const examFindingsPicker = (draft, uiState = {}) => {
-      const selections = draft?.examSelections || {};
-      const openId = uiState.openDropdownId || null;
-      const customId = uiState.customInputId || null;
-      const expandedSystems = new Set(uiState.expandedSystems || ["General"]);
-      const filledCount = EXAM_FINDINGS.filter((f) => String(selections[f.id] || "").trim()).length;
-
-      // Group findings by system, preserving catalog order.
-      const systems = [];
-      const systemIndex = new Map();
-      for (const finding of EXAM_FINDINGS) {
-        if (!systemIndex.has(finding.system)) {
-          systemIndex.set(finding.system, systems.length);
-          systems.push({ name: finding.system, findings: [] });
-        }
-        systems[systems.length - 1].findings.push(finding);
+    // Smart physical-exam editor. The student picks an exam system
+    // (General, HEENT, Neurological, ...) and presses Insert; the system
+    // renders inline in the note area as prose with SMART VARIABLE pills.
+    // Clicking a pill opens an inline multi-select dropdown right in the
+    // text — no separate picker section. "All normal" fills everything in
+    // one click; custom text covers anything not in the lists. Selections
+    // compile straight into the Physical Exam note text.
+    const smartExamBlock = (draft, uiState = {}) => {
+      const state = normalizeSmartExam(draft?.smartExam);
+      // Lazy migration: legacy free text already in the section shows up as
+      // notes so nothing the student wrote is lost.
+      let freeText = state.freeText;
+      if (!draft?.smartExam && !freeText) {
+        const legacy = String(draft?.sections?.physical_exam?.deidentifiedText || "").trim();
+        if (legacy) freeText = legacy;
       }
+      const openVar = uiState.openVar || null;
 
-      const renderPill = (finding) => {
-        const value = String(selections[finding.id] || "").trim();
-        const isOpen = openId === finding.id;
-        const isCustom = customId === finding.id;
-        if (isCustom) {
-          return `<span class="ef-custom-wrap"><input type="text" class="ef-custom-input" data-exam-finding-input="${escapeHtml(finding.id)}" value="${escapeHtml(value)}" placeholder="Type finding, Enter to save" aria-label="Custom finding for ${escapeHtml(finding.label)}"></span>`;
-        }
-        const pillClass = value ? "ef-pill is-filled" : "ef-pill is-empty";
-        const pillText = value || "select…";
-        const title = value ? `${finding.label}: ${value} — click to change` : `${finding.label} — click to select`;
-        let html = `<span class="ef-pill-wrap"><button type="button" class="${pillClass}" data-action="exam-finding-open" data-finding-id="${escapeHtml(finding.id)}" title="${escapeHtml(title)}" aria-haspopup="listbox" aria-expanded="${isOpen ? "true" : "false"}">${escapeHtml(pillText)}</button>`;
-        if (value) {
-          html += `<button type="button" class="ef-clear" data-action="exam-finding-clear" data-finding-id="${escapeHtml(finding.id)}" title="Clear ${escapeHtml(finding.label)}" aria-label="Clear ${escapeHtml(finding.label)}">×</button>`;
-        }
-        html += `</span>`;
-        if (isOpen) {
-          const optionButtons = finding.options.map((opt, idx) => {
-            const isNormal = idx === 0;
-            const isSelected = value === opt;
-            return `<button type="button" role="option" aria-selected="${isSelected ? "true" : "false"}" class="ef-option${isNormal ? " is-normal" : ""}${isSelected ? " is-selected" : ""}" data-action="exam-finding-select" data-finding-id="${escapeHtml(finding.id)}" data-option-index="${idx}" title="${escapeHtml(opt)}">${isNormal ? "✓ " : ""}${escapeHtml(opt)}</button>`;
-          }).join("");
-          html += `<div class="ef-dropdown" role="listbox" aria-label="${escapeHtml(finding.label)} options"><div class="ef-dropdown-scroll">${optionButtons}</div><button type="button" class="ef-option-custom" data-action="exam-finding-custom" data-finding-id="${escapeHtml(finding.id)}">✎ Type custom finding…</button></div>`;
-        }
-        return html;
+      const renderVarPill = (systemId, varDef) => {
+        const selected = state.selections?.[systemId]?.[varDef.var] || [];
+        const isOpen = openVar === `${systemId}:${varDef.var}`;
+        const pillText = selected.length ? selected.join(", ") : varDef.label;
+        const pillClass = selected.length ? "se-pill is-filled" : "se-pill is-empty";
+        const title = selected.length
+          ? `${varDef.label}: ${selected.join(", ")} — click to change`
+          : `${varDef.label} — click to select`;
+        let html = `<span class="se-var-wrap" data-smart-var-wrap><button type="button" class="${pillClass}" data-action="smart-var-open" data-system="${escapeHtml(systemId)}" data-var="${escapeHtml(varDef.var)}" title="${escapeHtml(title)}" aria-haspopup="listbox" aria-expanded="${isOpen}">${escapeHtml(pillText)} ▾</button>`;
+        if (isOpen) html += renderVarDropdown(systemId, varDef, selected);
+        return html + `</span>`;
       };
 
-      const systemsHtml = systems.map((system) => {
-        const sysFilled = system.findings.filter((f) => String(selections[f.id] || "").trim()).length;
-        const isOpen = expandedSystems.has(system.name);
-        const findingsHtml = system.findings.map((finding) =>
-          `<div class="ef-finding" data-finding-row="${escapeHtml(finding.id)}"><span class="ef-label" title="${escapeHtml(finding.label)}">${escapeHtml(finding.label)}</span>${renderPill(finding)}</div>`
+      const renderVarDropdown = (systemId, varDef, selected) => {
+        const selectedSet = new Set(selected);
+        const normalSet = new Set(varDef.normal);
+        const listed = varDef.options;
+        // Custom entries are selections that aren't listed options.
+        const customs = selected.filter((x) => !listed.includes(x));
+        const normalOpts = listed.filter((o) => normalSet.has(o));
+        const abnormalOpts = listed.filter((o) => !normalSet.has(o));
+        const optHtml = (opt, isNormal) =>
+          `<label class="se-opt${isNormal ? " is-normal" : ""}"><input type="checkbox" data-smart-var-option data-system="${escapeHtml(systemId)}" data-var="${escapeHtml(varDef.var)}" data-option="${escapeHtml(opt)}"${selectedSet.has(opt) ? " checked" : ""}><span>${isNormal ? "✓ " : ""}${escapeHtml(opt)}</span></label>`;
+        return `<span class="se-dropdown" role="listbox" aria-label="${escapeHtml(varDef.label)} options">`
+          + `<span class="se-dropdown-scroll">`
+          + (normalOpts.length ? `<span class="se-opt-group">Normal</span>${normalOpts.map((o) => optHtml(o, true)).join("")}` : "")
+          + (abnormalOpts.length ? `<span class="se-opt-group">Abnormal</span>${abnormalOpts.map((o) => optHtml(o, false)).join("")}` : "")
+          + (customs.length ? `<span class="se-opt-group">Custom</span>${customs.map((c) =>
+              `<span class="se-custom-pick"><span>${escapeHtml(c)}</span><button type="button" class="se-custom-x" data-action="smart-var-remove-custom" data-system="${escapeHtml(systemId)}" data-var="${escapeHtml(varDef.var)}" data-option="${escapeHtml(c)}" title="Remove custom entry" aria-label="Remove ${escapeHtml(c)}">×</button></span>`).join("")}` : "")
+          + `</span>`
+          + `<span class="se-custom-row"><input type="text" class="se-custom-input" data-smart-var-custom data-system="${escapeHtml(systemId)}" data-var="${escapeHtml(varDef.var)}" placeholder="Type custom finding, Enter to add" aria-label="Custom finding for ${escapeHtml(varDef.label)}"><button type="button" class="ed-mini" data-action="smart-var-add-custom" data-system="${escapeHtml(systemId)}" data-var="${escapeHtml(varDef.var)}">Add</button></span>`
+          + `</span>`;
+      };
+
+      const renderSystem = (systemId) => {
+        const system = getExamSystem(systemId);
+        if (!system) return "";
+        const prose = system.template.map((seg) =>
+          typeof seg === "string" ? escapeHtml(seg) : renderVarPill(systemId, seg)
         ).join("");
-        return `<details class="ef-system"${isOpen ? " open" : ""}><summary><span class="ef-system-name">${escapeHtml(system.name)}</span><span class="ef-system-count">${sysFilled}/${system.findings.length}</span></summary><div class="ef-grid">${findingsHtml}</div></details>`;
-      }).join("");
+        return `<div class="se-system" data-smart-system="${escapeHtml(systemId)}">
+          <div class="se-system-head"><strong>${escapeHtml(system.name)}</strong>
+            <span class="se-system-actions"><button type="button" class="ed-mini" data-action="smart-exam-system-normal" data-system="${escapeHtml(systemId)}" title="Fill this system with normal findings">✓ Normal</button><button type="button" class="ed-mini ed-mini--danger" data-action="smart-exam-system-remove" data-system="${escapeHtml(systemId)}" title="Remove this system" aria-label="Remove ${escapeHtml(system.name)}">×</button></span>
+          </div>
+          <p class="se-prose">${prose}</p>
+        </div>`;
+      };
 
-      const sources = [...new Set(EXAM_FINDINGS.map((f) => EXAM_FINDING_SOURCES[f.source] || f.source))].join("; ");
+      const systemOptions = EXAM_SYSTEMS.map((sys) =>
+        `<option value="${escapeHtml(sys.id)}"${state.systems.includes(sys.id) ? " disabled" : ""}>${escapeHtml(sys.name)}${state.systems.includes(sys.id) ? " (inserted)" : ""}</option>`
+      ).join("");
 
-      return `<div class="exam-findings-picker" data-exam-findings>
-        <div class="ef-toolbar">
-          <span class="ef-toolbar-label">Structured findings</span>
-          <button type="button" class="ed-mini ef-all-normal" data-action="exam-findings-all-normal" title="Fill every finding with its normal option">✓ All normal</button>
-          <button type="button" class="ed-mini" data-action="exam-findings-insert" title="Compile selections into the Physical Exam text">Insert into note</button>
-          <button type="button" class="ed-mini ed-mini--danger" data-action="exam-findings-clear-all" title="Clear all finding selections">Clear</button>
-          <span class="ef-count">${filledCount}/${EXAM_FINDINGS.length} filled</span>
+      return `<div class="smart-exam" data-smart-exam>
+        <div class="se-toolbar">
+          <label class="se-template-picker">Template: <select data-smart-exam-select><option value="">Select exam…</option>${systemOptions}</select></label>
+          <button type="button" class="ed-mini" data-action="smart-exam-insert" title="Insert the selected exam system below">Insert</button>
+          <button type="button" class="ed-mini" data-action="smart-exam-all-normal" title="Fill every inserted system with normal findings">✓ All normal</button>
+          <button type="button" class="ed-mini ed-mini--danger" data-action="smart-exam-clear" title="Remove all systems and notes">Clear</button>
         </div>
-        <div class="ef-systems">${systemsHtml}</div>
-        <p class="ef-sources">Finding options: ${escapeHtml(sources)}.</p>
+        <div class="se-systems">${state.systems.map(renderSystem).join("") || `<p class="ed-empty">Select an exam system above and press Insert — it appears here with inline dropdowns.</p>`}</div>
+        <label class="se-notes-label">Additional exam notes <span class="muted">(free text)</span><textarea class="se-notes" data-smart-exam-notes rows="2" placeholder="Anything not covered by the templates">${escapeHtml(freeText)}</textarea></label>
       </div>`;
     };
     const checklistTag = `<span class="ed-tag">from Checklist</span>`;
@@ -697,7 +700,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       <p class="ed-toolbar-note">One editor for the whole note — section labels included. Type <kbd>$</kbd> to pull a lab or vital into the note. Saving encrypts the draft without running de-identification.</p>
       <div class="note-editor" id="noteEditor" role="group" aria-label="Note editor">
         ${frontSections.join("")}
-        ${editorSection("Physical Exam", `${examTemplateSelector()}${examFindingsPicker(draft, examFindingsUi)}${editorRegion("data-draft-section=\"physical_exam\"", draft.sections?.physical_exam, "Document your physical exam findings")}<div class="ed-sub"><span class="ed-sub-label">From checklist ${checklistTag}</span><div class="ed-readonly" data-checklist-finding-kind="exam">${checklistFindingsEditor(draft, "exam", "Complete the physical-exam checklist to populate this section.")}</div></div>`, { labelExtra: helpFor("physical_exam", "Physical Exam"), sectionAttr: ` data-checklist-finding-kind="exam"` })}
+        ${editorSection("Physical Exam", `${smartExamBlock(draft, smartExamUi)}<div class="ed-sub"><span class="ed-sub-label">From checklist ${checklistTag}</span><div class="ed-readonly" data-checklist-finding-kind="exam">${checklistFindingsEditor(draft, "exam", "Complete the physical-exam checklist to populate this section.")}</div></div>`, { labelExtra: helpFor("physical_exam", "Physical Exam"), sectionAttr: ` data-checklist-finding-kind="exam"` })}
         ${editorSection("Objective", objectiveBody, { labelExtra: helpFor("objective", "Objective") })}
         ${editorSection("Assessment", editorRegion("data-draft-assessment", draft.assessment, "Your concise synthesis"), { labelExtra: helpFor("assessment", "Assessment") })}
         ${editorSection("Plan", planBody, { labelExtra: `${helpFor("plan", "Plan")}<button type="button" class="ed-mini" data-action="add-plan-problem">${icon("plus")} Add problem</button>` })}
@@ -707,7 +710,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     </section>`;
   }
 
-  function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, examFindingsUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm }) {
+  function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm }) {
     if (!draft) return patientRequiredMessage;
     const selectedIds = new Set((draft.objective?.selectedBlocks || []).map((block) => block.selectionId));
     // Banner calling out free-text results that pasted as a status only —
@@ -723,7 +726,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         <label class="review-packet-label">Note packet<select id="reviewPacketSelect">${packets.map((packet) => `<option value="${escapeHtml(packet.id)}" ${packet.id === selectedPacketId ? "selected" : ""}>${escapeHtml(packet.label)}</option>`).join("")}</select></label>
       </header>
       ${flaggedBanner}
-      <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, examFindingsUi, collapsedDraftSections, generatingApProblemId, apConfirm })}</div>
+      <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm })}</div>
     </div>`;
   }
 

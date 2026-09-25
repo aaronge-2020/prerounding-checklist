@@ -2,8 +2,13 @@ import { sortDays } from "../../daily-updates/days.js?v=20260921-medication-card
 import { updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20260924-optional-sections-v1&labs=20260925-trend-specimen-v1";
 import { createLabAutocomplete } from "./lab-autocomplete.js?v=20260924-dollar-autocomplete-v1";
-import { renderExamTemplate } from "../../clinical/exam-templates.js?v=20260925-exam-templates-v1";
-import { EXAM_FINDINGS, compileExamFindings } from "../../clinical/exam-findings.js?v=20260925-exam-findings-v1";
+import {
+  compileSmartExam,
+  EXAM_SYSTEMS,
+  getExamSystem,
+  getExamVar,
+  normalizeSmartExam,
+} from "../../clinical/exam-templates.js?v=20260925-exam-templates-v1";
 import {
   addDifferential,
   addPlanProblem,
@@ -35,7 +40,7 @@ import {
   updateAssessment,
   updateClosingSection,
   updateDifferential,
-  updateExamSelections,
+  updateSmartExam,
   updateManualObjective,
   updateNoteSection,
   updatePlanProblem
@@ -193,14 +198,13 @@ export function createReviewController(deps) {
   // state only; survives re-renders.
   const collapsedDraftSections = new Set();
 
-  // Structured exam-findings picker UI state. Transient only (not persisted):
-  // which finding's dropdown is open, and which is in custom-text mode.
-  // The selections themselves live on draft.examSelections and are saved.
-  const examFindingsUi = { openDropdownId: null, customInputId: null };
+  // Smart-exam UI state. Transient only (not persisted): which inline
+  // variable's dropdown is open. The selections themselves live on
+  // draft.smartExam and are saved.
+  const smartExamUi = { openVar: null }; // "systemId:varId" of the open inline dropdown
   // Which exam-finding systems are expanded. Native <details> open state is
   // lost on re-render (innerHTML replacement), so track it here and render
   // the `open` attribute from this set.
-  const expandedExamSystems = new Set(["General"]);
 
   // Latest clinical review index, cached for the `$` lab autocomplete.
   // Rebuilt on every model() call; the autocomplete reads from here.
@@ -368,7 +372,7 @@ export function createReviewController(deps) {
       clinicalDataCollapsed,
       collapsedObjectiveGroups,
       collapsedDraftSections,
-      examFindingsUi: { ...examFindingsUi, expandedSystems: [...expandedExamSystems] },
+      smartExamUi: { openVar: smartExamUi.openVar },
       patientRequiredMessage: deps.patientRequiredMessage(),
       generatingApProblemId,
       apConfirm: apConfirmState
@@ -478,6 +482,10 @@ export function createReviewController(deps) {
   function change(target) {
     const current = model();
     if (!current.patient) return false;
+    if (target.matches("[data-smart-var-option]")) {
+      toggleSmartVarOption(target.dataset.system, target.dataset.var, target.dataset.option, target.checked);
+      return true;
+    }
     if (target.id === "reviewPacketSelect") {
       deps.app.reviewPacketId = target.value || "admission";
       deps.app.reviewDifferenceSelectionId = "";
@@ -550,6 +558,10 @@ export function createReviewController(deps) {
   }
 
   function input(target) {
+    if (target.matches?.("[data-smart-exam-notes]")) {
+      setSmartExamNotes(target.value);
+      return true;
+    }
     if (target.id === "reviewDataSearch") {
       deps.app.reviewSearchQuery = target.value;
       patchDataList();
@@ -768,17 +780,12 @@ export function createReviewController(deps) {
       } else if (fieldId === "assessment") {
         draft = updateAssessment(draft, text);
       } else if (fieldId === "physical_exam") {
-        // physical_exam is stored in sections but not in NOTE_TYPE_FIELDS;
-        // update it directly to avoid the field validation throw.
-        const timestamp = new Date().toISOString();
-        draft = {
-          ...draft,
-          sections: {
-            ...draft.sections,
-            physical_exam: { deidentifiedText: text, createdAt: timestamp, updatedAt: timestamp }
-          },
-          updatedAt: timestamp
-        };
+        // The smart exam editor owns the physical_exam section text: pulled
+        // text lands in its free-text notes so the next recompile keeps it.
+        const state = getSmartExam(draft);
+        const existing = state.freeText.trim();
+        state.freeText = existing ? `${existing}\n\n${text}` : text;
+        draft = withSmartExam(draft, state);
       } else if (CLOSING_SECTION_FIELDS.some((field) => field.id === fieldId)) {
         draft = updateClosingSection(draft, fieldId, text);
       } else if (fieldId === "plan") {
@@ -862,205 +869,228 @@ export function createReviewController(deps) {
     deps.render();
   }
 
-  // Insert the selected exam template skeleton into the physical exam text box.
-  function insertExamTemplate() {
-    const select = document.querySelector("[data-exam-template-select]");
-    const templateId = select?.value;
-    if (!templateId) {
-      deps.setStatus("Select an exam template first.");
-      return;
-    }
-    const skeleton = renderExamTemplate(templateId);
-    if (!skeleton) {
-      deps.setStatus("Unknown exam template.");
+  // Insert the selected exam system into the smart physical-exam editor.
+  // The system renders inline in the note area as prose with smart-variable
+  // pills — no separate picker section.
+  function insertSmartExamSystem() {
+    const select = document.querySelector("[data-smart-exam-select]");
+    const system = getExamSystem(select?.value);
+    if (!system) {
+      deps.setStatus("Select an exam system first.");
       return;
     }
     const current = model();
     if (!current.patient) return;
-    let draft = current.draft;
-    const existing = sourceSectionText(draft?.sections?.physical_exam).trim();
-    const combined = existing ? `${existing}\n\n${skeleton}` : skeleton;
-    // physical_exam is stored in sections but not in NOTE_TYPE_FIELDS;
-    // update it directly to avoid the field validation throw.
+    const state = getSmartExam(current.draft);
+    if (!state.systems.includes(system.id)) state.systems.push(system.id);
+    setSmartExam(current.draft, state);
+    deps.render();
+    deps.setStatus(`Inserted ${system.name} exam — click any pill to document findings.`);
+  }
+
+  // ─── Smart physical-exam editor ────────────────────────────────
+  // Inline smart variables: each exam system is prose with pill buttons.
+  // Clicking a pill opens an inline multi-select dropdown; selections
+  // compile straight into the Physical Exam note text — no separate
+  // picker section, no manual copy step.
+
+  // Smart-exam state, migrated lazily: legacy free text already saved in
+  // the physical_exam section becomes freeText notes so nothing is lost.
+  function getSmartExam(draft) {
+    const state = normalizeSmartExam(draft?.smartExam);
+    if (!draft?.smartExam && !state.freeText) {
+      const legacy = sourceSectionText(draft?.sections?.physical_exam).trim();
+      if (legacy) state.freeText = legacy;
+    }
+    return state;
+  }
+
+  // Pure: apply smart-exam state to a draft and recompile the Physical
+  // Exam note text, so copy/download/final-note always see the current
+  // selections.
+  function withSmartExam(draft, smartExam) {
+    const state = normalizeSmartExam(smartExam);
+    const compiled = compileSmartExam(state);
     const timestamp = new Date().toISOString();
-    draft = {
-      ...draft,
-      sections: {
-        ...draft.sections,
-        physical_exam: { deidentifiedText: combined, createdAt: timestamp, updatedAt: timestamp }
+    const prev = draft?.sections?.physical_exam || {};
+    const next = updateSmartExam(draft, state);
+    next.sections = {
+      ...next.sections,
+      physical_exam: {
+        deidentifiedText: compiled,
+        createdAt: prev.createdAt || timestamp,
+        updatedAt: timestamp,
       },
-      updatedAt: timestamp
     };
-    deps.app.noteDraftSessions.set(packetKey(current.packet.id), draft);
-    deps.setStatus(`Inserted ${templateId} exam template.`);
-    deps.render();
+    return next;
   }
 
-  // ─── Structured exam-findings picker ────────────────────────────────
-  // Every finding gets a pill; clicking opens a dropdown of standard
-  // textbook options. "All normal" fills everything in one click; custom
-  // text covers anything not in the lists.
-
-  function findExamFinding(id) {
-    return EXAM_FINDINGS.find((f) => f.id === id) || null;
+  // Write smart-exam state to the session and recompile the note text.
+  function setSmartExam(draft, smartExam) {
+    setDraft(withSmartExam(draft, smartExam));
   }
 
-  function toggleExamFindingDropdown(findingId) {
-    if (!findExamFinding(findingId)) return;
-    examFindingsUi.customInputId = null;
-    examFindingsUi.openDropdownId = examFindingsUi.openDropdownId === findingId ? null : findingId;
-    deps.render();
-  }
-
-  function selectExamFinding(findingId, optionIndex) {
-    const finding = findExamFinding(findingId);
-    if (!finding) return;
-    const value = finding.options[optionIndex];
-    if (typeof value !== "string") return;
+  function removeSmartExamSystem(systemId) {
     const current = model();
     if (!current.patient) return;
-    const draft = updateExamSelections(current.draft, { [findingId]: value });
-    setDraft(draft);
-    examFindingsUi.openDropdownId = null;
-    examFindingsUi.customInputId = null;
+    const state = getSmartExam(current.draft);
+    state.systems = state.systems.filter((id) => id !== systemId);
+    delete state.selections[systemId];
+    smartExamUi.openVar = null;
+    setSmartExam(current.draft, state);
     deps.render();
-    // Ward speed: advance focus to the next unfilled finding so the student
-    // can hammer through the exam with keyboard + Enter.
-    focusNextUnfilledFinding(findingId);
-    deps.setStatus(`${finding.label}: ${value}`);
   }
 
-  function clearExamFinding(findingId) {
-    if (!findExamFinding(findingId)) return;
+  function markSmartExamNormal(systemIds) {
     const current = model();
     if (!current.patient) return;
-    setDraft(updateExamSelections(current.draft, { [findingId]: "" }));
-    examFindingsUi.openDropdownId = null;
-    examFindingsUi.customInputId = null;
-    deps.render();
-  }
-
-  function markAllExamFindingsNormal() {
-    const current = model();
-    if (!current.patient) return;
-    const changes = {};
-    for (const finding of EXAM_FINDINGS) changes[finding.id] = finding.normal;
-    setDraft(updateExamSelections(current.draft, changes));
-    examFindingsUi.openDropdownId = null;
-    examFindingsUi.customInputId = null;
-    deps.render();
-    deps.setStatus(`Marked all ${EXAM_FINDINGS.length} exam findings normal — change any abnormal ones.`);
-  }
-
-  function clearAllExamFindings() {
-    const current = model();
-    if (!current.patient) return;
-    setDraft({ ...current.draft, examSelections: {}, updatedAt: new Date().toISOString() });
-    examFindingsUi.openDropdownId = null;
-    examFindingsUi.customInputId = null;
-    deps.render();
-    deps.setStatus("Cleared all structured exam findings.");
-  }
-
-  function insertExamFindingsIntoNote() {
-    const current = model();
-    if (!current.patient) return;
-    const prose = compileExamFindings(current.draft?.examSelections);
-    if (!prose) {
-      deps.setStatus("No structured findings selected yet — pick findings or use “All normal” first.");
-      return;
-    }
-    let draft = current.draft;
-    const existing = String(draft?.sections?.physical_exam?.deidentifiedText || "").trim();
-    const combined = existing ? `${existing}\n\n${prose}` : prose;
-    const timestamp = new Date().toISOString();
-    draft = {
-      ...draft,
-      sections: {
-        ...draft.sections,
-        physical_exam: { deidentifiedText: combined, createdAt: timestamp, updatedAt: timestamp }
-      },
-      updatedAt: timestamp
-    };
-    setDraft(draft);
-    deps.render();
-    deps.setStatus("Structured findings inserted into the Physical Exam note text.");
-  }
-
-  function focusExamFindingInput(findingId) {
-    if (!findingId || typeof document === "undefined") return;
-    requestAnimationFrame(() => {
-      const input = document.querySelector(`[data-exam-finding-input="${CSS.escape(findingId)}"]`);
-      if (input) {
-        input.focus();
-        input.select();
+    const state = getSmartExam(current.draft);
+    const names = [];
+    for (const sysId of systemIds) {
+      const system = getExamSystem(sysId);
+      if (!system) continue;
+      if (!state.systems.includes(sysId)) state.systems.push(sysId);
+      const vars = {};
+      for (const seg of system.template) {
+        if (seg && typeof seg === "object" && seg.normal.length) vars[seg.var] = [...seg.normal];
       }
-    });
-  }
-
-  function focusNextUnfilledFinding(afterId) {
-    if (typeof document === "undefined") return;
-    const current = model();
-    const selections = current.draft?.examSelections || {};
-    const ids = EXAM_FINDINGS.map((f) => f.id);
-    const startIdx = ids.indexOf(afterId);
-    // Search forward from the next finding, wrapping around once.
-    for (let step = 1; step <= ids.length; step++) {
-      const id = ids[(startIdx + step) % ids.length];
-      if (!String(selections[id] || "").trim()) {
-        requestAnimationFrame(() => {
-          const pill = document.querySelector(`[data-finding-row="${CSS.escape(id)}"] [data-action="exam-finding-open"]`);
-          if (pill) pill.focus({ preventScroll: true });
-        });
-        return;
-      }
+      state.selections[sysId] = vars;
+      names.push(system.name);
     }
+    smartExamUi.openVar = null;
+    setSmartExam(current.draft, state);
+    deps.render();
+    deps.setStatus(names.length
+      ? `Marked ${names.join(", ")} normal — change any abnormal findings.`
+      : "Insert an exam system first.");
   }
 
-  function commitCustomExamFinding(findingId, value) {
-    const finding = findExamFinding(findingId);
-    if (!finding) return;
+  function clearSmartExam() {
     const current = model();
     if (!current.patient) return;
-    const text = String(value || "").trim();
-    setDraft(updateExamSelections(current.draft, { [findingId]: text }));
-    examFindingsUi.customInputId = null;
-    examFindingsUi.openDropdownId = null;
+    smartExamUi.openVar = null;
+    setSmartExam(current.draft, { systems: [], selections: {}, freeText: "" });
     deps.render();
-    if (text) {
-      focusNextUnfilledFinding(findingId);
-      deps.setStatus(`${finding.label}: ${text}`);
-    }
+    deps.setStatus("Cleared the smart exam.");
   }
 
-  // Keyboard: Enter commits a custom finding, Escape cancels back to the pill.
-  function keydown(event) {    const input = event.target?.closest?.("[data-exam-finding-input]");
-    if (!input) return false;
-    if (event.key === "Enter") {
-      event.preventDefault();
-      commitCustomExamFinding(input.dataset.examFindingInput, input.value);
-      return true;
+  function toggleSmartVarDropdown(systemId, varId) {
+    if (!getExamVar(systemId, varId)) return;
+    const key = `${systemId}:${varId}`;
+    smartExamUi.openVar = smartExamUi.openVar === key ? null : key;
+    deps.render();
+  }
+
+  function setSmartVarSelections(systemId, varId, values) {
+    if (!getExamVar(systemId, varId)) return;
+    const current = model();
+    if (!current.patient) return;
+    const state = getSmartExam(current.draft);
+    const clean = [...new Set(values.map((x) => String(x ?? "").trim()).filter(Boolean))];
+    if (!state.selections[systemId]) state.selections[systemId] = {};
+    if (clean.length) state.selections[systemId][varId] = clean;
+    else delete state.selections[systemId][varId];
+    setSmartExam(current.draft, state);
+    deps.render();
+  }
+
+  function toggleSmartVarOption(systemId, varId, option, checked) {
+    const variable = getExamVar(systemId, varId);
+    if (!variable) return;
+    const current = model();
+    if (!current.patient) return;
+    const state = getSmartExam(current.draft);
+    const currentVals = new Set(state.selections?.[systemId]?.[varId] || []);
+    const isNormal = variable.normal.includes(option);
+    if (checked) {
+      if (!variable.multi) {
+        // Single-select (e.g. GCS components): the new choice replaces all.
+        currentVals.clear();
+        currentVals.add(option);
+      } else {
+        // Normal options are mutually exclusive with everything else, so
+        // the compiled sentence can never read "non-tender, tender".
+        for (const val of [...currentVals]) {
+          const valIsNormal = variable.normal.includes(val);
+          if (isNormal ? !valIsNormal : valIsNormal) currentVals.delete(val);
+        }
+        currentVals.add(option);
+      }
+    } else {
+      currentVals.delete(option);
     }
-    if (event.key === "Escape") {
+    setSmartVarSelections(systemId, varId, [...currentVals]);
+  }
+
+  function addSmartVarCustom(systemId, varId, text) {
+    const value = String(text || "").trim();
+    if (!value) return;
+    const variable = getExamVar(systemId, varId);
+    if (!variable) return;
+    const current = model();
+    if (!current.patient) return;
+    const state = getSmartExam(current.draft);
+    const vals = new Set(state.selections?.[systemId]?.[varId] || []);
+    // Custom entries count as non-normal: they clear normal options.
+    if (variable.multi) {
+      for (const val of [...vals]) {
+        if (variable.normal.includes(val)) vals.delete(val);
+      }
+    } else {
+      vals.clear();
+    }
+    vals.add(value);
+    setSmartVarSelections(systemId, varId, [...vals]);
+    deps.setStatus(`${variable.label}: ${value}`);
+  }
+
+  function removeSmartVarCustom(systemId, varId, text) {
+    const current = model();
+    if (!current.patient) return;
+    const state = getSmartExam(current.draft);
+    const vals = new Set(state.selections?.[systemId]?.[varId] || []);
+    vals.delete(String(text || ""));
+    setSmartVarSelections(systemId, varId, [...vals]);
+  }
+
+  function setSmartExamNotes(text) {
+    const current = model();
+    if (!current.patient) return;
+    const state = getSmartExam(current.draft);
+    state.freeText = String(text ?? "");
+    // Recompile without re-rendering: the textarea owns its own value and
+    // a re-render would drop the caret mid-typing.
+    setDraft(withSmartExam(current.draft, state));
+  }
+
+  // Keyboard: Enter commits a smart-variable custom entry; Escape closes
+  // the open inline dropdown.
+  function keydown(event) {
+    const customInput = event.target?.closest?.("[data-smart-var-custom]");
+    if (customInput) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        addSmartVarCustom(customInput.dataset.system, customInput.dataset.var, customInput.value);
+        return true;
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        smartExamUi.openVar = null;
+        deps.render();
+        return true;
+      }
+      return false;
+    }
+    if (event.key === "Escape" && smartExamUi.openVar) {
       event.preventDefault();
-      examFindingsUi.customInputId = null;
+      smartExamUi.openVar = null;
       deps.render();
       return true;
     }
     return false;
   }
 
-  // Native <details> toggle for exam-finding systems: sync the expanded set
-  // so re-renders preserve which systems the student opened.
   function toggle(event) {
-    const systemDetails = event.target?.closest?.(".ef-system");
-    if (systemDetails) {
-      const name = systemDetails.querySelector(".ef-system-name")?.textContent?.trim();
-      if (!name) return false;
-      if (systemDetails.open) expandedExamSystems.add(name);
-      else expandedExamSystems.delete(name);
-      return true;
-    }
     // Draft-note section collapse: track by section id so re-renders keep
     // the student's open/closed choices.
     const sectionDetails = event.target?.closest?.("details.ed-section");
@@ -1075,9 +1105,9 @@ export function createReviewController(deps) {
   }
 
   function click(target) {
-    // Clicking outside the findings picker closes an open dropdown.
-    if (examFindingsUi.openDropdownId && !target.closest?.("[data-exam-findings]")) {
-      examFindingsUi.openDropdownId = null;
+    // Clicking outside the smart-exam editor closes an open inline dropdown.
+    if (smartExamUi.openVar && !target.closest?.("[data-smart-exam]")) {
+      smartExamUi.openVar = null;
       deps.render();
       return true;
     }
@@ -1101,39 +1131,39 @@ export function createReviewController(deps) {
       void saveDraft();
       return true;
     }
-    if (action === "insert-exam-template") {
-      insertExamTemplate();
+    if (action === "smart-exam-insert") {
+      insertSmartExamSystem();
       return true;
     }
-    if (action === "exam-finding-open") {
-      toggleExamFindingDropdown(button.dataset.findingId);
+    if (action === "smart-exam-all-normal") {
+      const current2 = model();
+      if (current2.patient) markSmartExamNormal(getSmartExam(current2.draft).systems);
       return true;
     }
-    if (action === "exam-finding-select") {
-      selectExamFinding(button.dataset.findingId, Number(button.dataset.optionIndex));
+    if (action === "smart-exam-clear") {
+      clearSmartExam();
       return true;
     }
-    if (action === "exam-finding-clear") {
-      clearExamFinding(button.dataset.findingId);
+    if (action === "smart-exam-system-normal") {
+      markSmartExamNormal([button.dataset.system]);
       return true;
     }
-    if (action === "exam-finding-custom") {
-      examFindingsUi.openDropdownId = null;
-      examFindingsUi.customInputId = button.dataset.findingId || null;
-      deps.render();
-      focusExamFindingInput(examFindingsUi.customInputId);
+    if (action === "smart-exam-system-remove") {
+      removeSmartExamSystem(button.dataset.system);
       return true;
     }
-    if (action === "exam-findings-all-normal") {
-      markAllExamFindingsNormal();
+    if (action === "smart-var-open") {
+      toggleSmartVarDropdown(button.dataset.system, button.dataset.var);
       return true;
     }
-    if (action === "exam-findings-clear-all") {
-      clearAllExamFindings();
+    if (action === "smart-var-add-custom") {
+      const wrap = button.closest("[data-smart-var-wrap]");
+      const input = wrap?.querySelector("[data-smart-var-custom]");
+      addSmartVarCustom(button.dataset.system, button.dataset.var, input?.value);
       return true;
     }
-    if (action === "exam-findings-insert") {
-      insertExamFindingsIntoNote();
+    if (action === "smart-var-remove-custom") {
+      removeSmartVarCustom(button.dataset.system, button.dataset.var, button.dataset.option);
       return true;
     }
     if (action === "copy-final-note") {

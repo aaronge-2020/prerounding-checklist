@@ -11805,174 +11805,60 @@ body.vault-locked .vault-access {
   color: var(--muted);
   font-size: 11px;
 }
-.ef-systems {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.ef-system {
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--background, transparent);
-}
-.ef-system > summary {
-  cursor: pointer;
-  padding: 5px 8px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  list-style: none;
-}
-.ef-system > summary::-webkit-details-marker { display: none; }
-.ef-system > summary::before {
-  content: "▸";
-  color: var(--muted);
-  font-size: 10px;
-}
-.ef-system[open] > summary::before { content: "▾"; }
-.ef-system-name { flex: none; }
-.ef-system-count {
-  margin-left: auto;
-  font-weight: 400;
-  color: var(--muted);
-  font-size: 11px;
-}
-.ef-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 4px 12px;
-  padding: 6px 8px 8px;
-}
-.ef-finding {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-  position: relative;
-}
-.ef-label {
-  flex: none;
-  max-width: 110px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--muted);
-  font-size: 11px;
-}
-.ef-pill-wrap {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  min-width: 0;
-  flex: 1;
-}
-.ef-pill {
-  flex: 1;
-  min-width: 0;
-  text-align: left;
-  padding: 3px 8px;
-  border: 1px dashed var(--border);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--muted);
-  font-size: 11px;
-  cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.ef-pill.is-empty:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.ef-pill.is-filled {
-  border-style: solid;
-  border-color: var(--accent);
-  color: var(--text);
+/* ─── Smart physical-exam editor (inline smart variables) ────────── */
+.smart-exam { display: flex; flex-direction: column; gap: 8px; }
+.se-toolbar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.se-template-picker { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; }
+.se-template-picker select { font-size: 12px; padding: 2px 4px; }
+.se-systems { display: flex; flex-direction: column; gap: 8px; }
+.se-system { border: 1px solid var(--border, #e2e2e2); border-radius: 8px; padding: 8px 10px; }
+.se-system-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.se-system-actions { display: inline-flex; gap: 4px; }
+.se-prose { margin: 0; line-height: 2.1; font-size: 13px; }
+.se-var-wrap { position: relative; display: inline-block; white-space: nowrap; }
+.se-pill {
+  display: inline-block; border: 1px dashed var(--accent); border-radius: 999px;
   background: color-mix(in srgb, var(--accent) 8%, transparent);
+  color: inherit; font-size: 12px; padding: 1px 8px; cursor: pointer; line-height: 1.7;
 }
-.ef-pill:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
+.se-pill.is-filled {
+  border-style: solid; background: color-mix(in srgb, var(--accent) 16%, transparent);
+  font-weight: 600;
 }
-.ef-clear {
-  flex: none;
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 13px;
-  line-height: 1;
-  padding: 2px 4px;
-  border-radius: 4px;
+.se-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.se-dropdown {
+  position: absolute; z-index: 40; left: 0; top: calc(100% + 4px); min-width: 240px; max-width: 320px;
+  background: var(--bg, #fff); border: 1px solid var(--border, #ddd); border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.14); display: flex; flex-direction: column;
 }
-.ef-clear:hover { color: var(--danger, #c0392b); }
-.ef-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 100px;
-  z-index: 60;
-  min-width: 240px;
-  max-width: 320px;
-  margin-top: 2px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-  overflow: hidden;
+.se-dropdown-scroll { display: flex; flex-direction: column; max-height: 260px; overflow-y: auto; padding: 4px; }
+.se-opt-group {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--muted); padding: 6px 6px 2px;
 }
-.ef-dropdown-scroll {
-  max-height: 260px;
-  overflow-y: auto;
-  padding: 4px;
+.se-opt {
+  display: flex; align-items: center; gap: 8px; padding: 5px 6px; border-radius: 6px;
+  font-size: 13px; cursor: pointer; white-space: normal;
 }
-.ef-option {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 5px 8px;
-  border: none;
-  border-radius: 5px;
-  background: transparent;
-  color: var(--text);
-  font-size: 12px;
-  cursor: pointer;
-  white-space: normal;
+.se-opt:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.se-opt.is-normal span { font-weight: 600; }
+.se-custom-pick {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 5px 6px; border-radius: 6px; font-size: 13px; font-style: italic;
 }
-.ef-option:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
-.ef-option.is-normal { font-weight: 600; }
-.ef-option.is-selected {
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
+.se-custom-x {
+  border: none; background: none; cursor: pointer; color: var(--muted);
+  font-size: 15px; line-height: 1; padding: 0 2px;
 }
-.ef-option-custom {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 6px 8px;
-  border: none;
-  border-top: 1px solid var(--border);
-  background: transparent;
-  color: var(--accent);
-  font-size: 12px;
-  cursor: pointer;
+.se-custom-x:hover { color: var(--danger, #c0392b); }
+.se-custom-row {
+  display: flex; gap: 6px; padding: 6px; border-top: 1px solid var(--border, #eee); align-items: center;
 }
-.ef-option-custom:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
-.ef-custom-wrap { flex: 1; min-width: 0; display: flex; }
-.ef-custom-input {
-  flex: 1;
-  min-width: 0;
-  padding: 3px 8px;
-  border: 1px solid var(--accent);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--text);
-  font-size: 11px;
-}
-.ef-sources {
-  margin: 6px 0 0;
-  font-size: 10px;
-  color: var(--muted);
+.se-custom-input { flex: 1; min-width: 0; font-size: 12px; padding: 4px 6px; border: 1px solid var(--border, #ddd); border-radius: 6px; }
+.se-notes-label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+.se-notes {
+  width: 100%; font-size: 13px; padding: 6px 8px; border: 1px solid var(--border, #ddd);
+  border-radius: 8px; resize: vertical; font-family: inherit;
 }
 
 /* ─── Collapsible draft-note sections (I1) ─────────────────────────── */

@@ -1,288 +1,546 @@
 /**
- * Physical exam skeleton templates.
+ * Smart physical-exam templates.
  *
- * Component lists are factual maneuver/component names compiled from standard
- * medical-education sources teaching the Bates' Guide to Physical Examination
- * and DeGowin's Diagnostic Examination frameworks (see research report
- * 2026-09-25: UW Foundations of Clinical Medicine, AAN Neurology Clerkship
- * Core Curriculum, UpToDate detailed neuro exam, Bates 12th ed. Ch. 11).
- * No textbook prose is reproduced — only standard component names.
+ * Each system is prose with INLINE SMART VARIABLES. A variable renders as a
+ * pill button inside the exam text; clicking it opens an inline dropdown
+ * with multi-select checkboxes. Selections compile back into the sentence.
  *
- * Each template is an array of [heading, maneuvers[]] pairs. The UI inserts
- * a compact skeleton; the student fills in findings for each maneuver.
+ * Schema:
+ *   template: [ "literal prose", { var, label, multi, options, normal }, ... ]
+ *   - var:     stable variable id (unique within the system)
+ *   - label:   short human label shown on the empty pill
+ *   - multi:   true  -> checkboxes, multiple selections allowed
+ *              false -> single-select (radio behavior), used for GCS parts
+ *   - options: full phrase fragments, e.g. "tender", "4/5 throughout"
+ *   - normal:  subset of options that are the "normal" defaults. Normal
+ *              options are mutually exclusive with the rest: checking an
+ *              abnormal finding unchecks the normals and vice versa, so the
+ *              compiled sentence can never read "non-tender, tender".
+ *
+ * An unselected variable compiles to "___" so unfinished documentation is
+ * visible rather than silently omitted.
+ *
+ * Grading scales embedded in the options follow standard clinical
+ * conventions: MRC muscle strength 0-5, deep tendon reflexes 0-4+, pulses
+ * 0-4+, pitting edema trace/1+-4+, murmurs grade I-VI, and the Glasgow Coma
+ * Scale (Eye/Verbal/Motor components).
+ *
+ * Sourcing note: the phrasing follows standard physical-examination
+ * documentation conventions (Bates'/DeGowin-style write-ups). This catalog
+ * was authored as standard clinical phrasing — it is NOT a validated,
+ * item-by-item extraction from a textbook, so spot-check wording against a
+ * reference before relying on any specific phrase.
  */
 
-export const EXAM_TEMPLATES = Object.freeze({
-  general: Object.freeze({
+export const SMART_EXAM_EMPTY = "___";
+
+function v(varId, label, options, normal, multi = true) {
+  return Object.freeze({
+    var: varId,
+    label,
+    multi,
+    options: Object.freeze([...options]),
+    normal: Object.freeze([...(normal || [])]),
+  });
+}
+
+const STRENGTH_ABNORMAL = Object.freeze([
+  "4/5 throughout",
+  "3/5 throughout",
+  "2/5 throughout",
+  "1/5 throughout",
+  "0/5 (no contraction)",
+  "4/5 proximal weakness",
+  "3/5 proximal weakness",
+  "4/5 distal weakness",
+  "3/5 distal weakness",
+  "drift present",
+]);
+
+function strengthVar(varId, label) {
+  return v(varId, label, ["5/5 throughout", ...STRENGTH_ABNORMAL], ["5/5 throughout"]);
+}
+
+export const EXAM_SYSTEMS = Object.freeze([
+  Object.freeze({
     id: "general",
-    label: "General",
-    sections: Object.freeze([
-      ["General", Object.freeze([
-        "Appearance (state of health, distress, age vs stated age, build/nutrition)",
-        "Level of consciousness / alertness",
-        "Posture, gait, motor activity",
-        "Skin color, lesions",
-        "Odor of breath/body"
-      ])],
-      ["Vitals", Object.freeze([
-        "Temperature",
-        "Heart rate / pulse",
-        "Respiratory rate",
-        "Blood pressure",
-        "SpO2",
-        "Pain rating"
-      ])]
-    ])
+    name: "General",
+    template: Object.freeze([
+      "General: ",
+      v("appearance", "appearance",
+        ["well-appearing", "no acute distress", "alert",
+         "ill-appearing", "mild distress", "moderate distress", "severe distress",
+         "lethargic", "anxious", "disheveled", "cachectic", "thin", "obese"],
+        ["well-appearing", "no acute distress", "alert"]),
+      ".",
+    ]),
   }),
 
-  neuro: Object.freeze({
-    id: "neuro",
-    label: "Neurological",
-    sections: Object.freeze([
-      ["Mental status", Object.freeze([
-        "Level of alertness / attentiveness",
-        "Orientation (person, place, time)",
-        "Attention (digit span, spell WORLD fwd/bkwd, serial 7s)",
-        "Memory (immediate, short-term, long-term)",
-        "Language (fluency, comprehension, repetition, naming, reading, writing)"
-      ])],
-      ["Cranial nerves", Object.freeze([
-        "I Olfactory: smell identification, one nostril occluded",
-        "II Optic: visual acuity, confrontation fields, fundi",
-        "II/III Pupils: direct + consensual light reflex, accommodation",
-        "III/IV/VI EOM: six cardinal fields of gaze, nystagmus, diplopia",
-        "V Trigeminal: facial sensation (V1/V2/V3), mastication strength, corneal reflex",
-        "VII Facial: raise eyebrows, close eyes tight, smile, puff cheeks",
-        "VIII Vestibulocochlear: hearing (whisper/finger rub)",
-        "IX/X Palate: say 'ah,' uvula midline; gag reflex",
-        "XI Spinal accessory: head rotation (SCM), shoulder shrug (trapezius)",
-        "XII Hypoglossal: tongue protrusion midline, strength, rapid movements"
-      ])],
-      ["Motor", Object.freeze([
-        "Bulk, fasciculations, involuntary movements; pronator drift",
-        "Tone: resistance to passive movement",
-        "Strength 0-5: shoulder abd; elbow flex/ext; wrist flex/ext; finger flex/ext/abd; grip",
-        "Strength 0-5: hip flex/ext; knee flex/ext; ankle dorsiflex/plantarflex"
-      ])],
-      ["Sensory", Object.freeze([
-        "Light touch",
-        "Pinprick / temperature",
-        "Vibration (tuning fork)",
-        "Proprioception (joint position sense)"
-      ])],
-      ["Reflexes", Object.freeze([
-        "DTRs 0-4: biceps (C5/6), brachioradialis (C6), triceps (C7), patellar (L4), Achilles (S1)",
-        "Plantar response (Babinski): upgoing vs downgoing",
-        "Clonus"
-      ])],
-      ["Coordination", Object.freeze([
-        "Finger-to-nose",
-        "Heel-to-shin",
-        "Rapid alternating movements (diadochokinesia)",
-        "Romberg test"
-      ])],
-      ["Gait", Object.freeze([
-        "Casual gait (symmetry, arm swing, turning)",
-        "Tandem gait",
-        "Toe walk / heel walk"
-      ])]
-    ])
+  Object.freeze({
+    id: "skin",
+    name: "Skin",
+    template: Object.freeze([
+      "Skin: ",
+      v("inspection", "inspection",
+        ["no rashes", "no lesions",
+         "erythematous rash", "maculopapular rash", "vesicular rash",
+         "ecchymosis", "petechiae", "purpura",
+         "jaundiced", "pale", "flushed", "diaphoretic"],
+        ["no rashes", "no lesions"]),
+      ". Wounds/ulcers: ",
+      v("wounds", "wounds",
+        ["no open wounds", "no ulcers",
+         "laceration", "abrasion", "ulcer",
+         "surgical incision, clean and dry", "surgical incision with erythema",
+         "pressure injury"],
+        ["no open wounds", "no ulcers"]),
+      ".",
+    ]),
   }),
 
-  heent: Object.freeze({
+  Object.freeze({
     id: "heent",
-    label: "HEENT",
-    sections: Object.freeze([
-      ["Head", Object.freeze([
-        "Inspect: size, shape, symmetry; hair/scalp",
-        "Palpate: tenderness, deformities, masses"
-      ])],
-      ["Eyes", Object.freeze([
-        "Visual acuity (Snellen)",
-        "External: lids, conjunctiva, sclera, cornea",
-        "Pupils: PERRLA (direct + consensual, accommodation)",
-        "EOM: six cardinal fields of gaze",
-        "Confrontation visual fields",
-        "Fundi: disc, vessels, macula"
-      ])],
-      ["Ears", Object.freeze([
-        "Inspect/palpate auricle, mastoid",
-        "Otoscopy: canal, tympanic membrane",
-        "Hearing: whispered voice; Weber/Rinne (512 Hz)"
-      ])],
-      ["Nose", Object.freeze([
-        "Inspect external nose; test patency (each nostril)",
-        "Mucosa, septum, turbinates",
-        "Sinus tenderness (frontal, maxillary)"
-      ])],
-      ["Mouth/Throat", Object.freeze([
-        "Lips, buccal mucosa, tongue, palate",
-        "Dentition, gums",
-        "Oropharynx: tonsils, pharynx",
-        "TMJ: crepitus, tenderness, ROM"
-      ])],
-      ["Neck", Object.freeze([
-        "Inspect: symmetry, masses, tracheal position",
-        "Lymph nodes: pre/postauricular, occipital, tonsillar, submandibular, submental, cervical, supraclavicular",
-        "Thyroid: size, consistency, nodules",
-        "Carotids: palpate (one side at a time), auscultate for bruits"
-      ])]
-    ])
+    name: "HEENT",
+    template: Object.freeze([
+      "HEENT: Head ",
+      v("head", "head",
+        ["atraumatic", "normocephalic",
+         "laceration", "hematoma", "deformity", "tenderness"],
+        ["atraumatic", "normocephalic"]),
+      ". Eyes ",
+      v("eyes", "eyes",
+        ["PERRL", "EOMI",
+         "anisocoria", "nystagmus", "limited EOM", "diplopia",
+         "periorbital edema", "ptosis", "exophthalmos"],
+        ["PERRL", "EOMI"]),
+      ". Sclerae ",
+      v("sclerae", "sclerae",
+        ["anicteric", "icteric", "injected"],
+        ["anicteric"]),
+      ". Conjunctivae ",
+      v("conjunctivae", "conjunctivae",
+        ["pink", "pale", "injected"],
+        ["pink"]),
+      ". Ears ",
+      v("ears", "ears",
+        ["canals clear", "TMs intact",
+         "effusion", "discharge", "erythema", "cerumen impaction"],
+        ["canals clear", "TMs intact"]),
+      ". Nose ",
+      v("nose", "nose",
+        ["patent bilaterally",
+         "congestion", "rhinorrhea", "epistaxis", "septal deviation"],
+        ["patent bilaterally"]),
+      ". Mouth and pharynx ",
+      v("mouth", "mouth/pharynx",
+        ["moist mucous membranes", "oropharynx clear",
+         "dry mucous membranes", "erythema", "exudate",
+         "tonsillar hypertrophy", "poor dentition", "oral lesions"],
+        ["moist mucous membranes", "oropharynx clear"]),
+      ". Palpation ",
+      v("palpation", "palpation",
+        ["non-tender", "no deformities", "no masses",
+         "tender", "deformities", "masses", "crepitus", "sinus tenderness"],
+        ["non-tender", "no deformities", "no masses"]),
+      ".",
+    ]),
   }),
 
-  cardiac: Object.freeze({
+  Object.freeze({
+    id: "neck",
+    name: "Neck",
+    template: Object.freeze([
+      "Neck: ",
+      v("inspection", "inspection",
+        ["supple", "no masses",
+         "stiffness", "mass", "swelling", "scar"],
+        ["supple", "no masses"]),
+      ". ROM ",
+      v("rom", "range of motion",
+        ["full ROM", "limited ROM", "pain with ROM"],
+        ["full ROM"]),
+      ". Lymph nodes ",
+      v("nodes", "lymph nodes",
+        ["no lymphadenopathy",
+         "tender LAD", "shotty LAD", "fixed LAD", "supraclavicular LAD"],
+        ["no lymphadenopathy"]),
+      ". Thyroid ",
+      v("thyroid", "thyroid",
+        ["non-palpable", "non-tender",
+         "enlarged", "nodule", "tender"],
+        ["non-palpable", "non-tender"]),
+      ". Trachea ",
+      v("trachea", "trachea",
+        ["midline", "deviated"],
+        ["midline"]),
+      ". JVD ",
+      v("jvd", "JVD",
+        ["not elevated", "elevated"],
+        ["not elevated"]),
+      ". Carotids ",
+      v("carotids", "carotids",
+        ["2+ bilaterally", "no bruits",
+         "1+ (diminished)", "bruit present", "absent"],
+        ["2+ bilaterally", "no bruits"]),
+      ".",
+    ]),
+  }),
+
+  Object.freeze({
     id: "cardiac",
-    label: "Cardiovascular",
-    sections: Object.freeze([
-      ["Inspection", Object.freeze([
-        "General: distress, cyanosis, pallor",
-        "Chest: scars, visible pulsations, PMI",
-        "Neck veins: JVP (cm above sternal angle)"
-      ])],
-      ["Palpation", Object.freeze([
-        "PMI: location (ICS/MCL), size, amplitude",
-        "Heaves / lifts",
-        "Thrills at valve areas",
-        "Carotid pulse: rate, rhythm, volume, character (one side at a time)",
-        "Peripheral pulses: radial, brachial, femoral, popliteal, PT, DP"
-      ])],
-      ["Auscultation", Object.freeze([
-        "Aortic (R 2nd ICS), Pulmonic (L 2nd ICS), Tricuspid (LLSB), Mitral/apex (5th ICS MCL), Erb's (L 3rd ICS)",
-        "S1, S2 (intensity, splitting)",
-        "S3, S4, clicks, snaps",
-        "Murmurs: timing, location, radiation, intensity, pitch, quality",
-        "Pericardial friction rub",
-        "Carotid bruits"
-      ])],
-      ["Extremities", Object.freeze([
-        "Edema (pitting), temperature, capillary refill",
-        "Clubbing, xanthomata"
-      ])]
-    ])
+    name: "Cardiac",
+    template: Object.freeze([
+      "Cardiac: Inspection ",
+      v("inspection", "inspection",
+        ["no chest wall deformity",
+         "pectus excavatum", "pectus carinatum", "scar"],
+        ["no chest wall deformity"]),
+      ". Palpation ",
+      v("palpation", "palpation",
+        ["PMI non-displaced", "no thrills", "no heaves",
+         "PMI displaced", "thrill present", "heave present"],
+        ["PMI non-displaced", "no thrills", "no heaves"]),
+      ". Rhythm ",
+      v("rhythm", "rhythm",
+        ["regular rate and rhythm",
+         "irregularly irregular", "regularly irregular",
+         "tachycardic", "bradycardic"],
+        ["regular rate and rhythm"]),
+      ". Murmur ",
+      v("murmur", "murmur",
+        ["no murmurs",
+         "systolic murmur, grade I/VI", "systolic murmur, grade II/VI",
+         "systolic murmur, grade III/VI", "systolic murmur, grade IV/VI",
+         "systolic murmur, grade V/VI", "systolic murmur, grade VI/VI",
+         "diastolic murmur", "continuous murmur"],
+        ["no murmurs"]),
+      ". Extra sounds ",
+      v("extra", "extra sounds",
+        ["no rubs", "no gallops",
+         "S3 gallop", "S4 gallop", "pericardial friction rub"],
+        ["no rubs", "no gallops"]),
+      ".",
+    ]),
   }),
 
-  pulmonary: Object.freeze({
+  Object.freeze({
     id: "pulmonary",
-    label: "Pulmonary",
-    sections: Object.freeze([
-      ["Inspection", Object.freeze([
-        "Respiratory rate, rhythm, depth; effort (accessory muscles)",
-        "Chest shape/symmetry; AP diameter",
-        "Expansion symmetry; retractions"
-      ])],
-      ["Palpation", Object.freeze([
-        "Tracheal position",
-        "Chest expansion / excursion",
-        "Tactile fremitus ('99')"
-      ])],
-      ["Percussion", Object.freeze([
-        "Systematic, side-to-side comparison",
-        "Notes: resonance, hyperresonance, dullness, tympany"
-      ])],
-      ["Auscultation", Object.freeze([
-        "Breath sounds: vesicular, bronchovesicular, bronchial",
-        "Adventitious: crackles, wheezes, rhonchi, stridor, pleural rub",
-        "Transmitted voice: bronchophony, egophony, whispered pectoriloquy (if indicated)"
-      ])]
-    ])
+    name: "Pulmonary",
+    template: Object.freeze([
+      "Pulmonary: Inspection ",
+      v("inspection", "inspection",
+        ["no respiratory distress", "symmetric chest expansion",
+         "respiratory distress", "accessory muscle use",
+         "asymmetric expansion", "tachypneic"],
+        ["no respiratory distress", "symmetric chest expansion"]),
+      ". Palpation ",
+      v("palpation", "palpation",
+        ["symmetric expansion", "no tenderness",
+         "decreased expansion", "increased tactile fremitus", "tenderness"],
+        ["symmetric expansion", "no tenderness"]),
+      ". Percussion ",
+      v("percussion", "percussion",
+        ["resonant throughout", "dullness", "hyperresonance"],
+        ["resonant throughout"]),
+      ". Auscultation ",
+      v("auscultation", "auscultation",
+        ["clear to auscultation bilaterally",
+         "wheezes", "crackles", "rhonchi",
+         "diminished breath sounds", "absent breath sounds",
+         "prolonged expiratory phase", "stridor", "pleural friction rub"],
+        ["clear to auscultation bilaterally"]),
+      ".",
+    ]),
   }),
 
-  abdominal: Object.freeze({
-    id: "abdominal",
-    label: "Abdominal",
-    sections: Object.freeze([
-      ["Inspection", Object.freeze([
-        "Contour: flat/scaphoid/rounded/protuberant; symmetry",
-        "Skin: scars, striae, dilated veins, Cullen/Grey Turner signs",
-        "Umbilicus; visible peristalsis/pulsations; hernias"
-      ])],
-      ["Auscultation", Object.freeze([
-        "Bowel sounds: present, frequency, character",
-        "Bruits: aorta, renal, iliac/femoral"
-      ])],
-      ["Percussion", Object.freeze([
-        "All quadrants: tympany vs dullness",
-        "Liver span (R midclavicular line)",
-        "Splenic percussion (Traube's space)"
-      ])],
-      ["Palpation", Object.freeze([
-        "Light: tenderness, guarding, rigidity (all quadrants)",
-        "Deep: masses (size, shape, consistency, mobility, tenderness)",
-        "Liver edge; spleen tip; kidneys; aorta"
-      ])],
-      ["Special tests", Object.freeze([
-        "Murphy's sign",
-        "McBurney's point tenderness; Rovsing's, psoas, obturator signs",
-        "Rebound tenderness",
-        "Shifting dullness / fluid wave (if ascites suspected)",
-        "CVA tenderness"
-      ])]
-    ])
+  Object.freeze({
+    id: "abdomen",
+    name: "Abdomen",
+    template: Object.freeze([
+      "Abdomen: Inspection ",
+      v("inspection", "inspection",
+        ["flat", "soft",
+         "distended", "scars", "striae", "caput medusae", "visible peristalsis"],
+        ["flat", "soft"]),
+      ". Bowel sounds ",
+      v("bowel", "bowel sounds",
+        ["normoactive bowel sounds",
+         "hypoactive bowel sounds", "hyperactive bowel sounds", "absent bowel sounds"],
+        ["normoactive bowel sounds"]),
+      ". Palpation ",
+      v("palpation", "palpation",
+        ["non-tender", "no guarding", "no rebound",
+         "tender", "guarding", "rebound tenderness", "rigidity", "voluntary guarding"],
+        ["non-tender", "no guarding", "no rebound"]),
+      ". Masses ",
+      v("masses", "masses",
+        ["no palpable masses", "palpable mass"],
+        ["no palpable masses"]),
+      ". Liver/spleen ",
+      v("organs", "liver/spleen",
+        ["no hepatosplenomegaly",
+         "hepatomegaly", "splenomegaly", "palpable liver edge"],
+        ["no hepatosplenomegaly"]),
+      ". CVA tenderness ",
+      v("cva", "CVA tenderness",
+        ["no CVA tenderness", "CVA tenderness present"],
+        ["no CVA tenderness"]),
+      ". Hernias ",
+      v("hernias", "hernias",
+        ["no hernias", "inguinal hernia", "umbilical hernia", "incisional hernia"],
+        ["no hernias"]),
+      ".",
+    ]),
   }),
 
-  msk: Object.freeze({
+  Object.freeze({
+    id: "neuro",
+    name: "Neurological",
+    template: Object.freeze([
+      "Neuro: Mental status ",
+      v("mental", "mental status",
+        ["alert", "oriented x3",
+         "disoriented", "inattentive", "lethargic", "obtunded", "agitated"],
+        ["alert", "oriented x3"]),
+      ". Speech ",
+      v("speech", "speech",
+        ["fluent", "normal prosody",
+         "non-fluent", "dysarthric", "paraphasic errors"],
+        ["fluent", "normal prosody"]),
+      ". CN II ",
+      v("cn2", "CN II",
+        ["visual fields full to confrontation", "fundi normal",
+         "field cut", "hemianopia", "quadrantanopia", "papilledema"],
+        ["visual fields full to confrontation", "fundi normal"]),
+      ". CN III/IV/VI ",
+      v("cn346", "CN III/IV/VI",
+        ["EOMI", "no nystagmus",
+         "nystagmus", "limited EOM", "diplopia"],
+        ["EOMI", "no nystagmus"]),
+      ". CN V ",
+      v("cn5", "CN V",
+        ["facial sensation intact to light touch",
+         "decreased facial sensation", "jaw weakness"],
+        ["facial sensation intact to light touch"]),
+      ". CN VII ",
+      v("cn7", "CN VII",
+        ["face symmetric", "facial droop", "forehead sparing"],
+        ["face symmetric"]),
+      ". CN VIII ",
+      v("cn8", "CN VIII",
+        ["hearing intact to finger rub", "hearing loss"],
+        ["hearing intact to finger rub"]),
+      ". CN IX/X ",
+      v("cn910", "CN IX/X",
+        ["palate elevates symmetrically", "gag intact",
+         "uvular deviation", "decreased gag", "dysphagia"],
+        ["palate elevates symmetrically", "gag intact"]),
+      ". CN XI ",
+      v("cn11", "CN XI",
+        ["shoulder shrug intact", "weak trapezius", "weak SCM"],
+        ["shoulder shrug intact"]),
+      ". CN XII ",
+      v("cn12", "CN XII",
+        ["tongue midline", "no fasciculations",
+         "tongue deviation", "fasciculations"],
+        ["tongue midline", "no fasciculations"]),
+      ". Strength RUE ",
+      strengthVar("motor_rue", "strength RUE"),
+      ". Strength LUE ",
+      strengthVar("motor_lue", "strength LUE"),
+      ". Strength RLE ",
+      strengthVar("motor_rle", "strength RLE"),
+      ". Strength LLE ",
+      strengthVar("motor_lle", "strength LLE"),
+      ". Tone ",
+      v("tone", "tone",
+        ["normal tone",
+         "spastic", "rigid", "flaccid", "cogwheeling", "paratonia"],
+        ["normal tone"]),
+      ". DTRs ",
+      v("dtr", "DTRs",
+        ["2+ throughout",
+         "0 (absent) throughout", "1+ (diminished) throughout",
+         "3+ (brisk) throughout", "4+ (clonus)"],
+        ["2+ throughout"]),
+      ". Plantars ",
+      v("plantar", "plantars",
+        ["downgoing bilaterally",
+         "upgoing bilaterally (Babinski)", "mute"],
+        ["downgoing bilaterally"]),
+      ". Sensation ",
+      v("sensation", "sensation",
+        ["intact to light touch",
+         "decreased", "absent",
+         "stocking-glove distribution", "dermatomal loss"],
+        ["intact to light touch"]),
+      ". Coordination ",
+      v("coordination", "coordination",
+        ["finger-to-nose intact", "no dysmetria",
+         "dysmetria", "intention tremor", "dysdiadochokinesia"],
+        ["finger-to-nose intact", "no dysmetria"]),
+      ". Gait ",
+      v("gait", "gait",
+        ["steady gait", "normal base",
+         "unsteady", "wide-based", "shuffling",
+         "requires assistance", "unable to ambulate", "positive Romberg"],
+        ["steady gait", "normal base"]),
+      ". GCS ",
+      v("gcs_e", "GCS eye",
+        ["E4 - spontaneous", "E3 - to voice", "E2 - to pressure", "E1 - none"],
+        ["E4 - spontaneous"], false),
+      " ",
+      v("gcs_v", "GCS verbal",
+        ["V5 - oriented", "V4 - confused", "V3 - inappropriate words",
+         "V2 - incomprehensible sounds", "V1 - none", "V-T - intubated"],
+        ["V5 - oriented"], false),
+      " ",
+      v("gcs_m", "GCS motor",
+        ["M6 - obeys commands", "M5 - localizes pain", "M4 - withdraws",
+         "M3 - flexion", "M2 - extension", "M1 - none"],
+        ["M6 - obeys commands"], false),
+      ".",
+    ]),
+  }),
+
+  Object.freeze({
     id: "msk",
-    label: "Musculoskeletal",
-    sections: Object.freeze([
-      ["Gait/Spine screen", Object.freeze([
-        "Gait: symmetry, smoothness, arm swing, turning; toe/heel walk",
-        "Spine: inspect alignment; cervical ROM; lumbar flexion"
-      ])],
-      ["Inspection", Object.freeze([
-        "Symmetry, posture, deformity, muscle bulk/atrophy",
-        "Swelling/effusion, erythema, alignment"
-      ])],
-      ["Palpation", Object.freeze([
-        "Bones, joints, muscles: heat, swelling, tenderness, crepitus, effusion"
-      ])],
-      ["Range of motion", Object.freeze([
-        "Neck: flexion, extension, lateral flexion, rotation",
-        "Shoulders: abduction, flexion, internal/external rotation",
-        "Elbows: flexion, extension, pronation, supination",
-        "Wrists/hands: flexion, extension, deviation; finger ROM, thumb opposition",
-        "Hips: flexion, extension, abduction, internal/external rotation",
-        "Knees: flexion, extension",
-        "Ankles: dorsiflexion, plantar flexion, inversion, eversion"
-      ])],
-      ["Strength", Object.freeze([
-        "MRC 0-5: handgrips; upper/lower extremities vs resistance"
-      ])]
-    ])
+    name: "Musculoskeletal",
+    template: Object.freeze([
+      "MSK: Inspection ",
+      v("inspection", "inspection",
+        ["no deformities", "no swelling",
+         "deformity", "swelling", "erythema", "ecchymosis"],
+        ["no deformities", "no swelling"]),
+      ". Palpation ",
+      v("palpation", "palpation",
+        ["non-tender", "tender"],
+        ["non-tender"]),
+      ". Range of motion ",
+      v("rom", "range of motion",
+        ["full ROM", "limited ROM", "crepitus", "instability"],
+        ["full ROM"]),
+      ". Pulses ",
+      v("pulses", "pulses",
+        ["2+ throughout",
+         "0 (absent)", "1+ (diminished)", "3+ (bounding)"],
+        ["2+ throughout"]),
+      ". Edema ",
+      v("edema", "edema",
+        ["no edema",
+         "trace pitting edema", "1+ pitting edema", "2+ pitting edema",
+         "3+ pitting edema", "4+ pitting edema", "non-pitting edema"],
+        ["no edema"]),
+      ".",
+    ]),
   }),
 
-  gu: Object.freeze({
-    id: "gu",
-    label: "GU / Pelvic",
-    sections: Object.freeze([
-      ["Male GU", Object.freeze([
-        "Inguinal/femoral lymph nodes, pulses",
-        "Penis: shaft, glans, meatus (position, discharge)",
-        "Scrotum/testes: size, shape, consistency, masses, tenderness; epididymis; cord",
-        "Hernia: bulge with Valsalva/cough",
-        "Prostate (DRE): size, shape, consistency, nodules, tenderness; stool occult blood"
-      ])],
-      ["Female pelvic", Object.freeze([
-        "External: mons, labia, clitoris, meatus, introitus, perineum; lesions/discharge",
-        "Speculum: cervix (color, position, discharge, lesions); vaginal walls",
-        "Bimanual: cervix (position, mobility, tenderness); uterus (size, shape, position, consistency); adnexa/ovaries"
-      ])]
-    ])
-  })
-});
+  Object.freeze({
+    id: "psych",
+    name: "Psychiatric",
+    template: Object.freeze([
+      "Psych: Behavior ",
+      v("behavior", "behavior",
+        ["cooperative", "appropriate eye contact", "normal psychomotor activity",
+         "agitated", "withdrawn", "poor eye contact",
+         "psychomotor retardation", "psychomotor agitation"],
+        ["cooperative", "appropriate eye contact", "normal psychomotor activity"]),
+      ". Mood and affect ",
+      v("mood", "mood/affect",
+        ["euthymic", "full range affect",
+         "depressed mood", "anxious", "labile",
+         "flat affect", "blunted affect", "elevated mood"],
+        ["euthymic", "full range affect"]),
+      ". Thought process ",
+      v("thought_process", "thought process",
+        ["linear", "goal-directed",
+         "disorganized", "tangential", "circumstantial", "flight of ideas"],
+        ["linear", "goal-directed"]),
+      ". Thought content ",
+      v("thought_content", "thought content",
+        ["no SI", "no HI", "no psychosis",
+         "suicidal ideation", "homicidal ideation",
+         "auditory hallucinations", "visual hallucinations",
+         "delusions", "paranoia"],
+        ["no SI", "no HI", "no psychosis"]),
+      ".",
+    ]),
+  }),
+]);
 
-export const EXAM_TEMPLATE_IDS = Object.freeze(Object.keys(EXAM_TEMPLATES));
+export const EXAM_SYSTEM_IDS = Object.freeze(EXAM_SYSTEMS.map((s) => s.id));
+
+export function getExamSystem(systemId) {
+  return EXAM_SYSTEMS.find((s) => s.id === systemId) || null;
+}
+
+export function getExamVar(systemId, varId) {
+  const system = getExamSystem(systemId);
+  if (!system) return null;
+  for (const seg of system.template) {
+    if (seg && typeof seg === "object" && seg.var === varId) return seg;
+  }
+  return null;
+}
 
 /**
- * Renders a template as compact skeleton text for the note.
- * Each section becomes "Heading: maneuver1; maneuver2; ..." with blank
- * space for the student to fill in findings.
+ * Validate/normalize persisted smart-exam state.
+ * { systems: [ids...], selections: { [systemId]: { [varId]: [strings] } }, freeText: "" }
+ * Unknown system/var ids are dropped; selections are trimmed non-empty strings.
  */
-export function renderExamTemplate(templateId) {
-  const template = EXAM_TEMPLATES[templateId];
-  if (!template) return "";
-  const lines = [`${template.label} exam:`];
-  for (const [heading, maneuvers] of template.sections) {
-    lines.push(`${heading}: ${maneuvers.join("; ")}.`);
+export function normalizeSmartExam(value) {
+  const out = { systems: [], selections: {}, freeText: "" };
+  if (!value || typeof value !== "object") return out;
+  if (Array.isArray(value.systems)) {
+    for (const id of value.systems) {
+      const sysId = String(id || "").trim();
+      if (sysId && getExamSystem(sysId) && !out.systems.includes(sysId)) out.systems.push(sysId);
+    }
+    // Keep canonical system order.
+    out.systems.sort((a, b) => EXAM_SYSTEM_IDS.indexOf(a) - EXAM_SYSTEM_IDS.indexOf(b));
   }
+  const selections = value.selections;
+  if (selections && typeof selections === "object") {
+    for (const [sysId, vars] of Object.entries(selections)) {
+      if (!getExamSystem(sysId) || !vars || typeof vars !== "object") continue;
+      const cleanVars = {};
+      for (const [varId, vals] of Object.entries(vars)) {
+        if (!getExamVar(sysId, varId) || !Array.isArray(vals)) continue;
+        const clean = [...new Set(vals.map((x) => String(x ?? "").trim()).filter(Boolean))];
+        if (clean.length) cleanVars[varId] = clean;
+      }
+      if (Object.keys(cleanVars).length) out.selections[sysId] = cleanVars;
+    }
+  }
+  out.freeText = String(value.freeText ?? "");
+  return out;
+}
+
+/**
+ * Compile smart-exam state into note prose. Each inserted system becomes one
+ * paragraph; unselected variables render as "___" so unfinished documentation
+ * stays visible instead of silently vanishing. Free-text notes are appended
+ * as their own paragraph.
+ */
+export function compileSmartExam(smartExam) {
+  const state = normalizeSmartExam(smartExam);
+  const lines = [];
+  for (const sysId of state.systems) {
+    const system = getExamSystem(sysId);
+    if (!system) continue;
+    const sel = state.selections[sysId] || {};
+    let prose = "";
+    for (const seg of system.template) {
+      if (typeof seg === "string") {
+        prose += seg;
+      } else {
+        const vals = (sel[seg.var] || []).filter(Boolean);
+        prose += vals.length ? vals.join(", ") : SMART_EXAM_EMPTY;
+      }
+    }
+    lines.push(prose.trim());
+  }
+  const free = state.freeText.trim();
+  if (free) lines.push(free);
   return lines.join("\n");
 }

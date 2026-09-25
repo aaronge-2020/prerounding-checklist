@@ -155,7 +155,24 @@ function objectiveItem(block) {
   const detail = String(block?.noteDetail || "").trim();
   if (block?.state === "edited") return { edited: true, text: String(block.editedText || "").trim() };
   const text = `${label}${detail ? ` ${detail}` : ""}`.trim() || String(block?.editedText || "").trim();
-  return { label, detail, text };
+  return {
+    label,
+    detail,
+    text,
+    range: String(block?.noteRange || "").trim(),
+    mean: String(block?.noteMean || "").trim(),
+  };
+}
+
+// Secondary vital hints (24-hour range, mean) shown in the review editor.
+// They must also reach the copied note — "copy rich text" used to drop them.
+function vitalSecondary(item) {
+  const parts = [];
+  const range = String(item?.range || "").trim();
+  const mean = String(item?.mean || "").trim();
+  if (range) parts.push(`24h ${range}`);
+  if (mean) parts.push(`mean ${mean}`);
+  return parts.length ? ` ${parts.join(" · ")}` : "";
 }
 
 function mergeMetabolicFamilies(groups) {
@@ -220,7 +237,15 @@ function objectiveModel(draft) {
     if (pushGroupOverride(groupKey, entry)) continue;
     if (String(groupEdits[groupKey] || "").trim()) continue; // remaining members of an overridden group
     if (key === NOTE_VITALS_GROUP_KEY && entry.text) {
-      vitals.push({ label: entry.label, detail: entry.detail, text: entry.text, edited: entry.edited });
+      // Carry the 24-hour range / mean through so the copied note keeps the
+      // same secondary hints the review editor shows.
+      const secondary = vitalSecondary(entry);
+      vitals.push({
+        label: entry.label,
+        detail: `${entry.detail}${secondary}`,
+        text: `${entry.text}${secondary}`,
+        edited: entry.edited
+      });
       continue;
     }
     // Medication blocks never render under Objective; they collapse into
@@ -399,7 +424,7 @@ function finalNoteSectionList(draft) {
   const visibility = normalizeSectionVisibility(draft?.sectionVisibility);
   const sections = [
     ...front,
-    { heading: "Physical Exam", body: checklistFindingText(draft, "exam") },
+    { heading: "Physical Exam", body: appendChecklistFindings(valueText(fields.physical_exam), checklistFindingText(draft, "exam")) },
     { heading: "Objective", objective: true },
     // U12: drop an Assessment that merely repeats the plan's problem titles.
     { heading: "Assessment", body: assessmentWithoutDuplicateProblems(valueText(draft.assessment), draft.problems) },

@@ -1,5 +1,12 @@
 import assert from "node:assert/strict";
 import {
+  compileSmartExam,
+  getExamSystem,
+  getExamVar,
+  normalizeSmartExam,
+  SMART_EXAM_EMPTY,
+} from "../src/clinical/exam-templates.js";
+import {
   NOTE_DRAFT_SCHEMA,
   NOTE_TYPES,
   NOTE_TYPE_FIELDS,
@@ -46,7 +53,8 @@ import {
   updateDifferential,
   updateManualObjective,
   updateNoteSection,
-  updatePlanProblem
+  updatePlanProblem,
+  updateSmartExam
 } from "../src/note-drafts/index.js";
 
 const FIXED_TIME = "2026-09-21T12:00:00.000Z";
@@ -466,6 +474,37 @@ const options = { now: fixedNow, idFactory: fixedId };
   assert.doesNotMatch(plain, /\*\*/);
 }
 
+// Copied notes must keep the vital secondary hints (24-hour range, mean)
+// that the review editor shows — "copy rich text" used to drop them.
+{
+  let draft = createNoteDraft(NOTE_TYPES.PROGRESS, { ...options, id: "vitals_copy_hints" });
+  const select = (selectionId, fields) => {
+    draft = selectObjectiveBlock(draft, {
+      selectionId,
+      sourceFingerprint: `fp:${selectionId}`,
+      generatedText: `${selectionId} verbose insertion text`,
+      kind: "vital_sign",
+      noteGroupKey: "vitals",
+      noteGroupLabel: "Vitals",
+      ...fields
+    }, { now: fixedNow });
+  };
+  select("vital:hr", { noteLabel: "HR", noteDetail: "98", noteRange: "88–112", noteMean: "99" });
+  select("vital:bp", { noteLabel: "BP", noteDetail: "128/78 mmHg", noteRange: "", noteMean: "" });
+  select("vital:temp", { noteLabel: "T", noteDetail: "99.1°F", noteRange: "98.6–100.4", noteMean: "99.2" });
+  draft = editObjectiveBlock(draft, "vital:temp", "T 99.1°F, afebrile", { now: fixedNow });
+
+  const note = renderFinalNote(draft);
+  assert.match(note, /\*\*Vitals:\*\* HR 98 24h 88–112 · mean 99; BP 128\/78 mmHg; T 99\.1°F, afebrile/);
+  const plain = renderFinalNotePlainText(draft);
+  assert.match(plain, /Vitals: HR 98 24h 88–112 · mean 99/);
+  const html = renderFinalNoteHtml(draft);
+  assert.match(html, /<th scope="row">HR<\/th><td>98 24h 88–112 · mean 99<\/td>/);
+  assert.match(html, /<th scope="row">BP<\/th><td>128\/78 mmHg<\/td>/);
+  assert.match(html, /<td colspan="2">T 99\.1°F, afebrile<\/td>/);
+  assert.doesNotMatch(note, /afebrile 24h/, "edited vitals keep the student's wording");
+}
+
 // Edited objective blocks keep the student's wording inside their group.
 {
   let draft = createNoteDraft(NOTE_TYPES.H_AND_P, { ...options, id: "objective_grouping_edited" });
@@ -698,6 +737,83 @@ const options = { now: fixedNow, idFactory: fixedId };
   const v1 = refreshed.objective.selectedBlocks.find((b) => b.selectionId === "v1");
   assert.equal(v1.editedText, "BP 122/81");
   assert.equal(v1.state, "synced");
+}
+
+// Smart physical-exam templates: inline variables compile into prose and the
+// compiled prose reaches the final note's Physical Exam section.
+{
+  // Catalog lookups resolve systems and variables.
+  assert.ok(getExamSystem("neuro"), "neuro system exists");
+  assert.ok(getExamVar("neuro", "cn2"), "neuro CN II variable exists");
+  assert.equal(getExamVar("neuro", "nope"), null, "unknown variable is null");
+  assert.equal(getExamSystem("nope"), null, "unknown system is null");
+
+  // normalizeSmartExam drops unknown systems/variables and cleans values.
+  const normalized = normalizeSmartExam({
+    systems: ["neuro", "bogus", "neuro"],
+    selections: {
+      neuro: { cn2: ["field cut", "  ", "field cut"], bogusVar: ["x"] },
+      bogus: { cn2: ["y"] },
+    },
+    freeText: "  extra notes  ",
+  });
+  assert.deepEqual(normalized.systems, ["neuro"]);
+  assert.deepEqual(normalized.selections, { neuro: { cn2: ["field cut"] } });
+  assert.equal(normalized.freeText, "  extra notes  ");
+
+  // Compilation: selections fill the prose; unselected variables stay visible.
+  const compiled = compileSmartExam({
+    systems: ["general", "neuro"],
+    selections: {
+      general: { appearance: ["ill-appearing", "mild distress"] },
+      neuro: { cn2: ["field cut"] },
+    },
+    freeText: "",
+  });
+  assert.match(compiled, /General: ill-appearing, mild distress\./);
+  assert.match(compiled, /CN II field cut\./);
+  assert.ok(compiled.includes(SMART_EXAM_EMPTY), "unselected variables render as ___");
+
+  // Free-text notes append as their own paragraph.
+  const withNotes = compileSmartExam({ systems: [], selections: {}, freeText: "Wound vac in place." });
+  assert.equal(withNotes, "Wound vac in place.");
+
+  // The compiled Physical Exam prose reaches all three final-note formats.
+  let draft = createNoteDraft(NOTE_TYPES.H_AND_P, { id: "d1", patientId: "p1", hospitalDayId: "h1" }, options);
+  draft = updateSmartExam(draft, {
+    systems: ["neuro"],
+    selections: { neuro: { cn2: ["field cut"], motor_rue: ["4/5 proximal weakness", "drift present"] } },
+    freeText: "",
+  }, options);
+  // Mirror the controller's withSmartExam: compiled prose becomes the
+  // physical_exam section text (a preserved input section, not an editable field).
+  draft = {
+    ...draft,
+    sections: {
+      ...draft.sections,
+      physical_exam: { deidentifiedText: compileSmartExam(draft.smartExam), createdAt: FIXED_TIME, updatedAt: FIXED_TIME },
+    },
+  };
+  const md = renderFinalNote(draft);
+  assert.match(md, /\*\*Physical Exam\*\*/, "Physical Exam heading present");
+  assert.match(md, /CN II field cut/, "compiled CN II finding in markdown note");
+  assert.match(md, /4\/5 proximal weakness, drift present/, "multi-select findings compile together");
+  const plain = renderFinalNotePlainText(draft);
+  assert.match(plain, /CN II field cut/, "compiled finding in plain-text note");
+  const html = renderFinalNoteHtml(draft);
+  assert.match(html, /CN II field cut/, "compiled finding in HTML note");
+
+  // Empty smart exam: no Physical Exam body, no crash.
+  let empty = createNoteDraft(NOTE_TYPES.H_AND_P, { id: "d2", patientId: "p1", hospitalDayId: "h1" }, options);
+  empty = updateSmartExam(empty, { systems: [], selections: {}, freeText: "" }, options);
+  empty = {
+    ...empty,
+    sections: {
+      ...empty.sections,
+      physical_exam: { deidentifiedText: compileSmartExam(empty.smartExam), createdAt: FIXED_TIME, updatedAt: FIXED_TIME },
+    },
+  };
+  assert.doesNotMatch(renderFinalNote(empty), /field cut/);
 }
 
 console.log("note draft model tests passed");

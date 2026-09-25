@@ -1,8 +1,28 @@
 # Physical Exam Finding Catalog — Source Matrix
 
-**Catalog:** `src/clinical/exam-findings.js` in `~/workspace/prerounding-checklist`
+**Catalog:** `src/clinical/exam-templates.js` in `~/workspace/prerounding-checklist`
+(previously `src/clinical/exam-findings.js`; the catalog was migrated on
+2026-09-25 from a separate findings-picker section to inline smart-variable
+templates — see migration note below)
 **Date:** 2026-09-25
 **Purpose:** Prove, finding by finding, that every structured exam option in the app comes from established medical references — not generated.
+
+## 2026-09-25 migration note: picker → inline smart variables
+
+The separate structured findings-picker section was removed at the user's
+explicit direction. The selectable catalog now lives in
+`src/clinical/exam-templates.js` as 10 prose templates (General, Skin,
+HEENT, Neck, Cardiac, Pulmonary, Abdomen, Neurological, Musculoskeletal,
+Psychiatric) with inline multi-select smart variables embedded directly in
+the Physical Exam note text. The variables cover the same exam components
+and use the same standard clinical vocabulary documented in the matrix
+below (e.g. "cachectic", "icteric", "PERRL", "2+ brisk", MRC 0–5 strength,
+DTR 0–4+, murmur grades I–VI, GCS components). The component-basis column
+remains accurate for the new catalog; only the UI presentation changed.
+The template file's header comment discloses that the phrasing is standard
+clinical documentation convention, not a validated item-by-item textbook
+extraction — spot-check wording against a reference before relying on any
+specific phrase.
 
 ## How to read this
 
