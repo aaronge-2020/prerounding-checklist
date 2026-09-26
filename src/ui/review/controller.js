@@ -1787,10 +1787,17 @@ export function createReviewController(deps) {
         panel.dataset.scrollerIsDocument = String(
           scroller === document.documentElement || scroller === document.body
         );
-        // DEBUG v20: identify the scroller and panel scroll directly.
-        const ident = (el) => el ? `${el.tagName}.${(el.className || "").toString().split(" ")[0]}` : "(null)";
-        panel.dataset.dbgScroller = ident(scroller);
-        panel.dataset.dbgPanelScroll = String(panel.scrollTop);
+        // DEBUG v21: full ancestor scroll chain.
+        const chain = [];
+        let node = full;
+        while (node && node !== document.body && chain.length < 12) {
+          if (node instanceof HTMLElement) {
+            const r = node.getBoundingClientRect();
+            chain.push(`${node.tagName}.${(node.className || "").toString().split(" ")[0]}:st=${node.scrollTop},sh=${node.scrollHeight},ch=${node.clientHeight},top=${Math.round(r.top)}`);
+          }
+          node = node.parentElement;
+        }
+        panel.dataset.dbgChainHide = chain.join(" | ");
       }
       const nowCollapsed = !wasCollapsed;
       // Keep the module variable in sync for the view model (initial render).
@@ -1832,9 +1839,18 @@ export function createReviewController(deps) {
         if (typeof setTimeout !== "undefined") {
           setTimeout(doRestore, 50);
           setTimeout(doRestore, 150);
-          // DEBUG v20: late check — did anything reset scroll after 600ms?
+          // DEBUG v21: late chain — which box actually shows the content?
           setTimeout(() => {
-            panel.dataset.dbgLate = `panel:${panel.scrollTop} doc:${document.documentElement.scrollTop}`;
+            const chain = [];
+            let node = full;
+            while (node && node !== document.body && chain.length < 12) {
+              if (node instanceof HTMLElement) {
+                const r = node.getBoundingClientRect();
+                chain.push(`${node.tagName}.${(node.className || "").toString().split(" ")[0]}:st=${node.scrollTop},sh=${node.scrollHeight},ch=${node.clientHeight},top=${Math.round(r.top)}`);
+              }
+              node = node.parentElement;
+            }
+            panel.dataset.dbgChainLate = chain.join(" | ");
           }, 600);
         } else {
           doRestore();
