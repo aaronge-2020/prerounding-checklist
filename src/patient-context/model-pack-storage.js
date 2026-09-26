@@ -698,7 +698,7 @@ export async function ensureModelPackServiceWorker() {
   if (typeof navigator === "undefined" || !navigator.serviceWorker) {
     return { ready: false, message: "This browser does not support the local model installer." };
   }
-  await navigator.serviceWorker.register(new URL("../../service-worker.js", import.meta.url));
+  await navigator.serviceWorker.register(new URL("../../service-worker.js?v=20260925-sw-auth-fix", import.meta.url));
   await navigator.serviceWorker.ready;
   if (!navigator.serviceWorker.controller) {
     await new Promise((resolve) => {

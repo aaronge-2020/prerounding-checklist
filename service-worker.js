@@ -38,6 +38,14 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   if (event.request.cache === "only-if-cached" && event.request.mode !== "same-origin") return;
+  // Only same-origin responses get the COOP/COEP stamping above (those
+  // headers are meaningless on cross-origin fetch responses). Re-issuing
+  // third-party requests via fetch(event.request) can drop headers the
+  // page set explicitly (notably Authorization), which breaks
+  // authenticated APIs such as OpenAI with a 401 "Missing Bearer or
+  // Basic authentication in header". Cross-origin traffic (OpenAI API,
+  // Hugging Face model downloads) passes through untouched.
+  if (url.origin !== self.location.origin) return;
   event.respondWith(
     fetch(event.request).then(withIsolationHeaders).catch(() => Response.error())
   );

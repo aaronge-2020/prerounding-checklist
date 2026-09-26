@@ -79,7 +79,7 @@ import {
   modelFilesFromInput,
   removeModelPack,
   requestPersistentModelStorage
-} from "../patient-context/model-pack-storage.js?v=20260921-medication-card-v4";
+} from "../patient-context/model-pack-storage.js?v=20260925-sw-auth-fix";
 import {
   formatBytes,
   hasAutomaticModelDownload,
