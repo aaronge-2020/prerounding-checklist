@@ -191,6 +191,20 @@ export function createReviewController(deps) {
   // Local UI state only; survives re-renders.
   let clinicalDataCollapsed = false;
 
+  // Find the nearest ancestor (or self) that is actually scrolled —
+  // the element whose scrollTop reflects the user's scroll position.
+  // Falls back to the given element.
+  function findScroller(startEl) {
+    let el = startEl;
+    while (el && typeof document !== "undefined" && el !== document.documentElement) {
+      if (el.scrollTop > 0 || el.scrollHeight > el.clientHeight + 1) {
+        return el;
+      }
+      el = el.parentElement;
+    }
+    return startEl;
+  }
+
   // Which Objective editor groups are collapsed (vitals, lab families, etc.).
   // Local UI state only; survives re-renders.
   const collapsedObjectiveGroups = new Set();
@@ -1730,17 +1744,6 @@ export function createReviewController(deps) {
   // Find the nearest ancestor (or self) that is actually scrolled —
   // the element whose scrollTop reflects the user's scroll position.
   // Falls back to the given element.
-  function findScroller(startEl) {
-    let el = startEl;
-    while (el && el !== document.documentElement) {
-      if (el.scrollTop > 0 || el.scrollHeight > el.clientHeight + 1) {
-        return el;
-      }
-      el = el.parentElement;
-    }
-    return startEl;
-  }
-
     if (action === "toggle-clinical-data") {
       // True surgical toggle: both the rail and the full content are
       // always in the DOM (see renderDataExplorer). Flipping `hidden`
@@ -1788,8 +1791,15 @@ export function createReviewController(deps) {
           void target.scrollHeight;
           target.scrollTop = restoreTo;
         };
+        // Restore multiple times: rAF for layout, then setTimeout to
+        // catch any late browser scroll adjustments (e.g., from display
+        // mode changes or grid column transitions).
         if (typeof requestAnimationFrame !== "undefined") {
           requestAnimationFrame(() => requestAnimationFrame(doRestore));
+        }
+        if (typeof setTimeout !== "undefined") {
+          setTimeout(doRestore, 50);
+          setTimeout(doRestore, 150);
         } else {
           doRestore();
         }
@@ -1937,19 +1947,9 @@ export function createReviewController(deps) {
           if (node) list.appendChild(node);
         }
         renumberProblemCards(panel);
-        // Restore in rAF so the browser's post-mutation scroll adjustment
-        // settles first; force layout before setting.
-        if (scroller) {
-          const doRestore = () => {
-            void scroller.scrollHeight;
-            scroller.scrollTop = savedScroll;
-          };
-          if (typeof requestAnimationFrame !== "undefined") {
-            requestAnimationFrame(() => requestAnimationFrame(doRestore));
-          } else {
-            doRestore();
-          }
-        }
+        // Restore synchronously — the reorder doesn't change total height
+        // much, so immediate restore works (v10 verified).
+        if (scroller) scroller.scrollTop = savedScroll;
       }
       return true;
     }
