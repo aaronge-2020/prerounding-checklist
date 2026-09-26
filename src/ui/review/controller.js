@@ -848,15 +848,25 @@ export function createReviewController(deps) {
         const dataScroller = dataPanel ? findScroller(dataPanel) : null;
         const savedDataScroll = dataScroller ? dataScroller.scrollTop : 0;
         syncObjectiveDom(draft, addedIds, removedIds);
-        if (dataScroller && dataScroller.scrollTop !== savedDataScroll) {
+        // Restore unconditionally: the browser can reset scrollTop
+        // asynchronously after layout, so a synchronous check races it.
+        if (dataScroller && dataPanel) {
+          // DEBUG v20.
+          dataPanel.dataset.dbgCbSaved = String(savedDataScroll);
           const restoreDataScroll = () => {
             void dataScroller.scrollHeight;
             dataScroller.scrollTop = savedDataScroll;
+            dataPanel.dataset.dbgCbRestored = `${savedDataScroll}->${dataScroller.scrollTop}`;
           };
           if (typeof requestAnimationFrame !== "undefined") {
             requestAnimationFrame(() => requestAnimationFrame(restoreDataScroll));
           } else {
             restoreDataScroll();
+          }
+          if (typeof setTimeout !== "undefined") {
+            setTimeout(() => {
+              dataPanel.dataset.dbgCbLate = `panel:${dataPanel.scrollTop}`;
+            }, 600);
           }
         }
       }
@@ -1777,6 +1787,10 @@ export function createReviewController(deps) {
         panel.dataset.scrollerIsDocument = String(
           scroller === document.documentElement || scroller === document.body
         );
+        // DEBUG v20: identify the scroller and panel scroll directly.
+        const ident = (el) => el ? `${el.tagName}.${(el.className || "").toString().split(" ")[0]}` : "(null)";
+        panel.dataset.dbgScroller = ident(scroller);
+        panel.dataset.dbgPanelScroll = String(panel.scrollTop);
       }
       const nowCollapsed = !wasCollapsed;
       // Keep the module variable in sync for the view model (initial render).
@@ -1797,6 +1811,7 @@ export function createReviewController(deps) {
       if (panel && !nowCollapsed) {
         const restoreTo = Number(panel.dataset.savedScrollTop || 0);
         const scrollerIsDocument = panel.dataset.scrollerIsDocument === "true";
+        const ident = (el) => el ? `${el.tagName}.${(el.className || "").toString().split(" ")[0]}` : "(null)";
         const doRestore = () => {
           let target = findScroller(full || panel);
           if (scrollerIsDocument && typeof document !== "undefined") {
@@ -1805,6 +1820,9 @@ export function createReviewController(deps) {
           }
           void target.scrollHeight; // force layout before setting scroll
           target.scrollTop = restoreTo;
+          // DEBUG v20: record what restore did.
+          panel.dataset.dbgRestoreTarget = ident(target);
+          panel.dataset.dbgRestoreSet = `${restoreTo}->${target.scrollTop}`;
         };
         // Restore repeatedly: rAF for layout, then timeouts to beat any
         // late browser scroll adjustments from the grid/display change.
@@ -1814,6 +1832,10 @@ export function createReviewController(deps) {
         if (typeof setTimeout !== "undefined") {
           setTimeout(doRestore, 50);
           setTimeout(doRestore, 150);
+          // DEBUG v20: late check — did anything reset scroll after 600ms?
+          setTimeout(() => {
+            panel.dataset.dbgLate = `panel:${panel.scrollTop} doc:${document.documentElement.scrollTop}`;
+          }, 600);
         } else {
           doRestore();
         }
