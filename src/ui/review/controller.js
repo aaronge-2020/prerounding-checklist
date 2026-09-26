@@ -8,7 +8,8 @@ import {
   getExamSystem,
   getExamVar,
   normalizeSmartExam,
-} from "../../clinical/exam-templates.js?v=20260925-exam-templates-v1";
+  templateToSegments,
+} from "../../clinical/exam-templates.js?v=20260926-exam-editor-v1";
 import {
   addDifferential,
   addPlanProblem,
@@ -888,6 +889,15 @@ export function createReviewController(deps) {
       setSmartExamNotes(target.value);
       return true;
     }
+    // Free-text physical-exam editor: serialize to segments and save to
+    // the model only. The editor owns its DOM — never re-render mid-typing
+    // or the caret dies. (Typing in the dropdown's custom input bubbles
+    // here too; serialization skips the dropdown subtree, so it's a no-op.)
+    const editor = target.closest?.("[data-smart-exam-editor]");
+    if (editor) {
+      setSmartExamSegments(editor.dataset.system, serializeSmartExamEditor(editor));
+      return true;
+    }
     if (target.id === "reviewDataSearch") {
       deps.app.reviewSearchQuery = target.value;
       patchDataList();
@@ -1305,7 +1315,7 @@ export function createReviewController(deps) {
     const listedSet = new Set(variable.options || []);
     const exam = deps.byId("reviewContent")?.querySelector(".note-draft-panel [data-smart-exam]");
     if (!exam) return;
-    const btn = exam.querySelector(`button[data-action="smart-var-open"][data-system="${CSS.escape(systemId)}"][data-var="${CSS.escape(varId)}"]`);
+    const btn = exam.querySelector(`[data-action="smart-var-open"][data-system="${CSS.escape(systemId)}"][data-var="${CSS.escape(varId)}"]`);
     const wrap = btn?.closest("[data-smart-var-wrap]");
     // Pill text + style reflect the selection.
     if (btn) {
@@ -1339,7 +1349,7 @@ export function createReviewController(deps) {
     const missing = customsInModel.filter((value) => !domCustomValues.has(value));
     if (missing.length) {
       const freshDropdown = freshDraftNode("[data-smart-exam]")
-        ?.querySelector(`button[data-action="smart-var-open"][data-system="${CSS.escape(systemId)}"][data-var="${CSS.escape(varId)}"]`)
+        ?.querySelector(`[data-action="smart-var-open"][data-system="${CSS.escape(systemId)}"][data-var="${CSS.escape(varId)}"]`)
         ?.closest("[data-smart-var-wrap]")?.querySelector(":scope > .se-dropdown");
       const freshPicks = new Map(
         [...(freshDropdown?.querySelectorAll(".se-custom-pick") || [])]
@@ -1439,6 +1449,7 @@ export function createReviewController(deps) {
     const state = getSmartExam(current.draft);
     state.systems = state.systems.filter((id) => id !== systemId);
     delete state.selections[systemId];
+    if (state.segments) delete state.segments[systemId];
     smartExamUi.openVar = null;
     setSmartExam(current.draft, state);
     syncSmartExamRegion();
@@ -1458,6 +1469,9 @@ export function createReviewController(deps) {
         if (seg && typeof seg === "object" && seg.normal.length) vars[seg.var] = [...seg.normal];
       }
       state.selections[sysId] = vars;
+      // Restore the template segments too: re-fills placeholders the
+      // student may have deleted while free-typing.
+      state.segments = { ...(state.segments || {}), [sysId]: templateToSegments(system) };
       names.push(system.name);
     }
     smartExamUi.openVar = null;
@@ -1486,20 +1500,20 @@ export function createReviewController(deps) {
     // pill wrap. The pill button itself is never destroyed, so focus stays.
     const exam = deps.byId("reviewContent")?.querySelector(".note-draft-panel [data-smart-exam]");
     if (!exam) return;
-    const btn = exam.querySelector(`button[data-action="smart-var-open"][data-system="${CSS.escape(systemId)}"][data-var="${CSS.escape(varId)}"]`);
+    const btn = exam.querySelector(`[data-action="smart-var-open"][data-system="${CSS.escape(systemId)}"][data-var="${CSS.escape(varId)}"]`);
     const wrap = btn?.closest("[data-smart-var-wrap]");
     // Close any other open dropdown.
     exam.querySelectorAll(":scope .se-dropdown").forEach((dd) => {
       if (!wrap || !wrap.contains(dd)) dd.remove();
     });
-    exam.querySelectorAll('button[data-action="smart-var-open"]').forEach((pill) => {
+    exam.querySelectorAll('[data-action="smart-var-open"]').forEach((pill) => {
       pill.setAttribute("aria-expanded", String(smartExamUi.openVar === `${pill.dataset.system}:${pill.dataset.var}`));
     });
     if (wrap) {
       wrap.querySelector(":scope > .se-dropdown")?.remove();
       if (opening) {
         const freshDropdown = freshDraftNode("[data-smart-exam]")
-          ?.querySelector(`button[data-action="smart-var-open"][data-system="${CSS.escape(systemId)}"][data-var="${CSS.escape(varId)}"]`)
+          ?.querySelector(`[data-action="smart-var-open"][data-system="${CSS.escape(systemId)}"][data-var="${CSS.escape(varId)}"]`)
           ?.closest("[data-smart-var-wrap]")?.querySelector(":scope > .se-dropdown");
         if (freshDropdown) {
           wrap.appendChild(freshDropdown);
@@ -1593,6 +1607,51 @@ export function createReviewController(deps) {
     setDraft(withSmartExam(current.draft, state));
   }
 
+  // Read the free-text exam editor back into segments. The open dropdown
+  // (if any) lives inside the editor DOM but is skipped — it isn't exam
+  // text. Pills keep their variable identity; everything else is text.
+  function serializeSmartExamEditor(editor) {
+    const systemId = editor.dataset.system;
+    const segments = [];
+    const pushText = (s) => {
+      if (!s) return;
+      const last = segments[segments.length - 1];
+      if (last && last.t === "text") last.s += s;
+      else segments.push({ t: "text", s });
+    };
+    const walk = (node) => {
+      for (const child of node.childNodes) {
+        if (child.nodeType === 3) {
+          pushText(child.nodeValue);
+        } else if (child.nodeType === 1) {
+          if (child.classList?.contains("se-dropdown")) continue;
+          if (child.classList?.contains("se-pill") && child.dataset.var && getExamVar(systemId, child.dataset.var)) {
+            segments.push({ t: "var", var: child.dataset.var });
+            continue;
+          }
+          if (child.tagName === "BR") {
+            pushText("\n");
+            continue;
+          }
+          walk(child);
+          if (child.tagName === "DIV" || child.tagName === "P" || child.tagName === "LI") pushText("\n");
+        }
+      }
+    };
+    walk(editor);
+    return segments.filter((seg) => seg.t === "var" || seg.s !== "");
+  }
+
+  // Save editor segments to the model only — the editor keeps its DOM and
+  // caret. Recompile keeps the note text in sync for copy/final-note.
+  function setSmartExamSegments(systemId, segments) {
+    const current = model();
+    if (!current.patient || !getExamSystem(systemId)) return;
+    const state = getSmartExam(current.draft);
+    state.segments = { ...(state.segments || {}), [systemId]: segments };
+    setDraft(withSmartExam(current.draft, state));
+  }
+
   // Close the open smart-var dropdown by removing its node — no re-render.
   // Returns the pill button that owned the dropdown (for focus restore).
   function closeSmartVarDropdown() {
@@ -1600,10 +1659,10 @@ export function createReviewController(deps) {
     const exam = deps.byId("reviewContent")?.querySelector(".note-draft-panel [data-smart-exam]");
     let owner = null;
     exam?.querySelectorAll(":scope .se-dropdown").forEach((dd) => {
-      owner = dd.closest("[data-smart-var-wrap]")?.querySelector('button[data-action="smart-var-open"]') || owner;
+      owner = dd.closest("[data-smart-var-wrap]")?.querySelector('[data-action="smart-var-open"]') || owner;
       dd.remove();
     });
-    exam?.querySelectorAll('button[data-action="smart-var-open"]').forEach((pill) => {
+    exam?.querySelectorAll('[data-action="smart-var-open"]').forEach((pill) => {
       pill.setAttribute("aria-expanded", "false");
     });
     return owner;
@@ -1612,6 +1671,14 @@ export function createReviewController(deps) {
   // Keyboard: Enter commits a smart-variable custom entry; Escape closes
   // the open inline dropdown.
   function keydown(event) {
+    // Pills are focusable spans inside the free-text editor: Enter/Space
+    // opens the dropdown, matching button behavior.
+    const pill = event.target?.closest?.('[data-action="smart-var-open"]');
+    if (pill && (event.key === "Enter" || event.key === " ")) {
+      event.preventDefault();
+      toggleSmartVarDropdown(pill.dataset.system, pill.dataset.var);
+      return true;
+    }
     const customInput = event.target?.closest?.("[data-smart-var-custom]");
     if (customInput) {
       if (event.key === "Enter") {

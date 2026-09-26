@@ -489,7 +489,7 @@ export function getExamVar(systemId, varId) {
  * Unknown system/var ids are dropped; selections are trimmed non-empty strings.
  */
 export function normalizeSmartExam(value) {
-  const out = { systems: [], selections: {}, freeText: "" };
+  const out = { systems: [], selections: {}, freeText: "", segments: {} };
   if (!value || typeof value !== "object") return out;
   if (Array.isArray(value.systems)) {
     for (const id of value.systems) {
@@ -513,7 +513,51 @@ export function normalizeSmartExam(value) {
     }
   }
   out.freeText = String(value.freeText ?? "");
+  // Per-system editable segments: the student's free text plus variable
+  // placeholders, in document order. When absent or invalid the system
+  // template is the starting point, so older saved exams keep working.
+  const rawSegments = value.segments;
+  for (const sysId of out.systems) {
+    const system = getExamSystem(sysId);
+    const raw = rawSegments && typeof rawSegments === "object" ? rawSegments[sysId] : null;
+    out.segments[sysId] = cleanSegments(raw, system) || templateToSegments(system);
+  }
   return out;
+}
+
+/**
+ * Convert a system template into editable segments: literal prose becomes
+ * { t: "text" } and each smart variable becomes { t: "var" }.
+ */
+export function templateToSegments(system) {
+  if (!system) return [];
+  const segments = [];
+  for (const seg of system.template || []) {
+    if (typeof seg === "string") {
+      if (seg) segments.push({ t: "text", s: seg });
+    } else if (seg && seg.var) {
+      segments.push({ t: "var", var: seg.var });
+    }
+  }
+  return segments;
+}
+
+function cleanSegments(raw, system) {
+  if (!Array.isArray(raw) || !raw.length || !system) return null;
+  const out = [];
+  for (const seg of raw) {
+    if (!seg || typeof seg !== "object") continue;
+    if (seg.t === "text") {
+      const s = String(seg.s ?? "");
+      if (!s) continue;
+      const last = out[out.length - 1];
+      if (last && last.t === "text") last.s += s;
+      else out.push({ t: "text", s });
+    } else if (seg.t === "var" && typeof seg.var === "string" && getExamVar(system.id, seg.var)) {
+      if (!out.some((x) => x.t === "var" && x.var === seg.var)) out.push({ t: "var", var: seg.var });
+    }
+  }
+  return out.length ? out : null;
 }
 
 /**
@@ -529,10 +573,11 @@ export function compileSmartExam(smartExam) {
     const system = getExamSystem(sysId);
     if (!system) continue;
     const sel = state.selections[sysId] || {};
+    const segments = state.segments[sysId] || templateToSegments(system);
     let prose = "";
-    for (const seg of system.template) {
-      if (typeof seg === "string") {
-        prose += seg;
+    for (const seg of segments) {
+      if (seg.t === "text") {
+        prose += seg.s;
       } else {
         const vals = (sel[seg.var] || []).filter(Boolean);
         prose += vals.length ? vals.join(", ") : SMART_EXAM_EMPTY;

@@ -5,6 +5,7 @@ import {
   getExamVar,
   normalizeSmartExam,
   SMART_EXAM_EMPTY,
+  templateToSegments,
 } from "../src/clinical/exam-templates.js";
 import {
   NOTE_DRAFT_SCHEMA,
@@ -777,6 +778,60 @@ const options = { now: fixedNow, idFactory: fixedId };
   // Free-text notes append as their own paragraph.
   const withNotes = compileSmartExam({ systems: [], selections: {}, freeText: "Wound vac in place." });
   assert.equal(withNotes, "Wound vac in place.");
+
+  // templateToSegments mirrors the system template: prose -> text, vars -> var.
+  const generalSegs = templateToSegments(getExamSystem("general"));
+  assert.deepEqual(generalSegs, [
+    { t: "text", s: "General: " },
+    { t: "var", var: "appearance" },
+    { t: "text", s: "." },
+  ]);
+
+  // Editable segments: free text the student typed is preserved verbatim
+  // and compiles in document order around the variable placeholders.
+  const edited = normalizeSmartExam({
+    systems: ["general"],
+    selections: { general: { appearance: ["ill-appearing"] } },
+    segments: {
+      general: [
+        { t: "text", s: "General: " },
+        { t: "var", var: "appearance" },
+        { t: "text", s: ". Tachy, otherwise " },
+        { t: "text", s: "comfortable." },
+      ],
+    },
+    freeText: "",
+  });
+  assert.deepEqual(edited.segments.general, [
+    { t: "text", s: "General: " },
+    { t: "var", var: "appearance" },
+    { t: "text", s: ". Tachy, otherwise comfortable." },
+  ], "adjacent text segments merge");
+  assert.match(compileSmartExam(edited), /General: ill-appearing\. Tachy, otherwise comfortable\./);
+
+  // Segments fall back to the template when missing; invalid entries are
+  // dropped; unknown vars and duplicate placeholders are rejected.
+  const fallback = normalizeSmartExam({ systems: ["general"], selections: {}, freeText: "" });
+  assert.deepEqual(fallback.segments.general, templateToSegments(getExamSystem("general")));
+  const cleaned = normalizeSmartExam({
+    systems: ["general"],
+    selections: {},
+    segments: {
+      general: [
+        { t: "text", s: "" },
+        { t: "var", var: "bogus" },
+        { t: "var", var: "appearance" },
+        { t: "var", var: "appearance" },
+        null,
+        { t: "text", s: "ok" },
+      ],
+    },
+    freeText: "",
+  });
+  assert.deepEqual(cleaned.segments.general, [
+    { t: "var", var: "appearance" },
+    { t: "text", s: "ok" },
+  ]);
 
   // The compiled Physical Exam prose reaches all three final-note formats.
   let draft = createNoteDraft(NOTE_TYPES.H_AND_P, { id: "d1", patientId: "p1", hospitalDayId: "h1" }, options);

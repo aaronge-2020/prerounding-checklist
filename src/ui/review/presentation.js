@@ -11,8 +11,10 @@ import { baselineDisplayText, baselinePriorityFor } from "../../patient-context/
 import {
   EXAM_SYSTEMS,
   getExamSystem,
+  getExamVar,
   normalizeSmartExam,
   SMART_EXAM_EMPTY,
+  templateToSegments,
 } from "../../clinical/exam-templates.js?v=20260925-exam-templates-v1";
 
 function valueText(value) {
@@ -616,7 +618,10 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         const title = selected.length
           ? `${varDef.label}: ${selected.join(", ")} — click to change`
           : `${varDef.label} — click to select`;
-        let html = `<span class="se-var-wrap" data-smart-var-wrap><button type="button" class="${pillClass}" data-action="smart-var-open" data-system="${escapeHtml(systemId)}" data-var="${escapeHtml(varDef.var)}" title="${escapeHtml(title)}" aria-haspopup="listbox" aria-expanded="${isOpen}">${escapeHtml(pillText)} ▾</button>`;
+        // Pills are atomic inline placeholders inside the free-text editor
+        // (Epic smart-phrase style): contenteditable="false" so the caret
+        // can't land inside one, focusable/clickable to open the dropdown.
+        let html = `<span class="se-var-wrap" data-smart-var-wrap><span class="${pillClass}" contenteditable="false" tabindex="0" role="button" data-action="smart-var-open" data-system="${escapeHtml(systemId)}" data-var="${escapeHtml(varDef.var)}" title="${escapeHtml(title)}" aria-haspopup="listbox" aria-expanded="${isOpen}">${escapeHtml(pillText)} ▾</span>`;
         if (isOpen) html += renderVarDropdown(systemId, varDef, selected);
         return html + `</span>`;
       };
@@ -645,14 +650,19 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       const renderSystem = (systemId) => {
         const system = getExamSystem(systemId);
         if (!system) return "";
-        const prose = system.template.map((seg) =>
-          typeof seg === "string" ? escapeHtml(seg) : renderVarPill(systemId, seg)
-        ).join("");
+        // Epic-style free-text editor: the student types anywhere; smart
+        // variables are atomic inline placeholders (click to fill).
+        const segments = state.segments?.[systemId] || templateToSegments(system);
+        const editorHtml = segments.map((seg) => {
+          if (seg.t === "text") return escapeHtml(seg.s).replace(/\n/g, "<br>");
+          const varDef = getExamVar(systemId, seg.var);
+          return varDef ? renderVarPill(systemId, varDef) : "";
+        }).join("");
         return `<div class="se-system" data-smart-system="${escapeHtml(systemId)}">
           <div class="se-system-head"><strong>${escapeHtml(system.name)}</strong>
             <span class="se-system-actions"><button type="button" class="ed-mini" data-action="smart-exam-system-normal" data-system="${escapeHtml(systemId)}" title="Fill this system with normal findings">✓ Normal</button><button type="button" class="ed-mini ed-mini--danger" data-action="smart-exam-system-remove" data-system="${escapeHtml(systemId)}" title="Remove this system" aria-label="Remove ${escapeHtml(system.name)}">×</button></span>
           </div>
-          <p class="se-prose">${prose}</p>
+          <div class="se-editor" contenteditable="true" spellcheck="true" data-smart-exam-editor data-system="${escapeHtml(systemId)}" data-placeholder="Type exam findings — click a placeholder to fill it">${editorHtml || "<br>"}</div>
         </div>`;
       };
 
