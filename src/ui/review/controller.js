@@ -1775,30 +1775,31 @@ export function createReviewController(deps) {
         // Clear any stale anchor before capturing the new one.
         panel.dataset.topSectionKey = "";
         panel.dataset.topSectionLabel = "";
-        panel.dataset.topSectionId = "";
-        panel.dataset.topSectionText = "";
-        // Find the section at the top of the panel viewport.
-        const rect = panel.getBoundingClientRect();
-        const x = rect.left + rect.width / 2;
-        const y = rect.top + 10;
-        const elAtTop = document.elementFromPoint(x, y);
-        const sectionEl = elAtTop?.closest?.("section[data-compact-section], [data-section-id], [data-lab-family], [data-clinical-section], h2, h3");
-        if (sectionEl) {
-          const key = sectionEl.dataset.sectionId || sectionEl.dataset.labFamily || sectionEl.dataset.clinicalSection || "";
-          const compact = sectionEl.dataset.compactSection || "";
-          // Lab families share data-compact-section="labs"; use the
-          // section's aria-label (e.g. "CBC") as the specific anchor.
-          const headingEl = sectionEl.matches("h2, h3") ? sectionEl : sectionEl.querySelector("h2, h3");
-          const headingText = headingEl?.textContent?.trim().slice(0, 50) || "";
-          const label = sectionEl.getAttribute("aria-label") || headingText;
-          if (key) panel.dataset.topSectionKey = key;
-          else if (compact && compact !== "labs") panel.dataset.topSectionKey = compact;
-          if (label) panel.dataset.topSectionLabel = label;
+        // Find the topmost section currently visible in the panel viewport
+        // by comparing bounding rects (robust against padding/focus).
+        const panelTop = panel.getBoundingClientRect().top;
+        const sections = full.querySelectorAll("section[data-compact-section]");
+        let anchorLabel = "";
+        let anchorKey = "";
+        for (const s of sections) {
+          const top = s.getBoundingClientRect().top;
+          if (top >= panelTop - 8) {
+            anchorKey = s.dataset.compactSection || "";
+            anchorLabel = s.getAttribute("aria-label") ||
+              s.querySelector("h2, h3")?.textContent?.trim().slice(0, 50) || "";
+            break;
+          }
         }
+        if (anchorKey && anchorKey !== "labs") panel.dataset.topSectionKey = anchorKey;
+        if (anchorLabel) panel.dataset.topSectionLabel = anchorLabel;
+        // DEBUG: expose what was captured.
+        panel.dataset.dbgAnchor = anchorLabel ? `${anchorKey || "?"}:${anchorLabel}` : "(none)";
         // Also save raw scrollTop as fallback.
         const scroller = findScroller(full);
         panel.dataset.savedScrollTop = String(scroller.scrollTop);
         panel.dataset.scrollerIsDocument = String(scroller === document.documentElement || scroller === document.body);
+        panel.dataset.dbgScrollTop = String(scroller.scrollTop);
+        panel.dataset.dbgDoc = panel.dataset.scrollerIsDocument;
       }
       const nowCollapsed = !wasCollapsed;
       // Keep the module variable in sync for the view model (initial render).
@@ -1824,19 +1825,20 @@ export function createReviewController(deps) {
         const doRestore = () => {
           // Try the section anchor first (most robust across scrollers).
           if (full && (topSectionKey || topSectionLabel)) {
-            const sections = full.querySelectorAll("section[data-compact-section], [data-section-id], [data-lab-family], [data-clinical-section]");
+            const sections = full.querySelectorAll("section[data-compact-section]");
             for (const s of sections) {
-              const sKey = s.dataset.sectionId || s.dataset.labFamily || s.dataset.clinicalSection || "";
-              const sCompact = s.dataset.compactSection || "";
-              const sHeading = s.querySelector("h2, h3");
-              const sLabel = s.getAttribute("aria-label") || sHeading?.textContent?.trim().slice(0, 50) || "";
-              const keyMatch = topSectionKey && (sKey === topSectionKey || (sCompact && sCompact !== "labs" && sCompact === topSectionKey));
+              const sKey = s.dataset.compactSection || "";
+              const sLabel = s.getAttribute("aria-label") ||
+                s.querySelector("h2, h3")?.textContent?.trim().slice(0, 50) || "";
+              const keyMatch = topSectionKey && sKey === topSectionKey;
               const labelMatch = topSectionLabel && sLabel === topSectionLabel;
               if (keyMatch || labelMatch) {
                 s.scrollIntoView({ block: "start" });
+                panel.dataset.dbgRestored = `section:${sLabel}`;
                 return;
               }
             }
+            panel.dataset.dbgRestored = "section-not-found";
           }
           // Fallback to scrollTop restore.
           let target = findScroller(full || panel);
@@ -1846,6 +1848,7 @@ export function createReviewController(deps) {
           }
           void target.scrollHeight;
           target.scrollTop = restoreTo;
+          panel.dataset.dbgRestored = `scrolltop:${restoreTo}->${target.scrollTop}`;
         };
         if (typeof requestAnimationFrame !== "undefined") {
           requestAnimationFrame(() => requestAnimationFrame(doRestore));
