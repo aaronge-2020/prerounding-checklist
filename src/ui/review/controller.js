@@ -193,16 +193,35 @@ export function createReviewController(deps) {
 
   // Find the nearest ancestor (or self) that is actually scrolled —
   // the element whose scrollTop reflects the user's scroll position.
+  // Checks the element, its ancestors, and the document.
   // Falls back to the given element.
   function findScroller(startEl) {
+    // Check the element and its ancestors first.
     let el = startEl;
     while (el && typeof document !== "undefined" && el !== document.documentElement) {
-      if (el.scrollTop > 0 || el.scrollHeight > el.clientHeight + 1) {
+      if (el.scrollTop > 0) {
         return el;
       }
       el = el.parentElement;
     }
-    return startEl;
+    // Check document scrolling (for sticky panels, the page may scroll).
+    if (typeof document !== "undefined") {
+      if (document.documentElement.scrollTop > 0) return document.documentElement;
+      if (document.body.scrollTop > 0) return document.body;
+    }
+    // Fall back to the element with the largest scrollHeight overflow.
+    el = startEl;
+    let best = startEl;
+    let bestOverflow = 0;
+    while (el && typeof document !== "undefined" && el !== document.documentElement) {
+      const overflow = el.scrollHeight - el.clientHeight;
+      if (overflow > bestOverflow) {
+        bestOverflow = overflow;
+        best = el;
+      }
+      el = el.parentElement;
+    }
+    return best;
   }
 
   // Which Objective editor groups are collapsed (vitals, lab families, etc.).
@@ -1745,33 +1764,35 @@ export function createReviewController(deps) {
       // True surgical toggle: both the rail and the full content are
       // always in the DOM (see renderDataExplorer). Flipping `hidden`
       // never destroys the search input, the data list, or their state.
-      // Find the actual scroller (panel or inner element) and save/restore
-      // its scrollTop. The panel's scrollTop was 0 in testing — the real
-      // scroller is an inner element.
+      // Scroll preservation: remember the section at the top of the
+      // viewport before hiding; scroll it back into view on show.
+      // This is robust against which element actually scrolls.
       const panel = target.closest(".review-data-panel");
       const rail = panel?.querySelector("[data-clinical-data-rail]");
       const full = panel?.querySelector("[data-clinical-data-full]");
       const wasCollapsed = panel?.dataset.clinicalDataCollapsed === "true";
-      // The scroller is the element that actually has scrollTop > 0.
-      // Check the full content first, then the panel, then walk up.
-      let scroller = null;
-      if (panel && typeof document !== "undefined") {
-        const candidates = [full, panel, target];
-        for (const cand of candidates) {
-          if (cand && cand.scrollTop > 0) {
-            scroller = cand;
-            break;
+      if (!wasCollapsed && panel && full && typeof document !== "undefined") {
+        // Find the section header at the top of the panel viewport.
+        const rect = panel.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + 10;
+        const elAtTop = document.elementFromPoint(x, y);
+        const section = elAtTop?.closest?.("[data-section-id], h2, h3, [data-lab-family], [data-clinical-section]");
+        // Store a selector for the section, or its text content as fallback.
+        if (section) {
+          const id = section.dataset.sectionId || section.dataset.labFamily || section.dataset.clinicalSection;
+          if (id) {
+            panel.dataset.topSectionId = id;
+          } else {
+            // Use the section's heading text as an identifier.
+            const heading = section.querySelector("h2, h3") || (section.tagName.match(/^H[23]$/) ? section : null);
+            if (heading) panel.dataset.topSectionText = heading.textContent.trim().slice(0, 50);
           }
         }
-        if (!scroller) scroller = findScroller(full || panel);
-        // Remember which element it was for restore.
-        const scrollerId = scroller === panel ? "panel"
-          : scroller === full ? "full"
-          : scroller === target ? "target" : "found";
-        panel.dataset.scrollerId = scrollerId;
-      }
-      if (!wasCollapsed && panel && scroller) {
+        // Also save raw scrollTop as fallback.
+        const scroller = findScroller(full);
         panel.dataset.savedScrollTop = String(scroller.scrollTop);
+        panel.dataset.scrollerIsDocument = String(scroller === document.documentElement || scroller === document.body);
       }
       const nowCollapsed = !wasCollapsed;
       // Keep the module variable in sync for the view model (initial render).
@@ -1791,15 +1812,34 @@ export function createReviewController(deps) {
       });
       if (panel && !nowCollapsed) {
         const restoreTo = Number(panel.dataset.savedScrollTop || 0);
-        const scrollerId = panel.dataset.scrollerId || "panel";
-        // Restore after layout settles. Use multiple attempts to beat
-        // browser scroll adjustments from the display/grid changes.
+        const scrollerIsDocument = panel.dataset.scrollerIsDocument === "true";
+        const topSectionId = panel.dataset.topSectionId || "";
+        const topSectionText = panel.dataset.topSectionText || "";
         const doRestore = () => {
-          // Resolve the scroller element.
-          let target = panel;
-          if (scrollerId === "full" && full) target = full;
-          else if (scrollerId === "found") target = findScroller(full || panel);
-          void target.scrollHeight; // force layout
+          // Try section-based restore first (most robust).
+          if (topSectionId && full) {
+            const section = full.querySelector(`[data-section-id="${CSS.escape(topSectionId)}"], [data-lab-family="${CSS.escape(topSectionId)}"], [data-clinical-section="${CSS.escape(topSectionId)}"]`);
+            if (section) {
+              section.scrollIntoView({ block: "start" });
+              return;
+            }
+          }
+          if (topSectionText && full) {
+            // Find heading by text content.
+            const headings = full.querySelectorAll("h2, h3");
+            for (const h of headings) {
+              if (h.textContent.trim().slice(0, 50) === topSectionText) {
+                h.scrollIntoView({ block: "start" });
+                return;
+              }
+            }
+          }
+          // Fallback to scrollTop restore.
+          let target = findScroller(full || panel);
+          if (scrollerIsDocument && typeof document !== "undefined") {
+            target = document.documentElement;
+          }
+          void target.scrollHeight;
           target.scrollTop = restoreTo;
         };
         if (typeof requestAnimationFrame !== "undefined") {
