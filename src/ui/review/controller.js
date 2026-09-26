@@ -1769,8 +1769,8 @@ export function createReviewController(deps) {
       if (typeof document !== "undefined" && document.activeElement instanceof HTMLElement) {
         document.activeElement.blur();
       }
-      if (rail) rail.hidden = nowCollapsed;
-      if (full) full.hidden = !nowCollapsed;
+      if (rail) rail.hidden = !nowCollapsed;
+      if (full) full.hidden = nowCollapsed;
       panel?.classList.toggle("is-collapsed", nowCollapsed);
       if (panel) panel.dataset.clinicalDataCollapsed = String(nowCollapsed);
       panel?.querySelectorAll('[data-action="toggle-clinical-data"]').forEach((btn) => {
