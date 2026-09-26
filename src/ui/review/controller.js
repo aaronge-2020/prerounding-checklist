@@ -1756,6 +1756,12 @@ export function createReviewController(deps) {
       const wasCollapsed = panel?.dataset.clinicalDataCollapsed === "true";
       if (!wasCollapsed && panel) {
         panel.dataset.savedScrollTop = String(panel.scrollTop);
+        // DEBUG: expose for testing
+        if (typeof document !== "undefined") {
+          document.documentElement.dataset.collapseSaved = String(panel.scrollTop);
+          document.documentElement.dataset.collapseScrollHeight = String(panel.scrollHeight);
+          document.documentElement.dataset.collapseClientHeight = String(panel.clientHeight);
+        }
       }
       const nowCollapsed = !wasCollapsed;
       // Keep the module variable in sync for the view model (initial render).
@@ -1775,11 +1781,18 @@ export function createReviewController(deps) {
       });
       if (panel && !nowCollapsed) {
         const restoreTo = Number(panel.dataset.savedScrollTop || 0);
+        // DEBUG: expose restore attempt
+        if (typeof document !== "undefined") {
+          document.documentElement.dataset.collapseRestoreTo = String(restoreTo);
+        }
         // Restore after layout settles. Use multiple attempts to beat
         // browser scroll adjustments from the display/grid changes.
         const doRestore = () => {
           void panel.scrollHeight; // force layout
           panel.scrollTop = restoreTo;
+          if (typeof document !== "undefined") {
+            document.documentElement.dataset.collapseRestored = String(panel.scrollTop);
+          }
         };
         if (typeof requestAnimationFrame !== "undefined") {
           requestAnimationFrame(() => requestAnimationFrame(doRestore));
