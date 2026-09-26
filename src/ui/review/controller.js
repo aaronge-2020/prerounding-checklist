@@ -1764,42 +1764,19 @@ export function createReviewController(deps) {
       // True surgical toggle: both the rail and the full content are
       // always in the DOM (see renderDataExplorer). Flipping `hidden`
       // never destroys the search input, the data list, or their state.
-      // Scroll preservation: remember the section at the top of the
-      // viewport before hiding; scroll it back into view on show.
-      // This is robust against which element actually scrolls.
+      // Scroll preservation: the panel (or document, when the sticky panel
+      // itself doesn't scroll) keeps its scrollTop; save it on hide and
+      // restore it on show after layout settles.
       const panel = target.closest(".review-data-panel");
       const rail = panel?.querySelector("[data-clinical-data-rail]");
       const full = panel?.querySelector("[data-clinical-data-full]");
       const wasCollapsed = panel?.dataset.clinicalDataCollapsed === "true";
       if (!wasCollapsed && panel && full && typeof document !== "undefined") {
-        // Clear any stale anchor before capturing the new one.
-        panel.dataset.topSectionKey = "";
-        panel.dataset.topSectionLabel = "";
-        // Find the topmost section currently visible in the panel viewport
-        // by comparing bounding rects (robust against padding/focus).
-        const panelTop = panel.getBoundingClientRect().top;
-        const sections = full.querySelectorAll("section[data-compact-section]");
-        let anchorLabel = "";
-        let anchorKey = "";
-        for (const s of sections) {
-          const top = s.getBoundingClientRect().top;
-          if (top >= panelTop - 8) {
-            anchorKey = s.dataset.compactSection || "";
-            anchorLabel = s.getAttribute("aria-label") ||
-              s.querySelector("h2, h3")?.textContent?.trim().slice(0, 50) || "";
-            break;
-          }
-        }
-        if (anchorKey && anchorKey !== "labs") panel.dataset.topSectionKey = anchorKey;
-        if (anchorLabel) panel.dataset.topSectionLabel = anchorLabel;
-        // DEBUG: expose what was captured.
-        panel.dataset.dbgAnchor = anchorLabel ? `${anchorKey || "?"}:${anchorLabel}` : "(none)";
-        // Also save raw scrollTop as fallback.
         const scroller = findScroller(full);
         panel.dataset.savedScrollTop = String(scroller.scrollTop);
-        panel.dataset.scrollerIsDocument = String(scroller === document.documentElement || scroller === document.body);
-        panel.dataset.dbgScrollTop = String(scroller.scrollTop);
-        panel.dataset.dbgDoc = panel.dataset.scrollerIsDocument;
+        panel.dataset.scrollerIsDocument = String(
+          scroller === document.documentElement || scroller === document.body
+        );
       }
       const nowCollapsed = !wasCollapsed;
       // Keep the module variable in sync for the view model (initial render).
@@ -1820,36 +1797,17 @@ export function createReviewController(deps) {
       if (panel && !nowCollapsed) {
         const restoreTo = Number(panel.dataset.savedScrollTop || 0);
         const scrollerIsDocument = panel.dataset.scrollerIsDocument === "true";
-        const topSectionKey = panel.dataset.topSectionKey || "";
-        const topSectionLabel = panel.dataset.topSectionLabel || "";
         const doRestore = () => {
-          // Try the section anchor first (most robust across scrollers).
-          if (full && (topSectionKey || topSectionLabel)) {
-            const sections = full.querySelectorAll("section[data-compact-section]");
-            for (const s of sections) {
-              const sKey = s.dataset.compactSection || "";
-              const sLabel = s.getAttribute("aria-label") ||
-                s.querySelector("h2, h3")?.textContent?.trim().slice(0, 50) || "";
-              const keyMatch = topSectionKey && sKey === topSectionKey;
-              const labelMatch = topSectionLabel && sLabel === topSectionLabel;
-              if (keyMatch || labelMatch) {
-                s.scrollIntoView({ block: "start" });
-                panel.dataset.dbgRestored = `section:${sLabel}`;
-                return;
-              }
-            }
-            panel.dataset.dbgRestored = "section-not-found";
-          }
-          // Fallback to scrollTop restore.
           let target = findScroller(full || panel);
           if (scrollerIsDocument && typeof document !== "undefined") {
             target = document.documentElement;
             document.body.scrollTop = restoreTo;
           }
-          void target.scrollHeight;
+          void target.scrollHeight; // force layout before setting scroll
           target.scrollTop = restoreTo;
-          panel.dataset.dbgRestored = `scrolltop:${restoreTo}->${target.scrollTop}`;
         };
+        // Restore repeatedly: rAF for layout, then timeouts to beat any
+        // late browser scroll adjustments from the grid/display change.
         if (typeof requestAnimationFrame !== "undefined") {
           requestAnimationFrame(() => requestAnimationFrame(doRestore));
         }
