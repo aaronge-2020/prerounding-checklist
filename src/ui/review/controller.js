@@ -1748,20 +1748,14 @@ export function createReviewController(deps) {
       // True surgical toggle: both the rail and the full content are
       // always in the DOM (see renderDataExplorer). Flipping `hidden`
       // never destroys the search input, the data list, or their state.
-      // Persist the scrollTop on the panel's dataset (not a JS variable)
-      // so it survives across handler invocations; restore after layout.
+      // The panel (.review-data-panel) has overflow:auto and is the scroller.
+      // Save its scrollTop when collapsing; restore when expanding.
       const panel = target.closest(".review-data-panel");
       const rail = panel?.querySelector("[data-clinical-data-rail]");
       const full = panel?.querySelector("[data-clinical-data-full]");
       const wasCollapsed = panel?.dataset.clinicalDataCollapsed === "true";
-      // Find the actual scroller — it may be the panel or an inner element.
-      const scroller = panel ? findScroller(full || panel) : null;
-      if (!wasCollapsed && scroller) {
-        panel.dataset.savedScrollTop = String(scroller.scrollTop);
-        // Remember which element scrolled, by a simple identifier.
-        panel.dataset.scrollerSelector = scroller === panel ? ".review-data-panel"
-          : scroller === full ? "[data-clinical-data-full]"
-          : scroller.className ? "." + String(scroller.className).split(" ")[0] : "";
+      if (!wasCollapsed && panel) {
+        panel.dataset.savedScrollTop = String(panel.scrollTop);
       }
       const nowCollapsed = !wasCollapsed;
       // Keep the module variable in sync for the view model (initial render).
@@ -1781,19 +1775,12 @@ export function createReviewController(deps) {
       });
       if (panel && !nowCollapsed) {
         const restoreTo = Number(panel.dataset.savedScrollTop || 0);
-        const selector = panel.dataset.scrollerSelector || ".review-data-panel";
+        // Restore after layout settles. Use multiple attempts to beat
+        // browser scroll adjustments from the display/grid changes.
         const doRestore = () => {
-          // Find the scroller again (it may be the panel or inner element).
-          const target = selector === ".review-data-panel" ? panel
-            : selector === "[data-clinical-data-full]" ? full
-            : panel.querySelector(selector) || panel;
-          if (!target) return;
-          void target.scrollHeight;
-          target.scrollTop = restoreTo;
+          void panel.scrollHeight; // force layout
+          panel.scrollTop = restoreTo;
         };
-        // Restore multiple times: rAF for layout, then setTimeout to
-        // catch any late browser scroll adjustments (e.g., from display
-        // mode changes or grid column transitions).
         if (typeof requestAnimationFrame !== "undefined") {
           requestAnimationFrame(() => requestAnimationFrame(doRestore));
         }
