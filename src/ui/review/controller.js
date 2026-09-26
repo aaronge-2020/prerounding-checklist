@@ -1741,27 +1741,37 @@ export function createReviewController(deps) {
       patchDataList();
       return true;
     }
-  // Find the nearest ancestor (or self) that is actually scrolled —
-  // the element whose scrollTop reflects the user's scroll position.
-  // Falls back to the given element.
     if (action === "toggle-clinical-data") {
       // True surgical toggle: both the rail and the full content are
       // always in the DOM (see renderDataExplorer). Flipping `hidden`
       // never destroys the search input, the data list, or their state.
-      // The panel (.review-data-panel) has overflow:auto and is the scroller.
-      // Save its scrollTop when collapsing; restore when expanding.
+      // Find the actual scroller (panel or inner element) and save/restore
+      // its scrollTop. The panel's scrollTop was 0 in testing — the real
+      // scroller is an inner element.
       const panel = target.closest(".review-data-panel");
       const rail = panel?.querySelector("[data-clinical-data-rail]");
       const full = panel?.querySelector("[data-clinical-data-full]");
       const wasCollapsed = panel?.dataset.clinicalDataCollapsed === "true";
-      if (!wasCollapsed && panel) {
-        panel.dataset.savedScrollTop = String(panel.scrollTop);
-        // DEBUG: expose for testing
-        if (typeof document !== "undefined") {
-          document.documentElement.dataset.collapseSaved = String(panel.scrollTop);
-          document.documentElement.dataset.collapseScrollHeight = String(panel.scrollHeight);
-          document.documentElement.dataset.collapseClientHeight = String(panel.clientHeight);
+      // The scroller is the element that actually has scrollTop > 0.
+      // Check the full content first, then the panel, then walk up.
+      let scroller = null;
+      if (panel && typeof document !== "undefined") {
+        const candidates = [full, panel, target];
+        for (const cand of candidates) {
+          if (cand && cand.scrollTop > 0) {
+            scroller = cand;
+            break;
+          }
         }
+        if (!scroller) scroller = findScroller(full || panel);
+        // Remember which element it was for restore.
+        const scrollerId = scroller === panel ? "panel"
+          : scroller === full ? "full"
+          : scroller === target ? "target" : "found";
+        panel.dataset.scrollerId = scrollerId;
+      }
+      if (!wasCollapsed && panel && scroller) {
+        panel.dataset.savedScrollTop = String(scroller.scrollTop);
       }
       const nowCollapsed = !wasCollapsed;
       // Keep the module variable in sync for the view model (initial render).
@@ -1781,18 +1791,16 @@ export function createReviewController(deps) {
       });
       if (panel && !nowCollapsed) {
         const restoreTo = Number(panel.dataset.savedScrollTop || 0);
-        // DEBUG: expose restore attempt
-        if (typeof document !== "undefined") {
-          document.documentElement.dataset.collapseRestoreTo = String(restoreTo);
-        }
+        const scrollerId = panel.dataset.scrollerId || "panel";
         // Restore after layout settles. Use multiple attempts to beat
         // browser scroll adjustments from the display/grid changes.
         const doRestore = () => {
-          void panel.scrollHeight; // force layout
-          panel.scrollTop = restoreTo;
-          if (typeof document !== "undefined") {
-            document.documentElement.dataset.collapseRestored = String(panel.scrollTop);
-          }
+          // Resolve the scroller element.
+          let target = panel;
+          if (scrollerId === "full" && full) target = full;
+          else if (scrollerId === "found") target = findScroller(full || panel);
+          void target.scrollHeight; // force layout
+          target.scrollTop = restoreTo;
         };
         if (typeof requestAnimationFrame !== "undefined") {
           requestAnimationFrame(() => requestAnimationFrame(doRestore));
