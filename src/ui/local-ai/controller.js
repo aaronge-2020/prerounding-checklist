@@ -8,8 +8,8 @@ import {
   readLocalLlmSettings,
   sharedLocalLlmClient,
   writeLocalLlmSettings
-} from "../../local-llm/client.js?v=20260927-local-llm-v1";
-import { createLocalAiPresentation } from "./presentation.js?v=20260927-local-llm-v1";
+} from "../../local-llm/client.js?v=20260927-local-llm-v3";
+import { createLocalAiPresentation } from "./presentation.js?v=20260927-local-llm-v3";
 
 export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus, render }) {
   const presentation = createLocalAiPresentation({ escapeHtml, icon });

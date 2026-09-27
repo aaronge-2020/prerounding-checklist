@@ -10,7 +10,7 @@ import {
   mergeSectionSplitResults,
   parseSectionSplitJson,
   verifySectionSplit
-} from "./section-split.js?v=20260927-local-llm-v1";
+} from "./section-split.js?v=20260927-local-llm-v3";
 
 const MAX_CHUNK_RETRIES = 2;
 const MIN_COVERAGE = 0.5;

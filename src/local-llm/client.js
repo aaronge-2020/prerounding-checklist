@@ -11,7 +11,7 @@ import {
   localLlmModelByKey,
   readHardwareFacts,
   recommendLocalLlmModels
-} from "./models.js?v=20260927-local-llm-v1";
+} from "./models.js?v=20260927-local-llm-v3";
 
 // Re-exported for UI modules that resolve the active model label from the
 // shared client entry point.
@@ -72,7 +72,17 @@ export function createLocalLlmClient() {
   let progress = 0;
   let progressText = "";
   let activeModelKey = "";
-  let verifiedModelKey = "";
+  // Restore verification across page loads so a cached model doesn't
+  // require re-download. The model files themselves live in the
+  // browser's Cache Storage (managed by WebLLM).
+  let verifiedModelKey = (() => {
+    try {
+      const stored = readJson(VERIFIED_KEY);
+      return typeof stored?.modelKey === "string" ? stored.modelKey : "";
+    } catch {
+      return "";
+    }
+  })();
   const listeners = new Set();
 
   function emit() {
@@ -104,7 +114,7 @@ export function createLocalLlmClient() {
 
   function ensureWorker() {
     if (worker) return worker;
-    worker = new Worker(new URL("./worker.js?v=20260927-local-llm-v1", import.meta.url), {
+    worker = new Worker(new URL("./worker.js?v=20260927-local-llm-v3", import.meta.url), {
       type: "module"
     });
     worker.onmessage = (event) => {
