@@ -109,6 +109,20 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
     return `<p class="lai-disclaimer" data-local-ai-disclaimer>${icon("alert")} <span>${model}Small on-device model — thousands of times smaller than state-of-the-art models, so answers may be inaccurate. Verify before acting.</span></p>`;
   }
 
+  // Live context-window meter: share of the on-device model's window used
+  // by the last request (system prompt + kept history). Shown only after
+  // a send has measured it. Kept visually quiet — small, muted,
+  // right-aligned.
+  function renderContextMeter(chat) {
+    const stats = chat.contextStats;
+    if (!stats || !(stats.promptTokens > 0) || !(stats.contextWindow > 0)) return "";
+    const pct = Math.max(1, Math.min(100, Math.round((stats.promptTokens / stats.contextWindow) * 100)));
+    const trimmed = stats.droppedMessages > 0
+      ? ` <span class="lai-context-note">· older messages trimmed</span>`
+      : "";
+    return `<div class="lai-context" title="Share of the on-device model's context window used by the last request"><span class="lai-context-bar" aria-hidden="true"><span style="width:${pct}%"></span></span><span class="lai-context-label">Context ${pct}%</span>${trimmed}</div>`;
+  }
+
   function renderChat(chat, llmStatus, activeLabel) {
     const ready = llmStatus.status === "ready" && llmStatus.verified;
     const messages = (chat.messages || [])
@@ -131,6 +145,7 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
     return `
       <section class="lai-chat" aria-label="Chat">
         <div class="lai-msgs" data-local-ai-messages aria-live="polite">${messages}${streaming}${empty}</div>
+        ${renderContextMeter(chat)}
         <form data-local-ai-chat-form class="lai-form" onsubmit="return false;">
           <input type="text" data-local-ai-chat-input placeholder="${ready ? "Message local AI…" : "Get a model to chat"}" ${ready ? "" : "disabled"} aria-label="Chat message" autocomplete="off">
           <button type="submit" data-action="local-ai-send" class="lai-send" ${ready && !chat.streaming ? "" : "disabled"} aria-label="Send">${icon("send")}</button>
@@ -155,7 +170,7 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
   function renderContextToggle(settings, patientContext) {
     const hasPatient = !!patientContext?.hasPatient;
     const hint = hasPatient
-      ? `Ask anything about ${escapeHtml(patientContext.label)} — admission context and hospital course are attached.`
+      ? `Ask anything about ${escapeHtml(patientContext.label)} — the primary team note is attached.`
       : "No active patient — open the Vault to attach patient context.";
     return `
       <section class="lai-parse">

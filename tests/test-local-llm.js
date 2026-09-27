@@ -29,6 +29,8 @@ import {
 import { splitNoteSectionsWithLlm } from "../src/local-llm/parse.js";
 import { splitThinking, stripThinking } from "../src/local-llm/thinking.js";
 import { MAX_PATIENT_CONTEXT_CHARS, buildPatientContextText } from "../src/local-llm/patient-context.js";
+import { MAX_PRIMARY_NOTE_CHARS, buildPrimaryTeamNoteText } from "../src/local-llm/patient-context.js";
+import { CHARS_PER_TOKEN, TOKEN_SAFETY_MARGIN, buildChatMessages, estimateTokens } from "../src/local-llm/context-budget.js";
 import { createLocalAiPresentation } from "../src/ui/local-ai/presentation.js";
 import { buildSystemPrompt } from "../src/local-llm/system-prompt.js";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../src/local-llm/system-prompt.js";
@@ -593,3 +595,195 @@ console.log("settings guidelines tests passed");
 }
 
 console.log("markdown tests passed");
+
+// --- context-budget.js: dynamic context-window monitoring ------------------
+// The prompt is measured BEFORE sending against the model's real window:
+// budget = contextWindow - maxTokens - TOKEN_SAFETY_MARGIN. Oldest history
+// is dropped first; the latest message is always kept; the system prompt
+// is truncated only as a last resort.
+
+{
+  assert.strictEqual(estimateTokens(""), 0, "empty text estimates 0 tokens");
+  assert.strictEqual(estimateTokens(null), 0, "null estimates 0 tokens");
+  assert.strictEqual(estimateTokens("x".repeat(360)), 100, "~3.6 chars/token");
+  assert.strictEqual(TOKEN_SAFETY_MARGIN, 256, "safety margin is 256 tokens");
+  assert.ok(CHARS_PER_TOKEN > 0, "chars-per-token documented");
+}
+
+{
+  // A small conversation fits entirely: nothing dropped, nothing truncated.
+  const assembled = buildChatMessages({
+    systemContent: "You are helpful.",
+    messages: [
+      { role: "user", content: "Hello" },
+      { role: "assistant", content: "Hi there" },
+      { role: "user", content: "How are you?" }
+    ],
+    contextWindow: 4096,
+    maxTokens: 1024
+  });
+  assert.strictEqual(assembled.messages.length, 4, "system + 3 history messages");
+  assert.strictEqual(assembled.messages[0].role, "system", "system message first");
+  assert.strictEqual(assembled.droppedMessages, 0, "nothing dropped");
+  assert.strictEqual(assembled.systemTruncated, false, "system not truncated");
+  assert.strictEqual(assembled.contextWindow, 4096, "window reported");
+  assert.strictEqual(assembled.budget, 4096 - 1024 - TOKEN_SAFETY_MARGIN, "budget = window - maxTokens - margin");
+  assert.ok(assembled.promptTokens > 0, "prompt tokens measured");
+  assert.ok(assembled.messages.every((m) => typeof m.content === "string"), "all messages have content");
+}
+
+{
+  // Over budget: oldest messages drop first, the latest is always kept.
+  // window 1024 -> budget = 1024 - 1024 - 256, floored at 512.
+  const big = (n, tag) => `${tag}:` + "x".repeat(n);
+  const history = Array.from({ length: 8 }, (_, i) => ({ role: i % 2 ? "assistant" : "user", content: big(350, `msg${i}`) }));
+  const assembled = buildChatMessages({
+    systemContent: big(36, "sys"), // ~10 tokens
+    messages: history,
+    contextWindow: 1024,
+    maxTokens: 1024
+  });
+  assert.strictEqual(assembled.budget, 512, "budget floored at 512");
+  assert.ok(assembled.droppedMessages > 0, "oldest messages dropped");
+  const keptContents = assembled.messages.slice(1).map((m) => m.content);
+  assert.ok(keptContents.includes(history[history.length - 1].content), "latest message always kept");
+  assert.ok(!keptContents.includes(history[0].content), "oldest message dropped first");
+  assert.ok(assembled.promptTokens <= assembled.budget + 360 / CHARS_PER_TOKEN, "prompt near budget (latest kept even if tight)");
+}
+
+{
+  // A huge system prompt alone over budget gets truncated, flagged, and
+  // still leaves room for the latest message.
+  const assembled = buildChatMessages({
+    systemContent: "y".repeat(10000),
+    messages: [{ role: "user", content: "hi" }],
+    contextWindow: 1024,
+    maxTokens: 64
+  });
+  assert.strictEqual(assembled.systemTruncated, true, "system truncation flagged");
+  assert.ok(assembled.messages[0].content.includes("truncated to fit"), "truncation marker present");
+  assert.ok(assembled.messages[0].content.length < 10000, "system actually shortened");
+  assert.strictEqual(assembled.messages.length, 2, "system + latest message survive");
+}
+
+console.log("context budget tests passed");
+
+// --- buildPrimaryTeamNoteText: chat attaches just the primary note --------
+// Selection: newest hospital day first whose sourceCaptures holds a
+// primary_note capture with text; falls back to the admission
+// contextSections primary_note; "" when none exists anywhere.
+
+function primaryNoteFixture() {
+  return {
+    id: "p1",
+    displayLabel: "Bed 12",
+    metadata: { admissionDate: "2026-09-20" },
+    contextSections: [
+      { label: "H&P", sourceKind: "primary_note", deidentifiedText: "Admission H&P text" },
+      { label: "Labs", sourceKind: "laboratory_results", deidentifiedText: "lab text" }
+    ],
+    days: [
+      {
+        label: "Hospital day 1",
+        date: "2026-09-21",
+        sourceCaptures: [
+          { label: "Primary team note", sourceKind: "primary_note", deidentifiedText: "Day 1 primary note" }
+        ],
+        quickNotes: []
+      },
+      {
+        label: "Hospital day 2",
+        date: "2026-09-22",
+        sourceCaptures: [
+          { label: "Primary team note", sourceKind: "primary_note", deidentifiedText: "Day 2 primary note" },
+          { label: "Labs", sourceKind: "laboratory_results", deidentifiedText: "day 2 labs" }
+        ],
+        quickNotes: []
+      }
+    ]
+  };
+}
+
+{
+  // Newest day's primary note wins.
+  const text = buildPrimaryTeamNoteText(primaryNoteFixture());
+  assert.ok(text.includes("PATIENT: Bed 12"), "header identifies the patient");
+  assert.ok(text.includes("Admitted: 2026-09-20"), "admission date shown");
+  assert.ok(text.includes("Day 2 primary note"), "newest day's primary note selected");
+  assert.ok(!text.includes("Day 1 primary note"), "older day's note not included");
+  assert.ok(!text.includes("Admission H&P text"), "admission H&P not included when a day note exists");
+  assert.ok(text.includes("PRIMARY TEAM NOTE (Hospital day 2 (2026-09-22))"), "note source labeled");
+  assert.ok(!text.includes("day 2 labs"), "non-primary captures excluded");
+}
+
+{
+  // No day notes -> falls back to the admission primary_note section.
+  const patient = primaryNoteFixture();
+  patient.days = [{ label: "Hospital day 1", date: "2026-09-21", sourceCaptures: [], quickNotes: [] }];
+  const text = buildPrimaryTeamNoteText(patient);
+  assert.ok(text.includes("Admission H&P text"), "admission primary note used as fallback");
+  assert.ok(text.includes("PRIMARY TEAM NOTE (Admission)"), "admission source labeled");
+}
+
+{
+  // Nothing anywhere -> empty.
+  const text = buildPrimaryTeamNoteText({
+    id: "p3", displayLabel: "Bed 3", metadata: {}, contextSections: [], days: []
+  });
+  assert.strictEqual(text, "", "no primary note yields empty string");
+  assert.strictEqual(buildPrimaryTeamNoteText(null), "", "null patient yields empty string");
+  // A primary_note capture with empty text does not count.
+  const empty = primaryNoteFixture();
+  empty.days = [{ label: "Hospital day 1", date: "2026-09-21", sourceCaptures: [{ label: "Primary team note", sourceKind: "primary_note", deidentifiedText: "  " }], quickNotes: [] }];
+  empty.contextSections = [];
+  assert.strictEqual(buildPrimaryTeamNoteText(empty), "", "blank primary note yields empty string");
+}
+
+{
+  // Budget cap respected.
+  assert.ok(MAX_PRIMARY_NOTE_CHARS >= 1000, "default primary-note budget is sane");
+  const patient = primaryNoteFixture();
+  patient.days[1].sourceCaptures[0].deidentifiedText = "z".repeat(5000);
+  const text = buildPrimaryTeamNoteText(patient, { maxChars: 800 });
+  assert.ok(text.length <= 800, `primary note fits budget (got ${text.length})`);
+}
+
+console.log("primary team note tests passed");
+
+// --- presentation: context-window meter ------------------------------------
+// After a send, the chat view shows a quiet "Context NN%" meter from
+// chat.contextStats, plus a note when older messages were trimmed.
+
+{
+  const presentation = createLocalAiPresentation({
+    escapeHtml: (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"),
+    icon: () => ""
+  });
+  const base = {
+    hardware: { recommendation: { models: [], recommendedKey: null } },
+    settings: { selectedModelKey: "", parsingEnabled: false, patientContextEnabled: true },
+    llmStatus: { status: "ready", verified: true, activeModelKey: "qwen3-4b" },
+    downloaded: {},
+    patientContext: { enabled: false, available: false, label: "", hasPatient: false }
+  };
+  const metered = presentation.render({
+    ...base,
+    chat: { messages: [], streamingText: "", modelKey: "", modelLabel: "", streaming: false, contextStats: { promptTokens: 2048, contextWindow: 4096, droppedMessages: 0 } }
+  });
+  assert.ok(metered.includes("lai-context"), "meter rendered when stats present");
+  assert.ok(metered.includes("Context 50%"), "meter shows measured share of window");
+
+  const trimmed = presentation.render({
+    ...base,
+    chat: { messages: [], streamingText: "", modelKey: "", modelLabel: "", streaming: false, contextStats: { promptTokens: 3000, contextWindow: 4096, droppedMessages: 2 } }
+  });
+  assert.ok(trimmed.includes("older messages trimmed"), "trimmed note shown when messages dropped");
+
+  const unmeasured = presentation.render({
+    ...base,
+    chat: { messages: [], streamingText: "", modelKey: "", modelLabel: "", streaming: false }
+  });
+  assert.ok(!unmeasured.includes("lai-context"), "no meter before the first send");
+}
+
+console.log("context meter tests passed");

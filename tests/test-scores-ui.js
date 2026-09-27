@@ -8,6 +8,9 @@
 // because full innerHTML replacement was the root cause of the view
 // "jumping" while filling calculators out.
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
 import { createScoresPresentation } from "../src/ui/scores/presentation.js";
 import { createScoresController } from "../src/ui/scores/controller.js";
 import { getScoreDefinition, listScoreDefinitions } from "../src/clinical-scores/index.js";
@@ -821,6 +824,26 @@ test("next-steps tab resolves band-specific guidance", () => {
   });
   assert.ok(html.includes("Favorable next step."), "band-specific next step shown");
   assert.ok(html.includes("General next step."), "general next step shown");
+});
+
+test("mdc-opt is positioned: absolute radio input stays inside the label", () => {
+  // Root-cause regression contract for the calculator "jumping" bug
+  // (2026-09-27): .mdc-opt input is position:absolute + opacity:0. Without
+  // position:relative on the label, the input's containing block escapes to
+  // <body> and Chrome sizes it to a ~viewport-wide box hanging off-screen;
+  // focusing it on label click then scrolls the page wildly. The label must
+  // remain the containing block so the input's box is the label's box and
+  // focus never moves scroll. Keyboard focus still reaches the real input
+  // (no tabindex hacks), so this stays accessible.
+  const here = dirname(fileURLToPath(import.meta.url));
+  const css = readFileSync(join(here, "..", "styles.css"), "utf8");
+  const match = css.match(/\.mdc-opt\s*\{([^}]*)\}/);
+  assert.ok(match, ".mdc-opt rule exists in styles.css");
+  assert.match(match[1], /position\s*:\s*relative/, ".mdc-opt must declare position: relative");
+  const inputMatch = css.match(/\.mdc-opt\s+input\s*\{([^}]*)\}/);
+  assert.ok(inputMatch, ".mdc-opt input rule exists in styles.css");
+  assert.match(inputMatch[1], /position\s*:\s*absolute/, ".mdc-opt input stays absolutely positioned (invisible overlay)");
+  assert.match(inputMatch[1], /opacity\s*:\s*0/, ".mdc-opt input stays invisible");
 });
 
 for (const [name, fn] of tests) {

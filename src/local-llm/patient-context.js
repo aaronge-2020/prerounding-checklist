@@ -70,3 +70,59 @@ export function buildPatientContextText(patient, { maxChars = MAX_PATIENT_CONTEX
   if (out.length > budget) out = `${out.slice(0, budget - 3).trimEnd()}...`;
   return out;
 }
+
+// The single most useful chart document for chat: the latest primary team
+// note ("primary_note" source capture — the latest primary-team note or
+// interval update copied from Epic). The full admission context plus
+// hospital course does not fit the on-device model's 4096-token window
+// alongside a growing conversation, so chat attaches just this note.
+//
+// Selection: newest hospital day first — the first day (in reverse
+// chronological order) whose sourceCaptures holds a primary_note capture
+// with non-empty de-identified text; falls back to the admission
+// contextSections entry with sourceKind "primary_note" (the H&P).
+// Rebuilt on every send, never persisted. Returns "" when no primary
+// note exists anywhere.
+export const MAX_PRIMARY_NOTE_CHARS = 3000;
+
+export function buildPrimaryTeamNoteText(patient, { maxChars = MAX_PRIMARY_NOTE_CHARS } = {}) {
+  if (!patient || typeof patient !== "object") return "";
+  const budget = Math.max(500, Number(maxChars) || MAX_PRIMARY_NOTE_CHARS);
+
+  const headerBits = [`PATIENT: ${textOf(patient.displayLabel) || "Active patient"}`];
+  const admissionDate = textOf(patient.metadata?.admissionDate);
+  if (admissionDate) headerBits.push(`Admitted: ${admissionDate}`);
+  const head = headerBits.join("\n");
+
+  let note = "";
+  let noteLabel = "";
+  const days = [...(patient.days || [])].reverse();
+  for (const day of days) {
+    const capture = (day?.sourceCaptures || []).find(
+      (candidate) =>
+        String(candidate?.sourceKind || "") === "primary_note" && sectionText(candidate)
+    );
+    if (capture) {
+      note = sectionText(capture);
+      const dayLabel = textOf(day?.label) || "Hospital day";
+      const dayDate = textOf(day?.date);
+      noteLabel = `${dayLabel}${dayDate ? ` (${dayDate})` : ""}`;
+      break;
+    }
+  }
+  if (!note) {
+    const section = (patient.contextSections || []).find(
+      (candidate) =>
+        String(candidate?.sourceKind || "") === "primary_note" && sectionText(candidate)
+    );
+    if (section) {
+      note = sectionText(section);
+      noteLabel = "Admission";
+    }
+  }
+  if (!note) return "";
+
+  let out = `${head}\n\nPRIMARY TEAM NOTE${noteLabel ? ` (${noteLabel})` : ""}:\n${note}`;
+  if (out.length > budget) out = `${out.slice(0, budget - 3).trimEnd()}...`;
+  return out;
+}

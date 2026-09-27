@@ -11,7 +11,8 @@ import {
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260927-local-llm-v6";
 import { createLocalAiPresentation } from "./presentation.js?v=20260927-local-llm-v8";
-import { buildPatientContextText } from "../../local-llm/patient-context.js?v=20260927-local-llm-v5";
+import { buildPrimaryTeamNoteText } from "../../local-llm/patient-context.js?v=20260927-local-llm-v6";
+import { buildChatMessages } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
 import { buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260927-local-llm-v9";
 import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 
@@ -34,13 +35,16 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     return readLocalLlmSettings();
   }
 
-  // The active patient's admission context + hospital course, rebuilt from
-  // the vault on every call and never persisted. Empty when the toggle is
-  // off or there is no active patient.
+  // The active patient's primary team note (latest primary_note source
+  // capture, falling back to the admission H&P), rebuilt from the vault on
+  // every call and never persisted. Empty when the toggle is off or there
+  // is no primary note. The full admission context is deliberately NOT
+  // sent: with a 4096-token window the model cannot hold it alongside a
+  // growing conversation (see context-budget.js).
   function patientContextInfo() {
     const patient = activePatient(app.vault);
     const enabled = settings().patientContextEnabled;
-    const text = enabled ? buildPatientContextText(patient) : "";
+    const text = enabled ? buildPrimaryTeamNoteText(patient) : "";
     return {
       patient,
       enabled,
@@ -106,6 +110,7 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     if (state.chat.patientId && pctx.patientId !== state.chat.patientId) {
       state.chat.messages = [];
       state.chat.streamingText = "";
+      state.chat.contextStats = null;
       void client.resetChat();
     }
     state.chat.patientId = pctx.patientId;
@@ -177,22 +182,37 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     state.chat.streaming = true;
     state.chat.streamingText = "";
     renderView();
-    // Attach the active patient's admission context + hospital course as a
-    // system message, rebuilt fresh on every send. In-memory only. The
-    // system prompt also grounds the model in its real environment: it
-    // runs on-device in this browser, inside Aaron Ge's Preround app.
+    // Attach the active patient's primary team note as a system message,
+    // rebuilt fresh on every send. In-memory only. The system prompt also
+    // grounds the model in its real environment: it runs on-device in this
+    // browser, inside Aaron Ge's Preround app.
     const pctx = patientContextInfo();
     state.chat.patientId = pctx.patientId;
     const systemContent = buildSystemPrompt({
       contextText: pctx.available ? pctx.text : "",
       guidelines: settings().systemGuidelines
     });
-    const history = [
-      { role: "system", content: systemContent },
-      ...state.chat.messages.map((m) => ({ role: m.role === "user" ? "user" : "assistant", content: m.text }))
-    ];
+    // Measure the prompt against the loaded model's real context window
+    // BEFORE sending: the window is small (4096 tokens), so oldest history
+    // messages are dropped first to fit. Usage stats feed the UI's
+    // context meter.
+    const modelRecord = localLlmModelByKey(state.chat.modelKey);
+    const assembled = buildChatMessages({
+      systemContent,
+      messages: state.chat.messages.map((m) => ({
+        role: m.role === "user" ? "user" : "assistant",
+        content: m.text
+      })),
+      contextWindow: modelRecord?.contextWindow || 4096,
+      maxTokens: 1024
+    });
+    state.chat.contextStats = {
+      promptTokens: assembled.promptTokens,
+      contextWindow: assembled.contextWindow,
+      droppedMessages: assembled.droppedMessages
+    };
     try {
-      const full = await client.chat(history, {
+      const full = await client.chat(assembled.messages, {
         maxTokens: 1024,
         temperature: 0.7,
         onToken: (token) => {
@@ -217,7 +237,17 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
       });
       state.chat.messages.push({ role: "assistant", text: full });
     } catch (error) {
-      state.chat.messages.push({ role: "assistant", text: `Error: ${error?.message || "generation failed"}` });
+      const raw = error?.message || "generation failed";
+      // The engine's overflow error ("Prompt tokens exceed context window
+      // size…") is confusing — it reports only the new message's tokens.
+      // Say what actually happened and what to do, in plain language.
+      const overflow = /context window|prompt tokens|sliding_window/i.test(raw);
+      state.chat.messages.push({
+        role: "assistant",
+        text: overflow
+          ? "That didn't fit in the on-device model's memory — its context window is small and this conversation grew too long. I've trimmed the oldest messages, so send again, or start a new chat for a clean slate."
+          : `Error: ${raw}`
+      });
     } finally {
       state.chat.streaming = false;
       state.chat.streamingText = "";
@@ -252,6 +282,7 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     if (action === "local-ai-new-chat") {
       state.chat.messages = [];
       state.chat.streamingText = "";
+      state.chat.contextStats = null;
       void client.resetChat();
       renderView();
       return true;
