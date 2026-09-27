@@ -1,134 +1,148 @@
-// Pure markup for the Local AI view: model download manager, hardware report,
-// note-parsing toggle, and chat UI. State is passed in; DOM updates and the
-// model lifecycle live in src/ui/local-ai/controller.js.
+// Pure markup for the Local AI view: chat-first interface with model
+// selector, device status, note-parsing toggle. State is passed in;
+// DOM updates and the model lifecycle live in src/ui/local-ai/controller.js.
 
 export function createLocalAiPresentation({ escapeHtml, icon }) {
-  function renderHardwareCard(hardware) {
-    if (!hardware) {
-      return `<div class="card"><p class="muted">Detecting device capabilities…</p></div>`;
+  function renderStatusPill(llmStatus, activeLabel) {
+    if (llmStatus.status === "ready" && llmStatus.verified) {
+      return `<span class="local-ai-pill local-ai-pill--ready">${icon("check")} Ready · ${escapeHtml(activeLabel)}</span>`;
     }
-    const { facts, recommendation } = hardware;
-    const webgpu = recommendation.webgpuAvailable;
-    const memory =
-      typeof facts.deviceMemoryGB === "number" ? `${facts.deviceMemoryGB} GB` : "not reported by this browser";
-    const cores =
-      typeof facts.hardwareConcurrency === "number" ? `${facts.hardwareConcurrency} cores` : "unknown";
-    const recommended = recommendation.models.find((m) => m.model.key === recommendation.recommendedKey);
-    return `
-      <div class="card">
-        <h3>${icon("check")} This device</h3>
-        <dl class="local-ai-specs">
-          <div><dt>WebGPU</dt><dd>${webgpu ? "Available" : "Not available"}</dd></div>
-          <div><dt>Device memory</dt><dd>${escapeHtml(memory)}</dd></div>
-          <div><dt>CPU cores</dt><dd>${escapeHtml(cores)}</dd></div>
-          <div><dt>Recommended model</dt><dd>${recommended ? escapeHtml(recommended.model.label) : "None — WebGPU is required"}</dd></div>
-        </dl>
-        ${webgpu ? "" : `<p class="local-ai-warning">${icon("alert")} The local LLM needs WebGPU (Chrome or Edge 113+, Safari 26+, Firefox 141+). This browser cannot run it.</p>`}
-      </div>`;
+    if (llmStatus.status === "loading") {
+      const pct = Math.round((llmStatus.progress || 0) * 100);
+      return `<span class="local-ai-pill local-ai-pill--loading">${pct}% — ${escapeHtml(llmStatus.progressText || "Loading…")}</span>`;
+    }
+    if (llmStatus.status === "error") {
+      return `<span class="local-ai-pill local-ai-pill--error">${icon("alert")} Load failed</span>`;
+    }
+    return `<span class="local-ai-pill">Not set up</span>`;
   }
 
-  function renderModelCard(entry, llmStatus, selectedKey) {
+  function renderModelOption(entry, llmStatus, selectedKey, recommendedKey) {
     const { model, available, note } = entry;
+    const isSelected = selectedKey === model.key;
+    const isRecommended = model.key === recommendedKey;
     const isActive = llmStatus.activeModelKey === model.key;
     const isLoading = isActive && llmStatus.status === "loading";
     const isReady = isActive && llmStatus.status === "ready" && llmStatus.verified;
-    const isError = isActive && llmStatus.status === "error";
-    const isRecommended = entry.model.key === entry.recommendedKey;
-    let actionHtml;
+    const classes = ["local-ai-model-option"];
+    if (isSelected) classes.push("is-selected");
+    if (!available) classes.push("is-unavailable");
+
+    let actionHtml = "";
     if (!available) {
-      actionHtml = `<button type="button" disabled title="${escapeHtml(note)}">Not available on this device</button>`;
+      actionHtml = `<span class="local-ai-model-note">${escapeHtml(note || "Not available on this device")}</span>`;
     } else if (isLoading) {
       const pct = Math.round((llmStatus.progress || 0) * 100);
       actionHtml = `
         <div class="local-ai-progress" role="status" aria-live="polite">
           <progress value="${pct}" max="100"></progress>
-          <span>${pct}% — ${escapeHtml(llmStatus.progressText || llmStatus.statusDetail || "Loading…")}</span>
+          <span>${pct}%</span>
         </div>`;
     } else if (isReady) {
       actionHtml = `
-        <span class="local-ai-badge local-ai-badge--ready">${icon("check")} Downloaded &amp; verified</span>
+        <span class="local-ai-model-note">${icon("check")} Downloaded &amp; verified</span>
         <button type="button" data-action="local-ai-unload" class="button--quiet">Unload</button>`;
-    } else if (isError) {
-      actionHtml = `
-        <p class="local-ai-error">${icon("alert")} ${escapeHtml(llmStatus.statusDetail || "Load failed.")}</p>
-        <button type="button" data-action="local-ai-download" data-model-key="${escapeHtml(model.key)}">${icon("download")} Retry download</button>`;
+    } else if (isActive && llmStatus.status === "error") {
+      actionHtml = `<button type="button" data-action="local-ai-download" data-model-key="${escapeHtml(model.key)}">${icon("download")} Retry</button>`;
     } else {
-      actionHtml = `<button type="button" data-action="local-ai-download" data-model-key="${escapeHtml(model.key)}">${icon("download")} Download (~${model.approxDownloadMB.toLocaleString()} MB)</button>`;
+      actionHtml = `<button type="button" data-action="local-ai-download" data-model-key="${escapeHtml(model.key)}">${icon("download")} Download</button>`;
     }
-    const selectedMark =
-      selectedKey === model.key ? `<span class="local-ai-badge">${icon("check")} Selected</span>` : "";
+
     return `
-      <div class="card local-ai-model-card">
-        <h3>${escapeHtml(model.label)} ${isRecommended ? `<span class="local-ai-badge">Recommended</span>` : ""} ${selectedMark}</h3>
-        <p class="muted">${escapeHtml(model.params)} · ~${model.vramMB.toLocaleString()} MB VRAM · ${escapeHtml(model.blurb)}</p>
-        ${note && available ? `<p class="muted local-ai-note">${escapeHtml(note)}</p>` : ""}
-        ${note && !available ? `<p class="local-ai-warning">${escapeHtml(note)}</p>` : ""}
+      <div class="${classes.join(" ")}" ${available && !isSelected ? `role="button" tabindex="0" data-action="local-ai-select" data-model-key="${escapeHtml(model.key)}"` : ""}>
+        <div class="local-ai-model-head">
+          <strong>${escapeHtml(model.label)}</strong>
+          ${isRecommended ? `<span class="local-ai-badge">Recommended</span>` : ""}
+          ${isSelected ? `<span class="local-ai-badge local-ai-badge--selected">${icon("check")}</span>` : ""}
+        </div>
+        <p class="muted">${escapeHtml(model.blurb)}</p>
         <div class="local-ai-model-actions">${actionHtml}</div>
-        ${available && !isActive ? `<button type="button" data-action="local-ai-select" data-model-key="${escapeHtml(model.key)}" class="button--quiet">Select this model</button>` : ""}
       </div>`;
+  }
+
+  function renderModelSelector(models, llmStatus, selectedKey, recommendedKey, hardware) {
+    if (!models.length) return "";
+    const facts = hardware?.facts || {};
+    const webgpu = hardware?.recommendation?.webgpuAvailable;
+    const memory =
+      typeof facts.deviceMemoryGB === "number" ? `${facts.deviceMemoryGB} GB` : "memory unknown";
+    const cores =
+      typeof facts.hardwareConcurrency === "number" ? `${facts.hardwareConcurrency} cores` : "";
+    return `
+      <section class="local-ai-models" aria-label="Choose a model">
+        <div class="local-ai-model-grid">
+          ${models.map((entry) => renderModelOption(entry, llmStatus, selectedKey, recommendedKey)).join("")}
+        </div>
+        <p class="local-ai-device-line muted">
+          ${webgpu ? `${icon("check")} WebGPU` : `${icon("alert")} WebGPU unavailable`} · ${escapeHtml(memory)}${cores ? ` · ${escapeHtml(cores)}` : ""}
+        </p>
+        ${webgpu ? "" : `<p class="local-ai-warning">${icon("alert")} The local LLM needs WebGPU (Chrome or Edge 113+, Safari 26+, Firefox 141+). This browser cannot run it.</p>`}
+      </section>`;
+  }
+
+  function renderChat(chat, llmStatus, activeLabel) {
+    const ready = llmStatus.status === "ready" && llmStatus.verified;
+    const messages = (chat.messages || [])
+      .map((m) => {
+        const cls = m.role === "user" ? "local-ai-msg--user" : "local-ai-msg--assistant";
+        const label = m.role === "user" ? "" : `<span class="local-ai-msg-label">${icon("sparkles")} Local AI · ${escapeHtml(activeLabel)}</span>`;
+        return `<div class="local-ai-msg ${cls}">${label}<p>${escapeHtml(m.text)}</p></div>`;
+      })
+      .join("");
+    const streaming = chat.streamingText
+      ? `<div class="local-ai-msg local-ai-msg--assistant"><span class="local-ai-msg-label">${icon("sparkles")} Local AI · ${escapeHtml(activeLabel)}</span><p>${escapeHtml(chat.streamingText)}<span class="local-ai-caret" aria-hidden="true">▍</span></p></div>`
+      : "";
+    const emptyState = !messages && !streaming
+      ? `<div class="local-ai-empty">
+           <p><strong>Chat with a model that never leaves this device.</strong></p>
+           <p class="muted">${ready ? "Ask anything — great for testing what the model can do before trusting it with notes." : "Download and verify a model above to start chatting."}</p>
+         </div>`
+      : "";
+    return `
+      <section class="local-ai-chat" aria-label="Chat">
+        <div class="local-ai-messages" data-local-ai-messages aria-live="polite">${messages}${streaming}${emptyState}</div>
+        <form data-local-ai-chat-form class="local-ai-chat-form" onsubmit="return false;">
+          <input type="text" data-local-ai-chat-input placeholder="${ready ? "Ask the local model…" : "Download a model to start chatting"}" ${ready ? "" : "disabled"} aria-label="Chat message" autocomplete="off">
+          <button type="submit" data-action="local-ai-send" class="local-ai-send" ${ready && !chat.streaming ? "" : "disabled"} aria-label="Send">${icon("send")}</button>
+        </form>
+        ${ready ? `<p class="muted local-ai-disclaimer">Runs entirely in this browser. Not for clinical decisions.</p>` : ""}
+      </section>`;
   }
 
   function renderParsingToggle(settings, canParse) {
     return `
-      <div class="card">
-        <h3>${icon("wand")} Note parsing</h3>
-        <p class="muted">When you paste a note in Hospital Stay, the local model sorts it into sections. It may only move sentences word-for-word — every parse is verified before it touches your draft, and anything unverified keeps the built-in parser's result.</p>
-        <label class="local-ai-toggle">
-          <input type="checkbox" data-local-ai-parsing-toggle ${settings.parsingEnabled ? "checked" : ""} ${canParse ? "" : "disabled"}>
-          Use local AI to parse pasted notes
+      <section class="local-ai-parsing">
+        <label class="local-ai-toggle-row">
+          <span>
+            <strong>Parse pasted notes with local AI</strong>
+            <span class="muted">Sorts pasted Hospital Stay notes into sections, word-for-word. Unverified parses keep the built-in result.</span>
+          </span>
+          <span class="local-ai-switch">
+            <input type="checkbox" data-local-ai-parsing-toggle ${settings.parsingEnabled ? "checked" : ""} ${canParse ? "" : "disabled"}>
+            <span class="local-ai-switch-track" aria-hidden="true"></span>
+          </span>
         </label>
         ${canParse ? "" : `<p class="muted">Download and verify a model above to enable this.</p>`}
-      </div>`;
-  }
-
-  function renderChat(chat, llmStatus, models) {
-    const ready = llmStatus.status === "ready" && llmStatus.verified;
-    const messages = (chat.messages || [])
-      .map((m) => {
-        const role = m.role === "user" ? "You" : "Local AI";
-        return `<div class="local-ai-message local-ai-message--${m.role}"><strong>${role}</strong><p>${escapeHtml(m.text)}</p></div>`;
-      })
-      .join("");
-    const streaming = chat.streamingText
-      ? `<div class="local-ai-message local-ai-message--assistant"><strong>Local AI</strong><p>${escapeHtml(chat.streamingText)}<span class="local-ai-caret" aria-hidden="true">▍</span></p></div>`
-      : "";
-    const options = models
-      .filter((entry) => entry.available)
-      .map(
-        (entry) =>
-          `<option value="${escapeHtml(entry.model.key)}" ${chat.modelKey === entry.model.key ? "selected" : ""}>${escapeHtml(entry.model.label)}</option>`
-      )
-      .join("");
-    return `
-      <div class="card local-ai-chat">
-        <h3>${icon("prompt")} Chat</h3>
-        ${ready ? `<p class="muted">Chatting with <strong>${escapeHtml(chat.modelLabel || "")}</strong> — runs entirely in this browser. Not for clinical decisions.</p>` : `<p class="local-ai-warning">${icon("alert")} Chat needs a downloaded and verified model.</p>`}
-        <div class="local-ai-chat-controls">
-          <label>Model <select data-local-ai-chat-model>${options}</select></label>
-          <button type="button" data-action="local-ai-new-chat" class="button--quiet" ${ready ? "" : "disabled"}>New chat</button>
-        </div>
-        <div class="local-ai-messages" data-local-ai-messages aria-live="polite">${messages}${streaming || `<p class="muted">No messages yet.</p>`}</div>
-        <form data-local-ai-chat-form class="local-ai-chat-form" onsubmit="return false;">
-          <textarea data-local-ai-chat-input rows="2" placeholder="${ready ? "Ask the local model…" : "Download a model to start chatting"}" ${ready ? "" : "disabled"} aria-label="Chat message"></textarea>
-          <button type="button" data-action="local-ai-send" ${ready && !chat.streaming ? "" : "disabled"}>${icon("play")} Send</button>
-        </form>
-      </div>`;
+      </section>`;
   }
 
   function render({ hardware, settings, llmStatus, chat }) {
     const models = hardware?.recommendation?.models || [];
+    const recommendedKey = hardware?.recommendation?.recommendedKey;
+    const activeEntry = models.find((e) => e.model.key === llmStatus.activeModelKey);
+    const activeLabel = activeEntry ? activeEntry.model.label : "";
     const canParse = llmStatus.status === "ready" && llmStatus.verified;
     return `
-      <div class="view-header">
-        <h2 id="local-ai-heading">Local AI <span class="pill">Optional add-on</span></h2>
-        <p class="muted">An optional on-device language model for note parsing and chat. Everything runs in your browser — no text is sent anywhere. Models download once (~1–2.5 GB) and are cached.</p>
-      </div>
-      ${renderHardwareCard(hardware)}
-      <div class="local-ai-models">
-        ${models.map((entry) => renderModelCard({ ...entry, recommendedKey: hardware.recommendation.recommendedKey }, llmStatus, settings.selectedModelKey)).join("")}
-      </div>
-      ${renderParsingToggle(settings, canParse)}
-      ${renderChat(chat, llmStatus, models)}`;
+      <div class="local-ai-page">
+        <div class="local-ai-header">
+          <h2 id="local-ai-heading">Local AI</h2>
+          ${renderStatusPill(llmStatus, activeLabel)}
+        </div>
+        <p class="muted local-ai-sub">An on-device language model for chat and note parsing. Nothing you type is sent anywhere — models download once and stay cached in this browser.</p>
+        ${renderModelSelector(models, llmStatus, settings.selectedModelKey, recommendedKey, hardware)}
+        ${renderChat(chat, llmStatus, activeLabel)}
+        ${renderParsingToggle(settings, canParse)}
+      </div>`;
   }
 
   return { render };
