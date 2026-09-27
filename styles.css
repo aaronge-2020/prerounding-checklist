@@ -12488,7 +12488,8 @@ details.ed-section:not([open]) > summary.ed-section-summary { margin-bottom: 0; 
 }
 .mdc-select:focus, .mdc-date:focus, .mdc-number:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 2px color-mix(in srgb, var(--focus) 25%, transparent); }
 .mdc-numberwrap { display: flex; gap: 8px; align-items: center; }
-.mdc-numberwrap .mdc-number { flex: 1; }
+.mdc-numberwrap .mdc-number { flex: 1; min-width: 0; }
+.mdc-numberwrap .mdc-unitsel { flex: 0 0 auto; width: auto; }
 .mdc-unit { color: var(--muted); font-size: 0.9rem; white-space: nowrap; }
 .mdc-unitsel { padding: 12px 8px; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--surface); color: var(--text); font-size: 0.9rem; }
 /* Sticky result bar */
