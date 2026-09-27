@@ -26,7 +26,9 @@ export function createScoresPresentation({ escapeHtml }) {
     return `score-${scoreId}-${key}`;
   }
 
-  function bindingBadge(binding, overridden) {
+  // Rendered into a <span data-score-badge> slot so the controller can patch
+  // it in place when a manual edit overrides a patient binding.
+  function renderBindingBadge(binding, overridden) {
     if (!binding) return "";
     if (overridden) {
       return ` <span class="score-binding-badge score-binding-badge--edited" title="${escapeHtml(`Was pulled from patient: ${binding.source}. You edited this value.`)}">edited</span>`;
@@ -37,18 +39,18 @@ export function createScoresPresentation({ escapeHtml }) {
   function fieldSide(input, binding, overridden) {
     return `
       <div class="mdc-field-side">
-        <span class="mdc-field-name">${escapeHtml(input.label)}${bindingBadge(binding, overridden)}</span>
+        <span class="mdc-field-name">${escapeHtml(input.label)}<span data-score-badge>${renderBindingBadge(binding, overridden)}</span></span>
         ${input.hint ? `<span class="mdc-field-hint">${escapeHtml(input.hint)}</span>` : ""}
       </div>`;
   }
 
-  function renderRadioInput({ definition, input, value, binding, overridden }) {
+  function renderRadioInput({ definition, input, value, binding, overridden, hidden }) {
     const name = inputId(definition.id, input.key);
     const current = value === undefined || value === null ? "" : String(value);
     return `
-      <div class="mdc-field" data-score-field="${escapeHtml(input.key)}">
+      <div class="mdc-field" data-score-field="${escapeHtml(input.key)}"${hidden ? " hidden" : ""}>
         ${fieldSide(input, binding, overridden)}
-        <div class="mdc-opts" role="radiogroup" aria-label="${escapeHtml(input.label)}">
+        <div class="mdc-opts" role="radiogroup" aria-label="${escapeHtml(input.label)}" data-score-opts="${escapeHtml(input.key)}">
           ${input.options.map((option) => `
             <label class="mdc-opt ${String(option.value) === current ? "is-selected" : ""}">
               <input type="radio" name="${escapeHtml(name)}" value="${escapeHtml(String(option.value))}"
@@ -60,10 +62,10 @@ export function createScoresPresentation({ escapeHtml }) {
       </div>`;
   }
 
-  function renderSelectInput({ definition, input, value, binding, overridden }) {
+  function renderSelectInput({ definition, input, value, binding, overridden, hidden }) {
     const current = value === undefined || value === null ? "" : String(value);
     return `
-      <div class="mdc-field mdc-field--stacked" data-score-field="${escapeHtml(input.key)}">
+      <div class="mdc-field mdc-field--stacked" data-score-field="${escapeHtml(input.key)}"${hidden ? " hidden" : ""}>
         ${fieldSide(input, binding, overridden)}
         <select class="mdc-select" id="${escapeHtml(inputId(definition.id, input.key))}"
           data-score-id="${escapeHtml(definition.id)}" data-score-input="${escapeHtml(input.key)}">
@@ -74,9 +76,9 @@ export function createScoresPresentation({ escapeHtml }) {
       </div>`;
   }
 
-  function renderNumberInput({ definition, input, value, binding, overridden }) {
+  function renderNumberInput({ definition, input, value, binding, overridden, hidden }) {
     return `
-      <div class="mdc-field mdc-field--stacked" data-score-field="${escapeHtml(input.key)}">
+      <div class="mdc-field mdc-field--stacked" data-score-field="${escapeHtml(input.key)}"${hidden ? " hidden" : ""}>
         ${fieldSide(input, binding, overridden)}
         <span class="mdc-numberwrap">
           <input class="mdc-number" id="${escapeHtml(inputId(definition.id, input.key))}" type="number"
@@ -90,10 +92,10 @@ export function createScoresPresentation({ escapeHtml }) {
       </div>`;
   }
 
-  function renderNumberWithUnitInput({ definition, input, value, unit, binding, overridden }) {
+  function renderNumberWithUnitInput({ definition, input, value, unit, binding, overridden, hidden }) {
     const currentUnit = unit || input.defaultUnit || input.units[0];
     return `
-      <div class="mdc-field mdc-field--stacked" data-score-field="${escapeHtml(input.key)}">
+      <div class="mdc-field mdc-field--stacked" data-score-field="${escapeHtml(input.key)}"${hidden ? " hidden" : ""}>
         ${fieldSide(input, binding, overridden)}
         <span class="mdc-numberwrap">
           <input class="mdc-number" id="${escapeHtml(inputId(definition.id, input.key))}" type="number"
@@ -111,12 +113,12 @@ export function createScoresPresentation({ escapeHtml }) {
       </div>`;
   }
 
-  function renderDateInput({ definition, input, value, binding, overridden }) {
+  function renderDateInput({ definition, input, value, binding, overridden, hidden }) {
     const label = input.modeLabels && input.modeLabels[input.activeMode] ? input.modeLabels[input.activeMode] : input.label;
     return `
-      <div class="mdc-field mdc-field--stacked" data-score-field="${escapeHtml(input.key)}">
+      <div class="mdc-field mdc-field--stacked" data-score-field="${escapeHtml(input.key)}"${hidden ? " hidden" : ""}>
         <div class="mdc-field-side">
-          <span class="mdc-field-name">${escapeHtml(label)}${bindingBadge(binding, overridden)}</span>
+          <span class="mdc-field-name">${escapeHtml(label)}<span data-score-badge>${renderBindingBadge(binding, overridden)}</span></span>
           ${input.hint ? `<span class="mdc-field-hint">${escapeHtml(input.hint)}</span>` : ""}
         </div>
         <input class="mdc-date" id="${escapeHtml(inputId(definition.id, input.key))}" type="date"
@@ -131,12 +133,15 @@ export function createScoresPresentation({ escapeHtml }) {
   }
 
   function renderInput({ definition, input, values, bindings, overriddenKeys, mode }) {
-    if (!isInputVisible(input, mode)) return "";
+    // Mode-gated fields stay in the DOM with `hidden` (instead of being
+    // omitted) so switching modes never rebuilds the form — the controller
+    // toggles visibility in place and typed values survive.
     const binding = bindings[input.key] || null;
     const overridden = overriddenKeys.has(input.key);
     const value = values[input.key];
     const unit = values[`${input.key}Unit`];
-    const args = { definition, input, value, unit, binding, overridden };
+    const hidden = !isInputVisible(input, mode);
+    const args = { definition, input, value, unit, binding, overridden, hidden };
     switch (input.type) {
       case "radio": return renderRadioInput(args);
       case "select": return renderSelectInput(args);
@@ -239,12 +244,14 @@ export function createScoresPresentation({ escapeHtml }) {
       </div>`;
   }
 
-  function renderNextStepsTab({ definition, result }) {
+  // Next-steps pane body, exported so the controller can refresh just this
+  // pane in place when the result band changes (tab switches never rebuild
+  // the calculator form).
+  function renderNextStepsPane({ definition, result }) {
     const guide = guideFor(definition);
     const { active, general } = resolveNextSteps(guide, result);
     const headline = result?.complete ? result.interpretation?.headline : null;
     return `
-      <div class="mdc-pane" data-mdc-pane="next-steps">
         <h2 class="mdc-pane-title">Next steps</h2>
         ${!guide ? `<p class="muted">No next-steps guidance is available for this model yet.</p>` : ""}
         ${active ? `
@@ -253,8 +260,7 @@ export function createScoresPresentation({ escapeHtml }) {
           ${blockHtml(active.text)}
         </section>` : ""}
         ${!result?.complete && guide ? `<p class="muted">Complete the calculator to see guidance tailored to the result band.</p>` : ""}
-        ${general ? `<div class="mdc-nextgeneral">${blockHtml(general)}</div>` : ""}
-      </div>`;
+        ${general ? `<div class="mdc-nextgeneral">${blockHtml(general)}</div>` : ""}`;
   }
 
   function renderEvidenceTab({ definition }) {
@@ -318,20 +324,27 @@ export function createScoresPresentation({ escapeHtml }) {
 
   // ---- detail + home ----
 
+  // Exported so the controller can patch the star in place on favorite
+  // toggles without rebuilding the header.
+  function renderFavoriteButton({ definition, isFavorite }) {
+    return `<button type="button" class="mdc-iconbtn${isFavorite ? " is-favorite" : ""}" data-score-fav aria-label="${isFavorite ? "Remove from favorites" : "Add to favorites"}" aria-pressed="${isFavorite ? "true" : "false"}">${isFavorite ? ICONS.starFilled : ICONS.star}</button>`;
+  }
+
   function renderScoreDetail({ definition, values, bindings, overriddenKeys, result, patientLabel, mode, hasBindings, savedState, tab, isFavorite }) {
     const activeTab = TABS.some((entry) => entry.id === tab) ? tab : "calculator";
-    const panes = {
-      "calculator": renderCalculatorTab({ definition, values, bindings, overriddenKeys, result, patientLabel, mode, hasBindings }),
-      "next-steps": renderNextStepsTab({ definition, result }),
-      "evidence": renderEvidenceTab({ definition }),
-      "creator": renderCreatorTab({ definition })
-    };
+    // All four panes render once; inactive panes stay in the DOM with
+    // `hidden` so tab switches are pure show/hide (no innerHTML rebuild,
+    // no scroll jump, no focus loss).
+    const pane = (id, bodyHtml) => `
+      <div class="mdc-pane" data-mdc-pane="${id}"${id === activeTab ? "" : " hidden"}>
+        ${bodyHtml}
+      </div>`;
     return `
       <div class="mdc" data-mdc-calc="${escapeHtml(definition.id)}">
         <header class="mdc-header">
           <button type="button" class="mdc-iconbtn" data-score-back aria-label="Back to all models">${ICONS.back}</button>
           <h1 class="mdc-title">${escapeHtml(definition.title)}</h1>
-          <button type="button" class="mdc-iconbtn${isFavorite ? " is-favorite" : ""}" data-score-fav aria-label="${isFavorite ? "Remove from favorites" : "Add to favorites"}" aria-pressed="${isFavorite ? "true" : "false"}">${isFavorite ? ICONS.starFilled : ICONS.star}</button>
+          <span class="mdc-favslot" data-score-fav-slot>${renderFavoriteButton({ definition, isFavorite })}</span>
           <button type="button" class="mdc-iconbtn" data-score-share aria-label="Share this calculator">${ICONS.share}</button>
         </header>
         <nav class="mdc-tabs" role="tablist" aria-label="Calculator sections">
@@ -340,9 +353,14 @@ export function createScoresPresentation({ escapeHtml }) {
               data-score-tab="${entry.id}" aria-selected="${entry.id === activeTab ? "true" : "false"}">${entry.label}</button>`).join("")}
         </nav>
         <div class="mdc-body">
-          ${panes[activeTab]}
+          ${pane("calculator", renderCalculatorTab({ definition, values, bindings, overriddenKeys, result, patientLabel, mode, hasBindings }))}
+          ${pane("next-steps", renderNextStepsPane({ definition, result }))}
+          ${pane("evidence", renderEvidenceTab({ definition }))}
+          ${pane("creator", renderCreatorTab({ definition }))}
         </div>
-        ${renderResultBar({ result, definition, savedState })}
+        <div class="mdc-resultbar-slot" data-mdc-resultbar-slot>
+          ${renderResultBar({ result, definition, savedState })}
+        </div>
       </div>`;
   }
 
@@ -388,5 +406,5 @@ export function createScoresPresentation({ escapeHtml }) {
       </div>`;
   }
 
-  return { renderScoresHome, renderScoreDetail };
+  return { renderScoresHome, renderScoreDetail, renderResultBar, renderNextStepsPane, renderFavoriteButton, renderBindingBadge };
 }

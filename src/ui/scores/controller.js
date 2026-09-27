@@ -152,15 +152,151 @@ export function createScoresController({
     return `${definition.id}|${result.interpretation?.headline || ""}|${JSON.stringify(values)}`;
   }
 
+  // Escape for double-quoted attribute selectors (score ids/keys are
+  // author-controlled, but never trust them in a selector).
+  function escAttr(value) {
+    return String(value ?? "").replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+  }
+
+  // Full model snapshot for the open calculator: data model only, no DOM.
+  function detailModel() {
+    const patient = active();
+    if (!patient || !state.scoreId) return null;
+    const definition = getDefinition(state.scoreId);
+    if (!definition) return null;
+    const bindings = bindingsForPatient();
+    const values = effectiveValues(definition, bindings);
+    const result = calculateResult(definition, values);
+    return { definition, bindings, scoreBindings: bindings[definition.id] || {}, values, result };
+  }
+
+  function savedStateFor(definition, values, result) {
+    const fingerprint = fingerprintFor(definition, values, result);
+    if (fingerprint && state.savedFingerprint === fingerprint) return "saved";
+    if (state.saveFailed) return "save-failed";
+    return null;
+  }
+
+  // ---- surgical DOM updates ----
+  // The detail view is built ONCE per calculator open (see render below).
+  // Every interaction below only mutates the data model (state.values etc.)
+  // and then patches the affected nodes in place. Nothing here replaces the
+  // form's innerHTML, so scroll position, focus, caret, and accordion/tab
+  // state all survive every keystroke and click. This is the root fix for
+  // the view "jumping" while filling out a calculator.
+
+  function detailContainer() {
+    const container = byId("scoresContent");
+    return container && typeof container.querySelector === "function" ? container : null;
+  }
+
+  // Result bar only: a small footer swap. Focus lives in the form above it,
+  // never inside the bar, so this cannot steal focus or move scroll.
+  function patchResultBar() {
+    const container = detailContainer();
+    const slot = container?.querySelector?.("[data-mdc-resultbar-slot]");
+    const ctx = detailModel();
+    if (!slot || !ctx) return;
+    slot.innerHTML = presentation.renderResultBar({
+      result: ctx.result,
+      definition: ctx.definition,
+      savedState: savedStateFor(ctx.definition, ctx.values, ctx.result)
+    });
+  }
+
+  function patchRadioSelection(container, key) {
+    const field = container.querySelector(`[data-score-field="${escAttr(key)}"]`);
+    const labels = field?.querySelectorAll?.(".mdc-opt") || [];
+    for (const label of labels) {
+      const input = label.querySelector?.('input[type="radio"]');
+      label.classList?.toggle?.("is-selected", !!(input && input.checked));
+    }
+  }
+
+  function patchFieldVisibility(container, definition, mode) {
+    for (const input of definition.inputs || []) {
+      if (!input.modes) continue;
+      const field = container.querySelector(`[data-score-field="${escAttr(input.key)}"]`);
+      if (field) field.hidden = !input.modes.includes(mode);
+    }
+  }
+
+  function patchBadge(container, definition, key, scoreBindings) {
+    const field = container.querySelector(`[data-score-field="${escAttr(key)}"]`);
+    const slot = field?.querySelector?.("[data-score-badge]");
+    if (!slot) return;
+    slot.innerHTML = presentation.renderBindingBadge(scoreBindings[key] || null, state.overridden.has(key));
+  }
+
+  // Push one field's DOM controls to the data-model values (re-pull path).
+  function setFieldValue(container, definition, key, values, scoreBindings) {
+    const input = (definition.inputs || []).find((entry) => entry.key === key);
+    const field = container.querySelector(`[data-score-field="${escAttr(key)}"]`);
+    if (!input || !field) return;
+    const value = values[key];
+    if (input.type === "radio") {
+      const radios = field.querySelectorAll?.('input[type="radio"]') || [];
+      for (const radio of radios) radio.checked = String(radio.value) === String(value ?? "");
+      patchRadioSelection(container, key);
+    } else if (input.type === "numberWithUnit") {
+      const numberEl = field.querySelector?.("[data-score-input]");
+      if (numberEl) numberEl.value = value ?? "";
+      const unitEl = field.querySelector?.("[data-score-unit]");
+      if (unitEl) unitEl.value = values[`${key}Unit`] ?? input.defaultUnit ?? input.units[0];
+    } else {
+      const el = field.querySelector?.("[data-score-input]");
+      if (el) el.value = value ?? "";
+    }
+    patchBadge(container, definition, key, scoreBindings);
+  }
+
+  function patchFavoriteButton() {
+    const container = detailContainer();
+    const slot = container?.querySelector?.("[data-score-fav-slot]");
+    const ctx = detailModel();
+    if (!slot || !ctx) return;
+    slot.innerHTML = presentation.renderFavoriteButton({
+      definition: ctx.definition,
+      isFavorite: readFavorites().has(ctx.definition.id)
+    });
+  }
+
+  function refreshNextStepsPane() {
+    const container = detailContainer();
+    const pane = container?.querySelector?.('[data-mdc-pane="next-steps"]');
+    const ctx = detailModel();
+    if (!pane || !ctx) return;
+    pane.innerHTML = presentation.renderNextStepsPane({ definition: ctx.definition, result: ctx.result });
+  }
+
+  function switchTab(nextTab) {
+    const container = detailContainer();
+    state.tab = nextTab;
+    if (!container) {
+      render();
+      return;
+    }
+    for (const button of container.querySelectorAll("[data-score-tab]")) {
+      const selected = button.dataset?.scoreTab === nextTab;
+      button.classList?.toggle?.("is-active", selected);
+      if (typeof button.setAttribute === "function") button.setAttribute("aria-selected", String(selected));
+    }
+    for (const pane of container.querySelectorAll("[data-mdc-pane]")) {
+      pane.hidden = pane.dataset?.mdcPane !== nextTab;
+    }
+    if (nextTab === "next-steps") refreshNextStepsPane();
+  }
+
   async function saveResult(definition, values, result) {
     const record = createSavedScoreRecord({ definition, result });
     if (!record || typeof updateActivePatient !== "function") return;
+    const scoreId = definition.id;
     app.vault = updateActivePatient(app.vault, (patient) => ({
       ...patient,
       savedScores: appendSavedScore(patient.savedScores, record)
     }));
     state.savedFingerprint = fingerprintFor(definition, values, result);
-    render();
+    patchResultBar();
     if (typeof persistVault === "function") {
       try {
         await persistVault("Score saved to patient.");
@@ -169,11 +305,14 @@ export function createScoresController({
         // but don't claim success — let the student retry the save.
         state.savedFingerprint = null;
         state.saveFailed = true;
-        render();
+        if (state.scoreId === scoreId) patchResultBar();
       }
     }
   }
 
+  // Full builds happen only on navigation: entering the view, switching
+  // patients, opening a calculator, or going back to the list. Editing a
+  // calculator never comes through here.
   function render() {
     const patient = active();
     const container = byId("scoresContent");
@@ -199,10 +338,6 @@ export function createScoresController({
     const values = effectiveValues(definition, bindings);
     const result = calculateResult(definition, values);
     const scoreBindings = bindings[definition.id] || {};
-    const fingerprint = fingerprintFor(definition, values, result);
-    const savedState = fingerprint && state.savedFingerprint === fingerprint
-      ? "saved"
-      : state.saveFailed ? "save-failed" : null;
     replaceViewContent(
       container,
       presentation.renderScoreDetail({
@@ -214,7 +349,7 @@ export function createScoresController({
         patientLabel,
         mode: values.mode,
         hasBindings: Object.keys(scoreBindings).length > 0,
-        savedState,
+        savedState: savedStateFor(definition, values, result),
         tab: state.tab,
         isFavorite: readFavorites().has(definition.id)
       })
@@ -226,7 +361,17 @@ export function createScoresController({
     state.overridden = new Set();
     state.savedFingerprint = null;
     state.saveFailed = false;
-    render();
+    const container = detailContainer();
+    const ctx = detailModel();
+    if (!ctx || !container) {
+      render();
+      return;
+    }
+    for (const input of ctx.definition.inputs || []) {
+      setFieldValue(container, ctx.definition, input.key, ctx.values, ctx.scoreBindings);
+    }
+    patchFieldVisibility(container, ctx.definition, ctx.values.mode);
+    patchResultBar();
   }
 
   function noteManualEdit(scoreId, key, bindings) {
@@ -234,92 +379,42 @@ export function createScoresController({
     if (bindings[scoreId]?.[key]) state.overridden.add(key);
   }
 
-  // Focus stewardship: render() replaces the whole calculator form, which
-  // would drop keyboard focus to <body> on every change event — breaking
-  // Tab navigation and arrow-key movement through radio groups. Capture the
-  // focused control before rendering and re-focus its equivalent afterwards.
-  function describeFocusable(el) {
-    if (!el || !el.matches) return null;
-    const scoreId = el.dataset?.scoreId;
-    if (!scoreId) return null;
-    if (el.matches("[data-score-input]")) {
-      return { scoreId, kind: "input", key: el.dataset.scoreInput, value: el.value, type: el.type };
-    }
-    if (el.matches("[data-score-unit]")) {
-      return { scoreId, kind: "unit", key: el.dataset.scoreUnit };
-    }
-    return null;
-  }
-
-  function restoreFocus(container, desc) {
-    if (!container || !desc || desc.scoreId !== state.scoreId) return;
-    const attr = desc.kind === "unit" ? "data-score-unit" : "data-score-input";
-    const selector = `[data-score-id="${CSS.escape(desc.scoreId)}"][${attr}="${CSS.escape(desc.key)}"]`;
-    const candidates = Array.from(container.querySelectorAll(selector));
-    if (!candidates.length) return;
-    let el = candidates[0];
-    if (desc.type === "radio") {
-      el = candidates.find((c) => c.value === desc.value) || el;
-    }
-    if (typeof el.focus === "function") el.focus({ preventScroll: true });
-  }
-
-  function renderPreservingFocus() {
-    const container = byId("scoresContent");
-    const active = typeof document !== "undefined" ? document.activeElement : null;
-    const desc = container && active && container.contains(active) ? describeFocusable(active) : null;
-    render();
-    restoreFocus(container, desc);
-  }
-
-  // change events on text/number/date inputs fire during blur (Tab, click
-  // away), so a synchronous render would run while the browser is still
-  // moving focus to the next control — destroying its target mid-flight.
-  // Deferring one frame lets the focus shift complete first, then we re-focus
-  // the equivalent control in the fresh DOM. Radios/selects keep focus on
-  // the changed control, so they render synchronously. Coalesced so rapid
-  // changes render once.
-  let renderQueued = false;
-  function scheduleRenderPreservingFocus() {
-    if (renderQueued) return;
-    renderQueued = true;
-    const schedule = typeof requestAnimationFrame === "function"
-      ? requestAnimationFrame
-      : (fn) => setTimeout(fn, 0);
-    schedule(() => {
-      renderQueued = false;
-      renderPreservingFocus();
-    });
-  }
-
-  function renderAfterChange(target) {
-    const active = typeof document !== "undefined" ? document.activeElement : null;
-    const textLike = !!target && (target.type === "number" || target.type === "date" || target.type === "text");
-    if (!active || (active === target && !textLike)) {
-      renderPreservingFocus();
-    } else {
-      scheduleRenderPreservingFocus();
-    }
-  }
-
+  // Every branch below updates the DATA MODEL first (state.values etc.)
+  // and then patches only the affected nodes. The form is never rebuilt,
+  // so typing/clicking cannot move scroll, drop focus, or reset the caret.
   function change(target) {
     if (!target || app.view !== "scores") return false;
     const scoreId = target.dataset?.scoreId;
-    if (target.matches?.("[data-score-input]") && scoreId) {
+    if (!scoreId || scoreId !== state.scoreId) return false;
+    if (target.matches?.("[data-score-input]")) {
       const key = target.dataset.scoreInput;
+      // Data model updates first; every patch below reads the fresh model.
       state.values[key] = target.value;
       state.savedFingerprint = null;
-    state.saveFailed = false;
+      state.saveFailed = false;
       noteManualEdit(scoreId, key, bindingsForPatient());
-      renderAfterChange(target);
+      const container = detailContainer();
+      const ctx = detailModel();
+      if (ctx && container) {
+        if (target.type === "radio") patchRadioSelection(container, key);
+        if (key === "mode") patchFieldVisibility(container, ctx.definition, ctx.values.mode);
+        patchBadge(container, ctx.definition, key, ctx.scoreBindings);
+        patchResultBar();
+      }
       return true;
     }
-    if (target.matches?.("[data-score-unit]") && scoreId) {
-      state.values[`${target.dataset.scoreUnit}Unit`] = target.value;
+    if (target.matches?.("[data-score-unit]")) {
+      const key = target.dataset.scoreUnit;
+      state.values[`${key}Unit`] = target.value;
       state.savedFingerprint = null;
-    state.saveFailed = false;
-      noteManualEdit(scoreId, target.dataset.scoreUnit, bindingsForPatient());
-      renderAfterChange(target);
+      state.saveFailed = false;
+      noteManualEdit(scoreId, key, bindingsForPatient());
+      const container = detailContainer();
+      const ctx = detailModel();
+      if (ctx && container) {
+        patchBadge(container, ctx.definition, key, ctx.scoreBindings);
+        patchResultBar();
+      }
       return true;
     }
     return false;
@@ -328,16 +423,23 @@ export function createScoresController({
   function input(target) {
     if (!target || app.view !== "scores") return false;
     const scoreId = target.dataset?.scoreId;
-    // Typing in number/date fields updates state silently so re-rendering
-    // never steals focus mid-keystroke; the result refreshes on change.
-    if (target.matches?.("[data-score-input]") && scoreId && (target.type === "number" || target.type === "date")) {
-      state.values[target.dataset.scoreInput] = target.value;
-      state.savedFingerprint = null;
+    if (!scoreId || scoreId !== state.scoreId) return false;
+    if (!target.matches?.("[data-score-input]")) return false;
+    // Keystrokes update the model and the result bar live. The input element
+    // itself is never touched, so the caret never jumps mid-typing.
+    const key = target.dataset.scoreInput;
+    state.values[key] = target.value;
+    state.savedFingerprint = null;
     state.saveFailed = false;
-      noteManualEdit(scoreId, target.dataset.scoreInput, bindingsForPatient());
-      return true;
+    noteManualEdit(scoreId, key, bindingsForPatient());
+    const container = detailContainer();
+    const ctx = detailModel();
+    if (ctx && container) {
+      if (target.type === "radio") patchRadioSelection(container, key);
+      patchBadge(container, ctx.definition, key, ctx.scoreBindings);
+      patchResultBar();
     }
-    return false;
+    return true;
   }
 
   function click(target) {
@@ -372,10 +474,7 @@ export function createScoresController({
     const tabButton = target.closest?.("[data-score-tab]");
     if (tabButton && state.scoreId) {
       const nextTab = tabButton.dataset?.scoreTab;
-      if (nextTab && nextTab !== state.tab) {
-        state.tab = nextTab;
-        render();
-      }
+      if (nextTab && nextTab !== state.tab) switchTab(nextTab);
       return true;
     }
     // Accordions toggle in place (no re-render) so open sections survive.
@@ -397,7 +496,7 @@ export function createScoresController({
     const favButton = target.closest?.("[data-score-fav]");
     if (favButton && state.scoreId) {
       toggleFavorite(state.scoreId);
-      render();
+      patchFavoriteButton();
       return true;
     }
     const shareButton = target.closest?.("[data-score-share]");

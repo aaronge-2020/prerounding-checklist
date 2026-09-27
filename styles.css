@@ -12408,6 +12408,9 @@ details.ed-section:not([open]) > summary.ed-section-summary { margin-bottom: 0; 
 }
 .mdc-tab.is-active { color: var(--text); border-bottom-color: var(--warning); }
 .mdc-body { padding: 16px 16px 24px; max-width: 760px; width: 100%; margin: 0 auto; }
+/* Mode-gated fields and inactive tab panes stay in the DOM with `hidden` so
+   toggling them never rebuilds the calculator form (no scroll jump). */
+.mdc-pane[hidden], .mdc-field[hidden] { display: none; }
 .mdc-pane-title { font-size: 1.05rem; margin: 0 0 10px; }
 .mdc-desc { color: var(--muted-strong); font-size: 0.95rem; line-height: 1.5; margin: 0 0 14px; }
 .mdc-patientline { font-size: 0.82rem; color: var(--muted); margin: 0 0 12px; }
