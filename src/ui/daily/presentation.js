@@ -6,7 +6,7 @@ import { primaryTeamNoteFields, primaryTeamNoteHasContent } from "../../patient-
 import { DIAGNOSTIC_RESULT_CATEGORIES, sourceCapturePacketCheck } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
 import { joinValueUnit } from "../../review-data/compact-summary.js?v=20260924-optional-sections-v1";
 
-export function createDailyPresentation({ escapeHtml, icon }) {
+export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) {
   function renderRowReviewStatus(completeness) {
     const missingCount = completeness.missingRequired.length;
     if (missingCount) {
@@ -274,13 +274,27 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function renderStructuredNoteDetected({ noteType, parseResult, scope }) {
+  function renderStructuredNoteDetected({ noteType, parseResult, scope, localAi }) {
+    const info = localAi || (typeof localAiParseInfo === "function" ? localAiParseInfo(scope) : null);
+    const provenanceBadge = parseResult?.provenance === "local-ai"
+      ? `<p class="structured-note-provenance">${icon("sparkles")} Parsed with ${escapeHtml(parseResult.modelLabel || "local AI")} · verified verbatim${typeof parseResult.coverage === "number" ? ` · ${Math.round(parseResult.coverage * 100)}% of sentences accounted for` : ""}${parseResult.unparsed ? ` · <span class="local-ai-warning">some text unassigned — review "Other note content"</span>` : ""}</p>`
+      : "";
+    const localAiControl = (() => {
+      if (!info?.enabled) return "";
+      if (info.busy) {
+        return `<div class="structured-note-local-ai" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span> Parsing with local AI… <span data-local-ai-parse-progress="${escapeHtml(scope)}"></span></div>`;
+      }
+      if (info.ready) {
+        return `<button type="button" class="button--quiet structured-note-local-ai-button" data-action="parse-structured-note-with-local-ai" data-note-scope="${escapeHtml(scope)}" title="Sort this note into sections with the on-device model (verified verbatim)">${icon("sparkles")} Parse with local AI</button>`;
+      }
+      return `<p class="muted">Local AI parsing is enabled — <span class="local-ai-warning">no verified model loaded.</span> Open Local AI to download one.</p>`;
+    })();
     const fields = primaryTeamNoteFields(noteType);
     const detectedIds = new Set(parseResult?.detectedFieldIds || []);
     const detectedFields = fields.filter((field) => detectedIds.has(field.id));
     if (!detectedFields.length) {
       const hasText = Boolean(parseResult?.rawCharacterCount);
-      return `<div class="structured-note-detected-empty"><p>${hasText ? "No standard headings found." : "No sections found yet."}</p><span>${hasText ? "The full note will be kept under Other note content for your review." : "Paste a note with headings such as HPI, Medications, Exam, or Assessment and Plan."}</span></div>`;
+      return `${provenanceBadge}<div class="structured-note-detected-empty"><p>${hasText ? "No standard headings found." : "No sections found yet."}</p><span>${hasText ? "The full note will be kept under Other note content for your review." : "Paste a note with headings such as HPI, Medications, Exam, or Assessment and Plan."}</span></div>${localAiControl}`;
     }
     const detectedTables = parseResult?.detectedTables || [];
     const tableBadge = (type) => {
@@ -292,6 +306,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     };
     const fieldTables = (fieldId) => detectedTables.filter((t) => t.fieldId === fieldId);
     return `
+      ${provenanceBadge}
       <ul class="structured-note-detected-list">
         ${detectedFields.map((field) => {
           const tables = fieldTables(field.id);
@@ -308,6 +323,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
         }).join("")}
       </ul>
       <button type="button" class="button--quiet structured-note-review-mapping" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}">Review section mapping →</button>
+      ${localAiControl}
     `;
   }
 
@@ -343,7 +359,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function renderStructuredPrimaryNote({ noteType, note, draftValues = {}, composer = {}, scope, deidBusy }) {
+  function renderStructuredPrimaryNote({ noteType, note, draftValues = {}, composer = {}, scope, deidBusy, localAi }) {
     const admission = noteType === NOTE_TYPES.H_AND_P;
     const typeLabel = admission ? "Primary-team admission note" : "Prior primary-team progress note";
     const help = admission
@@ -371,7 +387,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
           </label>
           <aside class="structured-note-detected" aria-labelledby="${scope}DetectedSectionsTitle">
             <h4 id="${scope}DetectedSectionsTitle">Sections found</h4>
-            <div data-structured-note-detected="${escapeHtml(scope)}" role="status" aria-live="polite">${renderStructuredNoteDetected({ noteType, parseResult, scope })}</div>
+            <div data-structured-note-detected="${escapeHtml(scope)}" role="status" aria-live="polite">${renderStructuredNoteDetected({ noteType, parseResult, scope, localAi })}</div>
           </aside>
         </div>
         <div class="structured-note-paste-meta"><span data-structured-note-paste-count="${escapeHtml(scope)}">${pastedText.length.toLocaleString()} characters · session only</span></div>
@@ -435,7 +451,7 @@ export function createDailyPresentation({ escapeHtml, icon }) {
     return `
       ${renderDeidStrip}
       ${renderSourcePicker(sourceOptions, selectedSourceKind, scope)}
-      ${selectedSourceKind === "primary_note" ? renderStructuredPrimaryNote({ noteType, note: primaryTeamNote, draftValues: structuredNoteDraft, composer: structuredNoteComposer, scope, deidBusy }) : `<section class="source-capture-composer" aria-labelledby="addChartSourceTitle">
+      ${selectedSourceKind === "primary_note" ? renderStructuredPrimaryNote({ noteType, note: primaryTeamNote, draftValues: structuredNoteDraft, composer: structuredNoteComposer, scope, deidBusy, localAi: typeof localAiParseInfo === "function" ? localAiParseInfo(scope) : null }) : `<section class="source-capture-composer" aria-labelledby="addChartSourceTitle">
         <div class="section-heading tight"><div><h3 id="addChartSourceTitle">Add chart source</h3><p class="muted">Paste a full Epic or CPRS block. Medication, laboratory, and vital-sign tables are organized automatically; narrative text stays as written.</p></div></div>
         ${selectedSourceKind === "results" ? `<div class="structured-result-fields">
           <label>Result label<input data-result-metadata="label" data-result-scope="${escapeHtml(scope)}" value="${escapeHtml(resultMetadata.label || "")}" placeholder="CT Head/Neck Without Contrast"></label>

@@ -152,8 +152,8 @@ import {
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=section-scroll-v3&parser=table-v6";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260923-plan-problems-v1&scroll=preserve-section-scroll-v3&parser=table-v7";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=section-scroll-v3&parser=table-v6&local-llm-v1";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260923-plan-problems-v1&scroll=preserve-section-scroll-v3&parser=table-v7&local-llm-v1";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20260926-exam-editor-v1&trend=concise-v3";
 import { createReviewController } from "./review/controller.js?v=20260926-exam-editor-v1&labs=analyte-selection-v3";
@@ -193,6 +193,8 @@ import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups
 import { createDemoController } from "./demo/controller.js?v=20260921-demo-complete-plan";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-demo-complete-plan";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-demo-complete-plan";
+import { createLocalAiController } from "./local-ai/controller.js?v=20260927-local-llm-v1";
+import { localLlmModelByKey, readLocalLlmSettings } from "../local-llm/client.js?v=20260927-local-llm-v1";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
   vault: null,
@@ -284,11 +286,11 @@ const app = {
   demoPreviewMode: false,
   admissionDate: "" // in-memory copy of the encrypted patient's admission-date anchor
 };
-const viewIds = ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "settings"];
+const viewIds = ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "localAi", "settings"];
 const viewTitles = {
   vault: "Vault / Roster", daily: "Hospital Stay", review: "Review Data / Draft Note",
   workups: "Workups", checklist: "Checklist", prompts: "Prompts",
-  quickDeid: "Quick De-ID Tool", settings: "Settings"
+  quickDeid: "Quick De-ID Tool", localAi: "Local AI", settings: "Settings"
 };
 let draggedWorkupRow = null;
 let workupDragSaved = false;
@@ -305,7 +307,29 @@ function byId(id) {
 function escapeHtml(value = "") {
   return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
-const checklistPresentation = createChecklistPresentation({ escapeHtml, icon }), dailyPresentation = createDailyPresentation({ escapeHtml, icon });
+// Local-AI note-parsing availability, shared by the Daily paste panel and the
+// source controller. Read at render time (never cached) so the paste panel
+// reflects model readiness as soon as it changes.
+const localAiParseBusyByScope = new Map();
+function setLocalAiParseBusy(scope, busy) {
+  if (busy) localAiParseBusyByScope.set(scope, true);
+  else localAiParseBusyByScope.delete(scope);
+}
+function localAiParseInfo(scope) {
+  let enabled = false;
+  let ready = false;
+  let modelLabel = "";
+  try {
+    enabled = readLocalLlmSettings().parsingEnabled === true;
+    const status = localAiController.getClient().getStatus();
+    ready = status.status === "ready" && status.verified === true;
+    modelLabel = status.activeModelKey ? localLlmModelByKey(status.activeModelKey)?.label || "" : "";
+  } catch {
+    // Client unavailable (e.g. during early boot): report not ready.
+  }
+  return { scope, enabled, ready, modelLabel, busy: localAiParseBusyByScope.get(scope) === true };
+}
+const checklistPresentation = createChecklistPresentation({ escapeHtml, icon }), dailyPresentation = createDailyPresentation({ escapeHtml, icon, localAiParseInfo });
 const reviewPresentation = createReviewPresentation({ escapeHtml, icon });
 const redactionPresentation = createRedactionPresentation({ escapeHtml, icon });
 const quickDeidPresentation = createQuickDeidPresentation({ escapeHtml, icon });
@@ -343,6 +367,14 @@ const demoSessionController = createDemoSessionController({
   clearQuickDeidSession,
   render,
   setStatus
+});
+const localAiController = createLocalAiController({
+  app,
+  byId,
+  escapeHtml,
+  icon,
+  setStatus,
+  render: renderLocalAi
 });
 const checklistSearch = createChecklistSearchController({ Fuse, normalizeQuery: normalizeWorkupCatalogQuery, byId });
 const phoneAutosave = createPhoneAutosave(localStorage);
@@ -408,6 +440,8 @@ const dailySourceController = createDailySourceController({
   deidentify: deidSession.deidentify,
   updateDeidOperation,
   setStatus,
+  localAiParseInfo,
+  setLocalAiParseBusy,
   setSectionDraftText,
   admissionDateAnchor,
   beginSectionReview,
@@ -1120,7 +1154,7 @@ function render() {
   // cached data) must never prevent renderStatusBar() below from running -
   // that's what reflects patient selection, so a single broken view previously
   // made the whole app look like patient selection had stopped working.
-  for (const renderView of [renderVault, renderDaily, renderReview, renderWorkups, renderChecklist, renderPrompts, renderQuickDeid, renderSettings]) {
+  for (const renderView of [renderVault, renderDaily, renderReview, renderWorkups, renderChecklist, renderPrompts, renderQuickDeid, renderLocalAi, renderSettings]) {
     try {
       renderView();
     } catch (error) {
@@ -1747,6 +1781,10 @@ function renderQuickDeid() {
   scheduleQuickReviewFocus();
 }
 
+function renderLocalAi() {
+  localAiController.render();
+}
+
 function renderPhoneChecklist() {
   const snapshot = app.phoneBundle.checklist;
   const returnBundle = phoneTransfer.currentReturnCode();
@@ -1830,6 +1868,7 @@ async function handleClick(event) {
   // data-pull-section but no data-action. Check before the data-action
   // early return below, otherwise these clicks are silently dropped.
   if (app.view === "review" && reviewController.click(event.target)) return;
+  if (app.view === "localAi" && localAiController.click(event.target)) return;
   const target = event.target.closest("[data-action]");
   if (!target) return;
   const action = target.dataset.action;
@@ -3945,6 +3984,7 @@ function handleChange(event) {
     return;
   }
   if (app.view === "review" && reviewController.change(event.target)) { demoController.observeChange(event.target); return; }
+  if (app.view === "localAi" && localAiController.change(event.target)) return;
   if (event.target.matches("[data-result-metadata]")) return dailySourceController.updateResultMetadata(event.target.dataset.resultScope || "daily", event.target.dataset.resultMetadata, event.target.value);
   if (event.target.matches?.(".guideline-select")) {
     guidelineSetsController.toggleSelection(event.target.dataset.guidelineId, event.target.checked);
@@ -4392,6 +4432,8 @@ function bindEvents() {
     }
     // Structured exam-findings custom input: Enter commits, Escape cancels.
     if (app.view === "review" && reviewController.keydown(event)) return;
+    // Local AI chat composer: Enter sends, Shift+Enter adds a newline.
+    if (app.view === "localAi" && localAiController.keydown(event)) return;
   });
   document.querySelectorAll("[data-view-target]").forEach((button) => {
     button.addEventListener("click", () => {

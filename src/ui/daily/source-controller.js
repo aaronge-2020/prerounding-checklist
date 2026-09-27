@@ -26,6 +26,8 @@ import {
   updatePrimaryTeamNoteSection
 } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
 import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20260925-one-liner-v1";
+import { sharedLocalLlmClient } from "../../local-llm/client.js?v=20260927-local-llm-v1";
+import { splitNoteSectionsWithLlm } from "../../local-llm/parse.js?v=20260927-local-llm-v1";
 
 export function createDailySourceController(deps) {
   function noteDraftSessionHasContent(draft) {
@@ -81,6 +83,48 @@ export function createDailySourceController(deps) {
     return next;
   }
 
+  function refreshStructuredNoteDetected(scope) {
+    const noteType = structuredNoteType(scope);
+    const composer = structuredNoteComposer(scope, { create: false }) || {};
+    const panel = document.querySelector(`[data-structured-note-detected="${scope}"]`);
+    if (panel) {
+      panel.innerHTML = deps.dailyPresentation.renderStructuredNoteDetected({
+        noteType,
+        parseResult: composer.parseResult,
+        scope,
+        localAi: deps.localAiParseInfo ? deps.localAiParseInfo(scope) : null
+      });
+    }
+  }
+
+  // Debounced automatic LLM parsing: when local-AI parsing is enabled and a
+  // verified model is ready, the LLM becomes the primary parser — it runs on
+  // the pasted note shortly after the user stops typing/pasting, replacing
+  // the deterministic result. The deterministic parse always runs first and
+  // stays as the fallback when the model is unavailable or fails closed.
+  const localAiAutoParseTimers = new Map();
+  const localAiAutoParsedTextByScope = new Map();
+  const LOCAL_AI_AUTO_PARSE_MIN_CHARS = 200;
+  const LOCAL_AI_AUTO_PARSE_DEBOUNCE_MS = 1200;
+
+  function maybeAutoParseStructuredNoteWithLocalAi(scope) {
+    const info = deps.localAiParseInfo ? deps.localAiParseInfo(scope) : null;
+    if (!info?.enabled || !info.ready || info.busy) return;
+    const text = String(structuredNoteComposer(scope)?.pastedText || "");
+    if (text.trim().length < LOCAL_AI_AUTO_PARSE_MIN_CHARS) return;
+    if (localAiAutoParsedTextByScope.get(scope) === text) return;
+    clearTimeout(localAiAutoParseTimers.get(scope));
+    localAiAutoParseTimers.set(scope, setTimeout(() => {
+      localAiAutoParseTimers.delete(scope);
+      const current = String(structuredNoteComposer(scope)?.pastedText || "");
+      if (current !== text) return;
+      const latest = deps.localAiParseInfo ? deps.localAiParseInfo(scope) : null;
+      if (!latest?.enabled || !latest.ready || latest.busy) return;
+      localAiAutoParsedTextByScope.set(scope, current);
+      void parseStructuredNoteWithLocalAi(scope);
+    }, LOCAL_AI_AUTO_PARSE_DEBOUNCE_MS));
+  }
+
   function updateStructuredNotePaste(scope, value) {
     const key = structuredNoteKey(scope);
     if (!key) return;
@@ -95,14 +139,101 @@ export function createDailySourceController(deps) {
     }
     deps.app.structuredNoteDrafts.set(key, parsedDrafts);
     setStructuredNoteComposer(scope, { pastedText: String(value || ""), parseResult });
-    const panel = document.querySelector(`[data-structured-note-detected="${scope}"]`);
-    if (panel) panel.innerHTML = deps.dailyPresentation.renderStructuredNoteDetected({ noteType, parseResult, scope });
+    refreshStructuredNoteDetected(scope);
     document.querySelectorAll(`[data-action="review-structured-note-sections"][data-note-scope="${scope}"]`).forEach((button) => {
       button.disabled = !String(value || "").trim();
       button.textContent = parseResult.detectedSectionCount ? "Review sections" : "Review note";
     });
     const count = document.querySelector(`[data-structured-note-paste-count="${scope}"]`);
     if (count) count.textContent = `${String(value || "").length.toLocaleString()} characters · session only`;
+    if (!String(value || "").trim()) {
+      clearTimeout(localAiAutoParseTimers.get(scope));
+      localAiAutoParseTimers.delete(scope);
+      localAiAutoParsedTextByScope.delete(scope);
+    } else {
+      maybeAutoParseStructuredNoteWithLocalAi(scope);
+    }
+  }
+
+  // Runs the local LLM section splitter on the pasted note and swaps the
+  // parse result in. Fails closed: if the model is not verified, verification
+  // rejects the output, or anything throws, the deterministic parse stays and
+  // the user gets an honest status message. Manually edited (dirty) fields
+  // are never overwritten.
+  async function parseStructuredNoteWithLocalAi(scope) {
+    const key = structuredNoteKey(scope);
+    if (!key) return;
+    const info = deps.localAiParseInfo ? deps.localAiParseInfo(scope) : null;
+    if (!info?.enabled) {
+      deps.setStatus("Local AI note parsing is off. Enable it in the Local AI view.");
+      return;
+    }
+    if (!info.ready) {
+      deps.setStatus("No verified local model yet. Open the Local AI view to download one.");
+      return;
+    }
+    if (info.busy) return;
+    const noteType = structuredNoteType(scope);
+    const text = String(structuredNoteComposer(scope)?.pastedText || "").trim();
+    if (!text) {
+      deps.setStatus("Paste a note first.");
+      return;
+    }
+    deps.setLocalAiParseBusy(scope, true);
+    refreshStructuredNoteDetected(scope);
+    const onChunk = ({ index, total }) => {
+      const el = document.querySelector(`[data-local-ai-parse-progress="${scope}"]`);
+      if (el) el.textContent = `part ${index} of ${total}`;
+    };
+    try {
+      const client = sharedLocalLlmClient();
+      const result = await splitNoteSectionsWithLlm(client, text, noteType, { onChunk });
+      const fields = primaryTeamNoteFields(noteType);
+      const sections = {};
+      for (const field of fields) {
+        const body = String(result.sections[field.id] || "").trim();
+        if (body) sections[field.id] = body;
+      }
+      const detectedFieldIds = fields.filter((field) => sections[field.id]).map((field) => field.id);
+      const prior = structuredNoteComposer(scope)?.parseResult || {};
+      const parseResult = {
+        recognized: detectedFieldIds.length > 0,
+        rawCharacterCount: text.length,
+        sourceCharacterCount: text.length,
+        parsedCharacterCount: Object.values(sections).reduce((total, value) => total + value.length, 0),
+        sections,
+        parsedProblems: prior.parsedProblems || [],
+        detected: [],
+        detectedTables: prior.detectedTables || [],
+        detectedFieldIds,
+        detectedSectionCount: detectedFieldIds.length,
+        matchedHeadingCount: 0,
+        unmatchedText: result.unparsed || "",
+        provenance: "local-ai",
+        modelLabel: info.modelLabel,
+        coverage: result.coverage,
+        unparsed: result.unparsed || ""
+      };
+      const composer = structuredNoteComposer(scope);
+      const dirty = new Set(composer?.dirtyFieldIds || []);
+      const current = deps.app.structuredNoteDrafts.get(key) || {};
+      const nextDrafts = { ...current };
+      for (const field of fields) {
+        if (!dirty.has(field.id)) nextDrafts[field.id] = sections[field.id] || "";
+      }
+      deps.app.structuredNoteDrafts.set(key, nextDrafts);
+      setStructuredNoteComposer(scope, { parseResult });
+      const coveragePct = Math.round((result.coverage || 0) * 100);
+      deps.setStatus(
+        `Local AI parsed the note (${info.modelLabel}): ${detectedFieldIds.length} sections, ${coveragePct}% of sentences verified verbatim.` +
+        (result.unparsed ? " Some text was left unassigned — check “Other note content”." : " Review the section mapping before saving.")
+      );
+    } catch (error) {
+      deps.setStatus(`Local AI parse did not verify — kept the built-in parse. ${error?.message || ""}`.trim());
+    } finally {
+      deps.setLocalAiParseBusy(scope, false);
+      refreshStructuredNoteDetected(scope);
+    }
   }
 
   function setStructuredNoteMode(scope, mode) {
@@ -203,6 +334,7 @@ export function createDailySourceController(deps) {
     else if (action === "move-structured-note-field") moveStructuredNoteField(scope, Number(target.dataset.direction || 0));
     else if (action === "clear-structured-note-field") clearStructuredNoteField(scope, target.dataset.noteField || "");
     else if (action === "clear-structured-note-paste") clearStructuredNotePaste(scope);
+    else if (action === "parse-structured-note-with-local-ai") void parseStructuredNoteWithLocalAi(scope);
     else return false;
     return true;
   }
@@ -739,6 +871,22 @@ export function createDailySourceController(deps) {
     deps.app.dailySourceParse = null;
     deps.app.dailySourceKind = "primary_note";
     deps.render();
+  }
+
+  // When local-AI availability flips (model verified, unloaded, or failed),
+  // refresh the paste panels so the "Parse with local AI" button appears or
+  // disappears without a manual re-render. Progress ticks during download do
+  // not re-render — only availability transitions.
+  let lastLocalAiAvailability = null;
+  try {
+    sharedLocalLlmClient().onStatusChange((status) => {
+      const available = status.status === "ready" && status.verified === true;
+      if (available === lastLocalAiAvailability) return;
+      lastLocalAiAvailability = available;
+      for (const scope of ["admission", "daily"]) refreshStructuredNoteDetected(scope);
+    });
+  } catch {
+    // Local LLM unavailable (e.g. workers blocked): panels render without it.
   }
 
   return Object.freeze({

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' blob: 'unsafe-inline' 'wasm-unsafe-eval'; script-src-attr 'none'; worker-src 'self' blob:; connect-src 'self' https://huggingface.co https://*.hf.co https://api.openai.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; trusted-types prerounding-app"
+      content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' blob: 'unsafe-inline' 'wasm-unsafe-eval'; script-src-attr 'none'; worker-src 'self' blob:; connect-src 'self' https://huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://raw.githubusercontent.com https://api.openai.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; trusted-types prerounding-app"
     >
     <meta name="theme-color" content="#f7f6f2">
     <meta name="description" content="Preround is a local, encrypted workspace for inpatient pre-rounding: organize hospital-day updates, build bedside checklists, and draft OpenEvidence prompts. Runs entirely in your browser — nothing is sent to a server.">
@@ -39,6 +39,7 @@
           <button type="button" data-view-target="review" data-icon="clipboard">Review Data / Draft Note</button>
           <button type="button" data-view-target="prompts" data-icon="prompt">Prompts</button>
           <button type="button" data-view-target="quickDeid" data-icon="wand">Quick De-ID</button>
+          <button type="button" data-view-target="localAi" data-icon="sparkles">Local AI</button>
           <button type="button" data-action="start-guided-demo" data-icon="play">Guided demo</button>
           <button type="button" data-view-target="settings" data-icon="settings">Settings</button>
         </nav>
@@ -91,6 +92,9 @@
           </section>
           <section id="quickDeidView" class="view" aria-labelledby="quick-deid-heading">
             <div id="quickDeidContent"></div>
+          </section>
+          <section id="localAiView" class="view" aria-labelledby="local-ai-heading">
+            <div id="localAiContent"></div>
           </section>
           <section id="settingsView" class="view" aria-labelledby="settings-heading">
             <div id="settingsContent"></div>

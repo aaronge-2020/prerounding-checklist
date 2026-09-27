@@ -27,6 +27,7 @@ const iconPaths = {
   moveUp: '<path d="M12 20V4"/><path d="m7 9 5-5 5 5"/>',
   moveDown: '<path d="M12 4v16"/><path d="m17 15-5 5-5-5"/>',
   externalLink: '<path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/>',
+  sparkles: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/><path d="M18.5 15.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9.9-2.1z"/>',
   play: '<path d="m9 5 10 7-10 7z"/>'
 };
 

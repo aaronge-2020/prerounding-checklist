@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' blob: 'unsafe-inline' 'wasm-unsafe-eval'; script-src-attr 'none'; worker-src 'self' blob:; connect-src 'self' https://huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://raw.githubusercontent.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:">
+<title>Local LLM eval harness</title>
+</head>
+<body>
+<h1>Local LLM eval harness</h1>
+<p id="status">idle</p>
+<pre id="log"></pre>
+<script type="module">
+import { createLocalLlmClient } from "../../src/local-llm/client.js?v=20260927-local-llm-v1";
+import { splitNoteSectionsWithLlm } from "../../src/local-llm/parse.js?v=20260927-local-llm-v1";
+import { LOCAL_LLM_EVAL_FIXTURES } from "../../tests/fixtures/local-llm-eval/fixtures.js";
+import { scoreParse, summarizeScores } from "../../tests/fixtures/local-llm-eval/score.js";
+
+const statusEl = document.getElementById("status");
+const logEl = document.getElementById("log");
+function log(message) {
+  statusEl.textContent = message;
+  logEl.textContent += message + "\n";
+}
+
+window.__localLlmEval = {
+  fixtures: LOCAL_LLM_EVAL_FIXTURES.map((f) => f.id),
+  async webgpu() {
+    try {
+      if (!navigator.gpu) return false;
+      return !!(await navigator.gpu.requestAdapter());
+    } catch {
+      return false;
+    }
+  },
+  async run(modelKey) {
+    const client = createLocalLlmClient();
+    const progressEvents = [];
+    log(`loading ${modelKey} ...`);
+    await client.ensureReady(modelKey, {
+      onProgress: (event) => {
+        progressEvents.push({ ...event, at: Date.now() });
+        if (event.phase === "downloading") {
+          log(`download ${event.loadedBytes}/${event.totalBytes} bytes`);
+        } else {
+          log(`${event.phase}: ${event.text || ""}`);
+        }
+      }
+    });
+    log(`${modelKey} ready, running ${LOCAL_LLM_EVAL_FIXTURES.length} fixtures ...`);
+    const results = [];
+    for (const fixture of LOCAL_LLM_EVAL_FIXTURES) {
+      const started = performance.now();
+      let parsed = null;
+      let error = null;
+      try {
+        parsed = await splitNoteSectionsWithLlm(client, fixture.text, fixture.noteType);
+      } catch (err) {
+        error = String(err && err.message || err);
+      }
+      const latencyMs = performance.now() - started;
+      const score = error
+        ? { fixtureId: fixture.id, noteType: fixture.noteType, error, latencyMs }
+        : scoreParse(fixture, parsed.sections, { latencyMs });
+      score.modelKey = modelKey;
+      score.verification = error ? null : {
+        coverage: parsed.coverage,
+        chunks: parsed.chunks
+      };
+      results.push(score);
+      log(`${fixture.id}: ${error ? "ERROR " + error : `accuracy ${(score.accuracy * 100).toFixed(1)}%`} (${Math.round(latencyMs)}ms)`);
+    }
+    const okScores = results.filter((r) => !r.error);
+    return {
+      parser: `llm:${modelKey}`,
+      summary: summarizeScores(okScores),
+      errors: results.filter((r) => r.error).map((r) => ({ fixtureId: r.fixtureId, error: r.error })),
+      results,
+      progressEvents
+    };
+  }
+};
+log("harness ready");
+</script>
+</body>
+</html>
