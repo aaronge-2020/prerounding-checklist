@@ -28,7 +28,62 @@ export function createScoresController({
   updateActivePatient
 }) {
   const presentation = createScoresPresentation({ escapeHtml });
-  const state = { patientId: null, scoreId: null, values: {}, overridden: new Set(), savedFingerprint: null };
+  const state = { patientId: null, scoreId: null, values: {}, overridden: new Set(), savedFingerprint: null, tab: "calculator" };
+
+  const FAVORITES_KEY = "prerounding.scoreFavorites.v1";
+  // In-memory fallback for environments without localStorage (tests, SSR).
+  const memoryFavorites = new Set();
+  const hasLocalStorage = (() => {
+    try {
+      return typeof localStorage !== "undefined" && typeof localStorage.getItem === "function";
+    } catch {
+      return false;
+    }
+  })();
+
+  function readFavorites() {
+    if (!hasLocalStorage) return new Set(memoryFavorites);
+    try {
+      const raw = localStorage.getItem(FAVORITES_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return new Set(Array.isArray(parsed) ? parsed : []);
+    } catch {
+      return new Set();
+    }
+  }
+
+  function toggleFavorite(scoreId) {
+    const favorites = readFavorites();
+    if (favorites.has(scoreId)) favorites.delete(scoreId);
+    else favorites.add(scoreId);
+    if (hasLocalStorage) {
+      try {
+        localStorage.setItem(FAVORITES_KEY, JSON.stringify([...favorites]));
+      } catch {
+        // Favorites are a nicety; ignore storage failures.
+      }
+    } else {
+      memoryFavorites.clear();
+      for (const id of favorites) memoryFavorites.add(id);
+    }
+    return favorites.has(scoreId);
+  }
+
+  async function shareScore(definition, result) {
+    const headline = result?.complete ? result.interpretation?.headline : "incomplete";
+    const text = `${definition.title}: ${headline}${definition.mdcalcUrl ? ` ${definition.mdcalcUrl}` : ""}`;
+    try {
+      if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+        await navigator.share({ title: definition.title, text });
+        return;
+      }
+      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      }
+    } catch {
+      // User dismissed the share sheet or clipboard failed; nothing to do.
+    }
+  }
 
   // Clinical calculators (MDCalc mirrors) plus native AI models.
   function listAllDefinitions() {
@@ -46,6 +101,7 @@ export function createScoresController({
     state.overridden = new Set();
     state.savedFingerprint = null;
     state.saveFailed = false;
+    state.tab = "calculator";
   }
 
   function bindingsForPatient() {
@@ -158,7 +214,9 @@ export function createScoresController({
         patientLabel,
         mode: values.mode,
         hasBindings: Object.keys(scoreBindings).length > 0,
-        savedState
+        savedState,
+        tab: state.tab,
+        isFavorite: readFavorites().has(definition.id)
       })
     );
   }
@@ -297,6 +355,7 @@ export function createScoresController({
       state.overridden = new Set();
       state.savedFingerprint = null;
     state.saveFailed = false;
+      state.tab = "calculator";
       render();
       return true;
     }
@@ -306,7 +365,49 @@ export function createScoresController({
       state.overridden = new Set();
       state.savedFingerprint = null;
     state.saveFailed = false;
+      state.tab = "calculator";
       render();
+      return true;
+    }
+    const tabButton = target.closest?.("[data-score-tab]");
+    if (tabButton && state.scoreId) {
+      const nextTab = tabButton.dataset?.scoreTab;
+      if (nextTab && nextTab !== state.tab) {
+        state.tab = nextTab;
+        render();
+      }
+      return true;
+    }
+    // Accordions toggle in place (no re-render) so open sections survive.
+    const accButton = target.closest?.("[data-mdc-acc]");
+    if (accButton) {
+      const targetId = accButton.dataset?.mdcAcc;
+      const root = accButton.closest(".mdc");
+      const panel = targetId && root?.querySelector
+        ? root.querySelector(`[data-mdc-acc-panel="${targetId}"]`)
+        : null;
+      if (panel) {
+        const willOpen = panel.hasAttribute("hidden");
+        if (willOpen) panel.removeAttribute("hidden");
+        else panel.setAttribute("hidden", "");
+        accButton.setAttribute("aria-expanded", String(willOpen));
+      }
+      return true;
+    }
+    const favButton = target.closest?.("[data-score-fav]");
+    if (favButton && state.scoreId) {
+      toggleFavorite(state.scoreId);
+      render();
+      return true;
+    }
+    const shareButton = target.closest?.("[data-score-share]");
+    if (shareButton && state.scoreId) {
+      const definition = getDefinition(state.scoreId);
+      if (definition) {
+        const values = effectiveValues(definition, bindingsForPatient());
+        const result = calculateResult(definition, values);
+        void shareScore(definition, result);
+      }
       return true;
     }
     if (target.closest?.("[data-score-repull]")) {

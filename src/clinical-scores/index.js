@@ -30,33 +30,39 @@ import { sofaDefinition } from "./sofa.js";
 import { blatchfordDefinition } from "./blatchford.js";
 import { anionGapDefinition } from "./anion-gap.js";
 import { correctedCalciumDefinition } from "./corrected-calcium.js";
+import { SCORE_GUIDES } from "./guide-content.js";
+
+function attachGuide(definition) {
+  const guide = SCORE_GUIDES[definition.id];
+  return guide ? { ...definition, guide } : definition;
+}
 
 export const CLINICAL_SCORES = Object.freeze([
-  bishopDefinition,
-  apgarDefinition,
-  vbacFlammDefinition,
-  vbacMfmuDefinition,
-  dueDatesDefinition,
-  chadsvascDefinition,
-  hasbledDefinition,
-  heartDefinition,
-  timiDefinition,
-  graceDefinition,
-  wellsDvtDefinition,
-  wellsPeDefinition,
-  percDefinition,
-  curb65Definition,
-  lightsDefinition,
-  meldnaDefinition,
-  childPughDefinition,
-  fib4Definition,
-  fenaDefinition,
-  crclDefinition,
-  qsofaDefinition,
-  sofaDefinition,
-  blatchfordDefinition,
-  anionGapDefinition,
-  correctedCalciumDefinition
+  attachGuide(bishopDefinition),
+  attachGuide(apgarDefinition),
+  attachGuide(vbacFlammDefinition),
+  attachGuide(vbacMfmuDefinition),
+  attachGuide(dueDatesDefinition),
+  attachGuide(chadsvascDefinition),
+  attachGuide(hasbledDefinition),
+  attachGuide(heartDefinition),
+  attachGuide(timiDefinition),
+  attachGuide(graceDefinition),
+  attachGuide(wellsDvtDefinition),
+  attachGuide(wellsPeDefinition),
+  attachGuide(percDefinition),
+  attachGuide(curb65Definition),
+  attachGuide(lightsDefinition),
+  attachGuide(meldnaDefinition),
+  attachGuide(childPughDefinition),
+  attachGuide(fib4Definition),
+  attachGuide(fenaDefinition),
+  attachGuide(crclDefinition),
+  attachGuide(qsofaDefinition),
+  attachGuide(sofaDefinition),
+  attachGuide(blatchfordDefinition),
+  attachGuide(anionGapDefinition),
+  attachGuide(correctedCalciumDefinition)
 ]);
 
 const byId = new Map(CLINICAL_SCORES.map((definition) => [definition.id, definition]));

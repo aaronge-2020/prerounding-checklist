@@ -68,7 +68,7 @@ test("detail shows incomplete panel with missing labels when inputs are empty", 
     mode: undefined,
     hasBindings: false
   });
-  assert.ok(html.includes("Complete the inputs to calculate."));
+  assert.ok(html.includes("Please fill out required fields."));
   assert.ok(html.includes("Still needed:"));
 });
 
@@ -123,7 +123,7 @@ test("due-dates mode gating hides irrelevant fields", () => {
 });
 
 test("detail provenance states verified one-to-one parity", () => {
-  const html = detailHtml();
+  const html = detailHtml({ tab: "evidence" });
   assert.ok(html.includes("one-to-one"));
   assert.ok(html.includes("Verified one-to-one against"));
   assert.ok(!html.includes("Modeled on"));
@@ -253,7 +253,8 @@ test("provenance wording matches verification state", () => {
       result: null,
       patientLabel: null,
       mode: "auto",
-      hasBindings: false
+      hasBindings: false,
+      tab: "evidence"
     });
     if (definition.verifiedOn) {
       assert.ok(html.includes("Verified one-to-one against"), `${definition.id} shows verified wording`);
@@ -263,6 +264,103 @@ test("provenance wording matches verification state", () => {
       assert.ok(!html.includes("Verified one-to-one against"), `${definition.id} must not claim verification`);
     }
   }
+});
+
+// ---- MDCalc tabbed layout ----
+
+const guideFixture = {
+  description: "Predicts test outcomes.",
+  instructions: "Fill in every field.",
+  whenToUse: ["When testing"],
+  pearlsPitfalls: ["A pearl"],
+  whyUse: "Because testing matters.",
+  nextSteps: { favorable: "Favorable next step.", default: "General next step." },
+  evidence: [{ label: "Test paper", url: "https://example.com/paper" }],
+  creator: "Dr. Test, 2020."
+};
+
+function guidedBishop() {
+  const definition = getScoreDefinition("bishop");
+  return { ...definition, guide: guideFixture };
+}
+
+test("detail renders all four MDCalc tabs with Calculator active", () => {
+  const html = presentation.renderScoreDetail({
+    definition: guidedBishop(),
+    values: {},
+    bindings: {},
+    overriddenKeys: new Set(),
+    result: null,
+    patientLabel: "Jane",
+    mode: undefined,
+    hasBindings: false
+  });
+  for (const tab of ["calculator", "next-steps", "evidence", "creator"]) {
+    assert.ok(html.includes(`data-score-tab="${tab}"`), `tab ${tab} present`);
+  }
+  assert.ok(html.includes("data-mdc-pane=\"calculator\""), "calculator pane shown by default");
+  assert.ok(html.includes("mdc-resultbar"), "sticky result bar present");
+  assert.ok(html.includes("data-score-fav"), "favorite star present");
+  assert.ok(html.includes("data-score-share"), "share button present");
+});
+
+test("detail renders accordions and description from the guide", () => {
+  const html = presentation.renderScoreDetail({
+    definition: guidedBishop(),
+    values: {},
+    bindings: {},
+    overriddenKeys: new Set(),
+    result: null,
+    patientLabel: "Jane",
+    mode: undefined,
+    hasBindings: false
+  });
+  assert.ok(html.includes("Predicts test outcomes."), "description shown");
+  assert.ok(html.includes('data-mdc-acc="instructions"'), "instructions accordion shown");
+  assert.ok(html.includes('data-mdc-acc="whenToUse"'), "when-to-use shown");
+  assert.ok(html.includes('data-mdc-acc="pearlsPitfalls"'), "pearls shown");
+  assert.ok(html.includes('data-mdc-acc="whyUse"'), "why-use shown");
+});
+
+test("next-steps tab resolves band-specific guidance", () => {
+  const definition = guidedBishop();
+  const values = { dilation: 3, effacement: 3, station: 3, position: 2, consistency: 2 };
+  const result = definition.calculate(values);
+  assert.ok(result.complete);
+  const html = presentation.renderScoreDetail({
+    definition,
+    values,
+    bindings: {},
+    overriddenKeys: new Set(),
+    result,
+    patientLabel: "Jane",
+    mode: undefined,
+    hasBindings: false,
+    tab: "next-steps"
+  });
+  assert.ok(html.includes("Favorable next step."), "band-specific next step shown");
+  assert.ok(html.includes("General next step."), "general next step shown");
+});
+
+test("controller switches tabs and keeps calculator state", () => {
+  const { controller, html } = makeController();
+  controller.render();
+  controller.click(fakeClickOpen("bishop"));
+  assert.ok(html().includes('data-mdc-pane="calculator"'), "starts on calculator tab");
+  const tabTarget = {
+    dataset: { scoreTab: "evidence" },
+    matches: () => false,
+    closest: (sel) => (sel === "[data-score-tab]" ? { dataset: { scoreTab: "evidence" } } : null)
+  };
+  assert.ok(controller.click(tabTarget), "tab click handled");
+  assert.ok(html().includes('data-mdc-pane="evidence"'), "evidence pane shown");
+  const favTarget = {
+    dataset: {},
+    matches: () => false,
+    closest: (sel) => (sel === "[data-score-fav]" ? {} : null)
+  };
+  assert.ok(controller.click(favTarget), "favorite click handled");
+  assert.ok(html().includes("is-favorite"), "star fills after favoriting");
 });
 
 console.log("score UI contract tests passed");
