@@ -98,6 +98,15 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
       </section>`;
   }
 
+  // Accuracy disclaimer: rendered by the UI (never left to the model),
+  // always visible under the composer. This is a small on-device model,
+  // thousands of times smaller than state-of-the-art models, so its
+  // answers may be inaccurate.
+  function renderDisclaimer(activeLabel) {
+    const model = activeLabel ? `${escapeHtml(activeLabel)} · ` : "";
+    return `<p class="lai-warn" data-local-ai-disclaimer>${icon("alert")} ${model}Small on-device model — thousands of times smaller than state-of-the-art models, so answers may be inaccurate. Verify before acting.</p>`;
+  }
+
   function renderChat(chat, llmStatus, activeLabel) {
     const ready = llmStatus.status === "ready" && llmStatus.verified;
     const messages = (chat.messages || [])
@@ -124,6 +133,7 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
           <input type="text" data-local-ai-chat-input placeholder="${ready ? "Message local AI…" : "Get a model to chat"}" ${ready ? "" : "disabled"} aria-label="Chat message" autocomplete="off">
           <button type="submit" data-action="local-ai-send" class="lai-send" ${ready && !chat.streaming ? "" : "disabled"} aria-label="Send">${icon("send")}</button>
         </form>
+        ${renderDisclaimer(activeLabel)}
       </section>`;
   }
 

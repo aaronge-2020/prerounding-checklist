@@ -459,6 +459,19 @@ console.log("patient context tests passed");
   });
   assert.ok(!idle.includes('data-local-ai-streaming'), "no streaming bubble when idle");
   assert.ok(!idle.includes("lai-thinking"), "no thinking indicator when idle");
+
+  // Accuracy disclaimer: UI-rendered, always visible under the composer,
+  // naming the active model.
+  assert.ok(idle.includes('data-local-ai-disclaimer'), "disclaimer rendered in chat view");
+  assert.ok(idle.includes("thousands of times smaller"), "disclaimer states the scale gap");
+  assert.ok(idle.includes("may be inaccurate"), "disclaimer warns about accuracy");
+  const withModel = presentation.render({
+    ...base,
+    hardware: { recommendation: { models: [{ model: { key: "qwen3-4b", label: "Qwen3 4B", blurb: "" }, available: true, note: "" }], recommendedKey: "qwen3-4b" } },
+    llmStatus: { status: "ready", verified: true, activeModelKey: "qwen3-4b" },
+    chat: { messages: [], streamingText: "", modelKey: "", modelLabel: "", streaming: false }
+  });
+  assert.ok(withModel.includes("Qwen3 4B"), "disclaimer names the active model");
 }
 
 console.log("local AI presentation tests passed");
@@ -474,6 +487,7 @@ console.log("local AI presentation tests passed");
   assert.ok(/on-device/i.test(prompt), "states on-device execution");
   assert.ok(/not on any cloud/i.test(prompt), "denies cloud execution");
   assert.ok(/never claim to run on a cloud/i.test(prompt), "forbids cloud-provider identity claims");
+  assert.ok(/answer medical and clinical questions directly instead of refusing/i.test(prompt), "instructs answering medical questions, not refusing");
   assert.ok(!prompt.includes("PATIENT:"), "no patient block without context");
 }
 
