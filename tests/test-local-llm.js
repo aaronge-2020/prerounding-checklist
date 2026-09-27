@@ -32,6 +32,7 @@ import { MAX_PATIENT_CONTEXT_CHARS, buildPatientContextText } from "../src/local
 import { createLocalAiPresentation } from "../src/ui/local-ai/presentation.js";
 import { buildSystemPrompt } from "../src/local-llm/system-prompt.js";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../src/local-llm/system-prompt.js";
+import { renderChatMarkdown } from "../src/local-llm/markdown.js";
 import { createSettingsPresentation } from "../src/ui/settings/presentation.js";
 
 // ---------------------------------------------------------------------------
@@ -465,6 +466,7 @@ console.log("patient context tests passed");
   // Accuracy disclaimer: UI-rendered, always visible under the composer,
   // naming the active model.
   assert.ok(idle.includes('data-local-ai-disclaimer'), "disclaimer rendered in chat view");
+  assert.ok(idle.includes("lai-disclaimer"), "disclaimer uses left-aligned styling");
   assert.ok(idle.includes("thousands of times smaller"), "disclaimer states the scale gap");
   assert.ok(idle.includes("may be inaccurate"), "disclaimer warns about accuracy");
   const withModel = presentation.render({
@@ -474,6 +476,20 @@ console.log("patient context tests passed");
     chat: { messages: [], streamingText: "", modelKey: "", modelLabel: "", streaming: false }
   });
   assert.ok(withModel.includes("Qwen3 4B"), "disclaimer names the active model");
+
+  // Assistant messages render markdown; raw markers and HTML never survive.
+  const mdReply = presentation.render({
+    ...base,
+    chat: { messages: [{ role: "assistant", text: "**Source:** Admission notes\n\n- one\n- two" }], streamingText: "", modelKey: "", modelLabel: "", streaming: false }
+  });
+  assert.ok(mdReply.includes("<strong>Source:</strong>"), "assistant bold rendered");
+  assert.ok(mdReply.includes("<ul>") && mdReply.includes("<li>one</li>"), "assistant list rendered");
+  assert.ok(!mdReply.includes("**Source:**"), "no raw markdown markers in output");
+  const evilReply = presentation.render({
+    ...base,
+    chat: { messages: [{ role: "assistant", text: "<script>alert(1)</script>" }], streamingText: "", modelKey: "", modelLabel: "", streaming: false }
+  });
+  assert.ok(!evilReply.includes("<script>alert"), "model HTML escaped in chat");
 }
 
 console.log("local AI presentation tests passed");
@@ -546,3 +562,34 @@ console.log("system prompt tests passed");
 }
 
 console.log("settings guidelines tests passed");
+
+// --- markdown.js: safe rendering of assistant messages ----------------------
+// Model output is untrusted: HTML must be escaped, then a small markdown
+// subset (bold, italic, code, lists) rendered.
+
+{
+  const bold = renderChatMarkdown("**Source:** Admission notes");
+  assert.ok(bold.includes("<strong>Source:</strong>"), "bold rendered");
+  assert.ok(!bold.includes("**"), "no raw bold markers left");
+
+  const list = renderChatMarkdown("- one\n- two");
+  assert.ok(list.includes("<ul>") && list.includes("<li>one</li>"), "bullet list rendered");
+
+  const olist = renderChatMarkdown("1. first\n2. second");
+  assert.ok(olist.includes("<ol>") && olist.includes("<li>second</li>"), "numbered list rendered");
+
+  const em = renderChatMarkdown("Some *italic* text");
+  assert.ok(em.includes("<em>italic</em>"), "italic rendered");
+
+  const code = renderChatMarkdown("Use `lactulose` here");
+  assert.ok(code.includes("<code>lactulose</code>"), "inline code rendered");
+
+  const evil = renderChatMarkdown('<script>alert(1)</script><img src=x onerror=y>');
+  assert.ok(!evil.includes("<script>") && !evil.includes("<img"), "raw HTML never rendered");
+  assert.ok(evil.includes("&lt;script&gt;"), "HTML escaped");
+
+  const paras = renderChatMarkdown("First para.\n\nSecond para.");
+  assert.strictEqual((paras.match(/<p>/g) || []).length, 2, "blank line splits paragraphs");
+}
+
+console.log("markdown tests passed");

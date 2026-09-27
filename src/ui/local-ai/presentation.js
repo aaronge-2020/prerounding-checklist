@@ -3,11 +3,13 @@
 // src/ui/local-ai/controller.js.
 
 import { splitThinking } from "../../local-llm/thinking.js?v=20260927-local-llm-v4";
+import { renderChatMarkdown } from "../../local-llm/markdown.js?v=20260927-local-llm-v1";
 
 export function createLocalAiPresentation({ escapeHtml, icon }) {
   // Assistant reply body: reasoning goes in a collapsed dropdown (hidden by
   // default, ChatGPT-style); only the final answer is visible. Raw <think>
-  // tags are stripped by splitThinking and never rendered.
+  // tags are stripped by splitThinking and never rendered. The final answer
+  // is rendered as safe markdown (HTML-escaped first).
   function renderThinkDetails(thinking) {
     if (!thinking) return "";
     return `<details class="lai-think"><summary>${icon("chevron")}<span>Thought process</span></summary><div class="lai-think-body">${escapeHtml(thinking)}</div></details>`;
@@ -15,7 +17,7 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
 
   function renderAssistantBody(text) {
     const { thinking, text: finalText } = splitThinking(text);
-    const body = finalText ? `<p>${escapeHtml(finalText)}</p>` : "";
+    const body = finalText ? renderChatMarkdown(finalText) : "";
     return `${renderThinkDetails(thinking)}${body}`;
   }
 
@@ -24,7 +26,7 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
   // the in-progress bubble with this on every token.
   function renderStreamingMessage(text) {
     const { thinking, text: finalText } = splitThinking(text);
-    return `${renderThinkDetails(thinking)}<p>${escapeHtml(finalText)}<span class="lai-caret">▍</span></p>`;
+    return `${renderThinkDetails(thinking)}${renderChatMarkdown(finalText)}<span class="lai-caret">▍</span>`;
   }
   function renderStatusPill(llmStatus, activeLabel) {
     if (llmStatus.status === "ready" && llmStatus.verified) {
@@ -104,7 +106,7 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
   // answers may be inaccurate.
   function renderDisclaimer(activeLabel) {
     const model = activeLabel ? `${escapeHtml(activeLabel)} · ` : "";
-    return `<p class="lai-warn" data-local-ai-disclaimer>${icon("alert")} ${model}Small on-device model — thousands of times smaller than state-of-the-art models, so answers may be inaccurate. Verify before acting.</p>`;
+    return `<p class="lai-disclaimer" data-local-ai-disclaimer>${icon("alert")} <span>${model}Small on-device model — thousands of times smaller than state-of-the-art models, so answers may be inaccurate. Verify before acting.</span></p>`;
   }
 
   function renderChat(chat, llmStatus, activeLabel) {

@@ -193,7 +193,7 @@ import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups
 import { createDemoController } from "./demo/controller.js?v=20260921-demo-complete-plan";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-demo-complete-plan";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-demo-complete-plan";
-import { createLocalAiController } from "./local-ai/controller.js?v=20260927-local-llm-v9";
+import { createLocalAiController } from "./local-ai/controller.js?v=20260927-local-llm-v10";
 import { createScoresController } from "./scores/controller.js?v=20260927-models-v2";
 import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20260927-local-llm-v6";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260927-local-llm-v9";

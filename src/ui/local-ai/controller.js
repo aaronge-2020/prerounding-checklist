@@ -10,7 +10,7 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260927-local-llm-v6";
-import { createLocalAiPresentation } from "./presentation.js?v=20260927-local-llm-v7";
+import { createLocalAiPresentation } from "./presentation.js?v=20260927-local-llm-v8";
 import { buildPatientContextText } from "../../local-llm/patient-context.js?v=20260927-local-llm-v5";
 import { buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260927-local-llm-v9";
 import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
