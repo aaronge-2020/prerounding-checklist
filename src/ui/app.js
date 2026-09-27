@@ -194,6 +194,7 @@ import { createDemoController } from "./demo/controller.js?v=20260921-demo-compl
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-demo-complete-plan";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-demo-complete-plan";
 import { createLocalAiController } from "./local-ai/controller.js?v=20260927-local-llm-v1";
+import { createScoresController } from "./scores/controller.js?v=20260927-models-v1";
 import { localLlmModelByKey, readLocalLlmSettings } from "../local-llm/client.js?v=20260927-local-llm-v1";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
@@ -286,11 +287,11 @@ const app = {
   demoPreviewMode: false,
   admissionDate: "" // in-memory copy of the encrypted patient's admission-date anchor
 };
-const viewIds = ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "localAi", "settings"];
+const viewIds = ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "localAi", "scores", "settings"];
 const viewTitles = {
   vault: "Vault / Roster", daily: "Hospital Stay", review: "Review Data / Draft Note",
   workups: "Workups", checklist: "Checklist", prompts: "Prompts",
-  quickDeid: "Quick De-ID Tool", localAi: "Local AI", settings: "Settings"
+  quickDeid: "Quick De-ID Tool", localAi: "Local AI", scores: "Models", settings: "Settings"
 };
 let draggedWorkupRow = null;
 let workupDragSaved = false;
@@ -375,6 +376,17 @@ const localAiController = createLocalAiController({
   icon,
   setStatus,
   render: renderLocalAi
+});
+const scoresController = createScoresController({
+  app,
+  active,
+  byId,
+  escapeHtml,
+  replaceViewContent,
+  patientRequiredMessage,
+  selectedDayId: selectedChecklistDay,
+  persistVault,
+  updateActivePatient
 });
 const checklistSearch = createChecklistSearchController({ Fuse, normalizeQuery: normalizeWorkupCatalogQuery, byId });
 const phoneAutosave = createPhoneAutosave(localStorage);
@@ -1154,7 +1166,7 @@ function render() {
   // cached data) must never prevent renderStatusBar() below from running -
   // that's what reflects patient selection, so a single broken view previously
   // made the whole app look like patient selection had stopped working.
-  for (const renderView of [renderVault, renderDaily, renderReview, renderWorkups, renderChecklist, renderPrompts, renderQuickDeid, renderLocalAi, renderSettings]) {
+  for (const renderView of [renderVault, renderDaily, renderReview, renderWorkups, renderChecklist, renderPrompts, renderQuickDeid, renderLocalAi, renderScores, renderSettings]) {
     try {
       renderView();
     } catch (error) {
@@ -1781,6 +1793,10 @@ function renderQuickDeid() {
   scheduleQuickReviewFocus();
 }
 
+function renderScores() {
+  scoresController.render();
+}
+
 function renderLocalAi() {
   localAiController.render();
 }
@@ -1869,6 +1885,7 @@ async function handleClick(event) {
   // early return below, otherwise these clicks are silently dropped.
   if (app.view === "review" && reviewController.click(event.target)) return;
   if (app.view === "localAi" && localAiController.click(event.target)) return;
+  if (app.view === "scores" && scoresController.click(event.target)) return;
   const target = event.target.closest("[data-action]");
   if (!target) return;
   const action = target.dataset.action;
@@ -3985,6 +4002,7 @@ function handleChange(event) {
   }
   if (app.view === "review" && reviewController.change(event.target)) { demoController.observeChange(event.target); return; }
   if (app.view === "localAi" && localAiController.change(event.target)) return;
+  if (app.view === "scores" && scoresController.change(event.target)) return;
   if (event.target.matches("[data-result-metadata]")) return dailySourceController.updateResultMetadata(event.target.dataset.resultScope || "daily", event.target.dataset.resultMetadata, event.target.value);
   if (event.target.matches?.(".guideline-select")) {
     guidelineSetsController.toggleSelection(event.target.dataset.guidelineId, event.target.checked);
@@ -4238,6 +4256,7 @@ function clearChecklistSearch() {
 function handleInput(event) {
   if (app.view === "review" && reviewController.input(event.target)) { demoController.observeInput(event.target); return; }
   if (dailySourceController.handleInput(event.target)) return;
+  if (app.view === "scores" && scoresController.input(event.target)) return;
   if (event.target.matches("[data-clinical-medication-search]")) return updateClinicalMedicationPage(event.target.closest('[data-clinical-view="medications"]'), { reset: true });
   if (event.target.id === "dailySourceDraft") {
     dailySourceController.updateDraft("daily", event.target.value);
