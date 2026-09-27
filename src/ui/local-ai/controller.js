@@ -12,6 +12,7 @@ import {
 } from "../../local-llm/client.js?v=20260927-local-llm-v5";
 import { createLocalAiPresentation } from "./presentation.js?v=20260927-local-llm-v6";
 import { buildPatientContextText } from "../../local-llm/patient-context.js?v=20260927-local-llm-v5";
+import { buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260927-local-llm-v7";
 import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 
 export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus, render }) {
@@ -177,16 +178,12 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     state.chat.streamingText = "";
     renderView();
     // Attach the active patient's admission context + hospital course as a
-    // system message, rebuilt fresh on every send. In-memory only.
+    // system message, rebuilt fresh on every send. In-memory only. The
+    // system prompt also grounds the model in its real environment: it
+    // runs on-device in this browser, inside Aaron Ge's Preround app.
     const pctx = patientContextInfo();
     state.chat.patientId = pctx.patientId;
-    const systemContent = pctx.available
-      ? "You are a clinical assistant running entirely in the user's browser, helping a medical student preround. " +
-        "Answer questions about the patient using ONLY the patient context below. If the context does not contain the answer, say so plainly. " +
-        "Be concise and name the part of the context your answer comes from.\n\n" +
-        pctx.text
-      : "You are a helpful assistant running entirely in the user's browser. Be concise. " +
-        "You are not a medical professional; do not provide diagnosis or treatment recommendations.";
+    const systemContent = buildSystemPrompt({ contextText: pctx.available ? pctx.text : "" });
     const history = [
       { role: "system", content: systemContent },
       ...state.chat.messages.map((m) => ({ role: m.role === "user" ? "user" : "assistant", content: m.text }))

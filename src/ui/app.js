@@ -193,7 +193,7 @@ import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups
 import { createDemoController } from "./demo/controller.js?v=20260921-demo-complete-plan";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-demo-complete-plan";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-demo-complete-plan";
-import { createLocalAiController } from "./local-ai/controller.js?v=20260927-local-llm-v6";
+import { createLocalAiController } from "./local-ai/controller.js?v=20260927-local-llm-v7";
 import { createScoresController } from "./scores/controller.js?v=20260927-models-v2";
 import { localLlmModelByKey, readLocalLlmSettings } from "../local-llm/client.js?v=20260927-local-llm-v5";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";

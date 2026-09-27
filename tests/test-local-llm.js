@@ -30,6 +30,7 @@ import { splitNoteSectionsWithLlm } from "../src/local-llm/parse.js";
 import { splitThinking, stripThinking } from "../src/local-llm/thinking.js";
 import { MAX_PATIENT_CONTEXT_CHARS, buildPatientContextText } from "../src/local-llm/patient-context.js";
 import { createLocalAiPresentation } from "../src/ui/local-ai/presentation.js";
+import { buildSystemPrompt } from "../src/local-llm/system-prompt.js";
 
 // ---------------------------------------------------------------------------
 // models.js
@@ -461,3 +462,26 @@ console.log("patient context tests passed");
 }
 
 console.log("local AI presentation tests passed");
+
+// --- system-prompt.js: identity / environment guidelines -------------------
+// The model must know it runs on-device in this browser (not on any cloud),
+// what Preround is, and that Aaron Ge created the app.
+
+{
+  const prompt = buildSystemPrompt();
+  assert.ok(prompt.includes("Aaron Ge"), "names the app creator");
+  assert.ok(prompt.includes("Preround"), "names the app");
+  assert.ok(/on-device/i.test(prompt), "states on-device execution");
+  assert.ok(/not on any cloud/i.test(prompt), "denies cloud execution");
+  assert.ok(/never claim to run on a cloud/i.test(prompt), "forbids cloud-provider identity claims");
+  assert.ok(!prompt.includes("PATIENT:"), "no patient block without context");
+}
+
+{
+  const prompt = buildSystemPrompt({ contextText: "PATIENT: Bed 12\nAdmitted: 2026-09-25" });
+  assert.ok(prompt.includes("Aaron Ge"), "identity kept when context attached");
+  assert.ok(prompt.includes("PATIENT: Bed 12"), "patient context appended");
+  assert.ok(/using ONLY the patient context/i.test(prompt), "context-grounding instruction present");
+}
+
+console.log("system prompt tests passed");
