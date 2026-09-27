@@ -137,7 +137,24 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
       </section>`;
   }
 
-  function render({ hardware, settings, llmStatus, chat, downloaded }) {
+  function renderContextToggle(settings, patientContext) {
+    const hasPatient = !!patientContext?.hasPatient;
+    const hint = hasPatient
+      ? `Ask anything about ${escapeHtml(patientContext.label)} — admission context and hospital course are attached.`
+      : "No active patient — open the Vault to attach patient context.";
+    return `
+      <section class="lai-parse">
+        <label class="lai-parse-row">
+          <span class="lai-parse-txt"><strong>Patient context</strong><span class="lai-muted">${hint}</span></span>
+          <span class="lai-sw">
+            <input type="checkbox" data-local-ai-context-toggle ${settings.patientContextEnabled ? "checked" : ""} ${hasPatient ? "" : "disabled"}>
+            <span class="lai-sw-t" aria-hidden="true"></span>
+          </span>
+        </label>
+      </section>`;
+  }
+
+  function render({ hardware, settings, llmStatus, chat, downloaded, patientContext }) {
     const models = hardware?.recommendation?.models || [];
     const recommendedKey = hardware?.recommendation?.recommendedKey;
     const activeEntry = models.find((e) => e.model.key === llmStatus.activeModelKey);
@@ -152,6 +169,7 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
         </div>
         ${renderModelRow(models, llmStatus, settings.selectedModelKey, recommendedKey, hardware, downloaded)}
         ${renderChat(chat, llmStatus, activeLabel)}
+        ${renderContextToggle(settings, patientContext)}
         ${renderParsing(settings, canParse)}
       </div>`;
   }

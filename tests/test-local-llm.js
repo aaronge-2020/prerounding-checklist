@@ -28,6 +28,7 @@ import {
 } from "../src/local-llm/section-split.js";
 import { splitNoteSectionsWithLlm } from "../src/local-llm/parse.js";
 import { splitThinking, stripThinking } from "../src/local-llm/thinking.js";
+import { MAX_PATIENT_CONTEXT_CHARS, buildPatientContextText } from "../src/local-llm/patient-context.js";
 
 // ---------------------------------------------------------------------------
 // models.js
@@ -332,3 +333,86 @@ assert.ok(bigResult.coverage > 0.9, `multi-chunk coverage is high (${bigResult.c
 }
 
 console.log("local LLM tests passed");
+
+// --- patient-context.js: admission context + hospital course builder ------
+
+function fixturePatient() {
+  return {
+    id: "patient-1",
+    displayLabel: "Bed 12",
+    metadata: { admissionDate: "2026-09-25" },
+    contextSections: [
+      { label: "Admission reason and initial severity", deidentifiedText: "Admitted with acute hypoxemic respiratory failure." },
+      { label: "Relevant baseline and active problem context", deidentifiedText: "COPD on 2L home oxygen." },
+      { label: "Empty section", deidentifiedText: "   " }
+    ],
+    days: [
+      {
+        label: "Hospital day 1",
+        date: "2026-09-25",
+        sourceCaptures: [
+          { label: "Interval events", deidentifiedText: "Tolerated BiPAP overnight." },
+          { label: "Empty capture", deidentifiedText: "" }
+        ],
+        quickNotes: ["Check ABG in AM"]
+      },
+      {
+        label: "Hospital day 2",
+        date: "2026-09-26",
+        sourceCaptures: [{ label: "Key results and trends", deidentifiedText: "ABG improved on BiPAP." }],
+        quickNotes: []
+      }
+    ]
+  };
+}
+
+{
+  assert.equal(buildPatientContextText(null), "", "no patient -> empty context");
+  assert.equal(buildPatientContextText(undefined), "", "undefined patient -> empty context");
+}
+
+{
+  const text = buildPatientContextText(fixturePatient());
+  assert.ok(text.includes("PATIENT: Bed 12"), "patient label in header");
+  assert.ok(text.includes("Admitted: 2026-09-25"), "admission date in header");
+  assert.ok(text.includes("ADMISSION CONTEXT:"), "admission block present");
+  assert.ok(text.includes("## Admission reason and initial severity"), "section labels kept");
+  assert.ok(text.includes("acute hypoxemic respiratory failure"), "section text kept");
+  assert.ok(!text.includes("Empty section"), "empty sections skipped");
+  assert.ok(text.includes("HOSPITAL COURSE:"), "course block present");
+  assert.ok(text.indexOf("Hospital day 1") < text.indexOf("Hospital day 2"), "days chronological");
+  assert.ok(text.includes("Tolerated BiPAP overnight."), "daily captures kept");
+  assert.ok(text.includes("- Check ABG in AM"), "quick notes kept");
+  assert.ok(!text.includes("Empty capture"), "empty captures skipped");
+}
+
+{
+  // Budget pressure drops the oldest days first, keeping admission + recent.
+  const big = fixturePatient();
+  big.days = Array.from({ length: 10 }, (_, i) => ({
+    label: `Hospital day ${i + 1}`,
+    date: `2026-09-${String(20 + i).padStart(2, "0")}`,
+    sourceCaptures: [{ label: "Note", deidentifiedText: `Day ${i + 1} content `.repeat(60) }],
+    quickNotes: []
+  }));
+  const text = buildPatientContextText(big, { maxChars: 1200 });
+  assert.ok(text.length <= 1200, `context fits budget (got ${text.length})`);
+  assert.ok(text.includes("ADMISSION CONTEXT:"), "admission survives truncation");
+  assert.ok(text.includes("acute hypoxemic respiratory failure"), "admission text survives truncation");
+  assert.ok(text.includes("Hospital day 10"), "most recent day kept");
+  assert.ok(!text.includes("Hospital day 1 ("), "oldest day dropped first");
+}
+
+{
+  assert.ok(MAX_PATIENT_CONTEXT_CHARS >= 1000, "default budget is sane");
+  const text = buildPatientContextText(fixturePatient());
+  assert.ok(text.length <= MAX_PATIENT_CONTEXT_CHARS, "default budget respected");
+}
+
+{
+  // A patient with no chart text still yields an identifiable header.
+  const text = buildPatientContextText({ id: "p2", displayLabel: "Bed 7", metadata: {}, contextSections: [], days: [] });
+  assert.ok(text.includes("PATIENT: Bed 7"), "header identifies the patient");
+}
+
+console.log("patient context tests passed");

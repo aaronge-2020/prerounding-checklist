@@ -9,8 +9,10 @@ import {
   readLocalLlmSettings,
   sharedLocalLlmClient,
   writeLocalLlmSettings
-} from "../../local-llm/client.js?v=20260927-local-llm-v4";
-import { createLocalAiPresentation } from "./presentation.js?v=20260927-local-llm-v4";
+} from "../../local-llm/client.js?v=20260927-local-llm-v5";
+import { createLocalAiPresentation } from "./presentation.js?v=20260927-local-llm-v5";
+import { buildPatientContextText } from "../../local-llm/patient-context.js?v=20260927-local-llm-v5";
+import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 
 export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus, render }) {
   const presentation = createLocalAiPresentation({ escapeHtml, icon });
@@ -29,6 +31,23 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
 
   function settings() {
     return readLocalLlmSettings();
+  }
+
+  // The active patient's admission context + hospital course, rebuilt from
+  // the vault on every call and never persisted. Empty when the toggle is
+  // off or there is no active patient.
+  function patientContextInfo() {
+    const patient = activePatient(app.vault);
+    const enabled = settings().patientContextEnabled;
+    const text = enabled ? buildPatientContextText(patient) : "";
+    return {
+      patient,
+      enabled,
+      text,
+      available: text.length > 0,
+      patientId: patient?.id || "",
+      label: patient ? String(patient.displayLabel || "Active patient") : ""
+    };
   }
 
   function ensureHardware() {
@@ -80,12 +99,27 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     const root = viewRoot();
     if (!root) return;
     ensureHardware();
+    // Switching patients starts a fresh chat: the attached context belongs
+    // to one patient, and mixing histories across patients is a hazard.
+    const pctx = patientContextInfo();
+    if (state.chat.patientId && pctx.patientId !== state.chat.patientId) {
+      state.chat.messages = [];
+      state.chat.streamingText = "";
+      void client.resetChat();
+    }
+    state.chat.patientId = pctx.patientId;
     root.innerHTML = presentation.render({
       hardware: state.hardware,
       settings: settings(),
       llmStatus: client.getStatus(),
       chat: state.chat,
-      downloaded: state.downloaded
+      downloaded: state.downloaded,
+      patientContext: {
+        enabled: pctx.enabled,
+        available: pctx.available,
+        label: pctx.label,
+        hasPatient: !!pctx.patient
+      }
     });
     const messages = root.querySelector("[data-local-ai-messages]");
     if (messages) messages.scrollTop = messages.scrollHeight;
@@ -142,13 +176,19 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     state.chat.streaming = true;
     state.chat.streamingText = "";
     renderView();
+    // Attach the active patient's admission context + hospital course as a
+    // system message, rebuilt fresh on every send. In-memory only.
+    const pctx = patientContextInfo();
+    state.chat.patientId = pctx.patientId;
+    const systemContent = pctx.available
+      ? "You are a clinical assistant running entirely in the user's browser, helping a medical student preround. " +
+        "Answer questions about the patient using ONLY the patient context below. If the context does not contain the answer, say so plainly. " +
+        "Be concise and name the part of the context your answer comes from.\n\n" +
+        pctx.text
+      : "You are a helpful assistant running entirely in the user's browser. Be concise. " +
+        "You are not a medical professional; do not provide diagnosis or treatment recommendations.";
     const history = [
-      {
-        role: "system",
-        content:
-          "You are a helpful assistant running entirely in the user's browser. Be concise. " +
-          "You are not a medical professional; do not provide diagnosis or treatment recommendations."
-      },
+      { role: "system", content: systemContent },
       ...state.chat.messages.map((m) => ({ role: m.role === "user" ? "user" : "assistant", content: m.text }))
     ];
     try {
@@ -231,6 +271,12 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     if (target.matches?.("[data-local-ai-parsing-toggle]")) {
       writeLocalLlmSettings({ parsingEnabled: target.checked });
       setStatus(target.checked ? "Local AI note parsing enabled." : "Local AI note parsing disabled.");
+      return true;
+    }
+    if (target.matches?.("[data-local-ai-context-toggle]")) {
+      writeLocalLlmSettings({ patientContextEnabled: target.checked });
+      setStatus(target.checked ? "Patient context attached to Local AI chat." : "Patient context detached from Local AI chat.");
+      render();
       return true;
     }
     return false;

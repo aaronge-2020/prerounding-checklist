@@ -51,7 +51,8 @@ export function readLocalLlmSettings() {
   const stored = readJson(SETTINGS_KEY) || {};
   return {
     selectedModelKey: typeof stored.selectedModelKey === "string" ? stored.selectedModelKey : "",
-    parsingEnabled: stored.parsingEnabled === true
+    parsingEnabled: stored.parsingEnabled === true,
+    patientContextEnabled: stored.patientContextEnabled !== false
   };
 }
 
