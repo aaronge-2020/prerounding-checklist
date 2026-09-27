@@ -6,17 +6,19 @@
 //                   { id, type: "chat", messages, maxTokens, temperature }
 //                   { id, type: "reset" }
 //                   { id, type: "unload" }
+//                   { id, type: "cached", modelIds }   (no engine needed)
 //   worker -> main: { id, type: "progress", progress, text }
 //                   { id, type: "ready", modelId }
 //                   { id, type: "token", token }        (streaming chat)
 //                   { id, type: "done", text }
+//                   { id, type: "cached", results }     ({ [modelId]: boolean })
 //                   { id, type: "error", message }
 //
 // Model weights, tokenizer, and compiled WebGPU libraries download from
 // Hugging Face / the MLC binary host on first init and are cached by the
 // browser afterwards. Nothing is sent anywhere: inference is fully local.
 
-import { CreateMLCEngine } from "../../vendor/web-llm/index.js";
+import { CreateMLCEngine, hasModelInCache } from "../../vendor/web-llm/index.js";
 
 let engine = null;
 let engineModelId = "";
@@ -100,6 +102,18 @@ self.onmessage = async (event) => {
       engine = null;
       engineModelId = "";
       post({ id, type: "done", text: "" });
+    } else if (type === "cached") {
+      // Ground-truth download check: asks the vendored runtime whether each
+      // model's weights are in this browser's cache. Needs no loaded engine.
+      const results = {};
+      for (const modelId of message.modelIds || []) {
+        try {
+          results[modelId] = await hasModelInCache(modelId);
+        } catch {
+          results[modelId] = false;
+        }
+      }
+      post({ id, type: "cached", results });
     } else {
       post({ id, type: "error", message: `Unknown worker message: ${type}` });
     }

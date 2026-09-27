@@ -2,7 +2,30 @@
 // State is passed in; DOM updates and the model lifecycle live in
 // src/ui/local-ai/controller.js.
 
+import { splitThinking } from "../../local-llm/thinking.js?v=20260927-local-llm-v4";
+
 export function createLocalAiPresentation({ escapeHtml, icon }) {
+  // Assistant reply body: reasoning goes in a collapsed dropdown (hidden by
+  // default, ChatGPT-style); only the final answer is visible. Raw <think>
+  // tags are stripped by splitThinking and never rendered.
+  function renderThinkDetails(thinking) {
+    if (!thinking) return "";
+    return `<details class="lai-think"><summary>${icon("chevron")}<span>Thought process</span></summary><div class="lai-think-body">${escapeHtml(thinking)}</div></details>`;
+  }
+
+  function renderAssistantBody(text) {
+    const { thinking, text: finalText } = splitThinking(text);
+    const body = finalText ? `<p>${escapeHtml(finalText)}</p>` : "";
+    return `${renderThinkDetails(thinking)}${body}`;
+  }
+
+  // Live-streaming variant of renderAssistantBody: same split, with the
+  // typing caret at the end of the visible answer. The controller repaints
+  // the in-progress bubble with this on every token.
+  function renderStreamingMessage(text) {
+    const { thinking, text: finalText } = splitThinking(text);
+    return `${renderThinkDetails(thinking)}<p>${escapeHtml(finalText)}<span class="lai-caret">▍</span></p>`;
+  }
   function renderStatusPill(llmStatus, activeLabel) {
     if (llmStatus.status === "ready" && llmStatus.verified) {
       return `<span class="lai-pill lai-pill--ready">${icon("check")} ${escapeHtml(activeLabel)}</span>`;
@@ -17,7 +40,7 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
     return `<span class="lai-pill">Not set up</span>`;
   }
 
-  function renderModelRow(models, llmStatus, selectedKey, recommendedKey, hardware) {
+  function renderModelRow(models, llmStatus, selectedKey, recommendedKey, hardware, downloaded) {
     if (!models.length) return "";
     const facts = hardware?.facts || {};
     const webgpu = hardware?.recommendation?.webgpuAvailable;
@@ -34,6 +57,7 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
       const isActive = llmStatus.activeModelKey === model.key;
       const isLoading = isActive && llmStatus.status === "loading";
       const isReady = isActive && llmStatus.status === "ready" && llmStatus.verified;
+      const isDownloaded = !!(downloaded && downloaded[model.key]);
 
       let action;
       if (!available) {
@@ -45,6 +69,10 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
         action = `<span class="lai-ok">${icon("check")} Ready</span><button type="button" data-action="local-ai-unload" class="lai-link">Unload</button>`;
       } else if (isActive && llmStatus.status === "error") {
         action = `<button type="button" data-action="local-ai-download" data-model-key="${escapeHtml(model.key)}" class="lai-btn">Retry</button>`;
+      } else if (isDownloaded) {
+        // Weights are in this browser's cache: no download, just load into
+        // the GPU and re-verify. Never label this "Get" again.
+        action = `<button type="button" data-action="local-ai-download" data-model-key="${escapeHtml(model.key)}" class="lai-btn">${icon("check")} Load</button>`;
       } else {
         action = `<button type="button" data-action="local-ai-download" data-model-key="${escapeHtml(model.key)}" class="lai-btn">${icon("download")} Get</button>`;
       }
@@ -55,6 +83,7 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
             <strong>${escapeHtml(model.label)}</strong>
             ${isRecommended ? `<span class="lai-tag">Recommended</span>` : ""}
             ${isSelected ? `<span class="lai-tag lai-tag--sel">${icon("check")}</span>` : ""}
+            ${isDownloaded && !isReady ? `<span class="lai-tag lai-tag--dl">${icon("check")} Downloaded</span>` : ""}
           </div>
           <div class="lai-model-sub">${escapeHtml(model.blurb)}</div>
           <div class="lai-model-act">${action}</div>
@@ -75,11 +104,12 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
       .map((m) => {
         const cls = m.role === "user" ? "lai-m--u" : "lai-m--a";
         const label = m.role === "user" ? "" : `<span class="lai-m-label">${escapeHtml(activeLabel)}</span>`;
-        return `<div class="lai-m ${cls}">${label}<p>${escapeHtml(m.text)}</p></div>`;
+        const body = m.role === "user" ? `<p>${escapeHtml(m.text)}</p>` : renderAssistantBody(m.text);
+        return `<div class="lai-m ${cls}">${label}${body}</div>`;
       })
       .join("");
     const streaming = chat.streamingText
-      ? `<div class="lai-m lai-m--a"><span class="lai-m-label">${escapeHtml(activeLabel)}</span><p>${escapeHtml(chat.streamingText)}<span class="lai-caret">▍</span></p></div>`
+      ? `<div class="lai-m lai-m--a" data-local-ai-streaming><span class="lai-m-label">${escapeHtml(activeLabel)}</span>${renderStreamingMessage(chat.streamingText)}</div>`
       : "";
     const empty = !messages && !streaming
       ? `<div class="lai-empty"><p><strong>On-device chat.</strong> <span class="lai-muted">${ready ? "Ask anything to test the model." : "Get a model above to start."}</span></p></div>`
@@ -107,7 +137,7 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
       </section>`;
   }
 
-  function render({ hardware, settings, llmStatus, chat }) {
+  function render({ hardware, settings, llmStatus, chat, downloaded }) {
     const models = hardware?.recommendation?.models || [];
     const recommendedKey = hardware?.recommendation?.recommendedKey;
     const activeEntry = models.find((e) => e.model.key === llmStatus.activeModelKey);
@@ -120,11 +150,11 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
           ${renderStatusPill(llmStatus, activeLabel)}
           <span class="lai-muted lai-tagline">On-device chat &amp; note parsing. Nothing leaves this browser.</span>
         </div>
-        ${renderModelRow(models, llmStatus, settings.selectedModelKey, recommendedKey, hardware)}
+        ${renderModelRow(models, llmStatus, settings.selectedModelKey, recommendedKey, hardware, downloaded)}
         ${renderChat(chat, llmStatus, activeLabel)}
         ${renderParsing(settings, canParse)}
       </div>`;
   }
 
-  return { render };
+  return { render, renderStreamingMessage };
 }

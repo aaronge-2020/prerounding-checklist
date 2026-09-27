@@ -10,7 +10,8 @@ import {
   mergeSectionSplitResults,
   parseSectionSplitJson,
   verifySectionSplit
-} from "./section-split.js?v=20260927-local-llm-v3";
+} from "./section-split.js?v=20260927-local-llm-v4";
+import { stripThinking } from "./thinking.js?v=20260927-local-llm-v4";
 
 const MAX_CHUNK_RETRIES = 2;
 const MIN_COVERAGE = 0.5;
@@ -24,7 +25,7 @@ async function parseChunkWithModel(client, chunkText, noteType, attempt) {
     ],
     { maxTokens: 2048, temperature: attempt === 0 ? 0 : 0.3 }
   );
-  const parsed = parseSectionSplitJson(raw);
+  const parsed = parseSectionSplitJson(stripThinking(raw));
   const verification = verifySectionSplit(parsed, chunkText, noteType);
   return { parsed, verification, raw };
 }

@@ -5,11 +5,12 @@
 
 import {
   localLlmModelByKey,
+  readLocalLlmDownloaded,
   readLocalLlmSettings,
   sharedLocalLlmClient,
   writeLocalLlmSettings
-} from "../../local-llm/client.js?v=20260927-local-llm-v3";
-import { createLocalAiPresentation } from "./presentation.js?v=20260927-local-llm-v3";
+} from "../../local-llm/client.js?v=20260927-local-llm-v4";
+import { createLocalAiPresentation } from "./presentation.js?v=20260927-local-llm-v4";
 
 export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus, render }) {
   const presentation = createLocalAiPresentation({ escapeHtml, icon });
@@ -18,7 +19,12 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     hardware: null,
     hardwarePromise: null,
     chat: { messages: [], streamingText: "", modelKey: "", modelLabel: "", streaming: false },
-    downloadInFlight: false
+    downloadInFlight: false,
+    // Per-model download state. The localStorage registry paints instantly;
+    // the worker probe (ground truth from the vendored runtime's cache)
+    // reconciles it once per page load.
+    downloaded: readLocalLlmDownloaded(),
+    downloadProbe: null
   };
 
   function settings() {
@@ -41,12 +47,29 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
           state.chat.modelLabel = localLlmModelByKey(key)?.label || "";
         }
         render();
+        refreshDownloadedFromCache();
       })
       .catch(() => {
         state.hardware = { facts: {}, recommendation: { webgpuAvailable: false, models: [], availableKeys: [], recommendedKey: null } };
         render();
       });
     return state.hardwarePromise;
+  }
+
+  // Ask the vendored runtime which model weights are actually in this
+  // browser's cache, and reconcile the instant registry with the answer.
+  function refreshDownloadedFromCache() {
+    if (state.downloadProbe) return state.downloadProbe;
+    state.downloadProbe = client
+      .cachedModels()
+      .then((result) => {
+        state.downloaded = result;
+        render();
+      })
+      .catch(() => {
+        // Keep the registry hint; a failed probe must not blank the UI.
+      });
+    return state.downloadProbe;
   }
 
   function viewRoot() {
@@ -61,7 +84,8 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
       hardware: state.hardware,
       settings: settings(),
       llmStatus: client.getStatus(),
-      chat: state.chat
+      chat: state.chat,
+      downloaded: state.downloaded
     });
     const messages = root.querySelector("[data-local-ai-messages]");
     if (messages) messages.scrollTop = messages.scrollHeight;
@@ -77,13 +101,23 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     const model = localLlmModelByKey(modelKey);
     if (!model) return;
     state.downloadInFlight = true;
-    setStatus(`Downloading ${model.label} — about ${model.approxDownloadMB.toLocaleString()} MB on first use.`);
+    const wasCached = !!state.downloaded[modelKey];
+    setStatus(
+      wasCached
+        ? `Loading ${model.label} from this browser's cache…`
+        : `Downloading ${model.label} — about ${model.approxDownloadMB.toLocaleString()} MB on first use.`
+    );
     try {
       await client.ensureReady(modelKey);
       writeLocalLlmSettings({ selectedModelKey: modelKey });
       state.chat.modelKey = modelKey;
       state.chat.modelLabel = model.label;
-      setStatus(`${model.label} downloaded, self-tested, and verified.`);
+      state.downloaded = { ...state.downloaded, [modelKey]: true };
+      setStatus(
+        wasCached
+          ? `${model.label} loaded from cache, self-tested, and verified.`
+          : `${model.label} downloaded, self-tested, and verified.`
+      );
     } catch (error) {
       setStatus(`Local AI failed: ${error?.message || "unknown error"}`);
     } finally {
@@ -123,14 +157,21 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
         temperature: 0.7,
         onToken: (token) => {
           state.chat.streamingText += token;
-          const box = viewRoot()?.querySelector("[data-local-ai-messages]");
-          if (box) {
-            // Stream without a full re-render: update the in-progress bubble.
-            const last = box.querySelector(".local-ai-message--assistant:last-child p");
-            if (last) {
-              last.innerHTML = `${escapeHtml(state.chat.streamingText)}<span class="local-ai-caret" aria-hidden="true">▍</span>`;
-              box.scrollTop = box.scrollHeight;
+          const bubble = viewRoot()?.querySelector("[data-local-ai-streaming]");
+          if (bubble) {
+            // Stream without a full re-render: repaint the in-progress
+            // bubble, splitting <think> reasoning into the collapsed
+            // dropdown as it arrives.
+            const thinkOpen = bubble.querySelector("details.lai-think")?.open === true;
+            bubble.innerHTML =
+              `<span class="lai-m-label">${escapeHtml(state.chat.modelLabel)}</span>` +
+              presentation.renderStreamingMessage(state.chat.streamingText);
+            if (thinkOpen) {
+              const details = bubble.querySelector("details.lai-think");
+              if (details) details.open = true;
             }
+            const box = viewRoot()?.querySelector("[data-local-ai-messages]");
+            if (box) box.scrollTop = box.scrollHeight;
           }
         }
       });
@@ -190,11 +231,6 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     if (target.matches?.("[data-local-ai-parsing-toggle]")) {
       writeLocalLlmSettings({ parsingEnabled: target.checked });
       setStatus(target.checked ? "Local AI note parsing enabled." : "Local AI note parsing disabled.");
-      return true;
-    }
-    if (target.matches?.("[data-local-ai-chat-model]")) {
-      state.chat.modelKey = target.value;
-      state.chat.modelLabel = localLlmModelByKey(target.value)?.label || "";
       return true;
     }
     return false;

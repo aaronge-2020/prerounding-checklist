@@ -12349,6 +12349,17 @@ details.ed-section:not([open]) > summary.ed-section-summary { margin-bottom: 0; 
 .lai-send svg { width: 17px; height: 17px; }
 .lai-caret { animation: lai-blink 1s steps(2) infinite; }
 @keyframes lai-blink { 50% { opacity: 0; } }
+/* Collapsed reasoning dropdown (ChatGPT-style): hidden by default, expands on tap. */
+.lai-think { border: 1px solid var(--border); border-radius: 10px; background: color-mix(in srgb, var(--text) 4%, var(--surface)); overflow: hidden; }
+.lai-think > summary { display: flex; align-items: center; gap: 6px; padding: 7px 12px; font-size: 0.78rem; font-weight: 600; color: var(--muted); cursor: pointer; list-style: none; }
+.lai-think > summary::-webkit-details-marker { display: none; }
+.lai-think > summary svg { width: 13px; height: 13px; transition: transform .15s; }
+.lai-think[open] > summary svg { transform: rotate(90deg); }
+.lai-think > summary:hover { color: var(--text); }
+.lai-think-body { padding: 2px 12px 10px; font-size: 0.8rem; line-height: 1.5; color: var(--muted); white-space: pre-wrap; word-break: break-word; max-height: 240px; overflow-y: auto; }
+/* "Downloaded" badge shown on model cards whose weights are in this browser's cache. */
+.lai-tag--dl { background: #e8f5e9; color: #2e7d32; }
+.lai-tag--dl svg { width: 11px; height: 11px; }
 .lai-parse { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 10px 14px; }
 .lai-parse-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; margin: 0; }
 .lai-parse-txt { display: flex; flex-direction: column; gap: 1px; }

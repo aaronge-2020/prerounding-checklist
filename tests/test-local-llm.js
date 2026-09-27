@@ -27,6 +27,7 @@ import {
   SECTION_SPLIT_VERSION
 } from "../src/local-llm/section-split.js";
 import { splitNoteSectionsWithLlm } from "../src/local-llm/parse.js";
+import { splitThinking, stripThinking } from "../src/local-llm/thinking.js";
 
 // ---------------------------------------------------------------------------
 // models.js
@@ -245,6 +246,13 @@ const orchJson = JSON.stringify({
 const orchResult = await splitNoteSectionsWithLlm(stubClient([orchJson]), orchNote, "hp");
 assert.equal(orchResult.sections.history_of_present_illness, "He has chest pain.");
 assert.equal(orchResult.sections.physical_exam, "Lungs are clear.");
+
+// A <think> preamble (even one containing braces) is stripped before JSON
+// extraction, so it cannot corrupt the parse.
+const thinkyJson = `<think>\nDeciding sections. The note mentions {chest pain} and lungs.\n</think>\n\n${orchJson}`;
+const thinkyResult = await splitNoteSectionsWithLlm(stubClient([thinkyJson]), orchNote, "hp");
+assert.equal(thinkyResult.sections.history_of_present_illness, "He has chest pain.");
+assert.equal(thinkyResult.sections.physical_exam, "Lungs are clear.");
 assert.equal(orchResult.coverage, 1);
 assert.equal(orchResult.chunks, 1);
 
@@ -282,5 +290,45 @@ const bigResult = await splitNoteSectionsWithLlm(bigClient, bigNote, "progress",
 });
 assert.equal(bigResult.chunks, bigChunks.length);
 assert.ok(bigResult.coverage > 0.9, `multi-chunk coverage is high (${bigResult.coverage})`);
+
+// ---------------------------------------------------------------------------
+// thinking.js — <think> blocks never reach the rendered chat
+// ---------------------------------------------------------------------------
+
+{
+  const plain = splitThinking("Hello! How can I assist you today?");
+  assert.equal(plain.thinking, "", "no think block means empty reasoning");
+  assert.equal(plain.text, "Hello! How can I assist you today?");
+}
+
+{
+  const split = splitThinking("<think>\nOkay, the user said \"Hello\". I need to respond politely.\n</think>\n\nHello! How can I assist you today?");
+  assert.equal(split.thinking, 'Okay, the user said "Hello". I need to respond politely.');
+  assert.equal(split.text, "Hello! How can I assist you today?");
+  assert.ok(!split.text.includes("<think>") && !split.text.includes("</think>"), "no raw tags in visible text");
+  assert.ok(!split.thinking.includes("<think>"), "no raw tags in reasoning either");
+}
+
+{
+  // Streaming: an unclosed trailing <think> is treated as in-progress reasoning.
+  const streaming = splitThinking("<think>\nStill thinking about the differential");
+  assert.equal(streaming.thinking, "Still thinking about the differential");
+  assert.equal(streaming.text, "");
+}
+
+{
+  // Multiple blocks merge; stray closers are stripped.
+  const multi = splitThinking("A <think>t1</think> B <think>t2</think> C</think>");
+  assert.equal(multi.thinking, "t1\n\nt2");
+  assert.equal(multi.text, "A  B  C");
+  assert.ok(!multi.text.includes("think>"), "stray closer stripped");
+}
+
+{
+  assert.equal(stripThinking("<think>reasoning</think>Final answer."), "Final answer.");
+  assert.equal(stripThinking(""), "");
+  const nullish = splitThinking(null);
+  assert.deepEqual(nullish, { thinking: "", text: "" });
+}
 
 console.log("local LLM tests passed");

@@ -8,10 +8,11 @@
 import {
   WEBLLM_VERSION,
   detectWebGpu,
+  LOCAL_LLM_MODELS,
   localLlmModelByKey,
   readHardwareFacts,
   recommendLocalLlmModels
-} from "./models.js?v=20260927-local-llm-v3";
+} from "./models.js?v=20260927-local-llm-v4";
 
 // Re-exported for UI modules that resolve the active model label from the
 // shared client entry point.
@@ -21,6 +22,11 @@ export const LOCAL_LLM_RUNTIME_VERSION = `webllm@${WEBLLM_VERSION}`;
 
 const SETTINGS_KEY = "prerounding.localLlm.settings.v1";
 const VERIFIED_KEY = "prerounding.localLlm.verified.v1";
+// Per-model download registry: { [modelKey]: { webllmId, downloadedAt } }.
+// This is only a fast-path hint for instant UI paint; the worker's "cached"
+// probe against the vendored runtime is the ground truth and reconciles
+// this registry whenever it runs.
+const DOWNLOADED_KEY = "prerounding.localLlm.downloaded.v1";
 const SELFTEST_MARKER = "LOCAL-LLM-SELFTEST-OK";
 
 function readJson(key) {
@@ -55,6 +61,38 @@ export function writeLocalLlmSettings(patch) {
 
 export function readLocalLlmVerification() {
   return readJson(VERIFIED_KEY);
+}
+
+// Synchronous, best-effort view of which models this browser has downloaded.
+// Reconciled against the real cache by cachedModels() below.
+export function readLocalLlmDownloaded() {
+  const stored = readJson(DOWNLOADED_KEY) || {};
+  const out = {};
+  for (const model of LOCAL_LLM_MODELS) {
+    out[model.key] = !!(stored && stored[model.key]);
+  }
+  return out;
+}
+
+function markModelDownloaded(modelKey, model) {
+  const stored = readJson(DOWNLOADED_KEY) || {};
+  stored[modelKey] = {
+    webllmId: model.webllmId,
+    downloadedAt: new Date().toISOString()
+  };
+  writeJson(DOWNLOADED_KEY, stored);
+}
+
+function pruneDownloadedRegistry(keepKeys) {
+  const stored = readJson(DOWNLOADED_KEY) || {};
+  let changed = false;
+  for (const key of Object.keys(stored)) {
+    if (!keepKeys.has(key)) {
+      delete stored[key];
+      changed = true;
+    }
+  }
+  if (changed) writeJson(DOWNLOADED_KEY, stored);
 }
 
 export async function getLocalLlmHardwareReport(nav) {
@@ -114,7 +152,7 @@ export function createLocalLlmClient() {
 
   function ensureWorker() {
     if (worker) return worker;
-    worker = new Worker(new URL("./worker.js?v=20260927-local-llm-v3", import.meta.url), {
+    worker = new Worker(new URL("./worker.js?v=20260927-local-llm-v4", import.meta.url), {
       type: "module"
     });
     worker.onmessage = (event) => {
@@ -210,6 +248,10 @@ export function createLocalLlmClient() {
         runtimeVersion: LOCAL_LLM_RUNTIME_VERSION,
         verifiedAt: new Date().toISOString()
       });
+      // Weights are confirmed in this browser's cache (they just loaded),
+      // so record the download per model. This survives model switches and
+      // page reloads; only the loaded/verified state is session-scoped.
+      markModelDownloaded(modelKey, model);
       status = "ready";
       statusDetail = `${model.label} ready and verified.`;
       emit();
@@ -252,13 +294,37 @@ export function createLocalLlmClient() {
     progressText = "";
     activeModelKey = "";
     verifiedModelKey = "";
+    // Downloads stay cached by the browser: the downloaded registry is
+    // deliberately NOT cleared here, so other models keep their
+    // "Downloaded" status when one model is unloaded or switched.
     emit();
+  }
+
+  // Ground-truth per-model download state, from the vendored runtime's own
+  // cache check (no engine or WebGPU needed). Returns { [modelKey]: bool }
+  // and reconciles the fast-path registry against what is actually cached.
+  async function cachedModels() {
+    const reply = await send({
+      type: "cached",
+      modelIds: LOCAL_LLM_MODELS.map((model) => model.webllmId)
+    });
+    const results = reply?.results || {};
+    const out = {};
+    const keep = new Set();
+    for (const model of LOCAL_LLM_MODELS) {
+      const cached = results[model.webllmId] === true;
+      out[model.key] = cached;
+      if (cached) keep.add(model.key);
+    }
+    pruneDownloadedRegistry(keep);
+    return out;
   }
 
   return {
     onStatusChange,
     getStatus,
     ensureReady,
+    cachedModels,
     chat,
     resetChat,
     unload,
