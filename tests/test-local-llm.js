@@ -29,6 +29,7 @@ import {
 import { splitNoteSectionsWithLlm } from "../src/local-llm/parse.js";
 import { splitThinking, stripThinking } from "../src/local-llm/thinking.js";
 import { MAX_PATIENT_CONTEXT_CHARS, buildPatientContextText } from "../src/local-llm/patient-context.js";
+import { createLocalAiPresentation } from "../src/ui/local-ai/presentation.js";
 
 // ---------------------------------------------------------------------------
 // models.js
@@ -416,3 +417,47 @@ function fixturePatient() {
 }
 
 console.log("patient context tests passed");
+
+// --- presentation: streaming "Thinking" indicator -------------------------
+// Regression: the assistant bubble used to render only once streamingText
+// was non-empty, so after sending the user saw nothing until the first
+// token (10-60s on a local model). The bubble must exist from the moment
+// streaming starts so onToken has a target and the user sees feedback.
+
+{
+  const presentation = createLocalAiPresentation({
+    escapeHtml: (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"),
+    icon: () => ""
+  });
+  const base = {
+    hardware: { recommendation: { models: [], recommendedKey: null } },
+    settings: { selectedModelKey: "", parsingEnabled: false, patientContextEnabled: true },
+    llmStatus: { status: "ready", verified: true, activeModelKey: "qwen3-1.7b" },
+    downloaded: {},
+    patientContext: { enabled: false, available: false, label: "", hasPatient: false }
+  };
+  const waiting = presentation.render({
+    ...base,
+    chat: { messages: [{ role: "user", text: "hi" }], streamingText: "", modelKey: "", modelLabel: "", streaming: true }
+  });
+  assert.ok(waiting.includes('data-local-ai-streaming'), "streaming bubble exists before first token");
+  assert.ok(waiting.includes("lai-thinking"), "thinking indicator shown while waiting for first token");
+  assert.ok(waiting.includes(">Thinking<"), "thinking label present");
+
+  const withText = presentation.render({
+    ...base,
+    chat: { messages: [{ role: "user", text: "hi" }], streamingText: "Hello", modelKey: "", modelLabel: "", streaming: true }
+  });
+  assert.ok(withText.includes('data-local-ai-streaming'), "streaming bubble persists once tokens arrive");
+  assert.ok(!withText.includes("lai-thinking"), "thinking indicator replaced by streamed text");
+  assert.ok(withText.includes("Hello"), "streamed text rendered");
+
+  const idle = presentation.render({
+    ...base,
+    chat: { messages: [], streamingText: "", modelKey: "", modelLabel: "", streaming: false }
+  });
+  assert.ok(!idle.includes('data-local-ai-streaming'), "no streaming bubble when idle");
+  assert.ok(!idle.includes("lai-thinking"), "no thinking indicator when idle");
+}
+
+console.log("local AI presentation tests passed");

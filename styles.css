@@ -12357,6 +12357,13 @@ details.ed-section:not([open]) > summary.ed-section-summary { margin-bottom: 0; 
 .lai-think[open] > summary svg { transform: rotate(90deg); }
 .lai-think > summary:hover { color: var(--text); }
 .lai-think-body { padding: 2px 12px 10px; font-size: 0.8rem; line-height: 1.5; color: var(--muted); white-space: pre-wrap; word-break: break-word; max-height: 240px; overflow-y: auto; }
+/* "Thinking" indicator: shown in the assistant bubble between send and the first token. */
+.lai-thinking { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.85rem; padding: 2px 0; }
+.lai-dots { display: inline-flex; gap: 4px; }
+.lai-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: lai-dot-bounce 1.2s infinite; }
+.lai-dots span:nth-child(2) { animation-delay: .15s; }
+.lai-dots span:nth-child(3) { animation-delay: .3s; }
+@keyframes lai-dot-bounce { 0%, 60%, 100% { transform: translateY(0); opacity: .35; } 30% { transform: translateY(-4px); opacity: 1; } }
 /* "Downloaded" badge shown on model cards whose weights are in this browser's cache. */
 .lai-tag--dl { background: #e8f5e9; color: #2e7d32; }
 .lai-tag--dl svg { width: 11px; height: 11px; }

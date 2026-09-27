@@ -108,8 +108,11 @@ export function createLocalAiPresentation({ escapeHtml, icon }) {
         return `<div class="lai-m ${cls}">${label}${body}</div>`;
       })
       .join("");
-    const streaming = chat.streamingText
-      ? `<div class="lai-m lai-m--a" data-local-ai-streaming><span class="lai-m-label">${escapeHtml(activeLabel)}</span>${renderStreamingMessage(chat.streamingText)}</div>`
+    const streamingBody = chat.streamingText
+      ? renderStreamingMessage(chat.streamingText)
+      : `<span class="lai-thinking"><span>Thinking</span><span class="lai-dots" aria-hidden="true"><span></span><span></span><span></span></span></span>`;
+    const streaming = chat.streaming
+      ? `<div class="lai-m lai-m--a" data-local-ai-streaming><span class="lai-m-label">${escapeHtml(activeLabel)}</span>${streamingBody}</div>`
       : "";
     const empty = !messages && !streaming
       ? `<div class="lai-empty"><p><strong>On-device chat.</strong> <span class="lai-muted">${ready ? "Ask anything to test the model." : "Get a model above to start."}</span></p></div>`
