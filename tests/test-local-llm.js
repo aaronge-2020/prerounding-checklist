@@ -31,6 +31,8 @@ import { splitThinking, stripThinking } from "../src/local-llm/thinking.js";
 import { MAX_PATIENT_CONTEXT_CHARS, buildPatientContextText } from "../src/local-llm/patient-context.js";
 import { createLocalAiPresentation } from "../src/ui/local-ai/presentation.js";
 import { buildSystemPrompt } from "../src/local-llm/system-prompt.js";
+import { DEFAULT_SYSTEM_GUIDELINES } from "../src/local-llm/system-prompt.js";
+import { createSettingsPresentation } from "../src/ui/settings/presentation.js";
 
 // ---------------------------------------------------------------------------
 // models.js
@@ -498,4 +500,49 @@ console.log("local AI presentation tests passed");
   assert.ok(/using ONLY the patient context/i.test(prompt), "context-grounding instruction present");
 }
 
+{
+  // Editable guidelines: a custom value replaces the default; empty or
+  // whitespace-only falls back to DEFAULT_SYSTEM_GUIDELINES.
+  const custom = buildSystemPrompt({ guidelines: "You are a pirate assistant. Be concise." });
+  assert.ok(custom.startsWith("You are a pirate assistant."), "custom guidelines used");
+  assert.ok(!custom.includes("Aaron Ge"), "default not mixed into custom guidelines");
+  assert.strictEqual(buildSystemPrompt({ guidelines: "" }), DEFAULT_SYSTEM_GUIDELINES, "empty guidelines fall back to default");
+  assert.strictEqual(buildSystemPrompt({ guidelines: "   " }), DEFAULT_SYSTEM_GUIDELINES, "whitespace guidelines fall back to default");
+  assert.strictEqual(buildSystemPrompt(), DEFAULT_SYSTEM_GUIDELINES, "omitted guidelines fall back to default");
+  const customCtx = buildSystemPrompt({ guidelines: "Custom.", contextText: "PATIENT: Bed 1" });
+  assert.ok(customCtx.startsWith("Custom."), "custom guidelines kept with context");
+  assert.ok(customCtx.includes("PATIENT: Bed 1"), "context still appended with custom guidelines");
+}
+
 console.log("system prompt tests passed");
+
+// --- settings: Local AI guidelines editor -----------------------------------
+// The guidelines must be editable in Settings and round-trip through the
+// persisted value (empty storage -> built-in default shown).
+
+{
+  const settingsPresentation = createSettingsPresentation({
+    escapeHtml: (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+  });
+  const html = settingsPresentation.renderSettings({
+    preferences: {},
+    apiKeySaved: false,
+    guidelineSets: [],
+    OPENAI_WORKUP_MODEL_OPTIONS: [],
+    localAiGuidelines: DEFAULT_SYSTEM_GUIDELINES
+  });
+  assert.ok(html.includes('id="localAiGuidelinesInput"'), "guidelines textarea rendered");
+  assert.ok(html.includes("Aaron Ge"), "default guidelines shown in the editor");
+  assert.ok(html.includes('data-action="save-local-ai-guidelines"'), "save action present");
+  assert.ok(html.includes('data-action="reset-local-ai-guidelines"'), "reset action present");
+  const customHtml = settingsPresentation.renderSettings({
+    preferences: {},
+    apiKeySaved: false,
+    guidelineSets: [],
+    OPENAI_WORKUP_MODEL_OPTIONS: [],
+    localAiGuidelines: "Custom guidelines here."
+  });
+  assert.ok(customHtml.includes("Custom guidelines here."), "persisted custom guidelines shown in the editor");
+}
+
+console.log("settings guidelines tests passed");

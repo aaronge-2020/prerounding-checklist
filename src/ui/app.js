@@ -176,7 +176,7 @@ import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-adm
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-medication-card-v4";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-medication-card-v4";
 import { preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20260925-preserve-view-scroll-v2";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-medication-card-v4";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-medication-card-v4&local-ai=guidelines-editable-v1";
 import { createVaultPresentation, disambiguatedPatientLabels } from "./vault/presentation.js?v=20260718-vault-safety";
 import { createVaultSessionGuards } from "./vault/session-guards.js?v=20260922-vault-guards";
 import { createClipboard } from "./clipboard.js?v=20260922-clipboard";
@@ -193,9 +193,10 @@ import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups
 import { createDemoController } from "./demo/controller.js?v=20260921-demo-complete-plan";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-demo-complete-plan";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-demo-complete-plan";
-import { createLocalAiController } from "./local-ai/controller.js?v=20260927-local-llm-v8";
+import { createLocalAiController } from "./local-ai/controller.js?v=20260927-local-llm-v9";
 import { createScoresController } from "./scores/controller.js?v=20260927-models-v2";
-import { localLlmModelByKey, readLocalLlmSettings } from "../local-llm/client.js?v=20260927-local-llm-v5";
+import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20260927-local-llm-v6";
+import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260927-local-llm-v9";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
   vault: null,
@@ -1629,7 +1630,8 @@ function renderSettings() {
     guidelineOpenId: app.guidelineOpenId,
     guidelineCreateDraft: app.guidelineCreateDraft,
     OPENAI_WORKUP_MODEL_OPTIONS,
-    colorOverrides: app.tokenColorOverrides
+    colorOverrides: app.tokenColorOverrides,
+    localAiGuidelines: readLocalLlmSettings().systemGuidelines || DEFAULT_SYSTEM_GUIDELINES
   }));
 }
 
@@ -1659,6 +1661,17 @@ async function clearOpenAiByok() {
   const preferences = currentPreferences();
   setVaultPreferences({ ...preferences, openAiApiKey: "" });
   await persistVault("Saved OpenAI key removed from the encrypted local vault.");
+  render();
+}
+
+function saveLocalAiGuidelines() {
+  const value = String(byId("localAiGuidelinesInput")?.value ?? "");
+  writeLocalLlmSettings({ systemGuidelines: value });
+  render();
+}
+
+function resetLocalAiGuidelines() {
+  writeLocalLlmSettings({ systemGuidelines: "" });
   render();
 }
 
@@ -2087,6 +2100,8 @@ async function handleClick(event) {
     if (action === "open-token-color-picker") tokenColorPicker.open(target.dataset.token, target, event);
     if (action === "save-openai-byok") await saveOpenAiByok();
     if (action === "clear-openai-byok") await clearOpenAiByok();
+    if (action === "save-local-ai-guidelines") saveLocalAiGuidelines();
+    if (action === "reset-local-ai-guidelines") resetLocalAiGuidelines();
     if (action === "run-quick-deid") await runQuickDeid();
     if (action === "start-new-quick-deid") {
       clearQuickDeidSession();

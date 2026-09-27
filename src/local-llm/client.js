@@ -52,7 +52,10 @@ export function readLocalLlmSettings() {
   return {
     selectedModelKey: typeof stored.selectedModelKey === "string" ? stored.selectedModelKey : "",
     parsingEnabled: stored.parsingEnabled === true,
-    patientContextEnabled: stored.patientContextEnabled !== false
+    patientContextEnabled: stored.patientContextEnabled !== false,
+    // Editable system guidelines (Settings > Local AI guidelines). Empty
+    // means "use the built-in default" — see DEFAULT_SYSTEM_GUIDELINES.
+    systemGuidelines: typeof stored.systemGuidelines === "string" ? stored.systemGuidelines : ""
   };
 }
 

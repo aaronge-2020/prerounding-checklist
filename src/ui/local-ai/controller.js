@@ -9,10 +9,10 @@ import {
   readLocalLlmSettings,
   sharedLocalLlmClient,
   writeLocalLlmSettings
-} from "../../local-llm/client.js?v=20260927-local-llm-v5";
+} from "../../local-llm/client.js?v=20260927-local-llm-v6";
 import { createLocalAiPresentation } from "./presentation.js?v=20260927-local-llm-v7";
 import { buildPatientContextText } from "../../local-llm/patient-context.js?v=20260927-local-llm-v5";
-import { buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260927-local-llm-v8";
+import { buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260927-local-llm-v9";
 import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 
 export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus, render }) {
@@ -183,7 +183,10 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     // runs on-device in this browser, inside Aaron Ge's Preround app.
     const pctx = patientContextInfo();
     state.chat.patientId = pctx.patientId;
-    const systemContent = buildSystemPrompt({ contextText: pctx.available ? pctx.text : "" });
+    const systemContent = buildSystemPrompt({
+      contextText: pctx.available ? pctx.text : "",
+      guidelines: settings().systemGuidelines
+    });
     const history = [
       { role: "system", content: systemContent },
       ...state.chat.messages.map((m) => ({ role: m.role === "user" ? "user" : "assistant", content: m.text }))

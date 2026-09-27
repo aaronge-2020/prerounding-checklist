@@ -11,7 +11,8 @@ export function createSettingsPresentation({ escapeHtml }) {
     guidelineOpenId = "",
     guidelineCreateDraft = null,
     OPENAI_WORKUP_MODEL_OPTIONS,
-    colorOverrides = {}
+    colorOverrides = {},
+    localAiGuidelines = ""
   }) {
     return `
       <div class="settings-page ${guidelineOpenId || guidelineCreateDraft ? "has-guideline-editor" : ""}">
@@ -62,6 +63,24 @@ export function createSettingsPresentation({ escapeHtml }) {
           </div>
           </section>
           </div>
+
+          <section class="panel settings-panel">
+          <div class="section-heading">
+            <div>
+              <h2>Local AI guidelines</h2>
+              <p class="muted">System instructions sent to the on-device model with every chat message — its identity, environment, and behavior. When patient context is attached, it is appended after these guidelines.</p>
+            </div>
+          </div>
+          <div class="settings-fields">
+            <label class="settings-field-wide">Guidelines
+              <textarea id="localAiGuidelinesInput" rows="9" spellcheck="false" style="width:100%;font:inherit;resize:vertical;">${escapeHtml(localAiGuidelines)}</textarea>
+            </label>
+          </div>
+          <div class="button-row">
+            <button class="button--primary" type="button" data-action="save-local-ai-guidelines">Save guidelines</button>
+            <button class="button--quiet" type="button" data-action="reset-local-ai-guidelines">Reset to default</button>
+          </div>
+          </section>
 
           ${renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides, searchQuery: guidelineSearchQuery, page: guidelinePage, selectedIds: guidelineSelectedIds, openId: guidelineOpenId })}
         </div>
