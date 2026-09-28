@@ -787,3 +787,60 @@ console.log("primary team note tests passed");
 }
 
 console.log("context meter tests passed");
+
+// --- import graph: one cache-bust query per local-llm module ----------------
+// ES modules are keyed by their full URL, query string included. Two
+// importers using different ?v= values for the same module silently get two
+// module instances — which split the sharedLocalLlmClient() singleton and
+// made every "parse with local AI" fail with "Load a local model before
+// chatting" even though the Local AI view showed a verified model. Every
+// runtime importer of a local-llm module must use the same query string.
+
+{
+  const { readdir, readFile } = await import("node:fs/promises");
+  const { dirname, extname, join, relative } = await import("node:path");
+  const { fileURLToPath } = await import("node:url");
+  const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
+  const runtimeFiles = [];
+  async function collect(dir) {
+    for (const entry of await readdir(dir, { withFileTypes: true })) {
+      if (entry.name === "node_modules" || entry.name === ".git") continue;
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) await collect(full);
+      else if (extname(entry.name) === ".js") runtimeFiles.push(full);
+    }
+  }
+  await collect(join(repoRoot, "src"));
+  runtimeFiles.push(join(repoRoot, "index.html"));
+
+  const specifierRe = /local-llm\/([A-Za-z][\w-]*\.js)(\?v=([^"'`\s)]+))?/;
+  const queriesByModule = new Map();
+  for (const file of runtimeFiles) {
+    const text = await readFile(file, "utf8");
+    // Real module specifiers only: quoted strings in import/from,
+    // dynamic import(), or new URL() positions.
+    const importRe = /(?:import\s+(?:[^"']*?\s+from\s+)?|import\s*\(|new\s+URL\s*\()\s*["']([^"']+)["']/g;
+    let im;
+    while ((im = importRe.exec(text))) {
+      const sm = specifierRe.exec(im[1]);
+      if (!sm) continue;
+      const mod = `local-llm/${sm[1]}`;
+      const query = sm[3] || "(no query string)";
+      if (!queriesByModule.has(mod)) queriesByModule.set(mod, new Map());
+      const seen = queriesByModule.get(mod);
+      if (!seen.has(query)) seen.set(query, []);
+      seen.get(query).push(relative(repoRoot, file));
+    }
+  }
+  assert.ok(queriesByModule.size > 0, "found local-llm imports in the runtime graph");
+  for (const [mod, seen] of queriesByModule) {
+    assert.equal(
+      seen.size,
+      1,
+      `${mod} is imported with ${seen.size} different cache-bust queries ` +
+        `(${[...seen.keys()].join(", ")}) — mismatched queries split the module singleton`
+    );
+  }
+}
+
+console.log("local-llm import alignment tests passed");
