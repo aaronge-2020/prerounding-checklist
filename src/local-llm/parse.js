@@ -15,15 +15,27 @@ import { stripThinking } from "./thinking.js?v=20260927-local-llm-v4";
 
 const MAX_CHUNK_RETRIES = 2;
 const MIN_COVERAGE = 0.5;
+// Generation of one chunk must never hang the caller: the client enforces
+// this deadline and fails closed so the deterministic parse is kept.
+const PARSE_CHAT_TIMEOUT_MS = 10 * 60 * 1000;
 
-async function parseChunkWithModel(client, chunkText, noteType, attempt) {
+async function parseChunkWithModel(client, chunkText, noteType, attempt, { onToken, index } = {}) {
   const { system, user } = buildSectionSplitPrompt(chunkText, noteType);
   const raw = await client.chat(
     [
       { role: "system", content: system },
       { role: "user", content: user }
     ],
-    { maxTokens: 2048, temperature: attempt === 0 ? 0 : 0.3 }
+    {
+      maxTokens: 2048,
+      temperature: attempt === 0 ? 0 : 0.3,
+      // Deterministic extraction: sort sentences into labels, no reasoning
+      // needed. Chain-of-thought would burn most of the 2048-token output
+      // budget on thinking and slow every chunk to a crawl.
+      chatOpts: { extraBody: { enable_thinking: false } },
+      timeoutMs: PARSE_CHAT_TIMEOUT_MS,
+      onToken: onToken ? (token) => onToken({ index, token }) : undefined
+    }
   );
   const parsed = parseSectionSplitJson(stripThinking(raw));
   const verification = verifySectionSplit(parsed, chunkText, noteType);
@@ -31,8 +43,10 @@ async function parseChunkWithModel(client, chunkText, noteType, attempt) {
 }
 
 // Returns { sections, unparsed, coverage, chunks } on success; throws on
-// failure so the caller can fall back honestly.
-export async function splitNoteSectionsWithLlm(client, noteText, noteType, { onChunk } = {}) {
+// failure so the caller can fall back honestly. onChunk reports per-chunk
+// progress; onToken streams live generation counts ({ index, token }) so the
+// UI can show the model is actually producing output.
+export async function splitNoteSectionsWithLlm(client, noteText, noteType, { onChunk, onToken } = {}) {
   const text = String(noteText || "").trim();
   if (!text) throw new Error("Nothing to parse.");
   const chunks = chunkNoteForSplit(text);
@@ -46,7 +60,10 @@ export async function splitNoteSectionsWithLlm(client, noteText, noteType, { onC
     let accepted = null;
     for (let attempt = 0; attempt <= MAX_CHUNK_RETRIES; attempt++) {
       try {
-        const { parsed, verification } = await parseChunkWithModel(client, chunk, noteType, attempt);
+        const { parsed, verification } = await parseChunkWithModel(client, chunk, noteType, attempt, {
+          onToken,
+          index: index + 1
+        });
         if (!verification.ok) {
           lastError = new Error(`Chunk ${index + 1} failed verification: ${verification.errors[0]}`);
           continue;

@@ -20,6 +20,15 @@ export { localLlmModelByKey };
 
 export const LOCAL_LLM_RUNTIME_VERSION = `webllm@${WEBLLM_VERSION}`;
 
+// A worker round-trip that never answers must fail closed instead of hanging
+// the UI forever. Generation of a long chunk on weak hardware can take
+// minutes, so the chat default is generous; the timer is cleared the moment
+// the worker answers (progress/token messages do not extend it, they only
+// prove the worker is alive — a stall with no messages at all still times
+// out). Init (model download) has no timeout: its progress is visible in the
+// Local AI view and downloads can legitimately take a long time.
+export const CHAT_TIMEOUT_MS = 10 * 60 * 1000;
+
 const SETTINGS_KEY = "prerounding.localLlm.settings.v1";
 const VERIFIED_KEY = "prerounding.localLlm.verified.v1";
 // Per-model download registry: { [modelKey]: { webllmId, downloadedAt } }.
@@ -156,10 +165,11 @@ export function createLocalLlmClient() {
 
   function ensureWorker() {
     if (worker) return worker;
-    worker = new Worker(new URL("./worker.js?v=20260927-local-llm-v4", import.meta.url), {
+    const w = new Worker(new URL("./worker.js?v=20260928-local-llm-v1", import.meta.url), {
       type: "module"
     });
-    worker.onmessage = (event) => {
+    worker = w;
+    w.onmessage = (event) => {
       const message = event.data || {};
       const entry = pending.get(message.id);
       if (message.type === "progress") {
@@ -177,23 +187,57 @@ export function createLocalLlmClient() {
       if (message.type === "error") entry.reject(new Error(message.message));
       else entry.resolve(message);
     };
-    worker.onerror = (event) => {
+    w.onerror = (event) => {
       const message = event?.message || "Local model worker failed to start.";
       for (const entry of pending.values()) entry.reject(new Error(message));
       pending.clear();
       status = "error";
       statusDetail = message;
+      // Drop the dead worker so the next send() spawns a fresh one. Posting
+      // into a crashed worker silently drops the message, which used to hang
+      // the awaiting promise forever.
+      try {
+        w.terminate();
+      } catch {
+        // Already dead.
+      }
+      if (worker === w) worker = null;
       emit();
     };
-    return worker;
+    return w;
   }
 
-  function send(message, { onToken } = {}) {
+  function send(message, { onToken, timeoutMs = 0, timeoutMessage = "Local model timed out." } = {}) {
     const w = ensureWorker();
     const id = nextId++;
     return new Promise((resolve, reject) => {
-      pending.set(id, { resolve, reject, onToken });
-      w.postMessage({ ...message, id });
+      let timer = null;
+      const done = (fn) => (value) => {
+        if (timer) clearTimeout(timer);
+        timer = null;
+        pending.delete(id);
+        fn(value);
+      };
+      const entry = { resolve: done(resolve), reject: done(reject), onToken };
+      pending.set(id, entry);
+      if (timeoutMs > 0) {
+        timer = setTimeout(() => {
+          timer = null;
+          if (pending.get(id) === entry) {
+            pending.delete(id);
+            entry.reject(new Error(timeoutMessage));
+          }
+        }, timeoutMs);
+        // Don't keep a Node test process alive for the timeout.
+        if (timer && typeof timer.unref === "function") timer.unref();
+      }
+      try {
+        w.postMessage({ ...message, id });
+      } catch (error) {
+        if (timer) clearTimeout(timer);
+        pending.delete(id);
+        reject(error);
+      }
     });
   }
 
@@ -271,9 +315,18 @@ export function createLocalLlmClient() {
     }
   }
 
-  async function chat(messages, { onToken, maxTokens = 1024, temperature = 0.7 } = {}) {
+  async function chat(
+    messages,
+    { onToken, maxTokens = 1024, temperature = 0.7, chatOpts, timeoutMs = CHAT_TIMEOUT_MS } = {}
+  ) {
     if (status !== "ready") throw new Error("Load a local model before chatting.");
-    const reply = await send({ type: "chat", messages, maxTokens, temperature }, { onToken });
+    const timeoutMessage =
+      `Local AI generation timed out after ${Math.max(1, Math.round(timeoutMs / 60000))} minute(s) ` +
+      `waiting for the on-device model. It may be stalled or very slow on this hardware.`;
+    const reply = await send(
+      { type: "chat", messages, maxTokens, temperature, chatOpts },
+      { onToken, timeoutMs, timeoutMessage }
+    );
     return reply.text;
   }
 

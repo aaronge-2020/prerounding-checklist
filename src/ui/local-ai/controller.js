@@ -9,7 +9,7 @@ import {
   readLocalLlmSettings,
   sharedLocalLlmClient,
   writeLocalLlmSettings
-} from "../../local-llm/client.js?v=20260927-local-llm-v6";
+} from "../../local-llm/client.js?v=20260928-local-llm-v1";
 import { createLocalAiPresentation } from "./presentation.js?v=20260927-local-llm-v8";
 import { buildPrimaryTeamNoteText } from "../../local-llm/patient-context.js?v=20260927-local-llm-v6";
 import { buildChatMessages } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";

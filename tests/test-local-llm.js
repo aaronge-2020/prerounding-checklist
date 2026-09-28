@@ -844,3 +844,41 @@ console.log("context meter tests passed");
 }
 
 console.log("local-llm import alignment tests passed");
+
+// --- parse: liveness and deterministic generation ---------------------------
+// The orchestrator must forward an onToken callback (the UI renders live
+// token counts so a slow model reads as "working", not "hung") and must
+// disable chain-of-thought for extraction (thinking would burn the output
+// token budget and slow every chunk).
+{
+  const seenCalls = [];
+  const tokenEvents = [];
+  const probeClient = {
+    chat: async (messages, opts) => {
+      seenCalls.push({ messages, opts });
+      for (const t of ["{", "\"sections\": {}"]) opts?.onToken?.(t);
+      return JSON.stringify({ sections: {}, unparsed: "He has chest pain." });
+    }
+  };
+  const probeNote = "He has chest pain.";
+  await splitNoteSectionsWithLlm(probeClient, probeNote, "hp", {
+    onToken: ({ index, token }) => tokenEvents.push({ index, token })
+  });
+  assert.ok(seenCalls.length >= 1, "parse calls client.chat");
+  for (const call of seenCalls) {
+    assert.equal(
+      call.opts?.chatOpts?.extraBody?.enable_thinking,
+      false,
+      "parse disables chain-of-thought for deterministic extraction"
+    );
+    assert.equal(typeof call.opts?.onToken, "function", "parse wires onToken into client.chat");
+    assert.ok(call.opts?.timeoutMs > 0, "parse sets a generation timeout so a stall fails closed");
+  }
+  assert.ok(tokenEvents.length > 0, "onToken events reach the caller's onToken");
+  assert.ok(
+    tokenEvents.every((e) => e.index === 1 && typeof e.token === "string"),
+    "onToken events carry the 1-based chunk index"
+  );
+}
+
+console.log("local-llm parse liveness tests passed");

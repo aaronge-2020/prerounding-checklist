@@ -26,8 +26,8 @@ import {
   updatePrimaryTeamNoteSection
 } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
 import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20260925-one-liner-v1";
-import { sharedLocalLlmClient } from "../../local-llm/client.js?v=20260927-local-llm-v6";
-import { splitNoteSectionsWithLlm } from "../../local-llm/parse.js?v=20260927-local-llm-v4";
+import { sharedLocalLlmClient } from "../../local-llm/client.js?v=20260928-local-llm-v1";
+import { splitNoteSectionsWithLlm } from "../../local-llm/parse.js?v=20260928-local-llm-v1";
 
 export function createDailySourceController(deps) {
   function noteDraftSessionHasContent(draft) {
@@ -181,13 +181,37 @@ export function createDailySourceController(deps) {
     }
     deps.setLocalAiParseBusy(scope, true);
     refreshStructuredNoteDetected(scope);
-    const onChunk = ({ index, total }) => {
+    // Live progress: chunk position plus streaming token count and elapsed
+    // time, so a slow model reads as "working" and a stalled one is obvious.
+    const progressState = { index: 0, total: 0, tokens: 0, startedAt: Date.now(), lastRenderAt: 0 };
+    const renderParseProgress = () => {
       const el = document.querySelector(`[data-local-ai-parse-progress="${scope}"]`);
-      if (el) el.textContent = `part ${index} of ${total}`;
+      if (!el) return;
+      const secs = Math.round((Date.now() - progressState.startedAt) / 1000);
+      const part = progressState.total ? `part ${progressState.index} of ${progressState.total}` : "working";
+      const tokens = progressState.tokens ? ` · ${progressState.tokens} tokens` : "";
+      el.textContent = `${part}${tokens} · ${secs}s`;
+    };
+    const onChunk = ({ index, total }) => {
+      progressState.index = index;
+      progressState.total = total;
+      progressState.tokens = 0;
+      progressState.startedAt = Date.now();
+      progressState.lastRenderAt = Date.now();
+      renderParseProgress();
+    };
+    const onToken = () => {
+      progressState.tokens += 1;
+      // Tokens can stream dozens per second; re-render at most 4x/sec.
+      const now = Date.now();
+      if (now - progressState.lastRenderAt > 250) {
+        progressState.lastRenderAt = now;
+        renderParseProgress();
+      }
     };
     try {
       const client = sharedLocalLlmClient();
-      const result = await splitNoteSectionsWithLlm(client, text, noteType, { onChunk });
+      const result = await splitNoteSectionsWithLlm(client, text, noteType, { onChunk, onToken });
       const fields = primaryTeamNoteFields(noteType);
       const sections = {};
       for (const field of fields) {

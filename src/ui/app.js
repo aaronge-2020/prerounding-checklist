@@ -153,7 +153,7 @@ import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
 import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=section-scroll-v3&parser=table-v6&local-llm-v1";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260923-plan-problems-v1&scroll=preserve-section-scroll-v3&parser=table-v7&local-llm-v2";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260923-plan-problems-v1&scroll=preserve-section-scroll-v3&parser=table-v7&local-llm-v3";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20260926-exam-editor-v1&trend=concise-v3";
 import { createReviewController } from "./review/controller.js?v=20260926-exam-editor-v1&labs=analyte-selection-v3";
@@ -195,7 +195,7 @@ import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=2026092
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-demo-complete-plan";
 import { createLocalAiController } from "./local-ai/controller.js?v=20260927-local-llm-v11";
 import { createScoresController } from "./scores/controller.js?v=20260927-models-v2";
-import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20260927-local-llm-v6";
+import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20260928-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260927-local-llm-v9";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {

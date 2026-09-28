@@ -3,7 +3,9 @@
 // protocol with src/local-llm/client.js:
 //
 //   main -> worker: { id, type: "init", modelId }
-//                   { id, type: "chat", messages, maxTokens, temperature }
+//                   { id, type: "chat", messages, maxTokens, temperature, chatOpts }
+//                     chatOpts is passed through to the engine request (e.g.
+//                     { extraBody: { enable_thinking: false } }).
 //                   { id, type: "reset" }
 //                   { id, type: "unload" }
 //                   { id, type: "cached", modelIds }   (no engine needed)
@@ -62,7 +64,7 @@ async function handleInit(id, modelId) {
   }
 }
 
-async function handleChat(id, { messages, maxTokens, temperature }) {
+async function handleChat(id, { messages, maxTokens, temperature, chatOpts }) {
   if (!engine) {
     post({ id, type: "error", message: "Model is not loaded." });
     return;
@@ -72,7 +74,10 @@ async function handleChat(id, { messages, maxTokens, temperature }) {
       messages,
       stream: true,
       max_tokens: maxTokens,
-      temperature
+      temperature,
+      // Pass-through for engine request extras (e.g. extra_body to disable
+      // chain-of-thought for deterministic extraction tasks).
+      ...(chatOpts && chatOpts.extraBody ? { extra_body: chatOpts.extraBody } : {})
     });
     let text = "";
     for await (const chunk of chunks) {
