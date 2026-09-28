@@ -30,6 +30,12 @@ import { splitNoteSectionsWithLlm } from "../src/local-llm/parse.js";
 import { splitThinking, stripThinking } from "../src/local-llm/thinking.js";
 import { MAX_PATIENT_CONTEXT_CHARS, buildPatientContextText } from "../src/local-llm/patient-context.js";
 import { MAX_PRIMARY_NOTE_CHARS, buildPrimaryTeamNoteText } from "../src/local-llm/patient-context.js";
+import {
+  MAX_SELECTED_PIECES_CHARS,
+  buildPatientContextFromPieces,
+  defaultSelectedPieceIds,
+  listPatientContextPieces
+} from "../src/local-llm/patient-context.js";
 import { CHARS_PER_TOKEN, TOKEN_SAFETY_MARGIN, buildChatMessages, estimateTokens } from "../src/local-llm/context-budget.js";
 import { createLocalAiPresentation } from "../src/ui/local-ai/presentation.js";
 import { buildSystemPrompt } from "../src/local-llm/system-prompt.js";
@@ -448,7 +454,8 @@ console.log("patient context tests passed");
   });
   assert.ok(waiting.includes('data-local-ai-streaming'), "streaming bubble exists before first token");
   assert.ok(waiting.includes("lai-thinking"), "thinking indicator shown while waiting for first token");
-  assert.ok(waiting.includes(">Thinking<"), "thinking label present");
+  assert.ok(waiting.includes("data-local-ai-thinking-label"), "thinking label carries the live-timer hook");
+  assert.ok(waiting.includes(">Reading context…<"), "prefill label names what the model is doing");
 
   const withText = presentation.render({
     ...base,
@@ -578,7 +585,7 @@ console.log("settings guidelines tests passed");
   assert.ok(list.includes("<ul>") && list.includes("<li>one</li>"), "bullet list rendered");
 
   const olist = renderChatMarkdown("1. first\n2. second");
-  assert.ok(olist.includes("<ol>") && olist.includes("<li>second</li>"), "numbered list rendered");
+  assert.ok(olist.includes("<ol") && olist.includes("<li>second</li>"), "numbered list rendered");
 
   const em = renderChatMarkdown("Some *italic* text");
   assert.ok(em.includes("<em>italic</em>"), "italic rendered");
@@ -595,6 +602,33 @@ console.log("settings guidelines tests passed");
 }
 
 console.log("markdown tests passed");
+
+// --- markdown.js: continuous list numbering --------------------------------
+// Small on-device models emit "1. Diagnosis …\n\n1. Treatment …" — one logical
+// list with blank lines between items. Blank lines must not split the list
+// (that rendered "1. 1. 1. 1."), and numbering must continue across an
+// interrupting bullet list instead of restarting at 1.
+
+{
+  const restarted = renderChatMarkdown("1. **Diagnosis:** fever\n\n1. **Treatment:** abx");
+  assert.strictEqual((restarted.match(/<ol/g) || []).length, 1, "blank-separated items stay in one list");
+  assert.ok(restarted.includes('<ol start="1">'), "list opens at 1");
+  assert.strictEqual((restarted.match(/<li>/g) || []).length, 2, "both items kept");
+
+  const interrupted = renderChatMarkdown("1. one\n\n- sub point\n\n1. two");
+  const opens = [...interrupted.matchAll(/<ol start="(\d+)">/g)].map((m) => m[1]);
+  assert.deepStrictEqual(opens, ["1", "2"], "numbering continues after an interrupting list");
+
+  const plain = renderChatMarkdown("1. first\n2. second");
+  assert.ok(plain.includes('<ol start="1">'), "plain list still opens at 1");
+  assert.ok(!plain.includes('start="2"'), "no spurious second list");
+
+  // Paragraphs still break lists; only blank lines are tolerated.
+  const broken = renderChatMarkdown("- a\n\nA paragraph.\n\n- b");
+  assert.strictEqual((broken.match(/<ul>/g) || []).length, 2, "paragraph still splits bullet lists");
+}
+
+console.log("markdown continuous-numbering tests passed");
 
 // --- context-budget.js: dynamic context-window monitoring ------------------
 // The prompt is measured BEFORE sending against the model's real window:
@@ -787,6 +821,155 @@ console.log("primary team note tests passed");
 }
 
 console.log("context meter tests passed");
+
+// --- context pieces: selectable chart documents for the Context inspector --
+// listPatientContextPieces enumerates admission sections, day captures, and
+// quick notes (skipping empty text); defaultSelectedPieceIds prefers primary
+// notes, falling back to admission sections; buildPatientContextFromPieces
+// assembles only the selected pieces within a char budget.
+
+function piecesFixture() {
+  return {
+    id: "p1",
+    displayLabel: "Bed 12",
+    metadata: { admissionDate: "2026-09-20" },
+    contextSections: [
+      { id: "s-hp", label: "H&P", sourceKind: "primary_note", deidentifiedText: "Admission H&P text" },
+      { id: "s-labs", label: "Labs", sourceKind: "laboratory_results", deidentifiedText: "lab text" },
+      { id: "s-empty", label: "Empty", sourceKind: "other_chart_text", deidentifiedText: "   " }
+    ],
+    days: [
+      {
+        id: "d1", label: "Hospital day 1", date: "2026-09-21",
+        sourceCaptures: [
+          { id: "c1", label: "Primary team note", sourceKind: "primary_note", deidentifiedText: "Day 1 primary note" },
+          { id: "c2", label: "Labs", sourceKind: "laboratory_results", deidentifiedText: "day 1 labs" }
+        ],
+        quickNotes: ["called about pain"]
+      },
+      {
+        id: "d2", label: "Hospital day 2", date: "2026-09-22",
+        sourceCaptures: [
+          { id: "c3", label: "Primary team note", sourceKind: "primary_note", deidentifiedText: "Day 2 primary note" }
+        ],
+        quickNotes: []
+      }
+    ]
+  };
+}
+
+{
+  const pieces = listPatientContextPieces(piecesFixture());
+  assert.strictEqual(pieces.length, 6, `2 admission + 3 captures + 1 quick-notes (got ${pieces.length})`);
+  assert.deepStrictEqual(
+    pieces.map((p) => p.group),
+    ["Admission", "Admission", "Hospital day 1 (2026-09-21)", "Hospital day 1 (2026-09-21)", "Hospital day 1 (2026-09-21)", "Hospital day 2 (2026-09-22)"],
+    "groups in document order"
+  );
+  assert.ok(pieces.every((p) => typeof p.id === "string" && p.id.length > 0), "stable ids");
+  assert.strictEqual(new Set(pieces.map((p) => p.id)).size, pieces.length, "ids unique");
+  assert.ok(pieces.every((p) => p.chars > 0), "empty-text sections skipped");
+  const primaries = pieces.filter((p) => p.primary);
+  assert.strictEqual(primaries.length, 3, "primary_note pieces flagged");
+  assert.strictEqual(listPatientContextPieces(null).length, 0, "null patient yields no pieces");
+}
+
+{
+  // Primary notes preferred when they exist.
+  const selected = defaultSelectedPieceIds(piecesFixture());
+  const pieces = listPatientContextPieces(piecesFixture());
+  const primaryIds = pieces.filter((p) => p.primary).map((p) => p.id);
+  assert.deepStrictEqual(selected, primaryIds, "defaults to the primary notes");
+
+  // No primary note anywhere -> admission sections.
+  const noPrimary = piecesFixture();
+  noPrimary.contextSections = noPrimary.contextSections.filter((s) => s.sourceKind !== "primary_note");
+  noPrimary.days.forEach((d) => {
+    d.sourceCaptures = d.sourceCaptures.filter((c) => c.sourceKind !== "primary_note");
+  });
+  const fallback = defaultSelectedPieceIds(noPrimary);
+  assert.deepStrictEqual(
+    fallback,
+    listPatientContextPieces(noPrimary).filter((p) => p.group === "Admission").map((p) => p.id),
+    "falls back to admission sections"
+  );
+
+  // Nothing at all -> empty selection.
+  assert.deepStrictEqual(
+    defaultSelectedPieceIds({ id: "p", contextSections: [], days: [] }),
+    [],
+    "empty patient yields empty selection"
+  );
+}
+
+{
+  // Only selected pieces are assembled, in document order.
+  const patient = piecesFixture();
+  const pieces = listPatientContextPieces(patient);
+  const labsOnly = pieces.filter((p) => p.label === "Labs").map((p) => p.id);
+  const text = buildPatientContextFromPieces(patient, labsOnly);
+  assert.ok(text.includes("PATIENT: Bed 12"), "header identifies the patient");
+  assert.ok(text.includes("lab text"), "selected admission labs included");
+  assert.ok(text.includes("day 1 labs"), "selected day labs included");
+  assert.ok(!text.includes("Day 1 primary note"), "unselected primary note excluded");
+  assert.ok(!text.includes("called about pain"), "unselected quick notes excluded");
+
+  // Quick notes assemble as a bullet list.
+  const qn = pieces.filter((p) => p.label === "Quick notes").map((p) => p.id);
+  const qnText = buildPatientContextFromPieces(patient, qn);
+  assert.ok(qnText.includes("- called about pain"), "quick notes listed");
+
+  // Empty / unknown selection yields "".
+  assert.strictEqual(buildPatientContextFromPieces(patient, []), "", "empty selection yields empty string");
+  assert.strictEqual(buildPatientContextFromPieces(patient, ["nope:missing"]), "", "unknown ids ignored");
+  assert.strictEqual(buildPatientContextFromPieces(null, ["x"]), "", "null patient yields empty string");
+
+  // Budget cap respected.
+  assert.ok(MAX_SELECTED_PIECES_CHARS >= 1000, "default pieces budget is sane");
+  const big = piecesFixture();
+  big.contextSections[0].deidentifiedText = "z".repeat(9000);
+  const capped = buildPatientContextFromPieces(patient, defaultSelectedPieceIds(big), { maxChars: 800 });
+  assert.ok(capped.length <= 800, `selected pieces fit budget (got ${capped.length})`);
+}
+
+console.log("context pieces tests passed");
+
+// --- draft note as an opt-in context piece ----------------------------------
+// listPatientContextPieces appends the student's current draft note (plain
+// text from the Review controller) as one selectable piece when provided.
+// It is never selected by default — the user attaches it explicitly.
+
+{
+  const patient = piecesFixture();
+  const without = listPatientContextPieces(patient);
+  assert.ok(without.every((p) => p.id !== "draft:current"), "no draft piece without draft text");
+
+  const withDraft = listPatientContextPieces(patient, { draftNoteText: "  " });
+  assert.ok(withDraft.every((p) => p.id !== "draft:current"), "blank draft text yields no piece");
+
+  const pieces = listPatientContextPieces(patient, { draftNoteText: "My in-progress note" });
+  const draftPiece = pieces.find((p) => p.id === "draft:current");
+  assert.ok(draftPiece, "draft piece appended");
+  assert.strictEqual(draftPiece.group, "Draft note", "draft group label");
+  assert.strictEqual(draftPiece.label, "Current draft note", "draft piece label");
+  assert.strictEqual(draftPiece.kind, "draft_note", "draft piece kind");
+  assert.ok(draftPiece.chars > 0, "draft chars counted");
+  assert.strictEqual(draftPiece.primary, false, "draft never flagged primary");
+
+  // Never selected by default.
+  assert.ok(!defaultSelectedPieceIds(patient).includes("draft:current"), "draft not in defaults");
+
+  // Selected explicitly, it assembles into the context.
+  const text = buildPatientContextFromPieces(patient, ["draft:current"], { draftNoteText: "My in-progress note" });
+  assert.ok(text.includes("My in-progress note"), "draft text attached when selected");
+  assert.ok(text.includes("Current draft note"), "draft section labeled in context");
+
+  // Without the draft text passed through, a stale id assembles nothing.
+  const stale = buildPatientContextFromPieces(patient, ["draft:current"]);
+  assert.ok(!stale.includes("My in-progress note"), "stale draft id yields no text");
+}
+
+console.log("draft note piece tests passed");
 
 // --- import graph: one cache-bust query per local-llm module ----------------
 // ES modules are keyed by their full URL, query string included. Two

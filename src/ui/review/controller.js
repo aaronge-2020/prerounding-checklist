@@ -2162,5 +2162,26 @@ export function createReviewController(deps) {
     return false;
   }
 
-  return Object.freeze({ change, click, input, keydown, open, prepare, render, saveDraft, toggle });
+
+  // The student's current draft note as plain text, for optional attachment
+  // to Local AI chat context. In-memory only, never persisted by this call;
+  // "" when there is no patient or the draft is empty. The draft is built
+  // from de-identified source text plus the student's own in-progress edits.
+  function getDraftNoteText() {
+    let current;
+    try {
+      current = model();
+    } catch {
+      return "";
+    }
+    if (!current?.patient || !current.draft) return "";
+    if (!noteDraftHasContent(current.draft)) return "";
+    try {
+      return String(renderFinalNotePlainText(current.draft) || "").trim();
+    } catch {
+      return "";
+    }
+  }
+
+  return Object.freeze({ change, click, input, keydown, open, prepare, render, saveDraft, toggle, getDraftNoteText });
 }

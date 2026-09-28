@@ -150,7 +150,7 @@ import {
   setChecklistNote
 } from "../checklist/state.js?v=20260711-functional-remediation-19";
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
-import { icon } from "./icons.js?v=20260711-functional-remediation-15";
+import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=undo-v1";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
 import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=section-scroll-v3&parser=table-v6&local-llm-v1";
 import { createDailySourceController } from "./daily/source-controller.js?v=20260923-plan-problems-v1&scroll=preserve-section-scroll-v3&parser=table-v7&local-llm-v3";
@@ -193,10 +193,10 @@ import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups
 import { createDemoController } from "./demo/controller.js?v=20260921-demo-complete-plan";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-demo-complete-plan";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-demo-complete-plan";
-import { createLocalAiController } from "./local-ai/controller.js?v=20260927-local-llm-v11";
+import { createLocalAiController } from "./local-ai/controller.js?v=20260928-local-llm-v12";
 import { createScoresController } from "./scores/controller.js?v=20260927-models-v2";
 import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20260928-local-llm-v1";
-import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260927-local-llm-v9";
+import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 const app = {
   vault: null,
@@ -376,7 +376,8 @@ const localAiController = createLocalAiController({
   escapeHtml,
   icon,
   setStatus,
-  render: renderLocalAi
+  render: renderLocalAi,
+  getDraftNoteText: () => reviewController.getDraftNoteText()
 });
 const scoresController = createScoresController({
   app,

@@ -12335,7 +12335,12 @@ details.ed-section:not([open]) > summary.ed-section-summary { margin-bottom: 0; 
 .lai-context-bar span { display: block; height: 100%; border-radius: 999px; background: var(--muted); }
 .lai-context-label { white-space: nowrap; }
 .lai-context-note { white-space: nowrap; }
-.lai-m--a ul, .lai-m--a ol { margin: 0; padding: 9px 14px 9px 32px; border-radius: 16px; border-bottom-left-radius: 5px; line-height: 1.45; font-size: 0.9rem; background: color-mix(in srgb, var(--text) 7%, var(--surface)); }
+.lai-m--a .lai-m-body { background: color-mix(in srgb, var(--text) 7%, var(--surface)); border-radius: 16px; border-bottom-left-radius: 5px; padding: 9px 14px; line-height: 1.45; font-size: 0.9rem; }
+.lai-m--a .lai-m-body > :first-child { margin-top: 0; }
+.lai-m--a .lai-m-body > :last-child { margin-bottom: 0; }
+.lai-m--a .lai-m-body p { margin: 0 0 8px; padding: 0; background: none; border-radius: 0; white-space: pre-wrap; word-break: break-word; }
+.lai-m--a .lai-m-body ul, .lai-m--a .lai-m-body ol { margin: 4px 0 8px; padding: 0 0 0 22px; background: none; border-radius: 0; }
+.lai-m--a .lai-m-body .lai-think { margin: 0 0 8px; }
 .lai-m--a li { margin: 2px 0; }
 .lai-m--a li::marker { color: var(--muted); }
 .lai-m--a code { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.82em; background: color-mix(in srgb, var(--text) 10%, transparent); padding: 1px 5px; border-radius: 5px; }
@@ -12346,14 +12351,19 @@ details.ed-section:not([open]) > summary.ed-section-summary { margin-bottom: 0; 
 .lai-m--u { align-self: flex-end; align-items: flex-end; }
 .lai-m--u p { background: var(--primary); color: #fff; border-bottom-right-radius: 5px; }
 .lai-m--a { align-self: flex-start; }
-.lai-m--a p { background: color-mix(in srgb, var(--text) 7%, var(--surface)); border-bottom-left-radius: 5px; }
 .lai-m-label { font-size: 0.7rem; color: var(--muted); padding: 0 4px; }
 .lai-empty { text-align: center; padding: 20px 12px; }
 .lai-empty p { margin: 0; font-size: 0.88rem; }
-.lai-form { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--border); align-items: center; }
-.lai-form input[type="text"] { flex: 1; border: 1px solid var(--border); border-radius: 999px; padding: 9px 16px; font-size: 0.9rem; background: var(--background); color: var(--text); }
-.lai-form input[type="text"]:focus { outline: none; border-color: var(--primary); }
-.lai-form input[type="text"]:disabled { opacity: .55; }
+.lai-form { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--border); align-items: flex-end; }
+/* Rich-text chat composer: a contenteditable box so formatted pastes keep
+   their line breaks and structure. Plain text is extracted on send. */
+.lai-input { flex: 1; border: 1px solid var(--border); border-radius: 18px; padding: 9px 16px; font-size: 0.9rem; line-height: 1.45; background: var(--background); color: var(--text); min-height: 22px; max-height: 140px; overflow-y: auto; word-break: break-word; }
+.lai-input:focus { outline: none; border-color: var(--primary); }
+.lai-input:empty::before { content: attr(data-placeholder); color: var(--muted); pointer-events: none; }
+.lai-input[contenteditable="false"] { opacity: .55; }
+.lai-input div, .lai-input p { margin: 0 0 4px; }
+.lai-input div:last-child, .lai-input p:last-child { margin-bottom: 0; }
+.lai-input ul, .lai-input ol { margin: 4px 0; padding-left: 22px; }
 .lai-send { width: 38px; height: 38px; border-radius: 50%; border: none; background: var(--primary); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .lai-send:hover:not(:disabled) { filter: brightness(1.1); }
 .lai-send:disabled { opacity: .35; cursor: default; }
@@ -12389,6 +12399,44 @@ details.ed-section:not([open]) > summary.ed-section-summary { margin-bottom: 0; 
 .lai-sw input:checked + .lai-sw-t { background: var(--primary); }
 .lai-sw input:checked + .lai-sw-t::after { transform: translateX(19px); }
 .lai-sw input:disabled + .lai-sw-t { opacity: .45; }
+/* Chat header bar: message count + "New chat" (clears the conversation and
+   the model's context). */
+.lai-chatbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 14px; border-bottom: 1px solid var(--border); }
+.lai-newchat { display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; font-weight: 600; color: var(--primary); background: none; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.lai-newchat:hover:not(:disabled) { border-color: var(--primary); }
+.lai-newchat:disabled { opacity: .4; cursor: default; }
+.lai-newchat svg { width: 13px; height: 13px; }
+/* Per-message "revert" control: removes the message and everything after it
+   from the conversation (the model's context on the next send). Absolutely
+   positioned so showing it never shifts the layout; revealed on hover, and
+   always faintly visible on touch devices. */
+.lai-m { position: relative; }
+.lai-m-revert { position: absolute; bottom: -7px; z-index: 2; display: inline-flex; align-items: center; gap: 3px; font-size: 0.68rem; font-weight: 600; color: var(--muted); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; cursor: pointer; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s; }
+.lai-m--u .lai-m-revert { right: 6px; }
+.lai-m--a .lai-m-revert { left: 6px; }
+.lai-m:hover .lai-m-revert, .lai-m-revert:focus-visible { opacity: 1; pointer-events: auto; }
+.lai-m-revert:hover { color: var(--text); border-color: var(--muted); }
+.lai-m-revert svg { width: 11px; height: 11px; }
+@media (hover: none) { .lai-m-revert { opacity: .8; pointer-events: auto; } }
+/* "Context" inspector: exactly what will be loaded into the model's context
+   on the next send, with per-piece include/exclude checkboxes. */
+.lai-ctx { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); overflow: hidden; }
+.lai-ctx-head { display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 14px; background: none; border: none; cursor: pointer; color: var(--text); text-align: left; }
+.lai-ctx-head strong { font-size: 0.88rem; }
+.lai-ctx-chev { display: inline-flex; }
+.lai-ctx-chev svg { width: 14px; height: 14px; color: var(--muted); transition: transform .15s; }
+.lai-ctx-chev.is-open svg { transform: rotate(90deg); }
+.lai-ctx-body { padding: 2px 14px 12px; display: flex; flex-direction: column; gap: 8px; }
+.lai-ctx-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 0.84rem; }
+.lai-ctx-grouphead { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 0.84rem; }
+.lai-ctx-sub { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-top: 6px; }
+.lai-ctx-piece { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 0.84rem; cursor: pointer; }
+.lai-ctx-piece input { accent-color: var(--primary); width: 15px; height: 15px; flex-shrink: 0; margin: 0; }
+.lai-ctx-piece-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lai-ctx-piece.is-off .lai-ctx-piece-label { color: var(--muted); }
+.lai-ctx-tok { white-space: nowrap; }
+.lai-ctx-empty { margin: 4px 0; }
+.lai-ctx-foot { margin: 2px 0 0; font-size: 0.74rem; color: var(--muted); line-height: 1.45; }
 
 /* MDCalc-style calculator views (Models tab). Uses the app theme:
    teal accent headers, navy primary selections, Aptos/system font. */

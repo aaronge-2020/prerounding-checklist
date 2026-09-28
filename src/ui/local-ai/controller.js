@@ -10,19 +10,35 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createLocalAiPresentation } from "./presentation.js?v=20260927-local-llm-v8";
-import { buildPrimaryTeamNoteText } from "../../local-llm/patient-context.js?v=20260927-local-llm-v6";
-import { buildChatMessages } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
-import { buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260927-local-llm-v9";
+import { createLocalAiPresentation } from "./presentation.js?v=20260928-local-llm-v10";
+import {
+  buildPatientContextFromPieces,
+  defaultSelectedPieceIds,
+  listPatientContextPieces
+} from "../../local-llm/patient-context.js?v=20260928-local-llm-v8";
+import { CHARS_PER_TOKEN, buildChatMessages, estimateTokens } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
+import { DEFAULT_SYSTEM_GUIDELINES, buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 
-export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus, render }) {
+export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus, render, getDraftNoteText }) {
   const presentation = createLocalAiPresentation({ escapeHtml, icon });
   const client = sharedLocalLlmClient();
   const state = {
     hardware: null,
     hardwarePromise: null,
-    chat: { messages: [], streamingText: "", modelKey: "", modelLabel: "", streaming: false },
+    chat: {
+      messages: [],
+      streamingText: "",
+      modelKey: "",
+      modelLabel: "",
+      streaming: false,
+      // In-memory selection of patient-context piece ids for the "Context"
+      // inspector. null means "use the defaults" (primary team note when it
+      // exists, else the admission sections). Reset on new chat and patient
+      // switch; never persisted.
+      contextSelection: null,
+      inspectorOpen: false
+    },
     downloadInFlight: false,
     // Per-model download state. The localStorage registry paints instantly;
     // the worker probe (ground truth from the vendored runtime's cache)
@@ -35,16 +51,46 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     return readLocalLlmSettings();
   }
 
-  // The active patient's primary team note (latest primary_note source
-  // capture, falling back to the admission H&P), rebuilt from the vault on
-  // every call and never persisted. Empty when the toggle is off or there
-  // is no primary note. The full admission context is deliberately NOT
-  // sent: with a 4096-token window the model cannot hold it alongside a
-  // growing conversation (see context-budget.js).
-  function patientContextInfo() {
+  // The student's current draft note, rendered as plain text by the Review
+  // controller. Offered as one opt-in piece in the Context inspector; "" when
+  // there is no draft yet. Building it is the same work the Review view does
+  // on render, so callers compute it once and thread it through.
+  function currentDraftNoteText() {
+    try {
+      return String(getDraftNoteText?.() || "");
+    } catch {
+      return "";
+    }
+  }
+
+  // The active patient's selectable context pieces and the current
+  // in-memory selection. Selection defaults are computed once per patient;
+  // the user can then freely include/exclude pieces in the inspector.
+  // Pass a cached draft string to avoid rebuilding the draft twice per render.
+  function contextPieces(cachedDraft) {
     const patient = activePatient(app.vault);
+    const draft = typeof cachedDraft === "string" ? cachedDraft : currentDraftNoteText();
+    const pieces = listPatientContextPieces(patient, { draftNoteText: draft });
+    const valid = new Set(pieces.map((piece) => piece.id));
+    let selectedIds = state.chat.contextSelection;
+    if (!Array.isArray(selectedIds)) {
+      selectedIds = defaultSelectedPieceIds(patient);
+      state.chat.contextSelection = selectedIds;
+    } else {
+      // Drop stale ids (chart edits can remove pieces).
+      selectedIds = selectedIds.filter((id) => valid.has(id));
+    }
+    return { patient, pieces, selectedIds };
+  }
+
+  // The patient context attached to chat: exactly the pieces the user
+  // selected in the inspector, rebuilt from the vault on every call and
+  // never persisted. Empty when the toggle is off or nothing is selected.
+  function patientContextInfo(cachedDraft) {
+    const draft = typeof cachedDraft === "string" ? cachedDraft : currentDraftNoteText();
+    const { patient, selectedIds } = contextPieces(draft);
     const enabled = settings().patientContextEnabled;
-    const text = enabled ? buildPrimaryTeamNoteText(patient) : "";
+    const text = enabled ? buildPatientContextFromPieces(patient, selectedIds, { draftNoteText: draft }) : "";
     return {
       patient,
       enabled,
@@ -100,20 +146,57 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     return byId("localAiContent");
   }
 
+  // The chat composer is a contenteditable rich-text box (so formatted
+  // pastes keep their line breaks and structure). Text is extracted as
+  // plain text on send — the model receives text, not HTML.
+  function composerText(input) {
+    if (!input) return "";
+    if (typeof input.value === "string") return input.value;
+    return input.innerText ?? input.textContent ?? "";
+  }
+
+  function clearComposer(input) {
+    if (!input) return;
+    if (typeof input.value === "string") input.value = "";
+    else input.textContent = "";
+  }
+
+  function focusComposer() {
+    const input = viewRoot()?.querySelector("[data-local-ai-chat-input]");
+    if (input && input.getAttribute("contenteditable") === "true") input.focus();
+  }
+
   function renderView() {
     const root = viewRoot();
     if (!root) return;
     ensureHardware();
     // Switching patients starts a fresh chat: the attached context belongs
     // to one patient, and mixing histories across patients is a hazard.
-    const pctx = patientContextInfo();
+    // The draft note is built once here and shared by the inspector and the
+    // context meter below.
+    const draft = currentDraftNoteText();
+    const pctx = patientContextInfo(draft);
     if (state.chat.patientId && pctx.patientId !== state.chat.patientId) {
       state.chat.messages = [];
       state.chat.streamingText = "";
       state.chat.contextStats = null;
+      state.chat.contextSelection = null;
       void client.resetChat();
     }
     state.chat.patientId = pctx.patientId;
+    const { pieces, selectedIds } = contextPieces(draft);
+    const selectedSet = new Set(selectedIds);
+    const modelRecord = localLlmModelByKey(state.chat.modelKey);
+    const contextWindow = modelRecord?.contextWindow || 4096;
+    const guidelines = String(settings().systemGuidelines || "").trim() || DEFAULT_SYSTEM_GUIDELINES;
+    const guidelinesTokens = estimateTokens(guidelines);
+    const historyTokens = estimateTokens(
+      state.chat.messages.map((m) => m.text).join("\n")
+    );
+    const pieceTokens = pieces.reduce(
+      (sum, piece) => sum + (selectedSet.has(piece.id) ? Math.ceil(piece.chars / CHARS_PER_TOKEN) : 0),
+      0
+    );
     root.innerHTML = presentation.render({
       hardware: state.hardware,
       settings: settings(),
@@ -124,7 +207,28 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
         enabled: pctx.enabled,
         available: pctx.available,
         label: pctx.label,
-        hasPatient: !!pctx.patient
+        hasPatient: !!pctx.patient,
+        selectedCount: selectedIds.length,
+        pieceCount: pieces.length
+      },
+      contextInspector: {
+        open: state.chat.inspectorOpen,
+        enabled: pctx.enabled,
+        hasPatient: !!pctx.patient,
+        patientLabel: pctx.label,
+        pieces: pieces.map((piece) => ({
+          id: piece.id,
+          group: piece.group,
+          label: piece.label,
+          primary: piece.primary,
+          tokens: Math.ceil(piece.chars / CHARS_PER_TOKEN),
+          selected: selectedSet.has(piece.id)
+        })),
+        guidelinesTokens,
+        historyTokens,
+        historyCount: state.chat.messages.length,
+        selectedTokens: pieceTokens,
+        contextWindow
       }
     });
     const messages = root.querySelector("[data-local-ai-messages]");
@@ -179,10 +283,9 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
       await downloadModel(state.chat.modelKey);
     }
     state.chat.messages.push({ role: "user", text: message });
-    state.chat.streaming = true;
-    state.chat.streamingText = "";
-    renderView();
-    // Attach the active patient's primary team note as a system message,
+    // Attach exactly the patient-context pieces the user selected in the
+    // "Context" inspector (defaults: primary team note, else admission
+    // sections; the current draft note is available as an opt-in piece),
     // rebuilt fresh on every send. In-memory only. The system prompt also
     // grounds the model in its real environment: it runs on-device in this
     // browser, inside Aaron Ge's Preround app.
@@ -195,7 +298,8 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     // Measure the prompt against the loaded model's real context window
     // BEFORE sending: the window is small (4096 tokens), so oldest history
     // messages are dropped first to fit. Usage stats feed the UI's
-    // context meter.
+    // context meter. Measuring first also lets the prefill indicator say
+    // how many tokens the model is chewing through.
     const modelRecord = localLlmModelByKey(state.chat.modelKey);
     const assembled = buildChatMessages({
       systemContent,
@@ -209,13 +313,47 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     state.chat.contextStats = {
       promptTokens: assembled.promptTokens,
       contextWindow: assembled.contextWindow,
-      droppedMessages: assembled.droppedMessages
+      droppedMessages: assembled.droppedMessages,
+      firstTokenMs: null
     };
+    state.chat.streaming = true;
+    state.chat.streamingText = "";
+    state.chat.firstTokenAt = null;
+    renderView();
+    // The composer was re-created by the render — put focus back so the
+    // user can keep typing.
+    focusComposer();
+    // Prefill (prompt processing before the first token) can take tens of
+    // seconds on-device with a large context attached. Tick a live
+    // elapsed-time readout into the "Reading context…" label so the wait
+    // visibly progresses instead of looking frozen. Stops at the first
+    // token; the finally block stops it on error too.
+    const streamStartedAt = Date.now();
+    const tickPrefill = () => {
+      const label = viewRoot()?.querySelector("[data-local-ai-thinking-label]");
+      if (label && !state.chat.streamingText) {
+        const secs = Math.max(1, Math.round((Date.now() - streamStartedAt) / 1000));
+        const tokens = state.chat.contextStats?.promptTokens;
+        label.textContent = tokens > 0
+          ? `Reading ~${tokens.toLocaleString()} tokens of context… ${secs}s`
+          : `Thinking… ${secs}s`;
+      }
+    };
+    const prefillTimer = setInterval(tickPrefill, 500);
     try {
       const full = await client.chat(assembled.messages, {
         maxTokens: 1024,
         temperature: 0.7,
         onToken: (token) => {
+          if (!state.chat.streamingText) {
+            // First token: prefill is over. Stop the elapsed timer and
+            // record time-to-first-token for the context meter.
+            clearInterval(prefillTimer);
+            state.chat.firstTokenAt = Date.now();
+            if (state.chat.contextStats) {
+              state.chat.contextStats.firstTokenMs = state.chat.firstTokenAt - streamStartedAt;
+            }
+          }
           state.chat.streamingText += token;
           const bubble = viewRoot()?.querySelector("[data-local-ai-streaming]");
           if (bubble) {
@@ -249,8 +387,10 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
           : `Error: ${raw}`
       });
     } finally {
+      clearInterval(prefillTimer);
       state.chat.streaming = false;
       state.chat.streamingText = "";
+      state.chat.firstTokenAt = null;
       renderView();
     }
   }
@@ -280,18 +420,41 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
       return true;
     }
     if (action === "local-ai-new-chat") {
+      // New chat clears the conversation only — the user's chosen patient
+      // context documents stay as they are, so they don't have to re-pick
+      // them for every fresh conversation.
       state.chat.messages = [];
       state.chat.streamingText = "";
       state.chat.contextStats = null;
       void client.resetChat();
+      setStatus("New chat started — conversation cleared. Your patient context selections are unchanged.");
+      renderView();
+      return true;
+    }
+    if (action === "local-ai-revert-message") {
+      // Revert the conversation to just before this message: drop it and
+      // everything after it. Chat history is in-memory only, so this is
+      // exactly "removing it from the model's context".
+      const index = Number.parseInt(actionTarget.dataset.messageIndex || "", 10);
+      if (Number.isInteger(index) && index >= 0 && index < state.chat.messages.length) {
+        const dropped = state.chat.messages.length - index;
+        state.chat.messages = state.chat.messages.slice(0, index);
+        state.chat.contextStats = null;
+        setStatus(dropped === 1 ? "Message removed from context." : `${dropped} messages removed from context.`);
+      }
+      renderView();
+      return true;
+    }
+    if (action === "local-ai-context-inspector") {
+      state.chat.inspectorOpen = !state.chat.inspectorOpen;
       renderView();
       return true;
     }
     if (action === "local-ai-send") {
       const form = actionTarget.closest?.("[data-local-ai-chat-form]");
       const input = form?.querySelector("[data-local-ai-chat-input]");
-      const text = input?.value || "";
-      if (input) input.value = "";
+      const text = composerText(input);
+      clearComposer(input);
       void sendChat(text);
       return true;
     }
@@ -310,6 +473,18 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
       render();
       return true;
     }
+    if (target.matches?.("[data-local-ai-context-piece]")) {
+      // Include/exclude one chart document from the model's context.
+      const pieceId = target.dataset.localAiContextPiece || "";
+      const { selectedIds } = contextPieces();
+      const next = new Set(selectedIds);
+      if (target.checked) next.add(pieceId);
+      else next.delete(pieceId);
+      state.chat.contextSelection = [...next];
+      state.chat.contextStats = null;
+      render();
+      return true;
+    }
     return false;
   }
 
@@ -318,20 +493,21 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     if (!form) return false;
     event.preventDefault();
     const input = form.querySelector("[data-local-ai-chat-input]");
-    const text = input?.value || "";
-    if (input) input.value = "";
+    const text = composerText(input);
+    clearComposer(input);
     void sendChat(text);
     return true;
   }
 
   // Enter sends, Shift+Enter adds a newline (chat composer convention).
+  // isComposing guard: don't send while an IME is composing text.
   function keydown(event) {
-    if (event.key !== "Enter" || event.shiftKey) return false;
+    if (event.key !== "Enter" || event.shiftKey || event.isComposing) return false;
     const input = event.target.closest?.("[data-local-ai-chat-input]");
     if (!input) return false;
     event.preventDefault();
-    const text = input.value || "";
-    input.value = "";
+    const text = composerText(input);
+    clearComposer(input);
     void sendChat(text);
     return true;
   }

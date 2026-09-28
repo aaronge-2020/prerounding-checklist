@@ -71,18 +71,165 @@ export function buildPatientContextText(patient, { maxChars = MAX_PATIENT_CONTEX
   return out;
 }
 
-// The single most useful chart document for chat: the latest primary team
-// note ("primary_note" source capture — the latest primary-team note or
-// interval update copied from Epic). The full admission context plus
-// hospital course does not fit the on-device model's 4096-token window
-// alongside a growing conversation, so chat attaches just this note.
+// ---------------------------------------------------------------------------
+// Selectable context pieces: the Local AI "Context" inspector shows the user
+// exactly which chart documents are available and lets them choose which
+// ones ride along in the model's context. Pure functions of the vault
+// patient record; selection state itself lives in the chat controller's
+// in-memory state (never persisted), and the assembled prompt is rebuilt
+// per send and never stored anywhere.
 //
-// Selection: newest hospital day first — the first day (in reverse
-// chronological order) whose sourceCaptures holds a primary_note capture
-// with non-empty de-identified text; falls back to the admission
-// contextSections entry with sourceKind "primary_note" (the H&P).
-// Rebuilt on every send, never persisted. Returns "" when no primary
-// note exists anywhere.
+// A piece is { id, group, label, kind, chars, primary }:
+//   id      stable selector, "admission:<sectionId>" | "day:<dayId>:<captureId>"
+//           | "day:<dayId>:quicknotes" | "draft:current"
+//   group   "Admission", the hospital-day label (with date), or "Draft note"
+//   label   the section/capture label shown in the inspector
+//   kind    the vault sourceKind (primary_note, laboratory_results, ...)
+//           or "draft_note" for the in-progress note
+//   chars   de-identified character count (for token estimates)
+//   primary true when sourceKind === "primary_note"
+//
+// The optional draftNoteText (the student's current draft note, rendered as
+// plain text by the Review controller) is appended as one opt-in piece when
+// non-empty. It is never selected by default: it is in-progress work, so the
+// user attaches it explicitly.
+
+export function listPatientContextPieces(patient, { draftNoteText = "" } = {}) {
+  if (!patient || typeof patient !== "object") return [];
+  const pieces = [];
+  for (const section of patient.contextSections || []) {
+    const text = sectionText(section);
+    if (!text) continue;
+    pieces.push({
+      id: `admission:${textOf(section?.id) || pieces.length}`,
+      group: "Admission",
+      label: textOf(section?.label) || "Admission note",
+      kind: String(section?.sourceKind || ""),
+      chars: text.length,
+      primary: String(section?.sourceKind || "") === "primary_note"
+    });
+  }
+  for (const day of patient.days || []) {
+    const dayLabel = textOf(day?.label) || "Hospital day";
+    const dayDate = textOf(day?.date);
+    const group = dayDate ? `${dayLabel} (${dayDate})` : dayLabel;
+    const dayId = textOf(day?.id) || group;
+    for (const capture of day?.sourceCaptures || []) {
+      const text = sectionText(capture);
+      if (!text) continue;
+      pieces.push({
+        id: `day:${dayId}:${textOf(capture?.id) || pieces.length}`,
+        group,
+        label: textOf(capture?.label) || "Note",
+        kind: String(capture?.sourceKind || ""),
+        chars: text.length,
+        primary: String(capture?.sourceKind || "") === "primary_note"
+      });
+    }
+    const quickNotes = (day?.quickNotes || []).map(textOf).filter(Boolean);
+    if (quickNotes.length) {
+      pieces.push({
+        id: `day:${dayId}:quicknotes`,
+        group,
+        label: "Quick notes",
+        kind: "quick_notes",
+        chars: quickNotes.join("\n").length,
+        primary: false
+      });
+    }
+  }
+  const draft = textOf(draftNoteText);
+  if (draft) {
+    pieces.push({
+      id: "draft:current",
+      group: "Draft note",
+      label: "Current draft note",
+      kind: "draft_note",
+      chars: draft.length,
+      primary: false
+    });
+  }
+  return pieces;
+}
+
+// Default selection: the primary team note(s) when they exist — the single
+// most useful chart document for chat. When no primary note exists, fall
+// back to the admission sections so "tell me about this patient" still has
+// something to work with instead of silently attaching nothing.
+export function defaultSelectedPieceIds(patient) {
+  const pieces = listPatientContextPieces(patient);
+  const primary = pieces.filter((piece) => piece.primary);
+  if (primary.length) return primary.map((piece) => piece.id);
+  return pieces.filter((piece) => piece.group === "Admission").map((piece) => piece.id);
+}
+
+function pieceText(patient, piece, { draftNoteText = "" } = {}) {
+  if (!patient || !piece) return "";
+  if (piece.id === "draft:current") {
+    const draft = textOf(draftNoteText);
+    return draft ? `## Current draft note (in progress)\n${draft}` : "";
+  }
+  if (piece.id.startsWith("admission:")) {
+    const section = (patient.contextSections || []).find(
+      (candidate) => `admission:${textOf(candidate?.id)}` === piece.id
+    );
+    // Fall back to label match for sections whose vault id is missing.
+    const target = section || (patient.contextSections || []).find(
+      (candidate) => (textOf(candidate?.label) || "Admission note") === piece.label && sectionText(candidate)
+    );
+    return target ? `## ${textOf(target.label) || "Admission note"}\n${sectionText(target)}` : "";
+  }
+  const rest = piece.id.slice(4);
+  const dayId = rest.slice(0, rest.lastIndexOf(":"));
+  const captureId = rest.slice(rest.lastIndexOf(":") + 1);
+  const day = (patient.days || []).find((candidate) => textOf(candidate?.id) === dayId)
+    || (patient.days || []).find((candidate) => {
+      const label = textOf(candidate?.label) || "Hospital day";
+      const date = textOf(candidate?.date);
+      return (date ? `${label} (${date})` : label) === piece.group;
+    });
+  if (!day) return "";
+  if (captureId === "quicknotes") {
+    const quickNotes = (day?.quickNotes || []).map(textOf).filter(Boolean);
+    if (!quickNotes.length) return "";
+    return `### ${piece.group} — Quick notes\n${quickNotes.map((note) => `- ${note}`).join("\n")}`;
+  }
+  const capture = (day?.sourceCaptures || []).find(
+    (candidate) => textOf(candidate?.id) === captureId
+  ) || (day?.sourceCaptures || []).find(
+    (candidate) => (textOf(candidate?.label) || "Note") === piece.label && sectionText(candidate)
+  );
+  if (!capture || !sectionText(capture)) return "";
+  return `### ${piece.group} — ${textOf(capture.label) || "Note"}\n${sectionText(capture)}`;
+}
+
+// Assemble the patient context from the user's selected pieces only.
+// Unknown/stale ids are ignored; empty selection yields "". Rebuilt on
+// every send, never persisted.
+export const MAX_SELECTED_PIECES_CHARS = 6000;
+
+export function buildPatientContextFromPieces(patient, selectedIds, { maxChars = MAX_SELECTED_PIECES_CHARS, draftNoteText = "" } = {}) {
+  if (!patient || typeof patient !== "object") return "";
+  const budget = Math.max(500, Number(maxChars) || MAX_SELECTED_PIECES_CHARS);
+  const wanted = new Set(Array.isArray(selectedIds) ? selectedIds.map(String) : []);
+  if (!wanted.size) return "";
+
+  const headerBits = [`PATIENT: ${textOf(patient.displayLabel) || "Active patient"}`];
+  const admissionDate = textOf(patient.metadata?.admissionDate);
+  if (admissionDate) headerBits.push(`Admitted: ${admissionDate}`);
+
+  const parts = [];
+  const pieceOpts = { draftNoteText };
+  for (const piece of listPatientContextPieces(patient, pieceOpts)) {
+    if (!wanted.has(piece.id)) continue;
+    const text = pieceText(patient, piece, pieceOpts);
+    if (text) parts.push(text);
+  }
+  if (!parts.length) return "";
+  let out = `${headerBits.join("\n")}\n\n${parts.join("\n\n")}`;
+  if (out.length > budget) out = `${out.slice(0, budget - 3).trimEnd()}...`;
+  return out;
+}
 export const MAX_PRIMARY_NOTE_CHARS = 3000;
 
 export function buildPrimaryTeamNoteText(patient, { maxChars = MAX_PRIMARY_NOTE_CHARS } = {}) {

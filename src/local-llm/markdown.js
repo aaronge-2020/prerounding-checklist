@@ -30,6 +30,12 @@ export function renderChatMarkdown(src) {
   const lines = renderInline(escapeHtmlText(src)).split("\n");
   let out = "";
   let list = null; // "ul" | "ol" | null
+  // Running ordered-list counter for the whole message. Small on-device
+  // models emit "1. Diagnosis …\n\n1. Treatment …" (one logical list with
+  // blank lines, or a bullet sub-list in between), which used to render as
+  // "1. 1. 1. 1." — disjointed. Keeping the count across interruptions and
+  // emitting start="N" keeps numbering continuous.
+  let olNumber = 0;
   const closeList = () => {
     if (list) {
       out += `</${list}>`;
@@ -39,7 +45,8 @@ export function renderChatMarkdown(src) {
   for (const rawLine of lines) {
     const line = rawLine.trim();
     if (!line) {
-      closeList();
+      // Blank lines no longer close lists: they usually separate items of
+      // one logical list in model output, not distinct lists.
       continue;
     }
     let m;
@@ -55,9 +62,10 @@ export function renderChatMarkdown(src) {
       }
       out += `<li>${m[1]}</li>`;
     } else if ((m = line.match(/^\d+[.)]\s+(.*)/))) {
+      olNumber += 1;
       if (list !== "ol") {
         closeList();
-        out += "<ol>";
+        out += `<ol start="${olNumber}">`;
         list = "ol";
       }
       out += `<li>${m[1]}</li>`;
