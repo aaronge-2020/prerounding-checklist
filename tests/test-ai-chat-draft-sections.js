@@ -6,11 +6,12 @@
 //
 //   Part 1  src/note-drafts/render.js - renderNoteSectionEntries
 //   Part 2  src/local-llm/patient-context.js - per-section pieces/pieceText
-//   Part 3  src/ui/ai-chat/delta-review.js - split/verify with draft subsets
-//   Part 4  src/ui/ai-chat/presentation.js - per-piece locking in ChatGPT mode
-//   Part 5  src/ui/ai-chat/controller.js - end-to-end: excluding draft
-//           sections in ChatGPT mode shrinks the review and the meter, while
-//           the full chart is still what gets grounded.
+//   Part 3  src/ui/ai-chat/delta-review.js - split/verify with selection subsets
+//   Part 4  src/ui/ai-chat/presentation.js - every piece selectable in ChatGPT mode
+//   Part 5  src/ui/ai-chat/controller.js - end-to-end: the ChatGPT review
+//           follows the shared selection (chart pieces deselectable, bare
+//           questions get the general-knowledge prompt), and the meter
+//           tracks it.
 //
 // All fixtures are synthetic and PHI-free ("CanaryName" is the canary the
 // de-id stub redacts).
@@ -29,15 +30,12 @@ import {
   renderNoteSectionEntries
 } from "../src/note-drafts/render.js";
 import {
-  buildFullChartContextText,
   buildPatientContextFromPieces,
   listPatientContextPieces,
   pieceText
 } from "../src/local-llm/patient-context.js";
 import {
   splitBuiltContext,
-  splitFullChartContext,
-  verifyFullChartEquivalence,
   verifySplitEquivalence
 } from "../src/ui/ai-chat/delta-review.js";
 import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js";
@@ -178,61 +176,63 @@ console.log("Part 1 passed: renderNoteSectionEntries is granular and pipeline-id
 console.log("Part 2 passed: patient-context pieces are per-section with a legacy fallback");
 
 // ---------------------------------------------------------------------------
-// Part 3: split/verify with draft subsets (fail-closed)
+// Part 3: split/verify with selection subsets (fail-closed)
 // ---------------------------------------------------------------------------
 
 {
   const patient = chartPatientFixture();
   const sections = renderNoteSectionEntries(draftFixture());
   const wholeNote = renderFinalNotePlainText(draftFixture());
-  const oneLinerOnly = sections.filter((entry) => entry.key === "section:one-liner");
+  const opts = { draftNoteText: wholeNote, draftNoteSections: sections };
+  const chartIds = listPatientContextPieces(patient, opts)
+    .filter((piece) => piece.kind !== "draft_note")
+    .map((piece) => piece.id);
 
-  const split = splitFullChartContext(patient, { draftNoteText: wholeNote, draftNoteSections: oneLinerOnly });
+  // Selecting the chart plus only the one-liner: the split carries exactly that.
+  const selectedIds = [...chartIds, "draft:section:one-liner"];
+  const split = splitBuiltContext(patient, selectedIds, opts);
   const draftSplitPieces = split.pieces.filter((piece) => piece.kind === "draft_note");
   assert.equal(draftSplitPieces.length, 1, "subset split carries only the chosen draft section");
   assert.ok(draftSplitPieces[0].rawText.includes("one-liner-marker-word"), "split raw text is the one-liner");
-
   assert.equal(
-    verifyFullChartEquivalence(patient, split, { draftNoteText: wholeNote, draftNoteSections: oneLinerOnly }),
+    verifySplitEquivalence(patient, selectedIds, split, opts),
     true,
-    "verifying against the same subset passes"
+    "verifying against the same selection passes"
   );
+
+  // Fail-closed: the prepared and reviewed subsets must match exactly.
   assert.equal(
-    verifyFullChartEquivalence(patient, split, { draftNoteText: wholeNote, draftNoteSections: sections }),
+    verifySplitEquivalence(patient, [...chartIds, "draft:plan:anemia"], split, opts),
     false,
-    "verifying against a larger section list fails closed"
+    "verifying against a different selection fails closed"
   );
   assert.equal(
-    verifyFullChartEquivalence(patient, split, { draftNoteText: wholeNote, draftNoteSections: null }),
+    verifySplitEquivalence(patient, selectedIds, split, { draftNoteText: wholeNote, draftNoteSections: null }),
     false,
     "verifying against the legacy whole-note draft fails closed"
   );
 
-  // The on-device piece-selection split honors subsets the same way.
-  const selectedIds = ["draft:section:one-liner"];
-  const built = splitBuiltContext(patient, selectedIds, { draftNoteText: wholeNote, draftNoteSections: sections });
-  assert.equal(
-    verifySplitEquivalence(patient, selectedIds, built, { draftNoteText: wholeNote, draftNoteSections: sections }),
-    true,
-    "on-device split verifies against the same section list"
-  );
-  assert.equal(
-    verifySplitEquivalence(patient, ["draft:plan:anemia"], built, { draftNoteText: wholeNote, draftNoteSections: sections }),
-    false,
-    "on-device split fails closed when the selected ids change"
-  );
+  // The assembled text carries only the chosen sections.
+  const builtText = buildPatientContextFromPieces(patient, selectedIds, opts);
+  assert.ok(builtText.includes("one-liner-marker-word"), "assembled text includes the one-liner");
+  assert.ok(!builtText.includes("aki-problem-marker-word"), "assembled text excludes the unchosen problem");
+  assert.ok(builtText.includes("chest pain"), "assembled text still grounds on the chart documents");
 
-  // The full-chart text itself carries only the chosen sections.
-  const fullText = buildFullChartContextText(patient, { draftNoteText: wholeNote, draftNoteSections: oneLinerOnly });
-  assert.ok(fullText.includes("one-liner-marker-word"), "full chart text includes the one-liner");
-  assert.ok(!fullText.includes("aki-problem-marker-word"), "full chart text excludes the unchosen problem");
-  assert.ok(fullText.includes("chest pain"), "full chart text still grounds on the chart documents");
+  // Empty selection assembles nothing — a bare question sends no context.
+  const emptySplit = splitBuiltContext(patient, [], opts);
+  assert.equal(emptySplit.pieces.length, 0, "empty selection splits to no pieces");
+  assert.equal(buildPatientContextFromPieces(patient, [], opts), "", "empty selection assembles empty text");
+  assert.equal(
+    verifySplitEquivalence(patient, [], emptySplit, opts),
+    true,
+    "the empty split still verifies — nothing to drift"
+  );
 }
 
-console.log("Part 3 passed: split/verify are fail-closed over draft section subsets");
+console.log("Part 3 passed: split/verify are fail-closed over selection subsets");
 
 // ---------------------------------------------------------------------------
-// Part 4: presentation — ChatGPT mode locks chart pieces, not draft sections
+// Part 4: presentation — every piece is selectable in ChatGPT mode
 // ---------------------------------------------------------------------------
 
 const presentation = createAiChatPresentation({
@@ -281,23 +281,24 @@ function pieceInput(html, id) {
 }
 
 {
-  // ChatGPT mode: chart documents are locked on, draft sections stay live.
+  // ChatGPT mode: every piece is selectable — only the selection is sent.
   const html = presentation.render({
     ...sidebarBase,
     mode: "remote",
     contextInspector: granularInspectorVm({ isRemote: true })
   });
-  assert.ok(pieceInput(html, "admission:hpi").includes("disabled"), "chart checkbox is locked in ChatGPT mode");
-  assert.ok(pieceInput(html, "admission:hpi").includes("checked"), "chart document is included in ChatGPT mode");
+  assert.ok(!pieceInput(html, "admission:hpi").includes("disabled"), "chart checkbox is live in ChatGPT mode");
+  assert.ok(pieceInput(html, "admission:hpi").includes("checked"), "chart document stays selected until unchecked");
   assert.ok(!pieceInput(html, "draft:section:one-liner").includes("disabled"), "draft one-liner checkbox is live in ChatGPT mode");
   assert.ok(!pieceInput(html, "draft:plan:acute-kidney-injury").includes("disabled"), "draft problem checkbox is live in ChatGPT mode");
-  // The Draft note group's select/deselect buttons work remotely; the
-  // Admission group's do not.
+  // Both groups' select/deselect buttons work in ChatGPT mode.
   const draftGroupButtons = [...html.matchAll(/data-group-index="1"[^>]*>/g)];
   assert.ok(draftGroupButtons.length === 2 && draftGroupButtons.every((m) => !m[0].includes("disabled")), "draft group buttons are live in ChatGPT mode");
   const admissionGroupButtons = [...html.matchAll(/data-group-index="0"[^>]*>/g)];
-  assert.ok(admissionGroupButtons.length === 2 && admissionGroupButtons.every((m) => m[0].includes("disabled")), "chart group buttons are locked in ChatGPT mode");
-  assert.ok(html.includes("Your draft note follows the section checkboxes below"), "sidebar explains draft granularity");
+  assert.equal(admissionGroupButtons.length, 2, "admission group buttons render in ChatGPT mode");
+  const admissionDeselect = admissionGroupButtons.find((m) => m[0].includes('data-select="0"'));
+  assert.ok(admissionDeselect && !admissionDeselect[0].includes("disabled"), "chart group Deselect all is live in ChatGPT mode");
+  assert.ok(html.includes("Only the selected context above is sent"), "sidebar explains selection-only sending");
 }
 
 {
@@ -311,10 +312,10 @@ function pieceInput(html, id) {
   assert.ok(!pieceInput(html, "draft:plan:acute-kidney-injury").includes("disabled"), "draft checkbox is live on-device");
 }
 
-console.log("Part 4 passed: ChatGPT mode locks chart pieces but keeps draft sections selectable");
+console.log("Part 4 passed: every piece is selectable in ChatGPT mode");
 
 // ---------------------------------------------------------------------------
-// Part 5: controller — excluding draft sections shrinks the ChatGPT review
+// Part 5: controller — the ChatGPT review follows the shared selection
 // ---------------------------------------------------------------------------
 
 function makeDeidStub() {
@@ -419,9 +420,15 @@ function patientLine(html) {
 {
   const sections = renderNoteSectionEntries(draftFixture());
   const h = makeControllerHarness({ draftSections: sections });
+
+  // Opt the draft sections in (selection defaults to the primary chart
+  // piece); both modes share this selection.
+  h.ctrl.change(pieceToggleTarget("draft:section:one-liner", true));
+  h.ctrl.change(pieceToggleTarget("draft:plan:acute-kidney-injury", true));
+  h.ctrl.change(pieceToggleTarget("draft:plan:anemia", true));
   const meterBefore = patientLine(h.html());
 
-  // Uncheck everything but the one-liner: both plan problems are excluded.
+  // Uncheck both plan problems: the meter drops.
   h.ctrl.change(pieceToggleTarget("draft:plan:acute-kidney-injury", false));
   h.ctrl.change(pieceToggleTarget("draft:plan:anemia", false));
   const meterAfter = patientLine(h.html());
@@ -438,12 +445,35 @@ function patientLine(html) {
   assert.ok(reviewedText.includes("[NAME]"), "the one-liner was de-identified");
   assert.ok(!reviewedText.includes("aki-problem-marker-word"), "the excluded AKI problem text is not reviewed");
   assert.ok(!reviewedText.includes("anemia-problem-marker-word"), "the excluded anemia problem text is not reviewed");
-  assert.ok(reviewedText.includes("chest pain"), "the full chart still grounds the send");
+  assert.ok(reviewedText.includes("chest pain"), "the selected chart piece still grounds the send");
   assert.ok(!reviewedText.includes("CanaryName"), "no raw canary anywhere in the reviewed text");
+  assert.ok(review.systemPromptText.includes("CITATION RULES"), "citation rules present when context is attached");
+
+  // Chart documents are deselectable too: uncheck the HPI and it leaves
+  // the review while the still-selected one-liner stays.
+  h.ctrl.click(actionTarget("ai-chat-new-chat-remote"));
+  h.ctrl.change(pieceToggleTarget("admission:hpi", false));
+  const reviewNoChart = await driveSend(h, "Question without the chart");
+  assert.equal(reviewNoChart.phase, "ready", "review is ready with the chart deselected");
+  const noChartText = reviewNoChart.pieces.map((p) => p.approvedText || "").join("\n");
+  assert.ok(!noChartText.includes("chest pain"), "deselected chart text is not sent");
+  assert.ok(noChartText.includes("one-liner-marker-word"), "the still-selected one-liner rides along");
+  assert.ok(reviewNoChart.systemPromptText.includes("CITATION RULES"), "citation rules still apply to the attached one-liner");
+
+  // Nothing selected: the question goes alone and the model answers from
+  // general knowledge instead of citing chart sections.
+  h.ctrl.click(actionTarget("ai-chat-new-chat-remote"));
+  h.ctrl.change(pieceToggleTarget("draft:section:one-liner", false));
+  const reviewBare = await driveSend(h, "Bare question");
+  assert.equal(reviewBare.phase, "ready", "review is ready with nothing selected");
+  assert.equal(reviewBare.pieces.length, 0, "no context pieces are reviewed");
+  assert.ok(reviewBare.systemPromptText.includes("CONTEXT RULES"), "general-knowledge prompt when nothing is attached");
+  assert.ok(!reviewBare.systemPromptText.includes("CITATION RULES"), "no citation rules without context");
 
   // Re-checking a problem opts it back in. Starting a new remote chat
   // clears the finished review so the next send re-prepares the gate.
   h.ctrl.click(actionTarget("ai-chat-new-chat-remote"));
+  h.ctrl.change(pieceToggleTarget("admission:hpi", true));
   h.ctrl.change(pieceToggleTarget("draft:plan:anemia", true));
   const review2 = await driveSend(h, "Summarize again");
   assert.equal(review2.phase, "ready", "review is ready after re-including");
@@ -455,13 +485,8 @@ function patientLine(html) {
 }
 
 {
-  // Stale exclusions (a section that no longer exists after a draft edit)
-  // are pruned, not applied to the wrong section.
-  const sections = renderNoteSectionEntries(draftFixture());
-  const h = makeControllerHarness({ draftSections: sections });
-  h.ctrl.change(pieceToggleTarget("draft:plan:anemia", false));
-  // The draft loses the anemia problem; the exclusion must not leak onto
-  // another section.
+  // Stale selection ids (a section that no longer exists after a draft
+  // edit) are pruned, not applied to the wrong section.
   let editedDraft = createNoteDraft(NOTE_TYPES.PROGRESS, { ...draftOptions, id: "edited-draft" });
   editedDraft = updateNoteSection(editedDraft, "one_liner", "CanaryName is a 65M with one-liner-marker-word", { now: fixedNow });
   editedDraft = addPlanProblem(editedDraft, {
@@ -471,13 +496,15 @@ function patientLine(html) {
   }, draftOptions);
   const editedSections = renderNoteSectionEntries(editedDraft);
   const h2 = makeControllerHarness({ draftSections: editedSections });
+  h2.ctrl.change(pieceToggleTarget("draft:section:one-liner", true));
+  h2.ctrl.change(pieceToggleTarget("draft:plan:acute-kidney-injury", true));
   h2.ctrl.change(pieceToggleTarget("draft:plan:anemia", false)); // stale id, never rendered
   const review = await driveSend(h2, "Summarize");
-  assert.equal(review.phase, "ready", "review is ready with a stale exclusion");
+  assert.equal(review.phase, "ready", "review is ready with a stale selection id");
   const reviewedText = review.pieces.map((p) => p.approvedText || "").join("\n");
-  assert.ok(reviewedText.includes("aki-problem-marker-word"), "stale exclusion does not suppress the remaining problem");
+  assert.ok(reviewedText.includes("aki-problem-marker-word"), "stale id does not suppress the remaining problem");
 }
 
-console.log("Part 5 passed: ChatGPT review follows draft-section exclusions and the meter tracks them");
+console.log("Part 5 passed: ChatGPT review follows the shared selection and the meter tracks it");
 
 console.log("All draft-section granularity tests passed");

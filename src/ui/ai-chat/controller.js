@@ -57,8 +57,8 @@ import { activePatient } from "../../app/state/vault.js?v=20260921-medication-ca
 import { medicalServiceOption, OPENAI_WORKUP_MODEL_OPTIONS } from "../../app/preferences.js?v=20260929-gpt6-models";
 import {
   hashPiece,
-  splitFullChartContext,
-  verifyFullChartEquivalence,
+  splitBuiltContext,
+  verifySplitEquivalence,
   buildSectionCitationIndex,
   entitiesToRedactionRecords,
   applyRedactions,
@@ -197,11 +197,6 @@ export function createAiChatController({
       // (see renderView's invalidation) so a late network reply can never
       // land in the wrong patient's thread.
       sendToken: 0,
-      // Draft-note section ids the user unchecked in the inspector while in
-      // ChatGPT mode. ChatGPT mode sends the full chart; the draft note
-      // follows these per-section opt-outs (empty = the whole draft rides
-      // along). Pruned to ids that still exist. Never persisted.
-      draftExcludedIds: [],
       // Which send token owns the `sending` flag: only that send's finally
       // may clear it, so a stale send can't unblock a newer one mid-flight.
       sendingToken: 0,
@@ -264,31 +259,6 @@ export function createAiChatController({
     } catch {
       return [];
     }
-  }
-
-  // Draft-note section ids excluded from ChatGPT sends, pruned to sections
-  // that still exist (draft edits can rename or remove sections).
-  function remoteDraftExcludedIds(pieces) {
-    const valid = new Set(
-      (pieces || []).filter((piece) => piece.kind === "draft_note").map((piece) => piece.id)
-    );
-    const pruned = (state.remote.draftExcludedIds || []).filter((id) => valid.has(id));
-    if (pruned.length !== (state.remote.draftExcludedIds || []).length) {
-      state.remote.draftExcludedIds = pruned;
-    }
-    return new Set(pruned);
-  }
-
-  // The draft-note sections for a ChatGPT send: every current section
-  // except the ones the user explicitly unchecked in the inspector.
-  function draftSectionsForRemote(allSections, pieces) {
-    const excluded = remoteDraftExcludedIds(pieces);
-    return (allSections || []).filter((entry) => {
-      const piece = (pieces || []).find(
-        (candidate) => candidate.kind === "draft_note" && candidate.sectionKey === entry.key
-      );
-      return !!piece && !excluded.has(piece.id);
-    });
   }
 
   // The active patient's selectable context pieces and the current
@@ -584,16 +554,12 @@ export function createAiChatController({
     const historyTokens = estimateTokens(
       budgetMessages.map((m) => m.text).join("\n")
     );
-    // API mode sends the FULL chart: every chart document counts, and the
-    // draft note counts except for sections the user unchecked. On-device
-    // mode sends only the inspector-selected pieces.
-    const remoteExcluded = isRemoteBudget ? remoteDraftExcludedIds(pieces) : null;
-    const pieceTokens = pieces.reduce((sum, piece) => {
-      const counts = isRemoteBudget
-        ? piece.kind !== "draft_note" || !remoteExcluded.has(piece.id)
-        : selectedSet.has(piece.id);
-      return sum + (counts ? Math.ceil(piece.chars / CHARS_PER_TOKEN) : 0);
-    }, 0);
+    // Both modes send exactly the inspector-selected pieces — the meter
+    // counts the selection and nothing more.
+    const pieceTokens = pieces.reduce(
+      (sum, piece) => sum + (selectedSet.has(piece.id) ? Math.ceil(piece.chars / CHARS_PER_TOKEN) : 0),
+      0
+    );
     const prefs = remotePrefs();
     // Local-path retrieval: lazy status probe. Ordinary rendering never
     // downloads the embedding model; the probe only asks whether it is
@@ -654,10 +620,9 @@ export function createAiChatController({
       contextInspector: {
         open: state.chat.inspectorOpen,
         enabled: pctx.enabled,
-        // ChatGPT mode sends the full chart through the review gate: chart
-        // documents are always included (shown checked, not selectable),
-        // while the draft note follows the per-section checkboxes below.
-        // The attach toggle stays an on-device-mode control.
+        // Both modes send exactly the inspector-selected pieces; ChatGPT
+        // mode additionally runs them through the de-identification review
+        // gate before anything is sent.
         isRemote: state.mode === "remote",
         hasPatient: !!pctx.patient,
         patientLabel: pctx.label,
@@ -668,9 +633,7 @@ export function createAiChatController({
           kind: piece.kind,
           primary: piece.primary,
           tokens: Math.ceil(piece.chars / CHARS_PER_TOKEN),
-          selected: state.mode === "remote"
-            ? piece.kind !== "draft_note" || !remoteExcluded.has(piece.id)
-            : selectedSet.has(piece.id)
+          selected: selectedSet.has(piece.id)
         })),
         // Ordered group names, matching the piece order above — drives the
         // per-group Select all / Deselect all controls.
@@ -1037,15 +1000,16 @@ export function createAiChatController({
   //   1. The student's message is de-identified FRESH on every send —
   //      never reused, never stored.
   //   2. The custom instructions (system guidelines), the patient header,
-  //      and EVERY chart section are de-identified into reviewable
-  //      redaction records. Pieces whose content hash matches the
+  //      and EVERY selected context piece are de-identified into
+  //      reviewable redaction records. Pieces whose content hash matches the
   //      session-scoped review store are reused verbatim (badge
   //      "reviewed"); changed pieces are de-identified again ("changed"),
-  //      unseen pieces are de-identified ("new"). No selection, no
-  //      retrieval: the full chart goes through the gate.
-  //   3. splitFullChartContext + verifyFullChartEquivalence prove the
-  //      per-piece review operates on EXACTLY the text the trusted full-
-  //      chart builder would assemble — any drift fails closed.
+  //      unseen pieces are de-identified ("new"). Only the
+  //      inspector-selected pieces go through the gate — never the chart
+  //      the student didn't select.
+  //   3. splitBuiltContext + verifySplitEquivalence prove the per-piece
+  //      review operates on EXACTLY the text the trusted selection-based
+  //      builder would assemble — any drift fails closed.
   //   4. The modal shows EXACTLY what will be sent. Send requires phase
   //      "ready", the acknowledgement checkbox, and zero pending records.
   // Any de-identification error fails closed: phase "failed" with no
@@ -1352,7 +1316,13 @@ export function createAiChatController({
   // System prompt built from the student's clinical preferences — never
   // the legacy per-model "chatService" setting — with the REVIEWED custom
   // instructions appended underneath.
-  function buildRemoteSystemPromptText(prefs, reviewedGuidelinesText) {
+  // The ChatGPT system prompt. Citation rules are conditional on what is
+  // actually attached: with patient context, the model must cite the
+  // section label + a short quote for every patient-fact claim so the
+  // student can verify against the source. With no context attached (a
+  // bare question), the model answers from general medical knowledge and
+  // must not invent patient details or section citations.
+  function buildRemoteSystemPromptText(prefs, reviewedGuidelinesText, { hasContext = true } = {}) {
     const clinical = {
       medicalService: prefs?.medicalService || "",
       customServiceName: prefs?.customServiceName || "",
@@ -1366,13 +1336,17 @@ export function createAiChatController({
       ? fromClinical(clinical)
       : remoteChatV4.buildRemoteChatSystemPrompt({ serviceValue: clinical.medicalService });
     const guidelines = String(reviewedGuidelinesText || "").trim();
-    // Section-grounded citations: the model must cite the chart SECTION
+    // Section-grounded citations: the model must cite the context SECTION
     // label + a short quote for every patient-fact claim, so the student
     // can verify against the source. Format: per [Section Label]: 'quote'.
-    const citationRules = `CITATION RULES:
-- For every claim about this patient, cite the chart section and a short verbatim quote: per [Section Label]: 'exact words from the chart'.
+    const citationRules = hasContext
+      ? `CITATION RULES:
+- For every claim about this patient, cite the context section and a short verbatim quote: per [Section Label]: 'exact words from the context'.
 - Use the section labels as they appear in the context (e.g. per [Hospital Stay]: '...', per [Labs]: '...').
-- If the chart does not contain the answer, say so explicitly — do not answer from general knowledge as if it were chart fact.`;
+- If the context does not contain the answer, say so explicitly — do not answer from general knowledge as if it were patient fact.`
+      : `CONTEXT RULES:
+- No patient context was attached to this question. Answer from general medical knowledge.
+- Do not invent patient details, chart findings, or section citations.`;
     const withCitations = `${base}\n\n${citationRules}`;
     return guidelines ? `${withCitations}\n\nSTUDENT'S CUSTOM INSTRUCTIONS:\n${guidelines}` : withCitations;
   }
@@ -1383,7 +1357,9 @@ export function createAiChatController({
     const pieceOrder = (review.pieces || []).map((piece) => piece.id);
     const approvedById = {};
     for (const piece of review.pieces || []) approvedById[piece.id] = piece.approvedText;
-    const systemPrompt = buildRemoteSystemPromptText(review.prefs, review.guidelines?.approvedText || "");
+    const systemPrompt = buildRemoteSystemPromptText(review.prefs, review.guidelines?.approvedText || "", {
+      hasContext: review.hasContext === true
+    });
     const chartBudget = Number(review.chartBudget) > 0
       ? Number(review.chartBudget)
       : fullChartBudgetChars(pricingForModel(review.prefs?.openAiModel)?.contextWindow);
@@ -1473,26 +1449,25 @@ export function createAiChatController({
         return;
       }
     }
-    // API path: the FULL chart text goes through the de-id review gate —
-    // the patient header plus every chart section in canonical order. No
-    // embedding model, no retrieval: the API context window holds the whole
-    // chart, and the exact reviewed bytes are what gets sent. The draft
-    // note follows the inspector's per-section opt-outs (the whole draft by
-    // default), so the student can send just the one-liner or one problem.
+    // API path: exactly the inspector-selected pieces go through the de-id
+    // review gate — no embedding model, no retrieval. The student can send
+    // the full chart (Select all), a subset, or just the question. Split,
+    // verify, and transmit share the model's real context window (minus
+    // headroom) so the review sees exactly what the wire will carry.
     const draft = currentDraftNoteText();
     const sections = currentDraftNoteSections();
     const patient = activePatient(app.vault);
-    const { pieces } = contextPieces(draft, sections);
-    const includedSections = draftSectionsForRemote(sections, pieces);
+    const { selectedIds } = contextPieces(draft, sections);
+    // The attach toggle gates both modes: off means the question goes
+    // alone, with no patient context at all.
+    const effectiveSelectedIds = settings().patientContextEnabled ? selectedIds : [];
     // The budget is the selected model's real context window minus
     // headroom — not an arbitrary cap. Split, verify, and transmit all
     // share it so the review sees exactly what the wire will carry.
     const chartBudget = fullChartBudgetChars(pricingForModel(prefs.openAiModel)?.contextWindow);
-    const split = splitFullChartContext(
-      patient,
-      { draftNoteText: draft, draftNoteSections: includedSections, maxChars: chartBudget }
-    );
-    if (!verifyFullChartEquivalence(patient, split, { draftNoteText: draft, draftNoteSections: includedSections })) {
+    const splitOpts = { draftNoteText: draft, draftNoteSections: sections, maxChars: chartBudget };
+    const split = splitBuiltContext(patient, effectiveSelectedIds, splitOpts);
+    if (!verifySplitEquivalence(patient, effectiveSelectedIds, split, splitOpts)) {
       state.remote.review = failedReview(
         "The patient context didn't rebuild exactly — sending is blocked. Nothing was sent.",
         deidModelLabel(deidKey)
@@ -1541,8 +1516,12 @@ export function createAiChatController({
       // disclose that this send may invoke local clinical tools.
       toolsEnabled: state.remote.toolsEnabled,
       // The model-grounded chart budget: split, verify, and transmit share
-      // it so the review sees exactly what the wire will carry.
-      chartBudget
+      // it so the review sees exactly what the wire will carry. hasContext
+      // records whether any context pieces were attached, so the system
+      // prompt can demand section citations only when there is context to
+      // cite — a bare question gets a general-knowledge answer instead.
+      chartBudget,
+      hasContext: split.pieces.length > 0
     };
     state.remote.review = review;
     render();
@@ -2571,6 +2550,8 @@ export function createAiChatController({
     }
     if (action === "ai-chat-context-group") {
       // Select all / Deselect all for one Admission / hospital-day group.
+      // Both modes share the inspector selection: only selected pieces go
+      // to the model (ChatGPT mode runs them through the review gate).
       const groupIndex = Number.parseInt(actionTarget.dataset.groupIndex || "", 10);
       const select = actionTarget.dataset.select === "1";
       const { pieces, selectedIds } = contextPieces();
@@ -2581,22 +2562,6 @@ export function createAiChatController({
       }
       const groupName = groupNames[groupIndex];
       if (groupName === undefined) return true;
-      if (state.mode === "remote") {
-        // ChatGPT mode: only the draft-note sections are selectable — the
-        // chart itself always rides along. Selecting adds back / deselecting
-        // opts out every draft section in the group.
-        const excluded = remoteDraftExcludedIds(pieces);
-        for (const piece of pieces) {
-          if ((piece.group || "Other") === groupName && piece.kind === "draft_note") {
-            if (select) excluded.delete(piece.id);
-            else excluded.add(piece.id);
-          }
-        }
-        state.remote.draftExcludedIds = [...excluded];
-        state.chat.contextStats = null;
-        render();
-        return true;
-      }
       const next = new Set(selectedIds);
       for (const piece of pieces) {
         if ((piece.group || "Other") === groupName) {
@@ -2656,22 +2621,9 @@ export function createAiChatController({
       return true;
     }
     if (target.matches?.("[data-ai-chat-context-piece]")) {
-      // Include/exclude one chart document from the model's context.
+      // Include/exclude one context piece from the model's context. Both
+      // modes share this selection.
       const pieceId = target.dataset.aiChatContextPiece || "";
-      if (state.mode === "remote") {
-        // ChatGPT mode: only draft-note sections are selectable. Checking
-        // one opts it back in; unchecking opts it out of the send.
-        const { pieces } = contextPieces();
-        const piece = pieces.find((candidate) => candidate.id === pieceId);
-        if (!piece || piece.kind !== "draft_note") return true;
-        const excluded = remoteDraftExcludedIds(pieces);
-        if (target.checked) excluded.delete(pieceId);
-        else excluded.add(pieceId);
-        state.remote.draftExcludedIds = [...excluded];
-        state.chat.contextStats = null;
-        render();
-        return true;
-      }
       const { selectedIds } = contextPieces();
       const next = new Set(selectedIds);
       if (target.checked) next.add(pieceId);

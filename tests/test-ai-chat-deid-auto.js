@@ -194,13 +194,14 @@ console.log("Part 2 passed: ensureDeidReady verifies the best system automatical
 // ---------------------------------------------------------------------------
 // Part 3: the context budget meter is honest in ChatGPT mode
 // ---------------------------------------------------------------------------
-// Regression: with nothing selected, the sidebar meter showed
-// "Patient ~3,340" while the checkboxes implied selection controls the
-// context. The meter was right — ChatGPT mode always sends the full chart
-// through the review gate — but two things were wrong: (1) turning the
-// "Attach to chat" toggle off dropped the meter to 0 even though the full
-// chart is still what gets sent, and (2) the selection controls looked
-// live in ChatGPT mode when they only apply to on-device chat.
+// Regression (first reported 2026-09-29): with nothing selected, the
+// sidebar meter showed "Patient ~3,340" while the checkboxes implied
+// selection controls the context. The design then was "ChatGPT mode always
+// sends the full chart", so the meter was right but the controls were
+// misleading. The design changed: both modes now send exactly the
+// inspector-selected pieces — ChatGPT mode runs them through the
+// de-identification review gate first. The meter counts the selection in
+// both modes, and every control is live in both modes.
 
 const { createAiChatPresentation } = await import("../src/ui/ai-chat/presentation.js");
 const presentation = createAiChatPresentation({
@@ -220,9 +221,8 @@ const sidebarBase = {
   patientContext: { enabled: false, available: false, label: "TR-3", hasPatient: true },
 };
 
-// Aaron's report: nothing selected in ChatGPT mode, meter said ~3,340.
-// The full chart is what actually goes, so the meter must keep saying so
-// even with the attach toggle off.
+// Only the draft note selected in ChatGPT mode: the meter must count the
+// selection — not the full chart.
 function inspectorVm({ isRemote, enabled }) {
   return {
     open: true,
@@ -232,14 +232,14 @@ function inspectorVm({ isRemote, enabled }) {
     patientLabel: "TR-3",
     pieces: [
       { id: "epic-results", group: "Admission", label: "Epic results", tokens: 783, selected: false },
-      { id: "draft-note", group: "Draft note", label: "Current draft note", tokens: 1927, selected: false },
+      { id: "draft-note", group: "Draft note", label: "Current draft note", tokens: 1927, selected: true },
     ],
     groups: ["Admission", "Draft note"],
     guidelinesTokens: 178,
     historyTokens: 381,
     historyCount: 2,
-    // The controller counts the full chart here in remote mode.
-    selectedTokens: 3340,
+    // The controller counts the inspector selection here in both modes.
+    selectedTokens: 1927,
     contextWindow: 1050000,
     windowLabel: "GPT-6 Luna",
   };
@@ -255,30 +255,37 @@ function patientLine(html) {
   const html = presentation.render({
     ...sidebarBase,
     mode: "remote",
-    contextInspector: inspectorVm({ isRemote: true, enabled: false }),
+    contextInspector: inspectorVm({ isRemote: true, enabled: true }),
   });
-  assert.equal(patientLine(html), "3,340", "remote meter counts the full chart with the toggle off");
-  assert.ok(html.includes("sends the full chart"), "remote sidebar explains the full chart goes through review");
+  assert.equal(patientLine(html), "1,927", "remote meter counts only the selected pieces");
+  assert.ok(html.includes("Only the selected context above is sent"), "remote sidebar explains selection-only sending");
   const pieceInput = html.match(/data-ai-chat-context-piece="epic-results"[^>]*>/);
-  assert.ok(pieceInput && pieceInput[0].includes("disabled"), "piece checkboxes are inert in ChatGPT mode");
+  assert.ok(pieceInput && !pieceInput[0].includes("disabled"), "piece checkboxes are live in ChatGPT mode");
   const toggles = [...html.matchAll(/data-ai-chat-context-toggle[^>]*>/g)];
   assert.ok(toggles.length >= 2, "both context toggles rendered");
   assert.ok(
-    toggles.every((m) => m[0].includes("disabled")),
-    "every attach toggle is inert in ChatGPT mode"
+    toggles.every((m) => !m[0].includes("disabled")),
+    "every attach toggle is live in ChatGPT mode"
   );
 }
 
 {
-  // On-device mode is unchanged: toggle off means zero patient tokens,
-  // and the selection controls stay live.
+  // The attach toggle gates the meter in both modes: off means zero
+  // patient tokens, even with pieces selected.
+  for (const mode of ["remote", "local"]) {
+    const html = presentation.render({
+      ...sidebarBase,
+      mode,
+      contextInspector: inspectorVm({ isRemote: mode === "remote", enabled: false }),
+    });
+    assert.equal(patientLine(html), "0", `${mode} meter shows 0 with the toggle off`);
+  }
   const html = presentation.render({
     ...sidebarBase,
     mode: "local",
     contextInspector: inspectorVm({ isRemote: false, enabled: false }),
   });
-  assert.equal(patientLine(html), "0", "on-device meter shows 0 with the toggle off");
-  assert.ok(!html.includes("sends the full chart"), "no full-chart note in on-device mode");
+  assert.ok(!html.includes("Only the selected context above is sent"), "no selection note in on-device mode");
   const toggle = html.match(/data-ai-chat-context-toggle[^>]*>/);
   assert.ok(toggle && !toggle[0].includes("disabled"), "attach toggle stays live in on-device mode");
 }
@@ -287,6 +294,7 @@ function patientLine(html) {
   // On-device mode with the toggle on and a piece selected still counts it.
   const inspector = inspectorVm({ isRemote: false, enabled: true });
   inspector.pieces[0].selected = true;
+  inspector.pieces[1].selected = false;
   inspector.selectedTokens = 783;
   const html = presentation.render({ ...sidebarBase, mode: "local", contextInspector: inspector });
   assert.equal(patientLine(html), "783", "on-device meter counts selected pieces");

@@ -263,36 +263,13 @@ export function buildPatientContextFromPieces(patient, selectedIds, { maxChars =
   return out;
 }
 // ---------------------------------------------------------------------------
-// Full-chart context: the API (ChatGPT) path sends the ENTIRE chart text —
-// every chart piece in canonical listPatientContextPieces order — through
-// the de-identification review gate. The budget for the full chart is NOT
-// this constant: the controller derives it from the selected API model's
-// real context window (fullChartBudgetChars in ui/ai-chat/delta-review.js),
-// reserving headroom for the system prompt, history, question, and reply.
-// MAX_FULL_CHART_CHARS survives only as the conservative fallback for an
-// unknown model and as the default budget of the pure builders below.
+// Chart budget constant: the controller derives the real per-model budget
+// from the selected API model's context window (fullChartBudgetChars in
+// ui/ai-chat/delta-review.js), reserving headroom for the system prompt,
+// history, question, and reply. MAX_FULL_CHART_CHARS survives only as the
+// conservative fallback for an unknown model and as the default budget of
+// the transmit builder.
 export const MAX_FULL_CHART_CHARS = 200000;
-
-export function buildFullChartContextText(patient, { maxChars = MAX_FULL_CHART_CHARS, draftNoteText = "", draftNoteSections = null } = {}) {
-  if (!patient || typeof patient !== "object") return "";
-  const budget = Math.max(500, Number(maxChars) || MAX_FULL_CHART_CHARS);
-
-  const headerBits = [`PATIENT: ${textOf(patient.displayLabel) || "Active patient"}`];
-  const admissionDate = textOf(patient.metadata?.admissionDate);
-  if (admissionDate) headerBits.push(`Admitted: ${admissionDate}`);
-
-  const parts = [];
-  const pieceOpts = { draftNoteText, draftNoteSections };
-  for (const piece of listPatientContextPieces(patient, pieceOpts)) {
-    const text = pieceText(patient, piece, pieceOpts);
-    if (text) parts.push(text);
-  }
-  if (!parts.length) return "";
-  let out = `${headerBits.join("\n")}\n\n${parts.join("\n\n")}`;
-  if (out.length > budget) out = `${out.slice(0, budget - 3).trimEnd()}...`;
-  return out;
-};
-
 
 export const MAX_PRIMARY_NOTE_CHARS = 3000;
 

@@ -222,9 +222,9 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
               </span>
             </label>
             <label class="aic-parse-row">
-              <span class="aic-parse-txt"><strong>Patient context</strong><span class="aic-muted">${local ? "Attach selected chart documents to both chats." : "ChatGPT mode sends the full chart — you review it before anything is sent."}</span></span>
+              <span class="aic-parse-txt"><strong>Patient context</strong><span class="aic-muted">Attach the selected documents to the chat. ChatGPT mode reviews the de-identified text before sending.</span></span>
               <span class="aic-sw">
-                <input type="checkbox" data-ai-chat-context-toggle ${settings.patientContextEnabled ? "checked" : ""} ${!patientContext.hasPatient || !local ? "disabled" : ""}>
+                <input type="checkbox" data-ai-chat-context-toggle ${settings.patientContextEnabled ? "checked" : ""} ${!patientContext.hasPatient ? "disabled" : ""}>
                 <span class="aic-sw-t" aria-hidden="true"></span>
               </span>
             </label>
@@ -450,10 +450,8 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
 
   function renderSidebarPieces(contextInspector) {
     const info = contextInspector || {};
-    // In ChatGPT mode the full chart goes through the review gate: chart
-    // documents are always included (shown checked, not selectable), while
-    // the draft-note sections stay selectable per section.
-    const selectionLocked = !!info.isRemote;
+    // Both modes send exactly the inspector-selected pieces: every piece
+    // is interactive, gated only by the attach toggle.
     const pieces = Array.isArray(info.pieces) ? info.pieces : [];
     const groups = Array.isArray(info.groups) ? info.groups : [];
     if (!info.hasPatient) {
@@ -466,9 +464,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       const groupPieces = pieces.filter((p) => (p.group || "Other") === groupName);
       const allSelected = groupPieces.length > 0 && groupPieces.every((p) => p.selected);
       const noneSelected = groupPieces.every((p) => !p.selected);
-      // In ChatGPT mode only groups with draft-note sections are actionable.
-      const groupHasDraft = groupPieces.some((p) => p.kind === "draft_note");
-      const groupLocked = selectionLocked ? !groupHasDraft : !info.enabled;
+      const groupLocked = !info.enabled;
       const head = `<div class="aic-side-group">
         <span class="aic-side-group-name">${escapeHtml(groupName)}</span>
         <span class="aic-side-group-actions">
@@ -477,7 +473,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
         </span>
       </div>`;
       const labels = groupPieces.map((piece) => {
-        const pieceLocked = selectionLocked ? piece.kind !== "draft_note" : !info.enabled;
+        const pieceLocked = !info.enabled;
         return `<label class="aic-ctx-piece${piece.selected ? "" : " is-off"}">
         <input type="checkbox" data-ai-chat-context-piece="${escapeHtml(piece.id)}" ${piece.selected ? "checked" : ""} ${pieceLocked ? "disabled" : ""}>
         <span class="aic-ctx-piece-label">${escapeHtml(piece.label)}</span>
@@ -492,10 +488,9 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
   function renderBudgetMeter(contextInspector) {
     const info = contextInspector || {};
     const guidelines = Number(info.guidelinesTokens || 0);
-    // Remote mode always sends the full chart (the review gate is the
-    // consent), so the meter counts it even when the on-device attach
-    // toggle is off. info.selectedTokens is already the full chart there.
-    const patient = info.isRemote || info.enabled ? Number(info.selectedTokens || 0) : 0;
+    // The meter counts the inspector selection in both modes; the attach
+    // toggle gates it (off = no patient context counted).
+    const patient = info.enabled ? Number(info.selectedTokens || 0) : 0;
     const history = Number(info.historyTokens || 0);
     const total = guidelines + patient + history;
     const windowSize = Number(info.contextWindow || 0) || 4096;
@@ -543,11 +538,11 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
           <label class="aic-parse-row">
             <span class="aic-parse-txt"><strong>Attach to chat</strong><span class="aic-muted">Include the selected documents below in the model's context.</span></span>
             <span class="aic-sw">
-              <input type="checkbox" data-ai-chat-context-toggle ${patientContext.enabled ? "checked" : ""} ${!patientContext.hasPatient || contextInspector?.isRemote ? "disabled" : ""}>
+              <input type="checkbox" data-ai-chat-context-toggle ${patientContext.enabled ? "checked" : ""} ${!patientContext.hasPatient ? "disabled" : ""}>
               <span class="aic-sw-t" aria-hidden="true"></span>
             </span>
           </label>
-          ${contextInspector?.isRemote ? `<p class="aic-muted aic-side-sub">ChatGPT mode sends the full chart — you'll review it before anything is sent. Your draft note follows the section checkboxes below.</p>` : ""}
+          ${contextInspector?.isRemote ? `<p class="aic-muted aic-side-sub">Only the selected context above is sent — you'll review the de-identified text before anything is sent.</p>` : ""}
           ${renderSidebarPieces(contextInspector)}
         </section>
         <section class="aic-side-sec" aria-label="Context budget">
