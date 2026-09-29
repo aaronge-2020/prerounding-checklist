@@ -262,7 +262,7 @@ function planLines(text) {
 //     ! <severity>: <drug A> + <drug B> — <mechanism / management>
 // - DailyMed label excerpts (label lookup migration pending) append under a
 //   "LABEL EXCERPTS:" subheader as:
-//     \u2022 <ingredient>: <section> — <excerpt> (<citation>)
+//     • <ingredient>: <section> — <excerpt> (<citation>)
 export function buildMedicationContextBlock(medications = []) {
   const seen = new Set();
   const lines = [];
