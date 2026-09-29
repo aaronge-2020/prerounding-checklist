@@ -28,7 +28,9 @@ assert.deepStrictEqual(CHEAT_SHEETS_DATA, bundleFromJson, "cheat-sheets.data.js 
 const bundle = JSON.parse(readFileSync(join(root, "src", "data", "cheat-sheets.json"), "utf8"));
 
 // Frozen 2026-09-29 from workups/admission/*.workup.json (prerounding_workup_v1),
-// 50 sheets / 673 history + 514 exam items. itemsHash = sha256 over each
+// 50 sheets / 673 history + 514 exam items, plus 6 OB/GYN sheets authored the
+// same day from Aaron's OB/GYN History Interview Prompt Sheet
+// (56 sheets / 725 history + 514 exam items). itemsHash = sha256 over each
 // source item's kind|id|system|text|choices joined by \x00.
 const FROZEN = [
     {
@@ -587,6 +589,97 @@ const FROZEN = [
       "history": 10,
       "exam": 10,
       "itemsHash": "65f923a241f569eb5c14549127be3d35e53e5772d12c89dd996a4cf2f3a59442"
+    },
+    {
+      "id": "ob-labor-triage",
+      "title": "Labor triage & current pregnancy",
+      "aliases": [
+        "labor",
+        "triage",
+        "pregnancy",
+        "labor check",
+        "contractions",
+        "vaginal bleeding in pregnancy"
+      ],
+      "history": 13,
+      "exam": 0,
+      "itemsHash": "a6a8934011f35bda7a1fa747d0b7487a2ac29fad237949bdb4d5433403210789"
+    },
+    {
+      "id": "ob-menstrual-menopause",
+      "title": "Menstrual history & menopause",
+      "aliases": [
+        "periods",
+        "menstruation",
+        "LMP",
+        "menopause",
+        "abnormal uterine bleeding",
+        "intermenstrual bleeding"
+      ],
+      "history": 9,
+      "exam": 0,
+      "itemsHash": "2dd0c4ba225eb35fb18402d3d6f8902abc2be84c8c5ec465e8a6e59e9a6b4599"
+    },
+    {
+      "id": "ob-obstetric-history",
+      "title": "Obstetric history (GTPAL)",
+      "aliases": [
+        "GTPAL",
+        "gravida para",
+        "obstetric history",
+        "pregnancy history",
+        "postpartum",
+        "postpartum hemorrhage"
+      ],
+      "history": 7,
+      "exam": 0,
+      "itemsHash": "a5d698271803af2e23bf8e273e540337f4e7e188057a748b0bdf59bedd4aa4a7"
+    },
+    {
+      "id": "ob-gyn-history-screening",
+      "title": "GYN history, screening & pelvic floor",
+      "aliases": [
+        "gyn",
+        "gynecology",
+        "pap smear",
+        "cervical screening",
+        "pelvic floor",
+        "incontinence",
+        "prolapse",
+        "mammogram"
+      ],
+      "history": 8,
+      "exam": 0,
+      "itemsHash": "d49e8d6f1235845ec94ab0e8b8c2e4da13b54a5eab2dfb050f92f5a1340df7ee"
+    },
+    {
+      "id": "ob-sexual-history",
+      "title": "Sexual history: 5 Ps + PLUS",
+      "aliases": [
+        "sexual history",
+        "5 Ps",
+        "STI",
+        "sexually transmitted infection",
+        "partners"
+      ],
+      "history": 7,
+      "exam": 0,
+      "itemsHash": "11cf438e276e8166d928bcbd132ffdc802da14822efa6048fd13b10aa16328a7"
+    },
+    {
+      "id": "ob-safety-close",
+      "title": "OB/GYN do-not-miss, safety & close",
+      "aliases": [
+        "IPV",
+        "intimate partner violence",
+        "safety",
+        "do not miss",
+        "one-liner",
+        "family history"
+      ],
+      "history": 8,
+      "exam": 0,
+      "itemsHash": "57e00b719e3223bba6f0c23720dce9aafe0f2df59a1d3511fdf97951c93169b6"
     }
   ];
 

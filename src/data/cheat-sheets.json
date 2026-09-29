@@ -14980,6 +14980,697 @@
         "whyMissing": 4,
         "howMissing": 10
       }
+    },
+    {
+      "id": "ob-labor-triage",
+      "title": "Labor triage & current pregnancy",
+      "aliases": [
+        "labor",
+        "triage",
+        "pregnancy",
+        "labor check",
+        "contractions",
+        "vaginal bleeding in pregnancy"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "obstetric",
+          "question": "What brought you in today? What is most important to address?",
+          "listenFor": [
+            "Chief concern in patient's own words",
+            "Most important issue identified"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-02",
+          "system": "obstetric",
+          "question": "Could you be pregnant? Are you trying to conceive?",
+          "listenFor": [
+            "Could be pregnant",
+            "Trying to conceive",
+            "Not pregnant / not trying"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-03",
+          "system": "obstetric",
+          "question": "When was the first day of your last normal period (LMP)?",
+          "listenFor": [
+            "LMP date given",
+            "Unsure of LMP"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-04",
+          "system": "obstetric",
+          "question": "Have you had a home or clinic pregnancy test?",
+          "listenFor": [
+            "Positive test",
+            "Negative test",
+            "Not tested"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-05",
+          "system": "obstetric",
+          "question": "What is your gestational age and estimated due date (EDD), and how was the pregnancy dated?",
+          "listenFor": [
+            "GA and EDD known",
+            "Dated by LMP",
+            "Dated by ultrasound"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-06",
+          "system": "obstetric",
+          "question": "Have you had prenatal care this pregnancy?",
+          "listenFor": [
+            "Receiving prenatal care",
+            "No or limited prenatal care"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-07",
+          "system": "obstetric",
+          "question": "Is this one baby or more than one (fetal number)?",
+          "listenFor": [
+            "Singleton",
+            "Multifetal gestation"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-08",
+          "system": "obstetric",
+          "question": "Any complications or medications in this pregnancy?",
+          "listenFor": [
+            "None reported",
+            "Complications or medications listed"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-09",
+          "system": "obstetric",
+          "question": "Are you having any vaginal bleeding?",
+          "listenFor": [
+            "No vaginal bleeding",
+            "Vaginal bleeding present"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-10",
+          "system": "obstetric",
+          "question": "Are you having contractions?",
+          "listenFor": [
+            "No contractions",
+            "Contractions — onset, frequency, duration described"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-11",
+          "system": "obstetric",
+          "question": "Any leakage of fluid?",
+          "listenFor": [
+            "No leakage",
+            "Possible fluid leakage / rupture of membranes"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-12",
+          "system": "obstetric",
+          "question": "How has the baby's movement been?",
+          "listenFor": [
+            "Normal fetal movement",
+            "Decreased fetal movement"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-13",
+          "system": "obstetric",
+          "question": "Any severe headache, vision change, right-upper-quadrant or epigastric pain, marked swelling, fever, burning with urination, or trauma?",
+          "listenFor": [
+            "None reported",
+            "Concerning symptom reported"
+          ],
+          "why": null,
+          "whySource": null
+        }
+      ],
+      "exam": [],
+      "reviewNeeded": {
+        "whyMissing": 13,
+        "howMissing": 0
+      }
+    },
+    {
+      "id": "ob-menstrual-menopause",
+      "title": "Menstrual history & menopause",
+      "aliases": [
+        "periods",
+        "menstruation",
+        "LMP",
+        "menopause",
+        "abnormal uterine bleeding",
+        "intermenstrual bleeding"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "gynecologic",
+          "question": "How old were you when your periods started (menarche)?",
+          "listenFor": [
+            "Menarche age given"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-02",
+          "system": "gynecologic",
+          "question": "Are your periods regular — every how many days, bleeding for how many days?",
+          "listenFor": [
+            "Regular pattern described",
+            "Irregular pattern"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-03",
+          "system": "gynecologic",
+          "question": "Has there been a recent change in your periods?",
+          "listenFor": [
+            "No recent change",
+            "Recent change described"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-04",
+          "system": "gynecologic",
+          "question": "How heavy is your flow — pads, tampons, or cup per day? Do you fully soak them?",
+          "listenFor": [
+            "Pads / tampons / cup per day, not soaked",
+            "Fully soaked",
+            "Flooding or overnight changes",
+            "Clots"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-05",
+          "system": "gynecologic",
+          "question": "How do your periods affect your life?",
+          "listenFor": [
+            "Minimal impact",
+            "Limits daily activities"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-06",
+          "system": "gynecologic",
+          "question": "Do you have cramping or pelvic pain with your periods? Headache, mood changes, or other symptoms around your period?",
+          "listenFor": [
+            "No perimenstrual symptoms",
+            "Cramping or pelvic pain",
+            "Headache, mood, or other perimenstrual symptoms"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-07",
+          "system": "gynecologic",
+          "question": "Any bleeding between periods? Any bleeding after sex?",
+          "listenFor": [
+            "No intermenstrual or postcoital bleeding",
+            "Bleeding between periods",
+            "Bleeding after sex"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-08",
+          "system": "gynecologic",
+          "question": "When did your periods stop? Any menopause symptoms? Any hormone therapy? Any bleeding or spotting since your periods stopped?",
+          "listenFor": [
+            "Menopause details given",
+            "Postmenopausal bleeding or spotting"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-09",
+          "system": "gynecologic",
+          "question": "Record: menarche age | LMP | cycle every __ days x __ days | flow | intermenstrual or postcoital bleeding Y/N.",
+          "listenFor": [
+            "Chart completed"
+          ],
+          "why": null,
+          "whySource": null
+        }
+      ],
+      "exam": [],
+      "reviewNeeded": {
+        "whyMissing": 9,
+        "howMissing": 0
+      }
+    },
+    {
+      "id": "ob-obstetric-history",
+      "title": "Obstetric history (GTPAL)",
+      "aliases": [
+        "GTPAL",
+        "gravida para",
+        "obstetric history",
+        "pregnancy history",
+        "postpartum",
+        "postpartum hemorrhage"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "obstetric",
+          "question": "What is your GTPAL — gravida, term births, preterm births, abortions / losses / ectopics, living children?",
+          "listenFor": [
+            "G___ P___-___-___-___ stated"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-02",
+          "system": "obstetric",
+          "question": "For each pregnancy: what year, what gestational age, and what was the outcome?",
+          "listenFor": [
+            "Each pregnancy detailed"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-03",
+          "system": "obstetric",
+          "question": "Was labor spontaneous or induced? Was the delivery vaginal, operative vaginal, or cesarean?",
+          "listenFor": [
+            "Spontaneous labor",
+            "Induced labor",
+            "Vaginal delivery",
+            "Operative vaginal delivery",
+            "Cesarean delivery"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-04",
+          "system": "obstetric",
+          "question": "What was the baby's sex and birth weight? Any maternal or newborn complications?",
+          "listenFor": [
+            "Infant details and complications given",
+            "No complications"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-05",
+          "system": "obstetric",
+          "question": "Any pregnancy losses, ectopic pregnancies, or molar pregnancies — what type or cause, and was treatment medical or surgical? Any complications?",
+          "listenFor": [
+            "Loss / ectopic / molar history detailed",
+            "None"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-06",
+          "system": "obstetric",
+          "question": "Any of these complications in a prior pregnancy: preeclampsia or hypertension, gestational diabetes, preterm birth, fetal growth restriction, shoulder dystocia, postpartum hemorrhage, stillbirth or anomaly, blood clots, ICU stay, postpartum depression or psychosis?",
+          "listenFor": [
+            "None reported",
+            "Prior complication identified"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-07",
+          "system": "obstetric",
+          "question": "How do you count a twin pregnancy in GTPAL?",
+          "listenFor": [
+            "One pregnancy in G/TPA",
+            "Each living child counted in L"
+          ],
+          "why": "A multifetal gestation counts as 1 pregnancy in G/TPA; count each living child in L. Use your institution's gestational-age threshold.",
+          "whySource": "curated"
+        }
+      ],
+      "exam": [],
+      "reviewNeeded": {
+        "whyMissing": 6,
+        "howMissing": 0
+      }
+    },
+    {
+      "id": "ob-gyn-history-screening",
+      "title": "GYN history, screening & pelvic floor",
+      "aliases": [
+        "gyn",
+        "gynecology",
+        "pap smear",
+        "cervical screening",
+        "pelvic floor",
+        "incontinence",
+        "prolapse",
+        "mammogram"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "gynecologic",
+          "question": "Any pelvic or abdominal pain, vaginal discharge — its color, odor, consistency — itching or burning, vulvar lesions, or abnormal bleeding?",
+          "listenFor": [
+            "None reported",
+            "Symptom described"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-02",
+          "system": "gynecologic",
+          "question": "Any history of fibroids, endometriosis, ovarian cysts, PCOS, infertility, PID or STIs, or prolapse — how were they diagnosed and treated?",
+          "listenFor": [
+            "No GYN conditions",
+            "Condition with diagnosis and treatment given"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-03",
+          "system": "gynecologic",
+          "question": "Any GYN procedures — biopsy, hysteroscopy or laparoscopy, ablation, myomectomy, hysterectomy, oophorectomy? What was the indication and date, and were there complications?",
+          "listenFor": [
+            "No prior procedures",
+            "Procedure with indication, date, complications"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-04",
+          "system": "gynecologic",
+          "question": "What are your pregnancy goals? How long have you been trying? Any prior fertility evaluation for you or your partner, or relevant disease or surgery?",
+          "listenFor": [
+            "Fertility history given"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-05",
+          "system": "gynecologic",
+          "question": "When was your last cervical cancer screening and what was the result? Any prior abnormal result or HPV, colposcopy, LEEP, or other treatment? Have you had HPV vaccination?",
+          "listenFor": [
+            "Screening history and result given",
+            "Prior abnormal result or treatment",
+            "HPV vaccinated"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-06",
+          "system": "gynecologic",
+          "question": "When was your last mammogram or breast imaging and what was the result? Any current lump, pain, skin or nipple change, or discharge? Any prior breast biopsy, surgery, or cancer?",
+          "listenFor": [
+            "Breast screening history given",
+            "Current breast symptom",
+            "Prior breast biopsy, surgery, or cancer"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-07",
+          "system": "gynecologic",
+          "question": "Any burning with urination or urinating more often? Any urine leakage with coughing, sneezing, or exercise (stress) versus a sudden urge you cannot hold (urge)?",
+          "listenFor": [
+            "No urinary symptoms",
+            "Dysuria or frequency",
+            "Stress leakage",
+            "Urge leakage"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-08",
+          "system": "gynecologic",
+          "question": "Any stool or gas leakage, constipation, pelvic pressure, or a vaginal bulge?",
+          "listenFor": [
+            "No bowel or prolapse symptoms",
+            "Symptom described"
+          ],
+          "why": null,
+          "whySource": null
+        }
+      ],
+      "exam": [],
+      "reviewNeeded": {
+        "whyMissing": 8,
+        "howMissing": 0
+      }
+    },
+    {
+      "id": "ob-sexual-history",
+      "title": "Sexual history: 5 Ps + PLUS",
+      "aliases": [
+        "sexual history",
+        "5 Ps",
+        "STI",
+        "sexually transmitted infection",
+        "partners"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "gynecologic",
+          "question": "I ask everyone these questions because sexual health is part of overall health. Is it okay if we discuss this?",
+          "listenFor": [
+            "Patient agrees to discuss",
+            "Patient declines or defers"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-02",
+          "system": "gynecologic",
+          "question": "Are you having sex of any kind now or in the past? How many partners in recent months? What genders? Any new or concurrent partners?",
+          "listenFor": [
+            "Partner history given"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-03",
+          "system": "gynecologic",
+          "question": "What kinds of sex — oral, vaginal/frontal, anal — and which body parts are involved?",
+          "listenFor": [
+            "Practices described"
+          ],
+          "why": "This guides site-specific testing.",
+          "whySource": "curated"
+        },
+        {
+          "id": "history-04",
+          "system": "gynecologic",
+          "question": "Do you use condoms or barriers — for which acts and how often? Any STI testing? Have you had HPV or hepatitis vaccines? Is PrEP relevant?",
+          "listenFor": [
+            "Protection practices described"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-05",
+          "system": "gynecologic",
+          "question": "Any past STIs — testing and prior diagnoses, dates, treatment, recurrence, partner history? Ask specifically as needed: gonorrhea, chlamydia, trich, HSV, HPV/warts, syphilis, HIV, hepatitis, PID.",
+          "listenFor": [
+            "No prior STIs",
+            "Prior STI history detailed"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-06",
+          "system": "gynecologic",
+          "question": "Would you like pregnancy now, later, or not at all? How important is preventing pregnancy? What contraception do you use now or used before — adherence, satisfaction, side effects?",
+          "listenFor": [
+            "Pregnancy intention and contraception history given"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-07",
+          "system": "gynecologic",
+          "question": "Any pain with sex? Any concerns about desire, arousal, orgasm, pleasure, or satisfaction? Any unwanted or coerced sexual activity?",
+          "listenFor": [
+            "No concerns reported",
+            "Concern disclosed"
+          ],
+          "why": null,
+          "whySource": null
+        }
+      ],
+      "exam": [],
+      "reviewNeeded": {
+        "whyMissing": 6,
+        "howMissing": 0
+      }
+    },
+    {
+      "id": "ob-safety-close",
+      "title": "OB/GYN do-not-miss, safety & close",
+      "aliases": [
+        "IPV",
+        "intimate partner violence",
+        "safety",
+        "do not miss",
+        "one-liner",
+        "family history"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "general",
+          "question": "When appropriate, interview alone. Do you feel safe at home and in your relationships? Has anyone hurt, threatened, controlled you, or forced you into sexual activity?",
+          "listenFor": [
+            "Feels safe",
+            "Safety concern disclosed"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-02",
+          "system": "general",
+          "question": "Any family history of breast, ovarian, endometrial/uterine, cervical, or colon cancer — which relative and at what age? Any blood clots or osteoporosis?",
+          "listenFor": [
+            "No relevant family history",
+            "Family history detailed"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-03",
+          "system": "general",
+          "question": "If pregnancy-relevant: any known inherited disorders, developmental delay, trisomy, neural tube defects, or congenital heart defects in the family?",
+          "listenFor": [
+            "None reported",
+            "Relevant family history"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-04",
+          "system": "general",
+          "question": "What hormones or contraceptives, blood thinners, fertility medications, over-the-counter drugs, herbs, or vitamins do you take?",
+          "listenFor": [
+            "Medication list given",
+            "None"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-05",
+          "system": "general",
+          "question": "Do you use tobacco, alcohol, cannabis, or other drugs?",
+          "listenFor": [
+            "No substance use",
+            "Use described"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-06",
+          "system": "general",
+          "question": "Any allergies, including latex — and what was the reaction?",
+          "listenFor": [
+            "No allergies",
+            "Allergy with reaction described"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-07",
+          "system": "general",
+          "question": "What else about your menstrual, reproductive, or sexual health should we discuss today?",
+          "listenFor": [
+            "Nothing further",
+            "Additional concern raised"
+          ],
+          "why": null,
+          "whySource": null
+        },
+        {
+          "id": "history-08",
+          "system": "general",
+          "question": "One-liner: ___-year-old G__P____ at __w__d (if pregnant), LMP ___, presenting with ___. Key menstrual, OB, GYN, and sexual history: ___.",
+          "listenFor": [
+            "One-liner completed"
+          ],
+          "why": null,
+          "whySource": null
+        }
+      ],
+      "exam": [],
+      "reviewNeeded": {
+        "whyMissing": 8,
+        "howMissing": 0
+      }
     }
   ]
 }
