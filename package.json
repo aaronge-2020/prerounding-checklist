@@ -23,7 +23,7 @@
     "test:primary-note-parser": "node tests/test-primary-team-note-parser.js",
     "test:review-data": "node tests/test-review-data.js",
     "test:lab-baselines": "node tests/test-lab-baselines.js",
-    "test:note-extractor": "node tests/test-note-clinical-extractor.js",
+    "test:note-extractor": "node tests/test-note-clinical-extractor.js && node tests/test-mar-medication-parsing.js",
     "test:narrative-fixtures": "node tests/test-narrative-fixtures.js",
     "test:note-drafts": "node tests/test-note-drafts.js",
     "test:prompts": "node tests/test-local-first-prompts.js",

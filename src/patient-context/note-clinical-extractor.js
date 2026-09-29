@@ -33,15 +33,24 @@ export const MED_METADATA_LABEL = /^(?:PRN Reasons?|PRN Comment|Weight Dosing In
 export const TRANSFUSION_ORDER = /^\s*transfus(?:e|ion)\b/i;
 // Vital-sign goals ("SBP goal <=130 mmHg") are targets, never medications.
 const VITAL_GOAL_LINE = /\b(?:sbp|dbp|map|bp|hr|rr|spo2|fio2|temp(?:erature)?)\s+goals?\b/i;
-// Section headings ("Medications:", "Inpatient orders:") that leak into the
-// medication section text.
-export const MED_LIST_HEADING = /^(?:(?:home|inpatient|outpatient|active|current)\s+)?(?:medications?|meds?|rx|prescriptions?|orders)(?:\s+list)?\s*[:—–-]\s*$/i;
+// Section headings ("Medications:", "Inpatient orders:", or a bare "Medications"
+// section title) that leak into the medication section text.
+export const MED_LIST_HEADING = /^(?:(?:home|inpatient|outpatient|active|current)\s+)?(?:medications?|meds?|rx|prescriptions?|orders)(?:\s+list)?\s*[:—–-]?\s*$/i;
+// MAR (Medication Administration Report) exports tag each line with a
+// bracketed status/source ("[Medications]", "[Completed Medications]",
+// "[Discontinued Medications]", "[Other Encounter]", "[Lab 1/2]") and may
+// wrap a latest-result marker in markdown bold ("**[LATEST_RESULT]**").
+// Strip all leading tags so the drug name leads.
+export const MAR_LEAD_TAG = /^(?:\*\*\[LATEST_RESULT\]\*\*\s*)?(?:\[(?:medications|completed medications|discontinued medications|other encounter|lab \d+\s*\/\s*\d+)\]\s*)+/i;
+// MAR export footers ("Medication Administration Report", "for [NAME] as of
+// ...", "0734-D/C'd") are never medications.
+const MAR_FOOTER = /^(?:medication administration report\b|for \[name\] as of\b|\d{3,4}-d\/c'd\s*$)/i;
 
 // True for lines that are never medications (metadata labels, headings,
-// transfusion orders) so list parsers can drop them before parsing.
+// transfusion orders, MAR footers) so list parsers can drop them before parsing.
 export function isNonMedicationLine(rawLine) {
   const stripped = stripBullet(rawLine);
-  return MED_METADATA_LABEL.test(stripped) || MED_LIST_HEADING.test(stripped) || TRANSFUSION_ORDER.test(stripped) || VITAL_GOAL_LINE.test(stripped);
+  return MED_METADATA_LABEL.test(stripped) || MED_LIST_HEADING.test(stripped) || TRANSFUSION_ORDER.test(stripped) || VITAL_GOAL_LINE.test(stripped) || MAR_FOOTER.test(stripped);
 }
 
 function looksLikeSentence(line) {
@@ -53,6 +62,13 @@ function looksLikeSentence(line) {
 export function splitMedicationLine(rawLine) {
   let line = stripBullet(rawLine);
   if (!line || NO_MEDS.test(line) || isNonMedicationLine(rawLine) || looksLikeSentence(line)) return null;
+  // MAR exports prefix each line with bracketed tags ("[Medications]",
+  // "[Completed Medications]", "[Lab 1/2] [Other Encounter]"); strip them so
+  // the drug name leads. Tagged lines are structured exports, not prose, so
+  // their drug+formulation names may run longer than the prose cutoff below.
+  const hadMarTag = MAR_LEAD_TAG.test(line);
+  line = line.replace(MAR_LEAD_TAG, "");
+  if (!line) return null;
   // "She takes Lexapro", "He is on lisinopril": strip the verb phrase so the
   // drug name leads.
   line = line.replace(/^(?:(?:she|he|they|the patient|patient|pt)\s+)?(?:takes?|taking|is\s+(?:on|taking))\s+/i, "");
@@ -89,7 +105,7 @@ export function splitMedicationLine(rawLine) {
     }
   }
   name = clean(name).replace(/\s+/g, " ").replace(/[.—–-\s]+$/, "");
-  if (name.length < 2 || name.length > 60) return null;
+  if (name.length < 2 || (!hadMarTag && name.length > 60)) return null;
   // A "name" that is really a sentence fragment is not a medication.
   if (/^(the|this|that|with|and|for|from|a|an|but)\b/i.test(name)) return null;
   if (name.split(" ").length > 6 && !details) return null;
