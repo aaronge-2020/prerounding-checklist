@@ -11878,33 +11878,33 @@ body.vault-locked .vault-access {
    <details> (required for native disclosure toggle). Interactive controls
    live in .ed-section-actions, a sibling of <summary>, never inside it. */
 details.ed-section {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  column-gap: 8px;
+  position: relative;
+  display: block;
 }
 details.ed-section > summary.ed-section-summary {
-  grid-column: 1;
-  grid-row: 1;
+  display: block;
+  padding-right: 80px;
   min-width: 0;
 }
 details.ed-section > .ed-section-actions {
-  grid-column: 2;
-  grid-row: 1;
+  position: absolute;
+  top: 8px;
+  right: 8px;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 details.ed-section > .ed-section-body {
-  grid-column: 1 / -1;
+  display: block;
+  min-width: 0;
 }
-details.ed-section > summary.ed-section-summary {
+details.ed-section .ed-section-summary {
   cursor: pointer;
   list-style: none;
   display: block;
 }
-details.ed-section > summary.ed-section-summary::-webkit-details-marker { display: none; }
-details.ed-section > summary.ed-section-summary::before {
+details.ed-section .ed-section-summary::-webkit-details-marker { display: none; }
+details.ed-section .ed-section-summary::before {
   content: "▾";
   display: inline-block;
   width: 14px;
@@ -11912,8 +11912,8 @@ details.ed-section > summary.ed-section-summary::before {
   font-size: 10px;
   margin-right: 2px;
 }
-details.ed-section:not([open]) > summary.ed-section-summary::before { content: "▸"; }
-details.ed-section > summary.ed-section-summary .ed-label { display: inline-flex; }
+details.ed-section:not([open]) .ed-section-summary::before { content: "▸"; }
+details.ed-section .ed-section-summary .ed-label { display: inline-flex; }
 
 /* ─── Persistent patient identity bar (NIST S1) ────────────────────── */
 /* Patient identifiers in a reserved area at the top, persisting regardless
