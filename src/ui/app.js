@@ -2208,6 +2208,10 @@ function deleteVaultAndStartOver() {
 async function admitPatient() {
   const label = byId("newPatientLabel").value.trim();
   if (!label) throw new Error("Enter a local display label.");
+  // Admitting a patient is a patient switch: the previous patient's
+  // drafts/review state (notably app.noteDraftSessions) must not survive,
+  // or the Review Data view keeps showing the previous patient's draft.
+  clearPatientScopedSession();
   app.vault = updateOrInitializeVault(createPatientRecord(label));
   admissionDateAnchor.restore();
   await persistVault("Patient admitted locally.");
@@ -4582,3 +4586,4 @@ async function refreshGuidelines() {
   }
   renderPrompts();
 }
+
