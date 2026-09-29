@@ -12675,3 +12675,103 @@ details.ed-section:not([open]) > summary.ed-section-summary { margin-bottom: 0; 
   .mdc-tab { font-size: 0.68rem; padding: 12px 2px 10px; }
   .mdc-resultbar-label { font-size: 1.1rem; }
 }
+
+/* A&P inline suggestions — track-changes style, rendered directly in the plan */
+.ap-loading-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--border, #e2e8f0);
+  border-left: 4px solid var(--accent, #2563eb);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+  background: var(--panel-alt, #fbfdff);
+}
+.ap-loading-banner p { margin: 0.15rem 0; }
+.ap-spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 auto;
+  border: 3px solid var(--border, #e2e8f0);
+  border-top-color: var(--accent, #2563eb);
+  border-radius: 50%;
+  animation: ap-spin 0.9s linear infinite;
+}
+@keyframes ap-spin { to { transform: rotate(360deg); } }
+.ap-inline-del {
+  color: #b91c1c;
+  text-decoration-thickness: 2px;
+  background: #fef2f2;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+.ap-inline-ins {
+  color: #15803d;
+  font-weight: 600;
+  text-decoration: none;
+  background: #f0fdf4;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+.ap-inline-change { display: inline; }
+div.ap-inline-change { display: block; margin: 0.3rem 0; }
+.ap-inline-actions {
+  display: inline-flex;
+  gap: 0.25rem;
+  margin-left: 0.35rem;
+  vertical-align: middle;
+}
+.ap-inline-btn {
+  font-size: 0.8rem;
+  line-height: 1;
+  padding: 0.15rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--border, #e2e8f0);
+  background: #fff;
+  cursor: pointer;
+}
+.ap-inline-approve { color: #15803d; border-color: #15803d; }
+.ap-inline-approve:hover { background: #f0fdf4; }
+.ap-inline-reject { color: #b91c1c; border-color: #b91c1c; }
+.ap-inline-reject:hover { background: #fef2f2; }
+.ap-inline-rationale {
+  margin: 0.25rem 0 0.35rem;
+  font-size: 0.85rem;
+  color: var(--muted, #64748b);
+}
+.ap-inline-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  color: #fff;
+}
+.ap-inline-badge--add { background: #15803d; }
+.ap-inline-badge--revise { background: #b45309; }
+.ap-inline-badge--remove { background: #b91c1c; }
+.ap-inline-diff {
+  border-left: 4px solid #b45309;
+}
+.ap-review-note {
+  font-size: 0.8rem;
+  color: var(--muted, #64748b);
+  margin: 0.25rem 0 0;
+  font-style: italic;
+}
+.ap-inline-unmatched {
+  border: 1px dashed #b45309;
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  background: #fffbeb;
+}
+.ap-inline-unmatched-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #b45309;
+}
+.ed-body[data-ap-reviewing="true"] {
+  background: var(--panel-alt, #fbfdff);
+}

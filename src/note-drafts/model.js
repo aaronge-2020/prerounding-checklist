@@ -285,6 +285,10 @@ export function normalizeNoteDraft(draft, { now = timestampNow, idFactory = loca
     problems: (Array.isArray(draft?.problems) ? draft.problems : []).map((problem) =>
       normalizePlanProblem(problem, { timestamp, idFactory })
     ),
+    // AI suggestion references (persisted): when a suggestion with citations
+    // is approved, its references are stored here so plan text citation
+    // markers like [1] can be rendered as hyperlinks.
+    apReferences: normalizeApReferences(draft?.apReferences),
     closing: normalizeClosingSections(draft?.closing, timestamp),
     // Smart physical-exam state: inserted systems + inline variable selections.
     // Rendered by the smart exam editor; compiled into the note on every change.
@@ -353,6 +357,43 @@ function normalizeGroupEdits(value) {
 }
 
 
+
+// AI suggestion references: [{ id, title, authors, journal, year, url }]
+// Deduplicated by id. Persisted on the draft so citation markers in plan
+// text can be rendered as hyperlinks.
+function normalizeApReferences(value) {
+  if (!Array.isArray(value)) return [];
+  const seen = new Set();
+  const out = [];
+  for (const ref of value) {
+    if (!ref || typeof ref !== "object") continue;
+    const id = String(ref.id ?? "").trim();
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    out.push({
+      id,
+      title: text(ref.title).trim(),
+      authors: text(ref.authors).trim(),
+      journal: text(ref.journal).trim(),
+      year: text(ref.year).trim(),
+      url: text(ref.url).trim()
+    });
+  }
+  return out;
+}
+
+// Merge new references into existing, deduplicated by id.
+export function mergeApReferences(existing, additions) {
+  const merged = normalizeApReferences(existing);
+  const seen = new Set(merged.map((r) => r.id));
+  for (const ref of normalizeApReferences(additions)) {
+    if (!seen.has(ref.id)) {
+      seen.add(ref.id);
+      merged.push(ref);
+    }
+  }
+  return merged;
+}
 
 function touch(draft, changes, now) {
   return { ...draft, ...changes, updatedAt: now() };

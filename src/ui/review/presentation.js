@@ -577,58 +577,188 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     }).join("")}</sup>`;
   }
 
-  // Google-Docs-style suggestion list: each AI revision shows what would
-  // change, why, and Approve / Reject buttons.
-  // apSuggestions = { suggestions, references } for one problem.
-  function renderApSuggestions(apSuggestions, problemId) {
-    const suggestions = apSuggestions?.suggestions || [];
-    const references = apSuggestions?.references || [];
-    if (!suggestions.length) return "";
-    const cards = suggestions.map((suggestion) => {
-      const targetLabel = AP_SUGGESTION_TARGET_LABELS[suggestion.target] || suggestion.target;
-      const actionLabel = AP_SUGGESTION_ACTION_LABELS[suggestion.action] || suggestion.action;
-      const actionClass = suggestion.action === "add" ? "ap-suggestion-badge--add"
-        : suggestion.action === "remove" ? "ap-suggestion-badge--remove"
-        : "ap-suggestion-badge--revise";
-      const changeHtml = suggestion.action === "remove"
-        ? `<p class="ap-suggestion-change"><s>${escapeHtml(suggestion.anchor)}</s></p>`
-        : suggestion.action === "revise"
-          ? `<p class="ap-suggestion-change"><s>${escapeHtml(suggestion.anchor)}</s><span class="ap-suggestion-new">${escapeHtml(suggestion.suggested)}</span></p>`
-          : `<p class="ap-suggestion-change"><span class="ap-suggestion-new">+ ${escapeHtml(suggestion.suggested)}</span></p>`;
-      const likelihood = suggestion.target === "differential" && suggestion.likelihood
-        ? ` <span class="muted">(${escapeHtml(suggestion.likelihood)})</span>` : "";
-      return `<div class="ap-suggestion" data-ap-suggestion>
-        <div class="ap-suggestion-head"><span class="ap-suggestion-badge ${actionClass}">${escapeHtml(actionLabel)}</span><span class="ap-suggestion-target">${escapeHtml(targetLabel)}${likelihood}</span><span class="ap-suggestion-actions"><button type="button" class="ed-mini ed-mini--approve" data-action="ap-suggestion-approve" data-problem-id="${escapeHtml(problemId)}" data-suggestion-id="${escapeHtml(String(suggestion.id))}">✓ Approve</button><button type="button" class="ed-mini ed-mini--danger" data-action="ap-suggestion-reject" data-problem-id="${escapeHtml(problemId)}" data-suggestion-id="${escapeHtml(String(suggestion.id))}">✕ Reject</button></span></div>
-        ${changeHtml}
-        ${suggestion.rationale ? `<p class="ap-suggestion-rationale">${escapeHtml(suggestion.rationale)}${apSuggestionCitations(suggestion, references)}</p>` : ""}
-      </div>`;
-    }).join("");
-    const refItems = references.filter((r) => r.title || r.url);
-    const refsHtml = refItems.length
-      ? `<div class="ap-suggestion-refs"><p class="ap-refs-head">References</p><ol class="ap-refs">${refItems.map((r) => {
-        const parts = [r.authors, r.title ? `<em>${escapeHtml(r.title)}</em>` : "", r.journal, r.year].filter(Boolean).join(". ");
-        const body = r.url ? `<a href="${escapeHtml(r.url)}" target="_blank" rel="noopener noreferrer">${parts || escapeHtml(r.url)}</a>` : parts;
-        return `<li value="${r.id}">${body}</li>`;
-      }).join("")}</ol></div>` : "";
-    return `<div class="ap-suggestions" data-ap-suggestions>
-      <p class="ap-suggestions-head">${icon("wand")} AI suggestions <span class="muted">— approve or reject each one</span></p>
-      ${cards}${refsHtml}
+  // Prominent loading indicator shown while the AI generates suggestions.
+  // Replaces the subtle button text change — the student should never wonder
+  // whether anything is happening after the prompt modal closes.
+  function renderApLoadingBanner() {
+    return `<div class="ap-loading-banner" data-ap-loading role="status" aria-live="polite">
+      <div class="ap-spinner" aria-hidden="true"></div>
+      <div class="ap-loading-text">
+        <p><strong>AI is reviewing your plan…</strong></p>
+        <p class="muted">Searching references and drafting targeted revisions. This can take 1–2 minutes with web search.</p>
+      </div>
     </div>`;
+  }
+
+  // Small inline approve/reject buttons for a single suggestion change.
+  // Uses the same data-action attributes as the old cards, so the controller
+  // handlers work unchanged.
+  function renderInlineSuggestionActions(suggestion, problemId) {
+    return `<span class="ap-inline-actions" contenteditable="false">`
+      + `<button type="button" class="ap-inline-btn ap-inline-approve" data-action="ap-suggestion-approve" data-problem-id="${escapeHtml(problemId)}" data-suggestion-id="${escapeHtml(String(suggestion.id))}" title="Approve this change">✓</button>`
+      + `<button type="button" class="ap-inline-btn ap-inline-reject" data-action="ap-suggestion-reject" data-problem-id="${escapeHtml(problemId)}" data-suggestion-id="${escapeHtml(String(suggestion.id))}" title="Reject this change">✕</button>`
+      + `</span>`;
+  }
+
+  // Rationale shown below an inline change, with citation links.
+  function renderInlineSuggestionRationale(suggestion, references) {
+    if (!suggestion.rationale) return "";
+    return `<div class="ap-inline-rationale" contenteditable="false">${escapeHtml(suggestion.rationale)}${apSuggestionCitations(suggestion, references)}</div>`;
+  }
+
+  // Render plan text with AI suggestions applied inline, track-changes style.
+  // - revise: anchor shown struck through, suggested text inserted after
+  // - remove: anchor shown struck through
+  // - add: suggested text appended with a + marker
+  // Each change gets inline approve/reject buttons and its rationale.
+  // Returns HTML for a read-only (non-editable) field — the student resolves
+  // suggestions before editing resumes, so anchors can't be broken mid-review.
+  function renderPlanTextWithInlineSuggestions(text, suggestions, problemId, references) {
+    const plainText = String(text || "");
+    let html = escapeHtml(plainText);
+    const unmatched = [];
+    for (const suggestion of suggestions) {
+      const anchor = String(suggestion.anchor || "").trim();
+      const suggested = String(suggestion.suggested || "").trim();
+      const actions = renderInlineSuggestionActions(suggestion, problemId);
+      const rationale = renderInlineSuggestionRationale(suggestion, references);
+      if (suggestion.action === "add") {
+        if (!suggested) continue;
+        const block = `<div class="ap-inline-change" contenteditable="false"><ins class="ap-inline-ins">+ ${escapeHtml(suggested)}</ins> ${actions}${rationale}</div>`;
+        html = html ? `${html}<br>${block}` : block;
+        continue;
+      }
+      if (!anchor) {
+        unmatched.push(suggestion);
+        continue;
+      }
+      const anchorHtml = escapeHtml(anchor);
+      const idx = html.indexOf(anchorHtml);
+      if (idx === -1) {
+        unmatched.push(suggestion);
+        continue;
+      }
+      const del = `<s class="ap-inline-del">${anchorHtml}</s>`;
+      const ins = (suggestion.action === "revise" && suggested)
+        ? `<ins class="ap-inline-ins">${escapeHtml(suggested)}</ins>`
+        : "";
+      const change = `<span class="ap-inline-change" contenteditable="false">${del}${ins} ${actions}</span>${rationale}`;
+      html = html.slice(0, idx) + change + html.slice(idx + anchorHtml.length);
+    }
+    // Suggestions whose anchor wasn't found in the text (student edited after
+    // generating): show them as fallback blocks so none are silently hidden.
+    for (const suggestion of unmatched) {
+      const label = suggestion.action === "remove" ? "Remove" : "Revise";
+      const anchor = String(suggestion.anchor || "").trim();
+      const suggested = String(suggestion.suggested || "").trim();
+      const actions = renderInlineSuggestionActions(suggestion, problemId);
+      const rationale = renderInlineSuggestionRationale(suggestion, references);
+      html += `<div class="ap-inline-change ap-inline-unmatched" contenteditable="false">`
+        + `<span class="ap-inline-unmatched-label">${escapeHtml(label)} (text changed since generated):</span> `
+        + (anchor ? `<s class="ap-inline-del">${escapeHtml(anchor)}</s> ` : "")
+        + (suggested ? `<ins class="ap-inline-ins">${escapeHtml(suggested)}</ins> ` : "")
+        + `${actions}${rationale}</div>`;
+    }
+    return html.replace(/\n/g, "<br>") || `<span class="muted">—</span>`;
+  }
+
+  // Render the differential list with AI suggestions inline, track-changes style.
+  // - add: new entry shown highlighted with approve/reject
+  // - revise/remove: matching entry shown with struck-through diagnosis
+  function renderDifferentialsWithInlineSuggestions(problem, suggestionList, references) {
+    const differentials = problem.differentials || [];
+    const diffSuggestions = suggestionList.filter((s) => s.target === "differential");
+    if (!diffSuggestions.length) {
+      return differentials.map((entry, i) => renderDifferentialEditor(entry, i, problem.id)).join("")
+        || `<p class="ed-empty">No differential diagnoses added.</p>`;
+    }
+    const normalize = (v) => String(v || "").toLowerCase().replace(/\s+/g, " ").trim();
+    const matchedIds = new Set();
+    let html = differentials.map((entry, i) => {
+      const diagText = normalize(valueText(entry.diagnosis));
+      const match = diffSuggestions.find((s) => {
+        if (matchedIds.has(s.id)) return false;
+        const anchor = normalize(s.anchor);
+        return anchor && diagText && (diagText.includes(anchor) || anchor.includes(diagText));
+      });
+      if (!match) return renderDifferentialEditor(entry, i, problem.id);
+      matchedIds.add(match.id);
+      const actions = renderInlineSuggestionActions(match, problem.id);
+      const rationale = renderInlineSuggestionRationale(match, references);
+      const suggested = String(match.suggested || "").trim();
+      if (match.action === "remove") {
+        return `<div class="differential-card ap-inline-diff ap-inline-change" data-differential-id="${escapeHtml(entry.id)}">`
+          + `<div class="ed-diff-bar"><strong>#${i + 1}</strong><span class="ap-inline-badge ap-inline-badge--remove">Remove suggested</span><span class="ed-mini-row">${actions}</span></div>`
+          + `<div class="ed-sub"><span class="ed-sub-label">Diagnosis</span><div class="ed-body"><s class="ap-inline-del">${escapeHtml(valueText(entry.diagnosis))}</s></div></div>`
+          + `${rationale}</div>`;
+      }
+      // revise
+      return `<div class="differential-card ap-inline-diff ap-inline-change" data-differential-id="${escapeHtml(entry.id)}">`
+        + `<div class="ed-diff-bar"><strong>#${i + 1}</strong><span class="ap-inline-badge ap-inline-badge--revise">Revise suggested</span><span class="ed-mini-row">${actions}</span></div>`
+        + `<div class="ed-sub"><span class="ed-sub-label">Diagnosis</span><div class="ed-body"><s class="ap-inline-del">${escapeHtml(valueText(entry.diagnosis))}</s> <ins class="ap-inline-ins">${escapeHtml(suggested)}</ins></div></div>`
+        + `${rationale}</div>`;
+    }).join("");
+    // Unmatched suggestions (anchor not found) + adds render as new cards.
+    for (const s of diffSuggestions) {
+      if (matchedIds.has(s.id)) continue;
+      const actions = renderInlineSuggestionActions(s, problem.id);
+      const rationale = renderInlineSuggestionRationale(s, references);
+      const suggested = String(s.suggested || "").trim();
+      const likelihood = s.likelihood ? ` <span class="muted">(${escapeHtml(s.likelihood)})</span>` : "";
+      const badge = s.action === "remove" ? "ap-inline-badge--remove" : "ap-inline-badge--add";
+      const badgeLabel = s.action === "remove" ? "Remove suggested" : s.action === "revise" ? "Revise suggested" : "Add suggested";
+      html += `<div class="differential-card ap-inline-diff ap-inline-change">`
+        + `<div class="ed-diff-bar"><span class="ap-inline-badge ${badge}">${badgeLabel}</span><span class="ed-mini-row">${actions}</span></div>`
+        + `<div class="ed-sub"><span class="ed-sub-label">Diagnosis</span><div class="ed-body">`
+        + (s.anchor ? `<s class="ap-inline-del">${escapeHtml(s.anchor)}</s> ` : "")
+        + (suggested ? `<ins class="ap-inline-ins">${escapeHtml(suggested)}</ins>${likelihood}` : "")
+        + `</div></div>${rationale}</div>`;
+    }
+    return html || `<p class="ed-empty">No differential diagnoses added.</p>`;
+  }
+
+  // References list rendered at the bottom of the problem card.
+  function renderApReferences(references) {
+    const refItems = (references || []).filter((r) => r.title || r.url);
+    if (!refItems.length) return "";
+    return `<div class="ap-suggestion-refs"><p class="ap-refs-head">References</p><ol class="ap-refs">${refItems.map((r) => {
+      const parts = [r.authors, r.title ? `<em>${escapeHtml(r.title)}</em>` : "", r.journal, r.year].filter(Boolean).join(". ");
+      const body = r.url ? `<a href="${escapeHtml(r.url)}" target="_blank" rel="noopener noreferrer">${parts || escapeHtml(r.url)}</a>` : parts;
+      return `<li value="${r.id}">${body}</li>`;
+    }).join("")}</ol></div>`;
   }
 
   function renderProblemEditor(problem, index, guidanceFor, options = {}) {
     const known = problem.etiologyStatus === "known";
     const generating = options.generatingApProblemId === problem.id;
+    const apSuggestions = options.apSuggestions;
+    const suggestionList = apSuggestions?.suggestions || [];
+    const references = apSuggestions?.references || [];
+    const diagnosticSuggestions = suggestionList.filter((s) => s.target === "diagnostic_plan");
+    const therapeuticSuggestions = suggestionList.filter((s) => s.target === "therapeutic_plan");
+    const hasDiagnosticSuggestions = diagnosticSuggestions.length > 0;
+    const hasTherapeuticSuggestions = therapeuticSuggestions.length > 0;
+    // While suggestions are pending, plan fields render read-only with inline
+    // track-changes markup. Editing resumes once all are approved/rejected.
+    const apReferences = options.apReferences || [];
+    const diagnosticPlanHtml = hasDiagnosticSuggestions
+      ? renderPlanTextWithInlineSuggestions(valueText(problem.diagnosticPlan), diagnosticSuggestions, problem.id, references)
+      : renderTextWithCitationLinks(problem.diagnosticPlan, apReferences);
+    const therapeuticPlanHtml = hasTherapeuticSuggestions
+      ? renderPlanTextWithInlineSuggestions(valueText(problem.therapeuticPlan), therapeuticSuggestions, problem.id, references)
+      : renderTextWithCitationLinks(problem.therapeuticPlan, apReferences);
+    const referencesHtml = references.length ? renderApReferences(references) : "";
     return `<article class="plan-problem-card" data-problem-id="${escapeHtml(problem.id)}">
       <div class="ed-problem-bar"><strong>Problem ${index + 1}</strong><span class="ed-mini-row"><button type="button" class="ed-mini" data-action="generate-ap" data-problem-id="${escapeHtml(problem.id)}" ${generating ? "disabled" : ""} title="${escapeHtml(generating ? "Asking AI for suggested revisions…" : "Ask AI for suggested revisions to this problem's plan (uses your saved OpenAI key; only de-identified context is sent; you review the editable prompt first)")}">${icon("wand")} ${generating ? "Generating…" : "Generate"}</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="-1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem up">↑</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-plan-problem" data-problem-id="${escapeHtml(problem.id)}">Remove</button></span></div>
+      ${generating ? renderApLoadingBanner() : ""}
       <div class="ed-sub"><span class="ed-sub-label">Clinical problem</span><div class="ed-body ed-body--strong" contenteditable="true" data-problem-field="problem" data-placeholder="Name the clinical problem, not a test or treatment" spellcheck="true">${editorHtml(sanitizeProblemTitle(valueText(problem.problem)))}</div></div>
       <div class="ed-sub"><span class="ed-sub-label">Key context</span><div class="ed-body" contenteditable="true" data-problem-field="keyContext" data-placeholder="Optional concise context" spellcheck="true">${editorHtml(problem.keyContext)}</div></div>
       <div class="ed-etiology"><span class="ed-sub-label">Etiology</span>${helpButton(known ? "etiology_known" : "etiology_unknown", "Etiology status", guidanceFor(known ? "etiology_known" : "etiology_unknown"))}<div class="segmented-options"><label><input type="radio" name="etiology_${escapeHtml(problem.id)}" data-problem-etiology value="known" ${known ? "checked" : ""}> <span>Known</span></label><label><input type="radio" name="etiology_${escapeHtml(problem.id)}" data-problem-etiology value="unknown" ${known ? "" : "checked"}> <span>Unknown</span></label></div></div>
       ${known
         ? `<div class="ed-sub"><span class="ed-sub-label">Known etiology</span><div class="ed-body" contenteditable="true" data-problem-field="knownEtiology" data-placeholder="Documented cause or mechanism" spellcheck="true">${editorHtml(problem.knownEtiology)}</div></div>`
-        : `<div class="ed-differentials"><div class="ed-diff-head"><span class="ed-sub-label">Ranked differential</span><button type="button" class="ed-mini" data-action="add-differential" data-problem-id="${escapeHtml(problem.id)}">${icon("plus")} Add</button></div>${problem.differentials.map((entry, differentialIndex) => renderDifferentialEditor(entry, differentialIndex, problem.id)).join("") || `<p class="ed-empty">No differential diagnoses added.</p>`}</div>`}
-      <div class="ed-two"><div class="ed-sub"><span class="ed-sub-label">Diagnostic plan</span><div class="ed-body" contenteditable="true" data-problem-field="diagnosticPlan" data-placeholder="Optional" spellcheck="true">${editorHtml(problem.diagnosticPlan)}</div></div><div class="ed-sub"><span class="ed-sub-label">Therapeutic plan</span><div class="ed-body" contenteditable="true" data-problem-field="therapeuticPlan" data-placeholder="Optional" spellcheck="true">${editorHtml(problem.therapeuticPlan)}</div></div></div>
-      ${options.apSuggestions ? renderApSuggestions(options.apSuggestions, problem.id) : ""}
+        : `<div class="ed-differentials"><div class="ed-diff-head"><span class="ed-sub-label">Ranked differential</span><button type="button" class="ed-mini" data-action="add-differential" data-problem-id="${escapeHtml(problem.id)}">${icon("plus")} Add</button></div>${renderDifferentialsWithInlineSuggestions(problem, suggestionList, references)}</div>`}
+      <div class="ed-two"><div class="ed-sub"><span class="ed-sub-label">Diagnostic plan</span><div class="ed-body" ${hasDiagnosticSuggestions ? `contenteditable="false" data-ap-reviewing="true"` : `contenteditable="true"`} data-problem-field="diagnosticPlan" data-placeholder="Optional" spellcheck="true">${diagnosticPlanHtml}</div>${hasDiagnosticSuggestions ? `<p class="ap-review-note">Resolve the suggestions above to resume editing.</p>` : ""}</div><div class="ed-sub"><span class="ed-sub-label">Therapeutic plan</span><div class="ed-body" ${hasTherapeuticSuggestions ? `contenteditable="false" data-ap-reviewing="true"` : `contenteditable="true"`} data-problem-field="therapeuticPlan" data-placeholder="Optional" spellcheck="true">${therapeuticPlanHtml}</div>${hasTherapeuticSuggestions ? `<p class="ap-review-note">Resolve the suggestions above to resume editing.</p>` : ""}</div></div>
+      ${referencesHtml}
     </article>`;
   }
 
@@ -768,7 +898,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       + (objectiveBlocks || `<p class="ed-empty">Choose items from Clinical data to add Objective content.</p>`)
       + `<div class="ed-sub"><span class="ed-sub-label">Student-authored Objective text</span>${editorRegion("data-draft-objective-manual", draft.objective?.manual, "Optional exam findings, intake/output, or other directly observed data")}</div>`;
 
-    const planBody = `<p class="ed-hint">Order problems by decisional importance. Add only reasoning and actions you support.</p><div class="plan-problem-list" data-plan-problem-list>${draft.problems.map((problem, index) => renderProblemEditor(problem, index, guidanceFor, { generatingApProblemId, apSuggestions: (apSuggestions || {})[problem.id] })).join("") || `<p class="ed-empty">No problems added yet.</p><p class="ed-hint">If you pulled from the primary note and expected problems here, the Assessment &amp; Plan may not have parsed — use the ⤓ pull button on the Plan section header or add a problem manually.</p>`}</div>${apConfirm ? renderApConfirmModal(apConfirm) : ""}`;
+    const planBody = `<p class="ed-hint">Order problems by decisional importance. Add only reasoning and actions you support.</p><div class="plan-problem-list" data-plan-problem-list>${draft.problems.map((problem, index) => renderProblemEditor(problem, index, guidanceFor, { generatingApProblemId, apSuggestions: (apSuggestions || {})[problem.id], apReferences: draft.apReferences })).join("") || `<p class="ed-empty">No problems added yet.</p><p class="ed-hint">If you pulled from the primary note and expected problems here, the Assessment &amp; Plan may not have parsed — use the ⤓ pull button on the Plan section header or add a problem manually.</p>`}</div>${apConfirm ? renderApConfirmModal(apConfirm) : ""}`;
 
     return `<section class="note-draft-panel panel" aria-labelledby="draftNoteHeading">
       <div class="note-editor-toolbar">

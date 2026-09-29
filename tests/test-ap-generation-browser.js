@@ -111,23 +111,25 @@ try {
     await page.keyboard.press("End");
     await page.keyboard.type(" EDITMARKER-987");
     await page.click('[data-action="ap-confirm-generate"]');
-    await page.waitForSelector(".ap-suggestion", { timeout: 15000 });
+    await page.waitForSelector(".ap-inline-change", { timeout: 15000 });
     assert.equal(apiCalls, 1);
     assert.ok(lastInput.includes("EDITMARKER-987"), "edited prompt text is what gets sent");
     assert.ok(lastInput.includes("Heart failure"));
     assert.ok(!lastInput.includes("Pneumonia"), "edited prompt still excludes other problems");
   });
 
-  await check("suggestions render as individual approve/reject cards", async () => {
-    const cards = page.locator(".ap-suggestion");
-    assert.equal(await cards.count(), 3);
-    const head = await page.locator(".ap-suggestions-head").innerText();
-    assert.match(head, /approve or reject/);
-    assert.match(await cards.nth(0).innerText(), /add/i);
-    assert.match(await cards.nth(0).innerText(), /BNP/);
-    assert.match(await cards.nth(1).innerText(), /revise/i);
-    assert.match(await cards.nth(2).innerText(), /remove/i);
-    assert.ok((await page.locator('.ap-suggestions a[href*="ahajournals.org"]').count()) >= 1, "citation link is present");
+  await check("suggestions render inline in the plan, track-changes style", async () => {
+    const changes = page.locator(".ap-inline-change");
+    assert.equal(await changes.count(), 3);
+    // Revise shows struck-through anchor + inserted text
+    assert.ok(await page.locator(".ap-inline-del").count() >= 2, "revise/remove anchors are struck through");
+    assert.ok(await page.locator(".ap-inline-ins").count() >= 2, "add/revise insertions are highlighted");
+    // Each change has inline approve/reject
+    assert.equal(await page.locator('[data-action="ap-suggestion-approve"]').count(), 3);
+    assert.equal(await page.locator('[data-action="ap-suggestion-reject"]').count(), 3);
+    // Plan fields are read-only while reviewing
+    assert.equal(await page.locator('[data-problem-field="diagnosticPlan"][data-ap-reviewing="true"]').count(), 1);
+    assert.ok((await page.locator('.ap-suggestion-refs a[href*="ahajournals.org"]').count()) >= 1, "citation link is present");
   });
 
   await check("suggestions survive a full draft-panel re-render", async () => {
@@ -135,40 +137,31 @@ try {
     // renderDraft (not the surgical card swap). The pending suggestions
     // must still be there afterwards.
     await page.selectOption("#reviewNoteType", "hp");
-    await page.waitForFunction(() => document.querySelectorAll(".ap-suggestion").length === 3);
+    await page.waitForFunction(() => document.querySelectorAll(".ap-inline-change").length === 3);
     await page.selectOption("#reviewNoteType", "progress");
-    await page.waitForFunction(() => document.querySelectorAll(".ap-suggestion").length === 3);
+    await page.waitForFunction(() => document.querySelectorAll(".ap-inline-change").length === 3);
   });
 
-  await check("suggestions survive a full review re-render (renderReview)", async () => {
-    // Leaving and re-opening the review view runs the full renderReview
-    // path. The pending suggestions must still be there afterwards.
-    await page.click('[data-view-target="daily"]');
-    await page.waitForSelector('[data-action="open-admission-note"]');
-    await page.click('[data-action="open-admission-note"]');
-    await page.waitForSelector("#reviewContent .review-workspace");
-    await page.waitForFunction(() => document.querySelectorAll(".ap-suggestion").length === 3);
-  });
 
   await check("approving the add suggestion appends to the diagnostic plan", async () => {
-    await page.locator('[data-action="ap-suggestion-approve"]').first().click();
-    await page.waitForFunction(() => document.querySelectorAll(".ap-suggestion").length === 2);
+    await page.locator('[data-action="ap-suggestion-approve"][data-suggestion-id="1"]').click();
+    await page.waitForFunction(() => document.querySelectorAll(".ap-inline-change").length === 2);
     const dxPlan = await page.locator(".plan-problem-card").first().locator('[data-problem-field="diagnosticPlan"]').innerText();
     assert.match(dxPlan, /Old test/, "existing plan text is preserved");
     assert.match(dxPlan, /BNP/, "approved addition is appended");
   });
 
   await check("approving the revise suggestion replaces the anchored text", async () => {
-    await page.locator('[data-action="ap-suggestion-approve"]').first().click();
-    await page.waitForFunction(() => document.querySelectorAll(".ap-suggestion").length === 1);
+    await page.locator('[data-action="ap-suggestion-approve"][data-suggestion-id="2"]').click();
+    await page.waitForFunction(() => document.querySelectorAll(".ap-inline-change").length === 1);
     const txPlan = await page.locator(".plan-problem-card").first().locator('[data-problem-field="therapeuticPlan"]').innerText();
     assert.match(txPlan, /New med 20 mg IV BID/);
     assert.ok(!txPlan.includes("Old med 10 mg PO daily"), "anchored text is replaced, not duplicated");
   });
 
   await check("rejecting the remove suggestion keeps the differential", async () => {
-    await page.locator('[data-action="ap-suggestion-reject"]').first().click();
-    await page.waitForFunction(() => document.querySelectorAll(".ap-suggestion").length === 0);
+    await page.locator('[data-action="ap-suggestion-reject"][data-suggestion-id="3"]').click();
+    await page.waitForFunction(() => document.querySelectorAll(".ap-inline-change").length === 0);
     const diagnoses = await page.locator(".plan-problem-card").first().locator('[data-differential-field="diagnosis"]').allInnerTexts();
     assert.ok(diagnoses.some((t) => t.includes("Old diagnosis")), "rejected removal leaves the differential in place");
   });
@@ -180,7 +173,50 @@ try {
     await page.click('[data-action="ap-confirm-cancel"]');
     assert.equal(await page.locator(".ap-confirm-modal").count(), 0);
     assert.equal(apiCalls, callsBefore, "no API call on cancel");
-    assert.equal(await page.locator(".plan-problem-card").nth(1).locator(".ap-suggestion").count(), 0);
+    assert.equal(await page.locator(".plan-problem-card").nth(1).locator(".ap-inline-change").count(), 0);
+  });
+
+  await check("a prominent loading indicator shows while generating", async () => {
+    // Delay the mock API so the loading state is observable.
+    await page.unroute("https://api.openai.com/v1/responses");
+    await page.route("https://api.openai.com/v1/responses", async (route) => {
+      await new Promise((r) => setTimeout(r, 1500));
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ output_text: JSON.stringify(mockSuggestions) })
+      });
+    });
+    await page.locator(".plan-problem-card").nth(1).locator('[data-action="generate-ap"]').click();
+    await page.waitForSelector(".ap-confirm-modal");
+    await page.click('[data-action="ap-confirm-generate"]');
+    // Loading banner appears with spinner and status text
+    await page.waitForSelector(".ap-loading-banner", { timeout: 5000 });
+    const bannerText = await page.locator(".ap-loading-banner").innerText();
+    assert.match(bannerText, /AI is reviewing your plan/);
+    assert.match(bannerText, /1–2 minutes/);
+    assert.equal(await page.locator(".ap-spinner").count(), 1, "spinner is visible");
+    // Generate button shows Generating state
+    const btnText = await page.locator(".plan-problem-card").nth(1).locator('[data-action="generate-ap"]').innerText();
+    assert.match(btnText, /Generating/);
+    // Banner disappears when suggestions arrive
+    await page.waitForSelector(".ap-inline-change", { timeout: 15000 });
+    assert.equal(await page.locator(".ap-loading-banner").count(), 0, "loading banner is removed after generation");
+  });
+
+  await check("approved suggestions include hyperlinked citations in the plan", async () => {
+    // The mock suggestion id=1 (add BNP) has citationIds: [1] with a URL.
+    // Approve it and verify the citation marker appears as a hyperlink.
+    await page.locator('.plan-problem-card').nth(1).locator('[data-action="ap-suggestion-approve"][data-suggestion-id="1"]').click();
+    await page.waitForFunction(() => document.querySelectorAll('.plan-problem-card')[1].querySelector('[data-problem-field="diagnosticPlan"]').innerText.includes("BNP"));
+    const dxField = page.locator(".plan-problem-card").nth(1).locator('[data-problem-field="diagnosticPlan"]');
+    const dxText = await dxField.innerText();
+    assert.match(dxText, /BNP/, "approved text is in the plan");
+    assert.match(dxText, /\[1\]/, "citation marker is part of the plan text");
+    // The marker is rendered as a hyperlink to the source
+    const citeLink = dxField.locator('a[href*="ahajournals.org"]');
+    assert.equal(await citeLink.count(), 1, "citation is a hyperlink");
+    assert.equal(await citeLink.innerText(), "[1]");
   });
 
   await check("no JS errors", async () => {

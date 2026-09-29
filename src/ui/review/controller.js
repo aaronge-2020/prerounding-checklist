@@ -21,6 +21,7 @@ import {
   deselectObjectiveBlockWithMemory,
   editObjectiveGroup,
   fieldsForNoteType,
+  mergeApReferences,
   NOTE_TYPES,
   normalizeNoteDraft,
   objectiveEditorGroups,
@@ -1053,16 +1054,11 @@ export function createReviewController(deps) {
     const finalPrompt = readEditedApPrompt().trim() || pending.promptText;
     apConfirmState = null;
     generatingApProblemId = problemId;
-    // Remove the modal node and flip just the Generate button to its
-    // generating state — no re-render.
+    // Remove the modal node and re-render the card to show the prominent
+    // loading banner (plus the Generating button state).
     const panel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
     panel?.querySelector("[data-ap-confirm-overlay]")?.remove();
-    const generateBtn = panel?.querySelector(`[data-problem-id="${CSS.escape(problemId)}"] [data-action="generate-ap"]`);
-    if (generateBtn) {
-      generateBtn.disabled = true;
-      const svg = generateBtn.querySelector("svg")?.outerHTML || "";
-      generateBtn.innerHTML = `${svg} Generating…`;
-    }
+    refreshProblemCard(problemId);
     deps.setStatus(`Asking AI for suggested revisions to "${pending.problemName}"…`);
     try {
       const preferences = deps.currentPreferences ? deps.currentPreferences() : {};
@@ -1131,11 +1127,20 @@ export function createReviewController(deps) {
 
   // Apply one approved suggestion to the draft model. Returns true when the
   // plan changed; false when the anchor could not be located (no-op).
-  function applyApSuggestionToDraft(draft, problemId, suggestion) {
+  function applyApSuggestionToDraft(draft, problemId, suggestion, references = []) {
     const problem = (draft.problems || []).find((p) => p.id === problemId);
     if (!problem) return { draft, changed: false };
-    const citations = (suggestion.citationIds || []).map((id) => `[${id}]`).join(" ");
-    const rationale = [suggestion.rationale, citations].filter(Boolean).join(" ").trim();
+    const citationIds = (suggestion.citationIds || []).filter((id) =>
+      references.some((r) => String(r.id) === String(id))
+    );
+    const citationMarkers = citationIds.map((id) => `[${id}]`).join(" ");
+    // Append citation markers to the suggested text so they become part of
+    // the plan. The presentation layer renders [n] as hyperlinks using the
+    // persisted draft.apReferences.
+    const suggestedWithCitations = citationMarkers
+      ? `${suggestion.suggested} ${citationMarkers}`.trim()
+      : suggestion.suggested;
+    const rationale = [suggestion.rationale, citationMarkers].filter(Boolean).join(" ").trim();
 
     if (suggestion.target === "differential") {
       const likelihoodPrefix = suggestion.likelihood ? `${suggestion.likelihood} — ` : "";
@@ -1183,16 +1188,17 @@ export function createReviewController(deps) {
     const lines = currentText.split(/\r?\n/);
     const needle = normalizeAnchor(suggestion.anchor);
     if (suggestion.action === "add") {
-      const bullet = suggestion.suggested.startsWith("•") || suggestion.suggested.startsWith("-")
-        ? suggestion.suggested
-        : `• ${suggestion.suggested}`;
+      const base = suggestedWithCitations;
+      const bullet = base.startsWith("•") || base.startsWith("-")
+        ? base
+        : `• ${base}`;
       const next = currentText ? `${currentText}\n${bullet}` : bullet;
       return { draft: updatePlanProblem(draft, problemId, { [field]: next }), changed: true };
     }
     const idx = lines.findIndex((line) => normalizeAnchor(line).includes(needle) || (needle && normalizeAnchor(line) && needle.includes(normalizeAnchor(line))));
     if (idx === -1) {
-      if (suggestion.action === "revise" && suggestion.suggested) {
-        const next = currentText ? `${currentText}\n• ${suggestion.suggested}` : `• ${suggestion.suggested}`;
+      if (suggestion.action === "revise" && suggestedWithCitations) {
+        const next = currentText ? `${currentText}\n• ${suggestedWithCitations}` : `• ${suggestedWithCitations}`;
         return { draft: updatePlanProblem(draft, problemId, { [field]: next }), changed: true };
       }
       return { draft, changed: false };
@@ -1200,7 +1206,7 @@ export function createReviewController(deps) {
     if (suggestion.action === "remove") {
       lines.splice(idx, 1);
     } else {
-      lines[idx] = suggestion.suggested;
+      lines[idx] = suggestedWithCitations;
     }
     return { draft: updatePlanProblem(draft, problemId, { [field]: lines.join("\n") }), changed: true };
   }
@@ -1209,8 +1215,16 @@ export function createReviewController(deps) {
     const suggestion = pendingSuggestions(problemId).find((s) => String(s.id) === String(suggestionId));
     if (!suggestion) return;
     const current = model();
-    const { draft, changed } = applyApSuggestionToDraft(current.draft, problemId, suggestion);
-    if (changed) setDraft(draft);
+    const references = (apSuggestionsState[problemId]?.references || []);
+    const { draft, changed } = applyApSuggestionToDraft(current.draft, problemId, suggestion, references);
+    if (changed) {
+      // Persist the suggestion's references so citation markers in the plan
+      // can be rendered as hyperlinks.
+      const mergedRefs = mergeApReferences(draft.apReferences, references.filter((r) =>
+        (suggestion.citationIds || []).includes(r.id)
+      ));
+      setDraft({ ...draft, apReferences: mergedRefs });
+    }
     dropSuggestion(problemId, suggestionId);
     refreshProblemCard(problemId);
     deps.setStatus(changed
