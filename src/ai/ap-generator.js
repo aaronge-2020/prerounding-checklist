@@ -5,6 +5,8 @@
 // Privacy: the caller must supply ONLY de-identified text. This module never
 // sees raw chart data; it formats whatever context strings it is given.
 
+import { resolveMedicationConcepts } from "../patient-context/rxnorm-resolve.js?v=20260929-rxnorm-mar-v1";
+
 export const AP_RESPONSE_SCHEMA = {
   type: "object",
   additionalProperties: false,
@@ -239,6 +241,59 @@ function planLines(text) {
 // the note-level assessment and compact objective data — never other
 // problems, never the full draft. The whole prompt is shown to the student
 // in an editable textarea before anything is sent.
+// Deterministic medication context for the per-problem consult.
+// Resolves each medication order string to RxNorm concepts (ingredient-level
+// RxCUIs via src/patient-context/rxnorm-resolve.js — offline, never throws)
+// and renders one line per concept:
+//
+//   MEDICATION CONTEXT (RxNorm-coded, deterministic):
+//   - Lipitor 20 mg PO daily → atorvastatin (RxCUI 83367) — 20 mg, PO
+//
+// Combination products emit one line per ingredient. Medications that do not
+// resolve are skipped silently; when nothing resolves the block is omitted
+// entirely so the consult prompt is never broken by a lookup miss.
+// The block contains only coded concepts and public terminology (no PHI), and
+// it is injected into the prompt BEFORE the student reviews the exact outbound
+// text in the confirm modal — the existing review gate stays authoritative.
+//
+// EXTENSION CONTRACT (append-only; no dead code shipped):
+// - Interaction flags (DDInter bundle, download in progress) append under an
+//   "INTERACTION FLAGS:" subheader as:
+//     ! <severity>: <drug A> + <drug B> — <mechanism / management>
+// - DailyMed label excerpts (label lookup migration pending) append under a
+//   "LABEL EXCERPTS:" subheader as:
+//     \u2022 <ingredient>: <section> — <excerpt> (<citation>)
+export function buildMedicationContextBlock(medications = []) {
+  const seen = new Set();
+  const lines = [];
+  const list = Array.isArray(medications) ? medications : [];
+  for (const entry of list) {
+    const text = typeof entry === "string" ? entry : String(entry?.orderText ?? entry?.name ?? "");
+    if (!text.trim()) continue;
+    let concepts = [];
+    try {
+      concepts = resolveMedicationConcepts(text) || [];
+    } catch {
+      concepts = [];
+    }
+    for (const concept of concepts) {
+      const rxcui = String(concept?.rxcui || "").trim();
+      const name = String(concept?.name || "").trim();
+      if (!rxcui || !name) continue;
+      const detail = [concept?.strength, concept?.doseForm, concept?.route]
+        .map((part) => String(part || "").trim())
+        .filter(Boolean)
+        .join(", ");
+      const dedupeKey = `${rxcui}|${detail}`;
+      if (seen.has(dedupeKey)) continue;
+      seen.add(dedupeKey);
+      lines.push(`- ${clean(text, 120)} \u2192 ${name} (RxCUI ${rxcui})${detail ? ` \u2014 ${detail}` : ""}`);
+    }
+  }
+  if (!lines.length) return "";
+  return clean(`MEDICATION CONTEXT (RxNorm-coded, deterministic):\n${lines.join("\n")}`, 4000);
+}
+
 export function buildApRevisionPrompt({
   problem,
   keyContext,
@@ -249,7 +304,8 @@ export function buildApRevisionPrompt({
   therapeuticPlan,
   assessment,
   vitals,
-  keyLabs
+  keyLabs,
+  medications
 } = {}) {
   const problemName = clean(problem, 300) || "(problem not named)";
   const context = clean(keyContext, 1500);
@@ -271,6 +327,7 @@ export function buildApRevisionPrompt({
   const objectiveBits = [];
   if (clean(vitals, 1500)) objectiveBits.push(`Vitals: ${clean(vitals, 1500)}`);
   if (clean(keyLabs, 3000)) objectiveBits.push(`Key labs / diagnostics: ${clean(keyLabs, 3000)}`);
+  const medicationBlock = buildMedicationContextBlock(medications);
 
   return `You are an expert clinical assistant helping a medical student refine the assessment and plan for ONE clinical problem. All patient context below is DE-IDENTIFIED. Base every suggestion on the context given; do not invent patient data.
 
@@ -292,6 +349,7 @@ ${txLines.length ? txLines.map((line) => `- ${line}`).join("\n") : "(none writte
 STUDENT'S ASSESSMENT SYNTHESIS (note-level):
 ${assessmentText || "(none written yet)"}
 ${objectiveBits.length ? `\nDE-IDENTIFIED OBJECTIVE DATA:\n${objectiveBits.join("\n")}\n` : ""}
+${medicationBlock ? `\n${medicationBlock}\n` : ""}
 TASK — return suggestions as a JSON object with a "suggestions" array. Each suggestion revises ONE thing:
 
 - "target": one of "differential", "diagnostic_plan", "therapeutic_plan".

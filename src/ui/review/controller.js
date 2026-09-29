@@ -54,7 +54,7 @@ import {
 } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import {
   buildApRevisionPrompt
-} from "../../ai/ap-generator.js?v=20260928-ap-suggestions-v1";
+} from "../../ai/ap-generator.js?v=20260929-ap-medcontext-v1";
 import { generateProblemApRevisionsWithOpenAi } from "../openai-ap-api.js?v=20260928-ap-suggestions-v1";
 import { createDifferential } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 
@@ -1091,7 +1091,12 @@ export function createReviewController(deps) {
       therapeuticPlan: apPlanFieldText(problem, "therapeuticPlan"),
       assessment: apDraftText(draft.assessment),
       vitals: apDraftText(draft.vitalsSummary),
-      keyLabs: apDraftText(draft.keyLabsSummary)
+      keyLabs: apDraftText(draft.keyLabsSummary),
+      // Active medication list (MAR + home meds, coalesced by the review
+      // index). No problem→medication association exists, so the whole active
+      // list is passed; the prompt builder resolves each entry to RxNorm
+      // concepts and silently drops anything unresolvable.
+      medications: (current.index?.medications || []).map((m) => m?.name).filter(Boolean)
     });
     apConfirmState = { problemId, problemName: problemName || "(unnamed problem)", promptText };
     // Insert just the modal node — no re-render. The modal lives at the end
