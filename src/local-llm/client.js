@@ -286,12 +286,24 @@ export function createLocalLlmClient() {
     if (!model) throw new Error(`Unknown local model: ${modelKey}`);
     // Offline mode must not trigger a multi-hundred-megabyte download the
     // student didn't ask for: fail fast with a clear explanation when the
-    // weights aren't already in this browser's cache.
+    // weights aren't already in this browser's cache. The registry is only
+    // a hint, so reconcile it against the worker's ground-truth cache
+    // check first — a model whose weights are actually in Cache Storage
+    // stays usable offline even if its registry entry is missing.
     if (isOfflineMode() && !readLocalLlmDownloaded()[modelKey]) {
-      throw new Error(
-        `Offline mode is on and ${model.label} hasn't been downloaded in this browser yet. ` +
-        "Turn offline mode off in Settings to download it once — afterwards it runs fully offline."
-      );
+      let actuallyCached = false;
+      try {
+        actuallyCached = (await cachedModels())[modelKey] === true;
+      } catch {
+        // Ground-truth check unavailable (no worker); fall through to the
+        // refusal rather than risking a blocked multi-hundred-MB download.
+      }
+      if (!actuallyCached) {
+        throw new Error(
+          `Offline mode is on and ${model.label} hasn't been downloaded in this browser yet. ` +
+          "Turn offline mode off in Settings to download it once — afterwards it runs fully offline."
+        );
+      }
     }
     if (status === "ready" && activeModelKey === modelKey && verifiedModelKey === modelKey) {
       return getStatus();
