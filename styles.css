@@ -302,6 +302,14 @@ p {
   padding-left: 5px;
 }
 
+.primary-nav .nav-note {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
 @media (min-width: 1041px) {
   .app-shell {
     grid-template-columns: 64px minmax(0, 1fr);

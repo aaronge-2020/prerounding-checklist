@@ -860,9 +860,12 @@ function decorateNavigation() {
   document.querySelectorAll(".primary-nav [data-icon]").forEach((button) => {
     if (button.dataset.decorated) return;
     const label = button.textContent.trim();
-    button.innerHTML = `${icon(button.dataset.icon)}<span>${escapeHtml(label)}</span>`;
-    button.setAttribute("aria-label", label);
-    button.title = label;
+    const note = (button.dataset.note || "").trim();
+    const noteHtml = note ? `<small class="nav-note">${escapeHtml(note)}</small>` : "";
+    button.innerHTML = `${icon(button.dataset.icon)}<span>${escapeHtml(label)}${noteHtml}</span>`;
+    const accessible = note ? `${label} — ${note}` : label;
+    button.setAttribute("aria-label", accessible);
+    button.title = accessible;
     button.dataset.decorated = "true";
   });
 }
@@ -1652,7 +1655,7 @@ async function handleClick(event) {
   try {
     if (
       !vaultIsUnlocked() &&
-      !["unlock-vault", "toggle-vault-passphrase", "restore-vault", "request-delete-vault", "confirm-delete-vault", "start-guided-demo"].includes(action)
+      !["unlock-vault", "toggle-vault-passphrase", "restore-vault", "request-delete-vault", "confirm-delete-vault", "start-guided-demo", "open-scribe"].includes(action)
     ) {
       throw new Error("Unlock the local vault before using workspace tools.");
     }
@@ -1664,6 +1667,11 @@ async function handleClick(event) {
         app.passphrase = "demo-preview-session";
       }
       demoSessionController.start();
+    }
+    if (action === "open-scribe") {
+      // Standalone prototype page: no vault, no patient data. New tab keeps the
+      // unlocked workspace intact. Phone-first; the native iOS app is the full experience.
+      window.open("scribe-prototype.html", "_blank", "noopener");
     }
     if (action === "exit-guided-demo") {
       if (app.demoPreviewMode) {

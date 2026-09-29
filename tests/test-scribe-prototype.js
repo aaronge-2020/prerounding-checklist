@@ -1,10 +1,10 @@
 /**
  * Contract tests for the standalone on-device scribe prototype.
  *
- * The prototype (scribe-prototype.html + src/scribe/) is intentionally NOT
- * wired into the app: it must stay out of index.html navigation, keep all
- * inference local (WASM, single thread), never call a remote transcription
- * API, and never persist patient audio or transcripts.
+ * The prototype (scribe-prototype.html + src/scribe/) is linked from the desktop
+ * navigation as a phone-first entry (data-action="open-scribe", no vault gate): it
+ * must keep all inference local (WASM, single thread), never call a remote
+ * transcription API, and never persist patient audio or transcripts.
  */
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
@@ -21,9 +21,12 @@ const worklet = read("src/scribe/capture-worklet.js");
 const fbank = read("src/scribe/speaker-fbank.js");
 const index = read("index.html");
 
-// 1. The prototype is a standalone root page, not part of app navigation.
+// 1. The prototype is a standalone root page, linked from desktop nav as phone-first.
 assert.ok(existsSync(repoFile("scribe-prototype.html")), "scribe-prototype.html exists at repo root");
-assert.ok(!index.includes("scribe-prototype"), "index.html must not link the prototype");
+assert.ok(index.includes('data-action="open-scribe"'), "desktop nav exposes the prototype via open-scribe");
+assert.ok(index.includes("Phone-first"), "nav entry is marked phone-first");
+const app = read("src/ui/app.js");
+assert.ok(app.includes('window.open("scribe-prototype.html"'), "open-scribe opens the prototype page");
 assert.ok(!index.includes("src/scribe/"), "index.html must not reference prototype modules");
 assert.ok(!page.includes('href="styles.css"') && !page.includes("href='styles.css'"), "prototype must not pull in the app stylesheet");
 
@@ -32,7 +35,7 @@ assert.match(worker, /device:\s*["']wasm["']/, "transcription runs on the wasm d
 assert.match(worker, /numThreads\s*=\s*1/, "single-threaded WASM (no cross-origin isolation on Pages)");
 assert.match(worker, /proxy\s*=\s*false/, "no proxy threads");
 assert.ok(!/device:\s*["']webgpu["']/.test(worker), "WebGPU must not be selected anywhere in the prototype worker");
-assert.match(worker, /dtype:\s*payload\.dtype\s*\|\|\s*["']q8["']/, "quantized (q8) weights are the default for the phone download budget");
+assert.match(worker, /dtype:\s*payload\.dtype\s*\|\|\s*["']fp32["']/, "fp32 is the default: the Jan-2025 *_quantized.onnx QDQ layout is rejected by the vendored ORT at session creation");
 
 // 3. No remote transcription endpoint: the only network use is one-time model download.
 for (const [name, src] of [["page", page], ["worker", worker], ["worklet", worklet], ["fbank", fbank]]) {
@@ -58,9 +61,10 @@ assert.ok(/first model installation requires connectivity|downloads once/i.test(
 assert.ok(/Not validated for clinical documentation/i.test(page), "explicit not-validated-for-clinical-documentation warning");
 assert.ok(/clinician review/i.test(page), "clinician-review requirement stated");
 
-// 5b. Phone defaults: tiny model pre-selected, q8 explicit, recording bounded, worklet graph alive.
+// 5b. Phone defaults: tiny model pre-selected, fp32 explicit (quantized artifacts
+// incompatible with the vendored ORT), recording bounded, worklet graph alive.
 assert.match(page, /moonshine-tiny-ONNX" selected/, "tiny is the default model");
-assert.ok(page.includes('dtype: "q8"'), "q8 dtype passed explicitly on install");
+assert.ok(page.includes('dtype: "fp32"'), "fp32 dtype passed explicitly on install");
 assert.match(page, /MAX_REC_SECONDS\s*=\s*10\s*\*\s*60/, "10-minute recording cap defined");
 assert.ok(/gain\.value\s*=\s*0/.test(page) && /connect\(ctx\.destination\)/.test(page),
   "capture graph kept alive via zero-gain node to destination (no feedback)");
