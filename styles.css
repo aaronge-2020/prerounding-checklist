@@ -13153,6 +13153,10 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   border-radius: 10px;
   background: var(--surface, #fff);
   overflow: hidden;
+  /* Never let flex layout crush review cards to a sliver: the modal body
+     scrolls instead. (overflow:hidden zeroes the automatic minimum size,
+     so without this the cards collapse to their 2px borders.) */
+  flex-shrink: 0;
 }
 .aic-hipaa-piece-head {
   width: 100%;
