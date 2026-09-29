@@ -1102,11 +1102,11 @@ export function createReviewController(deps) {
     apConfirmState = null;
     generatingApProblemId = problemId;
     // Remove the modal node and re-render the card to show the prominent
-    // loading banner (plus the Generating button state).
+    // loading banner (plus the Consulting button state).
     const panel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
     panel?.querySelector("[data-ap-confirm-overlay]")?.remove();
     refreshProblemCard(problemId);
-    deps.setStatus(`Asking AI for suggested revisions to "${pending.problemName}"…`);
+    deps.setStatus(`Consulting AI on "${pending.problemName}"…`);
     try {
       const preferences = deps.currentPreferences ? deps.currentPreferences() : {};
       const result = await generateProblemApRevisionsWithOpenAi({
@@ -1131,7 +1131,7 @@ export function createReviewController(deps) {
       deps.setStatus(`${result.suggestions.length} suggestion${result.suggestions.length === 1 ? "" : "s"} for "${pending.problemName}" — approve or reject each one.`);
     } catch (error) {
       generatingApProblemId = "";
-      // Restore the Generate button from a fresh render of just the card.
+      // Restore the Consult button from a fresh render of just the card.
       refreshProblemCard(problemId);
       const message = error instanceof Error ? error.message : "Suggestion generation failed.";
       deps.setStatus(message);
