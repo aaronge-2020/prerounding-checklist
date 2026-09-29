@@ -16,7 +16,7 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v14";
+import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v15";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20260929-ai-chat-v2";
 import { gatedFetch, isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
 import {
@@ -50,7 +50,7 @@ import {
   pieceText,
   textOf,
   MAX_SELECTED_PIECES_CHARS
-} from "../../local-llm/patient-context.js?v=20260929-local-llm-v10";
+} from "../../local-llm/patient-context.js?v=20260929-local-llm-v11";
 import { CHARS_PER_TOKEN, buildChatMessages, estimateTokens } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES, buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
@@ -67,7 +67,7 @@ import {
   locateTruncation,
   fullChartBudgetChars,
   effectiveGuidelinesText
-} from "./delta-review.js?v=20260929-ai-chat-v14";
+} from "./delta-review.js?v=20260929-ai-chat-v15";
 import {
   parseSectionCitations
 } from "./section-citations.js?v=20260929-ai-chat-v14";
@@ -84,7 +84,7 @@ import {
   clearRagWorkerMemory
 } from "../../rag/rag-service.js?v=20260929-rag-v3";
 import { DEFAULT_RAG_MODEL_KEY } from "../../rag/rag-models.js?v=20260929-rag-v2";
-import { piecesWithRawText } from "../../rag/chart-chunks.js?v=20260929-rag-v2";
+import { piecesWithRawText } from "../../rag/chart-chunks.js?v=20260929-rag-v3";
 
 // Fresh per-conversation OpenAI usage accumulator. All token counts come
 // from the Responses API's own usage blocks; costUsd is computed from the
@@ -109,6 +109,7 @@ export function createAiChatController({
   setStatus,
   render,
   getDraftNoteText,
+  getDraftNoteSections,
   currentPreferences,
   onChatServiceChange,
   onOpenAiModelChange,
@@ -196,6 +197,11 @@ export function createAiChatController({
       // (see renderView's invalidation) so a late network reply can never
       // land in the wrong patient's thread.
       sendToken: 0,
+      // Draft-note section ids the user unchecked in the inspector while in
+      // ChatGPT mode. ChatGPT mode sends the full chart; the draft note
+      // follows these per-section opt-outs (empty = the whole draft rides
+      // along). Pruned to ids that still exist. Never persisted.
+      draftExcludedIds: [],
       // Which send token owns the `sending` flag: only that send's finally
       // may clear it, so a stale send can't unblock a newer one mid-flight.
       sendingToken: 0,
@@ -248,14 +254,52 @@ export function createAiChatController({
     }
   }
 
+  // The draft note as individually selectable sections (one-liner, each
+  // plan problem, ...). [] when there is no draft. Entries are
+  // { key, heading, label, text }; see renderNoteSectionEntries.
+  function currentDraftNoteSections() {
+    try {
+      const entries = getDraftNoteSections?.();
+      return Array.isArray(entries) ? entries : [];
+    } catch {
+      return [];
+    }
+  }
+
+  // Draft-note section ids excluded from ChatGPT sends, pruned to sections
+  // that still exist (draft edits can rename or remove sections).
+  function remoteDraftExcludedIds(pieces) {
+    const valid = new Set(
+      (pieces || []).filter((piece) => piece.kind === "draft_note").map((piece) => piece.id)
+    );
+    const pruned = (state.remote.draftExcludedIds || []).filter((id) => valid.has(id));
+    if (pruned.length !== (state.remote.draftExcludedIds || []).length) {
+      state.remote.draftExcludedIds = pruned;
+    }
+    return new Set(pruned);
+  }
+
+  // The draft-note sections for a ChatGPT send: every current section
+  // except the ones the user explicitly unchecked in the inspector.
+  function draftSectionsForRemote(allSections, pieces) {
+    const excluded = remoteDraftExcludedIds(pieces);
+    return (allSections || []).filter((entry) => {
+      const piece = (pieces || []).find(
+        (candidate) => candidate.kind === "draft_note" && candidate.sectionKey === entry.key
+      );
+      return !!piece && !excluded.has(piece.id);
+    });
+  }
+
   // The active patient's selectable context pieces and the current
   // in-memory selection. Selection defaults are computed once per patient;
   // the user can then freely include/exclude pieces in the inspector.
   // Pass a cached draft string to avoid rebuilding the draft twice per render.
-  function contextPieces(cachedDraft) {
+  function contextPieces(cachedDraft, cachedSections) {
     const patient = activePatient(app.vault);
     const draft = typeof cachedDraft === "string" ? cachedDraft : currentDraftNoteText();
-    const pieces = listPatientContextPieces(patient, { draftNoteText: draft });
+    const sections = Array.isArray(cachedSections) ? cachedSections : currentDraftNoteSections();
+    const pieces = listPatientContextPieces(patient, { draftNoteText: draft, draftNoteSections: sections });
     const valid = new Set(pieces.map((piece) => piece.id));
     let selectedIds = state.chat.contextSelection;
     if (!Array.isArray(selectedIds)) {
@@ -271,11 +315,14 @@ export function createAiChatController({
   // The patient context attached to chat: exactly the pieces the user
   // selected in the inspector, rebuilt from the vault on every call and
   // never persisted. Empty when the toggle is off or nothing is selected.
-  function patientContextInfo(cachedDraft) {
+  function patientContextInfo(cachedDraft, cachedSections) {
     const draft = typeof cachedDraft === "string" ? cachedDraft : currentDraftNoteText();
-    const { patient, selectedIds } = contextPieces(draft);
+    const sections = Array.isArray(cachedSections) ? cachedSections : currentDraftNoteSections();
+    const { patient, selectedIds } = contextPieces(draft, sections);
     const enabled = settings().patientContextEnabled;
-    const text = enabled ? buildPatientContextFromPieces(patient, selectedIds, { draftNoteText: draft }) : "";
+    const text = enabled
+      ? buildPatientContextFromPieces(patient, selectedIds, { draftNoteText: draft, draftNoteSections: sections })
+      : "";
     return {
       patient,
       enabled,
@@ -473,7 +520,8 @@ export function createAiChatController({
     // lock no matter which tab is visible. The draft note is built once
     // here and shared by the inspector and the context meter below.
     const draft = currentDraftNoteText();
-    const pctx = patientContextInfo(draft);
+    const draftSections = currentDraftNoteSections();
+    const pctx = patientContextInfo(draft, draftSections);
     if (state.chat.patientId && pctx.patientId !== state.chat.patientId) {
       // Invalidate any in-flight local send: its generation token dies here
       // so a late retrieval callback can't continue into the new patient.
@@ -513,7 +561,7 @@ export function createAiChatController({
     state.remote.patientId = pctx.patientId;
     if (!root) return;
     ensureHardware();
-    const { pieces, selectedIds } = contextPieces(draft);
+    const { pieces, selectedIds } = contextPieces(draft, draftSections);
     const selectedSet = new Set(selectedIds);
     const modelRecord = localLlmModelByKey(state.chat.modelKey);
     // The sidebar budget meters the ACTIVE mode: ChatGPT mode counts the
@@ -536,12 +584,16 @@ export function createAiChatController({
     const historyTokens = estimateTokens(
       budgetMessages.map((m) => m.text).join("\n")
     );
-    const pieceTokens = pieces.reduce(
-      // API mode sends the FULL chart (no selection); on-device mode sends
-      // only the inspector-selected pieces.
-      (sum, piece) => sum + (isRemoteBudget || selectedSet.has(piece.id) ? Math.ceil(piece.chars / CHARS_PER_TOKEN) : 0),
-      0
-    );
+    // API mode sends the FULL chart: every chart document counts, and the
+    // draft note counts except for sections the user unchecked. On-device
+    // mode sends only the inspector-selected pieces.
+    const remoteExcluded = isRemoteBudget ? remoteDraftExcludedIds(pieces) : null;
+    const pieceTokens = pieces.reduce((sum, piece) => {
+      const counts = isRemoteBudget
+        ? piece.kind !== "draft_note" || !remoteExcluded.has(piece.id)
+        : selectedSet.has(piece.id);
+      return sum + (counts ? Math.ceil(piece.chars / CHARS_PER_TOKEN) : 0);
+    }, 0);
     const prefs = remotePrefs();
     // Local-path retrieval: lazy status probe. Ordinary rendering never
     // downloads the embedding model; the probe only asks whether it is
@@ -602,9 +654,10 @@ export function createAiChatController({
       contextInspector: {
         open: state.chat.inspectorOpen,
         enabled: pctx.enabled,
-        // ChatGPT mode always sends the full chart through the review gate,
-        // so the piece checkboxes and the attach toggle are on-device-mode
-        // controls; the sidebar says so and the budget counts the full chart.
+        // ChatGPT mode sends the full chart through the review gate: chart
+        // documents are always included (shown checked, not selectable),
+        // while the draft note follows the per-section checkboxes below.
+        // The attach toggle stays an on-device-mode control.
         isRemote: state.mode === "remote",
         hasPatient: !!pctx.patient,
         patientLabel: pctx.label,
@@ -612,9 +665,12 @@ export function createAiChatController({
           id: piece.id,
           group: piece.group,
           label: piece.label,
+          kind: piece.kind,
           primary: piece.primary,
           tokens: Math.ceil(piece.chars / CHARS_PER_TOKEN),
-          selected: selectedSet.has(piece.id)
+          selected: state.mode === "remote"
+            ? piece.kind !== "draft_note" || !remoteExcluded.has(piece.id)
+            : selectedSet.has(piece.id)
         })),
         // Ordered group names, matching the piece order above — drives the
         // per-group Select all / Deselect all controls.
@@ -1419,17 +1475,24 @@ export function createAiChatController({
     }
     // API path: the FULL chart text goes through the de-id review gate —
     // the patient header plus every chart section in canonical order. No
-    // embedding model, no retrieval, no piece selection: the API context
-    // window holds the whole chart, and the exact reviewed bytes are what
-    // gets sent.
+    // embedding model, no retrieval: the API context window holds the whole
+    // chart, and the exact reviewed bytes are what gets sent. The draft
+    // note follows the inspector's per-section opt-outs (the whole draft by
+    // default), so the student can send just the one-liner or one problem.
     const draft = currentDraftNoteText();
+    const sections = currentDraftNoteSections();
     const patient = activePatient(app.vault);
+    const { pieces } = contextPieces(draft, sections);
+    const includedSections = draftSectionsForRemote(sections, pieces);
     // The budget is the selected model's real context window minus
     // headroom — not an arbitrary cap. Split, verify, and transmit all
     // share it so the review sees exactly what the wire will carry.
     const chartBudget = fullChartBudgetChars(pricingForModel(prefs.openAiModel)?.contextWindow);
-    const split = splitFullChartContext(patient, { draftNoteText: draft, maxChars: chartBudget });
-    if (!verifyFullChartEquivalence(patient, split, { draftNoteText: draft })) {
+    const split = splitFullChartContext(
+      patient,
+      { draftNoteText: draft, draftNoteSections: includedSections, maxChars: chartBudget }
+    );
+    if (!verifyFullChartEquivalence(patient, split, { draftNoteText: draft, draftNoteSections: includedSections })) {
       state.remote.review = failedReview(
         "The patient context didn't rebuild exactly — sending is blocked. Nothing was sent.",
         deidModelLabel(deidKey)
@@ -2518,6 +2581,22 @@ export function createAiChatController({
       }
       const groupName = groupNames[groupIndex];
       if (groupName === undefined) return true;
+      if (state.mode === "remote") {
+        // ChatGPT mode: only the draft-note sections are selectable — the
+        // chart itself always rides along. Selecting adds back / deselecting
+        // opts out every draft section in the group.
+        const excluded = remoteDraftExcludedIds(pieces);
+        for (const piece of pieces) {
+          if ((piece.group || "Other") === groupName && piece.kind === "draft_note") {
+            if (select) excluded.delete(piece.id);
+            else excluded.add(piece.id);
+          }
+        }
+        state.remote.draftExcludedIds = [...excluded];
+        state.chat.contextStats = null;
+        render();
+        return true;
+      }
       const next = new Set(selectedIds);
       for (const piece of pieces) {
         if ((piece.group || "Other") === groupName) {
@@ -2579,6 +2658,20 @@ export function createAiChatController({
     if (target.matches?.("[data-ai-chat-context-piece]")) {
       // Include/exclude one chart document from the model's context.
       const pieceId = target.dataset.aiChatContextPiece || "";
+      if (state.mode === "remote") {
+        // ChatGPT mode: only draft-note sections are selectable. Checking
+        // one opts it back in; unchecking opts it out of the send.
+        const { pieces } = contextPieces();
+        const piece = pieces.find((candidate) => candidate.id === pieceId);
+        if (!piece || piece.kind !== "draft_note") return true;
+        const excluded = remoteDraftExcludedIds(pieces);
+        if (target.checked) excluded.delete(pieceId);
+        else excluded.add(pieceId);
+        state.remote.draftExcludedIds = [...excluded];
+        state.chat.contextStats = null;
+        render();
+        return true;
+      }
       const { selectedIds } = contextPieces();
       const next = new Set(selectedIds);
       if (target.checked) next.add(pieceId);

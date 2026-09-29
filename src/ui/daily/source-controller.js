@@ -19,7 +19,7 @@ import {
   replaceSourceCapturesFromFormAsync,
   sourceCapturePacketCheck
 } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
-import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
+import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
 import {
   createPrimaryTeamNote,
   primaryTeamNoteFields,

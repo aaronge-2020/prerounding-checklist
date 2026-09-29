@@ -132,8 +132,8 @@ export const resolvePieceText = pieceText;
 
 // Convenience: resolve raw text for every piece descriptor (the shape
 // listPatientContextPieces returns) and attach it as rawText.
-export function piecesWithRawText(patient, pieceDescriptors, { draftNoteText = "" } = {}) {
+export function piecesWithRawText(patient, pieceDescriptors, { draftNoteText = "", draftNoteSections = null } = {}) {
   return (pieceDescriptors || [])
-    .map((piece) => ({ ...piece, rawText: resolvePieceText(patient, piece, { draftNoteText }) }))
+    .map((piece) => ({ ...piece, rawText: resolvePieceText(patient, piece, { draftNoteText, draftNoteSections }) }))
     .filter((piece) => piece.rawText);
 }

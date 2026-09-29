@@ -33,6 +33,7 @@ import {
   removePlanProblem,
   renderFinalNoteHtml,
   renderFinalNotePlainText,
+  renderNoteSectionEntries,
   reorderDifferentials,
   reorderPlanProblems,
   reselectObjectiveBlock,
@@ -46,7 +47,7 @@ import {
   updateManualObjective,
   updateNoteSection,
   updatePlanProblem
-} from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
+} from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
 import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20260925-plan-rows-v1";
 import {
   clearLabBaseline,
@@ -56,7 +57,7 @@ import {
   buildApRevisionPrompt
 } from "../../ai/ap-generator.js?v=20260929-ap-medcontext-v3";
 import { generateProblemApRevisionsWithOpenAi } from "../openai-ap-api.js?v=20260928-ap-suggestions-v1";
-import { createDifferential } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
+import { createDifferential } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
 
 function packetKey(value) {
   return String(value || "admission");
@@ -2417,6 +2418,26 @@ export function createReviewController(deps) {
     }
   }
 
+  // The student's current draft note as individually selectable
+  // sections (one-liner, each plan problem, ...), for granular AI Chat
+  // context. [] when there is no patient or the draft is empty. Entries
+  // are { key, heading, label, text }; see renderNoteSectionEntries.
+  function getDraftNoteSections() {
+    let current;
+    try {
+      current = model();
+    } catch {
+      return [];
+    }
+    if (!current?.patient || !current.draft) return [];
+    if (!noteDraftHasContent(current.draft)) return [];
+    try {
+      return renderNoteSectionEntries(current.draft) || [];
+    } catch {
+      return [];
+    }
+  }
+
   function withAutoSave(fn) {
     return function (target, ...rest) {
       const handled = fn.call(this, target, ...rest);
@@ -2424,5 +2445,5 @@ export function createReviewController(deps) {
       return handled;
     };
   }
-  return Object.freeze({ change: withAutoSave(change), click: withAutoSave(click), input, keydown, open, prepare, render, saveDraft, toggle: withAutoSave(toggle), getDraftNoteText });
+  return Object.freeze({ change: withAutoSave(change), click: withAutoSave(click), input, keydown, open, prepare, render, saveDraft, toggle: withAutoSave(toggle), getDraftNoteText, getDraftNoteSections });
 }

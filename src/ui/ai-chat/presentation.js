@@ -450,8 +450,9 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
 
   function renderSidebarPieces(contextInspector) {
     const info = contextInspector || {};
-    // In ChatGPT mode the full chart goes through the review gate, so the
-    // per-piece selection is an on-device-mode control: shown but inert.
+    // In ChatGPT mode the full chart goes through the review gate: chart
+    // documents are always included (shown checked, not selectable), while
+    // the draft-note sections stay selectable per section.
     const selectionLocked = !!info.isRemote;
     const pieces = Array.isArray(info.pieces) ? info.pieces : [];
     const groups = Array.isArray(info.groups) ? info.groups : [];
@@ -465,19 +466,24 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       const groupPieces = pieces.filter((p) => (p.group || "Other") === groupName);
       const allSelected = groupPieces.length > 0 && groupPieces.every((p) => p.selected);
       const noneSelected = groupPieces.every((p) => !p.selected);
+      // In ChatGPT mode only groups with draft-note sections are actionable.
+      const groupHasDraft = groupPieces.some((p) => p.kind === "draft_note");
+      const groupLocked = selectionLocked ? !groupHasDraft : !info.enabled;
       const head = `<div class="aic-side-group">
         <span class="aic-side-group-name">${escapeHtml(groupName)}</span>
         <span class="aic-side-group-actions">
-          <button type="button" class="aic-link" data-action="ai-chat-context-group" data-group-index="${groupIndex}" data-select="1" ${!info.enabled || selectionLocked || allSelected ? "disabled" : ""}>Select all</button>
-          <button type="button" class="aic-link" data-action="ai-chat-context-group" data-group-index="${groupIndex}" data-select="0" ${!info.enabled || selectionLocked || noneSelected ? "disabled" : ""}>Deselect all</button>
+          <button type="button" class="aic-link" data-action="ai-chat-context-group" data-group-index="${groupIndex}" data-select="1" ${groupLocked || allSelected ? "disabled" : ""}>Select all</button>
+          <button type="button" class="aic-link" data-action="ai-chat-context-group" data-group-index="${groupIndex}" data-select="0" ${groupLocked || noneSelected ? "disabled" : ""}>Deselect all</button>
         </span>
       </div>`;
-      const labels = groupPieces.map((piece) => `<label class="aic-ctx-piece${piece.selected ? "" : " is-off"}">
-        <input type="checkbox" data-ai-chat-context-piece="${escapeHtml(piece.id)}" ${piece.selected ? "checked" : ""} ${info.enabled && !selectionLocked ? "" : "disabled"}>
+      const labels = groupPieces.map((piece) => {
+        const pieceLocked = selectionLocked ? piece.kind !== "draft_note" : !info.enabled;
+        return `<label class="aic-ctx-piece${piece.selected ? "" : " is-off"}">
+        <input type="checkbox" data-ai-chat-context-piece="${escapeHtml(piece.id)}" ${piece.selected ? "checked" : ""} ${pieceLocked ? "disabled" : ""}>
         <span class="aic-ctx-piece-label">${escapeHtml(piece.label)}</span>
         ${piece.primary ? `<span class="aic-tag">primary</span>` : ""}
         <span class="aic-muted aic-ctx-tok">~${Number(piece.tokens || 0).toLocaleString()}</span>
-      </label>`).join("");
+      </label>`;}).join("");
       return head + labels;
     }).join("");
     return rows;
@@ -541,7 +547,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
               <span class="aic-sw-t" aria-hidden="true"></span>
             </span>
           </label>
-          ${contextInspector?.isRemote ? `<p class="aic-muted aic-side-sub">ChatGPT mode sends the full chart — you'll review it before anything is sent. Selection applies to on-device chat.</p>` : ""}
+          ${contextInspector?.isRemote ? `<p class="aic-muted aic-side-sub">ChatGPT mode sends the full chart — you'll review it before anything is sent. Your draft note follows the section checkboxes below.</p>` : ""}
           ${renderSidebarPieces(contextInspector)}
         </section>
         <section class="aic-side-sec" aria-label="Context budget">

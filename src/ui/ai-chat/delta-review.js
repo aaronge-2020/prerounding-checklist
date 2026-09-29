@@ -97,12 +97,12 @@ export function effectiveGuidelinesText(settingsObj) {
 
 // Split the trusted assembly into its header + one entry per selected piece,
 // in listPatientContextPieces order, each with its raw (pre-redaction) text.
-export function splitBuiltContext(patient, selectedIds, { draftNoteText = "", maxChars = MAX_SELECTED_PIECES_CHARS } = {}) {
+export function splitBuiltContext(patient, selectedIds, { draftNoteText = "", draftNoteSections = null, maxChars = MAX_SELECTED_PIECES_CHARS } = {}) {
   const budget = normalizeBudget(maxChars);
   const header = buildContextHeaderText(patient);
   const wanted = new Set(Array.isArray(selectedIds) ? selectedIds.map(String) : []);
   const pieces = [];
-  const pieceOpts = { draftNoteText };
+  const pieceOpts = { draftNoteText, draftNoteSections };
   for (const piece of listPatientContextPieces(patient, pieceOpts)) {
     if (!wanted.has(piece.id)) continue;
     const rawText = pieceText(patient, piece, pieceOpts);
@@ -115,23 +115,25 @@ export function splitBuiltContext(patient, selectedIds, { draftNoteText = "", ma
 // Reassemble the split with the trusted builder's own budget-truncate rule
 // and require a byte-exact match against buildPatientContextFromPieces.
 // Any drift (piece order, header format, truncation) fails the check.
-export function verifySplitEquivalence(patient, selectedIds, split, { draftNoteText = "", maxChars } = {}) {
+export function verifySplitEquivalence(patient, selectedIds, split, { draftNoteText = "", draftNoteSections = null, maxChars } = {}) {
   if (!split || typeof split.header !== "string" || !Array.isArray(split.pieces)) return false;
   const budget = normalizeBudget(maxChars ?? split.maxChars);
   const parts = split.pieces.map((piece) => String(piece?.rawText ?? ""));
   const reassembled = parts.length ? truncateToBudget(`${split.header}\n\n${parts.join("\n\n")}`, budget) : "";
-  return reassembled === buildPatientContextFromPieces(patient, selectedIds, { maxChars: budget, draftNoteText });
+  return reassembled === buildPatientContextFromPieces(patient, selectedIds, { maxChars: budget, draftNoteText, draftNoteSections });
 }
 
 // Split the FULL chart assembly into its header + one entry per chart
 // piece, in listPatientContextPieces order, each with its raw
 // (pre-redaction) text. The API (ChatGPT) path reviews the entire chart —
-// no selection, no retrieval — so every section goes through the gate.
-export function splitFullChartContext(patient, { draftNoteText = "", maxChars = MAX_FULL_CHART_CHARS } = {}) {
+// every chart document goes through the gate; the caller's
+// draftNoteSections decides which draft-note sections ride along (the
+// whole draft when the full section list is passed).
+export function splitFullChartContext(patient, { draftNoteText = "", draftNoteSections = null, maxChars = MAX_FULL_CHART_CHARS } = {}) {
   const budget = Math.max(500, Number(maxChars) || MAX_FULL_CHART_CHARS);
   const header = buildContextHeaderText(patient);
   const pieces = [];
-  const pieceOpts = { draftNoteText };
+  const pieceOpts = { draftNoteText, draftNoteSections };
   for (const piece of listPatientContextPieces(patient, pieceOpts)) {
     const rawText = pieceText(patient, piece, pieceOpts);
     if (!rawText) continue;
@@ -144,12 +146,12 @@ export function splitFullChartContext(patient, { draftNoteText = "", maxChars = 
 // budget-truncate rule and require a byte-exact match against
 // buildFullChartContextText. Any drift (piece order, header format,
 // truncation) fails the check.
-export function verifyFullChartEquivalence(patient, split, { draftNoteText = "", maxChars } = {}) {
+export function verifyFullChartEquivalence(patient, split, { draftNoteText = "", draftNoteSections = null, maxChars } = {}) {
   if (!split || typeof split.header !== "string" || !Array.isArray(split.pieces)) return false;
   const budget = Math.max(500, Number(maxChars ?? split.maxChars) || MAX_FULL_CHART_CHARS);
   const parts = split.pieces.map((piece) => String(piece?.rawText ?? ""));
   const reassembled = parts.length ? truncateToBudget(`${split.header}\n\n${parts.join("\n\n")}`, budget) : "";
-  return reassembled === buildFullChartContextText(patient, { maxChars: budget, draftNoteText });
+  return reassembled === buildFullChartContextText(patient, { maxChars: budget, draftNoteText, draftNoteSections });
 }
 
 // Where a chart piece lives in the app, for citation navigation. Returns

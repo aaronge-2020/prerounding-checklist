@@ -104,7 +104,7 @@ import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medi
 import { createDailySourceController } from "./daily/source-controller.js?v=20260923-plan-problems-v1&scroll=preserve-section-scroll-v3&parser=table-v7&local-llm-v3";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20260928-ap-suggestions-v1&trend=concise-v3";
-import { createReviewController } from "./review/controller.js?v=20260928-ap-suggestions-v1&labs=analyte-selection-v3&rxnorm=v2";
+import { createReviewController } from "./review/controller.js?v=20260928-ap-suggestions-v1&labs=analyte-selection-v3&rxnorm=v2&draft=sections-v1";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-medication-card-v4";
 import {
   createPromptTaskController,
@@ -135,7 +135,7 @@ import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20
 import { createDemoController } from "./demo/controller.js?v=20260929-demo-v2";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260929-demo-v2";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260929-demo-v2";
-import { createAiChatController } from "./ai-chat/controller.js?v=20260929-ai-chat-v14";
+import { createAiChatController } from "./ai-chat/controller.js?v=20260929-ai-chat-v15";
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20260929-rag-v3";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
@@ -329,6 +329,7 @@ const aiChatController = createAiChatController({
   setStatus,
   render: renderAiChat,
   getDraftNoteText: () => reviewController.getDraftNoteText(),
+  getDraftNoteSections: () => reviewController.getDraftNoteSections(),
   currentPreferences,
   onChatServiceChange: (value) => {
     setVaultPreferences({ ...currentPreferences(), chatService: value });

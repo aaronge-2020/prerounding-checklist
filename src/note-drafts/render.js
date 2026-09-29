@@ -459,7 +459,70 @@ export function renderFinalNote(draft) {
 }
 
 export function renderFinalNotePlainText(draft) {
-  return renderFinalNote(draft)
+  return plainTextFromMarkdown(renderFinalNote(draft));
+}
+
+// The draft note as individually selectable entries for AI Chat context:
+// one entry per rendered note section, with the Plan split into one entry
+// per problem. Each entry is { key, heading, label, text } where `text` is
+// the plain-text rendering of that entry alone (heading line included), so
+// it reads as the same slice inside renderFinalNotePlainText. Keys are
+// stable slugs of the heading / problem name, deduplicated within the
+// note. Entries with no text are omitted, matching the whole-note render.
+export function renderNoteSectionEntries(draft) {
+  assertNoteType(draft);
+  const entries = [];
+  const usedKeys = new Set();
+  const uniqueKey = (base) => {
+    let key = base;
+    let n = 2;
+    while (usedKeys.has(key)) key = `${base}-${n++}`;
+    usedKeys.add(key);
+    return key;
+  };
+  for (const { heading, body, objective, medications } of finalNoteSectionList(draft)) {
+    if (heading === "Plan") {
+      for (const problem of draft.problems || []) {
+        const name = sanitizeProblemTitle(valueText(problem.problem));
+        const problemMd = renderProblem(problem);
+        if (!name || !problemMd) continue;
+        const text = plainTextFromMarkdown(problemMd);
+        if (!text) continue;
+        entries.push({
+          key: uniqueKey(`plan:${slugifyNoteSection(name)}`),
+          heading: "Plan",
+          label: `Plan — ${name}`,
+          text
+        });
+      }
+      continue;
+    }
+    const content = objective ? objectiveText(draft) : medications ? medicationsText(draft) : body;
+    const md = section(heading, content);
+    if (!md) continue;
+    const text = plainTextFromMarkdown(md);
+    if (!text) continue;
+    entries.push({
+      key: uniqueKey(`section:${slugifyNoteSection(heading)}`),
+      heading,
+      label: heading,
+      text
+    });
+  }
+  return entries;
+}
+
+function slugifyNoteSection(value) {
+  const slug = String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  return slug || "section";
+}
+
+// The plain-text pipeline shared by the whole-note and per-section
+// renderers: markdown table separators are dropped, table rows are
+// flattened, bold/italic markers are stripped, <br> becomes a newline,
+// runs of 3+ newlines collapse, and the result is trimmed.
+function plainTextFromMarkdown(markdown) {
+  return String(markdown || "")
     .split(/\r?\n/)
     .filter((line) => !/^\|\s*-+(?:\s*\|\s*-+)+\s*\|?$/.test(line.trim()))
     .map((line) => {
