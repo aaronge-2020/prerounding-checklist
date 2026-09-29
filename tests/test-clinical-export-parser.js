@@ -14,7 +14,7 @@ import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
 const parserRevision = "20260921-medication-card-v4";
 const epicParserRevision = "20260925-mixed-unparsed-v1";
-const clinicalParserRevision = "20260925-negative-lab-v1";
+const clinicalParserRevision = "20260929-rxnorm-mar-v1";
 const primaryNoteRevision = "20260921-medication-card-v4";
 const sourceControllerRevision = "20260923-plan-problems-v1";
 const appRevision = "20260924-helptip-position-v1";

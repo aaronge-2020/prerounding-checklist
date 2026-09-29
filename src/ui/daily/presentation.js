@@ -1,5 +1,5 @@
 import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-medication-card-v4";
-import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260925-negative-lab-v1";
+import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260929-rxnorm-mar-v1";
 import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-medication-card-v4";
 import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 import { primaryTeamNoteFields, primaryTeamNoteHasContent } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
