@@ -37,12 +37,12 @@ try {
   await page.waitForFunction(() => document.querySelectorAll('.primary-nav [data-view-target]').length === 10);
   assert.deepEqual(
     await page.locator('.primary-nav [data-view-target]').evaluateAll((buttons) => buttons.map((button) => button.dataset.viewTarget)),
-    ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "aiChat", "scores", "settings"],
+    ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "aiChat", "drugLookup", "scores", "settings"],
     "the visible page order must collect history and exam findings before Draft Note"
   );
   assert.deepEqual(
     await page.locator('main .view').evaluateAll((views) => views.map((view) => view.id)),
-    ["vaultView", "dailyView", "workupsView", "checklistView", "reviewView", "promptsView", "quickDeidView", "aiChatView", "scoresView", "settingsView"],
+    ["vaultView", "dailyView", "workupsView", "checklistView", "reviewView", "promptsView", "quickDeidView", "aiChatView", "drugLookupView", "scoresView", "settingsView"],
     "the document order must match the visible workflow"
   );
   await page.fill("#vaultPassphrase", "guided demo test passphrase");

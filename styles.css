@@ -13334,3 +13334,23 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   .aic-model-menu { position: fixed; left: 12px; right: 12px; top: 64px; width: auto; max-height: 70vh; }
   .aic-hipaa-sug-act { margin-left: 0; }
 }
+
+/* Drug Lookup view styles */
+.drug-lookup .card { margin-bottom: 1rem; }
+.drug-add-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+.drug-add-row input { flex: 1 1 12rem; }
+.drug-chip-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.drug-chip { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.6rem; border: 1px solid var(--border, #ccc); border-radius: 999px; }
+.drug-chip-flag { font-size: 0.75em; color: var(--warning, #a60); }
+.interaction-list { list-style: none; padding: 0; display: grid; gap: 0.75rem; }
+.interaction-card { border: 1px solid var(--border, #ccc); border-left-width: 4px; border-radius: 6px; padding: 0.75rem; }
+.interaction-card--major { border-left-color: #c0392b; }
+.interaction-card--moderate { border-left-color: #e67e22; }
+.interaction-card--minor { border-left-color: #f1c40f; }
+.interaction-card-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
+.severity-badge { font-size: 0.75em; font-weight: 700; text-transform: uppercase; padding: 0.15em 0.6em; border-radius: 999px; }
+.severity-badge--major { background: #c0392b; color: #fff; }
+.severity-badge--moderate { background: #e67e22; color: #fff; }
+.severity-badge--minor { background: #f1c40f; color: #333; }
+.indication-text { white-space: pre-wrap; }
+.drug-lookup-privacy { display: flex; gap: 0.6rem; align-items: flex-start; }

@@ -38,7 +38,7 @@ import {
   reorderSectionsById,
   replaceSectionsFromFormAsync
 } from "../patient-context/sections.js?v=20260921-medication-card-v4";
-import { clinicalParseWarning } from "../patient-context/clinical-export-parser.js?v=20260925-negative-lab-v1";
+import { clinicalParseWarning, parseClinicalExport } from "../patient-context/clinical-export-parser.js?v=20260925-negative-lab-v1";
 import {
   createEphemeralRedactionReview,
   refreshEphemeralRedactionReview,
@@ -190,6 +190,8 @@ import {
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20260922-deid-session";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
+import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-drug-lookup-v1";
+import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-drug-lookup-v1";
 import { createDemoController } from "./demo/controller.js?v=20260921-demo-complete-plan";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-demo-complete-plan";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-demo-complete-plan";
@@ -288,11 +290,11 @@ const app = {
   demoPreviewMode: false,
   admissionDate: "" // in-memory copy of the encrypted patient's admission-date anchor
 };
-const viewIds = ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "aiChat", "scores", "settings"];
+const viewIds = ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "aiChat", "drugLookup", "scores", "settings"];
 const viewTitles = {
   vault: "Vault / Roster", daily: "Hospital Stay", review: "Review Data / Draft Note",
   workups: "Workups", checklist: "Checklist", prompts: "Prompts",
-  quickDeid: "Quick De-ID Tool", aiChat: "AI Chat", scores: "Models", settings: "Settings"
+  quickDeid: "Quick De-ID Tool", aiChat: "AI Chat", drugLookup: "Drug Lookup", scores: "Models", settings: "Settings"
 };
 let draggedWorkupRow = null;
 let workupDragSaved = false;
@@ -335,6 +337,7 @@ const checklistPresentation = createChecklistPresentation({ escapeHtml, icon }),
 const reviewPresentation = createReviewPresentation({ escapeHtml, icon });
 const redactionPresentation = createRedactionPresentation({ escapeHtml, icon });
 const quickDeidPresentation = createQuickDeidPresentation({ escapeHtml, icon });
+const drugLookupPresentation = createDrugLookupPresentation({ escapeHtml, icon });
 const workupPresentation = createWorkupPresentation({ escapeHtml, icon });
 const promptsPresentation = createPromptsPresentation({ escapeHtml });
 const settingsPresentation = createSettingsPresentation({ escapeHtml });
@@ -383,6 +386,43 @@ const aiChatController = createAiChatController({
     setVaultPreferences({ ...currentPreferences(), chatService: value });
     persistVault("Chat service updated.").then(() => render());
   }
+});
+// Medication names for the active patient, pulled from parsed medication
+// captures on this device. Only names are returned; the caller sends just
+// those names to NLM for RxCUI matching, never patient context.
+function getPatientMedicationNames() {
+  const patient = active();
+  if (!patient) return [];
+  const names = [];
+  const seen = new Set();
+  for (const day of patient.days || []) {
+    for (const capture of day.sourceCaptures || []) {
+      if (capture?.sourceKind !== "medication_activity") continue;
+      const text = capture.deidentifiedText || "";
+      if (!text.trim()) continue;
+      try {
+        const parsed = parseClinicalExport(text, { sourceKind: "medication_activity" });
+        for (const group of parsed?.displayModel?.groups || []) {
+          for (const row of group.rows || []) {
+            const name = String(row?.name || "").trim();
+            if (name && !seen.has(name.toLowerCase())) {
+              seen.add(name.toLowerCase());
+              names.push(name);
+            }
+          }
+        }
+      } catch {
+        // Skip captures that do not parse; never break the view.
+      }
+    }
+  }
+  return names;
+}
+const drugLookupController = createDrugLookupController({
+  presentation: drugLookupPresentation,
+  render: renderDrugLookup,
+  setStatus,
+  getPatientMedicationNames
 });
 const scoresController = createScoresController({
   app,
@@ -1173,7 +1213,7 @@ function render() {
   // cached data) must never prevent renderStatusBar() below from running -
   // that's what reflects patient selection, so a single broken view previously
   // made the whole app look like patient selection had stopped working.
-  for (const renderView of [renderVault, renderDaily, renderReview, renderWorkups, renderChecklist, renderPrompts, renderQuickDeid, renderAiChat, renderScores, renderSettings]) {
+  for (const renderView of [renderVault, renderDaily, renderReview, renderWorkups, renderChecklist, renderPrompts, renderQuickDeid, renderAiChat, renderDrugLookup, renderScores, renderSettings]) {
     try {
       renderView();
     } catch (error) {
@@ -1820,6 +1860,10 @@ function renderAiChat() {
   aiChatController.render();
 }
 
+function renderDrugLookup() {
+  replaceViewContent(byId("drugLookupContent"), drugLookupController.renderView());
+}
+
 function renderPhoneChecklist() {
   const snapshot = app.phoneBundle.checklist;
   const returnBundle = phoneTransfer.currentReturnCode();
@@ -1904,6 +1948,7 @@ async function handleClick(event) {
   // early return below, otherwise these clicks are silently dropped.
   if (app.view === "review" && reviewController.click(event.target)) return;
   if (app.view === "aiChat" && aiChatController.click(event.target)) return;
+  if (app.view === "drugLookup" && drugLookupController.click(event.target)) return;
   if (app.view === "scores" && scoresController.click(event.target)) return;
   const target = event.target.closest("[data-action]");
   if (!target) return;
