@@ -39,7 +39,9 @@ check("mobile respects the iPhone safe area", mobile.includes("safe-area-inset")
 check("detail shows no answer-choice chips by default", !mobile.includes('class="chips"') && !mobile.includes("function chipList"), true);
 check("questions render as dense expandable rows", mobile.includes("qrow"), true);
 check("tap-to-expand uses aria-expanded", mobile.includes("aria-expanded"), true);
-check("answer options live only in the tap-to-expand region", mobile.includes("Listen for:"), true);
+check("expand region shows clinical reasoning (meaning), not answer choices",
+  mobile.includes("item.meaning") && !mobile.includes("Listen for:") && !mobile.includes("Findings:"), true);
+check("AI-drafted meanings carry a review note", mobile.includes("AI-drafted"), true);
 check("fast sheet switcher strip exists", mobile.includes('id="sheetStrip"'), true);
 check("History/Exam quick-jump exists", mobile.includes("#sec-history") && mobile.includes("#sec-exam"), true);
 check("no checkbox or check-off UI", !/type="checkbox"/.test(mobile), true);

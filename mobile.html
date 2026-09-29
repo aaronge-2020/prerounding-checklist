@@ -254,6 +254,7 @@
     }
     .qrow[aria-expanded="true"] .qx { display: block; }
     .why { font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+    .meaning-src { font-size: 12px; color: var(--muted); font-style: italic; margin: 0 0 6px; }
     .how { font-size: 13px; margin: 0 0 6px; }
     .lf { font-size: 12.5px; color: var(--muted); margin: 0; }
     .lf .lbl { font-weight: 700; }
@@ -392,8 +393,10 @@
     }
 
     // ---- rendering ---------------------------------------------------------
-    // One dense row per question. Answer options (listenFor / findings) are
-    // never shown by default — they live inside the tap-to-expand region only.
+    // One dense row per question. The tap-to-expand region shows the clinical
+    // reasoning (meaning): why the question/maneuver matters and what the
+    // answer means. Answer options (listenFor / findings) stay in the data
+    // for provenance but are never rendered.
     function itemBlock(item, isExam) {
       var prompt = isExam ? item.maneuver : item.question;
       if (!prompt) return '';
@@ -401,13 +404,11 @@
       if (isExam && item.how) {
         extra += '<p class="how"><strong>How:</strong> ' + esc(item.how) + '</p>';
       }
-      if (item.why) {
-        extra += '<p class="why">' + esc(item.why) + '</p>';
-      }
-      var options = isExam ? item.findings : item.listenFor;
-      if (options && options.length) {
-        extra += '<p class="lf"><span class="lbl">' + (isExam ? 'Findings:' : 'Listen for:') +
-          '</span> ' + options.map(esc).join(' · ') + '</p>';
+      if (item.meaning) {
+        extra += '<p class="why">' + esc(item.meaning) + '</p>';
+        if (item.meaningSource === 'ai-draft') {
+          extra += '<p class="meaning-src">AI-drafted \u2014 needs clinician review.</p>';
+        }
       }
       if (!extra) {
         return '<div class="qrow static"><span class="qr"><span class="qt">' +

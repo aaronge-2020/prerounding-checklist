@@ -721,6 +721,17 @@ bundle.sheets.forEach((sheet, index) => {
     assert.strictEqual(typeof entry.system, "string", `system must be a string for ${sheet.id}/${entry.id}`);
     assert.strictEqual(entry.whySource, entry.why != null ? "curated" : null, `whySource must be "curated" iff why is filled, for ${sheet.id}/${entry.id}`);
     assert.doesNotMatch(String(entry.question || entry.maneuver || ""), /<input|<textarea|<select/i, `sheet ${sheet.id} must stay read-only`);
+    // Every item carries clinical reasoning in `meaning` (rendered in the
+    // expand region instead of answer-choice options). Curated items mirror
+    // `why`; the rest are AI-drafted and flagged for clinician review.
+    // itemsHash is unaffected: it covers kind|id|system|text|choices only.
+    assert.strictEqual(typeof entry.meaning, "string", `meaning must be a string for ${sheet.id}/${entry.id}`);
+    assert.ok(entry.meaning.trim().length > 0, `meaning must be non-empty for ${sheet.id}/${entry.id}`);
+    assert.strictEqual(entry.meaningSource, entry.why != null ? "curated" : "ai-draft",
+      `meaningSource must be "curated" iff why is filled, for ${sheet.id}/${entry.id}`);
+    if (entry.why != null) {
+      assert.strictEqual(entry.meaning, entry.why, `curated meaning must equal why for ${sheet.id}/${entry.id}`);
+    }
   }
 
   const whyMissing = [...sheet.history, ...sheet.exam].filter((entry) => entry.why == null).length;
@@ -728,8 +739,15 @@ bundle.sheets.forEach((sheet, index) => {
   assert.deepStrictEqual(sheet.reviewNeeded, { whyMissing, howMissing }, `reviewNeeded mismatch on sheet ${sheet.id}`);
 });
 
+let aiDraft = 0;
+for (const sheet of bundle.sheets) {
+  for (const entry of [...sheet.history, ...sheet.exam]) {
+    if (entry.meaningSource === "ai-draft") aiDraft += 1;
+  }
+}
+
 console.log(
   `OK: ${bundle.sheets.length} sheets, ` +
   `${FROZEN.reduce((n, f) => n + f.history, 0)} history + ${FROZEN.reduce((n, f) => n + f.exam, 0)} exam items verified verbatim ` +
-  `(why filled ${filledWhy}, how filled ${filledHow})`
+  `(why filled ${filledWhy}, how filled ${filledHow}, meaning ai-draft ${aiDraft})`
 );
