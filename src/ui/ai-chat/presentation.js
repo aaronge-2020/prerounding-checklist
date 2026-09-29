@@ -493,21 +493,22 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
   // the proposed replacement, a label chip, and Accept/Reject. Reviewed
   // rows show their status plus Undo/Restore/Accept depending on status.
   function renderSuggestionRow(pieceId, redaction, labels, reviewed) {
-    const rid = String(redaction.id || "");
+    const safeRedaction = (redaction && typeof redaction === "object") ? redaction : {};
+    const rid = String(safeRedaction.id || "");
     const text = `
       <div class="aic-hipaa-sug-text">
-        <span class="aic-hipaa-sug-orig">${escapeHtml(redaction.originalSnippet || "")}</span>
+        <span class="aic-hipaa-sug-orig">${escapeHtml(safeRedaction.originalSnippet || "")}</span>
         <span class="aic-hipaa-sug-arrow" aria-hidden="true">→</span>
-        <span class="aic-hipaa-sug-repl">${highlightHipaaRedactions(escapeHtml(redaction.replacement || ""), labels)}</span>
+        <span class="aic-hipaa-sug-repl">${highlightHipaaRedactions(escapeHtml(safeRedaction.replacement || ""), labels)}</span>
       </div>
       <div class="aic-hipaa-sug-meta">
-        ${redaction.label ? `<span class="aic-hipaa-chip">${escapeHtml(redaction.label)}</span>` : ""}
-        <span class="aic-hipaa-sug-act">${reviewed ? renderReviewedActions(pieceId, rid, redaction.status) : `
+        ${safeRedaction.label ? `<span class="aic-hipaa-chip">${escapeHtml(safeRedaction.label)}</span>` : ""}
+        <span class="aic-hipaa-sug-act">${reviewed ? renderReviewedActions(pieceId, rid, safeRedaction.status) : `
           <button type="button" class="aic-btn aic-btn--sm" data-action="ai-chat-hipaa-accept" data-piece="${escapeHtml(pieceId)}" data-redaction="${escapeHtml(rid)}">Accept</button>
           <button type="button" class="aic-btn aic-btn--sm" data-action="ai-chat-hipaa-reject" data-piece="${escapeHtml(pieceId)}" data-redaction="${escapeHtml(rid)}">Reject</button>`}
         </span>
       </div>`;
-    return `<div class="aic-hipaa-sug${reviewed ? " is-reviewed" : ""}">${reviewed ? `<span class="aic-hipaa-chip aic-hipaa-chip--status">${escapeHtml(String(redaction.status || "reviewed"))}</span>` : ""}${text}</div>`;
+    return `<div class="aic-hipaa-sug${reviewed ? " is-reviewed" : ""}">${reviewed ? `<span class="aic-hipaa-chip aic-hipaa-chip--status">${escapeHtml(String(safeRedaction.status || "reviewed"))}</span>` : ""}${text}</div>`;
   }
 
   function renderReviewedActions(pieceId, rid, status) {
@@ -524,37 +525,73 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
   // chips), new-suggestion rows with Accept all/Reject all, the
   // already-reviewed list, and the highlighted approved-text preview with
   // a "Redact selection" control for manual fixes.
+  // One review piece card: bulletproof rendering that ALWAYS shows visible
+  // content. Defensive against malformed piece data — never renders empty.
   function renderReviewPiece(piece, ctx, opts = {}) {
-    const pieceId = String(piece.id || "");
-    const isOpen = ctx.expanded.has(pieceId);
-    const reviewedOpen = ctx.reviewedOpen.has(pieceId);
-    const counts = piece.counts || {};
+    // Defensive: handle null/undefined/malformed piece objects.
+    const safePiece = (piece && typeof piece === "object") ? piece : {};
+    const pieceId = String(safePiece.id || opts.fallbackId || "piece");
+    const expanded = ctx && ctx.expanded instanceof Set ? ctx.expanded : new Set();
+    const reviewedOpenSet = ctx && ctx.reviewedOpen instanceof Set ? ctx.reviewedOpen : new Set();
+    const isOpen = expanded.has(pieceId);
+    const reviewedOpen = reviewedOpenSet.has(pieceId);
+    const counts = (safePiece.counts && typeof safePiece.counts === "object") ? safePiece.counts : {};
     const labels = Object.keys(counts);
     const chips = Object.entries(counts)
-      .filter(([, n]) => n > 0)
-      .map(([kind, n]) => `<span class="aic-hipaa-chip aic-hipaa-chip--red">${escapeHtml(kind)} × ${n}</span>`)
+      .filter(([, n]) => Number(n) > 0)
+      .map(([kind, n]) => `<span class="aic-hipaa-chip aic-hipaa-chip--red">${escapeHtml(String(kind))} × ${Number(n)}</span>`)
       .join("");
     const badgeNames = { new: "New", changed: "Changed", reviewed: "Reviewed" };
-    const badge = piece.badge
-      ? `<span class="aic-hipaa-badge aic-hipaa-badge--${escapeHtml(piece.badge)}">${escapeHtml(badgeNames[piece.badge] || piece.badge)}</span>`
+    const badgeKey = String(safePiece.badge || "");
+    const badge = badgeKey
+      ? `<span class="aic-hipaa-badge aic-hipaa-badge--${escapeHtml(badgeKey)}">${escapeHtml(badgeNames[badgeKey] || badgeKey)}</span>`
       : "";
-    const approvedText = piece.approvedText ?? piece.text ?? "";
-    const chars = Number(piece.chars ?? String(approvedText).length ?? 0);
-    // Contract (v4): pieces carry modelRecords/manualRecords with
-    // { id, start, end, originalText, replacement, label, source, status }.
-    // Derive the pending/reviewed row lists here; keep the legacy
-    // pending/reviewed arrays as a fallback for older view-models.
-    const allRecords = [
-      ...(Array.isArray(piece.modelRecords) ? piece.modelRecords : []),
-      ...(Array.isArray(piece.manualRecords) ? piece.manualRecords : []),
-    ].map((r) => ({ ...r, originalSnippet: r.originalSnippet ?? r.originalText ?? "" }));
-    const pending = Array.isArray(piece.pending)
-      ? piece.pending
-      : allRecords.filter((r) => String(r.status || "pending") === "pending");
-    const reviewed = Array.isArray(piece.reviewed)
-      ? piece.reviewed
-      : allRecords.filter((r) => String(r.status || "") !== "pending");
-    const hasDateRedaction = pending.some((r) => /date/i.test(String(r.label || "")));
+    // Title: NEVER empty — fall back through multiple options.
+    const rawTitle = opts.title || safePiece.title || safePiece.label || "";
+    const title = String(rawTitle).trim() || "Untitled document";
+    // Content: NEVER empty — show a clear message if there's no text.
+    const rawText = safePiece.approvedText ?? safePiece.text ?? "";
+    const approvedText = String(rawText);
+    const hasContent = approvedText.trim().length > 0;
+    let chars = 0;
+    try {
+      chars = Number(safePiece.chars ?? approvedText.length ?? 0) || 0;
+    } catch (e) { chars = approvedText.length; }
+    // Redaction records: defensive against malformed arrays.
+    let allRecords = [];
+    try {
+      const modelRecs = Array.isArray(safePiece.modelRecords) ? safePiece.modelRecords : [];
+      const manualRecs = Array.isArray(safePiece.manualRecords) ? safePiece.manualRecords : [];
+      allRecords = [...modelRecs, ...manualRecs].map((r) => {
+        const rec = (r && typeof r === "object") ? r : {};
+        return { ...rec, originalSnippet: rec.originalSnippet ?? rec.originalText ?? "" };
+      });
+    } catch (e) { allRecords = []; }
+    let pending = [];
+    let reviewed = [];
+    try {
+      pending = Array.isArray(safePiece.pending)
+        ? safePiece.pending
+        : allRecords.filter((r) => String(r.status || "pending") === "pending");
+      reviewed = Array.isArray(safePiece.reviewed)
+        ? safePiece.reviewed
+        : allRecords.filter((r) => String(r.status || "") !== "pending");
+    } catch (e) { pending = []; reviewed = []; }
+    let hasDateRedaction = false;
+    try {
+      hasDateRedaction = pending.some((r) => /date/i.test(String((r && r.label) || "")));
+    } catch (e) { hasDateRedaction = false; }
+    let suggestionRows = "";
+    try {
+      suggestionRows = pending.map((r) => renderSuggestionRow(pieceId, r, labels, false)).join("");
+    } catch (e) { suggestionRows = ""; }
+    let reviewedRows = "";
+    try {
+      reviewedRows = reviewed.map((r) => renderSuggestionRow(pieceId, r, labels, true)).join("");
+    } catch (e) { reviewedRows = ""; }
+    const previewHtml = hasContent
+      ? highlightHipaaRedactions(escapeHtml(approvedText), labels)
+      : `<span class="aic-muted">No content in this document.</span>`;
     const body = isOpen ? `
       <div class="aic-hipaa-piece-body">
         ${pending.length ? `
@@ -567,27 +604,28 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
             </span>
           </div>
           ${hasDateRedaction ? `<p class="aic-hipaa-note">${icon("alert")} Date redactions use relative timeline markers (e.g. [Hospital Day N]) — check the preview below.</p>` : ""}
-          ${pending.map((r) => renderSuggestionRow(pieceId, r, labels, false)).join("")}` : ""}
+          ${suggestionRows}` : ""}
         ${reviewed.length ? `
           <button type="button" class="aic-hipaa-reviewed-head" data-action="ai-chat-hipaa-toggle-reviewed" data-piece="${escapeHtml(pieceId)}" aria-expanded="${reviewedOpen ? "true" : "false"}">
             <span class="aic-hipaa-chev${reviewedOpen ? " is-open" : ""}">${icon("chevron")}</span>
             <strong>Already reviewed</strong>
             <span class="aic-muted">${reviewed.length}</span>
           </button>
-          ${reviewedOpen ? `<div class="aic-hipaa-reviewed">${reviewed.map((r) => renderSuggestionRow(pieceId, r, labels, true)).join("")}</div>` : ""}` : ""}
-        <div class="aic-hipaa-preview" data-hipaa-piece-preview data-piece="${escapeHtml(pieceId)}">${highlightHipaaRedactions(escapeHtml(approvedText), labels)}</div>
+          ${reviewedOpen ? `<div class="aic-hipaa-reviewed">${reviewedRows}</div>` : ""}` : ""}
+        <div class="aic-hipaa-preview" data-hipaa-piece-preview data-piece="${escapeHtml(pieceId)}">${previewHtml}</div>
         <div class="aic-hipaa-preview-act">
           <button type="button" class="aic-btn aic-btn--sm" data-action="ai-chat-hipaa-redact-selection" data-piece="${escapeHtml(pieceId)}">${icon("wand")} Redact selection</button>
           <span class="aic-muted">Select text in the preview, then redact it.</span>
         </div>
-        ${piece.truncated ? `<p class="aic-hipaa-note">${icon("alert")} This piece was truncated to fit the size budget — what you see above is the complete text that will be sent.</p>` : ""}
+        ${safePiece.truncated ? `<p class="aic-hipaa-note">${icon("alert")} This piece was truncated to fit the size budget — what you see above is the complete text that will be sent.</p>` : ""}
       </div>` : "";
+    // The header ALWAYS renders with a visible title and char count.
     return `
-      <div class="aic-hipaa-piece${isOpen ? " is-open" : ""}">
+      <div class="aic-hipaa-piece${isOpen ? " is-open" : ""}" data-hipaa-piece-id="${escapeHtml(pieceId)}">
         <button type="button" class="aic-hipaa-piece-head" data-action="ai-chat-hipaa-piece" data-piece="${escapeHtml(pieceId)}" aria-expanded="${isOpen ? "true" : "false"}">
           <span class="aic-hipaa-chev${isOpen ? " is-open" : ""}">${icon("chevron")}</span>
           ${badge}
-          <span class="aic-hipaa-piece-title">${escapeHtml(opts.title || piece.title || "Context")}</span>
+          <span class="aic-hipaa-piece-title">${escapeHtml(title)}</span>
           <span class="aic-hipaa-chips">${chips}<span class="aic-hipaa-chip">${chars.toLocaleString()} chars</span></span>
         </button>
         ${body}
@@ -646,8 +684,15 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
 
     // Ready: the full delta-review modal.
     const pieces = Array.isArray(review.pieces) ? review.pieces : [];
+    const expandedIds = Array.isArray(review.expanded) ? review.expanded : [];
+    // Safety: if nothing is expanded, expand the first piece so the user
+    // always sees content immediately (never an empty-looking modal).
+    if (expandedIds.length === 0 && pieces.length > 0) {
+      const firstId = pieces[0] && pieces[0].id ? String(pieces[0].id) : "";
+      if (firstId) expandedIds.push(firstId);
+    }
     const ctx = {
-      expanded: new Set(review.expanded || []),
+      expanded: new Set(expandedIds),
       reviewedOpen: new Set(review.reviewedOpen || [])
     };
     const totalRedactions = Number(review.redactionTotal || 0);
