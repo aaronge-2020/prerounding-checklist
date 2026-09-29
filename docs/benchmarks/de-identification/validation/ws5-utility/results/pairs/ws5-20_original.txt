@@ -1,0 +1,30 @@
+DISCHARGE SUMMARY
+
+Patient: Philip Young    DOB: 08/13/1990
+MRN: 6107460
+Admission: 7/4/26    Discharge: 07/28/2026
+Attending Physician: Dr. David Wells
+Facility: Northgate Medical Center
+
+PRINCIPAL DIAGNOSIS: type 2 diabetes mellitus with hyperglycemia
+
+HISTORY OF PRESENT ILLNESS:
+36-year-old woman with type 2 diabetes mellitus, iron deficiency anemia, migraine without aura presented with increased thirst, blurred vision, and frequent urination. Point-of-care glucose 313 mg/dL on arrival. hemoglobin A1c 11.3 %. She reported missing insulin doses for several days. Denied palpitations, nausea.
+
+HOSPITAL COURSE:
+Treated with intravenous fluids and an insulin infusion, transitioned to basal-bolus insulin (potassium chloride 20 mEq daily). Diabetes education provided by the inpatient team. Nephrology consulted for chronic kidney disease stage 3; renal ultrasound on 9/7/26 unremarkable. Discharged on a simplified regimen.
+
+DISCHARGE MEDICATIONS:
+- amoxicillin-clavulanate 875 mg twice daily
+- spironolactone 25 mg daily
+- sertraline 100 mg daily
+- empagliflozin 10 mg daily
+- allopurinol 100 mg daily
+- ondansetron 4 mg every 6 hours as needed
+
+DIABETES EDUCATION:
+Home glucose monitoring twice daily. Hypoglycemia action plan reviewed. Follow up with endocrinology (Dr. Nina Foster) in 2 weeks. Patient address on file: 3709 Park Avenue, Silver Spring, MD 20910.
+
+Signed: Dr. David Wells on 07/28/2026.
+
+Registration: SSN 921-11-8616 on file.

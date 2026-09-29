@@ -1,0 +1,36 @@
+DISCHARGE SUMMARY
+
+Patient: [PATIENT NAME]
+DOB: [74 years prior to hospital admission]   Age: 75   Sex: Female
+MRN: [MRN]
+Timeline: [Hospital Day 201]   Discharge Date: [Hospital Day 201]
+Attending Physician: [PROVIDER NAME]
+Facility: [FACILITY]
+
+CHIEF COMPLAINT: easy bruising
+
+HISTORY OF PRESENT ILLNESS:
+75-year-old woman with mitral regurgitation, asthma, and liver cirrhosis presented with easy bruising and generalized weakness. Symptoms began 6 days prior to admission and progressively worsened. On arrival the patient was in mild distress. She denied palpitations, rash, chills. No recent travel, sick contacts, or known exposures.
+
+PAST MEDICAL HISTORY: Mitral Regurgitation; Asthma; Liver Cirrhosis.
+
+HOME MEDICATIONS:
+- sertraline 100 mg daily
+- amoxicillin-clavulanate 875 mg twice daily
+- acetaminophen 650 mg every 6 hours as needed
+- ezetimibe 10 mg daily
+- losartan 50 mg daily
+
+HOSPITAL COURSE:
+Admitted on [Hospital Day 201] for acute decompensation. Hemodialysis performed on [Hospital Day 1] showed severe multivessel disease. Diuresed with good response. Labs on discharge: NT-proBNP 2840 pg/mL; vitamin D 25-OH 18 ng/mL; glucose 212 mg/dL; troponin I 0.06 ng/mL. Discharged in stable condition on [Hospital Day 201].
+
+DISCHARGE MEDICATIONS:
+- prednisone 10 mg daily
+- aspirin 81 mg daily
+- prednisone 10 mg daily
+- ciprofloxacin 500 mg twice daily
+
+DISCHARGE INSTRUCTIONS:
+Follow up with [PROVIDER NAME]. Low-salt diet, daily weights, and medication adherence reviewed. Return for worsening easy bruising, generalized weakness, or fever. Questions: call [PHONE].
+
+Electronically signed by [PROVIDER NAME] on [Hospital Day 201].

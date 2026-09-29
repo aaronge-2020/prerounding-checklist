@@ -1,0 +1,445 @@
+{
+  "modes": {
+    "hybrid": {
+      "n_docs": 25,
+      "n_docs_with_gold": 25,
+      "binary_exact_span": {
+        "precision": 0.7565,
+        "recall": 0.6084,
+        "f1": 0.6744,
+        "tp": 233,
+        "fp": 75,
+        "fn": 150
+      },
+      "per_category_exact_span": {
+        "NAME": {
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "tp": 50,
+          "fp": 50,
+          "fn": 50
+        },
+        "PHONE": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 25,
+          "fp": 0,
+          "fn": 0
+        },
+        "EMAIL": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 8,
+          "fp": 0,
+          "fn": 0
+        },
+        "DATE": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 75,
+          "fp": 0,
+          "fn": 0
+        },
+        "TIME": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 25,
+          "fp": 0,
+          "fn": 0
+        },
+        "DOB": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 25,
+          "fp": 0,
+          "fn": 0
+        },
+        "LOCATION": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 75
+        },
+        "ADDRESS": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 25,
+          "fn": 25
+        },
+        "ID": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 25,
+          "fp": 0,
+          "fn": 0
+        },
+        "IP": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0
+        }
+      },
+      "secondary_binary_overlap": {
+        "precision": 1.0,
+        "recall": 0.8042,
+        "f1": 0.8915,
+        "tp": 308,
+        "fp": 0,
+        "fn": 75
+      },
+      "secondary_per_category_overlap": {
+        "NAME": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 100,
+          "fp": 0,
+          "fn": 0
+        },
+        "PHONE": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 25,
+          "fp": 0,
+          "fn": 0
+        },
+        "EMAIL": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 8,
+          "fp": 0,
+          "fn": 0
+        },
+        "DATE": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 75,
+          "fp": 0,
+          "fn": 0
+        },
+        "TIME": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 25,
+          "fp": 0,
+          "fn": 0
+        },
+        "DOB": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 25,
+          "fp": 0,
+          "fn": 0
+        },
+        "LOCATION": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 75
+        },
+        "ADDRESS": {
+          "precision": 0.96,
+          "recall": 0.96,
+          "f1": 0.96,
+          "tp": 24,
+          "fp": 1,
+          "fn": 1
+        },
+        "ID": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 25,
+          "fp": 0,
+          "fn": 0
+        },
+        "IP": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0
+        }
+      },
+      "secondary_char_level_binary": {
+        "precision": 0.9337,
+        "recall": 0.9509,
+        "f1": 0.9422,
+        "tp": 3875,
+        "fp": 275,
+        "fn": 200
+      },
+      "unmapped_predicted_labels": {},
+      "latency_ms": {
+        "mean": 4907.9,
+        "median": 4816.9,
+        "p95": 7782.6,
+        "max": 8673.4
+      }
+    },
+    "model-only": {
+      "n_docs": 25,
+      "n_docs_with_gold": 25,
+      "binary_exact_span": {
+        "precision": 0.5474,
+        "recall": 0.1958,
+        "f1": 0.2885,
+        "tp": 75,
+        "fp": 62,
+        "fn": 308
+      },
+      "per_category_exact_span": {
+        "NAME": {
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "tp": 50,
+          "fp": 50,
+          "fn": 50
+        },
+        "PHONE": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 25
+        },
+        "EMAIL": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 8
+        },
+        "DATE": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 75
+        },
+        "TIME": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 25
+        },
+        "DOB": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 25
+        },
+        "LOCATION": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 75
+        },
+        "ADDRESS": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 25
+        },
+        "ID": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 25,
+          "fp": 0,
+          "fn": 0
+        },
+        "IP": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0
+        }
+      },
+      "secondary_binary_overlap": {
+        "precision": 1.0,
+        "recall": 0.3577,
+        "f1": 0.5269,
+        "tp": 137,
+        "fp": 0,
+        "fn": 246
+      },
+      "secondary_per_category_overlap": {
+        "NAME": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 100,
+          "fp": 0,
+          "fn": 0
+        },
+        "PHONE": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 25
+        },
+        "EMAIL": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 8
+        },
+        "DATE": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 75
+        },
+        "TIME": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 25
+        },
+        "DOB": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 25
+        },
+        "LOCATION": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 75
+        },
+        "ADDRESS": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 25
+        },
+        "ID": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 25,
+          "fp": 0,
+          "fn": 0
+        },
+        "IP": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0
+        }
+      },
+      "secondary_char_level_binary": {
+        "precision": 0.8825,
+        "recall": 0.3907,
+        "f1": 0.5416,
+        "tp": 1592,
+        "fp": 212,
+        "fn": 2483
+      },
+      "unmapped_predicted_labels": {
+        "ORGANIZATION": 8,
+        "FACILITY": 4
+      },
+      "latency_ms": {
+        "mean": 2625.4,
+        "median": 2759.3,
+        "p95": 3507.2,
+        "max": 3511.9
+      }
+    }
+  },
+  "gold_label_mapping": {
+    "GIVENNAME1": "NAME",
+    "GIVENNAME2": "NAME",
+    "LASTNAME1": "NAME",
+    "LASTNAME2": "NAME",
+    "LASTNAME3": "NAME",
+    "TEL": "PHONE",
+    "EMAIL": "EMAIL",
+    "DATE": "DATE",
+    "TIME": "TIME",
+    "BOD": "DOB",
+    "CITY": "LOCATION",
+    "STATE": "LOCATION",
+    "COUNTRY": "LOCATION",
+    "POSTCODE": "LOCATION",
+    "STREET": "ADDRESS",
+    "BUILDING": "ADDRESS",
+    "SECADDRESS": "ADDRESS",
+    "IDCARD": "ID",
+    "SOCIALNUMBER": "ID",
+    "PASSPORT": "ID",
+    "DRIVERLICENSE": "ID",
+    "IP": "IP"
+  },
+  "excluded_gold_labels": [
+    "CARDISSUER",
+    "GEOCOORD",
+    "PASS",
+    "SEX",
+    "TITLE",
+    "USERNAME"
+  ],
+  "dataset": "ws4 synthetic clinical notes (progress); ALL SYNTHETIC, no real PHI",
+  "dataset_doi": null,
+  "dataset_split_file": "data-progress/sample.jsonl",
+  "sample_seed": 20260929,
+  "n_sampled": 25,
+  "manifest": "data/sample_manifest.json",
+  "model_load_ms": 21996.8,
+  "model_id": "onnx-community/stanford-deidentifier-base-ONNX"
+}

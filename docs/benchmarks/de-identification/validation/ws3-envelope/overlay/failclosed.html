@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>deid fail-closed harness (ws3)</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 24px; background: #111; color: #eee; }
+  #panel { max-width: 900px; }
+  .status { border: 1px solid #555; border-radius: 8px; padding: 12px 16px; margin: 12px 0; background: #1c1c1c; }
+  .status.error { border-color: #c33; background: #2a1414; }
+  .status.ok { border-color: #3c3; background: #142a14; }
+  code, pre { white-space: pre-wrap; word-break: break-word; }
+  #log { font-size: 13px; }
+</style>
+</head>
+<body>
+<div id="panel">
+  <h2>De-identification fail-closed probe</h2>
+  <div id="log"></div>
+</div>
+<script type="module">
+// Same pipeline wiring as the benchmark harness (harness.html), but exposes
+// a capture API: loadWithCapture() wires onModelStatus into the page and
+// returns {ok, error, statuses} instead of throwing, so the exact user-visible
+// behavior can be recorded. runOne(text) attempts a de-identification without
+// a prior successful load.
+import * as transformers from "./vendor/transformers-web.js";
+import { createDeidentifier } from "./src/vault/deid.bundle.js";
+
+const MODEL_ID = "onnx-community/stanford-deidentifier-base-ONNX";
+const logEl = document.getElementById("log");
+
+function log(html, cls) {
+  const d = document.createElement("div");
+  d.className = "status" + (cls ? " " + cls : "");
+  d.innerHTML = html;
+  logEl.appendChild(d);
+}
+log("page ready — waiting for probe");
+
+const capturedWarnings = [];
+const origWarn = console.warn.bind(console);
+console.warn = (...a) => { capturedWarnings.push(a.map(String).join(" ").slice(0, 500)); origWarn(...a); };
+
+let deidentifier = null;
+
+function wirePipelineFactory(statuses) {
+  const base = new URL("./", location.href).href;
+  transformers.env.allowLocalModels = true;
+  transformers.env.allowRemoteModels = true;
+  transformers.env.localModelPath = new URL("models/", base).href;
+  const nativeFetch = fetch.bind(globalThis);
+  transformers.env.fetch = async (input, init) => {
+    const raw = typeof input === "string" ? input : input.url;
+    const m = /^https:\/\/huggingface\.co\/([^/]+\/[^/]+)\/resolve\/[^/]+\/(.+)$/.exec(raw);
+    if (m) return nativeFetch(new URL(`models/${m[1]}/${m[2]}`, base), init);
+    return nativeFetch(input, init);
+  };
+  transformers.env.useBrowserCache = false;
+  if (transformers.env.backends?.onnx?.wasm) {
+    transformers.env.backends.onnx.wasm.wasmPaths = {
+      mjs: new URL("vendor/ort-wasm-simd-threaded.asyncify.mjs", base).href,
+      wasm: new URL("vendor/ort-wasm-simd-threaded.asyncify.wasm", base).href
+    };
+    transformers.env.backends.onnx.wasm.proxy = false;
+  }
+  return (task, modelId, options) => transformers.pipeline(task, modelId, options);
+}
+
+async function loadWithCapture() {
+  const statuses = [];
+  const t0 = performance.now();
+  const pipelineFactory = wirePipelineFactory(statuses);
+  deidentifier = createDeidentifier({
+    pipelineFactory,
+    mode: "hybrid",
+    onModelStatus: (s) => { statuses.push({ t: Math.round(performance.now() - t0), ...s }); },
+    modelCandidates: [
+      {
+        modelId: MODEL_ID,
+        options: { dtype: "q8", local_files_only: true },
+        inferenceOptions: { aggregation_strategy: "simple" }
+      }
+    ]
+  });
+  try {
+    await deidentifier.loadModel();
+    log(`<b>LOAD SUCCEEDED</b> in ${Math.round(performance.now() - t0)} ms`, "ok");
+    return { ok: true, ms: performance.now() - t0, statuses, warnings: capturedWarnings };
+  } catch (e) {
+    const msg = e && e.message ? e.message : String(e);
+    log(`<b>LOAD FAILED</b> after ${Math.round(performance.now() - t0)} ms<br>thrown error: <code>${msg.replace(/</g, "&lt;")}</code>`, "error");
+    return { ok: false, ms: performance.now() - t0, error: msg, statuses, warnings: capturedWarnings };
+  }
+}
+
+async function runOne(text) {
+  const t0 = performance.now();
+  try {
+    if (!deidentifier) return { ok: false, error: "no deidentifier instance (load never attempted)" };
+    const result = await deidentifier.deidentifyText(text, { mode: "hybrid" });
+    return { ok: true, ms: performance.now() - t0, modelId: result.modelId || null };
+  } catch (e) {
+    const msg = e && e.message ? e.message : String(e);
+    log(`<b>RUN FAILED</b><br>thrown error: <code>${msg.replace(/</g, "&lt;")}</code>`, "error");
+    return { ok: false, ms: performance.now() - t0, error: msg };
+  }
+}
+
+window.__fc = { loadWithCapture, runOne };
+window.__fcReady = true;
+</script>
+</body>
+</html>

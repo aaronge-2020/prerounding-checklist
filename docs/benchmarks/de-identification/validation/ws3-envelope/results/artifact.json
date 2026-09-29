@@ -1,0 +1,30 @@
+{
+  "modelId": "onnx-community/stanford-deidentifier-base-ONNX",
+  "files": [
+    {
+      "file": "onnx/model_quantized.onnx",
+      "bytes": 109651017
+    },
+    {
+      "file": "config.json",
+      "bytes": 929
+    },
+    {
+      "file": "tokenizer.json",
+      "bytes": 706024
+    },
+    {
+      "file": "tokenizer_config.json",
+      "bytes": 1264
+    },
+    {
+      "file": "vocab.txt",
+      "bytes": 226150
+    }
+  ],
+  "totalBytes": 110585384,
+  "totalMiB": 105.46,
+  "totalMB_decimal": 110.59,
+  "onnxBytes": 109651017,
+  "onnxMiB": 104.57
+}

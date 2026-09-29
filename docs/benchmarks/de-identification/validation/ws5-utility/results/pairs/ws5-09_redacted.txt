@@ -1,0 +1,37 @@
+DISCHARGE SUMMARY
+
+Patient: [PATIENT NAME]
+DOB: [39 years prior to hospital admission]   Age: 39   Sex: Female
+MRN: [MRN]
+Timeline: [Hospital Day 186]   Discharge Date: [Hospital Day 1]
+Attending Physician: [PROVIDER NAME]
+Facility: [FACILITY]
+
+CHIEF COMPLAINT: wheezing
+
+HISTORY OF PRESENT ILLNESS:
+39-year-old woman with psoriasis, hypothyroidism, and metabolic acidosis presented with wheezing and cough. Symptoms began 4 days prior to admission and progressively worsened. On arrival the patient was in mild distress. She denied shortness of breath, cough, headache. No recent travel, sick contacts, or known exposures.
+
+PAST MEDICAL HISTORY: Psoriasis; Hypothyroidism; Metabolic Acidosis.
+
+HOME MEDICATIONS:
+- sertraline 100 mg daily
+- azithromycin 500 mg daily [Hospital Day 262]
+- amoxicillin-clavulanate 875 mg twice daily
+- losartan 50 mg daily
+- azithromycin 500 mg daily [Hospital Day 262]
+- amoxicillin-clavulanate 875 mg twice daily
+
+HOSPITAL COURSE:
+Admitted on [Hospital Day 186] for acute decompensation. [PATIENT NAME] performed on [Hospital Day 109] showed no acute obstructive disease. Diuresed with good response. Labs on discharge: calcium 9.1 mg/dL; sodium 131 mmol/L; creatinine 2.1 mg/dL; ferritin 88 ng/mL. Discharged in stable condition on [Hospital Day 1].
+
+DISCHARGE MEDICATIONS:
+- cephalexin 500 mg four times daily
+- ferrous sulfate 325 mg daily
+- apixaban 5 mg twice daily
+- tamsulosin 0.4 mg daily
+
+DISCHARGE INSTRUCTIONS:
+Follow up with [PROVIDER NAME] [Hospital Day 273]. Low-salt diet, daily weights, and medication adherence reviewed. Return for worsening wheezing, cough, or fever. Questions: call [PHONE].
+
+Electronically signed by [PROVIDER NAME] on [Hospital Day 1].

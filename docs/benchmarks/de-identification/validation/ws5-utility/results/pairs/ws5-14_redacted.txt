@@ -1,0 +1,19 @@
+PRIMARY CARE PROGRESS NOTE
+
+Patient: [PATIENT NAME]  DOB: [DOB]  MRN: [MRN]
+Timeline: [Historical: 2026]  Provider: [PROVIDER NAME]
+
+CHIEF COMPLAINT: routine follow-up
+
+SUBJECTIVE:
+37-year-old woman here for chronic disease management. Reports productive cough and generalized weakness. Review of systems: denies dysuria, rhinorrhea, otalgia, dysphagia. Social: lives at [ADDRESS]. Works as a nurse. No tobacco, alcohol socially. Family history: mother with hypertension, father with coronary artery disease. Health maintenance: colonoscopy due next year; mammogram up to date; flu shot this season.
+
+OBJECTIVE:
+BP 124/73, HR 77, BMI 36.9. General: no acute distress. HEENT: unremarkable. Heart: regular rhythm. Lungs: clear. Abdomen: soft, nontender. Skin: [NAME]. Neurologic: alert and oriented, cranial nerves intact, strength full throughout.
+Recent labs: hemoglobin 11.2 g/dL; total cholesterol 196 mg/dL; D-dimer 1.8 mcg/mL; LDL cholesterol 118 mg/dL.
+
+ASSESSMENT AND PLAN:
+1. Chronic Kidney Disease Stage 3: continue levetiracetam 500 mg twice daily; lifestyle counseling provided. 2. Pleural Effusion: continue escitalopram 10 mg daily; dose adjusted as below. 3. Ischemic Stroke: referral placed.
+Return visit [Historical: 2027]. Contact the office at [PHONE] with questions. Email: [EMAIL] on file.
+
+Signed: [PROVIDER NAME]

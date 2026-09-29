@@ -1,0 +1,30 @@
+DISCHARGE SUMMARY
+
+Patient: [PATIENT NAME]
+DOB [76 years prior to hospital admission]   MRN [MRN]
+Date of Admission: [Hospital Day 7]   Date of Discharge: [Hospital Day 1]
+Surgeon: [PROVIDER NAME]
+Facility: [FACILITY]
+
+PREOPERATIVE DIAGNOSIS: acute cholecystitis
+POSTOPERATIVE DIAGNOSIS: same
+
+HISTORY:
+77-year-old woman presented with nausea, fever, and vomiting. Imaging confirmed the diagnosis. Past medical history includes hypothyroidism and psoriasis. Home medications include tramadol 50 mg every 6 hours as needed, albuterol 90 mcg per inhalation, 2 puffs every 4 hours as needed, tamsulosin 0.4 mg daily. Allergies: no known drug allergies. Review of systems otherwise negative except as noted above.
+
+PHYSICAL EXAMINATION:
+Vital signs stable. General: no acute distress. Abdomen: tender in the right upper quadrant with a positive Murphy sign. No rebound or guarding. Bowel sounds present. Skin warm and dry.
+
+OPERATIVE COURSE:
+Laparoscopic Cholecystectomy performed on [Hospital Day 126] without complication. Estimated blood loss minimal. Tolerated the procedure well and recovered in the post-anesthesia care unit. Postoperative labs: creatinine 2.1 mg/dL; hemoglobin A1c 7.1 %; alkaline phosphatase 88 U/L. Pain controlled on oral analgesics. Ambulating with assistance. Wound clean, dry, and intact.
+
+DISCHARGE MEDICATIONS:
+- ferrous sulfate 325 mg daily
+- metformin 1000 mg twice daily
+- semaglutide 1 mg weekly by injection
+- quetiapine 50 mg at bedtime
+
+DISCHARGE INSTRUCTIONS:
+Wound care reviewed. No heavy lifting for 5 [PROVIDER NAME]. Follow up with [PROVIDER NAME]. Call [PHONE] for fever, increasing pain, or wound drainage.
+
+Surgeon signature: [PROVIDER NAME].

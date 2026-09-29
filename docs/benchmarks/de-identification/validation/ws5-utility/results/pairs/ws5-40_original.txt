@@ -1,0 +1,28 @@
+NEPHROLOGY PROGRESS NOTE
+
+Patient Name: Lucille Hall
+DOB: 01/25/1951   MRN: 5055520
+Date of Service: September 26, 2026
+Nephrologist: Dr. Steven Barnes
+
+SUBJECTIVE:
+75-year-old man with chronic kidney disease stage 3, type 2 diabetes mellitus, hyperlipidemia reports decreased urine output and fatigue. Denies chest pain, fever, or dysuria. Fluid intake approximately 2 liters daily. Medication list reconciled.
+
+OBJECTIVE:
+BP 145/84, HR 87. Mild bilateral lower extremity edema. Lungs clear.
+Laboratory studies from 03/05/2026:
+- estimated glomerular filtration rate 46 mL/min
+- bicarbonate 18 mmol/L
+- hemoglobin 12.1 g/dL
+- blood urea nitrogen 36 mg/dL
+- potassium 5.0 mmol/L
+
+Hemodialysis: stable compared to prior. 
+ASSESSMENT AND PLAN:
+1. Chronic kidney disease stage 3, likely diabetic and hypertensive: continue empagliflozin 10 mg daily; avoid NSAIDs; low-salt diet.
+2. Type 2 Diabetes Mellitus: at goal.
+3. Hyperlipidemia: monitor.
+
+Follow up in 4 months. Labs beforehand. Patient may reach the office at 301-555-1873.
+
+Attending attestation: Dr. Steven Barnes.

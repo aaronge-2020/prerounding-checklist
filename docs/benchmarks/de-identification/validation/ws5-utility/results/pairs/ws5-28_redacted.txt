@@ -1,0 +1,28 @@
+DISCHARGE SUMMARY
+
+Patient: [PATIENT NAME]    DOB: [48 years prior to hospital admission]
+MRN: [MRN]
+Admission: [Hospital Day 1]    Discharge: [Hospital Day 61]
+Attending Physician: [PROVIDER NAME]
+Facility: [FACILITY]
+
+PRINCIPAL DIAGNOSIS: type 2 diabetes mellitus with hyperglycemia
+
+HISTORY OF PRESENT ILLNESS:
+49-year-old man with type 2 diabetes mellitus, ischemic stroke, asthma presented with frequent urination, increased thirst, and fatigue. Point-of-care glucose 359 mg/dL on arrival. hemoglobin A1c 9.7 %. He reported missing insulin doses for several days. Denied palpitations, shortness of breath.
+
+HOSPITAL COURSE:
+Treated with intravenous fluids and an insulin infusion, transitioned to basal-bolus insulin (azithromycin 500 mg daily [Hospital Day 221]). Diabetes education provided by the inpatient team. Nephrology consulted for chronic kidney disease stage 3; renal ultrasound on [8 days prior to hospital admission] unremarkable. Discharged on a simplified regimen.
+
+DISCHARGE MEDICATIONS:
+- tramadol 50 mg every 6 hours as needed
+- cephalexin 500 mg four times daily
+- digoxin 0.125 mg daily
+- trazodone 50 mg at bedtime as needed
+- ezetimibe 10 mg daily
+- ibuprofen 400 mg every 6 hours as needed
+
+DIABETES EDUCATION:
+Home glucose monitoring twice daily. Hypoglycemia action plan reviewed. Follow up with endocrinology ([PROVIDER NAME]) [Hospital Day 232]. Patient address on file: [ADDRESS].
+
+Signed: [PROVIDER NAME] on [Hospital Day 61].

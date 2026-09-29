@@ -1,0 +1,27 @@
+DISCHARGE SUMMARY
+
+Patient: Susan Martin    DOB: 08/23/1950
+MRN: 9202736
+Admission: 4/22/26    Discharge: June 12, 2026
+Attending Physician: Dr. Anna Kim
+Facility: Harborview Medical Center
+
+PRINCIPAL DIAGNOSIS: type 2 diabetes mellitus with hyperglycemia
+
+HISTORY OF PRESENT ILLNESS:
+76-year-old woman with type 2 diabetes mellitus, osteoporosis, iron deficiency anemia presented with blurred vision, increased thirst, and fatigue. Point-of-care glucose 319 mg/dL on arrival. hemoglobin A1c 11.7 %. She reported missing insulin doses for several days. Denied fever, cough.
+
+HOSPITAL COURSE:
+Treated with intravenous fluids and an insulin infusion, transitioned to basal-bolus insulin (vitamin D3 2000 IU daily). Diabetes education provided by the inpatient team. Nephrology consulted for chronic kidney disease stage 3; renal ultrasound on 07/01/2026 unremarkable. Discharged on a simplified regimen.
+
+DISCHARGE MEDICATIONS:
+- tamsulosin 0.4 mg daily
+- trazodone 50 mg at bedtime as needed
+- amlodipine 5 mg daily
+- albuterol 90 mcg per inhalation, 2 puffs every 4 hours as needed
+- furosemide 40 mg twice daily
+
+DIABETES EDUCATION:
+Home glucose monitoring twice daily. Hypoglycemia action plan reviewed. Follow up with endocrinology (Dr. Priya Mcdonald) in 2 weeks. Patient address on file: 9025 Highland Avenue, Gaithersburg, MD 20878.
+
+Signed: Dr. Anna Kim on June 12, 2026.

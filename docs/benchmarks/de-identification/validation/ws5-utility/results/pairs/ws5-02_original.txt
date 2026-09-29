@@ -1,0 +1,26 @@
+DISCHARGE SUMMARY
+
+Patient Name: William White   DOB: 02/20/1949
+MRN 4278956   Encounter ID 31702215
+Admit Date: 02/02/2026   Discharge Date: June 8, 2026
+Attending: Dr. Alan Choi, Gastroenterology
+Hospital: Harborview Medical Center
+
+REASON FOR ADMISSION: community-acquired pneumonia
+
+HISTORY OF PRESENT ILLNESS:
+77-year-old woman with sepsis, psoriasis, rheumatoid arthritis presented with chills, cough, and fever for 5 days. Initial vitals: temperature 101.5 F, heart rate 108, respiratory rate 24, oxygen saturation 89 percent on room air. Chest CT on July 17, 2026 demonstrated right lower lobe consolidation. Blood cultures drawn; lactate 2.1 mmol/L on admission. 
+
+HOSPITAL COURSE:
+Treated with amlodipine 5 mg daily and azithromycin 500 mg daily for 3 days. Required 2 liters nasal cannula initially, weaned to room air by hospital day 4. Respiratory status improved steadily. Repeat labs: albumin 3.6 g/dL; blood urea nitrogen 24 mg/dL; creatinine 1.3 mg/dL. 
+
+DISCHARGE MEDICATIONS:
+- folic acid 1 mg daily
+- tramadol 50 mg every 6 hours as needed
+- cephalexin 500 mg four times daily
+- aspirin 81 mg daily
+
+FOLLOW-UP:
+Primary care with Dr. Sarah Choi in 1 week. Repeat chest imaging in 6 weeks to document resolution. Patient verbalized understanding. Emergency contact: Lucille Bell, 443-555-1661.
+
+Dictated by Dr. Alan Choi.

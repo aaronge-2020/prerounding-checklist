@@ -1,0 +1,233 @@
+[
+  {
+    "id": "E01-misspelled-name",
+    "pass": true,
+    "ms": 1360.2,
+    "n_pred": 1,
+    "detail": "'Jonh Smtih': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E02-allcaps-name",
+    "pass": true,
+    "ms": 684.6,
+    "n_pred": 2,
+    "detail": "'JOHN SMITH': covered 100%; '01/02/1970': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E03-lowercase-apostrophe",
+    "pass": true,
+    "ms": 1036.2,
+    "n_pred": 1,
+    "detail": "\"jane o'brien\": covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E04-hyphenated-name",
+    "pass": true,
+    "ms": 797.8,
+    "n_pred": 1,
+    "detail": "'Mary-Jane Watson-Parker': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E05-date-ordinal",
+    "pass": true,
+    "ms": 287.4,
+    "n_pred": 1,
+    "detail": "'24th Sept 2026': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E06-date-dots",
+    "pass": true,
+    "ms": 545.9,
+    "n_pred": 1,
+    "detail": "'09.24.2026': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E07-date-yearless",
+    "pass": true,
+    "ms": 452.4,
+    "n_pred": 1,
+    "detail": "'Sept 24th': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E08-phone-plus1",
+    "pass": true,
+    "ms": 646.0,
+    "n_pred": 1,
+    "detail": "'+1 (410) 555-0132': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E09-phone-dots",
+    "pass": true,
+    "ms": 397.7,
+    "n_pred": 1,
+    "detail": "'410.555.0132': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E10-phone-intl",
+    "pass": true,
+    "ms": 389.4,
+    "n_pred": 1,
+    "detail": "'+44 20 7946 0958': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E11-test-patient",
+    "pass": false,
+    "ms": 338.2,
+    "n_pred": 1,
+    "detail": "'Test Patient': MISSED 0%; '01/02/1970': covered 100%",
+    "failures": [
+      "expected 'Test Patient' (placeholder-like name (KNOWN model gap)) uncovered (best 0%)"
+    ]
+  },
+  {
+    "id": "E12-john-doe",
+    "pass": true,
+    "ms": 540.6,
+    "n_pred": 1,
+    "detail": "'John Doe': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E13-patient-x",
+    "pass": true,
+    "ms": 179.8,
+    "n_pred": 0,
+    "detail": "'Patient X': correctly absent",
+    "failures": []
+  },
+  {
+    "id": "E14-no-space-comma",
+    "pass": true,
+    "ms": 414.5,
+    "n_pred": 1,
+    "detail": "'Smith': covered 100%; 'John': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E15-dob-newline",
+    "pass": true,
+    "ms": 215.1,
+    "n_pred": 2,
+    "detail": "'01/02/1970': covered 100%; '445123': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E16-long-note",
+    "pass": true,
+    "ms": 44617.6,
+    "n_pred": 4,
+    "detail": "'Robert Longfellow': covered 100%; '09/24/2026': covered 100%; '410-555-0147': covered 100%; 'Zachary Quill': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E17-alias-variants",
+    "pass": true,
+    "ms": 795.1,
+    "n_pred": 3,
+    "detail": "'Alan Smith': covered 100%; 'Smith': covered 100%; 'J. Smith': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E18-age-hyphen",
+    "pass": false,
+    "ms": 260.3,
+    "n_pred": 0,
+    "detail": "'47-year-old': MISSED 0%",
+    "failures": [
+      "expected '47-year-old' (hyphenated age) uncovered (best 0%)"
+    ]
+  },
+  {
+    "id": "E19-age-word",
+    "pass": false,
+    "ms": 212.5,
+    "n_pred": 0,
+    "detail": "'age 47': MISSED 0%",
+    "failures": [
+      "expected 'age 47' (age as words) uncovered (best 0%)"
+    ]
+  },
+  {
+    "id": "E20-age-slash",
+    "pass": false,
+    "ms": 214.4,
+    "n_pred": 0,
+    "detail": "'47 y/o': MISSED 0%",
+    "failures": [
+      "expected '47 y/o' (slash age abbreviation) uncovered (best 0%)"
+    ]
+  },
+  {
+    "id": "E21-age-89plus",
+    "pass": false,
+    "ms": 353.7,
+    "n_pred": 0,
+    "detail": "'92-year-old': MISSED 0%; 'age 91': MISSED 0%",
+    "failures": [
+      "expected '92-year-old' (age over 89 (HIPAA-sensitive)) uncovered (best 0%)",
+      "expected 'age 91' (age over 89 as words) uncovered (best 0%)"
+    ]
+  },
+  {
+    "id": "E22-mrn-hash",
+    "pass": true,
+    "ms": 210.8,
+    "n_pred": 1,
+    "detail": "'0045123': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E23-chart-id",
+    "pass": true,
+    "ms": 227.5,
+    "n_pred": 1,
+    "detail": "'45123': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E24-ssn",
+    "pass": true,
+    "ms": 360.0,
+    "n_pred": 1,
+    "detail": "'000-12-3456': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E25-email-plus",
+    "pass": true,
+    "ms": 303.0,
+    "n_pred": 1,
+    "detail": "'j.smith+clinic@examplemail.com': covered 100%",
+    "failures": []
+  },
+  {
+    "id": "E26-address-apt",
+    "pass": false,
+    "ms": 392.6,
+    "n_pred": 2,
+    "detail": "'1234 W Pratt St Apt 5B': covered 91%; 'Baltimore': MISSED 0%; 'MD': covered 100%; '21201': covered 100%",
+    "failures": [
+      "expected 'Baltimore' (city) uncovered (best 0%)"
+    ]
+  },
+  {
+    "id": "E27-time-date",
+    "pass": false,
+    "ms": 228.3,
+    "n_pred": 1,
+    "detail": "'09/24/2026': MISSED 0%; '2:30 PM': covered 100%",
+    "failures": [
+      "expected '09/24/2026' (date) uncovered (best 0%)"
+    ]
+  }
+]

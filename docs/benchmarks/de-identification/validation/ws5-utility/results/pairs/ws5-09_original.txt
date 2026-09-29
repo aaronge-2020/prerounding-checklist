@@ -1,0 +1,37 @@
+DISCHARGE SUMMARY
+
+Patient: Olivia Ramirez
+DOB: 01/13/1987   Age: 39   Sex: Female
+MRN: 7179886
+Admission Date: 07/18/2026   Discharge Date: 01/14/2026
+Attending Physician: Dr. Karen Wilson
+Facility: Northgate Medical Center
+
+CHIEF COMPLAINT: wheezing
+
+HISTORY OF PRESENT ILLNESS:
+39-year-old woman with psoriasis, hypothyroidism, and metabolic acidosis presented with wheezing and cough. Symptoms began 4 days prior to admission and progressively worsened. On arrival the patient was in mild distress. She denied shortness of breath, cough, headache. No recent travel, sick contacts, or known exposures.
+
+PAST MEDICAL HISTORY: Psoriasis; Hypothyroidism; Metabolic Acidosis.
+
+HOME MEDICATIONS:
+- sertraline 100 mg daily
+- azithromycin 500 mg daily for 3 days
+- amoxicillin-clavulanate 875 mg twice daily
+- losartan 50 mg daily
+- azithromycin 500 mg daily for 3 days
+- amoxicillin-clavulanate 875 mg twice daily
+
+HOSPITAL COURSE:
+Admitted on 07/18/2026 for acute decompensation. Cardiac Mri performed on 05/02/2026 showed no acute obstructive disease. Diuresed with good response. Labs on discharge: calcium 9.1 mg/dL; sodium 131 mmol/L; creatinine 2.1 mg/dL; ferritin 88 ng/mL. Discharged in stable condition on 01/14/2026.
+
+DISCHARGE MEDICATIONS:
+- cephalexin 500 mg four times daily
+- ferrous sulfate 325 mg daily
+- apixaban 5 mg twice daily
+- tamsulosin 0.4 mg daily
+
+DISCHARGE INSTRUCTIONS:
+Follow up with Dr. Steven Mcdonald in 2 weeks. Low-salt diet, daily weights, and medication adherence reviewed. Return for worsening wheezing, cough, or fever. Questions: call 443-555-1287.
+
+Electronically signed by Dr. Karen Wilson on 01/14/2026.

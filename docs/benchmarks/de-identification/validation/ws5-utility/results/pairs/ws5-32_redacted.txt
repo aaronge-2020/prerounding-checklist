@@ -1,0 +1,30 @@
+NEPHROLOGY PROGRESS NOTE
+
+Patient Name: [PATIENT NAME]
+DOB: [DOB]   MRN: [MRN]
+Timeline: [Historical: 2026]
+Nephrologist: [PATIENT NAME]
+
+SUBJECTIVE:
+55-year-old man with chronic kidney disease stage 3, type 2 diabetes mellitus, hyperlipidemia reports nausea and decreased urine output. Denies chest pain, fever, or dysuria. Fluid intake approximately 2 liters daily. Medication list reconciled.
+
+OBJECTIVE:
+BP 137/91, HR 72. Mild bilateral lower extremity edema. Lungs clear.
+Laboratory studies from [Historical: 2026]:
+- bicarbonate 22 mmol/L
+- creatinine 2.4 mg/dL
+- estimated glomerular filtration rate 48 mL/min
+- potassium 5.1 mmol/L
+- blood urea nitrogen 30 mg/dL
+
+Renal Ultrasound: tolerated well.
+ASSESSMENT AND PLAN:
+1. Chronic kidney disease stage 3, likely diabetic and hypertensive: continue ezetimibe 10 mg daily; avoid NSAIDs; low-salt diet.
+2. Type 2 Diabetes Mellitus: at goal.
+3. Hyperlipidemia: monitor.
+
+Follow up [Historical: 2027]. Labs beforehand. Patient may reach the office at [PHONE].
+
+Attending attestation: [PATIENT NAME].
+
+Registration: SSN [ID] on file.

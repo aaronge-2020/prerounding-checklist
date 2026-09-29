@@ -1,0 +1,28 @@
+NEPHROLOGY PROGRESS NOTE
+
+Patient Name: [PATIENT NAME]
+DOB: [DOB]   MRN: [MRN]
+Timeline: [Historical: 2026]
+Nephrologist: [PROVIDER NAME]
+
+SUBJECTIVE:
+75-year-old man with chronic kidney disease stage 3, type 2 diabetes mellitus, hyperlipidemia reports decreased urine output and fatigue. Denies chest pain, fever, or dysuria. Fluid intake approximately 2 liters daily. Medication list reconciled.
+
+OBJECTIVE:
+BP 145/84, HR 87. Mild bilateral lower extremity edema. Lungs clear.
+Laboratory studies from [Historical: 2026]:
+- estimated glomerular filtration rate 46 mL/min
+- bicarbonate 18 mmol/L
+- hemoglobin 12.1 g/dL
+- blood urea nitrogen 36 mg/dL
+- potassium 5.0 mmol/L
+
+Hemodialysis: stable compared to prior.
+ASSESSMENT AND PLAN:
+1. Chronic kidney disease stage 3, likely diabetic and hypertensive: continue empagliflozin 10 mg daily; avoid NSAIDs; low-salt diet.
+2. Type 2 Diabetes Mellitus: at goal.
+3. Hyperlipidemia: monitor.
+
+Follow up [Historical: 2027]. Labs beforehand. Patient may reach the office at [PHONE].
+
+Attending attestation: [PROVIDER NAME].
