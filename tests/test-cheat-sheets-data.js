@@ -680,7 +680,185 @@ const FROZEN = [
       "history": 8,
       "exam": 0,
       "itemsHash": "57e00b719e3223bba6f0c23720dce9aafe0f2df59a1d3511fdf97951c93169b6"
-    }
+    },
+    {
+      "id": "ld-preterm-labor",
+      "title": "Preterm labor",
+      "aliases": [
+        "preterm labor",
+        "PTL",
+        "premature labor",
+        "threatened preterm labor"
+      ],
+      "history": 14,
+      "exam": 10,
+      "itemsHash": "c6de3246eef299ee002d98df1574c85b830bfe29b4ffbbd9c84c91c9ed982341"
+    },
+    {
+      "id": "ld-prom",
+      "title": "Premature rupture of membranes (PROM / PPROM)",
+      "aliases": [
+        "PROM",
+        "PPROM",
+        "ruptured membranes",
+        "water broke"
+      ],
+      "history": 12,
+      "exam": 9,
+      "itemsHash": "bd3ef3b35a498f1502fa42854bfc2ed48db80414fb50baeb304a0a9b732bcdb9"
+    },
+    {
+      "id": "ld-magnesium-check",
+      "title": "Magnesium sulfate check",
+      "aliases": [
+        "magnesium check",
+        "MgSO4",
+        "mag check",
+        "magnesium toxicity"
+      ],
+      "history": 10,
+      "exam": 10,
+      "itemsHash": "7776af0a67b84a7f7a2f735da412582a6447b8abea55d84b7cbb46757c7212c4"
+    },
+    {
+      "id": "ld-term-labor",
+      "title": "Term labor triage",
+      "aliases": [
+        "term labor",
+        "labor check",
+        "labor triage",
+        "in labor?"
+      ],
+      "history": 13,
+      "exam": 10,
+      "itemsHash": "0f277f33f903894a64387b4f4d0e8eef2b38f21a024a3bf70b2151fadb2760bc"
+    },
+    {
+      "id": "ld-antepartum-bleeding",
+      "title": "Vaginal bleeding in pregnancy",
+      "aliases": [
+        "antepartum hemorrhage",
+        "vaginal bleeding pregnant",
+        "APH",
+        "previa bleed",
+        "abruption"
+      ],
+      "history": 14,
+      "exam": 10,
+      "itemsHash": "7f98c3c87864dc3ca997fb8adec74a4f6c9308daf6778ee21a09d213a00e8c7e"
+    },
+    {
+      "id": "ld-decreased-fetal-movement",
+      "title": "Decreased fetal movement",
+      "aliases": [
+        "decreased fetal movement",
+        "DFM",
+        "reduced fetal movements",
+        "kick counts",
+        "fetal movement concern"
+      ],
+      "history": 12,
+      "exam": 10,
+      "itemsHash": "8312ea280fc6328c9244d4760fe8daf4ccf31c331b40d1b40dc7ad1c8096c9de"
+    },
+    {
+      "id": "ld-preeclampsia",
+      "title": "Preeclampsia / hypertension in pregnancy",
+      "aliases": [
+        "preeclampsia",
+        "pregnancy hypertension",
+        "HTN pregnancy",
+        "PIH",
+        "severe features"
+      ],
+      "history": 12,
+      "exam": 10,
+      "itemsHash": "9e29be50db98e9829f8844eddf44f4a1092bd05151113c9df26d548fa32601ce"
+    },
+    {
+      "id": "clinic-well-woman",
+      "title": "Well-woman visit",
+      "aliases": [
+        "well-woman exam",
+        "annual preventive visit",
+        "wellness check",
+        "Pap visit",
+        "annual exam"
+      ],
+      "history": 16,
+      "exam": 12,
+      "itemsHash": "1dc3298e7404a12deee828bfa709f69f479091d668bbf59f8f8eddb1560de7a7"
+    },
+    {
+      "id": "clinic-first-prenatal",
+      "title": "First prenatal visit",
+      "aliases": [
+        "first prenatal visit",
+        "new OB visit",
+        "initial OB intake",
+        "pregnancy intake visit",
+        "dating visit"
+      ],
+      "history": 16,
+      "exam": 12,
+      "itemsHash": "5f8cce6270ef68b16045f9af4464b7e121c38918bc4fb12ce3a32537fbb61111"
+    },
+    {
+      "id": "clinic-aub",
+      "title": "Abnormal uterine bleeding",
+      "aliases": [
+        "abnormal uterine bleeding",
+        "AUB",
+        "heavy menstrual bleeding",
+        "menorrhagia",
+        "irregular bleeding"
+      ],
+      "history": 14,
+      "exam": 10,
+      "itemsHash": "f759146b41ae52e60719cf3aaeab8417133af1962c5a7764999efdb327f6b13c"
+    },
+    {
+      "id": "clinic-vaginal-discharge",
+      "title": "Vaginal discharge",
+      "aliases": [
+        "vaginal discharge",
+        "discharge",
+        "BV",
+        "yeast infection",
+        "vaginitis"
+      ],
+      "history": 14,
+      "exam": 10,
+      "itemsHash": "8bbae7cb941a67210f6f95acc7fe449ef61066f7f742d90e90e0e5dd69c240fc"
+    },
+    {
+      "id": "clinic-pelvic-pain",
+      "title": "Pelvic pain",
+      "aliases": [
+        "pelvic pain",
+        "lower abdominal pain",
+        "dysmenorrhea",
+        "torsion",
+        "PID pain"
+      ],
+      "history": 14,
+      "exam": 8,
+      "itemsHash": "022643fe21a9d7944e01a3c3b8000fd43aa4ad45555e16b33ee083ebc40aedd9"
+    },
+    {
+      "id": "clinic-contraception",
+      "title": "Contraception counseling",
+      "aliases": [
+        "contraception",
+        "birth control",
+        "OCP",
+        "IUD",
+        "family planning"
+      ],
+      "history": 12,
+      "exam": 4,
+      "itemsHash": "1861b56e6f249bb4b0f59a786833d82ead00b619ab787338f51e0924ed025085"
+    },
   ];
 
 assert.strictEqual(bundle.version, 1, "bundle version must be 1");
