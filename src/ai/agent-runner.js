@@ -24,7 +24,41 @@ import {
 import { AGENT_MAX_STEPS } from "./agent-tools.js?v=20260929-agent-tools-v2";
 import { AGENT_SYSTEM_PROMPT } from "./agent-prompts.js?v=20260929-agent-v1";
 
-export const AGENT_RUNNER_TAG = "20260929-agent-runner-v1";
+export const AGENT_RUNNER_TAG = "20260929-agent-runner-v2";
+
+/**
+ * Normalize one SDK tool-result entry into an audit record.
+ *
+ * Pure and unit-tested: each local tool's execute() returns
+ * { text, deterministic }; the SDK wraps it as { type: 'json', value } or
+ * passes it through raw. Provider tools (e.g. web search) return no local
+ * payload, so their records keep text/deterministic null. A malformed
+ * entry yields a record with nulls — it must never break the run.
+ *
+ * @returns {{ step, toolName, input, text, deterministic }}
+ */
+export function toToolRecord(tr, call, stepNumber) {
+  const toolName = String(tr?.toolName || call?.toolName || "");
+  const input = call?.input ?? null;
+  let text = null;
+  let deterministic = null;
+  try {
+    const output = tr?.output;
+    // SDK v6 wraps tool output as { type: 'json', value } or raw.
+    const value = output && typeof output === "object" && "value" in output
+      ? output.value
+      : output;
+    if (value && typeof value === "object") {
+      if (typeof value.text === "string") text = value.text;
+      if (value.deterministic && typeof value.deterministic === "object") deterministic = value.deterministic;
+    } else if (typeof value === "string") {
+      text = value;
+    }
+  } catch {
+    // A malformed tool result must not break the run.
+  }
+  return { step: stepNumber, toolName, input, text, deterministic };
+}
 
 /**
  * Run one agentic turn.
@@ -39,8 +73,17 @@ export const AGENT_RUNNER_TAG = "20260929-agent-runner-v1";
  * @param {Function} [opts.onStep] - called after each step with
  *   { stepNumber, toolCalls: [{ toolName, input }] }
  * @param {AbortSignal} [opts.abortSignal]
+ * @param {string} [opts.systemPrompt] - optional system-prompt override
+ *   (defaults to AGENT_SYSTEM_PROMPT). Lets other surfaces (e.g. AI Chat)
+ *   reuse the loop with their own reviewed prompt.
+ * @param {boolean} [opts.webSearch] - when true, the OpenAI web_search
+ *   provider tool is merged into the tool set alongside the local tools.
  *
- * @returns {Promise<{ text, steps, toolCalls, deterministicFindings, usage, finishReason }>}
+ * @returns {Promise<{ text, steps, toolCalls, toolResults, deterministicFindings, usage, finishReason }>}
+ *   toolResults: per tool call, in order —
+ *   [{ step, toolName, input, text, deterministic }]. `text`/`deterministic`
+ *   are null for provider tools (e.g. web search) that return no local
+ *   payload.
  */
 export async function runAgent({
   apiKey,
@@ -49,7 +92,9 @@ export async function runAgent({
   tools,
   fetchImpl,
   onStep,
-  abortSignal
+  abortSignal,
+  systemPrompt,
+  webSearch
 } = {}) {
   const key = String(apiKey || "").trim();
   if (!key) throw new Error("Save an OpenAI API key in Settings before using Agent mode.");
@@ -69,21 +114,34 @@ export async function runAgent({
 
   const deterministicFindings = [];
   const toolCalls = [];
+  const toolResults = [];
   let stepNumber = 0;
 
   // The SDK calls onStep for each step; we record tool calls and harvest
   // deterministic payloads from tool results as they arrive.
+  //
+  // systemPrompt lets callers (e.g. AI Chat) reuse this loop with their own
+  // already-reviewed prompt instead of the Agent-mode default.
+  const effectiveSystemPrompt =
+    typeof systemPrompt === "string" && systemPrompt.trim()
+      ? systemPrompt
+      : AGENT_SYSTEM_PROMPT;
+  // Optional OpenAI web_search provider tool, merged with the local tools.
+  // Kept off unless the caller asks: local tools never touch the network.
+  const effectiveTools = webSearch
+    ? { ...tools, web_search: openai.tools.webSearch({}) }
+    : tools;
   const result = await generateText({
     model: openai(model),
-    system: AGENT_SYSTEM_PROMPT,
+    system: effectiveSystemPrompt,
     messages: messages.map((m) => ({
       role: m.role === "assistant" ? "assistant" : m.role === "system" ? "system" : "user",
       content: String(m.content || "")
     })),
-    tools,
+    tools: effectiveTools,
     stopWhen: stepCountIs(AGENT_MAX_STEPS),
     abortSignal,
-    onStepFinish: ({ toolCalls: stepToolCalls, toolResults }) => {
+    onStepFinish: ({ toolCalls: stepToolCalls, toolResults: stepToolResults }) => {
       stepNumber += 1;
       for (const call of stepToolCalls || []) {
         toolCalls.push({
@@ -92,27 +150,20 @@ export async function runAgent({
           input: call.input ?? null
         });
       }
-      // Harvest deterministic payloads: each tool's execute() returns
-      // { text, deterministic }. The SDK wraps it; unwrap carefully.
-      for (const tr of toolResults || []) {
-        try {
-          const output = tr?.output;
-          // SDK v6 wraps tool output as { type: 'json', value } or raw.
-          const value = output && typeof output === "object" && "value" in output
-            ? output.value
-            : output;
-          const det = value && typeof value === "object" ? value.deterministic : null;
-          if (det && typeof det === "object") {
-            deterministicFindings.push({
-              step: stepNumber,
-              toolName: String(tr.toolName || ""),
-              ...det
-            });
-          }
-        } catch {
-          // A malformed tool result must not break the run.
+      // Harvest one audit record per tool result; deterministic payloads
+      // are pinned separately for UIs that render them as assertions.
+      const callsByName = stepToolCalls || [];
+      (stepToolResults || []).forEach((tr, index) => {
+        const record = toToolRecord(tr, callsByName[index] || {}, stepNumber);
+        toolResults.push(record);
+        if (record.deterministic) {
+          deterministicFindings.push({
+            step: record.step,
+            toolName: record.toolName,
+            ...record.deterministic
+          });
         }
-      }
+      });
       if (typeof onStep === "function") {
         try {
           onStep({
@@ -130,6 +181,7 @@ export async function runAgent({
     text: String(result.text || ""),
     steps: stepNumber,
     toolCalls,
+    toolResults,
     deterministicFindings,
     usage: result.usage
       ? {

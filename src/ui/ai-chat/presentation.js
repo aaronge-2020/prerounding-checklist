@@ -211,6 +211,13 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
               </span>
             </label>
             <label class="aic-parse-row">
+              <span class="aic-parse-txt"><strong>Clinical tools</strong><span class="aic-muted">Let ChatGPT run the 25 calculators and 7 AI models locally, in-chat.</span></span>
+              <span class="aic-sw">
+                <input type="checkbox" data-ai-chat-tools-toggle ${remote.toolsEnabled ? "checked" : ""}>
+                <span class="aic-sw-t" aria-hidden="true"></span>
+              </span>
+            </label>
+            <label class="aic-parse-row">
               <span class="aic-parse-txt"><strong>Patient context</strong><span class="aic-muted">Attach selected chart documents to both chats.</span></span>
               <span class="aic-sw">
                 <input type="checkbox" data-ai-chat-context-toggle ${settings.patientContextEnabled ? "checked" : ""} ${patientContext.hasPatient ? "" : "disabled"}>
@@ -229,6 +236,43 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
   }
 
   // ── Conversation ────────────────────────────────────────
+
+  // Auditable tool records: one collapsed row per tool call the model made
+  // while composing a reply. The deterministic payload is the pinned fact
+  // (score/headline/missing inputs); the model's prose stays advisory and
+  // cannot override these numbers.
+  function toolRecordHeadline(rec) {
+    const det = rec && rec.deterministic ? rec.deterministic : {};
+    if (det.kind === "calculator-run" || det.kind === "ai-model-run") {
+      const what = det.kind === "calculator-run" ? "calculator" : "model";
+      if (det.found === false) return `Unknown ${what} “${det.calculatorId || det.modelId || ""}”`;
+      if (det.error) return `Failed: ${det.error}`;
+      if (!det.complete) return `Incomplete — missing: ${(det.missing || []).join(", ") || "unknown"}`;
+      return det.headline || det.title || "complete";
+    }
+    if (det.kind === "calculator-list") return `${det.count} calculators listed`;
+    if (det.kind === "ai-model-list") return `${det.count} AI models listed`;
+    if (rec && rec.toolName === "web_search") return "Web search";
+    return "done";
+  }
+
+  function renderToolRecords(records) {
+    const items = (records || []).map((rec) => {
+      const name = String((rec && rec.toolName) || "tool");
+      const inputJson = rec && rec.input && typeof rec.input === "object"
+        ? JSON.stringify(rec.input)
+        : String(rec && rec.input != null ? rec.input : "");
+      const detJson = rec && rec.deterministic ? JSON.stringify(rec.deterministic) : "";
+      return `<details class="aic-toolrec">` +
+        `<summary>${icon("wand")}<code>${escapeHtml(name)}</code><span>${escapeHtml(toolRecordHeadline(rec))}</span></summary>` +
+        `<div class="aic-toolrec-body">` +
+        (inputJson ? `<p><strong>Inputs</strong></p><pre>${escapeHtml(inputJson.slice(0, 800))}</pre>` : "") +
+        (rec && rec.text ? `<p><strong>Result</strong></p><pre>${escapeHtml(String(rec.text).slice(0, 1200))}</pre>` : "") +
+        (detJson ? `<p><strong>Verified output</strong></p><pre>${escapeHtml(detJson.slice(0, 1200))}</pre>` : "") +
+        `</div></details>`;
+    }).join("");
+    return `<div class="aic-toolrecs" aria-label="Tool calls used in this reply">${items}</div>`;
+  }
 
   function renderLocalMessages(chat, activeLabel) {
     const messages = (chat.messages || [])
@@ -266,8 +310,12 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     const messages = (remote.messages || [])
       .map((m, index) => {
         const cls = m.role === "user" ? "aic-m--u" : "aic-m--a";
-        const label = m.role === "user" ? "" : `<span class="aic-m-label">ChatGPT${m.webSearch ? " · web search" : ""}${renderSummaryBadge(m)}</span>`;
-        const body = m.role === "user" ? `<p>${escapeHtml(m.text)}</p>` : `<div class="aic-m-body">${renderChatMarkdown(m.text)}</div>`;
+        const toolBadge = m.toolsUsed ? " · tools" : "";
+        const label = m.role === "user" ? "" : `<span class="aic-m-label">ChatGPT${m.webSearch ? " · web search" : ""}${toolBadge}${renderSummaryBadge(m)}</span>`;
+        const records = m.role !== "user" && Array.isArray(m.toolRecords) && m.toolRecords.length
+          ? renderToolRecords(m.toolRecords)
+          : "";
+        const body = m.role === "user" ? `<p>${escapeHtml(m.text)}</p>` : `<div class="aic-m-body">${renderChatMarkdown(m.text)}</div>${records}`;
         const revert = `<button type="button" class="aic-m-revert" data-action="ai-chat-revert-remote" data-message-index="${index}" title="Revert to here — remove this message and everything after it">${icon("undo")} revert</button>`;
         return `<div class="aic-m ${cls}">${label}${body}${revert}</div>`;
       })
@@ -770,6 +818,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
             ${pieces.map((piece) => renderReviewPiece(piece, ctx)).join("") || `<p class="aic-muted">No context pieces.</p>`}
             <h3 class="aic-hipaa-sec-title">What will be sent</h3>
             <pre class="aic-hipaa-transmit">${escapeHtml(review.transmitText || "")}</pre>
+            ${review.toolsEnabled ? `<p class="aic-hipaa-note">${icon("wand")} <strong>Clinical tools on</strong> — ChatGPT may run the 25 local calculators and 7 on-device AI models while composing this reply. Every calculation runs in this browser; only the de-identified text above is sent.</p>` : ""}
             ${review.truncationNote ? `<p class="aic-hipaa-note">${icon("alert")} ${escapeHtml(review.truncationNote)}</p>` : ""}
             <div class="aic-hipaa-flags${flagItems.length ? "" : " aic-hipaa-flags--ok"}">
               <strong>${icon("alert")} Review flags</strong>

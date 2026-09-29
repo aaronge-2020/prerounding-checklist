@@ -13778,3 +13778,19 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   .cs-list, .cs-detail { padding-left: 20px; padding-right: 20px; }
 }
 
+
+/* ── AI Chat clinical-tool records ────────────────────────────────────
+   Collapsed per-tool-call audit rows under a tool-mode assistant reply:
+   which tool ran, with what inputs, and the deterministic result it
+   returned. Styled after .aic-think disclosures. */
+.aic-toolrecs { display: flex; flex-direction: column; gap: 6px; margin: 10px 0 2px; }
+.aic-toolrec { border: 1px solid var(--border); border-radius: 10px; background: color-mix(in srgb, var(--text) 4%, var(--surface)); overflow: hidden; }
+.aic-toolrec > summary { display: flex; align-items: center; gap: 8px; padding: 7px 12px; font-size: 0.78rem; font-weight: 600; color: var(--muted); cursor: pointer; list-style: none; }
+.aic-toolrec > summary::-webkit-details-marker { display: none; }
+.aic-toolrec > summary svg { width: 13px; height: 13px; flex-shrink: 0; }
+.aic-toolrec > summary code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.75rem; color: var(--text); background: color-mix(in srgb, var(--text) 8%, transparent); border-radius: 6px; padding: 1px 6px; }
+.aic-toolrec > summary span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aic-toolrec > summary:hover { color: var(--text); }
+.aic-toolrec-body { padding: 2px 12px 10px; font-size: 0.78rem; line-height: 1.5; color: var(--muted); }
+.aic-toolrec-body p { margin: 8px 0 4px; }
+.aic-toolrec-body pre { margin: 0; padding: 8px 10px; border-radius: 8px; background: color-mix(in srgb, var(--text) 5%, transparent); white-space: pre-wrap; word-break: break-word; max-height: 220px; overflow-y: auto; font-size: 0.74rem; }

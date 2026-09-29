@@ -52,6 +52,14 @@ import {
 } from "../src/ai/openai-pricing.js";
 import { requestOpenAiChatWithUsage } from "../src/ui/openai-client.js";
 import { buildCompressionInput } from "../src/ai/remote-chat.js";
+import {
+  buildChatToolsSystemPrompt,
+  CHAT_MAX_STEPS,
+  CHAT_TOOL_NAMES,
+  CHAT_TOOLS_TAG,
+  createChatTools
+} from "../src/ui/ai-chat/chat-tools.js";
+import { toToolRecord } from "../src/ai/agent-runner.js";
 
 
 // ---------------------------------------------------------------------------
@@ -830,7 +838,36 @@ function makeChatStub() {
   };
 }
 
-function makeHarness({ patient = controllerFixturePatient(), prefs = {}, deidStub = makeDeidStub(), chatStub = makeChatStub(), draftText = "" } = {}) {
+function makeAgentStub({ throwOnRun = false } = {}) {
+  const calls = [];
+  return {
+    calls,
+    runAgent: async (args) => {
+      calls.push(args);
+      if (throwOnRun) throw new Error("network down");
+      return {
+        text: "Tool-mode reply. [Stub]",
+        toolCalls: [
+          { step: 1, toolName: "list_clinical_calculators", input: {} },
+          { step: 2, toolName: "run_clinical_calculator", input: { calculatorId: "chadsvasc", inputs: {} } }
+        ],
+        toolResults: [
+          { step: 1, toolName: "list_clinical_calculators", input: {}, text: "25 calculators", deterministic: { kind: "calculator-list", count: 25 } },
+          { step: 2, toolName: "run_clinical_calculator", input: { calculatorId: "chadsvasc" }, text: "CHA2DS2-VASc: incomplete", deterministic: { kind: "calculator-run", complete: false, missing: ["age"] } }
+        ],
+        deterministicFindings: [],
+        usage: { inputTokens: 100, outputTokens: 50, totalTokens: 150 },
+        finishReason: "stop"
+      };
+    }
+  };
+}
+
+function setToolsToggle(h, checked) {
+  h.ctrl.change({ matches: (sel) => sel === "[data-ai-chat-tools-toggle]", checked });
+}
+
+function makeHarness({ patient = controllerFixturePatient(), prefs = {}, deidStub = makeDeidStub(), chatStub = makeChatStub(), agentStub = makeAgentStub(), draftText = "" } = {}) {
   const statuses = [];
   let html = "";
   const root = {};
@@ -860,12 +897,13 @@ function makeHarness({ patient = controllerFixturePatient(), prefs = {}, deidStu
     currentPreferences: () => ({ openAiApiKey: "sk-test", openAiModel: "gpt-5.4-mini", medicalService: "medicine", ...prefs }),
     onChatServiceChange: () => {},
     deidDeps: deidStub,
-    chatDeps: chatStub
+    chatDeps: chatStub,
+    agentDeps: agentStub
   });
   // The review gate lives on the ChatGPT (remote) tab.
   ctrl.click(actionTarget("ai-chat-mode", { mode: "remote" }));
   return {
-    ctrl, app, statuses, deidStub, chatStub, composerInput,
+    ctrl, app, statuses, deidStub, chatStub, agentStub, composerInput,
     html: () => html,
     setDraft: (t) => { draftText = t; }
   };
@@ -914,12 +952,13 @@ function acceptAllAndAck(h) {
 }
 
 async function confirmSend(h) {
-  const before = h.chatStub.calls.length;
+  const beforeChat = h.chatStub.calls.length;
+  const beforeAgent = h.agentStub.calls.length;
   h.ctrl.click(actionTarget("ai-chat-hipaa-confirm"));
   const start = Date.now();
-  while (h.chatStub.calls.length === before && Date.now() - start < 5000) await tick();
+  while (h.chatStub.calls.length === beforeChat && h.agentStub.calls.length === beforeAgent && Date.now() - start < 5000) await tick();
   await tick(30);
-  return h.chatStub.calls.length > before;
+  return h.chatStub.calls.length > beforeChat || h.agentStub.calls.length > beforeAgent;
 }
 
 {
@@ -962,10 +1001,12 @@ async function confirmSend(h) {
 }
 
 {
-  // (2) Happy path: what was reviewed is what is sent. The captured input's
-  // final user content equals the review's finalUserContent, contains the
-  // reviewed transmit text, and leads with the transformed message.
+  // (2) Happy path, tools OFF: what was reviewed is what is sent. The
+  // captured input's final user content equals the review's
+  // finalUserContent, contains the reviewed transmit text, and leads with
+  // the transformed message.
   const h = makeHarness();
+  setToolsToggle(h, false);
   const optIn = (id) => h.ctrl.change({
     matches: (sel) => sel === "[data-ai-chat-context-piece]",
     dataset: { aiChatContextPiece: id },
@@ -1113,6 +1154,7 @@ async function confirmSend(h) {
   // (9) Manual redaction renders as [REDACTED], survives cancel/resend via
   // the review store, and lands in the payload.
   const h = makeHarness();
+  setToolsToggle(h, false);
   const review = await driveSend(h, "Q CanaryName");
   assert.equal(review.phase, "ready");
   const hpi = review.pieces.find((p) => p.id === "admission:hpi");
@@ -1166,6 +1208,7 @@ async function confirmSend(h) {
       serviceFocus: "heart failure"
     }
   });
+  setToolsToggle(h, false);
   await driveSend(h, "Q CanaryName");
   acceptAllAndAck(h);
   const pre = h.ctrl.getRemoteReview();
@@ -1417,6 +1460,7 @@ async function sendRemoteReviewed(h, message) {
   // Usage + cost accumulate per conversation and render in the view model.
   const chatStub = makeUsageChatStub({ inputTokens: 10000, outputTokens: 2000, cachedInputTokens: 4000, webSearchCalls: 2 });
   const h = makeHarness({ chatStub, prefs: { openAiModel: "gpt-5.6" } });
+  setToolsToggle(h, false);
   await sendRemoteReviewed(h, "CanaryName question");
   const remote = h.ctrl.getRemoteState();
   assert.equal(remote.usage.inputTokens, 10000, "input tokens accumulated");
@@ -1434,6 +1478,7 @@ async function sendRemoteReviewed(h, message) {
   // A second send accumulates onto the first; new chat resets the totals.
   const chatStub = makeUsageChatStub({ inputTokens: 10000, outputTokens: 2000, cachedInputTokens: 0, webSearchCalls: 0 });
   const h = makeHarness({ chatStub, prefs: { openAiModel: "gpt-5.6" } });
+  setToolsToggle(h, false);
   await sendRemoteReviewed(h, "CanaryName question one");
   await sendRemoteReviewed(h, "CanaryName question two");
   let remote = h.ctrl.getRemoteState();
@@ -1459,6 +1504,7 @@ async function sendRemoteReviewed(h, message) {
     }
   };
   const h = makeHarness({ chatStub: legacyStub, prefs: { openAiModel: "gpt-5.6" } });
+  setToolsToggle(h, false);
   await sendRemoteReviewed(h, "CanaryName question");
   const remote = h.ctrl.getRemoteState();
   assert.equal(remote.messages.length, 2, "reply recorded via legacy stub");
@@ -1470,6 +1516,7 @@ async function sendRemoteReviewed(h, message) {
   // Remote context stats meter against the selected model's real window.
   const chatStub = makeUsageChatStub({ inputTokens: 1000, outputTokens: 100, cachedInputTokens: 0, webSearchCalls: 0 });
   const h = makeHarness({ chatStub, prefs: { openAiModel: "gpt-5.4-mini" } });
+  setToolsToggle(h, false);
   await sendRemoteReviewed(h, "CanaryName question");
   const stats = h.ctrl.getRemoteState().contextStats;
   assert.ok(stats, "context stats recorded");
@@ -1498,6 +1545,7 @@ async function driveRemoteCompression(h) {
   const usage = { inputTokens: 50000, outputTokens: 400, cachedInputTokens: 0, webSearchCalls: 0 };
   const chatStub = makeUsageChatStub(usage);
   const h = makeHarness({ chatStub, prefs: { openAiModel: "gpt-5.6" } });
+  setToolsToggle(h, false);
   const remote = h.ctrl.getRemoteState();
   remote.messages = [
     { role: "user", text: "q1" },
@@ -1526,6 +1574,7 @@ async function driveRemoteCompression(h) {
   // Recompressing folds the earlier summary in instead of dropping it.
   const chatStub = makeUsageChatStub({ inputTokens: 50000, outputTokens: 400, cachedInputTokens: 0, webSearchCalls: 0 });
   const h = makeHarness({ chatStub, prefs: { openAiModel: "gpt-5.6" } });
+  setToolsToggle(h, false);
   const remote = h.ctrl.getRemoteState();
   remote.messages = [
     { role: "assistant", text: "Earlier summary.", summary: true, compressedCount: 8 },
@@ -1566,7 +1615,8 @@ async function sendReviewedOnce(h, message) {
 // Clicks send and waits for the direct-send path: no review modal appears
 // and the OpenAI stub sees a new call.
 async function driveSendExpectSkip(h, message) {
-  const before = h.chatStub.calls.length;
+  const beforeChat = h.chatStub.calls.length;
+  const beforeAgent = h.agentStub.calls.length;
   h.ctrl.click(sendRemoteAction(message));
   const start = Date.now();
   for (;;) {
@@ -1574,7 +1624,7 @@ async function driveSendExpectSkip(h, message) {
     if (review && (review.phase === "ready" || review.phase === "failed")) {
       throw new Error(`expected a direct send, but the review modal opened (phase ${review.phase})`);
     }
-    if (h.chatStub.calls.length > before) {
+    if (h.chatStub.calls.length > beforeChat || h.agentStub.calls.length > beforeAgent) {
       await tick(30);
       assert.equal(h.ctrl.getRemoteReview(), null, "no review modal after the direct send");
       return;
@@ -1727,4 +1777,243 @@ function fakeKeyEvent({ key = "Enter", shiftKey = false, isComposing = false, in
   });
   assert.equal(handled, false, "Enter outside the composer is ignored");
   assert.ok(!prevented, "default not prevented outside the composer");
+}
+
+// ---------------------------------------------------------------------------
+// chat-tools.js: ChatGPT-mode clinical tool set (25 calculators + 7 models)
+// ---------------------------------------------------------------------------
+
+{
+  // The chat exposes exactly the four clinical-computation tools, in a
+  // stable order, and the tool loop stays bounded like Agent mode.
+  const tools = createChatTools();
+  assert.deepEqual(Object.keys(tools), CHAT_TOOL_NAMES, "chat exposes exactly the four clinical tools");
+  assert.deepEqual(CHAT_TOOL_NAMES, [
+    "list_clinical_calculators",
+    "run_clinical_calculator",
+    "list_ai_models",
+    "run_ai_model"
+  ]);
+  assert.equal(CHAT_MAX_STEPS, 8, "tool loop stays bounded at 8 steps");
+  assert.match(CHAT_TOOLS_TAG, /^20260929-chat-tools-v1$/, "tool module is version-tagged");
+}
+
+{
+  // list_ai_models: all seven native models, with the preprint flagged.
+  const tools = createChatTools();
+  const out = await tools.list_ai_models.execute({ filter: "" }, {});
+  assert.equal(out.deterministic.kind, "ai-model-list");
+  assert.equal(out.deterministic.count, 7, "seven native AI models exposed");
+  assert.deepEqual(
+    out.deterministic.models.map((m) => m.id).sort(),
+    ["autoscore-mortality", "covidgram", "easp-sepsis", "isaric4c", "periop-xgboost", "qrisk3", "recode"].sort()
+  );
+  const periop = out.deterministic.models.find((m) => m.id === "periop-xgboost");
+  assert.equal(periop.peerReviewed, false, "preprint model is flagged not peer-reviewed");
+  assert.match(out.text, /PREPRINT/, "preprint warning is human-visible in the list text");
+}
+
+{
+  // run_ai_model: unknown id never throws — structured not-found.
+  const tools = createChatTools();
+  const out = await tools.run_ai_model.execute({ modelId: "nope", inputs: {} }, {});
+  assert.equal(out.deterministic.found, false);
+  assert.match(out.text, /Unknown AI model/);
+}
+
+{
+  // run_ai_model: missing inputs are reported, never invented.
+  const tools = createChatTools();
+  const out = await tools.run_ai_model.execute({ modelId: "qrisk3", inputs: {} }, {});
+  assert.equal(out.deterministic.complete, false);
+  assert.ok(out.deterministic.missing.length > 0, "missing inputs are listed");
+  assert.match(out.text, /do not invent them/i, "model is told not to invent inputs");
+}
+
+{
+  // run_ai_model: complete run returns the deterministic fact payload with
+  // provenance (COVID-GRAM low-risk vector from test-ai-models.js).
+  const tools = createChatTools();
+  const out = await tools.run_ai_model.execute({
+    modelId: "covidgram",
+    inputs: {
+      xrayAbnormality: 0, age: 30, hemoptysis: 0, dyspnea: 0, unconsciousness: 0,
+      comorbidityCount: 0, cancerHistory: 0, nlr: 2.0, ldh: 200, directBilirubin: 8
+    }
+  }, {});
+  assert.equal(out.deterministic.complete, true);
+  assert.equal(out.deterministic.modelId, "covidgram");
+  assert.ok(out.deterministic.headline.length > 0, "headline present");
+  assert.ok(
+    Math.abs(out.deterministic.result.probability - 0.012288129343777267) <= 1e-9,
+    "probability matches the reference vector"
+  );
+  assert.match(out.text, /Reference:/, "provenance reference is surfaced");
+}
+
+{
+  // run_ai_model: the preprint model's complete result carries its
+  // validation warning alongside the number.
+  const tools = createChatTools();
+  const out = await tools.run_ai_model.execute({
+    modelId: "periop-xgboost",
+    inputs: { age: 65, sex: 1, heightCm: 175, weightKg: 80, asa: 2, emergency: 0 }
+  }, {});
+  assert.equal(out.deterministic.complete, true);
+  assert.equal(out.deterministic.peerReviewed, false);
+  assert.match(out.text, /WARNING/i, "preprint warning travels with the result");
+  assert.ok(out.deterministic.validationNote.length > 0, "validation note retained in the payload");
+}
+
+{
+  // run_clinical_calculator via the chat set: incomplete lists what is
+  // missing; complete returns the verified score payload.
+  const tools = createChatTools();
+  const incomplete = await tools.run_clinical_calculator.execute({ calculatorId: "chadsvasc", inputs: {} }, {});
+  assert.equal(incomplete.deterministic.complete, false);
+  assert.ok(incomplete.deterministic.missing.length > 0, "missing calculator inputs are listed");
+  assert.match(incomplete.text, /do not invent them/i);
+  const complete = await tools.run_clinical_calculator.execute({
+    calculatorId: "chadsvasc",
+    inputs: { age: 1, sex: 1, chf: 0, hypertension: 1, strokeTiaTe: 0, vascularDisease: 0, diabetes: 0 }
+  }, {});
+  assert.equal(complete.deterministic.complete, true);
+  assert.equal(complete.deterministic.score, 3, "CHA2DS2-VASc: 65-74 + female + hypertension = 3");
+  assert.ok(complete.deterministic.headline.length > 0, "headline present");
+}
+
+{
+  // run_clinical_calculator: unknown id never throws.
+  const tools = createChatTools();
+  const out = await tools.run_clinical_calculator.execute({ calculatorId: "nope", inputs: {} }, {});
+  assert.equal(out.deterministic.found, false);
+  assert.match(out.text, /Unknown calculator/);
+}
+
+{
+  // buildChatToolsSystemPrompt: the reviewed base prompt passes through
+  // unchanged, with the tool-use rules appended.
+  const base = "BASE-PROMPT-SENTINEL-123";
+  const prompt = buildChatToolsSystemPrompt(base);
+  assert.ok(prompt.startsWith(base), "base prompt is preserved verbatim at the top");
+  assert.match(prompt, /list_clinical_calculators/, "calculator tools are named");
+  assert.match(prompt, /list_ai_models/, "AI model tools are named");
+  assert.match(prompt, /NEVER invent or assume missing inputs/, "never-invent rule is explicit");
+  assert.match(prompt, /never claim MDCalc parity/, "AI models are fenced off from MDCalc parity");
+  assert.match(prompt, /de-identified/, "PHI-safety rule is present");
+}
+
+// ---------------------------------------------------------------------------
+// agent-runner.js: toToolRecord — audit-record normalization (pure)
+// ---------------------------------------------------------------------------
+
+{
+  // SDK-wrapped tool output ({ type: "json", value }) unwraps to text +
+  // deterministic payload.
+  const rec = toToolRecord(
+    { toolName: "run_clinical_calculator", output: { type: "json", value: { text: "CHA2DS2-VASc: 3", deterministic: { kind: "calculator-run", score: 3 } } } },
+    { toolName: "run_clinical_calculator", input: { calculatorId: "chadsvasc" } },
+    2
+  );
+  assert.equal(rec.step, 2);
+  assert.equal(rec.toolName, "run_clinical_calculator");
+  assert.deepEqual(rec.input, { calculatorId: "chadsvasc" });
+  assert.equal(rec.text, "CHA2DS2-VASc: 3");
+  assert.deepEqual(rec.deterministic, { kind: "calculator-run", score: 3 });
+}
+
+{
+  // Raw (unwrapped) object output and plain-string output both normalize.
+  const raw = toToolRecord(
+    { toolName: "t", output: { text: "hi", deterministic: { kind: "x" } } },
+    { toolName: "t", input: null },
+    1
+  );
+  assert.equal(raw.text, "hi");
+  assert.deepEqual(raw.deterministic, { kind: "x" });
+  const str = toToolRecord({ toolName: "t", output: "plain" }, { toolName: "t" }, 1);
+  assert.equal(str.text, "plain");
+  assert.equal(str.deterministic, null);
+}
+
+{
+  // Provider tools (web search) and malformed entries never break the
+  // harvest — they yield records with null payloads.
+  const provider = toToolRecord({ toolName: "web_search", output: { type: "text", value: "sources..." } }, { toolName: "web_search" }, 3);
+  assert.equal(provider.toolName, "web_search");
+  assert.equal(provider.deterministic, null);
+  const malformed = toToolRecord({ toolName: "t", output: { get value() { throw new Error("boom"); } } }, { toolName: "t" }, 1);
+  assert.equal(malformed.text, null, "throwing output normalizes to nulls, not an exception");
+  assert.equal(malformed.deterministic, null);
+  const empty = toToolRecord(null, {}, 1);
+  assert.equal(empty.toolName, "");
+  assert.equal(empty.input, null);
+}
+
+// ---------------------------------------------------------------------------
+// controller.js: ChatGPT-mode clinical-tools send path
+// ---------------------------------------------------------------------------
+
+{
+  // Tools ON (default): confirm routes through the tool loop. The assistant
+  // message carries auditable tool records, and only the reviewed /
+  // de-identified payload reaches the runner.
+  const agentStub = makeAgentStub();
+  const h = makeHarness({ agentStub });
+  const review = await driveSend(h, "Summarize CanaryName for me");
+  assert.equal(review.phase, "ready", "review ready");
+  assert.equal(review.toolsEnabled, true, "clinical tools on by default in the review");
+  acceptAllAndAck(h);
+  const pre = h.ctrl.getRemoteReview();
+  assert.equal(pre.canSend, true, "ack + zero pending => canSend");
+  const sent = await confirmSend(h);
+  assert.equal(sent, true, "send happened");
+  assert.equal(agentStub.calls.length, 1, "tool loop ran once");
+  assert.equal(h.chatStub.calls.length, 0, "single-shot path not used when tools are on");
+  const args = agentStub.calls[0];
+  assert.ok(String(args.systemPrompt).startsWith(pre.systemPromptText), "reviewed system prompt leads the loop system prompt");
+  const lastMsg = args.messages[args.messages.length - 1];
+  assert.ok(lastMsg.content.includes(pre.transmitText), "reviewed transmit text is the loop input");
+  assert.ok(!lastMsg.content.includes("CanaryName"), "no raw canary reaches the loop");
+  assert.ok(args.tools && typeof args.tools.run_clinical_calculator?.execute === "function", "clinical tools are passed to the loop");
+  assert.equal(typeof args.fetchImpl, "function", "loop traffic goes through the network gate");
+  const htmlAfter = h.html();
+  assert.ok(htmlAfter.includes("· tools"), "assistant label shows tool use");
+  assert.ok(htmlAfter.includes("run_clinical_calculator"), "tool record names the tool");
+  assert.ok(htmlAfter.includes("CHA2DS2-VASc: incomplete"), "deterministic tool result text is rendered");
+  assert.ok(htmlAfter.includes("calculator-run"), "deterministic payload kind is rendered");
+  assert.ok(htmlAfter.includes("[NAME]"), "transformed message in history");
+  assert.ok(!htmlAfter.includes("CanaryName"), "raw canary not in rendered history");
+}
+
+{
+  // Toggling clinical tools off restores the single-shot send path, and
+  // the review snapshot reflects the toggle.
+  const agentStub = makeAgentStub();
+  const h = makeHarness({ agentStub });
+  setToolsToggle(h, false);
+  const review = await driveSend(h, "Q CanaryName");
+  assert.equal(review.phase, "ready", "review ready");
+  assert.equal(review.toolsEnabled, false, "review snapshot reflects the toggle");
+  acceptAllAndAck(h);
+  const sent = await confirmSend(h);
+  assert.equal(sent, true, "send happened");
+  assert.equal(agentStub.calls.length, 0, "tool loop not used when tools are off");
+  assert.equal(h.chatStub.calls.length, 1, "single-shot path used when tools are off");
+}
+
+{
+  // Tool loop throw fails closed: an error assistant message, no crash,
+  // and the transformed user message is already in history.
+  const agentStub = makeAgentStub({ throwOnRun: true });
+  const h = makeHarness({ agentStub });
+  const review = await driveSend(h, "Q CanaryName");
+  assert.equal(review.phase, "ready", "review ready");
+  acceptAllAndAck(h);
+  const sent = await confirmSend(h);
+  assert.equal(sent, true, "confirm resolves even when the loop throws");
+  assert.equal(agentStub.calls.length, 1, "loop was attempted");
+  const htmlAfter = h.html();
+  assert.ok(htmlAfter.includes("Error: network down"), "loop failure surfaces as an assistant error message");
+  assert.ok(!htmlAfter.includes("CanaryName"), "raw canary not in rendered history");
 }

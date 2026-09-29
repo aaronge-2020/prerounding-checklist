@@ -16,9 +16,16 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v9";
+import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v10";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20260929-ai-chat-v2";
-import { isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
+import { gatedFetch, isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
+import {
+  buildChatToolsSystemPrompt,
+  CHAT_MAX_STEPS,
+  CHAT_TOOL_NAMES,
+  createChatTools
+} from "./chat-tools.js?v=20260929-chat-tools-v1";
+import { runAgent as defaultRunAgent } from "../../ai/agent-runner.js?v=20260929-agent-runner-v3";
 import * as remoteChatV4 from "../../ai/remote-chat.js?v=20260929-ai-chat-v6";
 import {
   costForUsage,
@@ -87,7 +94,8 @@ export function createAiChatController({
   // Optional test seams, last in the destructured args. Defaults below fill
   // any gaps so partial overrides still work.
   deidDeps,
-  chatDeps
+  chatDeps,
+  agentDeps
 } = {}) {
   const presentation = createAiChatPresentation({ escapeHtml, icon });
   const deid = {
@@ -99,6 +107,9 @@ export function createAiChatController({
     ...(deidDeps || {})
   };
   const chat = { requestOpenAiChat, requestOpenAiChatWithUsage, ...(chatDeps || {}) };
+  // Tool-loop runner seam: tests stub runAgent so the tool path never hits
+  // the network; production always uses the real Vercel AI SDK runner.
+  const agent = { runAgent: defaultRunAgent, ...(agentDeps || {}) };
   const client = sharedLocalLlmClient();
   const state = {
     hardware: null,
@@ -126,6 +137,11 @@ export function createAiChatController({
       messages: [],
       sending: false,
       webSearch: true,
+      // Clinical tools: when on, ChatGPT-mode sends run through the Vercel
+      // AI SDK tool loop, letting the model call the 25 local calculators
+      // and 7 on-device AI models. All computation stays in this browser;
+      // only the de-identified messages go to OpenAI.
+      toolsEnabled: true,
       patientId: "",
       // Accumulated OpenAI usage for THIS conversation (resets on new chat
       // and patient switch): billed tokens and dollars, from the API's own
@@ -338,6 +354,7 @@ export function createAiChatController({
         messages: state.remote.messages,
         sending: state.remote.sending,
         webSearch: state.remote.webSearch,
+        toolsEnabled: state.remote.toolsEnabled,
         patientId: state.remote.patientId,
         review: reviewViewModel(state.remote.review),
         deid: remoteDeidInfo(),
@@ -1030,7 +1047,10 @@ export function createAiChatController({
       expanded: [],
       reviewedOpen: [],
       ack: false,
-      canSend: false
+      canSend: false,
+      // Snapshot of the tools toggle at review time, so the modal can
+      // disclose that this send may invoke local clinical tools.
+      toolsEnabled: state.remote.toolsEnabled
     };
     state.remote.review = review;
     render();
@@ -1153,6 +1173,13 @@ export function createAiChatController({
   }
 
   async function doRemoteSend({ input, transformedMessage }) {
+    // Clinical-tools mode: the reviewed payload goes through the Vercel AI
+    // SDK tool loop instead of the single-shot chat call, so ChatGPT can
+    // run the 25 local calculators and 7 on-device AI models mid-reply.
+    if (state.remote.toolsEnabled) {
+      await doRemoteToolSend({ input, transformedMessage });
+      return;
+    }
     const prefs = remotePrefs();
     const apiKey = String(prefs.openAiApiKey || "").trim();
     if (!apiKey) {
@@ -1197,6 +1224,99 @@ export function createAiChatController({
         role: "assistant",
         text: reply,
         webSearch: state.remote.webSearch,
+        model: prefs.openAiModel,
+        usage: usage ? { ...usage } : null,
+        costUsd: cost ? cost.totalCost : null
+      });
+    } catch (error) {
+      state.remote.messages.push({ role: "assistant", text: `Error: ${error?.message || "the ChatGPT request failed"}` });
+    } finally {
+      state.remote.sending = false;
+      const secs = Math.max(1, Math.round((Date.now() - sentAt) / 1000));
+      const spent = state.remote.usage.costUsd > 0 ? ` · ${formatUsd(state.remote.usage.costUsd)} this conversation` : "";
+      setStatus(`ChatGPT replied in ${secs}s.${spent}`);
+      render();
+    }
+  }
+
+  // Tool-mode send: the reviewed input goes through the Vercel AI SDK tool
+  // loop (runAgent) with the four clinical-computation tools, so the model
+  // can run the 25 local calculators and 7 on-device AI models mid-reply.
+  //
+  // SAFETY: `input` is the exact payload the HIPAA review gate approved —
+  // the tool loop never sees raw text. Tool executions are local (same
+  // process, no network); tool arguments are derived from the de-identified
+  // input, and tool results stay in this browser. Only the model's messages
+  // go to OpenAI, through the gated fetch so offline mode fails closed.
+  async function doRemoteToolSend({ input, transformedMessage }) {
+    const prefs = remotePrefs();
+    const apiKey = String(prefs.openAiApiKey || "").trim();
+    if (!apiKey) {
+      setStatus("Save an OpenAI API key in Settings before using ChatGPT chat.");
+      return;
+    }
+    if (isOfflineMode()) {
+      state.remote.messages.push({
+        role: "assistant",
+        text: "Offline mode is on, so this ChatGPT request was not sent. Turn offline mode off in Settings, or switch to on-device mode to keep chatting — your message is unchanged."
+      });
+      render();
+      return;
+    }
+    state.remote.sending = true;
+    state.remote.compressArmed = false;
+    // The history stores the TRANSFORMED message — the raw text never
+    // persists past the review gate.
+    state.remote.messages.push({ role: "user", text: transformedMessage, deidentified: true });
+    render();
+    const sentAt = Date.now();
+    try {
+      const entries = Array.isArray(input) ? input : [];
+      const systemEntry = entries.find((e) => e && e.role === "system");
+      const messages = entries
+        .filter((e) => e && e.role && e.role !== "system")
+        .map((e) => ({
+          role: e.role === "assistant" ? "assistant" : "user",
+          content: String(e.content || "")
+        }));
+      const result = await agent.runAgent({
+        apiKey,
+        model: prefs.openAiModel,
+        messages,
+        tools: createChatTools(),
+        fetchImpl: gatedFetch,
+        systemPrompt: buildChatToolsSystemPrompt(systemEntry ? systemEntry.content : ""),
+        webSearch: state.remote.webSearch,
+        onStep: ({ stepNumber, toolCalls }) => {
+          const names = (toolCalls || []).map((t) => t.toolName).filter(Boolean);
+          setStatus(
+            names.length
+              ? `ChatGPT is running ${names.join(", ")} locally… (step ${stepNumber}/${CHAT_MAX_STEPS})`
+              : `ChatGPT is thinking… (step ${stepNumber}/${CHAT_MAX_STEPS})`
+          );
+          render();
+        }
+      });
+      const usage = result.usage || null;
+      const cost = recordRemoteUsage(usage, prefs.openAiModel);
+      updateRemoteContextStats(input, prefs.openAiModel);
+      // Auditable tool records ride on the assistant message: which tool
+      // ran, with what inputs, and the deterministic result it returned.
+      // The model's prose stays advisory; the tool numbers are the facts.
+      const toolCalls = Array.isArray(result.toolCalls) ? result.toolCalls : [];
+      const toolResults = Array.isArray(result.toolResults) ? result.toolResults : [];
+      const toolRecords = toolResults.map((tr, index) => ({
+        toolName: String(tr.toolName || toolCalls[index]?.toolName || ""),
+        input: tr.input ?? toolCalls[index]?.input ?? null,
+        text: typeof tr.text === "string" ? tr.text : "",
+        deterministic: tr.deterministic && typeof tr.deterministic === "object" ? tr.deterministic : null
+      }));
+      state.remote.messages.push({
+        role: "assistant",
+        text: result.text || "(no response text)",
+        toolsUsed: true,
+        webSearch: state.remote.webSearch,
+        toolRecords,
         model: prefs.openAiModel,
         usage: usage ? { ...usage } : null,
         costUsd: cost ? cost.totalCost : null
@@ -1457,7 +1577,8 @@ export function createAiChatController({
       expanded: [...(review.expanded || [])],
       reviewedOpen: [...(review.reviewedOpen || [])],
       ack: !!review.ack,
-      canSend: !!review.canSend
+      canSend: !!review.canSend,
+      toolsEnabled: !!review.toolsEnabled
     };
   }
 
@@ -1885,6 +2006,14 @@ export function createAiChatController({
     if (target.matches?.("[data-ai-chat-websearch-toggle]")) {
       state.remote.webSearch = target.checked;
       setStatus(target.checked ? "Web search on — ChatGPT will ground citations in real sources." : "Web search off — faster replies, citations from model knowledge.");
+      render();
+      return true;
+    }
+    if (target.matches?.("[data-ai-chat-tools-toggle]")) {
+      state.remote.toolsEnabled = target.checked;
+      setStatus(target.checked
+        ? "Clinical tools on — ChatGPT can run the 25 calculators and 7 AI models locally, in-chat."
+        : "Clinical tools off — ChatGPT replies without running calculators or AI models.");
       render();
       return true;
     }
