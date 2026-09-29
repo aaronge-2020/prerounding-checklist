@@ -11,7 +11,7 @@ import {
 } from "../src/patient-context/rxnorm-resolve.js";
 import { parseClinicalExport } from "../src/patient-context/clinical-export-parser.js";
 
-assert.equal(RXNORM_RESOLVER_TAG, "20260929-rxnorm-mar-v2");
+assert.equal(RXNORM_RESOLVER_TAG, "20260929-rxnorm-official-v3");
 assert.ok(
   rxNormAssetSize() > 1000,
   `expected a populated RxNorm bare-name asset, got ${rxNormAssetSize()} entries`
@@ -37,11 +37,12 @@ assert.equal(tablet[0].strength, "20 mg");
 assert.equal(tablet[0].doseForm, "tablet");
 assert.equal(tablet[0].route, "PO");
 
-// Salt forms resolve to the same ingredient concept.
+// Salt forms resolve to the precise salt concept (official PIN), not the
+// base ingredient. v3 uses official RxNorm where PINs exist.
 const salt = resolveMedicationConcepts("atorvastatin calcium 20 mg PO daily");
 assert.equal(salt.length, 1);
-assert.equal(salt[0].rxcui, "83367");
-assert.equal(salt[0].name, "atorvastatin");
+assert.equal(salt[0].rxcui, "83366");
+assert.equal(salt[0].name, "atorvastatin calcium");
 
 // Combination products split into one concept per ingredient.
 const combo = resolveMedicationConcepts("Give: sacubitril-valsartan 49/51 mg PO BID");

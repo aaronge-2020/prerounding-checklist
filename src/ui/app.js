@@ -28,7 +28,7 @@ import {
   reorderSectionsById,
   replaceSectionsFromFormAsync
 } from "../patient-context/sections.js?v=20260921-medication-card-v4";
-import { clinicalParseWarning, parseClinicalExport } from "../patient-context/clinical-export-parser.js?v=20260929-rxnorm-mar-v2";
+import { clinicalParseWarning, parseClinicalExport } from "../patient-context/clinical-export-parser.js?v=20260929-rxnorm-official-v3";
 import {
   createEphemeralRedactionReview,
   refreshEphemeralRedactionReview,

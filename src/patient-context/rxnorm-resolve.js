@@ -19,9 +19,9 @@
 // Unknown medications resolve to [] and this module never throws, so MAR
 // parsing continues undisturbed when the lookup misses.
 
-import { RXNORM_BARE_NAMES } from "./rxnorm-bare-names.data.js?v=20260929-rxnorm-mar-v2";
+import { RXNORM_BARE_NAMES } from "./rxnorm-bare-names.data.js?v=20260929-rxnorm-official-v3";
 
-export const RXNORM_RESOLVER_TAG = "20260929-rxnorm-mar-v2";
+export const RXNORM_RESOLVER_TAG = "20260929-rxnorm-official-v3";
 
 // [rxcui, tty, name, kind, ingredients?] -> normalized concept records.
 const CONCEPTS = new Map();

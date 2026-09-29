@@ -18,19 +18,28 @@ const combo = buildMedicationContextBlock(["sacubitril valsartan 49/51 mg PO BID
 assert.ok(combo.includes("sacubitril (RxCUI 1656328)"), "combo ingredient 1 coded");
 assert.ok(combo.includes("valsartan (RxCUI 69749)"), "combo ingredient 2 coded");
 
-// --- uncoded meds: omitted silently ---
-assert.equal(buildMedicationContextBlock(["Give: unobtanium 5 mg PO daily"]), "", "unknown med yields no block");
+// --- uncoded meds: visible safety flag, never silently dropped ---
+// (2026-09-29 contract: absence of a result is never evidence of safety)
+const uncoded = buildMedicationContextBlock(["Give: unobtanium 5 mg PO daily"]);
+assert.ok(uncoded.includes("MEDICATION CONTEXT"), "unknown med still yields a block");
+assert.ok(uncoded.includes("unobtanium"), "unknown med text stays visible");
+assert.ok(uncoded.includes("NOT checked for interactions"), "unknown med carries the safety flag");
 assert.equal(buildMedicationContextBlock([]), "", "empty list yields no block");
 assert.equal(buildMedicationContextBlock(), "", "missing arg yields no block");
 assert.equal(buildMedicationContextBlock([null, 123, {}]), "", "non-string entries never throw");
 
-// --- mixed list: coded kept, uncoded dropped ---
+// --- mixed list: coded kept, uncoded flagged (and flagged FIRST) ---
 const mixed = buildMedicationContextBlock([
   "Give: Lipitor 20 mg PO daily",
   "Give: unobtanium 5 mg PO daily"
 ]);
 assert.ok(mixed.includes("RxCUI 83367"), "coded med kept");
-assert.ok(!mixed.includes("unobtanium"), "uncoded med dropped");
+assert.ok(mixed.includes("unobtanium"), "uncoded med stays visible");
+assert.ok(mixed.includes("NOT checked for interactions"), "uncoded med flagged");
+assert.ok(
+  mixed.indexOf("NOT checked for interactions") < mixed.indexOf("RxCUI 83367"),
+  "safety flags precede resolved lines so truncation cannot hide them"
+);
 
 // --- dedup: same med twice renders once ---
 const dupe = buildMedicationContextBlock(["Give: Lipitor 20 mg PO daily", "Lipitor 20 mg PO daily"]);

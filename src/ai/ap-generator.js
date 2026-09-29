@@ -5,7 +5,7 @@
 // Privacy: the caller must supply ONLY de-identified text. This module never
 // sees raw chart data; it formats whatever context strings it is given.
 
-import { resolveMedicationConcepts } from "../patient-context/rxnorm-resolve.js?v=20260929-rxnorm-mar-v2";
+import { resolveMedicationConcepts } from "../patient-context/rxnorm-resolve.js?v=20260929-rxnorm-official-v3";
 
 export const AP_RESPONSE_SCHEMA = {
   type: "object",
@@ -250,8 +250,11 @@ function planLines(text) {
 //   - Lipitor 20 mg PO daily → atorvastatin (RxCUI 83367) — 20 mg, PO
 //
 // Combination products emit one line per ingredient. Medications that do not
-// resolve are skipped silently; when nothing resolves the block is omitted
-// entirely so the consult prompt is never broken by a lookup miss.
+// resolve are NEVER dropped: each one renders a visible safety flag
+// ("could not be coded to RxNorm — NOT checked for interactions") so the
+// absence of a result is never presented as evidence of safety. Unresolved
+// flags sort BEFORE resolved lines so the 4,000-character truncation cannot
+// hide them; when nothing at all is provided the block is omitted entirely.
 // The block contains only coded concepts and public terminology (no PHI), and
 // it is injected into the prompt BEFORE the student reviews the exact outbound
 // text in the confirm modal — the existing review gate stays authoritative.
@@ -265,7 +268,8 @@ function planLines(text) {
 //     • <ingredient>: <section> — <excerpt> (<citation>)
 export function buildMedicationContextBlock(medications = []) {
   const seen = new Set();
-  const lines = [];
+  const resolvedLines = [];
+  const unresolvedLines = [];
   const list = Array.isArray(medications) ? medications : [];
   for (const entry of list) {
     const text = typeof entry === "string" ? entry : String(entry?.orderText ?? entry?.name ?? "");
@@ -276,10 +280,20 @@ export function buildMedicationContextBlock(medications = []) {
     } catch {
       concepts = [];
     }
-    for (const concept of concepts) {
-      const rxcui = String(concept?.rxcui || "").trim();
-      const name = String(concept?.name || "").trim();
-      if (!rxcui || !name) continue;
+    const valid = concepts.filter(
+      (concept) => String(concept?.rxcui || "").trim() && String(concept?.name || "").trim()
+    );
+    if (!valid.length) {
+      // Visible safety flag: this medication was NOT checked for interactions.
+      // Unresolved lines sort first so truncation can never hide them.
+      unresolvedLines.push(
+        `- ${clean(text, 120)} \u2192 could not be coded to RxNorm \u2014 NOT checked for interactions`
+      );
+      continue;
+    }
+    for (const concept of valid) {
+      const rxcui = String(concept.rxcui).trim();
+      const name = String(concept.name).trim();
       const detail = [concept?.strength, concept?.doseForm, concept?.route]
         .map((part) => String(part || "").trim())
         .filter(Boolean)
@@ -287,9 +301,10 @@ export function buildMedicationContextBlock(medications = []) {
       const dedupeKey = `${rxcui}|${detail}`;
       if (seen.has(dedupeKey)) continue;
       seen.add(dedupeKey);
-      lines.push(`- ${clean(text, 120)} \u2192 ${name} (RxCUI ${rxcui})${detail ? ` \u2014 ${detail}` : ""}`);
+      resolvedLines.push(`- ${clean(text, 120)} \u2192 ${name} (RxCUI ${rxcui})${detail ? ` \u2014 ${detail}` : ""}`);
     }
   }
+  const lines = [...unresolvedLines, ...resolvedLines];
   if (!lines.length) return "";
   return clean(`MEDICATION CONTEXT (RxNorm-coded, deterministic):\n${lines.join("\n")}`, 4000);
 }
