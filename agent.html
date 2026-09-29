@@ -123,11 +123,21 @@ fluconazole 200mg daily</textarea>
       findingsEl.innerHTML = `<p>Resolved ${patientMeds.length} medications. Running agent (max ${AGENT_MAX_STEPS} steps)...</p>`;
 
       const tools = createAgentTools({ patientMedications: patientMeds });
-      
+
+      // The model needs the resolved medication list in context — otherwise
+      // "these medications" is unresolvable and it asks for the list instead
+      // of calling check_patient_medication_interactions. Drug names only;
+      // no patient identifiers are introduced here.
+      const medContext = patientMeds.length
+        ? "Patient medications (RxNorm-resolved):\n" +
+          patientMeds.map((m) => `- ${m.name} (RxCUI ${m.rxcui})`).join("\n") +
+          "\n\n"
+        : "Patient medications: none resolved from the input.\n\n";
+
       const result = await runAgent({
         apiKey,
         model: 'gpt-4o-mini',
-        messages: [{ role: 'user', content: question }],
+        messages: [{ role: 'user', content: medContext + "Question: " + question }],
         tools,
         fetchImpl: fetch.bind(window),
         onStep: ({ stepNumber, toolCalls }) => {
