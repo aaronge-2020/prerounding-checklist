@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f6f2">
+  <meta name="description" content="Preround bedside: searchable clinical cheat sheets and the on-device scribe. Reference only — no patient data, no vault unlock needed.">
+  <title>Preround · Bedside</title>
+  <link rel="icon" href="./favicon.ico">
+  <style>
+    :root {
+      --paper: #f7f6f2;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e1d8;
+      --accent: #1d4ed8;
+      --accent-ink: #ffffff;
+      --warn-bg: #fef3c7;
+      --warn-ink: #92400e;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.45;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+    header.topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      padding: calc(10px + env(safe-area-inset-top, 0)) 16px 10px;
+    }
+    header.topbar h1 {
+      margin: 0;
+      font-size: 19px;
+      letter-spacing: -0.01em;
+    }
+    header.topbar p {
+      margin: 2px 0 0;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+    main { padding: 12px 12px 32px; max-width: 640px; margin: 0 auto; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .scribe-card {
+      display: block;
+      text-decoration: none;
+      color: var(--ink);
+      background: #111827;
+      border: none;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .scribe-card strong { color: #fff; font-size: 17px; display: block; margin-bottom: 4px; }
+    .scribe-card span { color: #d1d5db; font-size: 13.5px; }
+    .scribe-card .go {
+      display: inline-block;
+      margin-top: 10px;
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-weight: 600;
+      font-size: 16px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      min-height: 48px;
+    }
+    .search-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--paper);
+      padding: 10px 0;
+    }
+    #q {
+      width: 100%;
+      font-size: 17px; /* >=16px prevents iOS focus zoom */
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--card);
+      color: var(--ink);
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    #q:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .count { font-size: 12.5px; color: var(--muted); margin: 6px 2px 0; }
+    .sheet-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      margin: 8px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink);
+      min-height: 52px;
+      cursor: pointer;
+    }
+    .sheet-btn .sub {
+      display: block;
+      font-weight: 400;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 700;
+      background: var(--warn-bg);
+      color: var(--warn-ink);
+      border-radius: 999px;
+      padding: 2px 9px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .detail-head { display: flex; align-items: flex-start; gap: 8px; }
+    .detail-head h2 { margin: 0; font-size: 20px; flex: 1; }
+    .back {
+      flex: none;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent);
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      min-height: 44px;
+      cursor: pointer;
+    }
+    h3.section {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin: 18px 0 8px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 6px;
+    }
+    .item { padding: 10px 0; border-bottom: 1px dashed var(--line); }
+    .item:last-child { border-bottom: none; }
+    .item .q { font-weight: 600; font-size: 15.5px; margin: 0 0 6px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+    .chip {
+      font-size: 13px;
+      background: #eef2ff;
+      color: #3730a3;
+      border-radius: 999px;
+      padding: 4px 10px;
+    }
+    .why {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin: 6px 0 0;
+      border-left: 3px solid var(--line);
+      padding-left: 10px;
+    }
+    .how { font-size: 13.5px; margin: 6px 0 0; }
+    .how strong { font-weight: 600; }
+    .status { text-align: center; color: var(--muted); font-size: 14px; padding: 24px 12px; }
+    .error { color: #b91c1c; }
+    footer {
+      text-align: center;
+      padding: 8px 16px calc(20px + env(safe-area-inset-bottom, 0));
+      font-size: 13px;
+      color: var(--muted);
+    }
+    footer a { color: var(--accent); font-weight: 600; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Preround · Bedside</h1>
+    <p>Cheat sheets &amp; scribe. Reference only — no patient data, no unlock needed.</p>
+  </header>
+
+  <main>
+    <a class="scribe-card" href="./scribe-prototype.html" id="scribeLink">
+      <strong>🎙️ Scribe</strong>
+      <span>On-device voice transcription. Audio never leaves this phone.</span><br>
+      <span class="go">Open scribe →</span>
+    </a>
+
+    <div id="listView">
+      <div class="search-wrap">
+        <input id="q" type="search" placeholder="Search by chief complaint…" autocomplete="off"
+               autocapitalize="off" spellcheck="false" aria-label="Search cheat sheets">
+        <div class="count" id="count" aria-live="polite"></div>
+      </div>
+      <div id="list"></div>
+    </div>
+
+    <div id="detailView" class="hidden">
+      <div class="card">
+        <div class="detail-head">
+          <button class="back" id="backBtn" type="button">← All</button>
+          <h2 id="detailTitle"></h2>
+        </div>
+        <div id="detailBody"></div>
+      </div>
+    </div>
+
+    <div id="status" class="status" role="status">Loading cheat sheets…</div>
+  </main>
+
+  <footer>
+    <a href="./index.html?full=1" id="fullSiteLink">Full site</a>
+    &nbsp;·&nbsp;works offline after first load
+  </footer>
+
+  <script>
+  (function () {
+    'use strict';
+
+    // ---- constants -------------------------------------------------------
+    var DATA_URL = './src/data/cheat-sheets.json';
+    var LAST_SHEET_KEY = 'prerounding.cheatSheets.lastSheetId.v1';
+    var MOBILE_CHOICE_KEY = 'prerounding.mobileChoice.v1';
+
+    // ---- tiny DOM helpers -------------------------------------------------
+    function $(id) { return document.getElementById(id); }
+    function esc(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    // ---- search ranking (mirrors src/ui/cheat-sheets/search.js tiers) -----
+    var TIER = { titlePrefix: 100, aliasPrefix: 80, idPrefix: 70, titleSub: 60,
+                 aliasSub: 45, idSub: 40, systemPrefix: 30, systemSub: 15 };
+
+    function normalizeQuery(q) { return String(q == null ? '' : q).trim().toLowerCase(); }
+
+    function systemNames(sheet) {
+      var seen = [];
+      function push(v) {
+        var name = String(v == null ? '' : v).trim().toLowerCase();
+        if (name && seen.indexOf(name) === -1) seen.push(name);
+      }
+      (sheet.history || []).forEach(function (i) { push(i && i.system); });
+      (sheet.exam || []).forEach(function (i) { push(i && i.system); });
+      return seen;
+    }
+
+    function scoreSheet(sheet, rawQuery) {
+      var q = normalizeQuery(rawQuery);
+      if (!q || !sheet) return 0;
+      var best = 0;
+      function consider(text, prefixTier, subTier) {
+        var t = String(text == null ? '' : text).trim().toLowerCase();
+        if (!t) return;
+        if (t.indexOf(q) === 0) best = Math.max(best, prefixTier);
+        else if (t.indexOf(q) !== -1) best = Math.max(best, subTier);
+      }
+      consider(sheet.title, TIER.titlePrefix, TIER.titleSub);
+      (sheet.aliases || []).forEach(function (a) { consider(a, TIER.aliasPrefix, TIER.aliasSub); });
+      consider(sheet.id, TIER.idPrefix, TIER.idSub);
+      systemNames(sheet).forEach(function (s) { consider(s, TIER.systemPrefix, TIER.systemSub); });
+      return best;
+    }
+
+    function searchSheets(sheets, rawQuery) {
+      var q = normalizeQuery(rawQuery);
+      if (!q) return sheets.slice();
+      var scored = [];
+      sheets.forEach(function (s) {
+        var score = scoreSheet(s, q);
+        if (score > 0) scored.push({ sheet: s, score: score });
+      });
+      scored.sort(function (a, b) {
+        if (b.score !== a.score) return b.score - a.score;
+        return String(a.sheet.title || '').localeCompare(String(b.sheet.title || ''));
+      });
+      return scored.map(function (r) { return r.sheet; });
+    }
+
+    // ---- state ------------------------------------------------------------
+    var sheets = [];
+    var currentId = null;
+
+    function readLastSheetId() {
+      try { return window.localStorage.getItem(LAST_SHEET_KEY); } catch (e) { return null; }
+    }
+    function writeLastSheetId(id) {
+      try {
+        if (id) window.localStorage.setItem(LAST_SHEET_KEY, String(id));
+        else window.localStorage.removeItem(LAST_SHEET_KEY);
+      } catch (e) { /* persistence is a nicety */ }
+    }
+
+    // ---- rendering ---------------------------------------------------------
+    function chipList(items) {
+      if (!items || !items.length) return '';
+      return '<div class="chips">' + items.map(function (t) {
+        return '<span class="chip">' + esc(t) + '</span>';
+      }).join('') + '</div>';
+    }
+    function whyBlock(why) {
+      return why ? '<p class="why">' + esc(why) + '</p>' : '';
+    }
+
+    function renderList(query) {
+      var results = searchSheets(sheets, query);
+      var list = $('list');
+      $('count').textContent = results.length + ' of ' + sheets.length + ' sheets';
+      if (!results.length) {
+        list.innerHTML = '<div class="status">No sheets match “' + esc(query) + '”.</div>';
+        return;
+      }
+      list.innerHTML = results.map(function (s) {
+        var nH = (s.history || []).length, nE = (s.exam || []).length;
+        var badge = s.reviewNeeded ? '<span class="badge">needs clinician review</span>' : '';
+        return '<button type="button" class="sheet-btn" data-sheet-id="' + esc(s.id) + '">' +
+          esc(s.title) + badge +
+          '<span class="sub">' + nH + ' questions · ' + nE + ' exam maneuvers</span></button>';
+      }).join('');
+    }
+
+    function renderDetail(sheet) {
+      $('detailTitle').textContent = sheet.title || sheet.id;
+      var html = '';
+      if (sheet.reviewNeeded) {
+        html += '<p class="why" style="border-left-color:#f59e0b">Some items on this sheet are marked for clinician review before relying on them.</p>';
+      }
+      var history = sheet.history || [];
+      if (history.length) {
+        html += '<h3 class="section">History — questions to ask</h3>';
+        history.forEach(function (h) {
+          html += '<div class="item"><p class="q">' + esc(h.question) + '</p>' +
+            chipList(h.listenFor) + whyBlock(h.why) + '</div>';
+        });
+      }
+      var exam = sheet.exam || [];
+      if (exam.length) {
+        html += '<h3 class="section">Physical exam</h3>';
+        exam.forEach(function (e) {
+          html += '<div class="item"><p class="q">' + esc(e.maneuver) + '</p>' +
+            (e.how ? '<p class="how"><strong>How:</strong> ' + esc(e.how) + '</p>' : '') +
+            chipList(e.findings) + whyBlock(e.why) + '</div>';
+        });
+      }
+      if (!history.length && !exam.length) {
+        html += '<div class="status">This sheet has no items yet.</div>';
+      }
+      $('detailBody').innerHTML = html;
+      $('listView').classList.add('hidden');
+      $('detailView').classList.remove('hidden');
+      window.scrollTo(0, 0);
+    }
+
+    function showList() {
+      currentId = null;
+      writeLastSheetId(null);
+      $('detailView').classList.add('hidden');
+      $('listView').classList.remove('hidden');
+      renderList($('q').value);
+    }
+
+    function openSheet(id) {
+      var sheet = null;
+      for (var i = 0; i < sheets.length; i++) {
+        if (String(sheets[i].id) === String(id)) { sheet = sheets[i]; break; }
+      }
+      if (!sheet) { showList(); return; }
+      currentId = sheet.id;
+      writeLastSheetId(sheet.id);
+      renderDetail(sheet);
+    }
+
+    // ---- events --------------------------------------------------------------
+    $('q').addEventListener('input', function (e) { renderList(e.target.value); });
+    $('list').addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('[data-sheet-id]') : null;
+      if (btn) openSheet(btn.getAttribute('data-sheet-id'));
+    });
+    $('backBtn').addEventListener('click', showList);
+    $('fullSiteLink').addEventListener('click', function () {
+      try { window.localStorage.setItem(MOBILE_CHOICE_KEY, 'full'); } catch (e) {}
+      // href carries ?full=1 as a backup; the link navigates normally.
+    });
+
+    // ---- boot ------------------------------------------------------------------
+    function setStatus(msg, isError) {
+      var el = $('status');
+      el.textContent = msg;
+      el.classList.toggle('error', !!isError);
+      el.classList.toggle('hidden', !msg);
+    }
+
+    fetch(DATA_URL, { cache: 'force-cache' }).then(function (resp) {
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      return resp.json();
+    }).then(function (data) {
+      var raw = data && Array.isArray(data.sheets) ? data.sheets : [];
+      sheets = raw.filter(function (s) {
+        return s && s.id != null && String(s.title || '').trim() !== '';
+      });
+      if (!sheets.length) throw new Error('empty sheet list');
+      setStatus('', false);
+      var last = readLastSheetId();
+      if (last) {
+        var known = sheets.some(function (s) { return String(s.id) === String(last); });
+        if (known) { openSheet(last); return; }
+      }
+      renderList('');
+    }).catch(function (err) {
+      setStatus('Couldn’t load cheat sheets (' + (err && err.message ? err.message : 'network error') +
+        '). Connect once to cache them, then this page works offline.', true);
+    });
+  })();
+  </script>
+</body>
+</html>
