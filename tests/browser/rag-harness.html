@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Mirrors the app's deployment CSP for worker/wasm/Hugging Face so this
+     harness also proves the RAG worker is CSP-compatible. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' blob: 'unsafe-inline' 'wasm-unsafe-eval'; script-src-attr 'none'; worker-src 'self' blob:; connect-src 'self' https://huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:">
+<title>RAG embedding harness</title>
+</head>
+<body>
+<h1>RAG embedding harness</h1>
+<p id="status">idle</p>
+<pre id="log"></pre>
+<script type="module">
+import { chunkChartPieces } from "../../src/rag/chart-chunks.js";
+import { RAG_EMBEDDING_MODELS } from "../../src/rag/rag-models.js";
+import { buildGroundedContextSection } from "../../src/rag/rag-prompts.js";
+import { callRagWorker, retrieveChartChunks } from "../../src/rag/rag-service.js";
+
+const statusEl = document.getElementById("status");
+const logEl = document.getElementById("log");
+function log(message) {
+  statusEl.textContent = message;
+  logEl.textContent += message + "\n";
+}
+
+// Offline compat runs serve the pinned model files locally and pass
+// ?modelBase=<url> (redirecting the model file host); otherwise the worker
+// downloads from Hugging Face.
+const LOCAL_MODEL_BASE_URL = new URLSearchParams(location.search).get("modelBase") || null;
+
+// Synthetic, PHI-free chart. Each section has a distinctive vocabulary so
+// retrieval ranking is unambiguous.
+const SYNTHETIC_PIECES = [
+  {
+    id: "admission:allergies",
+    label: "Allergies",
+    group: "Admission",
+    rawText: "No known drug allergies. NKDA documented on admission. No latex allergy."
+  },
+  {
+    id: "admission:hpi",
+    label: "History of present illness",
+    group: "Admission",
+    rawText: "Patient reports substernal chest pressure for two hours, radiating to the left arm, associated with diaphoresis and mild shortness of breath."
+  },
+  {
+    id: "day:day1:labs",
+    label: "Laboratory results",
+    group: "Hospital day 1",
+    rawText: "Troponin I 2.4 ng/mL, markedly elevated. BNP 180 pg/mL. Creatinine 1.1 mg/dL, at baseline."
+  },
+  {
+    id: "day:day1:imaging",
+    label: "Chest radiograph",
+    group: "Hospital day 1",
+    rawText: "Chest radiograph shows no acute infiltrate. Cardiac silhouette is normal in size. No pleural effusion."
+  },
+  {
+    id: "day:day1:plan",
+    label: "Assessment and plan",
+    group: "Hospital day 1",
+    rawText: "Start heparin infusion per ACS protocol. Cardiology consult requested. Serial troponins every 3 hours."
+  }
+];
+
+// Queries with the single chunk id each MUST rank first.
+const RETRIEVAL_CASES = [
+  { query: "chest pressure radiating to the left arm", expectId: "admission:hpi#0" },
+  { query: "troponin lab value", expectId: "day:day1:labs#0" },
+  { query: "heparin infusion plan", expectId: "day:day1:plan#0" },
+  { query: "drug allergies NKDA", expectId: "admission:allergies#0" },
+  { query: "chest x-ray infiltrate", expectId: "day:day1:imaging#0" }
+];
+
+window.__ragHarness = {
+  modelKeys: Object.keys(RAG_EMBEDDING_MODELS),
+  async run() {
+    const result = { models: {}, servicePath: null, errors: [] };
+    const chunks = chunkChartPieces(SYNTHETIC_PIECES, { maxTokens: 60, overlapTokens: 0 });
+    log(`chunked ${SYNTHETIC_PIECES.length} pieces into ${chunks.length} chunks`);
+    result.chunkCount = chunks.length;
+    result.chunkIds = chunks.map((c) => c.id);
+
+    for (const modelKey of window.__ragHarness.modelKeys) {
+      const spec = RAG_EMBEDDING_MODELS[modelKey];
+      const modelResult = { modelId: spec.modelId, dims: spec.dims, cases: [] };
+      try {
+        log(`[${modelKey}] loading ${spec.modelId} ...`);
+        const loadStart = performance.now();
+        const ensured = await callRagWorker("ensure-model", {
+          modelKey,
+          ...(LOCAL_MODEL_BASE_URL ? { testRemoteHost: LOCAL_MODEL_BASE_URL } : {})
+        });
+        modelResult.loadMs = Math.round(performance.now() - loadStart);
+        modelResult.loadedDims = ensured.dims;
+        log(`[${modelKey}] loaded in ${modelResult.loadMs}ms, dims=${ensured.dims}`);
+
+        const indexStart = performance.now();
+        const indexed = await callRagWorker("index", {
+          chunks: chunks.map((c) => ({ id: c.id, text: c.text }))
+        });
+        modelResult.indexMs = Math.round(performance.now() - indexStart);
+        modelResult.indexedCount = indexed.count;
+        log(`[${modelKey}] indexed ${indexed.count} chunks in ${modelResult.indexMs}ms`);
+
+        for (const testCase of RETRIEVAL_CASES) {
+          const queryStart = performance.now();
+          const hits = await callRagWorker("query", { text: testCase.query, k: 5 });
+          const queryMs = Math.round(performance.now() - queryStart);
+          const rank = hits.findIndex((h) => h.id === testCase.expectId) + 1; // 0 -> not in top-5
+          modelResult.cases.push({
+            query: testCase.query,
+            expectId: testCase.expectId,
+            rank,
+            topId: hits[0]?.id || null,
+            topScore: hits[0] ? Math.round(hits[0].score * 1000) / 1000 : null,
+            queryMs
+          });
+          log(`[${modelKey}] "${testCase.query}" -> rank ${rank} (top: ${hits[0]?.id})`);
+        }
+        modelResult.recallAt1 =
+          modelResult.cases.filter((c) => c.rank === 1).length / modelResult.cases.length;
+      } catch (error) {
+        modelResult.error = error instanceof Error ? `${error.message}\n${error.stack || ""}` : String(error);
+        result.errors.push(`${modelKey}: ${String(modelResult.error).slice(0, 300)}`);
+        log(`[${modelKey}] ERROR ${String(modelResult.error).slice(0, 500)}`);
+      }
+      result.models[modelKey] = modelResult;
+    }
+
+    // Full service path: chunk -> ensureChartIndex (IndexedDB cache) ->
+    // retrieveChartChunks, with the default model.
+    try {
+      log("[service] retrieveChartChunks via rag-service ...");
+      const serviceOptions = {
+        patientId: "rag-harness-patient",
+        pieces: SYNTHETIC_PIECES,
+        query: "chest pressure radiating to the left arm",
+        k: 3,
+        ...(LOCAL_MODEL_BASE_URL ? { testRemoteHost: LOCAL_MODEL_BASE_URL } : {})
+      };
+      const first = await retrieveChartChunks(serviceOptions);
+      const second = await retrieveChartChunks(serviceOptions);
+      const { section } = buildGroundedContextSection(
+        first.map((hit) => ({ label: hit.label, group: hit.group, text: hit.text }))
+      );
+      result.servicePath = {
+        firstTopId: first[0]?.id || null,
+        firstTopN: first[0]?.n || null,
+        resultCount: first.length,
+        secondTopId: second[0]?.id || null,
+        cacheReused: second[0]?.id === first[0]?.id && first.length > 0,
+        promptHasC1: section.includes("[C1]"),
+        promptHasInstructions: section.includes("CHART GROUNDING")
+      };
+      log(`[service] top=${result.servicePath.firstTopId} cached=${result.servicePath.cacheReused}`);
+    } catch (error) {
+      result.servicePath = { error: error instanceof Error ? error.message : String(error) };
+      result.errors.push(`service: ${result.servicePath.error}`);
+      log(`[service] ERROR ${result.servicePath.error}`);
+    }
+
+    log("done");
+    return result;
+  }
+};
+</script>
+</body>
+</html>
