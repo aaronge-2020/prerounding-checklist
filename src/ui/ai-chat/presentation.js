@@ -349,36 +349,100 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
   // HIPAA review gate: a modal showing EXACTLY what will be sent to OpenAI
   // after the second de-identification pass. The student must explicitly
   // confirm; opening this modal sends nothing.
+  // Highlight redaction markers in already-escaped text: [LABEL] spans
+  // become yellow pills, relative-timeline conversions ([Hospital Day N])
+  // get a blue pill. Labels come from the piece's own redaction counts.
+  function highlightHipaaRedactions(escapedText, labels) {
+    let html = escapedText;
+    const kinds = [...new Set((labels || []).filter(Boolean))].sort((a, b) => b.length - a.length);
+    if (kinds.length) {
+      const pat = kinds.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+      html = html.replace(new RegExp(`\\[(${pat})\\]`, "g"), '<mark class="aic-hipaa-mark">[$1]</mark>');
+    }
+    html = html.replace(/\[(Hospital Day [^\]]+)\]/g, '<mark class="aic-hipaa-mark aic-hipaa-mark--date">[$1]</mark>');
+    return html;
+  }
+
   function renderHipaaReview(review) {
     if (!review) return "";
-    const counts = Object.entries(review.redactionCounts || {})
-      .filter(([, n]) => n > 0)
-      .map(([kind, n]) => `<span class="aic-tag">${escapeHtml(kind)} × ${n}</span>`)
-      .join("");
-    const warnings = (review.residualWarnings || [])
-      .map((w) => `<li>${escapeHtml(w)}</li>`)
-      .join("");
-    const flags = [...(review.flags || []), ...(review.messageFlags || [])]
-      .map((f) => `<li>${escapeHtml(f)}</li>`)
-      .join("");
+    const pieces = Array.isArray(review.pieces) ? review.pieces : [];
+    const expanded = new Set(review.expanded || []);
+    const totalRedactions = review.redactionTotal || 0;
+    const warningCount =
+      (review.residualWarnings || []).length +
+      (review.flags || []).length +
+      (review.messageFlags || []).length;
+    const stat = (iconName, label, value, tone) => `
+      <div class="aic-hipaa-stat${tone ? ` aic-hipaa-stat--${tone}` : ""}">
+        <span class="aic-hipaa-stat-ic">${icon(iconName)}</span>
+        <span class="aic-hipaa-stat-tx"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></span>
+      </div>`;
+    const pieceCards = pieces.map((piece) => {
+      const isOpen = expanded.has(piece.id);
+      const chips = Object.entries(piece.counts || {})
+        .filter(([, n]) => n > 0)
+        .map(([kind, n]) => `<span class="aic-hipaa-chip aic-hipaa-chip--red">${escapeHtml(kind)} × ${n}</span>`)
+        .join("");
+      const labels = Object.keys(piece.counts || {});
+      return `
+        <div class="aic-hipaa-piece${isOpen ? " is-open" : ""}">
+          <button type="button" class="aic-hipaa-piece-head" data-action="ai-chat-hipaa-piece" data-piece="${escapeHtml(piece.id)}" aria-expanded="${isOpen ? "true" : "false"}">
+            <span class="aic-hipaa-chev">${icon("chevron")}</span>
+            <span class="aic-hipaa-piece-title">${escapeHtml(piece.title || "Context")}</span>
+            <span class="aic-hipaa-chips">${chips}<span class="aic-hipaa-chip">${Number(piece.chars || 0).toLocaleString()} chars</span></span>
+          </button>
+          ${isOpen ? `<div class="aic-hipaa-piece-body">${highlightHipaaRedactions(escapeHtml(piece.text || ""), labels)}</div>` : ""}
+        </div>`;
+    }).join("");
+    const flagItems = [
+      ...(review.flags || []).map((f) => ({ text: f, kind: "" })),
+      ...(review.residualWarnings || []).map((w) => ({ text: w, kind: "warn" })),
+      ...(review.messageFlags || []).map((f) => ({ text: `Your message: ${f}`, kind: "" }))
+    ];
+    const flagsCard = `
+      <div class="aic-hipaa-flags${flagItems.length ? "" : " aic-hipaa-flags--ok"}">
+        <strong>${icon("alert")} Review flags</strong>
+        ${
+          flagItems.length
+            ? `<ul>${flagItems.map((f) => `<li${f.kind ? ` class="is-${f.kind}"` : ""}>${escapeHtml(f.text)}</li>`).join("")}</ul>`
+            : `<p>No PHI spans detected. Review still required — confirm the content above is safe to send.</p>`
+        }
+      </div>`;
     return `
-      <div class="aic-hipaa" role="dialog" aria-modal="true" aria-label="Review before sending to ChatGPT">
-        <div class="aic-hipaa-card">
-          <h3>Review before sending to ChatGPT</h3>
-          <p class="aic-muted">You attached patient context, so this needs your review. A second de-identification pass ran over the attached context — what you see below is <strong>exactly</strong> what will be sent to OpenAI if you confirm. Nothing has been sent yet.</p>
-          <div class="aic-hipaa-sec">
-            <h4>Your message (sent as typed)</h4>
-            <div class="aic-hipaa-body">${escapeHtml(review.message)}${review.messageRedactionTotal ? `<p class="aic-muted">Your message also had ${review.messageRedactionTotal} identifier-like pattern${review.messageRedactionTotal === 1 ? "" : "s"} redacted.</p>` : ""}</div>
+      <div class="aic-hipaa-backdrop" data-action="ai-chat-hipaa-cancel">
+        <div class="aic-hipaa-modal" role="dialog" aria-modal="true" aria-labelledby="aicHipaaTitle">
+          <div class="aic-hipaa-head">
+            <span class="aic-hipaa-shield">${icon("shield")}</span>
+            <div>
+              <h2 id="aicHipaaTitle">Review before sending to ChatGPT</h2>
+              <p>Nothing has been sent yet — confirm exactly what will leave this browser.</p>
+            </div>
           </div>
-          <div class="aic-hipaa-sec">
-            <h4>De-identified context ${counts ? `(redactions: ${counts})` : "(no patterns found)"}</h4>
-            <div class="aic-hipaa-body aic-hipaa-ctx">${escapeHtml(review.redactedContext)}</div>
-            ${warnings ? `<div class="aic-hipaa-warn"><strong>Residual warnings — double-check these:</strong><ul>${warnings}</ul></div>` : ""}
-            ${flags ? `<div class="aic-hipaa-warn"><strong>Review flags:</strong><ul>${flags}</ul></div>` : ""}
+          <div class="aic-hipaa-stats">
+            ${stat("prompt", "Your message", "1 message", "")}
+            ${stat("workup", "Context", `${pieces.length} document${pieces.length === 1 ? "" : "s"}`, "")}
+            ${stat("wand", "Redactions", `${totalRedactions} applied`, totalRedactions ? "" : "ok")}
+            ${stat("alert", "Warnings", warningCount ? `${warningCount} to check` : "none", warningCount ? "warn" : "ok")}
           </div>
-          <div class="aic-hipaa-actions">
+          <div class="aic-hipaa-body">
+            <h3 class="aic-hipaa-sec-title">Your message — sent as typed</h3>
+            <div class="aic-hipaa-msg">${escapeHtml(review.message)}${
+              review.messageRedactionTotal
+                ? `<p class="aic-hipaa-note">${icon("alert")} Your message itself contained ${review.messageRedactionTotal} identifier-like pattern${review.messageRedactionTotal === 1 ? "" : "s"} — it is sent as typed, so remove them before confirming if needed.</p>`
+                : ""
+            }</div>
+            <h3 class="aic-hipaa-sec-title">De-identified context</h3>
+            ${pieceCards || `<p class="aic-muted">No context pieces.</p>`}
+            ${review.truncated ? `<p class="aic-hipaa-note">${icon("alert")} Context exceeded the size budget — the tail was cut. What you see above is the complete text that will be sent.</p>` : ""}
+            ${flagsCard}
+          </div>
+          <div class="aic-hipaa-foot">
             <button type="button" class="aic-btn" data-action="ai-chat-hipaa-cancel">Cancel — don't send</button>
-            <button type="button" class="aic-btn aic-btn--primary" data-action="ai-chat-hipaa-confirm">${icon("check")} I've reviewed it — send to ChatGPT</button>
+            <label class="aic-hipaa-ack">
+              <input type="checkbox" data-ai-chat-hipaa-ack${review.ack ? " checked" : ""}>
+              <span>I have reviewed the content above</span>
+            </label>
+            <button type="button" class="aic-btn aic-btn--primary" data-action="ai-chat-hipaa-confirm"${review.ack ? "" : " disabled"}>${icon("send")} Send to ChatGPT</button>
           </div>
         </div>
       </div>`;

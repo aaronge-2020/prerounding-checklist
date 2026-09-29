@@ -263,11 +263,46 @@ const base = {
     message: "Summarize this patient's course.",
     messageRedactionTotal: 0,
     messageFlags: [],
-    redactedContext: "Pt is a 34F G2P1… [REDACTED DATE]…",
+    pieces: [
+      {
+        id: "header",
+        title: "Patient header",
+        text: "PATIENT: WH Timeline",
+        chars: 20,
+        redactionTotal: 0,
+        counts: {},
+        warnings: [],
+        flags: []
+      },
+      {
+        id: "day:Hospital Day 7:vitals",
+        title: "Vitals flowsheet — Hospital Day 7",
+        text: "Seen by [NAME] on [DATE]. Vitals @ [Hospital Day 7 at 19:30]: HRm 80.",
+        chars: 68,
+        redactionTotal: 3,
+        counts: { DATE: 2, NAME: 1 },
+        warnings: [],
+        flags: []
+      },
+      {
+        id: "day:Hospital Day 7:labs",
+        title: "Labs — Hospital Day 7",
+        text: "WBC 4.8, Hgb 9.7.",
+        chars: 17,
+        redactionTotal: 0,
+        counts: {},
+        warnings: [],
+        flags: []
+      }
+    ],
+    redactedContext: "PATIENT: WH Timeline\n\nSeen by [NAME] on [DATE]. Vitals @ [Hospital Day 7 at 19:30]: HRm 80.\n\nWBC 4.8, Hgb 9.7.",
     redactionTotal: 3,
     redactionCounts: { DATE: 2, NAME: 1 },
     residualWarnings: ["possible MRN pattern: 12-34-56"],
-    flags: []
+    flags: [],
+    truncated: false,
+    ack: false,
+    expanded: ["header", "day:Hospital Day 7:vitals"]
   };
   const html = presentation.render({
     ...base,
@@ -276,15 +311,55 @@ const base = {
     chatService: "",
     hasApiKey: true
   });
-  assert.ok(html.includes("aic-hipaa"), "HIPAA review modal rendered");
+  assert.ok(html.includes("aic-hipaa-backdrop"), "HIPAA review modal rendered");
   assert.ok(html.includes("Review before sending to ChatGPT"), "modal title");
-  assert.ok(html.includes("Summarize this patient&#x27;s course.") || html.includes("Summarize this patient"), "message shown");
-  assert.ok(html.includes("Pt is a 34F"), "redacted context shown");
-  assert.ok(html.includes("DATE"), "redaction counts shown");
-  assert.ok(html.includes("possible MRN pattern"), "residual warnings shown");
   assert.ok(html.includes("Nothing has been sent yet"), "explicit no-send-yet statement");
+  assert.ok(html.includes("1 message"), "message stat card");
+  assert.ok(html.includes("3 documents"), "context stat card counts pieces");
+  assert.ok(html.includes("3 applied"), "redaction stat card");
+  assert.ok(html.includes("1 to check"), "warning stat card");
+  assert.ok(html.includes("Summarize this patient&#x27;s course.") || html.includes("Summarize this patient"), "message shown");
+  assert.ok(html.includes("Patient header"), "header piece title shown");
+  assert.ok(html.includes("Vitals flowsheet — Hospital Day 7"), "expanded piece title shown");
+  assert.ok(html.includes("Labs — Hospital Day 7"), "collapsed piece title shown");
+  assert.ok(html.includes("DATE × 2"), "per-piece redaction chips shown");
+  assert.ok(html.includes("aic-hipaa-mark"), "redaction markers highlighted");
+  assert.ok(html.includes("[Hospital Day 7 at 19:30]"), "relative-timeline conversion visible");
+  assert.ok(!html.includes("WBC 4.8"), "collapsed piece body not rendered");
+  assert.ok(html.includes("Review flags"), "flags card shown");
+  assert.ok(html.includes("possible MRN pattern"), "residual warnings shown");
+  assert.ok(html.includes("data-ai-chat-hipaa-ack"), "review ack checkbox present");
   assert.ok(html.includes("ai-chat-hipaa-confirm"), "confirm action present");
+  assert.ok(html.includes('data-action="ai-chat-hipaa-confirm" disabled'), "send disabled until the student acks review");
   assert.ok(html.includes("ai-chat-hipaa-cancel"), "cancel action present");
+  assert.ok(html.includes('data-action="ai-chat-hipaa-piece"'), "piece expand/collapse present");
+}
+
+{
+  // Acked review: the send button enables.
+  const acked = {
+    message: "hi",
+    messageRedactionTotal: 0,
+    messageFlags: [],
+    pieces: [{ id: "header", title: "Patient header", text: "PATIENT: WH Timeline", chars: 20, redactionTotal: 0, counts: {}, warnings: [], flags: [] }],
+    redactedContext: "PATIENT: WH Timeline",
+    redactionTotal: 0,
+    redactionCounts: {},
+    residualWarnings: [],
+    flags: ["No PHI spans detected. Review still required."],
+    truncated: false,
+    ack: true,
+    expanded: ["header"]
+  };
+  const html = presentation.render({
+    ...base,
+    mode: "remote",
+    remote: { messages: [], sending: false, webSearch: true, review: acked },
+    chatService: "",
+    hasApiKey: true
+  });
+  assert.ok(html.includes('data-action="ai-chat-hipaa-confirm">'), "send enabled after ack");
+  assert.ok(html.includes('data-ai-chat-hipaa-ack checked'), "ack checkbox reflects state");
 }
 
 console.log("ai-chat tests passed");

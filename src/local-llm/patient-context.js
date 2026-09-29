@@ -8,7 +8,7 @@
 
 export const MAX_PATIENT_CONTEXT_CHARS = 6000;
 
-function textOf(value) {
+export function textOf(value) {
   return String(value ?? "").trim();
 }
 
@@ -163,7 +163,7 @@ export function defaultSelectedPieceIds(patient) {
   return pieces.filter((piece) => piece.group === "Admission").map((piece) => piece.id);
 }
 
-function pieceText(patient, piece, { draftNoteText = "" } = {}) {
+export function pieceText(patient, piece, { draftNoteText = "" } = {}) {
   if (!patient || !piece) return "";
   if (piece.id === "draft:current") {
     const draft = textOf(draftNoteText);

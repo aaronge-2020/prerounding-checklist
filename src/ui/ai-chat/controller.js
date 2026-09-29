@@ -14,7 +14,7 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20260928-ai-chat-v1";
+import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v2";
 import { requestOpenAiChat } from "../openai-client.js?v=20260928-ai-chat-v1";
 import {
   buildRemoteChatInput,
@@ -25,8 +25,11 @@ import { deidentifyTextStructuredOnly } from "../../vault/deid.js?v=20260928-ai-
 import {
   buildPatientContextFromPieces,
   defaultSelectedPieceIds,
-  listPatientContextPieces
-} from "../../local-llm/patient-context.js?v=20260928-local-llm-v8";
+  listPatientContextPieces,
+  pieceText,
+  textOf,
+  MAX_SELECTED_PIECES_CHARS
+} from "../../local-llm/patient-context.js?v=20260928-local-llm-v9";
 import { CHARS_PER_TOKEN, buildChatMessages, estimateTokens } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES, buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
@@ -452,28 +455,110 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
   // 2. A scan of the student's own message for identifier-like patterns.
   // 3. A human-review modal showing EXACTLY what will be sent — the student
   //    must explicitly confirm. Nothing is sent on modal open.
-  function openHipaaReview(message, contextText) {
-    let contextResult;
-    let messageResult;
-    try {
-      contextResult = deidentifyTextStructuredOnly(contextText);
-    } catch {
-      contextResult = { text: contextText, redactionTotal: 0, counts: {}, residualWarnings: [], flags: ["Second de-identification pass failed — review carefully."] };
+  // Build the raw (pre-redaction) review pieces: a patient header plus one
+  // entry per selected chart document / draft note. Titles shown in the
+  // review modal are derived from the REDACTED text so unredacted metadata
+  // (e.g. real dates in day-group labels) never renders in the modal.
+  function buildHipaaReviewPieces(cachedDraft) {
+    const draft = typeof cachedDraft === "string" ? cachedDraft : currentDraftNoteText();
+    const { patient, pieces, selectedIds } = contextPieces(draft);
+    const wanted = new Set(selectedIds);
+    const out = [];
+    const headerBits = [`PATIENT: ${textOf(patient?.displayLabel) || "Active patient"}`];
+    const admissionDate = textOf(patient?.metadata?.admissionDate);
+    if (admissionDate) headerBits.push(`Admitted: ${admissionDate}`);
+    out.push({ id: "header", kind: "header", text: headerBits.join("\n") });
+    const pieceOpts = { draftNoteText: draft };
+    for (const piece of pieces) {
+      if (!wanted.has(piece.id)) continue;
+      const text = pieceText(patient, piece, pieceOpts);
+      if (text) out.push({ id: piece.id, kind: "piece", text });
     }
+    return out;
+  }
+
+  function openHipaaReview(message, rawPieces) {
+    let messageResult;
     try {
       messageResult = deidentifyTextStructuredOnly(message);
     } catch {
       messageResult = { text: message, redactionTotal: 0, flags: [] };
     }
+    // Apply the context budget to the raw pieces (same cap the blob
+    // assembly used), cutting from the tail, so the reviewed text is
+    // exactly the text that will be sent on confirm.
+    const budget = Math.max(500, Number(MAX_SELECTED_PIECES_CHARS) || 6000);
+    let remaining = budget;
+    const capped = [];
+    for (const raw of rawPieces) {
+      if (remaining <= 0) break;
+      let text = raw.text;
+      let cut = false;
+      if (text.length > remaining) {
+        text = `${text.slice(0, Math.max(0, remaining - 3)).trimEnd()}...`;
+        cut = true;
+      }
+      remaining -= text.length + 2; // +2 for the "\n\n" join below
+      capped.push({ ...raw, text, cut });
+    }
+    const pieces = [];
+    const redactionCounts = {};
+    let redactionTotal = 0;
+    let truncated = false;
+    for (const raw of capped) {
+      if (raw.cut) truncated = true;
+      let r;
+      try {
+        r = deidentifyTextStructuredOnly(raw.text);
+      } catch {
+        r = null;
+      }
+      if (!r) {
+        r = { text: raw.text, redactionTotal: 0, counts: {}, residualWarnings: [], flags: ["Second de-identification pass failed — review carefully."] };
+      }
+      const text = String(r.text || "");
+      const lines = text.split("\n");
+      const firstLine = (lines[0] || "").replace(/^#{1,3}\s*/, "").trim();
+      pieces.push({
+        id: raw.id,
+        title: raw.kind === "header" ? "Patient header" : (firstLine || "Context"),
+        text,
+        chars: text.length,
+        redactionTotal: r.redactionTotal || 0,
+        counts: r.counts || {},
+        warnings: (r.residualWarnings || []).slice(0, 4).map((w) => w?.snippet || String(w || "")),
+        flags: (r.flags || []).slice(0, 4)
+      });
+      redactionTotal += r.redactionTotal || 0;
+      for (const [kind, n] of Object.entries(r.counts || {})) {
+        redactionCounts[kind] = (redactionCounts[kind] || 0) + n;
+      }
+    }
+    // The exact string sent on confirm — joined from the reviewed pieces.
+    const redactedContext = pieces.map((piece) => piece.text).join("\n\n");
+    const residualWarnings = [];
+    const flags = [];
+    for (const piece of pieces) {
+      for (const w of piece.warnings) {
+        if (residualWarnings.length < 8) residualWarnings.push(w);
+      }
+      for (const f of piece.flags) {
+        if (flags.length < 6) flags.push(f);
+      }
+    }
     state.remote.review = {
       message,
       messageRedactionTotal: messageResult.redactionTotal || 0,
       messageFlags: (messageResult.flags || []).slice(0, 6),
-      redactedContext: contextResult.text,
-      redactionTotal: contextResult.redactionTotal || 0,
-      redactionCounts: contextResult.counts || {},
-      residualWarnings: (contextResult.residualWarnings || []).slice(0, 8).map((w) => w?.snippet || String(w || "")),
-      flags: (contextResult.flags || []).slice(0, 6)
+      pieces,
+      redactedContext,
+      redactionTotal,
+      redactionCounts,
+      residualWarnings,
+      flags,
+      truncated,
+      ack: false,
+      expanded: pieces.length ? [pieces[0].id] : []
     };
     render();
   }
@@ -485,7 +570,7 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
 
   async function confirmHipaaReview() {
     const review = state.remote.review;
-    if (!review) return;
+    if (!review || !review.ack) return;
     state.remote.review = null;
     await doRemoteSend(review.message, review.redactedContext);
   }
@@ -505,7 +590,7 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
     if (pctx.enabled && pctx.text) {
       // Patient context (chart and/or the student's own note) is attached:
       // run the HIPAA review gate instead of sending immediately.
-      openHipaaReview(message, pctx.text);
+      openHipaaReview(message, buildHipaaReviewPieces());
       return;
     }
     await doRemoteSend(message, "");
@@ -583,8 +668,23 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
       return true;
     }
     if (action === "ai-chat-hipaa-cancel") {
+      // The backdrop carries this action; clicks inside the dialog bubble
+      // up to it but must not cancel — only a direct backdrop click does.
+      if (target !== actionTarget) return true;
       closeHipaaReview();
       setStatus("Review cancelled — nothing was sent to OpenAI.");
+      return true;
+    }
+    if (action === "ai-chat-hipaa-piece") {
+      const review = state.remote.review;
+      const pieceId = actionTarget.dataset.piece || "";
+      if (review && pieceId) {
+        const expanded = new Set(review.expanded || []);
+        if (expanded.has(pieceId)) expanded.delete(pieceId);
+        else expanded.add(pieceId);
+        review.expanded = [...expanded];
+        render();
+      }
       return true;
     }
     if (action === "ai-chat-download") {
@@ -670,6 +770,13 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
       writeLocalLlmSettings({ patientContextEnabled: target.checked });
       setStatus(target.checked ? "Patient context attached to AI Chat chat." : "Patient context detached from AI Chat chat.");
       render();
+      return true;
+    }
+    if (target.matches?.("[data-ai-chat-hipaa-ack]")) {
+      if (state.remote.review) {
+        state.remote.review.ack = !!target.checked;
+        render();
+      }
       return true;
     }
     if (target.matches?.("[data-ai-chat-context-piece]")) {
