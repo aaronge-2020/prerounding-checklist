@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { collectTemporalEntities, createDeidentifier, deidentifyTextStructuredOnly, modelPredictionsToEntities, normalizeResidualTemporalPhi, scanResidualPhi } from "../src/vault/deid.js";
+import { collectTemporalEntities, createDeidentifier, deidentifyTextStructuredOnly, modelPredictionsToEntities, normalizePhiLabel, normalizeResidualTemporalPhi, scanResidualPhi } from "../src/vault/deid.js";
 import { createEphemeralRedactionReview, refreshEphemeralRedactionReview, synchronizeReviewPlaceholders } from "../src/patient-context/review.js";
 import { DEMO_ADMISSION_DATE, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS } from "../src/ui/demo/session.js";
 import { assertDeidCase } from "../scripts/deid-adversarial.js";
@@ -1130,5 +1130,31 @@ const priorAdmissionResult = deidentifyTextStructuredOnly("Previously admitted o
 assert.ok(priorAdmissionResult.text.includes("Previously admitted on [Historical: 2025]"), "a prior-admission date must use generic historical semantics");
 assert.ok(priorAdmissionResult.text.includes("Current labs [Historical: 2026] normal"), "a reading-date cue must not invent a hospital admission anchor");
 assert.ok(!/Hospital Day \d+|prior to hospital admission/.test(priorAdmissionResult.text), "no admission timeline may be inferred from prior-admission or reading-date cues");
+
+// 20260929-deid-rules regressions: BILOU label normalization (L-/U- prefixes
+// from the deid_bert_i2b2-ONNX model) plus the ten benchmark-winning rule
+// improvements (T1/P1/P2/P3/P4/D1/B1/A1/D2/A2) and their integration fixes.
+assert.equal(normalizePhiLabel("L-PATIENT"), "PATIENT NAME", "L- prefix must normalize like B-/I- (BILOU)");
+assert.equal(normalizePhiLabel("U-DATE"), "DATE", "U- prefix must normalize like B-/I- (BILOU)");
+assert.equal(normalizePhiLabel("B-PHONE"), "PHONE", "B- prefix still normalizes");
+assert.equal(normalizePhiLabel("I-PHONE"), "PHONE", "I- prefix still normalizes");
+assert.ok(deidentifyTextStructuredOnly("Symptoms started at 3:45 PM.", null).text.includes("[TIME]"), "meridiem clock time must be [TIME]");
+assert.ok(deidentifyTextStructuredOnly("Vitals at 14:30 were stable.", null).text.includes("[TIME]"), "24-hour clock time must be [TIME]");
+assert.ok(deidentifyTextStructuredOnly("The alarm rang at 3 o'clock.", null).text.includes("[TIME]"), "o'clock must be [TIME]");
+assert.ok(deidentifyTextStructuredOnly("Call +44 20 7946 0018 today.", null).text.includes("[PHONE]"), "international +CC number must be [PHONE]");
+assert.ok(deidentifyTextStructuredOnly("Call 0091 44 034 6283 today.", null).text.includes("[PHONE]"), "00-prefix international number must be [PHONE]");
+assert.ok(deidentifyTextStructuredOnly("call 03-0460-0180", null).text.includes("[PHONE]"), "trunk-dialed leading-zero number must be [PHONE]");
+const trunkDateGuard = deidentifyTextStructuredOnly("admission: 01-02-2026", null).text;
+assert.ok(!trunkDateGuard.includes("[PHONE]"), "MM-DD-YYYY must not be mislabeled PHONE by the trunk rule");
+assert.ok(trunkDateGuard.includes("Hospital Day") || trunkDateGuard.includes("[Historical"), "MM-DD-YYYY must stay a date");
+assert.ok(deidentifyTextStructuredOnly("DOB: June 13th, 1956", null).text.includes("[DOB]"), "written-out DOB with ordinal must be [DOB]");
+assert.ok(deidentifyTextStructuredOnly("Born 1954-07-02", null).text.includes("[Historical: 1954]"), "ISO DOB-adjacent date must redact as historical");
+assert.ok(deidentifyTextStructuredOnly("Meet at Suite 800.", null).text.includes("[ADDRESS]"), "suite number must be [ADDRESS]");
+assert.ok(deidentifyTextStructuredOnly('"Building": "174"', null).text.includes("[ADDRESS]"), "quoted building number must be [ADDRESS]");
+assert.ok(deidentifyTextStructuredOnly("Visit on 09/12/2025.", null).text.includes("[Historical: 2025]"), "explicit numeric date must redact");
+const noDoubleTime = deidentifyTextStructuredOnly("POC Glucose 06/06/2026 04:02 160", null).text;
+assert.ok(noDoubleTime.includes("[Historical: 2026 at 04:02]"), "datetime placeholder must preserve the exact clock time");
+assert.ok(!noDoubleTime.includes("[TIME]"), "folded clock time must not double-redact as [TIME]");
+assert.equal((noDoubleTime.match(/04:02/g) || []).length, 1, "the clock time must appear exactly once, inside the datetime placeholder");
 
 console.log(`De-ID tests passed for ${cases.length} synthetic cases plus targeted guards.`);
