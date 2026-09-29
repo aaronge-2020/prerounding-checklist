@@ -736,6 +736,7 @@ export function createReviewController(deps) {
       } else return false;
     }
     setDraft(draft);
+    scheduleAutoSave();
     return true;
   }
 
@@ -913,6 +914,47 @@ export function createReviewController(deps) {
     return updateInput(target);
   }
 
+  // Auto-save: every keystroke syncs to the in-memory model; this debounced
+  // persister writes it to the encrypted vault. No save button needed.
+  let autoSaveTimer = null;
+  let autoSaveIndicatorTimer = null;
+  function scheduleAutoSave() {
+    if (autoSaveTimer) clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => { void persistDraftToVault(); }, 1500);
+    const indicator = document.querySelector("[data-autosave-indicator]");
+    if (indicator) {
+      indicator.textContent = "Saving\u2026";
+      indicator.dataset.state = "saving";
+    }
+  }
+  async function persistDraftToVault() {
+    autoSaveTimer = null;
+    const current = model();
+    if (!current.patient) return;
+    const savedDraft = normalizeNoteDraft(current.draft);
+    deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({
+      ...patient,
+      noteDrafts: { ...(patient.noteDrafts || {}), [current.packet.id]: savedDraft }
+    }));
+    setDraft(savedDraft);
+    const ephemeralDemo = deps.isEphemeralDemo?.();
+    if (!ephemeralDemo) await deps.persistVault();
+    deps.onDraftSaved?.();
+    const indicator = document.querySelector("[data-autosave-indicator]");
+    if (indicator) {
+      indicator.textContent = ephemeralDemo ? "Demo \u2014 not saved" : "Saved";
+      indicator.dataset.state = "saved";
+      if (autoSaveIndicatorTimer) clearTimeout(autoSaveIndicatorTimer);
+      autoSaveIndicatorTimer = setTimeout(() => {
+        const el = document.querySelector("[data-autosave-indicator]");
+        if (el && el.dataset.state === "saved") {
+          el.textContent = "Auto-save on";
+          el.dataset.state = "idle";
+        }
+      }, 3000);
+    }
+  }
+
   async function saveDraft() {
     const current = model();
     if (!current.patient) return;
@@ -1051,7 +1093,12 @@ export function createReviewController(deps) {
   async function runApGeneration(problemId) {
     const pending = apConfirmState;
     if (!pending || pending.problemId !== problemId) return;
-    const finalPrompt = readEditedApPrompt().trim() || pending.promptText;
+    // Include any consult questions the user typed in the modal
+    const consultQuestions = document.querySelector("[data-ap-consult-questions]")?.value?.trim() || "";
+    let finalPrompt = readEditedApPrompt().trim() || pending.promptText;
+    if (consultQuestions) {
+      finalPrompt += `\n\nThe clinician has these specific questions about this problem — address each directly in your response, in addition to the revision suggestions above:\n${consultQuestions}`;
+    }
     apConfirmState = null;
     generatingApProblemId = problemId;
     // Remove the modal node and re-render the card to show the prominent
@@ -1376,7 +1423,7 @@ export function createReviewController(deps) {
     setDraft(normalizedPull);
     if (!deps.isEphemeralDemo?.()) {
       void deps.persistVault("Pulled section saved.").catch(() => {
-        deps.showToast?.("Pulled content is shown, but the vault save failed — click Save draft to be safe.", { type: "error" });
+        deps.showToast?.("Pulled content is shown, but the vault save failed — your changes may not persist.", { type: "error" });
       });
     }
     const successMessage = `Pulled ${fieldLabel} from primary note.`;
@@ -1848,6 +1895,16 @@ export function createReviewController(deps) {
   }
 
   function click(target) {
+    // Citation links: let [n] references open in a new tab even inside
+    // contenteditable plan fields (where a plain click would just move the caret).
+    const citationLink = target.closest?.('a[href]');
+    if (citationLink && citationLink.closest?.('.note-draft-panel, .plan-problem-card')) {
+      const url = citationLink.getAttribute('href');
+      if (url && /^https?:\/\//i.test(url)) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+        return true;
+      }
+    }
     // Clicking outside the smart-exam editor closes an open inline dropdown.
     if (smartExamUi.openVar && !target.closest?.("[data-smart-exam]")) {
       closeSmartVarDropdown();
@@ -1869,10 +1926,6 @@ export function createReviewController(deps) {
     const current = model();
     if (!current.patient) return false;
     let draft = current.draft;
-    if (action === "save-note-draft") {
-      void saveDraft();
-      return true;
-    }
     if (action === "smart-exam-insert") {
       insertSmartExamSystem();
       return true;
@@ -2337,5 +2390,12 @@ export function createReviewController(deps) {
     }
   }
 
-  return Object.freeze({ change, click, input, keydown, open, prepare, render, saveDraft, toggle, getDraftNoteText });
+  function withAutoSave(fn) {
+    return function (target, ...rest) {
+      const handled = fn.call(this, target, ...rest);
+      if (handled) scheduleAutoSave();
+      return handled;
+    };
+  }
+  return Object.freeze({ change: withAutoSave(change), click: withAutoSave(click), input, keydown, open, prepare, render, saveDraft, toggle: withAutoSave(toggle), getDraftNoteText });
 }

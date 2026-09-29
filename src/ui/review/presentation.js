@@ -553,6 +553,11 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       <div class="ap-confirm-modal" role="dialog" aria-modal="true" aria-label="Review and edit the AI prompt">
         <h3>AI suggestions for &ldquo;${escapeHtml(apConfirm.problemName)}&rdquo;</h3>
         <p class="muted">The prompt below is exactly what will be sent to OpenAI using your saved API key. <strong>Edit anything</strong> — instructions, wording, or the patient data — before sending. Confirm it contains <strong>no protected health information</strong> (no names, dates, MRNs, locations).</p>
+        <div class="ap-consult-questions">
+          <label for="apConsultQuestions"><strong>Specific consult questions</strong> <span class="muted">(optional)</span></label>
+          <textarea id="apConsultQuestions" class="ap-consult-input" data-ap-consult-questions rows="3" spellcheck="true" placeholder="e.g. What is the best medication regimen for this problem? What dose should I use? Should I consult a specialist?" aria-label="Specific consult questions for the AI">${escapeHtml(apConfirm.consultQuestions || "")}</textarea>
+          <p class="muted ap-consult-hint">Ask focused questions — the AI will address them along with suggesting plan revisions.</p>
+        </div>
         <textarea class="ap-prompt-editor" data-ap-prompt-editor rows="18" spellcheck="false" aria-label="Editable AI prompt">${escapeHtml(apConfirm.promptText)}</textarea>
         <p class="muted ap-confirm-note">The AI proposes targeted revisions to this problem's current plan — never a rewrite. Each suggestion appears below the problem for you to approve or reject individually.</p>
         <div class="button-row">
@@ -926,7 +931,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return `<section class="note-draft-panel panel" aria-labelledby="draftNoteHeading">
       <div class="note-editor-toolbar">
         <div class="note-editor-title"><h2 id="draftNoteHeading">Draft note</h2><label class="note-type-control"><span>Format</span><select id="reviewNoteType"><option value="${NOTE_TYPES.PROGRESS}" ${draft.noteType === NOTE_TYPES.PROGRESS ? "selected" : ""}>Progress note</option><option value="${NOTE_TYPES.H_AND_P}" ${draft.noteType === NOTE_TYPES.H_AND_P ? "selected" : ""}>H&amp;P</option></select></label></div>
-        <div class="note-editor-actions"><button type="button" class="button--primary button--small" data-action="save-note-draft">Save draft</button><button type="button" class="button--secondary button--small" data-action="copy-final-note">Copy for Epic</button><button type="button" class="button--secondary button--small" data-action="copy-rich-note">Copy rich text</button><button type="button" class="button--secondary button--small" data-action="download-final-note">${icon("download")} Download .txt</button></div>
+        <div class="note-editor-actions"><span class="autosave-indicator" data-autosave-indicator data-state="idle" title="Your note saves automatically to the encrypted vault as you type">Auto-save on</span><button type="button" class="button--secondary button--small" data-action="copy-final-note">Copy for Epic</button><button type="button" class="button--secondary button--small" data-action="copy-rich-note">Copy rich text</button><button type="button" class="button--secondary button--small" data-action="download-final-note">${icon("download")} Download .txt</button></div>
       </div>
       <p class="ed-toolbar-note">One editor for the whole note — section labels included. Type <kbd>$</kbd> to pull a lab or vital into the note. Saving encrypts the draft without running de-identification.</p>
       <div class="note-editor" id="noteEditor" role="group" aria-label="Note editor">

@@ -2680,6 +2680,35 @@ button.var-fill:focus-visible {
   padding: 3px 6px;
 }
 
+/* Auto-save indicator (replaces the Save Draft button) */
+.autosave-indicator {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted, #6b7280);
+  padding: 6px 10px;
+  user-select: none;
+}
+.autosave-indicator[data-state="saving"] {
+  color: var(--warning, #b45309);
+}
+.autosave-indicator[data-state="saving"]::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: autosave-spin 0.8s linear infinite;
+}
+.autosave-indicator[data-state="saved"] {
+  color: var(--success, #15803d);
+}
+@keyframes autosave-spin {
+  to { transform: rotate(360deg); }
+}
+
 .note-editor-actions {
   display: flex;
   align-items: center;
@@ -3087,6 +3116,18 @@ button.var-fill:focus-visible {
   border-radius: 10px;
   padding: 8px 10px;
   margin: 6px 0;
+}
+
+/* Clickable citation links in plan fields */
+.plan-problem-card .ed-body a[href],
+.note-draft-panel .ed-body a[href] {
+  color: var(--primary, #0d6efd);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.plan-problem-card .ed-body a[href]:hover,
+.note-draft-panel .ed-body a[href]:hover {
+  text-decoration-thickness: 2px;
 }
 
 .plan-problem-card {
@@ -11981,6 +12022,35 @@ details.ed-section .ed-section-summary .ed-label { display: inline-flex; }
   margin-bottom: 1rem;
 }
 /* Editable AI prompt: the exact text that will be sent. */
+/* Consult questions textbox in A&P generation modal */
+.ap-consult-questions {
+  margin: 12px 0;
+}
+.ap-consult-questions label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+.ap-consult-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border, #d1d5db);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+.ap-consult-input:focus {
+  outline: 2px solid var(--primary, #0d6efd);
+  outline-offset: -1px;
+  border-color: var(--primary, #0d6efd);
+}
+.ap-consult-hint {
+  margin-top: 4px;
+  font-size: 12px;
+}
+
 .ap-prompt-editor {
   width: 100%;
   box-sizing: border-box;
