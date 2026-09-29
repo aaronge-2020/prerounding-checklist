@@ -3386,6 +3386,10 @@ async function runQuickDeid() {
 function handleSubmit(event) {
   const form = event.target?.closest?.("form");
   if (form && form.matches("[data-ai-chat-form]") && app.view === "aiChat" && aiChatController.submit(event)) return;
+  // Native <dialog> forms (method="dialog") close their dialog on submit;
+  // cancelling the event here would leave the dialog stuck open with no
+  // feedback (e.g. the admission-date gate's Continue button).
+  if (form?.closest?.("dialog") && form.method === "dialog") return;
   event.preventDefault();
 }
 
@@ -3480,14 +3484,15 @@ function handleInput(event) {
     return;
   }
   if (event.target.id === "quickDeidAdmissionDateInput") {
+    // Update state live but re-render only on change (committed value):
+    // re-rendering here would replace the focused input on every keystroke,
+    // swallowing typed digits and throwing when the node is already detached.
     app.quickDeid.admissionDate = event.target.value;
-    if (app.view === "quickDeid") renderQuickDeid();
     return;
   }
   if (event.target.id === "dailyAdmissionDateInput") {
+    // Same as above: the change handler re-renders once the date is committed.
     app.admissionDate = event.target.value;
-    if (app.view === "daily") refreshDeidControlsInActiveView();
-    if (app.view === "quickDeid") renderQuickDeid();
     return;
   }
   if (event.target.id === "deleteVaultConfirmation") {
