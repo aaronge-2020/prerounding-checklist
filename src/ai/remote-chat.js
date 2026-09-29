@@ -134,9 +134,11 @@ export function buildRemoteChatSystemPromptFromClinicalPreferences({
     "critical-care": "You are helping the student in critical care — prioritize physiology, organ support, ventilator and vasopressor management, and time-sensitive decisions.",
     "specialty": "You are helping the student on a specialty service — prioritize specialty-specific diagnosis and management with precise, guideline-grounded recommendations."
   };
+  const serviceOpt = CHAT_SERVICE_OPTIONS.find((o) => o.value === role);
   const serviceContext = [
     "SERVICE CONTEXT:",
     roleLines[role] ||
+      (serviceOpt ? serviceOpt.servicePrompt : null) ||
       "Give balanced, service-agnostic answers appropriate to any inpatient or outpatient setting."
   ];
   const customName = String(customServiceName || "").trim();
@@ -166,4 +168,45 @@ export function buildRemoteChatSystemPromptFromClinicalPreferences({
     "- Keep answers focused and structured; lead with the direct answer, then the reasoning and citations.",
     "- This is educational support, not medical advice. Close consequential recommendations with a reminder to verify against primary sources and the primary team."
   ].join("\n");
+}
+
+// Conversation compression: shrink a long chat history into one dense summary
+// so future requests fit the model's context window and cost fewer tokens.
+// The caller passes the CURRENT messages (already de-identified — the remote
+// history stores only the reviewed/transformed text, never raw PHI), keeps
+// the newest `keepTail` messages verbatim for continuity, and replaces the
+// older ones with the returned summary. Pure: no DOM, no storage, no network.
+export const COMPRESSION_SYSTEM_PROMPT = [
+  "You are compressing a clinical tutoring conversation into a dense summary.",
+  "The transcript is already de-identified: never attempt to re-identify anyone,",
+  "never invent names, dates, or identifiers, and never add identifiers to the summary.",
+  "Write a compact structured summary for a clinician continuing the conversation:",
+  "- the student's clinical questions and the key facts established in each exchange,",
+  "- any differential diagnoses, workup plans, or management decisions discussed,",
+  "- open questions and what the student asked to do next.",
+  "Keep it under 400 words. Plain paragraphs and short bullet lists only — no",
+  "citations needed, no preamble, no meta-commentary about the summarization task."
+].join("\n");
+
+export function buildCompressionInput({ history = [], keepTail = 2 } = {}) {
+  const entries = (Array.isArray(history) ? history : [])
+    .filter((entry) => entry && (entry.role === "user" || entry.role === "assistant"))
+    .map((entry) => ({ role: entry.role, text: String(entry.text || ""), summary: !!entry.summary }))
+    .filter((entry) => entry.text.trim().length > 0);
+  const tail = Math.max(0, Math.floor(Number(keepTail) || 0));
+  const compressible = tail > 0 ? entries.slice(0, Math.max(0, entries.length - tail)) : entries;
+  const keptTail = tail > 0 ? entries.slice(Math.max(0, entries.length - tail)) : [];
+  // A prior summary is labeled as such so the model folds it in rather than
+  // treating it as a fresh exchange; recompressing never drops history.
+  const transcript = compressible
+    .map((entry) => `${entry.summary ? "Summary of the earlier conversation" : (entry.role === "user" ? "Student" : "Assistant")}: ${entry.text}`)
+    .join("\n\n");
+  return {
+    input: [
+      { role: "system", content: COMPRESSION_SYSTEM_PROMPT },
+      { role: "user", content: `Summarize this de-identified tutoring conversation so it can continue from the summary:\n\n${transcript}` }
+    ],
+    compressibleCount: compressible.length,
+    keptTail
+  };
 }

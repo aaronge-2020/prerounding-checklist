@@ -54,21 +54,45 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     return `<p class="aic-disclaimer" data-ai-chat-disclaimer>${icon("alert")} <span>${model}Small on-device model — thousands of times smaller than state-of-the-art models, so answers may be inaccurate. Verify before acting.</span></p>`;
   }
 
-  // Live context-window meter: share of the on-device model's window used
-  // by the last request (system prompt + kept history). Shown only after
-  // a send has measured it. Kept visually quiet — small, muted,
-  // right-aligned.
+  // Live context-window meter: share of the model's window used by the last
+  // request (system prompt + kept history). Shown only after a send has
+  // measured it. Kept visually quiet — small, muted, right-aligned.
+  // Each mode meters against its OWN window: the on-device models use a few
+  // thousand tokens, the OpenAI models use hundreds of thousands to over a
+  // million — one shared limit would be wrong for both.
   function renderContextMeter(chat) {
     const stats = chat.contextStats;
     if (!stats || !(stats.promptTokens > 0) || !(stats.contextWindow > 0)) return "";
     const pct = Math.max(1, Math.min(100, Math.round((stats.promptTokens / stats.contextWindow) * 100)));
+    const windowName = stats.windowLabel ? ` of ${escapeHtml(stats.windowLabel)}` : "";
     const trimmed = stats.droppedMessages > 0
       ? ` <span class="aic-context-note">· older messages trimmed</span>`
+      : "";
+    const suggest = pct >= 70
+      ? ` <span class="aic-context-note">· getting full — compress to save context</span>`
       : "";
     const firstToken = stats.firstTokenMs > 0
       ? ` First token took ${(stats.firstTokenMs / 1000).toFixed(1)}s.`
       : "";
-    return `<div class="aic-context" title="Share of the on-device model's context window used by the last request.${firstToken}"><span class="aic-context-bar" aria-hidden="true"><span style="width:${pct}%"></span></span><span class="aic-context-label">Context ${pct}%</span>${trimmed}</div>`;
+    return `<div class="aic-context" title="Share of${windowName} context window used by the last request.${firstToken}"><span class="aic-context-bar" aria-hidden="true"><span style="width:${pct}%"></span></span><span class="aic-context-label">Context ${pct}%</span>${trimmed}${suggest}</div>`;
+  }
+
+  // Compress button with two-step confirm: first click arms it (label flips
+  // to "Confirm compress?"), second click runs it. Keeps an irreversible-ish
+  // history rewrite behind a deliberate gesture without a modal.
+  function renderCompressButton({ action, armed, busy, disabled, title }) {
+    if (busy) return `<button type="button" class="aic-compress" disabled>Compressing…</button>`;
+    if (armed) {
+      return `<button type="button" class="aic-compress is-armed" data-action="${action}" title="Click again to confirm">Confirm compress?</button>`;
+    }
+    return `<button type="button" class="aic-compress" data-action="${action}" ${disabled ? "disabled" : ""} title="${escapeHtml(title)}">Compress</button>`;
+  }
+
+  // Badge marking a message as an AI-generated summary of older exchanges.
+  function renderSummaryBadge(m) {
+    if (!m.summary) return "";
+    const count = m.compressedCount > 0 ? ` of ${m.compressedCount} messages` : "";
+    return ` <span class="aic-tag" title="Summary${escapeHtml(count)} — the original messages were replaced to save context">summary</span>`;
   }
 
   // ── Topbar ──────────────────────────────────────────────
@@ -183,7 +207,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     const messages = (chat.messages || [])
       .map((m, index) => {
         const cls = m.role === "user" ? "aic-m--u" : "aic-m--a";
-        const label = m.role === "user" ? "" : `<span class="aic-m-label">${escapeHtml(activeLabel)}</span>`;
+        const label = m.role === "user" ? "" : `<span class="aic-m-label">${escapeHtml(activeLabel)}${renderSummaryBadge(m)}</span>`;
         const body = m.role === "user" ? `<p>${escapeHtml(m.text)}</p>` : renderAssistantBody(m.text);
         // Revert control: removes this message and everything after it from
         // the conversation, i.e. from the model's context on the next send.
@@ -215,7 +239,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     const messages = (remote.messages || [])
       .map((m, index) => {
         const cls = m.role === "user" ? "aic-m--u" : "aic-m--a";
-        const label = m.role === "user" ? "" : `<span class="aic-m-label">ChatGPT${m.webSearch ? " · web search" : ""}</span>`;
+        const label = m.role === "user" ? "" : `<span class="aic-m-label">ChatGPT${m.webSearch ? " · web search" : ""}${renderSummaryBadge(m)}</span>`;
         const body = m.role === "user" ? `<p>${escapeHtml(m.text)}</p>` : `<div class="aic-m-body">${renderChatMarkdown(m.text)}</div>`;
         const revert = `<button type="button" class="aic-m-revert" data-action="ai-chat-revert-remote" data-message-index="${index}" title="Revert to here — remove this message and everything after it">${icon("undo")} revert</button>`;
         return `<div class="aic-m ${cls}">${label}${body}${revert}</div>`;
@@ -239,7 +263,10 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     return `
       <div class="aic-chatbar">
         <span class="aic-muted">${chat.messages?.length ? `${chat.messages.length} message${chat.messages.length === 1 ? "" : "s"}` : "New conversation"}</span>
-        <button type="button" class="aic-newchat" data-action="ai-chat-new-chat" ${chat.streaming ? "disabled" : ""}>${icon("plus")} New chat</button>
+        <span class="aic-chatbar-actions">
+          ${renderCompressButton({ action: "ai-chat-compress", armed: chat.compressArmed, busy: chat.compressing, disabled: chat.streaming, title: "Replace older messages with an on-device summary to free context (free, nothing leaves this browser)" })}
+          <button type="button" class="aic-newchat" data-action="ai-chat-new-chat" ${chat.streaming ? "disabled" : ""}>${icon("plus")} New chat</button>
+        </span>
       </div>
       <div class="aic-messages" data-ai-chat-messages aria-live="polite">${renderLocalMessages(chat, activeLabel)}</div>
       ${renderContextMeter(chat)}
@@ -277,9 +304,14 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       ${keyWarn}
       <div class="aic-chatbar">
         <span class="aic-muted">${remote.messages?.length ? `${remote.messages.length} message${remote.messages.length === 1 ? "" : "s"}` : "New conversation"}</span>
-        <button type="button" class="aic-newchat" data-action="ai-chat-new-chat-remote" ${remote.sending ? "disabled" : ""}>${icon("plus")} New chat</button>
+        <span class="aic-chatbar-actions">
+          ${renderCompressButton({ action: "ai-chat-compress-remote", armed: remote.compressArmed, busy: remote.compressing, disabled: remote.sending, title: "Summarize older messages with one ChatGPT call to cut future token use" })}
+          <button type="button" class="aic-newchat" data-action="ai-chat-new-chat-remote" ${remote.sending ? "disabled" : ""}>${icon("plus")} New chat</button>
+        </span>
       </div>
+      ${remote.cost ? `<div class="aic-cost" title="${escapeHtml(remote.cost.title)}"><span class="aic-cost-label">${escapeHtml(remote.cost.line)}</span></div>` : ""}
       <div class="aic-messages" data-ai-chat-messages aria-live="polite">${renderRemoteMessages(remote)}</div>
+      ${renderContextMeter({ contextStats: remote.contextStats })}
       <div class="aic-composer">
         <form data-ai-chat-form class="aic-form">
           <div class="aic-input" contenteditable="${canCompose ? "true" : "false"}" data-ai-chat-input role="textbox" aria-multiline="true" aria-label="ChatGPT message" data-placeholder="${gated ? escapeHtml(disabledReason) : (hasApiKey ? "Message ChatGPT…" : "Add an OpenAI key in Settings first")}"${disabledReason ? ` title="${escapeHtml(disabledReason)}"` : ""}></div>

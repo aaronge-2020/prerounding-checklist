@@ -18,7 +18,7 @@ import {
   buildPatientContextFromPieces,
   MAX_SELECTED_PIECES_CHARS
 } from "../../local-llm/patient-context.js?v=20260928-local-llm-v9";
-import { buildRemoteChatInput } from "../../ai/remote-chat.js?v=20260929-ai-chat-v4";
+import { buildRemoteChatInput } from "../../ai/remote-chat.js?v=20260929-ai-chat-v6";
 import { redactFromEntities } from "../../vault/deid.js?v=20260921-medication-card-v4";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 

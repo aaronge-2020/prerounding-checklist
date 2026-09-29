@@ -16,9 +16,16 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v4";
-import { requestOpenAiChat } from "../openai-client.js?v=20260928-ai-chat-v1";
-import * as remoteChatV4 from "../../ai/remote-chat.js?v=20260929-ai-chat-v4";
+import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v5";
+import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20260929-ai-chat-v2";
+import * as remoteChatV4 from "../../ai/remote-chat.js?v=20260929-ai-chat-v6";
+import {
+  costForUsage,
+  formatTokens,
+  formatUsd,
+  pricingForModel,
+  PRICING_AS_OF
+} from "../../ai/openai-pricing.js?v=20260929-pricing-v1";
 import {
   deidentifyText,
   getSelectedDeidModelStatus,
@@ -48,7 +55,22 @@ import {
   buildTransmitPayload,
   locateTruncation,
   effectiveGuidelinesText
-} from "./delta-review.js?v=20260929-ai-chat-v4";
+} from "./delta-review.js?v=20260929-ai-chat-v5";
+
+// Fresh per-conversation OpenAI usage accumulator. All token counts come
+// from the Responses API's own usage blocks; costUsd is computed from the
+// published per-model pricing in ../../ai/openai-pricing.js.
+function freshRemoteUsage() {
+  return {
+    inputTokens: 0,
+    outputTokens: 0,
+    cachedInputTokens: 0,
+    webSearchCalls: 0,
+    costUsd: 0,
+    calls: 0,
+    unknownPricing: false
+  };
+}
 
 export function createAiChatController({
   app,
@@ -74,7 +96,7 @@ export function createAiChatController({
     STRUCTURED_DEID_MODE,
     ...(deidDeps || {})
   };
-  const chat = { requestOpenAiChat, ...(chatDeps || {}) };
+  const chat = { requestOpenAiChat, requestOpenAiChatWithUsage, ...(chatDeps || {}) };
   const client = sharedLocalLlmClient();
   const state = {
     hardware: null,
@@ -90,7 +112,9 @@ export function createAiChatController({
       // exists, else the admission sections). Reset on new chat and patient
       // switch; never persisted.
       contextSelection: null,
-      inspectorOpen: false
+      inspectorOpen: false,
+      // Two-step confirm for the compress action: first click arms it.
+      compressArmed: false
     },
     // Chat mode: "local" (on-device) or "remote" (ChatGPT). Persisted in
     // the local-LLM settings so the choice survives reloads.
@@ -101,6 +125,15 @@ export function createAiChatController({
       sending: false,
       webSearch: true,
       patientId: "",
+      // Accumulated OpenAI usage for THIS conversation (resets on new chat
+      // and patient switch): billed tokens and dollars, from the API's own
+      // usage blocks — never estimated.
+      usage: freshRemoteUsage(),
+      // Two-step confirm for the compress action: first click arms it.
+      compressArmed: false,
+      // Estimated prompt tokens of the last request vs the model's real
+      // context window (per-model, not a shared guess).
+      contextStats: null,
       // Session-scoped store: piece id -> the student's last reviewed
       // de-identification of that piece. Unchanged pieces are reused
       // verbatim so the student only re-reviews what changed. Cleared on
@@ -256,6 +289,10 @@ export function createAiChatController({
       state.remote.messages = [];
       state.remote.review = null;
       state.remote.reviewStore.clear();
+      state.remote.usage = freshRemoteUsage();
+      state.remote.compressArmed = false;
+      state.remote.compressing = false;
+      state.remote.contextStats = null;
     }
     state.chat.patientId = pctx.patientId;
     state.remote.patientId = pctx.patientId;
@@ -286,7 +323,15 @@ export function createAiChatController({
         webSearch: state.remote.webSearch,
         patientId: state.remote.patientId,
         review: reviewViewModel(state.remote.review),
-        deid: remoteDeidInfo()
+        deid: remoteDeidInfo(),
+        usage: state.remote.usage,
+        contextStats: state.remote.contextStats,
+        compressArmed: state.remote.compressArmed,
+        compressing: !!state.remote.compressing,
+        model: prefs.openAiModel,
+        modelLabel: (pricingForModel(prefs.openAiModel) || {}).label || String(prefs.openAiModel || ""),
+        pricingAsOf: PRICING_AS_OF,
+        cost: remoteCostViewModel()
       },
       hasApiKey: String(prefs.openAiApiKey || "").trim().length > 0,
       patientContext: {
@@ -362,6 +407,7 @@ export function createAiChatController({
   async function sendChat(text) {
     const message = String(text || "").trim();
     if (!message || state.chat.streaming) return;
+    state.chat.compressArmed = false;
     const status = client.getStatus();
     if (status.status !== "ready" || !status.verified) {
       setStatus("Download and verify a model before chatting.");
@@ -861,6 +907,41 @@ export function createAiChatController({
     render();
   }
 
+  // Add one API call's usage to the conversation totals. Token counts come
+  // from the API's own usage block; dollars come from the published
+  // per-model pricing table. Unknown models accumulate tokens but leave
+  // cost at zero and flag pricing as unknown.
+  function recordRemoteUsage(usage, modelId) {
+    if (!usage) return null;
+    const cost = costForUsage({ model: modelId, ...usage });
+    const totals = state.remote.usage;
+    totals.inputTokens += usage.inputTokens || 0;
+    totals.outputTokens += usage.outputTokens || 0;
+    totals.cachedInputTokens += usage.cachedInputTokens || 0;
+    totals.webSearchCalls += usage.webSearchCalls || 0;
+    totals.costUsd += cost.totalCost;
+    totals.calls += 1;
+    if (cost.unknownPricing) totals.unknownPricing = true;
+    return cost;
+  }
+
+  // Estimated prompt tokens of a Responses-API input array vs the model's
+  // real context window — the remote tab's context meter. OpenAI's window is
+  // per-model (1.05M for GPT-5.6, 400K for GPT-5.4), nothing like the
+  // on-device 4K window, so each mode meters against its own limit.
+  function updateRemoteContextStats(input, modelId) {
+    const pricing = pricingForModel(modelId);
+    const text = (Array.isArray(input) ? input : [])
+      .map((entry) => String(entry?.content || ""))
+      .join("\n");
+    state.remote.contextStats = {
+      promptTokens: estimateTokens(text),
+      contextWindow: pricing ? pricing.contextWindow : 0,
+      windowLabel: pricing ? pricing.label : String(modelId || ""),
+      model: modelId
+    };
+  }
+
   async function doRemoteSend({ input, transformedMessage }) {
     const prefs = remotePrefs();
     const apiKey = String(prefs.openAiApiKey || "").trim();
@@ -869,25 +950,227 @@ export function createAiChatController({
       return;
     }
     state.remote.sending = true;
+    state.remote.compressArmed = false;
     // The history stores the TRANSFORMED message — the raw text never
     // persists past the review gate.
     state.remote.messages.push({ role: "user", text: transformedMessage, deidentified: true });
     render();
     const sentAt = Date.now();
     try {
-      const reply = await chat.requestOpenAiChat({
+      // Prefer the usage-returning call when the active chat backend
+      // provides it; test stubs may only provide the plain-text variant,
+      // in which case usage stays untracked.
+      const sendFn = typeof chatDeps?.requestOpenAiChatWithUsage === "function"
+        ? chat.requestOpenAiChatWithUsage
+        : chat.requestOpenAiChat;
+      const result = await sendFn({
         apiKey,
         model: prefs.openAiModel,
         input,
         tools: state.remote.webSearch ? [{ type: "web_search" }] : []
       });
-      state.remote.messages.push({ role: "assistant", text: reply, webSearch: state.remote.webSearch });
+      const reply = typeof result === "string" ? result : result?.text;
+      const usage = result && typeof result === "object" ? result.usage || null : null;
+      const cost = recordRemoteUsage(usage, prefs.openAiModel);
+      updateRemoteContextStats(input, prefs.openAiModel);
+      state.remote.messages.push({
+        role: "assistant",
+        text: reply,
+        webSearch: state.remote.webSearch,
+        model: prefs.openAiModel,
+        usage: usage ? { ...usage } : null,
+        costUsd: cost ? cost.totalCost : null
+      });
     } catch (error) {
       state.remote.messages.push({ role: "assistant", text: `Error: ${error?.message || "the ChatGPT request failed"}` });
     } finally {
       state.remote.sending = false;
       const secs = Math.max(1, Math.round((Date.now() - sentAt) / 1000));
-      setStatus(`ChatGPT replied in ${secs}s.`);
+      const spent = state.remote.usage.costUsd > 0 ? ` · ${formatUsd(state.remote.usage.costUsd)} this conversation` : "";
+      setStatus(`ChatGPT replied in ${secs}s.${spent}`);
+      render();
+    }
+  }
+
+  // ----- conversation compression ---------------------------------------
+  // Both chat modes get a manual "compress" that replaces older exchanges
+  // with one dense summary, freeing context and (for ChatGPT) cutting the
+  // tokens billed on every future reply. The newest exchange is always kept
+  // verbatim so the conversation continues naturally.
+
+  const LOCAL_COMPRESSION_SYSTEM_PROMPT = [
+    "You are compressing a clinical tutoring conversation into a dense summary.",
+    "Write a compact structured summary for a clinician continuing the conversation:",
+    "the student's clinical questions and the key facts established in each exchange,",
+    "any differential diagnoses, workup plans, or management decisions discussed,",
+    "and open questions plus what the student asked to do next.",
+    "Keep it under 400 words. Plain paragraphs and short bullet lists only — no",
+    "preamble, no meta-commentary about the summarization task."
+  ].join("\n");
+
+  function compressibleLocalCount() {
+    // Prior summaries count: recompressing folds the earlier summary into
+    // the new one instead of dropping the history it captured.
+    return state.chat.messages.filter(
+      (m) => String(m.text || "").trim().length > 0
+    ).length;
+  }
+
+  function compressibleRemoteCount() {
+    return state.remote.messages.filter(
+      (m) => String(m.text || "").trim().length > 0 && !String(m.text || "").startsWith("Error:")
+    ).length;
+  }
+
+  async function compressLocalChat() {
+    try {
+      const status = client.getStatus();
+      if (status.status !== "ready" || !status.verified) {
+        setStatus("Load the local model before compressing.");
+        return;
+      }
+      // Prior summaries are included — never filtered out — so recompressing
+      // folds the earlier summary into the new one instead of silently
+      // dropping the history it captured.
+      const entries = state.chat.messages.filter(
+        (m) => String(m.text || "").trim().length > 0
+      );
+      if (entries.length < 5) {
+        setStatus("Not enough conversation to compress yet — keep chatting first.");
+        return;
+      }
+      // Context safety: the compression prompt itself must fit the small
+      // on-device window. ~4 chars per token, same heuristic as the send path.
+      const modelRecord = localLlmModelByKey(state.chat.modelKey);
+      const contextWindow = Number(modelRecord?.contextWindow) || 4096;
+      const approxTokens = (s) => Math.max(1, Math.ceil(String(s || "").length / 4));
+      const tail = entries.slice(-2);
+      const tailText = tail
+        .map((m) => `${m.role === "user" ? "Student" : "Assistant"}: ${m.text}`)
+        .join("\n\n");
+      // Fixed cost: system prompt + newest exchange (kept verbatim in the
+      // prompt) + the summary we ask for + margin. If even that exceeds the
+      // window, refuse instead of silently sending an oversized request.
+      const fixedCost = approxTokens(LOCAL_COMPRESSION_SYSTEM_PROMPT) + approxTokens(tailText) + 512 + 256;
+      if (fixedCost >= contextWindow) {
+        setStatus("The newest messages alone exceed this model's context — revert to an earlier message or start a new chat.");
+        return;
+      }
+      const budget = contextWindow - fixedCost;
+      const labelOf = (m) => (m.summary
+        ? "Summary of the earlier conversation"
+        : (m.role === "user" ? "Student" : "Assistant"));
+      // Items oldest-first. If the head doesn't fit, fold the oldest raw
+      // messages into an interim summary first (repeated halving), so every
+      // message passes through a summary and none are silently dropped.
+      let items = entries.slice(0, -2).map((m) => ({ label: labelOf(m), text: m.text, summary: !!m.summary }));
+      const transcriptOf = (list) => list.map((it) => `${it.label}: ${it.text}`).join("\n\n");
+      let guard = 0;
+      while (approxTokens(transcriptOf(items)) > budget && guard++ < 8) {
+        const rawIdx = items.findIndex((it) => !it.summary);
+        if (rawIdx === -1) break;
+        let cut = rawIdx;
+        let used = 0;
+        while (cut < items.length && !items[cut].summary && used < budget / 2) {
+          used += approxTokens(`${items[cut].label}: ${items[cut].text}`);
+          cut++;
+        }
+        if (cut === rawIdx) cut = rawIdx + 1;
+        const interim = await client.chat(
+          [
+            { role: "system", content: LOCAL_COMPRESSION_SYSTEM_PROMPT },
+            { role: "user", content: `Summarize this tutoring conversation so it can continue from the summary:\n\n${transcriptOf(items.slice(rawIdx, cut))}` }
+          ],
+          { maxTokens: 512, temperature: 0.3 }
+        );
+        const interimText = String(interim || "").trim();
+        if (!interimText) throw new Error("the local model returned an empty summary");
+        items = [
+          ...items.slice(0, rawIdx),
+          { label: "Summary of the earlier conversation", text: interimText, summary: true },
+          ...items.slice(cut)
+        ];
+      }
+      if (approxTokens(transcriptOf(items)) > budget) {
+        setStatus("Conversation too long to compress with this model — revert to an earlier message or start a new chat.");
+        return;
+      }
+      const summary = await client.chat(
+        [
+          { role: "system", content: LOCAL_COMPRESSION_SYSTEM_PROMPT },
+          { role: "user", content: `Summarize this tutoring conversation so it can continue from the summary:\n\n${transcriptOf(items)}\n\nThe conversation continues from these newest messages (already kept verbatim — no need to repeat them in full):\n\n${tailText}` }
+        ],
+        { maxTokens: 512, temperature: 0.3 }
+      );
+      const text = String(summary || "").trim();
+      if (!text) throw new Error("the local model returned an empty summary");
+      const headCount = entries.length - tail.length;
+      state.chat.messages = [
+        { role: "assistant", text, summary: true, compressedCount: headCount },
+        ...tail
+      ];
+      state.chat.contextStats = null;
+      setStatus(`Compressed ${headCount} messages into an on-device summary.`);
+    } catch (error) {
+      setStatus(`Compression failed: ${error?.message || "the local model didn't return a summary"}.`);
+    } finally {
+      state.chat.compressing = false;
+      state.chat.compressArmed = false;
+      renderView();
+    }
+  }
+
+  async function compressRemoteChat() {
+    try {
+      const prefs = remotePrefs();
+      const apiKey = String(prefs.openAiApiKey || "").trim();
+      if (!apiKey) {
+        setStatus("Save an OpenAI API key in Settings before compressing.");
+        return;
+      }
+      const entries = state.remote.messages.filter(
+        (m) => String(m.text || "").trim().length > 0 && !String(m.text || "").startsWith("Error:")
+      );
+      if (entries.length < 5) {
+        setStatus("Not enough conversation to compress yet — keep chatting first.");
+        return;
+      }
+      // The stored history holds only the already de-identified text — raw
+      // PHI never persists past the review gate — so summarizing it with one
+      // API call introduces no new disclosure.
+      const { input, compressibleCount, keptTail } = remoteChatV4.buildCompressionInput({ history: entries, keepTail: 2 });
+      if (compressibleCount < 3) {
+        setStatus("Not enough conversation to compress yet — keep chatting first.");
+        return;
+      }
+      const sendFn = typeof chat.requestOpenAiChatWithUsage === "function"
+        ? chat.requestOpenAiChatWithUsage
+        : chat.requestOpenAiChat;
+      const result = await sendFn({ apiKey, model: prefs.openAiModel, input, tools: [] });
+      const summaryText = typeof result === "string" ? result : result?.text;
+      const usage = result && typeof result === "object" ? result.usage || null : null;
+      const cost = recordRemoteUsage(usage, prefs.openAiModel);
+      const text = String(summaryText || "").trim();
+      if (!text) throw new Error("the API returned an empty summary");
+      state.remote.messages = [
+        {
+          role: "assistant",
+          text,
+          summary: true,
+          compressedCount: compressibleCount,
+          model: prefs.openAiModel,
+          usage: usage ? { ...usage } : null,
+          costUsd: cost ? cost.totalCost : null
+        },
+        ...keptTail.map((m) => ({ role: m.role, text: m.text, ...(m.summary ? { summary: true } : {}) }))
+      ];
+      const price = cost && !cost.unknownPricing ? ` (${formatUsd(cost.totalCost)})` : "";
+      setStatus(`Compressed ${compressibleCount} messages into a summary${price}.`);
+    } catch (error) {
+      setStatus(`Compression failed: ${error?.message || "the API didn't return a summary"}.`);
+    } finally {
+      state.remote.compressing = false;
+      state.remote.compressArmed = false;
       render();
     }
   }
@@ -972,6 +1255,32 @@ export function createAiChatController({
     };
   }
 
+  // Cost readout for the ChatGPT tab: billed tokens and dollars for THIS
+  // conversation, from the API's own usage blocks. Rendered as a quiet line
+  // under the chatbar with a tooltip breaking down the math.
+  function remoteCostViewModel() {
+    const totals = state.remote.usage;
+    if (!totals || totals.calls === 0) return null;
+    const modelId = remotePrefs().openAiModel;
+    const pricing = pricingForModel(modelId);
+    const line = totals.unknownPricing
+      ? `${formatTokens(totals.inputTokens)} in · ${formatTokens(totals.outputTokens)} out · model pricing unavailable`
+      : `${formatUsd(totals.costUsd)} · ${formatTokens(totals.inputTokens)} in / ${formatTokens(totals.outputTokens)} out`;
+    const parts = [
+      `${formatTokens(totals.inputTokens)} input tokens`,
+      `${formatTokens(totals.outputTokens)} output tokens`
+    ];
+    if (totals.cachedInputTokens > 0) parts.push(`${formatTokens(totals.cachedInputTokens)} cached input`);
+    if (totals.webSearchCalls > 0) {
+      parts.push(`${totals.webSearchCalls} web search${totals.webSearchCalls === 1 ? "" : "es"} (${formatUsd(totals.webSearchCalls * 0.01)})`);
+    }
+    parts.push(`${totals.calls} API call${totals.calls === 1 ? "" : "s"}`);
+    if (pricing) {
+      parts.push(`Rates: ${pricing.label} $${pricing.inputPerMillion}/$${pricing.outputPerMillion} per 1M input/output tokens (OpenAI pricing, ${PRICING_AS_OF})`);
+    }
+    return { line, title: parts.join(" · ") };
+  }
+
   function clinicalServiceInfo() {
     const prefs = remotePrefs();
     let label = "";
@@ -1001,8 +1310,35 @@ export function createAiChatController({
       state.remote.messages = [];
       state.remote.review = null;
       state.remote.reviewStore.clear();
+      state.remote.usage = freshRemoteUsage();
+      state.remote.compressArmed = false;
+      state.remote.compressing = false;
+      state.remote.contextStats = null;
       setStatus("New ChatGPT chat started — conversation cleared. Your patient context selections are unchanged.");
       render();
+      return true;
+    }
+    if (action === "ai-chat-compress-remote") {
+      // ChatGPT-side compression: summarize the older (already de-identified)
+      // history with one API call — billed like a normal reply — and keep
+      // the newest exchange verbatim. Two-step: first click arms, second
+      // confirms.
+      if (state.remote.sending || state.remote.compressing) return true;
+      if (!state.remote.compressArmed) {
+        if (compressibleRemoteCount() < 5) {
+          setStatus("Not enough conversation to compress yet — keep chatting first.");
+          render();
+          return true;
+        }
+        state.remote.compressArmed = true;
+        setStatus("Compress will summarize older messages with one ChatGPT call (billed like a reply) over the already de-identified history. Click Compress again to confirm.");
+        render();
+        return true;
+      }
+      state.remote.compressArmed = false;
+      state.remote.compressing = true;
+      render();
+      void compressRemoteChat();
       return true;
     }
     if (action === "ai-chat-revert-remote") {
@@ -1191,9 +1527,32 @@ export function createAiChatController({
       state.chat.messages = [];
       state.chat.streamingText = "";
       state.chat.contextStats = null;
+      state.chat.compressArmed = false;
       void client.resetChat();
       setStatus("New chat started — conversation cleared. Your patient context selections are unchanged.");
       renderView();
+      return true;
+    }
+    if (action === "ai-chat-compress") {
+      // On-device conversation compression: summarize older exchanges with
+      // the local model (free, nothing leaves the browser) and keep the
+      // newest exchange verbatim. Two-step: first click arms, second confirms.
+      if (state.chat.streaming || state.chat.compressing) return true;
+      if (!state.chat.compressArmed) {
+        if (compressibleLocalCount() < 5) {
+          setStatus("Not enough conversation to compress yet — keep chatting first.");
+          renderView();
+          return true;
+        }
+        state.chat.compressArmed = true;
+        setStatus("Compress will replace older messages with an on-device summary. Click Compress again to confirm.");
+        renderView();
+        return true;
+      }
+      state.chat.compressArmed = false;
+      state.chat.compressing = true;
+      renderView();
+      void compressLocalChat();
       return true;
     }
     if (action === "ai-chat-revert-message") {
@@ -1308,6 +1667,9 @@ export function createAiChatController({
     getSettings: settings,
     // Thin test seam: the live remote review object (or null). Lets tests
     // drive the review gate without a DOM.
-    getRemoteReview: () => state.remote.review
+    getRemoteReview: () => state.remote.review,
+    // Thin test seam: the live remote chat state (messages, usage, cost).
+    // Lets tests assert usage accumulation and compression without a DOM.
+    getRemoteState: () => state.remote
   };
 }

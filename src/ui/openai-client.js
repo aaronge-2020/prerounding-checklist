@@ -74,6 +74,16 @@ export async function requestOpenAiStructuredJson({ apiKey, model, input, schema
 // `tools` optionally enables web search ([{ type: "web_search" }]) so the
 // model's citations can be grounded in real sources.
 export async function requestOpenAiChat({ apiKey, model, input, tools, fetchImpl = fetch, timeoutMs = 300000 } = {}) {
+  const { text } = await requestOpenAiChatWithUsage({ apiKey, model, input, tools, fetchImpl, timeoutMs });
+  return text;
+}
+
+// Same call as requestOpenAiChat, but also returns the Responses-API usage
+// block so callers can track tokens and cost. Resolves to
+// { text, usage: { inputTokens, outputTokens, cachedInputTokens, webSearchCalls } }.
+// webSearchCalls counts web_search_call items in the response — each one is a
+// billable search ($0.01 per call) on top of the tokens it consumed.
+export async function requestOpenAiChatWithUsage({ apiKey, model, input, tools, fetchImpl = fetch, timeoutMs = 300000 } = {}) {
   const key = String(apiKey || "").trim();
   if (!key) throw new Error("Save an OpenAI API key in Settings before using ChatGPT chat.");
   const body = { model, input };
@@ -103,5 +113,19 @@ export async function requestOpenAiChat({ apiKey, model, input, tools, fetchImpl
   if (!response.ok) throw new Error(apiError(response, payload));
   const output = responseText(payload).trim();
   if (!output) throw new Error("The OpenAI API returned an empty reply. Try again.");
-  return output;
+  return { text: output, usage: extractUsage(payload) };
+}
+
+function extractUsage(payload) {
+  const raw = payload && typeof payload === "object" ? payload.usage || {} : {};
+  const details = raw.input_tokens_details && typeof raw.input_tokens_details === "object"
+    ? raw.input_tokens_details
+    : {};
+  const outputs = Array.isArray(payload?.output) ? payload.output : [];
+  return {
+    inputTokens: Math.max(0, Math.floor(Number(raw.input_tokens) || 0)),
+    outputTokens: Math.max(0, Math.floor(Number(raw.output_tokens) || 0)),
+    cachedInputTokens: Math.max(0, Math.floor(Number(details.cached_tokens) || 0)),
+    webSearchCalls: outputs.filter((entry) => entry && entry.type === "web_search_call").length
+  };
 }

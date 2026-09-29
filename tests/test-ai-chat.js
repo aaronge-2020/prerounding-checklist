@@ -41,6 +41,18 @@ import {
 } from "../src/ui/ai-chat/delta-review.js";
 import { buildPatientContextFromPieces, MAX_SELECTED_PIECES_CHARS } from "../src/local-llm/patient-context.js";
 import { createAiChatController } from "../src/ui/ai-chat/controller.js";
+import {
+  LONG_CONTEXT_THRESHOLD,
+  WEB_SEARCH_COST_PER_CALL,
+  OPENAI_MODEL_PRICING,
+  pricingForModel,
+  costForUsage,
+  formatUsd,
+  formatTokens
+} from "../src/ai/openai-pricing.js";
+import { requestOpenAiChatWithUsage } from "../src/ui/openai-client.js";
+import { buildCompressionInput } from "../src/ai/remote-chat.js";
+
 
 // ---------------------------------------------------------------------------
 // remote-chat.js: service options
@@ -834,7 +846,7 @@ function makeHarness({ patient = controllerFixturePatient(), prefs = {}, deidStu
     textContent: ""
   };
   root.querySelector = (sel) => (sel === "[data-ai-chat-input]" ? composerInput : null);
-  const vault = { activePatient: patient };
+  const vault = { patients: [patient], activePatientId: patient.id };
   const app = { view: "aiChat", vault, deidMode: "stub-model" };
   let ctrl;
   ctrl = createAiChatController({
@@ -1205,3 +1217,330 @@ async function confirmSend(h) {
 }
 
 console.log("ai-chat tests passed");
+
+{
+  const ids = ["gpt-5.6", "gpt-5.6-terra", "gpt-5.6-luna", "gpt-5.4", "gpt-5.4-mini", "gpt-5.4-nano"];
+  for (const id of ids) {
+    const row = pricingForModel(id);
+    assert.ok(row, `pricing row for ${id}`);
+    assert.ok(row.contextWindow > 0, `${id} has a context window`);
+    assert.ok(row.inputPerMillion > 0 && row.outputPerMillion > 0, `${id} has rates`);
+  }
+  assert.equal(pricingForModel("gpt-nope"), null, "unknown model has no pricing row");
+  assert.equal(pricingForModel(""), null, "empty model has no pricing row");
+  assert.equal(pricingForModel("gpt-5.6").contextWindow, 1050000, "GPT-5.6 window");
+  assert.equal(pricingForModel("gpt-5.4").contextWindow, 1050000, "GPT-5.4 window (1.05M per official model page)");
+  assert.equal(pricingForModel("gpt-5.4-mini").contextWindow, 400000, "GPT-5.4 mini window");
+  assert.equal(pricingForModel("gpt-5.4").cachedInputPerMillion, 0.25, "GPT-5.4 cached rate");
+  assert.equal(pricingForModel("gpt-5.4-mini").cachedInputPerMillion, 0.075, "mini cached rate");
+  assert.equal(pricingForModel("gpt-5.4-nano").cachedInputPerMillion, 0.02, "nano cached rate");
+  assert.ok(Object.keys(OPENAI_MODEL_PRICING).length >= 6, "covers every repo model option");
+}
+
+{
+  // GPT-5.6 Sol short context: $4/1M in, $20/1M out.
+  // (100K tokens stays under the 272K long-context threshold.)
+  const c = costForUsage({ model: "gpt-5.6", inputTokens: 100_000, outputTokens: 100_000 });
+  assert.equal(c.unknownPricing, false);
+  assert.equal(c.longContext, false);
+  assert.ok(Math.abs(c.totalCost - 2.4) < 1e-9, `short-context total is $2.40, got ${c.totalCost}`);
+}
+
+{
+  // Cached input bills at the cached rate and is not double-counted.
+  const c = costForUsage({ model: "gpt-5.6", inputTokens: 100_000, cachedInputTokens: 100_000 });
+  assert.ok(Math.abs(c.totalCost - 0.04) < 1e-9, `100K cached input is $0.04, got ${c.totalCost}`);
+  assert.ok(Math.abs(c.inputCost) < 1e-12, "no double-counted input cost");
+}
+
+{
+  // Long context: above the threshold the long rates apply, including the
+  // long-context cached-input rate.
+  const c = costForUsage({
+    model: "gpt-5.6",
+    inputTokens: LONG_CONTEXT_THRESHOLD + 1000,
+    cachedInputTokens: LONG_CONTEXT_THRESHOLD + 1000,
+    outputTokens: 1_000_000
+  });
+  assert.equal(c.longContext, true, "long context detected");
+  const expected = ((LONG_CONTEXT_THRESHOLD + 1000) / 1e6) * 0.8 + 30;
+  assert.ok(Math.abs(c.totalCost - expected) < 1e-6, `long-context total, got ${c.totalCost}`);
+}
+
+{
+  // Web search calls bill per call.
+  const c = costForUsage({ model: "gpt-5.6", webSearchCalls: 3 });
+  assert.ok(Math.abs(c.searchCost - 3 * WEB_SEARCH_COST_PER_CALL) < 1e-12, "search cost per call");
+  assert.ok(Math.abs(c.totalCost - c.searchCost) < 1e-12, "search-only total");
+}
+
+{
+  // Unknown model: never invent a cost.
+  const c = costForUsage({ model: "gpt-future", inputTokens: 5000, outputTokens: 5000 });
+  assert.equal(c.unknownPricing, true, "unknown pricing flagged");
+  assert.equal(c.totalCost, 0, "unknown pricing totals zero");
+}
+
+{
+  // Cached tokens can never exceed input tokens.
+  const c = costForUsage({ model: "gpt-5.6", inputTokens: 100, cachedInputTokens: 99999 });
+  assert.ok(Math.abs(c.totalCost - (100 / 1e6) * 0.4) < 1e-12, "cached clamped to input");
+}
+
+assert.equal(formatUsd(0.0042), "$0.0042", "sub-cent amounts show 4 decimals");
+assert.equal(formatUsd(0.00999), "$0.0100", "rounds to 4 decimals under a cent");
+assert.equal(formatUsd(1.5), "$1.50", "dollar amounts show 2 decimals");
+assert.equal(formatUsd(0), "$0.00", "zero formats cleanly");
+assert.equal(formatTokens(999), "999", "small counts plain");
+assert.equal(formatTokens(12400), "12.4K", "thousands compact");
+assert.equal(formatTokens(1050000), "1.05M", "millions compact");
+
+// ---------------------------------------------------------------------------
+// openai-client.js: requestOpenAiChatWithUsage
+// ---------------------------------------------------------------------------
+
+{
+  const calls = [];
+  const fakeFetch = async (url, opts) => {
+    calls.push({ url, body: JSON.parse(opts.body) });
+    return {
+      ok: true,
+      json: async () => ({
+        output: [
+          { type: "web_search_call", id: "ws1" },
+          { type: "message", content: [{ type: "output_text", text: "Cited reply. [Stub]" }] }
+        ],
+        usage: {
+          input_tokens: 1000,
+          output_tokens: 200,
+          input_tokens_details: { cached_tokens: 800 }
+        }
+      })
+    };
+  };
+  const result = await requestOpenAiChatWithUsage({
+    apiKey: "sk-test",
+    model: "gpt-5.6",
+    input: "hello",
+    tools: [{ type: "web_search" }],
+    fetchImpl: fakeFetch
+  });
+  assert.equal(result.text, "Cited reply. [Stub]", "returns reply text");
+  assert.equal(result.usage.inputTokens, 1000, "input tokens from usage");
+  assert.equal(result.usage.outputTokens, 200, "output tokens from usage");
+  assert.equal(result.usage.cachedInputTokens, 800, "cached tokens from details");
+  assert.equal(result.usage.webSearchCalls, 1, "web_search_call items counted");
+  assert.equal(calls[0].body.tools.length, 1, "tools forwarded");
+}
+
+{
+  // Missing usage block degrades to zeros, not a crash.
+  const fakeFetch = async () => ({
+    ok: true,
+    json: async () => ({
+      output: [{ type: "message", content: [{ type: "output_text", text: "hi" }] }]
+    })
+  });
+  const result = await requestOpenAiChatWithUsage({ apiKey: "sk-test", model: "gpt-5.6", input: "hi", fetchImpl: fakeFetch });
+  assert.equal(result.text, "hi", "text returned");
+  assert.deepEqual(
+    [result.usage.inputTokens, result.usage.outputTokens, result.usage.cachedInputTokens, result.usage.webSearchCalls],
+    [0, 0, 0, 0],
+    "usage defaults to zeros"
+  );
+}
+
+// ---------------------------------------------------------------------------
+// remote-chat.js: buildCompressionInput
+// ---------------------------------------------------------------------------
+
+{
+  const history = [
+    { role: "user", text: "q1" },
+    { role: "assistant", text: "a1" },
+    { role: "user", text: "q2" },
+    { role: "assistant", text: "a2" },
+    { role: "user", text: "q3" },
+    { role: "assistant", text: "a3" },
+    { role: "system", text: "should be ignored" }
+  ];
+  const { input, compressibleCount, keptTail } = buildCompressionInput({ history, keepTail: 2 });
+  assert.equal(compressibleCount, 4, "four older messages compressible");
+  assert.equal(keptTail.length, 2, "newest two kept verbatim");
+  assert.equal(keptTail[0].text, "q3", "tail keeps newest exchange");
+  assert.equal(keptTail[1].text, "a3", "tail keeps newest exchange");
+  assert.equal(input.length, 2, "system + user input");
+  assert.ok(!input[1].content.includes("should be ignored"), "system-role entries excluded");
+  assert.ok(input[1].content.includes("q1") && input[1].content.includes("a2"), "older exchanges in transcript");
+  assert.ok(!input[1].content.includes("q3"), "tail not duplicated in transcript");
+}
+
+{
+  // A prior summary is labeled and folded in, never dropped.
+  const history = [
+    { role: "assistant", text: "Earlier: discussed MI workup.", summary: true },
+    { role: "user", text: "q1" },
+    { role: "assistant", text: "a1" },
+    { role: "user", text: "q2" },
+    { role: "assistant", text: "a2" }
+  ];
+  const { input, compressibleCount } = buildCompressionInput({ history, keepTail: 2 });
+  assert.equal(compressibleCount, 3, "prior summary counts as compressible");
+  assert.ok(input[1].content.includes("Summary of the earlier conversation"), "prior summary labeled");
+}
+
+// ---------------------------------------------------------------------------
+// controller.js: remote usage/cost accumulation, reset, compression
+// ---------------------------------------------------------------------------
+
+function makeUsageChatStub(usage) {
+  const calls = [];
+  return {
+    calls,
+    requestOpenAiChatWithUsage: async ({ input, model, tools }) => {
+      calls.push({ input, model, tools });
+      return { text: "Reply. [Stub]", usage: { ...usage } };
+    }
+  };
+}
+
+// Full remote send through the review gate (de-id stub redacts CanaryName).
+async function sendRemoteReviewed(h, message) {
+  const review = await driveSend(h, message);
+  assert.equal(review.phase, "ready", "review ready");
+  acceptAllAndAck(h);
+  const sent = await confirmSend(h);
+  assert.equal(sent, true, "send happened");
+}
+
+{
+  // Usage + cost accumulate per conversation and render in the view model.
+  const chatStub = makeUsageChatStub({ inputTokens: 10000, outputTokens: 2000, cachedInputTokens: 4000, webSearchCalls: 2 });
+  const h = makeHarness({ chatStub, prefs: { openAiModel: "gpt-5.6" } });
+  await sendRemoteReviewed(h, "CanaryName question");
+  const remote = h.ctrl.getRemoteState();
+  assert.equal(remote.usage.inputTokens, 10000, "input tokens accumulated");
+  assert.equal(remote.usage.outputTokens, 2000, "output tokens accumulated");
+  assert.equal(remote.usage.cachedInputTokens, 4000, "cached tokens accumulated");
+  assert.equal(remote.usage.webSearchCalls, 2, "search calls accumulated");
+  assert.equal(remote.usage.calls, 1, "one billed call");
+  assert.ok(remote.usage.costUsd > 0, "cost accumulated");
+  const html = h.html();
+  assert.ok(html.includes("aic-cost"), "cost line rendered");
+  assert.ok(html.includes("$"), "dollar amount shown");
+}
+
+{
+  // A second send accumulates onto the first; new chat resets the totals.
+  const chatStub = makeUsageChatStub({ inputTokens: 10000, outputTokens: 2000, cachedInputTokens: 0, webSearchCalls: 0 });
+  const h = makeHarness({ chatStub, prefs: { openAiModel: "gpt-5.6" } });
+  await sendRemoteReviewed(h, "CanaryName question one");
+  await sendRemoteReviewed(h, "CanaryName question two");
+  let remote = h.ctrl.getRemoteState();
+  assert.equal(remote.usage.calls, 2, "two billed calls");
+  assert.equal(remote.usage.inputTokens, 20000, "tokens accumulate across sends");
+  h.ctrl.click(actionTarget("ai-chat-new-chat-remote"));
+  remote = h.ctrl.getRemoteState();
+  assert.equal(remote.usage.calls, 0, "usage reset on new chat");
+  assert.equal(remote.usage.costUsd, 0, "cost reset on new chat");
+  assert.equal(remote.usage.inputTokens, 0, "tokens reset on new chat");
+  assert.equal(remote.messages.length, 0, "messages cleared");
+  assert.ok(!h.html().includes("aic-cost"), "cost line gone after reset");
+}
+
+{
+  // Legacy stubs exposing only requestOpenAiChat still work; cost stays untracked.
+  const calls = [];
+  const legacyStub = {
+    calls,
+    requestOpenAiChat: async ({ input }) => {
+      calls.push({ input });
+      return "Legacy reply. [Stub]";
+    }
+  };
+  const h = makeHarness({ chatStub: legacyStub, prefs: { openAiModel: "gpt-5.6" } });
+  await sendRemoteReviewed(h, "CanaryName question");
+  const remote = h.ctrl.getRemoteState();
+  assert.equal(remote.messages.length, 2, "reply recorded via legacy stub");
+  assert.equal(remote.usage.calls, 0, "no usage without usage-returning stub");
+  assert.ok(!h.html().includes("aic-cost"), "no cost line without usage");
+}
+
+{
+  // Remote context stats meter against the selected model's real window.
+  const chatStub = makeUsageChatStub({ inputTokens: 1000, outputTokens: 100, cachedInputTokens: 0, webSearchCalls: 0 });
+  const h = makeHarness({ chatStub, prefs: { openAiModel: "gpt-5.4-mini" } });
+  await sendRemoteReviewed(h, "CanaryName question");
+  const stats = h.ctrl.getRemoteState().contextStats;
+  assert.ok(stats, "context stats recorded");
+  assert.equal(stats.contextWindow, 400000, "meters against the selected model's window");
+  assert.ok(String(stats.windowLabel || "").includes("mini"), "window labeled with the model");
+  assert.ok(h.html().includes("Context"), "context meter rendered");
+}
+
+async function driveRemoteCompression(h) {
+  const remote = h.ctrl.getRemoteState();
+  if (!remote.compressArmed) {
+    h.ctrl.click(actionTarget("ai-chat-compress-remote"));
+    assert.equal(h.ctrl.getRemoteState().compressArmed, true, "first click arms");
+  }
+  h.ctrl.click(actionTarget("ai-chat-compress-remote"));
+  const start = Date.now();
+  while (h.ctrl.getRemoteState().compressing && Date.now() - start < 5000) {
+    await new Promise((r) => setTimeout(r, 25));
+  }
+  assert.equal(h.ctrl.getRemoteState().compressing, false, "compression finished");
+}
+
+{
+  // Remote compression: two-step confirm, summary replaces older messages,
+  // newest exchange kept verbatim, usage recorded on the summary.
+  const usage = { inputTokens: 50000, outputTokens: 400, cachedInputTokens: 0, webSearchCalls: 0 };
+  const chatStub = makeUsageChatStub(usage);
+  const h = makeHarness({ chatStub, prefs: { openAiModel: "gpt-5.6" } });
+  const remote = h.ctrl.getRemoteState();
+  remote.messages = [
+    { role: "user", text: "q1" },
+    { role: "assistant", text: "a1" },
+    { role: "user", text: "q2" },
+    { role: "assistant", text: "a2" },
+    { role: "user", text: "q3" },
+    { role: "assistant", text: "a3" }
+  ];
+  h.ctrl.click(actionTarget("ai-chat-compress-remote"));
+  assert.equal(chatStub.calls.length, 0, "arming makes no API call");
+  await driveRemoteCompression(h);
+  assert.equal(chatStub.calls.length, 1, "one billed compression call");
+  const after = h.ctrl.getRemoteState();
+  assert.equal(after.messages.length, 3, "summary + newest exchange");
+  assert.equal(after.messages[0].summary, true, "first message is the summary");
+  assert.equal(after.messages[0].compressedCount, 4, "summary records folded count");
+  assert.equal(after.messages[1].text, "q3", "newest exchange kept verbatim");
+  assert.equal(after.messages[2].text, "a3", "newest exchange kept verbatim");
+  assert.equal(after.usage.calls, 1, "compression call counted in usage");
+  assert.ok(after.usage.costUsd > 0, "compression call costed");
+  assert.ok(h.html().includes("summary"), "summary badge rendered");
+}
+
+{
+  // Recompressing folds the earlier summary in instead of dropping it.
+  const chatStub = makeUsageChatStub({ inputTokens: 50000, outputTokens: 400, cachedInputTokens: 0, webSearchCalls: 0 });
+  const h = makeHarness({ chatStub, prefs: { openAiModel: "gpt-5.6" } });
+  const remote = h.ctrl.getRemoteState();
+  remote.messages = [
+    { role: "assistant", text: "Earlier summary.", summary: true, compressedCount: 8 },
+    { role: "user", text: "q1" },
+    { role: "assistant", text: "a1" },
+    { role: "user", text: "q2" },
+    { role: "assistant", text: "a2" },
+    { role: "user", text: "q3" },
+    { role: "assistant", text: "a3" }
+  ];
+  await driveRemoteCompression(h);
+  const sentInput = chatStub.calls[0].input;
+  const transcript = JSON.stringify(sentInput);
+  assert.ok(transcript.includes("Summary of the earlier conversation"), "prior summary folded into recompression");
+  assert.ok(transcript.includes("Earlier summary."), "prior summary text preserved");
+  const after = h.ctrl.getRemoteState();
+  assert.equal(after.messages.filter((m) => m.summary).length, 1, "exactly one summary remains");
+}

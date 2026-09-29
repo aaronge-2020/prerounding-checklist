@@ -12602,6 +12602,14 @@ details.ed-section .ed-section-summary .ed-label { display: inline-flex; }
 .aic-newchat:hover:not(:disabled) { border-color: var(--primary); }
 .aic-newchat:disabled { opacity: .4; cursor: default; }
 .aic-newchat svg { width: 13px; height: 13px; }
+.aic-chatbar-actions { display: inline-flex; align-items: center; gap: 8px; }
+.aic-compress { display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; font-weight: 600; color: var(--muted); background: none; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.aic-compress:hover:not(:disabled) { border-color: var(--muted); color: var(--text); }
+.aic-compress:disabled { opacity: .4; cursor: default; }
+.aic-compress.is-armed { color: var(--warning); border-color: var(--warning); }
+.aic-compress.is-armed:hover { background: var(--warning-bg); }
+.aic-cost { display: flex; align-items: center; justify-content: flex-end; padding: 6px 14px 0; font-size: 0.72rem; color: var(--muted); }
+.aic-cost-label { white-space: nowrap; }
 /* Per-message "revert" control: removes the message and everything after it
    from the conversation (the model's context on the next send). Absolutely
    positioned so showing it never shifts the layout; revealed on hover, and
