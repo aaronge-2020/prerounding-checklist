@@ -419,6 +419,48 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     </section>`;
   }
 
+  function renderSourceKindEditor({
+    scope,
+    selectedSourceKind,
+    sourceOptions,
+    sourceDraft,
+    sourceParse,
+    primaryTeamNote,
+    structuredNoteDraft,
+    structuredNoteComposer,
+    noteType,
+    resultMetadata = { label: "", category: "imaging", date: "", context: "" },
+    deidBusy,
+    localAiParseInfo
+  }) {
+    if (selectedSourceKind === "primary_note") {
+      return renderStructuredPrimaryNote({ noteType, note: primaryTeamNote, draftValues: structuredNoteDraft, composer: structuredNoteComposer, scope, deidBusy, localAi: typeof localAiParseInfo === "function" ? localAiParseInfo(scope) : null });
+    }
+    const selectedSource = sourceOptions.find((option) => option.id === selectedSourceKind) || sourceOptions[0];
+    const prefix = scope === "admission" ? "admission" : "daily";
+    const addAction = scope === "admission" ? "add-admission-source" : "add-daily-source";
+    const parsedSourceCount = Array.isArray(sourceParse?.sections) && sourceParse.sections.length > 1 ? sourceParse.sections.length : 1;
+    const addLabel = parsedSourceCount > 1 ? `De-identify and add ${parsedSourceCount} sources` : "De-identify and add source";
+    const draftId = `${prefix}SourceDraft`;
+    return `<section class="source-capture-composer" aria-labelledby="addChartSourceTitle">
+        <div class="section-heading tight"><div><h3 id="addChartSourceTitle">Add chart source</h3><p class="muted">Paste a full Epic or CPRS block. Medication, laboratory, and vital-sign tables are organized automatically; narrative text stays as written.</p></div></div>
+        ${selectedSourceKind === "results" ? `<div class="structured-result-fields">
+          <label>Result label<input data-result-metadata="label" data-result-scope="${escapeHtml(scope)}" value="${escapeHtml(resultMetadata.label || "")}" placeholder="CT Head/Neck Without Contrast"></label>
+          <label>Result type<select data-result-metadata="category" data-result-scope="${escapeHtml(scope)}">${DIAGNOSTIC_RESULT_CATEGORIES.map((entry) => `<option value="${escapeHtml(entry.id)}" ${entry.id === resultMetadata.category ? "selected" : ""}>${escapeHtml(entry.label)}</option>`).join("")}</select></label>
+          <label>Result date<input type="date" data-result-metadata="date" data-result-scope="${escapeHtml(scope)}" value="${escapeHtml(resultMetadata.date || "")}"></label>
+          <label>Context<input data-result-metadata="context" data-result-scope="${escapeHtml(scope)}" value="${escapeHtml(resultMetadata.context || "")}" placeholder="Final read, blood culture source, specimen…"></label>
+        </div>` : ""}
+        <label class="source-draft-label" for="${draftId}">Paste the full copied block
+          <textarea id="${draftId}" rows="8" placeholder="Paste the full copied text from ${escapeHtml(selectedSource.label)} here">${escapeHtml(sourceDraft)}</textarea>
+        </label>
+        <div class="source-draft-footer">
+          <span class="muted" data-${prefix}-source-draft-count>${sourceDraft.length.toLocaleString()} characters · ${escapeHtml(selectedSource.description)}</span>
+          <button class="button--primary" type="button" data-action="${addAction}" ${deidBusy || !sourceDraft.trim() ? "disabled" : ""}>${deidBusy ? "De-identifying…" : addLabel}</button>
+        </div>
+        <div data-source-parse-preview="${prefix}">${renderSourceParsePreview({ scope, parseResult: sourceParse })}</div>
+      </section>`;
+  }
+
   function renderSourceWorkspace({
     scope,
     sources,
@@ -451,23 +493,9 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     return `
       ${renderDeidStrip}
       ${renderSourcePicker(sourceOptions, selectedSourceKind, scope)}
-      ${selectedSourceKind === "primary_note" ? renderStructuredPrimaryNote({ noteType, note: primaryTeamNote, draftValues: structuredNoteDraft, composer: structuredNoteComposer, scope, deidBusy, localAi: typeof localAiParseInfo === "function" ? localAiParseInfo(scope) : null }) : `<section class="source-capture-composer" aria-labelledby="addChartSourceTitle">
-        <div class="section-heading tight"><div><h3 id="addChartSourceTitle">Add chart source</h3><p class="muted">Paste a full Epic or CPRS block. Medication, laboratory, and vital-sign tables are organized automatically; narrative text stays as written.</p></div></div>
-        ${selectedSourceKind === "results" ? `<div class="structured-result-fields">
-          <label>Result label<input data-result-metadata="label" data-result-scope="${escapeHtml(scope)}" value="${escapeHtml(resultMetadata.label || "")}" placeholder="CT Head/Neck Without Contrast"></label>
-          <label>Result type<select data-result-metadata="category" data-result-scope="${escapeHtml(scope)}">${DIAGNOSTIC_RESULT_CATEGORIES.map((entry) => `<option value="${escapeHtml(entry.id)}" ${entry.id === resultMetadata.category ? "selected" : ""}>${escapeHtml(entry.label)}</option>`).join("")}</select></label>
-          <label>Result date<input type="date" data-result-metadata="date" data-result-scope="${escapeHtml(scope)}" value="${escapeHtml(resultMetadata.date || "")}"></label>
-          <label>Context<input data-result-metadata="context" data-result-scope="${escapeHtml(scope)}" value="${escapeHtml(resultMetadata.context || "")}" placeholder="Final read, blood culture source, specimen…"></label>
-        </div>` : ""}
-        <label class="source-draft-label" for="${draftId}">Paste the full copied block
-          <textarea id="${draftId}" rows="8" placeholder="Paste the full copied text from ${escapeHtml(selectedSource.label)} here">${escapeHtml(sourceDraft)}</textarea>
-        </label>
-        <div class="source-draft-footer">
-          <span class="muted" data-${prefix}-source-draft-count>${sourceDraft.length.toLocaleString()} characters · ${escapeHtml(selectedSource.description)}</span>
-          <button class="button--primary" type="button" data-action="${addAction}" ${deidBusy || !sourceDraft.trim() ? "disabled" : ""}>${deidBusy ? "De-identifying…" : addLabel}</button>
-        </div>
-        <div data-source-parse-preview="${prefix}">${renderSourceParsePreview({ scope, parseResult: sourceParse })}</div>
-      </section>`}
+      <div data-source-kind-editor="${scope}">
+        ${renderSourceKindEditor({ scope, selectedSourceKind, sourceOptions, sourceDraft, sourceParse, primaryTeamNote, structuredNoteDraft, structuredNoteComposer, noteType, resultMetadata, deidBusy, localAiParseInfo })}
+      </div>
       <section class="saved-source-list" aria-labelledby="savedSourcesTitle">
         <div class="section-heading tight"><div><h3 id="savedSourcesTitle">${sourceTitle}</h3><p class="muted">${totalSourceCount} source${totalSourceCount === 1 ? "" : "s"} · summaries are reviewed on the separate note workspace</p></div><button class="button--primary" type="button" data-action="${generateAction}" ${totalSourceCount ? "" : "disabled"}>${generateLabel}</button></div>
         <div id="${scope === "admission" ? "contextSections" : "dailySources"}" class="source-capture-list">
@@ -625,6 +653,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     renderDaily,
     renderDayRow,
     renderSavedClinicalDisplay,
+    renderSourceKindEditor,
     renderSourceParsePreview,
     renderStructuredNoteDetected,
     renderStructuredPrimaryNote

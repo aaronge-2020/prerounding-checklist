@@ -606,6 +606,29 @@ export function createDailySourceController(deps) {
     deps.app[state.kindKey] = state.options.some((option) => option.id === sourceKind)
       ? sourceKind
       : "primary_note";
+    // Re-render the editor below the source-kind picker. The picker buttons
+    // alone only toggle their own selected state — without this the editor
+    // keeps showing the previous source kind's UI.
+    const editor = document.querySelector(`[data-source-kind-editor="${scope}"]`);
+    if (editor && deps.dailyPresentation?.renderSourceKindEditor) {
+      const patient = deps.active();
+      const day = scope === "admission" ? null : deps.selectedChecklistDay(patient);
+      const dayId = scope === "admission" ? "admission" : day?.id;
+      editor.innerHTML = deps.dailyPresentation.renderSourceKindEditor({
+        scope,
+        selectedSourceKind: deps.app[state.kindKey],
+        sourceOptions: state.options,
+        sourceDraft: deps.app[state.draftKey],
+        sourceParse: deps.app[state.parseKey],
+        primaryTeamNote: scope === "admission" ? patient.admissionPrimaryTeamNote : day?.primaryTeamNote,
+        structuredNoteDraft: deps.app.structuredNoteDrafts?.get(dayId) || {},
+        structuredNoteComposer: deps.app.structuredNoteComposers?.get(dayId) || {},
+        noteType: scope === "admission" ? NOTE_TYPES.H_AND_P : NOTE_TYPES.PROGRESS,
+        resultMetadata: scope === "admission" ? deps.app.admissionResultMetadata : deps.app.dailyResultMetadata,
+        deidBusy: deps.app.deidOperation?.active,
+        localAiParseInfo: deps.localAiParseInfo
+      });
+    }
     updateDraft(scope, deps.app[state.draftKey]);
   }
 
