@@ -20,6 +20,7 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
   const state = {
     drugs: [],
     busy: false,
+    checkQueued: false,
     error: "",
     findings: [],
     checked: false,
@@ -55,7 +56,13 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
   }
 
   async function checkInteractions() {
-    if (state.drugs.length < 2 || state.busy) return;
+    if (state.busy) {
+      // A check is already running — queue a re-check so the latest list
+      // is what gets reported, not a stale in-flight result.
+      if (state.drugs.length >= 2) state.checkQueued = true;
+      return;
+    }
+    if (state.drugs.length < 2) return;
     if (!fetchFn) {
       state.error = "Lookups need a network connection, which is not available here.";
       render();
@@ -69,6 +76,12 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
       const resolved = [];
       const unresolved = [];
       for (const drug of state.drugs) {
+        // Skip names already matched — re-checking pairs doesn't need to
+        // re-hit RxNav for every drug. Unresolved/pending names retry.
+        if (drug.rxcui && !drug.pending && !drug.unresolved) {
+          resolved.push(drug);
+          continue;
+        }
         const result = await resolveDrug(fetchFn, drug.input);
         Object.assign(drug, result, { pending: false });
         if (result.unresolved || !result.rxcui) unresolved.push(drug.input);
@@ -88,13 +101,18 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
       state.error = networkErrorMessage(error);
     } finally {
       state.busy = false;
+      const queued = state.checkQueued;
+      state.checkQueued = false;
       render();
+      // A drug was added or removed mid-check — run again on the new list.
+      if (queued) void checkInteractions();
     }
   }
 
   // Auto-load: called by app.js when the view renders. Idempotent per
   // medication list — if the MAR hasn't changed since the last auto-load,
-  // this is a no-op. Runs the interaction check automatically.
+  // this is a no-op, so the user's manual adds/removes survive re-renders.
+  // Only a real MAR change (or an explicit "Re-check from MAR") reloads.
   function ensureAutoLoaded() {
     if (typeof getPatientMedicationNames !== "function") return;
     const names = getPatientMedicationNames() || [];
@@ -132,9 +150,11 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
     }
     state.drugs.push({ input, name: "", rxcui: null, ingredientRxcuis: [], unresolved: false, pending: true });
     state.checked = false;
-    // Manual adds invalidate the auto-load key so a re-render doesn't wipe them.
-    state.autoLoadedFor = "__manual__";
+    // The auto-load key is left alone: as long as the MAR itself hasn't
+    // changed, re-renders keep the manually edited list. Run the check on
+    // the current list so the new drug is actually evaluated.
     render();
+    void checkInteractions();
   }
 
   async function lookupIndications() {
@@ -178,9 +198,16 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
       if (Number.isInteger(index) && index >= 0 && index < state.drugs.length) {
         state.drugs.splice(index, 1);
         state.checked = false;
-        state.autoLoadedFor = "__manual__";
+        state.findings = state.drugs.length >= 2 ? state.findings : [];
         render();
+        void checkInteractions();
       }
+      return true;
+    }
+    if (action === "drug-lookup-check") {
+      // Check the current list as it stands — MAR, manual adds, or both —
+      // without resetting anything back to the MAR.
+      void checkInteractions();
       return true;
     }
     if (action === "drug-lookup-clear") {
@@ -188,7 +215,7 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
       state.findings = [];
       state.checked = false;
       state.error = "";
-      state.autoLoadedFor = "__manual__";
+      state.checkQueued = false;
       render();
       return true;
     }

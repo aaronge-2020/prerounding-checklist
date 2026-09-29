@@ -16,7 +16,7 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v8";
+import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v9";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20260929-ai-chat-v2";
 import { isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
 import * as remoteChatV4 from "../../ai/remote-chat.js?v=20260929-ai-chat-v6";
@@ -373,6 +373,16 @@ export function createAiChatController({
           tokens: Math.ceil(piece.chars / CHARS_PER_TOKEN),
           selected: selectedSet.has(piece.id)
         })),
+        // Ordered group names, matching the piece order above — drives the
+        // per-group Select all / Deselect all controls.
+        groups: (() => {
+          const names = [];
+          for (const piece of pieces) {
+            const name = piece.group || "Other";
+            if (!names.includes(name)) names.push(name);
+          }
+          return names;
+        })(),
         guidelinesTokens,
         historyTokens,
         historyCount: budgetMessages.length,
@@ -1832,6 +1842,32 @@ export function createAiChatController({
       // it in sync — otherwise the mobile Context button does nothing.
       state.sidebarOpen = state.chat.inspectorOpen;
       renderView();
+      return true;
+    }
+    if (action === "ai-chat-context-group") {
+      // Select all / Deselect all for one Admission / hospital-day group.
+      const groupIndex = Number.parseInt(actionTarget.dataset.groupIndex || "", 10);
+      const select = actionTarget.dataset.select === "1";
+      const { pieces, selectedIds } = contextPieces();
+      const groupNames = [];
+      for (const piece of pieces) {
+        const name = piece.group || "Other";
+        if (!groupNames.includes(name)) groupNames.push(name);
+      }
+      const groupName = groupNames[groupIndex];
+      if (groupName === undefined) return true;
+      const next = new Set(selectedIds);
+      for (const piece of pieces) {
+        if ((piece.group || "Other") === groupName) {
+          if (select) next.add(piece.id);
+          else next.delete(piece.id);
+        }
+      }
+      state.chat.contextSelection = [...next];
+      // Invalidate the cached budget so the meter recomputes on the next
+      // render with the new selection.
+      state.chat.contextStats = null;
+      render();
       return true;
     }
     if (action === "ai-chat-send") {

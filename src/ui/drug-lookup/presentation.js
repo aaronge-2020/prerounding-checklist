@@ -78,6 +78,7 @@ export function createDrugLookupPresentation({ escapeHtml, icon }) {
           <button type="button" data-action="drug-lookup-add" ${busy ? "disabled" : ""}>${icon("plus")} Add drug</button>
         </div>
         <div class="button-row">
+          <button type="button" data-action="drug-lookup-check" ${busy || drugs.length < 2 ? "disabled" : ""}>${icon("check")} Check interactions</button>
           <button type="button" class="button--quiet" data-action="drug-lookup-recheck" ${busy ? "disabled" : ""}>${icon("refresh")} Re-check from MAR</button>
           <button type="button" class="button--quiet" data-action="drug-lookup-clear" ${busy || !drugs.length ? "disabled" : ""}>Clear</button>
         </div>

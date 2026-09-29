@@ -358,24 +358,31 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
   function renderSidebarPieces(contextInspector) {
     const info = contextInspector || {};
     const pieces = Array.isArray(info.pieces) ? info.pieces : [];
+    const groups = Array.isArray(info.groups) ? info.groups : [];
     if (!info.hasPatient) {
       return `<p class="aic-muted aic-side-sub">No active patient — open the Vault to attach patient context.</p>`;
     }
     if (!pieces.length) {
       return `<p class="aic-muted aic-side-sub">No saved chart documents yet — add them in Hospital Stay.</p>`;
     }
-    let lastGroup = "";
-    const rows = pieces.map((piece) => {
-      const sub = piece.group !== lastGroup
-        ? `<div class="aic-side-group">${escapeHtml(piece.group || "Other")}</div>`
-        : "";
-      lastGroup = piece.group;
-      return `${sub}<label class="aic-ctx-piece${piece.selected ? "" : " is-off"}">
+    const rows = groups.map((groupName, groupIndex) => {
+      const groupPieces = pieces.filter((p) => (p.group || "Other") === groupName);
+      const allSelected = groupPieces.length > 0 && groupPieces.every((p) => p.selected);
+      const noneSelected = groupPieces.every((p) => !p.selected);
+      const head = `<div class="aic-side-group">
+        <span class="aic-side-group-name">${escapeHtml(groupName)}</span>
+        <span class="aic-side-group-actions">
+          <button type="button" class="aic-link" data-action="ai-chat-context-group" data-group-index="${groupIndex}" data-select="1" ${!info.enabled || allSelected ? "disabled" : ""}>Select all</button>
+          <button type="button" class="aic-link" data-action="ai-chat-context-group" data-group-index="${groupIndex}" data-select="0" ${!info.enabled || noneSelected ? "disabled" : ""}>Deselect all</button>
+        </span>
+      </div>`;
+      const labels = groupPieces.map((piece) => `<label class="aic-ctx-piece${piece.selected ? "" : " is-off"}">
         <input type="checkbox" data-ai-chat-context-piece="${escapeHtml(piece.id)}" ${piece.selected ? "checked" : ""} ${info.enabled ? "" : "disabled"}>
         <span class="aic-ctx-piece-label">${escapeHtml(piece.label)}</span>
         ${piece.primary ? `<span class="aic-tag">primary</span>` : ""}
         <span class="aic-muted aic-ctx-tok">~${Number(piece.tokens || 0).toLocaleString()}</span>
-      </label>`;
+      </label>`).join("");
+      return head + labels;
     }).join("");
     return rows;
   }
