@@ -7,7 +7,7 @@ import { guidelinePageModel } from "../settings/guideline-pagination.js?v=202609
 // Create/delete custom prompt tasks - kept out of app.js to respect the
 // coordinator-file size boundary (scripts/check-ui-module-boundaries.js).
 // `state` is the shared app state object, mutated directly the same way
-// the other controllers in src/ui/checklist/ already do.
+// the other controllers in src/ui/ already do.
 export function createPromptTaskController({ state, setStatus, renderPrompts, refreshPromptPreview, byId }) {
   function migrateLegacyTasks() {
     if (!state.customPromptTasks.length) return;
@@ -67,8 +67,8 @@ export function createPromptTaskController({ state, setStatus, renderPrompts, re
 }
 
 // Filters the already-rendered variable buttons in place (same
-// hide-non-matching-rows pattern as the checklist search/workup catalog
-// filters) instead of re-rendering, so the textarea keeps focus and caret
+// hide-non-matching-rows pattern as the cheat-sheets search filter)
+// instead of re-rendering, so the textarea keeps focus and caret
 // position while the user is mid-keystroke.
 export function filterSmartVariableMenu(menu, query) {
   if (!menu) return;

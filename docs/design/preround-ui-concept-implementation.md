@@ -1,5 +1,7 @@
 # Preround UI Concept — Implementation Handoff
 
+> Route inventory note (2026-09-29): the Workups and Checklist routes described in this brief were removed and replaced by a single read-only Cheat Sheets route (cheat sheet search + history/exam reference cards). The visual system below — page surfaces, row dividers, quiet tinted state, one primary action per task — still applies to the current routes: `Vault / Roster`, `Hospital Stay`, `Cheat Sheets`, `Prompts`, and `Quick De-ID`.
+
 ## Visual target
 
 Use [the concept board](./preround-ui-concept-board.png) as the single visual reference. It redesigns the six existing application routes without changing the product model: `Vault / Roster`, `Hospital Stay`, `Workups`, `Checklist`, `Prompts`, and `Quick De-ID`.

@@ -1,6 +1,6 @@
 # Preround
 
-Static, server-free browser workspace for inpatient pre-rounding. It keeps de-identified patient packets in an encrypted browser-local vault, organizes hospital-day updates, builds bedside checklists, and assembles copy-ready OpenEvidence prompts.
+Static, server-free browser workspace for inpatient pre-rounding. It keeps de-identified patient packets in an encrypted browser-local vault, organizes hospital-day updates, offers read-only bedside reference sheets, and assembles copy-ready OpenEvidence prompts.
 
 The app does not create accounts, synchronize data, host patient records, infer a clinical timeline, or author clinical notes.
 
@@ -8,11 +8,10 @@ The app does not create accounts, synchronize data, host patient records, infer 
 
 - **Vault / Roster**: create or unlock the local vault; admit, select, archive, export, and restore patients.
 - **Hospital Stay**: maintain the admission packet and labeled day-by-day updates in one place. Primary note, Vital signs, and Laboratory results are distinct required-review reminders; medications and consult notes are optional, and missing items never block the clinician from continuing. Standard-format Epic or CPRS vitals, labs, and medication exports receive clean local tables, source-derived abnormal flags, and compact AI-ready text before de-identification and encrypted save. Narrative notes stay opaque even when they quote results.
-- **Workups**: create, edit, import, export, order, and explicitly convert local workups into a checklist. A saved BYOK option can format a reviewed, de-identified OpenEvidence draft into workup JSON; manual ChatGPT formatting remains available as the fallback.
-- **Checklist**: answer grouped History and Physical Exam items on a laptop or phone; transfer answers with an encrypted local bundle.
-- **Prompts**: edit prompt text directly and insert labeled smart variables with `@`, including a named guideline-set variable (Settings) for general or OB/Gyn H&Ps and SOAP notes, progress notes, discharge instructions, bedside pre-round checklists, or your own prompt.
+- **Cheat Sheets**: a read-only, phone-first bedside reference. Search 50 chief-complaint sheets for history questions and exam maneuvers, including how to perform them and why they matter. Fully offline; no patient data involved.
+- **Prompts**: edit prompt text directly and insert labeled smart variables with `@`, including a named guideline-set variable (Settings) for general or OB/Gyn H&Ps and SOAP notes, progress notes, discharge instructions, or your own prompt.
 - **Quick De-ID**: process one-off text without saving it to a patient.
-- **Settings**: select a medical-service focus, presentation detail, and attending preferences for OpenEvidence prompts; optionally save an OpenAI API key inside the encrypted local vault for explicit workup-formatting requests.
+- **Settings**: select a medical-service focus, presentation detail, and attending preferences for OpenEvidence prompts; optionally save an OpenAI API key inside the encrypted local vault for per-problem plans and ChatGPT chat.
 
 ## Repository Map
 
@@ -22,8 +21,8 @@ The app does not create accounts, synchronize data, host patient records, infer 
 - `src/app/state/`: encrypted local vault persistence and state normalization.
 - `src/patient-context/`: admission sections and browser-worker de-identification.
 - `src/daily-updates/`: hospital-day records and trajectory assembly.
-- `src/workups/`: catalog, editable schema, validation, and checklist conversion.
-- `src/checklist/`: answers, grouped display helpers, and phone transfer bundles.
+- `src/data/cheat-sheets.json`: the read-only bedside reference dataset (50 chief-complaint sheets).
+- `src/ui/cheat-sheets/`: local search, read-only history/exam cards, and view wiring for the reference.
 - `src/prompts/`: pure OpenEvidence prompt and template functions.
 - `src/vault/deid/`: structured redaction rules and local model configuration.
 - `data/clinical-guard-*`: generated vocabulary used by the structured redactor.
@@ -40,7 +39,7 @@ Stanford clinical de-identification is bundled with the public static build. The
 
 OpenAI Privacy Filter and Ettin use the browser's private filesystem so large weights can resume after an interrupted download. GLiNER uses same-origin Cache Storage because its tokenizer adapter requires a local URL. The model library shows progress, supports cancellation/resume where supported, and requests persistent storage to reduce browser eviction. Imported model files never enter the encrypted patient vault.
 
-Optional network operations are the user-initiated model-weight download from the pinned source shown on the model card and the explicitly confirmed BYOK workup-formatting request to OpenAI's API. The BYOK key is kept inside the AES-GCM encrypted browser vault and is never displayed after it is saved; the user must confirm that the pasted draft is de-identified before each request. The model runtime and all de-identification requests remain local. **Import folder** remains available for offline, managed-device, or browser-compatibility workflows. For a self-hosted copy, the helper can download supported source files into a local folder:
+Optional network operations are the user-initiated model-weight download from the pinned source shown on the model card and the explicitly confirmed OpenAI requests (per-problem plans, ChatGPT chat) using the saved key. The BYOK key is kept inside the AES-GCM encrypted browser vault and is never displayed after it is saved; the user must confirm that the pasted draft is de-identified before each request. The model runtime and all de-identification requests remain local. **Import folder** remains available for offline, managed-device, or browser-compatibility workflows. For a self-hosted copy, the helper can download supported source files into a local folder:
 
 ```powershell
 node scripts/download-deid-models.js --model=openai/privacy-filter
@@ -60,8 +59,8 @@ Focused commands:
 npm.cmd run test:state
 npm.cmd run test:deid
 npm.cmd run test:prompts
-npm.cmd run test:workups
-npm.cmd run test:openai-workup
+npm.cmd run test:cheat-sheets
+npm.cmd run test:cheat-sheets-data
 npm.cmd run test:deid-model-options
 npm.cmd run test:local-ui
 ```

@@ -1,4 +1,5 @@
 import { NOTE_TYPES, normalizeSectionVisibility, objectiveGroupKeyFor } from "./model.js";
+import { getLayout } from "./layout.js";
 import {
   NOTE_LAB_FAMILY_LABELS,
   NOTE_LAB_FAMILY_ORDER,
@@ -301,19 +302,6 @@ function objectiveText(draft) {
   return parts.join("\n\n");
 }
 
-function checklistFindingText(draft, kind) {
-  return (draft.checklistFindings?.selectedBlocks || [])
-    .filter((block) => block.kind === kind)
-    .map((block) => String(block.editedText || "").trim())
-    .filter(Boolean)
-    .map((finding) => `- ${finding}`)
-    .join("\n");
-}
-
-function appendChecklistFindings(body, findings) {
-  return [body, findings].filter(Boolean).join("\n\n");
-}
-
 function relevantHistoryText(sections) {
   return [
     labeledLine("Past medical history", sections.past_medical_history),
@@ -398,41 +386,59 @@ function medicationsHtml(draft) {
 }
 
 // Shared section order for the markdown, plain-text, and rich-HTML note.
+// Sections are keyed by layout section id and rendered in the draft's layout
+// order, so the final note follows the student's custom editor arrangement.
 // Entries are { heading, body, visibility } with markdown bodies, except the
 // Objective entry which carries { heading, objective: true } and the
 // Medications entry which carries { heading, medications: true } and renders
 // from the structured objective model. Only optional sections carry a
 // visibility key: core sections always appear, and toggled-off optional
-// sections are omitted.
+// sections are omitted. Sections hidden via the layout are skipped as well.
 function finalNoteSectionList(draft) {
   const fields = draft.sections || {};
   // U14: the copied one-liner must not retain the source "CC:" label.
   const oneLiner = valueText(fields.one_liner).replace(/^(cc|chief complaint)\s*:\s*/i, "");
-  const front = draft.noteType === NOTE_TYPES.H_AND_P
-    ? [
-        { heading: "One-Liner", body: oneLiner },
-        { heading: "Chief Complaint", body: valueText(fields.chief_complaint) },
-        { heading: "HPI", body: dedupeOneLiner(oneLiner, valueText(fields.history_of_present_illness)) },
-        { heading: "Review of Systems", body: checklistFindingText(draft, "history") },
-        { heading: "Relevant History", body: relevantHistoryText(fields) },
-        { heading: "Diet and Exercise", body: valueText(fields.diet_and_exercise), visibility: "diet_and_exercise" }
-      ]
-    : [
-        { heading: "One-Liner", body: oneLiner },
-        { heading: "Subjective", body: appendChecklistFindings(subjectiveText(fields), checklistFindingText(draft, "history")) }
-      ];
+  const byId = new Map();
+  const put = (id, entry) => byId.set(id, entry);
+  if (draft.noteType === NOTE_TYPES.H_AND_P) {
+    put("one-liner", { heading: "One-Liner", body: oneLiner });
+    put("chief-complaint", { heading: "Chief Complaint", body: valueText(fields.chief_complaint) });
+    put("history-of-present-illness", { heading: "HPI", body: dedupeOneLiner(oneLiner, valueText(fields.history_of_present_illness)) });
+    put("review-of-systems", { heading: "Review of Systems", body: "" });
+    put("relevant-history", { heading: "Relevant History", body: relevantHistoryText(fields) });
+    put("diet-and-exercise", { heading: "Diet and Exercise", body: valueText(fields.diet_and_exercise), visibility: "diet_and_exercise" });
+  } else {
+    put("one-liner", { heading: "One-Liner", body: oneLiner });
+    put("subjective", { heading: "Subjective", body: subjectiveText(fields) });
+  }
+  put("physical-exam", { heading: "Physical Exam", body: valueText(fields.physical_exam) });
+  put("objective", { heading: "Objective", objective: true });
+  // U12: drop an Assessment that merely repeats the plan's problem titles.
+  put("assessment", { heading: "Assessment", body: assessmentWithoutDuplicateProblems(valueText(draft.assessment), draft.problems) });
+  put("plan", { heading: "Plan", body: planText(draft) });
+  for (const entry of closingSectionList(draft)) {
+    const slug = String(entry.heading).toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    put(slug, entry);
+  }
+  put("medications", { heading: "Medications", medications: true });
   const visibility = normalizeSectionVisibility(draft?.sectionVisibility);
-  const sections = [
-    ...front,
-    { heading: "Physical Exam", body: appendChecklistFindings(valueText(fields.physical_exam), checklistFindingText(draft, "exam")) },
-    { heading: "Objective", objective: true },
-    // U12: drop an Assessment that merely repeats the plan's problem titles.
-    { heading: "Assessment", body: assessmentWithoutDuplicateProblems(valueText(draft.assessment), draft.problems) },
-    { heading: "Plan", body: planText(draft) },
-    ...closingSectionList(draft),
-    { heading: "Medications", medications: true }
-  ];
-  return sections.filter((section) => section.visibility === undefined || visibility[section.visibility] !== false);
+  const layout = getLayout(draft);
+  const hidden = new Set(layout.hidden);
+  const customLabels = new Map(layout.custom.map((entry) => [entry.id, entry.label]));
+  const sections = [];
+  for (const id of layout.order) {
+    if (hidden.has(id)) continue;
+    if (customLabels.has(id)) {
+      const body = valueText(fields[id]);
+      if (body) sections.push({ heading: customLabels.get(id), body });
+      continue;
+    }
+    const entry = byId.get(id);
+    if (!entry) continue;
+    if (entry.visibility !== undefined && visibility[entry.visibility] === false) continue;
+    sections.push(entry);
+  }
+  return sections;
 }
 
 function assertNoteType(draft) {

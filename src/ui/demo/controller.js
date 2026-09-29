@@ -1,5 +1,5 @@
-import { createDemoPresentation } from "./presentation.js?v=20260921-demo-complete-plan";
-import { DEMO_DAY_ID, DEMO_REQUIRED_ANSWER_ITEM_ID, DEMO_WORKUP_ID, prefillDemoChecklist } from "./session.js?v=20260921-demo-complete-plan";
+import { createDemoPresentation } from "./presentation.js?v=20260929-demo-v2";
+import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20260929-demo-v2";
 
 export const DEMO_REVIEW_ACTIONS = Object.freeze(new Set([
   "keep-reviewed-redaction",
@@ -159,7 +159,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
         render();
         return;
       }
-      if (session.stage === "daily-review") session.stage = "open-workups";
+      if (session.stage === "daily-review") session.stage = "open-cheat-sheets";
       else {
         app.selectedStayPacketId = DEMO_DAY_ID;
         selectDemoPacket();
@@ -167,25 +167,28 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       }
     }
     if (action === "add-daily-source")
-      session.stage = document.querySelector('[data-action="keep-reviewed-redaction"]') ? "daily-review" : "open-workups";
-    if (action === "build-checklist") {
-      app.vault = {
-        ...app.vault,
-        patients: (app.vault?.patients || []).map((patient) => patient.id === app.vault.activePatientId ? prefillDemoChecklist(patient) : patient)
-      };
-      session.stage = "answer-checklist";
-    }
+      session.stage = document.querySelector('[data-action="keep-reviewed-redaction"]') ? "daily-review" : "open-cheat-sheets";
     if (action === "copy-prompt") session.stage = "done";
+    renderApp();
+  }
+
+  // The guided demo requires the exact ACS sheet: opening any other sheet
+  // must not advance the demo past the cheat-sheets stage.
+  function observeSheetOpened(sheetId) {
+    const session = getSession();
+    if (!session || session.stage !== "browse-cheat-sheet") return;
+    if (sheetId !== "acute-coronary-syndrome") return;
+    app.vault = {
+      ...app.vault,
+      patients: (app.vault?.patients || []).map((patient) => patient.id === app.vault.activePatientId ? attachDemoObjectiveData(patient) : patient)
+    };
+    session.stage = "open-review";
     renderApp();
   }
 
   function observeChange(target) {
     const session = getSession();
     if (!session) return;
-    if (session.stage === "select-workup" && target.matches?.(`.workup-checkbox[value="${DEMO_WORKUP_ID}"]`) && target.checked)
-      session.stage = "build-checklist";
-    if (session.stage === "answer-checklist" && target.matches?.(`.checklist-answer[name="${DEMO_REQUIRED_ANSWER_ITEM_ID}"]`) && (target.value || target.checked))
-      session.stage = "open-review";
     setTimeout(render, 0);
   }
 
@@ -201,11 +204,11 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   function observeNavigation(view) {
     const session = getSession();
     if (!session) return;
-    if (session.stage === "open-workups" && view === "workups") session.stage = "select-workup";
+    if (session.stage === "open-cheat-sheets" && view === "cheatSheets") session.stage = "browse-cheat-sheet";
     if (session.stage === "open-review" && view === "review") session.stage = "write-note";
     if (session.stage === "open-prompts" && view === "prompts") session.stage = "copy-prompt";
     renderApp();
   }
 
-  return { observeAction, observeChange, observeDraftSaved, observeInput, observeNavigation, render };
+  return { observeAction, observeChange, observeDraftSaved, observeInput, observeNavigation, observeSheetOpened, render };
 }

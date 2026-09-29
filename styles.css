@@ -13627,3 +13627,52 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   font-style: italic;
   font-size: 14px;
 }
+/* Cheat Sheets — mobile-first read-only pocket reference (2026-09-29) */
+.cs-list { display: flex; flex-direction: column; gap: 12px; max-width: 720px; margin: 0 auto; padding: 12px 12px 32px; }
+.cs-title { margin: 4px 2px 0; font-size: 1.25rem; }
+.cs-count { color: var(--muted); font-size: 0.85rem; margin: 0 2px; }
+.cs-searchbar { position: sticky; top: 0; z-index: 5; padding: 8px 0; background: var(--bg); }
+.cs-search { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 12px; padding: 0 12px; }
+.cs-search-icon { color: var(--muted); flex: none; }
+.cs-search input { flex: 1; min-height: 44px; border: 0; background: transparent; font-size: 1rem; color: var(--text); }
+.cs-search input:focus { outline: none; }
+.cs-search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.cs-search-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.cs-cards { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.cs-card { width: 100%; display: flex; align-items: center; gap: 10px; min-height: 52px; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; cursor: pointer; }
+.cs-card:active { background: var(--surface-subtle); }
+.cs-card-icon { color: var(--accent); flex: none; display: inline-flex; }
+.cs-card-body { flex: 1; min-width: 0; }
+.cs-card-title { font-weight: 600; color: var(--text); }
+.cs-card-aliases, .cs-aliases { color: var(--muted); font-size: 0.8rem; }
+.cs-card-meta { color: var(--faint); font-size: 0.75rem; margin-top: 2px; }
+.cs-card-chev { color: var(--faint); flex: none; }
+.cs-empty { text-align: center; padding: 32px 16px; color: var(--muted); }
+.cs-empty-title { font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.cs-empty-hint { font-size: 0.85rem; }
+.cs-detail { display: flex; flex-direction: column; gap: 14px; max-width: 720px; margin: 0 auto; padding: 12px 12px 40px; }
+.cs-back { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; background: none; border: 0; color: var(--accent); font-size: 0.95rem; cursor: pointer; padding: 4px 8px 4px 0; }
+.cs-detail-header h2 { margin: 0 0 4px; font-size: 1.3rem; }
+.cs-review-banner { background: var(--warning-bg); border: 1px solid var(--warning); border-radius: 10px; padding: 10px 12px; font-size: 0.85rem; color: var(--text); }
+.cs-section { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+.cs-section-title { margin: 0 0 10px; font-size: 1.05rem; }
+.cs-group { margin-bottom: 12px; }
+.cs-group:last-child { margin-bottom: 0; }
+.cs-group-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted-strong); margin: 0 0 6px; }
+.cs-qlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.cs-q, .cs-exam { border-top: 1px solid var(--line); padding-top: 10px; }
+.cs-q:first-child, .cs-exam:first-child { border-top: 0; padding-top: 0; }
+.cs-q-text, .cs-exam-name { font-weight: 500; color: var(--text); margin-bottom: 6px; }
+.cs-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.cs-chip { background: var(--surface-tint); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; font-size: 0.78rem; color: var(--muted-strong); }
+.cs-pearl { background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 8px 10px; margin: 8px 0 2px; font-size: 0.87rem; }
+.cs-pearl-label { font-weight: 700; color: var(--accent); display: block; margin-bottom: 2px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.cs-pearl-source { display: block; margin-top: 4px; font-size: 0.75rem; color: var(--muted); }
+.cs-pending { font-size: 0.8rem; color: var(--muted); font-style: italic; margin: 6px 0 2px; }
+.cs-how { font-size: 0.87rem; margin: 6px 0; }
+.cs-how-label { font-weight: 600; }
+.cs-footnote { color: var(--faint); font-size: 0.78rem; margin: 0 2px; }
+@media (min-width: 720px) {
+  .cs-list, .cs-detail { padding-left: 20px; padding-right: 20px; }
+}
+

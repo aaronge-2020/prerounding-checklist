@@ -37,12 +37,12 @@ try {
   await page.waitForFunction(() => document.querySelectorAll('.primary-nav [data-view-target]').length === 10);
   assert.deepEqual(
     await page.locator('.primary-nav [data-view-target]').evaluateAll((buttons) => buttons.map((button) => button.dataset.viewTarget)),
-    ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "aiChat", "drugLookup", "scores", "settings"],
-    "the visible page order must collect history and exam findings before Draft Note"
+    ["vault", "daily", "cheatSheets", "review", "prompts", "quickDeid", "aiChat", "drugLookup", "scores", "settings"],
+    "the visible page order must offer bedside cheat sheets before Draft Note"
   );
   assert.deepEqual(
     await page.locator('main .view').evaluateAll((views) => views.map((view) => view.id)),
-    ["vaultView", "dailyView", "workupsView", "checklistView", "reviewView", "promptsView", "quickDeidView", "aiChatView", "drugLookupView", "scoresView", "settingsView"],
+    ["vaultView", "dailyView", "cheatSheetsView", "reviewView", "promptsView", "quickDeidView", "aiChatView", "drugLookupView", "scoresView", "settingsView"],
     "the document order must match the visible workflow"
   );
   await page.fill("#vaultPassphrase", "guided demo test passphrase");
@@ -68,9 +68,9 @@ try {
   assert.equal(await page.locator('[data-action="add-daily-source"]').isVisible(), true, "Confirm all must remain usable after individual accepts");
 
   await page.click('[data-action="add-daily-source"]');
-  await page.waitForFunction(() => /Check the day-one changes|Choose checklist questions/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
+  await page.waitForFunction(() => /Check the day-one changes|Open the bedside cheat sheets/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   for (let step = 0; step < 30; step += 1) {
-    if (/Choose checklist questions/.test(await page.locator("[data-demo-guide]").innerText())) break;
+    if (/Open the bedside cheat sheets/.test(await page.locator("[data-demo-guide]").innerText())) break;
     const confirmRest = page.locator('.section-editor.is-expanded [data-action="confirm-all-section-redactions"]:visible').first();
     const continueReview = page.locator('.section-editor.is-expanded [data-action="continue-section-review"]:visible').first();
     if (await confirmRest.count()) await confirmRest.click();
@@ -78,23 +78,22 @@ try {
     else throw new Error("The guided daily review did not offer a next visible action.");
     await page.waitForTimeout(50);
   }
-  assert.match(await page.locator("[data-demo-guide]").innerText(), /Choose checklist questions/);
-  await page.click('[data-view-target="workups"]');
-  await page.locator(`.workup-checkbox[value="nstemi-prerounds"]`).check();
-  await page.locator('.workup-editor-header-actions [data-action="build-checklist"]').click();
-  await page.locator('.checklist-answer[name="nstemi-prerounds:chest-pain-now"]').selectOption("No chest discomfort now");
-  assert.match(await page.locator("[data-demo-guide]").innerText(), /Write after bedside data collection/);
+  assert.match(await page.locator("[data-demo-guide]").innerText(), /Open the bedside cheat sheets/);
+  await page.click('[data-view-target="cheatSheets"]');
+  await page.waitForFunction(() => /Open the ACS cheat sheet/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
+  await page.click('[data-cheat-sheets-open="acute-coronary-syndrome"]');
+  await page.waitForFunction(() => /Write after bedside review/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
+  assert.match(await page.locator("[data-demo-guide]").innerText(), /Write after bedside review/);
 
   await page.click('[data-view-target="review"]');
-  await page.waitForSelector('[data-checklist-finding-kind="history"] li');
-  assert.match(await page.locator('[data-checklist-finding-kind="history"]').innerText(), /No chest discomfort now/);
+  await page.waitForSelector('[data-action="download-final-note"]');
   // The right side is a single editor now (no separate preview pane): verify
   // the final note through the same Download .txt action the student uses.
   const [download] = await Promise.all([
     page.waitForEvent("download"),
     page.click('[data-action="download-final-note"]')
   ]);
-  assert.doesNotMatch(await readFile(await download.path(), "utf8"), /Do you have chest pressure or pain now/);
+  assert.doesNotMatch(await readFile(await download.path(), "utf8"), /pressure or squeezing feeling/, "cheat-sheet bedside questions must not leak into the note");
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Review the complete assessment and plan/);
   assert.match(await page.locator("[data-draft-assessment]").innerText(), /high-risk NSTEMI/i);
   assert.equal(await page.locator(".plan-problem-card").count(), 3);

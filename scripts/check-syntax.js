@@ -64,8 +64,7 @@ for (const required of [
   "daily_progress_note",
   "teaching_case_trajectory",
   "medication_explainer_by_problem",
-  "medication_safety_audit",
-  "checklist_workup_refinement"
+  "medication_safety_audit"
 ]) {
   if (!`${html}\n${stylesheet}\n${promptRegistry}`.includes(required)) {
     throw new Error(`Expected local-first app marker not found: ${required}`);

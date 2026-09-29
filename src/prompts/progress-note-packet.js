@@ -1,4 +1,3 @@
-import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
 import { isCarryForwardContextRole, packetRoleFor, packetRoleLabel, packetRolesForScope } from "../patient-context/packet-roles.js";
 import { dailySourceKindLabel, sourceCapturePacketCheck } from "../patient-context/source-captures.js?v=20260921-medication-card-v4";
 import { naturalLanguagePrompt } from "./natural-language.js";
@@ -24,10 +23,11 @@ function sortedFields(scope, sections, include) {
     .filter(Boolean);
 }
 
+// The interactive checklist was removed in 2026-09-29. Legacy saved answers
+// (day.checklistSnapshot, day.answers, day.quickNotes) stay decryptable in
+// older vaults but are ignored: the dedicated OpenEvidence exam note is the
+// surviving separate-exam source.
 function selectedDayExam(day) {
-  if (hasAssessedChecklistContent(day?.checklistSnapshot || null, day?.answers || {}, day?.quickNotes || [])) {
-    return checklistAnswersSummary(day.checklistSnapshot, day.answers || {}, day.quickNotes || []);
-  }
   return compactText(day?.openEvidenceExamNote?.text);
 }
 
@@ -52,7 +52,7 @@ export function buildProgressNotePacket({ patient, selectedDay } = {}) {
     "Selected hospital day.",
     `Carry-forward admission context. ${[admission.join("\n\n"), admissionStructuredNote].filter(Boolean).join("\n\n") || "No carry-forward admission context saved."}`,
     `Selected-day source record. ${[daySources.join("\n\n"), dailyStructuredNote].filter(Boolean).join("\n\n") || "No selected-day sources saved."}`,
-    exam ? `Separate selected-day examination. ${exam}` : "Separate selected-day examination. No checklist or examination note saved outside the source record.",
+    exam ? `Separate selected-day examination. ${exam}` : "Separate selected-day examination. No examination note saved outside the source record.",
     packetCheck.notSupplied.length
       ? `Packet limitations. The following source types were not supplied: ${packetCheck.notSupplied.join(", ")}. Do not infer their contents from another source.`
       : "Packet limitations. The required daily review sources—primary team note, vital signs, and laboratory results—were supplied. Consult notes and medication activity are optional sources. This does not establish that the chart is complete or internally consistent."

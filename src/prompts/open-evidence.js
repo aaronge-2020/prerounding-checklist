@@ -1,4 +1,3 @@
-import { checklistAnswersSummary } from "../checklist/state.js";
 import { buildTrajectoryBlock } from "../daily-updates/days.js?v=20260921-medication-card-v4";
 import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260921-medication-card-v4";
 import { attendingHospitalistPrompt } from "./natural-language.js?v=20260815-standalone-ap";
@@ -48,14 +47,10 @@ export function documentationInstructionForTask(taskId, guidelines) {
 function patientBlocks(patient, selectedDayId = "") {
   const days = [...(patient?.days || [])].sort((left, right) => `${left.date || ""} ${left.createdAt || ""}`.localeCompare(`${right.date || ""} ${right.createdAt || ""}`));
   const currentDay = days.find((day) => day.id === selectedDayId) || days.at(-1) || null;
-  const snapshot = currentDay?.checklistSnapshot || null;
-  const answers = currentDay?.answers || {};
-  const quickNotes = currentDay?.quickNotes || [];
   return {
     patientContext: sectionsToPromptBlock(patient?.contextSections || [], "Saved patient context"),
     trajectory: buildTrajectoryBlock(patient, { selectedDayId: currentDay?.id, includeAllDays: false }),
-    selectedDay: currentDay ? sourceCapturesToPromptBlock(currentDay.sourceCaptures || [], "Selected hospital-day source record") : "",
-    checklist: checklistAnswersSummary(snapshot, answers, quickNotes)
+    selectedDay: currentDay ? sourceCapturesToPromptBlock(currentDay.sourceCaptures || [], "Selected hospital-day source record") : ""
   };
 }
 
@@ -66,9 +61,6 @@ export function buildInitialAdmissionPrompt({ patient, guidelines }) {
 ${documentationInstructionForTask("initial_admission_rounds", guidelines)}
 
 ${compactText(blocks.patientContext)}
-
-Here are the checklist answers for context.
-${compactText(blocks.checklist, 10000)}
 `);
 }
 
@@ -91,9 +83,7 @@ export function buildTeachingTrajectoryPrompt({ patient, selectedDayId }) {
 ${compactText(blocks.patientContext, 22000)}
 
 ${compactText(blocks.trajectory, 26000)}
-
-Here are the checklist answers.
-${compactText(blocks.checklist, 10000)}`);
+`);
 }
 
 export function buildMedicationExplainerPrompt({ patient, selectedDayId }) {
@@ -114,26 +104,13 @@ ${compactText(blocks.patientContext, 24000)}
 ${compactText(blocks.trajectory, 22000)}`);
 }
 
-export function buildChecklistRefinementPrompt({ patient, selectedDayId }) {
-  const blocks = patientBlocks(patient, selectedDayId);
-  return attendingHospitalistPrompt(`Review this workup-derived checklist against the de-identified patient context. Suggest useful history questions or physical exam items, identify items that are redundant, vague, or not relevant, and offer short answer choices for new items. Use plain language only. Do not suggest orders, treatment plans, diagnoses, citations, code, or structured data.
-
-${compactText(blocks.patientContext, 22000)}
-
-${compactText(blocks.trajectory, 22000)}
-
-Current checklist:
-${compactText(blocks.checklist, 12000)}`);
-}
-
 export function buildOpenEvidencePrompt(taskId, options = {}) {
   const builders = {
     initial_admission_rounds: buildInitialAdmissionPrompt,
     daily_progress_note: buildDailyProgressPrompt,
     teaching_case_trajectory: buildTeachingTrajectoryPrompt,
     medication_explainer_by_problem: buildMedicationExplainerPrompt,
-    medication_safety_audit: buildMedicationSafetyPrompt,
-    checklist_workup_refinement: buildChecklistRefinementPrompt
+    medication_safety_audit: buildMedicationSafetyPrompt
   };
   const builder = builders[taskId];
   if (!builder) throw new Error(`Unknown OpenEvidence prompt task: ${taskId}`);

@@ -11,11 +11,7 @@ import {
   archivePatient,
   createEmptyVaultState,
   createPatientRecord,
-  removeWorkupOverride,
   setActivePatient,
-  setSelectedWorkups,
-  setWorkupOverride,
-  setWorkupOverrides,
   updateActivePatient
 } from "../app/state/vault.js?v=20260921-medication-card-v4";
 import {
@@ -26,12 +22,6 @@ import {
   saveEncryptedVault,
   writeEncryptedVaultRecord
 } from "../app/state/persistence.js?v=20260921-medication-card-v4";
-import {
-  authorizeWorkupWorkspaceMirror,
-  disconnectWorkupWorkspaceMirror,
-  getWorkupWorkspaceMirrorState,
-  mirrorWorkupOverridesToWorkspace
-} from "../app/state/workspace-mirror.js?v=20260711-functional-remediation-15";
 import {
   removeSection,
   reorderSections,
@@ -107,62 +97,14 @@ import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-t
 import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260910-pre-op-prep";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
-  normalizeUserPreferences,
-  openAiWorkupModelOption
+  normalizeUserPreferences
 } from "../app/preferences.js?v=20260929-gpt6-models";
-import {
-  bundledWorkupById,
-  effectiveWorkupCatalog,
-  findWorkupsById,
-  normalizeWorkup,
-  parseWorkupJson
-} from "../workups/schema.js?v=20260815-standalone-ap";
-import {
-  mergeWorkupLibraryIntoOverrides,
-  parseWorkupLibraryJson,
-  workupLibraryFromOverrides
-} from "../workups/library.js?v=20260711-functional-remediation-15";
-import {
-  createBlankWorkup,
-  createBlankWorkupItem,
-  collectWorkupDraftFromDocument,
-  workupFromEditorDraft,
-  workupThoroughnessOption
-} from "../workups/editor.js?v=20260821-etiology-checklist";
-import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260921-medication-card-v4";
-import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260921-medication-card-v4";
-import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260815-standalone-ap";
-import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20260711-functional-remediation-15";
-import {
-  createChecklistReturnBundle,
-  createPhoneChecklistBundle,
-  decodeChecklistReturnInput,
-  decodeChecklistReturnTransferFile,
-  decodePhoneChecklistBundle,
-  decodePhoneChecklistTransferFile,
-  emptyChecklistAnswers,
-  emptyQuickNotes,
-  fillNegativeChecklistAnswers,
-  mergeQuickNotes,
-  mergeReturnedAnswers,
-  checklistExamFindingsSummary,
-  setChecklistChoice,
-  setChecklistNote
-} from "../checklist/state.js?v=20260711-functional-remediation-19";
-import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
-import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=undo-v1";
-import { createChecklistPresentation } from "./checklist/presentation.js?v=20260717-checklist-surface-readable";
+import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1";
 import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=section-scroll-v3&parser=table-v6&local-llm-v1";
 import { createDailySourceController } from "./daily/source-controller.js?v=20260923-plan-problems-v1&scroll=preserve-section-scroll-v3&parser=table-v7&local-llm-v3";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20260928-ap-suggestions-v1&trend=concise-v3";
 import { createReviewController } from "./review/controller.js?v=20260928-ap-suggestions-v1&labs=analyte-selection-v3";
-import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
-import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260921-checklist-scroll-position&focus=prevent-scroll-v2";
-import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
-import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260921-medication-card-v4";
-import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260815-standalone-ap";
-import { createExamFindingsController } from "./checklist/exam-findings-controller.js?v=20260921-medication-card-v4";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-medication-card-v4";
 import {
   createPromptTaskController,
@@ -190,14 +132,14 @@ import {
 } from "./redaction/presentation.js?v=20260921-medication-card-v4";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20260922-deid-session";
-import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
+import { createDemoController } from "./demo/controller.js?v=20260929-demo-v2";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260929-demo-v2";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20260929-demo-v2";
+import { createAiChatController } from "./ai-chat/controller.js?v=20260929-ai-chat-v7";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
-import { createDemoController } from "./demo/controller.js?v=20260921-demo-complete-plan";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-demo-complete-plan";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-demo-complete-plan";
-import { createAiChatController } from "./ai-chat/controller.js?v=20260929-ai-chat-v7";
 import { createScoresController } from "./scores/controller.js?v=20260927-models-v2";
+import { createCheatSheetsController } from "./cheat-sheets/controller.js?v=20260929-cheat-sheets-v1";
 import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20260928-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
@@ -207,11 +149,9 @@ const app = {
   view: "vault",
   selectedDayId: "",
   selectedStayPacketId: "admission", selectedPromptTask: "presentation_quality_editor", promptDayId: "",
-  promptDayFollowsChecklist: true,
+  promptDayFollowsSelectedDay: true,
   customPromptTasks: loadCustomPromptTasks(),
   pendingRemovePromptTaskId: "",
-  selectedWorkupEditorId: "general-admission",
-  draftWorkup: null,
   guidelineSets: [],
   guidelineSearchQuery: "",
   guidelineSelectedIds: new Set(),
@@ -219,10 +159,6 @@ const app = {
   guidelineCreateDraft: null,
   pendingRemoveGuidelineSetId: "",
   pendingRemoveGuidelineSetIds: [],
-  phoneBundle: null,
-  phoneAnswers: {},
-  phoneQuickNotes: [],
-  phoneResumeOffer: null,
   status: "",
   vaultUnlockError: "",
   deidMode: DEFAULT_DEID_MODEL_KEY,
@@ -261,48 +197,20 @@ const app = {
   admissionSourceDraft: "",
   admissionSourceParse: null,
   admissionResultMetadata: { label: "", category: "imaging", date: "", context: "" },
-  workupThoroughness: "standard",
-  workupImportDraft: "",
-  workupApiBusy: false,
-  workupApiDeidConfirmed: false,
-  workupImportPanelOpen: false,
-  phoneReturnReady: false,
-  checklistSearchQuery: "",
-  checklistOpenNoteIds: new Set(),
-  openEvidenceImport: {
-    input: "",
-    busy: false,
-    deidBusy: false,
-    error: "",
-    deidConfirmed: false,
-    deidStatus: "",
-    deidResidualWarnings: []
-  },
-  workupImportError: "",
-  workupCatalogOpen: false,
-  workupCatalogQuery: "",
-  workupCatalogSearch: null,
-  workupWorkspace: { status: "unconfigured", message: "Choose a workspace folder to mirror local workups." },
-  workupWorkspaceBusy: false,
   pendingArchivePatientId: "",
   pendingRemoveDayId: "",
-  pendingDeleteWorkupId: "",
   demoSession: null,
   demoPreviewMode: false,
   admissionDate: "" // in-memory copy of the encrypted patient's admission-date anchor
 };
-const viewIds = ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "aiChat", "drugLookup", "scores", "settings"];
+const viewIds = ["vault", "daily", "cheatSheets", "review", "prompts", "quickDeid", "aiChat", "drugLookup", "scores", "settings"];
 const viewTitles = {
   vault: "Vault / Roster", daily: "Hospital Stay", review: "Review Data / Draft Note",
-  workups: "Workups", checklist: "Checklist", prompts: "Prompts",
+  cheatSheets: "Cheat Sheets", prompts: "Prompts",
   quickDeid: "Quick De-ID Tool", aiChat: "AI Chat", drugLookup: "Drug Lookup", scores: "Models", settings: "Settings"
 };
-let draggedWorkupRow = null;
-let workupDragSaved = false;
 let draggedSectionRow = null;
 let sectionDragSaved = false;
-let workupAutosaveTimer = null;
-let workupAutosaveChain = Promise.resolve();
 let vaultInactivityTimer = null;
 const VAULT_INACTIVITY_MS = 15 * 60 * 1000;
 
@@ -334,12 +242,11 @@ function localAiParseInfo(scope) {
   }
   return { scope, enabled, ready, modelLabel, busy: localAiParseBusyByScope.get(scope) === true };
 }
-const checklistPresentation = createChecklistPresentation({ escapeHtml, icon }), dailyPresentation = createDailyPresentation({ escapeHtml, icon, localAiParseInfo });
+const dailyPresentation = createDailyPresentation({ escapeHtml, icon, localAiParseInfo });
 const reviewPresentation = createReviewPresentation({ escapeHtml, icon });
 const redactionPresentation = createRedactionPresentation({ escapeHtml, icon });
 const quickDeidPresentation = createQuickDeidPresentation({ escapeHtml, icon });
 const drugLookupPresentation = createDrugLookupPresentation({ escapeHtml, icon });
-const workupPresentation = createWorkupPresentation({ escapeHtml, icon });
 const promptsPresentation = createPromptsPresentation({ escapeHtml });
 const settingsPresentation = createSettingsPresentation({ escapeHtml });
 const vaultPresentation = createVaultPresentation({ escapeHtml, icon });
@@ -436,50 +343,12 @@ const scoresController = createScoresController({
   escapeHtml,
   replaceViewContent,
   patientRequiredMessage,
-  selectedDayId: selectedChecklistDay,
+  selectedDayId: selectedDay,
   persistVault,
   updateActivePatient
 });
-const checklistSearch = createChecklistSearchController({ Fuse, normalizeQuery: normalizeWorkupCatalogQuery, byId });
-const phoneAutosave = createPhoneAutosave(localStorage);
-const phoneSession = createPhoneSessionController({
-  phoneAutosave,
-  state: app,
-  active,
-  selectedChecklistDay,
-  persistVault,
-  renderPhoneChecklist,
-  renderChecklist
-});
-const examFindingsController = createExamFindingsController({ state: app, active, persistVault, setStatus });
+const cheatSheetsController = createCheatSheetsController({ app, byId, escapeHtml, replaceViewContent });
 const admissionDateAnchor = createAdmissionDateAnchor({ state: app, active, sortDays });
-const openEvidenceImport = createOpenEvidenceImportController({
-  state: app,
-  active,
-  selectedChecklistDay,
-  persistVault,
-  renderChecklist,
-  byId,
-  copyText: clipboard.copyText,
-  setStatus,
-  currentPreferences,
-  deidentify: (...args) => deidSession.deidentify(...args),
-  ensureDeidReady: ensureSelectedDeidReady,
-  formatChecklistAnswersWithOpenAi,
-  saveExamFindings: examFindingsController.saveExamFindings,
-  clearExamFindings: examFindingsController.clearExamFindings
-});
-const workupOpenAiImport = createWorkupOpenAiImportController({
-  state: app,
-  active,
-  byId,
-  copyText: clipboard.copyText,
-  setStatus,
-  currentPreferences,
-  renderWorkups,
-  parseAndSaveWorkupJson
-});
-const workupDeleteController = createWorkupDeleteController({ state: app, renderWorkups, persistWorkupChanges, byId });
 const promptTaskController = createPromptTaskController({ state: app, setStatus, renderPrompts, refreshPromptPreview, byId });
 const guidelineSetsController = createGuidelineSetsController({ state: app, setStatus, renderSettings, renderPrompts, byId });
 const admissionDateGate = createAdmissionDateGate({ app, byId });
@@ -487,7 +356,7 @@ const deidSession = createDeidSessionCoordinator({ state: app, admissionDateAnch
 const dailySourceController = createDailySourceController({
   app,
   active,
-  selectedChecklistDay,
+  selectedDay,
   byId,
   localCalendarDate,
   patientRequiredMessage,
@@ -967,16 +836,6 @@ function actionFeedback(target, action) {
   setStatus(`${label || fallback}...`);
 }
 
-const phoneTransfer = createPhoneTransferController({
-  FileConstructor: typeof File === "undefined" ? null : File,
-  getChecklistBundle: currentPhoneChecklistBundle,
-  getReturnBundle: currentPhoneReturnBundle,
-  location: window.location,
-  navigatorObject: navigator,
-  downloadJson,
-  setStatus
-});
-
 async function persistVault(message = "Saved.") {
   if (!app.vault || !app.passphrase) return;
   if (app.demoSession) {
@@ -987,13 +846,12 @@ async function persistVault(message = "Saved.") {
   setStatus(message);
 }
 
-function patientRequiredMessage({ allowPhoneBundleImport = false } = {}) {
+function patientRequiredMessage() {
   const heading = vaultIsUnlocked() ? "Next step: add a patient." : "Next step: unlock the vault and add a patient.";
   return `
     <div class="empty-state next-step">
       <strong>${heading}</strong>
       <span>Use a de-identified room label to begin a new hospital stay.</span>
-      ${allowPhoneBundleImport ? `<div class="transfer-actions"><button class="button--secondary button--transfer" type="button" data-action="choose-phone-bundle-file">${icon("upload")} Open shared checklist file</button><input id="phoneBundleFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden></div>` : ""}
     </div>
   `;
 }
@@ -1029,13 +887,12 @@ function recordVaultActivity() {
 }
 
 function clearProtectedViewContent() {
-  ["dailyContent", "reviewContent", "workupsContent", "checklistContent", "promptsContent", "quickDeidContent", "settingsContent"].forEach((id) => {
+  ["dailyContent", "reviewContent", "promptsContent", "quickDeidContent", "settingsContent"].forEach((id) => {
     const container = byId(id);
     if (container) container.replaceChildren();
   });
   byId("archiveConfirmDialog")?.close();
   byId("removeDayConfirmDialog")?.close();
-  byId("deleteWorkupConfirmDialog")?.close();
 }
 
 function clearPatientScopedSession() {
@@ -1046,7 +903,7 @@ function clearPatientScopedSession() {
   app.selectedDayId = "";
   app.selectedStayPacketId = "admission";
   app.promptDayId = "";
-  app.promptDayFollowsChecklist = true;
+  app.promptDayFollowsSelectedDay = true;
   app.promptDrafts = {}; app.selectedPromptTask = "presentation_quality_editor";
   app.presentationToEdit = ""; app.presentationToEditPacketId = ""; app.presentationToEditEdited = false;
   app.presentationSpecialty = "";
@@ -1064,17 +921,6 @@ function clearPatientScopedSession() {
   app.admissionSourceParse = null;
   app.admissionResultMetadata = { label: "", category: "imaging", date: "", context: "" };
   clearPhiReviews();
-  app.checklistSearchQuery = "";
-  app.checklistOpenNoteIds = new Set();
-  app.openEvidenceImport = {
-    input: "",
-    busy: false,
-    deidBusy: false,
-    error: "",
-    deidConfirmed: false,
-    deidStatus: "",
-    deidResidualWarnings: []
-  };
   app.admissionDate = "";
 }
 
@@ -1089,17 +935,6 @@ function clearSensitiveSession() {
   app.demoPreviewMode = false;
   app.vaultUnlockError = "";
   clearPatientScopedSession();
-  app.draftWorkup = null;
-  app.phoneBundle = null;
-  app.phoneAnswers = {};
-  app.phoneQuickNotes = [];
-  app.phoneResumeOffer = null;
-  app.phoneReturnReady = false;
-  app.workupImportError = "";
-  app.workupImportDraft = "";
-  app.workupApiBusy = false;
-  app.workupApiDeidConfirmed = false;
-  app.workupImportPanelOpen = false;
   clearQuickDeidSession();
 }
 
@@ -1179,22 +1014,10 @@ function render() {
     }
   };
 
-  if (app.phoneBundle) {
-    document.body.classList.remove("vault-locked");
-    document.body.classList.add("phone-mode");
-    renderPhoneChecklist();
-    restoreScroll();
-    return;
-  }
   const unlocked = vaultIsUnlocked();
   document.body.classList.toggle("vault-locked", !unlocked);
   if (!unlocked) {
     app.view = "vault";
-    app.phoneBundle = null;
-    app.phoneAnswers = {};
-    app.phoneQuickNotes = [];
-    app.phoneResumeOffer = null;
-    app.phoneReturnReady = false;
     clearPhiReviews();
     clearQuickDeidSession();
     clearProtectedViewContent();
@@ -1207,9 +1030,8 @@ function render() {
     restoreScroll();
     return;
   }
-  if (!app.phoneBundle && app.view !== "daily" && app.phiReviews.size) clearPhiReviews();
-  if (!app.phoneBundle && app.view !== "quickDeid" && (app.quickDeid.input || app.quickDeid.review)) clearQuickDeidSession();
-  document.body.classList.remove("phone-mode");
+  if (app.view !== "daily" && app.phiReviews.size) clearPhiReviews();
+  if (app.view !== "quickDeid" && (app.quickDeid.input || app.quickDeid.review)) clearQuickDeidSession();
   for (const id of viewIds) {
     byId(`${id}View`)?.classList.toggle("active", app.view === id);
     document.querySelector(`[data-view-target="${id}"]`)?.classList.toggle("active", app.view === id);
@@ -1218,7 +1040,7 @@ function render() {
   // cached data) must never prevent renderStatusBar() below from running -
   // that's what reflects patient selection, so a single broken view previously
   // made the whole app look like patient selection had stopped working.
-  for (const renderView of [renderVault, renderDaily, renderReview, renderWorkups, renderChecklist, renderPrompts, renderQuickDeid, renderAiChat, renderDrugLookup, renderScores, renderSettings]) {
+  for (const renderView of [renderVault, renderDaily, renderReview, renderCheatSheets, renderPrompts, renderQuickDeid, renderAiChat, renderDrugLookup, renderScores, renderSettings]) {
     try {
       renderView();
     } catch (error) {
@@ -1314,7 +1136,7 @@ function isSectionTextEditing(scope, sectionId) {
 function reviewSectionsForScope(scope) {
   const patient = active();
   if (!patient) return [];
-  return scope === "daily" ? selectedChecklistDay(patient)?.sourceCaptures || [] : patient.contextSections || [];
+  return scope === "daily" ? selectedDay(patient)?.sourceCaptures || [] : patient.contextSections || [];
 }
 
 function pendingSectionReviewTargets(scope) {
@@ -1437,156 +1259,10 @@ function renderDaily() {
 }
 
 function renderReview() { preserveViewScroll(byId("reviewContent"), () => reviewController.render()); }
-function workupCatalogQueryValue(query) {
-  return normalizeWorkupCatalogQuery(query);
-}
 
-function workupCatalogMatchIds(query) {
-  const normalizedQuery = workupCatalogQueryValue(query);
-  if (!normalizedQuery) return null;
-  return new Set((app.workupCatalogSearch?.search(normalizedQuery) || []).map((result) => result.item.id));
-}
-
-function updateWorkupCatalogFilter() {
-  const list = document.querySelector("[data-workup-catalog-list]");
-  if (!list) return;
-  const matchingIds = workupCatalogMatchIds(app.workupCatalogQuery);
-  const rows = [...list.querySelectorAll(".workup-catalog-row")];
-  const visible = rows.filter((row) => {
-    const matches = !matchingIds || matchingIds.has(row.dataset.workupId);
-    row.hidden = !matches;
-    row.style.display = matches ? "" : "none";
-    return matches;
-  });
-  const count = document.querySelector("[data-workup-catalog-count]");
-  if (count) count.textContent = matchingIds ? `${visible.length} of ${rows.length} workups` : `${rows.length} workups`;
-  const empty = document.querySelector("[data-workup-catalog-empty]");
-  if (empty) empty.hidden = visible.length > 0;
-  const clear = document.querySelector('[data-action="clear-workup-search"]');
-  if (clear) clear.hidden = !matchingIds;
-}
-
-function renderWorkups() {
-  const patient = active();
-  if (!patient || !app.vault) {
-    replaceViewContent(byId("workupsContent"), patientRequiredMessage());
-    return;
-  }
-  const catalog = effectiveWorkupCatalog(app.vault.workupOverrides, app.vault.hiddenWorkupIds);
-  const hiddenWorkups = app.vault.hiddenWorkupIds.map(bundledWorkupById).filter(Boolean);
-  const selectedIds = new Set(app.vault.selectedWorkupIds);
-  app.workupCatalogSearch = new Fuse(catalog, {
-    keys: [
-      { name: "title", weight: 0.55 },
-      { name: "aliases", weight: 0.3 },
-      { name: "id", weight: 0.15 }
-    ],
-    ignoreLocation: true,
-    minMatchCharLength: 1,
-    threshold: 0.35
-  });
-  const matchingWorkupIds = workupCatalogMatchIds(app.workupCatalogQuery);
-  const editorWorkup =
-    app.draftWorkup || catalog.find((workup) => workup.id === app.selectedWorkupEditorId) || catalog[0] || createBlankWorkup();
-  app.selectedWorkupEditorId = editorWorkup.id;
-  const preferences = currentPreferences();
-  replaceViewContent(byId("workupsContent"), workupPresentation.renderWorkups({
-    catalog,
-    selectedIds,
-    matchingWorkupIds,
-    editorWorkup,
-    hasDraftWorkup: Boolean(app.draftWorkup),
-    catalogQuery: app.workupCatalogQuery,
-    thoroughness: app.workupThoroughness,
-    hasSavedOpenAiKey: Boolean(preferences.openAiApiKey),
-    openAiModelLabel: openAiWorkupModelOption(preferences.openAiModel).label,
-    workspace: app.workupWorkspace || { status: "unconfigured" },
-    workspaceBusy: app.workupWorkspaceBusy,
-    workupOverrides: app.vault.workupOverrides,
-    workupImportError: app.workupImportError,
-    workupApiBusy: app.workupApiBusy,
-    workupApiDeidConfirmed: app.workupApiDeidConfirmed,
-    workupImportPanelOpen: app.workupImportPanelOpen,
-    workupImportDraft: app.workupImportDraft,
-    hiddenWorkups
-  }));
-  bindWorkupReordering();
-}
-
-function selectedChecklistDay(patient) {
+function selectedDay(patient) {
   const days = sortDays(patient?.days || []);
-  return (
-    days.find((day) => day.id === app.selectedDayId) || [...days].reverse().find((day) => day.checklistSnapshot) || days.at(-1) || null
-  );
-}
-
-function renderChecklist() {
-  const patient = active();
-  if (!patient) {
-    replaceViewContent(byId("checklistContent"), patientRequiredMessage({ allowPhoneBundleImport: true }));
-    return;
-  }
-  const day = selectedChecklistDay(patient);
-  const snapshot = day?.checklistSnapshot || null;
-  const answers = day?.answers || {};
-  const latestExamDay = latestDay(patient.days || []);
-  const preferences = currentPreferences();
-  const examFindingsText = checklistExamFindingsSummary(snapshot, answers);
-  const dayOptionsHtml = sortDays(patient.days || [])
-    .map(
-      (entry, index) =>
-        `<option value="${escapeHtml(entry.id)}" ${entry.id === day?.id ? "selected" : ""}>HD${index + 1} · ${escapeHtml(entry.label)} · ${escapeHtml(entry.date)}${entry.checklistSnapshot ? "" : " · no checklist yet"}</option>`
-    )
-    .join("");
-  checklistSearch.buildIndex(snapshot);
-  replaceViewContent(byId("checklistContent"), checklistPresentation.renderDesktopChecklist({
-    day,
-    snapshot,
-    answers,
-    quickNotes: day?.quickNotes || [],
-    openNoteIds: app.checklistOpenNoteIds,
-    searchQuery: app.checklistSearchQuery,
-    phoneLink: snapshot ? phoneTransfer.currentChecklistUrl() : "",
-    openEvidenceImport: {
-      ...app.openEvidenceImport,
-      ...selectedDeidReadinessAsPanelProps(),
-      hasSavedOpenAiKey: Boolean(preferences.openAiApiKey),
-      openAiModelLabel: openAiWorkupModelOption(preferences.openAiModel).label,
-      canSaveExamNote: Boolean(patient && app.openEvidenceImport.input.trim() && app.openEvidenceImport.deidConfirmed),
-      savedExamNote: latestExamDay?.openEvidenceExamNote || null
-    },
-    canSaveChecklistExamFindings: Boolean(
-      day &&
-      snapshot &&
-      examFindingsText !== "No checklist items have been assessed yet." &&
-      examFindingsText !== "No physical exam items are included in this checklist."
-    ),
-    dayOptionsHtml
-  }));
-  checklistSearch.updateFilter(app.checklistSearchQuery);
-}
-
-async function saveChecklistExamFindings() {
-  const patient = active();
-  const day = selectedChecklistDay(patient);
-  if (!day?.checklistSnapshot) throw new Error("Build a checklist before saving physical exam findings.");
-  const text = checklistExamFindingsSummary(day.checklistSnapshot, day.answers || {});
-  if (text === "No checklist items have been assessed yet.")
-    throw new Error("Fill at least one physical exam item before saving findings.");
-  await examFindingsController.saveExamFindings({ text, source: "Checklist" });
-}
-
-function currentPhoneChecklistBundle() {
-  const patient = active();
-  const day = selectedChecklistDay(patient);
-  if (!day?.checklistSnapshot) throw new Error("Build a checklist first.");
-  return createPhoneChecklistBundle(patient, day.checklistSnapshot, day.answers || {}, day.quickNotes || []);
-}
-
-function currentPhoneReturnBundle() {
-  const snapshot = app.phoneBundle?.checklist;
-  if (!snapshot) throw new Error("Open a phone checklist first.");
-  return createChecklistReturnBundle(snapshot, app.phoneAnswers, app.phoneQuickNotes);
+  return days.find((day) => day.id === app.selectedDayId) || days.at(-1) || null;
 }
 
 function renderPrompts() {
@@ -1599,9 +1275,9 @@ function renderPrompts() {
   if (!task) { replaceViewContent(byId("promptsContent"), "Built-in prompts are unavailable. Reload to retry.", { text: true }); return; }
   app.selectedPromptTask = task.id;
   const promptDays = sortDays(patient.days || []);
-  // Follow the Checklist/Daily day until manually overridden here, so a
+  // Follow the selected day until manually overridden here, so a
   // note saved on a newly-added day doesn't look lost behind a stale pick.
-  if (app.promptDayFollowsChecklist && app.promptDayId !== app.selectedDayId) app.promptDayId = app.selectedDayId;
+  if (app.promptDayFollowsSelectedDay && app.promptDayId !== app.selectedDayId) app.promptDayId = app.selectedDayId;
   const isAdmissionSelected = app.promptDayId === ADMISSION_PSEUDO_DAY_ID;
   if (!isAdmissionSelected) {
     const selectedPromptDay =
@@ -1887,6 +1563,10 @@ function renderScores() {
   scoresController.render();
 }
 
+function renderCheatSheets() {
+  cheatSheetsController.render();
+}
+
 function renderAiChat() {
   aiChatController.render();
 }
@@ -1894,28 +1574,6 @@ function renderAiChat() {
 function renderDrugLookup() {
   drugLookupController.ensureAutoLoaded();
   replaceViewContent(byId("drugLookupContent"), drugLookupController.renderView());
-}
-
-function renderPhoneChecklist() {
-  const snapshot = app.phoneBundle.checklist;
-  const returnBundle = phoneTransfer.currentReturnCode();
-  checklistSearch.buildIndex(snapshot);
-  const phoneView = checklistPresentation.buildPhoneChecklistView({
-    patientLabel: app.phoneBundle.patientLabel,
-    snapshot,
-    answers: app.phoneAnswers,
-    quickNotes: app.phoneQuickNotes,
-    openNoteIds: app.checklistOpenNoteIds,
-    searchQuery: app.checklistSearchQuery,
-    phoneReturnReady: app.phoneReturnReady,
-    resumeOffer: app.phoneResumeOffer,
-    returnBundle
-  });
-  document.querySelectorAll(".view").forEach((view) => view.classList.remove("active"));
-  byId("checklistView").classList.add("active");
-  replaceViewContent(byId("checklistContent"), phoneView.markup);
-  checklistSearch.updateFilter(app.checklistSearchQuery);
-  renderStatusBar();
 }
 
 function collectSectionRows(containerId) {
@@ -1951,7 +1609,7 @@ function refreshDeidControlsInActiveView() {
     }
     const saveDayButton = document.querySelector('[data-action="save-day"]');
     if (saveDayButton) {
-      saveDayButton.disabled = busy || !selectedChecklistDay(active())?.sourceCaptures?.length;
+      saveDayButton.disabled = busy || !selectedDay(active())?.sourceCaptures?.length;
       saveDayButton.textContent = busy ? "De-identifying…" : "Save source edits";
     }
     const addSourceButton = document.querySelector('[data-action="add-daily-source"]');
@@ -1982,13 +1640,17 @@ async function handleClick(event) {
   if (app.view === "aiChat" && aiChatController.click(event.target)) return;
   if (app.view === "drugLookup" && drugLookupController.click(event.target)) return;
   if (app.view === "scores" && scoresController.click(event.target)) return;
+  if (app.view === "cheatSheets" && cheatSheetsController.click(event.target)) {
+    const opened = event.target.closest?.("[data-cheat-sheets-open]");
+    if (opened) demoController.observeSheetOpened(opened.getAttribute("data-cheat-sheets-open"));
+    return;
+  }
   const target = event.target.closest("[data-action]");
   if (!target) return;
   const action = target.dataset.action;
   actionFeedback(target, action);
   try {
     if (
-      !app.phoneBundle &&
       !vaultIsUnlocked() &&
       !["unlock-vault", "toggle-vault-passphrase", "restore-vault", "request-delete-vault", "confirm-delete-vault", "start-guided-demo"].includes(action)
     ) {
@@ -2094,72 +1756,6 @@ async function handleClick(event) {
     if (action === "verify-model-pack") await verifyInstalledModelPack(target.dataset.modelKey);
     if (action === "cancel-model-download") cancelModelPackDownload(target.dataset.modelKey);
     if (action === "remove-model-pack") await removeSelectedModelPack(target.dataset.modelKey);
-    if (action === "new-workup") await newWorkup();
-    if (action === "edit-workup") editWorkup(target.dataset.workupId);
-    if (action === "delete-workup") workupDeleteController.requestDelete(target.dataset.workupId);
-    if (action === "confirm-delete-workup") await workupDeleteController.confirmDeletePending();
-    if (action === "restore-hidden-workup") await workupDeleteController.restoreHidden(target.dataset.workupId);
-    if (action === "add-workup-item") addWorkupItemRow(target.dataset.kind);
-    if (action === "remove-workup-item") removeWorkupItemRow(target);
-    if (action === "duplicate-workup-item") duplicateWorkupItemRow(target);
-    if (action === "move-workup-item") await moveWorkupItemRow(target, target.dataset.direction);
-    if (action === "save-workup-ui") await saveWorkupUi();
-    if (action === "reset-workup-json") await resetWorkupJson();
-    if (action === "export-workup-json") exportWorkupJson();
-    if (action === "export-workup-library") exportWorkupLibrary();
-    if (action === "parse-workup-json") await parseAndSaveWorkupJson(byId("workupJsonImport")?.value || "");
-    if (action === "format-workup-json-api") await workupOpenAiImport.formatWorkupJsonWithSavedKey();
-    if (action === "choose-workup-file") byId("workupJsonFileInput").click();
-    if (action === "choose-workup-library-file") byId("workupLibraryFileInput").click();
-    if (action === "choose-workup-workspace") await chooseWorkupWorkspace();
-    if (action === "sync-workup-workspace") await syncWorkupWorkspace({ explicit: true });
-    if (action === "disconnect-workup-workspace") await disconnectWorkupWorkspace();
-    if (action === "clear-workup-search") {
-      app.workupCatalogQuery = "";
-      const search = byId("workupCatalogSearch");
-      if (search) {
-        search.value = "";
-        search.focus({ preventScroll: true });
-      }
-      updateWorkupCatalogFilter();
-    }
-    if (action === "copy-open-evidence-workup-prompt") await workupOpenAiImport.copyOpenEvidenceWorkupPrompt(target.dataset.destination);
-    if (action === "copy-json-formatter-prompt") await workupOpenAiImport.copyJsonFormatterPrompt();
-    if (action === "build-checklist") await buildChecklist();
-    if (action === "run-openevidence-note-deid") await openEvidenceImport.runLocalDeid();
-    if (action === "format-checklist-answers-api") await openEvidenceImport.formatWithSavedKey();
-    if (action === "parse-checklist-answers-json") await openEvidenceImport.parseAndApply(byId("openEvidenceImportInput")?.value || "");
-    if (action === "copy-checklist-answers-formatter-prompt") await openEvidenceImport.copyFormatterPrompt();
-    if (action === "save-openevidence-exam-note") await openEvidenceImport.saveExamNote();
-    if (action === "save-checklist-exam-findings") await saveChecklistExamFindings();
-    if (action === "clear-openevidence-exam-note") await openEvidenceImport.clearExamNote();
-    if (action === "go-workups") {
-      app.view = "workups";
-      render();
-    }
-    if (action === "go-settings") {
-      app.view = "settings";
-      render();
-    }
-    if (action === "choose-phone-bundle-file") byId("phoneBundleFileInput")?.click();
-    if (action === "share-phone-bundle") await phoneTransfer.shareChecklist();
-    if (action === "copy-phone-bundle") await clipboard.copyText(target.dataset.bundle || byId("phoneBundleText")?.value || "");
-    if (action === "download-phone-bundle") phoneTransfer.downloadChecklist();
-    if (action === "choose-phone-return-file") byId("phoneReturnFileInput")?.click();
-    if (action === "import-phone-return") await importPhoneReturn();
-    if (action === "share-phone-return") await phoneTransfer.shareReturn();
-    if (action === "download-phone-return") phoneTransfer.downloadReturn();
-    if (action === "copy-phone-return") await clipboard.copyText(byId("phoneReturnBundle")?.value || "");
-    if (action === "show-phone-return") showPhoneReturn();
-    if (action === "fill-all-negatives") await fillChecklistNegatives();
-    if (action === "fill-section-negatives") await fillChecklistNegatives({ kind: target.dataset.kind });
-    if (action === "fill-system-negatives") await fillChecklistNegatives({ kind: target.dataset.kind, system: target.dataset.system });
-    if (action === "toggle-item-note") toggleItemNote(target, app.checklistOpenNoteIds);
-    if (action === "clear-checklist-search") clearChecklistSearch();
-    if (action === "add-quick-note") await phoneSession.addQuickNoteText(byId("quickNoteInput")?.value);
-    if (action === "delete-quick-note") await phoneSession.deleteQuickNoteById(target.dataset.noteId);
-    if (action === "resume-phone-autosave") phoneSession.resumeAutosave();
-    if (action === "discard-phone-autosave") phoneSession.discardAutosave();
     if (action === "save-prompt-template") savePromptTemplate();
     if (action === "reset-prompt-template") resetPromptTemplate();
     if (action === "create-prompt-task") promptTaskController.createTaskFromInput();
@@ -2203,7 +1799,6 @@ async function handleClick(event) {
     if (action === "dismiss-quick-warning") dismissQuickWarning(Number(target.dataset.warningIndex));
     demoController.observeAction(action);
   } catch (error) {
-    app.workupImportError = action.includes("workup") ? error.message : app.workupImportError;
     setStatus(
       app.demoSession && action === "copy-prompt"
         ? "Prompt ready. Clipboard access may be blocked in this preview; the de-identified prompt remains visible."
@@ -2286,10 +1881,6 @@ function deleteVaultAndStartOver() {
 async function admitPatient() {
   const label = byId("newPatientLabel").value.trim();
   if (!label) throw new Error("Enter a local display label.");
-  // Admitting a patient is a patient switch: the previous patient's
-  // drafts/review state (notably app.noteDraftSessions) must not survive,
-  // or the Review Data view keeps showing the previous patient's draft.
-  clearPatientScopedSession();
   app.vault = updateOrInitializeVault(createPatientRecord(label));
   admissionDateAnchor.restore();
   await persistVault("Patient admitted locally.");
@@ -2314,7 +1905,7 @@ function selectPatient(patientId) {
   app.vault = setActivePatient(app.vault, patientId);
   app.view = "daily";
   admissionDateAnchor.restore();
-  app.selectedDayId = selectedChecklistDay(active())?.id || "";
+  app.selectedDayId = selectedDay(active())?.id || "";
   render();
   void persistVault("Patient selected.");
 }
@@ -2345,7 +1936,7 @@ function requestRemoveDay(dayId) {
   if (!day) return;
   app.pendingRemoveDayId = dayId;
   byId("removeDayConfirmText").textContent =
-    `This permanently removes ${day.label} (${day.date}) and its saved checklist answers from this patient.`;
+    `This permanently removes ${day.label} (${day.date}) and its saved answers from this patient.`;
   byId("removeDayConfirmDialog")?.showModal();
 }
 
@@ -2551,7 +2142,7 @@ async function persistReprocessedSection(scope, sectionId, deidentifiedText, war
   const residualWarnings = sanitizeResidualWarningMetadata(warnings);
   app.vault = updateActivePatient(app.vault, (current) => {
     if (scope === "daily") {
-      const day = selectedChecklistDay(current);
+      const day = selectedDay(current);
       if (!day) return current;
       const nextDay = {
         ...day,
@@ -2581,7 +2172,7 @@ async function resumeSectionReview(scope, sectionId) {
   const field = editor?.querySelector(".section-text");
   if (!editor || !field) return;
   const rawText = field.value;
-  const referenceDate = scope === "daily" ? selectedChecklistDay(active())?.date : app.admissionDate;
+  const referenceDate = scope === "daily" ? selectedDay(active())?.date : app.admissionDate;
   updateDeidOperation({ active: true, message: "Re-running local de-identification review…", value: 0, total: 1 });
   try {
     await ensureSelectedDeidReady();
@@ -2730,12 +2321,12 @@ async function dismissSectionWarning(scope, sectionId, warningIndex) {
     setStatus("Warning dismissed for this review only. The decision is not stored.");
   } else {
     const patient = active();
-    const sections = scope === "daily" ? selectedChecklistDay(patient)?.sourceCaptures : patient?.contextSections;
+    const sections = scope === "daily" ? selectedDay(patient)?.sourceCaptures : patient?.contextSections;
     const section = (sections || []).find((entry) => entry.id === sectionId);
     if (!section?.residualWarnings?.[warningIndex]) return;
     app.vault = updateActivePatient(app.vault, (current) => {
       if (scope === "daily") {
-        const day = selectedChecklistDay(current);
+        const day = selectedDay(current);
         if (!day) return current;
         const nextDay = {
           ...day,
@@ -2774,7 +2365,7 @@ async function dismissSectionWarning(scope, sectionId, warningIndex) {
 
 async function dismissAllSectionWarnings(scope, sectionId) {
   const patient = active();
-  const sections = scope === "daily" ? selectedChecklistDay(patient)?.sourceCaptures : patient?.contextSections;
+  const sections = scope === "daily" ? selectedDay(patient)?.sourceCaptures : patient?.contextSections;
   if (!(sections || []).some((section) => section.id === sectionId && section.residualWarnings?.length)) return;
   const review = sectionReviewFor(scope, sectionId);
   if (review) {
@@ -2782,7 +2373,7 @@ async function dismissAllSectionWarnings(scope, sectionId) {
   } else {
     app.vault = updateActivePatient(app.vault, (current) => {
       if (scope === "daily") {
-        const day = selectedChecklistDay(current);
+        const day = selectedDay(current);
         if (!day) return current;
         const nextDay = {
           ...day,
@@ -2827,7 +2418,7 @@ function redactSectionWarning(scope, sectionId, warningIndex) {
 
 function reviewSectionWarning({ scope, sectionId, warningIndex }) {
   const patient = active();
-  const sections = scope === "daily" ? selectedChecklistDay(patient)?.sourceCaptures : patient?.contextSections;
+  const sections = scope === "daily" ? selectedDay(patient)?.sourceCaptures : patient?.contextSections;
   const section = (sections || []).find((entry) => entry.id === sectionId);
   const review = sectionReviewFor(scope, sectionId);
   const warning = review?.warnings?.[Number(warningIndex)] || section?.residualWarnings?.[Number(warningIndex)];
@@ -3154,7 +2745,7 @@ async function mutateSections(scope, updater) {
   if (scope === "context") {
     app.vault = updateActivePatient(app.vault, (current) => ({ ...current, contextSections: updater(current.contextSections) }));
   } else {
-    const day = selectedChecklistDay(patient);
+    const day = selectedDay(patient);
     if (!day) throw new Error("Add a hospital day first.");
     const nextDay = { ...day, sourceCaptures: updater(day.sourceCaptures), updatedAt: new Date().toISOString() };
     app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
@@ -3520,155 +3111,7 @@ async function removeSelectedModelPack(modelKey) {
   }
 }
 
-async function refreshWorkupWorkspace({ renderAfter = false } = {}) {
-  app.workupWorkspace = await getWorkupWorkspaceMirrorState();
-  if (renderAfter && app.view === "workups") renderWorkups();
-  return app.workupWorkspace;
-}
 
-async function syncWorkupWorkspace({ explicit = false } = {}) {
-  if (!app.vault) return null;
-  app.workupWorkspaceBusy = true;
-  if (explicit && app.view === "workups") renderWorkups();
-  try {
-    const result = await mirrorWorkupOverridesToWorkspace(app.vault.workupOverrides, { requestPermission: false });
-    app.workupWorkspace = result;
-    if (explicit) setStatus(result.status === "ready" ? `${result.message} Files are in ${result.path}/.` : result.message);
-    return result;
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Unable to mirror local workups.";
-    app.workupWorkspace = { status: "error", message };
-    if (explicit) setStatus(message);
-    return app.workupWorkspace;
-  } finally {
-    app.workupWorkspaceBusy = false;
-    if (explicit && app.view === "workups") renderWorkups();
-  }
-}
-
-async function chooseWorkupWorkspace() {
-  app.workupWorkspaceBusy = true;
-  renderWorkups();
-  try {
-    app.workupWorkspace = await authorizeWorkupWorkspaceMirror();
-    const result = await syncWorkupWorkspace();
-    setStatus(result?.status === "ready" ? `${result.message} Files are in ${result.path}/.` : app.workupWorkspace.message);
-  } finally {
-    app.workupWorkspaceBusy = false;
-    renderWorkups();
-  }
-}
-
-async function disconnectWorkupWorkspace() {
-  app.workupWorkspace = await disconnectWorkupWorkspaceMirror();
-  setStatus(app.workupWorkspace.message);
-  renderWorkups();
-}
-
-async function persistWorkupChanges(message) {
-  await persistVault(message);
-  if (app.demoSession) return;
-  const result = await syncWorkupWorkspace();
-  if (result?.status === "ready") setStatus(`${message} ${result.message}`);
-}
-
-async function commitWorkupOverride(workup, message) {
-  app.vault = setWorkupOverride(app.vault, workup);
-  await persistWorkupChanges(message);
-}
-
-function isWorkupEditorControl(target) {
-  return Boolean(
-    target?.closest?.("#workupsContent") &&
-    target.matches?.(
-      "#workupTitleInput, #workupAliasesInput, [data-workup-item-row] input, [data-workup-item-row] textarea, [data-workup-item-row] select"
-    )
-  );
-}
-
-function queueWorkupAutosave() {
-  clearTimeout(workupAutosaveTimer);
-  workupAutosaveTimer = setTimeout(() => {
-    workupAutosaveChain = workupAutosaveChain
-      .then(async () => {
-        const workup = workupFromEditorDraft(collectWorkupDraftFromDocument(document));
-        if (!workup.title) return;
-        await commitWorkupOverride(workup, "Workup changes saved locally.");
-        app.selectedWorkupEditorId = workup.id;
-        app.draftWorkup = null;
-      })
-      .catch((error) => setStatus(error instanceof Error ? error.message : "Unable to automatically save this workup."));
-  }, 700);
-}
-
-async function newWorkup() {
-  const usedIds = new Set(effectiveWorkupCatalog(app.vault.workupOverrides).map((entry) => entry.id));
-  let ordinal = 1;
-  let id = "new-workup";
-  while (usedIds.has(id)) {
-    ordinal += 1;
-    id = `new-workup-${ordinal}`;
-  }
-  const workup = createBlankWorkup({ id, title: ordinal === 1 ? "New Workup" : `New Workup ${ordinal}` });
-  await commitWorkupOverride(workup, "New workup saved locally.");
-  app.selectedWorkupEditorId = workup.id;
-  app.draftWorkup = null;
-  app.workupImportError = "";
-  renderWorkups();
-}
-
-function editWorkup(workupId) {
-  app.draftWorkup = null;
-  app.selectedWorkupEditorId = workupId;
-  app.workupImportError = "";
-  renderWorkups();
-}
-
-function addWorkupItemRow(kind) {
-  const column = document.querySelector(`[data-workup-kind="${kind}"] .list-stack`);
-  if (!column) return;
-  column.insertAdjacentHTML("beforeend", workupPresentation.renderWorkupItemEditor(createBlankWorkupItem(kind), kind, column.children.length));
-  updateWorkupRowNumbers(column);
-}
-
-function removeWorkupItemRow(target) {
-  target.closest("[data-workup-item-row]")?.remove();
-}
-
-function duplicateWorkupItemRow(target) {
-  const row = target.closest("[data-workup-item-row]");
-  if (!row) return;
-  row.insertAdjacentHTML("afterend", row.outerHTML);
-  updateWorkupRowNumbers(row.parentElement);
-}
-
-async function moveWorkupItemRow(target, direction) {
-  const row = target.closest("[data-workup-item-row]");
-  const list = row?.parentElement;
-  if (!row || !list) return;
-  const sibling = direction === "up" ? row.previousElementSibling : row.nextElementSibling;
-  if (sibling?.matches("[data-workup-item-row]")) {
-    if (direction === "up") list.insertBefore(row, sibling);
-    else list.insertBefore(sibling, row);
-  } else {
-    const group = row.closest(".workup-system-group");
-    const scroll = group?.parentElement;
-    const adjacent = direction === "up" ? group?.previousElementSibling : group?.nextElementSibling;
-    if (!group || !scroll || !adjacent?.matches(".workup-system-group")) return;
-    if (direction === "up") scroll.insertBefore(group, adjacent);
-    else scroll.insertBefore(adjacent, group);
-  }
-  updateWorkupRowNumbers(list);
-  await saveWorkupUi("Workup item order saved.");
-}
-
-function updateWorkupRowNumbers(list) {
-  const column = list?.closest("[data-workup-kind]");
-  [...(column?.querySelectorAll("[data-workup-item-row]") || [])].forEach((row, index) => {
-    const number = row.querySelector(".workup-row-number");
-    if (number) number.textContent = String(index + 1);
-  });
-}
 
 function sectionDropTarget(list, pointerY) {
   const rows = [...list.querySelectorAll(".section-editor:not(.is-dragging)")];
@@ -3773,245 +3216,6 @@ function bindSectionReordering() {
   });
 }
 
-function workupDropTarget(list, pointerY) {
-  const rows = [...list.querySelectorAll("[data-workup-item-row]:not(.is-dragging)")];
-  return rows.reduce(
-    (closest, row) => {
-      const rect = row.getBoundingClientRect();
-      const offset = pointerY - rect.top - rect.height / 2;
-      return offset < 0 && offset > closest.offset ? { offset, row } : closest;
-    },
-    { offset: Number.NEGATIVE_INFINITY, row: null }
-  ).row;
-}
-
-function reorderWorkupRowAtPointer(row, clientX, clientY) {
-  const target = document.elementFromPoint(clientX, clientY);
-  const list = target?.closest("[data-workup-kind] .list-stack");
-  const sourceList = row.parentElement;
-  if (!list || row.dataset.kind !== list.closest("[data-workup-kind]")?.dataset.workupKind) return false;
-  if (sourceList !== list) {
-    const sourceGroup = row.closest(".workup-system-group");
-    const targetGroup = list.closest(".workup-system-group");
-    if (!sourceGroup || !targetGroup) return false;
-    const dropTarget = workupDropTarget(list, clientY);
-    if (dropTarget) list.insertBefore(row, dropTarget);
-    else list.append(row);
-    const targetSystem = targetGroup.dataset.workupSystem || "general";
-    const systemField = row.querySelector('[data-field="item-system"]');
-    if (systemField) systemField.value = targetSystem;
-    if (!sourceList.querySelector("[data-workup-item-row]")) sourceGroup.remove();
-    updateWorkupRowNumbers(list);
-    updateWorkupRowNumbers(sourceList);
-    return true;
-  }
-  const dropTarget = workupDropTarget(list, clientY);
-  if (dropTarget) list.insertBefore(row, dropTarget);
-  else list.append(row);
-  updateWorkupRowNumbers(list);
-  return true;
-}
-
-function startPointerWorkupReorder(event, handle, lists) {
-  if (event.button !== 0) return;
-  const row = handle.closest("[data-workup-item-row]");
-  if (!row) return;
-  event.preventDefault();
-  draggedWorkupRow = row;
-  workupDragSaved = false;
-  let moved = false;
-  row.classList.add("is-dragging");
-  const onMove = (moveEvent) => {
-    moved = reorderWorkupRowAtPointer(row, moveEvent.clientX, moveEvent.clientY) || moved;
-  };
-  const onEnd = () => {
-    window.removeEventListener("mousemove", onMove);
-    window.removeEventListener("mouseup", onEnd);
-    if (moved && !workupDragSaved) {
-      workupDragSaved = true;
-      void saveWorkupUi("Workup item order saved.").catch((error) => {
-        setStatus(error instanceof Error ? error.message : "Unable to save workup order.");
-        renderWorkups();
-      });
-    }
-    row.classList.remove("is-dragging");
-    if (draggedWorkupRow === row) draggedWorkupRow = null;
-    lists.forEach((list) => list.classList.remove("is-drop-target"));
-  };
-  window.addEventListener("mousemove", onMove);
-  window.addEventListener("mouseup", onEnd, { once: true });
-}
-
-function bindWorkupReordering() {
-  const lists = [...document.querySelectorAll("[data-workup-kind] .list-stack")];
-  document.querySelectorAll(".workup-drag-handle").forEach((handle) => {
-    handle.addEventListener("mousedown", (event) => startPointerWorkupReorder(event, handle, lists));
-    handle.addEventListener("dragstart", (event) => {
-      draggedWorkupRow = handle.closest("[data-workup-item-row]");
-      if (!draggedWorkupRow) return;
-      workupDragSaved = false;
-      draggedWorkupRow.classList.add("is-dragging");
-      event.dataTransfer.effectAllowed = "move";
-      event.dataTransfer.setData("text/plain", draggedWorkupRow.dataset.kind || "");
-    });
-    handle.addEventListener("dragend", () => {
-      if (draggedWorkupRow && !workupDragSaved) {
-        workupDragSaved = true;
-        void saveWorkupUi("Workup item order saved.").catch((error) => {
-          setStatus(error instanceof Error ? error.message : "Unable to save workup order.");
-          renderWorkups();
-        });
-      }
-      draggedWorkupRow?.classList.remove("is-dragging");
-      draggedWorkupRow = null;
-      lists.forEach((list) => list.classList.remove("is-drop-target"));
-    });
-  });
-  lists.forEach((list) => {
-    list.addEventListener("dragover", (event) => {
-      if (!draggedWorkupRow || draggedWorkupRow.dataset.kind !== list.closest("[data-workup-kind]")?.dataset.workupKind) return;
-      event.preventDefault();
-      list.classList.add("is-drop-target");
-      reorderWorkupRowAtPointer(draggedWorkupRow, event.clientX, event.clientY);
-    });
-    list.addEventListener("drop", (event) => {
-      if (!draggedWorkupRow) return;
-      event.preventDefault();
-      workupDragSaved = true;
-      void saveWorkupUi("Workup item order saved.").catch((error) => {
-        setStatus(error instanceof Error ? error.message : "Unable to save workup order.");
-        renderWorkups();
-      });
-    });
-  });
-}
-
-async function saveWorkupUi(message = "Local workup saved.") {
-  const workup = workupFromEditorDraft(collectWorkupDraftFromDocument(document));
-  if (!workup.title) {
-    setStatus("Give the workup a title before saving.");
-    byId("workupTitleInput")?.focus();
-    return;
-  }
-  clearTimeout(workupAutosaveTimer);
-  await commitWorkupOverride(workup, message);
-  app.selectedWorkupEditorId = workup.id;
-  app.draftWorkup = null;
-  app.workupImportError = "";
-  render();
-}
-
-async function resetWorkupJson() {
-  app.vault = removeWorkupOverride(app.vault, app.selectedWorkupEditorId);
-  app.draftWorkup = null;
-  await persistWorkupChanges("Local workup override removed. Existing workspace-mirror files are intentionally left untouched.");
-  render();
-}
-
-function currentEditorWorkup() {
-  return workupFromEditorDraft(collectWorkupDraftFromDocument(document));
-}
-
-function exportWorkupJson() {
-  const workup = currentEditorWorkup();
-  downloadJson(`${workup.id}.workup.json`, workup);
-}
-
-function exportWorkupLibrary() {
-  const library = workupLibraryFromOverrides(app.vault.workupOverrides, {
-    id: "local-workups",
-    title: "Local workup library",
-    description: "Local workups exported from Preround. This bundle contains no patient data."
-  });
-  downloadJson(`${library.id}.workup-library.json`, library);
-}
-
-async function parseAndSaveWorkupJson(text) {
-  const imported = parseWorkupJson(text);
-  const current =
-    app.draftWorkup || effectiveWorkupCatalog(app.vault.workupOverrides).find((workup) => workup.id === app.selectedWorkupEditorId);
-  // Importing from an open editor means "replace this workup". Incoming IDs
-  // are useful for a new workup, but must not create a duplicate copy of the
-  // catalog entry the user is actively editing.
-  const workup = normalizeWorkup({
-    ...imported,
-    id: current?.id || imported.id
-  });
-  await commitWorkupOverride(workup, `Imported JSON replaced ${current?.title || workup.title}.`);
-  app.selectedWorkupEditorId = workup.id;
-  app.draftWorkup = null;
-  app.workupImportError = "";
-  app.workupImportDraft = "";
-  app.workupApiDeidConfirmed = false;
-  app.workupImportPanelOpen = false;
-  render();
-}
-
-async function importWorkupFile(file) {
-  await parseAndSaveWorkupJson(await file.text());
-}
-
-async function importWorkupLibraryFile(file) {
-  const library = parseWorkupLibraryJson(await file.text());
-  app.vault = setWorkupOverrides(app.vault, mergeWorkupLibraryIntoOverrides(app.vault.workupOverrides, library));
-  app.selectedWorkupEditorId = library.workups[0].id;
-  app.draftWorkup = null;
-  app.workupImportError = "";
-  await persistWorkupChanges(`Imported ${library.workups.length} workups from ${library.title}.`);
-  render();
-}
-
-async function buildChecklist() {
-  const patient = active();
-  if (!patient || !app.vault) throw new Error("Select a patient first.");
-  const catalog = effectiveWorkupCatalog(app.vault.workupOverrides, app.vault.hiddenWorkupIds);
-  const workups = findWorkupsById(catalog, app.vault.selectedWorkupIds);
-  if (!workups.length) throw new Error("Select at least one workup.");
-  const day = latestDay(patient.days) || createDailyRecord();
-  const snapshot = createChecklistSnapshot(workups);
-  const nextDay = {
-    ...day,
-    checklistSnapshot: snapshot,
-    answers: emptyChecklistAnswers(snapshot),
-    quickNotes: day.quickNotes || emptyQuickNotes(),
-    updatedAt: new Date().toISOString()
-  };
-  app.selectedDayId = nextDay.id;
-  app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
-  app.view = "checklist";
-  await persistVault("Checklist built.");
-  render();
-}
-
-async function importPhoneReturnBundle(bundle) {
-  const patient = active();
-  const day = selectedChecklistDay(patient);
-  if (!day?.checklistSnapshot) throw new Error("Build a checklist first.");
-  const answers = mergeReturnedAnswers(day.answers || {}, bundle, day.checklistSnapshot);
-  const quickNotes = mergeQuickNotes(day.quickNotes || [], bundle.quickNotes || []);
-  const nextDay = { ...day, answers, quickNotes, updatedAt: new Date().toISOString() };
-  app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
-  await persistVault("Returned phone answers imported.");
-  render();
-}
-
-async function importPhoneReturn() {
-  try {
-    await importPhoneReturnBundle(decodeChecklistReturnInput(byId("phoneReturnText").value));
-  } catch (error) {
-    console.error("IMPORT ERROR:", error);
-    throw error;
-  }
-}
-
-async function importPhoneReturnFile(file) {
-  await importPhoneReturnBundle(decodeChecklistReturnTransferFile(await file.text()));
-}
-
-async function importPhoneBundleFile(file) {
-  phoneSession.enterPhoneMode(decodePhoneChecklistTransferFile(await file.text()));
-  render();
-}
 
 function savePromptTemplate() {
   const value = byId("promptPreview")?.value || "";
@@ -4128,12 +3332,6 @@ function handleChange(event) {
     else guidelineSetsController.deselectVisible();
     return;
   }
-  if (event.target.matches(".workup-checkbox")) {
-    const checkedIds = [...document.querySelectorAll(".workup-checkbox:checked")].map((input) => input.value);
-    app.vault = setSelectedWorkups(app.vault, checkedIds);
-    app.workupCatalogOpen = true;
-    void persistVault("Selected workups updated.").then(renderWorkups);
-  }
   if (event.target.id === "patientSwitcher" && app.vault) {
     selectPatient(event.target.value);
   }
@@ -4144,35 +3342,10 @@ function handleChange(event) {
   }
   if (event.target.id === "promptDaySelect") {
     app.promptDayId = event.target.value;
-    app.promptDayFollowsChecklist = event.target.value === app.selectedDayId;
+    app.promptDayFollowsSelectedDay = event.target.value === app.selectedDayId;
     app.smartMenuOpen = false;
     renderPrompts();
   }
-  if (event.target.id === "checklistDaySelect") {
-    app.selectedDayId = event.target.value;
-    app.checklistOpenNoteIds.clear();
-    renderChecklist();
-  }
-  if (event.target.id === "workupEditorSelect") {
-    app.draftWorkup = null;
-    app.selectedWorkupEditorId = event.target.value;
-    app.workupCatalogOpen = true;
-    renderWorkups();
-  }
-  if (event.target.id === "workupThoroughness") {
-    app.workupThoroughness = workupThoroughnessOption(event.target.value);
-    renderWorkups();
-  }
-  if (event.target.id === "workupApiDeidConfirmed") {
-    app.workupApiDeidConfirmed = event.target.checked;
-    app.workupImportPanelOpen = true;
-    renderWorkups();
-  }
-  if (event.target.id === "openEvidenceDeidConfirmed") {
-    app.openEvidenceImport.deidConfirmed = event.target.checked;
-    renderChecklist();
-  }
-  if (isWorkupEditorControl(event.target)) queueWorkupAutosave();
   if (event.target.id === "deidModeSelect" || event.target.id === "quickDeidMode") {
     app.deidMode = event.target.value;
     app.quickDeid.status = "";
@@ -4190,34 +3363,8 @@ function handleChange(event) {
     if (app.view === "daily") refreshDeidControlsInActiveView();
     if (app.view === "quickDeid") renderQuickDeid();
   }
-  if (event.target.classList.contains("checklist-answer")) {
-    void updateChecklistAnswer(event.target);
-  }
   if (event.target.id === "restoreVaultInput" && event.target.files?.[0]) {
     void restoreVault(event.target.files[0]);
-  }
-  if (event.target.id === "workupJsonFileInput" && event.target.files?.[0]) {
-    void importWorkupFile(event.target.files[0]);
-  }
-  if (event.target.id === "workupLibraryFileInput" && event.target.files?.[0]) {
-    void importWorkupLibraryFile(event.target.files[0]);
-    event.target.value = "";
-  }
-  if (event.target.id === "phoneBundleFileInput" && event.target.files?.[0]) {
-    const file = event.target.files[0];
-    event.target.value = "";
-    void importPhoneBundleFile(file).catch((error) => {
-      setStatus(error instanceof Error ? error.message : "Unable to open the phone checklist file.");
-      render();
-    });
-  }
-  if (event.target.id === "phoneReturnFileInput" && event.target.files?.[0]) {
-    const file = event.target.files[0];
-    event.target.value = "";
-    void importPhoneReturnFile(file).catch((error) => {
-      setStatus(error instanceof Error ? error.message : "Unable to import the returned checklist file.");
-      render();
-    });
   }
   if (event.target.id === "modelPackFolderInput" && event.target.files?.length && app.pendingModelPackKey) {
     void importSelectedModelPack(app.pendingModelPackKey, modelFilesFromInput(event.target.files));
@@ -4226,152 +3373,12 @@ function handleChange(event) {
   demoController.observeChange(event.target);
 }
 
-async function updateChecklistAnswer(input) {
-  const itemId = input.name;
-  if (app.phoneBundle) {
-    const item = app.phoneBundle.checklist.items.find((entry) => entry.id === itemId);
-    app.phoneAnswers = setChecklistChoice(
-      app.phoneAnswers,
-      item,
-      input.value,
-      input.tagName === "SELECT" ? Boolean(input.value) : input.checked
-    );
-    phoneSession.saveAutosave();
-    // Surgical: the input is already in the correct visual state.
-    // Update only the status dot — no re-render, no scroll loss.
-    updateChecklistItemStatus(itemId, app.phoneAnswers[itemId]);
-    return;
-  }
-  const patient = active();
-  const day = selectedChecklistDay(patient);
-  const item = day?.checklistSnapshot?.items.find((entry) => entry.id === itemId);
-  if (!item) return;
-  const answers = setChecklistChoice(
-    day.answers || {},
-    item,
-    input.value,
-    input.tagName === "SELECT" ? Boolean(input.value) : input.checked
-  );
-  const nextDay = { ...day, answers, updatedAt: new Date().toISOString() };
-  app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
-  await persistVault("Checklist answer saved.");
-  // ROOT FIX: Update only the answered item's status dot and the section
-  // count directly. Do NOT re-render the checklist (which destroys the
-  // inner .checklist-scroll scroller and loses its position). The model
-  // is already updated above; the input itself is already correct.
-  updateChecklistItemStatus(itemId, answers[itemId]);
-}
-
-// Update a checklist item's status dot and its section's completed count
-// after an answer change — no re-render.
-function updateChecklistItemStatus(itemId, answer) {
-  const container = byId("checklistContent");
-  if (!container) return;
-  const article = container.querySelector(`[data-item-id="${CSS.escape(itemId)}"]`);
-  if (!article) return;
-  const dot = article.querySelector(".status-dot");
-  if (dot) dot.textContent = answer?.selected?.length || answer?.note ? "✓" : "○";
-  const section = article.closest(".checklist-system");
-  if (section) {
-    const countSpan = section.querySelector(".checklist-system-header .muted");
-    if (countSpan) {
-      const items = section.querySelectorAll("[data-item-id]");
-      // Recompute from the vault (source of truth), not the DOM.
-      const day = selectedChecklistDay(active());
-      const answers = app.phoneBundle ? app.phoneAnswers : day?.answers || {};
-      let completed = 0;
-      for (const el of items) {
-        const ans = answers[el.dataset.itemId];
-        if (ans?.selected?.length || ans?.note) completed++;
-      }
-      countSpan.textContent = `${completed} / ${items.length}`;
-    }
-  }
-}
-
-async function fillChecklistNegatives({ kind = "", system = "" } = {}) {
-  const snapshot = app.phoneBundle ? app.phoneBundle.checklist : selectedChecklistDay(active())?.checklistSnapshot;
-  const allItems = snapshot?.items || [];
-  const scopedItems = allItems.filter(
-    (item) => (!kind || item.kind === kind) && (!system || groupChecklistItemsBySystem([item])[0]?.system === system)
-  );
-  const currentAnswers = app.phoneBundle ? app.phoneAnswers : selectedChecklistDay(active())?.answers || {};
-  const result = fillNegativeChecklistAnswers(currentAnswers, scopedItems);
-  if (!result.changed) {
-    setStatus("No unanswered selectable items were available to fill.");
-    return;
-  }
-  if (app.phoneBundle) {
-    app.phoneAnswers = result.answers;
-    phoneSession.saveAutosave();
-    renderPhoneChecklist();
-    return;
-  }
-  const patient = active();
-  const day = selectedChecklistDay(patient);
-  const nextDay = { ...day, answers: result.answers, updatedAt: new Date().toISOString() };
-  app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
-  await persistVault(`${result.changed} checklist item${result.changed === 1 ? "" : "s"} filled.`);
-  // SURGICAL UPDATE (root fix): Update only the changed question elements in
-  // the DOM directly. Do NOT re-render the entire checklist (which destroys
-  // scroll position). The data model is already updated above.
-  const container = byId("checklistContent");
-  if (container && result.changedIds) {
-    for (const itemId of result.changedIds) {
-      const article = container.querySelector(`[data-item-id="${CSS.escape(itemId)}"]`);
-      if (!article) continue;
-      const answer = result.answers[itemId];
-      const selectedValue = answer?.selected?.[0] || "";
-      // Update checkbox or select to reflect the new answer.
-      const checkbox = article.querySelector(`input.checklist-answer[type="checkbox"][value="${CSS.escape(selectedValue)}"]`);
-      if (checkbox) {
-        checkbox.checked = true;
-      } else {
-        const select = article.querySelector("select.checklist-answer");
-        if (select) select.value = selectedValue;
-      }
-      // Update the completed count in the section header.
-      const section = article.closest(".checklist-system");
-      if (section) {
-        const countSpan = section.querySelector(".checklist-system-header .muted");
-        if (countSpan) {
-          // Recompute from current DOM state.
-          const items = section.querySelectorAll("[data-item-id]");
-          let completed = 0;
-          for (const el of items) {
-            const id = el.dataset.itemId;
-            const ans = result.answers[id];
-            if (ans?.selected?.length) completed++;
-          }
-          countSpan.textContent = `${completed} / ${items.length}`;
-        }
-      }
-    }
-  } else {
-    // Fallback to full render if container not found (should not happen).
-    renderChecklist();
-  }
-}
-
-function showPhoneReturn() {
-  const snapshot = app.phoneBundle?.checklist;
-  const total = snapshot?.items?.length || 0;
-  if (!total || checklistPresentation.completedCount(snapshot.items, app.phoneAnswers) !== total) {
-    throw new Error("Finish every history and physical exam item before generating the return code.");
-  }
-  app.phoneReturnReady = true;
-  renderPhoneChecklist();
-}
-
-function clearChecklistSearch() {
-  app.checklistSearchQuery = "";
-  checklistSearch.clear();
-}
 
 function handleInput(event) {
   if (app.view === "review" && reviewController.input(event.target)) { demoController.observeInput(event.target); return; }
   if (dailySourceController.handleInput(event.target)) return;
   if (app.view === "scores" && scoresController.input(event.target)) return;
+  if (app.view === "cheatSheets" && cheatSheetsController.input(event.target)) return;
   if (event.target.matches("[data-clinical-medication-search]")) return updateClinicalMedicationPage(event.target.closest('[data-clinical-view="medications"]'), { reset: true });
   if (event.target.id === "dailySourceDraft") {
     dailySourceController.updateDraft("daily", event.target.value);
@@ -4411,24 +3418,11 @@ function handleInput(event) {
     if (confirmButton) confirmButton.disabled = event.target.value.trim() !== "DELETE";
     return;
   }
-  if (event.target.id === "workupJsonImport") {
-    app.workupImportDraft = event.target.value;
-    return;
-  }
-  if (event.target.id === "workupCatalogSearch") {
-    app.workupCatalogQuery = event.target.value;
-    updateWorkupCatalogFilter();
-    return;
-  }
   if (event.target.matches(".section-editor .section-text")) {
     const editor = event.target.closest(".section-editor");
     const scope = editor?.dataset.sectionScope || "context";
     const sectionId = editor?.dataset.sectionId || "";
     if (sectionId) setSectionDraftText(scope, sectionId, event.target.value);
-    return;
-  }
-  if (isWorkupEditorControl(event.target)) {
-    queueWorkupAutosave();
     return;
   }
   if (event.target.id === "promptPreview") {
@@ -4460,47 +3454,9 @@ function handleInput(event) {
     app.quickDeid.output = event.target.value;
     return;
   }
-  if (event.target.id === "checklistSearchInput") {
-    app.checklistSearchQuery = event.target.value;
-    checklistSearch.updateFilter(app.checklistSearchQuery);
-    return;
-  }
-  if (!event.target.classList.contains("item-note-input")) return;
-  const itemId = event.target.closest(".checklist-item")?.dataset.itemId;
-  if (!itemId) return;
-  if (app.phoneBundle) {
-    app.phoneAnswers = setChecklistNote(app.phoneAnswers, itemId, event.target.value);
-    phoneSession.saveAutosave();
-    const returnBundle = byId("phoneReturnBundle");
-    if (returnBundle) returnBundle.value = phoneTransfer.currentReturnCode();
-    updateChecklistItemStatus(itemId, app.phoneAnswers[itemId]);
-    return;
-  }
-  const patient = active();
-  const day = selectedChecklistDay(patient);
-  if (!day) return;
-  const answers = setChecklistNote(day.answers || {}, itemId, event.target.value);
-  const nextDay = {
-    ...day,
-    answers,
-    updatedAt: new Date().toISOString()
-  };
-  app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
-  void persistVault("Checklist note saved.");
-  // Update the status dot (a note counts as "answered") — no re-render.
-  updateChecklistItemStatus(itemId, answers[itemId]);
 }
 
 function handleToggle(event) {
-  if (event.target.matches?.(".workup-catalog-menu")) {
-    // The catalog is a persistent desktop rail in the concept; keep the
-    // existing details/summary contract for keyboard and test compatibility.
-    event.target.open = true;
-    app.workupCatalogOpen = true;
-  }
-  if (event.target.matches?.(".workup-import")) {
-    app.workupImportPanelOpen = event.target.open;
-  }
   // Exam-findings picker: preserve expanded systems across re-renders.
   if (app.view === "review" && reviewController.toggle(event)) return;
 }
@@ -4558,13 +3514,7 @@ function bindEvents() {
   ["pointerdown", "keydown", "touchstart"].forEach((eventName) => {
     document.addEventListener(eventName, recordVaultActivity, { passive: true });
   });
-  // Enter submits a quick note without needing the on-screen keyboard's
-  // return key to double as a form submit.
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" && event.target.id === "quickNoteInput") {
-      event.preventDefault();
-      void phoneSession.addQuickNoteText(event.target.value);
-    }
     // Structured exam-findings custom input: Enter commits, Escape cancels.
     if (app.view === "review" && reviewController.keydown(event)) return;
     // Local AI chat composer: Enter sends, Shift+Enter adds a newline.
@@ -4578,7 +3528,7 @@ function bindEvents() {
         render();
         return;
       }
-      if (app.demoSession && !["daily", "workups", "checklist", "review", "prompts"].includes(button.dataset.viewTarget))
+      if (app.demoSession && !["daily", "cheatSheets", "review", "prompts"].includes(button.dataset.viewTarget))
         demoSessionController.exit({ renderAfter: false });
       if (button.dataset.viewTarget === "review") reviewController.prepare(app.selectedStayPacketId || app.selectedDayId || "admission");
       app.view = button.dataset.viewTarget;
@@ -4625,10 +3575,6 @@ async function init() {
     renderOfflineModePill();
     if (app.view === "settings") renderSettings();
   });
-  const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-  if (params.has("phone")) {
-    phoneSession.enterPhoneMode(decodePhoneChecklistBundle(params.get("phone")));
-  }
   await ensureCrossOriginIsolationOnce();
   bindEvents();
   render();
@@ -4643,7 +3589,6 @@ async function init() {
       app.modelPackService = { ready: false, message: error instanceof Error ? error.message : "Local model installer unavailable." };
     });
   void refreshModelPackStates();
-  void refreshWorkupWorkspace({ renderAfter: true });
 }
 
 void init();
@@ -4685,4 +3630,3 @@ async function refreshGuidelines() {
   }
   renderPrompts();
 }
-

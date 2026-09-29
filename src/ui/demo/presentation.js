@@ -31,46 +31,30 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     calloutTitle: "Review this update separately",
     callout: "The same review process applies to each hospital day. Keeping this update separate lets a progress-note prompt focus on today’s clinical decisions."
   },
-  "open-workups": {
-    view: "workups",
-    navTarget: "workups",
-    title: "Choose checklist questions",
-    instruction: "Click Workups in the sidebar.",
-    calloutTitle: "Next: build a focused checklist",
-    callout: "Workups are reusable sets of history and examination questions. You will select one, then turn it into a checklist for this case."
+  "open-cheat-sheets": {
+    view: "cheatSheets",
+    navTarget: "cheatSheets",
+    title: "Open the bedside cheat sheets",
+    instruction: "Click Cheat Sheets in the sidebar.",
+    calloutTitle: "Next: look up the bedside approach",
+    callout: "Cheat sheets are read-only pocket references distilled from the old bedside question sets. Search by complaint to pull up focused history questions and physical-exam maneuvers before you see the patient."
   },
-  "select-workup": {
-    view: "workups",
-    targetSelector: '.workup-checkbox[value="nstemi-prerounds"]',
-    title: "Choose a question set",
-    instruction: "Select NSTEMI pre-rounds.",
-    calloutTitle: "Select a workup",
-    callout: "This focused workup pairs ACS-specific history questions with bedside maneuvers for recurrent ischemia, heart failure, arrhythmia, bleeding, perfusion, important alternatives, and readiness for angiography."
-  },
-  "build-checklist": {
-    view: "workups",
-    targetSelector: '.workup-editor-header-actions [data-action="build-checklist"]',
-    title: "Build the checklist",
-    instruction: "Click Build checklist.",
-    calloutTitle: "Create the checklist",
-    callout: "Build checklist turns the selected question set into an editable bedside checklist for this hospital day."
-  },
-  "answer-checklist": {
-    view: "checklist",
-    targetSelector: '.checklist-answer[name="nstemi-prerounds:chest-pain-now"]',
-    title: "Ask one bedside question",
-    instruction: "Record that Daniel has no chest discomfort now.",
-    helper: "All other history and examination findings are pre-filled for this sample case.",
-    calloutTitle: "Complete the one open finding",
-    callout: "The other history and examination findings are pre-filled to keep the walkthrough focused. Confirming whether chest pain is present now completes bedside data collection before you begin writing the note."
+  "browse-cheat-sheet": {
+    view: "cheatSheets",
+    targetSelector: '[data-cheat-sheets-open="acute-coronary-syndrome"]',
+    title: "Open the ACS cheat sheet",
+    instruction: "Click the Acute coronary syndrome / NSTEMI/STEMI sheet.",
+    helper: "Cheat sheets are read-only — no patient is needed.",
+    calloutTitle: "Scan the bedside approach",
+    callout: "The ACS sheet lists the history questions to ask and the maneuvers to perform, with why each one matters. Opening it attaches the sample case's vitals, labs, ECG, echo, and medications to the hospital day, so the note-writing step has objective data."
   },
   "open-review": {
     view: "review",
     navTarget: "review",
-    title: "Write after bedside data collection",
+    title: "Write after bedside review",
     instruction: "Click Review Data / Draft Note in the sidebar.",
     calloutTitle: "Next: write the note",
-    callout: "History questions and physical-exam maneuvers come first. Every completed answer is already placed in Subjective or Physical Exam, using only the chart-ready answer rather than the bedside question."
+    callout: "Bedside preparation comes first. The cheat sheet showed you what to ask and examine; the sample objective data is now attached to the hospital day, and your synthetic assessment and plan are pre-filled for review."
   },
   "write-note": {
     view: "review",
@@ -101,7 +85,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "prompts",
     title: "Demo complete",
     instruction: "You followed the full sample workflow.",
-    helper: "You gathered history and exam findings, wrote and encrypted a student note, and prepared it for external feedback. Nothing from this demo was written to your vault."
+    helper: "You de-identified the source notes, reviewed a bedside cheat sheet, wrote and encrypted a student note, and prepared it for external feedback. Nothing from this demo was written to your vault."
   }
 });
 
@@ -120,7 +104,7 @@ export function createDemoPresentation({ escapeHtml }) {
       ? `The previous field is complete. Click Continue to next field to review ${nextSectionLabel || "the next field"}. You check the app's suggestions before moving on.`
       : "";
     const nextInstruction = routeMismatch
-      ? `Open ${stage.view === "workups" ? "Workups" : stage.view === "prompts" ? "Prompts" : stage.view} with the highlighted sidebar control to continue.`
+      ? `Open ${stage.view === "cheatSheets" ? "Cheat Sheets" : stage.view === "prompts" ? "Prompts" : stage.view} with the highlighted sidebar control to continue.`
       : reviewHandoff || stage.instruction;
     return `
       <section class="guided-demo-bar" data-demo-guide role="status" aria-live="polite">

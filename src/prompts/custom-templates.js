@@ -1,4 +1,3 @@
-import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
 import { buildTrajectoryBlock } from "../daily-updates/days.js?v=20260921-medication-card-v4";
 import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20260921-medication-card-v4";
 import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-medication-card-v4";
@@ -27,12 +26,10 @@ export const DEFAULT_PROMPT_TEMPLATES = {
   obgyn_soap_note: `@team-preferences\n\n@obgyn-soap-guidelines\n\n@progress-note-packet`,
   presentation_quality_editor: `@presentation-editor-guidelines\n\n@presentation-to-edit\n\n@admission-packet\n\n@progress-note-packet`,
   attending_presentation_critique: `@presentation-critique-guidelines\n\n@specialty-team\n\n@team-preferences\n\n@presentation-to-edit\n\n@admission-packet\n\n@progress-note-packet`,
-  teaching_case_trajectory: `@teaching-guidelines\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
+  teaching_case_trajectory: `@teaching-guidelines\n\n@admission-packet\n\n@selected-day`,
   pre_op_prep: `@team-preferences\n\n@pre-op-prep-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-physical-exam`,
   medication_explainer_by_problem: `@medication-explainer-guidelines\n\n@admission-packet\n\n@medications\n\n@selected-day`,
   medication_safety_audit: `@medication-safety-guidelines\n\n@admission-packet\n\n@medications\n\n@labs\n\n@selected-day`,
-  checklist_workup_refinement: `@checklist-refinement-guidelines\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
-  preround_bedside_exam: `@team-preferences\n\n@pre-round-checklist-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-physical-exam`,
   discharge_instructions: `@team-preferences\n\n@discharge-instructions-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-physical-exam`,
   consulting: `@team-preferences\n\n@consulting-guidelines\n\n@admission-packet\n\n@selected-day\n\n@selected-day-physical-exam`
 };
@@ -44,7 +41,6 @@ export const SMART_PROMPT_VARIABLES = [
   { token: "@progress-note-packet", label: "Curated progress-note context", description: "Carry-forward admission context plus the selected hospital day, in clinical order." },
   { token: "@presentation-to-edit", label: "Presentation draft", description: "The de-identified presentation pasted into the editor; held only in this tab." },
   { token: "@specialty-team", label: "Specialty team", description: "The specialty or clinical team for an attending-level presentation critique; held only in this tab." },
-  { token: "@checklist-answers", label: "Selected-day checklist answers", description: "History and physical-exam answers saved for the selected hospital day." },
   { token: "@admission-physical-exam", label: "Physical exam — admission", description: "Only the physical-exam field saved in the Admission packet." },
   { token: "@selected-day-physical-exam", label: "Physical exam — selected day", description: "Only the physical exam for the selected packet, including Admission when Admission is selected." },
   { token: "@openevidence-exam-note", label: "OpenEvidence exam note — selected day", description: "The saved de-identified OpenEvidence exam note for the selected hospital day, if any." }
@@ -147,12 +143,11 @@ function sectionByLabel(sections = [], pattern) {
   return sections.find((section) => pattern.test(section.label || "")) || null;
 }
 
-// Prefers the checklist (it's what the clinician actually filled in) but
-// falls back to a directly-saved OpenEvidence exam note when the checklist
-// has nothing real in it, so a default note-writing prompt never goes empty
-// just because the user chose the paste-a-note path over the checklist.
-function examFindingsSummary(snapshot, answers, quickNotes, examNoteText) {
-  if (hasAssessedChecklistContent(snapshot, answers, quickNotes)) return checklistAnswersSummary(snapshot, answers, quickNotes);
+// The interactive checklist was removed in 2026-09-29. Legacy saved answers
+// (day.checklistSnapshot, day.answers, day.quickNotes) stay decryptable in
+// older vaults but are ignored: the dedicated OpenEvidence exam note is the
+// surviving selected-day exam source.
+function examFindingsSummary(examNoteText) {
   const note = String(examNoteText || "").trim();
   return note || "No exam findings recorded.";
 }
@@ -192,12 +187,7 @@ function selectedDayExamFindings(patient, selectedDayId, day) {
     capture?.sourceKind === "physical_exam" && String(capture?.deidentifiedText || "").trim()
   );
   if (captures.length) return sourceCapturesToPromptBlock(captures, "Current pre-round physical exam findings");
-  return examFindingsSummary(
-    day?.checklistSnapshot || null,
-    day?.answers || {},
-    day?.quickNotes || [],
-    day?.openEvidenceExamNote?.text
-  );
+  return examFindingsSummary(day?.openEvidenceExamNote?.text);
 }
 
 export function loadPromptTemplateOverrides(storage = localStorage) {
@@ -246,9 +236,6 @@ export function promptTemplateForTask(taskId, overrides = {}, guidelineSets = []
 export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets = [], teamPreferences = {}, presentationToEdit = "", presentationSpecialty = "" }) {
   const usingAdmission = selectedDayId === ADMISSION_PSEUDO_DAY_ID;
   const selectedDay = selectedPromptDay(patient, selectedDayId);
-  const snapshot = selectedDay?.checklistSnapshot || null;
-  const answers = selectedDay?.answers || {};
-  const quickNotes = selectedDay?.quickNotes || [];
   const medicationSection = sectionByLabel(patient?.contextSections || [], /medication/i);
   const labSection = sectionByLabel(patient?.contextSections || [], /lab|result/i);
   const selectedMedicationSources = (selectedDay?.sourceCaptures || []).filter((capture) => capture.sourceKind === "medication_activity");
@@ -315,7 +302,6 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
     "@specialty-team": String(presentationSpecialty || "").trim()
       ? `Specialty team: ${String(presentationSpecialty).trim()}`
       : "Specialty team: Not specified.",
-    "@checklist-answers": checklistAnswersSummary(snapshot, answers, quickNotes),
     "@openevidence-exam-note": savedExamNoteText(selectedDay) || "No saved OpenEvidence exam note.",
     "@admission-physical-exam": admissionExamFindings(patient),
     "@selected-day-physical-exam": selectedDayExamFindings(patient, selectedDayId, selectedDay)

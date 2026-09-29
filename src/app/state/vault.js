@@ -24,9 +24,6 @@ export function createEmptyVaultState({ now = timestampNow } = {}) {
     schemaVersion: VAULT_SCHEMA_VERSION,
     activePatientId: "",
     patients: [],
-    workupOverrides: {},
-    selectedWorkupIds: [],
-    hiddenWorkupIds: [],
     preferences: normalizeUserPreferences(),
     updatedAt: now()
   };
@@ -109,9 +106,9 @@ export function normalizeDay(day, index = 0, { now = timestampNow } = {}) {
     label: String(day?.label || `Hospital day ${index + 1}`).trim() || `Hospital day ${index + 1}`,
     sourceCaptures,
     primaryTeamNote: normalizeOptionalPrimaryTeamNote(day?.primaryTeamNote, NOTE_TYPES.PROGRESS, { now }),
-    checklistSnapshot: day?.checklistSnapshot || null,
-    answers: day?.answers && typeof day.answers === "object" ? day.answers : {},
-    quickNotes: Array.isArray(day?.quickNotes) ? day.quickNotes : [],
+    // Retired checklist fields (checklistSnapshot, answers, quickNotes) are
+    // not carried forward: old vaults still decrypt because normalization
+    // only reads known fields, but new day records ignore them entirely.
     openEvidenceOutputs: day?.openEvidenceOutputs && typeof day.openEvidenceOutputs === "object" ? day.openEvidenceOutputs : {},
     // A de-identified OpenEvidence exam note the user pasted in as a
     // physical-exam alternative to the checklist - source material like
@@ -207,9 +204,8 @@ export function migrateVaultState(value, { now = timestampNow } = {}) {
     schemaVersion: VAULT_SCHEMA_VERSION,
     activePatientId,
     patients,
-    workupOverrides: base.workupOverrides && typeof base.workupOverrides === "object" ? { ...base.workupOverrides } : {},
-    selectedWorkupIds: Array.isArray(base.selectedWorkupIds) ? base.selectedWorkupIds.map(String) : [],
-    hiddenWorkupIds: Array.isArray(base.hiddenWorkupIds) ? [...new Set(base.hiddenWorkupIds.map(String))] : [],
+    // Retired Workups fields (workupOverrides, selectedWorkupIds,
+    // hiddenWorkupIds) are tolerated on decrypt but not carried forward.
     preferences: normalizeUserPreferences(base.preferences),
     updatedAt: String(base.updatedAt || now())
   };
@@ -254,47 +250,4 @@ export function archivePatient(vault, patientId, { now = timestampNow } = {}) {
 export function setActivePatient(vault, patientId, { now = timestampNow } = {}) {
   const current = migrateVaultState(vault, { now });
   return current.patients.some((patient) => patient.id === patientId) ? { ...current, activePatientId: patientId, updatedAt: now() } : current;
-}
-
-export function setSelectedWorkups(vault, workupIds, { now = timestampNow } = {}) {
-  return {
-    ...migrateVaultState(vault, { now }),
-    selectedWorkupIds: [...new Set((workupIds || []).map(String).filter(Boolean))],
-    updatedAt: now()
-  };
-}
-
-export function setWorkupOverride(vault, workup, { now = timestampNow } = {}) {
-  const current = migrateVaultState(vault, { now });
-  return {
-    ...current,
-    workupOverrides: { ...current.workupOverrides, [workup.id]: workup },
-    updatedAt: now()
-  };
-}
-
-export function setWorkupOverrides(vault, workupOverrides, { now = timestampNow } = {}) {
-  const current = migrateVaultState(vault, { now });
-  return {
-    ...current,
-    workupOverrides: { ...(workupOverrides || {}) },
-    updatedAt: now()
-  };
-}
-
-export function removeWorkupOverride(vault, workupId, { now = timestampNow } = {}) {
-  const current = migrateVaultState(vault, { now });
-  const nextOverrides = { ...current.workupOverrides };
-  delete nextOverrides[workupId];
-  return { ...current, workupOverrides: nextOverrides, updatedAt: now() };
-}
-
-export function hideWorkupId(vault, workupId, { now = timestampNow } = {}) {
-  const current = migrateVaultState(vault, { now });
-  return { ...current, hiddenWorkupIds: [...new Set([...current.hiddenWorkupIds, workupId])], updatedAt: now() };
-}
-
-export function unhideWorkupId(vault, workupId, { now = timestampNow } = {}) {
-  const current = migrateVaultState(vault, { now });
-  return { ...current, hiddenWorkupIds: current.hiddenWorkupIds.filter((id) => id !== workupId), updatedAt: now() };
 }

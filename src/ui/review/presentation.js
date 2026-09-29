@@ -409,7 +409,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   // labels in final-note order. Editable regions are inline contenteditable
   // areas with no per-section boxes, so the whole note fits on roughly one
   // page. Structured pieces (objective blocks, problems, medications,
-  // checklist findings) render compactly inside the same document flow.
+  // selected findings) render compactly inside the same document flow.
 
   // Plain-text model value -> editor HTML. Newlines become <br> so the text
   // the student sees round-trips through innerText when the controller reads
@@ -443,12 +443,6 @@ export function createReviewPresentation({ escapeHtml, icon }) {
 
   function editorSubRegion(fieldAttr, subLabel, value, placeholder) {
     return `<div class="ed-sub"><span class="ed-sub-label">${escapeHtml(subLabel)}</span>${editorRegion(fieldAttr, value, placeholder)}</div>`;
-  }
-
-  function checklistFindingsEditor(draft, kind, emptyHint) {
-    const blocks = (draft.checklistFindings?.selectedBlocks || []).filter((block) => block.kind === kind);
-    if (!blocks.length) return `<p class="ed-empty">${escapeHtml(emptyHint)}</p>`;
-    return `<ul class="ed-checklist">${blocks.map((block) => `<li>${escapeHtml(String(block.editedText || "").trim())}</li>`).join("")}</ul>`;
   }
 
   // Only the optional sections get an on/off toggle, rendered next to the
@@ -900,13 +894,11 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         <label class="se-notes-label">Additional exam notes <span class="muted">(free text)</span><textarea class="se-notes" data-smart-exam-notes rows="2" placeholder="Anything not covered by the templates">${escapeHtml(freeText)}</textarea></label>
       </div>`;
     };
-    const checklistTag = `<span class="ed-tag">from Checklist</span>`;
 
     const frontSections = isHP ? [
       editorSection("One-Liner", editorRegion(`data-draft-section="one_liner"`, fields.one_liner, "One-sentence summary"), { labelExtra: helpFor("one_liner", "One-Liner") }),
       editorSection("Chief Complaint", editorRegion(`data-draft-section="chief_complaint"`, fields.chief_complaint), { labelExtra: helpFor("chief_complaint", "Chief Complaint") }),
       editorSection("History of Present Illness", editorRegion(`data-draft-section="history_of_present_illness"`, fields.history_of_present_illness), { labelExtra: helpFor("history_of_present_illness", "HPI") }),
-      editorSection("Review of Systems", checklistFindingsEditor(draft, "history", "Complete the history checklist to populate this section."), { labelExtra: checklistTag, sectionAttr: ` data-checklist-finding-kind="history"` }),
       editorSection("Relevant History", RELEVANT_HISTORY_SUBFIELDS.map(([fieldId, subLabel]) => editorSubRegion(`data-draft-section="${fieldId}"`, subLabel, fields[fieldId])).join(""), { labelExtra: helpFor("past_medical_history", "Relevant History") }),
       editorSection("Diet and Exercise", editorRegion(`data-draft-section="diet_and_exercise"`, fields.diet_and_exercise), { labelExtra: `${helpFor("diet_and_exercise", "Diet and Exercise")}${optionalSectionToggle("diet_and_exercise", visibility)}` })
     ] : [
@@ -916,8 +908,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         editorSubRegion(`data-draft-section="patient_report"`, "Patient report", fields.patient_report),
         editorSubRegion(`data-draft-section="nursing_report"`, "Nursing report", fields.nursing_report),
         editorSubRegion(`data-draft-section="pertinent_symptoms"`, "Pertinent symptoms", fields.pertinent_symptoms),
-        editorSubRegion(`data-draft-section="other"`, "Other subjective information", fields.other),
-        `<div class="ed-sub"><span class="ed-sub-label">Bedside history ${checklistTag}</span><div class="ed-readonly" data-checklist-finding-kind="history">${checklistFindingsEditor(draft, "history", "Complete the history checklist to populate this section.")}</div></div>`
+        editorSubRegion(`data-draft-section="other"`, "Other subjective information", fields.other)
       ].join(""), { labelExtra: helpFor("interval_events", "Subjective") }),
     ];
 
@@ -936,7 +927,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       <p class="ed-toolbar-note">One editor for the whole note — section labels included. Type <kbd>$</kbd> to pull a lab or vital into the note. Saving encrypts the draft without running de-identification.</p>
       <div class="note-editor" id="noteEditor" role="group" aria-label="Note editor">
         ${frontSections.join("")}
-        ${editorSection("Physical Exam", `${smartExamBlock(draft, smartExamUi)}<div class="ed-sub"><span class="ed-sub-label">From checklist ${checklistTag}</span><div class="ed-readonly" data-checklist-finding-kind="exam">${checklistFindingsEditor(draft, "exam", "Complete the physical-exam checklist to populate this section.")}</div></div>`, { labelExtra: helpFor("physical_exam", "Physical Exam"), sectionAttr: ` data-checklist-finding-kind="exam"` })}
+        ${editorSection("Physical Exam", smartExamBlock(draft, smartExamUi), { labelExtra: helpFor("physical_exam", "Physical Exam") })}
         ${editorSection("Objective", objectiveBody, { labelExtra: helpFor("objective", "Objective") })}
         ${editorSection("Assessment", editorRegion("data-draft-assessment", draft.assessment, "Your concise synthesis"), { labelExtra: helpFor("assessment", "Assessment") })}
         ${editorSection("Plan", planBody, { labelExtra: `${helpFor("plan", "Plan")}<button type="button" class="ed-mini" data-action="add-plan-problem">${icon("plus")} Add problem</button>` })}

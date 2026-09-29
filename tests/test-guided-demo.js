@@ -1,11 +1,8 @@
 import assert from "node:assert/strict";
-import { createDemoPatient, DEMO_ASSESSMENT, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS, DEMO_DAY_ID, DEMO_PATIENT_ID, DEMO_PLAN_PROBLEMS, DEMO_REQUIRED_ANSWER_ITEM_ID, DEMO_WORKUP_ID, prefillDemoChecklist } from "../src/ui/demo/session.js";
-import { checklistAnswersSummary, emptyChecklistAnswers } from "../src/checklist/state.js";
-import { createChecklistSnapshot } from "../src/workups/checklist-conversion.js";
-import { effectiveWorkupCatalog } from "../src/workups/schema.js";
+import { createDemoPatient, DEMO_ASSESSMENT, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS, DEMO_DAY_ID, DEMO_PATIENT_ID, DEMO_PLAN_PROBLEMS, attachDemoObjectiveData } from "../src/ui/demo/session.js";
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 import { DEMO_GUIDE_STAGES, createDemoPresentation, demoStage } from "../src/ui/demo/presentation.js";
-import { DEMO_REVIEW_ACTIONS, demoReviewTransition } from "../src/ui/demo/controller.js";
+import { DEMO_REVIEW_ACTIONS, demoReviewTransition, createDemoController } from "../src/ui/demo/controller.js";
 
 const escapeHtml = (value = "") => String(value)
   .replace(/&/g, "&amp;")
@@ -33,20 +30,11 @@ assert.match(structuredDemo.text, /Occupation: \[OCCUPATION\]/);
 assert.doesNotMatch(structuredDemo.text, /Mechanical Engineer/);
 assert.doesNotMatch(structuredDemo.text, /11\/22\/1964|6:30 AM|heavy equipment|pickup truck|stairs at work/i);
 
-assert.equal(demoStage("select-workup").targetSelector, `.workup-checkbox[value="${DEMO_WORKUP_ID}"]`);
-const demoWorkup = effectiveWorkupCatalog().find((workup) => workup.id === DEMO_WORKUP_ID);
-assert.ok(demoWorkup, "the focused demo workup should be available in the built-in catalog");
-assert.ok(demoWorkup.items.filter((item) => item.kind === "history").length >= 8);
-assert.ok(demoWorkup.items.filter((item) => item.kind === "exam").length >= 12);
-const snapshot = createChecklistSnapshot([demoWorkup], { id: "demo-checklist" });
-const seededPatient = prefillDemoChecklist({ ...patient, days: [{ ...patient.days[0], checklistSnapshot: snapshot, answers: emptyChecklistAnswers(snapshot) }] });
-const seededAnswers = seededPatient.days[0].answers;
-assert.deepEqual(seededAnswers[DEMO_REQUIRED_ANSWER_ITEM_ID].selected, [], "the bedside chest-pain question should remain open for the user");
-assert.equal(Object.values(seededAnswers).filter((answer) => answer.selected.length).length, snapshot.items.length - 1);
-const promptSummary = checklistAnswersSummary(snapshot, seededAnswers);
-assert.match(promptSummary, /JVP not elevated/);
-assert.match(promptSummary, /Lungs clear throughout, including the bases/);
-assert.doesNotMatch(promptSummary, /Do you have chest pressure or pain now/);
+assert.equal(demoStage("open-cheat-sheets").view, "cheatSheets");
+assert.equal(demoStage("open-cheat-sheets").navTarget, "cheatSheets");
+assert.equal(demoStage("browse-cheat-sheet").targetSelector, '[data-cheat-sheets-open="acute-coronary-syndrome"]');
+assert.match(demoStage("browse-cheat-sheet").instruction, /Acute coronary syndrome/i);
+const seededPatient = attachDemoObjectiveData(patient);
 assert.equal(seededPatient.days[0].sourceCaptures.length, 5, "the guided note workspace should include objective demo data");
 assert.ok(seededPatient.days[0].sourceCaptures.some((capture) => capture.sourceKind === "vital_signs"));
 assert.ok(seededPatient.days[0].sourceCaptures.some((capture) => capture.sourceKind === "laboratory_results"));
@@ -67,19 +55,19 @@ assert.equal(demoReviewTransition("continue-section-review", true), "preserve-re
 assert.equal(demoReviewTransition("keep-reviewed-redaction", false), "complete-review");
 assert.equal(demoReviewTransition("copy-prompt", false), "unrelated");
 assert.match(demoStage("context-review").instruction, /Accept.*one change at a time/i);
-assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 13);
+assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 11);
 const stageOrder = Object.keys(DEMO_GUIDE_STAGES);
-assert.ok(stageOrder.indexOf("answer-checklist") < stageOrder.indexOf("write-note"));
+assert.ok(stageOrder.indexOf("browse-cheat-sheet") < stageOrder.indexOf("write-note"));
 assert.ok(stageOrder.indexOf("write-note") < stageOrder.indexOf("open-prompts"));
 Object.values(DEMO_GUIDE_STAGES).forEach((stage) => {
   assert.ok(stage.instruction, `${stage.title} should tell the user what to do`);
 });
-const guide = presentation.renderGuide({ session: { stage: "answer-checklist" }, currentView: "checklist" });
+const guide = presentation.renderGuide({ session: { stage: "browse-cheat-sheet" }, currentView: "cheatSheets" });
 assert.match(guide, /Guided demo/);
-assert.match(guide, /Ask one bedside question/);
+assert.match(guide, /Open the ACS cheat sheet/);
 assert.match(guide, /guided-demo-instructions/);
-assert.match(guide, /Record that Daniel has no chest discomfort now/);
-assert.match(guide, /other history and examination findings are pre-filled/i);
+assert.match(guide, /Click the Acute coronary syndrome \/ NSTEMI\/STEMI sheet/);
+assert.match(guide, /Cheat sheets are read-only/);
 assert.match(guide, /data-action="exit-guided-demo"/);
 assert.match(guide, />Exit demo</);
 assert.doesNotMatch(guide, /Restart demo/);
@@ -102,8 +90,35 @@ assert.match(handoffGuide, /You check the app's suggestions before moving on/);
 
 const complete = presentation.renderGuide({ session: { stage: "done" }, currentView: "prompts" });
 assert.match(complete, /Demo complete/);
-assert.match(complete, /gathered history and exam findings, wrote and encrypted a student note/i);
+assert.match(complete, /reviewed a bedside cheat sheet, wrote and encrypted a student note/i);
 assert.match(complete, /nothing from this demo was written to your vault/i);
 assert.match(complete, /data-action="exit-guided-demo"/);
 
 console.log("Guided demo session tests passed");
+
+// The guided demo only advances past the cheat-sheets stage when the exact
+// ACS sheet is opened; opening any other sheet must leave the stage alone.
+{
+  const session = { stage: "browse-cheat-sheet" };
+  // createDemoController only touches document/window listeners at creation;
+  // the render passed in here is a stub, so a minimal DOM shim is enough.
+  globalThis.document ??= { addEventListener() {} };
+  globalThis.window ??= { addEventListener() {} };
+  const controller = createDemoController({
+    app: { vault: { activePatientId: DEMO_PATIENT_ID, patients: [createDemoPatient()] } },
+    byId: () => null,
+    escapeHtml: (value) => String(value),
+    getSession: () => session,
+    getView: () => "cheatSheets",
+    render: () => {},
+    selectDemoPacket: () => {}
+  });
+  controller.observeSheetOpened("heart-failure");
+  assert.equal(session.stage, "browse-cheat-sheet", "opening a different sheet must not advance the demo");
+  controller.observeSheetOpened(undefined);
+  assert.equal(session.stage, "browse-cheat-sheet", "a missing sheet id must not advance the demo");
+  controller.observeSheetOpened("acute-coronary-syndrome");
+  assert.equal(session.stage, "open-review", "opening the ACS sheet advances the demo");
+
+  console.log("Guided demo cheat-sheet gate tests passed");
+}

@@ -6,11 +6,11 @@ This app is a local PHI risk-reduction tool, not a legal de-identification certi
 
 - Pasted text is processed in the browser.
 - Raw chart text is never saved to the encrypted vault.
-- Saved patient labels, de-identified admission packets, hospital-day packets, checklist answers, and optional pasted OpenEvidence output remain encrypted in browser-local storage.
+- Saved patient labels, de-identified admission packets, hospital-day packets, and optional pasted OpenEvidence output remain encrypted in browser-local storage.
 - The app has no account system, telemetry, analytics, cloud synchronization, or hosted patient-record store.
-- By default, patient text is not sent over the network. The only patient-text exception is the explicit BYOK workup-formatting action: after the user checks the de-identification confirmation, the app sends only the pasted workup draft directly to OpenAI's API using the user's saved key.
-- The API key is stored only inside the AES-GCM encrypted vault record in browser-local storage. It is never shown again after saving, but it must be present in browser memory while an explicitly requested conversion runs.
-- Text leaves the browser only when the user deliberately copies, exports, downloads, pastes it into another system, or explicitly starts the confirmed BYOK conversion.
+- By default, patient text is not sent over the network. The only patient-text exception is an explicitly confirmed OpenAI request (per-problem plans, ChatGPT chat): the app de-identifies text on-device first, shows exactly what will be sent for review, and transmits only after the user confirms, using the saved key.
+- The API key is stored only inside the AES-GCM encrypted vault record in browser-local storage. It is never shown again after saving, but it must be present in browser memory while an explicitly requested request runs.
+- Text leaves the browser only when the user deliberately copies, exports, downloads, pastes it into another system, or explicitly starts the confirmed OpenAI request.
 
 ## De-Identification
 
@@ -32,7 +32,7 @@ This app is a local PHI risk-reduction tool, not a legal de-identification certi
 ## User Responsibilities
 
 - Review every generated prompt for possible identifiers before use outside the browser.
-- Before using BYOK formatting, confirm that the pasted workup draft is de-identified and that sending it to the selected external service is permitted by institutional policy.
+- Before using an OpenAI request, confirm that the text shown in the review screen is de-identified and that sending it to the selected external service is permitted by institutional policy.
 - Use only institution-approved external tools for clinical information.
 - Use managed devices and approved browsers for real patient workflows.
 - Export encrypted vault data only when moving between authorized devices.

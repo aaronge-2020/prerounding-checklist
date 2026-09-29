@@ -39,12 +39,11 @@ export function createDailySourceController(deps) {
     ];
     return textValues.some((value) => String(value?.deidentifiedText || "").trim())
       || Boolean(draft?.objective?.selectedBlocks?.length)
-      || Boolean(draft?.checklistFindings?.selectedBlocks?.length)
       || Boolean(draft?.problems?.length);
   }
 
   function structuredNoteKey(scope) {
-    return scope === "admission" ? "admission" : deps.selectedChecklistDay(deps.active())?.id || "";
+    return scope === "admission" ? "admission" : deps.selectedDay(deps.active())?.id || "";
   }
 
   function structuredNoteType(scope) {
@@ -53,7 +52,7 @@ export function createDailySourceController(deps) {
 
   function existingStructuredNote(scope) {
     const patient = deps.active();
-    const day = scope === "admission" ? null : deps.selectedChecklistDay(patient);
+    const day = scope === "admission" ? null : deps.selectedDay(patient);
     return scope === "admission" ? patient?.admissionPrimaryTeamNote : day?.primaryTeamNote;
   }
 
@@ -296,7 +295,7 @@ export function createDailySourceController(deps) {
     const innerScroll = captureScrollPositions(current);
     const composer = structuredNoteComposer(scope) || {};
     // Honor the requested field even if the composer could not be persisted
-    // (e.g. no checklist day selected, so the composer key is empty). Without
+    // (e.g. no hospital day selected, so the composer key is empty). Without
     // this the re-render falls back to the first field and the input appears
     // not to update when a different section is selected.
     const effectiveComposer = focusFieldId
@@ -401,7 +400,7 @@ export function createDailySourceController(deps) {
 
   async function saveStructuredPrimaryNote(scope) {
     const patient = deps.active();
-    const day = scope === "admission" ? null : deps.selectedChecklistDay(patient);
+    const day = scope === "admission" ? null : deps.selectedDay(patient);
     if (!patient) throw new Error("Select a patient first.");
     if (scope !== "admission" && !day) throw new Error("Add a hospital day first.");
     const noteType = scope === "admission" ? NOTE_TYPES.H_AND_P : NOTE_TYPES.PROGRESS;
@@ -620,7 +619,7 @@ export function createDailySourceController(deps) {
     const editor = document.querySelector(`[data-source-kind-editor="${scope}"]`);
     if (editor && deps.dailyPresentation?.renderSourceKindEditor) {
       const patient = deps.active();
-      const day = scope === "admission" ? null : deps.selectedChecklistDay(patient);
+      const day = scope === "admission" ? null : deps.selectedDay(patient);
       const dayId = scope === "admission" ? "admission" : day?.id;
       editor.innerHTML = deps.dailyPresentation.renderSourceKindEditor({
         scope,
@@ -769,7 +768,7 @@ export function createDailySourceController(deps) {
   }
 
   async function addSource() {
-    const day = deps.selectedChecklistDay(deps.active());
+    const day = deps.selectedDay(deps.active());
     if (!day) throw new Error("Add a hospital day first.");
     if (deps.app.dailySourceKind === "results" && !deps.app.dailyResultMetadata.label.trim())
       throw new Error("Enter a descriptive result label before adding this result.");
@@ -869,7 +868,7 @@ export function createDailySourceController(deps) {
   }
 
   async function saveSources() {
-    const day = deps.selectedChecklistDay(deps.active());
+    const day = deps.selectedDay(deps.active());
     if (!day) throw new Error("Add a hospital day first.");
     const rows = captureRows();
     if (!rows.length) throw new Error("Add at least one selected-day source first.");

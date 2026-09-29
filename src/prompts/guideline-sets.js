@@ -7,6 +7,7 @@ export const OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY = "prerounding_open_evidence
 export const OBGYN_TASK_GUIDELINES_SEED_KEY = "prerounding_obgyn_task_guidelines_seed_v1";
 export const PRESENTATION_COACH_GUIDELINE_SET_SEED_KEY = "prerounding_presentation_coach_guideline_set_seed_v1";
 export const PRE_OP_PREP_GUIDELINE_SET_SEED_KEY = "prerounding_pre_op_prep_guideline_set_seed_v1";
+export const RETIRED_CHECKLIST_GUIDELINE_SETS_REMOVED_KEY = "prerounding_retired_checklist_guideline_sets_removed_v1";
 
 const OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP = "open_evidence_task_guidelines_v1";
 const OBGYN_TASK_GUIDELINES_SEED_GROUP = "obgyn_task_guidelines_v1";
@@ -15,7 +16,6 @@ const PRE_OP_PREP_GUIDELINE_SET_SEED_GROUP = "pre_op_prep_guideline_v1";
 
 export const DEFAULT_GUIDELINE_SET_SOURCES = Object.freeze([
   { label: "Admission", token: "@admission-guidelines", path: "./prompts/Guidelines-admission.md", task: { id: "initial_admission_rounds", label: "Initial admission rounds", order: 1 } },
-  { label: "Pre-round checklist", token: "@pre-round-checklist-guidelines", path: "./prompts/Pre-round_checklist.md", task: { id: "preround_bedside_exam", label: "Pre-round bedside exam", order: 12 } },
   { label: "Discharge instructions", token: "@discharge-instructions-guidelines", path: "./prompts/Discharge_Instructions.md", task: { id: "discharge_instructions", label: "Discharge instructions", order: 13 } },
   { label: "Consulting", token: "@consulting-guidelines", path: "./prompts/Consulting.md", task: { id: "consulting", label: "Consulting", order: 14 } },
   { label: "Team preferences", token: "@team-preferences", path: "" },
@@ -27,13 +27,11 @@ export const DEFAULT_GUIDELINE_SET_SOURCES = Object.freeze([
   { label: "Presentation editor", token: "@presentation-editor-guidelines", path: "./prompts/Presentation-editor.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "presentation_quality_editor", label: "Coach and verify presentation", order: 5 } },
   { label: "Attending presentation critique", token: "@presentation-critique-guidelines", path: "./prompts/Presentation-critique.md", seedGroup: PRESENTATION_COACH_GUIDELINE_SET_SEED_GROUP, task: { id: "attending_presentation_critique", label: "Attending presentation critique", order: 6 } },
   { label: "Medication organization and explanation", token: "@medication-explainer-guidelines", path: "./prompts/Medication-explainer.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "medication_explainer_by_problem", label: "Medication organization and explanation", order: 9 } },
-  { label: "Medication safety audit", token: "@medication-safety-guidelines", path: "./prompts/Medication-safety.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "medication_safety_audit", label: "Medication safety audit", order: 10 } },
-  { label: "Checklist/workup refinement", token: "@checklist-refinement-guidelines", path: "./prompts/Checklist-refinement.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "checklist_workup_refinement", label: "Checklist/workup refinement", order: 11 } }
+  { label: "Medication safety audit", token: "@medication-safety-guidelines", path: "./prompts/Medication-safety.md", seedGroup: OPEN_EVIDENCE_TASK_GUIDELINES_SEED_GROUP, task: { id: "medication_safety_audit", label: "Medication safety audit", order: 10 } }
 ]);
 
 const DEFAULT_TOKENS = new Set(DEFAULT_GUIDELINE_SET_SOURCES.map((source) => source.token));
 const LEGACY_DEFAULT_ALIASES = new Map([
-  ["@pre-round-checklist-guidelines", ["@pre-round-checklist-updated-guidelines"]],
   ["@discharge-instructions-guidelines", ["@discharge-instructions-updated-guidelines"]]
 ]);
 
@@ -41,7 +39,9 @@ const LEGACY_DEFAULT_ALIASES = new Map([
 // app-managed revisions, not user-created guideline identities. One canonical
 // migration removes them so the prompt menu and Settings have the same source
 // of truth.
-const LEGACY_DEFAULT_TOKEN = /^@(?:admissions?|progress|pre-round-checklist|discharge-instructions|consulting)[a-z0-9-]*guidelines[a-z0-9-]*$/;
+// Matches app-managed guideline tokens from removed defaults so a canonical
+// migration never misclassifies a leftover as a user-created custom set.
+const LEGACY_DEFAULT_TOKEN = /^@(?:admissions?|progress|pre-round-checklist|checklist-refinement|discharge-instructions|consulting)[a-z0-9-]*guidelines[a-z0-9-]*$/;
 
 function slugStem(label) {
   return String(label || "")
@@ -324,7 +324,29 @@ export async function ensureTaskGuidelineSets(sets, { storage = localStorage } =
   const withGeneralTasks = await ensureOpenEvidenceTaskGuidelineSets(sets, { storage });
   const withObGynTasks = await ensureObGynTaskGuidelineSets(withGeneralTasks, { storage });
   const withPresentationCoach = await ensurePresentationCoachGuidelineSet(withObGynTasks, { storage });
-  return ensurePreOpPrepGuidelineSet(withPresentationCoach, { storage });
+  const withPreOpPrep = await ensurePreOpPrepGuidelineSet(withPresentationCoach, { storage });
+  return ensureRetiredChecklistGuidelineSetsRemoved(withPreOpPrep, { storage });
+}
+
+// Removes the app-managed guideline sets for the retired Workups/Checklist
+// features exactly once. The interactive checklist is gone, so its guideline
+// tokens and prompt tasks no longer resolve; leaving stale copies would show
+// dead tasks in the prompt builder. The dedicated marker keeps a later state
+// untouched, and the tokens stay matched by LEGACY_DEFAULT_TOKEN so they are
+// never mistaken for user-created custom sets.
+const RETIRED_CHECKLIST_GUIDELINE_TOKENS = new Set([
+  "@pre-round-checklist-guidelines",
+  "@pre-round-checklist-updated-guidelines",
+  "@checklist-refinement-guidelines"
+]);
+
+export async function ensureRetiredChecklistGuidelineSetsRemoved(sets, { storage = localStorage } = {}) {
+  if (storage.getItem(RETIRED_CHECKLIST_GUIDELINE_SETS_REMOVED_KEY) !== null) return sets;
+  const current = Array.isArray(sets) ? sets : [];
+  const next = current.filter((set) => !RETIRED_CHECKLIST_GUIDELINE_TOKENS.has(set?.token));
+  if (next.length !== current.length) saveGuidelineSets(next, storage);
+  storage.setItem(RETIRED_CHECKLIST_GUIDELINE_SETS_REMOVED_KEY, "1");
+  return next;
 }
 
 export async function ensureCanonicalDefaultGuidelineSets(sets, { legacyTeamPreferences = "", storage = localStorage } = {}) {

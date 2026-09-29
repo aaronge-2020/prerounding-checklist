@@ -3,8 +3,6 @@ import { normalizeSourceCapture } from "../../patient-context/source-captures.js
 
 export const DEMO_PATIENT_ID = "demo_patient_guided_case";
 export const DEMO_DAY_ID = "demo_day_guided_case";
-export const DEMO_WORKUP_ID = "nstemi-prerounds";
-export const DEMO_REQUIRED_ANSWER_ITEM_ID = `${DEMO_WORKUP_ID}:chest-pain-now`;
 export const DEMO_ADMISSION_DATE = "2026-07-17";
 export const DEMO_ASSESSMENT = `61-year-old man with known coronary artery disease, prior LAD drug-eluting stent, hypertension, hyperlipidemia, type 2 diabetes, obesity, and former tobacco use admitted with a high-risk NSTEMI. His ischemic chest pain has improved with nitroglycerin, high-sensitivity troponin peaked at 364 ng/L and is now downtrending, and ECG continues to show lateral ST depressions without ST elevation. He remains hemodynamically stable without arrhythmia or clinical heart failure. Echocardiography shows mildly reduced LVEF of 48% with anterior-wall hypokinesis. He is awaiting early invasive coronary angiography.`;
 
@@ -326,10 +324,7 @@ export function createDemoPatient() {
     id: DEMO_DAY_ID,
     date: DEMO_ADMISSION_DATE,
     label: "HD1 - NSTEMI admission",
-    sourceCaptures: [],
-    checklistSnapshot: null,
-    answers: {},
-    quickNotes: []
+    sourceCaptures: []
   }, 0);
   return {
     ...createPatientRecord("Demo patient · Synthetic NSTEMI case", {
@@ -342,50 +337,21 @@ export function createDemoPatient() {
   };
 }
 
-const DEMO_PREFILLED_ANSWERS = Object.freeze({
-  "nitroglycerin-response": "Chest discomfort relieved promptly with nitroglycerin",
-  "heart-failure-symptoms": "No dyspnea, orthopnea, or new swelling",
-  "rhythm-low-output-symptoms": "No palpitations, dizziness, or syncope",
-  "bleeding-symptoms": "No bleeding symptoms",
-  "ischemic-equivalents": "Mild fatigue only",
-  "medication-history": "Cardiac medications taken consistently without adverse effects",
-  "procedure-readiness": "NPO, understands the procedure, and reports no prior contrast reaction",
-  "glycemic-symptoms": "No hypo- or hyperglycemic symptoms",
-  "overall-appearance": "Comfortable, alert, no diaphoresis or respiratory distress",
-  hemodynamics: "Hemodynamically stable without new oxygen need",
-  "jugular-venous-pressure": "JVP not elevated",
-  "cardiac-auscultation": "Regular rhythm, no new murmur, gallop, or rub",
-  "lung-exam": "Lungs clear throughout, including the bases",
-  "perfusion-pulses": "Warm, well perfused, symmetric palpable pulses",
-  edema: "No peripheral or sacral edema",
-  "chest-wall": "No reproducible chest-wall tenderness",
-  "calf-exam": "No calf asymmetry, warmth, or tenderness",
-  "abdominal-aortic-exam": "Abdomen soft and nontender without a concerning pulsatile mass",
-  "focused-neurologic-exam": "Alert with clear speech and no focal deficit",
-  "bleeding-skin-exam": "No active bleeding or significant bruising"
-});
-
-export function prefillDemoChecklist(patient) {
+// Attaches the sample objective captures (vitals, labs, ECG, echo, medications)
+// to the demo hospital day. Called when the demo reaches the bedside
+// cheat-sheet step, so the note-writing step has objective data without
+// requiring any bedside data entry.
+export function attachDemoObjectiveData(patient) {
   return {
     ...patient,
-    noteDrafts: {
-      ...(patient?.noteDrafts || {}),
-      [DEMO_DAY_ID]: demoNoteDraft(patient?.id)
-    },
     days: (patient?.days || []).map((day) => {
-      if (day.id !== DEMO_DAY_ID || !day.checklistSnapshot) return day;
-      const answers = { ...(day.answers || {}) };
-      for (const item of day.checklistSnapshot.items || []) {
-        if (item.id === DEMO_REQUIRED_ANSWER_ITEM_ID) continue;
-        const selected = DEMO_PREFILLED_ANSWERS[item.itemId];
-        if (selected && item.choices.includes(selected)) answers[item.id] = { selected: [selected], note: "" };
-      }
+      if (day.id !== DEMO_DAY_ID) return day;
       const demoIds = new Set(DEMO_OBJECTIVE_CAPTURES.map((capture) => capture.id));
       const sourceCaptures = [
         ...(day.sourceCaptures || []).filter((capture) => !demoIds.has(capture.id)),
         ...DEMO_OBJECTIVE_CAPTURES.map((capture) => normalizeSourceCapture(capture, { now: () => DEMO_CAPTURE_TIME }))
       ];
-      return { ...day, answers, sourceCaptures };
+      return { ...day, sourceCaptures };
     })
   };
 }

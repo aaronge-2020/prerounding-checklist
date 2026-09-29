@@ -229,29 +229,26 @@ Creatinine: pending
 Sodium: 138`;
   await addDailySource("laboratory_results", dayTwoLabs, 1);
 
-  // Build and complete only one history question and one exam maneuver for
-  // this day; answered findings must flow into the note automatically.
-  await page.click('[data-view-target="workups"]');
-  const catalogMenu = page.locator(".workup-catalog-menu");
-  if (!(await catalogMenu.getAttribute("open"))) await catalogMenu.locator("summary").click();
-  await page.locator(".workup-checkbox").first().check();
-  await page.locator('[data-action="build-checklist"]').first().click();
-  await page.waitForSelector("#checklistSections .checklist-item");
-  const historyItem = page.locator("#checklistSections .checklist-section").filter({ has: page.locator("h3", { hasText: "History" }) }).locator(".checklist-item").first();
-  const examItem = page.locator("#checklistSections .checklist-section").filter({ has: page.locator("h3", { hasText: "Physical Exam" }) }).locator(".checklist-item").first();
-  if (await historyItem.locator("select.checklist-answer").count()) await historyItem.locator("select.checklist-answer").selectOption({ index: 1 });
-  else await historyItem.locator('input.checklist-answer').first().check();
-  if (await examItem.locator("select.checklist-answer").count()) await examItem.locator("select.checklist-answer").selectOption({ index: 1 });
-  else await examItem.locator('input.checklist-answer').first().check();
-  await page.waitForFunction(() => [...document.querySelectorAll("#checklistSections .checklist-item")].filter((item) => item.querySelector("select.checklist-answer")?.value || item.querySelector("input.checklist-answer:checked")).length >= 2);
+  // The interactive Workups/Checklist flow is gone: no new checklist findings
+  // can be built, and the note must not gain checklist-derived content.
 
   // The compact sheet shows every matching row on one page: no pagination.
   await page.click('[data-view-target="review"]');
   await page.waitForSelector("#reviewContent .review-workspace");
   assert.equal(await page.locator("#reviewDataCategory").inputValue(), "all", "opening Patient Data Review must reveal labs, vitals, medications, and results");
   assert.equal(await page.locator(".review-data-pagination").count(), 0, "the compact sheet must not paginate");
-  assert.equal(await page.locator('[data-checklist-finding-kind="history"] li').count(), 1);
-  assert.equal(await page.locator('[data-checklist-finding-kind="exam"] li').count(), 1);
+  // Day 3 is the latest packet with the fullest source set.
+  const day3Value = await page.locator('#reviewPacketSelect option').filter({ hasText: "Hospital day 3" }).getAttribute("value");
+  await page.selectOption("#reviewPacketSelect", day3Value);
+  await page.waitForTimeout(1000);
+  // No checklist findings exist anymore: the interactive checklist is gone
+  // and nothing may flow checklist-derived content into the note.
+  assert.equal(await page.locator('[data-checklist-finding-kind="history"] li').count(), 0);
+  assert.equal(await page.locator('[data-checklist-finding-kind="exam"] li').count(), 0);
+  // Vitals are on day 2.
+  const day2Value = await page.locator('#reviewPacketSelect option').filter({ hasText: "Hospital day 2" }).getAttribute("value");
+  await page.selectOption("#reviewPacketSelect", day2Value);
+  await page.waitForTimeout(2000);
 
   // Vitals and medications are in the note by default; every row is checked.
   const vitalChecks = page.locator(".vital-chip [data-objective-selection-id]");

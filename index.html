@@ -8,14 +8,14 @@
       content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' blob: 'unsafe-inline' 'wasm-unsafe-eval'; script-src-attr 'none'; worker-src 'self' blob:; connect-src 'self' https://huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://raw.githubusercontent.com https://api.openai.com https://rxnav.nlm.nih.gov https://api.fda.gov; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; trusted-types prerounding-app"
     >
     <meta name="theme-color" content="#f7f6f2">
-    <meta name="description" content="Preround is an on-device, encrypted workspace for inpatient pre-rounding: organize hospital-day updates, build bedside checklists, and draft OpenEvidence prompts. Patient data stays in this browser — cloud features clearly say what they send before they send it.">
+    <meta name="description" content="Preround is an on-device, encrypted workspace for inpatient pre-rounding: organize hospital-day updates, draft notes, and chat with an on-device AI. Patient data stays in this browser; optional OpenAI features send de-identified text to OpenAI only when you start them. Offline mode blocks all network requests.">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Preround — local pre-rounding workspace">
-    <meta property="og:description" content="Organize hospital-day updates, build bedside checklists, and draft OpenEvidence prompts — everything encrypted in your browser.">
+    <meta property="og:description" content="Organize hospital-day updates, browse bedside cheat sheets, and draft OpenEvidence prompts — everything encrypted in your browser.">
     <meta property="og:image" content="./assets/apple-touch-icon.png">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Preround — local pre-rounding workspace">
-    <meta name="twitter:description" content="Organize hospital-day updates, build bedside checklists, and draft OpenEvidence prompts — everything encrypted in your browser.">
+    <meta name="twitter:description" content="Organize hospital-day updates, browse bedside cheat sheets, and draft OpenEvidence prompts — everything encrypted in your browser.">
     <title>Preround</title>
     <link rel="icon" href="./favicon.ico">
     <link rel="stylesheet" href="./styles.css?v=20260929-ai-chat-v5">
@@ -34,8 +34,7 @@
         <nav class="primary-nav" aria-label="Workspace sections">
           <button type="button" data-view-target="vault" class="active" data-icon="lock">Vault / Roster</button>
           <button type="button" data-view-target="daily" data-icon="calendar">Hospital Stay</button>
-          <button type="button" data-view-target="workups" data-icon="workup">Workups</button>
-          <button type="button" data-view-target="checklist" data-icon="checklist">Checklist</button>
+          <button type="button" data-view-target="cheatSheets" data-icon="book">Cheat Sheets</button>
           <button type="button" data-view-target="review" data-icon="clipboard">Review Data / Draft Note</button>
           <button type="button" data-view-target="prompts" data-icon="prompt">Prompts</button>
           <button type="button" data-view-target="quickDeid" data-icon="wand">Quick De-ID</button>
@@ -80,11 +79,8 @@
           <section id="dailyView" class="view" aria-labelledby="daily-heading">
             <div id="dailyContent"></div>
           </section>
-          <section id="workupsView" class="view" aria-labelledby="workups-heading">
-            <div id="workupsContent"></div>
-          </section>
-          <section id="checklistView" class="view" aria-labelledby="checklist-heading">
-            <div id="checklistContent"></div>
+          <section id="cheatSheetsView" class="view" aria-labelledby="cheat-sheets-heading">
+            <div id="cheatSheetsContent"></div>
           </section>
           <section id="reviewView" class="view" aria-labelledby="review-heading">
             <div id="reviewContent"></div>
@@ -139,7 +135,7 @@
     <dialog id="removeDayConfirmDialog" class="confirm-dialog" aria-labelledby="removeDayConfirmTitle">
       <form method="dialog">
         <h2 id="removeDayConfirmTitle">Remove this hospital day?</h2>
-        <p id="removeDayConfirmText">This permanently removes the day and its saved checklist answers from this patient.</p>
+        <p id="removeDayConfirmText">This permanently removes the day and its saved answers from this patient.</p>
         <div class="button-row">
           <button value="cancel">Cancel</button>
           <button type="button" data-action="confirm-remove-day" class="danger-button">Remove hospital day</button>
@@ -154,17 +150,6 @@
         <div class="button-row">
           <button value="cancel">Cancel</button>
           <button type="button" data-action="confirm-remove-prompt-task" class="danger-button">Delete prompt</button>
-        </div>
-      </form>
-    </dialog>
-
-    <dialog id="deleteWorkupConfirmDialog" class="confirm-dialog" aria-labelledby="deleteWorkupConfirmTitle">
-      <form method="dialog">
-        <h2 id="deleteWorkupConfirmTitle">Delete this workup?</h2>
-        <p id="deleteWorkupConfirmText">This permanently deletes the workup and its saved items.</p>
-        <div class="button-row">
-          <button value="cancel">Cancel</button>
-          <button id="confirmDeleteWorkupButton" type="button" data-action="confirm-delete-workup" class="danger-button">Delete workup</button>
         </div>
       </form>
     </dialog>
@@ -194,7 +179,7 @@
     <dialog id="deleteVaultConfirmDialog" class="confirm-dialog danger-confirm-dialog" aria-labelledby="deleteVaultConfirmTitle">
       <form method="dialog">
         <h2 id="deleteVaultConfirmTitle">Delete this local vault?</h2>
-        <p>This permanently deletes every patient, hospital day, checklist answer, and workup override stored in this browser. It can't be undone or recovered.</p>
+        <p>This permanently deletes every patient, hospital day, and saved answer stored in this browser. It can't be undone or recovered.</p>
         <label>Type DELETE to confirm
           <input id="deleteVaultConfirmation" autocomplete="off" spellcheck="false" placeholder="DELETE">
         </label>

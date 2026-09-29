@@ -14,7 +14,6 @@ import {
 import {
   addDifferential,
   addPlanProblem,
-  buildChecklistNoteCandidates,
   changeNoteDraftType,
   CLOSING_SECTION_FIELDS,
   createNoteDraft,
@@ -28,7 +27,6 @@ import {
   objectiveEditorGroups,
   objectiveGroupKeyFor,
   reconcileObjectiveBlock,
-  reconcileChecklistFinding,
   refreshObjectiveGroup,
   removeDifferential,
   removeObjectiveGroupWithMemory,
@@ -39,7 +37,6 @@ import {
   reorderPlanProblems,
   reselectObjectiveBlock,
   selectObjectiveBlock,
-  selectChecklistFinding,
   setSectionVisibility,
   studentGuidance,
   updateAssessment,
@@ -317,7 +314,7 @@ export function createReviewController(deps) {
     return selected;
   }
 
-  function reviewDraft(patient, selectedPacketId, index, checklistCandidates) {
+  function reviewDraft(patient, selectedPacketId, index) {
     const key = packetKey(selectedPacketId);
     let draft = deps.app.noteDraftSessions.get(key) || patient?.noteDrafts?.[key] || draftFromSource(patient, key);
     draft = normalizeNoteDraft(draft);
@@ -343,19 +340,6 @@ export function createReviewController(deps) {
     for (const block of draft.objective.selectedBlocks) {
       const candidate = candidates.get(block.selectionId);
       if (candidate) draft = reconcileObjectiveBlock(draft, selectionInputFor(candidate));
-    }
-    const checklistById = new Map(checklistCandidates.map((candidate) => [candidate.id, candidate]));
-    for (const candidate of checklistCandidates) {
-      const existing = draft.checklistFindings.selectedBlocks.find((block) => block.selectionId === candidate.id);
-      draft = existing ? reconcileChecklistFinding(draft, candidate) : selectChecklistFinding(draft, candidate);
-    }
-    if (draft.checklistFindings.selectedBlocks.some((block) => !checklistById.has(block.selectionId))) {
-      draft = normalizeNoteDraft({
-        ...draft,
-        checklistFindings: {
-          selectedBlocks: draft.checklistFindings.selectedBlocks.filter((block) => checklistById.has(block.selectionId))
-        }
-      });
     }
     // Auto-include every vital and medication candidate the student has not
     // explicitly unchecked. Explicit deselections survive re-renders, packet
@@ -386,13 +370,11 @@ export function createReviewController(deps) {
     // the patient record and resolve the ambiguity at the review boundary.
     const index = buildClinicalReviewIndex(patient, { temperatureUnits: patient?.temperatureUnits });
     latestIndex = index;
-    const checklistCandidates = buildChecklistNoteCandidates(patient, packet.id);
-    const draft = reviewDraft(patient, packet.id, index, checklistCandidates);
+    const draft = reviewDraft(patient, packet.id, index);
     return {
       patient,
       packet,
       index,
-      checklistCandidates,
       draft,
       oneLiner: draft.sections.one_liner.deidentifiedText || ""
     };

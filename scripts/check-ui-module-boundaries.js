@@ -19,15 +19,15 @@ for (const legacyTemplate of [
 }
 
 for (const path of [
-  "../src/ui/checklist/presentation.js",
+  "../src/ui/cheat-sheets/presentation.js",
   "../src/ui/redaction/presentation.js",
   "../src/ui/review/presentation.js",
-  "../src/ui/workups/presentation.js",
   "../src/ui/prompts/presentation.js",
   "../src/ui/demo/presentation.js",
   "../src/ui/demo/session.js",
   "../src/ui/settings/presentation.js",
-  "../src/ui/settings/guidelines-presentation.js"
+  "../src/ui/settings/guidelines-presentation.js",
+  "../src/ui/scores/presentation.js"
 ]) {
   const source = await readFile(new URL(path, import.meta.url), "utf8");
   assert.doesNotMatch(source, /\b(?:document|window|navigator)\s*\.\s*(?:querySelector|querySelectorAll|getElementById|createElement|addEventListener|location|clipboard|open)/, `${path} must remain a pure presentation module.`);

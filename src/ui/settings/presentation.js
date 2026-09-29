@@ -59,7 +59,7 @@ export function createSettingsPresentation({ escapeHtml }) {
           <div class="section-heading">
             <div>
               <h2>Bring your own OpenAI key</h2>
-              <p class="muted">Use your own key to format a reviewed, de-identified OpenEvidence workup draft, to fill checklist answers from a de-identified OpenEvidence note, or to generate per-problem assessment &amp; plans (differential, diagnostic and therapeutic plans with citations) from de-identified draft context.</p>
+              <p class="muted">Use your own key to generate per-problem assessment &amp; plans (differential, diagnostic and therapeutic plans with citations) from de-identified draft context, or to chat with ChatGPT about de-identified context you review before sending.</p>
             </div>
           </div>
           <div class="notice settings-security-note">
@@ -80,7 +80,6 @@ export function createSettingsPresentation({ escapeHtml }) {
             <button class="button--primary" type="button" data-action="save-openai-byok">Save encrypted key</button>
             <button class="button--quiet" type="button" data-action="clear-openai-byok" ${apiKeySaved ? "" : "disabled"}>Remove saved key</button>
           </div>
-          <p class="muted settings-helper">Without a saved key, the Workups and Checklist pages fall back to the copy-and-paste ChatGPT formatter prompt.</p>
           </section>
 
           <section class="panel settings-panel settings-panel--backup">

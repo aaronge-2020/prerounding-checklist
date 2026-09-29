@@ -3,9 +3,8 @@ import {
   DEMO_CONTEXT_TEXTS,
   DEMO_DAILY_TEXTS,
   DEMO_DAY_ID,
-  DEMO_PATIENT_ID,
-  DEMO_WORKUP_ID
-} from "./session.js?v=20260921-demo-complete-plan";
+  DEMO_PATIENT_ID
+} from "./session.js?v=20260929-demo-v2";
 
 export function createDemoSessionController({
   app,
@@ -27,17 +26,12 @@ export function createDemoSessionController({
       restoreSelectedStayPacketId: app.selectedStayPacketId,
       restoreDeidMode: app.deidMode,
       restoreAdmissionDate: app.admissionDate,
-      restoreSelectedWorkupEditorId: app.selectedWorkupEditorId,
       restoreSelectedPromptTask: app.selectedPromptTask,
       restorePresentationToEdit: app.presentationToEdit,
       restorePresentationToEditPacketId: app.presentationToEditPacketId,
       restorePresentationToEditEdited: app.presentationToEditEdited,
       restorePromptDayId: app.promptDayId,
-      restorePromptDayFollowsChecklist: app.promptDayFollowsChecklist,
-      restoreDraftWorkup: app.draftWorkup,
-      restoreChecklistSearchQuery: app.checklistSearchQuery,
-      restoreWorkupCatalogQuery: app.workupCatalogQuery,
-      restoreWorkupCatalogOpen: app.workupCatalogOpen,
+      restorePromptDayFollowsSelectedDay: app.promptDayFollowsSelectedDay,
       restoreAdmissionSourceDraft: app.admissionSourceDraft,
       restoreAdmissionSourceKind: app.admissionSourceKind,
       restoreDailySourceDraft: app.dailySourceDraft,
@@ -58,14 +52,12 @@ export function createDemoSessionController({
       ...app.vault,
       activePatientId: DEMO_PATIENT_ID,
       patients: [patient],
-      selectedWorkupIds: [],
       updatedAt: new Date().toISOString()
     };
     app.selectedDayId = DEMO_DAY_ID;
     app.selectedStayPacketId = "admission";
     app.admissionDate = DEMO_ADMISSION_DATE;
     app.deidMode = structuredDeidMode;
-    app.selectedWorkupEditorId = DEMO_WORKUP_ID;
     app.selectedPromptTask = "presentation_quality_editor";
     app.promptDayId = DEMO_DAY_ID;
     app.presentationToEdit = "";
@@ -73,10 +65,6 @@ export function createDemoSessionController({
     app.presentationToEditEdited = false;
     app.noteDraftSessions = new Map();
     app.reviewPacketId = DEMO_DAY_ID;
-    app.draftWorkup = null;
-    app.checklistSearchQuery = "";
-    app.workupCatalogQuery = "";
-    app.workupCatalogOpen = true;
     app.admissionSourceKind = "other_chart_text";
     app.admissionSourceDraft = DEMO_CONTEXT_TEXTS.join("\n\n");
     app.dailySourceKind = "other_chart_text";
@@ -97,17 +85,12 @@ export function createDemoSessionController({
     app.selectedStayPacketId = session.restoreSelectedStayPacketId;
     app.deidMode = session.restoreDeidMode;
     app.admissionDate = session.restoreAdmissionDate;
-    app.selectedWorkupEditorId = session.restoreSelectedWorkupEditorId;
     app.selectedPromptTask = session.restoreSelectedPromptTask;
     app.presentationToEdit = session.restorePresentationToEdit;
     app.presentationToEditPacketId = session.restorePresentationToEditPacketId;
     app.presentationToEditEdited = session.restorePresentationToEditEdited;
     app.promptDayId = session.restorePromptDayId;
-    app.promptDayFollowsChecklist = session.restorePromptDayFollowsChecklist;
-    app.draftWorkup = session.restoreDraftWorkup;
-    app.checklistSearchQuery = session.restoreChecklistSearchQuery;
-    app.workupCatalogQuery = session.restoreWorkupCatalogQuery;
-    app.workupCatalogOpen = session.restoreWorkupCatalogOpen;
+    app.promptDayFollowsSelectedDay = session.restorePromptDayFollowsSelectedDay;
     app.admissionSourceDraft = session.restoreAdmissionSourceDraft;
     app.admissionSourceKind = session.restoreAdmissionSourceKind;
     app.dailySourceDraft = session.restoreDailySourceDraft;
