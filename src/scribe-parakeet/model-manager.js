@@ -320,15 +320,23 @@ function concatChunks(chunks) {
  * Load all cached models from IndexedDB.
  * Returns {frontend, encoder, joint, vad, wespeaker} as ArrayBuffers plus
  * {vocab} as a string. Throws naming any missing model.
+ * onProgress (optional) receives {name, bytes, filesDone, fileCount} as each
+ * file's bytes are read — the 652MB encoder read is the slow step of boot.
  */
-export async function loadModelFiles() {
+export async function loadModelFiles(onProgress) {
   const out = {};
   const missing = [];
+  const total = MODEL_MANIFEST.length;
+  let done = 0;
   for (const entry of MODEL_MANIFEST) {
     const record = await idbGetModel(entry);
     if (!recordIsComplete(entry, record)) { missing.push(entry.name); continue; }
     out[entry.name] =
       entry.kind === 'text' ? record.text : await record.blob.arrayBuffer();
+    done += 1;
+    try {
+      onProgress?.({ name: entry.name, bytes: entry.bytes, filesDone: done, fileCount: total });
+    } catch { /* progress listeners must not break loading */ }
   }
   if (missing.length) {
     throw new Error(

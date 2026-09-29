@@ -18,6 +18,8 @@
  *
  * Message API (postMessage; transfer ArrayBuffers where noted):
  *   {type:'init', files:{frontend,encoder,joint,vad,wespeaker:ArrayBuffer, vocab:string}, preferWebGPU}
+ *     -> {type:'initProgress', stage:'sessions-start', total}   (session creation begins)
+ *     -> {type:'initProgress', stage:'session', label, done, total}  (per network loaded)
  *     -> {type:'ready', info:{eps, ortVersion, threads}}
  *     -> {type:'error', fatal:true, message}
  *   {type:'vad', id, pcm:ArrayBuffer}
@@ -95,7 +97,7 @@ function parseVocab(text) {
 }
 
 async function handleInit(msg) {
-  const { files, preferWebGPU } = msg;
+  const { files, preferWebGPU, id } = msg;
   for (const k of ['frontend', 'encoder', 'joint', 'vad', 'wespeaker', 'vocab']) {
     if (!files || files[k] === undefined) {
       fail(undefined, `init: missing file "${k}"`, true);
@@ -110,12 +112,25 @@ async function handleInit(msg) {
     ort.env.wasm.numThreads = threads;
 
     const encEps = preferWebGPU === false ? ['wasm'] : ['webgpu', 'wasm'];
+    // Report per-session progress: the 652MB encoder session is the long pole
+    // (minutes on first run), and the page must show that instead of stalling.
+    // Every progress/ready message carries the init request id so the page's
+    // client can route it (a reply without id can never resolve init()).
+    postMessage({ type: 'initProgress', id, stage: 'sessions-start', total: 5 });
+    let sessionsDone = 0;
+    const track = (label, p) => p.then((r) => {
+      sessionsDone += 1;
+      try {
+        postMessage({ type: 'initProgress', id, stage: 'session', label, done: sessionsDone, total: 5 });
+      } catch { /* a closed port must not break init */ }
+      return r;
+    });
     const [frontend, encoder, joint, vad, wespeaker] = await Promise.all([
-      createSession(files.frontend, ['wasm'], 'frontend (nemo128)'),
-      createSession(files.encoder, encEps, 'encoder (parakeet int8)'),
-      createSession(files.joint, ['wasm'], 'decoder+joint (int8)'),
-      createSession(files.vad, ['wasm'], 'silero vad'),
-      createSession(files.wespeaker, ['wasm'], 'wespeaker fp32'),
+      track('frontend', createSession(files.frontend, ['wasm'], 'frontend (nemo128)')),
+      track('encoder', createSession(files.encoder, encEps, 'encoder (parakeet int8)')),
+      track('decoder+joint', createSession(files.joint, ['wasm'], 'decoder+joint (int8)')),
+      track('vad', createSession(files.vad, ['wasm'], 'silero vad')),
+      track('wespeaker', createSession(files.wespeaker, ['wasm'], 'wespeaker fp32')),
     ]);
     S = {
       frontend: frontend.session,
@@ -131,6 +146,7 @@ async function handleInit(msg) {
     ID2TOK = parseVocab(files.vocab);
     postMessage({
       type: 'ready',
+      id,
       info: { eps: EPS, ortVersion: ort.env.versions.web, threads },
     });
   } catch (e) {

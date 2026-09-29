@@ -330,4 +330,163 @@ assert.equal(pkg.scripts["test:scribe-parakeet"], "node tests/test-scribe-parake
 assert.ok(pkg.scripts["test:core"].trimEnd().endsWith("npm run test:scribe-parakeet"),
   "test:core chain ends with the new test");
 
+// ------------------------------------------- 6. boot status & engine startup
+
+// The 689MB of models must be TRANSFERRED to the worker (zero-copy), not
+// structured-cloned: files[k] are already ArrayBuffers, so files[k].buffer is
+// undefined and an empty transfer list used to stall boot for many minutes.
+{
+  const w = makeStubWorker();
+  let initTransfer = null;
+  const basePost = w.postMessage.bind(w);
+  w.postMessage = (msg, transfer) => {
+    if (msg.type === "init") initTransfer = transfer;
+    basePost(msg, transfer);
+  };
+  const client = pipe.createWorkerClient(w);
+  const files = {
+    frontend: new ArrayBuffer(8), encoder: new ArrayBuffer(16),
+    joint: new ArrayBuffer(8), vad: new ArrayBuffer(8),
+    wespeaker: new ArrayBuffer(8), vocab: "a 0",
+  };
+  await client.init(files, true);
+  assert.ok(Array.isArray(initTransfer), "init passes a transfer list");
+  assert.equal(initTransfer.length, 5, "all five model buffers are transferred");
+  for (const k of ["frontend", "encoder", "joint", "vad", "wespeaker"]) {
+    assert.ok(initTransfer.includes(files[k]), `${k} buffer is transferred, not copied`);
+  }
+  client.dispose();
+}
+
+// Worker-side init progress must reach the page: the stub emits one
+// initProgress before ready, exactly like the real worker per session.
+{
+  const w = makeStubWorker();
+  const basePost = w.postMessage.bind(w);
+  w.postMessage = (msg, transfer) => {
+    if (msg.type === "init") {
+      queueMicrotask(() => {
+        if (w.onmessage) w.onmessage({ data: { type: "initProgress", id: msg.id, stage: "session", label: "encoder", done: 2, total: 5 } });
+      });
+    }
+    basePost(msg, transfer);
+  };
+  const client = pipe.createWorkerClient(w);
+  const seen = [];
+  await client.init({ frontend: new ArrayBuffer(8) }, true, (p) => seen.push(p));
+  assert.equal(seen.length, 1, "initProgress delivered to onProgress");
+  assert.equal(seen[0].type, "initProgress");
+  assert.equal(seen[0].label, "encoder");
+  client.dispose();
+}
+
+// A worker that dies (importScripts failure, OOM kill) must reject init with
+// the real error, never hang silently.
+{
+  const w = makeStubWorker();
+  w.postMessage = () => {}; // never replies
+  const client = pipe.createWorkerClient(w);
+  assert.equal(typeof w.onerror, "function", "client installs worker.onerror");
+  assert.equal(typeof w.onmessageerror, "function", "client installs worker.onmessageerror");
+  const p = client.init({ frontend: new ArrayBuffer(8) }, true);
+  w.onerror(new Error("importScripts failed"));
+  await assert.rejects(p, /importScripts failed/);
+  client.dispose();
+}
+
+// A fatal worker error message rejects init with its message.
+{
+  const w = makeStubWorker();
+  w.postMessage = (msg) => {
+    queueMicrotask(() => {
+      if (w.onmessage) w.onmessage({ data: { type: "error", id: msg.id, fatal: true, message: "session create failed" } });
+    });
+  };
+  const client = pipe.createWorkerClient(w);
+  await assert.rejects(client.init({ frontend: new ArrayBuffer(8) }, true), /session create failed/);
+  client.dispose();
+}
+
+// initPipeline: stage ordering with injected deps; per-session progress propagates.
+{
+  const stages = [];
+  const w = makeStubWorker();
+  const basePost = w.postMessage.bind(w);
+  w.postMessage = (msg, transfer) => {
+    if (msg.type === "init") {
+      queueMicrotask(() => {
+        if (w.onmessage) w.onmessage({ data: { type: "initProgress", id: msg.id, stage: "session", label: "encoder", done: 2, total: 5 } });
+      });
+    }
+    basePost(msg, transfer);
+  };
+  const files = {
+    frontend: new ArrayBuffer(8), encoder: new ArrayBuffer(8),
+    joint: new ArrayBuffer(8), vad: new ArrayBuffer(8),
+    wespeaker: new ArrayBuffer(8), vocab: "x 0",
+  };
+  const engine = await pipe.initPipeline(
+    (p) => stages.push(p.stage + (p.done != null ? `:${p.done}/${p.total}` : "") + (p.name ? `:${p.name}` : "")),
+    {
+      checkBrowserSupport: () => [],
+      getModelStatus: async () => ["frontend", "encoder", "joint", "vad", "wespeaker", "vocab"]
+        .map((n) => ({ name: n, cached: true })),
+      loadModelFiles: async (onFile) => {
+        const names = ["frontend", "encoder", "joint", "vad", "wespeaker", "vocab"];
+        names.forEach((n, i) => onFile?.({ name: n, bytes: 8, filesDone: i + 1, fileCount: names.length }));
+        return files;
+      },
+      workerFactory: () => w,
+      bootTimeoutMs: 5000,
+    }
+  );
+  assert.ok(engine && engine.client, "initPipeline resolves with a client");
+  const first = (s) => stages.findIndex((x) => x === s || x.startsWith(s + ":"));
+  for (const s of ["support", "status", "load", "transfer", "sessions", "ready"]) {
+    assert.ok(first(s) >= 0, `stage '${s}' is reported`);
+  }
+  assert.ok(first("support") < first("status"), "support before status");
+  assert.ok(first("status") < first("load"), "status before load");
+  assert.ok(first("load") < first("transfer"), "load before transfer");
+  assert.ok(first("transfer") < first("sessions"), "transfer before sessions");
+  assert.ok(first("sessions") < first("ready"), "sessions before ready");
+  assert.ok(stages.some((x) => x === "sessions:2/5"), "per-session progress reaches the page");
+  assert.equal(stages.filter((x) => x.startsWith("load:")).length, 6, "per-file load progress reported");
+  engine.client.dispose();
+}
+
+// initPipeline: a worker that never responds rejects with a timeout error.
+{
+  const w = makeStubWorker();
+  w.postMessage = () => {}; // never replies
+  await assert.rejects(
+    pipe.initPipeline(() => {}, {
+      checkBrowserSupport: () => [],
+      getModelStatus: async () => [{ name: "frontend", cached: true }],
+      loadModelFiles: async () => ({ frontend: new ArrayBuffer(8) }),
+      workerFactory: () => w,
+      bootTimeoutMs: 60,
+    }),
+    /timed out after/,
+    "silent boot is impossible: the timeout guard rejects"
+  );
+}
+
+// Page + app surface: a visible boot status line and an honest record button.
+assert.ok(page.includes('id="engineProc"'), "page has a visible #engineProc boot status");
+assert.ok(page.includes('id="engineProcText"'), "page has #engineProcText");
+assert.ok(app.includes("engineProcText"), "app.js writes boot stages to the status line");
+assert.ok(app.includes("Loading neural networks into memory"), "app.js narrates the slow session-load stage");
+assert.ok(app.includes("Starting engine"), "record button shows boot state");
+assert.ok(app.includes("Engine ready"), "app.js confirms engine-ready visibly");
+assert.ok(pipelineSrc.includes("initProgress"), "pipeline routes worker init progress");
+assert.ok(pipelineSrc.includes("bootTimeoutMs"), "pipeline has a boot timeout");
+assert.ok(pipelineSrc.includes("worker.onerror"), "pipeline installs worker.onerror");
+assert.ok(worker.includes("type: 'initProgress'"), "worker posts per-session init progress");
+assert.ok(/initProgress', id/.test(worker),
+  "worker tags initProgress with the request id (without it the page can never route progress)");
+assert.ok(/type: 'ready',\s+id,/.test(worker),
+  "worker tags ready with the request id (without it init() can never resolve)");
+assert.ok(modelManagerSrc.includes("onProgress"), "loadModelFiles reports per-file progress");
+
 console.log("scribe-parakeet contract tests passed");

@@ -45,6 +45,8 @@ const els = {
   levelBar: $('levelBar'),
   recProc: $('recProc'),
   recProcText: $('recProcText'),
+  engineProc: $('engineProc'),
+  engineProcText: $('engineProcText'),
   bannerMic: $('bannerMic'),
   btnRetryMic: $('btnRetryMic'),
   bannerWorker: $('bannerWorker'),
@@ -153,33 +155,68 @@ async function runDownload() {
 
 // --------------------------------------------------------------- engine ---
 
+/**
+ * Human-readable boot status for each initPipeline stage. The 652MB encoder
+ * session load is the long pole (minutes on first run), so the sessions stage
+ * says so explicitly instead of stalling silently.
+ */
+function bootStageText(p) {
+  switch (p.stage) {
+    case 'support': return 'Checking browser capabilities…';
+    case 'status': return 'Checking model cache…';
+    case 'load': {
+      if (p.name) {
+        const entry = MODEL_MANIFEST.find((e) => e.name === p.name);
+        const label = entry ? entry.label : p.name;
+        const count = p.filesDone != null && p.fileCount != null ? ` (${p.filesDone}/${p.fileCount})` : '';
+        return `Reading ${label} from local cache…${count}`;
+      }
+      return 'Reading models from local cache…';
+    }
+    case 'transfer': return 'Handing models to the transcription engine…';
+    case 'sessions': {
+      const count = p.total != null ? ` (${p.done ?? 0}/${p.total})` : '';
+      return `Loading neural networks into memory…${count} — this can take several minutes the first time`;
+    }
+    case 'ready': return 'Engine ready ✓';
+    default: return null;
+  }
+}
+
 async function bootEngine() {
   if (engine) return engine;
   if (booting) return booting;
   booting = (async () => {
     hide(els.bannerWorker);
+    // Honest state while booting: the Record button says what it is doing and
+    // a dedicated status line narrates the stages below it.
+    els.btnRecord.disabled = true;
+    els.btnRecord.textContent = '● Starting engine…';
+    show(els.engineProc);
+    els.engineProcText.textContent = 'Starting engine…';
     try {
       engine = await initPipeline((p) => {
         if (p.stage === 'transcribe') return;
-        els.recProcText.textContent =
-          p.stage === 'worker' ? 'Processing… starting engine'
-          : p.stage === 'load' ? 'Processing… loading models'
-          : 'Processing…';
+        const t = bootStageText(p);
+        if (t) els.engineProcText.textContent = t;
       });
       const info = engine.info || {};
       els.workerEpInfo.textContent =
         `onnxruntime-web ${info.ortVersion || 'n/a'} · ` +
         `threads=${info.threads ?? 'n/a'} · ` +
         Object.entries(info.eps || {}).map(([k, v]) => `${k}:${v}`).join(' ');
-      updateRecordButtons();
+      els.engineProcText.textContent = 'Engine ready ✓';
+      setTimeout(() => hide(els.engineProc), 3000);
       return engine;
     } catch (e) {
+      hide(els.engineProc);
       if (e?.code === 'models-not-cached') throw e; // setup card handles it
       els.workerErrText.textContent = `The transcription engine failed to start: ${e?.message || e}`;
       show(els.bannerWorker);
       throw e;
     } finally {
       booting = null;
+      updateRecordButtons();
     }
   })();
   return booting;
@@ -277,6 +314,7 @@ function updateRecordButtons() {
   els.btnStop.disabled = !rec;
   if (!engine && !rec) els.btnRecord.title = 'Start the engine first (download models, or wait for auto-start)';
   else els.btnRecord.title = '';
+  if (!rec && !booting) els.btnRecord.textContent = '● Record';
 }
 
 function startTimer() {

@@ -4,7 +4,8 @@
  *
  * Owns the browser side of the inference contract implemented by
  * parakeet-worker.js (classic worker, message API):
- *   {type:'init', files, preferWebGPU:true} -> {type:'ready', info}
+ *   {type:'init', files, preferWebGPU:true} -> {type:'initProgress', stage, done, total, label}*
+ *                                             {type:'ready', info}
  *   {type:'vad', id, pcm}                   -> {type:'vadResult', id, segments:[{start,end}]}
  *   {type:'transcribe', id, pcm}            -> {type:'transcribeProgress', id, framesDone, framesTotal}*
  *                                             {type:'transcribeResult', id, text, tokens:[{id,start,end}], audioSec}
@@ -60,7 +61,7 @@ export function createWorkerClient(worker) {
 
   worker.onmessage = (ev) => {
     const msg = (ev && ev.data) || {};
-    if (msg.type === 'transcribeProgress') {
+    if (msg.type === 'transcribeProgress' || msg.type === 'initProgress') {
       const h = progressHandlers.get(msg.id);
       if (h) {
         try { h(msg); } catch { /* listener errors must not break dispatch */ }
@@ -92,6 +93,26 @@ export function createWorkerClient(worker) {
     }
   };
 
+  // A worker that dies during importScripts, throws outside a handler, or is
+  // OOM-killed never posts a message; without this, init() would hang forever
+  // with no error surfaced to the page.
+  const onWorkerError = (ev) => {
+    const detail = ev && (ev.message || (ev.error && ev.error.message)) || 'unknown worker error';
+    const err = new Error(`Transcription engine worker failed: ${detail}`);
+    err.code = 'worker-error';
+    err.fatal = true;
+    fatalError = fatalError || err;
+    for (const [, e] of pending) e.reject(err);
+    pending.clear();
+    progressHandlers.clear();
+  };
+  try {
+    worker.onerror = onWorkerError;
+    worker.onmessageerror = onWorkerError;
+  } catch {
+    // ignore: stub workers in tests may not accept handler assignment
+  }
+
   function call(type, payload, { transfer, onProgress } = {}) {
     if (fatalError) return Promise.reject(fatalError);
     const id = nextMsgId++;
@@ -109,12 +130,22 @@ export function createWorkerClient(worker) {
   }
 
   return {
-    /** files: {frontend, encoder, joint, vad, wespeaker} ArrayBuffers + {vocab} string. */
-    init(files, preferWebGPU = true) {
+    /**
+     * files: {frontend, encoder, joint, vad, wespeaker} ArrayBuffers + {vocab} string.
+     * The model ArrayBuffers are TRANSFERRED (zero-copy): after init() returns,
+     * the caller's copies are neutered. onProgress receives the worker's
+     * {type:'initProgress'} messages while sessions are being created.
+     */
+    init(files, preferWebGPU = true, onProgress) {
+      // files[k] are already ArrayBuffers (from Blob.arrayBuffer()): transfer
+      // the buffers themselves. (A previous revision mapped files[k].buffer,
+      // which is undefined on an ArrayBuffer, silently producing an empty
+      // transfer list — so the ~689MB of models were structured-cloned
+      // instead of transferred, spiking memory ~3x and stalling boot.)
       const transfer = ['frontend', 'encoder', 'joint', 'vad', 'wespeaker']
-        .map((k) => files[k]?.buffer)
+        .map((k) => files[k])
         .filter((b) => b instanceof ArrayBuffer);
-      return call('init', { files, preferWebGPU }, { transfer });
+      return call('init', { files, preferWebGPU }, { transfer, onProgress });
     },
     /** pcm: Float32Array @16kHz. Resolves {type:'vadResult', id, segments:[{start,end}]}. */
     vad(pcm) {
@@ -179,20 +210,40 @@ function pipelineError(code, message, extra) {
   return e;
 }
 
+/** Race a promise against a timeout; rejects with {code:'worker-init-timeout'}. */
+function withTimeout(promise, ms, message) {
+  let timer = null;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(pipelineError('worker-init-timeout', message)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
 /**
  * Boot the pipeline: capability check -> model cache status -> load files ->
- * spawn worker -> init (preferWebGPU) -> ready.
+ * transfer to worker -> session creation -> ready.
+ *
+ * Reports stages via onProgress: 'support', 'status', 'load' (per file:
+ * {name, bytes, filesDone, fileCount}), 'transfer', 'sessions'
+ * ({done, total, label} as each network finishes loading), 'ready'.
  *
  * Throws {code:'unsupported-browser'}, {code:'models-not-cached', status},
- * or {code:'worker-error'|'worker-init-failed'}.
- * opts.workerFactory: () => worker-like, for tests.
+ * {code:'worker-init-failed'}, or {code:'worker-init-timeout'} (no response
+ * from the worker within opts.bootTimeoutMs, default 12 minutes).
+ *
+ * opts: {workerFactory, checkBrowserSupport, getModelStatus, loadModelFiles,
+ *        bootTimeoutMs} — injectable for tests.
  */
 export async function initPipeline(onProgress, opts = {}) {
   const report = (stage, detail) => {
     try { onProgress?.({ stage, ...detail }); } catch { /* ignore */ }
   };
+  const checkSupport = opts.checkBrowserSupport || checkBrowserSupport;
+  const getStatus = opts.getModelStatus || getModelStatus;
+  const loadFiles = opts.loadModelFiles || loadModelFiles;
+  const bootTimeoutMs = opts.bootTimeoutMs ?? 12 * 60 * 1000;
   report('support');
-  const missing = checkBrowserSupport();
+  const missing = checkSupport();
   if (missing.length) {
     throw pipelineError(
       'unsupported-browser',
@@ -201,23 +252,39 @@ export async function initPipeline(onProgress, opts = {}) {
     );
   }
   report('status');
-  const status = await getModelStatus();
+  const status = await getStatus();
   const allCached = status.length > 0 && status.every((s) => s.cached);
   if (!allCached) {
     throw pipelineError('models-not-cached', 'Model files are not downloaded yet.', { status });
   }
   report('load');
-  const files = await loadModelFiles();
-  report('worker');
+  const files = await loadFiles((f) => report('load', {
+    name: f.name, bytes: f.bytes, filesDone: f.filesDone, fileCount: f.fileCount,
+  }));
+  report('transfer');
   const worker = opts.workerFactory
     ? opts.workerFactory()
     : new Worker(new URL('./parakeet-worker.js', import.meta.url));
   const client = createWorkerClient(worker);
+  report('sessions');
   let ready;
   try {
-    ready = await client.init(files, true);
+    ready = await withTimeout(
+      client.init(files, true, (p) => {
+        if (p && p.type === 'initProgress') {
+          report('sessions', { done: p.done, total: p.total, label: p.label });
+        }
+      }),
+      bootTimeoutMs,
+      `Transcription engine start timed out after ` +
+      `${Math.max(1, Math.round(bootTimeoutMs / 60000))} minute(s) with no response ` +
+      `from the engine worker. The 652 MB model may be too large for this browser ` +
+      `tab — close other tabs and retry, or use Chrome/Edge with hardware ` +
+      `acceleration enabled.`
+    );
   } catch (e) {
     try { client.dispose(); } catch { /* ignore */ }
+    if (e && e.code === 'worker-init-timeout') throw e;
     throw pipelineError('worker-init-failed', `Transcription engine failed to start: ${e.message}`, { cause: e });
   }
   if (!ready || ready.type !== 'ready') {
