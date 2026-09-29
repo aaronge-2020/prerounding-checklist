@@ -11874,6 +11874,30 @@ body.vault-locked .vault-access {
 }
 
 /* ─── Collapsible draft-note sections (I1) ─────────────────────────── */
+/* A11y: section header uses grid — <summary> stays a direct child of
+   <details> (required for native disclosure toggle). Interactive controls
+   live in .ed-section-actions, a sibling of <summary>, never inside it. */
+details.ed-section {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 8px;
+}
+details.ed-section > summary.ed-section-summary {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+details.ed-section > .ed-section-actions {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+details.ed-section > .ed-section-body {
+  grid-column: 1 / -1;
+}
 details.ed-section > summary.ed-section-summary {
   cursor: pointer;
   list-style: none;
@@ -11890,7 +11914,6 @@ details.ed-section > summary.ed-section-summary::before {
 }
 details.ed-section:not([open]) > summary.ed-section-summary::before { content: "▸"; }
 details.ed-section > summary.ed-section-summary .ed-label { display: inline-flex; }
-details.ed-section:not([open]) > summary.ed-section-summary { margin-bottom: 0; }
 
 /* ─── Persistent patient identity bar (NIST S1) ────────────────────── */
 /* Patient identifiers in a reserved area at the top, persisting regardless

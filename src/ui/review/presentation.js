@@ -432,7 +432,13 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     // preserve which sections the student opened/closed.
     const id = sectionId || String(labelText).toLowerCase().replace(/[^a-z0-9]+/g, "-");
     const isCollapsed = activeCollapsedSections instanceof Set ? activeCollapsedSections.has(id) : false;
-    return `<details class="ed-section"${isCollapsed ? "" : " open"}${sectionAttr} data-draft-section-id="${escapeHtml(id)}"><summary class="ed-section-summary">${editorLabel(labelText, labelExtra)}</summary><div class="ed-section-body">${bodyHtml}</div></details>`;
+    // A11y: interactive controls (help/pull buttons, visibility toggle, add-
+    // problem) must NOT live inside <summary> — interactive descendants of
+    // <summary> are an accessibility violation. They render as a direct child
+    // of <details> (sibling of <summary>), laid out in the header row via CSS
+    // grid. <summary> stays a direct child so native disclosure toggle works.
+    const actions = labelExtra ? `<div class="ed-section-actions">${labelExtra}</div>` : "";
+    return `<details class="ed-section"${isCollapsed ? "" : " open"}${sectionAttr} data-draft-section-id="${escapeHtml(id)}"><summary class="ed-section-summary">${editorLabel(labelText)}</summary>${actions}<div class="ed-section-body">${bodyHtml}</div></details>`;
   }
 
   function editorSubRegion(fieldAttr, subLabel, value, placeholder) {
