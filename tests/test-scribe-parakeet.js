@@ -18,6 +18,10 @@
  *  5. Desktop wiring: index.html gains the Scribe Pro (Laptop-only) entry,
  *     mobile.html stays clean, service-worker precache is additive,
  *     package.json wires the new test at the end of test:core.
+ *  6. The in-app view matches the app theme (scoped styles use the app's
+ *     tokens, no dark palette) and is state-driven: a setup hero while the
+ *     models are missing, recording as the hero once ready, voice enrollment
+ *     as a collapsed disclosure, and mic-denied guidance with recovery steps.
  */
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
@@ -348,6 +352,30 @@ for (const id of ["scribe-pro-heading", "bannerUnsupported", "fileList", "overal
 assert.ok(index.includes("#scribeProView button{"), "scribe button styles are scoped");
 assert.ok(index.includes("#scribeProView .card{"), "scribe card styles are scoped");
 assert.ok(!index.includes("\nbody{"), "no unscoped body rule in index.html");
+
+// The in-app Scribe Pro view matches the app theme: its scoped styles use the
+// app's theme tokens and never smuggle in a private dark palette.
+const scribeStyle = index.slice(index.indexOf("<style>"), index.indexOf("</style>"));
+for (const hex of ["#0f141b", "#182029", "#4da3ff", "#3ecf8e", "#ff6b6b", "#1d4ed8", "#2a3542", "#223041"]) {
+  assert.ok(!scribeStyle.includes(hex), `scribe view: no dark-theme hex ${hex}`);
+}
+for (const rule of ["#scribeProView .card{", "#scribeProView .banner.err{",
+  "#scribeProView .seg .who.you{", "#scribeProView .timer{"]) {
+  assert.ok(index.includes(rule), `scribe view styles ${rule}`);
+}
+assert.ok(/var\(--(surface|border|ink|muted|accent|success|danger|primary)\)/.test(scribeStyle),
+  "scribe view styles use app theme tokens");
+assert.ok(!/--bg:\s*#/.test(scribeStyle), "scribe view does not redefine --bg");
+
+// State-driven ease-of-use structure: one primary action per state.
+assert.ok(app.includes("dataset.modelsReady"), "scribe module sets the setup/ready state hook");
+assert.ok(index.includes('<details class="card" id="enrollCard"'),
+  "voice enrollment is a collapsed disclosure");
+assert.ok(index.includes('data-models-ready="false"'),
+  "CSS keys the setup hero off the state hook");
+assert.ok(index.includes("Site settings"), "mic-denied banner explains how to grant permission");
+assert.ok(index.includes("Recording unlocks once the models finish downloading"),
+  "record card explains why recording is unavailable before setup");
 
 for (const f of ["./scribe-parakeet.html", "./src/scribe-parakeet/app.js",
   "./src/scribe-parakeet/pipeline.js", "./src/scribe-parakeet/model-manager.js",

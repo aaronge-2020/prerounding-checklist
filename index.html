@@ -43,69 +43,80 @@
     <link rel="icon" href="./favicon.ico">
     <link rel="stylesheet" href="./styles.css?v=20260929-ai-chat-v10">
     <style>
-    /* Scribe Pro in-app view: the standalone scribe-parakeet.html styles,
-       scoped under #scribeProView so they never leak into the app shell. */
-#scribeProView{
-    --bg:#0f141b; --card:#182029; --line:#2a3542; --text:#e8eef4; --muted:#93a3b5;
-    --accent:#4da3ff; --good:#3ecf8e; --bad:#ff6b6b; --warn:#ffbf47;
-  }
+    /* Scribe Pro in-app view: styles scoped under #scribeProView so they never
+       leak into the app shell. Uses the app's light-theme tokens (no local
+       palette) so the view always matches the rest of the site. */
 #scribeProView, #scribeProView *{box-sizing:border-box}
-#scribeProView{margin:0;background:var(--bg);color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    line-height:1.45}
+#scribeProView [hidden]{display:none !important}
 #scribeProView .wrap{max-width:760px;margin:0 auto;padding:20px 16px 64px}
 #scribeProView header.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:4px}
-#scribeProView header.top h1{font-size:22px;margin:0}
+#scribeProView header.top h1{font-size:22px;margin:0;color:var(--ink)}
 #scribeProView .badge{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;
-    background:#243b2e;color:var(--good);border:1px solid #2f5c40}
-#scribeProView .back{margin-left:auto;font-size:14px;color:var(--accent);text-decoration:none}
-#scribeProView .back:hover{text-decoration:underline}
+    background:var(--accent-soft);color:var(--accent);border:1px solid #b9cfd2}
 #scribeProView .sub{color:var(--muted);font-size:14px;margin:2px 0 18px}
-#scribeProView .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+#scribeProView .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
     padding:16px;margin:14px 0}
-#scribeProView .card h2{font-size:16px;margin:0 0 10px}
+#scribeProView .card h2{font-size:16px;margin:0 0 10px;color:var(--ink)}
 #scribeProView .card p{margin:8px 0;font-size:14px}
 #scribeProView .muted{color:var(--muted)}
 #scribeProView .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-#scribeProView button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);
-    background:#223041;color:var(--text);padding:9px 16px;font-size:14px}
-#scribeProView button.primary{background:#1d4ed8;border-color:#1d4ed8;color:#fff;font-weight:600}
-#scribeProView button.danger{background:#3a1d1d;border-color:#7a2e2e;color:#ffb3b3}
-#scribeProView button:disabled{opacity:.45;cursor:default}
-#scribeProView .banner{display:none;border-radius:10px;padding:12px 14px;margin:12px 0;font-size:14px;
-    border:1px solid}
+#scribeProView button{font:inherit;cursor:pointer}
+#scribeProView button.primary{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600}
+#scribeProView button.primary:hover:not(:disabled){background:var(--primary-hover);border-color:var(--primary-hover)}
+#scribeProView button.danger{color:var(--danger);border-color:var(--danger);background:var(--danger-bg)}
+#scribeProView #btnRecord{font-size:16px;padding:12px 24px;border-radius:var(--radius-md)}
+#scribeProContent[data-models-ready="false"] #btnDownload{font-size:16px;padding:12px 24px;border-radius:var(--radius-md)}
+#scribeProContent[data-models-ready="false"] #setupCard{border-left:3px solid var(--accent)}
+#scribeProContent[data-models-ready="true"] #setupDetails{display:none}
+#scribeProView .rec-hint{display:none}
+#scribeProContent[data-models-ready="false"] .rec-hint{display:block}
+#scribeProView .banner{display:none;border-radius:4px;padding:10px 12px;margin:12px 0;font-size:14px}
 #scribeProView .banner.show{display:block}
-#scribeProView .banner.err{background:#2a1518;border-color:#7a2e2e;color:#ffc9c9}
-#scribeProView .banner.warn{background:#2a2113;border-color:#7a5a1e;color:#ffe1a8}
+#scribeProView .banner.err{border-left:3px solid var(--danger);background:var(--danger-bg);color:#81433e}
+#scribeProView .banner.warn{border-left:3px solid var(--warning);background:var(--warning-bg);color:#7c5a17}
+#scribeProView .banner strong{color:inherit}
 #scribeProView .banner .row{margin-top:8px}
+#scribeProView .banner ol,#scribeProView .banner ul{margin:8px 0 4px;padding-left:20px}
+#scribeProView .banner li{margin:4px 0}
 #scribeProView .file{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:8px 0;
     border-bottom:1px solid var(--line);font-size:13px}
 #scribeProView .file:last-of-type{border-bottom:none}
-#scribeProView .file .name{font-weight:600}
+#scribeProView .file .name{font-weight:600;color:var(--text)}
 #scribeProView .file .meta{color:var(--muted);text-align:right;white-space:nowrap}
-#scribeProView .file .bar{grid-column:1/-1;height:6px;background:#0c1117;border-radius:4px;overflow:hidden}
+#scribeProView .file.done .meta{color:var(--success)}
+#scribeProView .file .bar{grid-column:1/-1;height:6px;background:var(--line);border-radius:4px;overflow:hidden}
 #scribeProView .file .bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:4px}
-#scribeProView .file.done .bar i{background:var(--good)}
+#scribeProView .file.done .bar i{background:var(--success)}
 #scribeProView .overall{margin-top:12px}
-#scribeProView .overall .bar{height:10px;background:#0c1117;border-radius:6px;overflow:hidden}
+#scribeProView .overall .bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden}
 #scribeProView .overall .bar i{display:block;height:100%;width:0;background:var(--accent)}
 #scribeProView .overall .lbl{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-top:6px}
-#scribeProView .ready-pill{display:inline-block;font-size:13px;font-weight:600;color:var(--good);
-    border:1px solid #2f5c40;background:#16281d;border-radius:999px;padding:4px 12px;margin-top:10px}
-#scribeProView .timer{font-variant-numeric:tabular-nums;font-size:28px;font-weight:600}
-#scribeProView .meter{height:10px;background:#0c1117;border-radius:6px;overflow:hidden;flex:1;min-width:120px}
-#scribeProView .meter i{display:block;height:100%;width:0;background:var(--good)}
-#scribeProView .seg{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:10px 0;background:#141c25}
+#scribeProView .ready-pill{display:inline-block;font-size:13px;font-weight:600;color:var(--success);
+    border:1px solid #bfe3cd;background:#eef7f1;border-radius:999px;padding:4px 12px;margin-top:10px}
+#scribeProView .timer{font-variant-numeric:tabular-nums;font-size:28px;font-weight:600;color:var(--ink)}
+#scribeProView .meter{height:10px;background:var(--line);border-radius:6px;overflow:hidden;flex:1;min-width:120px}
+#scribeProView .meter i{display:block;height:100%;width:0;background:var(--success)}
+#scribeProView .seg{border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 12px;margin:10px 0;background:var(--surface)}
 #scribeProView .seg .who{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-#scribeProView .seg .who.you{color:var(--good)}
+#scribeProView .seg .who.you{color:var(--success)}
 #scribeProView .seg .who.patient{color:var(--accent)}
-#scribeProView .seg .who.speaker{color:var(--warn)}
+#scribeProView .seg .who.speaker{color:var(--warning)}
 #scribeProView .seg .ts{font-size:12px;color:var(--muted);margin-left:8px;font-variant-numeric:tabular-nums}
-#scribeProView .seg .txt{margin:6px 0 0;font-size:15px;white-space:pre-wrap}
+#scribeProView .seg .txt{margin:6px 0 0;font-size:15px;white-space:pre-wrap;color:var(--text)}
 #scribeProView .empty{color:var(--muted);font-size:14px}
-#scribeProView .privacy{border:1px dashed #3a4a5c;border-radius:10px;padding:12px 14px;font-size:14px;
-    background:#121922;margin:14px 0}
+#scribeProView details.card{padding:0}
+#scribeProView details.card summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;
+    padding:16px;font-size:16px;font-weight:600;color:var(--ink);border-radius:var(--radius-md)}
+#scribeProView details.card summary::-webkit-details-marker{display:none}
+#scribeProView details.card summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+#scribeProView details.card summary .chev{margin-left:auto;color:var(--muted);transition:transform 150ms ease}
+#scribeProView details.card[open] summary .chev{transform:rotate(180deg)}
+#scribeProView details.card .details-body{padding:0 16px 16px}
+#scribeProView .privacy{border:1px dashed var(--line-strong);border-radius:var(--radius-md);padding:12px 14px;font-size:14px;
+    background:var(--surface-subtle);margin:14px 0;color:var(--text)}
 #scribeProView .attr{font-size:13px;color:var(--muted)}
+#scribeProView .attr h2{font-size:14px}
+#scribeProView .attr ul{padding-left:20px;margin:8px 0}
 #scribeProView .attr li{margin:4px 0}
 #scribeProView .attr a{color:var(--accent)}
 #scribeProView .proc{display:none;align-items:center;gap:10px;font-size:14px;color:var(--muted);margin-top:10px}
@@ -225,14 +236,16 @@
 
   <section class="card" id="setupCard" aria-labelledby="setupH">
     <h2 id="setupH">1 · Model setup</h2>
-    <p class="muted">The models download once from Hugging Face (~690 MB), are stored in this browser's IndexedDB, and then run fully offline.</p>
-    <div id="fileList"></div>
-    <div class="overall">
-      <div class="bar" aria-hidden="true"><i id="overallBar"></i></div>
-      <div class="lbl"><span id="overallText">Checking cache…</span><span id="overallPct"></span></div>
-    </div>
-    <div class="row" style="margin-top:12px">
-      <button class="primary" id="btnDownload">Download models (~690 MB, once)</button>
+    <div id="setupDetails">
+      <p class="muted">One download, then it works offline. The models come from Hugging Face (~690 MB), are stored in this browser's IndexedDB, and run fully on this device afterwards. Best done on Wi-Fi — you only do this once.</p>
+      <div id="fileList"></div>
+      <div class="overall">
+        <div class="bar" aria-hidden="true"><i id="overallBar"></i></div>
+        <div class="lbl"><span id="overallText">Checking cache…</span><span id="overallPct"></span></div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="primary" id="btnDownload">Download models (~690 MB, once)</button>
+      </div>
     </div>
     <div><span class="ready-pill" id="offlinePill" hidden>✓ Ready offline — everything runs on this device</span></div>
     <div class="banner err" id="bannerDownload" role="alert">
@@ -241,30 +254,24 @@
     </div>
   </section>
 
-  <section class="card" id="enrollCard" aria-labelledby="enrollH">
-    <h2 id="enrollH">2 · Voice enrollment <span class="muted" style="font-weight:400">(optional)</span></h2>
-    <p class="muted">Record a 12-second sample of <em>your</em> voice. Later transcripts label matching speech as “You” and everything else as “Patient”. Only the voiceprint (a small numeric embedding) is saved on this device — never audio.</p>
-    <div class="row">
-      <button id="btnEnrollRec">Record 12s sample</button>
-      <button class="primary" id="btnEnrollSave" disabled>Save voiceprint</button>
-      <button class="danger" id="btnEnrollClear" hidden>Clear voiceprint</button>
-    </div>
-    <p id="enrollStatus" class="muted" role="status">Not enrolled.</p>
-    <div class="proc" id="enrollProc"><span class="spin" aria-hidden="true"></span><span>Processing voiceprint…</span></div>
-  </section>
-
   <section class="card" id="recCard" aria-labelledby="recH">
-    <h2 id="recH">3 · Record</h2>
+    <h2 id="recH">2 · Record</h2>
     <div class="row">
       <button class="primary" id="btnRecord">● Record</button>
       <button id="btnStop" disabled>■ Stop</button>
       <span class="timer" id="timer">0:00</span>
       <div class="meter" aria-hidden="true"><i id="levelBar"></i></div>
     </div>
+    <p class="muted rec-hint">Recording unlocks once the models finish downloading above.</p>
     <div class="proc" id="engineProc"><span class="spin" aria-hidden="true"></span><span id="engineProcText">Starting engine…</span></div>
     <div class="proc" id="recProc"><span class="spin" aria-hidden="true"></span><span id="recProcText">Processing…</span></div>
     <div class="banner err" id="bannerMic" role="alert">
-      <span>Microphone access was denied. Allow microphone access for this page, then retry.</span>
+      <strong>Microphone access was denied.</strong> The browser is blocking this page from using the microphone.
+      <ol>
+        <li>Click the lock (or tune) icon in the address bar, then choose <strong>Site settings</strong>.</li>
+        <li>Set <strong>Microphone</strong> to <strong>Allow</strong>, then return here and retry below.</li>
+        <li>On iPhone: open the Settings app → Apps → Safari → Microphone, and allow microphone access for websites.</li>
+      </ol>
       <div class="row"><button id="btnRetryMic">Retry microphone</button></div>
     </div>
     <div class="banner err" id="bannerWorker" role="alert">
@@ -275,14 +282,28 @@
   </section>
 
   <section class="card" id="transcriptCard" aria-labelledby="trH">
-    <h2 id="trH">4 · Transcript</h2>
-    <div id="transcriptList"><p class="empty">No transcript yet. Record above, then stop to transcribe on-device.</p></div>
+    <h2 id="trH">3 · Transcript</h2>
+    <div id="transcriptList"><p class="empty">No transcript yet. Press Record above, then Stop — the transcript appears here, transcribed on this device.</p></div>
     <div class="row" style="margin-top:12px">
       <button id="btnCopy" disabled>Copy transcript</button>
       <button id="btnShare" disabled>Share…</button>
     </div>
     <p class="muted" style="font-size:13px">Experimental — review and verify the transcript before any clinical use. Timestamps are approximate.</p>
   </section>
+
+  <details class="card" id="enrollCard">
+    <summary aria-labelledby="enrollH"><span id="enrollH">Voice enrollment <span class="muted" style="font-weight:400">(optional)</span></span><span class="chev" aria-hidden="true">▾</span></summary>
+    <div class="details-body">
+      <p class="muted">Record a 12-second sample of <em>your</em> voice. Later transcripts label matching speech as “You” and everything else as “Patient”. Only the voiceprint (a small numeric embedding) is saved on this device — never audio.</p>
+      <div class="row">
+        <button id="btnEnrollRec">Record 12s sample</button>
+        <button class="primary" id="btnEnrollSave" disabled>Save voiceprint</button>
+        <button class="danger" id="btnEnrollClear" hidden>Clear voiceprint</button>
+      </div>
+      <p id="enrollStatus" class="muted" role="status">Not enrolled.</p>
+      <div class="proc" id="enrollProc"><span class="spin" aria-hidden="true"></span><span>Processing voiceprint…</span></div>
+    </div>
+  </details>
 
   <div class="privacy" role="note">
     Audio never leaves this device. Models download once from Hugging Face, then everything runs locally.

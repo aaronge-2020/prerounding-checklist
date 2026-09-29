@@ -125,6 +125,10 @@ async function refreshSetup() {
   setOverall(loaded, TOTAL_BYTES);
   const allCached = status.length > 0 && status.every((s) => s.cached);
   els.offlinePill.hidden = !allCached;
+  // State hook for the view layout: CSS shows the setup hero while models are
+  // missing and collapses the setup card to a slim status once cached.
+  const scribeView = document.getElementById('scribeProContent');
+  if (scribeView) scribeView.dataset.modelsReady = String(allCached);
   els.btnDownload.disabled = allCached;
   els.btnDownload.textContent = allCached
     ? 'Models cached ✓'
