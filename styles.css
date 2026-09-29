@@ -13049,15 +13049,19 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 12px;
 }
+/* Compact review modal: wider than tall content needs, tight vertical
+   rhythm, ONE scrollbar (the body). Head/stats/actionbar/foot are
+   flex:none siblings that stay pinned; per-piece nested scrollers are
+   gone so nothing hides inside nested viewports. */
 .aic-hipaa-modal {
   background: var(--surface, #fff);
   color: var(--ink, #0f172a);
-  border-radius: 16px;
+  border-radius: 14px;
   width: 100%;
-  max-width: 880px;
-  max-height: 92dvh;
+  max-width: 1080px;
+  max-height: 94dvh;
   display: flex;
   flex-direction: column;
   box-shadow: 0 24px 70px rgba(15, 23, 42, 0.4);
@@ -13065,43 +13069,45 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 }
 .aic-hipaa-head {
   display: flex;
-  gap: 14px;
+  gap: 10px;
   align-items: flex-start;
-  padding: 20px 24px 0;
+  padding: 12px 16px 0;
+  flex: none;
 }
 .aic-hipaa-shield {
   flex: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   background: #dbeafe;
   color: #1d4ed8;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.aic-hipaa-shield svg { width: 24px; height: 24px; }
-.aic-hipaa-head h2 { margin: 0; font-size: 20px; letter-spacing: -0.01em; }
-.aic-hipaa-head p { margin: 4px 0 0; font-size: 13.5px; color: var(--muted, #64748b); }
+.aic-hipaa-shield svg { width: 20px; height: 20px; }
+.aic-hipaa-head h2 { margin: 0; font-size: 17px; letter-spacing: -0.01em; }
+.aic-hipaa-head p { margin: 2px 0 0; font-size: 12.5px; color: var(--muted, #64748b); }
 .aic-hipaa-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  padding: 16px 24px 0;
+  gap: 8px;
+  padding: 10px 16px 0;
+  flex: none;
 }
 .aic-hipaa-stat {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
   border: 1px solid var(--border, #e2e8f0);
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: 8px;
+  padding: 7px 10px;
   background: var(--surface-2, #f8fafc);
 }
 .aic-hipaa-stat-ic {
   flex: none;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: #e0e7ff;
   color: #4338ca;
@@ -13116,28 +13122,31 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .aic-hipaa-stat-tx span { font-size: 12px; color: var(--muted, #64748b); }
 .aic-hipaa-stat-tx strong { font-size: 14.5px; }
 .aic-hipaa-body {
-  padding: 16px 24px;
+  padding: 10px 16px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
 }
 .aic-hipaa-sec-title {
-  margin: 6px 0 0;
-  font-size: 11.5px;
+  margin: 4px 0 0;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted, #64748b);
 }
 .aic-hipaa-msg {
-  font-size: 13.5px;
+  font-size: 13px;
   background: var(--surface-2, #f8fafc);
   border: 1px solid var(--border, #e2e8f0);
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: 8px;
+  padding: 9px 12px;
   white-space: pre-wrap;
   word-break: break-word;
+  flex: none;
 }
 .aic-hipaa-note {
   display: flex;
@@ -13145,7 +13154,7 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   align-items: flex-start;
   font-size: 12.5px;
   color: #92400e;
-  margin: 8px 0 0;
+  margin: 6px 0 0;
 }
 .aic-hipaa-note svg { flex: none; width: 15px; height: 15px; margin-top: 1px; }
 .aic-hipaa-piece {
@@ -13162,8 +13171,8 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 11px 14px;
+  gap: 8px;
+  padding: 8px 12px;
   background: var(--surface-2, #f8fafc);
   border: 0;
   cursor: pointer;
@@ -13189,12 +13198,12 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .aic-hipaa-chip--red { background: #fde68a; color: #92400e; }
 .aic-hipaa-piece-body {
   font-size: 12.5px;
-  line-height: 1.6;
-  padding: 12px 14px;
+  line-height: 1.55;
+  padding: 8px 12px;
   white-space: pre-wrap;
   word-break: break-word;
-  max-height: 260px;
-  overflow-y: auto;
+  /* No nested scroller: the modal body owns the single scrollbar, so long
+     documents never hide inside a 260px viewport. */
   border-top: 1px solid var(--border, #e2e8f0);
   color: #334155;
 }
@@ -13211,10 +13220,11 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .aic-hipaa-flags {
   border: 1px solid #fcd34d;
   background: #fffbeb;
-  border-radius: 10px;
-  padding: 12px 14px;
-  font-size: 13px;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12.5px;
   color: #78350f;
+  flex: none;
 }
 .aic-hipaa-flags > strong { display: flex; align-items: center; gap: 8px; font-size: 13.5px; margin-bottom: 6px; }
 .aic-hipaa-flags > strong svg { width: 16px; height: 16px; }
@@ -13224,10 +13234,11 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .aic-hipaa-foot {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 24px;
+  gap: 12px;
+  padding: 10px 16px;
   border-top: 1px solid var(--border, #e2e8f0);
   background: var(--surface, #fff);
+  flex: none;
 }
 .aic-hipaa-ack {
   flex: 1;
@@ -13343,10 +13354,10 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .aic-hipaa-badge--new { background: #dbeafe; color: #1d4ed8; }
 .aic-hipaa-badge--changed { background: #fef3c7; color: #b45309; }
 .aic-hipaa-badge--reviewed { background: #dcfce7; color: #15803d; }
-.aic-hipaa-sughead { display: flex; align-items: center; justify-content: space-between; margin: 12px 0 6px; }
+.aic-hipaa-sughead { display: flex; align-items: center; justify-content: space-between; margin: 8px 0 4px; }
 .aic-hipaa-sughead strong { font-size: 0.85rem; }
 .aic-hipaa-sug-all { display: inline-flex; align-items: center; gap: 4px; font-size: 0.78rem; }
-.aic-hipaa-sug { border: 1px solid var(--border, #e2e8f0); border-radius: 10px; padding: 8px 10px; margin-bottom: 6px; display: flex; flex-direction: column; gap: 6px; background: var(--surface, #fff); }
+.aic-hipaa-sug { border: 1px solid var(--border, #e2e8f0); border-radius: 8px; padding: 6px 10px; margin-bottom: 4px; display: flex; flex-direction: column; gap: 4px; background: var(--surface, #fff); }
 .aic-hipaa-sug.is-reviewed { background: color-mix(in srgb, var(--text, #0f172a) 3%, var(--surface, #fff)); }
 .aic-hipaa-sug-text { display: flex; align-items: baseline; gap: 8px; font-size: 0.83rem; flex-wrap: wrap; }
 .aic-hipaa-sug-orig { text-decoration: line-through; color: var(--muted, #64748b); word-break: break-word; }
@@ -13383,12 +13394,13 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .aic-hipaa-actionbar {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
   background: var(--surface-2, #f8fafc);
   border: 1px solid var(--border, #e2e8f0);
-  border-radius: 10px;
-  padding: 8px 12px;
+  border-radius: 8px;
+  padding: 7px 12px;
+  margin: 8px 16px 0;
   flex: none;
 }
 .aic-hipaa-actionbar-tx { font-size: 13px; }

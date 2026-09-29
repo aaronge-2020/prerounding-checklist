@@ -3,7 +3,7 @@
 // src/ui/ai-chat/controller.js.
 
 import { splitThinking } from "../../local-llm/thinking.js?v=20260927-local-llm-v4";
-import { renderChatMarkdown } from "../../local-llm/markdown.js?v=20260928-local-llm-v2";
+import { renderChatMarkdown } from "../../local-llm/markdown.js?v=20260929-local-llm-v3";
 
 export function createAiChatPresentation({ escapeHtml, icon }) {
   // Assistant reply body: reasoning goes in a collapsed dropdown (hidden by
@@ -387,13 +387,14 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     const history = Number(info.historyTokens || 0);
     const total = guidelines + patient + history;
     const windowSize = Number(info.contextWindow || 0) || 4096;
+    const windowName = info.windowLabel ? ` · ${escapeHtml(info.windowLabel)}` : "";
     const pct = Math.max(total > 0 ? 1 : 0, Math.min(100, Math.round((total / windowSize) * 100)));
     return `
       <div class="aic-meter">
         <span class="aic-meter-bar" aria-hidden="true"><span style="width:${pct}%"></span></span>
         <span class="aic-meter-label">~${total.toLocaleString()} / ${windowSize.toLocaleString()} tokens (${pct}%)</span>
       </div>
-      <p class="aic-muted aic-side-sub">Guidelines ~${guidelines.toLocaleString()} · Patient ~${patient.toLocaleString()} · Conversation ~${history.toLocaleString()}${info.historyCount ? ` (${info.historyCount} message${info.historyCount === 1 ? "" : "s"})` : ""}</p>`;
+      <p class="aic-muted aic-side-sub">Guidelines ~${guidelines.toLocaleString()} · Patient ~${patient.toLocaleString()} · Conversation ~${history.toLocaleString()}${info.historyCount ? ` (${info.historyCount} message${info.historyCount === 1 ? "" : "s"})` : ""}${windowName}</p>`;
   }
 
   function renderSidebarService(clinicalService) {

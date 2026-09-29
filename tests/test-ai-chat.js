@@ -857,7 +857,7 @@ function makeHarness({ patient = controllerFixturePatient(), prefs = {}, deidStu
     setStatus: (m) => statuses.push(String(m)),
     render: () => { ctrl.render(); },
     getDraftNoteText: () => draftText,
-    currentPreferences: () => ({ openAiApiKey: "sk-test", openAiModel: "gpt-4o-mini", medicalService: "medicine", ...prefs }),
+    currentPreferences: () => ({ openAiApiKey: "sk-test", openAiModel: "gpt-5.4-mini", medicalService: "medicine", ...prefs }),
     onChatServiceChange: () => {},
     deidDeps: deidStub,
     chatDeps: chatStub
@@ -1543,4 +1543,188 @@ async function driveRemoteCompression(h) {
   assert.ok(transcript.includes("Earlier summary."), "prior summary text preserved");
   const after = h.ctrl.getRemoteState();
   assert.equal(after.messages.filter((m) => m.summary).length, 1, "exactly one summary remains");
+}
+
+// ---------------------------------------------------------------------------
+// controller.js: sidebar context budget meters the ACTIVE mode
+// ---------------------------------------------------------------------------
+
+function budgetMeter(html) {
+  const m = html.match(/~([\d,]+)\s*\/\s*([\d,]+)\s*tokens/);
+  assert.ok(m, "sidebar renders a context budget meter");
+  return { used: m[1], window: m[2] };
+}
+
+// Full remote send through the review gate (de-id stub redacts CanaryName).
+async function sendReviewedOnce(h, message) {
+  const review = await driveSend(h, message);
+  assert.equal(review.phase, "ready", "review ready");
+  acceptAllAndAck(h);
+  assert.equal(await confirmSend(h), true, "send happened");
+}
+
+// Clicks send and waits for the direct-send path: no review modal appears
+// and the OpenAI stub sees a new call.
+async function driveSendExpectSkip(h, message) {
+  const before = h.chatStub.calls.length;
+  h.ctrl.click(sendRemoteAction(message));
+  const start = Date.now();
+  for (;;) {
+    const review = h.ctrl.getRemoteReview();
+    if (review && (review.phase === "ready" || review.phase === "failed")) {
+      throw new Error(`expected a direct send, but the review modal opened (phase ${review.phase})`);
+    }
+    if (h.chatStub.calls.length > before) {
+      await tick(30);
+      assert.equal(h.ctrl.getRemoteReview(), null, "no review modal after the direct send");
+      return;
+    }
+    if (Date.now() - start > 8000) throw new Error("timed out waiting for the direct send");
+    await tick();
+  }
+}
+
+{
+  // Remote mode meters the remote conversation against the selected
+  // OpenAI model's real context window (GPT-6 Luna: 1.05M tokens).
+  const h = makeHarness({ prefs: { openAiModel: "gpt-6-luna" } });
+  await sendReviewedOnce(h, "first question");
+  const meter = budgetMeter(h.html());
+  assert.equal(meter.window, "1,050,000", "remote budget uses the GPT-6 Luna window");
+  assert.ok(h.html().includes("GPT-6 Luna"), "remote budget names the active model");
+  assert.ok(h.ctrl.getRemoteState().messages.length >= 2, "remote history accumulated");
+}
+
+{
+  // Returning to on-device mode restores the local model window
+  // (4,096 tokens) instead of keeping the remote one.
+  const h = makeHarness({ prefs: { openAiModel: "gpt-6-luna" } });
+  await sendReviewedOnce(h, "first question");
+  assert.equal(budgetMeter(h.html()).window, "1,050,000", "remote window while in ChatGPT mode");
+  h.ctrl.click(actionTarget("ai-chat-mode", { mode: "local" }));
+  const meter = budgetMeter(h.html());
+  assert.equal(meter.window, "4,096", "on-device budget restores the local window");
+  assert.ok(!h.html().includes("1,050,000"), "remote window is gone in on-device mode");
+}
+
+{
+  // A cheaper-window model meters against its own window.
+  const h = makeHarness({ prefs: { openAiModel: "gpt-5.4-mini" } });
+  await sendReviewedOnce(h, "first question");
+  assert.equal(budgetMeter(h.html()).window, "400,000", "budget follows the selected model");
+}
+
+// ---------------------------------------------------------------------------
+// controller.js: PHI review opens only when new context is added
+// ---------------------------------------------------------------------------
+
+{
+  // A clean follow-up with unchanged, already-reviewed context skips the
+  // review modal entirely — every message is still de-identified, but the
+  // unchanged context is not re-reviewed.
+  const h = makeHarness({});
+  await sendReviewedOnce(h, "first question");
+  const deidCallsBefore = h.deidStub.calls.length;
+  const msgsBefore = h.ctrl.getRemoteState().messages.length;
+  await driveSendExpectSkip(h, "second question, nothing new");
+  assert.ok(h.ctrl.getRemoteState().messages.length > msgsBefore, "follow-up message sent directly");
+  assert.equal(h.ctrl.getRemoteReview(), null, "no review modal for unchanged context");
+  // The new message itself was still de-identified exactly once.
+  assert.equal(h.deidStub.calls.length, deidCallsBefore + 1, "follow-up message de-identified once");
+}
+
+{
+  // A message with fresh de-identification findings reopens the modal even
+  // when the context is unchanged and fully reviewed.
+  const h = makeHarness({});
+  await sendReviewedOnce(h, "first question");
+  const review = await driveSend(h, "tell me about CanaryName");
+  assert.equal(review.phase, "ready", "message-level findings reopen the review modal");
+  assert.ok((review.messageCounts || {}).NAME > 0, "the message carries fresh redaction counts");
+  assert.ok(review.messageTransformed.includes("[NAME]"), "message findings are visible in the review");
+}
+
+{
+  // Changed chart context reopens the modal even when the new message is
+  // clean — simulating a chart update between sends.
+  const h = makeHarness({});
+  await sendReviewedOnce(h, "first question");
+  h.app.vault.patients[0].contextSections[0].deidentifiedText =
+    "Patient CanaryName presents with chest pain. Now also short of breath.";
+  const review = await driveSend(h, "clean follow-up");
+  assert.equal(review.phase, "ready", "changed context reopens the review modal");
+  const hpi = review.pieces.find((p) => p.id === "admission:hpi");
+  assert.equal(hpi.badge, "changed", "edited piece is marked changed");
+}
+
+{
+  // Cancelling the review leaves its redaction records pending, so the
+  // next send reopens the modal even with unchanged context and a clean
+  // message.
+  const h = makeHarness({});
+  const first = await driveSend(h, "first question");
+  assert.equal(first.phase, "ready", "first send opens the review modal");
+  h.ctrl.click(actionTarget("ai-chat-hipaa-cancel"));
+  assert.equal(h.ctrl.getRemoteReview(), null, "cancel closes the review");
+  assert.equal(h.chatStub.calls.length, 0, "cancelled review never sent");
+  const second = await driveSend(h, "second question");
+  assert.equal(second.phase, "ready", "pending records reopen the review modal");
+}
+
+// ---------------------------------------------------------------------------
+// controller.js: composer Enter behavior
+// ---------------------------------------------------------------------------
+
+function fakeKeyEvent({ key = "Enter", shiftKey = false, isComposing = false, inComposer = true } = {}) {
+  const input = {
+    value: "typed message",
+    closest: (sel) => (sel === "[data-ai-chat-input]" && inComposer ? input : null)
+  };
+  let prevented = false;
+  return {
+    input,
+    prevented: () => prevented,
+    event: { key, shiftKey, isComposing, target: input, preventDefault: () => { prevented = true; } }
+  };
+}
+
+{
+  // Plain Enter sends: the controller handles the key, prevents the
+  // browser default, and clears the composer.
+  const h = makeHarness({});
+  const { event, input, prevented } = fakeKeyEvent();
+  assert.equal(h.ctrl.keydown(event), true, "Enter is handled");
+  assert.ok(prevented(), "Enter default is prevented");
+  assert.equal(input.value, "", "composer cleared after Enter");
+}
+
+{
+  // Shift+Enter is left alone so the browser inserts a newline.
+  const h = makeHarness({});
+  const { event, input, prevented } = fakeKeyEvent({ shiftKey: true });
+  assert.equal(h.ctrl.keydown(event), false, "Shift+Enter is not intercepted");
+  assert.equal(input.value, "typed message", "composer keeps its text on Shift+Enter");
+  assert.ok(!prevented(), "default not prevented on Shift+Enter");
+}
+
+{
+  // Enter during IME composition is ignored so CJK input is not sent
+  // mid-composition.
+  const h = makeHarness({});
+  const { event, input } = fakeKeyEvent({ isComposing: true });
+  assert.equal(h.ctrl.keydown(event), false, "IME Enter is not intercepted");
+  assert.equal(input.value, "typed message", "composer keeps its text during IME composition");
+}
+
+{
+  // Enter outside the composer is ignored.
+  const h = makeHarness({});
+  let prevented = false;
+  const outsider = { value: "x", closest: () => null };
+  const handled = h.ctrl.keydown({
+    key: "Enter", shiftKey: false, isComposing: false, target: outsider,
+    preventDefault: () => { prevented = true; }
+  });
+  assert.equal(handled, false, "Enter outside the composer is ignored");
+  assert.ok(!prevented, "default not prevented outside the composer");
 }

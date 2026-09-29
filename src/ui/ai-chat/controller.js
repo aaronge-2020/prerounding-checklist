@@ -301,11 +301,25 @@ export function createAiChatController({
     const { pieces, selectedIds } = contextPieces(draft);
     const selectedSet = new Set(selectedIds);
     const modelRecord = localLlmModelByKey(state.chat.modelKey);
-    const contextWindow = modelRecord?.contextWindow || 4096;
+    // The sidebar budget meters the ACTIVE mode: ChatGPT mode counts the
+    // remote conversation against the selected OpenAI model's context
+    // window; on-device mode counts the local conversation against the
+    // local model's window. (The per-message meter under the chat shows
+    // the last request's measured usage; this is the planning budget.)
+    const remotePrefsForBudget = remotePrefs();
+    const isRemoteBudget = state.mode === "remote";
+    const remotePricing = isRemoteBudget ? pricingForModel(remotePrefsForBudget.openAiModel) : null;
+    const contextWindow = isRemoteBudget
+      ? remotePricing?.contextWindow || 0
+      : modelRecord?.contextWindow || 4096;
+    const budgetWindowLabel = isRemoteBudget
+      ? remotePricing?.label || String(remotePrefsForBudget.openAiModel || "")
+      : modelRecord?.label || "";
+    const budgetMessages = isRemoteBudget ? state.remote.messages : state.chat.messages;
     const guidelines = String(settings().systemGuidelines || "").trim() || DEFAULT_SYSTEM_GUIDELINES;
     const guidelinesTokens = estimateTokens(guidelines);
     const historyTokens = estimateTokens(
-      state.chat.messages.map((m) => m.text).join("\n")
+      budgetMessages.map((m) => m.text).join("\n")
     );
     const pieceTokens = pieces.reduce(
       (sum, piece) => sum + (selectedSet.has(piece.id) ? Math.ceil(piece.chars / CHARS_PER_TOKEN) : 0),
@@ -361,9 +375,10 @@ export function createAiChatController({
         })),
         guidelinesTokens,
         historyTokens,
-        historyCount: state.chat.messages.length,
+        historyCount: budgetMessages.length,
         selectedTokens: pieceTokens,
-        contextWindow
+        contextWindow,
+        windowLabel: budgetWindowLabel
       },
       sidebarOpen: state.sidebarOpen,
       clinicalService: clinicalServiceInfo(),
@@ -736,6 +751,32 @@ export function createAiChatController({
     return count;
   }
 
+  // Informational de-id flags describe the model run, not PHI in the text —
+  // they never need human eyes on their own.
+  const DEID_INFORMATIONAL_FLAG_RE = /^(Model:|Structured-only de-identification\.|No PHI spans detected)/;
+
+  // True when the de-identified message itself needs human eyes: the model
+  // found redactable spans (counts) or raised a non-informational flag.
+  function messageHasDeidFindings(messageResult) {
+    const counts = messageResult?.counts || {};
+    if (Object.keys(counts).length > 0) return true;
+    const flags = messageResult?.flags || [];
+    return flags.some((flag) => !DEID_INFORMATIONAL_FLAG_RE.test(String(flag || "")));
+  }
+
+  // True when the review modal must open: any piece (custom instructions or
+  // context) is new/changed, any redaction decision is still pending, or
+  // the message itself has actionable findings. Unchanged context + a clean
+  // message sends directly without reopening the modal.
+  function reviewNeedsHumanEyes(review) {
+    for (const piece of [review?.guidelines, ...(review?.pieces || [])]) {
+      if (!piece) continue;
+      if (piece.badge !== "reviewed") return true;
+    }
+    if (pendingRecordCount(review) > 0) return true;
+    return messageHasDeidFindings({ counts: review?.messageCounts, flags: review?.messageFlags });
+  }
+
   // The student's current text selection, for the highlight-to-redact flow.
   // The app's global mousedown handler already preventDefaults button
   // mousedowns, so the selection survives clicking the floating Redact pill.
@@ -1013,6 +1054,18 @@ export function createAiChatController({
         .filter((piece, index) => index === 0 || piece.redactionTotal > 0 || piece.warnings.length > 0 || piece.flags.length > 0)
         .map((piece) => piece.id);
       rebuildTransmit(review);
+      // Reviewed, unchanged context + a clean message: skip the modal and
+      // send the exact payload the earlier review approved. Every send
+      // still de-identifies the message fresh; only the manual re-review
+      // is skipped, and only when nothing needs human eyes.
+      if (!reviewNeedsHumanEyes(review)) {
+        const transmit = review.transmit;
+        const transformedMessage = review.messageTransformed;
+        state.remote.review = null;
+        render();
+        await doRemoteSend({ input: transmit.input, transformedMessage });
+        return;
+      }
       render();
     } catch (error) {
       // Fail closed: no message/context content, no acknowledgement, no Send.
