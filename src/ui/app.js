@@ -4064,6 +4064,18 @@ async function runQuickDeid() {
   renderStatusBar();
 }
 
+// Form submits are routed here because the CSP blocks inline onsubmit
+// handlers: chat sends go to the active chat controller, and every other
+// form just has its navigation cancelled (form-action 'none' would block
+// it anyway). The controllers' submit handlers already preventDefault,
+// so this also keeps the Send-button click path working without the
+// browser attempting a form navigation.
+function handleSubmit(event) {
+  const form = event.target?.closest?.("form");
+  if (form && form.matches("[data-ai-chat-form]") && app.view === "aiChat" && aiChatController.submit(event)) return;
+  event.preventDefault();
+}
+
 function handleChange(event) {
   if (event.target.id === "vaultPassphrase") {
     clearVaultUnlockError();
@@ -4494,6 +4506,7 @@ function bindEvents() {
   document.addEventListener("click", handleClick);
   document.addEventListener("change", handleChange);
   document.addEventListener("input", handleInput);
+  document.addEventListener("submit", handleSubmit);
   // Prevent action buttons from stealing focus on mousedown. When a button
   // receives focus, the browser scrolls it into view — clicking a button at
   // the top while scrolled down yanks the view to the top. Preventing the

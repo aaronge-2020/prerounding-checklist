@@ -244,9 +244,9 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       <div class="aic-messages" data-ai-chat-messages aria-live="polite">${renderLocalMessages(chat, activeLabel)}</div>
       ${renderContextMeter(chat)}
       <div class="aic-composer">
-        <form data-ai-chat-form class="aic-form" onsubmit="return false;">
+        <form data-ai-chat-form class="aic-form">
           <div class="aic-input" contenteditable="${ready && !chat.streaming ? "true" : "false"}" data-ai-chat-input role="textbox" aria-multiline="true" aria-label="Chat message" data-placeholder="${ready ? "Message local AI…" : "Get a model from the Model menu first"}"></div>
-          <button type="submit" data-action="ai-chat-send" class="aic-send" ${ready && !chat.streaming ? "" : "disabled"} aria-label="Send">${icon("send")}</button>
+          <button type="button" data-action="ai-chat-send" class="aic-send" ${ready && !chat.streaming ? "" : "disabled"} aria-label="Send">${icon("send")}</button>
         </form>
         ${renderDisclaimer(activeLabel)}
       </div>`;
@@ -281,9 +281,9 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       </div>
       <div class="aic-messages" data-ai-chat-messages aria-live="polite">${renderRemoteMessages(remote)}</div>
       <div class="aic-composer">
-        <form data-ai-chat-form class="aic-form" onsubmit="return false;">
+        <form data-ai-chat-form class="aic-form">
           <div class="aic-input" contenteditable="${canCompose ? "true" : "false"}" data-ai-chat-input role="textbox" aria-multiline="true" aria-label="ChatGPT message" data-placeholder="${gated ? escapeHtml(disabledReason) : (hasApiKey ? "Message ChatGPT…" : "Add an OpenAI key in Settings first")}"${disabledReason ? ` title="${escapeHtml(disabledReason)}"` : ""}></div>
-          <button type="submit" data-action="ai-chat-send-remote" class="aic-send" ${canCompose ? "" : "disabled"} aria-label="Send">${icon("send")}</button>
+          <button type="button" data-action="ai-chat-send-remote" class="aic-send" ${canCompose ? "" : "disabled"} aria-label="Send">${icon("send")}</button>
         </form>
         <p class="aic-disclaimer">${icon("alert")} <span>ChatGPT — every medical fact is cited. Verify against primary sources before acting.</span></p>
       </div>`;

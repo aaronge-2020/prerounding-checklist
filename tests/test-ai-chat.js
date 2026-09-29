@@ -15,6 +15,7 @@
 // All fixtures are synthetic and PHI-free.
 
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 import {
   CHAT_SERVICE_OPTIONS,
@@ -1162,6 +1163,45 @@ async function confirmSend(h) {
   assert.ok(!systemPrompt.includes("Labor & Delivery"), "legacy chatService ignored");
   assert.ok(systemPrompt.includes("internal medicine wards"), "clinical medicalService used");
   assert.ok(systemPrompt.includes("STUDENT'S CUSTOM INSTRUCTIONS:"), "reviewed guidelines appended");
+}
+
+// ---------------------------------------------------------------------------
+// presentation.js + app.js: CSP compliance for chat forms
+// Regression test: inline event handlers are blocked by the CSP's
+// script-src-attr 'none', and form navigations are blocked by form-action
+// 'none'. The chat composer must therefore carry no inline handlers and no
+// submit-type buttons, and the app must route submits through a delegated
+// listener instead.
+// ---------------------------------------------------------------------------
+
+{
+  const inlineHandler = /\son[a-z]+\s*=/i;
+  const localBase = {
+    ...base,
+    hardware: {
+      recommendation: {
+        models: [{ model: { key: "qwen3-1.7b", label: "Qwen3 1.7B", blurb: "Small, fast." }, available: true }],
+        recommendedKey: "qwen3-1.7b"
+      }
+    }
+  };
+  const localHtml = presentation.render({ ...localBase, mode: "local", remote: { messages: [], sending: false, webSearch: true, review: null }, hasApiKey: false });
+  const remoteHtml = presentation.render({ ...base, mode: "remote", remote: { messages: [], sending: false, webSearch: true, review: null }, hasApiKey: true });
+  for (const [label, html] of [["local", localHtml], ["remote", remoteHtml]]) {
+    assert.ok(!inlineHandler.test(html), `${label} mode chat markup has no inline event handlers (CSP script-src-attr)`);
+    assert.ok(!html.includes('type="submit"'), `${label} mode send button is not a submit button (would trigger blocked form navigation)`);
+    assert.ok(html.includes("data-ai-chat-form"), `${label} mode composer form present`);
+  }
+}
+
+{
+  const appSource = readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8");
+  assert.ok(appSource.includes('addEventListener("submit", handleSubmit)'), "app.js registers a delegated submit listener");
+  assert.ok(appSource.includes("function handleSubmit(event)"), "app.js defines handleSubmit");
+  for (const path of ["../src/ui/ai-chat/presentation.js", "../src/ui/scores/presentation.js"]) {
+    const src = readFileSync(new URL(path, import.meta.url), "utf8");
+    assert.ok(!src.includes("onsubmit="), `${path} has no inline onsubmit handlers`);
+  }
 }
 
 console.log("ai-chat tests passed");

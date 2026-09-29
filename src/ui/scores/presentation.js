@@ -237,7 +237,7 @@ export function createScoresPresentation({ escapeHtml }) {
         ${guide.pearlsPitfalls ? `<div class="mdc-trio-panel" id="mdc-acc-pearlsPitfalls" data-mdc-acc-panel="pearlsPitfalls" hidden>${blockHtml(guide.pearlsPitfalls)}</div>` : ""}
         ${guide.whyUse ? `<div class="mdc-trio-panel" id="mdc-acc-whyUse" data-mdc-acc-panel="whyUse" hidden>${blockHtml(guide.whyUse)}</div>` : ""}` : ""}
         ${patientLabel ? `<p class="mdc-patientline">Inputs marked <span class="score-binding-badge">from patient</span> are pulled from ${escapeHtml(patientLabel)}\u2019s saved data \u2014 verify before use.${hasBindings ? ` <button type="button" class="score-repull" data-score-repull>Re-pull from patient</button>` : ""}</p>` : ""}
-        <form class="mdc-form" data-score-form="${escapeHtml(definition.id)}" onsubmit="return false;">
+        <form class="mdc-form" data-score-form="${escapeHtml(definition.id)}">
           ${(definition.inputs || []).map((input) => renderInput({ definition, input, values, bindings, overriddenKeys, mode })).join("")}
         </form>
         <p class="mdc-footnote">Decision support only \u2014 verify against the primary reference before acting on any result.</p>
