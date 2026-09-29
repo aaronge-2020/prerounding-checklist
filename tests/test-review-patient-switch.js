@@ -171,4 +171,67 @@ function makeHarness(app) {
 }
 
 console.log("Part 2 passed: stale session leaks the old draft; the session clear resolves it");
+
+// ---------------------------------------------------------------------------
+// Part 3: a mid-debounce patient switch must not lose the outgoing patient's
+// in-flight keystrokes. scheduleAutoSave() captures patient/packet/draft when
+// the edit happens; if the timer fires after a switch, persistDraftToVault()
+// redirects the save to the original patient instead of writing the new
+// patient's draft or dropping the edits.
+// ---------------------------------------------------------------------------
+{
+  const realSetTimeout = globalThis.setTimeout;
+  const pendingTimers = [];
+  globalThis.setTimeout = (callback, ...args) => {
+    pendingTimers.push(() => callback(...args));
+    return pendingTimers.length; // opaque id; a real clearTimeout on it is a harmless no-op
+  };
+  try {
+    const app = makeApp();
+    const { controller } = makeHarness(app);
+    controller.render();
+    pendingTimers.length = 0; // ignore render-time timers; only the autosave matters here
+
+    // Aaron types in patient A's one-liner; the autosave is now pending.
+    const fakeTarget = {
+      isContentEditable: false,
+      value: "A_LATE_KEYSTROKES_9z8x",
+      dataset: { draftSection: "one_liner" },
+      matches: (selector) => selector === "[data-draft-section]",
+      closest: () => null,
+    };
+    assert.equal(controller.input(fakeTarget), true, "keystroke is handled and the autosave is scheduled");
+    assert.ok(pendingTimers.length > 0, "an autosave timer is pending");
+
+    // Switch to patient B before the debounce fires. The real selectPatient()
+    // clears the packet-keyed in-memory session first (Part 1).
+    clearPatientScopedSession(app);
+    app.vault = { ...app.vault, patients: [...app.vault.patients, patientB], activePatientId: "patient_b" };
+
+    // Fire the pending autosave and flush the async save it kicks off.
+    for (const fire of pendingTimers.splice(0)) {
+      fire();
+      await new Promise((resolve) => realSetTimeout(resolve, 0));
+      await new Promise((resolve) => realSetTimeout(resolve, 0));
+    }
+
+    const savedA = app.vault.patients.find((entry) => entry.id === "patient_a");
+    const savedB = app.vault.patients.find((entry) => entry.id === "patient_b");
+    const aOneLiner = savedA?.noteDrafts?.admission?.sections?.one_liner?.deidentifiedText || "";
+    assert.ok(
+      aOneLiner.includes("A_LATE_KEYSTROKES_9z8x"),
+      "in-flight keystrokes land on the original patient's saved draft"
+    );
+    const bOneLiner = savedB?.noteDrafts?.admission?.sections?.one_liner?.deidentifiedText || "";
+    assert.ok(
+      !bOneLiner.includes("A_LATE_KEYSTROKES_9z8x"),
+      "the newly selected patient's draft is untouched by the redirected save"
+    );
+  } finally {
+    globalThis.setTimeout = realSetTimeout;
+  }
+}
+
+console.log("Part 3 passed: mid-debounce patient switch redirects the autosave to the original patient");
+
 console.log("All review patient-switch checks passed");
