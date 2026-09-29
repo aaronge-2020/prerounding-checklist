@@ -1,7 +1,7 @@
 import {
   DEFAULT_DEID_MODEL_KEY,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20260921-medication-card-v4";
+} from "./deid-model-options.js?v=20260929-obi-default";
 
 const statuses = new Map();
 const requests = new Map();

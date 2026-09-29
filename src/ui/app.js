@@ -67,7 +67,7 @@ import {
   DEID_MODEL_OPTIONS,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../patient-context/deid-model-options.js?v=20260921-medication-card-v4";
+} from "../patient-context/deid-model-options.js?v=20260929-obi-default";
 import {
   canAutomaticallyInstallModel,
   ensureModelPackServiceWorker,

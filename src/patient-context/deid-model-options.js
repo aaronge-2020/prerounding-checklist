@@ -2,6 +2,7 @@ import {
   DEFAULT_DTYPE,
   DEFAULT_PRIMARY_MODEL_ID,
   ETTIN_68M_NEMOTRON_PII_MODEL_ID,
+  I2B2_CLINICALBERT_MODEL_ID,
   OPENMED_BASE_MODEL_ID,
   OPENMED_MODEL_ID,
   OPENMED_SMALL_MODEL_ID,
@@ -13,7 +14,11 @@ export const STRUCTURED_DEID_MODE = "structured";
 // offered in the clinician UI. Large WebGPU packs that repeatedly failed their
 // own self-test are deliberately not selectable; a model is useful only when
 // this app can verify a real local inference session.
-export const DEFAULT_DEID_MODEL_KEY = "stanford-clinical";
+// Default selected by the 2026-09-29 de-identification benchmark
+// (obi/deid_bert_i2b2, MIT): strongest redaction-relevant recall on
+// facilities, ages, and locations — the identifiers the structured
+// layer cannot recover on its own.
+export const DEFAULT_DEID_MODEL_KEY = "obi-deid-bert-i2b2";
 
 const ALL_DEID_MODEL_OPTIONS = [
   {
@@ -155,6 +160,29 @@ const ALL_DEID_MODEL_OPTIONS = [
         { path: "onnx/model_int8.onnx", sourcePath: "small/model_int8.onnx", bytes: 171750792, etag: "cf6756eacfd73377130e1203b7e14ddd357a5b1f7f88c54d6428cdb677e7a5a0" }
       ]
     }
+  },
+  {
+    key: "obi-deid-bert-i2b2",
+    label: "obi clinical de-identification",
+    shortLabel: "obi de-id",
+    modelId: I2B2_CLINICALBERT_MODEL_ID,
+    engine: "transformers-token-classification",
+    dtype: DEFAULT_DTYPE,
+    browserRunnable: true,
+    assetMode: "bundled",
+    sizeLabel: "104 MB bundled",
+    localOnly: true,
+    description: "Clinical de-identification model (obi/deid_bert_i2b2, BERT-base, MIT) fine-tuned on i2b2 2014 notes. Selected as the default browser model by the benchmark for its redaction-relevant recall on facilities, ages, and locations. Delivered in small same-site pieces for compatibility with restricted workplace networks.",
+    bundledChunks: {
+      "onnx/model_quantized.onnx": {
+        directory: "onnx/model_quantized.chunks",
+        count: 13,
+        bytes: 108507617
+      }
+    },
+    candidates: [
+      { modelId: I2B2_CLINICALBERT_MODEL_ID, options: { dtype: DEFAULT_DTYPE, local_files_only: true }, inferenceOptions: { aggregation_strategy: "simple" } }
+    ]
   },
   {
     key: "stanford-clinical",
@@ -315,6 +343,7 @@ const ALL_DEID_MODEL_OPTIONS = [
 ];
 
 export const DEID_MODEL_OPTIONS = ALL_DEID_MODEL_OPTIONS.filter((option) => [
+  "obi-deid-bert-i2b2",
   "stanford-clinical",
   "openmed-superclinical-small",
   "gliner-multi-pii"

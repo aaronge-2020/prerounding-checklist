@@ -24,14 +24,25 @@ assert.match(deidClientSource, /deid-worker\.js\?v=/);
 assert.match(deidWorkerSource, /deid-service\.js\?v=/);
 
 const keys = DEID_MODEL_OPTIONS.map((option) => option.key);
-assert.deepEqual(keys.sort(), ["gliner-multi-pii", "openmed-superclinical-small", "stanford-clinical"].sort(), "the clinician picker must exclude unsupported large local packs");
-assert.equal(DEFAULT_DEID_MODEL_KEY, "stanford-clinical", "the bundled clinical model is the safe default");
+assert.deepEqual(keys.sort(), ["gliner-multi-pii", "obi-deid-bert-i2b2", "openmed-superclinical-small", "stanford-clinical"].sort(), "the clinician picker must exclude unsupported large local packs");
+assert.equal(DEFAULT_DEID_MODEL_KEY, "obi-deid-bert-i2b2", "the benchmark-selected bundled clinical model is the default");
 assert.ok(keys.includes(DEFAULT_DEID_MODEL_KEY));
+assert.ok(keys.includes("stanford-clinical"));
 assert.ok(keys.includes("openmed-superclinical-small"));
 assert.ok(keys.includes("gliner-multi-pii"));
 assert.equal(keys.includes("openmed-superclinical"), false, "large OpenMed must not be presented after repeated local allocation failures");
 
-const stanford = deidModelOptionByKey(DEFAULT_DEID_MODEL_KEY);
+const obi = deidModelOptionByKey(DEFAULT_DEID_MODEL_KEY);
+assert.equal(obi.assetMode, "bundled");
+assert.equal(obi.browserRunnable, true);
+assert.equal(obi.modelId, "onnx-community/deid_bert_i2b2-ONNX");
+assert.deepEqual(obi.bundledChunks["onnx/model_quantized.onnx"], {
+  directory: "onnx/model_quantized.chunks",
+  count: 13,
+  bytes: 108507617
+});
+
+const stanford = deidModelOptionByKey("stanford-clinical");
 assert.equal(stanford.assetMode, "bundled");
 assert.equal(stanford.browserRunnable, true);
 

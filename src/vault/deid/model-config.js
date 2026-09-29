@@ -25,7 +25,7 @@ export const MODEL_PROFILES = {
     id: DEFAULT_PRIMARY_MODEL_ID,
     mobileFeasible: false,
     expectedQuantizedBytes: 109651017,
-    notes: "Clinical deidentifier primary; larger, but selected by the current benchmark gate."
+    notes: "Bundled clinical deidentifier; retained as a selectable fallback after the 2026-09-29 benchmark selected the i2b2 model as default."
   },
   openmed: {
     id: OPENMED_MODEL_ID,
@@ -54,8 +54,8 @@ export const MODEL_PROFILES = {
   i2b2: {
     id: I2B2_CLINICALBERT_MODEL_ID,
     mobileFeasible: false,
-    expectedQuantizedBytes: 109651017,
-    notes: "ClinicalBERT fine-tuned on i2b2 2014 de-id; 11 HIPAA entity types, BILOU tagging."
+    expectedQuantizedBytes: 108507617,
+    notes: "ClinicalBERT fine-tuned on i2b2 2014 de-id; 11 HIPAA entity types. Default browser model since the 2026-09-29 benchmark; shipped config rewritten BILOU to BIOES for the vendored aggregator."
   },
   gliner: {
     id: GLINER_PII_MODEL_ID,

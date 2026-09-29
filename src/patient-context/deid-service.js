@@ -7,7 +7,7 @@ import {
   STRUCTURED_DEID_MODE,
   deidModelCandidates,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20260921-medication-card-v4";
+} from "./deid-model-options.js?v=20260929-obi-default";
 import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260921-medication-card-v4";
 import { importedModelBaseUrl } from "./model-packs.js?v=20260921-medication-card-v4";
 

@@ -30,6 +30,13 @@ assert.deepEqual(stanford.bundledChunks["onnx/model_quantized.onnx"], {
   count: 14,
   bytes: 109651017
 });
+const obi = deidModelOptionByKey("obi-deid-bert-i2b2");
+assert.equal(isInstallableModel(obi), false);
+assert.deepEqual(obi.bundledChunks["onnx/model_quantized.onnx"], {
+  directory: "onnx/model_quantized.chunks",
+  count: 13,
+  bytes: 108507617
+});
 assert.equal(hasAutomaticModelDownload(openmedSmall), true);
 assert.equal(openmedSmall.allowSelfHosted, true, "OpenMed Small must prefer packaged same-origin files on managed devices");
 assert.deepEqual(openmedSmall.bundledChunks["onnx/model_int8.onnx"], {
