@@ -2,6 +2,7 @@ import { sortDays } from "../../daily-updates/days.js?v=20260921-medication-card
 import { updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20260924-optional-sections-v1&labs=20260925-trend-specimen-v1";
 import { createLabAutocomplete } from "./lab-autocomplete.js?v=20260924-dollar-autocomplete-v1";
+import { createDrugAutocomplete } from "./drug-autocomplete.js?v=20260929-drug-autocomplete-v1";
 import {
   compileSmartExam,
   EXAM_SYSTEMS,
@@ -259,6 +260,10 @@ export function createReviewController(deps) {
       return [...(latestIndex.labs || []), ...(latestIndex.vitals || [])];
     }
   });
+
+  // Smart `@` autocomplete for drug lookup via OpenFDA.
+  // Attaches via event delegation so it survives full re-renders.
+  const drugAutocomplete = createDrugAutocomplete();
 
   // Only the 5 core vitals are auto-selected: BP, SpO2, HR, RR, Temp.
   // Medications are also auto-added. Labs and other vitals (weight, MAP, etc.)
@@ -528,7 +533,10 @@ export function createReviewController(deps) {
     }
     // Attach the `$` lab autocomplete via event delegation. Safe to call on
     // every render; it no-ops if already attached to this container.
-    if (container) labAutocomplete.attach(container);
+    if (container) {
+      labAutocomplete.attach(container);
+      drugAutocomplete.attach(container);
+    }
   }
 
   // Surgical update: refresh ONLY the draft note panel (right column),
