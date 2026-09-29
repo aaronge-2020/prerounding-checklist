@@ -294,11 +294,19 @@ export function createDailySourceController(deps) {
     const viewTop = view?.scrollTop || 0;
     const viewLeft = view?.scrollLeft || 0;
     const innerScroll = captureScrollPositions(current);
+    const composer = structuredNoteComposer(scope) || {};
+    // Honor the requested field even if the composer could not be persisted
+    // (e.g. no checklist day selected, so the composer key is empty). Without
+    // this the re-render falls back to the first field and the input appears
+    // not to update when a different section is selected.
+    const effectiveComposer = focusFieldId
+      ? { ...composer, mode: "sections", activeFieldId: focusFieldId }
+      : composer;
     current.outerHTML = deps.dailyPresentation.renderStructuredPrimaryNote({
       noteType: structuredNoteType(scope),
       note: existingStructuredNote(scope),
       draftValues: deps.app.structuredNoteDrafts.get(structuredNoteKey(scope)) || {},
-      composer: structuredNoteComposer(scope) || {},
+      composer: effectiveComposer,
       scope,
       deidBusy: deps.app.deidOperation.active
     });

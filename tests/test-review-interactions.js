@@ -14,11 +14,20 @@ const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => 
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 }[char]));
 
+globalThis.CSS = { escape: (s) => String(s).replace(/[^a-zA-Z0-9_-]/g, (c) => "\\" + c) };
+
 globalThis.document = {
   createElement: () => ({
     set innerHTML(value) { this._html = value; },
-    content: { querySelector: () => null }
-  })
+    content: { querySelector: () => null },
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    querySelector: () => null,
+    querySelectorAll: () => []
+  }),
+  addEventListener: () => {},
+  removeEventListener: () => {},
+  querySelector: () => null
 };
 
 const patient = {
@@ -57,7 +66,7 @@ Patient improving on antibiotics. Likely bacterial CAP.
   }]
 };
 
-const reviewContent = { innerHTML: "", querySelector: () => null };
+const reviewContent = { innerHTML: "", querySelector: () => null, querySelectorAll: () => [], addEventListener: () => {}, removeEventListener: () => {} };
 const app = {
   noteDraftSessions: new Map(),
   reviewPacketId: "day_one",

@@ -920,17 +920,49 @@ export function createReviewController(deps) {
   let autoSaveIndicatorTimer = null;
   function scheduleAutoSave() {
     if (autoSaveTimer) clearTimeout(autoSaveTimer);
-    autoSaveTimer = setTimeout(() => { void persistDraftToVault(); }, 1500);
+    // Capture the patient/packet/draft now. If the student switches patients
+    // before the debounce fires, the save must go to the captured patient,
+    // not the new current one (and the in-flight edits must not be lost).
+    const sched = model();
+    const scheduled = sched.patient ? {
+      patientId: sched.patient.id,
+      packetId: sched.packet?.id,
+      draft: sched.draft,
+    } : null;
+    autoSaveTimer = setTimeout(() => { void persistDraftToVault(scheduled); }, 1500);
     const indicator = document.querySelector("[data-autosave-indicator]");
     if (indicator) {
       indicator.textContent = "Saving\u2026";
       indicator.dataset.state = "saving";
     }
   }
-  async function persistDraftToVault() {
+  async function persistDraftToVault(scheduled) {
     autoSaveTimer = null;
     const current = model();
     if (!current.patient) return;
+    // Patient switched mid-debounce: the in-flight edits belong to the
+    // scheduled patient. Redirect the save there instead of writing the
+    // new patient's (empty) draft or dropping the edits.
+    if (scheduled && scheduled.patientId && current.patient.id !== scheduled.patientId) {
+      if (!scheduled.packetId) return;
+      const savedDraft = normalizeNoteDraft(scheduled.draft);
+      const vault = deps.app.vault || {};
+      const patients = (vault.patients || []).map((entry) => (
+        entry.id === scheduled.patientId
+          ? { ...entry, noteDrafts: { ...(entry.noteDrafts || {}), [scheduled.packetId]: savedDraft }, updatedAt: Date.now() }
+          : entry
+      ));
+      deps.app.vault = { ...vault, patients, updatedAt: Date.now() };
+      const ephemeralDemo = deps.isEphemeralDemo?.();
+      if (!ephemeralDemo) await deps.persistVault();
+      deps.onDraftSaved?.();
+      const indicator = document.querySelector("[data-autosave-indicator]");
+      if (indicator) {
+        indicator.textContent = ephemeralDemo ? "Demo \u2014 not saved" : "Saved";
+        indicator.dataset.state = "saved";
+      }
+      return;
+    }
     const savedDraft = normalizeNoteDraft(current.draft);
     deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({
       ...patient,
