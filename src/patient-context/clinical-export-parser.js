@@ -6,7 +6,7 @@ import {
   withClinicalRepresentations
 } from "./structured-clinical-data.js?v=20260921-medication-card-v4";
 import { normalizedLaboratoryName, laboratoryPanelFamily, splitLaboratoryRowsByPanel } from "./laboratory-panels.js?v=20260925-blood-gas-v1";
-import { isNonMedicationLine, splitMedicationLine } from "./note-clinical-extractor.js?v=20260925-med-filters-v1";
+import { isNonMedicationLine, splitMedicationLine } from "./note-clinical-extractor.js?v=20260928-mar-tags-v1";
 
 const REPORT_SEPARATOR = /^\s*[-=]{20,}\s*$/;
 const MEDICATION_STATUS = /\b(?:ADMINISTERED|CANCELLED|CANCELED|DISCONTINUED|GIVEN|HELD|MISSED|NOT GIVEN|REFUSED|STOPPED|BCMA EXPIRED)\b/i;

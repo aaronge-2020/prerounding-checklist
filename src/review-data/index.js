@@ -29,7 +29,7 @@ import {
 } from "../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import {
   extractNoteClinicalData
-} from "../patient-context/note-clinical-extractor.js?v=20260925-med-filters-v1";
+} from "../patient-context/note-clinical-extractor.js?v=20260928-mar-tags-v1";
 import {
   primaryTeamNoteHasContent
 } from "../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
