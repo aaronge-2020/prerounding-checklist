@@ -19,9 +19,9 @@
 // Unknown medications resolve to [] and this module never throws, so MAR
 // parsing continues undisturbed when the lookup misses.
 
-import { RXNORM_BARE_NAMES } from "./rxnorm-bare-names.data.js?v=20260929-rxnorm-mar-v1";
+import { RXNORM_BARE_NAMES } from "./rxnorm-bare-names.data.js?v=20260929-rxnorm-mar-v2";
 
-export const RXNORM_RESOLVER_TAG = "20260929-rxnorm-mar-v1";
+export const RXNORM_RESOLVER_TAG = "20260929-rxnorm-mar-v2";
 
 // [rxcui, tty, name, kind, ingredients?] -> normalized concept records.
 const CONCEPTS = new Map();
@@ -107,6 +107,11 @@ const ADMIN_VERB_RE = /\b(give|take|inject|apply|administer(?:ed)?)\b/gi;
 const RELEASE_RE = /\b(extended|delayed|sustained|controlled)(?:\s+release)?\b|\brelease\b/gi;
 const BRACKET_RE = /\[[^\]]*\]/g;
 const PAREN_RE = /\([^)]*\)/g;
+// Multi-ingredient free-text orders ("bupivacaine 0.0625% & fentanyl 2 mcg/mL").
+// Strengths are stripped before this runs, so a surviving & or + separates
+// ingredients rather than a ratio (ratios like 49/51 mg are consumed by
+// STRENGTH_RE). Each fragment resolves independently; misses contribute nothing.
+const COMBO_SPLIT_RE = /\s*[&+]\s*/;
 
 function removeSpan(working, match) {
   return `${working.slice(0, match.index)} ${working.slice(match.index + match[0].length)}`;
@@ -191,6 +196,22 @@ export function resolveMedicationConcepts(orderText) {
       .replace(RELEASE_RE, " ")
       .replace(FREQUENCY_RE, " ")
       .replace(ADMIN_VERB_RE, " ");
+
+    const fragments = working.split(COMBO_SPLIT_RE).map((f) => f.trim()).filter(Boolean);
+    if (fragments.length > 1) {
+      const seen = new Set();
+      const out = [];
+      for (const fragment of fragments) {
+        const entry = lookupWithFallback(normKey(fragment));
+        if (!entry) continue;
+        for (const concept of toConcepts(entry, strength, form.value, route.value)) {
+          if (seen.has(concept.rxcui)) continue;
+          seen.add(concept.rxcui);
+          out.push(concept);
+        }
+      }
+      return out;
+    }
 
     const entry = lookupWithFallback(normKey(working));
     if (!entry) return [];

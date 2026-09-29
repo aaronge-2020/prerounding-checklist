@@ -54,7 +54,7 @@ import {
 } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import {
   buildApRevisionPrompt
-} from "../../ai/ap-generator.js?v=20260929-ap-medcontext-v1";
+} from "../../ai/ap-generator.js?v=20260929-ap-medcontext-v2";
 import { generateProblemApRevisionsWithOpenAi } from "../openai-ap-api.js?v=20260928-ap-suggestions-v1";
 import { createDifferential } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 

@@ -11,7 +11,7 @@ import {
 } from "../src/patient-context/rxnorm-resolve.js";
 import { parseClinicalExport } from "../src/patient-context/clinical-export-parser.js";
 
-assert.equal(RXNORM_RESOLVER_TAG, "20260929-rxnorm-mar-v1");
+assert.equal(RXNORM_RESOLVER_TAG, "20260929-rxnorm-mar-v2");
 assert.ok(
   rxNormAssetSize() > 1000,
   `expected a populated RxNorm bare-name asset, got ${rxNormAssetSize()} entries`
@@ -132,3 +132,35 @@ assert.ok(hydralazine.concepts.length > 0, "hydralazine resolves to a concept");
 assert.ok(hydralazine.status.includes("DISCONTINUED"), "hydralazine shows discontinued");
 
 console.log(`test-rxnorm-mar passed (${rxNormAssetSize()} bare-name entries)`);
+
+// --- Aaron's 2026-09-28 MAR export lines (browser-verified 2026-09-29) ---
+// Oxytocin: the generic was missing from the asset (only brand "pitocin"
+// existed, and parens are stripped before lookup) — now resolves.
+const oxytocin = resolveMedicationConcepts("oxytocin (PITOCIN) 30 units in NS 500 mL induction infusion");
+assert.equal(oxytocin.length, 1);
+assert.equal(oxytocin[0].rxcui, "7824");
+assert.equal(oxytocin[0].name, "oxytocin");
+
+// Magnesium sulfate: the asset carried the right RxCUI (6585) under a wrong
+// display name ("magnesium") — now labeled correctly.
+const magSulfate = resolveMedicationConcepts("magnesium sulfate infusion 40 g/1000 mL water premix");
+assert.equal(magSulfate.length, 1);
+assert.equal(magSulfate[0].rxcui, "6585");
+assert.equal(magSulfate[0].name, "magnesium sulfate");
+
+// Multi-ingredient free-text orders joined by & or + resolve every fragment;
+// the epidural bupivacaine/fentanyl line must not drop fentanyl.
+const pcea = resolveMedicationConcepts("bupivacaine 0.0625 % & fentaNYL 2 mcg/mL in NS 250 mL for PCEA");
+const pceaRxcuis = pcea.map((c) => c.rxcui).sort();
+assert.deepEqual(pceaRxcuis, ["1815", "4337"]);
+
+// OB top-up: common L&D drugs missing from the v1 asset.
+assert.equal(resolveMedicationConcepts("terbutaline 0.25 mg SC")[0].rxcui, "10368");
+assert.equal(resolveMedicationConcepts("tranexamic acid 1 g IV")[0].rxcui, "10691");
+
+// "&" splitting does not disturb single-drug or ratio-strength orders.
+const single = resolveMedicationConcepts("sacubitril valsartan 49/51 mg PO BID");
+assert.ok(single.some((c) => c.rxcui === "1656328"));
+assert.ok(single.some((c) => c.rxcui === "69749"));
+
+console.log("test-rxnorm-mar MAR regression cases passed");

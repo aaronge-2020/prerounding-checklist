@@ -5,7 +5,7 @@
 // Privacy: the caller must supply ONLY de-identified text. This module never
 // sees raw chart data; it formats whatever context strings it is given.
 
-import { resolveMedicationConcepts } from "../patient-context/rxnorm-resolve.js?v=20260929-rxnorm-mar-v1";
+import { resolveMedicationConcepts } from "../patient-context/rxnorm-resolve.js?v=20260929-rxnorm-mar-v2";
 
 export const AP_RESPONSE_SCHEMA = {
   type: "object",

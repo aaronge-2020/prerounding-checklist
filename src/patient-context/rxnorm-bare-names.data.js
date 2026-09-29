@@ -1,5 +1,5 @@
 // RxNorm bare-name -> concept map (offline, static).
-// Tag: 20260929-rxnorm-mar-v1 | Built: 2026-09-29 | Entries: 6016
+// Tag: 20260929-rxnorm-mar-v2 | Built: 2026-09-29 | Entries: 6019
 // Regenerate via ~/workspace/offline-pipeline/build_mar_asset.py
 // Each value: [rxcui, tty, name, kind, ingredients?]
 //   tty: IN | MIN | PIN ; kind: ingredient | combo | precise_ingredient | as_is
@@ -3773,7 +3773,7 @@ export const RXNORM_BARE_NAMES = {
   "magnesium hydroxide": ["6581","IN","magnesium hydroxide","ingredient"],
   "magnesium oxide": ["6582","IN","magnesium oxide","ingredient"],
   "magnesium salicylate": ["52364","IN","magnesium salicylate","ingredient"],
-  "magnesium sulfate": ["6585","IN","magnesium","ingredient"],
+  "magnesium sulfate": ["6585","IN","magnesium sulfate","ingredient"],
   "mal a ket": ["168","MIN","acetic acid","combo",[["168", "acetic acid"], ["2358", "chlorhexidine"], ["6135", "ketoconazole"]]],
   "mal a ket wipes": ["2358","MIN","chlorhexidine","combo",[["2358", "chlorhexidine"], ["6135", "ketoconazole"]]],
   "malacetic": ["5492","MIN","hydrocortisone","combo",[["5492", "hydrocortisone"], ["6135", "ketoconazole"]]],
@@ -4428,6 +4428,7 @@ export const RXNORM_BARE_NAMES = {
   "oxy gard": ["114202","MIN","lactate","combo",[["114202", "lactate"], ["5499", "hydrogen peroxide"], ["993243", "993243"]]],
   "oxycide": ["5499","IN","hydrogen peroxide","ingredient"],
   "oxycontin": ["7804","IN","Roxicodone","ingredient"],
+  "oxytocin": ["7824","IN","oxytocin","ingredient"],
   "oxytrol": ["32675","IN","Gelnique","ingredient"],
   "ozempic": ["1991302","IN","semaglutide","ingredient"],
   "oziltus": ["993449","IN","denosumab","ingredient"],
@@ -5340,6 +5341,7 @@ export const RXNORM_BARE_NAMES = {
   "tepezza": ["2274803","IN","Tepezza","ingredient"],
   "tepmetko": ["2477103","IN","Tepmetko","ingredient"],
   "terlivaz": ["57048","IN","Terlivaz","ingredient"],
+  "terbutaline": ["10368","IN","terbutaline","ingredient"],
   "terpenicol": ["314881","IN","Undecylenic Acid","ingredient"],
   "terpenicol antifungal": ["6932","IN","miconazole","ingredient"],
   "terra vet": ["7821","IN","Terramycin","ingredient"],
@@ -5436,6 +5438,7 @@ export const RXNORM_BARE_NAMES = {
   "tradjenta": ["1100699","IN","linagliptin","ingredient"],
   "tralement": ["21579","MIN","Tralement","combo",[["21579", "Tralement"], ["29268", "29268"], ["36344", "36344"], ["39954", "39954"]]],
   "trandate": ["6185","IN","labetalol","ingredient"],
+  "tranexamic acid": ["10691","IN","tranexamic acid","ingredient"],
   "transderm scop": ["9601","IN","Transderm Scop","ingredient"],
   "travatan": ["283809","IN","Travatan","ingredient"],
   "trazimera": ["224905","IN","ado-trastuzumab emtansine","ingredient"],
@@ -6023,5 +6026,5 @@ export const RXNORM_BARE_NAMES = {
   "zzzquil ultra": ["3642","IN","doxylamine","ingredient"],
 };
 
-export const RXNORM_BARE_NAMES_TAG = "20260929-rxnorm-mar-v1";
-export const RXNORM_BARE_NAMES_COUNT = 6016;
+export const RXNORM_BARE_NAMES_TAG = "20260929-rxnorm-mar-v2";
+export const RXNORM_BARE_NAMES_COUNT = 6019;
