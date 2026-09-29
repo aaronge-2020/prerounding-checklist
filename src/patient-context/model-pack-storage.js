@@ -13,6 +13,7 @@ import {
   modelPackVerifiedForCurrentRuntime,
   validateModelPackEntries
 } from "./model-packs.js?v=20260921-medication-card-v4";
+import { gatedFetch } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
 
 const MODEL_PACK_DATABASE = "prerounding-local-model-pack-handles-v1";
 const MODEL_PACK_STORE = "packs";
@@ -48,7 +49,7 @@ function normalizedEtag(value) {
 async function verifyPinnedRemoteAsset(option, asset, { signal } = {}) {
   if (!asset?.etag) return;
   const url = modelDownloadUrl(option, asset);
-  const response = await fetch(url, { method: "HEAD", cache: "no-store", signal });
+  const response = await gatedFetch(url, { method: "HEAD", cache: "no-store", signal });
   if (!response.ok) throw new Error(`Could not verify the pinned identity for ${asset.path}.`);
   const actual = normalizedEtag(response.headers.get("etag"));
   if (!actual || actual !== normalizedEtag(asset.etag)) {
@@ -175,7 +176,7 @@ async function hasSelfHostedModelPack(option) {
     const responses = [];
     for (let start = 0; start < files.length; start += 4) {
       responses.push(...await Promise.all(files.slice(start, start + 4).map((fileName) =>
-        fetch(selfHostedModelFileUrl(option, fileName), { method: "HEAD", cache: "no-store" })
+        gatedFetch(selfHostedModelFileUrl(option, fileName), { method: "HEAD", cache: "no-store" })
       )));
     }
     return responses.every((response) => response.ok);
@@ -399,7 +400,7 @@ async function installCacheModelPack(option, { signal, onProgress } = {}) {
   try {
     for (const asset of plan) {
       await verifyPinnedRemoteAsset(option, asset, { signal });
-      const response = await fetch(modelDownloadUrl(option, asset), { cache: "no-store", signal });
+      const response = await gatedFetch(modelDownloadUrl(option, asset), { cache: "no-store", signal });
       if (!response.ok || !response.body) throw new Error(`Could not download ${asset.path} (${response.status || "network error"}).`);
       assertPinnedResponseAsset(asset, response);
       const contentLength = Number(response.headers.get("content-length") || 0);
@@ -482,7 +483,7 @@ async function streamModelAsset(option, asset, existingBytes, { signal, onProgre
   if (!url) throw new Error(`${option.label} does not have a trusted browser download source.`);
   await verifyPinnedRemoteAsset(option, asset, { signal });
   const headers = existingBytes > 0 ? { Range: `bytes=${existingBytes}-` } : undefined;
-  const response = await fetch(url, { cache: "no-store", headers, signal });
+  const response = await gatedFetch(url, { cache: "no-store", headers, signal });
   if (!response.ok || !response.body) {
     throw new Error(`Could not download ${asset.path} (${response.status || "network error"}).`);
   }

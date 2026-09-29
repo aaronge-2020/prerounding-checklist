@@ -18,6 +18,7 @@ import {
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
 import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v6";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20260929-ai-chat-v2";
+import { isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
 import * as remoteChatV4 from "../../ai/remote-chat.js?v=20260929-ai-chat-v6";
 import {
   costForUsage,
@@ -318,6 +319,7 @@ export function createAiChatController({
       chat: state.chat,
       downloaded: state.downloaded,
       mode: state.mode,
+      offlineMode: isOfflineMode(),
       remote: {
         messages: state.remote.messages,
         sending: state.remote.sending,
@@ -541,6 +543,13 @@ export function createAiChatController({
   function setMode(mode) {
     const next = mode === "remote" ? "remote" : "local";
     if (state.mode === next) return;
+    // Offline mode degrades ChatGPT chat to the on-device model: switching
+    // to remote while offline would only produce a blocked request.
+    if (next === "remote" && isOfflineMode()) {
+      setStatus("Offline mode is on — ChatGPT chat needs a connection. Staying on on-device mode.");
+      render();
+      return;
+    }
     state.mode = next;
     writeLocalLlmSettings({ chatMode: next });
     // Switching patients starts a fresh remote chat too: the attached
@@ -548,6 +557,17 @@ export function createAiChatController({
     setStatus(next === "remote" ? "ChatGPT mode — patient context needs your review before sending." : "On-device mode — nothing leaves this browser.");
     render();
   }
+
+  // Turning offline mode on mid-session degrades an active ChatGPT chat to
+  // the on-device model rather than letting the next send fail.
+  onOfflineModeChange((offline) => {
+    if (offline && state.mode === "remote") {
+      state.mode = "local";
+      writeLocalLlmSettings({ chatMode: "local" });
+      setStatus("Offline mode is on — switched AI Chat to on-device mode. Nothing will be sent to OpenAI.");
+      render();
+    }
+  });
 
   // ----- HIPAA review gate -------------------------------------------
   // Every ChatGPT send passes through this gate:
@@ -949,6 +969,16 @@ export function createAiChatController({
     const apiKey = String(prefs.openAiApiKey || "").trim();
     if (!apiKey) {
       setStatus("Save an OpenAI API key in Settings before using ChatGPT chat.");
+      return;
+    }
+    // Race safety: the gate itself also refuses, but surfacing it here keeps
+    // the message in the conversation instead of a bare status flash.
+    if (isOfflineMode()) {
+      state.remote.messages.push({
+        role: "assistant",
+        text: "Offline mode is on, so this ChatGPT request was not sent. Turn offline mode off in Settings, or switch to on-device mode to keep chatting — your message is unchanged."
+      });
+      render();
       return;
     }
     state.remote.sending = true;

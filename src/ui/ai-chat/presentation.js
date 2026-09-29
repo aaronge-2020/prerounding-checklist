@@ -181,7 +181,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
   }
 
   function renderTopbar(vm) {
-    const { mode, hardware, settings, llmStatus, downloaded, remote, patientContext } = vm;
+    const { mode, hardware, settings, llmStatus, downloaded, remote, patientContext, offlineMode } = vm;
     const local = mode !== "remote";
     const models = hardware?.recommendation?.models || [];
     const recommendedKey = hardware?.recommendation?.recommendedKey;
@@ -192,7 +192,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       <div class="aic-topbar">
         <div class="aic-modeseg" role="tablist" aria-label="Chat mode">
           <button type="button" role="tab" aria-selected="${local ? "true" : "false"}" data-action="ai-chat-mode" data-mode="local" class="aic-modeseg-btn${local ? " is-on" : ""}">${icon("phone")} On-device</button>
-          <button type="button" role="tab" aria-selected="${local ? "false" : "true"}" data-action="ai-chat-mode" data-mode="remote" class="aic-modeseg-btn${local ? "" : " is-on"}">${icon("cloud")} ChatGPT</button>
+          <button type="button" role="tab" aria-selected="${local ? "false" : "true"}" data-action="ai-chat-mode" data-mode="remote" class="aic-modeseg-btn${local ? "" : " is-on"}"${offlineMode ? " disabled title=\"Unavailable in offline mode — turn offline mode off in Settings to use ChatGPT chat.\"" : ""}>${icon("cloud")} ChatGPT${offlineMode ? " (offline)" : ""}</button>
         </div>
         <span class="aic-topbar-spacer"></span>
         ${local ? renderStatusPill(llmStatus, activeLabel) : ""}
@@ -741,7 +741,8 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       patientContext = {},
       contextInspector = {},
       clinicalService = {},
-      sidebarGuidelinesText = ""
+      sidebarGuidelinesText = "",
+      offlineMode = false
     } = vm;
     const isRemote = mode === "remote";
     // The v3 sibling controller passes sidebarOpen; fall back to the
@@ -749,7 +750,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     const sidebarOpen = typeof vm.sidebarOpen === "boolean"
       ? vm.sidebarOpen
       : !!(contextInspector && contextInspector.open);
-    const topVm = { mode, hardware, settings, llmStatus, downloaded, remote, patientContext };
+    const topVm = { mode, hardware, settings, llmStatus, downloaded, remote, patientContext, offlineMode };
     return `
       <div class="aic-shell">
         ${renderTopbar(topVm)}

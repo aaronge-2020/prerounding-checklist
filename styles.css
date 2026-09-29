@@ -550,6 +550,50 @@ p {
   font-weight: 600;
 }
 
+/* Offline-mode header pill. Reuses the topbar-trust slot; the is-offline
+   state gets a distinct, restrained treatment (no alarm colors). */
+.offline-pill {
+  padding: 0 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: default;
+  background: transparent;
+}
+.offline-pill.is-offline {
+  color: #0f766e;
+  border-color: #0f766e;
+  background: #f0fdfa;
+}
+@media (prefers-color-scheme: dark) {
+  .offline-pill.is-offline {
+    color: #5eead4;
+    border-color: #2dd4bf;
+    background: rgba(45, 212, 191, 0.12);
+  }
+}
+
+/* Settings > "Where does my data go?" disclosure list. */
+.data-flow-list {
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.data-flow-list > div {
+  display: grid;
+  gap: 2px;
+}
+.data-flow-list dt {
+  font-weight: 600;
+  font-size: 13px;
+}
+.data-flow-list dd {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
 .notice,
 .empty-state {
   border: 0;

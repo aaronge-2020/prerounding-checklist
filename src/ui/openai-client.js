@@ -2,6 +2,10 @@
 // messages, prompt text, and JSON schemas stay with their own callers (see
 // openai-workup-api.js and openai-checklist-api.js) - this module only knows
 // how to make the structured-output request and parse the reply.
+//
+// All requests flow through the central network gate: when offline mode is
+// on, the call fails fast with OfflineBlockedError instead of hanging.
+import { gatedFetch } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
 function responseText(payload) {
   if (typeof payload?.output_text === "string") return payload.output_text;
   const outputs = Array.isArray(payload?.output) ? payload.output : [];
@@ -28,7 +32,7 @@ function apiError(response, payload) {
     : `OpenAI API request failed (${response.status}).`;
 }
 
-export async function requestOpenAiStructuredJson({ apiKey, model, input, schemaName, schema, tools, fetchImpl = fetch } = {}) {
+export async function requestOpenAiStructuredJson({ apiKey, model, input, schemaName, schema, tools, fetchImpl = gatedFetch } = {}) {
   let response;
   const body = {
     model,
@@ -52,7 +56,10 @@ export async function requestOpenAiStructuredJson({ apiKey, model, input, schema
       },
       body: JSON.stringify(body)
     });
-  } catch {
+  } catch (err) {
+    // The network gate's refusal is already a clear, calm explanation —
+    // pass it through untouched.
+    if (err && err.name === "OfflineBlockedError") throw err;
     throw new Error("Unable to reach the OpenAI API from this browser. Check the network connection and try again.");
   }
 
@@ -73,7 +80,7 @@ export async function requestOpenAiStructuredJson({ apiKey, model, input, schema
 // ([{ role: "system"|"user"|"assistant", content }]) or a plain string.
 // `tools` optionally enables web search ([{ type: "web_search" }]) so the
 // model's citations can be grounded in real sources.
-export async function requestOpenAiChat({ apiKey, model, input, tools, fetchImpl = fetch, timeoutMs = 300000 } = {}) {
+export async function requestOpenAiChat({ apiKey, model, input, tools, fetchImpl = gatedFetch, timeoutMs = 300000 } = {}) {
   const { text } = await requestOpenAiChatWithUsage({ apiKey, model, input, tools, fetchImpl, timeoutMs });
   return text;
 }
@@ -83,7 +90,7 @@ export async function requestOpenAiChat({ apiKey, model, input, tools, fetchImpl
 // { text, usage: { inputTokens, outputTokens, cachedInputTokens, webSearchCalls } }.
 // webSearchCalls counts web_search_call items in the response — each one is a
 // billable search ($0.01 per call) on top of the tokens it consumed.
-export async function requestOpenAiChatWithUsage({ apiKey, model, input, tools, fetchImpl = fetch, timeoutMs = 300000 } = {}) {
+export async function requestOpenAiChatWithUsage({ apiKey, model, input, tools, fetchImpl = gatedFetch, timeoutMs = 300000 } = {}) {
   const key = String(apiKey || "").trim();
   if (!key) throw new Error("Save an OpenAI API key in Settings before using ChatGPT chat.");
   const body = { model, input };
@@ -105,6 +112,9 @@ export async function requestOpenAiChatWithUsage({ apiKey, model, input, tools, 
     if (err && err.name === "AbortError") {
       throw new Error("The ChatGPT request timed out after 5 minutes. Try again, or turn off web search for a faster reply.");
     }
+    // The network gate's refusal is already a clear, calm explanation —
+    // pass it through untouched.
+    if (err && err.name === "OfflineBlockedError") throw err;
     throw new Error("Unable to reach the OpenAI API from this browser. Check the network connection and try again.");
   } finally {
     if (timeoutId) clearTimeout(timeoutId);

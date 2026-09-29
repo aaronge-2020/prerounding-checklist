@@ -13,6 +13,7 @@ import {
   readHardwareFacts,
   recommendLocalLlmModels
 } from "./models.js?v=20260927-local-llm-v4";
+import { isOfflineMode, onOfflineModeChange } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
 
 // Re-exported for UI modules that resolve the active model label from the
 // shared client entry point.
@@ -31,6 +32,9 @@ export const CHAT_TIMEOUT_MS = 10 * 60 * 1000;
 
 const SETTINGS_KEY = "prerounding.localLlm.settings.v1";
 const VERIFIED_KEY = "prerounding.localLlm.verified.v1";
+// The offline-mode subscription is installed once per page, not per client,
+// so creating extra clients (e.g. in tests) does not stack listeners.
+let offlineSubscriptionInstalled = false;
 // Per-model download registry: { [modelKey]: { webllmId, downloadedAt } }.
 // This is only a fast-path hint for instant UI paint; the worker's "cached"
 // probe against the vendored runtime is the ground truth and reconciles
@@ -121,6 +125,22 @@ export function createLocalLlmClient() {
   let worker = null;
   let nextId = 1;
   const pending = new Map();
+  // Keep a live worker's offline flag in sync when the toggle changes
+  // mid-session. No worker is spawned just for this: if none exists, the
+  // next init carries the current state.
+  if (!offlineSubscriptionInstalled) {
+    offlineSubscriptionInstalled = true;
+    onOfflineModeChange((offline) => {
+      if (worker) {
+        try {
+          worker.postMessage({ type: "offlineMode", offline });
+        } catch {
+          // Dead worker; the next send() spawns a fresh one that gets the
+          // current state with its init message.
+        }
+      }
+    });
+  }
   let status = "idle"; // idle | loading | ready | error
   let statusDetail = "";
   let progress = 0;
@@ -264,6 +284,15 @@ export function createLocalLlmClient() {
   async function ensureReady(modelKey, { onProgress } = {}) {
     const model = localLlmModelByKey(modelKey);
     if (!model) throw new Error(`Unknown local model: ${modelKey}`);
+    // Offline mode must not trigger a multi-hundred-megabyte download the
+    // student didn't ask for: fail fast with a clear explanation when the
+    // weights aren't already in this browser's cache.
+    if (isOfflineMode() && !readLocalLlmDownloaded()[modelKey]) {
+      throw new Error(
+        `Offline mode is on and ${model.label} hasn't been downloaded in this browser yet. ` +
+        "Turn offline mode off in Settings to download it once — afterwards it runs fully offline."
+      );
+    }
     if (status === "ready" && activeModelKey === modelKey && verifiedModelKey === modelKey) {
       return getStatus();
     }
@@ -286,7 +315,7 @@ export function createLocalLlmClient() {
       if (snapshot.status === "loading") onProgress?.({ progress: snapshot.progress, text: snapshot.progressText });
     });
     try {
-      await send({ type: "init", modelId: model.webllmId });
+      await send({ type: "init", modelId: model.webllmId, offlineMode: isOfflineMode() });
       statusDetail = "Running self-test…";
       emit();
       await send({ type: "reset" });

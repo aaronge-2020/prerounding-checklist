@@ -9,10 +9,13 @@ import {
   fetchLabel,
   checkPairs
 } from "./api.js?v=20260929-ddinter-v2";
+import { gatedFetch } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
 import { DDI_LOOKUP, DDI_DATASET_VERSION, DDI_DATASET_SOURCE } from "./interactions-data.js?v=20260929-ddinter-v2";
 
 export function createDrugLookupController({ presentation, render, setStatus, getPatientMedicationNames, getActivePatientLabel, fetchImpl }) {
-  const fetchFn = fetchImpl || (typeof fetch !== "undefined" ? fetch.bind(globalThis) : null);
+  // Drug reference lookups (RxNav/openFDA) go through the offline-mode
+  // gate: while offline mode is on they fail fast with a clear message.
+  const fetchFn = fetchImpl || (typeof fetch !== "undefined" ? gatedFetch : null);
 
   const state = {
     drugs: [],

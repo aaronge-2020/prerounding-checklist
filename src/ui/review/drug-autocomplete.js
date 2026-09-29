@@ -7,6 +7,8 @@
 // This module attaches once to the review content container via event
 // delegation, so it survives the controller's full re-renders.
 
+import { gatedFetch } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
+
 const TRIGGER_PATTERN = /@([A-Za-z0-9_.\-]*)$/;
 const MAX_SUGGESTIONS = 8;
 const DEBOUNCE_MS = 300;
@@ -86,7 +88,9 @@ export function createDrugAutocomplete() {
       // Search by generic name (prefix match). Prefer single-ingredient products.
       const search = `openfda.generic_name:"${query}*"`;
       const url = `${OPENFDA_SEARCH_URL}?search=${encodeURIComponent(search)}&limit=${MAX_SUGGESTIONS}`;
-      const resp = await fetch(url, { signal: searchController.signal });
+      // OpenFDA suggestions go through the offline-mode gate: while
+      // offline mode is on this fails fast and the dropdown stays empty.
+      const resp = await gatedFetch(url, { signal: searchController.signal });
       if (!resp.ok) return [];
       const data = await resp.json();
       const results = data.results || [];
@@ -109,6 +113,7 @@ export function createDrugAutocomplete() {
         });
     } catch (err) {
       if (err.name === "AbortError") return null; // Signal: ignore, new search in flight
+      if (err && err.name === "OfflineBlockedError") return []; // Offline mode: no suggestions, no noise
       console.warn("Drug search failed:", err);
       return [];
     }

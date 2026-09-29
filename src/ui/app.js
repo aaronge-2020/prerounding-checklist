@@ -177,6 +177,7 @@ import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-medication-card-v4";
 import { preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20260925-preserve-view-scroll-v2";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-medication-card-v4&local-ai=guidelines-editable-v1";
+import { installGlobalFetchGuard, isOfflineMode, onOfflineModeChange, setOfflineMode } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
 import { createVaultPresentation, disambiguatedPatientLabels } from "./vault/presentation.js?v=20260718-vault-safety";
 import { createVaultSessionGuards } from "./vault/session-guards.js?v=20260922-vault-guards";
 import { createClipboard } from "./clipboard.js?v=20260922-clipboard";
@@ -1681,7 +1682,8 @@ function renderSettings() {
     guidelineCreateDraft: app.guidelineCreateDraft,
     OPENAI_WORKUP_MODEL_OPTIONS,
     colorOverrides: app.tokenColorOverrides,
-    localAiGuidelines: readLocalLlmSettings().systemGuidelines || DEFAULT_SYSTEM_GUIDELINES
+    localAiGuidelines: readLocalLlmSettings().systemGuidelines || DEFAULT_SYSTEM_GUIDELINES,
+    offlineMode: isOfflineMode()
   }));
 }
 
@@ -1712,6 +1714,31 @@ async function clearOpenAiByok() {
   setVaultPreferences({ ...preferences, openAiApiKey: "" });
   await persistVault("Saved OpenAI key removed from the encrypted local vault.");
   render();
+}
+
+// App-wide offline mode: one boolean in localStorage that the network gate
+// enforces on every remote request. The AI Chat controller subscribes to the
+// same event and degrades ChatGPT chat to the on-device model; here we just
+// reflect the toggle in the header pill and re-render the Settings panel.
+function toggleOfflineMode() {
+  const next = !isOfflineMode();
+  setOfflineMode(next);
+  renderOfflineModePill();
+  renderSettings();
+  setStatus(next
+    ? "Offline mode is on. OpenAI calls, ChatGPT chat, and model downloads are blocked; everything on-device keeps working."
+    : "Offline mode is off. Cloud features are available again.");
+}
+
+function renderOfflineModePill() {
+  const pill = byId("offlineModePill");
+  if (!pill) return;
+  const offline = isOfflineMode();
+  pill.textContent = offline ? "Offline mode" : "Online";
+  pill.classList.toggle("is-offline", offline);
+  pill.title = offline
+    ? "Offline mode is on — no network requests will be sent. Change it in Settings."
+    : "Online — cloud features are available. Change it in Settings.";
 }
 
 function saveLocalAiGuidelines() {
@@ -2156,6 +2183,7 @@ async function handleClick(event) {
     if (action === "open-token-color-picker") tokenColorPicker.open(target.dataset.token, target, event);
     if (action === "save-openai-byok") await saveOpenAiByok();
     if (action === "clear-openai-byok") await clearOpenAiByok();
+    if (action === "toggle-offline-mode") toggleOfflineMode();
     if (action === "save-local-ai-guidelines") saveLocalAiGuidelines();
     if (action === "reset-local-ai-guidelines") resetLocalAiGuidelines();
     if (action === "run-quick-deid") await runQuickDeid();
@@ -4589,6 +4617,14 @@ async function ensureCrossOriginIsolationOnce() {
 }
 
 async function init() {
+  // Enforce offline mode at the fetch layer before anything else runs, and
+  // reflect the persisted toggle in the header pill.
+  installGlobalFetchGuard();
+  renderOfflineModePill();
+  onOfflineModeChange(() => {
+    renderOfflineModePill();
+    if (app.view === "settings") renderSettings();
+  });
   const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
   if (params.has("phone")) {
     phoneSession.enterPhoneMode(decodePhoneChecklistBundle(params.get("phone")));

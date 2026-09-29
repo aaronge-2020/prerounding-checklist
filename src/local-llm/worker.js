@@ -19,7 +19,11 @@
 // Model weights, tokenizer, and compiled WebGPU libraries download from
 // Hugging Face / the MLC binary host on first init and are cached by the
 // browser afterwards. Nothing is sent anywhere: inference is fully local.
-
+//
+// The offline-mode guard (worker-net-guard.js) MUST stay the first import:
+// it wraps fetch/XHR before the vendored runtime evaluates, and the client
+// passes the toggle state via the "init" and "offlineMode" messages.
+import { setWorkerOfflineMode } from "./worker-net-guard.js?v=20260929-offline-mode-v1";
 import { CreateMLCEngine, hasModelInCache } from "../../vendor/web-llm/index.js";
 
 let engine = null;
@@ -97,8 +101,14 @@ self.onmessage = async (event) => {
   const message = event.data || {};
   const { id, type } = message;
   try {
-    if (type === "init") await handleInit(id, message.modelId);
-    else if (type === "chat") await handleChat(id, message);
+    if (type === "init") {
+      // The worker cannot read the toggle itself; the client passes it.
+      setWorkerOfflineMode(message.offlineMode === true);
+      await handleInit(id, message.modelId);
+    } else if (type === "offlineMode") {
+      // Mid-session toggle: in-flight requests finish, new ones are refused.
+      setWorkerOfflineMode(message.offline === true);
+    } else if (type === "chat") await handleChat(id, message);
     else if (type === "reset") {
       if (engine) await engine.resetChat();
       post({ id, type: "done", text: "" });

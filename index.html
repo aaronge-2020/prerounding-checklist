@@ -8,7 +8,7 @@
       content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' blob: 'unsafe-inline' 'wasm-unsafe-eval'; script-src-attr 'none'; worker-src 'self' blob:; connect-src 'self' https://huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://raw.githubusercontent.com https://api.openai.com https://rxnav.nlm.nih.gov https://api.fda.gov; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; trusted-types prerounding-app"
     >
     <meta name="theme-color" content="#f7f6f2">
-    <meta name="description" content="Preround is a local, encrypted workspace for inpatient pre-rounding: organize hospital-day updates, build bedside checklists, and draft OpenEvidence prompts. Runs entirely in your browser — nothing is sent to a server.">
+    <meta name="description" content="Preround is an on-device, encrypted workspace for inpatient pre-rounding: organize hospital-day updates, build bedside checklists, and draft OpenEvidence prompts. Patient data stays in this browser — cloud features clearly say what they send before they send it.">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Preround — local pre-rounding workspace">
     <meta property="og:description" content="Organize hospital-day updates, build bedside checklists, and draft OpenEvidence prompts — everything encrypted in your browser.">
@@ -48,7 +48,7 @@
 
         <div class="side-footer">
           <div id="vaultStateLabel">Vault locked</div>
-          <div>Local only. No sync.</div>
+          <div>On-device first. No accounts, sync, or analytics.</div>
           <div id="deidStateLabel">Advanced redaction models available</div>
         </div>
       </aside>
@@ -58,13 +58,13 @@
           <div class="workspace-heading">
             <h1>Preround</h1>
             <div id="currentPageTitle" class="page-context">Vault / Roster</div>
-            <div id="statusLine" class="subtle">Local-only workspace.</div>
+            <div id="statusLine" class="subtle">On-device first. Cloud features are clearly marked.</div>
           </div>
           <div class="top-controls">
             <label class="patient-switcher">Current patient
               <select id="patientSwitcher" aria-label="Current patient"></select>
             </label>
-            <span class="topbar-trust">Local only</span>
+            <span id="offlineModePill" class="topbar-trust offline-pill">Online</span>
           </div>
         </header>
 
