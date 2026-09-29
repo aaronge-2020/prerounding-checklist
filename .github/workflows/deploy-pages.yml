@@ -34,7 +34,7 @@ jobs:
         run: |
           mkdir -p _site
           touch _site/.nojekyll
-          cp index.html scribe-prototype.html styles.css service-worker.js favicon.ico _site/
+          cp *.html styles.css service-worker.js favicon.ico _site/
           for directory in assets data models prompts src vendor; do
             cp -R "$directory" _site/
           done
