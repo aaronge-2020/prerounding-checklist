@@ -362,4 +362,70 @@ const base = {
   assert.ok(html.includes('data-ai-chat-hipaa-ack checked'), "ack checkbox reflects state");
 }
 
+{
+  // Failed de-identification: fail-closed error state, no content, no send.
+  const failed = {
+    message: "should not appear",
+    messageRedactionTotal: 0,
+    messageFlags: [],
+    pieces: [{ id: "p1", title: "Doc", text: "SECRET-CONTEXT", chars: 14, redactionTotal: 0, counts: {}, warnings: [], flags: [] }],
+    redactedContext: "SECRET-CONTEXT",
+    redactionTotal: 0,
+    redactionCounts: {},
+    residualWarnings: [],
+    flags: [],
+    truncated: false,
+    failed: true,
+    failedDetail: "Context de-identification failed (boom) \u2014 nothing was sent.",
+    ack: false,
+    expanded: []
+  };
+  const html = presentation.render({
+    ...base,
+    mode: "remote",
+    remote: { messages: [], sending: false, webSearch: true, review: failed },
+    chatService: "",
+    hasApiKey: true
+  });
+  assert.ok(html.includes("sending is blocked"), "fail-closed error state rendered");
+  assert.ok(html.includes("nothing was sent"), "failure detail shown");
+  assert.ok(!html.includes("SECRET-CONTEXT"), "no context text shown on failure");
+  assert.ok(!html.includes("should not appear"), "no message text shown on failure");
+  assert.ok(!html.includes("ai-chat-hipaa-confirm"), "no send button on failure");
+  assert.ok(!html.includes("data-ai-chat-hipaa-ack"), "no ack checkbox on failure");
+  assert.ok(html.includes("ai-chat-hipaa-cancel"), "close action still present on failure");
+}
+
+{
+  // Multiple expanded pieces all render their bodies (auto-expanded flagged docs).
+  const multi = {
+    message: "hi",
+    messageRedactionTotal: 0,
+    messageFlags: [],
+    pieces: [
+      { id: "p1", title: "Doc one", text: "alpha [NAME]", chars: 12, redactionTotal: 1, counts: { NAME: 1 }, warnings: [], flags: [] },
+      { id: "p2", title: "Doc two", text: "beta [DATE]", chars: 11, redactionTotal: 1, counts: { DATE: 1 }, warnings: [], flags: [] },
+      { id: "p3", title: "Doc three", text: "gamma plain", chars: 11, redactionTotal: 0, counts: {}, warnings: [], flags: [] }
+    ],
+    redactedContext: "x",
+    redactionTotal: 2,
+    redactionCounts: { NAME: 1, DATE: 1 },
+    residualWarnings: [],
+    flags: [],
+    truncated: false,
+    ack: false,
+    expanded: ["p1", "p2"]
+  };
+  const html = presentation.render({
+    ...base,
+    mode: "remote",
+    remote: { messages: [], sending: false, webSearch: true, review: multi },
+    chatService: "",
+    hasApiKey: true
+  });
+  assert.ok(html.includes('aria-expanded="true"'), "expanded pieces marked open");
+  const openCount = html.split('aria-expanded="true"').length - 1;
+  assert.equal(openCount, 2, "exactly the two flagged pieces open");
+}
+
 console.log("ai-chat tests passed");

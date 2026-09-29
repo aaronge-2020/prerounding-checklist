@@ -408,6 +408,32 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
             : `<p>No PHI spans detected. Review still required — confirm the content above is safe to send.</p>`
         }
       </div>`;
+    if (review.failed) {
+      // Fail-closed state: de-identification errored, so no message and no
+      // context is shown and nothing can be sent from this dialog.
+      return `
+      <div class="aic-hipaa-backdrop" data-action="ai-chat-hipaa-cancel">
+        <div class="aic-hipaa-modal" role="dialog" aria-modal="true" aria-labelledby="aicHipaaTitle">
+          <div class="aic-hipaa-head">
+            <span class="aic-hipaa-shield">${icon("shield")}</span>
+            <div>
+              <h2 id="aicHipaaTitle">Review before sending to ChatGPT</h2>
+              <p>Nothing has been sent yet — confirm exactly what will leave this browser.</p>
+            </div>
+          </div>
+          <div class="aic-hipaa-body">
+            <div class="aic-hipaa-flags">
+              <strong>${icon("alert")} De-identification failed — sending is blocked</strong>
+              <ul><li>${escapeHtml(review.failedDetail || "The second de-identification pass failed.")}</li>
+              <li>Close this dialog and try again. Nothing from this send left the browser.</li></ul>
+            </div>
+          </div>
+          <div class="aic-hipaa-foot">
+            <button type="button" class="aic-btn" data-action="ai-chat-hipaa-cancel">Close — don't send</button>
+          </div>
+        </div>
+      </div>`;
+    }
     return `
       <div class="aic-hipaa-backdrop" data-action="ai-chat-hipaa-cancel">
         <div class="aic-hipaa-modal" role="dialog" aria-modal="true" aria-labelledby="aicHipaaTitle">

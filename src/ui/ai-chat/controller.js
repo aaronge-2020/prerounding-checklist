@@ -14,7 +14,7 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v2";
+import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v3";
 import { requestOpenAiChat } from "../openai-client.js?v=20260928-ai-chat-v1";
 import {
   buildRemoteChatInput,
@@ -479,10 +479,16 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
 
   function openHipaaReview(message, rawPieces) {
     let messageResult;
+    let failed = false;
+    let failedDetail = "";
     try {
       messageResult = deidentifyTextStructuredOnly(message);
-    } catch {
-      messageResult = { text: message, redactionTotal: 0, flags: [] };
+    } catch (err) {
+      // Fail closed: never fall back to the raw message. The review is
+      // blocked and nothing from this send will leave the browser.
+      failed = true;
+      failedDetail = `Message de-identification failed (${err?.message || "error"}) — nothing was sent.`;
+      messageResult = { text: "", redactionTotal: 0, counts: {}, residualWarnings: [], flags: [] };
     }
     // Apply the context budget to the raw pieces (same cap the blob
     // assembly used), cutting from the tail, so the reviewed text is
@@ -510,11 +516,12 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
       let r;
       try {
         r = deidentifyTextStructuredOnly(raw.text);
-      } catch {
-        r = null;
-      }
-      if (!r) {
-        r = { text: raw.text, redactionTotal: 0, counts: {}, residualWarnings: [], flags: ["Second de-identification pass failed — review carefully."] };
+      } catch (err) {
+        // Fail closed: never fall back to raw text. The review is blocked
+        // and nothing from this batch will be sent.
+        failed = true;
+        failedDetail = `Context de-identification failed (${err?.message || "error"}) — nothing was sent.`;
+        break;
       }
       const text = String(r.text || "");
       const lines = text.split("\n");
@@ -557,8 +564,12 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
       residualWarnings,
       flags,
       truncated,
+      failed,
+      failedDetail,
       ack: false,
-      expanded: pieces.length ? [pieces[0].id] : []
+      // Auto-expand every piece that needs eyes on it (redactions, warnings,
+      // or flags), plus the first piece so the body never opens empty.
+      expanded: pieces.filter((piece, idx) => idx === 0 || piece.redactionTotal > 0 || (piece.warnings || []).length || (piece.flags || []).length).map((piece) => piece.id)
     };
     render();
   }
@@ -570,7 +581,7 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
 
   async function confirmHipaaReview() {
     const review = state.remote.review;
-    if (!review || !review.ack) return;
+    if (!review || !review.ack || review.failed) return;
     state.remote.review = null;
     await doRemoteSend(review.message, review.redactedContext);
   }
