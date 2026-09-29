@@ -602,6 +602,10 @@ export function createAiChatController({
       contextInspector: {
         open: state.chat.inspectorOpen,
         enabled: pctx.enabled,
+        // ChatGPT mode always sends the full chart through the review gate,
+        // so the piece checkboxes and the attach toggle are on-device-mode
+        // controls; the sidebar says so and the budget counts the full chart.
+        isRemote: state.mode === "remote",
         hasPatient: !!pctx.patient,
         patientLabel: pctx.label,
         pieces: pieces.map((piece) => ({

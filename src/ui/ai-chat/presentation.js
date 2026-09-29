@@ -222,9 +222,9 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
               </span>
             </label>
             <label class="aic-parse-row">
-              <span class="aic-parse-txt"><strong>Patient context</strong><span class="aic-muted">Attach selected chart documents to both chats.</span></span>
+              <span class="aic-parse-txt"><strong>Patient context</strong><span class="aic-muted">${local ? "Attach selected chart documents to both chats." : "ChatGPT mode sends the full chart — you review it before anything is sent."}</span></span>
               <span class="aic-sw">
-                <input type="checkbox" data-ai-chat-context-toggle ${settings.patientContextEnabled ? "checked" : ""} ${patientContext.hasPatient ? "" : "disabled"}>
+                <input type="checkbox" data-ai-chat-context-toggle ${settings.patientContextEnabled ? "checked" : ""} ${!patientContext.hasPatient || !local ? "disabled" : ""}>
                 <span class="aic-sw-t" aria-hidden="true"></span>
               </span>
             </label>
@@ -450,6 +450,9 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
 
   function renderSidebarPieces(contextInspector) {
     const info = contextInspector || {};
+    // In ChatGPT mode the full chart goes through the review gate, so the
+    // per-piece selection is an on-device-mode control: shown but inert.
+    const selectionLocked = !!info.isRemote;
     const pieces = Array.isArray(info.pieces) ? info.pieces : [];
     const groups = Array.isArray(info.groups) ? info.groups : [];
     if (!info.hasPatient) {
@@ -465,12 +468,12 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       const head = `<div class="aic-side-group">
         <span class="aic-side-group-name">${escapeHtml(groupName)}</span>
         <span class="aic-side-group-actions">
-          <button type="button" class="aic-link" data-action="ai-chat-context-group" data-group-index="${groupIndex}" data-select="1" ${!info.enabled || allSelected ? "disabled" : ""}>Select all</button>
-          <button type="button" class="aic-link" data-action="ai-chat-context-group" data-group-index="${groupIndex}" data-select="0" ${!info.enabled || noneSelected ? "disabled" : ""}>Deselect all</button>
+          <button type="button" class="aic-link" data-action="ai-chat-context-group" data-group-index="${groupIndex}" data-select="1" ${!info.enabled || selectionLocked || allSelected ? "disabled" : ""}>Select all</button>
+          <button type="button" class="aic-link" data-action="ai-chat-context-group" data-group-index="${groupIndex}" data-select="0" ${!info.enabled || selectionLocked || noneSelected ? "disabled" : ""}>Deselect all</button>
         </span>
       </div>`;
       const labels = groupPieces.map((piece) => `<label class="aic-ctx-piece${piece.selected ? "" : " is-off"}">
-        <input type="checkbox" data-ai-chat-context-piece="${escapeHtml(piece.id)}" ${piece.selected ? "checked" : ""} ${info.enabled ? "" : "disabled"}>
+        <input type="checkbox" data-ai-chat-context-piece="${escapeHtml(piece.id)}" ${piece.selected ? "checked" : ""} ${info.enabled && !selectionLocked ? "" : "disabled"}>
         <span class="aic-ctx-piece-label">${escapeHtml(piece.label)}</span>
         ${piece.primary ? `<span class="aic-tag">primary</span>` : ""}
         <span class="aic-muted aic-ctx-tok">~${Number(piece.tokens || 0).toLocaleString()}</span>
@@ -483,7 +486,10 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
   function renderBudgetMeter(contextInspector) {
     const info = contextInspector || {};
     const guidelines = Number(info.guidelinesTokens || 0);
-    const patient = info.enabled ? Number(info.selectedTokens || 0) : 0;
+    // Remote mode always sends the full chart (the review gate is the
+    // consent), so the meter counts it even when the on-device attach
+    // toggle is off. info.selectedTokens is already the full chart there.
+    const patient = info.isRemote || info.enabled ? Number(info.selectedTokens || 0) : 0;
     const history = Number(info.historyTokens || 0);
     const total = guidelines + patient + history;
     const windowSize = Number(info.contextWindow || 0) || 4096;
@@ -531,10 +537,11 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
           <label class="aic-parse-row">
             <span class="aic-parse-txt"><strong>Attach to chat</strong><span class="aic-muted">Include the selected documents below in the model's context.</span></span>
             <span class="aic-sw">
-              <input type="checkbox" data-ai-chat-context-toggle ${patientContext.enabled ? "checked" : ""} ${patientContext.hasPatient ? "" : "disabled"}>
+              <input type="checkbox" data-ai-chat-context-toggle ${patientContext.enabled ? "checked" : ""} ${!patientContext.hasPatient || contextInspector?.isRemote ? "disabled" : ""}>
               <span class="aic-sw-t" aria-hidden="true"></span>
             </span>
           </label>
+          ${contextInspector?.isRemote ? `<p class="aic-muted aic-side-sub">ChatGPT mode sends the full chart — you'll review it before anything is sent. Selection applies to on-device chat.</p>` : ""}
           ${renderSidebarPieces(contextInspector)}
         </section>
         <section class="aic-side-sec" aria-label="Context budget">

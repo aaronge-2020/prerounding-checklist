@@ -799,11 +799,23 @@ function controllerFixturePatient() {
 // occurrence and returns the text with the canary replaced.
 function makeDeidStub({ throwOn } = {}) {
   const calls = [];
+  const verifyCalls = [];
+  let ready = true;
+  let verifyImpl = null;
   return {
     calls,
+    verifyCalls,
     STRUCTURED_DEID_MODE: "structured",
-    getSelectedDeidModelStatus: () => ({ ready: true, label: "Stub de-id model" }),
+    setReady: (value) => { ready = value; },
+    setVerifyImpl: (fn) => { verifyImpl = fn; },
+    getSelectedDeidModelStatus: (key) => ({ ready, modelKey: key, label: "Stub de-id model" }),
     getAdvancedDeidStatus: () => ({ label: "Stub de-id model" }),
+    crossOriginIsolationBlocker: () => "",
+    verifyAdvancedDeidModel: async (options) => {
+      verifyCalls.push(options);
+      if (verifyImpl) await verifyImpl(options);
+      else ready = true;
+    },
     preloadAdvancedDeidModel: async () => ({}),
     deidentifyText: async (rawText, opts) => {
       const text = String(rawText);
@@ -1050,26 +1062,26 @@ async function confirmSend(h) {
 }
 
 {
-  // (4) De-id model not ready blocks before any de-identification runs.
+  // (4) De-id model not ready: the send auto-loads and verifies the best
+  // system instead of refusing — no manual download step.
   const deidStub = makeDeidStub();
-  deidStub.getSelectedDeidModelStatus = () => ({ ready: false, label: "Stub" });
+  deidStub.setReady(false);
   const h = makeHarness({ deidStub });
-  h.ctrl.click(sendRemoteAction("Hi"));
-  await tick(50);
-  assert.equal(h.ctrl.getRemoteReview(), null, "no review opened");
-  assert.equal(deidStub.calls.length, 0, "de-identification never ran");
-  assert.ok(h.statuses.some((s) => s.includes("Download a de-identification model to enable sending.")), "blocked status shown");
+  const review = await driveSend(h, "Hi");
+  assert.equal(review.phase, "ready", "review opened after the automatic load");
+  assert.ok(deidStub.verifyCalls.length >= 1, "the best de-id system was verified automatically");
+  assert.ok(deidStub.calls.length > 0, "de-identification ran after the automatic load");
+  assert.ok(!h.statuses.some((s) => s.includes("nothing was sent")), "nothing failed closed");
 }
 
 {
-  // Structured-only de-id mode is blocked for ChatGPT sends.
+  // Structured-only de-id mode no longer blocks ChatGPT sends: AI Chat
+  // always uses the best system, loaded automatically.
   const h = makeHarness();
   h.app.deidMode = "structured";
-  h.ctrl.click(sendRemoteAction("Hi"));
-  await tick(50);
-  assert.equal(h.ctrl.getRemoteReview(), null, "no review opened");
-  assert.equal(h.deidStub.calls.length, 0, "de-identification never ran");
-  assert.ok(h.statuses.some((s) => s.includes("Download a de-identification model to enable sending.")), "blocked status shown");
+  const review = await driveSend(h, "Hi");
+  assert.equal(review.phase, "ready", "review opened despite the structured mode setting");
+  assert.ok(h.deidStub.calls.length > 0, "de-identification ran");
 }
 
 {
