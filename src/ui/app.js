@@ -1655,7 +1655,7 @@ async function handleClick(event) {
   try {
     if (
       !vaultIsUnlocked() &&
-      !["unlock-vault", "toggle-vault-passphrase", "restore-vault", "request-delete-vault", "confirm-delete-vault", "start-guided-demo", "open-scribe"].includes(action)
+      !["unlock-vault", "toggle-vault-passphrase", "restore-vault", "request-delete-vault", "confirm-delete-vault", "start-guided-demo", "open-scribe", "open-scribe-parakeet"].includes(action)
     ) {
       throw new Error("Unlock the local vault before using workspace tools.");
     }
@@ -1672,6 +1672,12 @@ async function handleClick(event) {
       // Standalone prototype page: no vault, no patient data. New tab keeps the
       // unlocked workspace intact. Phone-first; the native iOS app is the full experience.
       window.open("scribe-prototype.html", "_blank", "noopener");
+    }
+    if (action === "open-scribe-parakeet") {
+      // Standalone laptop scribe (Parakeet, on-device): no vault, no patient data.
+      // New tab keeps the unlocked workspace intact. Laptop-only: the models
+      // download once, then everything runs locally.
+      window.open("scribe-parakeet.html", "_blank", "noopener");
     }
     if (action === "exit-guided-demo") {
       if (app.demoPreviewMode) {
