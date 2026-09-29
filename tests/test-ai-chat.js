@@ -1004,23 +1004,18 @@ async function confirmSend(h) {
   // (2) Happy path, tools OFF: what was reviewed is what is sent. The
   // captured input's final user content equals the review's
   // finalUserContent, contains the reviewed transmit text, and leads with
-  // the transformed message.
+  // the transformed message. API mode always reviews the FULL chart — the
+  // local context-selection toggle does not shrink what is sent; the
+  // de-identification review gate is the consent point.
   const h = makeHarness();
   setToolsToggle(h, false);
-  const optIn = (id) => h.ctrl.change({
-    matches: (sel) => sel === "[data-ai-chat-context-piece]",
-    dataset: { aiChatContextPiece: id },
-    checked: true
-  });
-  optIn("admission:pmh");
-  optIn("day:day1:vitals");
   const review = await driveSend(h, "Summarize CanaryName for me");
   assert.equal(review.phase, "ready", "review ready");
   assert.ok(!review.messageTransformed.includes("CanaryName"), "message transformed");
   assert.ok(review.messageTransformed.includes("[NAME]"), "message redaction visible");
-  assert.equal(h.deidStub.calls.length, 6, "message + guidelines + header + 3 pieces de-identified");
+  assert.equal(h.deidStub.calls.length, 7, "message + guidelines + header + full chart (4 pieces) de-identified");
   assert.ok(review.pieces.some((p) => p.id === "header"), "header reviewed");
-  assert.equal(review.pieces.length, 4, "header + all three selected pieces reviewed");
+  assert.equal(review.pieces.length, 5, "header + all four chart pieces reviewed");
   acceptAllAndAck(h);
   const pre = h.ctrl.getRemoteReview();
   assert.equal(pre.canSend, true, "ack + zero pending => canSend");
@@ -1095,22 +1090,20 @@ async function confirmSend(h) {
 }
 
 {
-  // (7) A newly selected piece is de-identified and badged "new".
+  // (7) The draft note is part of the full chart: it is de-identified in
+  // the first review without any selection toggle, and badged "reviewed"
+  // (not "new") on the next send when unchanged.
   const h = makeHarness({ draftText: "Draft: patient stable for discharge." });
-  await driveSend(h, "Q CanaryName");
+  const review = await driveSend(h, "Q CanaryName");
+  const draftPiece = review.pieces.find((p) => p.id === "draft:current");
+  assert.ok(draftPiece, "draft piece in the full-chart review");
+  assert.ok(draftPiece.rawText.includes("stable for discharge"), "draft text reviewed");
   acceptAllAndAck(h);
   await confirmSend(h);
-  h.ctrl.change({
-    matches: (sel) => sel === "[data-ai-chat-context-piece]",
-    dataset: { aiChatContextPiece: "draft:current" },
-    checked: true
-  });
-  const before = h.deidStub.calls.length;
-  const review = await driveSend(h, "Q2 CanaryName");
-  const draftPiece = review.pieces.find((p) => p.id === "draft:current");
-  assert.ok(draftPiece, "draft piece reviewed");
-  assert.equal(draftPiece.badge, "new", "unseen piece badged new");
-  assert.ok(h.deidStub.calls.slice(before).some((c) => c.rawText.includes("stable for discharge")), "new piece was de-identified");
+  const review2 = await driveSend(h, "Q2 CanaryName");
+  const draftPiece2 = review2.pieces.find((p) => p.id === "draft:current");
+  assert.ok(draftPiece2, "draft piece still in the review");
+  assert.equal(draftPiece2.badge, "reviewed", "unchanged draft badged reviewed");
 }
 
 {
@@ -1132,7 +1125,10 @@ async function confirmSend(h) {
 }
 
 {
-  // (8) A deselected piece is excluded from review and transmit.
+  // (8) The local context-selection toggle does not shrink the API review:
+  // a "deselected" piece is still reviewed and transmitted, because the
+  // de-identification review gate — not the toggle — is the consent point
+  // for the full chart. (The toggle only shapes the on-device path.)
   const h = makeHarness();
   const togglePmh = (checked) => h.ctrl.change({
     matches: (sel) => sel === "[data-ai-chat-context-piece]",
@@ -1146,8 +1142,8 @@ async function confirmSend(h) {
   await confirmSend(h);
   togglePmh(false);
   const review = await driveSend(h, "Q2 CanaryName");
-  assert.ok(!review.pieces.some((p) => p.id === "admission:pmh"), "deselected piece not reviewed");
-  assert.ok(!review.transmitText.includes("Hypertension"), "deselected text not transmitted");
+  assert.ok(review.pieces.some((p) => p.id === "admission:pmh"), "deselected piece still reviewed");
+  assert.ok(review.transmitText.includes("Hypertension"), "deselected text still transmitted");
 }
 
 {

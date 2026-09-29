@@ -4,6 +4,10 @@
 
 import { splitThinking } from "../../local-llm/thinking.js?v=20260927-local-llm-v4";
 import { renderChatMarkdown } from "../../local-llm/markdown.js?v=20260929-local-llm-v3";
+import {
+  sentinelizeSectionCitations,
+  sectionCitationChipHtml
+} from "./section-citations.js?v=20260929-ai-chat-v14";
 
 export function createAiChatPresentation({ escapeHtml, icon }) {
   // Assistant reply body: reasoning goes in a collapsed dropdown (hidden by
@@ -274,6 +278,22 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     return `<div class="aic-toolrecs" aria-label="Tool calls used in this reply">${items}</div>`;
   }
 
+  // Local-path RAG notice: one-tap download for the chart-search
+  // (embedding) model. The 4K on-device window needs top-k retrieval;
+  // without the model, local chat falls back to selected pieces.
+  function renderLocalRagNotice(rag) {
+    if (!rag) return "";
+    const status = rag.status;
+    if (status === "ready") return "";
+    if (status === "downloading") {
+      return `<p class="rag-notice rag-status--busy" role="status">Downloading the chart-search model… you can keep chatting.</p>`;
+    }
+    const error = rag.retrievalError
+      ? ` <span class="aic-muted">${escapeHtml(rag.retrievalError)}</span>`
+      : "";
+    return `<p class="rag-notice" role="status">Smarter chart answers need the on-device chart-search model.${error} <button type="button" class="rag-cite-chip" data-action="ai-chat-download-rag-model">Download chart-search model</button></p>`;
+  }
+
   function renderLocalMessages(chat, activeLabel) {
     const messages = (chat.messages || [])
       .map((m, index) => {
@@ -306,6 +326,27 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     return `${messages}${streaming}${empty}`;
   }
 
+  // Render assistant text with section-grounded citations. The model cites
+  // patient facts as per [Section Label]: 'short quote'. Each becomes a
+  // clickable chip PLUS the verbatim quote (a <q> element) — the quote is
+  // never dropped. `citations` is the message's sectionCitations metadata
+  // (matched at send time against the reviewed chart pieces), zipped with
+  // the parse by match order. A citation whose label matched no reviewed
+  // section renders as inert text — never clickable — so a hallucinated
+  // citation can't open a fake source. The sentinel approach keeps Markdown
+  // formatting intact around citations.
+  function renderCitedMarkdown(text, citations, messageIndex) {
+    const metas = Array.isArray(citations) ? citations : [];
+    const { text: sentinelized, cites } = sentinelizeSectionCitations(text);
+    let html = renderChatMarkdown(sentinelized);
+    for (let i = 0; i < cites.length; i += 1) {
+      const sentinel = `\uE000SECITE${i}\uE001`;
+      const chip = sectionCitationChipHtml(cites[i], metas[i] || null, escapeHtml, messageIndex);
+      html = html.split(sentinel).join(chip);
+    }
+    return html;
+  }
+
   function renderRemoteMessages(remote) {
     const messages = (remote.messages || [])
       .map((m, index) => {
@@ -315,7 +356,10 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
         const records = m.role !== "user" && Array.isArray(m.toolRecords) && m.toolRecords.length
           ? renderToolRecords(m.toolRecords)
           : "";
-        const body = m.role === "user" ? `<p>${escapeHtml(m.text)}</p>` : `<div class="aic-m-body">${renderChatMarkdown(m.text)}</div>${records}`;
+        const citedBody = m.role !== "user"
+          ? renderCitedMarkdown(m.text, m.sectionCitations, index)
+          : renderChatMarkdown(m.text);
+        const body = m.role === "user" ? `<p>${escapeHtml(m.text)}</p>` : `<div class="aic-m-body">${citedBody}</div>${records}`;
         const revert = `<button type="button" class="aic-m-revert" data-action="ai-chat-revert-remote" data-message-index="${index}" title="Revert to here — remove this message and everything after it">${icon("undo")} revert</button>`;
         return `<div class="aic-m ${cls}">${label}${body}${revert}</div>`;
       })
@@ -343,6 +387,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
           <button type="button" class="aic-newchat" data-action="ai-chat-new-chat" ${chat.streaming ? "disabled" : ""}>${icon("plus")} New chat</button>
         </span>
       </div>
+      ${renderLocalRagNotice(chat.rag)}
       <div class="aic-messages" data-ai-chat-messages aria-live="polite">${renderLocalMessages(chat, activeLabel)}</div>
       ${renderContextMeter(chat)}
       <div class="aic-composer">

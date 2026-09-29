@@ -13794,3 +13794,48 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .aic-toolrec-body { padding: 2px 12px 10px; font-size: 0.78rem; line-height: 1.5; color: var(--muted); }
 .aic-toolrec-body p { margin: 8px 0 4px; }
 .aic-toolrec-body pre { margin: 0; padding: 8px 10px; border-radius: 8px; background: color-mix(in srgb, var(--text) 5%, transparent); white-space: pre-wrap; word-break: break-word; max-height: 220px; overflow-y: auto; font-size: 0.74rem; }
+
+/* ── Chart-grounded RAG (Phase 2): citation chips, disclosure panel, model notice ── */
+.rag-cite-chip {
+  display: inline-block;
+  margin: 0 2px;
+  padding: 1px 7px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent, #4da3ff) 12%, transparent);
+  color: var(--text);
+  font-size: 0.75em;
+  font-weight: 600;
+  cursor: pointer;
+  vertical-align: baseline;
+}
+.rag-cite-chip:hover {
+  background: color-mix(in srgb, var(--accent, #4da3ff) 22%, transparent);
+}
+/* Section-grounded citation quote: the model's verbatim quote stays
+   visible next to the chip. <q> adds quotation marks; keep it inline so
+   it flows with the surrounding sentence. */
+.aic-cite-quote {
+  font-style: italic;
+  color: var(--muted);
+  quotes: "“" "”" "‘" "’";
+}
+/* Citation navigation target flash: the chart section briefly highlights
+   when a citation chip is clicked. */
+.aic-flash-section {
+  animation: aic-flash-section 1.6s ease-out;
+  border-radius: 8px;
+}
+@keyframes aic-flash-section {
+  0%, 30% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #4da3ff) 65%, transparent); background: color-mix(in srgb, var(--accent, #4da3ff) 10%, transparent); }
+  100% { box-shadow: none; background: transparent; }
+}
+.rag-notice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  color: var(--muted, #6b7280);
+}
+.rag-status--busy { color: var(--text, #111827); }

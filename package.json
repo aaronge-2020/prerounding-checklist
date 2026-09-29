@@ -65,7 +65,7 @@
     "test:mobile-entry": "node tests/test-mobile-entry.js",
     "test:scribe-parakeet": "node tests/test-scribe-parakeet.js",
     "test:markdown-links": "node tests/test-markdown-links.js",
-    "test:rag": "node tests/test-rag-chunks.js && node tests/test-rag-similarity.js && node tests/test-rag-citations.js && node tests/test-rag-prompts.js",
+    "test:rag": "node tests/test-rag-chunks.js && node tests/test-rag-similarity.js && node tests/test-chart-grounded.js && node tests/test-full-chart-canonical.js && node tests/test-section-split-ingestion.js && node tests/test-rag-lifecycle.js",
     "test:rag-embedding-browser": "node tests/test-rag-embedding-browser.js"
   },
   "devDependencies": {

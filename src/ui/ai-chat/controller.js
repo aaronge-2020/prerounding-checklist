@@ -16,7 +16,7 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v10";
+import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v14";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20260929-ai-chat-v2";
 import { gatedFetch, isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
 import {
@@ -48,22 +48,41 @@ import {
   pieceText,
   textOf,
   MAX_SELECTED_PIECES_CHARS
-} from "../../local-llm/patient-context.js?v=20260928-local-llm-v9";
+} from "../../local-llm/patient-context.js?v=20260929-local-llm-v10";
 import { CHARS_PER_TOKEN, buildChatMessages, estimateTokens } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES, buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 import { medicalServiceOption, OPENAI_WORKUP_MODEL_OPTIONS } from "../../app/preferences.js?v=20260929-gpt6-models";
 import {
   hashPiece,
-  splitBuiltContext,
-  verifySplitEquivalence,
+  splitFullChartContext,
+  verifyFullChartEquivalence,
+  buildSectionCitationIndex,
   entitiesToRedactionRecords,
   applyRedactions,
   locateManualSpan,
   buildTransmitPayload,
   locateTruncation,
+  fullChartBudgetChars,
   effectiveGuidelinesText
-} from "./delta-review.js?v=20260929-ai-chat-v5";
+} from "./delta-review.js?v=20260929-ai-chat-v14";
+import {
+  parseSectionCitations
+} from "./section-citations.js?v=20260929-ai-chat-v14";
+
+// Chart-grounded retrieval (local path only): the on-device model's 4K
+// window cannot hold the full chart, so top-k embedding retrieval selects
+// the context. The embedding model downloads ONLY on explicit user action;
+// the service enforces that (retrieveChartChunks never downloads).
+import {
+  getRagStatus,
+  ensureChartIndex,
+  retrieveChartChunks,
+  warmChartIndex,
+  clearRagWorkerMemory
+} from "../../rag/rag-service.js?v=20260929-rag-v3";
+import { DEFAULT_RAG_MODEL_KEY } from "../../rag/rag-models.js?v=20260929-rag-v2";
+import { piecesWithRawText } from "../../rag/chart-chunks.js?v=20260929-rag-v2";
 
 // Fresh per-conversation OpenAI usage accumulator. All token counts come
 // from the Responses API's own usage blocks; costUsd is computed from the
@@ -91,11 +110,19 @@ export function createAiChatController({
   currentPreferences,
   onChatServiceChange,
   onOpenAiModelChange,
+  // App-level chart navigation: called with { scope, dayId, sectionId }
+  // when a section citation chip is clicked. Optional — citation clicks
+  // degrade to a status message without it.
+  onNavigateToChartSection,
   // Optional test seams, last in the destructured args. Defaults below fill
   // any gaps so partial overrides still work.
   deidDeps,
   chatDeps,
-  agentDeps
+  agentDeps,
+  ragDeps,
+  // Optional override for the on-device chat client (tests stub it; the
+  // real singleton is used otherwise).
+  clientDeps
 } = {}) {
   const presentation = createAiChatPresentation({ escapeHtml, icon });
   const deid = {
@@ -107,10 +134,20 @@ export function createAiChatController({
     ...(deidDeps || {})
   };
   const chat = { requestOpenAiChat, requestOpenAiChatWithUsage, ...(chatDeps || {}) };
+  // RAG seam: tests stub retrieval/cleanup so the controller lifecycle is
+  // deterministic; production uses the real embedding worker service.
+  const ragService = {
+    getRagStatus,
+    ensureChartIndex,
+    retrieveChartChunks,
+    warmChartIndex,
+    clearRagWorkerMemory,
+    ...(ragDeps || {})
+  };
   // Tool-loop runner seam: tests stub runAgent so the tool path never hits
   // the network; production always uses the real Vercel AI SDK runner.
   const agent = { runAgent: defaultRunAgent, ...(agentDeps || {}) };
-  const client = sharedLocalLlmClient();
+  const client = clientDeps?.client || sharedLocalLlmClient();
   const state = {
     hardware: null,
     hardwarePromise: null,
@@ -120,6 +157,21 @@ export function createAiChatController({
       modelKey: "",
       modelLabel: "",
       streaming: false,
+      // Local-path retrieval (bge-small): the 4K on-device window cannot
+      // hold the full chart, so top-k chunks are the context. The embedding
+      // model downloads only on explicit user action.
+      rag: {
+        status: null,
+        retrievalError: "",
+        modelKey: DEFAULT_RAG_MODEL_KEY,
+        // Debounced warm bookkeeping: the pending timer, the fingerprint
+        // it was armed for, and the (patient, fingerprint) of the last
+        // completed warm. All in-memory, never persisted.
+        warmTimer: null,
+        warmFingerprint: null,
+        warmedPatientId: null,
+        warmedFingerprint: null
+      },
       // In-memory selection of patient-context piece ids for the "Context"
       // inspector. null means "use the defaults" (primary team note when it
       // exists, else the admission sections). Reset on new chat and patient
@@ -136,6 +188,13 @@ export function createAiChatController({
     remote: {
       messages: [],
       sending: false,
+      // In-flight remote-send token: bumped on patient switch / vault lock
+      // (see renderView's invalidation) so a late network reply can never
+      // land in the wrong patient's thread.
+      sendToken: 0,
+      // Which send token owns the `sending` flag: only that send's finally
+      // may clear it, so a stale send can't unblock a newer one mid-flight.
+      sendingToken: 0,
       webSearch: true,
       // Clinical tools: when on, ChatGPT-mode sends run through the Vercel
       // AI SDK tool loop, letting the model call the 25 local calculators
@@ -288,17 +347,136 @@ export function createAiChatController({
     if (input && input.getAttribute("contenteditable") === "true") input.focus();
   }
 
+  // --- Chart-grounded RAG helpers (Phase 2) -------------------------------
+  // The embedding model is NEVER fetched by rendering, status checks,
+  // warming, or retrieval fallbacks. The only path to ensure-model is the
+  // explicit user tap handled by downloadRagModel().
+  async function refreshRagStatus() {
+    const rag = state.chat.rag;
+    if (!rag) return;
+    if (rag.status === "downloading") return;
+    try {
+      const status = await ragService.getRagStatus();
+      rag.status = status.ready ? "ready" : "not-downloaded";
+      rag.retrievalError = status.ready ? "" : rag.retrievalError;
+    } catch {
+      rag.status = "unavailable";
+    }
+  }
+
+  async function downloadRagModel() {
+    const rag = state.chat.rag;
+    if (!rag || rag.status === "downloading") return;
+    rag.status = "downloading";
+    rag.retrievalError = "";
+    renderView();
+    try {
+      await ragService.ensureChartIndex({
+        patientId: activePatient(app.vault)?.id,
+        pieces: piecesWithRawText(
+          activePatient(app.vault),
+          listPatientContextPieces(activePatient(app.vault), {
+            draftNoteText: currentDraftNoteText()
+          })
+        )
+      });
+      await refreshRagStatus();
+    } catch (error) {
+      rag.status = "not-downloaded";
+      rag.retrievalError = error instanceof Error ? error.message : String(error);
+    }
+    renderView();
+  }
+
+  // Warm the per-patient index when the model is already on the device.
+  // Ordinary sends probe readiness but never download: retrieval is skipped
+  // when the model isn't ready, and the user sees the one-tap notice.
+  // Chart-content fingerprint: hash over the piece ids and their raw text,
+  // so a new/edited section, capture, or quick note invalidates a warmed
+  // index. The debounced warm rebuilds when the chart CHANGES, not just
+  // when the patient changes.
+  function chartContentFingerprint(pieces) {
+    return hashPiece((pieces || []).map((p) => `${p.id || ""}\n${p.rawText || ""}`).join("\n"));
+  }
+
+  // Debounced index warm: 15s after the chat view renders with a READY
+  // chart-search model, pre-build the current patient's embedding index so
+  // the first question doesn't wait. Warming runs through warmChartIndex —
+  // it NEVER downloads the model: on a cold worker the status probe fails
+  // closed and the warm is skipped.
+  //
+  // Debounce rules:
+  // - Rapid chart edits collapse into ONE rebuild: an edit while a warm is
+  //   pending restarts the 15s clock for the latest chart.
+  // - A later same-patient content change triggers another rebuild: the
+  //   warmed fingerprint is compared, not just the patient id.
+  // - Switching patients cancels the pending warm and clears the warmed
+  //   record (done in renderView's patient-switch block).
+  function maybeWarmRagIndex() {
+    const rag = state.chat.rag;
+    if (!rag || rag.status !== "ready") return;
+    const patient = activePatient(app.vault);
+    const patientId = patient?.id || null;
+    if (!patientId) return;
+    const pieces = piecesWithRawText(
+      patient,
+      listPatientContextPieces(patient, { draftNoteText: currentDraftNoteText() })
+    );
+    const fingerprint = chartContentFingerprint(pieces);
+    if (rag.warmTimer) {
+      if (rag.warmFingerprint === fingerprint) return;
+      // Chart edited mid-debounce: restart the clock for the latest chart.
+      clearTimeout(rag.warmTimer);
+      rag.warmTimer = null;
+    } else if (rag.warmedPatientId === patientId && rag.warmedFingerprint === fingerprint) {
+      return; // Already warmed for this exact chart.
+    }
+    rag.warmFingerprint = fingerprint;
+    rag.warmTimer = setTimeout(async () => {
+      rag.warmTimer = null;
+      try {
+        const nowPatient = activePatient(app.vault);
+        if (!nowPatient || state.chat.rag?.status !== "ready") return;
+        // Recompute at fire time: warm the CURRENT chart. If it changed
+        // again since arming, re-arm instead of indexing stale content.
+        const nowPieces = piecesWithRawText(
+          nowPatient,
+          listPatientContextPieces(nowPatient, { draftNoteText: currentDraftNoteText() })
+        );
+        const nowFingerprint = chartContentFingerprint(nowPieces);
+        if (nowFingerprint !== state.chat.rag?.warmFingerprint || nowPatient.id !== patientId) {
+          state.chat.rag.warmFingerprint = nowFingerprint;
+          maybeWarmRagIndex();
+          return;
+        }
+        await ragService.warmChartIndex({ patientId: nowPatient.id, pieces: nowPieces });
+        if (state.chat.rag) {
+          state.chat.rag.warmedPatientId = nowPatient.id;
+          state.chat.rag.warmedFingerprint = nowFingerprint;
+        }
+      } catch {
+        // Warming is best-effort; a failed warm never surfaces.
+      }
+    }, 15000);
+  }
+
   function renderView() {
     const root = viewRoot();
-    if (!root) return;
-    ensureHardware();
     // Switching patients starts a fresh chat: the attached context belongs
     // to one patient, and mixing histories across patients is a hazard.
-    // The draft note is built once here and shared by the inspector and the
-    // context meter below.
+    // This invalidation runs even when the chat view isn't mounted — an
+    // in-flight send's generation/token must die on patient switch or vault
+    // lock no matter which tab is visible. The draft note is built once
+    // here and shared by the inspector and the context meter below.
     const draft = currentDraftNoteText();
     const pctx = patientContextInfo(draft);
     if (state.chat.patientId && pctx.patientId !== state.chat.patientId) {
+      // Invalidate any in-flight local send: its generation token dies here
+      // so a late retrieval callback can't continue into the new patient.
+      state.chat.generation = (state.chat.generation || 0) + 1;
+      // Invalidate any in-flight remote (ChatGPT) send: its token dies here
+      // so a late network reply can't land in the new patient's thread.
+      state.remote.sendToken = (state.remote.sendToken || 0) + 1;
       state.chat.messages = [];
       state.chat.streamingText = "";
       state.chat.contextStats = null;
@@ -311,9 +489,26 @@ export function createAiChatController({
       state.remote.compressArmed = false;
       state.remote.compressing = false;
       state.remote.contextStats = null;
+      // Chart-grounded RAG: the previous patient's embedding vectors must
+      // not survive the switch. Clear worker memory and cancel any pending
+      // index warm so it can't re-index the old patient.
+      if (state.chat.rag?.warmTimer) {
+        clearTimeout(state.chat.rag.warmTimer);
+        state.chat.rag.warmTimer = null;
+      }
+      if (state.chat.rag) {
+        state.chat.rag.active = false;
+        state.chat.rag.retrievedChunks = [];
+        state.chat.rag.warmedPatientId = null;
+        state.chat.rag.warmedFingerprint = null;
+        state.chat.rag.warmFingerprint = null;
+      }
+      void ragService.clearRagWorkerMemory().catch(() => {});
     }
     state.chat.patientId = pctx.patientId;
     state.remote.patientId = pctx.patientId;
+    if (!root) return;
+    ensureHardware();
     const { pieces, selectedIds } = contextPieces(draft);
     const selectedSet = new Set(selectedIds);
     const modelRecord = localLlmModelByKey(state.chat.modelKey);
@@ -338,10 +533,26 @@ export function createAiChatController({
       budgetMessages.map((m) => m.text).join("\n")
     );
     const pieceTokens = pieces.reduce(
-      (sum, piece) => sum + (selectedSet.has(piece.id) ? Math.ceil(piece.chars / CHARS_PER_TOKEN) : 0),
+      // API mode sends the FULL chart (no selection); on-device mode sends
+      // only the inspector-selected pieces.
+      (sum, piece) => sum + (isRemoteBudget || selectedSet.has(piece.id) ? Math.ceil(piece.chars / CHARS_PER_TOKEN) : 0),
       0
     );
     const prefs = remotePrefs();
+    // Local-path retrieval: lazy status probe. Ordinary rendering never
+    // downloads the embedding model; the probe only asks whether it is
+    // already on the device. The API path does not use the embedding model.
+    if (state.mode === "local") {
+      void refreshRagStatus().then(() => {
+        if (state.chat.rag && !state.chat.rag.statusNoticed) {
+          state.chat.rag.statusNoticed = true;
+          renderView();
+        }
+        // Debounced index warm: armed only after the status probe, and only
+        // when the model is already on the device (never a download).
+        maybeWarmRagIndex();
+      });
+    }
     root.innerHTML = presentation.render({
       hardware: state.hardware,
       settings: settings(),
@@ -366,7 +577,14 @@ export function createAiChatController({
         modelLabel: (pricingForModel(prefs.openAiModel) || {}).label || String(prefs.openAiModel || ""),
         modelOptions: remoteModelPickerItems(),
         pricingAsOf: PRICING_AS_OF,
-        cost: remoteCostViewModel()
+        cost: remoteCostViewModel(),
+        // Chart-grounded RAG status for the inline notice / download affordance.
+        rag: state.chat.rag ? {
+          status: state.chat.rag.status,
+          active: state.chat.rag.active,
+          retrievalError: state.chat.rag.retrievalError,
+          preparing: state.chat.rag.preparing
+        } : null
       },
       hasApiKey: String(prefs.openAiApiKey || "").trim().length > 0,
       patientContext: {
@@ -413,6 +631,11 @@ export function createAiChatController({
     });
     const messages = root.querySelector("[data-ai-chat-messages]");
     if (messages) messages.scrollTop = messages.scrollHeight;
+    // An aborted send's unsent draft survives in state: restore it to the
+    // composer whenever that patient's composer is eligible again (after a
+    // patient switch back or a vault unlock). Never touches another
+    // patient's composer and never clobbers typed text.
+    restorePendingSendToComposer();
   }
 
   // Keep the view live while models download or chat streams.
@@ -450,6 +673,67 @@ export function createAiChatController({
     }
   }
 
+  // Hard-abort a local send whose patient changed or vault locked mid-
+  // retrieval: drop the queued user message, restore its text to the
+  // composer, and bump the generation token so late callbacks die.
+  // Restore an aborted send's unsent text into the composer. The draft is
+  // keyed to the patient it was written for: it is restored only when the
+  // vault is unlocked and that same patient is active, so one patient's
+  // unsent text can never land in another patient's composer. Never
+  // clobbers text the user typed after the restore.
+  function restorePendingSendToComposer() {
+    const pending = state.chat.pendingSend;
+    if (!pending || !pending.message || !pending.aborted) return;
+    if (!app.vault) return;
+    if (pending.patientId !== activePatient(app.vault)?.id) return;
+    const input = viewRoot()?.querySelector("[data-ai-chat-input]");
+    if (!input) return;
+    const current = typeof input.value === "string" ? input.value : input.textContent;
+    if (current && String(current).trim()) return;
+    if (typeof input.value === "string") input.value = pending.message;
+    else input.textContent = pending.message;
+  }
+
+  // True while a remote (ChatGPT) send's initiating patient is still the
+  // active patient and the vault is unlocked. A patient switch or vault
+  // lock clears the remote thread (renderView's invalidation bumps the
+  // send token), so a late network reply must be discarded instead of
+  // appended to the wrong patient's conversation.
+  function remoteSendStillCurrent(sendToken, sendPatientId) {
+    if (sendToken !== state.remote.sendToken) return false;
+    if (!app.vault) return false;
+    return (activePatient(app.vault)?.id ?? null) === sendPatientId;
+  }
+
+  // Classify why a local send died: vault locked, patient changed, or a
+  // newer send superseded it (same patient, vault fine — the new send owns
+  // the thread now, so the old one exits quietly).
+  function localAbortReason(sendPatientId) {
+    if (!app.vault) return "vault";
+    if (sendPatientId !== activePatient(app.vault)?.id) return "patient";
+    return "superseded";
+  }
+
+  function abortLocalSend(message, generation, reason) {
+    if (reason === "superseded") return;
+    if (generation === state.chat.generation) state.chat.generation = (state.chat.generation || 0) + 1;
+    const last = state.chat.messages[state.chat.messages.length - 1];
+    if (last && last.role === "user" && last.text === message) state.chat.messages.pop();
+    // The unsent text stays in state.chat.pendingSend — marked aborted so
+    // renderView restores it to the composer. The draft survives render
+    // and vault-lock transitions and is restored when its patient's
+    // composer is eligible again.
+    if (state.chat.pendingSend?.generation === generation) {
+      state.chat.pendingSend.aborted = true;
+    }
+    setStatus(reason === "vault"
+      ? "Vault locked — your message was not sent."
+      : "Patient changed — your message was not sent.");
+    // render() re-runs renderView, which restores the pending draft to the
+    // composer when its patient's composer is eligible.
+    render();
+  }
+
   async function sendChat(text) {
     const message = String(text || "").trim();
     if (!message || state.chat.streaming) return;
@@ -459,21 +743,90 @@ export function createAiChatController({
       setStatus("Download and verify a model before chatting.");
       return;
     }
+    // Capture the pending send BEFORE the first await: the initiating
+    // patient id, this generation's token, and the raw unsent message. If
+    // the patient changes or the vault locks mid-send, the send
+    // hard-aborts and the message is preserved as an unsent draft keyed to
+    // this patient — never generated against another patient.
+    const pctx = patientContextInfo();
+    const sendPatientId = pctx.patientId;
+    const generation = (state.chat.generation = (state.chat.generation || 0) + 1);
+    state.chat.patientId = sendPatientId;
+    state.chat.pendingSend = { patientId: sendPatientId, generation, message };
     // Switch models if the chat picker chose a different downloaded one.
     if (state.chat.modelKey && state.chat.modelKey !== status.activeModelKey) {
       await downloadModel(state.chat.modelKey);
+      if (generation !== state.chat.generation) {
+        abortLocalSend(message, generation, localAbortReason(sendPatientId));
+        return;
+      }
     }
     state.chat.messages.push({ role: "user", text: message });
-    // Attach exactly the patient-context pieces the user selected in the
-    // "Context" inspector (defaults: primary team note, else admission
-    // sections; the current draft note is available as an opt-in piece),
-    // rebuilt fresh on every send. In-memory only. The system prompt also
-    // grounds the model in its real environment: it runs on-device in this
-    // browser, inside Aaron Ge's Preround app.
-    const pctx = patientContextInfo();
-    state.chat.patientId = pctx.patientId;
+    // Local path context: the on-device model's 4K window cannot hold the
+    // full chart, so when the chart-search (embedding) model is ready we
+    // retrieve the top-k chunks for this question and use those as the
+    // context. Otherwise fall back to the selected pieces from the
+    // "Context" inspector. All on-device; nothing leaves the browser.
+    // retrieveChartChunks never downloads the embedding model: on a cold
+    // worker it returns [] and chat falls back to the selected pieces.
+    let localContextText = pctx.available ? pctx.text : "";
+    try {
+      const ragStatus = await ragService.getRagStatus();
+      if (generation !== state.chat.generation) {
+        // Patient switched, vault locked, or a newer send superseded this
+        // one: abort. The unsent message stays in pendingSend, never
+        // generated against the wrong patient.
+        abortLocalSend(message, generation, localAbortReason(sendPatientId));
+        return;
+      }
+      if (ragStatus?.ready && pctx.patient && sendPatientId === activePatient(app.vault)?.id && app.vault) {
+        const patient = pctx.patient;
+        const draftForRag = currentDraftNoteText();
+        const pieces = piecesWithRawText(
+          patient,
+          listPatientContextPieces(patient, { draftNoteText: draftForRag })
+        );
+        const hits = await ragService.retrieveChartChunks({
+          patientId: patient.id,
+          pieces,
+          query: message,
+          k: 6
+        });
+        // Abort check, again, after the await: patient switch or vault
+        // lock during retrieval must not continue into generation.
+        if (generation !== state.chat.generation) {
+          abortLocalSend(message, generation, localAbortReason(sendPatientId));
+          return;
+        }
+        if (sendPatientId !== activePatient(app.vault)?.id || !app.vault) {
+          abortLocalSend(message, generation, !app.vault ? "vault" : "patient");
+          return;
+        }
+        if (hits.length > 0) {
+          // Retrieved chunks carry their section labels for citations.
+          localContextText = hits
+            .map((hit) => `[${hit.label || "Chart excerpt"}${hit.group ? ` — ${hit.group}` : ""}]\n${hit.text}`)
+            .join("\n\n");
+        }
+      }
+    } catch {
+      // Retrieval failure falls back to the selected pieces; the send
+      // continues — a missing index never blocks local chat.
+    }
+    if (generation !== state.chat.generation) {
+      abortLocalSend(message, generation, localAbortReason(sendPatientId));
+      return;
+    }
+    // A retrieval failure racing a patient switch or vault lock must never
+    // fall through to local generation: the generation token may not have
+    // been invalidated yet, so recheck the initiating patient and the vault
+    // explicitly before the model runs.
+    if (!app.vault || sendPatientId !== activePatient(app.vault)?.id) {
+      abortLocalSend(message, generation, !app.vault ? "vault" : "patient");
+      return;
+    }
     const systemContent = buildSystemPrompt({
-      contextText: pctx.available ? pctx.text : "",
+      contextText: localContextText,
       guidelines: settings().systemGuidelines
     });
     // Measure the prompt against the loaded model's real context window
@@ -572,6 +925,10 @@ export function createAiChatController({
       state.chat.streaming = false;
       state.chat.streamingText = "";
       state.chat.firstTokenAt = null;
+      // The send was attempted against the right patient: the draft is
+      // delivered (or the failure is recorded in the thread), so the
+      // pending send is done. Aborts return before this block, keeping it.
+      if (state.chat.pendingSend?.generation === generation) state.chat.pendingSend = null;
       renderView();
     }
   }
@@ -616,14 +973,15 @@ export function createAiChatController({
   //   1. The student's message is de-identified FRESH on every send —
   //      never reused, never stored.
   //   2. The custom instructions (system guidelines), the patient header,
-  //      and each selected chart piece are de-identified into reviewable
+  //      and EVERY chart section are de-identified into reviewable
   //      redaction records. Pieces whose content hash matches the
   //      session-scoped review store are reused verbatim (badge
   //      "reviewed"); changed pieces are de-identified again ("changed"),
-  //      unseen pieces are de-identified ("new").
-  //   3. splitBuiltContext + verifySplitEquivalence prove the per-piece
-  //      review operates on EXACTLY the text the trusted builder would
-  //      assemble — any drift fails closed.
+  //      unseen pieces are de-identified ("new"). No selection, no
+  //      retrieval: the full chart goes through the gate.
+  //   3. splitFullChartContext + verifyFullChartEquivalence prove the
+  //      per-piece review operates on EXACTLY the text the trusted full-
+  //      chart builder would assemble — any drift fails closed.
   //   4. The modal shows EXACTLY what will be sent. Send requires phase
   //      "ready", the acknowledgement checkbox, and zero pending records.
   // Any de-identification error fails closed: phase "failed" with no
@@ -944,7 +1302,15 @@ export function createAiChatController({
       ? fromClinical(clinical)
       : remoteChatV4.buildRemoteChatSystemPrompt({ serviceValue: clinical.medicalService });
     const guidelines = String(reviewedGuidelinesText || "").trim();
-    return guidelines ? `${base}\n\nSTUDENT'S CUSTOM INSTRUCTIONS:\n${guidelines}` : base;
+    // Section-grounded citations: the model must cite the chart SECTION
+    // label + a short quote for every patient-fact claim, so the student
+    // can verify against the source. Format: per [Section Label]: 'quote'.
+    const citationRules = `CITATION RULES:
+- For every claim about this patient, cite the chart section and a short verbatim quote: per [Section Label]: 'exact words from the chart'.
+- Use the section labels as they appear in the context (e.g. per [Hospital Stay]: '...', per [Labs]: '...').
+- If the chart does not contain the answer, say so explicitly — do not answer from general knowledge as if it were chart fact.`;
+    const withCitations = `${base}\n\n${citationRules}`;
+    return guidelines ? `${withCitations}\n\nSTUDENT'S CUSTOM INSTRUCTIONS:\n${guidelines}` : withCitations;
   }
 
   // Rebuild the transmit payload and review aggregates after any change.
@@ -954,18 +1320,21 @@ export function createAiChatController({
     const approvedById = {};
     for (const piece of review.pieces || []) approvedById[piece.id] = piece.approvedText;
     const systemPrompt = buildRemoteSystemPromptText(review.prefs, review.guidelines?.approvedText || "");
+    const chartBudget = Number(review.chartBudget) > 0
+      ? Number(review.chartBudget)
+      : fullChartBudgetChars(pricingForModel(review.prefs?.openAiModel)?.contextWindow);
     const transmit = buildTransmitPayload({
       approvedById,
       pieceOrder,
       transformedMessage: review.messageTransformed,
       systemPrompt,
       history: review.history || [],
-      maxChars: MAX_SELECTED_PIECES_CHARS
+      maxChars: chartBudget
     });
     review.transmit = transmit;
     review.transmitText = transmit.contextText;
     review.systemPromptText = systemPrompt;
-    const truncation = locateTruncation(pieceOrder, approvedById, MAX_SELECTED_PIECES_CHARS);
+    const truncation = locateTruncation(pieceOrder, approvedById, chartBudget);
     const cutPiece = (review.pieces || []).find((piece) => piece.id === truncation.cutPieceId);
     review.truncationNote = truncation.truncated
       ? `Context exceeded the size budget — the tail was cut inside "${cutPiece?.title || truncation.cutPieceId}". What you see above is exactly what will be sent.`
@@ -1003,10 +1372,19 @@ export function createAiChatController({
       render();
       return;
     }
+    // API path: the FULL chart text goes through the de-id review gate —
+    // the patient header plus every chart section in canonical order. No
+    // embedding model, no retrieval, no piece selection: the API context
+    // window holds the whole chart, and the exact reviewed bytes are what
+    // gets sent.
     const draft = currentDraftNoteText();
-    const { patient, selectedIds } = contextPieces(draft);
-    const split = splitBuiltContext(patient, selectedIds, { draftNoteText: draft });
-    if (!verifySplitEquivalence(patient, selectedIds, split, { draftNoteText: draft })) {
+    const patient = activePatient(app.vault);
+    // The budget is the selected model's real context window minus
+    // headroom — not an arbitrary cap. Split, verify, and transmit all
+    // share it so the review sees exactly what the wire will carry.
+    const chartBudget = fullChartBudgetChars(pricingForModel(prefs.openAiModel)?.contextWindow);
+    const split = splitFullChartContext(patient, { draftNoteText: draft, maxChars: chartBudget });
+    if (!verifyFullChartEquivalence(patient, split, { draftNoteText: draft })) {
       state.remote.review = failedReview(
         "The patient context didn't rebuild exactly — sending is blocked. Nothing was sent.",
         deidModelLabel(deidKey)
@@ -1015,7 +1393,10 @@ export function createAiChatController({
       return;
     }
     const admissionDate = reviewAdmissionDate(patient);
-    const includeContext = settings().patientContextEnabled && split.pieces.length > 0;
+    // API mode: the review gate IS the consent — the student sees and
+    // approves the full chart before anything is sent. The local-mode
+    // context toggle never silently drops the chart here.
+    const includeContext = split.pieces.length > 0;
     const contextTargets = includeContext
       ? [
           { id: "header", title: "Patient header", group: "", rawText: split.header },
@@ -1050,7 +1431,10 @@ export function createAiChatController({
       canSend: false,
       // Snapshot of the tools toggle at review time, so the modal can
       // disclose that this send may invoke local clinical tools.
-      toolsEnabled: state.remote.toolsEnabled
+      toolsEnabled: state.remote.toolsEnabled,
+      // The model-grounded chart budget: split, verify, and transmit share
+      // it so the review sees exactly what the wire will carry.
+      chartBudget
     };
     state.remote.review = review;
     render();
@@ -1131,9 +1515,11 @@ export function createAiChatController({
     const transmit = review.transmit;
     if (!transmit) return;
     // The already-reviewed input goes to the wire unchanged — rebuilt here
-    // from the same pieces the modal showed.
+    // from the same pieces the modal showed. Capture the pieces before the
+    // review is cleared: they back the reply's section-citation metadata.
+    const pieces = Array.isArray(review.pieces) ? review.pieces : [];
     state.remote.review = null;
-    await doRemoteSend({ input: transmit.input, transformedMessage: review.messageTransformed });
+    await doRemoteSend({ input: transmit.input, transformedMessage: review.messageTransformed, pieces });
     render();
   }
 
@@ -1172,12 +1558,32 @@ export function createAiChatController({
     };
   }
 
-  async function doRemoteSend({ input, transformedMessage }) {
+  // Parse the model's section citations and match them against the reviewed
+  // chart pieces, in order. Each entry: { section, quote, pieceId, label,
+  // group, target } — pieceId/target null when the label matched no reviewed
+  // section (renders as inert text, never clickable). The presentation zips
+  // these with its own parse by match order.
+  function matchSectionCitations(replyText, piecesForCitations) {
+    const index = buildSectionCitationIndex(piecesForCitations || []);
+    return parseSectionCitations(replyText).map((cite) => {
+      const meta = index.get(cite.section.toLowerCase()) || null;
+      return {
+        section: cite.section,
+        quote: cite.quote,
+        pieceId: meta ? meta.pieceId : null,
+        label: meta ? meta.label : cite.section,
+        group: meta ? meta.group : "",
+        target: meta ? meta.target : null
+      };
+    });
+  }
+
+  async function doRemoteSend({ input, transformedMessage, pieces = [] }) {
     // Clinical-tools mode: the reviewed payload goes through the Vercel AI
     // SDK tool loop instead of the single-shot chat call, so ChatGPT can
     // run the 25 local calculators and 7 on-device AI models mid-reply.
     if (state.remote.toolsEnabled) {
-      await doRemoteToolSend({ input, transformedMessage });
+      await doRemoteToolSend({ input, transformedMessage, pieces });
       return;
     }
     const prefs = remotePrefs();
@@ -1198,11 +1604,22 @@ export function createAiChatController({
     }
     state.remote.sending = true;
     state.remote.compressArmed = false;
+    // Patient-switch / vault-lock race: capture the initiating patient and
+    // a send token before the network await. The invalidation in renderView
+    // bumps the token and clears the thread on switch or lock; a late
+    // reply must never be appended to the new patient's conversation.
+    const sendToken = (state.remote.sendToken = (state.remote.sendToken || 0) + 1);
+    state.remote.sendingToken = sendToken;
+    const sendPatientId = app.vault ? activePatient(app.vault)?.id ?? null : null;
     // The history stores the TRANSFORMED message — the raw text never
     // persists past the review gate.
     state.remote.messages.push({ role: "user", text: transformedMessage, deidentified: true });
     render();
     const sentAt = Date.now();
+    // Set false when the patient changed or the vault locked mid-reply:
+    // the orphaned reply is discarded and the "replied" status must not
+    // pretend it landed in the conversation.
+    let delivered = true;
     try {
       // Prefer the usage-returning call when the active chat backend
       // provides it; test stubs may only provide the plain-text variant,
@@ -1216,25 +1633,48 @@ export function createAiChatController({
         input,
         tools: state.remote.webSearch ? [{ type: "web_search" }] : []
       });
-      const reply = typeof result === "string" ? result : result?.text;
-      const usage = result && typeof result === "object" ? result.usage || null : null;
-      const cost = recordRemoteUsage(usage, prefs.openAiModel);
-      updateRemoteContextStats(input, prefs.openAiModel);
-      state.remote.messages.push({
-        role: "assistant",
-        text: reply,
-        webSearch: state.remote.webSearch,
-        model: prefs.openAiModel,
-        usage: usage ? { ...usage } : null,
-        costUsd: cost ? cost.totalCost : null
-      });
+      if (!remoteSendStillCurrent(sendToken, sendPatientId)) {
+        // The patient changed or the vault locked mid-reply: the thread was
+        // already cleared, so drop the orphaned reply (and its usage) rather
+        // than misattributing them to the new patient's conversation.
+        delivered = false;
+      } else {
+        const reply = typeof result === "string" ? result : result?.text;
+        const usage = result && typeof result === "object" ? result.usage || null : null;
+        const cost = recordRemoteUsage(usage, prefs.openAiModel);
+        updateRemoteContextStats(input, prefs.openAiModel);
+        state.remote.messages.push({
+          role: "assistant",
+          text: reply,
+          webSearch: state.remote.webSearch,
+          model: prefs.openAiModel,
+          usage: usage ? { ...usage } : null,
+          costUsd: cost ? cost.totalCost : null,
+          sectionCitations: matchSectionCitations(reply, pieces)
+        });
+      }
     } catch (error) {
-      state.remote.messages.push({ role: "assistant", text: `Error: ${error?.message || "the ChatGPT request failed"}` });
+      if (!remoteSendStillCurrent(sendToken, sendPatientId)) {
+        delivered = false;
+      } else {
+        state.remote.messages.push({ role: "assistant", text: `Error: ${error?.message || "the ChatGPT request failed"}` });
+      }
     } finally {
-      state.remote.sending = false;
+      // Only the send that owns the flag clears it: a stale send finishing
+      // after a newer one started must not unblock that newer send.
+      if (state.remote.sendingToken === sendToken) {
+        state.remote.sending = false;
+        state.remote.sendingToken = 0;
+      }
       const secs = Math.max(1, Math.round((Date.now() - sentAt) / 1000));
       const spent = state.remote.usage.costUsd > 0 ? ` · ${formatUsd(state.remote.usage.costUsd)} this conversation` : "";
-      setStatus(`ChatGPT replied in ${secs}s.${spent}`);
+      setStatus(
+        delivered
+          ? `ChatGPT replied in ${secs}s.${spent}`
+          : app.vault
+            ? "Patient changed while ChatGPT was replying — that reply was discarded."
+            : "Vault locked while ChatGPT was replying — the reply was discarded."
+      );
       render();
     }
   }
@@ -1248,7 +1688,7 @@ export function createAiChatController({
   // process, no network); tool arguments are derived from the de-identified
   // input, and tool results stay in this browser. Only the model's messages
   // go to OpenAI, through the gated fetch so offline mode fails closed.
-  async function doRemoteToolSend({ input, transformedMessage }) {
+  async function doRemoteToolSend({ input, transformedMessage, pieces = [] }) {
     const prefs = remotePrefs();
     const apiKey = String(prefs.openAiApiKey || "").trim();
     if (!apiKey) {
@@ -1265,11 +1705,18 @@ export function createAiChatController({
     }
     state.remote.sending = true;
     state.remote.compressArmed = false;
+    // Same patient-switch / vault-lock race as the single-shot path: capture
+    // the initiating patient and a send token before the tool loop runs.
+    const sendToken = (state.remote.sendToken = (state.remote.sendToken || 0) + 1);
+    state.remote.sendingToken = sendToken;
+    const sendPatientId = app.vault ? activePatient(app.vault)?.id ?? null : null;
     // The history stores the TRANSFORMED message — the raw text never
     // persists past the review gate.
     state.remote.messages.push({ role: "user", text: transformedMessage, deidentified: true });
     render();
     const sentAt = Date.now();
+    // Set false when the patient changed or the vault locked mid-reply.
+    let delivered = true;
     try {
       const entries = Array.isArray(input) ? input : [];
       const systemEntry = entries.find((e) => e && e.role === "system");
@@ -1297,37 +1744,60 @@ export function createAiChatController({
           render();
         }
       });
-      const usage = result.usage || null;
-      const cost = recordRemoteUsage(usage, prefs.openAiModel);
-      updateRemoteContextStats(input, prefs.openAiModel);
-      // Auditable tool records ride on the assistant message: which tool
-      // ran, with what inputs, and the deterministic result it returned.
-      // The model's prose stays advisory; the tool numbers are the facts.
-      const toolCalls = Array.isArray(result.toolCalls) ? result.toolCalls : [];
-      const toolResults = Array.isArray(result.toolResults) ? result.toolResults : [];
-      const toolRecords = toolResults.map((tr, index) => ({
-        toolName: String(tr.toolName || toolCalls[index]?.toolName || ""),
-        input: tr.input ?? toolCalls[index]?.input ?? null,
-        text: typeof tr.text === "string" ? tr.text : "",
-        deterministic: tr.deterministic && typeof tr.deterministic === "object" ? tr.deterministic : null
-      }));
-      state.remote.messages.push({
-        role: "assistant",
-        text: result.text || "(no response text)",
-        toolsUsed: true,
-        webSearch: state.remote.webSearch,
-        toolRecords,
-        model: prefs.openAiModel,
-        usage: usage ? { ...usage } : null,
-        costUsd: cost ? cost.totalCost : null
-      });
+      if (!remoteSendStillCurrent(sendToken, sendPatientId)) {
+        // The patient changed or the vault locked during the tool loop: the
+        // thread was already cleared, so drop the orphaned reply (and its
+        // usage) rather than misattributing them to the new patient.
+        delivered = false;
+      } else {
+        const usage = result.usage || null;
+        const cost = recordRemoteUsage(usage, prefs.openAiModel);
+        updateRemoteContextStats(input, prefs.openAiModel);
+        // Auditable tool records ride on the assistant message: which tool
+        // ran, with what inputs, and the deterministic result it returned.
+        // The model's prose stays advisory; the tool numbers are the facts.
+        const toolCalls = Array.isArray(result.toolCalls) ? result.toolCalls : [];
+        const toolResults = Array.isArray(result.toolResults) ? result.toolResults : [];
+        const toolRecords = toolResults.map((tr, index) => ({
+          toolName: String(tr.toolName || toolCalls[index]?.toolName || ""),
+          input: tr.input ?? toolCalls[index]?.input ?? null,
+          text: typeof tr.text === "string" ? tr.text : "",
+          deterministic: tr.deterministic && typeof tr.deterministic === "object" ? tr.deterministic : null
+        }));
+        state.remote.messages.push({
+          role: "assistant",
+          text: result.text || "(no response text)",
+          toolsUsed: true,
+          webSearch: state.remote.webSearch,
+          toolRecords,
+          model: prefs.openAiModel,
+          usage: usage ? { ...usage } : null,
+          costUsd: cost ? cost.totalCost : null,
+          sectionCitations: matchSectionCitations(result.text || "", pieces)
+        });
+      }
     } catch (error) {
-      state.remote.messages.push({ role: "assistant", text: `Error: ${error?.message || "the ChatGPT request failed"}` });
+      if (!remoteSendStillCurrent(sendToken, sendPatientId)) {
+        delivered = false;
+      } else {
+        state.remote.messages.push({ role: "assistant", text: `Error: ${error?.message || "the ChatGPT request failed"}` });
+      }
     } finally {
-      state.remote.sending = false;
+      // Only the send that owns the flag clears it: a stale send finishing
+      // after a newer one started must not unblock that newer send.
+      if (state.remote.sendingToken === sendToken) {
+        state.remote.sending = false;
+        state.remote.sendingToken = 0;
+      }
       const secs = Math.max(1, Math.round((Date.now() - sentAt) / 1000));
       const spent = state.remote.usage.costUsd > 0 ? ` · ${formatUsd(state.remote.usage.costUsd)} this conversation` : "";
-      setStatus(`ChatGPT replied in ${secs}s.${spent}`);
+      setStatus(
+        delivered
+          ? `ChatGPT replied in ${secs}s.${spent}`
+          : app.vault
+            ? "Patient changed while ChatGPT was replying — that reply was discarded."
+            : "Vault locked while ChatGPT was replying — the reply was discarded."
+      );
       render();
     }
   }
@@ -1659,11 +2129,41 @@ export function createAiChatController({
   // ── event wiring ───────────────────────────────────────────────────
 
   function click(target) {
+    // Section citations: clicking a "per [Section]" chip navigates to the
+    // matching saved chart source. The chip carries the piece id; the
+    // message's sectionCitations (matched at send time against the reviewed
+    // pieces) resolve it to a navigation target. Unmatched citations are
+    // inert text and never reach this branch.
+    const sectionChip = target.closest?.("[data-section-cite]");
+    if (sectionChip) {
+      const pieceId = sectionChip.dataset.sectionCite || "";
+      const messageIndex = Number(sectionChip.dataset.messageIndex || "0");
+      const cite = state.remote.messages[messageIndex]?.sectionCitations?.find(
+        (entry) => entry?.pieceId === pieceId
+      );
+      if (cite?.target && typeof onNavigateToChartSection === "function") {
+        onNavigateToChartSection(cite.target);
+      } else {
+        setStatus(
+          cite?.section
+            ? `Chart section: ${cite.section} — no matching saved source.`
+            : "Chart section: this citation matches no reviewed chart section."
+        );
+        render();
+      }
+      return true;
+    }
     const actionTarget = target.closest?.("[data-action]");
     if (!actionTarget) return false;
     const action = actionTarget.dataset.action;
-    if (action === "ai-chat-mode") {
-      setMode(actionTarget.dataset.mode);
+    // One-tap chart-search model download: the ONLY user path that may
+    // download the embedding model. Everything else (render, status probe,
+    // ordinary chat) never touches ensure-model on a cold worker.
+    if (action === "ai-chat-download-rag-model") {
+      void downloadRagModel();
+      return true;
+    }
+    if (action === "ai-chat-mode") {      setMode(actionTarget.dataset.mode);
       return true;
     }
     if (action === "ai-chat-new-chat-remote") {
@@ -2106,6 +2606,9 @@ export function createAiChatController({
     // Thin test seam: the live remote chat state (messages, usage, cost).
     // Lets tests assert usage accumulation and compression without a DOM.
     getRemoteState: () => state.remote,
+    // Thin test seam: the live on-device chat state. Lets tests assert
+    // retrieval context, hard aborts, and fallback without a DOM.
+    getChatState: () => state.chat,
     // Test seam for the highlight-to-redact pill: recompute its visibility
     // and position from the current text selection.
     updateHipaaRedactFloat

@@ -16,11 +16,32 @@ import {
   listPatientContextPieces,
   pieceText,
   buildPatientContextFromPieces,
-  MAX_SELECTED_PIECES_CHARS
-} from "../../local-llm/patient-context.js?v=20260928-local-llm-v9";
+  buildFullChartContextText,
+  MAX_SELECTED_PIECES_CHARS,
+  MAX_FULL_CHART_CHARS
+} from "../../local-llm/patient-context.js?v=20260929-local-llm-v10";
 import { buildRemoteChatInput } from "../../ai/remote-chat.js?v=20260929-ai-chat-v6";
 import { redactFromEntities } from "../../vault/deid.js?v=20260921-medication-card-v4";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
+import { CHARS_PER_TOKEN } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
+
+// ---------------------------------------------------------------------------
+// Full-chart budget
+// ---------------------------------------------------------------------------
+// The full-chart budget is grounded in the selected API model's real
+// context window — not an arbitrary cap. Headroom is reserved for the
+// system prompt, conversation history, the question, and the reply. A real
+// student chart essentially never reaches this; if it does, the review
+// modal names the cut piece honestly (see locateTruncation) instead of
+// silently claiming the chart is complete. Unknown model: conservative
+// fallback to MAX_FULL_CHART_CHARS.
+export const FULL_CHART_RESERVE_TOKENS = 32000;
+export function fullChartBudgetChars(contextWindowTokens) {
+  const windowTokens = Number(contextWindowTokens) || 0;
+  if (windowTokens <= 0) return MAX_FULL_CHART_CHARS;
+  const usable = Math.max(0, windowTokens - FULL_CHART_RESERVE_TOKENS);
+  return Math.max(500, Math.floor(usable * CHARS_PER_TOKEN));
+}
 
 // ---------------------------------------------------------------------------
 // Hashing
@@ -100,6 +121,84 @@ export function verifySplitEquivalence(patient, selectedIds, split, { draftNoteT
   const parts = split.pieces.map((piece) => String(piece?.rawText ?? ""));
   const reassembled = parts.length ? truncateToBudget(`${split.header}\n\n${parts.join("\n\n")}`, budget) : "";
   return reassembled === buildPatientContextFromPieces(patient, selectedIds, { maxChars: budget, draftNoteText });
+}
+
+// Split the FULL chart assembly into its header + one entry per chart
+// piece, in listPatientContextPieces order, each with its raw
+// (pre-redaction) text. The API (ChatGPT) path reviews the entire chart —
+// no selection, no retrieval — so every section goes through the gate.
+export function splitFullChartContext(patient, { draftNoteText = "", maxChars = MAX_FULL_CHART_CHARS } = {}) {
+  const budget = Math.max(500, Number(maxChars) || MAX_FULL_CHART_CHARS);
+  const header = buildContextHeaderText(patient);
+  const pieces = [];
+  const pieceOpts = { draftNoteText };
+  for (const piece of listPatientContextPieces(patient, pieceOpts)) {
+    const rawText = pieceText(patient, piece, pieceOpts);
+    if (!rawText) continue;
+    pieces.push({ id: piece.id, label: piece.label, group: piece.group, kind: piece.kind, rawText });
+  }
+  return { header, pieces, maxChars: budget };
+}
+
+// Reassemble the full-chart split with the trusted builder's own
+// budget-truncate rule and require a byte-exact match against
+// buildFullChartContextText. Any drift (piece order, header format,
+// truncation) fails the check.
+export function verifyFullChartEquivalence(patient, split, { draftNoteText = "", maxChars } = {}) {
+  if (!split || typeof split.header !== "string" || !Array.isArray(split.pieces)) return false;
+  const budget = Math.max(500, Number(maxChars ?? split.maxChars) || MAX_FULL_CHART_CHARS);
+  const parts = split.pieces.map((piece) => String(piece?.rawText ?? ""));
+  const reassembled = parts.length ? truncateToBudget(`${split.header}\n\n${parts.join("\n\n")}`, budget) : "";
+  return reassembled === buildFullChartContextText(patient, { maxChars: budget, draftNoteText });
+}
+
+// Where a chart piece lives in the app, for citation navigation. Returns
+// null for pieces with no chart location (patient header, draft note).
+//   { scope: "context", sectionId }            -> admission packet section
+//   { scope: "daily", dayId, sectionId|null }   -> hospital-day capture
+//      (sectionId null = day-level piece, e.g. quick notes: the day itself
+//      is the anchor)
+export function pieceSectionTarget(pieceId) {
+  const id = String(pieceId || "");
+  if (id.startsWith("admission:")) {
+    return { scope: "context", dayId: null, sectionId: id.slice("admission:".length) };
+  }
+  if (id.startsWith("day:")) {
+    const rest = id.slice("day:".length);
+    const cut = rest.lastIndexOf(":");
+    if (cut <= 0) return null;
+    const dayId = rest.slice(0, cut);
+    const captureId = rest.slice(cut + 1);
+    if (captureId === "quicknotes") return { scope: "daily", dayId, sectionId: null };
+    return { scope: "daily", dayId, sectionId: captureId };
+  }
+  return null;
+}
+
+// Build the citation lookup for one assistant reply: lowercased section
+// label -> { pieceId, label, group, target }. First piece wins on duplicate
+// labels; pieces with no chart location are skipped (their citations stay
+// inert text).
+export function buildSectionCitationIndex(pieces) {
+  const index = new Map();
+  for (const piece of pieces || []) {
+    // Reviewed pieces carry `title` (from contextTargets/prepareReviewPiece);
+    // raw context targets carry `label`. Either is the chart-section name the
+    // model cites as `per [Section Label]`.
+    const label = String(piece?.label || piece?.title || "").trim();
+    if (!label) continue;
+    const key = label.toLowerCase();
+    if (index.has(key)) continue;
+    const target = pieceSectionTarget(piece?.id);
+    if (!target) continue;
+    index.set(key, {
+      pieceId: String(piece.id),
+      label,
+      group: String(piece?.group || ""),
+      target
+    });
+  }
+  return index;
 }
 
 // Content fingerprints for the session-scoped review store.
@@ -201,9 +300,10 @@ export function locateManualSpan(rawText, selectedText, occupiedSpans = []) {
 // Assemble the exact context string that will be sent: the approved piece
 // texts in piece order, joined with "\n\n", under the same budget the
 // trusted builder enforces. The Responses-API input is built from the real
-// buildRemoteChatInput so the wire format can't drift from review.
-export function buildTransmitPayload({ approvedById = {}, pieceOrder = [], transformedMessage = "", systemPrompt = "", history = [], maxChars = MAX_SELECTED_PIECES_CHARS } = {}) {
-  const budget = normalizeBudget(maxChars);
+// buildRemoteChatInput so the wire format can't drift from review: exactly
+// one standard outer context wrapper around the reviewed chart sections.
+export function buildTransmitPayload({ approvedById = {}, pieceOrder = [], transformedMessage = "", systemPrompt = "", history = [], maxChars = MAX_FULL_CHART_CHARS } = {}) {
+  const budget = Math.max(500, Number(maxChars) || MAX_FULL_CHART_CHARS);
   const parts = [];
   for (const id of pieceOrder || []) {
     const text = approvedById?.[id];
@@ -216,8 +316,8 @@ export function buildTransmitPayload({ approvedById = {}, pieceOrder = [], trans
 
 // Locate where the budget cut lands, for the truncation note: which piece
 // is cut and at what offset inside it (pre-trim, matching truncateToBudget).
-export function locateTruncation(pieceOrder = [], approvedById = {}, maxChars = MAX_SELECTED_PIECES_CHARS) {
-  const budget = normalizeBudget(maxChars);
+export function locateTruncation(pieceOrder = [], approvedById = {}, maxChars = MAX_FULL_CHART_CHARS) {
+  const budget = Math.max(500, Number(maxChars) || MAX_FULL_CHART_CHARS);
   let used = 0;
   for (const id of pieceOrder || []) {
     const text = String(approvedById?.[id] || "");

@@ -135,7 +135,8 @@ import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20
 import { createDemoController } from "./demo/controller.js?v=20260929-demo-v2";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260929-demo-v2";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260929-demo-v2";
-import { createAiChatController } from "./ai-chat/controller.js?v=20260929-deid-rules";
+import { createAiChatController } from "./ai-chat/controller.js?v=20260929-ai-chat-v14";
+import { clearAllRagIndexes } from "../rag/rag-service.js?v=20260929-rag-v3";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
 import { createScoresController } from "./scores/controller.js?v=20260927-models-v2";
@@ -281,6 +282,45 @@ const demoSessionController = createDemoSessionController({
   render,
   setStatus
 });
+// Section-citation navigation: clicking a "per [Section]" chip in AI Chat
+// opens the matching saved chart source. The target ({ scope, dayId,
+// sectionId }) comes from the reviewed chart pieces, so it always points at
+// a real saved source — never a vector chunk. Admission sections and
+// hospital-day captures both live in the Hospital Stay view under
+// #contextSections / #dailySources.
+function navigateToChartSection(target) {
+  if (!target || !active()) return;
+  if (target.scope === "context") {
+    app.selectedStayPacketId = "admission";
+  } else if (target.scope === "daily" && target.dayId) {
+    app.selectedDayId = target.dayId;
+    app.selectedStayPacketId = target.dayId;
+  } else {
+    return;
+  }
+  app.view = "daily";
+  render();
+  // The daily view renders synchronously inside render(); scroll and flash
+  // the matching saved source on the next frame.
+  requestAnimationFrame(() => {
+    const listId = target.scope === "daily" ? "dailySources" : "contextSections";
+    let el = null;
+    if (target.sectionId) {
+      el = document.querySelector(
+        `#${listId} .section-editor[data-section-id="${CSS.escape(String(target.sectionId))}"]`
+      );
+    }
+    // Day-level pieces (e.g. quick notes) anchor the packet's section list.
+    if (!el) el = document.getElementById(listId);
+    if (!el) return;
+    el.scrollIntoView({ block: "center", behavior: "smooth" });
+    el.classList.remove("aic-flash-section");
+    void el.offsetWidth;
+    el.classList.add("aic-flash-section");
+    setTimeout(() => el.classList.remove("aic-flash-section"), 1700);
+  });
+}
+
 const aiChatController = createAiChatController({
   app,
   byId,
@@ -297,7 +337,8 @@ const aiChatController = createAiChatController({
   onOpenAiModelChange: (value) => {
     setVaultPreferences({ ...currentPreferences(), openAiModel: value });
     persistVault("ChatGPT model updated.").then(() => render());
-  }
+  },
+  onNavigateToChartSection: navigateToChartSection
 });
 // Medication names for the active patient, pulled from parsed medication
 // captures on this device. Only names are returned; the caller sends just
@@ -928,6 +969,10 @@ function clearPatientScopedSession() {
 }
 
 function clearSensitiveSession() {
+  // Chart-grounded RAG: drop the in-memory embedding vectors and the cached
+  // per-patient chart indexes BEFORE protected state is discarded.
+  // Fire-and-forget — lock must not wait on it.
+  void clearAllRagIndexes().catch(() => {});
   if (vaultInactivityTimer) {
     clearTimeout(vaultInactivityTimer);
     vaultInactivityTimer = null;
