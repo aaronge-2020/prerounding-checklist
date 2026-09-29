@@ -15,7 +15,6 @@
       --muted: #6b7280;
       --line: #e5e1d8;
       --accent: #1d4ed8;
-      --accent-ink: #ffffff;
       --warn-bg: #fef3c7;
       --warn-ink: #92400e;
     }
@@ -26,154 +25,239 @@
       background: var(--paper);
       color: var(--ink);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.45;
+      font-size: 15px;
+      line-height: 1.35;
       padding-bottom: env(safe-area-inset-bottom, 0);
     }
-    header.topbar {
+    button { font-family: inherit; }
+    .hidden { display: none !important; }
+
+    /* ---- list view ---- */
+    .topbar {
       position: sticky;
       top: 0;
       z-index: 10;
       background: var(--paper);
       border-bottom: 1px solid var(--line);
-      padding: calc(10px + env(safe-area-inset-top, 0)) 16px 10px;
+      padding: calc(8px + env(safe-area-inset-top, 0)) 12px 8px;
     }
-    header.topbar h1 {
-      margin: 0;
-      font-size: 19px;
+    .topbar h1 {
+      margin: 0 0 6px;
+      font-size: 17px;
       letter-spacing: -0.01em;
-    }
-    header.topbar p {
-      margin: 2px 0 0;
-      font-size: 12.5px;
-      color: var(--muted);
-    }
-    main { padding: 12px 12px 32px; max-width: 640px; margin: 0 auto; }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 12px;
-    }
-    .scribe-card {
-      display: block;
-      text-decoration: none;
-      color: var(--ink);
-      background: #111827;
-      border: none;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-    .scribe-card strong { color: #fff; font-size: 17px; display: block; margin-bottom: 4px; }
-    .scribe-card span { color: #d1d5db; font-size: 13.5px; }
-    .scribe-card .go {
-      display: inline-block;
-      margin-top: 10px;
-      background: var(--accent);
-      color: var(--accent-ink);
-      font-weight: 600;
-      font-size: 16px;
-      padding: 12px 20px;
-      border-radius: 12px;
-      min-height: 48px;
-    }
-    .search-wrap {
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      background: var(--paper);
-      padding: 10px 0;
     }
     #q {
       width: 100%;
       font-size: 17px; /* >=16px prevents iOS focus zoom */
-      padding: 13px 14px;
+      padding: 10px 12px;
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 10px;
       background: var(--card);
       color: var(--ink);
       -webkit-appearance: none;
       appearance: none;
     }
     #q:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
-    .count { font-size: 12.5px; color: var(--muted); margin: 6px 2px 0; }
-    .sheet-btn {
+    .count { font-size: 11.5px; color: var(--muted); margin: 4px 2px 0; }
+
+    .scribe-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 10px 12px 2px;
+      padding: 11px 12px;
+      background: #111827;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .scribe-row small { font-weight: 400; color: #d1d5db; font-size: 12.5px; }
+    .scribe-row .go { margin-left: auto; font-size: 18px; line-height: 1; }
+
+    #list { padding: 6px 12px 24px; max-width: 640px; margin: 0 auto; }
+    .srow {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      width: 100%;
+      text-align: left;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 12px;
+      margin: 5px 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .srow .t {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .srow .m {
+      flex: none;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+    .badge {
+      flex: none;
+      font-size: 10.5px;
+      font-weight: 700;
+      background: var(--warn-bg);
+      color: var(--warn-ink);
+      border-radius: 999px;
+      padding: 2px 7px;
+    }
+
+    /* ---- detail view ---- */
+    .dstick {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      padding-top: env(safe-area-inset-top, 0);
+    }
+    .dbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px 6px;
+    }
+    .back {
+      flex: none;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 8px 12px;
+      min-height: 40px;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .dbar h2 {
+      flex: 1;
+      min-width: 0;
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .jump { display: flex; gap: 4px; flex: none; }
+    .jump a {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+    }
+    #sheetStrip {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 2px 12px 8px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    #sheetStrip::-webkit-scrollbar { display: none; }
+    .strip-chip {
+      flex: none;
+      max-width: 170px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .strip-chip[aria-current="true"] {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff;
+    }
+
+    #detailBody { padding: 2px 12px 32px; max-width: 640px; margin: 0 auto; }
+    .review-note {
+      font-size: 12.5px;
+      color: var(--warn-ink);
+      background: var(--warn-bg);
+      border-radius: 8px;
+      padding: 7px 10px;
+      margin: 8px 0 0;
+    }
+    h3.sec {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin: 14px 0 4px;
+      scroll-margin-top: 118px;
+    }
+    h3.sec .n { font-size: 11px; text-transform: none; letter-spacing: 0; }
+    .qrow {
       display: block;
       width: 100%;
       text-align: left;
       background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 14px;
-      margin: 8px 0;
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--ink);
-      min-height: 52px;
-      cursor: pointer;
-    }
-    .sheet-btn .sub {
-      display: block;
-      font-weight: 400;
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-    .badge {
-      display: inline-block;
-      font-size: 11.5px;
-      font-weight: 700;
-      background: var(--warn-bg);
-      color: var(--warn-ink);
-      border-radius: 999px;
-      padding: 2px 9px;
-      margin-left: 8px;
-      vertical-align: middle;
-    }
-    .detail-head { display: flex; align-items: flex-start; gap: 8px; }
-    .detail-head h2 { margin: 0; font-size: 20px; flex: 1; }
-    .back {
-      flex: none;
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--accent);
-      background: none;
-      border: 1px solid var(--line);
       border-radius: 10px;
-      padding: 10px 14px;
-      min-height: 44px;
+      padding: 9px 12px;
+      margin: 5px 0;
+      color: var(--ink);
       cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
     }
-    h3.section {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+    .qrow.static { cursor: default; }
+    .qrow .qr { display: flex; align-items: flex-start; gap: 8px; }
+    .qrow .qt { flex: 1; font-size: 15px; font-weight: 500; }
+    .qrow .chev {
+      flex: none;
       color: var(--muted);
-      margin: 18px 0 8px;
-      border-bottom: 1px solid var(--line);
-      padding-bottom: 6px;
+      font-size: 17px;
+      line-height: 1.25;
+      transition: transform 0.15s ease;
     }
-    .item { padding: 10px 0; border-bottom: 1px dashed var(--line); }
-    .item:last-child { border-bottom: none; }
-    .item .q { font-weight: 600; font-size: 15.5px; margin: 0 0 6px; }
-    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
-    .chip {
-      font-size: 13px;
-      background: #eef2ff;
-      color: #3730a3;
-      border-radius: 999px;
-      padding: 4px 10px;
+    .qrow[aria-expanded="true"] .chev { transform: rotate(90deg); }
+    .qrow .qx {
+      display: none;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--line);
     }
-    .why {
-      font-size: 13.5px;
-      color: var(--muted);
-      margin: 6px 0 0;
-      border-left: 3px solid var(--line);
-      padding-left: 10px;
-    }
-    .how { font-size: 13.5px; margin: 6px 0 0; }
-    .how strong { font-weight: 600; }
+    .qrow[aria-expanded="true"] .qx { display: block; }
+    .why { font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+    .how { font-size: 13px; margin: 0 0 6px; }
+    .lf { font-size: 12.5px; color: var(--muted); margin: 0; }
+    .lf .lbl { font-weight: 700; }
+
     .status { text-align: center; color: var(--muted); font-size: 14px; padding: 24px 12px; }
     .error { color: #b91c1c; }
     footer {
@@ -183,48 +267,42 @@
       color: var(--muted);
     }
     footer a { color: var(--accent); font-weight: 600; }
-    .hidden { display: none !important; }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <h1>Preround · Bedside</h1>
-    <p>Cheat sheets &amp; scribe. Reference only — no patient data, no unlock needed.</p>
-  </header>
+  <div id="listView">
+    <header class="topbar">
+      <h1>Bedside</h1>
+      <input id="q" type="search" placeholder="Search by chief complaint…" autocomplete="off"
+             autocapitalize="off" spellcheck="false" aria-label="Search cheat sheets">
+      <div class="count" id="count" aria-live="polite"></div>
+    </header>
 
-  <main>
-    <a class="scribe-card" href="./scribe-prototype.html" id="scribeLink">
-      <strong>🎙️ Scribe</strong>
-      <span>On-device voice transcription. Audio never leaves this phone.</span><br>
-      <span class="go">Open scribe →</span>
+    <a class="scribe-row" href="./scribe-prototype.html" id="scribeLink">
+      <span>🎙️ Scribe</span><small>on-device transcription</small><span class="go" aria-hidden="true">→</span>
     </a>
 
-    <div id="listView">
-      <div class="search-wrap">
-        <input id="q" type="search" placeholder="Search by chief complaint…" autocomplete="off"
-               autocapitalize="off" spellcheck="false" aria-label="Search cheat sheets">
-        <div class="count" id="count" aria-live="polite"></div>
+    <div id="list"></div>
+
+    <footer>
+      <a href="./index.html?full=1" id="fullSiteLink">Full site</a>
+      &nbsp;·&nbsp;works offline after first load
+    </footer>
+  </div>
+
+  <div id="detailView" class="hidden">
+    <div class="dstick">
+      <div class="dbar">
+        <button class="back" id="backBtn" type="button">← All</button>
+        <h2 id="detailTitle"></h2>
+        <nav class="jump" id="jumpNav" aria-label="Jump to section"></nav>
       </div>
-      <div id="list"></div>
+      <div id="sheetStrip" aria-label="Switch sheet"></div>
     </div>
+    <div id="detailBody"></div>
+  </div>
 
-    <div id="detailView" class="hidden">
-      <div class="card">
-        <div class="detail-head">
-          <button class="back" id="backBtn" type="button">← All</button>
-          <h2 id="detailTitle"></h2>
-        </div>
-        <div id="detailBody"></div>
-      </div>
-    </div>
-
-    <div id="status" class="status" role="status">Loading cheat sheets…</div>
-  </main>
-
-  <footer>
-    <a href="./index.html?full=1" id="fullSiteLink">Full site</a>
-    &nbsp;·&nbsp;works offline after first load
-  </footer>
+  <div id="status" class="status" role="status">Loading cheat sheets…</div>
 
   <script>
   (function () {
@@ -306,15 +384,39 @@
       } catch (e) { /* persistence is a nicety */ }
     }
 
-    // ---- rendering ---------------------------------------------------------
-    function chipList(items) {
-      if (!items || !items.length) return '';
-      return '<div class="chips">' + items.map(function (t) {
-        return '<span class="chip">' + esc(t) + '</span>';
-      }).join('') + '</div>';
+    function findSheet(id) {
+      for (var i = 0; i < sheets.length; i++) {
+        if (String(sheets[i].id) === String(id)) return sheets[i];
+      }
+      return null;
     }
-    function whyBlock(why) {
-      return why ? '<p class="why">' + esc(why) + '</p>' : '';
+
+    // ---- rendering ---------------------------------------------------------
+    // One dense row per question. Answer options (listenFor / findings) are
+    // never shown by default — they live inside the tap-to-expand region only.
+    function itemBlock(item, isExam) {
+      var prompt = isExam ? item.maneuver : item.question;
+      if (!prompt) return '';
+      var extra = '';
+      if (isExam && item.how) {
+        extra += '<p class="how"><strong>How:</strong> ' + esc(item.how) + '</p>';
+      }
+      if (item.why) {
+        extra += '<p class="why">' + esc(item.why) + '</p>';
+      }
+      var options = isExam ? item.findings : item.listenFor;
+      if (options && options.length) {
+        extra += '<p class="lf"><span class="lbl">' + (isExam ? 'Findings:' : 'Listen for:') +
+          '</span> ' + options.map(esc).join(' · ') + '</p>';
+      }
+      if (!extra) {
+        return '<div class="qrow static"><span class="qr"><span class="qt">' +
+          esc(prompt) + '</span></span></div>';
+      }
+      return '<button type="button" class="qrow" aria-expanded="false">' +
+        '<span class="qr"><span class="qt">' + esc(prompt) +
+        '</span><span class="chev" aria-hidden="true">›</span></span>' +
+        '<span class="qx">' + extra + '</span></button>';
     }
 
     function renderList(query) {
@@ -327,35 +429,43 @@
       }
       list.innerHTML = results.map(function (s) {
         var nH = (s.history || []).length, nE = (s.exam || []).length;
-        var badge = s.reviewNeeded ? '<span class="badge">needs clinician review</span>' : '';
-        return '<button type="button" class="sheet-btn" data-sheet-id="' + esc(s.id) + '">' +
-          esc(s.title) + badge +
-          '<span class="sub">' + nH + ' questions · ' + nE + ' exam maneuvers</span></button>';
+        var badge = s.reviewNeeded ? '<span class="badge">review</span>' : '';
+        return '<button type="button" class="srow" data-sheet-id="' + esc(s.id) + '">' +
+          '<span class="t">' + esc(s.title) + '</span>' + badge +
+          '<span class="m">' + nH + 'q · ' + nE + 'e</span></button>';
       }).join('');
     }
 
     function renderDetail(sheet) {
       $('detailTitle').textContent = sheet.title || sheet.id;
+
+      var history = sheet.history || [];
+      var exam = sheet.exam || [];
+
+      var jump = '';
+      if (history.length) jump += '<a href="#sec-history">Hx</a>';
+      if (exam.length) jump += '<a href="#sec-exam">Ex</a>';
+      $('jumpNav').innerHTML = jump;
+
+      $('sheetStrip').innerHTML = sheets.map(function (s) {
+        return '<button type="button" class="strip-chip" data-sheet-id="' + esc(s.id) + '"' +
+          (String(s.id) === String(sheet.id) ? ' aria-current="true"' : '') + '>' +
+          esc(s.title) + '</button>';
+      }).join('');
+
       var html = '';
       if (sheet.reviewNeeded) {
-        html += '<p class="why" style="border-left-color:#f59e0b">Some items on this sheet are marked for clinician review before relying on them.</p>';
+        html += '<p class="review-note">Some items on this sheet are marked for clinician review before relying on them.</p>';
       }
-      var history = sheet.history || [];
       if (history.length) {
-        html += '<h3 class="section">History — questions to ask</h3>';
-        history.forEach(function (h) {
-          html += '<div class="item"><p class="q">' + esc(h.question) + '</p>' +
-            chipList(h.listenFor) + whyBlock(h.why) + '</div>';
-        });
+        html += '<h3 class="sec" id="sec-history">History <span class="n">' +
+          history.length + ' questions</span></h3>';
+        history.forEach(function (h) { html += itemBlock(h, false); });
       }
-      var exam = sheet.exam || [];
       if (exam.length) {
-        html += '<h3 class="section">Physical exam</h3>';
-        exam.forEach(function (e) {
-          html += '<div class="item"><p class="q">' + esc(e.maneuver) + '</p>' +
-            (e.how ? '<p class="how"><strong>How:</strong> ' + esc(e.how) + '</p>' : '') +
-            chipList(e.findings) + whyBlock(e.why) + '</div>';
-        });
+        html += '<h3 class="sec" id="sec-exam">Physical exam <span class="n">' +
+          exam.length + '</span></h3>';
+        exam.forEach(function (e) { html += itemBlock(e, true); });
       }
       if (!history.length && !exam.length) {
         html += '<div class="status">This sheet has no items yet.</div>';
@@ -375,10 +485,7 @@
     }
 
     function openSheet(id) {
-      var sheet = null;
-      for (var i = 0; i < sheets.length; i++) {
-        if (String(sheets[i].id) === String(id)) { sheet = sheets[i]; break; }
-      }
+      var sheet = findSheet(id);
       if (!sheet) { showList(); return; }
       currentId = sheet.id;
       writeLastSheetId(sheet.id);
@@ -390,6 +497,19 @@
     $('list').addEventListener('click', function (e) {
       var btn = e.target.closest ? e.target.closest('[data-sheet-id]') : null;
       if (btn) openSheet(btn.getAttribute('data-sheet-id'));
+    });
+    // Tap a question to expand/collapse its detail (accordion: one open at a time).
+    $('detailBody').addEventListener('click', function (e) {
+      var row = e.target.closest ? e.target.closest('.qrow') : null;
+      if (!row || row.classList.contains('static')) return;
+      var wasOpen = row.getAttribute('aria-expanded') === 'true';
+      var open = $('detailBody').querySelectorAll('.qrow[aria-expanded="true"]');
+      for (var i = 0; i < open.length; i++) open[i].setAttribute('aria-expanded', 'false');
+      row.setAttribute('aria-expanded', wasOpen ? 'false' : 'true');
+    });
+    $('sheetStrip').addEventListener('click', function (e) {
+      var chip = e.target.closest ? e.target.closest('[data-sheet-id]') : null;
+      if (chip) openSheet(chip.getAttribute('data-sheet-id'));
     });
     $('backBtn').addEventListener('click', showList);
     $('fullSiteLink').addEventListener('click', function () {
@@ -416,10 +536,7 @@
       if (!sheets.length) throw new Error('empty sheet list');
       setStatus('', false);
       var last = readLastSheetId();
-      if (last) {
-        var known = sheets.some(function (s) { return String(s.id) === String(last); });
-        if (known) { openSheet(last); return; }
-      }
+      if (last && findSheet(last)) { openSheet(last); return; }
       renderList('');
     }).catch(function (err) {
       setStatus('Couldn’t load cheat sheets (' + (err && err.message ? err.message : 'network error') +

@@ -35,6 +35,15 @@ check("mobile persists the full-site choice", mobile.includes("prerounding.mobil
 check("mobile search input avoids iOS focus zoom", /#q\s*{[^}]*font-size:\s*1[67]px/.test(mobile), true);
 check("mobile respects the iPhone safe area", mobile.includes("safe-area-inset"), true);
 
+// ---- redesigned compact UI contract ---------------------------------------
+check("detail shows no answer-choice chips by default", !mobile.includes('class="chips"') && !mobile.includes("function chipList"), true);
+check("questions render as dense expandable rows", mobile.includes("qrow"), true);
+check("tap-to-expand uses aria-expanded", mobile.includes("aria-expanded"), true);
+check("answer options live only in the tap-to-expand region", mobile.includes("Listen for:"), true);
+check("fast sheet switcher strip exists", mobile.includes('id="sheetStrip"'), true);
+check("History/Exam quick-jump exists", mobile.includes("#sec-history") && mobile.includes("#sec-exam"), true);
+check("no checkbox or check-off UI", !/type="checkbox"/.test(mobile), true);
+
 // ---- index.html redirect contract -----------------------------------------
 const startMarker = "<!-- mobile-redirect:start";
 const endMarker = "mobile-redirect:end -->";
