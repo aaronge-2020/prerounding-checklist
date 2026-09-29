@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20260929-obi-default";
+} from "./deid-service.js?v=20260929-deid-rules";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });

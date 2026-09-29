@@ -11,7 +11,7 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../../patient-context/deid-client.js?v=20260929-obi-default";
+} from "../../patient-context/deid-client.js?v=20260929-deid-rules";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,

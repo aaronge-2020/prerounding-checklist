@@ -39,7 +39,7 @@ import {
   getSelectedDeidModelStatus,
   getAdvancedDeidStatus,
   preloadAdvancedDeidModel
-} from "../../patient-context/deid-service.js?v=20260929-obi-default";
+} from "../../patient-context/deid-service.js?v=20260929-deid-rules";
 import { STRUCTURED_DEID_MODE } from "../../patient-context/deid-model-options.js?v=20260929-obi-default";
 import {
   buildPatientContextFromPieces,

@@ -1,7 +1,7 @@
 import {
   createDeidentifier,
   deidentifyTextStructuredOnly
-} from "../vault/deid.js?v=20260921-medication-card-v4";
+} from "../vault/deid.js?v=20260929-deid-rules";
 import {
   DEFAULT_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,

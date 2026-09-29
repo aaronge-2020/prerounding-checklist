@@ -51,7 +51,7 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../patient-context/deid-client.js?v=20260929-obi-default";
+} from "../patient-context/deid-client.js?v=20260929-deid-rules";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
@@ -135,7 +135,7 @@ import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20
 import { createDemoController } from "./demo/controller.js?v=20260929-demo-v2";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260929-demo-v2";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260929-demo-v2";
-import { createAiChatController } from "./ai-chat/controller.js?v=20260929-ai-chat-v10";
+import { createAiChatController } from "./ai-chat/controller.js?v=20260929-deid-rules";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
 import { createScoresController } from "./scores/controller.js?v=20260927-models-v2";
