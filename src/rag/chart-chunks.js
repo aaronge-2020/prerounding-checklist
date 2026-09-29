@@ -126,7 +126,7 @@ export function hashChunkSet(chunks) {
 
 // Canonical piece-text resolver shared with the rest of the chat code.
 // Re-exported as resolvePieceText so existing importers keep working.
-import { pieceText } from "../local-llm/patient-context.js?v=20260929-local-llm-v10";
+import { pieceText } from "../local-llm/patient-context.js?v=20260929-local-llm-v12";
 export { pieceText };
 export const resolvePieceText = pieceText;
 

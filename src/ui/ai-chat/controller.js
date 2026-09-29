@@ -16,7 +16,7 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v15";
+import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v16";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20260929-ai-chat-v2";
 import { gatedFetch, isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
 import {
@@ -50,7 +50,7 @@ import {
   pieceText,
   textOf,
   MAX_SELECTED_PIECES_CHARS
-} from "../../local-llm/patient-context.js?v=20260929-local-llm-v11";
+} from "../../local-llm/patient-context.js?v=20260929-local-llm-v12";
 import { CHARS_PER_TOKEN, buildChatMessages, estimateTokens } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES, buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
@@ -67,7 +67,7 @@ import {
   locateTruncation,
   fullChartBudgetChars,
   effectiveGuidelinesText
-} from "./delta-review.js?v=20260929-ai-chat-v15";
+} from "./delta-review.js?v=20260929-ai-chat-v16";
 import {
   parseSectionCitations
 } from "./section-citations.js?v=20260929-ai-chat-v14";
