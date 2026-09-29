@@ -6,6 +6,8 @@
 // sees raw chart data; it formats whatever context strings it is given.
 
 import { resolveMedicationConcepts } from "../patient-context/rxnorm-resolve.js?v=20260929-rxnorm-official-v3";
+import { buildLabelExcerptsBlock } from "../patient-context/dailymed.js?v=20260929-dailymed-v1";
+import { lookupInteraction } from "../patient-context/ddi-query.js?v=20260929-ddi-query-v1";
 
 export const AP_RESPONSE_SCHEMA = {
   type: "object",
@@ -263,13 +265,17 @@ function planLines(text) {
 // - Interaction flags (DDInter bundle, download in progress) append under an
 //   "INTERACTION FLAGS:" subheader as:
 //     ! <severity>: <drug A> + <drug B> — <mechanism / management>
-// - DailyMed label excerpts (label lookup migration pending) append under a
+// - DailyMed label excerpts (src/patient-context/dailymed.js) append under a
 //   "LABEL EXCERPTS:" subheader as:
 //     • <ingredient>: <section> — <excerpt> (<citation>)
-export function buildMedicationContextBlock(medications = []) {
+//   Label data is fetched on demand by the UI via fetchLabelSections() and
+//   passed in as already-retrieved, de-identified labelData — this module
+//   never touches the network; the block stays deterministic.
+export function buildMedicationContextBlock(medications = [], labelData = []) {
   const seen = new Set();
   const resolvedLines = [];
   const unresolvedLines = [];
+  const resolvedRxcuis = []; // For DDInter pair checking
   const list = Array.isArray(medications) ? medications : [];
   for (const entry of list) {
     const text = typeof entry === "string" ? entry : String(entry?.orderText ?? entry?.name ?? "");
@@ -302,11 +308,30 @@ export function buildMedicationContextBlock(medications = []) {
       if (seen.has(dedupeKey)) continue;
       seen.add(dedupeKey);
       resolvedLines.push(`- ${clean(text, 120)} \u2192 ${name} (RxCUI ${rxcui})${detail ? ` \u2014 ${detail}` : ""}`);
+      if (!resolvedRxcuis.includes(rxcui)) resolvedRxcuis.push(rxcui);
+    }
+  }
+  // DDInter interaction checking: all pairs of resolved RxCUIs.
+  const interactionLines = [];
+  for (let i = 0; i < resolvedRxcuis.length; i++) {
+    for (let j = i + 1; j < resolvedRxcuis.length; j++) {
+      let hit = null;
+      try { hit = lookupInteraction(resolvedRxcuis[i], resolvedRxcuis[j]); } catch { hit = null; }
+      if (hit) {
+        const names = hit.drugNames.length ? hit.drugNames.join(" + ") : `${hit.rxcuiA} + ${hit.rxcuiB}`;
+        interactionLines.push(`- \u26a0\ufe0f ${names}: ${hit.severity} interaction (DDInter 2.0)`);
+      }
     }
   }
   const lines = [...unresolvedLines, ...resolvedLines];
-  if (!lines.length) return "";
-  return clean(`MEDICATION CONTEXT (RxNorm-coded, deterministic):\n${lines.join("\n")}`, 4000);
+  if (interactionLines.length) {
+    lines.push("", "DRUG-DRUG INTERACTIONS (DDInter 2.0, deterministic):", ...interactionLines);
+  }
+  if (!lines.length && !labelData?.length) return "";
+  const block = clean(`MEDICATION CONTEXT (RxNorm-coded, deterministic):\n${lines.join("\n")}`, 8000);
+  if (!lines.length) return buildLabelExcerptsBlock(labelData);
+  const excerpts = buildLabelExcerptsBlock(labelData);
+  return excerpts ? `${block}\n\n${excerpts}` : block;
 }
 
 export function buildApRevisionPrompt({
@@ -320,7 +345,8 @@ export function buildApRevisionPrompt({
   assessment,
   vitals,
   keyLabs,
-  medications
+  medications,
+  labelData
 } = {}) {
   const problemName = clean(problem, 300) || "(problem not named)";
   const context = clean(keyContext, 1500);
@@ -342,7 +368,7 @@ export function buildApRevisionPrompt({
   const objectiveBits = [];
   if (clean(vitals, 1500)) objectiveBits.push(`Vitals: ${clean(vitals, 1500)}`);
   if (clean(keyLabs, 3000)) objectiveBits.push(`Key labs / diagnostics: ${clean(keyLabs, 3000)}`);
-  const medicationBlock = buildMedicationContextBlock(medications);
+  const medicationBlock = buildMedicationContextBlock(medications, labelData);
 
   return `You are an expert clinical assistant helping a medical student refine the assessment and plan for ONE clinical problem. All patient context below is DE-IDENTIFIED. Base every suggestion on the context given; do not invent patient data.
 
