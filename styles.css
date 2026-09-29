@@ -13377,6 +13377,48 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 /* Small button variant used for suggestion rows. */
 .aic-btn--sm { padding: 4px 10px; font-size: 0.78rem; }
 
+/* Review action bar: the one-click review controls live here, always visible
+   between the stats and the scrollable body — no hunting through cards for
+   the decision buttons. */
+.aic-hipaa-actionbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: var(--surface-2, #f8fafc);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  padding: 8px 12px;
+  flex: none;
+}
+.aic-hipaa-actionbar-tx { font-size: 13px; }
+.aic-hipaa-actionbar-tx strong { font-weight: 750; }
+.aic-hipaa-actionbar-btns { display: inline-flex; gap: 8px; }
+.aic-hipaa-actionbar-hint { margin-left: auto; font-size: 12px; color: var(--muted, #64748b); }
+/* Floating highlight-to-redact pill: summoned next to any text selection in
+   the review modal. position:fixed so it tracks the viewport rather than the
+   modal's internal scroll; z-index sits above the modal backdrop. */
+.aic-hipaa-redact-float {
+  position: fixed;
+  z-index: 300;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #1d4ed8;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(29, 78, 216, 0.45);
+  white-space: nowrap;
+}
+.aic-hipaa-redact-float[hidden] { display: none; }
+.aic-hipaa-redact-float:hover { background: #1e40af; }
+.aic-hipaa-redact-float svg { width: 14px; height: 14px; }
+
 /* ── Mobile: sidebar becomes a drawer ── */
 @media (max-width: 1023px) {
   .aic-topbar { padding: 8px 12px; gap: 8px; }

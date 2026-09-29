@@ -467,6 +467,8 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       html = html.replace(new RegExp(`\\[(${pat})\\]`, "g"), '<mark class="aic-hipaa-mark">[$1]</mark>');
     }
     html = html.replace(/\[(Hospital Day [^\]]+)\]/g, '<mark class="aic-hipaa-mark aic-hipaa-mark--date">[$1]</mark>');
+    // Manual redactions always render as [REDACTED], whatever the labels are.
+    html = html.replace(/\[REDACTED\]/g, '<mark class="aic-hipaa-mark">[REDACTED]</mark>');
     return html;
   }
 
@@ -715,6 +717,26 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     const guidelines = review.guidelines;
     const history = Array.isArray(review.history) ? review.history : [];
     const canSend = !!review.canSend && !!review.ack;
+    // One-click review bar: always visible between the stats and the
+    // scrollable body, so the student never hunts through cards for the
+    // decision buttons. Accept all clears every pending suggestion at once;
+    // the floating Redact pill (summoned by any text selection) handles what
+    // the model missed. The presentation receives the view-model review, so
+    // pending counts come from the piece view-models' pending arrays.
+    const pendingCount = [guidelines, ...pieces]
+      .filter(Boolean)
+      .reduce((n, piece) => n + (Array.isArray(piece.pending) ? piece.pending.length : 0), 0);
+    const actionBar = `
+      <div class="aic-hipaa-actionbar">
+        ${pendingCount > 0 ? `
+          <span class="aic-hipaa-actionbar-tx"><strong>${pendingCount}</strong> suggestion${pendingCount === 1 ? "" : "s"} to review</span>
+          <span class="aic-hipaa-actionbar-btns">
+            <button type="button" class="aic-btn aic-btn--sm aic-btn--primary" data-action="ai-chat-hipaa-accept-all-pending">Accept all</button>
+            <button type="button" class="aic-btn aic-btn--sm" data-action="ai-chat-hipaa-reject-all-pending">Reject all</button>
+          </span>` : `
+          <span class="aic-hipaa-actionbar-tx">${icon("check")} All suggestions reviewed</span>`}
+        <span class="aic-hipaa-actionbar-hint">Highlight any text to redact it instantly.</span>
+      </div>`;
     return `
       <div class="aic-hipaa-backdrop" data-action="ai-chat-hipaa-cancel">
         <div class="aic-hipaa-modal" role="dialog" aria-modal="true" aria-labelledby="aicHipaaTitle">
@@ -725,9 +747,10 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
             ${hipaaStat("wand", "Redactions", `${totalRedactions} applied`, totalRedactions ? "" : "ok")}
             ${hipaaStat("alert", "Warnings", warningCount ? `${warningCount} to check` : "none", warningCount ? "warn" : "ok")}
           </div>
+          ${actionBar}
           <div class="aic-hipaa-body">
             <h3 class="aic-hipaa-sec-title">Your message — de-identified before sending</h3>
-            <div class="aic-hipaa-msg">
+            <div class="aic-hipaa-msg" data-hipaa-message="1">
               ${highlightHipaaRedactions(escapeHtml(messageText), Object.keys(messageCounts))}
               ${messageChips ? `<div class="aic-hipaa-chips">${messageChips}</div>` : ""}
               ${messageFlags.length ? `<ul class="aic-hipaa-msgflags">${messageFlags.map((f) => `<li>${escapeHtml(f)}</li>`).join("")}</ul>` : ""}
@@ -769,6 +792,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
             </label>
             <button type="button" class="aic-btn aic-btn--primary" data-action="ai-chat-hipaa-confirm"${canSend ? "" : " disabled"}>${icon("send")} Send to ChatGPT</button>
           </div>
+          <button type="button" class="aic-hipaa-redact-float" data-hipaa-redact-float data-action="ai-chat-hipaa-redact-float" data-target="" hidden>${icon("wand")} Redact</button>
         </div>
       </div>`;
   }

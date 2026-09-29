@@ -16,7 +16,7 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v7";
+import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v8";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20260929-ai-chat-v2";
 import { isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
 import * as remoteChatV4 from "../../ai/remote-chat.js?v=20260929-ai-chat-v6";
@@ -607,6 +607,7 @@ export function createAiChatController({
       messageTransformed: "",
       messageCounts: {},
       messageFlags: [],
+      messageManualRedactions: [],
       pieces: [],
       guidelines: null,
       history: [],
@@ -735,6 +736,129 @@ export function createAiChatController({
     return count;
   }
 
+  // The student's current text selection, for the highlight-to-redact flow.
+  // The app's global mousedown handler already preventDefaults button
+  // mousedowns, so the selection survives clicking the floating Redact pill.
+  function currentSelectionText() {
+    try {
+      if (typeof document !== "undefined") {
+        const text = document.getSelection?.()?.toString?.();
+        if (text) return text;
+      }
+    } catch { /* fall through to window */ }
+    try {
+      return window.getSelection?.()?.toString?.() ?? "";
+    } catch { return ""; }
+  }
+
+  // Shared manual-redaction core for one review piece: locate the selected
+  // span in the piece's raw text (exactly one free occurrence) and record an
+  // accepted MANUAL redaction. Used by the per-piece button and the floating
+  // highlight-to-redact pill.
+  function applyPieceManualRedaction(piece, selectionText) {
+    const review = state.remote.review;
+    if (!review || review.phase !== "ready" || !piece) return false;
+    const occupied = [...piece.modelRecords, ...piece.manualRecords]
+      .filter((record) => record.status !== "rejected")
+      .map((record) => ({ start: record.start, end: record.end }));
+    const located = locateManualSpan(piece.rawText, selectionText, occupied);
+    if (!located.ok) {
+      setStatus(
+        located.reason === "ambiguous" ? "That text appears more than once — select a single unique span." :
+        located.reason === "overlapping" ? "That span is already redacted." :
+        located.reason === "not-found" ? "That text wasn't found in this piece." :
+        "Select some text in the piece first."
+      );
+      return false;
+    }
+    piece.manualRecords.push({
+      id: `manual:${located.start}:${located.end}`,
+      start: located.start,
+      end: located.end,
+      originalText: piece.rawText.slice(located.start, located.end),
+      replacement: "[REDACTED]",
+      label: "MANUAL",
+      source: "manual",
+      status: "accepted"
+    });
+    afterReviewDecision(piece.id);
+    setStatus("Redacted — it now shows as [REDACTED] in what will be sent.");
+    return true;
+  }
+
+  // Manual redaction for the student's own message. The message is displayed
+  // post-de-identification, so the selected text is matched against the
+  // transformed message and EVERY occurrence is replaced — a name or number
+  // the model missed should be gone everywhere, not just once.
+  function applyMessageManualRedaction(selectionText) {
+    const review = state.remote.review;
+    if (!review || review.phase !== "ready") return false;
+    const needle = String(selectionText || "");
+    if (!needle.trim()) {
+      setStatus("Highlight some text in your message first, then click Redact.");
+      return false;
+    }
+    if (/^\[.*\]$/.test(needle.trim())) {
+      setStatus("That's already redacted.");
+      return false;
+    }
+    const text = String(review.messageTransformed || "");
+    const occurrences = text.split(needle).length - 1;
+    if (!occurrences) {
+      setStatus("That text wasn't found in your message.");
+      return false;
+    }
+    review.messageTransformed = text.split(needle).join("[REDACTED]");
+    review.messageManualRedactions = [
+      ...(review.messageManualRedactions || []),
+      { needle, replacement: "[REDACTED]", occurrences }
+    ];
+    review.messageCounts = {
+      ...(review.messageCounts || {}),
+      MANUAL: (review.messageCounts?.MANUAL || 0) + occurrences
+    };
+    rebuildTransmit(review);
+    render();
+    setStatus(occurrences === 1 ? "Redacted from your message." : `Redacted ${occurrences} occurrences from your message.`);
+    return true;
+  }
+
+  // Highlight-to-redact: while the review modal is open, any text selection
+  // inside the message or a piece preview summons the floating Redact pill
+  // next to the selection — one click redacts, no scrolling to find a button.
+  function updateHipaaRedactFloat() {
+    let float = null;
+    try { float = document.querySelector?.(".aic-hipaa-modal [data-hipaa-redact-float]"); } catch { float = null; }
+    const hide = () => { if (float) { float.hidden = true; float.dataset.target = ""; } };
+    if (!float) return;
+    const review = state.remote.review;
+    if (!review || review.phase !== "ready") { hide(); return; }
+    let sel = null;
+    try { sel = document.getSelection?.(); } catch { sel = null; }
+    if (!sel || sel.isCollapsed || sel.rangeCount === 0) { hide(); return; }
+    const anchor = sel.anchorNode;
+    const anchorEl = anchor?.nodeType === 1 ? anchor : anchor?.parentElement;
+    const redactable = anchorEl?.closest?.("[data-hipaa-piece-preview], [data-hipaa-message]");
+    const modal = float.closest?.(".aic-hipaa-modal");
+    if (!redactable || !modal || !modal.contains(redactable)) { hide(); return; }
+    const text = sel.toString();
+    // Empty, or an already-redacted pill like [PHONE] — nothing to do.
+    if (!text.trim() || /^\[.*\]$/.test(text.trim())) { hide(); return; }
+    let target = "";
+    if (redactable.hasAttribute("data-hipaa-message")) target = "message";
+    else target = redactable.getAttribute("data-piece") || "";
+    if (!target) { hide(); return; }
+    let rect = null;
+    try { rect = sel.getRangeAt(0).getBoundingClientRect(); } catch { rect = null; }
+    if (!rect || (rect.width === 0 && rect.height === 0)) { hide(); return; }
+    float.dataset.target = target;
+    float.hidden = false;
+    const top = Math.max(8, rect.top - 48);
+    const left = Math.min(Math.max(8, rect.left), Math.max(8, window.innerWidth - 140));
+    float.style.top = `${Math.round(top)}px`;
+    float.style.left = `${Math.round(left)}px`;
+  }
+
   // System prompt built from the student's clinical preferences — never
   // the legacy per-model "chatService" setting — with the REVIEWED custom
   // instructions appended underneath.
@@ -839,6 +963,7 @@ export function createAiChatController({
       messageTransformed: "",
       messageCounts: {},
       messageFlags: [],
+      messageManualRedactions: [],
       pieces: [],
       guidelines: null,
       prefs,
@@ -1499,31 +1624,48 @@ export function createAiChatController({
       const selection = window.getSelection?.()?.toString?.() ?? "";
       const preview = actionTarget.closest?.("[data-hipaa-piece-preview]");
       if (preview && !preview.contains(window.getSelection?.()?.anchorNode)) return true;
-      const occupied = [...piece.modelRecords, ...piece.manualRecords]
-        .filter((record) => record.status !== "rejected")
-        .map((record) => ({ start: record.start, end: record.end }));
-      const located = locateManualSpan(piece.rawText, selection, occupied);
-      if (!located.ok) {
-        setStatus(
-          located.reason === "ambiguous" ? "That text appears more than once — select a single unique span." :
-          located.reason === "overlapping" ? "That span is already redacted." :
-          located.reason === "not-found" ? "That text wasn't found in this piece." :
-          "Select some text in the piece first."
-        );
-        return true;
+      applyPieceManualRedaction(piece, selection);
+      return true;
+    }
+    if (action === "ai-chat-hipaa-redact-float") {
+      // Highlight-to-redact: the floating pill next to a text selection.
+      // Its data-target was resolved when it was positioned ("message" or a
+      // piece id). The app's global mousedown handler already preventDefaults
+      // button mousedowns, so the selection survives the click.
+      const review = state.remote.review;
+      if (!review || review.phase !== "ready") return true;
+      const target = actionTarget.dataset.target || "";
+      const selection = currentSelectionText();
+      if (target === "message") applyMessageManualRedaction(selection);
+      else {
+        const piece = findReviewPiece(review, target);
+        if (piece) applyPieceManualRedaction(piece, selection);
       }
-      piece.manualRecords.push({
-        id: `manual:${located.start}:${located.end}`,
-        start: located.start,
-        end: located.end,
-        originalText: piece.rawText.slice(located.start, located.end),
-        replacement: "[REDACTED]",
-        label: "MANUAL",
-        source: "manual",
-        status: "accepted"
-      });
-      afterReviewDecision(piece.id);
-      setStatus("Manual redaction added.");
+      try { document.getSelection?.()?.removeAllRanges?.(); } catch { /* noop */ }
+      return true;
+    }
+    if (action === "ai-chat-hipaa-accept-all-pending" || action === "ai-chat-hipaa-reject-all-pending") {
+      // One-click review: decide every pending suggestion across the message
+      // guidelines and all context pieces at once. Fail-closed gating is
+      // untouched — Send still requires the acknowledgment plus zero pending.
+      const review = state.remote.review;
+      if (!review || review.phase !== "ready") return true;
+      const next = action === "ai-chat-hipaa-accept-all-pending" ? "accepted" : "rejected";
+      let count = 0;
+      for (const piece of [review.guidelines, ...(review.pieces || [])]) {
+        if (!piece) continue;
+        let touched = false;
+        for (const record of [...piece.modelRecords, ...piece.manualRecords]) {
+          if (record.status === "pending") { record.status = next; count++; touched = true; }
+        }
+        if (touched) {
+          refreshPieceApproval(piece, review.admissionDate);
+          writePieceToStore(piece);
+        }
+      }
+      rebuildTransmit(review);
+      render();
+      setStatus(count === 0 ? "Nothing left to review." : next === "accepted" ? `Accepted ${count} suggestion${count === 1 ? "" : "s"}.` : `Rejected ${count} suggestion${count === 1 ? "" : "s"}.`);
       return true;
     }
     if (action === "ai-chat-deid-download") {
@@ -1718,6 +1860,19 @@ export function createAiChatController({
     return true;
   }
 
+  // Highlight-to-redact wiring: document-level so it works no matter where
+  // the modal rendered. Guarded for Node test harnesses (no document there).
+  if (typeof document !== "undefined" && typeof document.addEventListener === "function") {
+    document.addEventListener("selectionchange", updateHipaaRedactFloat);
+    // A stale pill must not linger after the modal scrolls beneath it.
+    document.addEventListener("scroll", () => {
+      try {
+        const stale = document.querySelector?.(".aic-hipaa-modal [data-hipaa-redact-float]");
+        if (stale) { stale.hidden = true; stale.dataset.target = ""; }
+      } catch { /* noop */ }
+    }, true);
+  }
+
   return {
     render: renderView,
     click,
@@ -1732,6 +1887,9 @@ export function createAiChatController({
     getRemoteReview: () => state.remote.review,
     // Thin test seam: the live remote chat state (messages, usage, cost).
     // Lets tests assert usage accumulation and compression without a DOM.
-    getRemoteState: () => state.remote
+    getRemoteState: () => state.remote,
+    // Test seam for the highlight-to-redact pill: recompute its visibility
+    // and position from the current text selection.
+    updateHipaaRedactFloat
   };
 }
