@@ -319,17 +319,35 @@ assert.match(pipelineSrc, /MAX_REC_SECONDS\s*=\s*10\s*\*\s*60/, "10-minute recor
 
 // ---------------------------------------------------------- 5. repo wiring
 
-assert.ok(index.includes('data-action="open-scribe-parakeet"'), "index: Scribe Pro action");
+// Scribe Pro is a first-class in-app view (2026-09-29): the sidebar targets
+// the view, nothing opens a detached new-tab page.
+assert.ok(index.includes('data-view-target="scribePro"'), "index: Scribe Pro sidebar entry targets the in-app view");
 assert.ok(index.includes(">Scribe Pro<"), "index: Scribe Pro label");
 assert.ok(index.includes('data-note="Laptop-only"'), "index: Laptop-only note");
+assert.ok(!index.includes('data-action="open-scribe-parakeet"'), "index: no detached Scribe Pro action");
+assert.ok(!index.includes('data-action="open-scribe"'), "index: phone scribe is not in the sidebar");
 assert.ok(!mobile.includes("scribe-parakeet"), "mobile.html stays clean of scribe-parakeet");
 
 const uiApp = read("src/ui/app.js");
-assert.ok(uiApp.includes('"open-scribe-parakeet"'), "app.js handles open-scribe-parakeet");
-assert.ok(uiApp.includes('window.open("scribe-parakeet.html", "_blank", "noopener")'),
-  "opens the page in a new tab, noopener");
-assert.ok(/"open-scribe-parakeet"\].includes\(action\)|"open-scribe", "open-scribe-parakeet"/.test(uiApp),
-  "vault-gate exemption covers open-scribe-parakeet");
+assert.match(uiApp, /const viewIds = \[[^\]]*"scribePro"[^\]]*\]/, "viewIds includes scribePro");
+assert.ok(uiApp.includes('import("../scribe-parakeet/app.js")'), "app.js lazily loads the scribe module in-app");
+assert.ok(!uiApp.includes('window.open("scribe-parakeet.html"'), "app.js never opens the detached scribe page");
+assert.ok(!uiApp.includes('"open-scribe-parakeet"'), "app.js: detached Scribe Pro action gone");
+assert.ok(!uiApp.includes('"open-scribe"'), "app.js: detached phone-scribe action gone");
+
+// The in-app view carries the full scribe DOM (the same ids the module wires).
+assert.ok(index.includes('id="scribeProView"'), "index: scribeProView section");
+assert.ok(index.includes('aria-labelledby="scribe-pro-heading"'), "view is labelled by its heading");
+for (const id of ["scribe-pro-heading", "bannerUnsupported", "fileList", "overallBar",
+  "btnDownload", "btnEnrollRec", "btnRecord", "btnStop", "timer",
+  "transcriptList", "btnCopy", "btnShare"]) {
+  assert.ok(index.includes(`id="${id}"`), `in-app view has #${id}`);
+}
+// Scribe styles are scoped under #scribeProView: no global button/body rules
+// leak into the app shell.
+assert.ok(index.includes("#scribeProView button{"), "scribe button styles are scoped");
+assert.ok(index.includes("#scribeProView .card{"), "scribe card styles are scoped");
+assert.ok(!index.includes("\nbody{"), "no unscoped body rule in index.html");
 
 for (const f of ["./scribe-parakeet.html", "./src/scribe-parakeet/app.js",
   "./src/scribe-parakeet/pipeline.js", "./src/scribe-parakeet/model-manager.js",
@@ -342,8 +360,8 @@ assert.ok(sw.includes("prerounding-local-model-packs-v1"), "existing model-pack 
 
 assert.equal(pkg.scripts["test:scribe-parakeet"], "node tests/test-scribe-parakeet.js",
   "package.json wires the new test");
-assert.ok(pkg.scripts["test:core"].trimEnd().endsWith("npm run test:scribe-parakeet"),
-  "test:core chain ends with the new test");
+assert.ok(pkg.scripts["test:core"].includes("npm run test:scribe-parakeet"),
+  "test:core chain still runs the scribe-parakeet contract test");
 
 // ------------------------------------------- 6. boot status & engine startup
 

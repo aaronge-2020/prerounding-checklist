@@ -21,9 +21,15 @@ function check(name, actual, expected) {
 
 const mobile = read("mobile.html");
 const index = read("index.html");
+const proto = read("scribe-prototype.html");
 
 // ---- mobile.html contract ------------------------------------------------
 check("mobile links the scribe prototype (does not embed it)", mobile.includes('href="./scribe-prototype.html"'), true);
+// The phone-first scribe auto-loads on phones: mobile.html forwards straight
+// to the scribe unless the bedside escape is present.
+check("mobile auto-forwards to the phone scribe", mobile.includes("window.location.replace('./scribe-prototype.html')"), true);
+check("mobile bedside escape opts out of the forward", mobile.includes("get('bedside')") && mobile.includes("bedside"), true);
+check("scribe prototype links back to bedside cheat sheets", proto.includes('href="./mobile.html?bedside=1"'), true);
 check("mobile loads the bundled cheat-sheet data", mobile.includes("./src/data/cheat-sheets.json"), true);
 check("mobile has a search field", /id="q"/.test(mobile), true);
 check("mobile has no vault passphrase gate", !/passphrase/i.test(mobile) && !/unlock the/i.test(mobile) && !/type="password"/i.test(mobile), true);

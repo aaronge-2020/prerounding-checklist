@@ -309,6 +309,18 @@
   (function () {
     'use strict';
 
+    // ---- phone scribe auto-load -------------------------------------------
+    // The phone-first scribe is the default phone experience: opening the app
+    // on a phone lands on this page (via the small-screen redirect) and goes
+    // straight to the scribe. ?bedside=1 (the "Bedside" link on the scribe
+    // page) opts out for that visit so the cheat sheets stay reachable.
+    var bedside = false;
+    try { bedside = new URLSearchParams(window.location.search).get('bedside') === '1'; } catch (e) {}
+    if (!bedside) {
+      try { window.location.replace('./scribe-prototype.html'); } catch (e) {}
+      return;
+    }
+
     // ---- constants -------------------------------------------------------
     var DATA_URL = './src/data/cheat-sheets.json?v=20260929-cheatsheets-v2';
     var LAST_SHEET_KEY = 'prerounding.cheatSheets.lastSheetId.v1';

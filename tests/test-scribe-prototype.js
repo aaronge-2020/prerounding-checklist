@@ -1,10 +1,11 @@
 /**
  * Contract tests for the standalone on-device scribe prototype.
  *
- * The prototype (scribe-prototype.html + src/scribe/) is linked from the desktop
- * navigation as a phone-first entry (data-action="open-scribe", no vault gate): it
- * must keep all inference local (WASM, single thread), never call a remote
- * transcription API, and never persist patient audio or transcripts.
+ * The prototype (scribe-prototype.html + src/scribe/) is the automatic phone
+ * experience (mobile.html forwards straight to it); it is NOT a desktop
+ * sidebar entry. It must keep all inference local (WASM, single thread),
+ * never call a remote transcription API, and never persist patient audio or
+ * transcripts.
  */
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
@@ -21,12 +22,14 @@ const worklet = read("src/scribe/capture-worklet.js");
 const fbank = read("src/scribe/speaker-fbank.js");
 const index = read("index.html");
 
-// 1. The prototype is a standalone root page, linked from desktop nav as phone-first.
+// 1. The prototype is a standalone root page and the automatic phone
+// experience - never a desktop sidebar entry or detached window.
 assert.ok(existsSync(repoFile("scribe-prototype.html")), "scribe-prototype.html exists at repo root");
-assert.ok(index.includes('data-action="open-scribe"'), "desktop nav exposes the prototype via open-scribe");
-assert.ok(index.includes("Phone-first"), "nav entry is marked phone-first");
+assert.ok(!index.includes('data-action="open-scribe"'), "desktop nav no longer exposes the prototype");
+assert.ok(!index.includes("Phone-first"), "phone-first sidebar entry removed");
 const app = read("src/ui/app.js");
-assert.ok(app.includes('window.open("scribe-prototype.html"'), "open-scribe opens the prototype page");
+assert.ok(!app.includes('window.open("scribe-prototype.html"'), "app never opens the prototype in a detached window");
+assert.ok(!app.includes('"open-scribe"'), "open-scribe action removed from app.js");
 assert.ok(!index.includes("src/scribe/"), "index.html must not reference prototype modules");
 assert.ok(!page.includes('href="styles.css"') && !page.includes("href='styles.css'"), "prototype must not pull in the app stylesheet");
 

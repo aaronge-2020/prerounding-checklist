@@ -15,6 +15,8 @@
   body { margin: 0; font-family: -apple-system, system-ui, "Segoe UI", sans-serif; background: #f4f4f2; color: #1c1c1c; }
   .wrap { max-width: 640px; margin: 0 auto; padding: 12px 14px 48px; }
   .proto-banner { background: #3a2b00; color: #ffd970; border-radius: 10px; padding: 10px 14px; font-size: 13px; line-height: 1.45; margin-bottom: 12px; }
+  .backnav { margin: 0 0 10px; font-size: 14px; }
+  .backnav a { color: #1c1c1c; font-weight: 600; }
   .proto-banner strong { display: block; font-size: 14px; margin-bottom: 2px; }
   h1 { font-size: 20px; margin: 4px 0 2px; }
   .sub { color: #5a5a5a; font-size: 13px; margin: 0 0 14px; line-height: 1.5; }
@@ -47,6 +49,7 @@
     <strong>PROTOTYPE — on-device scribe experiment</strong>
     This page is a standalone experiment and a laptop fallback for the phone-first scribe. It shares no patient data with the app. Audio never leaves this device.
   </div>
+  <p class="backnav"><a href="./mobile.html?bedside=1">← Bedside cheat sheets</a></p>
 
   <h1>On-device scribe prototype</h1>
   <p class="sub">Record from the mic (or load a test clip), transcribe fully on-device with Moonshine via Transformers.js + WASM. Phone-first: no WebGPU, single thread, small model.</p>

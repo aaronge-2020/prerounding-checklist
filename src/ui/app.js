@@ -203,7 +203,7 @@ const app = {
   demoPreviewMode: false,
   admissionDate: "" // in-memory copy of the encrypted patient's admission-date anchor
 };
-const viewIds = ["vault", "daily", "cheatSheets", "review", "prompts", "quickDeid", "aiChat", "drugLookup", "scores", "settings"];
+const viewIds = ["vault", "daily", "cheatSheets", "review", "prompts", "quickDeid", "aiChat", "drugLookup", "scores", "scribePro", "settings"];
 const viewTitles = {
   vault: "Vault / Roster", daily: "Hospital Stay", review: "Review Data / Draft Note",
   cheatSheets: "Cheat Sheets", prompts: "Prompts",
@@ -1043,7 +1043,7 @@ function render() {
   // cached data) must never prevent renderStatusBar() below from running -
   // that's what reflects patient selection, so a single broken view previously
   // made the whole app look like patient selection had stopped working.
-  for (const renderView of [renderVault, renderDaily, renderReview, renderCheatSheets, renderPrompts, renderQuickDeid, renderAiChat, renderDrugLookup, renderScores, renderSettings]) {
+  for (const renderView of [renderVault, renderDaily, renderReview, renderCheatSheets, renderPrompts, renderQuickDeid, renderAiChat, renderDrugLookup, renderScores, renderScribePro, renderSettings]) {
     try {
       renderView();
     } catch (error) {
@@ -1574,6 +1574,30 @@ function renderAiChat() {
   aiChatController.render();
 }
 
+// Scribe Pro (src/scribe-parakeet/) is a first-class in-app view. Its DOM lives
+// in index.html (#scribeProView); the module wires itself up on first import,
+// so it loads lazily the first time the view is shown. Like the other
+// workspace views it requires the vault to be unlocked.
+let scribeProBoot = null;
+function ensureScribePro() {
+  if (!scribeProBoot) {
+    scribeProBoot = import("../scribe-parakeet/app.js").catch((error) => {
+      scribeProBoot = null;
+      throw error;
+    });
+  }
+  return scribeProBoot;
+}
+
+function renderScribePro() {
+  if (app.view === "scribePro") {
+    ensureScribePro().catch((error) => {
+      console.error(error);
+      setStatus(`Scribe Pro failed to start: ${error instanceof Error ? error.message : "unknown error"}`);
+    });
+  }
+}
+
 function renderDrugLookup() {
   drugLookupController.ensureAutoLoaded();
   replaceViewContent(byId("drugLookupContent"), drugLookupController.renderView());
@@ -1655,7 +1679,7 @@ async function handleClick(event) {
   try {
     if (
       !vaultIsUnlocked() &&
-      !["unlock-vault", "toggle-vault-passphrase", "restore-vault", "request-delete-vault", "confirm-delete-vault", "start-guided-demo", "open-scribe", "open-scribe-parakeet"].includes(action)
+      !["unlock-vault", "toggle-vault-passphrase", "restore-vault", "request-delete-vault", "confirm-delete-vault", "start-guided-demo"].includes(action)
     ) {
       throw new Error("Unlock the local vault before using workspace tools.");
     }
@@ -1667,17 +1691,6 @@ async function handleClick(event) {
         app.passphrase = "demo-preview-session";
       }
       demoSessionController.start();
-    }
-    if (action === "open-scribe") {
-      // Standalone prototype page: no vault, no patient data. New tab keeps the
-      // unlocked workspace intact. Phone-first; the native iOS app is the full experience.
-      window.open("scribe-prototype.html", "_blank", "noopener");
-    }
-    if (action === "open-scribe-parakeet") {
-      // Standalone laptop scribe (Parakeet, on-device): no vault, no patient data.
-      // New tab keeps the unlocked workspace intact. Laptop-only: the models
-      // download once, then everything runs locally.
-      window.open("scribe-parakeet.html", "_blank", "noopener");
     }
     if (action === "exit-guided-demo") {
       if (app.demoPreviewMode) {
