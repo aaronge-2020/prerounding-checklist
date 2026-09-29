@@ -38,9 +38,11 @@ import {
   deidentifyText,
   getSelectedDeidModelStatus,
   getAdvancedDeidStatus,
-  preloadAdvancedDeidModel
+  preloadAdvancedDeidModel,
+  verifyAdvancedDeidModel
 } from "../../patient-context/deid-service.js?v=20260929-deid-rules";
-import { STRUCTURED_DEID_MODE } from "../../patient-context/deid-model-options.js?v=20260929-obi-default";
+import { DEFAULT_DEID_MODEL_KEY, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../../patient-context/deid-model-options.js?v=20260929-obi-default";
+import { crossOriginIsolationBlocker } from "../../patient-context/deid-client.js?v=20260929-deid-rules";
 import {
   buildPatientContextFromPieces,
   defaultSelectedPieceIds,
@@ -130,6 +132,8 @@ export function createAiChatController({
     getSelectedDeidModelStatus,
     getAdvancedDeidStatus,
     preloadAdvancedDeidModel,
+    verifyAdvancedDeidModel,
+    crossOriginIsolationBlocker,
     STRUCTURED_DEID_MODE,
     ...(deidDeps || {})
   };
@@ -1358,6 +1362,36 @@ export function createAiChatController({
     review.canSend = review.phase === "ready" && review.ack && pendingRecordCount(review) === 0;
   }
 
+  // AI Chat always runs the best de-identification system: the default
+  // clinical model is downloaded, loaded, and verified automatically the
+  // first time it is needed - no manual model setup before sending.
+  async function ensureBestDeidModelReady({ onProgress } = {}) {
+    const ready = deid.getSelectedDeidModelStatus(DEFAULT_DEID_MODEL_KEY);
+    if (ready?.ready) return ready;
+    const blocker = deid.crossOriginIsolationBlocker();
+    if (blocker) throw new Error(blocker);
+    const option = deidModelOptionByKey(DEFAULT_DEID_MODEL_KEY);
+    const label = option.shortLabel || option.label || "clinical deidentifier";
+    const size = option.sizeLabel ? ` (${option.sizeLabel})` : "";
+    setStatus(`Loading the ${label} - first run downloads it once${size}, then it stays on this device…`);
+    render();
+    await deid.verifyAdvancedDeidModel({
+      modelKey: DEFAULT_DEID_MODEL_KEY,
+      onStatus: (status) => { if (status?.message) setStatus(status.message); },
+      onProgress: (progress) => {
+        if (progress?.message) {
+          setStatus(progress.message);
+          render();
+        }
+        onProgress?.(progress);
+      }
+    });
+    render();
+    const final = deid.getSelectedDeidModelStatus(DEFAULT_DEID_MODEL_KEY);
+    if (final?.ready) return final;
+    throw new Error(final?.message || "The de-identification model did not finish loading.");
+  }
+
   async function sendRemoteChat(text) {
     const message = String(text || "").trim();
     if (!message || state.remote.sending || state.remote.review) return;
@@ -1366,11 +1400,18 @@ export function createAiChatController({
       setStatus("Save an OpenAI API key in Settings before using ChatGPT chat.");
       return;
     }
-    const deidKey = app.deidMode;
-    if (deidKey === deid.STRUCTURED_DEID_MODE || !deid.getSelectedDeidModelStatus(deidKey)?.ready) {
-      setStatus("Download a de-identification model to enable sending.");
-      render();
-      return;
+    // AI Chat always de-identifies with the best system - the default
+    // clinical model - which is downloaded, loaded, and verified
+    // automatically here on first use. Nothing to set up by hand.
+    const deidKey = DEFAULT_DEID_MODEL_KEY;
+    if (!deid.getSelectedDeidModelStatus(deidKey)?.ready) {
+      try {
+        await ensureBestDeidModelReady();
+      } catch (error) {
+        setStatus(`Couldn't load the de-identification model (${error?.message || "unknown error"}) - nothing was sent.`);
+        render();
+        return;
+      }
     }
     // API path: the FULL chart text goes through the de-id review gate —
     // the patient header plus every chart section in canonical order. No
@@ -2053,16 +2094,18 @@ export function createAiChatController({
   }
 
   function remoteDeidInfo() {
-    const deidKey = app.deidMode;
-    const blocked = deidKey === deid.STRUCTURED_DEID_MODE;
+    // AI Chat always reports the best (default) de-identification system,
+    // which it loads automatically - the manual model choice no longer
+    // gates ChatGPT sends.
+    const deidKey = DEFAULT_DEID_MODEL_KEY;
     const status = deid.getSelectedDeidModelStatus(deidKey) || {};
     const advanced = deid.getAdvancedDeidStatus() || {};
-    const ready = !blocked && !!status.ready;
+    const ready = !!status.ready;
     return {
       modelKey: String(deidKey || ""),
       modelLabel: String(status.label || advanced.label || ""),
       ready,
-      blockedReason: blocked ? "structured" : (ready ? "" : "not-ready")
+      blockedReason: ready ? "" : "not-ready"
     };
   }
 
@@ -2353,18 +2396,12 @@ export function createAiChatController({
       return true;
     }
     if (action === "ai-chat-deid-download") {
-      const deidKey = app.deidMode;
-      if (deidKey === deid.STRUCTURED_DEID_MODE) {
-        setStatus("Structured de-identification can't be used for ChatGPT sends — pick a downloaded de-identification model.");
-        render();
-        return true;
-      }
-      setStatus("Downloading the de-identification model — this can take a minute on first use.");
-      void deid.preloadAdvancedDeidModel({ modelKey: deidKey, onStatus: () => render() }).then(
+      setStatus("Loading the de-identification model — this can take a minute on first use.");
+      render();
+      void ensureBestDeidModelReady().then(
         () => { setStatus("De-identification model ready — you can now send to ChatGPT."); render(); },
         (error) => { setStatus(`De-identification model download failed: ${error?.message || "unknown error"}`); render(); }
       );
-      render();
       return true;
     }
     if (action === "ai-chat-sidebar-open") {
@@ -2603,6 +2640,11 @@ export function createAiChatController({
     // Thin test seam: the live remote review object (or null). Lets tests
     // drive the review gate without a DOM.
     getRemoteReview: () => state.remote.review,
+    // Best-effort warm-up hook: the app calls this when the AI Chat view
+    // opens in ChatGPT mode so the de-identification model is already
+    // loading before the first send. Test seam for the auto-load path.
+    ensureDeidReady: (...args) => ensureBestDeidModelReady(...args),
+    isRemoteMode: () => state.mode === "remote",
     // Thin test seam: the live remote chat state (messages, usage, cost).
     // Lets tests assert usage accumulation and compression without a DOM.
     getRemoteState: () => state.remote,

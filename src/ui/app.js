@@ -3610,6 +3610,12 @@ function bindEvents() {
       app.view = button.dataset.viewTarget;
       app.smartMenuOpen = false; render();
       demoController.observeNavigation(app.view);
+      if (button.dataset.viewTarget === "aiChat" && !isOfflineMode() && aiChatController.isRemoteMode?.()) {
+        // Warm the best de-identification system in the background so the
+        // first ChatGPT send doesn't wait on its one-time download. A
+        // failure only surfaces as status text; the send path retries.
+        void aiChatController.ensureDeidReady().catch(() => {});
+      }
     });
   });
 }
