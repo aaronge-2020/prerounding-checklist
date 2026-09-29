@@ -205,19 +205,20 @@ export const AP_SUGGESTION_SCHEMA = {
       items: {
         type: "object",
         additionalProperties: false,
-        required: ["id", "target", "action", "suggested", "rationale"],
+        required: ["id", "target", "action", "anchor", "suggested", "rationale", "likelihood", "citationIds"],
         properties: {
           id: { type: "integer" },
           target: { type: "string", enum: ["differential", "diagnostic_plan", "therapeutic_plan"] },
           action: { type: "string", enum: ["add", "revise", "remove"] },
           // Exact existing text this suggestion revises or removes. Required
-          // for revise/remove; omit for add.
+          // for revise/remove; empty string for add.
           anchor: { type: "string" },
-          // The proposed new text. Required for add/revise; omit for remove.
+          // The proposed new text. Required for add/revise; empty string for remove.
           suggested: { type: "string" },
           rationale: { type: "string" },
           // For differential adds/revises: where this diagnosis ranks.
-          likelihood: { type: "string", enum: ["most likely", "likely", "possible", "less likely"] },
+          // Empty string for plan suggestions.
+          likelihood: { type: "string" },
           citationIds: { type: "array", items: { type: "integer" } }
         }
       }
@@ -295,11 +296,11 @@ TASK — return suggestions as a JSON object with a "suggestions" array. Each su
 
 - "target": one of "differential", "diagnostic_plan", "therapeutic_plan".
 - "action": "add" (new item), "revise" (change existing text), or "remove" (delete something wrong or duplicative).
-- "anchor": for revise/remove, the EXACT existing text being changed (copy it verbatim from the current plan above). Omit for add.
-- "suggested": the proposed new text. For "add" to a plan, write the full line as it should appear (order-level specificity: drug name, dose, route, frequency, duration — e.g. "Furosemide 40 mg IV BID"). For "add" to the differential, the diagnosis name. Omit for remove.
+- "anchor": for revise/remove, the EXACT existing text being changed (copy it verbatim from the current plan above). Empty string for add.
+- "suggested": the proposed new text. For "add" to a plan, write the full line as it should appear (order-level specificity: drug name, dose, route, frequency, duration — e.g. "Furosemide 40 mg IV BID"). For "add" to the differential, the diagnosis name. Empty string for remove.
 - "rationale": 1-2 sentences tied to THIS patient's findings.
-- "likelihood": for differential add/revise — most likely / likely / possible / less likely.
-- "citationIds": ids into "references" supporting this suggestion.
+- "likelihood": for differential add/revise — most likely / likely / possible / less likely. Empty string for plan suggestions.
+- "citationIds": ids into "references" supporting this suggestion. Empty array when none apply.
 
 4. REFERENCES: every diagnostic and therapeutic suggestion MUST cite at least one primary source. Prefer the ORIGINAL clinical trial paper that established the benefit (e.g. PARADIGM-HF for sacubitril-valsartan in HFrEF — cite the trial, not a review article). Major society guidelines (ACC/AHA, KDIGO, IDSA, ASH, etc.) are acceptable when no single trial applies. Use web search to verify each citation exists and to obtain its canonical URL (PubMed, journal page, or DOI link). NEVER invent a citation: if you cannot verify a source, either omit the suggestion or support it with a major guideline you can verify.
 

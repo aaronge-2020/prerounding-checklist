@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {
+  AP_RESPONSE_SCHEMA,
   AP_SUGGESTION_ACTIONS,
   AP_SUGGESTION_SCHEMA,
   AP_SUGGESTION_TARGETS,
@@ -109,3 +110,25 @@ assert.throws(() => parseApSuggestions(null), /empty or malformed/);
 assert.deepEqual(parseApSuggestions({ suggestions: [], references: [] }).suggestions, []);
 
 console.log("test-openai-ap-format: all assertions passed");
+
+// --- OpenAI strict-mode schema compliance ---
+// OpenAI's structured outputs require: every property listed in `required`,
+// additionalProperties: false at every object level. This validates both
+// schemas recursively so a missing `required` entry can never 400 again.
+function assertStrictSchema(schema, path) {
+  if (schema.type === "object") {
+    assert.equal(schema.additionalProperties, false, `${path}: additionalProperties must be false`);
+    const props = Object.keys(schema.properties || {});
+    const required = schema.required || [];
+    for (const p of props) {
+      assert.ok(required.includes(p), `${path}: property '${p}' must be in required`);
+      assertStrictSchema(schema.properties[p], `${path}.${p}`);
+    }
+  }
+  if (schema.type === "array" && schema.items) {
+    assertStrictSchema(schema.items, `${path}[]`);
+  }
+}
+assertStrictSchema(AP_RESPONSE_SCHEMA, "AP_RESPONSE_SCHEMA");
+assertStrictSchema(AP_SUGGESTION_SCHEMA, "AP_SUGGESTION_SCHEMA");
+console.log("test-openai-ap-format: strict-mode schema compliance passed");
