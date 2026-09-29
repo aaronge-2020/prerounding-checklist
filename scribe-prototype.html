@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta
+  http-equiv="Content-Security-Policy"
+  content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' blob: 'unsafe-inline' 'wasm-unsafe-eval'; script-src-attr 'none'; worker-src 'self' blob:; connect-src 'self' https://huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://cdn-lfs.hf.co; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:"
+>
+<meta name="theme-color" content="#1a1a1a">
+<title>Scribe prototype — on-device transcription</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, system-ui, "Segoe UI", sans-serif; background: #f4f4f2; color: #1c1c1c; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 12px 14px 48px; }
+  .proto-banner { background: #3a2b00; color: #ffd970; border-radius: 10px; padding: 10px 14px; font-size: 13px; line-height: 1.45; margin-bottom: 12px; }
+  .proto-banner strong { display: block; font-size: 14px; margin-bottom: 2px; }
+  h1 { font-size: 20px; margin: 4px 0 2px; }
+  .sub { color: #5a5a5a; font-size: 13px; margin: 0 0 14px; line-height: 1.5; }
+  .card { background: #fff; border: 1px solid #e2e0da; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+  .card h2 { font-size: 14px; margin: 0 0 10px; text-transform: uppercase; letter-spacing: .04em; color: #6b6b6b; }
+  label { display: block; font-size: 13px; margin-bottom: 6px; color: #444; }
+  select, input[type="file"] { width: 100%; font-size: 16px; padding: 10px; border-radius: 8px; border: 1px solid #cfccc2; background: #fff; margin-bottom: 10px; }
+  .btnrow { display: flex; gap: 10px; flex-wrap: wrap; }
+  button { font-size: 16px; padding: 12px 18px; border-radius: 10px; border: 1px solid #cfccc2; background: #fff; cursor: pointer; }
+  button.primary { background: #1c1c1c; color: #fff; border-color: #1c1c1c; font-weight: 600; }
+  button.danger { background: #a31f1f; color: #fff; border-color: #a31f1f; font-weight: 600; }
+  button:disabled { opacity: .45; cursor: default; }
+  button.big { width: 100%; padding: 16px; font-size: 18px; }
+  .status { font-size: 13px; color: #444; background: #f0efe9; border-radius: 8px; padding: 10px 12px; margin-top: 10px; line-height: 1.5; min-height: 20px; word-break: break-word; }
+  .progress { height: 8px; background: #e6e4dc; border-radius: 4px; overflow: hidden; margin-top: 8px; display: none; }
+  .progress > div { height: 100%; background: #1c1c1c; width: 0%; transition: width .2s; }
+  .seg { border-bottom: 1px solid #eee; padding: 8px 0; font-size: 15px; line-height: 1.5; }
+  .seg:last-child { border-bottom: none; }
+  .seg .t { color: #8a6d00; font-variant-numeric: tabular-nums; font-size: 12.5px; font-weight: 600; margin-right: 8px; }
+  .seg .ms { color: #999; font-size: 11.5px; margin-left: 8px; }
+  .summary { font-size: 13px; color: #444; background: #eef4ff; border-radius: 8px; padding: 10px 12px; margin-top: 10px; line-height: 1.6; }
+  .note { font-size: 12.5px; color: #777; line-height: 1.55; }
+  .kv { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; }
+  .kv span:first-child { color: #777; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="proto-banner">
+    <strong>PROTOTYPE — on-device scribe experiment</strong>
+    This page is a standalone test. It is not linked from the app and shares no patient data with it. Audio never leaves this device.
+  </div>
+
+  <h1>On-device scribe prototype</h1>
+  <p class="sub">Record from the mic (or load a test clip), transcribe fully on-device with Moonshine via Transformers.js + WASM. Phone-first: no WebGPU, single thread, small model.</p>
+
+  <div class="card">
+    <h2>1 · Model</h2>
+    <label for="modelSel">Transcription model (downloads once, then cached)</label>
+    <select id="modelSel">
+      <option value="onnx-community/moonshine-tiny-ONNX" selected>Moonshine tiny — ~28 MB, fastest (recommended)</option>
+      <option value="onnx-community/moonshine-base-ONNX">Moonshine base — ~63 MB, best accuracy (experimental)</option>
+    </select>
+    <div class="btnrow">
+      <button id="loadBtn" class="primary">Load model</button>
+    </div>
+    <div class="progress" id="dlProgress"><div></div></div>
+    <div class="status" id="modelStatus">Model not loaded.</div>
+  </div>
+
+  <div class="card">
+    <h2>2 · Voice enrollment (speaker memory)</h2>
+    <p class="note">Record ~12 seconds of <strong>your</strong> voice reading anything. The phone keeps a tiny voice embedding (192 numbers) on this device — later encounters label each utterance “You” vs “Patient” with no per-encounter clustering and no server.</p>
+    <div class="btnrow">
+      <button id="enrollBtn" class="primary" disabled>🎙 Enroll my voice</button>
+      <button id="clearEnrollBtn" disabled>Clear enrollment</button>
+    </div>
+    <div class="status" id="enrollStatus">Load the transcription model first (speaker model loads on demand).</div>
+  </div>
+
+  <div class="card">
+    <h2>3 · Capture</h2>
+    <div class="btnrow">
+      <button id="recBtn" class="big primary" disabled>● Start recording</button>
+    </div>
+    <div style="height:10px"></div>
+    <label for="fileInput">…or transcribe an audio file (wav/mp3/m4a, decoded locally)</label>
+    <input type="file" id="fileInput" accept="audio/*" disabled>
+    <div class="status" id="capStatus">Load a model first.</div>
+  </div>
+
+  <div class="card">
+    <h2>4 · Transcript</h2>
+    <div id="transcript"><p class="note">Nothing transcribed yet.</p></div>
+    <div class="summary" id="runSummary" hidden></div>
+  </div>
+
+  <div class="card">
+    <h2>About this prototype</h2>
+    <div class="kv"><span>Engine</span><span>Transformers.js (vendored) + ONNX Runtime WASM</span></div>
+    <div class="kv"><span>Device</span><span>wasm · 1 thread (phone path, no WebGPU)</span></div>
+    <div class="kv"><span>Segmentation</span><span>energy VAD → utterance chunks</span></div>
+    <div class="kv"><span>Speaker memory</span><span>CAM++ embedding (28 MB) · enroll once, cosine match per utterance</span></div>
+    <div class="kv"><span>Network</span><span>model download only · inference fully local</span></div>
+    <p class="note">Patterns borrowed from meetscribe's on-device work (MIT): worker-isolated inference with downloadable model files streamed into the browser cache, capability-based plan choice, energy-VAD audio chunking. Parakeet TDT was evaluated and rejected for phone use — meetscribe's own capability check warns iOS Safari will crash on its ~1.5&nbsp;GB RAM need.</p>
+    <p class="note"><strong>Not validated for clinical documentation.</strong> Transcription accuracy has not been evaluated on real clinical speech, drug names are a known weak spot in early testing, and every transcript requires clinician review before it informs care or enters any record. Nothing here is medical advice.</p>
+  </div>
+</div>
+
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const modelSel = $("modelSel"), loadBtn = $("loadBtn"), recBtn = $("recBtn"),
+      fileInput = $("fileInput"), modelStatus = $("modelStatus"), capStatus = $("capStatus"),
+      dlProgress = $("dlProgress"), dlBar = dlProgress.firstElementChild,
+      transcriptEl = $("transcript"), runSummary = $("runSummary");
+
+// ---------- worker RPC ----------
+const worker = new Worker("src/scribe/prototype-worker.js", { type: "module" });
+let rpcId = 0;
+const pending = new Map();
+worker.onmessage = (e) => {
+  const { type, id, value } = e.data || {};
+  if (type === "progress") { onModelProgress(value); return; }
+  if (type === "status") { modelStatus.textContent = value; return; }
+  const p = pending.get(id);
+  if (!p) return;
+  pending.delete(id);
+  if (type === "error") p.reject(new Error(value));
+  else p.resolve(value);
+};
+function callWorker(action, payload) {
+  return new Promise((resolve, reject) => {
+    const id = ++rpcId;
+    pending.set(id, { resolve, reject });
+    worker.postMessage({ id, action, payload });
+  });
+}
+
+// ---------- model loading ----------
+let modelReady = false, modelBytes = 0, modelLoadMs = 0;
+function onModelProgress(p) {
+  if (!p || typeof p.progress !== "number") return;
+  dlProgress.style.display = "block";
+  dlBar.style.width = `${Math.round(p.progress * 100)}%`;
+  const name = String(p.file || "").split("/").pop();
+  modelStatus.textContent = `Downloading ${name} — ${Math.round(p.progress * 100)}%`;
+}
+loadBtn.addEventListener("click", async () => {
+  loadBtn.disabled = true;
+  try {
+    const t0 = performance.now();
+    const r = await callWorker("load", { modelId: modelSel.value, dtype: "q8" }); // q8 = phone download budget
+    modelReady = true; modelLoadMs = r.ms;
+    dlProgress.style.display = "none";
+    modelStatus.textContent = `Ready: ${modelSel.selectedOptions[0].text} (loaded in ${(r.ms / 1000).toFixed(1)}s)`;
+    recBtn.disabled = false; fileInput.disabled = false; enrollBtn.disabled = false;
+    capStatus.textContent = "Model ready. Tap record and speak, or load an audio file.";
+  } catch (err) {
+    modelStatus.textContent = `Load failed: ${err.message}`;
+    loadBtn.disabled = false;
+  }
+});
+
+// ---------- audio helpers ----------
+function downsampleTo16k(input, fromRate) {
+  if (fromRate === 16000) return input;
+  const ratio = fromRate / 16000;
+  const outLen = Math.floor(input.length / ratio);
+  const out = new Float32Array(outLen);
+  for (let i = 0; i < outLen; i++) {
+    const s = i * ratio, i0 = Math.floor(s), i1 = Math.min(i0 + 1, input.length - 1), f = s - i0;
+    out[i] = input[i0] * (1 - f) + input[i1] * f;
+  }
+  return out;
+}
+
+// Energy-VAD utterance segmentation over 16 kHz mono audio.
+// (Same family as meetscribe's chunking: RMS threshold with hangover.)
+function vadUtterances(audio) {
+  const FRAME = 1600; // 100 ms
+  const frames = Math.floor(audio.length / FRAME);
+  if (frames < 3) return audio.length ? [{ startSec: 0, audio }] : [];
+  const rms = new Float32Array(frames);
+  for (let f = 0; f < frames; f++) {
+    let s = 0; const off = f * FRAME;
+    for (let i = 0; i < FRAME; i++) { const v = audio[off + i]; s += v * v; }
+    rms[f] = Math.sqrt(s / FRAME);
+  }
+  // Adaptive threshold from the QUIETEST frames (p10), not the first frames:
+  // an encounter can start with immediate speech, which would otherwise
+  // calibrate the "noise floor" on speech itself and mute everything.
+  const sorted = Array.from(rms).sort((a, b) => a - b);
+  const noiseFloor = sorted[Math.floor(frames * 0.1)] || 0.004;
+  const thresh = Math.min(Math.max(noiseFloor * 4, 0.008), 0.06);
+  const LEAD = 2, TRAIL_SIL = 8, MAX_FRAMES = 200; // 0.2 s lead, 0.8 s trailing silence, 20 s cap
+  const out = [];
+  let start = -1, sil = 0;
+  const cut = (s, e) => out.push({ startSec: s * 0.1, audio: audio.slice(s * FRAME, Math.min(e * FRAME, audio.length)) });
+  for (let f = 0; f < frames; f++) {
+    const speech = rms[f] > thresh;
+    if (start < 0) { if (speech) start = Math.max(0, f - LEAD); }
+    else {
+      if (speech) sil = 0; else sil++;
+      if (sil >= TRAIL_SIL || f - start + 1 >= MAX_FRAMES) { cut(start, f + 1); start = -1; sil = 0; }
+    }
+  }
+  if (start >= 0) cut(start, frames);
+  return out.filter((u) => u.audio.length > 3200); // drop blips under 0.2 s
+}
+
+function fmtTime(s) {
+  const m = Math.floor(s / 60), ss = Math.floor(s % 60);
+  return `${String(m).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
+}
+
+// ---------- transcription run ----------
+let runSeq = 0;
+async function transcribeUtterances(utterances, label, opts = {}) {
+  const runId = ++runSeq;
+  const doLabel = opts.labelSpeakers !== false && speakerReady && loadEnrolled();
+  transcriptEl.innerHTML = "";
+  runSummary.hidden = true;
+  let totalAudio = 0, totalInfer = 0, totalEmbed = 0, done = 0;
+  capStatus.textContent = `${label}: transcribing ${utterances.length} utterance(s)…`;
+  for (const u of utterances) {
+    const t0 = performance.now();
+    let text = "", inferMs = 0;
+    try {
+      const r = await callWorker("transcribe", { audio: u.audio });
+      text = r.text; inferMs = r.ms;
+    } catch (err) {
+      text = `⚠ ${err.message}`;
+    }
+    let speakerTag = null;
+    if (doLabel && text && !text.startsWith("⚠")) {
+      try {
+        const e0 = performance.now();
+        const r = await callWorker("embed", { audio: u.audio });
+        totalEmbed += performance.now() - e0;
+        const sim = dot(r.embedding, enrolled.values);
+        speakerTag = { who: sim >= SIM_THRESHOLD ? "You" : "Patient", sim };
+      } catch { /* unlabeled on embedding failure */ }
+    }
+    if (runId !== runSeq) return; // superseded
+    done++;
+    totalAudio += u.audio.length / 16000;
+    totalInfer += inferMs;
+    const div = document.createElement("div");
+    div.className = "seg";
+    const t = document.createElement("span"); t.className = "t"; t.textContent = fmtTime(u.startSec);
+    const body = document.createElement("span");
+    if (speakerTag) {
+      const chip = document.createElement("strong");
+      chip.textContent = speakerTag.who + " ";
+      chip.style.color = speakerTag.who === "You" ? "#0b5cad" : "#7a4d00";
+      chip.title = `cosine similarity ${speakerTag.sim.toFixed(2)} (threshold ${SIM_THRESHOLD})`;
+      body.append(chip);
+    }
+    body.append(document.createTextNode(text || "(no speech detected)"));
+    const ms = document.createElement("span"); ms.className = "ms";
+    ms.textContent = `${(u.audio.length / 16000).toFixed(1)}s audio · ${(inferMs / 1000).toFixed(1)}s infer` +
+      (speakerTag ? ` · spk ${speakerTag.sim.toFixed(2)}` : "");
+    div.append(t, body, ms);
+    transcriptEl.appendChild(div);
+    capStatus.textContent = `${label}: ${done}/${utterances.length} utterances…`;
+  }
+  const rtf = totalInfer / 1000 / Math.max(totalAudio, 0.01);
+  runSummary.hidden = false;
+  runSummary.innerHTML =
+    `<strong>Run summary</strong><br>` +
+    `Speech audio: ${totalAudio.toFixed(1)}s · inference: ${(totalInfer / 1000).toFixed(1)}s · ` +
+    `<strong>real-time factor ${rtf.toFixed(2)}×</strong> (lower is faster; &lt;1 = faster than real time)` +
+    (totalEmbed ? `<br>Speaker embedding: ${(totalEmbed / 1000).toFixed(1)}s total` : "") +
+    `<br>Model: ${modelSel.selectedOptions[0].text}`;
+  capStatus.textContent = `${label}: done — ${utterances.length} utterance(s), RTF ${rtf.toFixed(2)}×.`;
+  return { segments: utterances.length, totalAudio, totalInferMs: totalInfer, totalEmbedMs: totalEmbed, rtf };
+}
+
+// ---------- mic capture ----------
+// 10-minute cap: 16 kHz float32 mono = ~3.84 MB/min, so 10 min ≈ 38 MB in RAM.
+const MAX_REC_SECONDS = 10 * 60;
+/** Keep an AudioWorklet capture graph alive without audible feedback. */
+function keepWorkletAlive(ctx, src, node) {
+  const sink = ctx.createGain();
+  sink.gain.value = 0;
+  src.connect(node);
+  node.connect(sink);
+  sink.connect(ctx.destination);
+  return sink;
+}
+let recording = null;
+recBtn.addEventListener("click", async () => {
+  if (recording) { await stopRecording(); return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    await ctx.resume();
+    await ctx.audioWorklet.addModule("src/scribe/capture-worklet.js");
+    const src = ctx.createMediaStreamSource(stream);
+    const node = new AudioWorkletNode(ctx, "scribe-capture");
+    const chunks = [];
+    node.port.onmessage = (e) => chunks.push(e.data);
+    const sink = keepWorkletAlive(ctx, src, node);
+    recording = { stream, ctx, node, sink, chunks, sampleRate: ctx.sampleRate, t0: performance.now() };
+    recBtn.textContent = "■ Stop recording";
+    recBtn.classList.remove("primary"); recBtn.classList.add("danger");
+    recording.timer = setInterval(() => {
+      const r = recording;
+      if (!r) return;
+      const el = (performance.now() - r.t0) / 1000;
+      capStatus.textContent = `Recording… ${Math.floor(el / 60)}:${String(Math.floor(el % 60)).padStart(2, "0")} / 10:00 — tap stop when the encounter is done.`;
+      if (el >= MAX_REC_SECONDS) stopRecording(" (stopped automatically at the 10-minute cap)");
+    }, 500);
+    capStatus.textContent = "Recording… 0:00 / 10:00 — tap stop when the encounter is done.";
+  } catch (err) {
+    capStatus.textContent = `Mic unavailable: ${err.message}`;
+  }
+});
+async function stopRecording(note = "") {
+  const r = recording; recording = null;
+  if (!r) return;
+  clearInterval(r.timer);
+  recBtn.textContent = "● Start recording";
+  recBtn.classList.add("primary"); recBtn.classList.remove("danger");
+  try {
+    r.node.disconnect(); r.sink.disconnect();
+    r.stream.getTracks().forEach((t) => t.stop());
+    const total = r.chunks.reduce((n, c) => n + c.length, 0);
+    const pcm = new Float32Array(total);
+    let o = 0; for (const c of r.chunks) { pcm.set(c, o); o += c.length; }
+    await r.ctx.close();
+    capStatus.textContent = `Recorded ${(total / r.sampleRate).toFixed(1)}s${note} — downsampling + VAD…`;
+    const mono16 = downsampleTo16k(pcm, r.sampleRate);
+    const utterances = vadUtterances(mono16);
+    if (!utterances.length) { capStatus.textContent = "No speech detected in the recording."; return; }
+    await transcribeUtterances(utterances, "Recording");
+  } catch (err) {
+    capStatus.textContent = `Recording failed: ${err.message}`;
+  }
+}
+
+// ---------- speaker memory: enroll-once voice embedding ----------
+const ENROL_KEY = "scribe.enrolledSpeaker.v1";
+const SPEAKER_URL = "https://huggingface.co/bitsydarel/campplus-onnx/resolve/main/3dspeaker_speech_campplus_sv_zh_en_16k-common_advanced.onnx";
+const SIM_THRESHOLD = 0.45; // cosine similarity at/above this => "You"
+let speakerReady = false, enrolled = null;
+
+function loadEnrolled() {
+  try {
+    const raw = localStorage.getItem(ENROL_KEY);
+    enrolled = raw ? JSON.parse(raw) : null;
+  } catch { enrolled = null; }
+  return enrolled;
+}
+function dot(a, b) { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * b[i]; return s; }
+
+async function ensureSpeakerModel() {
+  if (speakerReady) return;
+  enrollStatus.textContent = "Loading speaker-embedding model (~28 MB, one-time)…";
+  await callWorker("loadSpeaker", { url: window.__scribe._speakerUrl || SPEAKER_URL });
+  speakerReady = true;
+}
+
+/** Record exactly `seconds` of mic audio, returned as 16 kHz mono Float32Array. */
+function captureSeconds(seconds) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      await ctx.resume();
+      await ctx.audioWorklet.addModule("src/scribe/capture-worklet.js");
+      const src = ctx.createMediaStreamSource(stream);
+      const node = new AudioWorkletNode(ctx, "scribe-capture");
+      const chunks = [];
+      node.port.onmessage = (e) => chunks.push(e.data);
+      const sink = keepWorkletAlive(ctx, src, node);
+      setTimeout(async () => {
+        node.disconnect(); sink.disconnect();
+        stream.getTracks().forEach((t) => t.stop());
+        const total = chunks.reduce((n, c) => n + c.length, 0);
+        const pcm = new Float32Array(total);
+        let o = 0; for (const c of chunks) { pcm.set(c, o); o += c.length; }
+        await ctx.close();
+        resolve(downsampleTo16k(pcm, ctx.sampleRate));
+      }, seconds * 1000);
+    } catch (err) { reject(err); }
+  });
+}
+
+const enrollBtn = $("enrollBtn"), clearEnrollBtn = $("clearEnrollBtn"), enrollStatus = $("enrollStatus");
+loadEnrolled();
+function refreshEnrollUI() {
+  clearEnrollBtn.disabled = !enrolled;
+  enrollStatus.textContent = enrolled
+    ? `Enrolled ✓ (${enrolled.dim}-dim voice embedding stored on this device only).`
+    : "Not enrolled. Transcription will show unlabeled segments until you enroll.";
+}
+refreshEnrollUI();
+
+enrollBtn.addEventListener("click", async () => {
+  enrollBtn.disabled = true;
+  try {
+    await ensureSpeakerModel();
+    enrollStatus.textContent = "Recording 12 seconds of your voice — read anything aloud…";
+    const audio = await captureSeconds(12);
+    enrollStatus.textContent = "Computing voice embedding…";
+    // Average embeddings over 6 s windows for a stabler enrollment.
+    const WIN = 6 * 16000;
+    const acc = [];
+    for (let o = 0; o + 16000 < audio.length; o += WIN) {
+      const r = await callWorker("embed", { audio: audio.slice(o, Math.min(o + WIN, audio.length)) });
+      acc.push(r.embedding);
+    }
+    if (!acc.length) throw new Error("No usable speech captured.");
+    const dim = acc[0].length;
+    const avg = new Array(dim).fill(0);
+    for (const e of acc) for (let i = 0; i < dim; i++) avg[i] += e[i] / acc.length;
+    let n = 0; for (let i = 0; i < dim; i++) n += avg[i] * avg[i];
+    n = Math.sqrt(n) || 1;
+    const rec = { dim, values: avg.map((v) => v / n), at: new Date().toISOString() };
+    localStorage.setItem(ENROL_KEY, JSON.stringify(rec));
+    enrolled = rec;
+    refreshEnrollUI();
+  } catch (err) {
+    enrollStatus.textContent = `Enrollment failed: ${err.message}`;
+  }
+  enrollBtn.disabled = false;
+});
+clearEnrollBtn.addEventListener("click", () => {
+  localStorage.removeItem(ENROL_KEY);
+  enrolled = null;
+  refreshEnrollUI();
+});
+fileInput.addEventListener("change", async () => {
+  const f = fileInput.files && fileInput.files[0];
+  if (!f) return;
+  capStatus.textContent = `Decoding ${f.name}…`;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const buf = await ctx.decodeAudioData(await f.arrayBuffer());
+    const ch0 = buf.getChannelData(0);
+    const mono16 = downsampleTo16k(ch0, buf.sampleRate);
+    await ctx.close();
+    const utterances = vadUtterances(mono16);
+    if (!utterances.length) { capStatus.textContent = "No speech detected in the file."; return; }
+    await transcribeUtterances(utterances, f.name);
+  } catch (err) {
+    capStatus.textContent = `Could not decode file: ${err.message}`;
+  }
+  fileInput.value = "";
+});
+
+// ---------- headless test API (not part of the UI) ----------
+window.__scribe = {
+  models: {
+    base: "onnx-community/moonshine-base-ONNX",
+    tiny: "onnx-community/moonshine-tiny-ONNX",
+  },
+  async loadModel(modelId, remoteHost, dtype) {
+    const r = await callWorker("load", { modelId, remoteHost, dtype });
+    modelReady = true;
+    recBtn.disabled = false; fileInput.disabled = false;
+    return r;
+  },
+  _remoteHost: null,
+  vadUtterances,
+  transcribeUtterances,
+  downsampleTo16k,
+  async loadSpeakerModel(url) {
+    const r = await callWorker("loadSpeaker", { url: url || window.__scribe._speakerUrl || undefined });
+    speakerReady = true;
+    return r;
+  },
+  async embedAudio(audio) {
+    const r = await callWorker("embed", { audio });
+    return r.embedding;
+  },
+  setEnrolled(rec) { enrolled = rec; try { localStorage.setItem(ENROL_KEY, JSON.stringify(rec)); } catch {} refreshEnrollUI(); },
+  getEnrolled() { return loadEnrolled(); },
+  clearEnrolled() { try { localStorage.removeItem(ENROL_KEY); } catch {} enrolled = null; refreshEnrollUI(); },
+  _speakerUrl: null, // harness override for the campplus ONNX location
+  state() { return { modelReady, speakerReady, enrolled: !!loadEnrolled(), model: modelSel.value }; },
+};
+</script>
+</body>
+</html>

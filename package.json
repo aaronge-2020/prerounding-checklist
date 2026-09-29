@@ -63,6 +63,7 @@
     "test:clinical-scores": "node tests/test-clinical-scores.js",
     "test:score-guides": "node tests/test-score-guides.js",
     "test:scores-ui": "node tests/test-scores-ui.js",
+    "test:scribe-prototype": "node tests/test-scribe-prototype.js",
     "test:ai-models": "node tests/test-ai-models.js",
     "test:network-gate": "node tests/test-network-gate.js"
   },
