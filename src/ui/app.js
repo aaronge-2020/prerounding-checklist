@@ -1895,6 +1895,10 @@ function deleteVaultAndStartOver() {
 async function admitPatient() {
   const label = byId("newPatientLabel").value.trim();
   if (!label) throw new Error("Enter a local display label.");
+  // Patient boundary: in-memory draft sessions are keyed by packet, not
+  // patient. Without this clear the new patient's draft note renders the
+  // previous patient's content.
+  clearPatientScopedSession();
   app.vault = updateOrInitializeVault(createPatientRecord(label));
   admissionDateAnchor.restore();
   await persistVault("Patient admitted locally.");
