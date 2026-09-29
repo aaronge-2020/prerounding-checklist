@@ -734,6 +734,23 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     }).join("")}</ol></div>`;
   }
 
+  // Render plain text with [n] citation markers converted to hyperlinks.
+  // Used for plan fields so approved AI suggestions show clickable citations.
+  // References come from draft.apReferences (persisted when suggestions are
+  // approved). Markers without a matching reference render as plain text.
+  function renderTextWithCitationLinks(value, references) {
+    const escaped = escapeHtml(valueText(value));
+    if (!references?.length) return escaped.replace(/\r?\n/g, "<br>");
+    const byId = new Map(references.map((r) => [String(r.id), r]));
+    const linked = escaped.replace(/\[(\d+)\]/g, (match, id) => {
+      const ref = byId.get(id);
+      if (!ref?.url) return match;
+      const title = [ref.authors, ref.title, ref.journal, ref.year].filter(Boolean).join(". ");
+      return `<a href="${escapeHtml(ref.url)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(title)}">[${escapeHtml(id)}]</a>`;
+    });
+    return linked.replace(/\r?\n/g, "<br>");
+  }
+
   function renderProblemEditor(problem, index, guidanceFor, options = {}) {
     const known = problem.etiologyStatus === "known";
     const generating = options.generatingApProblemId === problem.id;
