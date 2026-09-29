@@ -1,11 +1,13 @@
 // Controller for the AI Chat view: two chat modes behind one streamlined
 // interface. "On-device" is the existing local-LLM chat (model
 // download/select lifecycle, note parsing) — nothing leaves the browser.
-// "ChatGPT" is a remote chat over the student's saved OpenAI key, with a
-// rigorous citation system prompt, service tailoring, and a HIPAA review
-// gate (second-pass de-identification + human review) before any patient
-// context leaves the browser. Pure markup comes from
-// src/ui/ai-chat/presentation.js.
+// "ChatGPT" is a remote chat over the student's saved OpenAI key, behind a
+// HIPAA review gate: the student's message is de-identified fresh on every
+// send, each context piece is de-identified and fingerprinted so only
+// changed pieces re-run, and the modal shows EXACTLY what will be sent.
+// Nothing leaves the browser until the student acknowledges and confirms.
+// The transformed (de-identified) message — never the raw text — is what
+// gets transmitted and stored.
 
 import {
   localLlmModelByKey,
@@ -14,14 +16,16 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v3";
+import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v4";
 import { requestOpenAiChat } from "../openai-client.js?v=20260928-ai-chat-v1";
+import * as remoteChatV4 from "../../ai/remote-chat.js?v=20260929-ai-chat-v4";
 import {
-  buildRemoteChatInput,
-  buildRemoteChatSystemPrompt,
-  CHAT_SERVICE_OPTIONS
-} from "../../ai/remote-chat.js?v=20260928-ai-chat-v1";
-import { deidentifyTextStructuredOnly } from "../../vault/deid.js?v=20260928-ai-chat-v1";
+  deidentifyText,
+  getSelectedDeidModelStatus,
+  getAdvancedDeidStatus,
+  preloadAdvancedDeidModel
+} from "../../patient-context/deid-service.js?v=20260929-obi-default";
+import { STRUCTURED_DEID_MODE } from "../../patient-context/deid-model-options.js?v=20260929-obi-default";
 import {
   buildPatientContextFromPieces,
   defaultSelectedPieceIds,
@@ -33,9 +37,44 @@ import {
 import { CHARS_PER_TOKEN, buildChatMessages, estimateTokens } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES, buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
+import { medicalServiceOption } from "../../app/preferences.js?v=20260722-guideline-library";
+import {
+  hashPiece,
+  splitBuiltContext,
+  verifySplitEquivalence,
+  entitiesToRedactionRecords,
+  applyRedactions,
+  locateManualSpan,
+  buildTransmitPayload,
+  locateTruncation,
+  effectiveGuidelinesText
+} from "./delta-review.js?v=20260929-ai-chat-v4";
 
-export function createAiChatController({ app, byId, escapeHtml, icon, setStatus, render, getDraftNoteText, currentPreferences, onChatServiceChange }) {
+export function createAiChatController({
+  app,
+  byId,
+  escapeHtml,
+  icon,
+  setStatus,
+  render,
+  getDraftNoteText,
+  currentPreferences,
+  onChatServiceChange,
+  // Optional test seams, last in the destructured args. Defaults below fill
+  // any gaps so partial overrides still work.
+  deidDeps,
+  chatDeps
+} = {}) {
   const presentation = createAiChatPresentation({ escapeHtml, icon });
+  const deid = {
+    deidentifyText,
+    getSelectedDeidModelStatus,
+    getAdvancedDeidStatus,
+    preloadAdvancedDeidModel,
+    STRUCTURED_DEID_MODE,
+    ...(deidDeps || {})
+  };
+  const chat = { requestOpenAiChat, ...(chatDeps || {}) };
   const client = sharedLocalLlmClient();
   const state = {
     hardware: null,
@@ -56,13 +95,19 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
     // Chat mode: "local" (on-device) or "remote" (ChatGPT). Persisted in
     // the local-LLM settings so the choice survives reloads.
     mode: readLocalLlmSettings().chatMode === "remote" ? "remote" : "local",
+    sidebarOpen: false,
     remote: {
       messages: [],
       sending: false,
       webSearch: true,
       patientId: "",
+      // Session-scoped store: piece id -> the student's last reviewed
+      // de-identification of that piece. Unchanged pieces are reused
+      // verbatim so the student only re-reviews what changed. Cleared on
+      // patient change and new remote chat.
+      reviewStore: new Map(),
       // HIPAA review gate state: set while the student reviews exactly what
-      // will be sent to OpenAI (message + second-pass de-identified context).
+      // will be sent to OpenAI. Nothing is sent on modal open.
       review: null
     },
     downloadInFlight: false,
@@ -210,6 +255,7 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
       void client.resetChat();
       state.remote.messages = [];
       state.remote.review = null;
+      state.remote.reviewStore.clear();
     }
     state.chat.patientId = pctx.patientId;
     state.remote.patientId = pctx.patientId;
@@ -234,9 +280,14 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
       chat: state.chat,
       downloaded: state.downloaded,
       mode: state.mode,
-      remote: state.remote,
-      chatService: String(prefs.chatService || ""),
-      chatServiceOptions: CHAT_SERVICE_OPTIONS,
+      remote: {
+        messages: state.remote.messages,
+        sending: state.remote.sending,
+        webSearch: state.remote.webSearch,
+        patientId: state.remote.patientId,
+        review: reviewViewModel(state.remote.review),
+        deid: remoteDeidInfo()
+      },
       hasApiKey: String(prefs.openAiApiKey || "").trim().length > 0,
       patientContext: {
         enabled: pctx.enabled,
@@ -264,7 +315,10 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
         historyCount: state.chat.messages.length,
         selectedTokens: pieceTokens,
         contextWindow
-      }
+      },
+      sidebarOpen: state.sidebarOpen,
+      clinicalService: clinicalServiceInfo(),
+      sidebarGuidelinesText: String(settings().systemGuidelines || "")
     });
     const messages = root.querySelector("[data-ai-chat-messages]");
     if (messages) messages.scrollTop = messages.scrollHeight;
@@ -447,167 +501,367 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
     render();
   }
 
-  // HIPAA review gate: runs BEFORE anything is sent to OpenAI when patient
-  // context (chart pieces and/or the student's own draft note) is attached.
-  // 1. A second deterministic de-identification pass over the assembled
-  //    context (the vault already stores de-identified text; this is
-  //    defense-in-depth against anything that slipped through).
-  // 2. A scan of the student's own message for identifier-like patterns.
-  // 3. A human-review modal showing EXACTLY what will be sent — the student
-  //    must explicitly confirm. Nothing is sent on modal open.
-  // Build the raw (pre-redaction) review pieces: a patient header plus one
-  // entry per selected chart document / draft note. Titles shown in the
-  // review modal are derived from the REDACTED text so unredacted metadata
-  // (e.g. real dates in day-group labels) never renders in the modal.
-  function buildHipaaReviewPieces(cachedDraft) {
-    const draft = typeof cachedDraft === "string" ? cachedDraft : currentDraftNoteText();
-    const { patient, pieces, selectedIds } = contextPieces(draft);
-    const wanted = new Set(selectedIds);
-    const out = [];
-    const headerBits = [`PATIENT: ${textOf(patient?.displayLabel) || "Active patient"}`];
-    const admissionDate = textOf(patient?.metadata?.admissionDate);
-    if (admissionDate) headerBits.push(`Admitted: ${admissionDate}`);
-    out.push({ id: "header", kind: "header", text: headerBits.join("\n") });
-    const pieceOpts = { draftNoteText: draft };
-    for (const piece of pieces) {
-      if (!wanted.has(piece.id)) continue;
-      const text = pieceText(patient, piece, pieceOpts);
-      if (text) out.push({ id: piece.id, kind: "piece", text });
-    }
-    return out;
+  // ----- HIPAA review gate -------------------------------------------
+  // Every ChatGPT send passes through this gate:
+  //   1. The student's message is de-identified FRESH on every send —
+  //      never reused, never stored.
+  //   2. The custom instructions (system guidelines), the patient header,
+  //      and each selected chart piece are de-identified into reviewable
+  //      redaction records. Pieces whose content hash matches the
+  //      session-scoped review store are reused verbatim (badge
+  //      "reviewed"); changed pieces are de-identified again ("changed"),
+  //      unseen pieces are de-identified ("new").
+  //   3. splitBuiltContext + verifySplitEquivalence prove the per-piece
+  //      review operates on EXACTLY the text the trusted builder would
+  //      assemble — any drift fails closed.
+  //   4. The modal shows EXACTLY what will be sent. Send requires phase
+  //      "ready", the acknowledgement checkbox, and zero pending records.
+  // Any de-identification error fails closed: phase "failed" with no
+  // message/context content, no acknowledgement, no Send.
+
+  function reviewAdmissionDate(patient) {
+    return textOf(patient?.metadata?.admissionDate) || null;
   }
 
-  function openHipaaReview(message, rawPieces) {
-    let messageResult;
-    let failed = false;
-    let failedDetail = "";
-    try {
-      messageResult = deidentifyTextStructuredOnly(message);
-    } catch (err) {
-      // Fail closed: never fall back to the raw message. The review is
-      // blocked and nothing from this send will leave the browser.
-      failed = true;
-      failedDetail = `Message de-identification failed (${err?.message || "error"}) — nothing was sent.`;
-      messageResult = { text: "", redactionTotal: 0, counts: {}, residualWarnings: [], flags: [] };
+  function deidModelLabel(deidKey) {
+    const selected = deid.getSelectedDeidModelStatus(deidKey) || {};
+    const advanced = deid.getAdvancedDeidStatus() || {};
+    return selected.label || advanced.label || "";
+  }
+
+  function failedReview(detail, modelLabel) {
+    return {
+      phase: "failed",
+      failed: true, // legacy flag for the pre-v4 modal; phase is authoritative
+      progress: null,
+      failedDetail: detail,
+      deidModelLabel: modelLabel || "",
+      messageTransformed: "",
+      messageCounts: {},
+      messageFlags: [],
+      pieces: [],
+      guidelines: null,
+      history: [],
+      transmitText: "",
+      systemPromptText: "",
+      redactionTotal: 0,
+      redactionCounts: {},
+      residualWarnings: [],
+      flags: [],
+      truncationNote: "",
+      expanded: [],
+      reviewedOpen: [],
+      ack: false,
+      canSend: false
+    };
+  }
+
+  function advanceProgress(review, label) {
+    if (review?.progress) {
+      review.progress = { ...review.progress, done: Math.min(review.progress.total, review.progress.done + 1), label };
     }
-    // Apply the context budget to the raw pieces (same cap the blob
-    // assembly used), cutting from the tail, so the reviewed text is
-    // exactly the text that will be sent on confirm.
-    const budget = Math.max(500, Number(MAX_SELECTED_PIECES_CHARS) || 6000);
-    let remaining = budget;
-    const capped = [];
-    for (const raw of rawPieces) {
-      if (remaining <= 0) break;
-      let text = raw.text;
-      let cut = false;
-      if (text.length > remaining) {
-        text = `${text.slice(0, Math.max(0, remaining - 3)).trimEnd()}...`;
-        cut = true;
+    render();
+  }
+
+  // De-identify one text through the selected model, fail-closed: a result
+  // we can't trust (missing text, no model id, chunk failures) is a
+  // failure, never a partial send. Structured-only mode is blocked by the
+  // send gate before this is ever called.
+  async function deidentifyForReview(rawText, deidKey, admissionDate, what) {
+    const result = await deid.deidentifyText(rawText, {
+      mode: deidKey,
+      allowStructuredFallback: false,
+      admissionDate,
+      relativeDate: admissionDate
+    });
+    if (!result || typeof result.text !== "string" || !result.modelId || result.modelChunkFailures) {
+      throw new Error(`the de-identification model didn't return a usable result for ${what}`);
+    }
+    return result;
+  }
+
+  // De-identify one review piece (custom instructions, patient header, or a
+  // chart piece), reusing the stored review verbatim when the content hash
+  // matches.
+  async function prepareReviewPiece(review, { id, title, group, rawText }, deidKey) {
+    const contentHash = hashPiece(rawText);
+    const stored = state.remote.reviewStore.get(id);
+    if (stored && stored.contentHash === contentHash && typeof stored.approvedRedactedText === "string") {
+      return {
+        id, title, group, badge: "reviewed", rawText,
+        approvedText: stored.approvedRedactedText,
+        redactionTotal: stored.redactionTotal || 0,
+        counts: { ...(stored.counts || {}) },
+        warnings: [...(stored.residualWarnings || [])],
+        flags: [...(stored.flags || [])],
+        modelRecords: (stored.modelRedactions || []).map((record) => ({ ...record })),
+        manualRecords: (stored.manualRedactions || []).map((record) => ({ ...record })),
+        truncated: false
+      };
+    }
+    const result = await deidentifyForReview(rawText, deidKey, review.admissionDate, `"${title}"`);
+    const piece = {
+      id, title, group,
+      badge: stored ? "changed" : "new",
+      rawText,
+      approvedText: "",
+      redactionTotal: 0,
+      counts: {},
+      warnings: (result.residualWarnings || []).slice(0, 4).map((w) => w?.snippet || String(w || "")),
+      flags: (result.flags || []).slice(0, 4),
+      modelRecords: entitiesToRedactionRecords(rawText, result.entities || []),
+      manualRecords: [],
+      truncated: false
+    };
+    refreshPieceApproval(piece, review.admissionDate);
+    return piece;
+  }
+
+  // Recompute a piece's approved text from its accepted/pending records
+  // (rejected records are dropped), plus its counts.
+  function refreshPieceApproval(piece, admissionDate) {
+    const applied = [...piece.modelRecords, ...piece.manualRecords].filter((record) => record.status !== "rejected");
+    piece.approvedText = applyRedactions(piece.rawText, applied, admissionDate);
+    const counts = {};
+    for (const record of applied) counts[record.label] = (counts[record.label] || 0) + 1;
+    piece.counts = counts;
+    piece.redactionTotal = applied.length;
+  }
+
+  function writePieceToStore(piece) {
+    if (!piece) return;
+    state.remote.reviewStore.set(piece.id, {
+      contentHash: hashPiece(piece.rawText),
+      rawText: piece.rawText,
+      approvedRedactedText: piece.approvedText,
+      modelRedactions: piece.modelRecords.map((record) => ({ ...record })),
+      manualRedactions: piece.manualRecords.map((record) => ({ ...record })),
+      counts: { ...piece.counts },
+      redactionTotal: piece.redactionTotal,
+      residualWarnings: [...piece.warnings],
+      flags: [...piece.flags],
+      title: piece.title,
+      group: piece.group
+    });
+  }
+
+  function findReviewPiece(review, pieceId) {
+    if (!review || !pieceId) return null;
+    if (review.guidelines?.id === pieceId) return review.guidelines;
+    return (review.pieces || []).find((piece) => piece.id === pieceId) || null;
+  }
+
+  function findReviewRecord(piece, recordId) {
+    if (!piece || !recordId) return null;
+    return [...piece.modelRecords, ...piece.manualRecords].find((record) => record.id === recordId) || null;
+  }
+
+  function pendingRecordCount(review) {
+    let count = 0;
+    for (const piece of [review?.guidelines, ...(review?.pieces || [])]) {
+      if (!piece) continue;
+      for (const record of [...piece.modelRecords, ...piece.manualRecords]) {
+        if (record.status === "pending") count++;
       }
-      remaining -= text.length + 2; // +2 for the "\n\n" join below
-      capped.push({ ...raw, text, cut });
     }
-    const pieces = [];
+    return count;
+  }
+
+  // System prompt built from the student's clinical preferences — never
+  // the legacy per-model "chatService" setting — with the REVIEWED custom
+  // instructions appended underneath.
+  function buildRemoteSystemPromptText(prefs, reviewedGuidelinesText) {
+    const clinical = {
+      medicalService: prefs?.medicalService || "",
+      customServiceName: prefs?.customServiceName || "",
+      serviceFocus: prefs?.serviceFocus || "",
+      presentationDetail: prefs?.presentationDetail || "",
+      attendingPreferences: prefs?.attendingPreferences || "",
+      teamInstructions: prefs?.teamInstructions || ""
+    };
+    const fromClinical = remoteChatV4.buildRemoteChatSystemPromptFromClinicalPreferences;
+    const base = typeof fromClinical === "function"
+      ? fromClinical(clinical)
+      : remoteChatV4.buildRemoteChatSystemPrompt({ serviceValue: clinical.medicalService });
+    const guidelines = String(reviewedGuidelinesText || "").trim();
+    return guidelines ? `${base}\n\nSTUDENT'S CUSTOM INSTRUCTIONS:\n${guidelines}` : base;
+  }
+
+  // Rebuild the transmit payload and review aggregates after any change.
+  // canSend requires: phase "ready", the ack checkbox, zero pending records.
+  function rebuildTransmit(review) {
+    const pieceOrder = (review.pieces || []).map((piece) => piece.id);
+    const approvedById = {};
+    for (const piece of review.pieces || []) approvedById[piece.id] = piece.approvedText;
+    const systemPrompt = buildRemoteSystemPromptText(review.prefs, review.guidelines?.approvedText || "");
+    const transmit = buildTransmitPayload({
+      approvedById,
+      pieceOrder,
+      transformedMessage: review.messageTransformed,
+      systemPrompt,
+      history: review.history || [],
+      maxChars: MAX_SELECTED_PIECES_CHARS
+    });
+    review.transmit = transmit;
+    review.transmitText = transmit.contextText;
+    review.systemPromptText = systemPrompt;
+    const truncation = locateTruncation(pieceOrder, approvedById, MAX_SELECTED_PIECES_CHARS);
+    const cutPiece = (review.pieces || []).find((piece) => piece.id === truncation.cutPieceId);
+    review.truncationNote = truncation.truncated
+      ? `Context exceeded the size budget — the tail was cut inside "${cutPiece?.title || truncation.cutPieceId}". What you see above is exactly what will be sent.`
+      : "";
+    for (const piece of review.pieces || []) piece.truncated = truncation.truncated && piece.id === truncation.cutPieceId;
     const redactionCounts = {};
     let redactionTotal = 0;
-    let truncated = false;
-    for (const raw of capped) {
-      if (raw.cut) truncated = true;
-      let r;
-      try {
-        r = deidentifyTextStructuredOnly(raw.text);
-      } catch (err) {
-        // Fail closed: never fall back to raw text. The review is blocked
-        // and nothing from this batch will be sent.
-        failed = true;
-        failedDetail = `Context de-identification failed (${err?.message || "error"}) — nothing was sent.`;
-        break;
-      }
-      const text = String(r.text || "");
-      const lines = text.split("\n");
-      const firstLine = (lines[0] || "").replace(/^#{1,3}\s*/, "").trim();
-      pieces.push({
-        id: raw.id,
-        title: raw.kind === "header" ? "Patient header" : (firstLine || "Context"),
-        text,
-        chars: text.length,
-        redactionTotal: r.redactionTotal || 0,
-        counts: r.counts || {},
-        warnings: (r.residualWarnings || []).slice(0, 4).map((w) => w?.snippet || String(w || "")),
-        flags: (r.flags || []).slice(0, 4)
-      });
-      redactionTotal += r.redactionTotal || 0;
-      for (const [kind, n] of Object.entries(r.counts || {})) {
-        redactionCounts[kind] = (redactionCounts[kind] || 0) + n;
-      }
-    }
-    // The exact string sent on confirm — joined from the reviewed pieces.
-    const redactedContext = pieces.map((piece) => piece.text).join("\n\n");
     const residualWarnings = [];
     const flags = [];
-    for (const piece of pieces) {
-      for (const w of piece.warnings) {
-        if (residualWarnings.length < 8) residualWarnings.push(w);
-      }
-      for (const f of piece.flags) {
-        if (flags.length < 6) flags.push(f);
-      }
+    for (const piece of [review.guidelines, ...(review.pieces || [])]) {
+      if (!piece) continue;
+      redactionTotal += piece.redactionTotal || 0;
+      for (const [label, n] of Object.entries(piece.counts || {})) redactionCounts[label] = (redactionCounts[label] || 0) + n;
+      for (const warning of piece.warnings || []) if (residualWarnings.length < 8) residualWarnings.push(warning);
+      for (const flag of piece.flags || []) if (flags.length < 6) flags.push(flag);
     }
-    state.remote.review = {
-      message,
-      messageRedactionTotal: messageResult.redactionTotal || 0,
-      messageFlags: (messageResult.flags || []).slice(0, 6),
-      pieces,
-      redactedContext,
-      redactionTotal,
-      redactionCounts,
-      residualWarnings,
-      flags,
-      truncated,
-      failed,
-      failedDetail,
-      ack: false,
-      // Auto-expand every piece that needs eyes on it (redactions, warnings,
-      // or flags), plus the first piece so the body never opens empty.
-      expanded: pieces.filter((piece, idx) => idx === 0 || piece.redactionTotal > 0 || (piece.warnings || []).length || (piece.flags || []).length).map((piece) => piece.id)
-    };
-    render();
-  }
-
-  function closeHipaaReview() {
-    state.remote.review = null;
-    render();
-  }
-
-  async function confirmHipaaReview() {
-    const review = state.remote.review;
-    if (!review || !review.ack || review.failed) return;
-    state.remote.review = null;
-    await doRemoteSend(review.message, review.redactedContext);
+    review.redactionTotal = redactionTotal;
+    review.redactionCounts = redactionCounts;
+    review.residualWarnings = residualWarnings;
+    review.flags = flags;
+    review.canSend = review.phase === "ready" && review.ack && pendingRecordCount(review) === 0;
   }
 
   async function sendRemoteChat(text) {
     const message = String(text || "").trim();
-    if (!message || state.remote.sending) return;
+    if (!message || state.remote.sending || state.remote.review) return;
     const prefs = remotePrefs();
     if (!String(prefs.openAiApiKey || "").trim()) {
       setStatus("Save an OpenAI API key in Settings before using ChatGPT chat.");
       return;
     }
-    // Attach exactly the patient-context pieces the user selected in the
-    // "Context" inspector — the same selection the on-device chat uses.
-    const pctx = patientContextInfo();
-    state.remote.patientId = pctx.patientId;
-    if (pctx.enabled && pctx.text) {
-      // Patient context (chart and/or the student's own note) is attached:
-      // run the HIPAA review gate instead of sending immediately.
-      openHipaaReview(message, buildHipaaReviewPieces());
+    const deidKey = app.deidMode;
+    if (deidKey === deid.STRUCTURED_DEID_MODE || !deid.getSelectedDeidModelStatus(deidKey)?.ready) {
+      setStatus("Download a de-identification model to enable sending.");
+      render();
       return;
     }
-    await doRemoteSend(message, "");
+    const draft = currentDraftNoteText();
+    const { patient, selectedIds } = contextPieces(draft);
+    const split = splitBuiltContext(patient, selectedIds, { draftNoteText: draft });
+    if (!verifySplitEquivalence(patient, selectedIds, split, { draftNoteText: draft })) {
+      state.remote.review = failedReview(
+        "The patient context didn't rebuild exactly — sending is blocked. Nothing was sent.",
+        deidModelLabel(deidKey)
+      );
+      render();
+      return;
+    }
+    const admissionDate = reviewAdmissionDate(patient);
+    const includeContext = settings().patientContextEnabled && split.pieces.length > 0;
+    const contextTargets = includeContext
+      ? [
+          { id: "header", title: "Patient header", group: "", rawText: split.header },
+          ...split.pieces.map((piece) => ({ id: piece.id, title: piece.label, group: piece.group, rawText: piece.rawText }))
+        ]
+      : [];
+    const review = {
+      phase: "preparing",
+      progress: { done: 0, total: 2 + contextTargets.length, label: "De-identifying your message…" },
+      failedDetail: "",
+      deidModelLabel: deidModelLabel(deidKey),
+      message, // raw — internal only; restored to the composer on cancel, never rendered
+      messageTransformed: "",
+      messageCounts: {},
+      messageFlags: [],
+      pieces: [],
+      guidelines: null,
+      prefs,
+      admissionDate,
+      transmit: null,
+      transmitText: "",
+      systemPromptText: "",
+      redactionTotal: 0,
+      redactionCounts: {},
+      residualWarnings: [],
+      flags: [],
+      truncationNote: "",
+      expanded: [],
+      reviewedOpen: [],
+      ack: false,
+      canSend: false
+    };
+    state.remote.review = review;
+    render();
+    try {
+      // (a) The message is ALWAYS de-identified fresh — never reused, never stored.
+      const messageResult = await deidentifyForReview(review.message, deidKey, admissionDate, "your message");
+      review.messageTransformed = messageResult.text;
+      review.messageCounts = messageResult.counts || {};
+      review.messageFlags = (messageResult.flags || []).slice(0, 6);
+      advanceProgress(review, "De-identifying your custom instructions…");
+      // (b) Custom instructions (system guidelines) — reviewed like any piece.
+      review.guidelines = await prepareReviewPiece(review, {
+        id: "guidelines",
+        title: "Custom instructions",
+        group: "Settings",
+        rawText: effectiveGuidelinesText(settings())
+      }, deidKey);
+      // (c) Patient header + each selected chart piece, sequentially.
+      for (const target of contextTargets) {
+        advanceProgress(review, `De-identifying ${target.title}…`);
+        review.pieces.push(await prepareReviewPiece(review, target, deidKey));
+      }
+      advanceProgress(review, "Assembling what will be sent…");
+      review.history = state.remote.messages.map((m) => ({ role: m.role, text: m.text }));
+      review.phase = "ready";
+      for (const piece of [review.guidelines, ...review.pieces]) writePieceToStore(piece);
+      const candidates = [review.guidelines, ...review.pieces];
+      // Auto-expand every piece that needs eyes on it (redactions, warnings,
+      // or flags), plus the first piece so the body never opens empty.
+      review.expanded = candidates
+        .filter((piece, index) => index === 0 || piece.redactionTotal > 0 || piece.warnings.length > 0 || piece.flags.length > 0)
+        .map((piece) => piece.id);
+      rebuildTransmit(review);
+      render();
+    } catch (error) {
+      // Fail closed: no message/context content, no acknowledgement, no Send.
+      state.remote.review = failedReview(
+        `De-identification failed (${error?.message || "unknown error"}) — nothing was sent.`,
+        deidModelLabel(deidKey)
+      );
+      render();
+    }
   }
 
-  async function doRemoteSend(message, contextText) {
+  function afterReviewDecision(pieceId) {
+    const review = state.remote.review;
+    if (!review || review.phase !== "ready") return;
+    const piece = findReviewPiece(review, pieceId);
+    if (piece) {
+      refreshPieceApproval(piece, review.admissionDate);
+      writePieceToStore(piece);
+    }
+    rebuildTransmit(review);
+    render();
+  }
+
+  async function confirmHipaaReview() {
+    const review = state.remote.review;
+    if (!review || review.phase !== "ready" || state.remote.sending) return;
+    rebuildTransmit(review);
+    if (!review.ack || pendingRecordCount(review) > 0) {
+      setStatus("Review every redaction and tick the acknowledgement before sending.");
+      render();
+      return;
+    }
+    const transmit = review.transmit;
+    if (!transmit) return;
+    // The already-reviewed input goes to the wire unchanged — rebuilt here
+    // from the same pieces the modal showed.
+    state.remote.review = null;
+    await doRemoteSend({ input: transmit.input, transformedMessage: review.messageTransformed });
+    render();
+  }
+
+  async function doRemoteSend({ input, transformedMessage }) {
     const prefs = remotePrefs();
     const apiKey = String(prefs.openAiApiKey || "").trim();
     if (!apiKey) {
@@ -615,16 +869,13 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
       return;
     }
     state.remote.sending = true;
-    state.remote.messages.push({ role: "user", text: message });
+    // The history stores the TRANSFORMED message — the raw text never
+    // persists past the review gate.
+    state.remote.messages.push({ role: "user", text: transformedMessage, deidentified: true });
     render();
     const sentAt = Date.now();
     try {
-      const systemPrompt = buildRemoteChatSystemPrompt({ serviceValue: prefs.chatService });
-      // History excludes the just-added user message; it is appended last
-      // with the (reviewed, de-identified) context attached.
-      const history = state.remote.messages.slice(0, -1);
-      const input = buildRemoteChatInput({ systemPrompt, history, userMessage: message, contextText });
-      const reply = await requestOpenAiChat({
+      const reply = await chat.requestOpenAiChat({
         apiKey,
         model: prefs.openAiModel,
         input,
@@ -641,6 +892,103 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
     }
   }
 
+  // ----- review view-model (targets the frozen v4 presentation contract) --
+
+  function recordViewModel(record) {
+    const base = {
+      id: record.id,
+      originalSnippet: String(record.originalText || "").slice(0, 160),
+      replacement: record.replacement,
+      label: record.label
+    };
+    return record.status === "pending" ? base : { ...base, status: record.status };
+  }
+
+  function pieceViewModel(piece) {
+    const pending = [];
+    const reviewed = [];
+    for (const record of [...piece.modelRecords, ...piece.manualRecords]) {
+      if (record.status === "pending") pending.push(recordViewModel(record));
+      else reviewed.push(recordViewModel(record));
+    }
+    return {
+      id: piece.id,
+      title: piece.title,
+      group: piece.group,
+      badge: piece.badge,
+      approvedText: piece.approvedText,
+      redactionTotal: piece.redactionTotal,
+      counts: { ...piece.counts },
+      warnings: [...piece.warnings],
+      flags: [...piece.flags],
+      pending,
+      reviewed,
+      truncated: !!piece.truncated,
+      // Legacy extras for the pre-v4 modal; the v4 presentation ignores them.
+      text: piece.approvedText,
+      chars: piece.approvedText.length
+    };
+  }
+
+  function reviewViewModel(review) {
+    if (!review) return null;
+    return {
+      phase: review.phase,
+      progress: review.progress,
+      failed: review.phase === "failed", // legacy flag for the pre-v4 modal
+      failedDetail: review.failedDetail || "",
+      deidModelLabel: review.deidModelLabel || "",
+      messageTransformed: review.messageTransformed || "",
+      messageCounts: { ...(review.messageCounts || {}) },
+      messageFlags: [...(review.messageFlags || [])],
+      pieces: (review.pieces || []).map(pieceViewModel),
+      guidelines: review.guidelines ? pieceViewModel(review.guidelines) : null,
+      history: (review.history || []).map((m) => ({ role: m.role, text: m.text })),
+      transmitText: review.transmitText || "",
+      systemPromptText: review.systemPromptText || "",
+      redactionTotal: review.redactionTotal || 0,
+      redactionCounts: { ...(review.redactionCounts || {}) },
+      residualWarnings: [...(review.residualWarnings || [])],
+      flags: [...(review.flags || [])],
+      truncationNote: review.truncationNote || "",
+      expanded: [...(review.expanded || [])],
+      reviewedOpen: [...(review.reviewedOpen || [])],
+      ack: !!review.ack,
+      canSend: !!review.canSend
+    };
+  }
+
+  function remoteDeidInfo() {
+    const deidKey = app.deidMode;
+    const blocked = deidKey === deid.STRUCTURED_DEID_MODE;
+    const status = deid.getSelectedDeidModelStatus(deidKey) || {};
+    const advanced = deid.getAdvancedDeidStatus() || {};
+    const ready = !blocked && !!status.ready;
+    return {
+      modelKey: String(deidKey || ""),
+      modelLabel: String(status.label || advanced.label || ""),
+      ready,
+      blockedReason: blocked ? "structured" : (ready ? "" : "not-ready")
+    };
+  }
+
+  function clinicalServiceInfo() {
+    const prefs = remotePrefs();
+    let label = "";
+    try { label = medicalServiceOption(prefs.medicalService)?.label || ""; }
+    catch { label = ""; }
+    return {
+      label,
+      customName: String(prefs.customServiceName || ""),
+      focus: String(prefs.serviceFocus || ""),
+      detail: String(prefs.presentationDetail || ""),
+      attending: String(prefs.attendingPreferences || ""),
+      team: String(prefs.teamInstructions || "")
+    };
+  }
+
+  // ── event wiring ───────────────────────────────────────────────────
+
   function click(target) {
     const actionTarget = target.closest?.("[data-action]");
     if (!actionTarget) return false;
@@ -652,6 +1000,7 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
     if (action === "ai-chat-new-chat-remote") {
       state.remote.messages = [];
       state.remote.review = null;
+      state.remote.reviewStore.clear();
       setStatus("New ChatGPT chat started — conversation cleared. Your patient context selections are unchanged.");
       render();
       return true;
@@ -681,9 +1030,22 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
     if (action === "ai-chat-hipaa-cancel") {
       // The backdrop carries this action; clicks inside the dialog bubble
       // up to it but must not cancel — only a direct backdrop click does.
+      // (The v4 modal's own cancel button targets the action directly, so
+      // it still cancels.)
       if (target !== actionTarget) return true;
-      closeHipaaReview();
+      const draft = state.remote.review?.message ?? "";
+      state.remote.review = null;
       setStatus("Review cancelled — nothing was sent to OpenAI.");
+      render();
+      // Restore the raw message AFTER render: render recreates the composer,
+      // so restoring before it would wipe the draft.
+      if (draft) {
+        const input = viewRoot()?.querySelector("[data-ai-chat-input]");
+        if (input) {
+          if (typeof input.value === "string") input.value = draft;
+          else input.textContent = draft;
+        }
+      }
       return true;
     }
     if (action === "ai-chat-hipaa-piece") {
@@ -696,6 +1058,110 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
         review.expanded = [...expanded];
         render();
       }
+      return true;
+    }
+    if (action === "ai-chat-hipaa-toggle-reviewed") {
+      const review = state.remote.review;
+      const pieceId = actionTarget.dataset.piece || "";
+      if (review && pieceId) {
+        const set = new Set(review.reviewedOpen || []);
+        if (set.has(pieceId)) set.delete(pieceId);
+        else set.add(pieceId);
+        review.reviewedOpen = [...set];
+        render();
+      }
+      return true;
+    }
+    if (action === "ai-chat-hipaa-accept" || action === "ai-chat-hipaa-reject") {
+      const review = state.remote.review;
+      const piece = review?.phase === "ready" ? findReviewPiece(review, actionTarget.dataset.piece || "") : null;
+      const record = piece ? findReviewRecord(piece, actionTarget.dataset.redaction || "") : null;
+      if (record) {
+        record.status = action === "ai-chat-hipaa-accept" ? "accepted" : "rejected";
+        afterReviewDecision(piece.id);
+      }
+      return true;
+    }
+    if (action === "ai-chat-hipaa-accept-all" || action === "ai-chat-hipaa-reject-all") {
+      const review = state.remote.review;
+      const piece = review?.phase === "ready" ? findReviewPiece(review, actionTarget.dataset.piece || "") : null;
+      if (piece) {
+        const next = action === "ai-chat-hipaa-accept-all" ? "accepted" : "rejected";
+        for (const record of [...piece.modelRecords, ...piece.manualRecords]) {
+          if (record.status === "pending") record.status = next;
+        }
+        afterReviewDecision(piece.id);
+      }
+      return true;
+    }
+    if (action === "ai-chat-hipaa-undo" || action === "ai-chat-hipaa-restore") {
+      const review = state.remote.review;
+      const piece = review?.phase === "ready" ? findReviewPiece(review, actionTarget.dataset.piece || "") : null;
+      const record = piece ? findReviewRecord(piece, actionTarget.dataset.redaction || "") : null;
+      if (record) {
+        // undo: accepted -> pending; restore: rejected -> accepted
+        record.status = action === "ai-chat-hipaa-undo" ? "pending" : "accepted";
+        afterReviewDecision(piece.id);
+      }
+      return true;
+    }
+    if (action === "ai-chat-hipaa-redact-selection") {
+      const review = state.remote.review;
+      const piece = review?.phase === "ready" ? findReviewPiece(review, actionTarget.dataset.piece || "") : null;
+      if (!piece) return true;
+      const selection = window.getSelection?.()?.toString?.() ?? "";
+      const preview = actionTarget.closest?.("[data-hipaa-piece-preview]");
+      if (preview && !preview.contains(window.getSelection?.()?.anchorNode)) return true;
+      const occupied = [...piece.modelRecords, ...piece.manualRecords]
+        .filter((record) => record.status !== "rejected")
+        .map((record) => ({ start: record.start, end: record.end }));
+      const located = locateManualSpan(piece.rawText, selection, occupied);
+      if (!located.ok) {
+        setStatus(
+          located.reason === "ambiguous" ? "That text appears more than once — select a single unique span." :
+          located.reason === "overlapping" ? "That span is already redacted." :
+          located.reason === "not-found" ? "That text wasn't found in this piece." :
+          "Select some text in the piece first."
+        );
+        return true;
+      }
+      piece.manualRecords.push({
+        id: `manual:${located.start}:${located.end}`,
+        start: located.start,
+        end: located.end,
+        originalText: piece.rawText.slice(located.start, located.end),
+        replacement: "[REDACTED]",
+        label: "MANUAL",
+        source: "manual",
+        status: "accepted"
+      });
+      afterReviewDecision(piece.id);
+      setStatus("Manual redaction added.");
+      return true;
+    }
+    if (action === "ai-chat-deid-download") {
+      const deidKey = app.deidMode;
+      if (deidKey === deid.STRUCTURED_DEID_MODE) {
+        setStatus("Structured de-identification can't be used for ChatGPT sends — pick a downloaded de-identification model.");
+        render();
+        return true;
+      }
+      setStatus("Downloading the de-identification model — this can take a minute on first use.");
+      void deid.preloadAdvancedDeidModel({ modelKey: deidKey, onStatus: () => render() }).then(
+        () => { setStatus("De-identification model ready — you can now send to ChatGPT."); render(); },
+        (error) => { setStatus(`De-identification model download failed: ${error?.message || "unknown error"}`); render(); }
+      );
+      render();
+      return true;
+    }
+    if (action === "ai-chat-sidebar-open") {
+      state.sidebarOpen = true;
+      render();
+      return true;
+    }
+    if (action === "ai-chat-sidebar-close") {
+      state.sidebarOpen = false;
+      render();
       return true;
     }
     if (action === "ai-chat-download") {
@@ -746,6 +1212,9 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
     }
     if (action === "ai-chat-context-inspector") {
       state.chat.inspectorOpen = !state.chat.inspectorOpen;
+      // The presentation opens the sidebar drawer from sidebarOpen, so keep
+      // it in sync — otherwise the mobile Context button does nothing.
+      state.sidebarOpen = state.chat.inspectorOpen;
       renderView();
       return true;
     }
@@ -767,25 +1236,20 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
       render();
       return true;
     }
-    if (target.matches?.("[data-ai-chat-service]")) {
-      const value = String(target.value || "");
-      if (onChatServiceChange) onChatServiceChange(value);
-      return true;
-    }
-    if (target.matches?.("[data-ai-chat-parsing-toggle]")) {
-      writeLocalLlmSettings({ parsingEnabled: target.checked });
-      setStatus(target.checked ? "AI Chat note parsing enabled." : "AI Chat note parsing disabled.");
-      return true;
-    }
     if (target.matches?.("[data-ai-chat-context-toggle]")) {
       writeLocalLlmSettings({ patientContextEnabled: target.checked });
       setStatus(target.checked ? "Patient context attached to AI Chat chat." : "Patient context detached from AI Chat chat.");
       render();
       return true;
     }
+    if (target.matches?.("[data-ai-chat-guidelines]")) {
+      writeLocalLlmSettings({ systemGuidelines: String(target.value ?? "") });
+      return true;
+    }
     if (target.matches?.("[data-ai-chat-hipaa-ack]")) {
       if (state.remote.review) {
         state.remote.review.ack = !!target.checked;
+        rebuildTransmit(state.remote.review);
         render();
       }
       return true;
@@ -841,6 +1305,9 @@ export function createAiChatController({ app, byId, escapeHtml, icon, setStatus,
     keydown,
     // Exposed for the note-import wiring in the Daily view.
     getClient: () => client,
-    getSettings: settings
+    getSettings: settings,
+    // Thin test seam: the live remote review object (or null). Lets tests
+    // drive the review gate without a DOM.
+    getRemoteReview: () => state.remote.review
   };
 }

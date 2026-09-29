@@ -13182,3 +13182,155 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   .aic-hipaa-foot { flex-wrap: wrap; }
   .aic-hipaa-ack { flex: 1 1 100%; order: -1; }
 }
+
+/* ==========================================================================
+   AI Chat v3 — full-screen layout + delta review
+   Appended 2026-09-29. Existing rules above are untouched; everything below
+   is new classes for the ChatGPT-style full-screen chat shell, the sidebar,
+   the Model menu, the de-identification gate, and the delta-review modal.
+   ========================================================================== */
+
+/* The aiChat view becomes a flex column with hidden overflow so the
+   conversation scroller owns the scrolling, ChatGPT-style. Scoped to this
+   view only; other views keep their existing behavior. */
+#aiChatView.active { display: flex; flex-direction: column; overflow: hidden; padding: 0; }
+#aiChatContent { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+.aic-shell { flex: 1; min-height: 0; display: flex; flex-direction: column; background: var(--background, #fff); }
+
+/* ── Topbar ── */
+.aic-topbar { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--border, #e2e8f0); flex: none; background: var(--surface, #fff); }
+.aic-topbar-spacer { flex: 1; }
+.aic-modeseg { display: inline-flex; background: color-mix(in srgb, var(--text, #0f172a) 7%, transparent); border-radius: 999px; padding: 3px; gap: 2px; }
+.aic-modeseg-btn { border: none; background: transparent; color: var(--muted, #64748b); font: inherit; font-size: 0.82rem; font-weight: 650; padding: 6px 14px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.aic-modeseg-btn svg { width: 14px; height: 14px; }
+.aic-modeseg-btn.is-on { background: var(--surface, #fff); color: var(--text, #0f172a); box-shadow: 0 1px 3px rgba(0,0,0,.14); }
+.aic-modesub { margin: 0; padding: 8px 16px 0; font-size: 0.78rem; }
+
+/* Model menu: a native <details> popover so no extra data-action is needed. */
+.aic-modelwrap { position: relative; }
+.aic-modelwrap > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 650; padding: 7px 12px; border: 1px solid var(--border, #e2e8f0); border-radius: 999px; background: var(--surface, #fff); color: var(--text, #0f172a); user-select: none; }
+.aic-modelwrap > summary::-webkit-details-marker { display: none; }
+.aic-modelwrap > summary::marker { content: none; }
+.aic-modelwrap > summary svg { width: 13px; height: 13px; color: var(--muted, #64748b); }
+.aic-modelwrap > summary strong { font-weight: 700; }
+.aic-model-menu { position: absolute; right: 0; top: calc(100% + 8px); width: min(400px, 92vw); max-height: min(72vh, 600px); overflow-y: auto; background: var(--surface, #fff); border: 1px solid var(--border, #e2e8f0); border-radius: 14px; box-shadow: 0 12px 32px rgba(0,0,0,.16); padding: 14px; z-index: 60; display: flex; flex-direction: column; gap: 8px; }
+.aic-menu-title { margin: 6px 0 2px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted, #64748b); font-weight: 700; }
+.aic-modelrow { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border: 1px solid var(--border, #e2e8f0); border-radius: 10px; }
+.aic-modelrow.is-sel { border-color: var(--primary, #1d4ed8); }
+.aic-modelrow.is-off { opacity: .55; }
+.aic-modelrow-info { flex: 1; min-width: 0; }
+.aic-modelrow-info strong { font-size: 0.85rem; display: block; }
+.aic-modelrow-info > span { font-size: 0.75rem; color: var(--muted, #64748b); display: block; margin-top: 2px; }
+.aic-modelrow-act { flex: none; display: flex; align-items: center; gap: 8px; }
+.aic-warnline { display: flex; gap: 6px; align-items: flex-start; font-size: 0.78rem; color: var(--warning, #b45309); margin: 0; }
+.aic-warnline svg { flex: none; width: 14px; height: 14px; margin-top: 1px; }
+
+/* Narrow-screen button that opens the sidebar drawer (hidden on desktop). */
+.aic-sidebtn { display: none; align-items: center; gap: 6px; font: inherit; font-size: 0.82rem; font-weight: 650; padding: 7px 12px; border: 1px solid var(--border, #e2e8f0); border-radius: 999px; background: var(--surface, #fff); color: var(--text, #0f172a); cursor: pointer; }
+.aic-sidebtn svg { width: 13px; height: 13px; color: var(--muted, #64748b); }
+
+/* ── Body: conversation column + sidebar ── */
+.aic-body { flex: 1; min-height: 0; display: flex; }
+.aic-main { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+.aic-chatbar { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; flex: none; }
+.aic-messages { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.aic-composer { flex: none; border-top: 1px solid var(--border, #e2e8f0); background: var(--surface, #fff); padding: 10px 16px 4px; }
+.aic-composer .aic-form { border-top: none; padding: 0; }
+.aic-composer .aic-disclaimer { padding-left: 2px; padding-right: 2px; }
+
+/* De-identification gate banner (ChatGPT mode). */
+.aic-deid-banner { flex: none; display: flex; align-items: center; gap: 12px; margin: 10px 16px 0; padding: 12px 14px; border: 1px solid #fcd34d; background: #fffbeb; border-radius: 12px; color: #92400e; }
+.aic-deid-ic { flex: none; display: flex; }
+.aic-deid-ic svg { width: 20px; height: 20px; }
+.aic-deid-tx { flex: 1; min-width: 0; }
+.aic-deid-tx strong { display: block; font-size: 0.85rem; }
+.aic-deid-tx p { margin: 2px 0 0; font-size: 0.8rem; }
+
+/* ── Sidebar ── */
+.aic-sidebar { width: 320px; flex: none; border-left: 1px solid var(--border, #e2e8f0); background: var(--surface, #fff); overflow-y: auto; padding: 14px 16px 24px; display: flex; flex-direction: column; gap: 18px; }
+.aic-side-head { display: flex; align-items: center; justify-content: space-between; }
+.aic-side-head strong { font-size: 0.9rem; }
+.aic-side-close { display: none; align-items: center; gap: 4px; background: none; border: none; font: inherit; font-size: 0.8rem; font-weight: 600; color: var(--muted, #64748b); cursor: pointer; padding: 4px; }
+.aic-side-close svg { width: 13px; height: 13px; }
+.aic-side-backdrop { display: none; }
+.aic-side-sec { display: flex; flex-direction: column; gap: 6px; }
+.aic-side-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted, #64748b); font-weight: 700; margin: 0 0 2px; }
+.aic-side-sub { font-size: 0.8rem; margin: 0; }
+.aic-side-hint { font-size: 0.75rem; margin: 4px 0 0; font-style: italic; }
+.aic-side-patient { font-size: 0.85rem; font-weight: 650; margin: 0; }
+.aic-side-group { font-size: 0.75rem; font-weight: 700; color: var(--muted, #64748b); margin: 8px 0 2px; }
+.aic-side-kv { display: flex; flex-direction: column; gap: 1px; font-size: 0.82rem; margin: 0; }
+.aic-side-kv .aic-muted { font-size: 0.72rem; }
+.aic-side-svc { font-size: 0.85rem; margin: 0; }
+
+/* Context budget meter. */
+.aic-meter { display: flex; flex-direction: column; gap: 5px; }
+.aic-meter-bar { display: block; height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--text, #0f172a) 9%, transparent); overflow: hidden; }
+.aic-meter-bar > span { display: block; height: 100%; border-radius: 999px; background: var(--primary, #1d4ed8); }
+.aic-meter-label { font-size: 0.8rem; font-weight: 650; }
+
+/* Editable custom guidelines textarea. */
+.aic-guide { width: 100%; box-sizing: border-box; border: 1px solid var(--border, #e2e8f0); border-radius: 10px; padding: 9px 11px; font: inherit; font-size: 0.82rem; line-height: 1.5; background: var(--background, #fff); color: var(--text, #0f172a); resize: vertical; min-height: 110px; }
+.aic-guide:focus { outline: none; border-color: var(--primary, #1d4ed8); }
+
+/* ── HIPAA delta-review additions ── */
+.aic-hipaa-badge { flex: none; font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 2px 8px; border-radius: 999px; }
+.aic-hipaa-badge--new { background: #dbeafe; color: #1d4ed8; }
+.aic-hipaa-badge--changed { background: #fef3c7; color: #b45309; }
+.aic-hipaa-badge--reviewed { background: #dcfce7; color: #15803d; }
+.aic-hipaa-sughead { display: flex; align-items: center; justify-content: space-between; margin: 12px 0 6px; }
+.aic-hipaa-sughead strong { font-size: 0.85rem; }
+.aic-hipaa-sug-all { display: inline-flex; align-items: center; gap: 4px; font-size: 0.78rem; }
+.aic-hipaa-sug { border: 1px solid var(--border, #e2e8f0); border-radius: 10px; padding: 8px 10px; margin-bottom: 6px; display: flex; flex-direction: column; gap: 6px; background: var(--surface, #fff); }
+.aic-hipaa-sug.is-reviewed { background: color-mix(in srgb, var(--text, #0f172a) 3%, var(--surface, #fff)); }
+.aic-hipaa-sug-text { display: flex; align-items: baseline; gap: 8px; font-size: 0.83rem; flex-wrap: wrap; }
+.aic-hipaa-sug-orig { text-decoration: line-through; color: var(--muted, #64748b); word-break: break-word; }
+.aic-hipaa-sug-arrow { color: var(--muted, #64748b); flex: none; }
+.aic-hipaa-sug-repl { font-weight: 650; word-break: break-word; }
+.aic-hipaa-sug-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.aic-hipaa-sug-act { margin-left: auto; display: inline-flex; gap: 6px; }
+.aic-hipaa-reviewed-head { display: flex; align-items: center; gap: 8px; width: 100%; background: none; border: none; font: inherit; cursor: pointer; padding: 8px 0; color: var(--text, #0f172a); text-align: left; }
+.aic-hipaa-reviewed-head strong { font-size: 0.85rem; }
+.aic-hipaa-reviewed { display: flex; flex-direction: column; }
+.aic-hipaa-preview { border: 1px dashed var(--border, #e2e8f0); border-radius: 10px; padding: 10px 12px; font-size: 0.83rem; line-height: 1.55; white-space: pre-wrap; word-break: break-word; margin: 10px 0 8px; user-select: text; }
+.aic-hipaa-preview-act { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.aic-hipaa-preview-act .aic-muted { font-size: 0.76rem; }
+.aic-hipaa-transmit { background: color-mix(in srgb, var(--text, #0f172a) 4%, var(--surface, #fff)); border: 1px solid var(--border, #e2e8f0); border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 0.8rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word; max-height: 260px; overflow-y: auto; margin: 0; }
+.aic-hipaa-details { margin-top: 10px; }
+.aic-hipaa-details > summary { cursor: pointer; font-weight: 650; font-size: 0.85rem; padding: 6px 0; }
+.aic-hipaa-history { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.aic-hipaa-hist { border: 1px solid var(--border, #e2e8f0); border-radius: 10px; padding: 8px 10px; }
+.aic-hipaa-hist strong { font-size: 0.78rem; display: block; margin-bottom: 3px; }
+.aic-hipaa-hist p { margin: 0; font-size: 0.82rem; white-space: pre-wrap; word-break: break-word; }
+.aic-hipaa-msgflags { margin: 8px 0 0; padding-left: 18px; font-size: 0.82rem; display: flex; flex-direction: column; gap: 3px; }
+.aic-hipaa-progress { text-align: center; padding: 28px 12px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.aic-hipaa-progress strong { font-size: 0.95rem; }
+.aic-hipaa-progress p { margin: 0; }
+.aic-hipaa-progressbar { width: 100%; max-width: 340px; height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--text, #0f172a) 10%, transparent); overflow: hidden; }
+.aic-hipaa-progressbar > span { display: block; height: 100%; background: var(--primary, #1d4ed8); border-radius: 999px; transition: width .2s ease; }
+
+/* Small button variant used for suggestion rows. */
+.aic-btn--sm { padding: 4px 10px; font-size: 0.78rem; }
+
+/* ── Mobile: sidebar becomes a drawer ── */
+@media (max-width: 1023px) {
+  .aic-topbar { padding: 8px 12px; gap: 8px; }
+  .aic-modesub { padding: 6px 12px 0; }
+  .aic-messages { padding: 12px; }
+  .aic-composer { padding: 8px 12px 2px; }
+  .aic-chatbar { padding: 6px 12px; }
+  .aic-sidebtn { display: inline-flex; }
+  .aic-sidebar { position: fixed; top: 0; right: 0; bottom: 0; width: min(360px, 88vw); z-index: 70; transform: translateX(105%); transition: transform .22s ease; box-shadow: -8px 0 24px rgba(0,0,0,.14); }
+  .aic-sidebar.is-open { transform: none; }
+  .aic-side-backdrop { display: block; position: fixed; inset: 0; z-index: 65; background: rgba(15,23,42,.38); border: none; padding: 0; cursor: pointer; }
+  .aic-side-close { display: inline-flex; }
+  .aic-deid-banner { margin: 8px 12px 0; flex-wrap: wrap; }
+}
+
+@media (max-width: 640px) {
+  .aic-topbar { flex-wrap: wrap; }
+  .aic-modesub { display: none; }
+  .aic-model-menu { position: fixed; left: 12px; right: 12px; top: 64px; width: auto; max-height: 70vh; }
+  .aic-hipaa-sug-act { margin-left: 0; }
+}

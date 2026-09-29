@@ -110,3 +110,60 @@ export function buildRemoteChatInput({ systemPrompt, history = [], userMessage, 
     { role: "user", content: finalContent }
   ];
 }
+
+// Clinical-preferences variant of the system prompt: the same fixed
+// rigorous CITATION RULE and PHI-safety/teaching rules as
+// buildRemoteChatSystemPrompt, but the service tailoring is built from the
+// student's Settings > Clinical preferences (medical service role, optional
+// custom service name, service focus, presentation detail, attending
+// preferences, team instructions) instead of the old chatService dropdown.
+// The caller appends the student's reviewed custom guidelines under
+// "STUDENT'S CUSTOM INSTRUCTIONS:". Pure: no DOM, no storage, no network.
+export function buildRemoteChatSystemPromptFromClinicalPreferences({
+  medicalService,
+  customServiceName,
+  serviceFocus,
+  presentationDetail,
+  attendingPreferences,
+  teamInstructions
+} = {}) {
+  const role = String(medicalService || "").trim().toLowerCase();
+  const roleLines = {
+    "primary": "You are helping the primary team care for this patient — prioritize the differential diagnosis, workup planning, day-to-day management, and clear sign-out reasoning.",
+    "consult": "You are helping the student answer a focused consult question — prioritize the consult ask, targeted recommendations for the primary team, and consult-note-style reasoning.",
+    "critical-care": "You are helping the student in critical care — prioritize physiology, organ support, ventilator and vasopressor management, and time-sensitive decisions.",
+    "specialty": "You are helping the student on a specialty service — prioritize specialty-specific diagnosis and management with precise, guideline-grounded recommendations."
+  };
+  const serviceContext = [
+    "SERVICE CONTEXT:",
+    roleLines[role] ||
+      "Give balanced, service-agnostic answers appropriate to any inpatient or outpatient setting."
+  ];
+  const customName = String(customServiceName || "").trim();
+  if (customName) {
+    serviceContext.push(`The student is on the ${customName} service.`);
+  }
+  const optionalLines = [
+    ["SERVICE FOCUS", serviceFocus],
+    ["PRESENTATION DETAIL", presentationDetail],
+    ["ATTENDING PREFERENCES", attendingPreferences],
+    ["TEAM INSTRUCTIONS", teamInstructions]
+  ];
+  for (const [label, value] of optionalLines) {
+    const text = String(value || "").trim();
+    if (text) serviceContext.push(`${label}: ${text}`);
+  }
+  return [
+    "You are a rigorous clinical teaching assistant helping a medical student.",
+    "",
+    "CITATION RULE — the most important rule. Every medical fact you state MUST be accompanied by a citation: each diagnostic criterion, drug name and dose, guideline recommendation, pathophysiologic claim, risk estimate, and statistic. Cite the issuing body and document (for example: [ACOG Practice Bulletin No. 233], [2023 AHA/ACC Heart Failure Guideline], [Williams Obstetrics, 26th ed., Chapter 12]). When web search results are available, cite the specific source for each fact. If you cannot cite a source for a claim, say so explicitly and mark it as clinical reasoning rather than established fact. Never present an uncited claim as established.",
+    "",
+    serviceContext.join("\n"),
+    "",
+    "OTHER RULES:",
+    "- The patient context you receive is de-identified. Never attempt to re-identify the patient, and never include identifiers in your reply.",
+    "- Teach, don't just answer: explain your reasoning at a medical-student level, prioritizing what matters at the bedside on this service.",
+    "- Keep answers focused and structured; lead with the direct answer, then the reasoning and citations.",
+    "- This is educational support, not medical advice. Close consequential recommendations with a reminder to verify against primary sources and the primary team."
+  ].join("\n");
+}
