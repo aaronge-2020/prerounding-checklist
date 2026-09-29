@@ -20,8 +20,8 @@ import {
   generateText,
   stepCountIs,
   createOpenAI
-} from "../../vendor/ai-sdk/ai-sdk-bundle.mjs?v=20260929-agent-v1";
-import { AGENT_MAX_STEPS } from "./agent-tools.js?v=20260929-agent-tools-v1";
+} from "../vendor/ai-sdk/ai-sdk-bundle.mjs?v=20260929-agent-v1";
+import { AGENT_MAX_STEPS } from "./agent-tools.js?v=20260929-agent-tools-v2";
 import { AGENT_SYSTEM_PROMPT } from "./agent-prompts.js?v=20260929-agent-v1";
 
 export const AGENT_RUNNER_TAG = "20260929-agent-runner-v1";

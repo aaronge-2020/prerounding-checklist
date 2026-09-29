@@ -17,8 +17,8 @@
 // - DDInter bundle is partial (see ddi-query.js): "no interaction found"
 //   is reported as such, never as proof of safety.
 
-import { tool } from "../../vendor/ai-sdk/ai-sdk-bundle.mjs?v=20260929-agent-v1";
-import { z } from "../../vendor/ai-sdk/ai-sdk-bundle.mjs?v=20260929-agent-v1";
+import { tool } from "../vendor/ai-sdk/ai-sdk-bundle.mjs?v=20260929-agent-v1";
+import { z } from "../vendor/ai-sdk/ai-sdk-bundle.mjs?v=20260929-agent-v1";
 import { resolveMedicationConcepts } from "../patient-context/rxnorm-resolve.js?v=20260929-rxnorm-official-v3";
 import {
   lookupInteraction,
