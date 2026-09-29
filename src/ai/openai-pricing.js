@@ -2,15 +2,19 @@
 //
 // Rates verified 2026-09-29 against OpenAI's published pricing (per-million
 // tokens, standard tier):
-//   - GPT-5.6 Sol / Terra / Luna: current OpenAI pricing page — Sol $4.00 in /
-//     $20.00 out, Terra $2.00 / $12.00, Luna $0.20 / $1.20 (short context,
-//     <=272K input tokens); long-context (>272K) doubles input and multiplies
-//     output by 1.5. Cached-input rates: Sol $0.40, Terra $0.20, Luna $0.02.
+//   - GPT-6 Sol / Luna (released 2026-09-22): Sol $2.00 in / $10.00 out,
+//     Luna $0.10 in / $0.50 out (short context, <=272K input tokens);
+//     long-context (>272K) doubles input and multiplies output by 1.5.
+//     Cached-input rates: Sol $0.20, Luna $0.01.
+//   - GPT-5.6 Sol / Terra / Luna: Sol $4.00 in / $20.00 out (promo through at
+//     least 2026-11-21), Terra $2.00 / $12.00, Luna $0.20 / $1.20;
+//     cached-input rates: Sol $0.40, Terra $0.20, Luna $0.02.
 //   - GPT-5.4 family: $2.50 / $15.00 (full), $0.75 / $4.50 (mini),
 //     $0.20 / $1.25 (nano); long-context tier applies to the full model.
 //   - web_search tool: $10 per 1,000 calls ($0.01 per call) plus search-content
 //     tokens, which arrive inside the normal input-token count.
-// Context windows: GPT-5.6 family 1.05M tokens; GPT-5.4 family 400K tokens.
+// Context windows: GPT-6 family 1.05M tokens; GPT-5.6 family 1.05M tokens;
+// GPT-5.4 family 400K tokens.
 //
 // Pure module: no DOM, no storage, no network. When OpenAI changes prices,
 // update PRICING_AS_OF and the table below — the cost tracker reads this
@@ -27,6 +31,8 @@ export const PRICING_AS_OF = "2026-09-29";
 // Per 1M tokens. Rates verified 2026-09-29 against the official OpenAI docs:
 //   https://developers.openai.com/api/docs/pricing (web search $10/1k calls;
 //     GPT-5.6 Sol promo $4/$20 through at least 2026-11-21)
+//   https://developers.openai.com/api/docs/models/gpt-6-sol (1.05M window)
+//   https://developers.openai.com/api/docs/models/gpt-6-luna (1.05M window)
 //   https://developers.openai.com/api/docs/models/gpt-5.6-terra
 //   https://developers.openai.com/api/docs/models/gpt-5.6-luna
 //   https://developers.openai.com/api/docs/models/gpt-5.4 (1.05M window)
@@ -37,6 +43,26 @@ export const PRICING_AS_OF = "2026-09-29";
 // null only when OpenAI publishes no cached-input rate — cached tokens then
 // bill at the input rate.
 export const OPENAI_MODEL_PRICING = {
+  "gpt-6-luna": {
+    label: "GPT-6 Luna",
+    contextWindow: 1050000,
+    inputPerMillion: 0.1,
+    outputPerMillion: 0.5,
+    cachedInputPerMillion: 0.01,
+    longInputPerMillion: 0.2,
+    longOutputPerMillion: 0.75,
+    longCachedInputPerMillion: 0.02
+  },
+  "gpt-6-sol": {
+    label: "GPT-6 Sol",
+    contextWindow: 1050000,
+    inputPerMillion: 2.0,
+    outputPerMillion: 10.0,
+    cachedInputPerMillion: 0.2,
+    longInputPerMillion: 4.0,
+    longOutputPerMillion: 15.0,
+    longCachedInputPerMillion: 0.4
+  },
   "gpt-5.6": {
     label: "GPT-5.6 Sol",
     contextWindow: 1050000,

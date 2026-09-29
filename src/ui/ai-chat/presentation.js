@@ -155,6 +155,31 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       ${webgpu ? "" : `<p class="aic-warnline">${icon("alert")} Needs WebGPU — Chrome/Edge 113+, Safari 26+, or Firefox 141+.</p>`}`;
   }
 
+  // ChatGPT-style model picker for remote (OpenAI) mode: the curated model
+  // list with per-model prices, rendered inside the same Model dropdown.
+  function renderRemoteModelMenuList(items) {
+    const rows = (items || []).map((item) => {
+      const sel = item.selected ? " is-sel" : "";
+      const clickable = item.selected
+        ? ""
+        : ` role="button" tabindex="0" data-action="ai-chat-remote-model" data-model-value="${escapeHtml(item.value)}"`;
+      const badge = item.selected ? `<span class="aic-ok">${icon("check")} Active</span>` : "";
+      return `
+        <div class="aic-modelrow${sel}"${clickable}>
+          <div class="aic-modelrow-info">
+            <strong>${escapeHtml(item.label)}</strong>
+            <span>${escapeHtml(item.description || "")}</span>
+            <span class="aic-muted">${escapeHtml(item.price || "")}</span>
+          </div>
+          <div class="aic-modelrow-act">${badge}</div>
+        </div>`;
+    }).join("");
+    return `
+      <p class="aic-menu-title">ChatGPT model</p>
+      ${rows || `<p class="aic-muted aic-side-sub">No models available.</p>`}
+      <p class="aic-specs">Billed to your OpenAI key · prices per 1M tokens</p>`;
+  }
+
   function renderTopbar(vm) {
     const { mode, hardware, settings, llmStatus, downloaded, remote, patientContext } = vm;
     const local = mode !== "remote";
@@ -172,9 +197,11 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
         <span class="aic-topbar-spacer"></span>
         ${local ? renderStatusPill(llmStatus, activeLabel) : ""}
         <details class="aic-modelwrap">
-          <summary class="aic-modelbtn" aria-label="Model and chat options"><span>Model</span>${activeLabel ? `<strong>${escapeHtml(activeLabel)}</strong>` : ""}${icon("chevron")}</summary>
+          <summary class="aic-modelbtn" aria-label="Model and chat options"><span>Model</span>${local ? (activeLabel ? `<strong>${escapeHtml(activeLabel)}</strong>` : "") : (remote.modelLabel ? `<strong>${escapeHtml(remote.modelLabel)}</strong>` : "")}${icon("chevron")}</summary>
           <div class="aic-model-menu">
-            ${renderModelMenuList(models, llmStatus, settings.selectedModelKey, recommendedKey, hardware, downloaded)}
+            ${local
+              ? renderModelMenuList(models, llmStatus, settings.selectedModelKey, recommendedKey, hardware, downloaded)
+              : renderRemoteModelMenuList(remote.modelOptions)}
             <p class="aic-menu-title">Advanced</p>
             <label class="aic-parse-row">
               <span class="aic-parse-txt"><strong>Web search</strong><span class="aic-muted">Ground ChatGPT citations in real sources.</span></span>

@@ -109,7 +109,7 @@ import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences,
   openAiWorkupModelOption
-} from "../app/preferences.js?v=20260722-guideline-library";
+} from "../app/preferences.js?v=20260929-gpt6-models";
 import {
   bundledWorkupById,
   effectiveWorkupCatalog,
@@ -195,7 +195,7 @@ import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20
 import { createDemoController } from "./demo/controller.js?v=20260921-demo-complete-plan";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-demo-complete-plan";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-demo-complete-plan";
-import { createAiChatController } from "./ai-chat/controller.js?v=20260929-ai-chat-v5";
+import { createAiChatController } from "./ai-chat/controller.js?v=20260929-ai-chat-v6";
 import { createScoresController } from "./scores/controller.js?v=20260927-models-v2";
 import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20260928-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260928-local-llm-v10";
@@ -385,6 +385,10 @@ const aiChatController = createAiChatController({
   onChatServiceChange: (value) => {
     setVaultPreferences({ ...currentPreferences(), chatService: value });
     persistVault("Chat service updated.").then(() => render());
+  },
+  onOpenAiModelChange: (value) => {
+    setVaultPreferences({ ...currentPreferences(), openAiModel: value });
+    persistVault("ChatGPT model updated.").then(() => render());
   }
 });
 // Medication names for the active patient, pulled from parsed medication

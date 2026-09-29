@@ -16,7 +16,7 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v5";
+import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v6";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20260929-ai-chat-v2";
 import * as remoteChatV4 from "../../ai/remote-chat.js?v=20260929-ai-chat-v6";
 import {
@@ -25,7 +25,7 @@ import {
   formatUsd,
   pricingForModel,
   PRICING_AS_OF
-} from "../../ai/openai-pricing.js?v=20260929-pricing-v1";
+} from "../../ai/openai-pricing.js?v=20260929-pricing-v2";
 import {
   deidentifyText,
   getSelectedDeidModelStatus,
@@ -44,7 +44,7 @@ import {
 import { CHARS_PER_TOKEN, buildChatMessages, estimateTokens } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES, buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
-import { medicalServiceOption } from "../../app/preferences.js?v=20260722-guideline-library";
+import { medicalServiceOption, OPENAI_WORKUP_MODEL_OPTIONS } from "../../app/preferences.js?v=20260929-gpt6-models";
 import {
   hashPiece,
   splitBuiltContext,
@@ -82,6 +82,7 @@ export function createAiChatController({
   getDraftNoteText,
   currentPreferences,
   onChatServiceChange,
+  onOpenAiModelChange,
   // Optional test seams, last in the destructured args. Defaults below fill
   // any gaps so partial overrides still work.
   deidDeps,
@@ -330,6 +331,7 @@ export function createAiChatController({
         compressing: !!state.remote.compressing,
         model: prefs.openAiModel,
         modelLabel: (pricingForModel(prefs.openAiModel) || {}).label || String(prefs.openAiModel || ""),
+        modelOptions: remoteModelPickerItems(),
         pricingAsOf: PRICING_AS_OF,
         cost: remoteCostViewModel()
       },
@@ -1281,6 +1283,25 @@ export function createAiChatController({
     return { line, title: parts.join(" · ") };
   }
 
+  // ChatGPT-style model picker items for the remote chat header: every
+  // curated OpenAI model with its price hint so the choice is informed.
+  function remoteModelPickerItems() {
+    const current = remotePrefs().openAiModel;
+    return OPENAI_WORKUP_MODEL_OPTIONS.map((option) => {
+      const pricing = pricingForModel(option.value);
+      const price = pricing
+        ? `$${pricing.inputPerMillion} in / $${pricing.outputPerMillion} out per 1M`
+        : "pricing unavailable";
+      return {
+        value: option.value,
+        label: option.label,
+        description: option.description,
+        price,
+        selected: option.value === current
+      };
+    });
+  }
+
   function clinicalServiceInfo() {
     const prefs = remotePrefs();
     let label = "";
@@ -1510,6 +1531,17 @@ export function createAiChatController({
       state.chat.modelKey = key;
       state.chat.modelLabel = localLlmModelByKey(key)?.label || "";
       setStatus(`Selected ${localLlmModelByKey(key)?.label || key}. Download it to use.`);
+      render();
+      return true;
+    }
+    if (action === "ai-chat-remote-model") {
+      const value = actionTarget.dataset.modelValue;
+      if (!value || !OPENAI_WORKUP_MODEL_OPTIONS.some((o) => o.value === value)) return true;
+      if (typeof onOpenAiModelChange === "function") onOpenAiModelChange(value);
+      const pricing = pricingForModel(value);
+      setStatus(`ChatGPT model set to ${pricing ? pricing.label : value}.`);
+      // Refresh the context meter against the new model's window.
+      state.remote.contextStats = null;
       render();
       return true;
     }
