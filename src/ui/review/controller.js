@@ -54,10 +54,9 @@ import {
   setLabBaseline
 } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import {
-  apResultToHtml,
-  buildApContextText
-} from "../../ai/ap-generator.js?v=20260925-ap-generator-v1";
-import { generateProblemApWithOpenAi } from "../openai-ap-api.js?v=20260925-ap-generator-v1";
+  buildApRevisionPrompt
+} from "../../ai/ap-generator.js?v=20260928-ap-suggestions-v1";
+import { generateProblemApRevisionsWithOpenAi } from "../openai-ap-api.js?v=20260928-ap-suggestions-v1";
 import { createDifferential } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 
 function packetKey(value) {
@@ -184,6 +183,10 @@ export function createReviewController(deps) {
   // Nothing here is persisted; generated content lands in the draft on success.
   let generatingApProblemId = "";
   let apConfirmState = null;
+  // Pending per-problem revision suggestions
+  // ({ [problemId]: { suggestions, references } }) awaiting approve/reject.
+  // Nothing here is persisted; approved suggestions land in the draft.
+  let apSuggestionsState = {};
   // Which lab families / flagged sections are collapsed on the data sheet.
   // Local UI state only; it survives re-renders and the search-only DOM patch.
   const collapsedFamilies = new Set();
@@ -411,7 +414,8 @@ export function createReviewController(deps) {
       smartExamUi: { openVar: smartExamUi.openVar },
       patientRequiredMessage: deps.patientRequiredMessage(),
       generatingApProblemId,
-      apConfirm: apConfirmState
+      apConfirm: apConfirmState,
+      apSuggestions: apSuggestionsState,
     };
   }
 
@@ -553,7 +557,8 @@ export function createReviewController(deps) {
       smartExamUi: vm.smartExamUi,
       collapsedDraftSections: vm.collapsedDraftSections,
       generatingApProblemId: vm.generatingApProblemId,
-      apConfirm: vm.apConfirm
+      apConfirm: vm.apConfirm,
+      apSuggestions: vm.apSuggestions,
     });
     const template = document.createElement("template");
     template.innerHTML = draftHtml;
@@ -672,7 +677,8 @@ export function createReviewController(deps) {
       smartExamUi: vm.smartExamUi,
       collapsedDraftSections: vm.collapsedDraftSections,
       generatingApProblemId: vm.generatingApProblemId,
-      apConfirm: vm.apConfirm
+      apConfirm: vm.apConfirm,
+      apSuggestions: vm.apSuggestions,
     });
     // Preserve the draft panel's own scroll position across the update.
     const scrollTop = draftPanel.scrollTop;
@@ -979,27 +985,9 @@ export function createReviewController(deps) {
     return "";
   }
 
-  // Assemble the de-identified context for one problem. Only draft text is
-  // used — the draft is built from de-identified sources by construction.
-  // The student confirms the exact text in the modal before anything is sent.
-  function buildApContextForProblem(draft, problem) {
-    const sections = draft.sections || {};
-    const differentials = (problem.differentials || []).map((d) => apDraftText(d.diagnosis)).filter(Boolean);
-    return {
-      problem: apDraftText(problem.problem),
-      keyContext: apDraftText(problem.keyContext),
-      existingDifferentials: differentials,
-      contextText: buildApContextText({
-        oneLiner: apDraftText(draft.oneLiner) || apDraftText(sections.one_liner),
-        hpi: apDraftText(sections.history_of_present_illness),
-        pastMedicalHistory: apDraftText(sections.past_medical_history),
-        medications: apDraftText(sections.medications),
-        allergies: apDraftText(sections.allergies),
-        vitals: apDraftText(draft.vitalsSummary),
-        keyLabs: apDraftText(draft.keyLabsSummary),
-        assessment: apDraftText(draft.assessment)
-      })
-    };
+  // The exact text currently in a plan field, as plain text.
+  function apPlanFieldText(problem, field) {
+    return apDraftText(problem[field]);
   }
 
   function openApConfirm(problemId) {
@@ -1007,29 +995,40 @@ export function createReviewController(deps) {
     const draft = current.draft;
     const problem = (draft.problems || []).find((p) => p.id === problemId);
     if (!problem) return;
-    const built = buildApContextForProblem(draft, problem);
-    if (!built.problem && !built.keyContext) {
-      deps.setStatus("Name the clinical problem (or add key context) before generating a plan.");
+    const problemName = apDraftText(problem.problem);
+    const keyContext = apDraftText(problem.keyContext);
+    if (!problemName && !keyContext) {
+      deps.setStatus("Name the clinical problem (or add key context) before generating suggestions.");
       return;
     }
     const preferences = deps.currentPreferences ? deps.currentPreferences() : {};
     if (!preferences.openAiApiKey) {
-      deps.setStatus("Save an OpenAI API key in Settings before generating a plan.");
+      deps.setStatus("Save an OpenAI API key in Settings before generating suggestions.");
       return;
     }
-    apConfirmState = {
-      problemId,
-      problemName: built.problem || "(unnamed problem)",
-      contextText: [
-        `Problem: ${built.problem || "(not named)"}`,
-        built.keyContext ? `Key context: ${built.keyContext}` : null,
-        built.existingDifferentials.length ? `Existing differential: ${built.existingDifferentials.join("; ")}` : null,
-        "",
-        "--- De-identified patient context ---",
-        built.contextText || "(no additional context in the draft)"
-      ].filter((line) => line !== null).join("\n"),
-      payload: built
-    };
+    // Scoped to THIS problem only: its own assessment content (key context,
+    // etiology, current differential, current diagnostic & therapeutic plans)
+    // plus the note-level assessment and compact objective data. Other
+    // problems and the rest of the draft are never sent. The student can edit
+    // the full prompt in the modal before anything leaves the browser.
+    const promptText = buildApRevisionPrompt({
+      problem: problemName,
+      keyContext,
+      etiologyStatus: problem.etiologyStatus,
+      knownEtiology: apDraftText(problem.knownEtiology),
+      differentials: (problem.differentials || []).map((d) => ({
+        diagnosis: apDraftText(d.diagnosis),
+        likelihood: apDraftText(d.likelihood),
+        cluesFor: apDraftText(d.cluesFor),
+        reasoning: apDraftText(d.reasoning)
+      })),
+      diagnosticPlan: apPlanFieldText(problem, "diagnosticPlan"),
+      therapeuticPlan: apPlanFieldText(problem, "therapeuticPlan"),
+      assessment: apDraftText(draft.assessment),
+      vitals: apDraftText(draft.vitalsSummary),
+      keyLabs: apDraftText(draft.keyLabsSummary)
+    });
+    apConfirmState = { problemId, problemName: problemName || "(unnamed problem)", promptText };
     // Insert just the modal node — no re-render. The modal lives at the end
     // of the Plan section body.
     const panel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
@@ -1042,9 +1041,16 @@ export function createReviewController(deps) {
     }
   }
 
+  // Read the (possibly edited) prompt out of the open modal.
+  function readEditedApPrompt() {
+    const editor = deps.byId("reviewContent")?.querySelector(".note-draft-panel [data-ap-prompt-editor]");
+    return editor ? String(editor.value || "") : "";
+  }
+
   async function runApGeneration(problemId) {
     const pending = apConfirmState;
     if (!pending || pending.problemId !== problemId) return;
+    const finalPrompt = readEditedApPrompt().trim() || pending.promptText;
     apConfirmState = null;
     generatingApProblemId = problemId;
     // Remove the modal node and flip just the Generate button to its
@@ -1057,55 +1063,165 @@ export function createReviewController(deps) {
       const svg = generateBtn.querySelector("svg")?.outerHTML || "";
       generateBtn.innerHTML = `${svg} Generating…`;
     }
-    deps.setStatus(`Generating assessment and plan for "${pending.problemName}"…`);
+    deps.setStatus(`Asking AI for suggested revisions to "${pending.problemName}"…`);
     try {
       const preferences = deps.currentPreferences ? deps.currentPreferences() : {};
-      const result = await generateProblemApWithOpenAi({
+      const result = await generateProblemApRevisionsWithOpenAi({
         apiKey: preferences.openAiApiKey,
         model: preferences.openAiModel,
-        problem: pending.payload.problem,
-        keyContext: pending.payload.keyContext,
-        existingDifferentials: pending.payload.existingDifferentials,
-        contextText: pending.payload.contextText
+        prompt: finalPrompt
       });
-      const html = apResultToHtml(result);
-      const current = model();
-      let draft = current.draft;
-      const problems = (draft.problems || []).map((p) => {
-        if (p.id !== problemId) return p;
-        return {
-          ...p,
-          differentials: result.differentials.map((d) => createDifferential({
-            diagnosis: d.diagnosis,
-            cluesFor: `${d.likelihood}${d.reasoning ? ` — ${d.reasoning}` : ""}`,
-            cluesAgainst: ""
-          })),
-          diagnosticPlan: html.diagnosticPlanHtml || p.diagnosticPlan,
-          therapeuticPlan: html.therapeuticPlanHtml || p.therapeuticPlan
-        };
-      });
-      draft = { ...draft, problems };
-      setDraft(draft);
       generatingApProblemId = "";
-      // The generated differentials/plans changed this card's content:
-      // swap just this card's node with its fresh render. Input events
-      // sync edits to the model on every keystroke, so the fresh render
-      // already includes the student's latest text.
-      const livePanel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
-      const liveCard = livePanel?.querySelector(`[data-problem-id="${CSS.escape(problemId)}"]`);
-      const freshCard = freshDraftNode(`[data-problem-id="${CSS.escape(problemId)}"]`);
-      if (liveCard && freshCard) liveCard.replaceWith(freshCard);
-      deps.setStatus(`Plan generated for "${pending.problemName}" — review and edit before using. Verify every citation.`);
+      if (!result.suggestions.length) {
+        refreshProblemCard(problemId);
+        deps.setStatus(`AI found no revisions worth suggesting for "${pending.problemName}" — the current plan stands.`);
+        return;
+      }
+      apSuggestionsState = {
+        ...apSuggestionsState,
+        [problemId]: { suggestions: result.suggestions, references: result.references }
+      };
+      // Swap just this card's node with its fresh render, which now includes
+      // the suggestion list. Input events sync edits to the model on every
+      // keystroke, so the fresh render already includes the student's text.
+      refreshProblemCard(problemId);
+      deps.setStatus(`${result.suggestions.length} suggestion${result.suggestions.length === 1 ? "" : "s"} for "${pending.problemName}" — approve or reject each one.`);
     } catch (error) {
       generatingApProblemId = "";
       // Restore the Generate button from a fresh render of just the card.
-      const errPanel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
-      const errCard = errPanel?.querySelector(`[data-problem-id="${CSS.escape(problemId)}"]`);
-      const errFresh = freshDraftNode(`[data-problem-id="${CSS.escape(problemId)}"]`);
-      if (errCard && errFresh) errCard.replaceWith(errFresh);
-      const message = error instanceof Error ? error.message : "Plan generation failed.";
+      refreshProblemCard(problemId);
+      const message = error instanceof Error ? error.message : "Suggestion generation failed.";
       deps.setStatus(message);
     }
+  }
+
+  // Swap one problem card's node with its fresh render.
+  function refreshProblemCard(problemId) {
+    const livePanel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
+    const liveCard = livePanel?.querySelector(`[data-problem-id="${CSS.escape(problemId)}"]`);
+    const freshCard = freshDraftNode(`[data-problem-id="${CSS.escape(problemId)}"]`);
+    if (liveCard && freshCard) liveCard.replaceWith(freshCard);
+  }
+
+  function pendingSuggestions(problemId) {
+    return apSuggestionsState[problemId]?.suggestions || [];
+  }
+
+  function dropSuggestion(problemId, suggestionId) {
+    const entry = apSuggestionsState[problemId];
+    if (!entry) return;
+    const suggestions = entry.suggestions.filter((s) => String(s.id) !== String(suggestionId));
+    apSuggestionsState = suggestions.length
+      ? { ...apSuggestionsState, [problemId]: { ...entry, suggestions } }
+      : Object.fromEntries(Object.entries(apSuggestionsState).filter(([id]) => id !== problemId));
+  }
+
+  function normalizeAnchor(value) {
+    return String(value || "").toLowerCase().replace(/\s+/g, " ").trim();
+  }
+
+  function findDifferentialByAnchor(problem, anchor) {
+    const needle = normalizeAnchor(anchor);
+    if (!needle) return null;
+    return (problem.differentials || []).find((d) => {
+      const hay = normalizeAnchor(apDraftText(d.diagnosis));
+      return hay && (hay.includes(needle) || needle.includes(hay));
+    }) || null;
+  }
+
+  // Apply one approved suggestion to the draft model. Returns true when the
+  // plan changed; false when the anchor could not be located (no-op).
+  function applyApSuggestionToDraft(draft, problemId, suggestion) {
+    const problem = (draft.problems || []).find((p) => p.id === problemId);
+    if (!problem) return { draft, changed: false };
+    const citations = (suggestion.citationIds || []).map((id) => `[${id}]`).join(" ");
+    const rationale = [suggestion.rationale, citations].filter(Boolean).join(" ").trim();
+
+    if (suggestion.target === "differential") {
+      const likelihoodPrefix = suggestion.likelihood ? `${suggestion.likelihood} — ` : "";
+      const cluesFor = `${likelihoodPrefix}${rationale}`.trim();
+      if (suggestion.action === "add") {
+        return {
+          draft: addDifferential(draft, problemId, {
+            diagnosis: suggestion.suggested,
+            cluesFor,
+            cluesAgainst: ""
+          }),
+          changed: true
+        };
+      }
+      const match = findDifferentialByAnchor(problem, suggestion.anchor);
+      if (!match) {
+        // Anchor gone (student edited meanwhile): fall back to adding.
+        if (suggestion.action === "revise" && suggestion.suggested) {
+          return {
+            draft: addDifferential(draft, problemId, {
+              diagnosis: suggestion.suggested,
+              cluesFor,
+              cluesAgainst: ""
+            }),
+            changed: true
+          };
+        }
+        return { draft, changed: false };
+      }
+      if (suggestion.action === "remove") {
+        return { draft: removeDifferential(draft, problemId, match.id), changed: true };
+      }
+      return {
+        draft: updateDifferential(draft, problemId, match.id, {
+          diagnosis: suggestion.suggested,
+          ...(cluesFor ? { cluesFor } : {})
+        }),
+        changed: true
+      };
+    }
+
+    // Diagnostic / therapeutic plan: plain-text line surgery on the field.
+    const field = suggestion.target === "diagnostic_plan" ? "diagnosticPlan" : "therapeuticPlan";
+    const currentText = apPlanFieldText(problem, field);
+    const lines = currentText.split(/\r?\n/);
+    const needle = normalizeAnchor(suggestion.anchor);
+    if (suggestion.action === "add") {
+      const bullet = suggestion.suggested.startsWith("•") || suggestion.suggested.startsWith("-")
+        ? suggestion.suggested
+        : `• ${suggestion.suggested}`;
+      const next = currentText ? `${currentText}\n${bullet}` : bullet;
+      return { draft: updatePlanProblem(draft, problemId, { [field]: next }), changed: true };
+    }
+    const idx = lines.findIndex((line) => normalizeAnchor(line).includes(needle) || (needle && normalizeAnchor(line) && needle.includes(normalizeAnchor(line))));
+    if (idx === -1) {
+      if (suggestion.action === "revise" && suggestion.suggested) {
+        const next = currentText ? `${currentText}\n• ${suggestion.suggested}` : `• ${suggestion.suggested}`;
+        return { draft: updatePlanProblem(draft, problemId, { [field]: next }), changed: true };
+      }
+      return { draft, changed: false };
+    }
+    if (suggestion.action === "remove") {
+      lines.splice(idx, 1);
+    } else {
+      lines[idx] = suggestion.suggested;
+    }
+    return { draft: updatePlanProblem(draft, problemId, { [field]: lines.join("\n") }), changed: true };
+  }
+
+  function approveApSuggestion(problemId, suggestionId) {
+    const suggestion = pendingSuggestions(problemId).find((s) => String(s.id) === String(suggestionId));
+    if (!suggestion) return;
+    const current = model();
+    const { draft, changed } = applyApSuggestionToDraft(current.draft, problemId, suggestion);
+    if (changed) setDraft(draft);
+    dropSuggestion(problemId, suggestionId);
+    refreshProblemCard(problemId);
+    deps.setStatus(changed
+      ? "Suggestion applied — review it in the plan above."
+      : "Could not locate the text that suggestion referred to; it was dismissed.");
+  }
+
+  function rejectApSuggestion(problemId, suggestionId) {
+    dropSuggestion(problemId, suggestionId);
+    refreshProblemCard(problemId);
+    deps.setStatus("Suggestion rejected.");
   }
 
   async function saveLabBaseline(analyte, fields, { clear = false } = {}) {    const current = model();
@@ -2024,6 +2140,30 @@ export function createReviewController(deps) {
     }
     if (action === "ap-confirm-generate") {
       void runApGeneration(button.dataset.problemId);
+      return true;
+    }
+    if (action === "ap-copy-prompt") {
+      const text = readEditedApPrompt();
+      if (!text.trim()) {
+        deps.setStatus("The prompt is empty — nothing to copy.");
+        return true;
+      }
+      const done = () => deps.setStatus("Prompt copied — paste it anywhere (e.g. Doximity) to run it outside the app.");
+      try {
+        const result = navigator.clipboard?.writeText(text);
+        if (result && typeof result.then === "function") result.then(done, () => deps.setStatus("Copy failed in this browser — select the prompt text and copy it manually."));
+        else done();
+      } catch {
+        deps.setStatus("Copy failed in this browser — select the prompt text and copy it manually.");
+      }
+      return true;
+    }
+    if (action === "ap-suggestion-approve") {
+      approveApSuggestion(button.dataset.problemId, button.dataset.suggestionId);
+      return true;
+    }
+    if (action === "ap-suggestion-reject") {
+      rejectApSuggestion(button.dataset.problemId, button.dataset.suggestionId);
       return true;
     }
     if (action === "remove-plan-problem") {

@@ -187,6 +187,168 @@ export function parseApResult(json) {
   return { differentials, diagnosticPlan, therapeuticPlan, references: [...refById.values()] };
 }
 
+// Per-problem Assessment & Plan generation now works as a SUGGESTED-EDITS
+// flow: instead of drafting the whole plan from scratch, the model proposes
+// targeted revisions (add / revise / remove) against the student's CURRENT
+// plan for one problem, and the student approves or rejects each
+// suggestion individually, Google-Docs style.
+export const AP_SUGGESTION_TARGETS = Object.freeze(["differential", "diagnostic_plan", "therapeutic_plan"]);
+export const AP_SUGGESTION_ACTIONS = Object.freeze(["add", "revise", "remove"]);
+
+export const AP_SUGGESTION_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["suggestions", "references"],
+  properties: {
+    suggestions: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["id", "target", "action", "suggested", "rationale"],
+        properties: {
+          id: { type: "integer" },
+          target: { type: "string", enum: ["differential", "diagnostic_plan", "therapeutic_plan"] },
+          action: { type: "string", enum: ["add", "revise", "remove"] },
+          // Exact existing text this suggestion revises or removes. Required
+          // for revise/remove; omit for add.
+          anchor: { type: "string" },
+          // The proposed new text. Required for add/revise; omit for remove.
+          suggested: { type: "string" },
+          rationale: { type: "string" },
+          // For differential adds/revises: where this diagnosis ranks.
+          likelihood: { type: "string", enum: ["most likely", "likely", "possible", "less likely"] },
+          citationIds: { type: "array", items: { type: "integer" } }
+        }
+      }
+    },
+    references: AP_RESPONSE_SCHEMA.properties.references
+  }
+};
+
+function planLines(text) {
+  return clean(text, 4000)
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+// Assemble the revision prompt for ONE problem. The prompt carries only this
+// problem's own assessment content (its current differential and plans) plus
+// the note-level assessment and compact objective data — never other
+// problems, never the full draft. The whole prompt is shown to the student
+// in an editable textarea before anything is sent.
+export function buildApRevisionPrompt({
+  problem,
+  keyContext,
+  etiologyStatus,
+  knownEtiology,
+  differentials,
+  diagnosticPlan,
+  therapeuticPlan,
+  assessment,
+  vitals,
+  keyLabs
+} = {}) {
+  const problemName = clean(problem, 300) || "(problem not named)";
+  const context = clean(keyContext, 1500);
+  const etiology = etiologyStatus === "known"
+    ? `Known etiology: ${clean(knownEtiology, 1000) || "(not specified)"}`
+    : "Etiology: unknown (student is working up the differential)";
+  const diffList = (Array.isArray(differentials) ? differentials : [])
+    .map((d) => {
+      const dx = clean(typeof d === "string" ? d : d?.diagnosis, 300);
+      if (!dx) return "";
+      const like = clean(typeof d === "string" ? "" : d?.likelihood, 30);
+      const clues = clean(typeof d === "string" ? "" : (d?.cluesFor || d?.reasoning), 400);
+      return `- ${dx}${like ? ` (${like})` : ""}${clues ? ` — ${clues}` : ""}`;
+    })
+    .filter(Boolean);
+  const dxLines = planLines(diagnosticPlan);
+  const txLines = planLines(therapeuticPlan);
+  const assessmentText = clean(assessment, 3000);
+  const objectiveBits = [];
+  if (clean(vitals, 1500)) objectiveBits.push(`Vitals: ${clean(vitals, 1500)}`);
+  if (clean(keyLabs, 3000)) objectiveBits.push(`Key labs / diagnostics: ${clean(keyLabs, 3000)}`);
+
+  return `You are an expert clinical assistant helping a medical student refine the assessment and plan for ONE clinical problem. All patient context below is DE-IDENTIFIED. Base every suggestion on the context given; do not invent patient data.
+
+IMPORTANT — SUGGESTED EDITS, NOT A REWRITE: do NOT generate a whole new plan. The student already has a current plan below. Propose TARGETED REVISIONS to it: individual suggestions the student will approve or reject one by one. Prefer a small number of high-value suggestions over an exhaustive list. If the current plan is already solid, say so with an empty suggestions array rather than inventing changes.
+
+PROBLEM: ${problemName}
+KEY CONTEXT FOR THIS PROBLEM: ${context || "(none provided)"}
+${etiology}
+
+STUDENT'S CURRENT DIFFERENTIAL:
+${diffList.length ? diffList.join("\n") : "(none written yet)"}
+
+STUDENT'S CURRENT DIAGNOSTIC PLAN:
+${dxLines.length ? dxLines.map((line) => `- ${line}`).join("\n") : "(none written yet)"}
+
+STUDENT'S CURRENT THERAPEUTIC PLAN:
+${txLines.length ? txLines.map((line) => `- ${line}`).join("\n") : "(none written yet)"}
+
+STUDENT'S ASSESSMENT SYNTHESIS (note-level):
+${assessmentText || "(none written yet)"}
+${objectiveBits.length ? `\nDE-IDENTIFIED OBJECTIVE DATA:\n${objectiveBits.join("\n")}\n` : ""}
+TASK — return suggestions as a JSON object with a "suggestions" array. Each suggestion revises ONE thing:
+
+- "target": one of "differential", "diagnostic_plan", "therapeutic_plan".
+- "action": "add" (new item), "revise" (change existing text), or "remove" (delete something wrong or duplicative).
+- "anchor": for revise/remove, the EXACT existing text being changed (copy it verbatim from the current plan above). Omit for add.
+- "suggested": the proposed new text. For "add" to a plan, write the full line as it should appear (order-level specificity: drug name, dose, route, frequency, duration — e.g. "Furosemide 40 mg IV BID"). For "add" to the differential, the diagnosis name. Omit for remove.
+- "rationale": 1-2 sentences tied to THIS patient's findings.
+- "likelihood": for differential add/revise — most likely / likely / possible / less likely.
+- "citationIds": ids into "references" supporting this suggestion.
+
+4. REFERENCES: every diagnostic and therapeutic suggestion MUST cite at least one primary source. Prefer the ORIGINAL clinical trial paper that established the benefit (e.g. PARADIGM-HF for sacubitril-valsartan in HFrEF — cite the trial, not a review article). Major society guidelines (ACC/AHA, KDIGO, IDSA, ASH, etc.) are acceptable when no single trial applies. Use web search to verify each citation exists and to obtain its canonical URL (PubMed, journal page, or DOI link). NEVER invent a citation: if you cannot verify a source, either omit the suggestion or support it with a major guideline you can verify.
+
+RULES:
+- Flag assumptions explicitly (e.g. "assumes eGFR > 30; if lower, dose-reduce...").
+- Keep language concise and suitable for a clinical note.
+- Output STRICT JSON matching the required schema. No markdown fences, no prose outside the JSON.`;
+}
+
+// Validate and normalize the model's suggestion reply. Throws on shape violations.
+export function parseApSuggestions(json) {
+  if (!json || typeof json !== "object") throw new Error("The AI reply was empty or malformed.");
+  const refById = new Map();
+  const references = Array.isArray(json.references) ? json.references : [];
+  for (const ref of references) {
+    const id = Number(ref?.id);
+    if (!Number.isInteger(id)) continue;
+    refById.set(id, {
+      id,
+      title: clean(ref.title, 300),
+      authors: clean(ref.authors, 300),
+      journal: clean(ref.journal, 200),
+      year: clean(ref.year, 20),
+      url: cleanUrl(ref.url)
+    });
+  }
+  const cite = (ids) => (Array.isArray(ids) ? ids : [])
+    .map(Number)
+    .filter((id) => Number.isInteger(id) && refById.has(id));
+
+  const suggestions = (Array.isArray(json.suggestions) ? json.suggestions : [])
+    .map((s, index) => {
+      const target = AP_SUGGESTION_TARGETS.includes(s?.target) ? s.target : "";
+      const action = AP_SUGGESTION_ACTIONS.includes(s?.action) ? s.action : "";
+      return {
+        id: Number.isInteger(s?.id) ? s.id : index + 1,
+        target,
+        action,
+        anchor: clean(s?.anchor, 800),
+        suggested: clean(s?.suggested, 1200),
+        rationale: clean(s?.rationale, 1200),
+        likelihood: LIKELIHOOD_ORDER[s?.likelihood] !== undefined ? s.likelihood : "",
+        citationIds: cite(s?.citationIds)
+      };
+    })
+    .filter((s) => s.target && s.action && (s.suggested || s.action === "remove") && (s.action === "add" || s.anchor));
+  return { suggestions, references: [...refById.values()] };
+}
+
 function escapeHtmlText(value) {
   return String(value || "")
     .replace(/&/g, "&amp;")

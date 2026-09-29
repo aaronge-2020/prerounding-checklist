@@ -539,20 +539,80 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   }
 
   // Confirmation modal shown before any patient context leaves the browser.
-  // apConfirm = { problemId, problemName, contextText }. The student reviews
-  // the exact de-identified text that will be sent to the AI provider.
+  // apConfirm = { problemId, problemName, promptText }. The textarea holds
+  // the EXACT prompt that will be sent — the student can edit anything in it
+  // (instructions, context, scope) before confirming.
   function renderApConfirmModal(apConfirm) {
     return `<div class="ap-confirm-overlay" data-ap-confirm-overlay>
-      <div class="ap-confirm-modal" role="dialog" aria-modal="true" aria-label="Confirm AI plan generation">
-        <h3>Generate assessment &amp; plan with AI?</h3>
-        <p class="muted">The text below — and only this text — will be sent to OpenAI using your saved API key. Confirm it contains <strong>no protected health information</strong> (no names, dates, MRNs, locations).</p>
-        <div class="ap-confirm-context" tabindex="0">${escapeHtml(apConfirm.contextText) || "<span class=\"muted\">(no context)</span>"}</div>
-        <p class="muted ap-confirm-note">The AI drafts a ranked differential, diagnostic plan, and order-level therapeutic plan with citations. You review and edit everything before it enters your note.</p>
+      <div class="ap-confirm-modal" role="dialog" aria-modal="true" aria-label="Review and edit the AI prompt">
+        <h3>AI suggestions for &ldquo;${escapeHtml(apConfirm.problemName)}&rdquo;</h3>
+        <p class="muted">The prompt below is exactly what will be sent to OpenAI using your saved API key. <strong>Edit anything</strong> — instructions, wording, or the patient data — before sending. Confirm it contains <strong>no protected health information</strong> (no names, dates, MRNs, locations).</p>
+        <textarea class="ap-prompt-editor" data-ap-prompt-editor rows="18" spellcheck="false" aria-label="Editable AI prompt">${escapeHtml(apConfirm.promptText)}</textarea>
+        <p class="muted ap-confirm-note">The AI proposes targeted revisions to this problem's current plan — never a rewrite. Each suggestion appears below the problem for you to approve or reject individually.</p>
         <div class="button-row">
-          <button type="button" class="button--primary button--small" data-action="ap-confirm-generate" data-problem-id="${escapeHtml(apConfirm.problemId)}">Confirm — generate plan</button>
+          <button type="button" class="button--primary button--small" data-action="ap-confirm-generate" data-problem-id="${escapeHtml(apConfirm.problemId)}">Send to AI</button>
+          <button type="button" class="button--secondary button--small" data-action="ap-copy-prompt">Copy prompt</button>
           <button type="button" class="button--secondary button--small" data-action="ap-confirm-cancel">Cancel</button>
         </div>
       </div>
+    </div>`;
+  }
+
+  const AP_SUGGESTION_TARGET_LABELS = {
+    differential: "Differential",
+    diagnostic_plan: "Diagnostic plan",
+    therapeutic_plan: "Therapeutic plan"
+  };
+  const AP_SUGGESTION_ACTION_LABELS = { add: "Add", revise: "Revise", remove: "Remove" };
+
+  function apSuggestionCitations(suggestion, references) {
+    const ids = (suggestion.citationIds || []).filter((id) => (references || []).some((r) => r.id === id));
+    if (!ids.length) return "";
+    return `<sup class="ap-cite">${ids.map((id) => {
+      const ref = references.find((r) => r.id === id);
+      const label = `[${id}]`;
+      return ref?.url
+        ? `<a href="${escapeHtml(ref.url)}" target="_blank" rel="noopener noreferrer">${label}</a>`
+        : label;
+    }).join("")}</sup>`;
+  }
+
+  // Google-Docs-style suggestion list: each AI revision shows what would
+  // change, why, and Approve / Reject buttons.
+  // apSuggestions = { suggestions, references } for one problem.
+  function renderApSuggestions(apSuggestions, problemId) {
+    const suggestions = apSuggestions?.suggestions || [];
+    const references = apSuggestions?.references || [];
+    if (!suggestions.length) return "";
+    const cards = suggestions.map((suggestion) => {
+      const targetLabel = AP_SUGGESTION_TARGET_LABELS[suggestion.target] || suggestion.target;
+      const actionLabel = AP_SUGGESTION_ACTION_LABELS[suggestion.action] || suggestion.action;
+      const actionClass = suggestion.action === "add" ? "ap-suggestion-badge--add"
+        : suggestion.action === "remove" ? "ap-suggestion-badge--remove"
+        : "ap-suggestion-badge--revise";
+      const changeHtml = suggestion.action === "remove"
+        ? `<p class="ap-suggestion-change"><s>${escapeHtml(suggestion.anchor)}</s></p>`
+        : suggestion.action === "revise"
+          ? `<p class="ap-suggestion-change"><s>${escapeHtml(suggestion.anchor)}</s><span class="ap-suggestion-new">${escapeHtml(suggestion.suggested)}</span></p>`
+          : `<p class="ap-suggestion-change"><span class="ap-suggestion-new">+ ${escapeHtml(suggestion.suggested)}</span></p>`;
+      const likelihood = suggestion.target === "differential" && suggestion.likelihood
+        ? ` <span class="muted">(${escapeHtml(suggestion.likelihood)})</span>` : "";
+      return `<div class="ap-suggestion" data-ap-suggestion>
+        <div class="ap-suggestion-head"><span class="ap-suggestion-badge ${actionClass}">${escapeHtml(actionLabel)}</span><span class="ap-suggestion-target">${escapeHtml(targetLabel)}${likelihood}</span><span class="ap-suggestion-actions"><button type="button" class="ed-mini ed-mini--approve" data-action="ap-suggestion-approve" data-problem-id="${escapeHtml(problemId)}" data-suggestion-id="${escapeHtml(String(suggestion.id))}">✓ Approve</button><button type="button" class="ed-mini ed-mini--danger" data-action="ap-suggestion-reject" data-problem-id="${escapeHtml(problemId)}" data-suggestion-id="${escapeHtml(String(suggestion.id))}">✕ Reject</button></span></div>
+        ${changeHtml}
+        ${suggestion.rationale ? `<p class="ap-suggestion-rationale">${escapeHtml(suggestion.rationale)}${apSuggestionCitations(suggestion, references)}</p>` : ""}
+      </div>`;
+    }).join("");
+    const refItems = references.filter((r) => r.title || r.url);
+    const refsHtml = refItems.length
+      ? `<div class="ap-suggestion-refs"><p class="ap-refs-head">References</p><ol class="ap-refs">${refItems.map((r) => {
+        const parts = [r.authors, r.title ? `<em>${escapeHtml(r.title)}</em>` : "", r.journal, r.year].filter(Boolean).join(". ");
+        const body = r.url ? `<a href="${escapeHtml(r.url)}" target="_blank" rel="noopener noreferrer">${parts || escapeHtml(r.url)}</a>` : parts;
+        return `<li value="${r.id}">${body}</li>`;
+      }).join("")}</ol></div>` : "";
+    return `<div class="ap-suggestions" data-ap-suggestions>
+      <p class="ap-suggestions-head">${icon("wand")} AI suggestions <span class="muted">— approve or reject each one</span></p>
+      ${cards}${refsHtml}
     </div>`;
   }
 
@@ -560,7 +620,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     const known = problem.etiologyStatus === "known";
     const generating = options.generatingApProblemId === problem.id;
     return `<article class="plan-problem-card" data-problem-id="${escapeHtml(problem.id)}">
-      <div class="ed-problem-bar"><strong>Problem ${index + 1}</strong><span class="ed-mini-row"><button type="button" class="ed-mini" data-action="generate-ap" data-problem-id="${escapeHtml(problem.id)}" ${generating ? "disabled" : ""} title="${escapeHtml(generating ? "Generating assessment and plan…" : "Generate differential, diagnostic plan, and therapeutic plan with citations (uses your saved OpenAI key; only de-identified context is sent)")}">${icon("wand")} ${generating ? "Generating…" : "Generate"}</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="-1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem up">↑</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-plan-problem" data-problem-id="${escapeHtml(problem.id)}">Remove</button></span></div>
+      <div class="ed-problem-bar"><strong>Problem ${index + 1}</strong><span class="ed-mini-row"><button type="button" class="ed-mini" data-action="generate-ap" data-problem-id="${escapeHtml(problem.id)}" ${generating ? "disabled" : ""} title="${escapeHtml(generating ? "Asking AI for suggested revisions…" : "Ask AI for suggested revisions to this problem's plan (uses your saved OpenAI key; only de-identified context is sent; you review the editable prompt first)")}">${icon("wand")} ${generating ? "Generating…" : "Generate"}</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="-1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem up">↑</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-plan-problem" data-problem-id="${escapeHtml(problem.id)}">Remove</button></span></div>
       <div class="ed-sub"><span class="ed-sub-label">Clinical problem</span><div class="ed-body ed-body--strong" contenteditable="true" data-problem-field="problem" data-placeholder="Name the clinical problem, not a test or treatment" spellcheck="true">${editorHtml(sanitizeProblemTitle(valueText(problem.problem)))}</div></div>
       <div class="ed-sub"><span class="ed-sub-label">Key context</span><div class="ed-body" contenteditable="true" data-problem-field="keyContext" data-placeholder="Optional concise context" spellcheck="true">${editorHtml(problem.keyContext)}</div></div>
       <div class="ed-etiology"><span class="ed-sub-label">Etiology</span>${helpButton(known ? "etiology_known" : "etiology_unknown", "Etiology status", guidanceFor(known ? "etiology_known" : "etiology_unknown"))}<div class="segmented-options"><label><input type="radio" name="etiology_${escapeHtml(problem.id)}" data-problem-etiology value="known" ${known ? "checked" : ""}> <span>Known</span></label><label><input type="radio" name="etiology_${escapeHtml(problem.id)}" data-problem-etiology value="unknown" ${known ? "" : "checked"}> <span>Unknown</span></label></div></div>
@@ -568,6 +628,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         ? `<div class="ed-sub"><span class="ed-sub-label">Known etiology</span><div class="ed-body" contenteditable="true" data-problem-field="knownEtiology" data-placeholder="Documented cause or mechanism" spellcheck="true">${editorHtml(problem.knownEtiology)}</div></div>`
         : `<div class="ed-differentials"><div class="ed-diff-head"><span class="ed-sub-label">Ranked differential</span><button type="button" class="ed-mini" data-action="add-differential" data-problem-id="${escapeHtml(problem.id)}">${icon("plus")} Add</button></div>${problem.differentials.map((entry, differentialIndex) => renderDifferentialEditor(entry, differentialIndex, problem.id)).join("") || `<p class="ed-empty">No differential diagnoses added.</p>`}</div>`}
       <div class="ed-two"><div class="ed-sub"><span class="ed-sub-label">Diagnostic plan</span><div class="ed-body" contenteditable="true" data-problem-field="diagnosticPlan" data-placeholder="Optional" spellcheck="true">${editorHtml(problem.diagnosticPlan)}</div></div><div class="ed-sub"><span class="ed-sub-label">Therapeutic plan</span><div class="ed-body" contenteditable="true" data-problem-field="therapeuticPlan" data-placeholder="Optional" spellcheck="true">${editorHtml(problem.therapeuticPlan)}</div></div></div>
+      ${options.apSuggestions ? renderApSuggestions(options.apSuggestions, problem.id) : ""}
     </article>`;
   }
 
@@ -581,7 +642,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     ["other", "Other relevant history"]
   ]);
 
-  function renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm }) {
+  function renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions }) {
     // Make the collapse set visible to editorSection for this render.
     activeCollapsedSections = collapsedDraftSections instanceof Set ? collapsedDraftSections : new Set();
     const visibility = draft.sectionVisibility || {};
@@ -707,7 +768,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       + (objectiveBlocks || `<p class="ed-empty">Choose items from Clinical data to add Objective content.</p>`)
       + `<div class="ed-sub"><span class="ed-sub-label">Student-authored Objective text</span>${editorRegion("data-draft-objective-manual", draft.objective?.manual, "Optional exam findings, intake/output, or other directly observed data")}</div>`;
 
-    const planBody = `<p class="ed-hint">Order problems by decisional importance. Add only reasoning and actions you support.</p><div class="plan-problem-list" data-plan-problem-list>${draft.problems.map((problem, index) => renderProblemEditor(problem, index, guidanceFor, { generatingApProblemId })).join("") || `<p class="ed-empty">No problems added yet.</p><p class="ed-hint">If you pulled from the primary note and expected problems here, the Assessment &amp; Plan may not have parsed — use the ⤓ pull button on the Plan section header or add a problem manually.</p>`}</div>${apConfirm ? renderApConfirmModal(apConfirm) : ""}`;
+    const planBody = `<p class="ed-hint">Order problems by decisional importance. Add only reasoning and actions you support.</p><div class="plan-problem-list" data-plan-problem-list>${draft.problems.map((problem, index) => renderProblemEditor(problem, index, guidanceFor, { generatingApProblemId, apSuggestions: (apSuggestions || {})[problem.id] })).join("") || `<p class="ed-empty">No problems added yet.</p><p class="ed-hint">If you pulled from the primary note and expected problems here, the Assessment &amp; Plan may not have parsed — use the ⤓ pull button on the Plan section header or add a problem manually.</p>`}</div>${apConfirm ? renderApConfirmModal(apConfirm) : ""}`;
 
     return `<section class="note-draft-panel panel" aria-labelledby="draftNoteHeading">
       <div class="note-editor-toolbar">
@@ -727,7 +788,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     </section>`;
   }
 
-  function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm }) {
+  function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm, apSuggestions }) {
     if (!draft) return patientRequiredMessage;
     const selectedIds = new Set((draft.objective?.selectedBlocks || []).map((block) => block.selectionId));
     // Banner calling out free-text results that pasted as a status only —
@@ -743,7 +804,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         <label class="review-packet-label">Note packet<select id="reviewPacketSelect">${packets.map((packet) => `<option value="${escapeHtml(packet.id)}" ${packet.id === selectedPacketId ? "selected" : ""}>${escapeHtml(packet.label)}</option>`).join("")}</select></label>
       </header>
       ${flaggedBanner}
-      <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm })}</div>
+      <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions })}</div>
     </div>`;
   }
 

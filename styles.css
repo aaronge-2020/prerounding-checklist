@@ -11957,6 +11957,103 @@ details.ed-section:not([open]) > summary.ed-section-summary { margin-bottom: 0; 
   font-size: 0.85rem;
   margin-bottom: 1rem;
 }
+/* Editable AI prompt: the exact text that will be sent. */
+.ap-prompt-editor {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--input-bg, #f8fafc);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  min-height: 280px;
+  max-height: 46vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-size: 0.85rem;
+  font-family: ui-monospace, monospace;
+  resize: vertical;
+}
+.ap-prompt-editor:focus {
+  outline: 2px solid var(--accent, #2563eb);
+  outline-offset: 1px;
+}
+/* Google-Docs-style suggestion list on a problem card. */
+.ap-suggestions {
+  border-top: 1px dashed var(--border, #e2e8f0);
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+}
+.ap-suggestions-head {
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.ap-suggestion {
+  border: 1px solid var(--border, #e2e8f0);
+  border-left: 4px solid var(--accent, #2563eb);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.5rem;
+  background: var(--panel-alt, #fbfdff);
+}
+.ap-suggestion-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  flex-wrap: wrap;
+}
+.ap-suggestion-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  color: #fff;
+}
+.ap-suggestion-badge--add { background: #15803d; }
+.ap-suggestion-badge--revise { background: #b45309; }
+.ap-suggestion-badge--remove { background: #b91c1c; }
+.ap-suggestion-target {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+.ap-suggestion-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.35rem;
+}
+.ed-mini--approve {
+  color: #15803d;
+  border-color: #15803d;
+}
+.ap-suggestion-change {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+.ap-suggestion-change s {
+  color: #b91c1c;
+  text-decoration-thickness: 2px;
+}
+.ap-suggestion-new {
+  color: #15803d;
+  font-weight: 600;
+  display: block;
+  margin-top: 0.15rem;
+}
+.ap-suggestion-rationale {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted, #64748b);
+}
+.ap-suggestion-refs {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
 /* AI-generated plan content inside the note editors */
 .ap-plan-list {
   margin: 0.25rem 0 0.5rem;
