@@ -190,8 +190,8 @@ import {
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20260922-deid-session";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
-import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-drug-lookup-v1";
-import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-drug-lookup-v1";
+import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
+import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
 import { createDemoController } from "./demo/controller.js?v=20260921-demo-complete-plan";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-demo-complete-plan";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-demo-complete-plan";
@@ -1861,6 +1861,7 @@ function renderAiChat() {
 }
 
 function renderDrugLookup() {
+  drugLookupController.ensureAutoLoaded();
   replaceViewContent(byId("drugLookupContent"), drugLookupController.renderView());
 }
 

@@ -1,22 +1,24 @@
 // Drug Lookup view: interaction checker + indication lookup.
-// Rendered HTML only; all network and state live in controller.js.
-// Event wiring uses the app's delegated data-action convention.
+// The interaction checker loads the active patient's MAR automatically and
+// runs the check without any taps. Rendered HTML only; all network and state
+// live in controller.js. Event wiring uses the app's delegated data-action
+// convention.
 
 export function createDrugLookupPresentation({ escapeHtml, icon }) {
   function renderPrivacyNotice() {
     return `
       <p class="notice drug-lookup-privacy">
         ${icon("shield")}
-        <span><strong>Your privacy:</strong> nothing is sent anywhere until you tap
-        “Check interactions” or “Look up indications”. When you do, only the drug
-        names you typed are sent to the U.S. National Library of Medicine and the
-        U.S. Food and Drug Administration for the lookup. Patient details are never
-        included. If you are offline, the lookup will tell you instead of failing silently.</span>
+        <span><strong>Your privacy:</strong> when this view opens with an active patient,
+        their medication names are sent to the U.S. National Library of Medicine (for name
+        matching) and the U.S. Food and Drug Administration (for label text). Only drug
+        names — never patient details. If you are offline, the lookup will tell you
+        instead of failing silently.</span>
       </p>`;
   }
 
   function renderDrugChips(drugs) {
-    if (!drugs.length) return `<p class="muted">No drugs added yet.</p>`;
+    if (!drugs.length) return `<p class="muted">No medications on file for the active patient. Add a MAR or medication list in Hospital Stay, or add drugs below to check manually.</p>`;
     return `
       <ul class="drug-chip-list">
         ${drugs.map((drug, index) => `
@@ -38,9 +40,9 @@ export function createDrugLookupPresentation({ escapeHtml, icon }) {
     if (!findings.length) {
       return `
         <div class="notice">
-          <strong>No known interactions found in the high-priority list.</strong>
-          <p>This list covers well-established, high-priority interactions only — it is not
-          a complete drug database. A pair not listed here is <em>not</em> proven safe.
+          <strong>No known interactions found in DDInter 2.0.</strong>
+          <p>DDInter 2.0 covers major and moderate interactions across 1,900+ drugs, but no
+          database is complete. A pair not listed here is <em>not</em> proven safe.
           When in doubt, check with a pharmacist.</p>
         </div>`;
     }
@@ -59,34 +61,26 @@ export function createDrugLookupPresentation({ escapeHtml, icon }) {
   }
 
   function renderChecker(state) {
-    const { drugs, busy, error, findings, checked } = state;
+    const { drugs, busy, error, findings, checked, patientLabel } = state;
+    const hasMeds = drugs.length > 0;
     return `
       <section class="card" aria-labelledby="drug-checker-heading">
         <h3 id="drug-checker-heading">Interaction checker</h3>
-        <p class="muted">Add two or more drugs by name (brand or generic). Each is matched
-        against RxNorm, then checked pairwise against a curated list of high-priority interactions.</p>
+        ${hasMeds ? `<p class="muted">Checking ${drugs.length} medication${drugs.length === 1 ? "" : "s"}${patientLabel ? ` for <strong>${escapeHtml(patientLabel)}</strong>` : ""}, pulled automatically from the MAR on this device.</p>` : `
+        <p class="muted">No medications on file — open a patient with a MAR, or add drugs below to check manually.</p>`}
+        <p class="muted">Each drug is matched against RxNorm, then checked pairwise against
+        DDInter 2.0 (major + moderate interactions).</p>
+        ${renderDrugChips(drugs)}
         <div class="drug-add-row">
-          <label class="visually-hidden" for="drugLookupInput">Drug name</label>
-          <input id="drugLookupInput" type="text" data-drug-lookup-input placeholder="e.g. warfarin, Lipitor"
+          <label class="visually-hidden" for="drugLookupInput">Add a drug manually</label>
+          <input id="drugLookupInput" type="text" data-drug-lookup-input placeholder="Add another drug (e.g. warfarin)"
             autocomplete="off" ${busy ? "disabled" : ""}>
           <button type="button" data-action="drug-lookup-add" ${busy ? "disabled" : ""}>${icon("plus")} Add drug</button>
         </div>
-        ${renderDrugChips(drugs)}
         <div class="button-row">
-          <button type="button" data-action="drug-lookup-check" ${busy || drugs.length < 2 ? "disabled" : ""}>
-            ${busy ? "Checking…" : `Check interactions`}
-          </button>
+          <button type="button" class="button--quiet" data-action="drug-lookup-recheck" ${busy ? "disabled" : ""}>${icon("refresh")} Re-check from MAR</button>
           <button type="button" class="button--quiet" data-action="drug-lookup-clear" ${busy || !drugs.length ? "disabled" : ""}>Clear</button>
         </div>
-        ${state.patientMedsAvailable ? `
-          <div class="button-row">
-            <button type="button" class="button--transfer" data-action="drug-lookup-patient-meds" ${busy ? "disabled" : ""}>
-              ${icon("clipboard")} Check my patient's meds
-            </button>
-          </div>
-          <p class="muted"><small>Tapping this loads the active patient's medication list from this device
-          into the checker above. Only the drug names are sent to NLM for matching — nothing else leaves the device.</small></p>
-        ` : ""}
         ${error ? `<div class="model-selection-message model-selection-message--error" role="alert">${escapeHtml(error)}</div>` : ""}
         ${busy ? `<div class="model-selection-progress" aria-live="polite"><progress></progress><span>Looking up drugs…</span></div>` : ""}
         ${checked && !busy ? renderFindings(findings) : ""}
@@ -99,7 +93,7 @@ export function createDrugLookupPresentation({ escapeHtml, icon }) {
     return `
       <section class="card" aria-labelledby="drug-indications-heading">
         <h3 id="drug-indications-heading">What is a drug approved for?</h3>
-        <p class="muted">Type one drug name to see its FDA-approved uses, taken from the official drug label.</p>
+        <p class="muted">Type one drug name to see its FDA-approved uses and dosing, taken from the official drug label.</p>
         <div class="drug-add-row">
           <label class="visually-hidden" for="indicationLookupInput">Drug name</label>
           <input id="indicationLookupInput" type="text" data-indication-lookup-input placeholder="e.g. atorvastatin"
@@ -117,6 +111,10 @@ export function createDrugLookupPresentation({ escapeHtml, icon }) {
               <p><strong>FDA-approved uses (from the label):</strong></p>
               <p class="indication-text">${escapeHtml(lookup.result.indications)}</p>
             ` : `<p class="muted">No indication text found on the label for this drug.</p>`}
+            ${lookup.result.dosage ? `
+              <p><strong>Dosing (from the label):</strong></p>
+              <p class="indication-text">${escapeHtml(lookup.result.dosage)}</p>
+            ` : ""}
             ${lookup.result.drugInteractions ? `
               <details class="indication-details">
                 <summary>What the label says about interactions</summary>
@@ -136,7 +134,7 @@ export function createDrugLookupPresentation({ escapeHtml, icon }) {
       <div class="drug-lookup">
         <div class="view-heading">
           <h2 id="drug-lookup-heading">Drug Lookup</h2>
-          <p class="muted">Check drug interactions and look up what drugs are approved for.
+          <p class="muted">Interaction check for the active patient's medications, plus FDA label lookup.
           Reference only — not a substitute for a pharmacist or clinical judgment.</p>
         </div>
         ${renderPrivacyNotice()}

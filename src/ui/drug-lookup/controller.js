@@ -1,15 +1,17 @@
 // Drug Lookup controller: owns view state and orchestrates RxNav + openFDA
-// lookups. Nothing leaves the device until the user taps a lookup button;
-// only typed drug names are ever sent, never patient context.
+// lookups. When the view opens with an active patient, their medication names
+// are loaded automatically from the on-device MAR and the interaction check
+// runs without any taps. Only drug names are ever sent to NLM/FDA — never
+// patient context.
 
 import {
   resolveDrug,
   fetchLabel,
   checkPairs
-} from "./api.js?v=20260929-drug-lookup-v1";
-import { DDI_PAIRS, DDI_DATASET_VERSION, DDI_DATASET_SOURCE } from "./interactions-data.js?v=20260929-drug-lookup-v1";
+} from "./api.js?v=20260929-ddinter-v2";
+import { DDI_LOOKUP, DDI_DATASET_VERSION, DDI_DATASET_SOURCE } from "./interactions-data.js?v=20260929-ddinter-v2";
 
-export function createDrugLookupController({ presentation, render, setStatus, getPatientMedicationNames, fetchImpl }) {
+export function createDrugLookupController({ presentation, render, setStatus, getPatientMedicationNames, getActivePatientLabel, fetchImpl }) {
   const fetchFn = fetchImpl || (typeof fetch !== "undefined" ? fetch.bind(globalThis) : null);
 
   const state = {
@@ -18,6 +20,8 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
     error: "",
     findings: [],
     checked: false,
+    autoLoadedFor: null,
+    patientLabel: "",
     datasetSource: `${DDI_DATASET_SOURCE} (dataset ${DDI_DATASET_VERSION})`,
     indicationLookup: { query: "", busy: false, error: "", result: null, searched: false }
   };
@@ -34,16 +38,17 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
     return el ? el.value : "";
   }
 
-  function addDrug(raw) {
-    const input = String(raw || "").trim();
-    if (!input) return;
-    if (state.drugs.some((d) => d.input.toLowerCase() === input.toLowerCase())) {
-      setStatus(`“${input}” is already in the list.`);
-      return;
+  function setDrugsFromNames(names) {
+    state.drugs = [];
+    const seen = new Set();
+    for (const raw of names || []) {
+      const input = String(raw || "").trim();
+      if (!input) continue;
+      const key = input.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      state.drugs.push({ input, name: "", rxcui: null, ingredientRxcuis: [], unresolved: false, pending: true });
     }
-    state.drugs.push({ input, name: "", rxcui: null, ingredientRxcuis: [], unresolved: false, pending: true });
-    state.checked = false;
-    render();
   }
 
   async function checkInteractions() {
@@ -61,13 +66,12 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
       const resolved = [];
       const unresolved = [];
       for (const drug of state.drugs) {
-        // Resolve each drug name via RxNav (exact, then approximate).
         const result = await resolveDrug(fetchFn, drug.input);
         Object.assign(drug, result, { pending: false });
         if (result.unresolved || !result.rxcui) unresolved.push(drug.input);
         else resolved.push(drug);
       }
-      state.findings = checkPairs(resolved, DDI_PAIRS);
+      state.findings = checkPairs(resolved, DDI_LOOKUP);
       state.checked = true;
       if (unresolved.length) {
         state.error = `Could not recognize: ${unresolved.join(", ")}. Those were left out of the check — check the spelling or try the generic name.`;
@@ -75,7 +79,7 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
       setStatus(
         state.findings.length
           ? `Check complete: ${state.findings.length} interaction${state.findings.length === 1 ? "" : "s"} found.`
-          : "Check complete: no known interactions in the high-priority list."
+          : "Check complete: no known interactions in DDInter 2.0 for these drugs."
       );
     } catch (error) {
       state.error = networkErrorMessage(error);
@@ -85,23 +89,48 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
     }
   }
 
-  async function loadPatientMeds() {
-    if (state.busy || typeof getPatientMedicationNames !== "function") return;
+  // Auto-load: called by app.js when the view renders. Idempotent per
+  // medication list — if the MAR hasn't changed since the last auto-load,
+  // this is a no-op. Runs the interaction check automatically.
+  function ensureAutoLoaded() {
+    if (typeof getPatientMedicationNames !== "function") return;
     const names = getPatientMedicationNames() || [];
-    if (!names.length) {
-      setStatus("No medications found for the active patient. Paste a MAR or medication list in Hospital Stay first.");
-      return;
-    }
-    state.drugs = [];
-    state.checked = false;
-    state.error = "";
-    for (const name of names) {
-      const input = String(name || "").trim();
-      if (input && !state.drugs.some((d) => d.input.toLowerCase() === input.toLowerCase())) {
-        state.drugs.push({ input, name: "", rxcui: null, ingredientRxcuis: [], unresolved: false, pending: true });
+    const key = names.map((n) => String(n || "").trim().toLowerCase()).filter(Boolean).sort().join("|");
+    if (state.autoLoadedFor === key) return;
+    state.autoLoadedFor = key;
+    if (typeof getActivePatientLabel === "function") {
+      try {
+        state.patientLabel = getActivePatientLabel() || "";
+      } catch {
+        state.patientLabel = "";
       }
     }
-    setStatus(`${state.drugs.length} medication${state.drugs.length === 1 ? "" : "s"} loaded from the active patient. Tap “Check interactions” when ready — only these drug names will be sent.`);
+    if (!names.length) {
+      // No meds: clear and show empty state, don't run a check.
+      state.drugs = [];
+      state.findings = [];
+      state.checked = false;
+      state.error = "";
+      return;
+    }
+    setDrugsFromNames(names);
+    state.checked = false;
+    state.error = "";
+    // Run the check in the background; render() is called by checkInteractions.
+    void checkInteractions();
+  }
+
+  function addDrug(raw) {
+    const input = String(raw || "").trim();
+    if (!input) return;
+    if (state.drugs.some((d) => d.input.toLowerCase() === input.toLowerCase())) {
+      setStatus(`“${input}” is already in the list.`);
+      return;
+    }
+    state.drugs.push({ input, name: "", rxcui: null, ingredientRxcuis: [], unresolved: false, pending: true });
+    state.checked = false;
+    // Manual adds invalidate the auto-load key so a re-render doesn't wipe them.
+    state.autoLoadedFor = "__manual__";
     render();
   }
 
@@ -123,9 +152,6 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
     try {
       lookup.result = await fetchLabel(fetchFn, query);
       lookup.searched = true;
-      if (!lookup.result) {
-        lookup.error = "";
-      }
     } catch (error) {
       lookup.error = networkErrorMessage(error);
     } finally {
@@ -149,6 +175,7 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
       if (Number.isInteger(index) && index >= 0 && index < state.drugs.length) {
         state.drugs.splice(index, 1);
         state.checked = false;
+        state.autoLoadedFor = "__manual__";
         render();
       }
       return true;
@@ -158,15 +185,14 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
       state.findings = [];
       state.checked = false;
       state.error = "";
+      state.autoLoadedFor = "__manual__";
       render();
       return true;
     }
-    if (action === "drug-lookup-check") {
-      void checkInteractions();
-      return true;
-    }
-    if (action === "drug-lookup-patient-meds") {
-      void loadPatientMeds();
+    if (action === "drug-lookup-recheck") {
+      state.autoLoadedFor = null;
+      ensureAutoLoaded();
+      render();
       return true;
     }
     if (action === "drug-lookup-indications") {
@@ -179,7 +205,7 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
   function getState() {
     return {
       ...state,
-      patientMedsAvailable: typeof getPatientMedicationNames === "function"
+      hasPatient: typeof getPatientMedicationNames === "function"
     };
   }
 
@@ -187,5 +213,5 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
     return presentation.renderDrugLookup(getState());
   }
 
-  return { click, getState, renderView };
+  return { click, getState, renderView, ensureAutoLoaded };
 }

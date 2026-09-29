@@ -6,8 +6,8 @@
 // - RxNav REST: keyless, CORS `Access-Control-Allow-Origin: *`
 // - openFDA drug/label: keyless, CORS `Access-Control-Allow-Origin: *`
 // - The old NLM RxNav Interaction API was discontinued 2024-01-02; pairwise
-//   checking here uses the bundled high-priority dataset in
-//   interactions-data.js instead of a live interaction endpoint.
+//   checking here uses the DDInter 2.0 dataset (Xiong et al., Nucleic Acids
+//   Res. 2025) in interactions-data.js, keyed by ingredient RxCUI.
 
 export const RXNAV_BASE = "https://rxnav.nlm.nih.gov/REST";
 export const OPENFDA_BASE = "https://api.fda.gov/drug/label.json";
@@ -105,6 +105,7 @@ export function parseOpenFdaLabel(json) {
     genericName: (openfda.generic_name || [])[0] || "",
     manufacturer: (openfda.manufacturer_name || [])[0] || "",
     indications: firstTextField(record, "indications_and_usage"),
+    dosage: firstTextField(record, "dosage_and_administration"),
     drugInteractions: firstTextField(record, "drug_interactions"),
     warnings: firstTextField(record, "warnings")
   };
@@ -126,37 +127,80 @@ export function sortInteractionsBySeverity(interactions) {
 }
 
 // ---------------------------------------------------------------------------
-// Pairwise checking against the bundled dataset
+// Pairwise checking against the DDInter dataset
 // ---------------------------------------------------------------------------
 
+// Build an O(1) lookup Map from the compact DDI_PAIRS format.
+// ddiPairs: [[rxcuiA, rxcuiB, severityInt], ...] where severityInt 0=major, 1=moderate.
+// Returns Map<"rxcuiA|rxcuiB" (sorted), severityInt>.
+export function buildDdiLookup(ddiPairs) {
+  const map = new Map();
+  for (const entry of ddiPairs || []) {
+    if (!Array.isArray(entry) || entry.length < 3) continue;
+    const a = String(entry[0]);
+    const b = String(entry[1]);
+    const s = Number(entry[2]);
+    if (!a || !b || a === b || !(s === 0 || s === 1)) continue;
+    const key = a < b ? `${a}|${b}` : `${b}|${a}`;
+    // Keep major (0) over moderate (1).
+    if (!map.has(key) || s < map.get(key)) {
+      map.set(key, s);
+    }
+  }
+  return map;
+}
+
+const DDI_SEVERITY_LABEL = ["major", "moderate"];
+
+function ddiDescription(severityLabel) {
+  return severityLabel === "major"
+    ? "Flagged as a major interaction in DDInter 2.0 — review with a pharmacist before administering."
+    : "Flagged as a moderate interaction in DDInter 2.0 — monitor or adjust; review with a pharmacist.";
+}
+
 // resolvedDrugs: [{ input, name, rxcui, ingredientRxcuis: [{rxcui,name}] }]
-// dataset: [{ a, b, severity, description, source }]
-// Returns one entry per interacting pair (highest-severity record wins).
-export function checkPairs(resolvedDrugs, dataset) {
+// ddiLookup: Map from buildDdiLookup (or a legacy [{a,b,severity}] array).
+// Returns one entry per interacting pair.
+export function checkPairs(resolvedDrugs, ddiLookup) {
   const findings = [];
   const seen = new Set();
   const drugs = Array.isArray(resolvedDrugs) ? resolvedDrugs : [];
-  const pairs = Array.isArray(dataset) ? dataset : [];
+
+  // Support both the Map (new) and legacy array-of-records (old) formats.
+  const lookupMap = ddiLookup instanceof Map ? ddiLookup : buildDdiLookup(
+    (Array.isArray(ddiLookup) ? ddiLookup : []).map((p) =>
+      Array.isArray(p) ? p : [p.a, p.b, p.severity === "major" ? 0 : 1]
+    )
+  );
+
   for (let i = 0; i < drugs.length; i++) {
     for (let j = i + 1; j < drugs.length; j++) {
       const left = drugs[i];
       const right = drugs[j];
-      const leftKeys = new Set([left.rxcui, ...(left.ingredientRxcuis || []).map((x) => x.rxcui)].filter(Boolean));
-      const rightKeys = new Set([right.rxcui, ...(right.ingredientRxcuis || []).map((x) => x.rxcui)].filter(Boolean));
-      const matches = pairs.filter(
-        (p) => (leftKeys.has(p.a) && rightKeys.has(p.b)) || (leftKeys.has(p.b) && rightKeys.has(p.a))
-      );
-      if (!matches.length) continue;
-      const best = sortInteractionsBySeverity(matches)[0];
-      const key = [left.rxcui, right.rxcui].sort().join("|");
-      if (seen.has(key)) continue;
-      seen.add(key);
+      const leftKeys = new Set([left.rxcui, ...(left.ingredientRxcuis || []).map((x) => x.rxcui)].filter(Boolean).map(String));
+      const rightKeys = new Set([right.rxcui, ...(right.ingredientRxcuis || []).map((x) => x.rxcui)].filter(Boolean).map(String));
+      let bestSeverity = -1;
+      for (const lk of leftKeys) {
+        for (const rk of rightKeys) {
+          if (lk === rk) continue;
+          const key = lk < rk ? `${lk}|${rk}` : `${rk}|${lk}`;
+          const s = lookupMap.get(key);
+          if (s !== undefined && (bestSeverity === -1 || s < bestSeverity)) {
+            bestSeverity = s;
+          }
+        }
+      }
+      if (bestSeverity === -1) continue;
+      const pairKey = [String(left.rxcui), String(right.rxcui)].sort().join("|");
+      if (seen.has(pairKey)) continue;
+      seen.add(pairKey);
+      const severityLabel = DDI_SEVERITY_LABEL[bestSeverity] || "moderate";
       findings.push({
         drugA: left.name || left.input,
         drugB: right.name || right.input,
-        severity: best.severity,
-        description: best.description,
-        source: best.source
+        severity: severityLabel,
+        description: ddiDescription(severityLabel),
+        source: "DDInter 2.0"
       });
     }
   }

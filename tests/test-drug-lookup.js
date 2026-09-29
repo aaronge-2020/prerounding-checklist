@@ -20,11 +20,12 @@ import {
   parseOpenFdaLabel,
   severityRank,
   sortInteractionsBySeverity,
+  buildDdiLookup,
   checkPairs,
   resolveDrug,
   fetchLabel
 } from "../src/ui/drug-lookup/api.js";
-import { DDI_PAIRS, DDI_DATASET_VERSION } from "../src/ui/drug-lookup/interactions-data.js";
+import { DDI_PAIRS, DDI_LOOKUP, DDI_DATASET_VERSION, DDI_DATASET_SOURCE } from "../src/ui/drug-lookup/interactions-data.js";
 
 // ---------------------------------------------------------------------------
 // URL builders
@@ -103,12 +104,14 @@ assert.equal(parseRxcuiResponse({}), null, "empty -> null");
     results: [{
       openfda: { brand_name: ["Lipitor"], generic_name: ["atorvastatin"], manufacturer_name: ["Pfizer"] },
       indications_and_usage: ["1 INDICATIONS AND USAGE ..."],
+      dosage_and_administration: ["2 DOSAGE AND ADMINISTRATION ..."],
       drug_interactions: ["7 DRUG INTERACTIONS ..."]
     }]
   });
   assert.equal(label.brandName, "Lipitor", "brand parsed");
   assert.equal(label.genericName, "atorvastatin", "generic parsed");
   assert.ok(label.indications.includes("INDICATIONS"), "indications parsed");
+  assert.ok(label.dosage.includes("DOSAGE"), "dosage parsed");
   assert.ok(label.drugInteractions.includes("INTERACTIONS"), "interactions parsed");
   assert.equal(parseOpenFdaLabel({ results: [] }), null, "no results -> null");
   assert.equal(parseOpenFdaLabel({}), null, "empty -> null");
@@ -130,11 +133,30 @@ assert.ok(severityRank("bogus") > severityRank("minor"), "unknown sorts last");
 }
 
 // ---------------------------------------------------------------------------
-// checkPairs
+// buildDdiLookup
+// ---------------------------------------------------------------------------
+
+{
+  const lookup = buildDdiLookup([[11289, 5640, 0], [11289, 1191, 1]]);
+  assert.ok(lookup instanceof Map, "returns a Map");
+  assert.equal(lookup.get("11289|5640"), 0, "major pair stored (sorted key)");
+  assert.equal(lookup.get("1191|11289"), undefined, "key must be sorted ascending");
+  assert.equal(lookup.get("11289|1191"), 1, "moderate pair stored");
+  // Major wins over moderate on duplicate.
+  const dup = buildDdiLookup([[11289, 5640, 1], [5640, 11289, 0]]);
+  assert.equal(dup.get("11289|5640"), 0, "major wins on duplicate");
+  // Bad entries skipped.
+  assert.equal(buildDdiLookup([[11289, 11289, 0]]).size, 0, "self-pair skipped");
+  assert.equal(buildDdiLookup("nope").size, 0, "non-array -> empty map");
+}
+
+// ---------------------------------------------------------------------------
+// checkPairs against the DDInter dataset
 // ---------------------------------------------------------------------------
 
 const warfarin = { input: "warfarin", name: "warfarin", rxcui: "11289", ingredientRxcuis: [] };
 const ibuprofen = { input: "ibuprofen", name: "ibuprofen", rxcui: "5640", ingredientRxcuis: [] };
+const fluconazole = { input: "fluconazole", name: "fluconazole", rxcui: "4450", ingredientRxcuis: [] };
 const lipitor = {
   input: "Lipitor", name: "Lipitor", rxcui: "153165",
   ingredientRxcuis: [{ rxcui: "83367", name: "atorvastatin" }]
@@ -143,64 +165,74 @@ const clarithro = { input: "clarithromycin", name: "clarithromycin", rxcui: "212
 const metformin = { input: "metformin", name: "metformin", rxcui: "6809", ingredientRxcuis: [] };
 
 {
-  const findings = checkPairs([warfarin, ibuprofen], DDI_PAIRS);
+  // Warfarin + fluconazole is a known Major pair in DDInter 2.0.
+  const findings = checkPairs([warfarin, fluconazole], DDI_LOOKUP);
+  assert.equal(findings.length, 1, "warfarin+fluconazole flagged in DDInter data");
+  assert.equal(findings[0].severity, "major", "DDInter severity preserved");
+  assert.equal(findings[0].source, "DDInter 2.0", "source labeled");
+}
+
+{
+  const findings = checkPairs([warfarin, ibuprofen], DDI_LOOKUP);
   assert.equal(findings.length, 1, "warfarin+ibuprofen flagged");
   assert.equal(findings[0].severity, "major", "bleeding pair is major");
-  assert.ok(findings[0].description.toLowerCase().includes("bleeding"), "description mentions bleeding");
 }
 
 {
   // Brand name resolves through the ingredient RxCUI.
-  const findings = checkPairs([lipitor, clarithro], DDI_PAIRS);
+  const lookup = buildDdiLookup([[83367, 21212, 1]]);
+  const findings = checkPairs([lipitor, clarithro], lookup);
   assert.equal(findings.length, 1, "Lipitor+clarithromycin flagged via ingredient");
   assert.equal(findings[0].drugA, "Lipitor", "keeps user-facing names");
 }
 
 {
-  const findings = checkPairs([warfarin, metformin], DDI_PAIRS);
-  assert.equal(findings.length, 0, "no pair -> no findings (not a silent all-clear, just no data)");
+  // No pair in a controlled lookup -> no findings (not a silent all-clear, just no data).
+  const lookup = buildDdiLookup([[11289, 5640, 0]]);
+  const findings = checkPairs([warfarin, metformin], lookup);
+  assert.equal(findings.length, 0, "no pair -> no findings");
 }
 
 {
   // Order of drugs must not matter.
-  const a = checkPairs([ibuprofen, warfarin], DDI_PAIRS);
-  const b = checkPairs([warfarin, ibuprofen], DDI_PAIRS);
+  const a = checkPairs([ibuprofen, warfarin], DDI_LOOKUP);
+  const b = checkPairs([warfarin, ibuprofen], DDI_LOOKUP);
   assert.equal(a.length, b.length, "pair order independent");
   assert.equal(a.length, 1, "one finding either way");
 }
 
 {
   // Duplicate entries for the same drug collapse to one finding.
-  const findings = checkPairs([warfarin, ibuprofen, ibuprofen], DDI_PAIRS);
+  const findings = checkPairs([warfarin, ibuprofen, ibuprofen], DDI_LOOKUP);
   assert.equal(findings.length, 1, "duplicate pair reported once");
 }
 
-{
-  // Highest severity wins when several records match a pair.
-  const dataset = [
-    { a: "11289", b: "5640", severity: "minor", description: "mild", source: "x" },
-    { a: "11289", b: "5640", severity: "major", description: "severe", source: "x" }
-  ];
-  const findings = checkPairs([warfarin, ibuprofen], dataset);
-  assert.equal(findings[0].severity, "major", "highest severity wins");
-}
-
 // ---------------------------------------------------------------------------
-// Dataset sanity
+// Dataset sanity (DDInter 2.0)
 // ---------------------------------------------------------------------------
 
 assert.ok(DDI_DATASET_VERSION, "dataset has a version");
-assert.ok(DDI_PAIRS.length >= 20, "dataset has a useful number of pairs");
+assert.ok(DDI_DATASET_SOURCE.toLowerCase().includes("ddinter"), "source names DDInter");
+assert.ok(Array.isArray(DDI_PAIRS), "DDI_PAIRS is an array");
+assert.ok(DDI_PAIRS.length >= 50000, `dataset has real DDInter scale (got ${DDI_PAIRS.length})`);
+assert.ok(DDI_LOOKUP instanceof Map, "DDI_LOOKUP is a prebuilt Map");
+assert.equal(DDI_LOOKUP.size, DDI_PAIRS.length, "lookup covers every pair");
 {
+  let majors = 0, moderates = 0;
   const keys = new Set();
-  for (const pair of DDI_PAIRS) {
-    assert.ok(pair.a && pair.b, "pair has both RxCUIs");
-    assert.ok(["major", "moderate", "minor"].includes(pair.severity), `valid severity: ${pair.severity}`);
-    assert.ok(pair.description && pair.source, "pair has description + source");
-    const key = [pair.a, pair.b].sort().join("|");
-    keys.add(key);
+  for (const entry of DDI_PAIRS) {
+    assert.ok(Array.isArray(entry) && entry.length === 3, "compact [a,b,severity] format");
+    const [a, b, s] = entry;
+    assert.ok(Number.isInteger(a) && Number.isInteger(b), "RxCUIs are integers");
+    assert.ok(s === 0 || s === 1, "severity is 0 (major) or 1 (moderate)");
+    assert.ok(a !== b, "no self-pairs");
+    if (s === 0) majors++; else moderates++;
+    keys.add(a < b ? `${a}|${b}` : `${b}|${a}`);
   }
-  assert.ok(keys.size === DDI_PAIRS.length || keys.size <= DDI_PAIRS.length, "pairs recorded");
+  assert.equal(keys.size, DDI_PAIRS.length, "no duplicate pairs");
+  assert.ok(majors > 10000, `meaningful major count (got ${majors})`);
+  assert.ok(moderates > 50000, `meaningful moderate count (got ${moderates})`);
+  console.log(`  dataset: ${DDI_PAIRS.length} pairs (${majors} major, ${moderates} moderate)`);
 }
 
 // ---------------------------------------------------------------------------
