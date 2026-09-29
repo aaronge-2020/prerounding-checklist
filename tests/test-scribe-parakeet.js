@@ -291,6 +291,21 @@ for (const [name, src] of [["page", page], ["app", app], ["pipeline", pipelineSr
 }
 assert.ok(!/fetch\(["']https?:\/\/(?!huggingface\.co)/.test(worker),
   "worker fetches only from Hugging Face (model downloads)");
+// Regression 2026-09-29: the worker loaded the vendored ORT build from a
+// domain-root path (importScripts('/vendor/ort-1.22.0/ort.all.min.js')), which
+// 404s under the /prerounding-checklist/ Pages base path and killed engine
+// startup. Same-origin vendor URLs must resolve from the worker's own URL.
+assert.ok(!/importScripts\(\s*["']\//.test(worker),
+  "worker importScripts never uses a domain-root path");
+assert.ok(!/wasmPaths\s*=\s*["']\//.test(worker),
+  "worker wasmPaths never uses a domain-root path");
+assert.match(worker, /new URL\(["']\.\.\/\.\.\/vendor\/ort-1\.22\.0\/["'],\s*self\.location\.href\)/,
+  "worker derives the ORT dir from its own location");
+assert.equal(
+  new URL('../../vendor/ort-1.22.0/',
+    'https://aaronge-2020.github.io/prerounding-checklist/src/scribe-parakeet/parakeet-worker.js').href,
+  'https://aaronge-2020.github.io/prerounding-checklist/vendor/ort-1.22.0/',
+  "ORT dir resolves under the Pages base path");
 const setItems = [...(page + app + pipelineSrc).matchAll(/localStorage\.setItem\(\s*([^,)\s]+)/g)]
   .map((m) => m[1].trim());
 assert.deepEqual(setItems, ["ENROLL_KEY"], "exactly one localStorage write (enrollment)");

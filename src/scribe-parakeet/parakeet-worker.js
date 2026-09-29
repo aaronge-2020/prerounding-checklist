@@ -35,7 +35,12 @@
  * Any handler failure replies {type:'error', id?, fatal:false, message}.
  */
 
-importScripts('/vendor/ort-1.22.0/ort.all.min.js');
+// Domain-root absolute paths break under the /prerounding-checklist/ Pages base
+// path (2026-09-29: a leading-slash vendor path resolved to the domain root
+// and the model download failed). Resolve the vendored ORT build from this
+// worker's own URL instead, so the path works from any deploy base.
+const ORT_DIR = new URL('../../vendor/ort-1.22.0/', self.location.href).href;
+importScripts(ORT_DIR + 'ort.all.min.js');
 
 const VAD_WINDOW = 576;          // samples @16kHz (36ms) — measured from the model
 const VAD_THRESHOLD = 0.5;
@@ -105,7 +110,7 @@ async function handleInit(msg) {
     }
   }
   try {
-    ort.env.wasm.wasmPaths = '/vendor/ort-1.22.0/';
+    ort.env.wasm.wasmPaths = ORT_DIR;
     const threads = (typeof crossOriginIsolated !== 'undefined' && crossOriginIsolated)
       ? Math.min(4, (navigator.hardwareConcurrency || 4))
       : 1;
