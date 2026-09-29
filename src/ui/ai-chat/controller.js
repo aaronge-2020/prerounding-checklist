@@ -1,7 +1,11 @@
-// Controller for the Local AI view: model download/select lifecycle, chat,
-// and the note-parsing preference. Owns the shared worker client and
-// re-renders the view on status changes. Pure markup comes from
-// src/ui/local-ai/presentation.js.
+// Controller for the AI Chat view: two chat modes behind one streamlined
+// interface. "On-device" is the existing local-LLM chat (model
+// download/select lifecycle, note parsing) — nothing leaves the browser.
+// "ChatGPT" is a remote chat over the student's saved OpenAI key, with a
+// rigorous citation system prompt, service tailoring, and a HIPAA review
+// gate (second-pass de-identification + human review) before any patient
+// context leaves the browser. Pure markup comes from
+// src/ui/ai-chat/presentation.js.
 
 import {
   localLlmModelByKey,
@@ -10,7 +14,14 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createLocalAiPresentation } from "./presentation.js?v=20260928-local-llm-v10";
+import { createAiChatPresentation } from "./presentation.js?v=20260928-ai-chat-v1";
+import { requestOpenAiChat } from "../openai-client.js?v=20260928-ai-chat-v1";
+import {
+  buildRemoteChatInput,
+  buildRemoteChatSystemPrompt,
+  CHAT_SERVICE_OPTIONS
+} from "../../ai/remote-chat.js?v=20260928-ai-chat-v1";
+import { deidentifyTextStructuredOnly } from "../../vault/deid.js?v=20260928-ai-chat-v1";
 import {
   buildPatientContextFromPieces,
   defaultSelectedPieceIds,
@@ -20,8 +31,8 @@ import { CHARS_PER_TOKEN, buildChatMessages, estimateTokens } from "../../local-
 import { DEFAULT_SYSTEM_GUIDELINES, buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 
-export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus, render, getDraftNoteText }) {
-  const presentation = createLocalAiPresentation({ escapeHtml, icon });
+export function createAiChatController({ app, byId, escapeHtml, icon, setStatus, render, getDraftNoteText, currentPreferences, onChatServiceChange }) {
+  const presentation = createAiChatPresentation({ escapeHtml, icon });
   const client = sharedLocalLlmClient();
   const state = {
     hardware: null,
@@ -38,6 +49,18 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
       // switch; never persisted.
       contextSelection: null,
       inspectorOpen: false
+    },
+    // Chat mode: "local" (on-device) or "remote" (ChatGPT). Persisted in
+    // the local-LLM settings so the choice survives reloads.
+    mode: readLocalLlmSettings().chatMode === "remote" ? "remote" : "local",
+    remote: {
+      messages: [],
+      sending: false,
+      webSearch: true,
+      patientId: "",
+      // HIPAA review gate state: set while the student reviews exactly what
+      // will be sent to OpenAI (message + second-pass de-identified context).
+      review: null
     },
     downloadInFlight: false,
     // Per-model download state. The localStorage registry paints instantly;
@@ -143,7 +166,7 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
   }
 
   function viewRoot() {
-    return byId("localAiContent");
+    return byId("aiChatContent");
   }
 
   // The chat composer is a contenteditable rich-text box (so formatted
@@ -162,7 +185,7 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
   }
 
   function focusComposer() {
-    const input = viewRoot()?.querySelector("[data-local-ai-chat-input]");
+    const input = viewRoot()?.querySelector("[data-ai-chat-input]");
     if (input && input.getAttribute("contenteditable") === "true") input.focus();
   }
 
@@ -182,8 +205,11 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
       state.chat.contextStats = null;
       state.chat.contextSelection = null;
       void client.resetChat();
+      state.remote.messages = [];
+      state.remote.review = null;
     }
     state.chat.patientId = pctx.patientId;
+    state.remote.patientId = pctx.patientId;
     const { pieces, selectedIds } = contextPieces(draft);
     const selectedSet = new Set(selectedIds);
     const modelRecord = localLlmModelByKey(state.chat.modelKey);
@@ -197,12 +223,18 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
       (sum, piece) => sum + (selectedSet.has(piece.id) ? Math.ceil(piece.chars / CHARS_PER_TOKEN) : 0),
       0
     );
+    const prefs = remotePrefs();
     root.innerHTML = presentation.render({
       hardware: state.hardware,
       settings: settings(),
       llmStatus: client.getStatus(),
       chat: state.chat,
       downloaded: state.downloaded,
+      mode: state.mode,
+      remote: state.remote,
+      chatService: String(prefs.chatService || ""),
+      chatServiceOptions: CHAT_SERVICE_OPTIONS,
+      hasApiKey: String(prefs.openAiApiKey || "").trim().length > 0,
       patientContext: {
         enabled: pctx.enabled,
         available: pctx.available,
@@ -231,13 +263,13 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
         contextWindow
       }
     });
-    const messages = root.querySelector("[data-local-ai-messages]");
+    const messages = root.querySelector("[data-ai-chat-messages]");
     if (messages) messages.scrollTop = messages.scrollHeight;
   }
 
   // Keep the view live while models download or chat streams.
   client.onStatusChange(() => {
-    if (app.view === "localAi") renderView();
+    if (app.view === "aiChat") renderView();
   });
 
   async function downloadModel(modelKey) {
@@ -263,7 +295,7 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
           : `${model.label} downloaded, self-tested, and verified.`
       );
     } catch (error) {
-      setStatus(`Local AI failed: ${error?.message || "unknown error"}`);
+      setStatus(`AI Chat failed: ${error?.message || "unknown error"}`);
     } finally {
       state.downloadInFlight = false;
       render();
@@ -330,7 +362,7 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     // token; the finally block stops it on error too.
     const streamStartedAt = Date.now();
     const tickPrefill = () => {
-      const label = viewRoot()?.querySelector("[data-local-ai-thinking-label]");
+      const label = viewRoot()?.querySelector("[data-ai-chat-thinking-label]");
       if (label && !state.chat.streamingText) {
         const secs = Math.max(1, Math.round((Date.now() - streamStartedAt) / 1000));
         const tokens = state.chat.contextStats?.promptTokens;
@@ -355,20 +387,20 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
             }
           }
           state.chat.streamingText += token;
-          const bubble = viewRoot()?.querySelector("[data-local-ai-streaming]");
+          const bubble = viewRoot()?.querySelector("[data-ai-chat-streaming]");
           if (bubble) {
             // Stream without a full re-render: repaint the in-progress
             // bubble, splitting <think> reasoning into the collapsed
             // dropdown as it arrives.
-            const thinkOpen = bubble.querySelector("details.lai-think")?.open === true;
+            const thinkOpen = bubble.querySelector("details.aic-think")?.open === true;
             bubble.innerHTML =
-              `<span class="lai-m-label">${escapeHtml(state.chat.modelLabel)}</span>` +
+              `<span class="aic-m-label">${escapeHtml(state.chat.modelLabel)}</span>` +
               presentation.renderStreamingMessage(state.chat.streamingText);
             if (thinkOpen) {
-              const details = bubble.querySelector("details.lai-think");
+              const details = bubble.querySelector("details.aic-think");
               if (details) details.open = true;
             }
-            const box = viewRoot()?.querySelector("[data-local-ai-messages]");
+            const box = viewRoot()?.querySelector("[data-ai-chat-messages]");
             if (box) box.scrollTop = box.scrollHeight;
           }
         }
@@ -395,15 +427,171 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     }
   }
 
+  // ── Remote (ChatGPT) chat ──────────────────────────────
+
+  function remotePrefs() {
+    return currentPreferences ? currentPreferences() : {};
+  }
+
+  function setMode(mode) {
+    const next = mode === "remote" ? "remote" : "local";
+    if (state.mode === next) return;
+    state.mode = next;
+    writeLocalLlmSettings({ chatMode: next });
+    // Switching patients starts a fresh remote chat too: the attached
+    // context belongs to one patient, and mixing histories is a hazard.
+    setStatus(next === "remote" ? "ChatGPT mode — patient context needs your review before sending." : "On-device mode — nothing leaves this browser.");
+    render();
+  }
+
+  // HIPAA review gate: runs BEFORE anything is sent to OpenAI when patient
+  // context (chart pieces and/or the student's own draft note) is attached.
+  // 1. A second deterministic de-identification pass over the assembled
+  //    context (the vault already stores de-identified text; this is
+  //    defense-in-depth against anything that slipped through).
+  // 2. A scan of the student's own message for identifier-like patterns.
+  // 3. A human-review modal showing EXACTLY what will be sent — the student
+  //    must explicitly confirm. Nothing is sent on modal open.
+  function openHipaaReview(message, contextText) {
+    let contextResult;
+    let messageResult;
+    try {
+      contextResult = deidentifyTextStructuredOnly(contextText);
+    } catch {
+      contextResult = { text: contextText, redactionTotal: 0, counts: {}, residualWarnings: [], flags: ["Second de-identification pass failed — review carefully."] };
+    }
+    try {
+      messageResult = deidentifyTextStructuredOnly(message);
+    } catch {
+      messageResult = { text: message, redactionTotal: 0, flags: [] };
+    }
+    state.remote.review = {
+      message,
+      messageRedactionTotal: messageResult.redactionTotal || 0,
+      messageFlags: (messageResult.flags || []).slice(0, 6),
+      redactedContext: contextResult.text,
+      redactionTotal: contextResult.redactionTotal || 0,
+      redactionCounts: contextResult.counts || {},
+      residualWarnings: (contextResult.residualWarnings || []).slice(0, 8).map((w) => w?.snippet || String(w || "")),
+      flags: (contextResult.flags || []).slice(0, 6)
+    };
+    render();
+  }
+
+  function closeHipaaReview() {
+    state.remote.review = null;
+    render();
+  }
+
+  async function confirmHipaaReview() {
+    const review = state.remote.review;
+    if (!review) return;
+    state.remote.review = null;
+    await doRemoteSend(review.message, review.redactedContext);
+  }
+
+  async function sendRemoteChat(text) {
+    const message = String(text || "").trim();
+    if (!message || state.remote.sending) return;
+    const prefs = remotePrefs();
+    if (!String(prefs.openAiApiKey || "").trim()) {
+      setStatus("Save an OpenAI API key in Settings before using ChatGPT chat.");
+      return;
+    }
+    // Attach exactly the patient-context pieces the user selected in the
+    // "Context" inspector — the same selection the on-device chat uses.
+    const pctx = patientContextInfo();
+    state.remote.patientId = pctx.patientId;
+    if (pctx.enabled && pctx.text) {
+      // Patient context (chart and/or the student's own note) is attached:
+      // run the HIPAA review gate instead of sending immediately.
+      openHipaaReview(message, pctx.text);
+      return;
+    }
+    await doRemoteSend(message, "");
+  }
+
+  async function doRemoteSend(message, contextText) {
+    const prefs = remotePrefs();
+    const apiKey = String(prefs.openAiApiKey || "").trim();
+    if (!apiKey) {
+      setStatus("Save an OpenAI API key in Settings before using ChatGPT chat.");
+      return;
+    }
+    state.remote.sending = true;
+    state.remote.messages.push({ role: "user", text: message });
+    render();
+    const sentAt = Date.now();
+    try {
+      const systemPrompt = buildRemoteChatSystemPrompt({ serviceValue: prefs.chatService });
+      // History excludes the just-added user message; it is appended last
+      // with the (reviewed, de-identified) context attached.
+      const history = state.remote.messages.slice(0, -1);
+      const input = buildRemoteChatInput({ systemPrompt, history, userMessage: message, contextText });
+      const reply = await requestOpenAiChat({
+        apiKey,
+        model: prefs.openAiModel,
+        input,
+        tools: state.remote.webSearch ? [{ type: "web_search" }] : []
+      });
+      state.remote.messages.push({ role: "assistant", text: reply, webSearch: state.remote.webSearch });
+    } catch (error) {
+      state.remote.messages.push({ role: "assistant", text: `Error: ${error?.message || "the ChatGPT request failed"}` });
+    } finally {
+      state.remote.sending = false;
+      const secs = Math.max(1, Math.round((Date.now() - sentAt) / 1000));
+      setStatus(`ChatGPT replied in ${secs}s.`);
+      render();
+    }
+  }
+
   function click(target) {
     const actionTarget = target.closest?.("[data-action]");
     if (!actionTarget) return false;
     const action = actionTarget.dataset.action;
-    if (action === "local-ai-download") {
+    if (action === "ai-chat-mode") {
+      setMode(actionTarget.dataset.mode);
+      return true;
+    }
+    if (action === "ai-chat-new-chat-remote") {
+      state.remote.messages = [];
+      state.remote.review = null;
+      setStatus("New ChatGPT chat started — conversation cleared. Your patient context selections are unchanged.");
+      render();
+      return true;
+    }
+    if (action === "ai-chat-revert-remote") {
+      const index = Number.parseInt(actionTarget.dataset.messageIndex || "", 10);
+      if (Number.isInteger(index) && index >= 0 && index < state.remote.messages.length) {
+        const dropped = state.remote.messages.length - index;
+        state.remote.messages = state.remote.messages.slice(0, index);
+        setStatus(dropped === 1 ? "Message removed from context." : `${dropped} messages removed from context.`);
+      }
+      render();
+      return true;
+    }
+    if (action === "ai-chat-send-remote") {
+      const form = actionTarget.closest?.("[data-ai-chat-form]");
+      const input = form?.querySelector("[data-ai-chat-input]");
+      const text = composerText(input);
+      clearComposer(input);
+      void sendRemoteChat(text);
+      return true;
+    }
+    if (action === "ai-chat-hipaa-confirm") {
+      void confirmHipaaReview();
+      return true;
+    }
+    if (action === "ai-chat-hipaa-cancel") {
+      closeHipaaReview();
+      setStatus("Review cancelled — nothing was sent to OpenAI.");
+      return true;
+    }
+    if (action === "ai-chat-download") {
       void downloadModel(actionTarget.dataset.modelKey);
       return true;
     }
-    if (action === "local-ai-select") {
+    if (action === "ai-chat-select") {
       const key = actionTarget.dataset.modelKey;
       writeLocalLlmSettings({ selectedModelKey: key });
       state.chat.modelKey = key;
@@ -412,14 +600,14 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
       render();
       return true;
     }
-    if (action === "local-ai-unload") {
+    if (action === "ai-chat-unload") {
       void client.unload().then(() => {
         setStatus("Local model unloaded. Downloads are cached by the browser.");
         render();
       });
       return true;
     }
-    if (action === "local-ai-new-chat") {
+    if (action === "ai-chat-new-chat") {
       // New chat clears the conversation only — the user's chosen patient
       // context documents stay as they are, so they don't have to re-pick
       // them for every fresh conversation.
@@ -431,7 +619,7 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
       renderView();
       return true;
     }
-    if (action === "local-ai-revert-message") {
+    if (action === "ai-chat-revert-message") {
       // Revert the conversation to just before this message: drop it and
       // everything after it. Chat history is in-memory only, so this is
       // exactly "removing it from the model's context".
@@ -445,14 +633,14 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
       renderView();
       return true;
     }
-    if (action === "local-ai-context-inspector") {
+    if (action === "ai-chat-context-inspector") {
       state.chat.inspectorOpen = !state.chat.inspectorOpen;
       renderView();
       return true;
     }
-    if (action === "local-ai-send") {
-      const form = actionTarget.closest?.("[data-local-ai-chat-form]");
-      const input = form?.querySelector("[data-local-ai-chat-input]");
+    if (action === "ai-chat-send") {
+      const form = actionTarget.closest?.("[data-ai-chat-form]");
+      const input = form?.querySelector("[data-ai-chat-input]");
       const text = composerText(input);
       clearComposer(input);
       void sendChat(text);
@@ -462,20 +650,31 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
   }
 
   function change(target) {
-    if (target.matches?.("[data-local-ai-parsing-toggle]")) {
-      writeLocalLlmSettings({ parsingEnabled: target.checked });
-      setStatus(target.checked ? "Local AI note parsing enabled." : "Local AI note parsing disabled.");
-      return true;
-    }
-    if (target.matches?.("[data-local-ai-context-toggle]")) {
-      writeLocalLlmSettings({ patientContextEnabled: target.checked });
-      setStatus(target.checked ? "Patient context attached to Local AI chat." : "Patient context detached from Local AI chat.");
+    if (target.matches?.("[data-ai-chat-websearch-toggle]")) {
+      state.remote.webSearch = target.checked;
+      setStatus(target.checked ? "Web search on — ChatGPT will ground citations in real sources." : "Web search off — faster replies, citations from model knowledge.");
       render();
       return true;
     }
-    if (target.matches?.("[data-local-ai-context-piece]")) {
+    if (target.matches?.("[data-ai-chat-service]")) {
+      const value = String(target.value || "");
+      if (onChatServiceChange) onChatServiceChange(value);
+      return true;
+    }
+    if (target.matches?.("[data-ai-chat-parsing-toggle]")) {
+      writeLocalLlmSettings({ parsingEnabled: target.checked });
+      setStatus(target.checked ? "AI Chat note parsing enabled." : "AI Chat note parsing disabled.");
+      return true;
+    }
+    if (target.matches?.("[data-ai-chat-context-toggle]")) {
+      writeLocalLlmSettings({ patientContextEnabled: target.checked });
+      setStatus(target.checked ? "Patient context attached to AI Chat chat." : "Patient context detached from AI Chat chat.");
+      render();
+      return true;
+    }
+    if (target.matches?.("[data-ai-chat-context-piece]")) {
       // Include/exclude one chart document from the model's context.
-      const pieceId = target.dataset.localAiContextPiece || "";
+      const pieceId = target.dataset.aiChatContextPiece || "";
       const { selectedIds } = contextPieces();
       const next = new Set(selectedIds);
       if (target.checked) next.add(pieceId);
@@ -488,14 +687,17 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
     return false;
   }
 
+  // Both modes share the composer hooks ([data-ai-chat-form] /
+  // [data-ai-chat-input]); the active mode decides where the message goes.
   function submit(event) {
-    const form = event.target.closest?.("[data-local-ai-chat-form]");
+    const form = event.target.closest?.("[data-ai-chat-form]");
     if (!form) return false;
     event.preventDefault();
-    const input = form.querySelector("[data-local-ai-chat-input]");
+    const input = form.querySelector("[data-ai-chat-input]");
     const text = composerText(input);
     clearComposer(input);
-    void sendChat(text);
+    if (state.mode === "remote") void sendRemoteChat(text);
+    else void sendChat(text);
     return true;
   }
 
@@ -503,12 +705,13 @@ export function createLocalAiController({ app, byId, escapeHtml, icon, setStatus
   // isComposing guard: don't send while an IME is composing text.
   function keydown(event) {
     if (event.key !== "Enter" || event.shiftKey || event.isComposing) return false;
-    const input = event.target.closest?.("[data-local-ai-chat-input]");
+    const input = event.target.closest?.("[data-ai-chat-input]");
     if (!input) return false;
     event.preventDefault();
     const text = composerText(input);
     clearComposer(input);
-    void sendChat(text);
+    if (state.mode === "remote") void sendRemoteChat(text);
+    else void sendChat(text);
     return true;
   }
 

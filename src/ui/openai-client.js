@@ -66,3 +66,42 @@ export async function requestOpenAiStructuredJson({ apiKey, model, input, schema
     throw new Error("The OpenAI API returned text that was not valid JSON. Review the input and try again.");
   }
 }
+
+// Plain-text chat completion for AI Chat's remote (ChatGPT) mode. Unlike
+// requestOpenAiStructuredJson, the reply is free-form text, not a JSON
+// object. `input` is a Responses-API input array
+// ([{ role: "system"|"user"|"assistant", content }]) or a plain string.
+// `tools` optionally enables web search ([{ type: "web_search" }]) so the
+// model's citations can be grounded in real sources.
+export async function requestOpenAiChat({ apiKey, model, input, tools, fetchImpl = fetch, timeoutMs = 300000 } = {}) {
+  const key = String(apiKey || "").trim();
+  if (!key) throw new Error("Save an OpenAI API key in Settings before using ChatGPT chat.");
+  const body = { model, input };
+  if (Array.isArray(tools) && tools.length) body.tools = tools;
+  const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+  const timeoutId = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+  let response;
+  try {
+    response = await fetchImpl("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${key}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body),
+      ...(controller ? { signal: controller.signal } : {})
+    });
+  } catch (err) {
+    if (err && err.name === "AbortError") {
+      throw new Error("The ChatGPT request timed out after 5 minutes. Try again, or turn off web search for a faster reply.");
+    }
+    throw new Error("Unable to reach the OpenAI API from this browser. Check the network connection and try again.");
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
+  const payload = await readJson(response);
+  if (!response.ok) throw new Error(apiError(response, payload));
+  const output = responseText(payload).trim();
+  if (!output) throw new Error("The OpenAI API returned an empty reply. Try again.");
+  return output;
+}

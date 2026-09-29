@@ -1,4 +1,5 @@
 import { naturalLanguagePrompt } from "../prompts/natural-language.js";
+import { CHAT_SERVICE_OPTIONS } from "../ai/remote-chat.js";
 
 export const MEDICAL_SERVICE_OPTIONS = [
   {
@@ -88,6 +89,7 @@ export const DEFAULT_OPENAI_WORKUP_MODEL = "gpt-5.6";
 export const DEFAULT_USER_PREFERENCES = Object.freeze({
   openAiApiKey: "",
   openAiModel: DEFAULT_OPENAI_WORKUP_MODEL,
+  chatService: "",
   medicalService: "",
   customServiceName: "",
   serviceFocus: "",
@@ -123,9 +125,13 @@ export function normalizeUserPreferences(value = {}) {
     medicalService = "";
     presentationDetail = "";
   }
+  const chatService = CHAT_SERVICE_OPTIONS.some((option) => option.value === value?.chatService)
+    ? value.chatService
+    : "";
   return {
     openAiApiKey: trimmed(value?.openAiApiKey, 1000),
     openAiModel: openAiWorkupModelOption(value?.openAiModel).value,
+    chatService,
     medicalService,
     customServiceName,
     serviceFocus,
@@ -145,6 +151,10 @@ export function presentationDetailOption(value) {
 
 export function openAiWorkupModelOption(value) {
   return optionFor(OPENAI_WORKUP_MODEL_OPTIONS, value, DEFAULT_OPENAI_WORKUP_MODEL);
+}
+
+export function chatServiceOption(value) {
+  return optionFor(CHAT_SERVICE_OPTIONS, value, DEFAULT_USER_PREFERENCES.chatService);
 }
 
 export function buildTeamPreferencesPromptBlock(preferences = {}) {

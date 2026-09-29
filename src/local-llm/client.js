@@ -1,7 +1,7 @@
 // Main-thread client for the browser-local LLM worker (src/local-llm/worker.js).
 // Owns the model lifecycle: hardware-gated selection, visible download/load
 // progress, a mandatory self-test before the model is marked verified, and
-// chat/parse calls. No DOM here; the UI controller in src/ui/local-ai/
+// chat/parse calls. No DOM here; the UI controller in src/ui/ai-chat/
 // renders state. Verification follows the same rule as the de-id model packs:
 // a model is usable only after it is loaded AND self-tested in this session.
 
@@ -64,7 +64,10 @@ export function readLocalLlmSettings() {
     patientContextEnabled: stored.patientContextEnabled !== false,
     // Editable system guidelines (Settings > Local AI guidelines). Empty
     // means "use the built-in default" — see DEFAULT_SYSTEM_GUIDELINES.
-    systemGuidelines: typeof stored.systemGuidelines === "string" ? stored.systemGuidelines : ""
+    systemGuidelines: typeof stored.systemGuidelines === "string" ? stored.systemGuidelines : "",
+    // AI Chat mode: "local" (on-device) or "remote" (ChatGPT). Persisted so
+    // the student's choice survives reloads.
+    chatMode: stored.chatMode === "remote" ? "remote" : "local"
   };
 }
 

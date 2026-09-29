@@ -37,7 +37,7 @@ import {
   listPatientContextPieces
 } from "../src/local-llm/patient-context.js";
 import { CHARS_PER_TOKEN, TOKEN_SAFETY_MARGIN, buildChatMessages, estimateTokens } from "../src/local-llm/context-budget.js";
-import { createLocalAiPresentation } from "../src/ui/local-ai/presentation.js";
+import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js";
 import { buildSystemPrompt } from "../src/local-llm/system-prompt.js";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../src/local-llm/system-prompt.js";
 import { renderChatMarkdown } from "../src/local-llm/markdown.js";
@@ -437,7 +437,7 @@ console.log("patient context tests passed");
 // streaming starts so onToken has a target and the user sees feedback.
 
 {
-  const presentation = createLocalAiPresentation({
+  const presentation = createAiChatPresentation({
     escapeHtml: (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"),
     icon: () => ""
   });
@@ -452,30 +452,30 @@ console.log("patient context tests passed");
     ...base,
     chat: { messages: [{ role: "user", text: "hi" }], streamingText: "", modelKey: "", modelLabel: "", streaming: true }
   });
-  assert.ok(waiting.includes('data-local-ai-streaming'), "streaming bubble exists before first token");
-  assert.ok(waiting.includes("lai-thinking"), "thinking indicator shown while waiting for first token");
-  assert.ok(waiting.includes("data-local-ai-thinking-label"), "thinking label carries the live-timer hook");
+  assert.ok(waiting.includes('data-ai-chat-streaming'), "streaming bubble exists before first token");
+  assert.ok(waiting.includes("aic-thinking"), "thinking indicator shown while waiting for first token");
+  assert.ok(waiting.includes("data-ai-chat-thinking-label"), "thinking label carries the live-timer hook");
   assert.ok(waiting.includes(">Reading context…<"), "prefill label names what the model is doing");
 
   const withText = presentation.render({
     ...base,
     chat: { messages: [{ role: "user", text: "hi" }], streamingText: "Hello", modelKey: "", modelLabel: "", streaming: true }
   });
-  assert.ok(withText.includes('data-local-ai-streaming'), "streaming bubble persists once tokens arrive");
-  assert.ok(!withText.includes("lai-thinking"), "thinking indicator replaced by streamed text");
+  assert.ok(withText.includes('data-ai-chat-streaming'), "streaming bubble persists once tokens arrive");
+  assert.ok(!withText.includes("aic-thinking"), "thinking indicator replaced by streamed text");
   assert.ok(withText.includes("Hello"), "streamed text rendered");
 
   const idle = presentation.render({
     ...base,
     chat: { messages: [], streamingText: "", modelKey: "", modelLabel: "", streaming: false }
   });
-  assert.ok(!idle.includes('data-local-ai-streaming'), "no streaming bubble when idle");
-  assert.ok(!idle.includes("lai-thinking"), "no thinking indicator when idle");
+  assert.ok(!idle.includes('data-ai-chat-streaming'), "no streaming bubble when idle");
+  assert.ok(!idle.includes("aic-thinking"), "no thinking indicator when idle");
 
   // Accuracy disclaimer: UI-rendered, always visible under the composer,
   // naming the active model.
-  assert.ok(idle.includes('data-local-ai-disclaimer'), "disclaimer rendered in chat view");
-  assert.ok(idle.includes("lai-disclaimer"), "disclaimer uses left-aligned styling");
+  assert.ok(idle.includes('data-ai-chat-disclaimer'), "disclaimer rendered in chat view");
+  assert.ok(idle.includes("aic-disclaimer"), "disclaimer uses left-aligned styling");
   assert.ok(idle.includes("thousands of times smaller"), "disclaimer states the scale gap");
   assert.ok(idle.includes("may be inaccurate"), "disclaimer warns about accuracy");
   const withModel = presentation.render({
@@ -789,7 +789,7 @@ console.log("primary team note tests passed");
 // chat.contextStats, plus a note when older messages were trimmed.
 
 {
-  const presentation = createLocalAiPresentation({
+  const presentation = createAiChatPresentation({
     escapeHtml: (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"),
     icon: () => ""
   });
@@ -804,7 +804,7 @@ console.log("primary team note tests passed");
     ...base,
     chat: { messages: [], streamingText: "", modelKey: "", modelLabel: "", streaming: false, contextStats: { promptTokens: 2048, contextWindow: 4096, droppedMessages: 0 } }
   });
-  assert.ok(metered.includes("lai-context"), "meter rendered when stats present");
+  assert.ok(metered.includes("aic-context"), "meter rendered when stats present");
   assert.ok(metered.includes("Context 50%"), "meter shows measured share of window");
 
   const trimmed = presentation.render({
@@ -817,7 +817,7 @@ console.log("primary team note tests passed");
     ...base,
     chat: { messages: [], streamingText: "", modelKey: "", modelLabel: "", streaming: false }
   });
-  assert.ok(!unmeasured.includes("lai-context"), "no meter before the first send");
+  assert.ok(!unmeasured.includes("aic-context"), "no meter before the first send");
 }
 
 console.log("context meter tests passed");

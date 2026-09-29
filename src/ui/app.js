@@ -193,7 +193,7 @@ import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups
 import { createDemoController } from "./demo/controller.js?v=20260921-demo-complete-plan";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260921-demo-complete-plan";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260921-demo-complete-plan";
-import { createLocalAiController } from "./local-ai/controller.js?v=20260928-local-llm-v12";
+import { createAiChatController } from "./ai-chat/controller.js?v=20260929-ai-chat-v1";
 import { createScoresController } from "./scores/controller.js?v=20260927-models-v2";
 import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20260928-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260928-local-llm-v10";
@@ -288,11 +288,11 @@ const app = {
   demoPreviewMode: false,
   admissionDate: "" // in-memory copy of the encrypted patient's admission-date anchor
 };
-const viewIds = ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "localAi", "scores", "settings"];
+const viewIds = ["vault", "daily", "workups", "checklist", "review", "prompts", "quickDeid", "aiChat", "scores", "settings"];
 const viewTitles = {
   vault: "Vault / Roster", daily: "Hospital Stay", review: "Review Data / Draft Note",
   workups: "Workups", checklist: "Checklist", prompts: "Prompts",
-  quickDeid: "Quick De-ID Tool", localAi: "Local AI", scores: "Models", settings: "Settings"
+  quickDeid: "Quick De-ID Tool", aiChat: "AI Chat", scores: "Models", settings: "Settings"
 };
 let draggedWorkupRow = null;
 let workupDragSaved = false;
@@ -323,7 +323,7 @@ function localAiParseInfo(scope) {
   let modelLabel = "";
   try {
     enabled = readLocalLlmSettings().parsingEnabled === true;
-    const status = localAiController.getClient().getStatus();
+    const status = aiChatController.getClient().getStatus();
     ready = status.status === "ready" && status.verified === true;
     modelLabel = status.activeModelKey ? localLlmModelByKey(status.activeModelKey)?.label || "" : "";
   } catch {
@@ -370,14 +370,19 @@ const demoSessionController = createDemoSessionController({
   render,
   setStatus
 });
-const localAiController = createLocalAiController({
+const aiChatController = createAiChatController({
   app,
   byId,
   escapeHtml,
   icon,
   setStatus,
-  render: renderLocalAi,
-  getDraftNoteText: () => reviewController.getDraftNoteText()
+  render: renderAiChat,
+  getDraftNoteText: () => reviewController.getDraftNoteText(),
+  currentPreferences,
+  onChatServiceChange: (value) => {
+    setVaultPreferences({ ...currentPreferences(), chatService: value });
+    persistVault("Chat service updated.").then(() => render());
+  }
 });
 const scoresController = createScoresController({
   app,
@@ -1168,7 +1173,7 @@ function render() {
   // cached data) must never prevent renderStatusBar() below from running -
   // that's what reflects patient selection, so a single broken view previously
   // made the whole app look like patient selection had stopped working.
-  for (const renderView of [renderVault, renderDaily, renderReview, renderWorkups, renderChecklist, renderPrompts, renderQuickDeid, renderLocalAi, renderScores, renderSettings]) {
+  for (const renderView of [renderVault, renderDaily, renderReview, renderWorkups, renderChecklist, renderPrompts, renderQuickDeid, renderAiChat, renderScores, renderSettings]) {
     try {
       renderView();
     } catch (error) {
@@ -1811,8 +1816,8 @@ function renderScores() {
   scoresController.render();
 }
 
-function renderLocalAi() {
-  localAiController.render();
+function renderAiChat() {
+  aiChatController.render();
 }
 
 function renderPhoneChecklist() {
@@ -1898,7 +1903,7 @@ async function handleClick(event) {
   // data-pull-section but no data-action. Check before the data-action
   // early return below, otherwise these clicks are silently dropped.
   if (app.view === "review" && reviewController.click(event.target)) return;
-  if (app.view === "localAi" && localAiController.click(event.target)) return;
+  if (app.view === "aiChat" && aiChatController.click(event.target)) return;
   if (app.view === "scores" && scoresController.click(event.target)) return;
   const target = event.target.closest("[data-action]");
   if (!target) return;
@@ -4017,7 +4022,7 @@ function handleChange(event) {
     return;
   }
   if (app.view === "review" && reviewController.change(event.target)) { demoController.observeChange(event.target); return; }
-  if (app.view === "localAi" && localAiController.change(event.target)) return;
+  if (app.view === "aiChat" && aiChatController.change(event.target)) return;
   if (app.view === "scores" && scoresController.change(event.target)) return;
   if (event.target.matches("[data-result-metadata]")) return dailySourceController.updateResultMetadata(event.target.dataset.resultScope || "daily", event.target.dataset.resultMetadata, event.target.value);
   if (event.target.matches?.(".guideline-select")) {
@@ -4468,7 +4473,7 @@ function bindEvents() {
     // Structured exam-findings custom input: Enter commits, Escape cancels.
     if (app.view === "review" && reviewController.keydown(event)) return;
     // Local AI chat composer: Enter sends, Shift+Enter adds a newline.
-    if (app.view === "localAi" && localAiController.keydown(event)) return;
+    if (app.view === "aiChat" && aiChatController.keydown(event)) return;
   });
   document.querySelectorAll("[data-view-target]").forEach((button) => {
     button.addEventListener("click", () => {
