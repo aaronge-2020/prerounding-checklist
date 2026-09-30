@@ -1,5 +1,11 @@
-import { createDemoPresentation } from "./presentation.js?v=20260929-demo-v2";
-import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20260929-demo-v2";
+import {
+  createDemoPresentation,
+  DEMO_STAGE_NEXT,
+  DEMO_INFO_STAGES,
+  DEMO_PARSE_NOTE_TEXT,
+  DEMO_DRUG_CHECK_MEDS
+} from "./presentation.js?v=20260930-demo-v3";
+import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20260930-demo-v3";
 
 export const DEMO_REVIEW_ACTIONS = Object.freeze(new Set([
   "keep-reviewed-redaction",
@@ -16,35 +22,45 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   const presentation = createDemoPresentation({ escapeHtml });
   let activeCalloutTarget = null;
   let calloutFrame = 0;
+  let preparedStage = null;
+  let preparing = false;
 
   function visibleTarget(container, selector) {
     return [...(container?.querySelectorAll(selector) || [])].find((element) => element.getClientRects().length > 0) || null;
   }
 
   function activeReviewAction(content) {
-    return visibleTarget(
-      content,
-      '.section-editor.is-expanded [data-action="keep-reviewed-redaction"], ' +
-        '.section-editor.is-expanded [data-action="confirm-all-section-redactions"], ' +
-        '.section-editor.is-expanded [data-action="continue-section-review"]'
-    );
+    // The tour allows both step-by-step Accept and Confirm all: mark every
+    // visible review action so the locked tour doesn't block the alternative.
+    // Check each action in priority order; the caller marks all returned.
+    const targets = [];
+    for (const action of ["keep-reviewed-redaction", "confirm-all-section-redactions", "continue-section-review"]) {
+      const target = visibleTarget(content, `.section-editor.is-expanded [data-action="${action}"]`);
+      if (target) targets.push(target);
+    }
+    return targets;
   }
 
-  function targetForStage(stage, stageId, view, content) {
+  function targetsForStage(stage, stageId, view, content) {
     if ((stageId === "context-review" || stageId === "daily-review") && view === stage.view) {
-      return activeReviewAction(content) || visibleTarget(content, stage.targetSelector);
+      const reviewTargets = activeReviewAction(content);
+      if (reviewTargets.length) return reviewTargets;
+      const fallback = visibleTarget(content, stage.targetSelector);
+      return fallback ? [fallback] : [];
     }
-    return stage.navTarget
+    const single = stage.navTarget
       ? document.querySelector(`button[data-view-target="${CSS.escape(stage.navTarget)}"]`)
       : view === stage.view
         ? visibleTarget(content, stage.targetSelector)
         : document.querySelector(`button[data-view-target="${CSS.escape(stage.view)}"]`);
+    return single ? [single] : [];
   }
 
   function clearTargetDecorations() {
-    document.querySelectorAll(".demo-next-action").forEach((element) => element.classList.remove("demo-next-action"));
+    document.querySelectorAll(".demo-next-action").forEach((element) => element.classList.remove("demo-next-action", "demo-pulse"));
     document.querySelectorAll("[data-demo-target]").forEach((element) => element.removeAttribute("data-demo-target"));
     document.querySelectorAll("[data-demo-callout]").forEach((element) => element.remove());
+    document.querySelectorAll("[data-demo-dim]").forEach((element) => element.remove());
     activeCalloutTarget = null;
     if (calloutFrame) cancelAnimationFrame(calloutFrame);
     calloutFrame = 0;
@@ -57,27 +73,36 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     const rect = target.getBoundingClientRect();
     const margin = 16;
     const gap = 16;
-    const width = callout.offsetWidth;
-    const height = callout.offsetHeight;
+    const calloutW = callout.offsetWidth;
+    const calloutH = callout.offsetHeight;
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
-    const fitsRight = rect.right + gap + width <= viewportWidth - margin;
-    const fitsLeft = rect.left - gap - width >= margin;
-    const fitsBelow = rect.bottom + gap + height <= viewportHeight - margin;
+    const fitsRight = rect.right + gap + calloutW <= viewportWidth - margin;
+    const fitsLeft = rect.left - gap - calloutW >= margin;
+    const fitsBelow = rect.bottom + gap + calloutH <= viewportHeight - margin;
     const placement = fitsRight ? "right" : fitsLeft ? "left" : fitsBelow ? "bottom" : "top";
     const left = placement === "right"
       ? rect.right + gap
       : placement === "left"
-        ? rect.left - width - gap
-        : Math.min(Math.max(margin, rect.left + rect.width / 2 - width / 2), viewportWidth - width - margin);
+        ? rect.left - calloutW - gap
+        : Math.min(Math.max(margin, rect.left + rect.width / 2 - calloutW / 2), viewportWidth - calloutW - margin);
     const top = placement === "bottom"
       ? rect.bottom + gap
       : placement === "top"
-        ? Math.max(margin, rect.top - height - gap)
-        : Math.min(Math.max(margin, rect.top + rect.height / 2 - height / 2), viewportHeight - height - margin);
+        ? Math.max(margin, rect.top - calloutH - gap)
+        : Math.min(Math.max(margin, rect.top + rect.height / 2 - calloutH / 2), viewportHeight - calloutH - margin);
     callout.dataset.placement = placement;
     callout.style.left = `${Math.round(left)}px`;
     callout.style.top = `${Math.round(top)}px`;
+    // Keep the arrow pointed at the target center after viewport clamping:
+    // the card edge may be clamped, but the arrow tracks the target.
+    if (placement === "top" || placement === "bottom") {
+      const arrowX = Math.min(Math.max(rect.left + rect.width / 2 - left, 16), Math.max(calloutW - 16, 16));
+      callout.style.setProperty("--demo-arrow-x", `${Math.round(arrowX)}px`);
+    } else {
+      const arrowY = Math.min(Math.max(rect.top + rect.height / 2 - top, 16), Math.max(calloutH - 16, 16));
+      callout.style.setProperty("--demo-arrow-y", `${Math.round(arrowY)}px`);
+    }
   }
 
   function mountCallout(target, stage) {
@@ -96,17 +121,73 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   document.addEventListener("scroll", scheduleCalloutPosition, true);
   window.addEventListener("resize", scheduleCalloutPosition);
 
+  function flashDemoHint() {
+    const target = document.querySelector("[data-demo-target]");
+    if (target) {
+      target.classList.remove("demo-pulse");
+      void target.offsetWidth;
+      target.classList.add("demo-pulse");
+    }
+    const hint = document.querySelector("[data-demo-hint]");
+    if (hint) {
+      hint.hidden = false;
+      clearTimeout(flashDemoHint.timer);
+      flashDemoHint.timer = setTimeout(() => { hint.hidden = true; }, 2400);
+    }
+  }
+
+  function mountDim() {
+    const dim = document.createElement("div");
+    dim.className = "demo-dim";
+    dim.dataset.demoDim = "true";
+    dim.addEventListener("click", flashDemoHint);
+    document.body.appendChild(dim);
+  }
+
+  // Stage-entry prefills: stage synthetic input through the real UI paths so
+  // the tour demonstrates actual behavior, not canned screenshots.
+  function prepareStage(stageId) {
+    if (stageId === "parse-note") {
+      // The admission note parser lives in the admission packet workspace.
+      // Select it and ensure the primary-note paste UI is shown.
+      // The textarea is filled after render (see render()).
+      if (app.selectedStayPacketId !== "admission") app.selectedStayPacketId = "admission";
+      if (app.admissionSourceKind !== "primary_note") app.admissionSourceKind = "primary_note";
+    }
+    if (stageId === "check-interactions") {
+      app.drugChecks.medInput = DEMO_DRUG_CHECK_MEDS;
+      app.drugChecks.result = null;
+      app.drugChecks.status = "";
+      app.drugChecks.dataState = "idle";
+      app.drugChecks.dataError = "";
+    }
+  }
+
   function render() {
     document.querySelectorAll("[data-demo-guide]").forEach((element) => element.remove());
     clearTargetDecorations();
     const session = getSession();
-    if (!session) return;
+    if (!session) {
+      preparedStage = null;
+      return;
+    }
+    if (!preparing && preparedStage !== session.stage) {
+      preparing = true;
+      prepareStage(session.stage);
+      preparedStage = session.stage;
+      preparing = false;
+      renderApp();
+      return;
+    }
     const view = getView();
     const content = byId(`${view}Content`);
     if (!content) return;
     const stageId = session.stage;
     const stage = presentation.stageFor(stageId);
-    const target = targetForStage(stage, stageId, view, content);
+    const isInfo = DEMO_INFO_STAGES.has(stageId);
+    const isComplete = stageId === "done";
+    const targets = targetsForStage(stage, stageId, view, content);
+    const target = targets[0] || null;
     const routeMismatch = view !== stage.view;
     content.insertAdjacentHTML(
       "afterbegin",
@@ -121,30 +202,60 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
             ?.textContent?.replace(/^Next: review\s*/i, "") || ""
       })
     );
+    if (!isComplete) mountDim();
+    if (stageId === "parse-note" && view === "daily") {
+      // Fill the admission paste textarea after render so the deterministic
+      // parser sections the synthetic note. Only fills once.
+      const textarea = content.querySelector('[data-structured-note-paste][data-structured-note-scope="admission"]');
+      if (textarea && !String(textarea.value || "").trim()) {
+        textarea.value = DEMO_PARSE_NOTE_TEXT;
+        textarea.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    }
     if (!target) return;
-    target.classList.add("demo-next-action");
-    target.dataset.demoTarget = "true";
+    // Action stages expose ONLY the highlighted controls above the dim layer;
+    // info stages keep the full dim and advance via the guide bar's Continue.
+    // Review stages may expose several valid actions (Accept, Confirm all).
+    if (!isInfo) {
+      for (const t of targets) {
+        t.classList.add("demo-next-action");
+        t.dataset.demoTarget = "true";
+      }
+    }
     if (!routeMismatch) mountCallout(target, stage);
     requestAnimationFrame(() => {
-      target.focus({ preventScroll: true });
+      if (!isInfo) target.focus({ preventScroll: true });
       if (!stage.navTarget && view === stage.view) target.scrollIntoView({ block: "center", behavior: "smooth" });
       scheduleCalloutPosition();
     });
     setTimeout(() => {
       if (getSession()?.stage !== stageId) return;
       clearTargetDecorations();
-      const currentTarget = targetForStage(stage, stageId, view, content);
-      currentTarget?.classList.add("demo-next-action");
-      if (currentTarget) {
-        currentTarget.dataset.demoTarget = "true";
-        if (!routeMismatch) mountCallout(currentTarget, stage);
+      if (getSession()?.stage !== "done") mountDim();
+      const currentTargets = targetsForStage(stage, stageId, view, content);
+      const currentTarget = currentTargets[0] || null;
+      if (!currentTarget) return;
+      if (!isInfo) {
+        for (const t of currentTargets) {
+          t.classList.add("demo-next-action");
+          t.dataset.demoTarget = "true";
+        }
       }
+      if (!routeMismatch) mountCallout(currentTarget, stage);
     }, 250);
   }
 
   function observeAction(action) {
     const session = getSession();
     if (!session) return;
+    if (action === "advance-guided-demo") {
+      const next = DEMO_STAGE_NEXT[session.stage];
+      if (next) {
+        session.stage = next;
+        renderApp();
+      }
+      return;
+    }
     if (action === "add-admission-source") {
       if (document.querySelector('[data-action="keep-reviewed-redaction"]')) session.stage = "context-review";
       else {
@@ -153,13 +264,13 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
         session.stage = "save-day";
       }
     }
-    const reviewTransition = demoReviewTransition(action, Boolean(activeReviewAction(document.querySelector("#dailyContent"))));
+    const reviewTransition = demoReviewTransition(action, activeReviewAction(document.querySelector("#dailyContent")).length > 0);
     if (reviewTransition !== "unrelated") {
       if (reviewTransition === "preserve-review") {
         render();
         return;
       }
-      if (session.stage === "daily-review") session.stage = "open-cheat-sheets";
+      if (session.stage === "daily-review") session.stage = "parse-note";
       else {
         app.selectedStayPacketId = DEMO_DAY_ID;
         selectDemoPacket();
@@ -167,7 +278,16 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       }
     }
     if (action === "add-daily-source")
-      session.stage = document.querySelector('[data-action="keep-reviewed-redaction"]') ? "daily-review" : "open-cheat-sheets";
+      session.stage = document.querySelector('[data-action="keep-reviewed-redaction"]') ? "daily-review" : "parse-note";
+    if (action === "drug-checks-check") {
+      // Fires only via the controller's onCheckComplete callback, i.e. after
+      // a successful check whose results are already painted. Never advance
+      // on the click alone (the check is async); and only from the matching
+      // stage so stray checks can't skip the tour ahead.
+      if (session.stage === "check-interactions") session.stage = "open-ai-chat";
+      renderApp();
+      return;
+    }
     if (action === "copy-prompt") session.stage = "done";
     renderApp();
   }
@@ -204,8 +324,11 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   function observeNavigation(view) {
     const session = getSession();
     if (!session) return;
+    if (session.stage === "open-drug-checks" && view === "drugChecks") session.stage = "check-interactions";
+    if (session.stage === "open-ai-chat" && view === "aiChat") session.stage = "ai-chat-models";
     if (session.stage === "open-cheat-sheets" && view === "cheatSheets") session.stage = "browse-cheat-sheet";
     if (session.stage === "open-review" && view === "review") session.stage = "write-note";
+    if (session.stage === "open-scribe-pro" && view === "scribePro") session.stage = "scribe-pro-voice";
     if (session.stage === "open-prompts" && view === "prompts") session.stage = "copy-prompt";
     renderApp();
   }

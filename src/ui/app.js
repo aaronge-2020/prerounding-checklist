@@ -132,10 +132,12 @@ import {
 } from "./redaction/presentation.js?v=20260921-medication-card-v4";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20260929-deid-clinicale5";
-import { createDemoController } from "./demo/controller.js?v=20260929-demo-v2";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260929-demo-v2";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20260929-demo-v2";
+import { createDemoController } from "./demo/controller.js?v=20260930-demo-v3";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260930-demo-v3";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20260930-demo-v3";
 import { createAiChatController } from "./ai-chat/controller.js?v=20260929-deid-clinicale5";
+import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20260930-drug-checks-v1";
+import { createDrugChecksController } from "./drug-checks/controller.js?v=20260930-drug-checks-v1";
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20260929-rag-v3";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
@@ -181,6 +183,7 @@ const app = {
   tokenColorOverrides: loadTokenColorOverrides(),
   smartMenuOpen: false,
   quickDeid: { input: "", output: "", warnings: [], status: "", review: null, admissionDate: "" },
+  drugChecks: { medInput: "", status: "", dataState: "idle", dataError: "", result: null },
   quickDeidBusy: false,
   phiReviews: new Map(),
   // Session-only edits remain outside the encrypted vault until the user
@@ -204,11 +207,11 @@ const app = {
   demoPreviewMode: false,
   admissionDate: "" // in-memory copy of the encrypted patient's admission-date anchor
 };
-const viewIds = ["vault", "daily", "cheatSheets", "review", "prompts", "quickDeid", "aiChat", "drugLookup", "scores", "scribePro", "settings"];
+const viewIds = ["vault", "daily", "cheatSheets", "review", "prompts", "quickDeid", "aiChat", "drugLookup", "drugChecks", "scores", "scribePro", "settings"];
 const viewTitles = {
   vault: "Vault / Roster", daily: "Hospital Stay", review: "Review Data / Draft Note",
   cheatSheets: "Cheat Sheets", prompts: "Prompts",
-  quickDeid: "Quick De-ID Tool", aiChat: "AI Chat", drugLookup: "Drug Lookup", scores: "Models", settings: "Settings"
+  quickDeid: "Quick De-ID Tool", aiChat: "AI Chat", drugLookup: "Drug Lookup", drugChecks: "Drug checks", scores: "Models", settings: "Settings"
 };
 let draggedSectionRow = null;
 let sectionDragSaved = false;
@@ -377,6 +380,17 @@ const drugLookupController = createDrugLookupController({
   render: renderDrugLookup,
   setStatus,
   getPatientMedicationNames
+});
+const drugChecksPresentation = createDrugChecksPresentation({ escapeHtml });
+const drugChecksController = createDrugChecksController({
+  app,
+  byId,
+  escapeHtml,
+  render: renderDrugChecks,
+  vaultIsUnlocked,
+  onCheckComplete: (ok) => {
+    if (ok) demoController.observeAction("drug-checks-check");
+  }
 });
 const scoresController = createScoresController({
   app,
@@ -1103,7 +1117,7 @@ function render() {
   // cached data) must never prevent renderStatusBar() below from running -
   // that's what reflects patient selection, so a single broken view previously
   // made the whole app look like patient selection had stopped working.
-  for (const renderView of [renderVault, renderDaily, renderReview, renderCheatSheets, renderPrompts, renderQuickDeid, renderAiChat, renderDrugLookup, renderScores, renderScribePro, renderSettings]) {
+  for (const renderView of [renderVault, renderDaily, renderReview, renderCheatSheets, renderPrompts, renderQuickDeid, renderAiChat, renderDrugLookup, renderDrugChecks, renderScores, renderScribePro, renderSettings]) {
     try {
       renderView();
     } catch (error) {
@@ -1662,6 +1676,9 @@ function renderDrugLookup() {
   drugLookupController.ensureAutoLoaded();
   replaceViewContent(byId("drugLookupContent"), drugLookupController.renderView());
 }
+function renderDrugChecks() {
+  replaceViewContent(byId("drugChecksContent"), drugChecksPresentation.renderDrugChecks({ state: app.drugChecks }));
+}
 
 function collectSectionRows(containerId) {
   return [...document.querySelectorAll(`#${containerId} .section-editor`)].map((row) => ({
@@ -1726,6 +1743,7 @@ async function handleClick(event) {
   if (app.view === "review" && reviewController.click(event.target)) return;
   if (app.view === "aiChat" && aiChatController.click(event.target)) return;
   if (app.view === "drugLookup" && drugLookupController.click(event.target)) return;
+  if (app.view === "drugChecks" && drugChecksController.click(event.target)) return;
   if (app.view === "scores" && scoresController.click(event.target)) return;
   if (app.view === "cheatSheets" && cheatSheetsController.click(event.target)) {
     const opened = event.target.closest?.("[data-cheat-sheets-open]");
@@ -3476,6 +3494,7 @@ function handleInput(event) {
   if (dailySourceController.handleInput(event.target)) return;
   if (app.view === "scores" && scoresController.input(event.target)) return;
   if (app.view === "cheatSheets" && cheatSheetsController.input(event.target)) return;
+  if (app.view === "drugChecks" && drugChecksController.input(event.target)) return;
   if (event.target.matches("[data-clinical-medication-search]")) return updateClinicalMedicationPage(event.target.closest('[data-clinical-view="medications"]'), { reset: true });
   if (event.target.id === "dailySourceDraft") {
     dailySourceController.updateDraft("daily", event.target.value);
@@ -3626,7 +3645,7 @@ function bindEvents() {
         render();
         return;
       }
-      if (app.demoSession && !["daily", "cheatSheets", "review", "prompts"].includes(button.dataset.viewTarget))
+      if (app.demoSession && !["daily", "cheatSheets", "review", "prompts", "drugChecks", "aiChat", "scribePro"].includes(button.dataset.viewTarget))
         demoSessionController.exit({ renderAfter: false });
       if (button.dataset.viewTarget === "review") reviewController.prepare(app.selectedStayPacketId || app.selectedDayId || "admission");
       app.view = button.dataset.viewTarget;

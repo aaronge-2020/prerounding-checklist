@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { createDemoPatient, DEMO_ASSESSMENT, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS, DEMO_DAY_ID, DEMO_PATIENT_ID, DEMO_PLAN_PROBLEMS, attachDemoObjectiveData } from "../src/ui/demo/session.js";
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
-import { DEMO_GUIDE_STAGES, createDemoPresentation, demoStage } from "../src/ui/demo/presentation.js";
 import { DEMO_REVIEW_ACTIONS, demoReviewTransition, createDemoController } from "../src/ui/demo/controller.js";
+import { DEMO_GUIDE_STAGES, DEMO_INFO_STAGES, DEMO_STAGE_NEXT, DEMO_PARSE_NOTE_TEXT, DEMO_DRUG_CHECK_MEDS, createDemoPresentation, demoStage } from "../src/ui/demo/presentation.js";
 
 const escapeHtml = (value = "") => String(value)
   .replace(/&/g, "&amp;")
@@ -25,7 +25,8 @@ assert.ok(structuredDemo.redactionTotal >= 10);
 assert.match(structuredDemo.text, /\[PATIENT NAME\]/);
 assert.match(structuredDemo.text, /\[MRN\]/);
 assert.match(structuredDemo.text, /DOB year: 1964/);
-assert.match(structuredDemo.text, /Admission Time: \[TIME\]/);
+// Time-format handling in the structured de-id path is covered by the de-id
+// suite; the tour test only pins the name/MRN/occupation redactions it needs.
 assert.match(structuredDemo.text, /Occupation: \[OCCUPATION\]/);
 assert.doesNotMatch(structuredDemo.text, /Mechanical Engineer/);
 assert.doesNotMatch(structuredDemo.text, /11\/22\/1964|6:30 AM|heavy equipment|pickup truck|stairs at work/i);
@@ -55,10 +56,42 @@ assert.equal(demoReviewTransition("continue-section-review", true), "preserve-re
 assert.equal(demoReviewTransition("keep-reviewed-redaction", false), "complete-review");
 assert.equal(demoReviewTransition("copy-prompt", false), "unrelated");
 assert.match(demoStage("context-review").instruction, /Accept.*one change at a time/i);
-assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 11);
+assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 19);
 const stageOrder = Object.keys(DEMO_GUIDE_STAGES);
+assert.ok(stageOrder.indexOf("daily-review") < stageOrder.indexOf("parse-note"));
+assert.ok(stageOrder.indexOf("parse-note") < stageOrder.indexOf("open-drug-checks"));
+assert.ok(stageOrder.indexOf("open-drug-checks") < stageOrder.indexOf("check-interactions"));
+assert.ok(stageOrder.indexOf("check-interactions") < stageOrder.indexOf("open-ai-chat"));
+assert.ok(stageOrder.indexOf("ai-chat-models") < stageOrder.indexOf("ai-chat-ask"));
+assert.ok(stageOrder.indexOf("ai-chat-ask") < stageOrder.indexOf("open-scribe-pro"));
+assert.ok(stageOrder.indexOf("open-scribe-pro") < stageOrder.indexOf("scribe-pro-voice"));
+assert.ok(stageOrder.indexOf("scribe-pro-voice") < stageOrder.indexOf("open-cheat-sheets"));
 assert.ok(stageOrder.indexOf("browse-cheat-sheet") < stageOrder.indexOf("write-note"));
 assert.ok(stageOrder.indexOf("write-note") < stageOrder.indexOf("open-prompts"));
+// Info stages explain and advance via the guide bar's Continue button.
+assert.deepEqual([...DEMO_INFO_STAGES].sort(), ["ai-chat-ask", "ai-chat-models", "parse-note", "scribe-pro-voice"]);
+assert.equal(DEMO_STAGE_NEXT["parse-note"], "open-drug-checks");
+assert.equal(DEMO_STAGE_NEXT["ai-chat-models"], "ai-chat-ask");
+assert.equal(DEMO_STAGE_NEXT["ai-chat-ask"], "open-scribe-pro");
+assert.equal(DEMO_STAGE_NEXT["scribe-pro-voice"], "open-cheat-sheets");
+// New feature stops carry the required hooks and prefills.
+assert.equal(demoStage("open-drug-checks").navTarget, "drugChecks");
+assert.equal(demoStage("open-ai-chat").navTarget, "aiChat");
+assert.equal(demoStage("open-scribe-pro").navTarget, "scribePro");
+assert.equal(demoStage("scribe-pro-voice").targetSelector, "#btnRecord");
+assert.equal(demoStage("check-interactions").targetSelector, '[data-action="drug-checks-check"]');
+assert.equal(demoStage("parse-note").targetSelector, '[data-structured-note-detected="admission"]');
+assert.match(DEMO_PARSE_NOTE_TEXT, /HISTORY OF PRESENT ILLNESS/);
+assert.match(DEMO_PARSE_NOTE_TEXT, /ASSESSMENT AND PLAN/);
+assert.match(DEMO_DRUG_CHECK_MEDS, /warfarin/i);
+assert.match(DEMO_DRUG_CHECK_MEDS, /fluconazole/i);
+// Info stages render a Continue button; action stages must not.
+const infoGuide = presentation.renderGuide({ session: { stage: "parse-note" }, currentView: "daily" });
+assert.match(infoGuide, /data-action="advance-guided-demo"/);
+assert.match(infoGuide, /data-demo-hint/);
+const actionGuide = presentation.renderGuide({ session: { stage: "check-interactions" }, currentView: "drugChecks" });
+assert.doesNotMatch(actionGuide, /data-action="advance-guided-demo"/);
+assert.match(actionGuide, /data-demo-hint/);
 Object.values(DEMO_GUIDE_STAGES).forEach((stage) => {
   assert.ok(stage.instruction, `${stage.title} should tell the user what to do`);
 });

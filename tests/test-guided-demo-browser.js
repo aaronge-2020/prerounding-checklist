@@ -1,48 +1,50 @@
 import assert from "node:assert/strict";
-import { createReadStream, existsSync, statSync } from "node:fs";
-import { readFile } from "node:fs/promises";
-import { createServer } from "node:http";
-import { dirname, extname, join, normalize } from "node:path";
-import { fileURLToPath } from "node:url";
-import { chromium } from "playwright";
+import { chromium, firefox } from "playwright";
 import { fileAppUrl } from "./browser/app-harness.js";
 
-const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const mime = new Map([
-  [".html", "text/html"],
-  [".js", "text/javascript"],
-  [".mjs", "text/javascript"],
-  [".css", "text/css"],
-  [".md", "text/markdown"],
-  [".json", "application/json"],
-  [".ico", "image/x-icon"],
-  [".wasm", "application/wasm"]
-]);
-
 const appUrl = fileAppUrl();
-const browser = await chromium.launch({
+// DEMO_BROWSER=firefox uses Playwright's bundled Firefox (no local-network
+// access block, reliable file:// module loads); default is system Chromium.
+const browser = process.env.DEMO_BROWSER === "firefox"
+  ? await firefox.launch()
+  : await chromium.launch({
     executablePath: "/opt/meta-chromium/chrome",
     args: ["--allow-file-access-from-files", "--disable-features=LocalNetworkAccessChecks", "--no-proxy-server"]
   });
-const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
+const page = await browser.newPage({
+  viewport: process.env.DEMO_VIEWPORT === "mobile" ? { width: 390, height: 844 } : { width: 1280, height: 820 }
+});
 const consoleErrors = [];
 page.on("console", (message) => {
   if (message.type() === "error") consoleErrors.push(message.text());
 });
 
 try {
-  await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
-  await page.goto(appUrl);
-  await page.waitForSelector("#vaultPassphrase", { timeout: 60000 });
-  await page.waitForFunction(() => document.querySelectorAll('.primary-nav [data-view-target]').length === 10);
+  if (process.env.DEMO_BROWSER !== "firefox")
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+  // file:// module loads flake under concurrency in this Chromium; a fresh
+  // reload re-requests the failed modules, so retry the initial load.
+  let loaded = false;
+  for (let attempt = 0; attempt < 4 && !loaded; attempt++) {
+    if (attempt > 0) await page.reload();
+    else await page.goto(appUrl, { waitUntil: "domcontentloaded" });
+    try {
+      await page.waitForSelector("#vaultPassphrase", { timeout: 20000 });
+      loaded = true;
+    } catch {
+      console.log(`initial load attempt ${attempt + 1} hit the file:// flake, reloading`);
+    }
+  }
+  assert.ok(loaded, "the app must render the vault gate after retries");
+  await page.waitForFunction(() => document.querySelectorAll('.primary-nav [data-view-target]').length === 12);
   assert.deepEqual(
     await page.locator('.primary-nav [data-view-target]').evaluateAll((buttons) => buttons.map((button) => button.dataset.viewTarget)),
-    ["vault", "daily", "cheatSheets", "review", "prompts", "quickDeid", "aiChat", "drugLookup", "scores", "settings"],
-    "the visible page order must offer bedside cheat sheets before Draft Note"
+    ["vault", "daily", "review", "aiChat", "prompts", "quickDeid", "scribePro", "cheatSheets", "drugLookup", "drugChecks", "scores", "settings"],
+    "the visible nav must keep Drug Lookup and add the offline Drug checks view"
   );
   assert.deepEqual(
     await page.locator('main .view').evaluateAll((views) => views.map((view) => view.id)),
-    ["vaultView", "dailyView", "cheatSheetsView", "reviewView", "promptsView", "quickDeidView", "aiChatView", "drugLookupView", "scoresView", "settingsView"],
+    ["vaultView", "dailyView", "cheatSheetsView", "reviewView", "promptsView", "quickDeidView", "aiChatView", "drugLookupView", "drugChecksView", "scoresView", "settingsView", "scribeProView"],
     "the document order must match the visible workflow"
   );
   await page.fill("#vaultPassphrase", "guided demo test passphrase");
@@ -68,9 +70,9 @@ try {
   assert.equal(await page.locator('[data-action="add-daily-source"]').isVisible(), true, "Confirm all must remain usable after individual accepts");
 
   await page.click('[data-action="add-daily-source"]');
-  await page.waitForFunction(() => /Check the day-one changes|Open the bedside cheat sheets/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
+  await page.waitForFunction(() => /Check the day-one changes|Paste a note, get sections/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   for (let step = 0; step < 30; step += 1) {
-    if (/Open the bedside cheat sheets/.test(await page.locator("[data-demo-guide]").innerText())) break;
+    if (/Paste a note, get sections/.test(await page.locator("[data-demo-guide]").innerText())) break;
     const confirmRest = page.locator('.section-editor.is-expanded [data-action="confirm-all-section-redactions"]:visible').first();
     const continueReview = page.locator('.section-editor.is-expanded [data-action="continue-section-review"]:visible').first();
     if (await confirmRest.count()) await confirmRest.click();
@@ -78,6 +80,42 @@ try {
     else throw new Error("The guided daily review did not offer a next visible action.");
     await page.waitForTimeout(50);
   }
+  // Pasted-note parsing stop: the tour prefilled a synthetic admission note and
+  // the deterministic parser must have sectioned it with no model involved.
+  assert.match(await page.locator("[data-demo-guide]").innerText(), /Paste a note, get sections/);
+  await page.waitForSelector('[data-structured-note-detected="admission"] .structured-note-detected-list', { timeout: 15000 });
+  assert.match(await page.locator('[data-structured-note-detected="admission"]').innerText(), /History of present illness|Medications/i);
+  await page.click('[data-action="advance-guided-demo"]');
+  await page.waitForFunction(() => /Check drug interactions/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
+
+  // Drug-interaction stop: the tour prefilled warfarin + fluconazole and the
+  // on-device DDInter/RxNorm check must surface a Major interaction card.
+  await page.click('[data-view-target="drugChecks"]');
+  await page.waitForFunction(() => /Run the interaction check/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
+  assert.match(await page.locator("#drugChecksInput").inputValue(), /warfarin/i);
+  await page.click('[data-action="drug-checks-check"]');
+  await page.waitForSelector(".dc-interaction-card", { timeout: 120000 });
+  assert.match(await page.locator("#drugChecksResults").innerText(), /Major/i);
+  await page.waitForFunction(() => /Open AI Chat/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
+
+  // AI Chat stops: two info stages gated on the guide bar's Continue button.
+  await page.click('[data-view-target="aiChat"]');
+  await page.waitForFunction(() => /On-device or ChatGPT/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
+  assert.equal(await page.locator('[data-action="ai-chat-mode"][data-mode="local"]').count(), 1);
+  assert.equal(await page.locator('[data-action="ai-chat-mode"][data-mode="remote"]').count(), 1);
+  await page.click('[data-action="advance-guided-demo"]');
+  await page.waitForFunction(() => /You control the context/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
+  assert.equal(await page.locator('[data-action="ai-chat-context-inspector"]').count(), 1);
+  await page.click('[data-action="advance-guided-demo"]');
+  await page.waitForFunction(() => /Open the voice scribe/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
+  assert.match(await page.locator("[data-demo-guide]").innerText(), /Open the voice scribe/);
+  await page.click('[data-view-target="scribePro"]');
+  await page.waitForFunction(() => /Voice scribe, on-device/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
+  assert.match(await page.locator("[data-demo-guide]").innerText(), /Voice scribe, on-device/);
+  // The tour must not start the engine: no model download, no microphone use.
+  assert.equal(await page.locator("#btnRecord").count(), 1);
+  await page.click('[data-action="advance-guided-demo"]');
+  await page.waitForFunction(() => /Open the bedside cheat sheets/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Open the bedside cheat sheets/);
   await page.click('[data-view-target="cheatSheets"]');
   await page.waitForFunction(() => /Open the ACS cheat sheet/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
@@ -118,6 +156,26 @@ try {
 
   await page.click('[data-view-target="prompts"]');
   assert.equal(await page.locator("#promptTaskSelect").inputValue(), "presentation_quality_editor");
+  // The final callout's arrow must track the Copy prompt button's center
+  // after viewport clamping: horizontal arrows share the target's center Y,
+  // vertical arrows share the target's center X.
+  const arrowMiss = await page.evaluate(() => {
+    const callout = document.querySelector("[data-demo-callout]");
+    const target = document.querySelector('[data-action="copy-prompt"]');
+    if (!callout || !target) return "missing callout or target";
+    const t = target.getBoundingClientRect();
+    const c = callout.getBoundingClientRect();
+    const style = getComputedStyle(callout);
+    const placement = callout.dataset.placement;
+    if (placement === "top" || placement === "bottom") {
+      const ax = c.left + parseFloat(style.getPropertyValue("--demo-arrow-x"));
+      return Math.abs(ax - (t.left + t.width / 2));
+    }
+    const ay = c.top + parseFloat(style.getPropertyValue("--demo-arrow-y"));
+    return Math.abs(ay - (t.top + t.height / 2));
+  });
+  assert.ok(typeof arrowMiss === "number" && arrowMiss < 6,
+    `final callout arrow must point at the Copy prompt button (miss ${arrowMiss}px)`);
   assert.match(await page.locator("#presentationToEdit").inputValue(), /high-risk NSTEMI/i);
   assert.match(await page.locator("#presentationToEdit").inputValue(), /Physical Exam/);
   assert.match(await page.locator("#presentationEditorInputTitle").innerText(), /From Draft Note/);
