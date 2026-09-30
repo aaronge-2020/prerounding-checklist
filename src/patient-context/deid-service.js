@@ -1,7 +1,7 @@
 import {
   createDeidentifier,
   deidentifyTextStructuredOnly
-} from "../vault/deid.js?v=20260929-deid-clinicale5";
+} from "../vault/deid.js?v=20260930-deid-trackc8";
 import {
   DEFAULT_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,

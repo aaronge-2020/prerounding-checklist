@@ -1321,4 +1321,10 @@ assertTrackCRedacts('{"givenname1": "Ossi"}', "Ossi", "C7 json givenname");
 assertTrackCPreserves('{"Status": "Active"}', "Active", "C7 non-name key not a name");
 assertTrackCPreserves('{"Patient_ID": "12345"}', "12345", "C7 non-name value not a name");
 
+// C8: numbered/underscored name labels (given_name1:, LN2:, Last Name 1:)
+assertTrackCRedacts('given_name1: Sicking', "Sicking", "C8 numbered given_name1");
+assertTrackCRedacts('LN2: Ossi', "Ossi", "C8 numbered LN2");
+assertTrackCRedacts('Last Name 1: Golding', "Golding", "C8 numbered Last Name 1");
+assertTrackCRedacts('GivenName2: Ariadna', "Ariadna", "C8 GivenName2");
+
 console.log("Track C structured-pattern tests passed.");
