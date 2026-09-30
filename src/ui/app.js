@@ -104,7 +104,7 @@ import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medi
 import { createDailySourceController } from "./daily/source-controller.js?v=20260923-plan-problems-v1&scroll=preserve-section-scroll-v3&parser=table-v7&local-llm-v3&clear-btn-v1";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20260928-ap-suggestions-v1&trend=concise-v3";
-import { createReviewController } from "./review/controller.js?v=20260928-ap-suggestions-v1&labs=analyte-selection-v3&rxnorm=v2&draft=sections-v1";
+import { createReviewController } from "./review/controller.js?v=20260928-ap-suggestions-v1&labs=analyte-selection-v3&rxnorm=v2&draft=sections-v1&pull=stay-fallback-v1";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-medication-card-v4";
 import {
   createPromptTaskController,

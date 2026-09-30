@@ -115,6 +115,22 @@ function sourceNoteForPacket(patient, selectedPacketId) {
   return patient?.days?.find((day) => day.id === selectedPacketId)?.primaryTeamNote || null;
 }
 
+// Resolve which saved primary note a pull reads. The admission H&P is the
+// stay's canonical primary note: when the selected packet is a hospital day
+// with no saved primary note of its own, the pull reads the admission H&P
+// instead of failing — the student thinks of "the primary note" as one note,
+// and the H&P is the only one that exists. A day WITH a saved note keeps
+// strict packet scoping: its sections are authoritative for that day.
+function primaryNoteSourceForPull(patient, packet) {
+  const own = sourceNoteForPacket(patient, packet.id);
+  if (own) return { source: own, sourcePacketId: packet.id, sourceLabel: packet.label };
+  if (packet.id !== "admission") {
+    const admissionNote = patient?.admissionPrimaryTeamNote || null;
+    if (admissionNote) return { source: admissionNote, sourcePacketId: "admission", sourceLabel: "Admission H&P" };
+  }
+  return { source: null, sourcePacketId: packet.id, sourceLabel: packet.label };
+}
+
 // Saved note sections cross a state boundary: a fresh parse stores plain
 // strings, while the vault stores { deidentifiedText } objects. Read the text
 // without falling through to the raw object — an empty-but-present object is
@@ -1332,16 +1348,35 @@ export function createReviewController(deps) {
       : clear ? "Baseline cleared." : "Baseline saved — the review sheet and note now show it.");
   }
 
+  // Unsaved primary-note input (typed sections or pasted text that was never
+  // de-identified and saved) is the most common reason a pull finds "no note".
+  // Name it so the student knows exactly which button to press. The transient
+  // maps are cleared on patient switch and on successful save, so content here
+  // with no saved note is genuinely unsaved input for this patient.
+  function unsavedPrimaryNoteMessage(packet) {
+    const key = packet.id === "admission" ? "admission" : packet.id;
+    const drafts = deps.app.structuredNoteDrafts?.get(key) || {};
+    const composer = deps.app.structuredNoteComposers?.get(key) || {};
+    const hasDraftText = Object.values(drafts).some((value) => String(value ?? "").trim());
+    const hasPastedText = String(composer.pastedText ?? "").trim();
+    if (hasDraftText || hasPastedText) {
+      return `Your primary-note text for ${packet.label} isn't saved yet — click "De-identify & save" under Hospital Stay first, then pull.`;
+    }
+    return "";
+  }
+
   // Pull the corresponding section text from the primary team note (for the
   // current hospital day) into the draft as a starting point. This lets the
   // student start from yesterday's primary note text when writing their own.
   function pullFromPrimaryNote(fieldId) {
     const current = model();
     if (!current.patient) return;
-    const source = sourceNoteForPacket(current.patient, current.packet.id);
+    const packet = current.packet;
     const fieldLabel = fieldId.replace(/_/g, " ");
+    const { source, sourcePacketId, sourceLabel } = primaryNoteSourceForPull(current.patient, packet);
     if (!source) {
-      const message = "No primary team note for this day — paste one under Hospital Stay first, then pull.";
+      const message = unsavedPrimaryNoteMessage(packet)
+        || `No primary team note for ${packet.label} — paste one under Hospital Stay first, then pull.`;
       deps.setStatus(message);
       deps.showToast?.(message, { type: "warning" });
       return;
@@ -1449,14 +1484,18 @@ export function createReviewController(deps) {
       noteDrafts: { ...(patient.noteDrafts || {}), [current.packet.id]: normalizedPull }
     }));
     setDraft(normalizedPull);
+    const successMessage = sourcePacketId === packet.id
+      ? `Pulled ${fieldLabel} from primary note.`
+      : `Pulled ${fieldLabel} from ${sourceLabel} (no primary note saved for ${packet.label}).`;
+    deps.setStatus(successMessage);
+    deps.showToast?.(successMessage, { type: "success", durationMs: 2500 });
     if (!deps.isEphemeralDemo?.()) {
-      void deps.persistVault("Pulled section saved.").catch(() => {
+      // Pass the same message to the vault persist so its completion status
+      // does not clobber the informative message above with a generic one.
+      void deps.persistVault(successMessage).catch(() => {
         deps.showToast?.("Pulled content is shown, but the vault save failed — your changes may not persist.", { type: "error" });
       });
     }
-    const successMessage = `Pulled ${fieldLabel} from primary note.`;
-    deps.setStatus(successMessage);
-    deps.showToast?.(successMessage, { type: "success", durationMs: 2500 });
     // Surgical: refresh only the affected region(s) — no re-render, so
     // both the clinical-data list and the draft panel keep their scroll.
     const livePanel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
