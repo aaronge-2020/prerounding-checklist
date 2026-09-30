@@ -12696,13 +12696,15 @@ details.ed-section .ed-section-summary .ed-label { display: inline-flex; }
    positioned so showing it never shifts the layout; revealed on hover, and
    always faintly visible on touch devices. */
 .aic-m { position: relative; }
-.aic-m-revert { position: absolute; bottom: -7px; z-index: 2; display: inline-flex; align-items: center; gap: 3px; font-size: 0.68rem; font-weight: 600; color: var(--muted); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; cursor: pointer; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s; }
-.aic-m--u .aic-m-revert { right: 6px; }
-.aic-m--a .aic-m-revert { left: 6px; }
-.aic-m:hover .aic-m-revert, .aic-m-revert:focus-visible { opacity: 1; pointer-events: auto; }
+/* Revert sits in the normal flow BELOW the message content (never overlaid
+   on top of it) and appears on hover. The flex column keeps it under the
+   text, tool records, and citations alike. */
+.aic-m-revert { display: none; align-items: center; gap: 3px; font-size: 0.68rem; font-weight: 600; color: var(--muted); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; cursor: pointer; white-space: nowrap; margin-top: 4px; align-self: flex-start; }
+.aic-m--u .aic-m-revert { align-self: flex-end; }
+.aic-m:hover .aic-m-revert, .aic-m-revert:focus-visible { display: inline-flex; }
 .aic-m-revert:hover { color: var(--text); border-color: var(--muted); }
 .aic-m-revert svg { width: 11px; height: 11px; }
-@media (hover: none) { .aic-m-revert { opacity: .8; pointer-events: auto; } }
+@media (hover: none) { .aic-m-revert { display: inline-flex; } }
 /* "Context" inspector: exactly what will be loaded into the model's context
    on the next send, with per-piece include/exclude checkboxes. */
 .aic-ctx { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); overflow: hidden; }
@@ -13793,6 +13795,9 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .aic-toolrec > summary:hover { color: var(--text); }
 .aic-toolrec-body { padding: 2px 12px 10px; font-size: 0.78rem; line-height: 1.5; color: var(--muted); }
 .aic-toolrec-body p { margin: 8px 0 4px; }
+.aic-toolrec-query { font-size: 0.85rem; color: var(--text); font-style: italic; }
+.aic-toolrec-meta { font-size: 0.72rem; }
+.aic-toolrec-meta code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.72rem; color: var(--text); background: color-mix(in srgb, var(--text) 8%, transparent); border-radius: 6px; padding: 1px 6px; }
 .aic-toolrec-body pre { margin: 0; padding: 8px 10px; border-radius: 8px; background: color-mix(in srgb, var(--text) 5%, transparent); white-space: pre-wrap; word-break: break-word; max-height: 220px; overflow-y: auto; font-size: 0.74rem; }
 
 /* ── Chart-grounded RAG (Phase 2): citation chips, disclosure panel, model notice ── */

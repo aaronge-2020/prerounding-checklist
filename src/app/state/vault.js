@@ -29,7 +29,7 @@ export function createEmptyVaultState({ now = timestampNow } = {}) {
   };
 }
 
-export function createTextSection(label, { id = createLocalId("section"), text = "", role = "", scope = "context", sourceKind = "other_chart_text", resultCategory = "", resultDate = "", resultContext = "", now = timestampNow } = {}) {
+export function createTextSection(label, { id = createLocalId("section"), text = "", role = "", scope = "context", sourceKind = "other_chart_text", resultCategory = "", resultDate = "", resultContext = "", deidentificationSkipped = false, now = timestampNow } = {}) {
   const timestamp = now();
   const normalizedSourceKind = normalizeSourceKindForScope(scope, sourceKind);
   return {
@@ -42,6 +42,7 @@ export function createTextSection(label, { id = createLocalId("section"), text =
     resultContext: normalizedSourceKind === "results" ? String(resultContext || "") : "",
     deidentifiedText: String(text || ""),
     residualWarnings: [],
+    deidentificationSkipped: deidentificationSkipped === true,
     createdAt: timestamp,
     updatedAt: timestamp
   };

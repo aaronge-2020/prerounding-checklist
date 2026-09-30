@@ -455,7 +455,10 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
         </label>
         <div class="source-draft-footer">
           <span class="muted" data-${prefix}-source-draft-count>${sourceDraft.length.toLocaleString()} characters · ${escapeHtml(selectedSource.description)}</span>
-          <button class="button--primary" type="button" data-action="${addAction}" ${deidBusy || !sourceDraft.trim() ? "disabled" : ""}>${deidBusy ? "De-identifying…" : addLabel}</button>
+          <div class="button-row">
+            <button class="button--secondary" type="button" data-action="${addAction}-raw" ${!sourceDraft.trim() ? "disabled" : ""} title="Save this source as-is without running de-identification, so you can redact false positives manually">Save without de-identifying</button>
+            <button class="button--primary" type="button" data-action="${addAction}" ${deidBusy || !sourceDraft.trim() ? "disabled" : ""}>${deidBusy ? "De-identifying…" : addLabel}</button>
+          </div>
         </div>
         <div data-source-parse-preview="${prefix}">${renderSourceParsePreview({ scope, parseResult: sourceParse })}</div>
       </section>`;

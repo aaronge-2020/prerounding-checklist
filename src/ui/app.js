@@ -99,7 +99,7 @@ import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences
 } from "../app/preferences.js?v=20260929-gpt6-models";
-import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1";
+import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1&icon=search-v1";
 import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=section-scroll-v3&parser=table-v6&local-llm-v1";
 import { createDailySourceController } from "./daily/source-controller.js?v=20260923-plan-problems-v1&scroll=preserve-section-scroll-v3&parser=table-v7&local-llm-v3";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
@@ -135,7 +135,7 @@ import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20
 import { createDemoController } from "./demo/controller.js?v=20260929-demo-v2";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260929-demo-v2";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260929-demo-v2";
-import { createAiChatController } from "./ai-chat/controller.js?v=20260929-ai-chat-v16";
+import { createAiChatController } from "./ai-chat/controller.js?v=20260929-ai-chat-v17";
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20260929-rag-v3";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
@@ -1816,7 +1816,9 @@ async function handleClick(event) {
     if (action === "save-structured-note-to-draft") await dailySourceController.saveStructuredNoteToDraft(target.dataset.noteScope || "daily");
     if (action === "add-day") await addDay();
     if (action === "add-daily-source") await dailySourceController.addSource();
+    if (action === "add-daily-source-raw") await dailySourceController.addSource({ deidentify: false });
     if (action === "add-admission-source") await dailySourceController.addAdmissionSource();
+    if (action === "add-admission-source-raw") await dailySourceController.addAdmissionSource({ deidentify: false });
     if (action === "select-day" || action === "select-admission")
       dailySourceController.selectPacket(action === "select-admission" ? "admission" : target.dataset.dayId);
     if (action === "save-day") await dailySourceController.saveSources();

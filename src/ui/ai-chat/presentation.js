@@ -241,10 +241,26 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
 
   // ── Conversation ────────────────────────────────────────
 
-  // Auditable tool records: one collapsed row per tool call the model made
-  // while composing a reply. The deterministic payload is the pinned fact
-  // (score/headline/missing inputs); the model's prose stays advisory and
-  // cannot override these numbers.
+  // Auditable tool records: one compact row per tool call the model made
+  // while composing a reply. The headline says WHAT the tool did in plain
+  // language — never the raw API name — and the query is front and center
+  // for web searches. Details expand for audit.
+  function truncateText(text, max) {
+    const s = String(text || "");
+    if (s.length <= max) return s;
+    return s.slice(0, max - 1).trimEnd() + "…";
+  }
+
+  function webSearchQuery(rec) {
+    const input = rec && rec.input;
+    if (input && typeof input === "object") {
+      const q = String(input.query || input.q || input.search_query || "").trim();
+      if (q) return q;
+    }
+    if (typeof input === "string" && input.trim()) return input.trim();
+    return "";
+  }
+
   function toolRecordHeadline(rec) {
     const det = rec && rec.deterministic ? rec.deterministic : {};
     if (det.kind === "calculator-run" || det.kind === "ai-model-run") {
@@ -256,23 +272,33 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     }
     if (det.kind === "calculator-list") return `${det.count} calculators listed`;
     if (det.kind === "ai-model-list") return `${det.count} AI models listed`;
-    if (rec && rec.toolName === "web_search") return "Web search";
-    return "done";
+    if (rec && rec.toolName === "web_search") {
+      const q = webSearchQuery(rec);
+      return q ? `Searched the web for “${truncateText(q, 80)}”` : "Searched the web";
+    }
+    const name = String((rec && rec.toolName) || "").trim();
+    return name ? `Ran ${name}` : "Ran a tool";
+  }
+
+  function toolRecordIcon(rec) {
+    if (rec && rec.toolName === "web_search") return "search";
+    return "wand";
   }
 
   function renderToolRecords(records) {
     const items = (records || []).map((rec) => {
-      const name = String((rec && rec.toolName) || "tool");
-      const inputJson = rec && rec.input && typeof rec.input === "object"
-        ? JSON.stringify(rec.input)
-        : String(rec && rec.input != null ? rec.input : "");
-      const detJson = rec && rec.deterministic ? JSON.stringify(rec.deterministic) : "";
+      const isWebSearch = rec && rec.toolName === "web_search";
+      const toolName = String((rec && rec.toolName) || "").trim();
+      const query = isWebSearch ? webSearchQuery(rec) : "";
+      const resultText = rec && typeof rec.text === "string" ? rec.text.trim() : "";
+      const detJson = rec && rec.deterministic && !isWebSearch ? JSON.stringify(rec.deterministic) : "";
       return `<details class="aic-toolrec">` +
-        `<summary>${icon("wand")}<code>${escapeHtml(name)}</code><span>${escapeHtml(toolRecordHeadline(rec))}</span></summary>` +
+        `<summary>${icon(toolRecordIcon(rec))}<span>${escapeHtml(toolRecordHeadline(rec))}</span></summary>` +
         `<div class="aic-toolrec-body">` +
-        (inputJson ? `<p><strong>Inputs</strong></p><pre>${escapeHtml(inputJson.slice(0, 800))}</pre>` : "") +
-        (rec && rec.text ? `<p><strong>Result</strong></p><pre>${escapeHtml(String(rec.text).slice(0, 1200))}</pre>` : "") +
+        (query ? `<p class="aic-toolrec-query">“${escapeHtml(query)}”</p>` : "") +
+        (resultText ? `<p>${escapeHtml(truncateText(resultText, 600))}</p>` : "") +
         (detJson ? `<p><strong>Verified output</strong></p><pre>${escapeHtml(detJson.slice(0, 1200))}</pre>` : "") +
+        (toolName && !isWebSearch ? `<p class="aic-toolrec-meta">Tool: <code>${escapeHtml(toolName)}</code></p>` : "") +
         `</div></details>`;
     }).join("");
     return `<div class="aic-toolrecs" aria-label="Tool calls used in this reply">${items}</div>`;
@@ -523,7 +549,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
   }
 
   function renderSidebar(vm) {
-    const { contextInspector, patientContext, clinicalService, sidebarGuidelinesText, sidebarOpen } = vm;
+    const { contextInspector, patientContext, clinicalService, sidebarGuidelinesText, sidebarGuidelinesRemoteText, sidebarOpen } = vm;
     const guidelinesTokens = Number(contextInspector?.guidelinesTokens || 0);
     return `
       ${sidebarOpen ? `<button type="button" class="aic-side-backdrop" data-action="ai-chat-sidebar-close" aria-label="Close sidebar"></button>` : ""}
@@ -555,8 +581,11 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
         </section>
         <section class="aic-side-sec" aria-label="Custom guidelines">
           <h3 class="aic-side-title">Guidelines</h3>
-          <textarea class="aic-guide" data-ai-chat-guidelines rows="6" aria-label="Custom chat guidelines" placeholder="Extra instructions for both chats — reviewed by you before anything is sent to ChatGPT.">${escapeHtml(sidebarGuidelinesText || "")}</textarea>
-          <p class="aic-muted aic-side-sub">~${guidelinesTokens.toLocaleString()} tokens</p>
+          <label class="aic-muted aic-side-sub" for="aic-guidelines-local">On-device chat</label>
+          <textarea id="aic-guidelines-local" class="aic-guide" data-ai-chat-guidelines rows="6" aria-label="Custom guidelines for the on-device chat" placeholder="Extra instructions for the on-device chat.">${escapeHtml(sidebarGuidelinesText || "")}</textarea>
+          <label class="aic-muted aic-side-sub" for="aic-guidelines-remote">ChatGPT</label>
+          <textarea id="aic-guidelines-remote" class="aic-guide" data-ai-chat-guidelines-remote rows="6" aria-label="Custom guidelines for ChatGPT" placeholder="Extra instructions for ChatGPT — reviewed by you once, then remembered. Never claims on-device execution.">${escapeHtml(sidebarGuidelinesRemoteText || "")}</textarea>
+          <p class="aic-muted aic-side-sub">~${guidelinesTokens.toLocaleString()} tokens in the active mode</p>
         </section>
       </aside>`;
   }
@@ -921,6 +950,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       contextInspector = {},
       clinicalService = {},
       sidebarGuidelinesText = "",
+      sidebarGuidelinesRemoteText = "",
       offlineMode = false
     } = vm;
     const isRemote = mode === "remote";
@@ -937,7 +967,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
           <div class="aic-main">
             ${isRemote ? renderRemoteMain({ remote, hasApiKey }) : renderLocalMain({ hardware, settings, llmStatus, chat })}
           </div>
-          ${renderSidebar({ contextInspector, patientContext, clinicalService, sidebarGuidelinesText, sidebarOpen })}
+          ${renderSidebar({ contextInspector, patientContext, clinicalService, sidebarGuidelinesText, sidebarGuidelinesRemoteText, sidebarOpen })}
         </div>
         ${renderHipaaReview(remote.review)}
       </div>`;

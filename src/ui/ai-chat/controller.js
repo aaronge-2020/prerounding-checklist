@@ -16,7 +16,7 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v16";
+import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v17";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20260929-ai-chat-v2";
 import { gatedFetch, isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
 import {
@@ -52,7 +52,7 @@ import {
   MAX_SELECTED_PIECES_CHARS
 } from "../../local-llm/patient-context.js?v=20260929-local-llm-v12";
 import { CHARS_PER_TOKEN, buildChatMessages, estimateTokens } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
-import { DEFAULT_SYSTEM_GUIDELINES, buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
+import { buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 import { medicalServiceOption, OPENAI_WORKUP_MODEL_OPTIONS } from "../../app/preferences.js?v=20260929-gpt6-models";
 import {
@@ -66,7 +66,11 @@ import {
   buildTransmitPayload,
   locateTruncation,
   fullChartBudgetChars,
-  effectiveGuidelinesText
+  effectiveGuidelinesText,
+  effectiveRemoteGuidelinesText,
+  applyGuidelineDecisions,
+  pieceHasNoPendingRecords,
+  persistGuidelineDecisions
 } from "./delta-review.js?v=20260929-ai-chat-v16";
 import {
   parseSectionCitations
@@ -549,7 +553,11 @@ export function createAiChatController({
       ? remotePricing?.label || String(remotePrefsForBudget.openAiModel || "")
       : modelRecord?.label || "";
     const budgetMessages = isRemoteBudget ? state.remote.messages : state.chat.messages;
-    const guidelines = String(settings().systemGuidelines || "").trim() || DEFAULT_SYSTEM_GUIDELINES;
+    // The meter counts the guidelines actually sent in the active mode:
+    // the on-device guidelines locally, the ChatGPT guidelines remotely.
+    const guidelines = isRemoteBudget
+      ? effectiveRemoteGuidelinesText(settings())
+      : effectiveGuidelinesText(settings());
     const guidelinesTokens = estimateTokens(guidelines);
     const historyTokens = estimateTokens(
       budgetMessages.map((m) => m.text).join("\n")
@@ -654,7 +662,8 @@ export function createAiChatController({
       },
       sidebarOpen: state.sidebarOpen,
       clinicalService: clinicalServiceInfo(),
-      sidebarGuidelinesText: String(settings().systemGuidelines || "")
+      sidebarGuidelinesText: String(settings().systemGuidelines || ""),
+      sidebarGuidelinesRemoteText: String(settings().systemGuidelinesRemote || "")
     });
     const messages = root.querySelector("[data-ai-chat-messages]");
     if (messages) messages.scrollTop = messages.scrollHeight;
@@ -1080,6 +1089,16 @@ export function createAiChatController({
   // De-identify one review piece (custom instructions, patient header, or a
   // chart piece), reusing the stored review verbatim when the content hash
   // matches.
+  //
+  // Custom instructions are settings text, not clinical notes: the clinical
+  // NER over-flags instructional prose (names, organizations, places that
+  // are not PHI). For the guidelines piece only, keep high-precision PHI
+  // patterns (dates, phones, emails, IDs) and drop the fuzzy entity types
+  // that are overwhelmingly false positives here. The student can still
+  // redact anything manually via the highlight-to-redact flow.
+  const GUIDELINE_KEEP_LABELS = new Set([
+    "DATE", "TIME", "PHONE", "EMAIL", "SSN", "MRN", "ID", "ZIP", "ADDRESS", "URL", "IP"
+  ]);
   async function prepareReviewPiece(review, { id, title, group, rawText }, deidKey) {
     const contentHash = hashPiece(rawText);
     const stored = state.remote.reviewStore.get(id);
@@ -1097,6 +1116,10 @@ export function createAiChatController({
       };
     }
     const result = await deidentifyForReview(rawText, deidKey, review.admissionDate, `"${title}"`);
+    // Guidelines filter: drop fuzzy entity types before building records.
+    const guidelineEntities = id === "guidelines"
+      ? (result.entities || []).filter((e) => GUIDELINE_KEEP_LABELS.has(String(e?.label || "").toUpperCase()))
+      : (result.entities || []);
     const piece = {
       id, title, group,
       badge: stored ? "changed" : "new",
@@ -1106,10 +1129,18 @@ export function createAiChatController({
       counts: {},
       warnings: (result.residualWarnings || []).slice(0, 4).map((w) => w?.snippet || String(w || "")),
       flags: (result.flags || []).slice(0, 4),
-      modelRecords: entitiesToRedactionRecords(rawText, result.entities || []),
+      modelRecords: entitiesToRedactionRecords(rawText, guidelineEntities),
       manualRecords: [],
       truncated: false
     };
+    // The ChatGPT custom instructions are settings text, not patient data:
+    // re-apply the student's stored accept/reject decisions so unchanged
+    // instructions don't demand a fresh review every send. Decisions apply
+    // to the current model run — new spans still surface as pending.
+    if (id === "guidelines") {
+      applyGuidelineDecisions(piece, contentHash);
+      if (pieceHasNoPendingRecords(piece)) piece.badge = "reviewed";
+    }
     refreshPieceApproval(piece, review.admissionDate);
     return piece;
   }
@@ -1140,6 +1171,10 @@ export function createAiChatController({
       title: piece.title,
       group: piece.group
     });
+    // Remember the student's custom-instruction decisions across sessions,
+    // but only once every suggestion has an explicit decision — a partial
+    // review is never treated as done.
+    if (piece.id === "guidelines") persistGuidelineDecisions(hashPiece(piece.rawText), piece);
   }
 
   function findReviewPiece(review, pieceId) {
@@ -1532,12 +1567,14 @@ export function createAiChatController({
       review.messageCounts = messageResult.counts || {};
       review.messageFlags = (messageResult.flags || []).slice(0, 6);
       advanceProgress(review, "De-identifying your custom instructions…");
-      // (b) Custom instructions (system guidelines) — reviewed like any piece.
+      // (b) Custom instructions for the ChatGPT path — reviewed like any piece.
+      // These are stored separately from the on-device guidelines so the
+      // local-execution identity claims are never sent to OpenAI.
       review.guidelines = await prepareReviewPiece(review, {
         id: "guidelines",
-        title: "Custom instructions",
+        title: "Custom instructions (ChatGPT)",
         group: "Settings",
-        rawText: effectiveGuidelinesText(settings())
+        rawText: effectiveRemoteGuidelinesText(settings())
       }, deidKey);
       // (c) Patient header + each selected chart piece, sequentially.
       for (const target of contextTargets) {
@@ -2610,6 +2647,10 @@ export function createAiChatController({
     }
     if (target.matches?.("[data-ai-chat-guidelines]")) {
       writeLocalLlmSettings({ systemGuidelines: String(target.value ?? "") });
+      return true;
+    }
+    if (target.matches?.("[data-ai-chat-guidelines-remote]")) {
+      writeLocalLlmSettings({ systemGuidelinesRemote: String(target.value ?? "") });
       return true;
     }
     if (target.matches?.("[data-ai-chat-hipaa-ack]")) {

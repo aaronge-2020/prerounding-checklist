@@ -372,11 +372,16 @@ function makeControllerHarness({ draftSections }) {
     currentPreferences: () => ({ openAiApiKey: "sk-test", openAiModel: "gpt-5.4-mini", medicalService: "medicine" }),
     onChatServiceChange: () => {},
     deidDeps: makeDeidStub(),
-    chatDeps: { requestOpenAiChat: async () => "ok" },
+    chatDeps: { requestOpenAiChat: async (req) => { h.sentRequests.push(req); return "ok"; } },
     agentDeps: { runAgent: async () => { throw new Error("not used"); } }
   });
+  const h = { ctrl, html: () => html, sentRequests: [] };
   ctrl.click({ dataset: { action: "ai-chat-mode", mode: "remote" }, closest: (sel) => (sel === "[data-action]" ? { dataset: { action: "ai-chat-mode", mode: "remote" } } : null) });
-  return { ctrl, html: () => html };
+  // Clinical tools are off for this suite: the harness only stubs the plain
+  // OpenAI path (agentDeps.runAgent throws), so tool-loop sends would error
+  // instead of recording. This suite tests the review gate, not tools.
+  ctrl.change({ matches: (sel) => sel === "[data-ai-chat-tools-toggle]", checked: false });
+  return h;
 }
 
 function pieceToggleTarget(id, checked) {
@@ -407,6 +412,19 @@ async function driveSend(h, message) {
     const review = h.ctrl.getRemoteReview();
     if (review && (review.phase === "ready" || review.phase === "failed")) return review;
     if (Date.now() - start > 5000) throw new Error("timed out waiting for the review gate");
+    await tick();
+  }
+}
+
+// A send that needs no human eyes auto-transmits without opening the
+// review modal: poll until the request goes out (or time out).
+async function driveAutoSend(h, message) {
+  const before = h.sentRequests.length;
+  h.ctrl.click(sendRemoteAction(message));
+  const start = Date.now();
+  for (;;) {
+    if (h.sentRequests.length > before) return h.sentRequests[h.sentRequests.length - 1];
+    if (Date.now() - start > 5000) throw new Error("timed out waiting for the auto-send");
     await tick();
   }
 }
@@ -461,14 +479,18 @@ function patientLine(html) {
   assert.ok(reviewNoChart.systemPromptText.includes("CITATION RULES"), "citation rules still apply to the attached one-liner");
 
   // Nothing selected: the question goes alone and the model answers from
-  // general knowledge instead of citing chart sections.
+  // general knowledge instead of citing chart sections. The custom
+  // instructions were already reviewed (nothing pending) and the bare
+  // question is clean, so no human eyes are needed: the send skips the
+  // review modal and transmits the de-identified payload directly.
   h.ctrl.click(actionTarget("ai-chat-new-chat-remote"));
   h.ctrl.change(pieceToggleTarget("draft:section:one-liner", false));
-  const reviewBare = await driveSend(h, "Bare question");
-  assert.equal(reviewBare.phase, "ready", "review is ready with nothing selected");
-  assert.equal(reviewBare.pieces.length, 0, "no context pieces are reviewed");
-  assert.ok(reviewBare.systemPromptText.includes("CONTEXT RULES"), "general-knowledge prompt when nothing is attached");
-  assert.ok(!reviewBare.systemPromptText.includes("CITATION RULES"), "no citation rules without context");
+  const sentBare = await driveAutoSend(h, "Bare question");
+  assert.equal(h.ctrl.getRemoteReview(), null, "no review modal opens for a clean bare question");
+  const sentBareText = JSON.stringify(sentBare.input || "");
+  assert.ok(sentBareText.includes("CONTEXT RULES"), "general-knowledge prompt when nothing is attached");
+  assert.ok(!sentBareText.includes("CITATION RULES"), "no citation rules without context");
+  assert.ok(!JSON.stringify(sentBare).includes("CanaryName"), "no raw canary in the transmitted payload");
 
   // Re-checking a problem opts it back in. Starting a new remote chat
   // clears the finished review so the next send re-prepares the gate.

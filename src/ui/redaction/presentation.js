@@ -118,6 +118,9 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
     const isTextEditable = !review || editing;
     return `
       <div class="section-review-surface" data-section-review-surface>
+        ${section.deidentificationSkipped
+          ? `<div class="warning-box" role="alert"><strong>Not de-identified.</strong> <span class="muted">This source was saved without de-identification. Review the text and redact any PHI manually before using it.</span></div>`
+          : ""}
         ${review && !editing
           ? `<input class="section-text" type="hidden" value="${escapeHtml(draftText)}">${renderRedactionDocument(draftText, review, { id: documentId, scope, sectionId: section.id, label: `${section.label} redaction review` })}`
           : `<textarea class="section-text" rows="5" spellcheck="false">${escapeHtml(draftText)}</textarea>`}

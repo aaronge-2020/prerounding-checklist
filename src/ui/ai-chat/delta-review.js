@@ -21,7 +21,7 @@ import {
 } from "../../local-llm/patient-context.js?v=20260929-local-llm-v12";
 import { buildRemoteChatInput } from "../../ai/remote-chat.js?v=20260929-ai-chat-v6";
 import { redactFromEntities } from "../../vault/deid.js?v=20260921-medication-card-v4";
-import { DEFAULT_SYSTEM_GUIDELINES } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
+import { DEFAULT_SYSTEM_GUIDELINES, DEFAULT_REMOTE_SYSTEM_GUIDELINES } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import { CHARS_PER_TOKEN } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
 
 // ---------------------------------------------------------------------------
@@ -92,6 +92,94 @@ export function buildContextHeaderText(patient) {
 // built-in default exactly like the on-device chat does.
 export function effectiveGuidelinesText(settingsObj) {
   return String(settingsObj?.systemGuidelines || "").trim() || DEFAULT_SYSTEM_GUIDELINES;
+}
+
+// The student's custom instructions for the ChatGPT path. These are stored
+// separately from the on-device guidelines so the local-execution identity
+// claims are never sent to OpenAI.
+export function effectiveRemoteGuidelinesText(settingsObj) {
+  return String(settingsObj?.systemGuidelinesRemote || "").trim() || DEFAULT_REMOTE_SYSTEM_GUIDELINES;
+}
+
+// ---------------------------------------------------------------------------
+// Persisted custom-instruction review decisions
+// ---------------------------------------------------------------------------
+// The ChatGPT custom instructions are settings text, not patient data, so
+// the student's accept/reject decisions on the de-identification suggestions
+// can be remembered across sessions (keyed by content hash). On a later send
+// with unchanged instructions, the stored decisions are re-applied to the
+// fresh model output: fully-decided instructions skip the review modal, and
+// only genuinely new suggestions need human eyes. Decisions are applied to
+// the CURRENT model run — never a stale approved text — so a model update
+// that finds new spans still surfaces them.
+
+// localStorage key for the persisted decisions. Never holds patient data:
+// the guidelines are the student's own settings text.
+const GUIDELINES_REVIEW_KEY = "prerounding.aiChat.guidelinesReview.v1";
+
+function storageAvailable() {
+  return typeof localStorage !== "undefined" && typeof localStorage.getItem === "function";
+}
+
+function readGuidelinesReviewStore() {
+  if (!storageAvailable()) return {};
+  try {
+    return JSON.parse(localStorage.getItem(GUIDELINES_REVIEW_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function writeGuidelinesReviewStore(store) {
+  if (!storageAvailable()) return;
+  try {
+    localStorage.setItem(GUIDELINES_REVIEW_KEY, JSON.stringify(store));
+  } catch {
+    // Storage may be unavailable (private mode); the session still works,
+    // it just won't remember decisions across reloads.
+  }
+}
+
+// Stable identity for one redaction record within one guidelines text:
+// span + label + the original snippet it covers.
+export function guidelineDecisionKey(record) {
+  return `${record?.start}:${record?.end}:${record?.label}:${String(record?.originalText || "").slice(0, 48)}`;
+}
+
+// Re-apply the student's stored accept/reject decisions to a freshly
+// de-identified guidelines piece. Returns the number of records decided.
+export function applyGuidelineDecisions(piece, contentHash) {
+  const entry = readGuidelinesReviewStore()?.[contentHash];
+  const decisions = entry && typeof entry === "object" ? entry.decisions || {} : {};
+  let applied = 0;
+  for (const record of piece?.modelRecords || []) {
+    const decision = decisions[guidelineDecisionKey(record)];
+    if (decision === "accepted" || decision === "rejected") {
+      record.status = decision;
+      applied++;
+    }
+  }
+  return applied;
+}
+
+// True when every redaction record on the piece already has a decision.
+export function pieceHasNoPendingRecords(piece) {
+  const records = [...(piece?.modelRecords || []), ...(piece?.manualRecords || [])];
+  return !records.some((record) => record?.status === "pending");
+}
+
+// Remember the student's decisions for this guidelines text. Only persists
+// when nothing is still pending — a partial review is never treated as done.
+export function persistGuidelineDecisions(contentHash, piece) {
+  if (!pieceHasNoPendingRecords(piece)) return false;
+  const decisions = {};
+  for (const record of piece.modelRecords || []) {
+    decisions[guidelineDecisionKey(record)] = record.status;
+  }
+  const store = readGuidelinesReviewStore();
+  store[contentHash] = { decisions, savedAt: new Date().toISOString() };
+  writeGuidelinesReviewStore(store);
+  return true;
 }
 
 // Split the trusted assembly into its header + one entry per selected piece,

@@ -33,7 +33,8 @@ const iconPaths = {
   play: '<path d="m9 5 10 7-10 7z"/>',
   cloud: '<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>',
   pill: '<path d="M10.5 4.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7l7-7z"/><path d="M7 7l7 7"/>',
-  book: '<path d="M12 6C10 4.5 7 4 4 4v14c3 0 6 .5 8 2 2-1.5 5-2 8-2V4c-3 0-6 .5-8 2z"/><path d="M12 6v14"/>'
+  book: '<path d="M12 6C10 4.5 7 4 4 4v14c3 0 6 .5 8 2 2-1.5 5-2 8-2V4c-3 0-6 .5-8 2z"/><path d="M12 6v14"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>'
 };
 
 export function icon(name, className = "icon") {
