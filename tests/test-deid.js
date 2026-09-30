@@ -1343,7 +1343,7 @@ function assertTrackDRedacts(text, value, id) {
 // D1: clinical ages re-added post-filter (Safe Harbor suppresses < 90)
 assertTrackDRedacts("Patient is 43 y/o male", "43", "D1 clinical age 43 y/o");
 assertTrackDRedacts("18-year-old female presented", "18-year-old", "D1 clinical age 18-year-old");
-assertTrackDRedacts("Age 67", "67", "D1 clinical age 67");
+assertTrackDRedacts("aged 67 years", "67", "D1 clinical age aged 67");
 
 // D2: role-anchored provider names (gold keeps ", MD" / ", MBBS")
 assertTrackDRedacts("Dr. Smith examined the patient", "Smith", "D2 Dr. anchor");
