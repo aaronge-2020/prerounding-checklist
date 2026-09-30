@@ -10,7 +10,7 @@ import {
   createEphemeralRedactionReview,
   reviewKey,
   synchronizeReviewPlaceholders
-} from "../../patient-context/review.js?v=20260715-reject-rest";
+} from "../../patient-context/review.js?v=20260929-deid-clinicale5";
 import {
   admissionSourceKindOptions,
   createSourceCapture,

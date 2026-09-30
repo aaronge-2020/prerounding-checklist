@@ -1,13 +1,13 @@
 import {
   createDeidentifier,
   deidentifyTextStructuredOnly
-} from "../vault/deid.js?v=20260929-deid-rules";
+} from "../vault/deid.js?v=20260929-deid-clinicale5";
 import {
   DEFAULT_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,
   deidModelCandidates,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20260929-obi-default";
+} from "./deid-model-options.js?v=20260929-deid-clinicale5";
 import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260921-medication-card-v4";
 import { importedModelBaseUrl } from "./model-packs.js?v=20260921-medication-card-v4";
 
@@ -389,10 +389,10 @@ export async function verifyAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_KE
   }
 }
 
-export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, assetSource = "auto", admissionDate = null, relativeDate = null, onStatus, onProgress } = {}) {
+export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, assetSource = "auto", admissionDate = null, relativeDate = null, patientIdentity = null, onStatus, onProgress } = {}) {
   const anchor = admissionDate ? new Date(admissionDate) : null;
   if (mode === STRUCTURED_DEID_MODE) {
-    return deidentifyTextStructuredOnly(rawText, anchor, { relativeDate: relativeDate ? new Date(relativeDate) : anchor });
+    return deidentifyTextStructuredOnly(rawText, anchor, { relativeDate: relativeDate ? new Date(relativeDate) : anchor, patientIdentity });
   }
   const option = deidModelOptionByKey(mode === "advanced" ? DEFAULT_DEID_MODEL_KEY : mode);
   try {
@@ -404,6 +404,7 @@ export async function deidentifyText(rawText, { mode = "advanced", allowStructur
       mode: "hybrid",
       admissionDate: anchor,
       relativeDate: relativeDate ? new Date(relativeDate) : anchor,
+      patientIdentity,
       onProgress
     });
     if (!result.modelId || result.modelChunkFailures) {

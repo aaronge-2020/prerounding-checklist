@@ -6,8 +6,9 @@ import {
   OPENMED_BASE_MODEL_ID,
   OPENMED_MODEL_ID,
   OPENMED_SMALL_MODEL_ID,
+  CLINICALE5_SMALL_MODEL_ID,
   OPENAI_PRIVACY_FILTER_MODEL_ID
-} from "../vault/deid/model-config.js?v=20260711-functional-remediation-15";
+} from "../vault/deid/model-config.js?v=20260929-deid-clinicale5";
 
 export const STRUCTURED_DEID_MODE = "structured";
 // Only browser configurations that have a supported local execution path are
@@ -18,7 +19,7 @@ export const STRUCTURED_DEID_MODE = "structured";
 // (obi/deid_bert_i2b2, MIT): strongest redaction-relevant recall on
 // facilities, ages, and locations — the identifiers the structured
 // layer cannot recover on its own.
-export const DEFAULT_DEID_MODEL_KEY = "obi-deid-bert-i2b2";
+export const DEFAULT_DEID_MODEL_KEY = "openmed-clinicale5-small";
 
 const ALL_DEID_MODEL_OPTIONS = [
   {
@@ -185,6 +186,50 @@ const ALL_DEID_MODEL_OPTIONS = [
     ]
   },
   {
+    key: "openmed-clinicale5-small",
+    label: "OpenMed ClinicalE5 Small",
+    shortLabel: "ClinicalE5 Small",
+    modelId: CLINICALE5_SMALL_MODEL_ID,
+    engine: "transformers-token-classification",
+    dtype: "int8",
+    // Round-2 benchmark winner (2026-09-29, 1,000 synthetic texts, strict
+    // exact-span scoring): highest F1 (0.672) and recall, 390 ms/doc median,
+    // 67 MB int8 download. Standard single-thread wasm runtime like the
+    // other OpenMed CPU option - the threaded asyncify wasm path traps on
+    // unaligned atomics in some Chromium worker environments.
+    device: "wasm",
+    wasmRuntime: "standard",
+    browserRunnable: true,
+    assetMode: "installable",
+    sizeLabel: "67 MB ONNX",
+    localOnly: true,
+    description: "Round-2 benchmark winner: 33M clinical PII model, highest F1 and recall on the 1,000-text synthetic benchmark, 390 ms/doc median, 67 MB download. Runs on CPU/WASM - no WebGPU needed.",
+    candidates: [
+      {
+        modelId: CLINICALE5_SMALL_MODEL_ID,
+        options: { dtype: "int8", device: "wasm", local_files_only: true },
+        inferenceOptions: { aggregation_strategy: "simple" }
+      }
+    ],
+    requiredFiles: [
+      "config.json",
+      "tokenizer.json",
+      "tokenizer_config.json",
+      "onnx/model_int8.onnx"
+    ],
+    download: {
+      provider: "Hugging Face",
+      repository: "OpenMed/OpenMed-PII-ClinicalE5-Small-33M-v1-onnx-android",
+      revision: "79f7db205869b1be4be23ac4f42aa95bdedc5aee",
+      assets: [
+        { path: "config.json", sourcePath: "config.json", bytes: 6440 },
+        { path: "tokenizer.json", sourcePath: "tokenizer.json", bytes: 711661 },
+        { path: "tokenizer_config.json", sourcePath: "tokenizer_config.json", bytes: 499 },
+        { path: "onnx/model_int8.onnx", sourcePath: "model_int8.onnx", bytes: 69638018 }
+      ]
+    }
+  },
+  {
     key: "stanford-clinical",
     label: "Stanford clinical deidentifier",
     shortLabel: "Stanford clinical",
@@ -343,6 +388,7 @@ const ALL_DEID_MODEL_OPTIONS = [
 ];
 
 export const DEID_MODEL_OPTIONS = ALL_DEID_MODEL_OPTIONS.filter((option) => [
+  "openmed-clinicale5-small",
   "obi-deid-bert-i2b2",
   "stanford-clinical",
   "openmed-superclinical-small",

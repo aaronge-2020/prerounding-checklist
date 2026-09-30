@@ -10,6 +10,7 @@ export const DEFAULT_FALLBACK_MODEL_ID = "rtrigoso/bert-small-pii-detection-ONNX
 export const OPENMED_MODEL_ID = "Wismut/openmed-onnx/large";
 export const OPENMED_BASE_MODEL_ID = "Wismut/openmed-onnx/base";
 export const OPENMED_SMALL_MODEL_ID = "Wismut/openmed-onnx/small";
+export const CLINICALE5_SMALL_MODEL_ID = "OpenMed/OpenMed-PII-ClinicalE5-Small-33M-v1-onnx-android";
 export const MULTILANG_PII_MODEL_ID = "onnx-community/multilang-pii-ner-ONNX";
 export const I2B2_CLINICALBERT_MODEL_ID = "onnx-community/deid_bert_i2b2-ONNX";
 export const DEFAULT_DTYPE = "q8";
@@ -44,6 +45,12 @@ export const MODEL_PROFILES = {
     mobileFeasible: true,
     expectedQuantizedBytes: 171750792,
     notes: "Direct ONNX export of OpenMed SuperClinical Small (44M). Its int8 export is the explicit CPU/WASM fallback for older devices."
+  },
+  clinicalE5Small: {
+    id: CLINICALE5_SMALL_MODEL_ID,
+    mobileFeasible: true,
+    expectedQuantizedBytes: 69638018,
+    notes: "OpenMed-PII ClinicalE5 Small (33M) int8. Round-2 benchmark winner (F1 0.672 on 1,000 synthetic texts, strict exact-span): highest recall, 390 ms/doc median, 67 MB download. Default browser model since 2026-09-29."
   },
   multilang: {
     id: MULTILANG_PII_MODEL_ID,

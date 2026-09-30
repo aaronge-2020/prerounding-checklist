@@ -1,7 +1,7 @@
 import {
   DEFAULT_DEID_MODEL_KEY,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20260929-obi-default";
+} from "./deid-model-options.js?v=20260929-deid-clinicale5";
 
 const statuses = new Map();
 const requests = new Map();
@@ -39,7 +39,7 @@ function rejectAll(error) {
 
 function getWorker() {
   if (worker) return worker;
-  worker = new Worker(new URL("./deid-worker.js?v=20260929-deid-rules", import.meta.url), { type: "module" });
+  worker = new Worker(new URL("./deid-worker.js?v=20260929-deid-clinicale5", import.meta.url), { type: "module" });
   worker.addEventListener("message", (event) => {
     const { type, id, value } = event.data || {};
     const request = requests.get(id);
@@ -117,12 +117,12 @@ export function resetAdvancedDeidWorker() {
   statuses.clear();
 }
 
-export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, admissionDate = null, relativeDate = null, onStatus, onProgress } = {}) {
+export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, admissionDate = null, relativeDate = null, patientIdentity = null, onStatus, onProgress } = {}) {
   const modelKey = mode === "advanced" ? DEFAULT_DEID_MODEL_KEY : mode;
   if (mode !== "structured") activeModelKey = deidModelOptionByKey(modelKey).key;
   return request(
     "deidentify",
-    { rawText: String(rawText || ""), options: { mode, allowStructuredFallback, admissionDate, relativeDate } },
+    { rawText: String(rawText || ""), options: { mode, allowStructuredFallback, admissionDate, relativeDate, patientIdentity } },
     { onStatus, onProgress }
   );
 }

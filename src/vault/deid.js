@@ -48,8 +48,9 @@ import {
   isLikelyMedicationContext
 } from "./deid/lexicons.js";
 import { buildZoneMap, zoneTypeForSpan, isProtectedZoneType } from "./deid/zones.js";
-import { isActionableResidualWarning } from "../patient-context/review.js";
+import { isActionableResidualWarning } from "../patient-context/review.js?v=20260929-deid-clinicale5";
 import { collectDictionaryNameCandidates } from "./deid/name-recall.js";
+import { ambiguousNameTokens } from "./deid/name-dictionary.js";
 // Free-text date/time detection and parsing runs entirely through chrono-node
 // (https://github.com/wanasit/chrono, vendored English-only build) rather
 // than hand-rolled regexes - it understands far more real-world phrasing
@@ -1121,6 +1122,28 @@ function constrainModelEntity(rawText, entity) {
   while (end > start && /[\s:;,#]/.test(rawText[end - 1])) {
     end -= 1;
   }
+  // Symmetric leading repair: a model span that opens with a bracket,
+  // paren, or quote ("(Okafor),", "\"Hendricks\"!") keeps that noise
+  // without this; a person name never legitimately starts with one.
+  while (start < end && /[(\[{"'\u201c]/.test(rawText[start])) {
+    start += 1;
+  }
+
+  // B5 boundary repair: trailing possessives ("Smith 's" from subword
+  // aggregation) and trailing sentence punctuation ("Garcia,") are span
+  // noise, never part of the identifier. A trailing period that forms an
+  // initial ("J.") or abbreviation ("St.") is kept: only strip "." when the
+  // stem is longer than a single letter and not a known abbreviation tail.
+  const possessiveTail = rawText.slice(start, end).match(/['\u2019][sS]$/);
+  if (possessiveTail && end - start > possessiveTail[0].length + 1) {
+    end -= possessiveTail[0].length;
+  }
+  while (end > start + 1 && /[,\]\)"'\u201d!?;]/.test(rawText[end - 1])) {
+    end -= 1;
+  }
+  if (end > start + 2 && rawText[end - 1] === "." && !/\b(?:St|Dr|Mr|Mrs|Ms|Jr|Sr|vs)\.$/i.test(rawText.slice(start, end))) {
+    end -= 1;
+  }
 
   if (end <= start || !rawText.slice(start, end).trim()) {
     return null;
@@ -1139,6 +1162,62 @@ const SUPPORTED_PHI_LABELS = new Set([
   "LOCATION", "FACILITY", "ORGANIZATION", "ADDRESS", "ROOM", "AGE",
   "OCCUPATION", "TIME", "DATE", "DOB", "EMAIL", "PHONE", "MRN", "ENCOUNTER ID", "ID", "URL", "IP"
 ]);
+
+// Compact veto list of clinical procedure/imaging phrases the NER model
+// misfires on as person names (seed false positives: "Cardiac Mri",
+// "Chest CT"). Applies to MODEL spans only: structured rules are explicit
+// and never vetoed, so a genuine name that collides with a vetoed phrase is
+// still caught when a structured rule fires on it. Kept short on purpose -
+// this is a curated correction list, not a terminology dump.
+const CLINICAL_TERM_STOPLIST = new Set([
+  "cardiac mri", "cardiac ct", "chest ct", "chest mri", "chest x-ray",
+  "chest xray", "head ct", "brain ct", "brain mri", "mri brain", "ct head",
+  "ct chest", "abdominal ct", "ct abdomen", "pelvic ct", "ct pelvis",
+  "pet ct", "knee mri", "shoulder mri", "spine mri", "lumbar mri",
+  "cardiac cath", "heart cath", "ct angiography"
+]);
+
+function isClinicalTermStoplistHit(rawText, entity) {
+  if (!/model/.test(entity.source || "")) return false;
+  const label = normalizePhiLabel(entity.label);
+  if (label !== "NAME" && label !== "PATIENT NAME" && label !== "PROVIDER NAME" && label !== "CONTACT NAME") return false;
+  return CLINICAL_TERM_STOPLIST.has(normalizePhrase(rawText.slice(entity.start, entity.end)));
+}
+
+// Per-entity-type model confidence thresholds (B2). Scores come from the
+// token-classification pipeline (aggregation "simple"); deterministic
+// structured rules always carry score 1 and are never thresholded.
+//
+// TUNING (2026-09-29, benchmark dev rows 0-699, baseline P=0.7328/R=0.5932/
+// F1=0.6556): one-factor-at-a-time sweep of NAME/ID/DATE/OTHER groups.
+// The model's scores are extremely peaked (nearly all >= 0.98), so
+// thresholding has almost no discriminative power: NAME@0.9 loses 7 of 34
+// NAME TPs (recall 0.043 -> 0.035, F1 down); DATE@0.9 is a wash (F1 -0.001);
+// only ID@0.9 moves F1 (+0.005: 140 fewer ID FPs for 5 fewer ID TPs).
+// Per the recall bias for NAME/ID (a leaked identifier is worse than an
+// over-redaction), that trade is declined: all thresholds stay 0 (no
+// filtering). The mechanism ships so values can be re-tuned later; see
+// rules-tuning/sweep_b2.py and detail_b2.py for the full tradeoff tables.
+// A threshold of 0 disables filtering for that type.
+const MODEL_SCORE_THRESHOLDS = {
+  "NAME": 0,
+  "PATIENT NAME": 0,
+  "PROVIDER NAME": 0,
+  "CONTACT NAME": 0,
+  "ID": 0,
+  "MRN": 0,
+  "ENCOUNTER ID": 0,
+  "DATE": 0,
+  "DOB": 0,
+  "TIME": 0,
+  "AGE": 0
+};
+const DEFAULT_MODEL_SCORE_THRESHOLD = 0;
+
+export function modelScoreThresholdForLabel(label) {
+  const threshold = MODEL_SCORE_THRESHOLDS[normalizePhiLabel(label)];
+  return typeof threshold === "number" ? threshold : DEFAULT_MODEL_SCORE_THRESHOLD;
+}
 
 export function modelPredictionsToEntities(rawText, predictions, offset = 0) {
   const entities = [];
@@ -1160,6 +1239,12 @@ export function modelPredictionsToEntities(rawText, predictions, offset = 0) {
       return;
     }
 
+    // B2: drop low-confidence model spans per entity type. Structured spans
+    // never pass through here, so their score-1 entities are unaffected.
+    if ((prediction.score || 0) < modelScoreThresholdForLabel(label)) {
+      return;
+    }
+
     const constrained = constrainModelEntity(rawText, {
       start: span.start,
       end: span.end,
@@ -1174,6 +1259,12 @@ export function modelPredictionsToEntities(rawText, predictions, offset = 0) {
     }
 
     if (isProtectedClinicalEntityFalsePositive(rawText, constrained)) {
+      return;
+    }
+
+    // B4: veto model NAME spans that are really imaging/procedure phrases
+    // ("Cardiac Mri", "Chest CT"). Structured spans are never vetoed.
+    if (isClinicalTermStoplistHit(rawText, constrained)) {
       return;
     }
 
@@ -1333,6 +1424,186 @@ function constrainPatternEntitySpan(rawText, label, start, end) {
   }
 
   return { start: constrainedStart, end: constrainedEnd };
+}
+
+// Dedicated age detector (B3). The NER model misses age mentions entirely -
+// including HIPAA-critical 90+ ages - so explicit patterns cover the clinical
+// phrasings: "45-year-old", "45 years old", "45 y.o.", "45 yo", "45 y/o",
+// "aged 45", "age 45". The span covers the full phrase so the rendered [AGE]
+// reads cleanly. Ages below 90 are dropped downstream by
+// filterLikelyFalsePositiveEntities (Safe Harbor only treats 90+ as
+// identifying); generalizeAgesOver89 top-codes any 90+ age text that survives
+// redaction. Deliberately excluded: bare "NNM"/"NNF" ("14F" is a French
+// catheter size far more often than an age) and ages written without a unit
+// cue (indistinguishable from measurements).
+function addAgeEntities(rawText, entities) {
+  const patterns = [
+    // "45-year-old", "45 years old", "45 y.o.", "45 yo", "45 y/o", "45 y-o"
+    /(?<![\d.])(1[0-2][0-9]|[1-9]?[0-9])(?!\d)(?!\.\d)\s*-?\s*(?:years?[-\s]+old|y\.?\s*o\.?(?![A-Za-z])|y\/o|yo|y-o)(?![A-Za-z])/gi,
+    // "aged 45", "age 45", "Age: 67" (a sentence-final period is fine;
+    // only a digit or decimal continuation like "90.5" is rejected)
+    /\baged?\s*:?\s*(1[0-2][0-9]|[1-9]?[0-9])(?!\d)(?!\.\d)/gi
+  ];
+  for (const pattern of patterns) {
+    for (const match of rawText.matchAll(pattern)) {
+      pushPatternEntity(entities, rawText, "AGE", match.index, match.index + match[0].length, "structured identifier", "age detector");
+    }
+  }
+  return entities;
+}
+
+// Labeled person names ("Name: Stuhlmüller",
+// "<strong>Last Name:</strong> X", "\"Given Name\": \"Y\"",
+// "Participant: Ariadna", "Full Name: Alexandru-Claudiu Golding Allaham", "- **Name**: X").
+// The existing PATIENT NAME captured patterns require 2-4 tokens in a single
+// span, so single-token values after name labels are missed - and the gold
+// spans on this sample are 97% single-token, so continuation tokens are
+// emitted as separate spans (up to 3). Name suffixes (Jr/Sr/II/...) never
+// continue, and obvious non-name values (Unknown, Male, ...) never start.
+function addTrackCLabeledNameEntities(rawText, entities) {
+  const labelRe = /(?:\*{1,2})?\b(?:Last[ _-]*Name|First[ _-]*Name|Given[ _-]*Names?|Second[ _-]*Given[ _-]*Name|Surname|Full[ _-]*Name|Middle[ _-]*Name|Student[ _-]*Name|Guardian[ _-]*Name|Participant(?:[ _-]*Last[ _-]*Name)?|Patient|Client|Employee|Member|Student|LN|Name|[A-Za-z]+[ _-]+Name)\b(?:\*{1,2})?\s*["']?\s*[:=]\s*(?:\*{1,2})?(?:\s*<[^>]*>)?\s*["']?/gi;
+  const tokenRe = /(?!(?:Jr|Sr|II|III|IV|VI|MD|DO|PhD|Unknown|Male|Female|None)\b)([A-ZÀ-Þ][A-Za-zÀ-þ'’-]{1,40})\b/y;
+  for (const lm of rawText.matchAll(labelRe)) {
+    tokenRe.lastIndex = lm.index + lm[0].length;
+    for (let n = 0; n < 4; n++) {
+      const tm = tokenRe.exec(rawText);
+      if (!tm) break;
+      pushPatternEntity(entities, rawText, "PATIENT NAME", tm.index,
+        tm.index + tm[1].length, "structured identifier", "labeled name");
+      const ws = /(?:[ \t]+|[ \t]*,[ \t]*)/y;
+      ws.lastIndex = tokenRe.lastIndex;
+      const wsm = ws.exec(rawText);
+      if (!wsm) break;
+      tokenRe.lastIndex = ws.lastIndex;
+    }
+  }
+  tokenRe.lastIndex = 0;
+}
+
+// Names wrapped in name-suggestive XML/HTML tags
+// ("<firstname>Bisrat</firstname>", "<lastname>Sassé</lastname>",
+// "<givenname1>Nifa</givenname1>"). The tag name itself says the content is
+// a name; only the inner text is emitted. Tag
+// names are restricted to name-field spellings so generic containers
+// ("<td>", "<span>", "<li>") never fire.
+function addTrackCTagWrappedNameEntities(rawText, entities) {
+  // Name-field tag spellings: firstname/lastname/givenname/surname/... with
+  // optional separators and numeric suffixes (givenname1, last_name_1),
+  // plus bare first/last/given/name. Generic containers (span/td/strong)
+  // are deliberately excluded.
+  const nameTagName = /^(?:(?:first|last|given|sur|middle|full)[-_ ]?names?|(?:first|last|given|names?))(?:[_-]?\d+)?$/i;
+  for (const match of rawText.matchAll(/<([A-Za-z][\w:.-]*)[^>]*>([^<>]{1,120}?)<\/\1\s*>/g)) {
+    const tagName = match[1].replace(/^.*:/, "");
+    if (!nameTagName.test(tagName)) continue;
+    const inner = match[2];
+    if (!/^\s*[A-ZÀ-Þ][A-Za-zÀ-þ'’-]{1,40}(?:[ \t]+[A-ZÀ-Þ][A-Za-zÀ-þ'’-]{1,40}){0,2}\s*$/.test(inner)) continue;
+    const openEnd = match[0].indexOf(">") + 1;
+    const innerStart = match.index + openEnd;
+    // Emit each token as its own span: gold NAME spans are 97% single-token.
+    for (const tm of inner.matchAll(/[A-ZÀ-Þ][A-Za-zÀ-þ'’-]{1,40}/g)) {
+      const start = innerStart + tm.index;
+      pushPatternEntity(entities, rawText, "PATIENT NAME", start, start + tm[0].length,
+        "structured identifier", `tag-wrapped name <${match[1]}>`);
+    }
+  }
+}
+
+// Single Titlecase words in square brackets ("[Ariadna]",
+// "[Hermien]", "[Dodë]"). Prose anonymization in synthetic exports brackets
+// bare names; the existing bracketed-placeholder rule only fires on
+// identity-concept content ("[Your Name]"), so these slip through. Digits
+// and symbols are excluded to avoid citations ("[1]") and instructions
+// ("[START ON 7/16/2026]"); the lowercase tail excludes all-caps markers
+// ("[DRAFT]").
+function addTrackCBracketedNameEntities(rawText, entities) {
+  for (const match of rawText.matchAll(/\[([A-ZÀ-Þ][a-zà-þ'’-]{1,40})\]/g)) {
+    pushPatternEntity(entities, rawText, "NAME", match.index + 1,
+      match.index + 1 + match[1].length,
+      "structured identifier", "bracketed name");
+  }
+}
+
+// Labeled geographic codes/names ("\"State\": \"ENG\"",
+// "\"Country\": \"GB\"", "City: Norwich", "<strong>State:</strong> ENG",
+// "<State>ENG</State>", "<City>Norwich</City>"). State/country codes are
+// 2-4 uppercase letters; cities are 1-2 Titlecase words. Labels are matched
+// case-insensitively (the sample uses Country/country/COUNTRY) while values
+// stay case-sensitive via a sticky second pass. Postcodes are deliberately
+// excluded (outward-code/ID mechanism conflict, see rules-tuning/results.md).
+function addTrackCLabeledLocationEntities(rawText, entities) {
+  const codeLabelRe = /\b(?:State|Country)\b(?:\s*<[^>]*>)?\s*["']?\s*[:=]\s*(?:<[^>]*>)?\s*["']?/gi;
+  const codeValueRe = /([A-Z]{2,4})\b/y;
+  const cityLabelRe = /\bCity\b(?:\s*<[^>]*>)?\s*["']?\s*[:=]\s*(?:<[^>]*>)?\s*["']?/gi;
+  const cityValueRe = /([A-ZÀ-Þ][A-Za-zÀ-þ'’-]{1,40}(?:[ \t]+[A-ZÀ-Þ][A-Za-zÀ-þ'’-]{1,40})?)\b/y;
+  for (const lm of rawText.matchAll(codeLabelRe)) {
+    codeValueRe.lastIndex = lm.index + lm[0].length;
+    const vm = codeValueRe.exec(rawText);
+    if (!vm) continue;
+    pushPatternEntity(entities, rawText, "LOCATION", vm.index,
+      vm.index + vm[1].length, "structured identifier", "labeled location");
+  }
+  for (const lm of rawText.matchAll(cityLabelRe)) {
+    cityValueRe.lastIndex = lm.index + lm[0].length;
+    const vm = cityValueRe.exec(rawText);
+    if (!vm) continue;
+    pushPatternEntity(entities, rawText, "LOCATION", vm.index,
+      vm.index + vm[1].length, "structured identifier", "labeled location");
+  }
+  codeValueRe.lastIndex = 0;
+  cityValueRe.lastIndex = 0;
+  for (const match of rawText.matchAll(/<(State|Country|City)>([^<>]{1,60}?)<\/\1>/gi)) {
+    const kind = match[1].toLowerCase();
+    const value = match[2].trim();
+    const ok = kind === "city"
+      ? /^[A-ZÀ-Þ][A-Za-zÀ-þ'’-]{1,40}(?:[ \t]+[A-ZÀ-Þ][A-Za-zÀ-þ'’-]{1,40})?$/.test(value)
+      : /^[A-Z]{2,4}$/.test(value);
+    if (!ok) continue;
+    const start = match.index + match[1].length + 2 + (match[2].length - match[2].trimStart().length);
+    pushPatternEntity(entities, rawText, "LOCATION", start, start + value.length,
+      "structured identifier", `tag-wrapped location <${match[1]}>`);
+  }
+}
+
+// Labeled identifiers with space-tolerant values
+// ("ID Card Number: \"GR99446RI\"", "social_number: \"30 15 05 51 P08 8\"",
+// "Passport Number: \"526498334\""). The existing labeled-ID pattern
+// disallows spaces in the value and lacks these labels, so spaced SSNs and
+// card/passport/driver-license numbers are missed. The value class excludes
+// lowercase letters so it cannot run on into following prose; the value must
+// contain a digit and end at a structural boundary.
+function addTrackCLabeledIdEntities(rawText, entities) {
+  const idRe = new RegExp(String.raw`\b(?:Social[ _-]*(?:Security[ _-]*)?Number|SSN|ID[ _-]*Card(?:[ _-]*Number)?|Passport(?:[ _-]*Number)?|Driver(?:'s)?[ _-]*Licen[cs]e(?:[ _-]*Number)?|National[ _-]*ID|Identification[ _-]*Card(?:[ _-]*Number)?|Case[ _-]*ID|Registration[ _-]*ID)\b\s*["']?\s*[:=]\s*["']?((?=[A-Z0-9 ._-]*\d)[A-Z0-9][A-Z0-9 ._-]{2,30}?[A-Z0-9])["']?(?=\s*[,;}\]<\]\n\r]|$)`, "gi");
+  addCapturedEntity(rawText, entities, "ID", idRe, "structured identifier", 1, "labeled id");
+}
+
+// JSON name keys: "last_name2": "Sicking", "givenname1": "Ossi",
+// "Student_ID": "Daniel-Alexandru". The key must be name-suggestive (C2's
+// name-tag test plus person-ID keys); the value must be a bare 1-3 token
+// Titlecase name. Values are emitted token-by-token (names are tokenized).
+function addTrackCJsonNameEntities(rawText, entities) {
+  const keyRe = /^(?:(?:first|last|given|sur|middle|full)[-_ ]?names?|(?:first|last|given|names?)|(?:student|patient|member|client|employee|guardian|mentor|mentee|doctor|provider|therapist|nurse|physician|surgeon)[-_ ]?id|therapist|doctor|physician|nurse)(?:[_-]?\d+)?$/i;
+  const denyRe = /^(?:Jr|Sr|II|III|IV|VI|MD|DO|PhD|Unknown|Male|Female|None)$/;
+  for (const m of rawText.matchAll(/"([A-Za-z][\w.-]*)"\s*:\s*"([^"]{1,80})"/g)) {
+    if (!keyRe.test(m[1])) continue;
+    const val = m[2];
+    if (!val || /^\s*$/.test(val)) continue;
+    if (/\d/.test(val)) continue;
+    const tokens = val.trim().split(/[ \t]+/);
+    if (tokens.length === 0 || tokens.length > 3) continue;
+    if (!tokens.every((t) => /^[A-ZÀ-Þ][A-Za-zÀ-þ'’-]{1,40}$/.test(t) && !denyRe.test(t))) continue;
+    // Locate the value's opening quote: search forward from the key for ':' then '"'.
+    const colonIdx = m[0].indexOf(':', m[1].length + 2);
+    const quoteIdx = m[0].indexOf('"', colonIdx);
+    const vStart = m.index + quoteIdx + 1;
+    let pos = vStart;
+    for (const tok of tokens) {
+      const idx = val.indexOf(tok, pos - vStart);
+      if (idx < 0) break;
+      const s = vStart + idx;
+      pushPatternEntity(entities, rawText, "PATIENT NAME", s, s + tok.length, "structured identifier", "json name key \"" + m[1] + "\"");
+      pos = s + tok.length + 1;
+    }
+  }
 }
 
 export function addStructuredSafeHarborEntities(rawText, entities = [], currentDate = null, { relativeDate = currentDate } = {}) {
@@ -1542,6 +1813,19 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
   directPatterns.forEach(({ label, regex, skip }) => {
     addRegexEntities(rawText, entities, label, regex, "structured identifier", skip);
   });
+
+  addAgeEntities(rawText, entities);
+
+  // Labeled person names, tag-wrapped names, bracketed names, labeled
+  // locations, labeled IDs, and JSON name keys (high-precision structured
+  // patterns that the general patterns miss).
+  addTrackCLabeledNameEntities(rawText, entities);
+  addTrackCTagWrappedNameEntities(rawText, entities);
+  addTrackCBracketedNameEntities(rawText, entities);
+  addTrackCJsonNameEntities(rawText, entities);
+  addTrackCLabeledLocationEntities(rawText, entities);
+  addTrackCLabeledIdEntities(rawText, entities);
+
 
   addTemporalPatternEntities(rawText, entities, relativeDate);
 
@@ -1839,7 +2123,8 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
 
 function generalizeAgesOver89(text) {
   return text
-    .replace(/\bAge\s*[:#]?\s*(?:9[0-9]|1[0-9]{2})\b/gi, "Age: 90 or older")
+    // Never rewrite our own top-coded placeholder: "[AGE 90+]" must survive.
+    .replace(/(?<!\[)\bAge\s*[:#]?\s*(?:9[0-9]|1[0-9]{2})\b/gi, "Age: 90 or older")
     .replace(/(?<!\d)(?:9[0-9]|1[0-9]{2})[-\s]*(?:year[-\s]*old|years old|yo|y\/o)\b(?:\s*(?:male|female|man|woman|M|F))?/gi, "90 or older")
     .replace(/(?<!\d)(?:9[0-9]|1[0-9]{2})\s*(?:M|F)\b/g, "90 or older");
 }
@@ -2715,15 +3000,29 @@ function makeDateTimelinePlaceholder(entity, dateTimeline) {
   return dateTimeline.get(`${entity.start}:${entity.end}`) || "[DATE]";
 }
 
+// B3: Safe Harbor top-coding. A detected 90+ age never renders its exact
+// value - the redacted text keeps the "90 or older" category as [AGE 90+],
+// which is also what the review queue shows ("flagged accordingly").
+// Ages under 90 are dropped by filterLikelyFalsePositiveEntities before this
+// stage; the span-text check here is a second guard.
+function resolvedRedactionPlaceholder(rawText, entity, dateTimeline) {
+  if (isTimelineDateLabel(entity.label)) {
+    return makeDateTimelinePlaceholder(entity, dateTimeline);
+  }
+  if (normalizePhiLabel(entity.label) === "AGE") {
+    const age = Number(rawText.slice(entity.start, entity.end).match(/\d{1,3}/)?.[0] || 0);
+    if (age >= 90) return "[AGE 90+]";
+  }
+  return entity.placeholder || placeholderForLabel(entity.label);
+}
+
 function resolvedRedactionEntities(rawText, entities, currentDate = null, { includeTemporalFallback = true, relativeDate = currentDate } = {}) {
   const temporalEntities = includeTemporalFallback ? collectTemporalEntities(rawText, relativeDate) : [];
   const allEntities = mergeEntities([...entities, ...temporalEntities], rawText);
   const dateTimeline = buildDateTimeline(rawText, allEntities, currentDate, { includeTemporalFallback, relativeDate });
   return allEntities.map((entity) => ({
     ...entity,
-    renderedPlaceholder: isTimelineDateLabel(entity.label)
-      ? makeDateTimelinePlaceholder(entity, dateTimeline)
-      : entity.placeholder || placeholderForLabel(entity.label)
+    renderedPlaceholder: resolvedRedactionPlaceholder(rawText, entity, dateTimeline)
   }));
 }
 
@@ -3621,6 +3920,171 @@ function addExactStructuredPatientNameRepeats(rawText, entities) {
   return entities;
 }
 
+// B1: patient-specific lexicon. The vault knows the admitted patient
+// (displayLabel, optional DOB); charts repeat the chart name, so matching the
+// known identity's variants against note text catches what the model and
+// generic rules miss. Everything runs locally as string search - no model,
+// no network.
+//
+// GUARD (the "May" rule): multi-token variants ("Jane Smith", "Smith, Jane",
+// "J. Smith") match unconditionally. Single-token variants ("Smith", "May")
+// only match with disambiguating context (a patient cue or honorific nearby)
+// unless the token is an uncommon name - i.e. not in the ambiguous
+// English/clinical-word set. A patient named "May" must never redact every
+// "may": lowercase matches are rejected outright, and the ambiguous token
+// still needs a cue ("patient May", "Ms. May").
+
+// Generic chart-label words that are never person names: a displayLabel like
+// "Room 412" must not build a lexicon from "Room".
+const PATIENT_LABEL_STOPWORDS = new Set([
+  "room", "bed", "bay", "pod", "unit", "ward", "floor", "patient", "pt",
+  "demo", "demonstration", "synthetic", "test", "case", "new", "active",
+  "admission", "inpatient", "outpatient", "emergency", "clinic", "hospital",
+  "nursing", "facility", "unknown", "unnamed", "tbd"
+]);
+
+const DOB_MONTH_NUMBERS = {
+  january: 1, february: 2, march: 3, april: 4, may: 5, june: 6,
+  july: 7, august: 8, september: 9, october: 10, november: 11, december: 12
+};
+const DOB_MONTH_NAMES = [
+  "", "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+export function parsePatientIdentity(input) {
+  if (!input || typeof input !== "object") return null;
+  const name = String(input.name || "").trim();
+  const dob = String(input.dob || input.dateOfBirth || "").trim();
+  if (!name && !dob) return null;
+  return { name, dob };
+}
+
+function patientNameTokens(name) {
+  return String(name || "")
+    .split(/[^A-Za-z'.-]+/)
+    .map((token) => token.replace(/^['.]+|['.]+$/g, ""))
+    .filter((token) =>
+      token.length >= 2 &&
+      /^[A-Za-z]/.test(token) &&
+      !PATIENT_LABEL_STOPWORDS.has(token.toLowerCase()));
+}
+
+export function patientNameVariants(name) {
+  const tokens = patientNameTokens(name);
+  if (!tokens.length) return [];
+  const variants = [];
+  const push = (text, kind) => {
+    const clean = String(text || "").replace(/\s+/g, " ").trim();
+    if (clean && !variants.some((v) => v.text.toLowerCase() === clean.toLowerCase())) {
+      variants.push({ text: clean, kind, tokens: clean.split(" ") });
+    }
+  };
+  push(tokens.join(" "), "full");
+  if (tokens.length >= 3) {
+    // With/without middle name: "Mary Jane Smith" -> "Mary Smith".
+    push(`${tokens[0]} ${tokens[tokens.length - 1]}`, "first-last");
+    const middleInitial = tokens[1][0].toUpperCase();
+    push(`${tokens[0]} ${middleInitial} ${tokens[tokens.length - 1]}`, "first-mi-last");
+    push(`${tokens[0]} ${middleInitial}. ${tokens[tokens.length - 1]}`, "first-mi-last");
+  }
+  // Comma-reversed chart headers: "Smith, Mary Jane".
+  const last = tokens[tokens.length - 1];
+  push(`${last}, ${tokens.slice(0, -1).join(" ")}`, "last-first");
+  if (tokens.length >= 3) {
+    push(`${last}, ${tokens[0]}`, "last-first");
+  }
+  // Initials: "J. Smith", "J Smith".
+  if (last.length >= 2) {
+    const firstInitial = tokens[0][0].toUpperCase();
+    push(`${firstInitial}. ${last}`, "initial-last");
+    push(`${firstInitial} ${last}`, "initial-last");
+  }
+  // Single tokens last: the match-time guard decides whether each fires.
+  tokens.forEach((token) => push(token, "single"));
+  return variants;
+}
+
+export function parseDobParts(dob) {
+  const text = String(dob || "").trim();
+  let match = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (match) return { y: Number(match[1]), m: Number(match[2]), d: Number(match[3]) };
+  match = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (match) return { y: Number(match[3]), m: Number(match[1]), d: Number(match[2]) };
+  match = text.match(/^([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})/);
+  if (match && DOB_MONTH_NUMBERS[match[1].toLowerCase()]) {
+    return { y: Number(match[3]), m: DOB_MONTH_NUMBERS[match[1].toLowerCase()], d: Number(match[2]) };
+  }
+  match = text.match(/^(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)\s+(\d{4})/);
+  if (match && DOB_MONTH_NUMBERS[match[2].toLowerCase()]) {
+    return { y: Number(match[3]), m: DOB_MONTH_NUMBERS[match[2].toLowerCase()], d: Number(match[1]) };
+  }
+  return null;
+}
+
+export function patientDobVariants(dob) {
+  const parts = parseDobParts(dob);
+  if (!parts || !(parts.y >= 1800 && parts.y <= 2100) || !(parts.m >= 1 && parts.m <= 12) || !(parts.d >= 1 && parts.d <= 31)) {
+    return [];
+  }
+  const mm = String(parts.m).padStart(2, "0");
+  const dd = String(parts.d).padStart(2, "0");
+  const monthName = DOB_MONTH_NAMES[parts.m];
+  return [
+    `${mm}/${dd}/${parts.y}`,
+    `${parts.m}/${parts.d}/${parts.y}`,
+    `${mm}-${dd}-${parts.y}`,
+    `${parts.y}-${mm}-${dd}`,
+    `${monthName} ${parts.d}, ${parts.y}`,
+    `${parts.d} ${monthName} ${parts.y}`
+  ];
+}
+
+// Disambiguating context for single-token name matches: a patient reference,
+// an honorific, or an explicit name label near the candidate.
+const PATIENT_CONTEXT_CUE_PATTERN = /\b(patient|pt|mr|mrs|ms|miss|mx)\b|\bname\s*:/i;
+
+function hasPatientContextCue(rawText, start, end, window = 40) {
+  const before = rawText.slice(Math.max(0, start - window), start);
+  const after = rawText.slice(end, Math.min(rawText.length, end + window));
+  return PATIENT_CONTEXT_CUE_PATTERN.test(before) || PATIENT_CONTEXT_CUE_PATTERN.test(after);
+}
+
+function singleTokenVariantAllowed(rawText, start, end, token) {
+  // Lowercase prose ("may", "smith") never matches a bare single token -
+  // the token must read as a name (contain an uppercase letter).
+  if (!/[A-Z]/.test(rawText.slice(start, end))) return false;
+  // Uncommon names match bare; common words need disambiguating context.
+  if (!ambiguousNameTokens.has(token.toLowerCase())) return true;
+  return hasPatientContextCue(rawText, start, end);
+}
+
+export function addKnownPatientIdentityEntities(rawText, entities, patientIdentity) {
+  const identity = parsePatientIdentity(patientIdentity);
+  if (!identity) return entities;
+  const context = "known explicit patient identity; patient lexicon";
+  for (const variant of patientNameVariants(identity.name)) {
+    const regex = new RegExp(`(^|[^A-Za-z])(${escapeRegExp(variant.text)})(?=$|[^A-Za-z])`, "gi");
+    for (const match of rawText.matchAll(regex)) {
+      const start = match.index + match[1].length;
+      const end = start + variant.text.length;
+      if (variant.tokens.length < 2 &&
+        !singleTokenVariantAllowed(rawText, start, end, variant.tokens[0])) {
+        continue;
+      }
+      pushPatternEntity(entities, rawText, "PATIENT NAME", start, end, "known patient identity", `${context} ${variant.kind}`);
+    }
+  }
+  for (const dobText of patientDobVariants(identity.dob)) {
+    const regex = new RegExp(`(^|[^\\d])(${escapeRegExp(dobText)})(?=$|[^\\d])`, "g");
+    for (const match of rawText.matchAll(regex)) {
+      const start = match.index + match[1].length;
+      pushPatternEntity(entities, rawText, "DOB", start, start + dobText.length, "known patient identity", `${context} dob`);
+    }
+  }
+  return entities;
+}
+
 // Words too generic to serve as standalone organization aliases. These appear
 // in many org names but cannot uniquely identify a specific facility or employer.
 const GENERIC_ORG_HEAD_WORDS = new Set([
@@ -3688,8 +4152,9 @@ function addOrganizationFirstWordAliases(rawText, entities) {
   return entities;
 }
 
-function expandIdentityGraphEntities(rawText, seedEntities, maxPasses = 3) {
-  let entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addExactStructuredPatientNameRepeats(rawText, addDictionaryNameEntities(rawText, seedEntities)), rawText));
+function expandIdentityGraphEntities(rawText, seedEntities, maxPasses = 3, options = {}) {
+  const patientIdentity = options.patientIdentity || null;
+  let entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addKnownPatientIdentityEntities(rawText, addExactStructuredPatientNameRepeats(rawText, addDictionaryNameEntities(rawText, seedEntities)), patientIdentity), rawText));
   let graph = buildIdentityGraph(rawText, entities);
   for (let pass = 0; pass < maxPasses; pass += 1) {
     const before = entitySignature(entities);
@@ -3739,7 +4204,7 @@ function formatPhiWarning(warning) {
 
 export function deidentifyTextStructuredOnly(rawText, currentDate = null, options = {}) {
   const bracketEntities = collectBracketedPlaceholderEntities(rawText);
-  const { entities } = expandIdentityGraphEntities(rawText, addStructuredSafeHarborEntities(rawText, bracketEntities, currentDate, options));
+  const { entities } = expandIdentityGraphEntities(rawText, addStructuredSafeHarborEntities(rawText, bracketEntities, currentDate, options), 3, { patientIdentity: options.patientIdentity });
   return deidentifyFromEntities(rawText, entities, { modelId: null, modelStatus: "structured only" }, currentDate, options);
 }
 
@@ -3991,7 +4456,7 @@ export function createDeidentifier(options = {}) {
 
     if (mode === "structured-only") {
       reportProgress(onProgress, { stage: "structured", message: "Running structured redaction...", percent: 0.25 });
-      return deidentifyTextStructuredOnly(rawText, admissionDate, { relativeDate });
+      return deidentifyTextStructuredOnly(rawText, admissionDate, { relativeDate, patientIdentity: runOptions.patientIdentity || null });
     }
 
     const modelResult = await detectModelEntities(rawText, { onProgress });
@@ -4010,7 +4475,7 @@ export function createDeidentifier(options = {}) {
     let structuredEntities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addStructuredSafeHarborEntities(rawText, bracketEntities, admissionDate, { relativeDate }), rawText));
     modelEntities = modelEntities.filter((entity) => !overlapsAny(entity, structuredEntities));
     reportProgress(onProgress, { stage: "aliases", message: "Checking repeated names and aliases...", percent: 0.84 });
-    const { entities } = expandIdentityGraphEntities(rawText, [...structuredEntities, ...modelEntities]);
+    const { entities } = expandIdentityGraphEntities(rawText, [...structuredEntities, ...modelEntities], 3, { patientIdentity: runOptions.patientIdentity || null });
     reportProgress(onProgress, { stage: "redacting", message: "Creating redacted preview...", percent: 0.92 });
     const result = deidentifyFromEntities(rawText, entities, modelResult, admissionDate, { relativeDate });
     reportProgress(onProgress, { stage: "complete", message: "De-identified preview ready.", percent: 1 });

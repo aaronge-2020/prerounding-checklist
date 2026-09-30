@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { collectTemporalEntities, createDeidentifier, deidentifyTextStructuredOnly, modelPredictionsToEntities, normalizePhiLabel, normalizeResidualTemporalPhi, scanResidualPhi } from "../src/vault/deid.js";
+import { collectTemporalEntities, createDeidentifier, deidentifyTextStructuredOnly, modelPredictionsToEntities, normalizePhiLabel, normalizeResidualTemporalPhi, scanResidualPhi, addKnownPatientIdentityEntities, patientNameVariants, patientDobVariants, parsePatientIdentity, modelScoreThresholdForLabel } from "../src/vault/deid.js";
 import { createEphemeralRedactionReview, refreshEphemeralRedactionReview, synchronizeReviewPlaceholders } from "../src/patient-context/review.js";
 import { DEMO_ADMISSION_DATE, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS } from "../src/ui/demo/session.js";
 import { assertDeidCase } from "../scripts/deid-adversarial.js";
@@ -1131,7 +1131,7 @@ assert.ok(priorAdmissionResult.text.includes("Previously admitted on [Historical
 assert.ok(priorAdmissionResult.text.includes("Current labs [Historical: 2026] normal"), "a reading-date cue must not invent a hospital admission anchor");
 assert.ok(!/Hospital Day \d+|prior to hospital admission/.test(priorAdmissionResult.text), "no admission timeline may be inferred from prior-admission or reading-date cues");
 
-// 20260929-deid-rules regressions: BILOU label normalization (L-/U- prefixes
+// 20260929-deid-clinicale5 regressions: BILOU label normalization (L-/U- prefixes
 // from the deid_bert_i2b2-ONNX model) plus the ten benchmark-winning rule
 // improvements (T1/P1/P2/P3/P4/D1/B1/A1/D2/A2) and their integration fixes.
 assert.equal(normalizePhiLabel("L-PATIENT"), "PATIENT NAME", "L- prefix must normalize like B-/I- (BILOU)");
@@ -1157,4 +1157,168 @@ assert.ok(noDoubleTime.includes("[Historical: 2026 at 04:02]"), "datetime placeh
 assert.ok(!noDoubleTime.includes("[TIME]"), "folded clock time must not double-redact as [TIME]");
 assert.equal((noDoubleTime.match(/04:02/g) || []).length, 1, "the clock time must appear exactly once, inside the datetime placeholder");
 
+// 20260929-deid-clinicale5 regressions: TRACK B round 2 (B1/B2/B3/B4/B5/B7).
+
+// B1: patient-specific lexicon. Variants cover full name, first+last,
+// middle initial, comma-reversed chart headers, and initial+last.
+const maryVariants = patientNameVariants("Mary Jane Smith").map((variant) => variant.text);
+assert.ok(maryVariants.includes("Mary Jane Smith"), "B1 keeps the full name variant");
+assert.ok(maryVariants.includes("Mary Smith"), "B1 drops the middle name");
+assert.ok(maryVariants.includes("Mary J. Smith"), "B1 builds the middle-initial variant");
+assert.ok(maryVariants.includes("Smith, Mary Jane"), "B1 builds the comma-reversed variant");
+assert.ok(maryVariants.includes("M. Smith"), "B1 builds the initial+last variant");
+assert.deepEqual(patientNameVariants("Room 412"), [], "B1 builds no lexicon from a chart label");
+assert.deepEqual(parsePatientIdentity(null), null, "B1 null identity parses to null");
+assert.deepEqual(parsePatientIdentity({}), null, "B1 empty identity parses to null");
+const dobVariants = patientDobVariants("1956-06-13");
+assert.ok(dobVariants.includes("06/13/1956"), "B1 builds the MM/DD/YYYY DOB variant");
+assert.ok(dobVariants.includes("June 13, 1956"), "B1 builds the written-out DOB variant");
+assert.deepEqual(patientDobVariants("not a date"), [], "B1 builds no variants from an unparseable DOB");
+assert.equal(addKnownPatientIdentityEntities("Jane Smith", [], null).length, 0, "B1 null identity adds no entities");
+const lexDirect = addKnownPatientIdentityEntities("Jane Smith arrived.", [], { name: "Jane Smith" });
+assert.ok(lexDirect.some((entity) => entity.label === "PATIENT NAME" && entity.source === "known patient identity"), "B1 lexicon emits a PATIENT NAME entity");
+const dobDirect = addKnownPatientIdentityEntities("born 06/13/1956", [], { name: "X", dob: "1956-06-13" });
+assert.ok(dobDirect.some((entity) => entity.label === "DOB"), "B1 lexicon emits a DOB entity");
+const b1Note = deidentifyTextStructuredOnly("Jane Smith was admitted. Ms. Smith tolerated the procedure.", null, { patientIdentity: { name: "Jane Smith" } });
+assert.ok(!b1Note.text.includes("Jane Smith"), "B1 redacts the known patient full name");
+assert.ok(!b1Note.text.includes("Ms. Smith"), "B1 redacts the known patient surname with honorific cue");
+// The "May" rule: a patient named May must not redact every "may".
+const mayNote = deidentifyTextStructuredOnly("The patient may go home. Ms. May was discharged.", null, { patientIdentity: { name: "May Chen" } });
+assert.ok(mayNote.text.includes("may go home"), "B1 never redacts lowercase 'may' (the verb)");
+assert.ok(!mayNote.text.includes("Ms. May"), "B1 redacts 'Ms. May' with disambiguating context");
+const b1DobNote = deidentifyTextStructuredOnly("Call about DOB 06/13/1956 please.", null, { patientIdentity: { name: "Jane Smith", dob: "1956-06-13" } });
+assert.ok(!b1DobNote.text.includes("06/13/1956"), "B1 redacts the known patient DOB");
+
+// B2: per-entity-type model confidence thresholds. Defaults are neutral
+// (recall-biased: no filtering) until tuned on the benchmark dev split.
+assert.equal(typeof modelScoreThresholdForLabel("DATE"), "number", "B2 threshold lookup returns a number");
+assert.equal(modelScoreThresholdForLabel("NAME"), 0, "B2 NAME defaults to no filtering (recall-biased)");
+assert.equal(modelScoreThresholdForLabel("ID"), 0, "B2 ID defaults to no filtering (recall-biased)");
+assert.equal(modelScoreThresholdForLabel("NOT_A_LABEL"), 0, "B2 unknown labels default to no filtering");
+const lowScoreSurvives = modelPredictionsToEntities("Okafor was seen.", [
+  { word: "Okafor", entity: "B-NAME", score: 0.05, start: 0, end: 6 }
+]);
+assert.equal(lowScoreSurvives.length, 1, "B2 a low-score span survives the neutral default threshold");
+
+// B3: age detector. 90+ ages redact top-coded as [AGE 90+]; younger ages are
+// non-PHI and stay; bare NNM/NNF (catheter sizes) and measurements are out.
+const age90 = deidentifyTextStructuredOnly("92-year-old male admitted.", null, {});
+assert.ok(age90.text.includes("[AGE 90+]"), "B3 top-codes a 90+ age as [AGE 90+]");
+assert.ok(!age90.text.includes("92-year-old"), "B3 never leaks the exact 90+ value");
+assert.ok(age90.entities.some((entity) => entity.label === "AGE"), "B3 flags the 90+ age as an AGE entity for review");
+const ageFormats = deidentifyTextStructuredOnly("95 years old; 101 y.o.; aged 93; Age: 90.", null, {});
+assert.equal((ageFormats.text.match(/\[AGE 90\+\]/g) || []).length, 4, "B3 top-codes every 90+ age format");
+const age45 = deidentifyTextStructuredOnly("45-year-old female seen.", null, {});
+assert.ok(age45.text.includes("45-year-old"), "B3 leaves ages under 90 in place (non-PHI)");
+assert.ok(!age45.entities.some((entity) => entity.label === "AGE"), "B3 emits no AGE entity under 90");
+assert.ok(deidentifyTextStructuredOnly("14F catheter placed.", null, {}).text.includes("14F"), "B3 ignores bare NNF (catheter size)");
+assert.ok(deidentifyTextStructuredOnly("O2 sat 92% on room air.", null, {}).text.includes("92%"), "B3 ignores oximetry values");
+
+// B4: clinical procedure/imaging stoplist vetoes MODEL name spans only.
+const vetoed = modelPredictionsToEntities("Cardiac MRI showed normal function.", [
+  { word: "Cardiac MRI", entity: "B-NAME", score: 0.9, start: 0, end: 11 }
+]);
+assert.equal(vetoed.length, 0, "B4 vetoes a 'Cardiac MRI' model NAME span");
+const vetoedChest = modelPredictionsToEntities("Chest CT was clear.", [
+  { word: "Chest CT", entity: "B-NAME", score: 0.9, start: 0, end: 8 }
+]);
+assert.equal(vetoedChest.length, 0, "B4 vetoes a 'Chest CT' model NAME span");
+const genuineKept = modelPredictionsToEntities("Dr. Okafor ordered a cardiac MRI.", [
+  { word: "Okafor", entity: "B-NAME", score: 0.9, start: 4, end: 10 }
+]);
+assert.equal(genuineKept.length, 1, "B4 keeps a genuine name next to an imaging phrase");
+const structuredKept = deidentifyTextStructuredOnly("Cardiac MRI showed normal function.", null, {});
+assert.ok(structuredKept.text.includes("Cardiac MRI"), "B4 never vetoes structured spans");
+
+// B5: model span boundary repair (possessives, leading/trailing punctuation,
+// abbreviation-aware periods) plus adjacent same-type stitching.
+const possessive = modelPredictionsToEntities("Smith's wound was cleaned.", [
+  { word: "Smith's", entity: "B-NAME", score: 0.9, start: 0, end: 7 }
+]);
+assert.deepEqual([possessive[0].start, possessive[0].end], [0, 5], "B5 strips the trailing possessive");
+const punctuated = modelPredictionsToEntities('See (Okafor), and "Hendricks"!', [
+  { word: "(Okafor),", entity: "B-NAME", score: 0.9, start: 4, end: 13 },
+  { word: '"Hendricks"!', entity: "B-NAME", score: 0.9, start: 18, end: 30 }
+]);
+assert.deepEqual([punctuated[0].start, punctuated[0].end], [5, 11], "B5 strips leading paren and trailing punctuation");
+assert.deepEqual([punctuated[1].start, punctuated[1].end], [19, 28], "B5 strips surrounding quotes and bang");
+const abbrev = modelPredictionsToEntities("Seen by Dr. Smith.", [
+  { word: "Dr. Smith.", entity: "B-NAME", score: 0.9, start: 8, end: 18 }
+]);
+assert.deepEqual([abbrev[0].start, abbrev[0].end], [8, 17], "B5 strips the sentence period but keeps 'Dr.'");
+
+// B7: the review queue surfaces lowest-confidence detections first.
+// Occurrences are computed in source order, then the queue is re-sorted.
+const b7review = createEphemeralRedactionReview("Alphonse saw Beatrice on 2026-01-05", {
+  text: "[NAME] saw [NAME] on [DATE]",
+  entities: [
+    { start: 0, end: 8, label: "NAME", source: "model", score: 0.95, placeholder: "[NAME]" },
+    { start: 13, end: 21, label: "NAME", source: "model", score: 0.42, placeholder: "[NAME]" },
+    { start: 25, end: 35, label: "DATE", source: "structured identifier", score: 1, placeholder: "[DATE]" }
+  ]
+});
+assert.equal(b7review.redactions.length, 3, "B7 keeps all three redactions");
+const confidences = b7review.redactions.map((redaction) => redaction.confidence);
+assert.deepEqual(confidences, [0.42, 0.95, 1], "B7 orders the queue confidence-ascending");
+assert.deepEqual(b7review.redactions.map((redaction) => redaction.id), ["redaction_0", "redaction_1", "redaction_2"], "B7 reassigns ids in queue order");
+const nameOccurrences = b7review.redactions
+  .filter((redaction) => redaction.placeholder === "[NAME]")
+  .map((redaction) => redaction.occurrence)
+  .sort();
+assert.deepEqual(nameOccurrences, [0, 1], "B7 keeps repeated-placeholder occurrences in source order");
+
 console.log(`De-ID tests passed for ${cases.length} synthetic cases plus targeted guards.`);
+
+// Track C: structured-pattern winners (labeled/tagged/bracketed/JSON names,
+// labeled locations, labeled IDs). Each asserts the value is redacted
+// (positive) or preserved (negative).
+function trackCRedacted(text) {
+  return deidentifyTextStructuredOnly(text).text;
+}
+function assertTrackCRedacts(text, value, id) {
+  const out = trackCRedacted(text);
+  assert.ok(!out.includes(value), `${id}: expected ${JSON.stringify(value)} to be redacted in ${JSON.stringify(out)}`);
+}
+function assertTrackCPreserves(text, value, id) {
+  const out = trackCRedacted(text);
+  assert.ok(out.includes(value), `${id}: expected ${JSON.stringify(value)} to be preserved in ${JSON.stringify(out)}`);
+}
+
+// C1: labeled person names
+assertTrackCRedacts("Name: Stuhlmüller\nDOB: 01/02/1980", "Stuhlmüller", "C1 plain label");
+assertTrackCRedacts("Full Name: Alexandru-Claudiu Golding\nAge: 44", "Golding", "C1 continuation token");
+assertTrackCRedacts("- **Name**: Arbentina Morris\n- Sex: F", "Arbentina", "C1 markdown-bold label");
+assertTrackCRedacts("- **Name**: Arbentina Morris\n- Sex: F", "Morris", "C1 bold continuation");
+assertTrackCRedacts('"GivenName": "Teute"\n"Age": "44"', "Teute", "C1 JSON label");
+assertTrackCRedacts("Participant: Ariadna\nStudy: X", "Ariadna", "C1 participant label");
+
+// C2: tag-wrapped names (and generic tags are NOT names)
+assertTrackCRedacts("<firstname>Bisrat</firstname>\n<age>44</age>", "Bisrat", "C2 firstname tag");
+assertTrackCRedacts("<lastname>Sassé</lastname>", "Sassé", "C2 lastname tag");
+assertTrackCRedacts("<givenname1>Nifa</givenname1>", "Nifa", "C2 numeric-suffix tag");
+assertTrackCPreserves("<td>Bisrat</td>", "Bisrat", "C2 generic td not a name");
+assertTrackCPreserves("<span>Sassé</span>", "Sassé", "C2 generic span not a name");
+
+// C3: bracketed single names (and non-name brackets are NOT names)
+assertTrackCRedacts("Patient: [Ariadna]\nAge: 44", "Ariadna", "C3 bracketed name");
+assertTrackCPreserves("See [UNKNOWN] for details", "[UNKNOWN]", "C3 all-caps bracket not a name");
+assertTrackCPreserves("Dose [123] mg given", "[123]", "C3 numeric bracket not a name");
+
+// C4: labeled locations (and postcodes stay excluded)
+assertTrackCRedacts('State: "ENG"\nCity: Norwich', "ENG", "C4 state code");
+assertTrackCRedacts('State: "ENG"\nCity: Norwich', "Norwich", "C4 city name");
+assertTrackCRedacts("<Country>GB</Country>", "GB", "C4 tag-wrapped country");
+
+// C5: labeled IDs (and unlabeled digit runs stay excluded)
+assertTrackCRedacts("SSN: 123-45-6789\nName: X", "123-45-6789", "C5 SSN");
+assertTrackCRedacts("Passport Number: X1234567\n", "X1234567", "C5 passport");
+assertTrackCRedacts("Driver License: BESMI-310286-BJ-181\n", "BESMI-310286-BJ-181", "C5 driver license");
+assertTrackCPreserves("Code 1234567 was entered", "1234567", "C5 unlabeled digit run excluded");
+
+// C7: JSON name keys (and non-name keys are NOT names)
+assertTrackCRedacts('{"last_name": "Sicking", "age": 44}', "Sicking", "C7 json last_name");
+assertTrackCRedacts('{"givenname1": "Ossi"}', "Ossi", "C7 json givenname");
+assertTrackCPreserves('{"Status": "Active"}', "Active", "C7 non-name key not a name");
+assertTrackCPreserves('{"Patient_ID": "12345"}', "12345", "C7 non-name value not a name");
+
+console.log("Track C structured-pattern tests passed.");

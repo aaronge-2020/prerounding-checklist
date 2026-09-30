@@ -10,7 +10,8 @@ export function createDeidSessionCoordinator({
   deidentifyText,
   updateDeidStatus,
   updateDeidOperation,
-  setStatus
+  setStatus,
+  getPatientIdentity
 }) {
   async function deidentify(rawText, { referenceDate = state.admissionDate, admissionDate = null, skipAdmissionGate = false } = {}) {
     // A session-scoped admissionDate (e.g. Quick De-ID's inline date) bypasses
@@ -34,10 +35,15 @@ export function createDeidSessionCoordinator({
     // Quick De-ID text must not resolve against the patient's admission date,
     // and an explicit session date is the reference when one was entered.
     const effectiveReferenceDate = sessionDate || (skipAdmissionGate ? null : (referenceDate || effectiveAdmissionDate));
+    // Quick De-ID pastes arbitrary standalone text: it must not learn the
+    // active patient's identity either, for the same reason it skips the
+    // admission-date anchor.
+    const patientIdentity = skipAdmissionGate ? null : (typeof getPatientIdentity === "function" ? getPatientIdentity() : null);
     return deidentifyText(rawText, {
       mode: state.deidMode,
       admissionDate: effectiveAdmissionDate,
       relativeDate: effectiveReferenceDate,
+      patientIdentity,
       onStatus: updateDeidStatus,
       onProgress: (progress) => {
         if (progress?.message) {

@@ -40,9 +40,9 @@ import {
   getAdvancedDeidStatus,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "../../patient-context/deid-service.js?v=20260929-deid-rules";
-import { DEFAULT_DEID_MODEL_KEY, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../../patient-context/deid-model-options.js?v=20260929-obi-default";
-import { crossOriginIsolationBlocker } from "../../patient-context/deid-client.js?v=20260929-deid-rules";
+} from "../../patient-context/deid-service.js?v=20260929-deid-clinicale5";
+import { DEFAULT_DEID_MODEL_KEY, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../../patient-context/deid-model-options.js?v=20260929-deid-clinicale5";
+import { crossOriginIsolationBlocker } from "../../patient-context/deid-client.js?v=20260929-deid-clinicale5";
 import {
   buildPatientContextFromPieces,
   defaultSelectedPieceIds,
@@ -1069,6 +1069,24 @@ export function createAiChatController({
     render();
   }
 
+  // B1: the active patient's known identity for the de-identifier's local
+  // patient lexicon (same sanitization and guards as the main app path).
+  // displayLabel is INTENTIONALLY de-identified (room labels, never real
+  // names), so only explicit identity metadata opts in; otherwise null.
+  function patientIdentity() {
+    const patient = activePatient(app.vault);
+    if (!patient) return null;
+    const metadata = patient.metadata && typeof patient.metadata === "object" ? patient.metadata : {};
+    const name = String(
+      metadata.patientName || metadata.name ||
+      [metadata.firstName, metadata.middleName, metadata.lastName].filter(Boolean).join(" ") || ""
+    ).trim();
+    const dob = String(metadata.dob || metadata.dateOfBirth || "").trim();
+    if (!name && !dob) return null;
+    return { name, dob };
+  }
+
+
   // De-identify one text through the selected model, fail-closed: a result
   // we can't trust (missing text, no model id, chunk failures) is a
   // failure, never a partial send. Structured-only mode is blocked by the
@@ -1078,7 +1096,8 @@ export function createAiChatController({
       mode: deidKey,
       allowStructuredFallback: false,
       admissionDate,
-      relativeDate: admissionDate
+      relativeDate: admissionDate,
+      patientIdentity: patientIdentity()
     });
     if (!result || typeof result.text !== "string" || !result.modelId || result.modelChunkFailures) {
       throw new Error(`the de-identification model didn't return a usable result for ${what}`);

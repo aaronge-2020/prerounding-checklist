@@ -42,7 +42,7 @@ import {
   quickWarningIndex,
   reviewKey,
   synchronizeReviewPlaceholders
-} from "../patient-context/review.js?v=20260723-review-refresh";
+} from "../patient-context/review.js?v=20260929-deid-clinicale5";
 import {
   crossOriginIsolationBlocker,
   deidentifyText,
@@ -51,13 +51,13 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../patient-context/deid-client.js?v=20260929-deid-rules";
+} from "../patient-context/deid-client.js?v=20260929-deid-clinicale5";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../patient-context/deid-model-options.js?v=20260929-obi-default";
+} from "../patient-context/deid-model-options.js?v=20260929-deid-clinicale5";
 import {
   canAutomaticallyInstallModel,
   ensureModelPackServiceWorker,
@@ -131,11 +131,11 @@ import {
   warningSnippet
 } from "./redaction/presentation.js?v=20260921-medication-card-v4";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
-import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20260922-deid-session";
+import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20260929-deid-clinicale5";
 import { createDemoController } from "./demo/controller.js?v=20260929-demo-v2";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260929-demo-v2";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260929-demo-v2";
-import { createAiChatController } from "./ai-chat/controller.js?v=20260929-ai-chat-v17";
+import { createAiChatController } from "./ai-chat/controller.js?v=20260929-deid-clinicale5";
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20260929-rag-v3";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
@@ -394,7 +394,21 @@ const admissionDateAnchor = createAdmissionDateAnchor({ state: app, active, sort
 const promptTaskController = createPromptTaskController({ state: app, setStatus, renderPrompts, refreshPromptPreview, byId });
 const guidelineSetsController = createGuidelineSetsController({ state: app, setStatus, renderSettings, renderPrompts, byId });
 const admissionDateGate = createAdmissionDateGate({ app, byId });
-const deidSession = createDeidSessionCoordinator({ state: app, admissionDateAnchor, admissionDateGate, deidentifyText, updateDeidStatus, updateDeidOperation, setStatus });
+const deidSession = createDeidSessionCoordinator({ state: app, admissionDateAnchor, admissionDateGate, deidentifyText, updateDeidStatus, updateDeidOperation, setStatus, getPatientIdentity: () => {
+  // B1: the active patient's known identity, passed as explicit data the
+  // de-identifier matches locally. displayLabel is INTENTIONALLY
+  // de-identified (the UI instructs room labels, never real names), so it
+  // must not feed the identity lexicon. Only explicit identity metadata
+  // opts in; without it B1 stays dormant and returns null.
+  const patient = active();
+  if (!patient) return null;
+  const metadata = patient.metadata && typeof patient.metadata === "object" ? patient.metadata : {};
+  const name = metadata.patientName || metadata.name ||
+    [metadata.firstName, metadata.middleName, metadata.lastName].filter(Boolean).join(" ");
+  const dob = metadata.dob || metadata.dateOfBirth || "";
+  if (!String(name || "").trim() && !String(dob || "").trim()) return null;
+  return { name: String(name || ""), dob: String(dob || "") };
+} });
 const dailySourceController = createDailySourceController({
   app,
   active,

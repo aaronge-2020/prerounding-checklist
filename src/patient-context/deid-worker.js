@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20260929-deid-rules";
+} from "./deid-service.js?v=20260929-deid-clinicale5";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });

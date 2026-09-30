@@ -6,6 +6,17 @@ function reviewPlaceholder(entity, label) {
   return String(entity?.renderedPlaceholder || entity?.placeholder || `[${label}]`);
 }
 
+// B7: surface the least-certain detections first. Model spans carry their
+// classifier score (0-1); deterministic structured rules carry score 1. An
+// entity with no score is treated as fully confident (structured-equivalent).
+function reviewEntityConfidence(entity) {
+  const score = Number(entity?.score);
+  if (Number.isFinite(score)) return score;
+  const confidence = Number(entity?.confidence);
+  if (Number.isFinite(confidence)) return confidence;
+  return 1;
+}
+
 function reviewEntitySpecificity(entity, output = "") {
   const label = normalizedLabel(entity?.label).toUpperCase();
   const placeholder = reviewPlaceholder(entity, label).toUpperCase();
@@ -43,7 +54,8 @@ function uniqueReviewEntities(source, entities = [], output = "") {
       label: normalizedLabel(entity.label),
       source: String(entity.source || "local de-identification"),
       original,
-      placeholder: reviewPlaceholder(entity, normalizedLabel(entity.label))
+      placeholder: reviewPlaceholder(entity, normalizedLabel(entity.label)),
+      confidence: reviewEntityConfidence(entity)
     };
     const key = `${start}:${end}`;
     const existing = bySourceRange.get(key);
@@ -141,6 +153,20 @@ export function createEphemeralRedactionReview(rawText, result = {}, { priorOutp
         state: "pending"
       };
     });
+
+  // B7: order the pending queue confidence-ascending so the least-certain
+  // detections are reviewed first. Occurrences above are computed in source
+  // order (repeated placeholders need their true position); only the
+  // presentation order changes. Tie-breaks are deterministic: source order,
+  // then the original entity index.
+  redactions.sort((left, right) =>
+    left.confidence - right.confidence ||
+    left.start - right.start ||
+    left.end - right.end ||
+    left.sourceIndex - right.sourceIndex);
+  redactions.forEach((redaction, index) => {
+    redaction.id = `redaction_${index}`;
+  });
 
   const review = {
     source,
