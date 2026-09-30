@@ -186,6 +186,14 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
 
   function renderTopbar(vm) {
     const { mode, hardware, settings, llmStatus, downloaded, remote, patientContext, offlineMode } = vm;
+    // Whether the topbar Context toggle reads as "on" (sidebar visible).
+    // The controller derives this per render: on narrow screens the sidebar
+    // is a drawer driven by sidebarOpen; on desktop it is a persistent
+    // column driven by sidebarCollapsed. Default to visible for older
+    // view-model shapes that don't carry the field.
+    const sidebarToggleOn = typeof vm.sidebarToggleOn === "boolean"
+      ? vm.sidebarToggleOn
+      : vm.sidebarCollapsed !== true;
     const local = mode !== "remote";
     const models = hardware?.recommendation?.models || [];
     const recommendedKey = hardware?.recommendation?.recommendedKey;
@@ -230,7 +238,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
             </label>
           </div>
         </details>
-        <button type="button" class="aic-sidebtn" data-action="ai-chat-context-inspector">${icon("chevron")} Context</button>
+        <button type="button" class="aic-sidebtn" data-action="ai-chat-context-inspector" aria-pressed="${sidebarToggleOn ? "true" : "false"}" title="${sidebarToggleOn ? "Hide the context sidebar" : "Show the context sidebar"}">${icon("chevron")} Context</button>
       </div>
       <p class="aic-modesub aic-muted">${
         local
@@ -550,10 +558,13 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
 
   function renderSidebar(vm) {
     const { contextInspector, patientContext, clinicalService, sidebarGuidelinesText, sidebarGuidelinesRemoteText, sidebarOpen } = vm;
+    // Desktop collapse state: the column is hidden via CSS when collapsed.
+    // Narrow screens ignore it (the drawer is driven by sidebarOpen).
+    const sidebarCollapsed = vm.sidebarCollapsed === true;
     const guidelinesTokens = Number(contextInspector?.guidelinesTokens || 0);
     return `
       ${sidebarOpen ? `<button type="button" class="aic-side-backdrop" data-action="ai-chat-sidebar-close" aria-label="Close sidebar"></button>` : ""}
-      <aside class="aic-sidebar${sidebarOpen ? " is-open" : ""}" aria-label="Chat context sidebar">
+      <aside class="aic-sidebar${sidebarOpen ? " is-open" : ""}${sidebarCollapsed ? " is-collapsed" : ""}" aria-label="Chat context sidebar">
         <div class="aic-side-head">
           <strong>Context &amp; options</strong>
           <button type="button" class="aic-side-close" data-action="ai-chat-sidebar-close" aria-label="Close sidebar">${icon("chevron")} Close</button>
@@ -959,7 +970,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     const sidebarOpen = typeof vm.sidebarOpen === "boolean"
       ? vm.sidebarOpen
       : !!(contextInspector && contextInspector.open);
-    const topVm = { mode, hardware, settings, llmStatus, downloaded, remote, patientContext, offlineMode };
+    const topVm = { mode, hardware, settings, llmStatus, downloaded, remote, patientContext, offlineMode, sidebarCollapsed: vm.sidebarCollapsed, sidebarToggleOn: vm.sidebarToggleOn };
     return `
       <div class="aic-shell">
         ${renderTopbar(topVm)}
@@ -967,7 +978,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
           <div class="aic-main">
             ${isRemote ? renderRemoteMain({ remote, hasApiKey }) : renderLocalMain({ hardware, settings, llmStatus, chat })}
           </div>
-          ${renderSidebar({ contextInspector, patientContext, clinicalService, sidebarGuidelinesText, sidebarGuidelinesRemoteText, sidebarOpen })}
+          ${renderSidebar({ contextInspector, patientContext, clinicalService, sidebarGuidelinesText, sidebarGuidelinesRemoteText, sidebarOpen, sidebarCollapsed: vm.sidebarCollapsed })}
         </div>
         ${renderHipaaReview(remote.review)}
       </div>`;

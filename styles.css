@@ -13491,6 +13491,16 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   .aic-hipaa-sug-act { margin-left: 0; }
 }
 
+/* ── Desktop: collapsible sidebar column ── */
+/* The topbar Context button is hidden on desktop by default; showing it
+   gives a collapse/expand toggle for the persistent sidebar column.
+   Narrow screens keep the drawer behavior (max-width: 1023px above). */
+@media (min-width: 1024px) {
+  .aic-sidebtn { display: inline-flex; }
+  .aic-sidebtn[aria-pressed="true"] { background: color-mix(in srgb, var(--primary, #1d4ed8) 10%, var(--surface, #fff)); border-color: color-mix(in srgb, var(--primary, #1d4ed8) 45%, var(--border, #e2e8f0)); }
+  .aic-sidebar.is-collapsed { display: none; }
+}
+
 /* Drug Lookup view styles */
 .drug-lookup .card { margin-bottom: 1rem; }
 .drug-add-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }

@@ -470,6 +470,56 @@ const base = {
   assert.ok(html.includes('data-action="ai-chat-hipaa-restore" data-piece="day:Hospital Day 7:vitals" data-redaction="r3"'), "rejected record offers Restore targeting its record id");
 }
 
+// ---------------------------------------------------------------------------
+// Sidebar collapse/expand (desktop): the topbar Context button toggles the
+// persistent sidebar column via sidebarCollapsed. Regression coverage for
+// the toggle markup, the pressed/title state, and the is-collapsed class.
+// ---------------------------------------------------------------------------
+
+{
+  // Expanded (default): no is-collapsed class, button reads pressed.
+  const html = presentation.render({
+    ...base,
+    mode: "local",
+    remote: { messages: [], sending: false, webSearch: true, review: null },
+    hasApiKey: false,
+    sidebarCollapsed: false,
+    sidebarToggleOn: true
+  });
+  assert.ok(html.includes('data-action="ai-chat-context-inspector"'), "topbar Context toggle present");
+  assert.ok(html.includes('aria-pressed="true"'), "toggle reads pressed while the sidebar is shown");
+  assert.ok(html.includes('title="Hide the context sidebar"'), "toggle tooltip offers hiding");
+  assert.ok(!html.includes("is-collapsed"), "sidebar column not collapsed by default");
+}
+
+{
+  // Collapsed: the aside carries is-collapsed and the button reads unpressed.
+  const html = presentation.render({
+    ...base,
+    mode: "local",
+    remote: { messages: [], sending: false, webSearch: true, review: null },
+    hasApiKey: false,
+    sidebarCollapsed: true,
+    sidebarToggleOn: false
+  });
+  assert.ok(html.includes("is-collapsed"), "collapsed sidebar carries the is-collapsed class");
+  assert.ok(html.includes('aria-pressed="false"'), "toggle reads unpressed while collapsed");
+  assert.ok(html.includes('title="Show the context sidebar"'), "toggle tooltip offers showing");
+}
+
+{
+  // Older view-model shapes without the new fields keep the legacy look:
+  // sidebar visible, toggle pressed.
+  const html = presentation.render({
+    ...base,
+    mode: "local",
+    remote: { messages: [], sending: false, webSearch: true, review: null },
+    hasApiKey: false
+  });
+  assert.ok(!html.includes("is-collapsed"), "no is-collapsed class without the collapse flag");
+  assert.ok(html.includes('aria-pressed="true"'), "toggle defaults to pressed for older view models");
+}
+
 {
   // Failed de-identification: fail-closed error state, no content, no send.
   const failed = {

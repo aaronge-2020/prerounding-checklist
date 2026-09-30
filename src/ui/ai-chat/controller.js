@@ -16,7 +16,7 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20260929-ai-chat-v17";
+import { createAiChatPresentation } from "./presentation.js?v=20260930-ai-chat-v18";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20260929-ai-chat-v2";
 import { gatedFetch, isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
 import {
@@ -194,6 +194,10 @@ export function createAiChatController({
     // the local-LLM settings so the choice survives reloads.
     mode: readLocalLlmSettings().chatMode === "remote" ? "remote" : "local",
     sidebarOpen: false,
+    // Desktop-only collapse state for the "Context & options" sidebar
+    // column (narrow screens use sidebarOpen for the drawer instead).
+    // Session-scoped, never persisted.
+    sidebarCollapsed: false,
     remote: {
       messages: [],
       sending: false,
@@ -350,6 +354,14 @@ export function createAiChatController({
 
   function viewRoot() {
     return byId("aiChatContent");
+  }
+
+  // Matches the CSS breakpoint where the sidebar becomes a drawer
+  // (styles.css: max-width 1023px). Guarded for non-DOM (test) environments.
+  function isNarrowViewport() {
+    return typeof window !== "undefined"
+      && typeof window.matchMedia === "function"
+      && window.matchMedia("(max-width: 1023px)").matches;
   }
 
   // The chat composer is a contenteditable rich-text box (so formatted
@@ -661,6 +673,11 @@ export function createAiChatController({
         windowLabel: budgetWindowLabel
       },
       sidebarOpen: state.sidebarOpen,
+      // Desktop collapse flag for the sidebar column. sidebarToggleOn
+      // drives the topbar Context button's pressed state: the drawer state
+      // on narrow viewports, the column state on desktop.
+      sidebarCollapsed: state.sidebarCollapsed,
+      sidebarToggleOn: isNarrowViewport() ? state.sidebarOpen : !state.sidebarCollapsed,
       clinicalService: clinicalServiceInfo(),
       sidebarGuidelinesText: String(settings().systemGuidelines || ""),
       sidebarGuidelinesRemoteText: String(settings().systemGuidelinesRemote || "")
@@ -2597,10 +2614,17 @@ export function createAiChatController({
       return true;
     }
     if (action === "ai-chat-context-inspector") {
-      state.chat.inspectorOpen = !state.chat.inspectorOpen;
-      // The presentation opens the sidebar drawer from sidebarOpen, so keep
-      // it in sync — otherwise the mobile Context button does nothing.
-      state.sidebarOpen = state.chat.inspectorOpen;
+      // The topbar Context button is the sidebar toggle on every viewport.
+      // Narrow screens (<1024px): the sidebar is a drawer — toggle it.
+      // Desktop: the sidebar is a persistent column — collapse/expand it.
+      if (isNarrowViewport()) {
+        state.chat.inspectorOpen = !state.chat.inspectorOpen;
+        // The presentation opens the sidebar drawer from sidebarOpen, so
+        // keep it in sync — otherwise the mobile Context button does nothing.
+        state.sidebarOpen = state.chat.inspectorOpen;
+      } else {
+        state.sidebarCollapsed = !state.sidebarCollapsed;
+      }
       renderView();
       return true;
     }
