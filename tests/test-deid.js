@@ -1328,3 +1328,44 @@ assertTrackCRedacts('Last Name 1: Golding', "Golding", "C8 numbered Last Name 1"
 assertTrackCRedacts('GivenName2: Ariadna', "Ariadna", "C8 GivenName2");
 
 console.log("Track C structured-pattern tests passed.");
+
+// Track D: clinical-text rule winners (measured 0.802 exact-span F1 on the
+// held-out split as Stanford + full rule stack). Same structured-only path
+// as Track C: the D rules live in addStructuredSafeHarborEntities.
+function trackDRedacted(text) {
+  return deidentifyTextStructuredOnly(text).text;
+}
+function assertTrackDRedacts(text, value, id) {
+  const out = trackDRedacted(text);
+  assert.ok(!out.includes(value), `${id}: expected ${JSON.stringify(value)} to be redacted in ${JSON.stringify(out)}`);
+}
+
+// D1: clinical ages re-added post-filter (Safe Harbor suppresses < 90)
+assertTrackDRedacts("Patient is 43 y/o male", "43", "D1 clinical age 43 y/o");
+assertTrackDRedacts("18-year-old female presented", "18-year-old", "D1 clinical age 18-year-old");
+assertTrackDRedacts("Age 67", "67", "D1 clinical age 67");
+
+// D2: role-anchored provider names (gold keeps ", MD" / ", MBBS")
+assertTrackDRedacts("Dr. Smith examined the patient", "Smith", "D2 Dr. anchor");
+assertTrackDRedacts("Attending: Jane Doe", "Jane Doe", "D2 attending anchor");
+assertTrackDRedacts("Yours sincerely, Michaiah Krawczuk, MD", "Krawczuk", "D2 signoff with credential");
+
+// D3: labeled clinical IDs
+assertTrackDRedacts("NHS number: 000 327 0743", "000 327 0743", "D3 NHS number");
+assertTrackDRedacts("Report ID: 048015141", "048015141", "D3 report ID");
+
+// D4: care facilities
+assertTrackDRedacts("Transferred to Royal Victoria Hospital", "Royal Victoria Hospital", "D4 facility");
+
+// D5: relatives' names
+assertTrackDRedacts("Mother: Mary Smith", "Mary Smith", "D5 relative name");
+assertTrackDRedacts("Next of kin: John Doe", "John Doe", "D5 next of kin");
+
+// D-location: locality anchors and residence verbs
+assertTrackDRedacts("lives in Citadel", "Citadel", "D location residence verb");
+
+// Production safety: a full 5-digit ZIP is a HIPAA identifier and stays
+// redacted (the benchmark's ST-ZIP suppression is NOT shipped).
+assertTrackDRedacts("Patient lives in WI 53023", "53023", "D ZIP stays redacted");
+
+console.log("Track D clinical-rule tests passed.");

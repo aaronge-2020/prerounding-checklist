@@ -11,6 +11,9 @@ export const OPENMED_MODEL_ID = "Wismut/openmed-onnx/large";
 export const OPENMED_BASE_MODEL_ID = "Wismut/openmed-onnx/base";
 export const OPENMED_SMALL_MODEL_ID = "Wismut/openmed-onnx/small";
 export const CLINICALE5_SMALL_MODEL_ID = "OpenMed/OpenMed-PII-ClinicalE5-Small-33M-v1-onnx-android";
+// Community q8 ONNX export of obi/deid_roberta_i2b2 (i2b2 2014). Pinned revision;
+// browser inference never resolves a mutable remote `main` revision.
+export const ROBERTA_I2B2_Q8_MODEL_ID = "thinkingface/deid_roberta_i2b2_q";
 export const MULTILANG_PII_MODEL_ID = "onnx-community/multilang-pii-ner-ONNX";
 export const I2B2_CLINICALBERT_MODEL_ID = "onnx-community/deid_bert_i2b2-ONNX";
 export const DEFAULT_DTYPE = "q8";

@@ -968,6 +968,13 @@ function refineNameLabel(label, rawText, start, end) {
     return normalized;
   }
 
+  // TRACK-D-D6a: narrow care-facility suffixes resolve to FACILITY (the gold
+  // schema's HOSPITAL->FACILITY mapping); broader org-like suffixes still
+  // fall through to ORGANIZATION below.
+  if (isClinicalFacilityPhrase(normalizePhrase(spanOriginal))) {
+    return "FACILITY";
+  }
+
   // Facility suffix: if phrase ends with a facility word, it's an organization
   if (isLikelyFacilityPhrase(normalizePhrase(spanOriginal))) {
     return "ORGANIZATION";
@@ -1632,6 +1639,373 @@ function addTrackC8NumberedNameEntities(rawText, entities) {
   tokenRe.lastIndex = 0;
 }
 
+// ================= TRACK-D (clinical) =================
+// Clinical-text rules layered on the Track-C stack. Tuned on the MedDeID
+// dev split (200 notes); each rule held to >= 0.60 precision on dev.
+// D1 age runs POST-filter because filterLikelyFalsePositiveEntities drops
+// ages < 90 (Safe Harbor: only 90+ is a HIPAA identifier) — the post-filter
+// call sites are marked TRACK-D-D1 below. D6 remap/suppression clauses live
+// in filterLikelyFalsePositiveEntities next to the ROOM->FACILITY remap.
+
+// Raw entity push for Track-D: bypasses constrainPatternEntitySpan's
+// credential stripping, because the clinical gold spans keep ", MD" /
+// ", MBBS" ("Michaiah Krawczuk, MD"). Other constraints are no-ops on the
+// tightly-constructed Track-D spans. Entities still flow through
+// mergeEntities -> normalizePhiEntity -> refineNameLabel like all others.
+function pushTrackDRawEntity(entities, label, start, end, context) {
+  if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return;
+  entities.push({
+    start, end, label,
+    placeholder: placeholderForLabel(label),
+    source: "structured identifier",
+    score: 0,
+    context: context || ""
+  });
+}
+
+// D2a+b: provider names. The existing Dr-pattern emits "Dr First Last" but
+// the gold span includes ", MBBS"; the wider span absorbs the shorter one at
+// merge. Role anchors ("Validated by:", "Attending:", "Clinician:",
+// "Yours sincerely,", "Seen and documented by", "Discussed with", ...)
+// capture 1-3 name tokens; tokens are validated as name-shaped (an uppercase
+// letter, or a hyphenated lowercase token such as "connor-joe jama").
+export function addTrackDProviderEntities(rawText, entities) {
+  for (const m of rawText.matchAll(/\b(?:Dr|Doctor)\.?\s+[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){0,2}(?:,\s*MBBS)?\b(?![A-Za-z0-9.'-])/g)) {
+    pushTrackDRawEntity(entities, "PROVIDER NAME", m.index, m.index + m[0].length, "track-d dr name");
+  }
+
+  const anchorRe = /\b(?:Validated and reported by|Validated by|Seen and documented by|Discharging clinician|Discharge clinician|Referring clinician|Documenting clinician|Documented by|Discussed with|Attending|Provider|Clinician|Signed|Sincerely|Yours faithfully|Yours sincerely)\b\s*[:,]\s*/gi;
+  const stopRoleTail = /^(?:signed|electronically|consultant|microbiologists?|doctors?|nurses?|clinicians?|physicians?)$/i;
+  const facilityWord = /^(?:hospitals?|infirmar(?:y|ies)|medical|medicine|clinics?|cent(?:er|re)|care|service|team|unit|department)$/i;
+  const connectorTail = /^(?:of|the|and|&)$/i;
+  const junkSpan = /^(?:not stated|not provided|not listed|unnamed(?:\s+gp)?|gp|gp surgery)$/i;
+  const pronounStart = /^(?:I|A|We|You|He|She|They)\b/;
+  for (const m of rawText.matchAll(anchorRe)) {
+    const start = m.index + m[0].length;
+    const nm = /^[A-Za-z][A-Za-z.'-]*(?:[ \t]+[A-Za-z][A-Za-z.'-]*){0,2}/.exec(rawText.slice(start));
+    if (!nm) continue;
+    const tokens = nm[0].split(/[ \t]+/);
+    // a trailing sentence period is not part of the name ("Internal Medicine.")
+    if (tokens.length > 0) tokens[tokens.length - 1] = tokens[tokens.length - 1].replace(/\.+$/, "");
+    let strippedFacility = false;
+    while (tokens.length > 1 && (stopRoleTail.test(tokens[tokens.length - 1]) || facilityWord.test(tokens[tokens.length - 1]) || connectorTail.test(tokens[tokens.length - 1]))) {
+      if (facilityWord.test(tokens[tokens.length - 1])) strippedFacility = true;
+      tokens.pop();
+    }
+    // A facility after the anchor ("Clinician, Royal Victoria Hospital") is
+    // D4's job, not a provider name.
+    const nextTok = /^[ \t]*(?:,[ \t]*)?([A-Za-z]+)/.exec(rawText.slice(start + tokens.join(" ").length));
+    if (strippedFacility || (nextTok && facilityWord.test(nextTok[1]))) continue;
+    const span = tokens.join(" ");
+    if (junkSpan.test(span) || pronounStart.test(span)) continue;
+    if (tokens.length === 1 && (stopRoleTail.test(span) || /^(?:gp|doctor|nurse|clinician)$/i.test(span))) continue;
+    if (!/[A-Z]/.test(span) && !/^[a-z]+-[a-z]+$/.test(tokens[0])) continue;
+    // gold keeps a ", MD" / ", MBBS" / ", DO" credential suffix on provider names
+    let end = start + span.length;
+    const cred = /^,\s*(?:MBBS|MD|DO)\b/.exec(rawText.slice(end));
+    if (cred) end += cred[0].length;
+    pushTrackDRawEntity(entities, "PROVIDER NAME", start, end, "track-d provider anchor");
+  }
+}
+
+// D3: labeled clinical IDs the Track-C labeled-ID rule does not cover:
+// "Report/accession ID: 048015141", "NHS number: 000 327 0743" /
+// "0002187940", "GMC no. 0833013", "National Insurance number: BG549511A" /
+// "ZZ 86 10 33 C", "Professional identifier: 0202898". Emits the value only.
+export function addTrackDIdEntities(rawText, entities) {
+  const anchorRe = /\b(?:Report\/accession ID|Report ID|accession ID|National Insurance number|Professional identifier|NHS number|SSN|GMC(?:\s*(?:no\.?|number|identifier|professional ID))?|professional ID)\b\s*:?\s*/gi;
+  const valueRe = /^(?:[A-Z]{2}\s?\d{2}\s?\d{2}\s?\d{2}\s?[A-Z]|[A-Z]{2}\d{6}[A-Z]|\d{3} \d{3} \d{4}|\d{7,10}(?!\d)|[A-Z0-9][A-Z0-9 /.-]{2,16}\d[A-Z0-9 /.-]*)/;
+  for (const m of rawText.matchAll(anchorRe)) {
+    const start = m.index + m[0].length;
+    const vm = valueRe.exec(rawText.slice(start));
+    if (!vm) continue;
+    const value = vm[0].replace(/[\s.,;]+$/, "");
+    if (value.length < 4) continue;
+    // Bare "GMC 0546514" (no colon/"no.") keeps the label in the gold span.
+    const bareGmc = /^GMC\s*$/i.test(m[0]);
+    const emitStart = bareGmc ? m.index : start;
+    pushPatternEntity(entities, rawText, "ID", emitStart, start + value.length, "structured identifier", "track-d labeled id");
+  }
+}
+
+// D4: care-facility names: titlecase ("Royal Victoria Hospital",
+// "Winch Lane Medical Centre", "Royal Infirmary of Edinburgh",
+// "Tidalhealth Nanticoke, Inc.", "Royal Victoria Hospital - Medical") and
+// ALL-CAPS ("HEXHAM GENERAL HOSPITAL - PRESCRIBING",
+// "NMP - CARE OF THE ELDERLY ROYAL SHREWSBURY HOSPITAL",
+// "GOV JUAN F LUIS HOSPITAL & MEDICAL CTR"). refineNameLabel maps these to
+// FACILITY via isClinicalFacilityPhrase (TRACK-D-D6a).
+export function addTrackDFacilityEntities(rawText, entities) {
+  // No gold FACILITY ends with "Clinic" (specialty clinics like "Respiratory
+  // Medicine Clinic" are document titles / departments), so Clinic is out.
+  const titleSrc = String.raw`\b([A-Z][A-Za-z&.'-]*(?:[ \t]+(?:of|and|the|&|[A-Z][A-Za-z&.'-]*)){0,6}[ \t]+(?:Hospitals?|Infirmar(?:y|ies)|Medical Cent(?:er|re)|Medical CTR|Health (?:System|Baptist))(?![ \t]+(?:Report|Review|Letter)\b)(?:[ \t]+of[ \t]+[A-Z][A-Za-z&.'-]+)?(?:[ \t]*-[ \t]*[A-Z][A-Za-z]+(?:[ \t]+[A-Z][A-Za-z]+)?)?(?:[ \t]+(?:CDC|NORTH|SOUTH|EAST|WEST)\b)?(?:,?[ \t]*Inc\.?)?(?:[ \t]+Corp)?)`;
+  // Leading verbs/prepositions ("DISCHARGED TO X") are trimmed; a leading
+  // "The" is kept ("The Royal Glamorgan Hospital" is the gold span).
+  const leadStop = /^(?:DISCHARGED|TRANSFERRED|ADMITTED|REFERRED|SEEN|TO|FOR|AT|FROM|UNDER)$/i;
+  const trimLead = (span, baseIndex, fullMatch) => {
+    const tokens = span.split(/[ \t]+/);
+    while (tokens.length > 2 && leadStop.test(tokens[0])) tokens.shift();
+    if (tokens.length < 2) return null;
+    const out = tokens.join(" ");
+    return { span: out, start: baseIndex + fullMatch.indexOf(tokens[0]) };
+  };
+  for (const m of rawText.matchAll(new RegExp(titleSrc, "g"))) {
+    const t = trimLead(m[1], m.index, m[0]);
+    if (!t) continue;
+    if (/^Dear\b/i.test(t.span)) continue;
+    pushPatternEntity(entities, rawText, "FACILITY", t.start, t.start + t.span.length, "structured identifier", "track-d facility");
+  }
+  const capsRe = /\b((?:[A-Z]{2,}[ \t]*-[ \t]*)?(?:[A-Z]+[ \t]+){1,7}(?:HOSPITALS?|INFIRMAR(?:Y|IES)|MEDICAL CENT(?:ER|RE)|MEDICAL CTR|HEALTH (?:SYSTEM|BAPTIST))(?:[ \t]+OF[ \t]+[A-Z]+)?(?:[ \t]*&[ \t]*MEDICAL[ \t]+CTR)?(?:(?:[ \t]+[A-Z]+)?[ \t]+LLC\b)?(?:[ \t]*-[ \t]*[A-Z][A-Za-z]+(?:[ \t]+[A-Z][A-Za-z]+)?)?(?:[ \t]+(?:NORTH|SOUTH|EAST|WEST))?)\b/g;
+  for (const m of rawText.matchAll(capsRe)) {
+    const t = trimLead(m[1], m.index, m[0]);
+    if (!t) continue;
+    pushPatternEntity(entities, rawText, "FACILITY", t.start, t.start + t.span.length, "structured identifier", "track-d facility caps");
+  }
+}
+
+// D5: relative/contact names ("Legal guardian: Naseem",
+// "Relative present: sibling, Inabiyah", "Accompanied by mother, N. Simmonds",
+// "A friend, AJOONI SAID", "father, N. Ellis",
+// "NICCI MCMANUS, the patient's spouse",
+// "involved in discussion: iyla-jane parry"). Single-token values that are
+// bare relationship words are skipped.
+const trackDRelationshipWords = /^(?:mother|father|parent|sibling|spouse|partner|friend|son|daughter|wife|husband|patient|relative|relatives)$/i;
+function trackDPushRelativeName(rawText, entities, start, nameText, lowerOk) {
+  // a trailing sentence period is not part of the name ("N. Ellis.")
+  nameText = nameText.replace(/\.+$/, "");
+  let tokens = nameText.split(/[ \t]+/);
+  // a relationship / placeholder word anywhere in the span kills it
+  // ("Relative listed", "relative details recorded")
+  if (tokens.some(t => trackDRelationshipWords.test(t) || /^(?:none|unknown|n\/a|declined|unavailable|not|stated|recorded|separately|listed|details|and|or|the)$/i.test(t))) return;
+  // Titlecase name followed by lowercase verb ("Diing updated") — truncate
+  // to the name; a 2-token name is only valid if both tokens are Titlecase
+  // or (with lowerOk) both are lowercase ("chidozie mercer").
+  if (tokens.length === 2 && /^[A-Z]/.test(tokens[0]) && /^[a-z]/.test(tokens[1])) {
+    tokens = [tokens[0]];
+    nameText = tokens[0];
+  }
+  if (!/[A-Z]/.test(nameText)) {
+    // Lowercase names only when ALL tokens are lowercase ("chidozie mercer").
+    const allLower = tokens.every(t => /^[a-z][a-z.'-]*$/.test(t));
+    const lowerPairOk = lowerOk && allLower && tokens.length === 2;
+    if (!lowerPairOk && !/^[a-z]+-[a-z]+$/.test(tokens[0])) return;
+  }
+  pushTrackDRawEntity(entities, "NAME", start, start + nameText.length, "track-d relative name");
+}
+export function addTrackDRelativeNameEntities(rawText, entities) {
+  const namePat = "[A-Za-z][A-Za-z.'-]*(?:[ \\t]+[A-Za-z][A-Za-z.'-]*)?";
+  const relPat = "(?:sibling|mother|father|parent|spouse|partner|friend)";
+  // Strong colon-anchors: the name follows, lowercase 2-token names allowed.
+  let re = new RegExp(String.raw`\b(?:Legal guardian|Relative present|Emergency contact|Emergency contact\/friend|Next of kin(?:\/partner)?|Partner present|Responsible adult|Informant\/contact|Parent present|Parent|Mother\/carer|Mother at bedside|Guardian\/legal decision-maker|Spouse\/contact|Support person\/friend)\b\s*:\s*(?:${relPat}\s*,\s*)?(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1], true);
+  // "Accompanied by" is case-sensitive here: lowercase "accompanied by nausea"
+  // is a verb phrase, the header "Accompanied by [friend:] NAME" is not.
+  re = new RegExp(String.raw`\bAccompanied by\b\s*:?\s*(?:friend\s*[:,]?\s*)?(${namePat})`, "g");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1], true);
+  re = new RegExp(String.raw`\bFamily contact\b\s*:?\s*(?:Aunt|Uncle|${relPat})\s+(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1], true);
+  re = new RegExp(String.raw`\b(?:Informant|Source)\b\s*:\s*Patient and (?:uncle|aunt|${relPat}),\s*(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1], true);
+  re = new RegExp(String.raw`\bHistory obtained from (?:father|mother|${relPat}),\s*(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1], true);
+  re = new RegExp(String.raw`\bSupport\b\s*:\s*(?:Adult child|${relPat})\s+(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1], true);
+  re = new RegExp(String.raw`\bDischarge home with friend\b\s*,?\s*(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1], true);
+  // "discharge home with D. Milne supporting" — relative name after "with".
+  // Lowercase NOT allowed here: "discharge home with oral cefuroxime" is
+  // a medication instruction, not a name.
+  re = new RegExp(String.raw`\b[Dd]ischarge home with\s+(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1], false);
+  // "Partner A. Zaniewski present" — relationship word + name + verb.
+  re = new RegExp(String.raw`\b[Pp]artner\s+(${namePat})\s+present\b`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1], true);
+  // "adult child, Delayne" — single name after relationship comma.
+  re = new RegExp(String.raw`\b[Aa]dult child,\s*(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1], true);
+  // Weaker / post-name anchors: name precedes the relationship cue.
+  re = new RegExp(String.raw`\binvolved in discussion\s*:\s*(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1]);
+  re = new RegExp(String.raw`(?:^|[.\n])\s*A friend,\s*(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1]);
+  re = new RegExp(String.raw`\b(?:father|mother)\s*,\s*(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1]);
+  re = new RegExp(String.raw`\b[Hh]is\s+(?:father|mother),\s*(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1]);
+  re = new RegExp(String.raw`\b[Tt]heir\s+sibling,\s*(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1]);
+  re = new RegExp(String.raw`\b(?:Spouse|Partner),\s*(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1]);
+  re = new RegExp(String.raw`\bthe legal guardian,\s*(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1]);
+  re = new RegExp(String.raw`\byour (?:friend|partner),\s*(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1], true);
+  re = new RegExp(String.raw`\bwith parent\s+(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1]);
+  re = new RegExp(String.raw`\b(?:^|[.\n])\s*(?:Friend|Aunt|Uncle),\s*(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1], true);
+  re = new RegExp(String.raw`\bParent,\s*(${namePat})`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].lastIndexOf(m[1]), m[1], true);
+  // name, then the relationship cue ("NICCI MCMANUS, the patient's spouse").
+  // The name must start at a sentence boundary so "yesterday. Kalki, uncle"
+  // does not capture "yesterday. Kalki".
+  const sentStart = String.raw`(?:^|[.!?\n]\s*)`;
+  re = new RegExp(sentStart + String.raw`\b(${namePat}),\s*(?:the patient['\u2019]s|identified as the)\s+(?:spouse|father|mother|son|daughter|sibling|partner|friend)\b`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].indexOf(m[1]), m[1]);
+  re = new RegExp(sentStart + String.raw`\b(${namePat}),\s*(?:her|his|their)\s+emergency contact\b`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].indexOf(m[1]), m[1]);
+  re = new RegExp(sentStart + String.raw`\b(${namePat}),\s*(?:uncle|aunt|brother|sister|cousin)\b`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].indexOf(m[1]), m[1]);
+  re = new RegExp(String.raw`(?:^|[.!?\n]\s*)\b(${namePat})\s+received an update\b`, "gi");
+  for (const m of rawText.matchAll(re)) trackDPushRelativeName(rawText, entities, m.index + m[0].indexOf(m[1]), m[1]);
+}
+
+export function addTrackDLocationEntities(rawText, entities) {
+  const pushLoc = (start, end, ctx) => {
+    const span = rawText.slice(start, end);
+    // Skip if obviously not a place.
+    if (/^(?:hospital|clinic|home|work|school|pharmacy|ward|unit|department)$/i.test(span.trim())) return;
+    pushTrackDRawEntity(entities, "LOCATION", start, end, ctx || "track-d location");
+  };
+  // "locality" anchors: "Emergency contact locality: Kilmuir",
+  // "locality TOBERMORE", "Service locality: Charlotte Amalie".
+  // Place is Titlecase words, ALL-CAPS, or "An t-Ollach" style.
+  let re = /\b(?:Emergency contact locality|contact locality|Service locality|Referring locality|Clinical locality|friend's locality is recorded as|locality)\b\s*:?\s*((?:[A-Z][a-z]+(?:[ \t]+[A-Z][a-z]+)*)|(?:[A-Z]{2,}(?:[ \t]+[A-Z]{2,})*)|(?:An[ \t]+t-[A-Za-z]+)|(?:[A-Z][A-Za-z']*(?:[ \t]+[A-Z][A-Za-z']*)*))/g;
+  for (const m of rawText.matchAll(re)) {
+    if (!m[1] || !m[1].trim()) continue;
+    const s = m.index + m[0].lastIndexOf(m[1]);
+    pushLoc(s, s + m[1].length, "track-d locality anchor");
+  }
+  // Residence verbs: "residing in Erath", "lives in Citadel",
+  // "living in An t-Ollach", "located in Baker", "based in ANNSBOROUGH".
+  re = /\b(?:residing in|lives in|living in|located in|based in)\b\s+((?:[A-Z][a-z]+(?:[ \t]+[A-Z][a-z]+)*)|(?:[A-Z]{2,}(?:[ \t]+[A-Z]{2,})*)|(?:An[ \t]+t-[A-Za-z]+))/g;
+  for (const m of rawText.matchAll(re)) {
+    if (!m[1] || !m[1].trim()) continue;
+    const s = m.index + m[0].lastIndexOf(m[1]);
+    pushLoc(s, s + m[1].length, "track-d residence verb");
+  }
+  // "from <PLACE>": "from CALEDON", "from Prichard", "from Blue Springs".
+  // Restrict to ALL-CAPS or Titlecase to avoid "from the hospital".
+  re = /\bfrom\b\s+((?:[A-Z]{2,}(?:[ \t]+[A-Z]{2,})*)|(?:[A-Z][a-z]+(?:[ \t]+[A-Z][a-z]+){0,2}))(?![a-z])/g;
+  for (const m of rawText.matchAll(re)) {
+    if (!m[1] || !m[1].trim()) continue;
+    // Skip common non-places.
+    if (/^(?:the|a|an|his|her|their|this|that)$/i.test(m[1].split(/\s+/)[0])) continue;
+    const s = m.index + m[0].lastIndexOf(m[1]);
+    pushLoc(s, s + m[1].length, "track-d from-place");
+  }
+  // "via <PLACE>": "contacted via HELEN'S BAY".
+  re = /\bvia\b\s+((?:[A-Z][A-Z' -]*[A-Z])|(?:[A-Z][a-z]+(?:[ \t]+[A-Z][a-z]+)*))/g;
+  for (const m of rawText.matchAll(re)) {
+    if (!m[1] || !m[1].trim()) continue;
+    const s = m.index + m[0].lastIndexOf(m[1]);
+    pushLoc(s, s + m[1].length, "track-d via-place");
+  }
+  // Signature block: standalone ALL-CAPS word on its own line after a
+  // provider signature (e.g. "Dr Mirha Frost, MBBS\nATTICAL\n").
+  re = /\n([A-Z]{2,}(?:[ \t]+[A-Z]{2,})?)\n/g;
+  for (const m of rawText.matchAll(re)) {
+    if (!m[1] || !m[1].trim()) continue;
+    // Must follow a name/credential line (not a heading).
+    const before = rawText.slice(Math.max(0, m.index - 80), m.index);
+    if (!/(?:Dr|MBBS|MD|DO|NP|PA)\b/.test(before)) continue;
+    // Skip known non-places.
+    if (/^(?:NHS|SSN|GMC|MRN|ID)$/.test(m[1].trim())) continue;
+    const s = m.index + 1;
+    pushLoc(s, s + m[1].length, "track-d signature place");
+  }
+}
+
+// D1: clinical age expressions with exact gold-shaped spans. Runs POST-filter
+// (TRACK-D-D1 call sites) because filterLikelyFalsePositiveEntities drops
+// ages < 90 per Safe Harbor. Existing entities win on overlap.
+export function addTrackDAgeEntitiesPostFilter(rawText, entities) {
+  const out = entities.slice();
+  const occupied = (s, e) => out.some((en) => en.start < e && s < en.end);
+  const push = (s, e) => {
+    if (!(e > s) || occupied(s, e)) return;
+    out.push({ start: s, end: e, label: "AGE", placeholder: placeholderForLabel("AGE"), source: "structured identifier", score: 0, context: "track-d age" });
+  };
+  for (const m of rawText.matchAll(/(?<![\d.])(1[0-2][0-9]|[1-9]?[0-9])\s*y\/o\b/gi)) push(m.index, m.index + m[0].length); // "43 y/o"
+  for (const m of rawText.matchAll(/\b(1[0-2][0-9]|[1-9]?[0-9])-year(?=-old\b)/gi)) push(m.index, m.index + m[0].length); // "18-year"
+  for (const m of rawText.matchAll(/\baged\s+(1[0-2][0-9]|[1-9]?[0-9])(\s+years?)?\b/gi)) push(m.index + m[0].indexOf(m[1]), m.index + m[0].indexOf(m[1]) + m[1].length + (m[2] || "").length); // "43" / "72 years"
+  for (const m of rawText.matchAll(/\b(1[0-2][0-9]|[1-9]?[0-9])\s*(?:wk|week)s?\s+old\b/gi)) push(m.index, m.index + m[0].length); // "2 wk old"
+  for (const m of rawText.matchAll(/\b(1[0-2][0-9]|[1-9]?[0-9])\s*m\/o\b/gi)) push(m.index, m.index + m[0].length); // "4 m/o"
+  // bare "72 years" / "2 years" — not a duration ("for/in/within/over/past N years")
+  for (const m of rawText.matchAll(/(?<!\bfor\s)(?<!\bin\s)(?<!\bwithin\s)(?<!\bover\s)(?<!\bpast\s)(?<!\babout\s)\b((?:1[0-2][0-9]|[1-9]?[0-9])\s+years?)\b/gi)) {
+    push(m.index + m[0].indexOf(m[1]), m.index + m[0].indexOf(m[1]) + m[1].length);
+  }
+  return out;
+}
+
+// D6a: narrow care-facility test used by refineNameLabel: true facility
+// suffixes only (hospital/infirmary/medical center/clinic). Broader org-like
+// suffixes ("association", "services", "center", ...) still resolve to
+// ORGANIZATION below, preserving e.g. "Hirnant Housing Association".
+function isClinicalFacilityPhrase(normalized) {
+  const words = clinicalWordsFromNormalized(normalized);
+  if (words.length < 2 || words.length > 8) return false;
+  const last = words[words.length - 1];
+  const lastTwo = words.slice(-2).join(" ");
+  if (/^(?:hospitals?|infirmar(?:y|ies))$/.test(last)) return true;
+  if (/^medical cent(?:er|re)$/.test(lastTwo)) return true;
+  if (/^health (?:system|baptist)$/.test(lastTwo)) return true;
+  // "Royal Infirmary of Edinburgh", "Royal Victoria Hospital - Medical"
+  if (/\b(?:hospital|infirmary)\b/.test(normalized) && !/\bassociation\b/.test(normalized)) return true;
+  return false;
+}
+
+// D6b: remaps and suppressions applied inside
+// filterLikelyFalsePositiveEntities, next to the ROOM->FACILITY remap.
+// Returns "keep", "drop", or "remap:<LABEL>".
+function trackDFilterDecision(rawText, entity) {
+  const label = entity.label;
+  const span = rawText.slice(entity.start, entity.end);
+  const trimmed = span.replace(/\s+/g, " ").trim();
+  if (label === "CONTACT NAME") {
+    // Gold has no CONTACT NAME; relatives are NAME. Keep name-shaped spans
+    // as NAME, drop the rest. Track-D strong-anchor names (even lowercase)
+    // are trusted via their context.
+    if (/track-d relative name/i.test(entity.context || "")) return "remap:NAME";
+    if (/[A-Z]/.test(trimmed) && /^(?:[A-Z]\.\s*)?[A-Za-z][A-Za-z.'-]*(?:\s+[A-Za-z][A-Za-z.'-]*){0,2}$/.test(trimmed)) return "remap:NAME";
+    return "drop";
+  }
+  // TRACK-D: systematic model FPs — phrases that are never person names.
+  if (nameEntityLabels.has(label)) {
+    if (/^(?:National Insurance|Dear Colleague|NHS(?:\s+Talking Therapies)?)$/i.test(trimmed)) return "drop";
+    // A date-shaped span is never a NAME ("31st July 2045").
+    if (/^\d{1,2}(?:st|nd|rd|th)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{2,4}$/i.test(trimmed)) return "drop";
+  }
+  if (label === "TIME" && /^\d{1,2}:\d{2}(?::\d{2})?$/.test(trimmed)) return "drop"; // bare clock times are never gold
+  if (label === "ROOM") return "drop"; // facility-shaped ROOMs already remapped above; gold has no ROOM
+  if (label === "FACILITY" && /^(?:GMC|NHS|SSN)$/.test(trimmed)) return "drop"; // acronym FPs
+  if (label === "ORGANIZATION" && /\b(?:Report\/accession ID|NHS number|National Insurance number|Professional identifier|GMC|professional ID|SSN|number)\b\s*:?/i.test(trimmed)) {
+    // ID-label spans: the wider ORGANIZATION (e.g. "number: BG549511A") may
+    // have absorbed a narrower Track-D ID in merge. Shrink to the ID value
+    // and remap to ID so the identifier isn't lost.
+    const idValueRe = /(?:[A-Z]{2}\s?\d{2}\s?\d{2}\s?\d{2}\s?[A-Z]|[A-Z]{2}\d{6}[A-Z]|\d{3} \d{3} \d{4}|\d{7,10}(?!\d)|[A-Z0-9][A-Z0-9 /.-]{2,16}\d[A-Z0-9 /.-]*)/;
+    const vm = idValueRe.exec(span);
+    if (vm) {
+      const clean = vm[0].replace(/[\s.,;]+$/, "");
+      if (clean.length >= 4) {
+        entity.start = entity.start + vm.index;
+        entity.end = entity.start + clean.length;
+        return "remap:ID";
+      }
+    }
+    return "drop";
+  }
+  if (label === "DATE") {
+    // durations and relative dates are never gold DATE spans
+    if (/^(?:for|in|within)\s+\d+\s+(?:days?|weeks?|months?|years?|minutes?|hours?)$/i.test(trimmed)) return "drop";
+    if (/^in\s+about\s+\d+\s+weeks?$/i.test(trimmed)) return "drop";
+    if (/^\d+\s+minutes?\s+before$/i.test(trimmed)) return "drop";
+    if (/^after\s+\d+\s+hours?$/i.test(trimmed)) return "drop";
+    if (/^(?:yesterday|today|past week|within one week)$/i.test(trimmed)) return "drop";
+  }
+  return "keep";
+}
+
 export function addStructuredSafeHarborEntities(rawText, entities = [], currentDate = null, { relativeDate = currentDate } = {}) {
   const dateValue = String.raw`(?:\d{4}-\d{1,2}-\d{1,2}T\d{1,2}:\d{2}(?::\d{2})?|\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9](?!\d)|[12]\d|3[01])(?:[/-](?:\d{4}(?!\d)|\d{2}(?!\d)))?(?![/-]\d)|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})`;
 
@@ -1673,7 +2047,7 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
     { label: "PROVIDER NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Primary endocrinologist|Provider|Attending|Resident|Fellow|Consultant|Surgeon|PCP|Primary care provider|Referring provider|Ordering provider)${mdSepOptionalColon}((?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){0,2}|[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,2})`, "gmi") },
     { label: "PROVIDER NAME", regex: new RegExp(String.raw`\bProvider${mdSep}((?:Dr|Doctor)\.?\s+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+(?:[ \t]+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+){1,2})`, "g") },
     { label: "CONTACT NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian|Caregiver)${mdSepOptionalColon}([A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,3})`, "gmi") },
-    { label: "CONTACT NAME", regex: new RegExp(String.raw`\b(?:contact${mdSep}|Emergency contact\s+)((?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+(?:[ \t]+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+){1,3})`, "g") },
+    { label: "CONTACT NAME", regex: new RegExp(String.raw`\b(?:contact${mdSep}|Emergency contact\s+)((?=[A-Za-z0-9.'-]*[A-Z])[A-Za-z0-9.'-]+(?:[ \t]+(?=[A-Za-z0-9.'-]*[A-Z])[A-Za-z0-9.'-]+){1,3})`, "g") },
     { label: "ORGANIZATION", regex: new RegExp(String.raw`^${mdFiller}Insurance${mdSepOptionalColon}([^,\n\r]+?)(?=\s+(?:PPO|HMO|EPO|POS|HDHP)\b\s*$|$)`, "gmi") },
     { label: "ORGANIZATION", regex: new RegExp(String.raw`^${mdFiller}Employer${mdSepOptionalColon}([^\n\r]+?)\s*$`, "gmi") },
     { label: "OCCUPATION", regex: new RegExp(String.raw`^${mdFiller}(?:Occupation|Profession|Job title)${mdSepOptionalColon}([^\n\r]+?)\s*$`, "gmi") },
@@ -1707,6 +2081,19 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
   capturedPatterns.forEach(({ label, regex }) => {
     addCapturedEntity(rawText, entities, label, regex);
   });
+
+  // TRACK-D (clinical): role-anchored provider names, labeled clinical IDs,
+  // care facilities, relative names. These run BEFORE the generic
+  // capturedPatterns so their precise spans/labels win: pushPatternEntity's
+  // covering check then skips the broader generic rules on the same span
+  // (e.g. the ORGANIZATION-on-Hospital regex would otherwise cover a D4
+  // FACILITY and, winning the equal-span merge by insertion order, relabel
+  // it ORGANIZATION).
+  addTrackDProviderEntities(rawText, entities);
+  addTrackDIdEntities(rawText, entities);
+  addTrackDFacilityEntities(rawText, entities);
+  addTrackDRelativeNameEntities(rawText, entities);
+  addTrackDLocationEntities(rawText, entities);
 
   const directPatterns = [
     { label: "EMAIL", regex: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi },
@@ -2015,6 +2402,14 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
       return age >= 90;
     }
 
+    // TRACK-D-D6b: remaps and suppressions for clinical text.
+    const trackDDecision = trackDFilterDecision(rawText, entity);
+    if (trackDDecision === "drop") return false;
+    if (trackDDecision.startsWith("remap:")) {
+      entity.label = trackDDecision.slice("remap:".length);
+      entity.placeholder = placeholderForLabel(entity.label);
+    }
+
     if (isProtectedClinicalEntityFalsePositive(rawText, entity)) {
       return false;
     }
@@ -2100,6 +2495,14 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
         return true;
       }
       const idText = rawText.slice(entity.start, entity.end).trim();
+      // TRACK-D: labeled clinical IDs (NHS number, GMC, Report ID, ...) carry
+      // explicit identifier anchors - the anchor itself is positive evidence
+      // of an identifier, so they bypass the clinical-result-line filter
+      // below (which misfires on "NHS number:" style lines).
+      if (/track-d/i.test(entity.context || "")) {
+        acceptedIdTexts.add(idText);
+        return true;
+      }
       // Explicit identifier markup ("<socialnumber>…</socialnumber>",
       // "driver_license: …") is positive evidence of an identifier, not a
       // misread clinical value - it bypasses the clinical-result-line filter
@@ -3044,10 +3447,51 @@ function resolvedRedactionPlaceholder(rawText, entity, dateTimeline) {
 }
 
 function resolvedRedactionEntities(rawText, entities, currentDate = null, { includeTemporalFallback = true, relativeDate = currentDate } = {}) {
-  const temporalEntities = includeTemporalFallback ? collectTemporalEntities(rawText, relativeDate) : [];
+  let temporalEntities = includeTemporalFallback ? collectTemporalEntities(rawText, relativeDate) : [];
+  // TRACK-D-D6b: the temporal fallback re-adds duration-DATEs ("for 3 days",
+  // "yesterday", "in about N weeks") that the D6b filter drops from the main
+  // pipeline, and the identity-graph passes can reintroduce CONTACT NAME /
+  // TIME / ROOM labels after the last D6b filter pass. ("ST ZIP" LOCATIONs are
+  // intentionally NOT suppressed here: a full 5-digit ZIP is a HIPAA
+  // identifier and stays redacted in production.)
   const allEntities = mergeEntities([...entities, ...temporalEntities], rawText);
-  const dateTimeline = buildDateTimeline(rawText, allEntities, currentDate, { includeTemporalFallback, relativeDate });
-  return allEntities.map((entity) => ({
+  // TRACK-D-D6b runs AFTER the merge because mergeEntities re-applies
+  // refineNameLabel, which would otherwise convert a remapped NAME back to
+  // CONTACT NAME on "Emergency contact:" prefixes.
+  const trackDFinalEntities = allEntities.filter((entity) => {
+    const label = normalizePhiLabel(entity.label);
+    const trimmed = rawText.slice(entity.start, entity.end).replace(/\s+/g, " ").trim();
+    if (label === "DATE") {
+      if (/^(?:for|in|within)\s+\d+\s+(?:days?|weeks?|months?|years?|minutes?|hours?)$/i.test(trimmed)) return false;
+      if (/^in\s+about\s+\d+\s+weeks?$/i.test(trimmed)) return false;
+      if (/^\d+\s+minutes?\s+before$/i.test(trimmed)) return false;
+      if (/^after\s+\d+\s+hours?$/i.test(trimmed)) return false;
+      if (/^(?:yesterday|today|tonight|tomorrow|past week|within one week)$/i.test(trimmed)) return false;
+    }
+    if (label === "CONTACT NAME") {
+      if (/track-d relative name/i.test(entity.context || "")) {
+        entity.label = "NAME";
+        entity.placeholder = placeholderForLabel("NAME");
+      } else if (/[A-Z]/.test(trimmed) && /^(?:[A-Z]\.\s*)?[A-Za-z][A-Za-z.'-]*(?:\s+[A-Za-z][A-Za-z.'-]*){0,2}$/.test(trimmed)) {
+        entity.label = "NAME";
+        entity.placeholder = placeholderForLabel("NAME");
+      } else {
+        return false;
+      }
+    }
+    if (label === "TIME" && /^\d{1,2}:\d{2}(?::\d{2})?$/.test(trimmed)) return false;
+    if (label === "ROOM") return false;
+    if (label === "FACILITY" && /^(?:GMC|NHS|SSN)$/.test(trimmed)) return false;
+    // TRACK-D: systematic model FPs — phrases that are never person names.
+    if (/^(?:NAME|PATIENT NAME|PROVIDER NAME)$/.test(label)) {
+      if (/^(?:National Insurance|Dear Colleague|NHS(?:\s+Talking Therapies)?)$/i.test(trimmed)) return false;
+      if (/^\d{1,2}(?:st|nd|rd|th)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{2,4}$/i.test(trimmed)) return false;
+    }
+    return true;
+  });
+  const dateTimeline = buildDateTimeline(rawText, trackDFinalEntities, currentDate, { includeTemporalFallback, relativeDate });
+  return trackDFinalEntities.map((entity) => ({
+
     ...entity,
     renderedPlaceholder: resolvedRedactionPlaceholder(rawText, entity, dateTimeline)
   }));
@@ -4231,7 +4675,9 @@ function formatPhiWarning(warning) {
 
 export function deidentifyTextStructuredOnly(rawText, currentDate = null, options = {}) {
   const bracketEntities = collectBracketedPlaceholderEntities(rawText);
-  const { entities } = expandIdentityGraphEntities(rawText, addStructuredSafeHarborEntities(rawText, bracketEntities, currentDate, options), 3, { patientIdentity: options.patientIdentity });
+  const graphResult = expandIdentityGraphEntities(rawText, addStructuredSafeHarborEntities(rawText, bracketEntities, currentDate, options), 3, { patientIdentity: options.patientIdentity });
+  // TRACK-D-D1: clinical age expressions (see deidentifyWithModel).
+  const entities = addTrackDAgeEntitiesPostFilter(rawText, graphResult.entities);
   return deidentifyFromEntities(rawText, entities, { modelId: null, modelStatus: "structured only" }, currentDate, options);
 }
 
@@ -4502,7 +4948,10 @@ export function createDeidentifier(options = {}) {
     let structuredEntities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addStructuredSafeHarborEntities(rawText, bracketEntities, admissionDate, { relativeDate }), rawText));
     modelEntities = modelEntities.filter((entity) => !overlapsAny(entity, structuredEntities));
     reportProgress(onProgress, { stage: "aliases", message: "Checking repeated names and aliases...", percent: 0.84 });
-    const { entities } = expandIdentityGraphEntities(rawText, [...structuredEntities, ...modelEntities], 3, { patientIdentity: runOptions.patientIdentity || null });
+    const graphResult = expandIdentityGraphEntities(rawText, [...structuredEntities, ...modelEntities], 3, { patientIdentity: runOptions.patientIdentity || null });
+    // TRACK-D-D1: clinical age expressions (< 90 are dropped by the Safe
+    // Harbor filter above, so they are added back here with gold-shaped spans).
+    const entities = addTrackDAgeEntitiesPostFilter(rawText, graphResult.entities);
     reportProgress(onProgress, { stage: "redacting", message: "Creating redacted preview...", percent: 0.92 });
     const result = deidentifyFromEntities(rawText, entities, modelResult, admissionDate, { relativeDate });
     reportProgress(onProgress, { stage: "complete", message: "De-identified preview ready.", percent: 1 });

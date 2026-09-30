@@ -24,8 +24,8 @@ assert.match(deidClientSource, /deid-worker\.js\?v=/);
 assert.match(deidWorkerSource, /deid-service\.js\?v=/);
 
 const keys = DEID_MODEL_OPTIONS.map((option) => option.key);
-assert.deepEqual(keys.sort(), ["gliner-multi-pii", "obi-deid-bert-i2b2", "openmed-clinicale5-small", "openmed-superclinical-small", "stanford-clinical"].sort(), "the clinician picker must exclude unsupported large local packs");
-assert.equal(DEFAULT_DEID_MODEL_KEY, "openmed-clinicale5-small", "the round-2 benchmark winner is the default");
+assert.deepEqual(keys.sort(), ["gliner-multi-pii", "obi-deid-bert-i2b2", "openmed-clinicale5-small", "openmed-superclinical-small", "stanford-clinical", "roberta-i2b2-q8", "stanford-roberta-ensemble"].sort(), "the clinician picker must exclude unsupported large local packs");
+assert.equal(DEFAULT_DEID_MODEL_KEY, "stanford-clinical", "the Track D benchmark winner is the default");
 assert.ok(keys.includes(DEFAULT_DEID_MODEL_KEY));
 assert.ok(keys.includes("stanford-clinical"));
 assert.ok(keys.includes("openmed-superclinical-small"));
@@ -87,6 +87,33 @@ assert.equal(gliner.engine, "gliner");
 assert.ok(gliner.requiredFiles.includes("onnx/model_int8.onnx"));
 assert.ok(existsSync(repoFile("vendor/gliner/index.mjs")));
 assert.deepEqual(deidModelCandidates(gliner).map((candidate) => candidate.options.device), ["wasm"]);
+
+const roberta = deidModelOptionByKey("roberta-i2b2-q8");
+assert.equal(roberta.modelId, "thinkingface/deid_roberta_i2b2_q");
+assert.equal(roberta.engine, "transformers-token-classification");
+assert.equal(roberta.browserRunnable, true);
+assert.equal(roberta.assetMode, "installable");
+assert.equal(roberta.localOnly, true);
+assert.ok(roberta.requiredFiles.includes("model_quantized.onnx"));
+assert.equal(roberta.download.repository, "thinkingface/deid_roberta_i2b2_q");
+assert.equal(roberta.download.revision, "bfc43a231568364a7f1aedea14196f62a2febae7");
+assert.deepEqual(
+  deidModelCandidates(roberta).map((candidate) => ({
+    device: candidate.options.device,
+    dtype: candidate.options.dtype,
+    aggregation: candidate.inferenceOptions.aggregation_strategy
+  })),
+  [{ device: "wasm", dtype: "q8", aggregation: "simple" }]
+);
+
+const ensemble = deidModelOptionByKey("stanford-roberta-ensemble");
+assert.equal(ensemble.engine, "ensemble");
+assert.deepEqual(ensemble.ensembleOf, ["stanford-clinical", "roberta-i2b2-q8"]);
+assert.equal(ensemble.browserRunnable, true);
+assert.equal(ensemble.localOnly, true);
+assert.ok(ensemble.description.includes("RoBERTa model pack"));
+assert.match(deidServiceSource, /createEnsembleRuntime/);
+assert.match(deidServiceSource, /option\.engine === "ensemble"/);
 
 assert.deepEqual(runnableDeidModelOptions().map((option) => option.key).sort(), keys.sort());
 assert.equal(normalizePhiLabel("private_person"), "NAME");

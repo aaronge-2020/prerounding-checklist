@@ -7,8 +7,9 @@ import {
   OPENMED_MODEL_ID,
   OPENMED_SMALL_MODEL_ID,
   CLINICALE5_SMALL_MODEL_ID,
+  ROBERTA_I2B2_Q8_MODEL_ID,
   OPENAI_PRIVACY_FILTER_MODEL_ID
-} from "../vault/deid/model-config.js?v=20260929-deid-clinicale5";
+} from "../vault/deid/model-config.js?v=20260930-deid-trackd";
 
 export const STRUCTURED_DEID_MODE = "structured";
 // Only browser configurations that have a supported local execution path are
@@ -19,7 +20,13 @@ export const STRUCTURED_DEID_MODE = "structured";
 // (obi/deid_bert_i2b2, MIT): strongest redaction-relevant recall on
 // facilities, ages, and locations — the identifiers the structured
 // layer cannot recover on its own.
-export const DEFAULT_DEID_MODEL_KEY = "openmed-clinicale5-small";
+export const DEFAULT_DEID_MODEL_KEY =
+  // Track D (2026-09-30): Stanford + the full algorithmic rule stack
+  // (labeled/bracketed/tag-wrapped names, clinical ages, role-anchored
+  // provider names, labeled clinical IDs, care facilities, relatives'
+  // names) is the winning system at 0.802 exact-span F1 on the held-out
+  // benchmark split.
+  "stanford-clinical";
 
 const ALL_DEID_MODEL_OPTIONS = [
   {
@@ -253,6 +260,62 @@ const ALL_DEID_MODEL_OPTIONS = [
     ]
   },
   {
+    key: "roberta-i2b2-q8",
+    label: "RoBERTa i2b2 clinical",
+    shortLabel: "RoBERTa i2b2",
+    modelId: ROBERTA_I2B2_Q8_MODEL_ID,
+    engine: "transformers-token-classification",
+    dtype: "q8",
+    browserRunnable: true,
+    assetMode: "installable",
+    sizeLabel: "340 MB ONNX",
+    localOnly: true,
+    description: "RoBERTa fine-tuned on i2b2 2014 notes (community q8 ONNX export). Strong recall on clinical text, slower than Stanford. Downloads once, then runs fully in your browser.",
+    candidates: [
+      { modelId: ROBERTA_I2B2_Q8_MODEL_ID, options: { dtype: "q8", device: "wasm", local_files_only: true }, inferenceOptions: { aggregation_strategy: "simple" } }
+    ],
+    requiredFiles: [
+      "config.json",
+      "tokenizer.json",
+      "tokenizer_config.json",
+      "special_tokens_map.json",
+      "vocab.json",
+      "merges.txt",
+      "model_quantized.onnx"
+    ],
+    download: {
+      provider: "Hugging Face",
+      repository: "thinkingface/deid_roberta_i2b2_q",
+      revision: "bfc43a231568364a7f1aedea14196f62a2febae7",
+      assets: [
+        { path: "config.json", bytes: 2500 },
+        { path: "tokenizer.json", bytes: 2108715 },
+        { path: "tokenizer_config.json", bytes: 1352 },
+        { path: "special_tokens_map.json", bytes: 964 },
+        { path: "vocab.json", bytes: 798293 },
+        { path: "merges.txt", bytes: 456318 },
+        { path: "model_quantized.onnx", bytes: 356334804 }
+      ]
+    }
+  },
+  {
+    key: "stanford-roberta-ensemble",
+    label: "Stanford + RoBERTa ensemble",
+    shortLabel: "Ensemble",
+    modelId: "ensemble/stanford-roberta-i2b2",
+    engine: "ensemble",
+    ensembleOf: ["stanford-clinical", "roberta-i2b2-q8"],
+    dtype: "q8",
+    browserRunnable: true,
+    assetMode: "installable",
+    sizeLabel: "110 MB bundled + 340 MB download",
+    localOnly: true,
+    description: "Runs the Stanford deidentifier and the RoBERTa i2b2 model side by side and unions their spans (higher score wins on overlap). The highest-recall option, but roughly 4x slower and needs a desktop-class machine. Install the RoBERTa model pack first. Best for a second-opinion pass, not routine use.",
+    candidates: [
+      { modelId: "ensemble/stanford-roberta-i2b2", options: { dtype: "q8", local_files_only: true }, inferenceOptions: { aggregation_strategy: "simple" } }
+    ]
+  },
+  {
     key: "openai-privacy-filter",
     label: "OpenAI Privacy Filter",
     shortLabel: "OpenAI Privacy Filter",
@@ -391,6 +454,8 @@ export const DEID_MODEL_OPTIONS = ALL_DEID_MODEL_OPTIONS.filter((option) => [
   "openmed-clinicale5-small",
   "obi-deid-bert-i2b2",
   "stanford-clinical",
+  "roberta-i2b2-q8",
+  "stanford-roberta-ensemble",
   "openmed-superclinical-small",
   "gliner-multi-pii"
 ].includes(option.key));

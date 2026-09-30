@@ -57,7 +57,7 @@ import {
   DEID_MODEL_OPTIONS,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../patient-context/deid-model-options.js?v=20260929-deid-clinicale5";
+} from "../patient-context/deid-model-options.js?v=20260930-deid-trackd";
 import {
   canAutomaticallyInstallModel,
   ensureModelPackServiceWorker,

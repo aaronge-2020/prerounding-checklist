@@ -1,13 +1,13 @@
 import {
   createDeidentifier,
   deidentifyTextStructuredOnly
-} from "../vault/deid.js?v=20260930-deid-trackc8";
+} from "../vault/deid.js?v=20260930-deid-trackd";
 import {
   DEFAULT_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,
   deidModelCandidates,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20260929-deid-clinicale5";
+} from "./deid-model-options.js?v=20260930-deid-trackd";
 import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260921-medication-card-v4";
 import { importedModelBaseUrl } from "./model-packs.js?v=20260921-medication-card-v4";
 
@@ -189,6 +189,91 @@ async function resolveAssetSource(option, requestedSource = "auto") {
   return pack.ready && ["imported", "handles", "opfs"].includes(pack.source) ? pack.source : "bundled";
 }
 
+// The Stanford+RoBERTa ensemble runs two token-classification pipelines from a
+// single transformers.js module instance. transformers.js keeps one global
+// `env.fetch`, so the runtime below installs a dispatching fetch that serves
+// each component model from its own asset source (Stanford's bundled chunks,
+// RoBERTa's installed pack) instead of overwriting the fetch per model.
+async function loadEnsembleRuntime(components) {
+  const runtime = await import("../../vendor/transformers/transformers.web.js");
+  runtime.env.allowLocalModels = true;
+  runtime.env.allowRemoteModels = true;
+  const bundledRoot = modelBaseUrl("bundled");
+  runtime.env.localModelPath = bundledRoot;
+  const nativeFetch = fetch.bind(globalThis);
+  const componentFetchers = components.map(({ option, assetSource }) =>
+    localOnlyModelFetch(modelBaseUrl(assetSource), assetSource, option.modelId));
+  runtime.env.fetch = async (input, init) => {
+    const requested = new URL(typeof input === "string" ? input : input.url, bundledRoot);
+    for (const { option } of components) {
+      const chunkedResponse = await fetchBundledModelChunks(option, requested, nativeFetch, init);
+      if (chunkedResponse) return chunkedResponse;
+    }
+    let lastResponse = null;
+    for (const componentFetch of componentFetchers) {
+      try {
+        const response = await componentFetch(input, init);
+        if (response && response.ok) return response;
+        if (response) lastResponse = response;
+      } catch (error) {
+        lastResponse = lastResponse;
+      }
+    }
+    return lastResponse || new Response("Ensemble model file not found.", { status: 404, statusText: "Not Found" });
+  };
+  runtime.env.useBrowserCache = true;
+  if (runtime.env.backends?.onnx?.wasm) {
+    runtime.env.backends.onnx.wasm.wasmPaths = wasmRuntimePaths({});
+    runtime.env.backends.onnx.wasm.proxy = false;
+  }
+  return runtime;
+}
+
+// Returns a pipelineFactory whose callable runs every ensemble component on the
+// text and concatenates the predictions. The shared hybrid pipeline downstream
+// (mergeEntities) dedups overlapping spans, keeping the higher model score —
+// the same union rule the benchmark measured for this pair.
+function createEnsemblePipelineFactory(runtime, components) {
+  let loadedPipelines = null;
+  return async function ensemblePipelineFactory(task, modelId, options) {
+    if (!loadedPipelines) {
+      loadedPipelines = await Promise.all(components.map(({ option }) => {
+        const candidate = (option.candidates || [])[0] || {};
+        return runtime.pipeline("token-classification", option.modelId, {
+          dtype: "q8",
+          local_files_only: true,
+          ...(candidate.options || {})
+        });
+      }));
+    }
+    return async (text, inferenceOptions) => {
+      const predictions = await Promise.all(
+        loadedPipelines.map((pipelineFn) => pipelineFn(text, inferenceOptions)));
+      return predictions.flatMap((result) => result || []);
+    };
+  };
+}
+
+async function createEnsembleRuntime(option, assetSource) {
+  const components = (option.ensembleOf || [])
+    .map((key) => deidModelOptionByKey(key))
+    .filter(Boolean);
+  if (components.length < 2 || components.some((component) => !component.browserRunnable)) {
+    throw new Error("The ensemble needs all of its component models to be browser-runnable.");
+  }
+  const withSources = [];
+  for (const component of components) {
+    await ensureWebGpuRuntime(component);
+    withSources.push({ option: component, assetSource: await resolveAssetSource(component, assetSource) });
+  }
+  const roberta = withSources.find(({ option }) => option.key === "roberta-i2b2-q8");
+  if (roberta && roberta.assetSource === "bundled") {
+    throw new Error("Install the RoBERTa i2b2 model pack first (Models), then run the ensemble.");
+  }
+  const runtime = await loadEnsembleRuntime(withSources);
+  return { pipeline: createEnsemblePipelineFactory(runtime, withSources) };
+}
+
 async function loadTransformersRuntime(option, assetSource) {
   const runtime = await import("../../vendor/transformers/transformers.web.js");
   runtime.env.allowLocalModels = true;
@@ -323,7 +408,9 @@ export async function getAdvancedDeidentifier({ modelKey = DEFAULT_DEID_MODEL_KE
     }, onStatus);
     const runtimePromise = option.engine === "gliner"
       ? createGlinerPipelineFactory(option, resolvedSource).then((glinerPipeline) => ({ pipeline: async () => glinerPipeline }))
-      : loadTransformersRuntime(option, resolvedSource);
+      : option.engine === "ensemble"
+        ? createEnsembleRuntime(option, assetSource)
+        : loadTransformersRuntime(option, resolvedSource);
     const deidentifierPromise = runtimePromise.then((runtime) =>
       createDeidentifier({
         pipelineFactory: runtime.pipeline,
