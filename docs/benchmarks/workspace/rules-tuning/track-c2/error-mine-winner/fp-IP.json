@@ -1,0 +1,218 @@
+[
+ {
+  "id": "42522",
+  "ctx": "rough - ENG - LE16 - 1:26 PM  Background Information: - [53.514, -2.51] - 30/03/2070  Please fill in th",
+  "got": "514",
+  "src": "model"
+ },
+ {
+  "id": "47640",
+  "ctx": "aml - Individuals:   - Brig: S0209940523200, M7.FRA.37IK1912.7.720928.LORENE   - Prefect: OM91947LH, ",
+  "got": ".",
+  "src": "model"
+ },
+ {
+  "id": "47640",
+  "ctx": " - Individuals:   - Brig: S0209940523200, M7.FRA.37IK1912.7.720928.LORENE   - Prefect: OM91947LH, SHARA-00",
+  "got": "720928",
+  "src": "model"
+ },
+ {
+  "id": "51472",
+  "ctx": ", 2004-02-13T00:00:00, 541 13 4459, 729266905011, 66146017, 881158728, 226.189.98.37, Renald...  6 PM, Winter",
+  "got": "881158728",
+  "src": "model"
+ },
+ {
+  "id": "53456",
+  "ctx": "\"---REHABILITATION PLAN---  **Individual A:** - e1a5:5021:",
+  "got": "REHABILITATION",
+  "src": "model"
+ },
+ {
+  "id": "40907G",
+  "ctx": "59d4:330f:d627:1df2:885e:11cc:d409:6562\": {                         \"Freimoser\"",
+  "got": "59d4:330f:d627:1df2:885e:11cc:d409:6562",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41051A",
+  "ctx": " Details:  IP Address: 94.70.86.75 Time: 11:44  IP Address: 156.241.173.1",
+  "got": "156.241.173.1",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41348B",
+  "ctx": "périne.linsenmann', 'périne.linsenmann@hotmail.com', 'PÉRIN.751032.9.013', '8:28am', 'Linsenmann', 'Displays",
+  "got": "751032.9",
+  "src": "model"
+ },
+ {
+  "id": "41492A",
+  "ctx": "85563      - Driver's License: O36999265      - IP Address: 203.64.21.1",
+  "got": "203.64.21.1",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41579B",
+  "ctx": "    given_name1: Nifa   - id_E:       driver_license: SIVAK.605074.SZ.125       telephone: +84-839023188  ",
+  "got": "605074",
+  "src": "model"
+ },
+ {
+  "id": "42335B",
+  "ctx": " REDA9 001125 9 539     - name: YIHUI8072279732     - name: XHYZI.809203.XB.275     - name: ANIFE6542679011     ",
+  "got": "XHYZI.809203",
+  "src": "model"
+ },
+ {
+  "id": "42335B",
+  "ctx": "539     - name: YIHUI8072279732     - name: XHYZI.809203.XB.275     - name: ANIFE6542679011     - name:",
+  "got": "275",
+  "src": "model"
+ },
+ {
+  "id": "42676B",
+  "ctx": "Last Name 1: Jesser  *Additional Information:* - IP Address C: 12.139.184.54 - IP Address D: ac27:4f4",
+  "got": "C",
+  "src": "model"
+ },
+ {
+  "id": "42676B",
+  "ctx": "ss E: 930:e02e:20a:609d:466d:5efd:f06d:1c82 - IP Address F: e22a:63aa:2869:46e5:60e1:2cfc:8202:2d1",
+  "got": "e22a:63aa:2869:46e5:60e1:2cfc:8202:2d1",
+  "src": "structured identifier"
+ },
+ {
+  "id": "43769A",
+  "ctx": "59 - Email: yumileander@yahoo.com - Social Security Number: 15.26.01.96.L98.5 - ID Card Number: S61260003 - Dri",
+  "got": "15.26.01.96",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "45304E",
+  "ctx": " accessible for emergency responders.\", \t\t\t\"NOLA9.409036.NF.472\": \"Pilots must provide their ",
+  "got": "472",
+  "src": "model"
+ },
+ {
+  "id": "46199A",
+  "ctx": "vic - Email: kapela@yahoo.com - Social Number: Soa.Kap.24.C.25.4.CYP - Driver License: 8003038217 -",
+  "got": "25",
+  "src": "model"
+ },
+ {
+  "id": "46912B",
+  "ctx": "\t\t\t\t\"FormStatus\": \"Approved\" \t\t\t}, \t\t\t{ \t\t\t\t\"ID\": \"M1.FRA.11HY4606.3.151011.LYNETTE\", \t\t\t\t\"Passport\": \"66Q",
+  "got": "11HY4606",
+  "src": "model"
+ },
+ {
+  "id": "47204B",
+  "ctx": "mith    - 987-65-4321    - Z67AA1234567    - 987654321    - 1234:abcd:5678:90ef:1234:5678:90ab:cdef    - United States    - 123    - West M",
+  "got": "1234:abcd:5678:90ef:1234:5678:90ab:cdef",
+  "src": "structured identifier"
+ },
+ {
+  "id": "49093A",
+  "ctx": "lower Mound     - State: TX     - Postcode: 75022     - IP: 3084:e209:a980:7c",
+  "got": "3084",
+  "src": "model"
+ },
+ {
+  "id": "49661B",
+  "ctx": "ates, 787, Abbey Lane, Colliers, WV, 26035-1226, Floor 334, 69.34.136.185",
+  "got": "69.34.136.185",
+  "src": "structured identifier"
+ },
+ {
+  "id": "49829C",
+  "ctx": "rina72 - Email: 1961P@hotmail.com - Social Security Number: 59.28.10.61.G33.8 - Driver's License: P51420ZG6CU1 ",
+  "got": "59.28.10.61",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "50014B",
+  "ctx": ":be6e Sulzmann Pologne Makeska, 683611595 4202:9c53:8e58:48f3:e092:832:e840:2b4 Cornaton, 090340478 d8c6:e031:2288:5557",
+  "got": "4202:9c53:8e58:48f3:e092:832:e840:2b4",
+  "src": "structured identifier"
+ },
+ {
+  "id": "50014B",
+  "ctx": "5 4202:9c53:8e58:48f3:e092:832:e840:2b4 Cornaton, 090340478 d8c6:e031:2288:5557:f99d:ed3c:e17a:81db Nadeau Chalut Waidelich, 930974006 68.8",
+  "got": "d8c6:e031:2288:5557:f99d:ed3c:e17a:81db",
+  "src": "structured identifier"
+ },
+ {
+  "id": "50014B",
+  "ctx": "e031:2288:5557:f99d:ed3c:e17a:81db Nadeau Chalut Waidelich, 930974006 68.84.211.25 Matveev, V40N2342O 110.175.81.61 Gutgsö",
+  "got": "930974006 68.84.211.25",
+  "src": "model+structured identifier"
+ },
+ {
+  "id": "50014B",
+  "ctx": "Chalut Waidelich, 930974006 68.84.211.25 Matveev, V40N2342O 110.175.81.61 Gutgsöll Lanzano Nazar, 711186168 cd45:",
+  "got": "110.175.81.61",
+  "src": "structured identifier"
+ },
+ {
+  "id": "50014B",
+  "ctx": ", V40N2342O 110.175.81.61 Gutgsöll Lanzano Nazar, 711186168 cd45:1b69:b33d:e073:5989:ac8:6b74:d274 Semanas-Gillet, 080588708 30.136.183.11",
+  "got": "cd45:1b69:b33d:e073:5989:ac8:6b74:d274",
+  "src": "structured identifier"
+ },
+ {
+  "id": "50861C",
+  "ctx": "110.204    - **Password**: P=\"i<8VC33_^    - **",
+  "got": "204",
+  "src": "model"
+ },
+ {
+  "id": "51028A",
+  "ctx": "02/16/2006\t+10.69-847-1763\tw\\R2\t+07.71 410.2857\t0141.86.681 8822\t1h+E'@\t+212-71-566 7525\t;i51W\tGu!Ma*2'\t",
+  "got": "8822",
+  "src": "model"
+ },
+ {
+  "id": "51218C",
+  "ctx": "3f65:a348:fdd5:735c:9ef1:cfa0:4f6:19ee    Security Password: uZ;8    Local Tim",
+  "got": "3f65:a348:fdd5:735c:9ef1:cfa0:4f6:19ee",
+  "src": "structured identifier"
+ },
+ {
+  "id": "51706B",
+  "ctx": "4         - 16:9334:da52:6405:36e0:c7cc:f238:28c5         - 0imaC#{|6         - 1 PM     - xpiaeimndtpx41",
+  "got": "0imaC",
+  "src": "model"
+ },
+ {
+  "id": "52714A",
+  "ctx": ".120.219.58 Participant Last Name: Eglauer  Participant IP: 626e:2587:e6fe:192b:ec78:83f3:7277:a",
+  "got": "626e:2587:e6fe:192b:ec78:83f3:7277:a",
+  "src": "structured identifier"
+ },
+ {
+  "id": "52916B",
+  "ctx": "ort: 625249271 - Telephone: +126-607.130 2615 - IP Address: c493:d",
+  "got": "c493",
+  "src": "model"
+ },
+ {
+  "id": "52998B",
+  "ctx": " schools and workplaces.  Furthermore, O1603729412092 and C3.FRA.90OV7639.6.420829.REIMUND are passio",
+  "got": ".",
+  "src": "model"
+ },
+ {
+  "id": "52998B",
+  "ctx": "kplaces.  Furthermore, O1603729412092 and C3.FRA.90OV7639.6.420829.REIMUND are passionate about holistic a",
+  "got": "420829",
+  "src": "model"
+ },
+ {
+  "id": "53018D",
+  "ctx": "reement Valid Until: \"23:50\" Geographical Coordinates: \"[41.179, -81.39]\" Agreement Date: \"2023-12-27T0",
+  "got": "179",
+  "src": "model"
+ }
+]

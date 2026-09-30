@@ -1,0 +1,242 @@
+[
+ {
+  "id": "40783",
+  "ctx": ", BOD, USERNAME, EMAIL, IDCARD, PASSPORT, TEL\\n1, Feminine, 1963-12-23T00:00:00, bardi, RB@outlook.com, UU24158CO, 3620",
+  "got": "1963-12-23T00:00:00",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "40783",
+  "ctx": "look.com, UU24158CO, 362045452, 0134 599 154.0432\\n2, Male, February/87, ewgenij.inzollitto22, ewgenij.inzollit",
+  "got": "February/87",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41187",
+  "ctx": "with feedback on their performance in assessments. Feminine\\January/51\\danusa.somsky1951\\danusa.somsky1951@hot",
+  "got": "January/51",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41187",
+  "ctx": "101\\Danusa\\Al Shaham\\Menkovic\\Somsky\\Prefer not to disclose\\1961-06-08T00:00:00\\laura-gabriela.massoubre\\L0808@protonma",
+  "got": "1961-06-08T00:00:00",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "42101",
+  "ctx": "\"Feminine, Miss, May/51, tlnhwseuynrep068, BENGÜ-555061-9-486, ",
+  "got": "May/51",
+  "src": "structured identifier"
+ },
+ {
+  "id": "42101",
+  "ctx": "1-9-486, eP1vB$(Q_, Bengü, Grandidier, Eshkol, \\n\\Male, Fr, September 28th, 1953, 97zagara, KEBIR 509283 KK 317, >MLonND",
+  "got": "September 28th, 1953",
+  "src": "temporal"
+ },
+ {
+  "id": "42522",
+  "ctx": "m Form:  Participant Information: - Lord - Jensen - Baqer - 1994-09-27T00:00:00 - 1994jensen.brünn - BB27@outlook.com -",
+  "got": "1994-09-27T00:00:00",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "44857",
+  "ctx": "In the year 2032, on the 25th of September, in Great Britain, a legal discussion o",
+  "got": "25th of September",
+  "src": "temporal"
+ },
+ {
+  "id": "44857",
+  "ctx": "ace involving various individuals with unique identifiers:  - 13D   - 369.897.8776   - 614497025    - dab",
+  "got": "- 13D",
+  "src": "temporal"
+ },
+ {
+  "id": "46154",
+  "ctx": "new coping mechanisms. The event will take place in Walsall on 29th July 2016, aiming to support the mental well-bein",
+  "got": "on 29th July 2016",
+  "src": "temporal"
+ },
+ {
+  "id": "47640",
+  "ctx": ", F4331258   - Heir: 2668018542, 69536321   Background:   - 3 o'clock, 04/20/2036 ```",
+  "got": "3 o'clock, 04/20/2036",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "49821",
+  "ctx": "\"June 29th, 1990...vonderemden...100661156383...Q0279468",
+  "got": "June 29th, 1990",
+  "src": "temporal"
+ },
+ {
+  "id": "51331",
+  "ctx": "plicationDetails:     Name: \"Duke Grabar\"     DateOfBirth: \"01/03/1975\"     Address:        Building: \"187\"   ",
+  "got": "01/03/1975",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "51472",
+  "ctx": "\"Selectwoman, 1984-09-04T00:00:00, 995-19-2720, 139081589551, N2334130582",
+  "got": "1984-09-04T00:00:00",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "51472",
+  "ctx": "058242, 175667435, 9615:93e2:bb4f:2e8e:4a1e:bc9c:b5a3:c64b, June, Róisín...  Abbot, 2004-02-13T00:00:00, ",
+  "got": "June,",
+  "src": "temporal"
+ },
+ {
+  "id": "51472",
+  "ctx": "93e2:bb4f:2e8e:4a1e:bc9c:b5a3:c64b, June, Róisín...  Abbot, 2004-02-13T00:00:00, 541 13 4459, 729266905011, 66146017, 8",
+  "got": "2004-02-13T00:00:00",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "51752",
+  "ctx": "ords indicate a potential violation of drone regulations on 2032-10-22 at 15. This matter requires immediate attenti",
+  "got": "2032-10-22 at 15",
+  "src": "temporal"
+ },
+ {
+  "id": "51940",
+  "ctx": "g the rights and protections of consumers under the law.  F\\July/99\\NC@gmail.com\\544-24-0451\\172218505631\\T",
+  "got": "July/99",
+  "src": "structured identifier"
+ },
+ {
+  "id": "51940",
+  "ctx": "51\\172218505631\\TFBM0G62EVE7A\\Cartelli  12:15 PM\\53033-9620\\July/38",
+  "got": "July/38",
+  "src": "structured identifier"
+ },
+ {
+  "id": "52056",
+  "ctx": "```yaml consent_form:   participants:     - M     - 1965-12-17T00:00:00     - 196517T     - 692-93-5622     - 4",
+  "got": "1965-12-17T00:00:00",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "40816A",
+  "ctx": "h1> <p>Proposal submitted by:</p> <ul>   <li>Date of Birth: 13/08/1982</li>   <li>Username: eleftheria.mambour",
+  "got": "13/08/1982",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "40838A",
+  "ctx": "x:</strong> Female</li> <li><strong>Date of Birth:</strong> 20/01/1958</li>",
+  "got": "20/01/1958",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "40912B",
+  "ctx": ",       \"Case_Number\":\"244810023017\",       \"Absence_Date\":\"2023-07-14\",       \"Document_Status\":\"Missing\",   ",
+  "got": "2023-07-14",
+  "src": "temporal"
+ },
+ {
+  "id": "40912B",
+  "ctx": "suance of official warning letter\",       \"Follow-up_Date\":\"2023-07-16\"    } }",
+  "got": "2023-07-16",
+  "src": "temporal"
+ },
+ {
+  "id": "40939A",
+  "ctx": " <Non-binary>                     <Dr>                     <1993-03-02T00:00:00>                     <üzmez>           ",
+  "got": "1993-03-02T00:00:00",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "40970B",
+  "ctx": " [ \t\t\t{ \t\t\t\t\"type\": \"Behavior Contract\", \t\t\t\t\"start_date\": \"2022-08-10\", \t\t\t\t\"end_date\": \"2022-09-10\", \t\t\t\t\"de",
+  "got": "2022-08-10",
+  "src": "temporal"
+ },
+ {
+  "id": "40970B",
+  "ctx": "Contract\", \t\t\t\t\"start_date\": \"2022-08-10\", \t\t\t\t\"end_date\": \"2022-09-10\", \t\t\t\t\"details\": \"Daily check-ins with ",
+  "got": "2022-09-10",
+  "src": "temporal"
+ },
+ {
+  "id": "40970B",
+  "ctx": "d_date\": \"2022-09-10\", \t\t\t\t\"details\": \"Daily check-ins with April 25th, 1989 focused on behavior progress and positi",
+  "got": "April 25th, 1989",
+  "src": "temporal"
+ },
+ {
+  "id": "40970B",
+  "ctx": "}, \t\t\t{ \t\t\t\t\"type\": \"Mentoring Program\", \t\t\t\t\"start_date\": \"2022-08-15\", \t\t\t\t\"end_date\": \"2023-06-15\", \t\t\t\t\"de",
+  "got": "2022-08-15",
+  "src": "temporal"
+ },
+ {
+  "id": "40970B",
+  "ctx": " Program\", \t\t\t\t\"start_date\": \"2022-08-15\", \t\t\t\t\"end_date\": \"2023-06-15\", \t\t\t\t\"details\": ",
+  "got": "2023-06-15",
+  "src": "temporal"
+ },
+ {
+  "id": "41044B",
+  "ctx": "        {                 \"details\": {                     \"May/58\": \"291 833 5958\",                     \"",
+  "got": "May/58",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41044C",
+  "ctx": "\"details\": {                     \"11th August 1964\": \"916 539 0736\",                     \"",
+  "got": "11th August 1964",
+  "src": "temporal"
+ },
+ {
+  "id": "41051A",
+  "ctx": "Full Name: Alexandru-Claudiu Golding Allaham Date of Birth: 22/12/2001 Username: cbptwqjiqjcoait90701 ID Card ",
+  "got": "22/12/2001",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "41093C",
+  "ctx": "___________________________   Signature of Applicant  Date: August/28   Location: Bristol  ",
+  "got": "August/28  ",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "41192A",
+  "ctx": "ong> Monsignor</li>     <li><strong>Date of Birth:</strong> 16/01/1960</li>     <li><strong>Username:</strong>",
+  "got": "16/01/1960",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "41200A",
+  "ctx": "rds of integrity and ethics in all academic endeavors.   On 09/12/2025 at 12 o'clock, we became aware of some concerning beh",
+  "got": "09/12/2025 at 12 o'clock",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "41230A",
+  "ctx": "dget Request  Request Date: 10:56 AM  Requested by: - Name: 16/03/1953     - Passport Number: 535044826      -",
+  "got": "16/03/1953",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "41230A",
+  "ctx": "e: 16/03/1953     - Passport Number: 535044826      - Name: April/36     - Passport Number: 445681761      -",
+  "got": "April/36",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41230A",
+  "ctx": "ame: April/36     - Passport Number: 445681761      - Name: July/61     - Passport Number: 379863855      -",
+  "got": "July/61",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41230A",
+  "ctx": "Name: July/61     - Passport Number: 379863855      - Name: 22/02/1956     - Passport Number: M54L1619I      -",
+  "got": "22/02/1956",
+  "src": "structured identifier+temporal"
+ }
+]

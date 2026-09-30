@@ -1,0 +1,261 @@
+{
+  "slug": "ensemble-stanford-roberta",
+  "gold_label_mapping": {
+    "GIVENNAME1": "NAME",
+    "GIVENNAME2": "NAME",
+    "LASTNAME1": "NAME",
+    "LASTNAME2": "NAME",
+    "LASTNAME3": "NAME",
+    "TEL": "PHONE",
+    "EMAIL": "EMAIL",
+    "DATE": "DATE",
+    "TIME": "TIME",
+    "BOD": "DOB",
+    "CITY": "LOCATION",
+    "STATE": "LOCATION",
+    "COUNTRY": "LOCATION",
+    "POSTCODE": "LOCATION",
+    "STREET": "ADDRESS",
+    "BUILDING": "ADDRESS",
+    "SECADDRESS": "ADDRESS",
+    "IDCARD": "ID",
+    "SOCIALNUMBER": "ID",
+    "PASSPORT": "ID",
+    "DRIVERLICENSE": "ID",
+    "IP": "IP"
+  },
+  "excluded_gold_labels": [
+    "CARDISSUER",
+    "GEOCOORD",
+    "PASS",
+    "SEX",
+    "TITLE",
+    "USERNAME"
+  ],
+  "dataset": "ai4privacy/pii-masking-300k",
+  "dataset_doi": "10.57967/hf/1995",
+  "dataset_split_file": "data/validation/1english_openpii_8k.jsonl",
+  "sample_seed": 42,
+  "n_sampled": 1000,
+  "manifest": "data/sample_manifest.json",
+  "scorer": "harness/score.py logic (hybrid mode only)",
+  "modes": {
+    "hybrid": {
+      "n_docs": 1000,
+      "n_docs_with_gold": 816,
+      "binary_exact_span": {
+        "precision": 0.677,
+        "recall": 0.6533,
+        "f1": 0.665,
+        "tp": 3677,
+        "fp": 1754,
+        "fn": 1951
+      },
+      "per_category_exact_span": {
+        "NAME": {
+          "precision": 0.1046,
+          "recall": 0.0448,
+          "f1": 0.0627,
+          "tp": 50,
+          "fp": 428,
+          "fn": 1067
+        },
+        "PHONE": {
+          "precision": 0.4442,
+          "recall": 0.9392,
+          "f1": 0.6032,
+          "tp": 247,
+          "fp": 309,
+          "fn": 16
+        },
+        "EMAIL": {
+          "precision": 0.8584,
+          "recall": 0.9281,
+          "f1": 0.8919,
+          "tp": 297,
+          "fp": 49,
+          "fn": 23
+        },
+        "DATE": {
+          "precision": 0.375,
+          "recall": 0.8312,
+          "f1": 0.5168,
+          "tp": 192,
+          "fp": 320,
+          "fn": 39
+        },
+        "TIME": {
+          "precision": 0.9195,
+          "recall": 0.6704,
+          "f1": 0.7755,
+          "tp": 297,
+          "fp": 26,
+          "fn": 146
+        },
+        "DOB": {
+          "precision": 0.9048,
+          "recall": 0.2088,
+          "f1": 0.3393,
+          "tp": 57,
+          "fp": 6,
+          "fn": 216
+        },
+        "LOCATION": {
+          "precision": 0.5495,
+          "recall": 0.2259,
+          "f1": 0.3202,
+          "tp": 211,
+          "fp": 173,
+          "fn": 723
+        },
+        "ADDRESS": {
+          "precision": 0.6932,
+          "recall": 0.5121,
+          "f1": 0.5891,
+          "tp": 296,
+          "fp": 131,
+          "fn": 282
+        },
+        "ID": {
+          "precision": 0.5254,
+          "recall": 0.6976,
+          "f1": 0.5994,
+          "tp": 849,
+          "fp": 767,
+          "fn": 368
+        },
+        "IP": {
+          "precision": 0.9423,
+          "recall": 0.9722,
+          "f1": 0.957,
+          "tp": 245,
+          "fp": 15,
+          "fn": 7
+        }
+      },
+      "secondary_binary_overlap": {
+        "precision": 0.7632,
+        "recall": 0.7365,
+        "f1": 0.7496,
+        "tp": 4145,
+        "fp": 1286,
+        "fn": 1483
+      },
+      "secondary_per_category_overlap": {
+        "NAME": {
+          "precision": 0.3808,
+          "recall": 0.1629,
+          "f1": 0.2282,
+          "tp": 182,
+          "fp": 296,
+          "fn": 935
+        },
+        "PHONE": {
+          "precision": 0.464,
+          "recall": 0.981,
+          "f1": 0.63,
+          "tp": 258,
+          "fp": 298,
+          "fn": 5
+        },
+        "EMAIL": {
+          "precision": 0.9133,
+          "recall": 0.9875,
+          "f1": 0.9489,
+          "tp": 316,
+          "fp": 30,
+          "fn": 4
+        },
+        "DATE": {
+          "precision": 0.4375,
+          "recall": 0.9697,
+          "f1": 0.603,
+          "tp": 224,
+          "fp": 288,
+          "fn": 7
+        },
+        "TIME": {
+          "precision": 0.9288,
+          "recall": 0.6772,
+          "f1": 0.7833,
+          "tp": 300,
+          "fp": 23,
+          "fn": 143
+        },
+        "DOB": {
+          "precision": 0.9048,
+          "recall": 0.2088,
+          "f1": 0.3393,
+          "tp": 57,
+          "fp": 6,
+          "fn": 216
+        },
+        "LOCATION": {
+          "precision": 0.599,
+          "recall": 0.2463,
+          "f1": 0.349,
+          "tp": 230,
+          "fp": 154,
+          "fn": 704
+        },
+        "ADDRESS": {
+          "precision": 0.7541,
+          "recall": 0.5571,
+          "f1": 0.6408,
+          "tp": 322,
+          "fp": 105,
+          "fn": 256
+        },
+        "ID": {
+          "precision": 0.5786,
+          "recall": 0.7683,
+          "f1": 0.6601,
+          "tp": 935,
+          "fp": 681,
+          "fn": 282
+        },
+        "IP": {
+          "precision": 0.9423,
+          "recall": 0.9722,
+          "f1": 0.957,
+          "tp": 245,
+          "fp": 15,
+          "fn": 7
+        }
+      },
+      "secondary_char_level_binary": {
+        "precision": 0.8053,
+        "recall": 0.849,
+        "f1": 0.8266,
+        "tp": 50055,
+        "fp": 12099,
+        "fn": 8902
+      },
+      "unmapped_predicted_labels": {
+        "FACILITY": 402,
+        "ROOM": 26,
+        "ORGANIZATION": 35,
+        "URL": 2,
+        "AGE": 1
+      },
+      "latency_ms": {
+        "mean": 3814.3,
+        "median": 3441.4,
+        "p95": 7221.1,
+        "max": 14588.6
+      }
+    }
+  },
+  "model_load_ms": 9244.8,
+  "model_id": null,
+  "load_info_extra": {
+    "models": [
+      "onnx-community/stanford-deidentifier-base-ONNX",
+      "thinkingface/deid_roberta_i2b2_q"
+    ],
+    "memoryAfterLoad": {
+      "usedJSHeapSizeMB": 440.6,
+      "totalJSHeapSizeMB": 468.3
+    }
+  }
+}

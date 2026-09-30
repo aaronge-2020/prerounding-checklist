@@ -1,0 +1,242 @@
+[
+  {
+    "config": "clinicale5_base",
+    "exact_span": {
+      "precision": 0.4184,
+      "recall": 0.5125,
+      "f1": 0.4607,
+      "tp": 880,
+      "fp": 1223,
+      "fn": 837,
+      "f1_ci95": [
+        0.4377,
+        0.4844
+      ]
+    },
+    "char_recall": {
+      "recall": 0.8485,
+      "ci95": [
+        0.8309,
+        0.865
+      ],
+      "gold_chars": 25695,
+      "covered_chars": 21802
+    }
+  },
+  {
+    "config": "clinicale5_trackb",
+    "exact_span": {
+      "precision": 0.4184,
+      "recall": 0.5125,
+      "f1": 0.4607,
+      "tp": 880,
+      "fp": 1223,
+      "fn": 837,
+      "f1_ci95": [
+        0.4377,
+        0.4844
+      ]
+    },
+    "char_recall": {
+      "recall": 0.8485,
+      "ci95": [
+        0.8309,
+        0.865
+      ],
+      "gold_chars": 25695,
+      "covered_chars": 21802
+    }
+  },
+  {
+    "config": "clinicale5_trackbc",
+    "exact_span": {
+      "precision": 0.4198,
+      "recall": 0.5154,
+      "f1": 0.4627,
+      "tp": 885,
+      "fp": 1223,
+      "fn": 832,
+      "f1_ci95": [
+        0.4397,
+        0.4862
+      ]
+    },
+    "char_recall": {
+      "recall": 0.8494,
+      "ci95": [
+        0.832,
+        0.8658
+      ],
+      "gold_chars": 25695,
+      "covered_chars": 21825
+    }
+  },
+  {
+    "config": "stanford_base",
+    "exact_span": {
+      "precision": 0.4985,
+      "recall": 0.5743,
+      "f1": 0.5337,
+      "tp": 986,
+      "fp": 992,
+      "fn": 731,
+      "f1_ci95": [
+        0.5113,
+        0.556
+      ]
+    },
+    "char_recall": {
+      "recall": 0.8859,
+      "ci95": [
+        0.8713,
+        0.8993
+      ],
+      "gold_chars": 25695,
+      "covered_chars": 22762
+    }
+  },
+  {
+    "config": "stanford_trackb",
+    "exact_span": {
+      "precision": 0.4954,
+      "recall": 0.5708,
+      "f1": 0.5304,
+      "tp": 980,
+      "fp": 998,
+      "fn": 737,
+      "f1_ci95": [
+        0.5079,
+        0.5532
+      ]
+    },
+    "char_recall": {
+      "recall": 0.8854,
+      "ci95": [
+        0.8709,
+        0.8988
+      ],
+      "gold_chars": 25695,
+      "covered_chars": 22750
+    }
+  },
+  {
+    "config": "stanford_trackbc",
+    "exact_span": {
+      "precision": 0.4955,
+      "recall": 0.5719,
+      "f1": 0.531,
+      "tp": 982,
+      "fp": 1000,
+      "fn": 735,
+      "f1_ci95": [
+        0.5084,
+        0.5537
+      ]
+    },
+    "char_recall": {
+      "recall": 0.8864,
+      "ci95": [
+        0.872,
+        0.8998
+      ],
+      "gold_chars": 25695,
+      "covered_chars": 22776
+    }
+  },
+  {
+    "config": "openmed_base",
+    "exact_span": {
+      "precision": 0.4668,
+      "recall": 0.5044,
+      "f1": 0.4849,
+      "tp": 866,
+      "fp": 989,
+      "fn": 851,
+      "f1_ci95": [
+        0.4606,
+        0.5096
+      ]
+    },
+    "char_recall": {
+      "recall": 0.8236,
+      "ci95": [
+        0.8048,
+        0.8411
+      ],
+      "gold_chars": 25695,
+      "covered_chars": 21163
+    }
+  },
+  {
+    "config": "openmed_trackbc",
+    "exact_span": {
+      "precision": 0.4724,
+      "recall": 0.5137,
+      "f1": 0.4922,
+      "tp": 882,
+      "fp": 985,
+      "fn": 835,
+      "f1_ci95": [
+        0.4681,
+        0.5165
+      ]
+    },
+    "char_recall": {
+      "recall": 0.8261,
+      "ci95": [
+        0.8073,
+        0.8436
+      ],
+      "gold_chars": 25695,
+      "covered_chars": 21226
+    }
+  },
+  {
+    "config": "roberta_base",
+    "exact_span": {
+      "precision": 0.4858,
+      "recall": 0.5661,
+      "f1": 0.5229,
+      "tp": 972,
+      "fp": 1029,
+      "fn": 745,
+      "f1_ci95": [
+        0.5001,
+        0.5459
+      ]
+    },
+    "char_recall": {
+      "recall": 0.883,
+      "ci95": [
+        0.8689,
+        0.8966
+      ],
+      "gold_chars": 25695,
+      "covered_chars": 22689
+    }
+  },
+  {
+    "config": "roberta_trackbc",
+    "exact_span": {
+      "precision": 0.4946,
+      "recall": 0.5614,
+      "f1": 0.5259,
+      "tp": 964,
+      "fp": 985,
+      "fn": 753,
+      "f1_ci95": [
+        0.5031,
+        0.5489
+      ]
+    },
+    "char_recall": {
+      "recall": 0.8616,
+      "ci95": [
+        0.8457,
+        0.8769
+      ],
+      "gold_chars": 25695,
+      "covered_chars": 22140
+    }
+  }
+]

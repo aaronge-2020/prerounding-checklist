@@ -1,0 +1,38 @@
+[
+ {
+  "id": "43304C",
+  "ctx": "ophie Brown\",                             \"Date_of_Birth\": \"11-30-1990\",                             \"Address\"",
+  "got": "11-30-1990",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "43304D",
+  "ctx": "           \"Date_of_Birth\": \"03-18-1987\",                             \"Address\"",
+  "got": "03-18-1987",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "43304D",
+  "ctx": "elia Wilson\",                             \"Date_of_Birth\": \"07-09-1995\",                             \"Address\"",
+  "got": "07-09-1995",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "43619B",
+  "ctx": "s Bougouin Marosvölgyi'   - Gender: 'M'   - Date of Birth: '09/05/1988'   - Address: '634, Airport Road West, ",
+  "got": "09/05/1988",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "47532A",
+  "ctx": "ld's Information: - Child's Name: Gausi, X - Date of Birth: 1990-08-15T00:00:00 - Address: 87124 - Parent's Email: 16ga",
+  "got": "1990-08-15T00:00:00",
+  "src": "structured identifier+temporal"
+ },
+ {
+  "id": "52738B",
+  "ctx": "aphical Coordinates:** [36.86, -121.8] - **Date of Birth:** 1967-02-14T00:00:00  ---  *This progress report template is",
+  "got": "1967-02-14T00:00:00",
+  "src": "structured identifier+temporal"
+ }
+]

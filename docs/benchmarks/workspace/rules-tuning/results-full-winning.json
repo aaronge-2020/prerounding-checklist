@@ -1,0 +1,450 @@
+{
+  "modes": {
+    "hybrid": {
+      "n_docs": 1000,
+      "n_docs_with_gold": 816,
+      "binary_exact_span": {
+        "precision": 0.7469,
+        "recall": 0.6031,
+        "f1": 0.6673,
+        "tp": 3394,
+        "fp": 1150,
+        "fn": 2234
+      },
+      "per_category_exact_span": {
+        "NAME": {
+          "precision": 0.1024,
+          "recall": 0.0385,
+          "f1": 0.056,
+          "tp": 43,
+          "fp": 377,
+          "fn": 1074
+        },
+        "PHONE": {
+          "precision": 0.4879,
+          "recall": 0.9202,
+          "f1": 0.6377,
+          "tp": 242,
+          "fp": 254,
+          "fn": 21
+        },
+        "EMAIL": {
+          "precision": 0.9,
+          "recall": 0.9281,
+          "f1": 0.9138,
+          "tp": 297,
+          "fp": 33,
+          "fn": 23
+        },
+        "DATE": {
+          "precision": 0.4212,
+          "recall": 0.9134,
+          "f1": 0.5765,
+          "tp": 211,
+          "fp": 290,
+          "fn": 20
+        },
+        "TIME": {
+          "precision": 0.9157,
+          "recall": 0.7111,
+          "f1": 0.8005,
+          "tp": 315,
+          "fp": 29,
+          "fn": 128
+        },
+        "DOB": {
+          "precision": 0.9048,
+          "recall": 0.2088,
+          "f1": 0.3393,
+          "tp": 57,
+          "fp": 6,
+          "fn": 216
+        },
+        "LOCATION": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 3,
+          "fn": 934
+        },
+        "ADDRESS": {
+          "precision": 0.8605,
+          "recall": 0.5121,
+          "f1": 0.6421,
+          "tp": 296,
+          "fp": 48,
+          "fn": 282
+        },
+        "ID": {
+          "precision": 0.622,
+          "recall": 0.6639,
+          "f1": 0.6423,
+          "tp": 808,
+          "fp": 491,
+          "fn": 409
+        },
+        "IP": {
+          "precision": 0.9423,
+          "recall": 0.9722,
+          "f1": 0.957,
+          "tp": 245,
+          "fp": 15,
+          "fn": 7
+        }
+      },
+      "secondary_binary_overlap": {
+        "precision": 0.8319,
+        "recall": 0.6716,
+        "f1": 0.7432,
+        "tp": 3780,
+        "fp": 764,
+        "fn": 1848
+      },
+      "secondary_per_category_overlap": {
+        "NAME": {
+          "precision": 0.3452,
+          "recall": 0.1298,
+          "f1": 0.1887,
+          "tp": 145,
+          "fp": 275,
+          "fn": 972
+        },
+        "PHONE": {
+          "precision": 0.5141,
+          "recall": 0.9696,
+          "f1": 0.6719,
+          "tp": 255,
+          "fp": 241,
+          "fn": 8
+        },
+        "EMAIL": {
+          "precision": 0.9606,
+          "recall": 0.9906,
+          "f1": 0.9754,
+          "tp": 317,
+          "fp": 13,
+          "fn": 3
+        },
+        "DATE": {
+          "precision": 0.4391,
+          "recall": 0.9524,
+          "f1": 0.6011,
+          "tp": 220,
+          "fp": 281,
+          "fn": 11
+        },
+        "TIME": {
+          "precision": 0.9244,
+          "recall": 0.7178,
+          "f1": 0.8081,
+          "tp": 318,
+          "fp": 26,
+          "fn": 125
+        },
+        "DOB": {
+          "precision": 0.9048,
+          "recall": 0.2088,
+          "f1": 0.3393,
+          "tp": 57,
+          "fp": 6,
+          "fn": 216
+        },
+        "LOCATION": {
+          "precision": 1.0,
+          "recall": 0.0032,
+          "f1": 0.0064,
+          "tp": 3,
+          "fp": 0,
+          "fn": 931
+        },
+        "ADDRESS": {
+          "precision": 0.936,
+          "recall": 0.5571,
+          "f1": 0.6985,
+          "tp": 322,
+          "fp": 22,
+          "fn": 256
+        },
+        "ID": {
+          "precision": 0.6821,
+          "recall": 0.728,
+          "f1": 0.7043,
+          "tp": 886,
+          "fp": 413,
+          "fn": 331
+        },
+        "IP": {
+          "precision": 0.9423,
+          "recall": 0.9722,
+          "f1": 0.957,
+          "tp": 245,
+          "fp": 15,
+          "fn": 7
+        }
+      },
+      "secondary_char_level_binary": {
+        "precision": 0.826,
+        "recall": 0.7968,
+        "f1": 0.8111,
+        "tp": 46975,
+        "fp": 9895,
+        "fn": 11982
+      },
+      "unmapped_predicted_labels": {
+        "FACILITY": 431,
+        "ROOM": 26,
+        "ORGANIZATION": 25,
+        "URL": 2
+      },
+      "latency_ms": {
+        "mean": 659.3,
+        "median": 614.1,
+        "p95": 1078.0,
+        "max": 1741.1
+      }
+    },
+    "model-only": {
+      "n_docs": 1000,
+      "n_docs_with_gold": 816,
+      "binary_exact_span": {
+        "precision": 0.5,
+        "recall": 0.2466,
+        "f1": 0.3303,
+        "tp": 1388,
+        "fp": 1388,
+        "fn": 4240
+      },
+      "per_category_exact_span": {
+        "NAME": {
+          "precision": 0.1547,
+          "recall": 0.0251,
+          "f1": 0.0431,
+          "tp": 28,
+          "fp": 153,
+          "fn": 1089
+        },
+        "PHONE": {
+          "precision": 0.0272,
+          "recall": 0.0152,
+          "f1": 0.0195,
+          "tp": 4,
+          "fp": 143,
+          "fn": 259
+        },
+        "EMAIL": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 320
+        },
+        "DATE": {
+          "precision": 0.3209,
+          "recall": 0.2987,
+          "f1": 0.3094,
+          "tp": 69,
+          "fp": 146,
+          "fn": 162
+        },
+        "TIME": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 443
+        },
+        "DOB": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 273
+        },
+        "LOCATION": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 934
+        },
+        "ADDRESS": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 578
+        },
+        "ID": {
+          "precision": 0.4618,
+          "recall": 0.516,
+          "f1": 0.4874,
+          "tp": 628,
+          "fp": 732,
+          "fn": 589
+        },
+        "IP": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 252
+        }
+      },
+      "secondary_binary_overlap": {
+        "precision": 0.7669,
+        "recall": 0.3783,
+        "f1": 0.5067,
+        "tp": 2129,
+        "fp": 647,
+        "fn": 3499
+      },
+      "secondary_per_category_overlap": {
+        "NAME": {
+          "precision": 0.7017,
+          "recall": 0.1137,
+          "f1": 0.1957,
+          "tp": 127,
+          "fp": 54,
+          "fn": 990
+        },
+        "PHONE": {
+          "precision": 0.2041,
+          "recall": 0.1141,
+          "f1": 0.1463,
+          "tp": 30,
+          "fp": 117,
+          "fn": 233
+        },
+        "EMAIL": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 320
+        },
+        "DATE": {
+          "precision": 0.3442,
+          "recall": 0.3203,
+          "f1": 0.3318,
+          "tp": 74,
+          "fp": 141,
+          "fn": 157
+        },
+        "TIME": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 443
+        },
+        "DOB": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 273
+        },
+        "LOCATION": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 934
+        },
+        "ADDRESS": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 578
+        },
+        "ID": {
+          "precision": 0.4941,
+          "recall": 0.5522,
+          "f1": 0.5215,
+          "tp": 672,
+          "fp": 688,
+          "fn": 545
+        },
+        "IP": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 252
+        }
+      },
+      "secondary_char_level_binary": {
+        "precision": 0.865,
+        "recall": 0.3853,
+        "f1": 0.5332,
+        "tp": 22717,
+        "fp": 3544,
+        "fn": 36240
+      },
+      "unmapped_predicted_labels": {
+        "ORGANIZATION": 212,
+        "FACILITY": 661
+      },
+      "latency_ms": {
+        "mean": 751.4,
+        "median": 696.8,
+        "p95": 1280.7,
+        "max": 2172.3
+      }
+    }
+  },
+  "gold_label_mapping": {
+    "GIVENNAME1": "NAME",
+    "GIVENNAME2": "NAME",
+    "LASTNAME1": "NAME",
+    "LASTNAME2": "NAME",
+    "LASTNAME3": "NAME",
+    "TEL": "PHONE",
+    "EMAIL": "EMAIL",
+    "DATE": "DATE",
+    "TIME": "TIME",
+    "BOD": "DOB",
+    "CITY": "LOCATION",
+    "STATE": "LOCATION",
+    "COUNTRY": "LOCATION",
+    "POSTCODE": "LOCATION",
+    "STREET": "ADDRESS",
+    "BUILDING": "ADDRESS",
+    "SECADDRESS": "ADDRESS",
+    "IDCARD": "ID",
+    "SOCIALNUMBER": "ID",
+    "PASSPORT": "ID",
+    "DRIVERLICENSE": "ID",
+    "IP": "IP"
+  },
+  "excluded_gold_labels": [
+    "CARDISSUER",
+    "GEOCOORD",
+    "PASS",
+    "SEX",
+    "TITLE",
+    "USERNAME"
+  ],
+  "dataset": "ai4privacy/pii-masking-300k",
+  "dataset_doi": "10.57967/hf/1995",
+  "dataset_split_file": "data/validation/1english_openpii_8k.jsonl",
+  "sample_seed": 42,
+  "n_sampled": 1000,
+  "manifest": "data/sample_manifest.json",
+  "model_load_ms": 4885.3,
+  "model_id": "onnx-community/stanford-deidentifier-base-ONNX"
+}

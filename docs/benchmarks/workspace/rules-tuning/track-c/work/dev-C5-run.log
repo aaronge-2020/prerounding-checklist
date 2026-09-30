@@ -1,0 +1,13 @@
+assembled 700 docs -> raw_dev_C5-trackc.json
+[C5-trackc] dev binary exact-span: P=0.7607 R=0.6788 F1=0.7174 (tp=2718 fp=855 fn=1286)
+  NAME      P=0.530 R=0.390 F1=0.449 (tp=305 fp=270 fn=478)
+  PHONE     P=0.470 R=0.909 F1=0.619 (tp=170 fp=192 fn=17)
+  EMAIL     P=0.879 R=0.909 F1=0.894 (tp=219 fp=30 fn=22)
+  DATE      P=0.372 R=0.823 F1=0.512 (tp=135 fp=228 fn=29)
+  TIME      P=0.899 R=0.646 F1=0.752 (tp=197 fp=22 fn=108)
+  DOB       P=0.889 R=0.202 F1=0.329 (tp=40 fp=5 fn=158)
+  LOCATION  P=0.938 R=0.224 F1=0.361 (tp=151 fp=10 fn=524)
+  ADDRESS   P=0.698 R=0.513 F1=0.592 (tp=215 fp=93 fn=204)
+  ID        P=0.643 R=0.649 F1=0.646 (tp=570 fp=317 fn=308)
+  IP        P=0.963 R=1.000 F1=0.981 (tp=154 fp=6 fn=0)
+  latency median=1336ms p95=2550ms

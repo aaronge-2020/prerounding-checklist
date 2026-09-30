@@ -1,0 +1,7 @@
+  // TRACK-C calls (tuning only; winners are inlined without flags).
+  if (TRACK_C_C1) addTrackCLabeledNameEntities(rawText, entities);
+  if (TRACK_C_C2) addTrackCTagWrappedNameEntities(rawText, entities);
+  if (TRACK_C_C3) addTrackCBracketedNameEntities(rawText, entities);
+  if (TRACK_C_C4) addTrackCLabeledLocationEntities(rawText, entities);
+  if (TRACK_C_C5) addTrackCLabeledIdEntities(rawText, entities);
+  if (TRACK_C_C7) addTrackCJsonNameEntities(rawText, entities);

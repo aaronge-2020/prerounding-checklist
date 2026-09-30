@@ -1,0 +1,26 @@
+loaded 1000 sampled texts
+loading model...
+model loaded: {"ms":7280.480000000447,"modelId":"onnx-community/stanford-deidentifier-base-ONNX"}
+hybrid: 100/1000 (92s)
+hybrid: 200/1000 (245s)
+hybrid: 300/1000 (411s)
+hybrid: 400/1000 (555s)
+hybrid: 500/1000 (669s)
+hybrid: 600/1000 (784s)
+hybrid: 700/1000 (887s)
+hybrid: 800/1000 (1043s)
+hybrid: 900/1000 (1156s)
+hybrid: 1000/1000 (1287s)
+hybrid done in 1287s -> raw_hybrid.json
+model-only: 100/1000 (115s)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.evaluate: Target page, context or browser has been closed
+    at runMode (/home/hatch/workspace/deid-benchmark/harness/driver_resync.mjs:60:33)
+    at async file:///home/hatch/workspace/deid-benchmark/harness/driver_resync.mjs:84:1 {
+  log: []
+}
+
+Node.js v24.20.0

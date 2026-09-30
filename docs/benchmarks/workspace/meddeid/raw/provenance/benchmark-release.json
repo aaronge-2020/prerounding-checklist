@@ -1,0 +1,21 @@
+{
+  "contract": "meddeid.english-synthetic-benchmark-release.v1",
+  "release_id": "meddeid-english-synthetic-human-validated-v1",
+  "status": "human_validated",
+  "validation_date": "2026-08-26",
+  "annotation_workspace": "english-synthetic-primary-curation",
+  "source": {
+    "path": "benchmark.jsonl",
+    "sha256": "ac036c069a073886327c5847b9316cf116fe7d94dec21e242ccebff0beee1b25"
+  },
+  "gold_sha256": "4455c8f64dd31a44b46f3180a6cb9c434721bdb507d25d4acdafdd61c7be959a",
+  "documents": 300,
+  "completed_documents": 300,
+  "spans": 1717,
+  "offset_errors": 0,
+  "profiles": {
+    "en-GB": 150,
+    "en-US": 150
+  },
+  "usage": "Canonical English synthetic benchmark for future comparisons of all configured models. Do not use for model selection or training."
+}

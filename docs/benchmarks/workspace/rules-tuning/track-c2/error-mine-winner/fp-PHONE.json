@@ -1,0 +1,242 @@
+[
+ {
+  "id": "40783",
+  "ctx": "22, ewgenij.inzollitto22@hotmail.com, VG30003PO, 236897938, 02870-56756 \"",
+  "got": "02870-56756",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41015",
+  "ctx": "ATION FORM - TSV  Employee Information: - Dame - Gohrke   - 369-261-0098   - 136666790   - +2380861.2896   - 80.",
+  "got": "369-261-0098",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41015",
+  "ctx": "861.2896   - 80.38.168.162   - n@nT3  - Queen - Carames   - 4766226113   - 532952036   - +61-59 416-6011   - 2",
+  "got": "4766226113",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41015",
+  "ctx": " - O]L5o<-  - Selectwoman - Lanvers - Klappert - Knutti   - 4480046140   - 097610434   - +78.379-715-6312   - ",
+  "got": "4480046140",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41015",
+  "ctx": "electwoman - Lanvers - Klappert - Knutti   - 4480046140   - 097610434   - +78.379-715-6312   - 1a5e:920c:89ca",
+  "got": "097610434",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41187",
+  "ctx": "\\January/51\\danusa.somsky1951\\danusa.somsky1951@hotmail.com\\952.547.4173\\617867632\\GB\\313\\High Street\\Dunstable\\",
+  "got": "952.547.4173",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41187",
+  "ctx": "6-08T00:00:00\\laura-gabriela.massoubre\\L0808@protonmail.com\\301.245.0467\\149738159\\United Kingdom\\950\\Wayside Cl",
+  "got": "301.245.0467",
+  "src": "structured identifier"
+ },
+ {
+  "id": "44857",
+  "ctx": "ing various individuals with unique identifiers:  - 13D   - 369.897.8776   - 614497025    - dabcuuqsnlimwnil056 ",
+  "got": "369.897.8776",
+  "src": "structured identifier"
+ },
+ {
+  "id": "44857",
+  "ctx": "  - 369.897.8776   - 614497025    - dabcuuqsnlimwnil056   - 298 383 0071   - 324142236    - raricbou1946   - 537",
+  "got": "298 383 0071",
+  "src": "structured identifier"
+ },
+ {
+  "id": "44857",
+  "ctx": "nil056   - 298 383 0071   - 324142236    - raricbou1946   - 537-273-8022   - 201950288    - 1936bulman   - 584-4",
+  "got": "537-273-8022",
+  "src": "structured identifier"
+ },
+ {
+  "id": "44857",
+  "ctx": "cbou1946   - 537-273-8022   - 201950288    - 1936bulman   - 584-414-6101   - 170800751    - EN   - 183 944 2133 ",
+  "got": "584-414-6101",
+  "src": "structured identifier"
+ },
+ {
+  "id": "44857",
+  "ctx": "    - 1936bulman   - 584-414-6101   - 170800751    - EN   - 183 944 2133   - 440481527    - hamda91   - 145.717.",
+  "got": "183 944 2133",
+  "src": "structured identifier"
+ },
+ {
+  "id": "44857",
+  "ctx": "751    - EN   - 183 944 2133   - 440481527    - hamda91   - 145.717.9705   - 211529895    - 1934sonila   - 079.8",
+  "got": "145.717.9705",
+  "src": "structured identifier"
+ },
+ {
+  "id": "44857",
+  "ctx": " hamda91   - 145.717.9705   - 211529895    - 1934sonila   - 079.812.4187   - 372579977",
+  "got": "079.812.4187",
+  "src": "structured identifier"
+ },
+ {
+  "id": "45874",
+  "ctx": "he 'tnxysn38195@aol.com' project, rigorously analyzing the '058286171318' data using the '07286925E' method. 'vs",
+  "got": "058286171318",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47173",
+  "ctx": "equest_type\": \"Student Transfer Request\", \t\"student_name\": \"016684653663\", \t\"current_institution\": \"6686566847\",",
+  "got": "016684653663",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47173",
+  "ctx": ", \t\"student_name\": \"016684653663\", \t\"current_institution\": \"6686566847\", \t\"transfer_reason\": \"27475991N\", \t\"re",
+  "got": "6686566847",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47173",
+  "ctx": "\t\"transfer_reason\": \"27475991N\", \t\"requested_institution\": \"8196471304\", \t\"transfer_approval\": \"92823497370857",
+  "got": "8196471304",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47640",
+  "ctx": "778760   - Prince: 12751232S, A46815993   - Miss: H7213216, 9262368302   - Senior: 5470260997, O004798053698  ",
+  "got": "9262368302",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47640",
+  "ctx": "1232S, A46815993   - Miss: H7213216, 9262368302   - Senior: 5470260997, O004798053698   - Monsignor: 864878782",
+  "got": "5470260997",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47640",
+  "ctx": "5993   - Miss: H7213216, 9262368302   - Senior: 5470260997, O004798053698   - Monsignor: 864878782666, L591322704",
+  "got": "O004798053698",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47640",
+  "ctx": "3698   - Monsignor: 864878782666, L591322704787   - Prince: 3903178860, J422998384714   - Doctor: 101875667, F",
+  "got": "3903178860",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47640",
+  "ctx": "60, J422998384714   - Doctor: 101875667, F4331258   - Heir: 2668018542, 69536321   Background:   - 3 o'clock, ",
+  "got": "2668018542",
+  "src": "structured identifier"
+ },
+ {
+  "id": "48989",
+  "ctx": "arnier@gmail.com, N41198359, g<z6oDT3}n, P1990@hotmail.com, 003106053, <B=^2zJa, M@gmail.com, N8522643J, \\\"61",
+  "got": "003106053",
+  "src": "structured identifier"
+ },
+ {
+  "id": "48989",
+  "ctx": "il.com, N8522643J, \\\"61V4f^`, oraphin.brodmühler@yahoo.com, 067467158, >0|_glVA, volanäff@gmail.com, 15204337",
+  "got": "067467158",
+  "src": "structured identifier"
+ },
+ {
+  "id": "49821",
+  "ctx": "\"June 29th, 1990...vonderemden...100661156383...Q0279468G...D39151103...ILT404607...0034-95401 47",
+  "got": "Q0279468G",
+  "src": "structured identifier"
+ },
+ {
+  "id": "52056",
+  "ctx": "- 1965-12-17T00:00:00     - 196517T     - 692-93-5622     - 4956035871     - 818753764     - 16 o'clock     - ",
+  "got": "4956035871",
+  "src": "structured identifier"
+ },
+ {
+  "id": "40805B",
+  "ctx": "/driverlicense>             <passport>077484896</passport>             <ip>60.13.177.8<",
+  "got": "077484896",
+  "src": "structured identifier"
+ },
+ {
+  "id": "40939A",
+  "ctx": "T00:00:00>                     <üzmez>                     <784-382-7001>                     <ANBES 903023 9 58",
+  "got": "784-382-7001",
+  "src": "structured identifier"
+ },
+ {
+  "id": "40949D",
+  "ctx": " contact our office at [24SA@gmail.com] or by phone at [742-240-8260]. Your opinion matters to us, and we ar",
+  "got": "742-240-8260",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41044B",
+  "ctx": "                \"details\": {                     \"May/58\": \"291 833 5958\",                     \"PP49354WP\": \"734",
+  "got": "291 833 5958",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41044C",
+  "ctx": "\"details\": {                     \"11th August 1964\": \"916 539 0736\",                     \"SK03907BC\": \"048",
+  "got": "916 539 0736",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41044C",
+  "ctx": "st 1964\": \"916 539 0736\",                     \"SK03907BC\": \"048235666\",                     \"9:54 AM\": \"Mabbo",
+  "got": "048235666",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41264A",
+  "ctx": "on_Training_Plan:   - username: \"24HAB\"     social_number: \"679.341.1892\"     training_modules:       - module_n",
+  "got": "679.341.1892",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41264B",
+  "ctx": "ce              - username: \"1949botan\"     social_number: \"0926443574\"     training_modules:       - module_n",
+  "got": "0926443574",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41934D",
+  "ctx": " ledionisotti36@gmail.com</p>             <p>Social Number: 229 277 8658</p>             <p>ID Card: NZ11027LW</",
+  "got": "229 277 8658",
+  "src": "structured identifier"
+ },
+ {
+  "id": "42008B",
+  "ctx": "r@tutanota.com      Passport: 680035041      Social Number: 614-709-3510      Telephone: 0039 93 133.8756      I",
+  "got": "614-709-3510",
+  "src": "structured identifier"
+ },
+ {
+  "id": "42048C",
+  "ctx": "]   - Passport: [408403009]   - Telephone: [+44 88420-6146]   - Co",
+  "got": "408403009",
+  "src": "model"
+ },
+ {
+  "id": "42114A",
+  "ctx": "imotea1946@yahoo.com</li>         <li><b>Social Number:</b> 908-365-9644</li>         <li><b>City:</b> Pulboroug",
+  "got": "908-365-9644",
+  "src": "structured identifier"
+ },
+ {
+  "id": "42335B",
+  "ctx": "     - name: NATHA.456302.9.830     - name: REDA9 001125 9 539     - name: YIHUI8072279732     - name:",
+  "got": "001125 9 539",
+  "src": "structured identifier"
+ }
+]

@@ -1,0 +1,11 @@
+stanford_base: installed bundle /home/hatch/workspace/deid-benchmark/meddeid/bundles/base.bundle.js
+stanford_base: loaded 300 notes
+stanford_base: model (re)loaded: {"ms":5527.60000000149,"modelId":"onnx-community/stanford-deidentifier-base-ONNX"}
+stanford_base: 50/300 (165s)
+stanford_base: 100/300 (296s)
+stanford_base: 150/300 (422s)
+stanford_base: 200/300 (574s)
+stanford_base: 250/300 (661s)
+stanford_base: 300/300 (743s)
+stanford_base: done in 743s -> out/stanford_base.json (mean 2475.0ms, median 2293.3ms, p95 4305.7ms)
+stanford_base: all done
