@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20260930-deid-trackd";
+} from "./deid-service.js?v=20260930-deid-refactor";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });

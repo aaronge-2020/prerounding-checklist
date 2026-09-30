@@ -40,7 +40,7 @@ import {
   getAdvancedDeidStatus,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "../../patient-context/deid-service.js?v=20260930-deid-trackd";
+} from "../../patient-context/deid-service.js?v=20260930-deid-refactor";
 import { DEFAULT_DEID_MODEL_KEY, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../../patient-context/deid-model-options.js?v=20260930-deid-trackd";
 import { crossOriginIsolationBlocker } from "../../patient-context/deid-client.js?v=20260929-deid-clinicale5";
 import {
