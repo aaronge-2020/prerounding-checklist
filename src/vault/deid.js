@@ -2006,242 +2006,418 @@ function trackDFilterDecision(rawText, entity) {
   return "keep";
 }
 
+// ============================================================================
+// Coherent evidence-proposal architecture.
+//
+// Every detector -- the captured/direct pattern tables, the Track-C/Track-D
+// rule sets, the age detector, the temporal parser -- independently proposes
+// candidate spans. Each proposal carries its span, label, evidence/source and
+// score. One explicit resolver (resolveEvidenceProposals) then settles every
+// overlap/conflict in a single pass; proposers never mutate each other's
+// output, so the final result cannot depend on implementation order.
+// ============================================================================
+
+// Shared regex fragments for the structured pattern tables, hoisted to module
+// level so the tables below are built once instead of on every call.
+const STRUCTURED_DATE_VALUE = String.raw`(?:\d{4}-\d{1,2}-\d{1,2}T\d{1,2}:\d{2}(?::\d{2})?|\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9](?!\d)|[12]\d|3[01])(?:[/-](?:\d{4}(?!\d)|\d{2}(?!\d)))?(?![/-]\d)|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})`;
+
+// LLM-generated H&P notes near-universally bold the field label in
+// markdown ("**MRN:** 58193427"), which puts "**" directly between the
+// colon and the value with no whitespace for a plain `\s*` to span, and
+// sometimes before the label itself ("**Hospital:**"). Unlike PHONE/
+// EMAIL/ADDRESS/DATE - which all have an independent shape- or chrono-
+// based detector that catches the value regardless of its label - MRN,
+// ENCOUNTER ID, and account/policy/insurance-style IDs have no such
+// fallback: a bare digit string is otherwise indistinguishable from any
+// other number without its label. When the label regex fails to match at
+// all here, the identifier isn't just mislabeled - it's never redacted.
+// MD_FILLER tolerates markdown emphasis wherever plain whitespace used to
+// be assumed; MD_SEP additionally allows the colon/hash itself to repeat
+// or appear in either order (e.g. "Account #:** ") since some labels have
+// more than one separator character back to back.
+const MD_FILLER = String.raw`[\s*_]*`;
+const MD_SEP = String.raw`[\s*]*[:#][\s*]*`;
+const MD_SEP_OPTIONAL_COLON = String.raw`[\s*:#]+`;
+
+// Labeled-field patterns: capture group 1 is the entity value.
+const CAPTURED_PATTERNS = [
+  { label: "PATIENT NAME", regex: new RegExp(String.raw`^${MD_FILLER}(?:Patient(?: Name)?|Pt(?: Name)?|Name)${MD_SEP}([A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,3})\s*$`, "gmi") },
+  { label: "PATIENT NAME", regex: new RegExp(String.raw`^${MD_FILLER}Preferred Name${MD_SEP_OPTIONAL_COLON}([A-Z][A-Za-z.'’-]+)\s*$`, "gmi") },
+  { label: "PATIENT NAME", regex: new RegExp(String.raw`\bALIAS${MD_SEP}([^|\n\r;]{2,80})`, "gi") },
+  { label: "PATIENT NAME", regex: /\bOCR HEADER\s*>{2,}\s*([A-Z][A-Z'-]+,\s+[A-Z][A-Z'-]+)(?=\s+(?:D0B|DOB|MRN)\b)/g },
+  { label: "DOB", regex: new RegExp(String.raw`^${MD_FILLER}(?:DOB|D\.O\.B\.|Date of birth|Birth date)${MD_SEP_OPTIONAL_COLON}(${STRUCTURED_DATE_VALUE})\s*$`, "gmi") },
+  { label: "DOB", regex: new RegExp(String.raw`\bD0B\s*=\s*(${STRUCTURED_DATE_VALUE})`, "gi") },
+  { label: "MRN", regex: new RegExp(String.raw`^${MD_FILLER}(?:MRN|Medical Record(?: Number)?)${MD_SEP_OPTIONAL_COLON}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
+  { label: "ENCOUNTER ID", regex: new RegExp(String.raw`^${MD_FILLER}(?:CSN|FIN|HAR|Encounter(?: ID| Number))${MD_SEP_OPTIONAL_COLON}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
+  { label: "ID", regex: new RegExp(String.raw`^${MD_FILLER}(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Group(?: Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)${MD_SEP_OPTIONAL_COLON}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
+  { label: "TIME", regex: new RegExp(String.raw`^${MD_FILLER}(?:Admission Time|Admit Time|Time of Admission)${MD_SEP_OPTIONAL_COLON}(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4})\s*$`, "gmi") },
+  { label: "DATE", regex: new RegExp(String.raw`^${MD_FILLER}(?:Encounter date|Admit(?:ted| date)?|Admission date|Discharge(?:d| date)?|Date of service|DOS|Collected|Collection(?: date| time| date\/time)?|Result(?:ed| date| time| date\/time)?|Received|Drawn|Specimen(?: collected)?|Ordered)${MD_SEP}(${STRUCTURED_DATE_VALUE}(?:\s+(?:at\s+)?\d{1,2}:\d{2}(?:\s*[AP]M)?)?)\s*$`, "gmi") },
+  { label: "PHONE", regex: new RegExp(String.raw`^${MD_FILLER}(?:Phone|Fax|Pager|Callback|Cell|Mobile|Tel)${MD_SEP_OPTIONAL_COLON}((?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4})\s*$`, "gmi") },
+  { label: "EMAIL", regex: new RegExp(String.raw`^${MD_FILLER}Email${MD_SEP_OPTIONAL_COLON}([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})\s*$`, "gmi") },
+  { label: "ADDRESS", regex: new RegExp(String.raw`^${MD_FILLER}Address${MD_SEP_OPTIONAL_COLON}(.+)$`, "gmi") },
+  { label: "FACILITY", regex: new RegExp(String.raw`^${MD_FILLER}(?:Facility|Campus|Hospital|Clinic|Site|Service location|Lab location|Ordering location)${MD_SEP}([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)`, "gmi") },
+  { label: "ROOM", regex: new RegExp(String.raw`^${MD_FILLER}(?:Room|Rm|Bed|ICU room|ED room|Unit|Floor|Ward|Pod|Bay|Location)${MD_SEP}([A-Z0-9][A-Z0-9 \t-]*\d?[A-Z0-9-]*)\s*$`, "gmi") },
+  { label: "PROVIDER NAME", regex: new RegExp(String.raw`^${MD_FILLER}(?:Primary endocrinologist|Provider|Attending|Resident|Fellow|Consultant|Surgeon|PCP|Primary care provider|Referring provider|Ordering provider)${MD_SEP_OPTIONAL_COLON}((?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){0,2}|[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,2})`, "gmi") },
+  { label: "PROVIDER NAME", regex: new RegExp(String.raw`\bProvider${MD_SEP}((?:Dr|Doctor)\.?\s+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+(?:[ \t]+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+){1,2})`, "g") },
+  { label: "CONTACT NAME", regex: new RegExp(String.raw`^${MD_FILLER}(?:Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian|Caregiver)${MD_SEP_OPTIONAL_COLON}([A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,3})`, "gmi") },
+  { label: "CONTACT NAME", regex: new RegExp(String.raw`\b(?:contact${MD_SEP}|Emergency contact\s+)((?=[A-Za-z0-9.'-]*[A-Z])[A-Za-z0-9.'-]+(?:[ \t]+(?=[A-Za-z0-9.'-]*[A-Z])[A-Za-z0-9.'-]+){1,3})`, "g") },
+  { label: "ORGANIZATION", regex: new RegExp(String.raw`^${MD_FILLER}Insurance${MD_SEP_OPTIONAL_COLON}([^,\n\r]+?)(?=\s+(?:PPO|HMO|EPO|POS|HDHP)\b\s*$|$)`, "gmi") },
+  { label: "ORGANIZATION", regex: new RegExp(String.raw`^${MD_FILLER}Employer${MD_SEP_OPTIONAL_COLON}([^\n\r]+?)\s*$`, "gmi") },
+  { label: "OCCUPATION", regex: new RegExp(String.raw`^${MD_FILLER}(?:Occupation|Profession|Job title)${MD_SEP_OPTIONAL_COLON}([^\n\r]+?)\s*$`, "gmi") },
+  { label: "ORGANIZATION", regex: new RegExp(String.raw`^${MD_FILLER}Preferred pharmacy${MD_SEP_OPTIONAL_COLON}([^,\n\r]{2,80})`, "gmi") },
+  { label: "DOB", regex: new RegExp(String.raw`\b(?:DOB|D\.O\.B\.|Date of birth|Birth date)${MD_SEP_OPTIONAL_COLON}(${STRUCTURED_DATE_VALUE})`, "gi") },
+  // DOB with separators/quotes/HTML in the label ("date_of_birth":
+  // "June 13th, 1956", "<strong>Date of Birth:</strong>
+  // 1954-07-02T00:00:00") - same meaning as "DOB: <date>", only the
+  // punctuation differs.
+  { label: "DOB", regex: new RegExp(String.raw`\b(?:DOB|D\.O\.B\.|Date[_\s]+of[_\s]+birth|Birth[_\s]+date)(?:\s*<[^>]*>)?\s*["']?\s*[:=]\s*(?:<[^>]*>)?\s*["']?(${STRUCTURED_DATE_VALUE})`, "gi") },
+  { label: "PATIENT NAME", regex: /\b(?:Patient(?: Name)?|Pt(?: Name)?)\s+(?!is\b|was\b|reports\b|states\b)([A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,3})(?=\s+(?:MRN|Medical Record(?: Number)?|DOB|Date of birth|Birth date)\b|[,:;\n\r]|$)/gi },
+  { label: "PATIENT NAME", regex: /\bPATIENT\s*:\s*([A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,3})(?=\s*\|)/gi },
+  { label: "PATIENT NAME", regex: new RegExp(String.raw`\bPreferred Name${MD_SEP_OPTIONAL_COLON}([A-Z][A-Za-z.'’-]+)`, "gi") },
+  { label: "MRN", regex: new RegExp(String.raw`\b(?:MRN|Medical Record(?: Number)?)${MD_SEP_OPTIONAL_COLON}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
+  { label: "MRN", regex: /\bMRN\s*=\s*((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})/gi },
+  { label: "ENCOUNTER ID", regex: new RegExp(String.raw`\b(?:CSN|FIN|HAR|Encounter(?: ID| Number))${MD_SEP_OPTIONAL_COLON}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
+  { label: "ID", regex: new RegExp(String.raw`\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Group(?: Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)${MD_SEP_OPTIONAL_COLON}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
+  { label: "FACILITY", regex: new RegExp(String.raw`\b(?:Facility|Campus|Hospital|Clinic|Service location|Lab location|Ordering location)${MD_SEP}([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)`, "gi") },
+  { label: "PATIENT NAME", regex: /\balso documented as\s+([^,;\n\r]{2,80})/gi },
+  { label: "PROVIDER NAME", regex: /\bseen by\s+((?:Dr|Doctor)\.?\s+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+(?:[ \t]+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+){1,2})/gi },
+  { label: "ROOM", regex: new RegExp(String.raw`\b(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|ICU room|ED room|Location)${MD_SEP}([A-Z0-9][A-Z0-9 \t-]{0,30}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|Phone|Email|Address|Primary|Preferred)\s*[:#]|[.,;\n\r]|$)`, "gi") },
+  { label: "ORGANIZATION", regex: new RegExp(String.raw`\bInsurance${MD_SEP_OPTIONAL_COLON}([^,\n\r]+?)(?=\s+(?:PPO|HMO|EPO|POS|HDHP)\b(?:\s|$)|[\n\r]|$)`, "gi") },
+  { label: "ORGANIZATION", regex: new RegExp(String.raw`\bEmployer${MD_SEP_OPTIONAL_COLON}([^,\n\r]+)`, "gi") },
+  { label: "OCCUPATION", regex: new RegExp(String.raw`\b(?:Occupation|Profession|Job title)${MD_SEP}([^,\n\r]+)`, "gi") },
+  // Labeled building numbers ("Building": "174", "<Building>104</Building>",
+  // "Building: [547]") - the number alone is the BUILDING gold span.
+  { label: "ADDRESS", regex: /\b[Bb]uilding(?:[\s_-]*[Nn]umber)?\b\s*["']?\s*[:=]\s*["']?\[?(\d{1,6})\]?["']?/g },
+  { label: "ADDRESS", regex: /<[Bb]uilding>\s*(\d{1,6})\s*<\/[Bb]uilding>/g }
+];
+
+// Free-standing shape patterns: the whole match is the entity.
+const DIRECT_PATTERNS = [
+  { label: "EMAIL", regex: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi },
+  { label: "URL", regex: /\b(?:https?:\/\/|www\.)[^\s<>()|,;]+/gi },
+  { label: "IP", regex: /\b(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}\b/g },
+  { label: "IP", regex: /\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b/g },
+  { label: "ID", regex: /\bDEV(?:ICE)?[:#=](?=[A-Z0-9:._\/-]*\d)[A-Z0-9][A-Z0-9:._\/-]{2,}\b/g },
+  // ISO-8601 timestamps without an explicit offset ("2020-06-04T00:00:00"):
+  // the offset is optional in ISO 8601. This runs before the free-text
+  // TIME patterns so a timestamp keeps its DATE label instead of
+  // contributing a clock-time sub-span.
+  { label: "DATE", regex: /\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?(?:Z|[+-]\d{2}:?\d{2})?\b/g },
+  // Numeric dates with 4-digit years ("09/12/2025", "21/01/2009") -
+  // explicit match so the date part survives even when chrono merges it
+  // with a following time or drops it downstream. Both M/D and D/M orders
+  // (same span either way); the year makes it unambiguous as a date.
+  { label: "DATE", regex: /\b(?:0?[1-9]|1[0-2])\/(?:0?[1-9]|[12]\d|3[01])\/\d{4}\b/g },
+  { label: "DATE", regex: /\b(?:0?[1-9]|[12]\d|3[01])\/(?:0?[1-9]|1[0-2])\/\d{4}\b/g },
+  // Month/year dates ("June/62", "September/64") - month name with a 2- or
+  // 4-digit year, slash-separated (card-expiry style).
+  { label: "DATE", regex: /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\/\d{2,4}\b/gi },
+  { label: "ID", regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+  // Presidio SSN patterns: broader than \d{3}-\d{2}-\d{4}
+  { label: "ID", regex: /\b(\d{3})[- .](\d{2})[- .](\d{4})\b/g },
+  // ZIP+4 ("12345-6789") is an address component, not an ID. The
+  // \d{5}-\d{4} shape is distinctive with very low collision rates.
+  { label: "ADDRESS", regex: /\b(\d{5})-(\d{4})\b/g },
+  // UK postcodes ("SW1A 1AA", "W1A 0AX", "M1 1AE") and Canadian
+  // postcodes ("K1A 0B1"): distinctive alphanumeric shapes with very
+  // low collision rates against non-address text.
+  { label: "ADDRESS", regex: /\b[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}\b/g },
+  // NPI: National Provider Identifier (10-digit, starts with 1-4)
+  { label: "ID", regex: /\bNPI\s*[:#]?\s*\d{10}\b/gi },
+  // Medical license number (DEA-like patterns)
+  { label: "ID", regex: /\b(?:DEA|License|Lic|NPI|State License)\s*[:#]\s*([A-Z0-9]{5,16})\b/gi },
+  // Credit card numbers (from Presidio CreditCardRecognizer)
+  { label: "ID", regex: /\b(?!1\d{12}(?!\d))((4\d{3})|(5[0-5]\d{2})|(6\d{3})|(1\d{3})|(3\d{3}))[- ]?(\d{3,4})[- ]?(\d{3,4})[- ]?(\d{3,5})\b/g },
+  // US driver license (from Presidio UsLicenseRecognizer)
+  { label: "ID", regex: /\b(?:[A-Z][0-9]{3,6}|[A-Z][0-9]{5,9}|[A-Z][0-9]{6,8}|[A-Z][0-9]{4,8}|[A-Z][0-9]{9,11}|[A-Z]{1,2}[0-9]{5,6}|H[0-9]{8}|V[0-9]{6}|X[0-9]{8}|[A-Z]{2}[0-9]{2,5}|[A-Z]{2}[0-9]{3,7}|[0-9]{2}[A-Z]{3}[0-9]{5,6}|[A-Z][0-9]{13,14}|[A-Z][0-9]{18}|[A-Z][0-9]{6}R|[A-Z][0-9]{9}|[0-9]{9}[A-Z]|[A-Z]{2}[0-9]{6}[A-Z]|[0-9]{8}[A-Z]{2}|[0-9]{3}[A-Z]{2}[0-9]{4}|[A-Z][0-9][A-Z][0-9][A-Z]|[0-9]{7,8}[A-Z])\b/g, skip: isLikelyIdentifierFalsePositive },
+  // US Passport (9 digits or letter+8 digits from Presidio)
+  { label: "ID", regex: /\b[A-Z][0-9]{8}\b/g },
+  // A 10-digit phone-shaped number explicitly marked as a non-phone
+  // identifier ("<socialnumber>738 958 6793</socialnumber>",
+  // 'Social Security Number: "435 124 5380"') is an ID, not a phone
+  // number - the markup says what the number is. This runs before the
+  // US phone rule and claims those spans so they are not dropped.
+  { label: "ID", regex: /(?:\+?1[-.\s]?)?\(?\b\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g, skip: (rawText, start, end) => !isPhoneDisqualifiedByIdentifierMarkup(rawText, start, end) },
+  // US 10-digit numbers. A digit string explicitly wrapped in or labeled as
+  // a non-phone identifier (SSN, ID card, passport) is disqualified by the
+  // guard - the markup says what the number is.
+  { label: "PHONE", regex: /(?:\+?1[-.\s]?)?\(?\b\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g, skip: isPhoneDisqualifiedByIdentifierMarkup },
+  // International numbers: a leading "+" followed by digit groups in any
+  // separator mix ("+44 20 7946 0018", "+2380861.2896", "+84-839023188").
+  // The "+" anchor keeps this away from dates and other digit runs; the
+  // digit-count guard rejects fragments and over-long runs.
+  { label: "PHONE", regex: /\+\d(?:[-.\s]?\d){5,14}(?![\d])/g, skip: isValidInternationalPhone },
+  // "00"-prefixed international dialing ("0091 44 034 6283",
+  // "0031-01-494 3486") - the ITU international call prefix, as general
+  // as the "+" form above. The lookbehind keeps this from matching the
+  // tail of a longer digit run such as a year ("2009").
+  { label: "PHONE", regex: /(?<![\d])00\d(?:[-.\s]?\d){5,13}(?![\d])/g, skip: isValidInternationalPhone },
+  // Trunk-prefixed national numbers ("0134 599 154.0432", "08.59.79-66 48",
+  // "03-0460-0180") - a leading 0 plus 2-4 separated digit groups is the
+  // general non-NANP national shape. Date-shaped runs are excluded by the
+  // guard above.
+  { label: "PHONE", regex: /(?<![\d])0\d(?:[-.\s]?\d{1,6}){2,4}(?![\d])/g, skip: isTrunkPhoneFalsePositive },
+  // Labeled 7-digit phone numbers: "Phone: 555-0142" or "Tel: 555 0142".
+  // Without an area code they are ambiguous in free text, but in a labeled
+  // phone context they are clearly phone numbers (AV-06).
+  { label: "PHONE", regex: /\b(?:Phone|Tel|Telephone|Cell|Mobile|Fax|Pager|Callback)\s*[:#]?\s*\d{3}[-.\s]\d{4}\b/gi },
+  // Free-text clock times ("3:45 PM", "14:30", "09:15:00"). The chrono
+  // temporal pass deliberately drops bare clock times - they carry no
+  // calendar-date information for the clinical timeline - but a clock time
+  // is still temporal PHI, so it is detected here as TIME. The hour/minute
+  // ranges exclude ratio-like shapes ("1:2"); the ISO-timestamp DATE
+  // pattern above runs first, so datetimes keep their DATE label.
+  { label: "TIME", regex: /(?<!:)\b(?:[01]?\d|2[0-3]):[0-5]\d(?::[0-5]\d)?(?:\s*[AP]\.?M\.?)?\b/gi },
+  // "3 o'clock", "11 o'clock" - ordinary English time phrasing.
+  { label: "TIME", regex: /\b(?:0?[1-9]|1[0-2])\s*o'clock\b/gi },
+  // "3 PM", "11 AM" - hour with meridiem and no colon.
+  { label: "TIME", regex: /\b(?:0?[1-9]|1[0-2])\s*[AP]\.?M\.?\b/gi },
+  // Free-text date/time detection runs through chrono-node instead (see
+  // addTemporalPatternEntities below) - it covers every format this list
+  // used to enumerate by hand (ISO, slash/dash dates in any order, "Month
+  // Day, Year", ordinals, weekday-relative dates, "X days ago", ...) plus
+  // many phrasings this regex list never matched. What is left here is
+  // narrow clinical/fiscal shorthand chrono general-purpose grammar does
+  // not recognize at all: fiscal quarters and vague relative periods.
+  // Fiscal quarter: Q1 2026, Q2/2026, 2nd Quarter 2026
+  { label: "DATE", regex: /\bQ[1-4][/\s]?\d{2,4}\b/g },
+  { label: "DATE", regex: /\b(?:1st|2nd|3rd|4th)\s+[Qq]uarter\s+\d{2,4}\b/g },
+  // "last week", "next month", "previous quarter", "past year"
+  { label: "DATE", regex: /\b(?:last|next|this|previous|prior|past|upcoming|following)\s+(?:week|month|quarter|year|semester|trimester|decade|century)\b/gi },
+  // The optional city-name group's charset includes plain space (so a
+  // multi-word city matches at all), which makes it greedily swallow the
+  // separating space the zip group further down also needs - and since
+  // that zip group is itself optional, dropping it entirely is a valid
+  // match, so the engine has no reason to backtrack and give the space
+  // back. That silently truncates every address written without a comma
+  // before the zip ("...Springfield Oregon 97477" - the ordinary shape a
+  // spelled-out state name produces), leaving the zip for something else
+  // downstream to mislabel on its own. Letting the zip group's own leading
+  // separator be optional (zero-or-more, not one-or-more) means it still
+  // matches even when the city group already ate the only space there.
+  { label: "ADDRESS", regex: /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b(?:,?[ \t]+[A-Za-z .-]+)?(?:,?[ \t]+[A-Z]{2})?(?:[ \t]*\d{5}(?:-\d{4})?)?/gi, skip: isLikelyAddressFalsePositive },
+  // Bare street names without a house number ("Main St") are still address
+  // identifiers - and must never fall through to the person-name detector.
+  // The leading word stays case-sensitive so lowercase prose ("lives on
+  // Main St") cannot anchor a match; only the suffix is case-insensitive.
+  // Bare "Dr" is excluded: without a house number it overwhelmingly means
+  // a doctor title ("Provider Dr Chang"), not "Drive".
+  { label: "ADDRESS", regex: /\b[A-Z][A-Za-z0-9.'-]*(?:[ \t]+[A-Z][A-Za-z0-9.'-]+){0,2}[ \t]+(?i:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b/g, skip: isBareStreetAbbreviationFalsePositive },
+  // Secondary address units ("Suite 800", "Apartment 5", "Pod 300") -
+  // labeled address components that the street-number patterns miss.
+  { label: "ADDRESS", regex: /\b(?:Suite|Ste|Apt|Apartment|Unit|Floor|Fl|Lodge|Villa|Duplex|Ranch|Bungalow|Basement|Office|Chalet|Pod|PB|RV|House|Dept|Trailer|Box|Castle|Residence|Flat|Bldg|Triplex|Quadruplex|Fort)\.?\s+\d+[A-Z]?\b/g },
+  { label: "ROOM", regex: /\b(?:Room|Rm|Bed|ICU room|ED room)\b(?!\s*[:#])\s+[A-Z0-9-]*\d[A-Z0-9-]*\b/gi },
+  { label: "LOCATION", regex: /\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/g },
+  { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+[A-Z][A-Za-z&.'-]+){0,4}[ \t]+Laboratory,\s+(?:University|College|Institute) of [A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){0,4},\s+[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+)*,\s+[A-Z]{2}\b/g },
+  { label: "ORGANIZATION", regex: /\b(?:University|College|Institute) of [A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){0,4}\b/g },
+  { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Pharmacy|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g, skip: isLikelyOrganizationFalsePositive },
+  { label: "FACILITY", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){1,5}[ \t]+Pavilion(?:[ \t]+[A-Z0-9-]{1,12})?\b/g, skip: isLikelyOrganizationFalsePositive },
+  { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){1,5}[ \t]+Cooperative(?:[ \t]+[A-Z0-9-]{1,12})?\b/g, skip: isLikelyOrganizationFalsePositive },
+  { label: "PROVIDER NAME", regex: /\b(?:Dr|Doctor)\.?\s+[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){0,2}\b(?![A-Za-z0-9.'-])/g },
+  { label: "NAME", regex: /\b[A-Z][a-z]{2,}[ \t]+[A-Z]\.[ \t]+[A-Z][A-Za-z'-]{5,}\b/g, skip: isLikelyNonNamePhrase },
+  { label: "ID", regex: /\b(?!\d{4}-\d{2}-\d{2}T)(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)+\b/g, skip: isLikelyIdentifierFalsePositive },
+  { label: "ID", regex: /\b[A-F0-9]{12,}\b/g },
+  { label: "ID", regex: /\b[A-HJ-NPR-Z0-9]{17}\b/g }
+];
+
+// Evidence precedence for the greedy resolver: lower wins. The ranking mirrors
+// the original insertion order, so greedy acceptance reproduces it exactly.
+// Structured evidence always outranks model evidence (hybrid path).
+const EVIDENCE_PRECEDENCE = {
+  captured: 0,
+  trackD: 1,
+  trackDId: 1,
+  trackDFacility: 1,
+  direct: 2,
+  age: 3,
+  trackC: 4,
+  temporal: 5,
+  model: 6,
+};
+
+// --- Independent evidence proposers ----------------------------------------
+// Each proposer scans the raw text on its own and returns candidate entity
+// objects; it never sees or mutates another proposer's output. All
+// per-candidate validation (span constraining, label refinement,
+// false-positive guards) is order-independent and stays inside the proposers;
+// only the cross-candidate covering decision moves to the resolver.
+
+function proposeCapturedPatterns(rawText) {
+  const candidates = [];
+  for (const { label, regex } of CAPTURED_PATTERNS) {
+    regex.lastIndex = 0; // hoisted shared regex: restore fresh-regex semantics
+    addCapturedEntity(rawText, candidates, label, regex);
+  }
+  return candidates;
+}
+
+// Track-D is split into granular proposers so the resolver can replicate the
+// original per-adder semantics exactly: the pushTrackDRawEntity-based adders
+// (provider, relative name, location) pushed unconditionally, while the
+// pushPatternEntity-based adders (labeled IDs, facilities) applied the
+// covering check. All five keep evidence precedence 1 and their original
+// relative order.
+function proposeTrackDProvider(rawText) {
+  const candidates = [];
+  addTrackDProviderEntities(rawText, candidates);
+  return candidates;
+}
+
+function proposeTrackDId(rawText) {
+  const candidates = [];
+  addTrackDIdEntities(rawText, candidates);
+  return candidates;
+}
+
+function proposeTrackDFacility(rawText) {
+  const candidates = [];
+  addTrackDFacilityEntities(rawText, candidates);
+  return candidates;
+}
+
+function proposeTrackDRelativeName(rawText) {
+  const candidates = [];
+  addTrackDRelativeNameEntities(rawText, candidates);
+  return candidates;
+}
+
+function proposeTrackDLocation(rawText) {
+  const candidates = [];
+  addTrackDLocationEntities(rawText, candidates);
+  return candidates;
+}
+
+function proposeDirectPatterns(rawText) {
+  const candidates = [];
+  for (const { label, regex, skip } of DIRECT_PATTERNS) {
+    regex.lastIndex = 0; // hoisted shared regex: restore fresh-regex semantics
+    addRegexEntities(rawText, candidates, label, regex, "structured identifier", skip);
+  }
+  return candidates;
+}
+
+function proposeAgeEvidence(rawText) {
+  const candidates = [];
+  addAgeEntities(rawText, candidates);
+  return candidates;
+}
+
+function proposeTrackC(rawText) {
+  const candidates = [];
+  addTrackCLabeledNameEntities(rawText, candidates);
+  addTrackCTagWrappedNameEntities(rawText, candidates);
+  addTrackCBracketedNameEntities(rawText, candidates);
+  addTrackCJsonNameEntities(rawText, candidates);
+  addTrackCLabeledLocationEntities(rawText, candidates);
+  addTrackCLabeledIdEntities(rawText, candidates);
+  addTrackC8NumberedNameEntities(rawText, candidates);
+  return candidates;
+}
+
+function proposeTemporalEvidence(rawText, relativeDate) {
+  const candidates = [];
+  addTemporalPatternEntities(rawText, candidates, relativeDate);
+  return candidates;
+}
+
+// Run every proposer independently and tag each candidate with its proposer,
+// evidence description, and global proposal index (the original insertion
+// order). Proposers must not mutate shared state.
+function collectProposals(rawText, proposerRuns) {
+  const proposals = [];
+  for (const [proposer, run] of proposerRuns) {
+    for (const candidate of run()) {
+      proposals.push({
+        ...candidate,
+        proposer,
+        evidence: candidate.context || proposer,
+        proposalIndex: proposals.length,
+      });
+    }
+  }
+  return proposals;
+}
+
+// All structured evidence proposers, in original insertion order.
+function proposeStructuredEvidence(rawText, { relativeDate = null } = {}) {
+  return collectProposals(rawText, [
+    ["captured", () => proposeCapturedPatterns(rawText)],
+    ["trackD", () => proposeTrackDProvider(rawText)],
+    ["trackDId", () => proposeTrackDId(rawText)],
+    ["trackDFacility", () => proposeTrackDFacility(rawText)],
+    ["trackD", () => proposeTrackDRelativeName(rawText)],
+    ["trackD", () => proposeTrackDLocation(rawText)],
+    ["direct", () => proposeDirectPatterns(rawText)],
+    ["age", () => proposeAgeEvidence(rawText)],
+    ["trackC", () => proposeTrackC(rawText)],
+    ["temporal", () => proposeTemporalEvidence(rawText, relativeDate)],
+  ]);
+}
+
+// --- Explicit conflict resolver --------------------------------------------
+// Single pass that settles every overlap/conflict between proposals.
+// Greedy acceptance in (precedence, proposalIndex) order reproduces the
+// original sequential insertion order exactly: a proposal is dropped when an
+// already-accepted, non-model proposal covers its span -- the exact semantics
+// of pushPatternEntity's covering check (and pushTemporalEntity's
+// isSpanCovered, which in the structured pipeline never sees model spans).
+// Track-D raw entities bypass the covering check in the original
+// implementation (pushTrackDRawEntity pushes unconditionally), so "trackD"
+// proposals are accepted without consulting it. The pushPatternEntity-based
+// Track-D adders ("trackDId", "trackDFacility") go through the check, exactly
+// as in the original. Pre-existing entities (e.g.
+// bracket placeholders) sit at the head of the acceptance order, exactly as
+// they sat at the head of the shared array in the original code.
+// Returns the accepted proposals in original insertion order; nothing is
+// merged here -- merging stays downstream where it was.
+function resolveEvidenceProposals(proposals, rawText, preExisting = []) {
+  const ordered = [...proposals].sort(
+    (a, b) =>
+      EVIDENCE_PRECEDENCE[a.proposer] - EVIDENCE_PRECEDENCE[b.proposer] ||
+      a.proposalIndex - b.proposalIndex
+  );
+  const accepted = [...preExisting];
+  for (const proposal of ordered) {
+    if (proposal.proposer === "trackD") {
+      accepted.push(proposal);
+      continue;
+    }
+    const covering = accepted.find(
+      (entity) => proposal.start >= entity.start && proposal.end <= entity.end
+    );
+    if (covering && !/model/.test(covering.source || "")) continue;
+    accepted.push(proposal);
+  }
+  return accepted
+    .slice(preExisting.length)
+    .sort((a, b) => a.proposalIndex - b.proposalIndex);
+}
+
+// Hybrid-path resolver: model evidence against already-resolved structured
+// evidence. Structured spans outrank model spans (EVIDENCE_PRECEDENCE), so a
+// model entity overlapping any structured span is dropped -- the exact
+// semantics of the original overlapsAny filter. Neither side is merged here.
+function resolveHybridEvidenceProposals(structuredEntities, modelEntities) {
+  const structured = Array.isArray(structuredEntities) ? structuredEntities : [];
+  const models = Array.isArray(modelEntities) ? modelEntities : [];
+  const keptModel = models.filter(
+    (entity) => !structured.some((s) => rangesOverlap(entity, s))
+  );
+  return { structured, model: keptModel };
+}
+
+// Drop the resolver's bookkeeping fields, leaving plain entity objects.
+function stripProposalMetadata(proposals) {
+  return proposals.map(({ proposer, evidence, proposalIndex, ...entity }) => entity);
+}
+
 export function addStructuredSafeHarborEntities(rawText, entities = [], currentDate = null, { relativeDate = currentDate } = {}) {
-  const dateValue = String.raw`(?:\d{4}-\d{1,2}-\d{1,2}T\d{1,2}:\d{2}(?::\d{2})?|\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9](?!\d)|[12]\d|3[01])(?:[/-](?:\d{4}(?!\d)|\d{2}(?!\d)))?(?![/-]\d)|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})`;
-
-  // LLM-generated H&P notes near-universally bold the field label in
-  // markdown ("**MRN:** 58193427"), which puts "**" directly between the
-  // colon and the value with no whitespace for a plain `\s*` to span, and
-  // sometimes before the label itself ("**Hospital:**"). Unlike PHONE/
-  // EMAIL/ADDRESS/DATE - which all have an independent shape- or chrono-
-  // based detector that catches the value regardless of its label - MRN,
-  // ENCOUNTER ID, and account/policy/insurance-style IDs have no such
-  // fallback: a bare digit string is otherwise indistinguishable from any
-  // other number without its label. When the label regex fails to match at
-  // all here, the identifier isn't just mislabeled - it's never redacted.
-  // mdFiller tolerates markdown emphasis wherever plain whitespace used to
-  // be assumed; mdSep additionally allows the colon/hash itself to repeat
-  // or appear in either order (e.g. "Account #:** ") since some labels have
-  // more than one separator character back to back.
-  const mdFiller = String.raw`[\s*_]*`;
-  const mdSep = String.raw`[\s*]*[:#][\s*]*`;
-  const mdSepOptionalColon = String.raw`[\s*:#]+`;
-
-  const capturedPatterns = [
-    { label: "PATIENT NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Patient(?: Name)?|Pt(?: Name)?|Name)${mdSep}([A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,3})\s*$`, "gmi") },
-    { label: "PATIENT NAME", regex: new RegExp(String.raw`^${mdFiller}Preferred Name${mdSepOptionalColon}([A-Z][A-Za-z.'’-]+)\s*$`, "gmi") },
-    { label: "PATIENT NAME", regex: new RegExp(String.raw`\bALIAS${mdSep}([^|\n\r;]{2,80})`, "gi") },
-    { label: "PATIENT NAME", regex: /\bOCR HEADER\s*>{2,}\s*([A-Z][A-Z'-]+,\s+[A-Z][A-Z'-]+)(?=\s+(?:D0B|DOB|MRN)\b)/g },
-    { label: "DOB", regex: new RegExp(String.raw`^${mdFiller}(?:DOB|D\.O\.B\.|Date of birth|Birth date)${mdSepOptionalColon}(${dateValue})\s*$`, "gmi") },
-    { label: "DOB", regex: new RegExp(String.raw`\bD0B\s*=\s*(${dateValue})`, "gi") },
-    { label: "MRN", regex: new RegExp(String.raw`^${mdFiller}(?:MRN|Medical Record(?: Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
-    { label: "ENCOUNTER ID", regex: new RegExp(String.raw`^${mdFiller}(?:CSN|FIN|HAR|Encounter(?: ID| Number))${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
-    { label: "ID", regex: new RegExp(String.raw`^${mdFiller}(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Group(?: Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
-    { label: "TIME", regex: new RegExp(String.raw`^${mdFiller}(?:Admission Time|Admit Time|Time of Admission)${mdSepOptionalColon}(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4})\s*$`, "gmi") },
-    { label: "DATE", regex: new RegExp(String.raw`^${mdFiller}(?:Encounter date|Admit(?:ted| date)?|Admission date|Discharge(?:d| date)?|Date of service|DOS|Collected|Collection(?: date| time| date\/time)?|Result(?:ed| date| time| date\/time)?|Received|Drawn|Specimen(?: collected)?|Ordered)${mdSep}(${dateValue}(?:\s+(?:at\s+)?\d{1,2}:\d{2}(?:\s*[AP]M)?)?)\s*$`, "gmi") },
-    { label: "PHONE", regex: new RegExp(String.raw`^${mdFiller}(?:Phone|Fax|Pager|Callback|Cell|Mobile|Tel)${mdSepOptionalColon}((?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4})\s*$`, "gmi") },
-    { label: "EMAIL", regex: new RegExp(String.raw`^${mdFiller}Email${mdSepOptionalColon}([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})\s*$`, "gmi") },
-    { label: "ADDRESS", regex: new RegExp(String.raw`^${mdFiller}Address${mdSepOptionalColon}(.+)$`, "gmi") },
-    { label: "FACILITY", regex: new RegExp(String.raw`^${mdFiller}(?:Facility|Campus|Hospital|Clinic|Site|Service location|Lab location|Ordering location)${mdSep}([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)`, "gmi") },
-    { label: "ROOM", regex: new RegExp(String.raw`^${mdFiller}(?:Room|Rm|Bed|ICU room|ED room|Unit|Floor|Ward|Pod|Bay|Location)${mdSep}([A-Z0-9][A-Z0-9 \t-]*\d?[A-Z0-9-]*)\s*$`, "gmi") },
-    { label: "PROVIDER NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Primary endocrinologist|Provider|Attending|Resident|Fellow|Consultant|Surgeon|PCP|Primary care provider|Referring provider|Ordering provider)${mdSepOptionalColon}((?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){0,2}|[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,2})`, "gmi") },
-    { label: "PROVIDER NAME", regex: new RegExp(String.raw`\bProvider${mdSep}((?:Dr|Doctor)\.?\s+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+(?:[ \t]+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+){1,2})`, "g") },
-    { label: "CONTACT NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian|Caregiver)${mdSepOptionalColon}([A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,3})`, "gmi") },
-    { label: "CONTACT NAME", regex: new RegExp(String.raw`\b(?:contact${mdSep}|Emergency contact\s+)((?=[A-Za-z0-9.'-]*[A-Z])[A-Za-z0-9.'-]+(?:[ \t]+(?=[A-Za-z0-9.'-]*[A-Z])[A-Za-z0-9.'-]+){1,3})`, "g") },
-    { label: "ORGANIZATION", regex: new RegExp(String.raw`^${mdFiller}Insurance${mdSepOptionalColon}([^,\n\r]+?)(?=\s+(?:PPO|HMO|EPO|POS|HDHP)\b\s*$|$)`, "gmi") },
-    { label: "ORGANIZATION", regex: new RegExp(String.raw`^${mdFiller}Employer${mdSepOptionalColon}([^\n\r]+?)\s*$`, "gmi") },
-    { label: "OCCUPATION", regex: new RegExp(String.raw`^${mdFiller}(?:Occupation|Profession|Job title)${mdSepOptionalColon}([^\n\r]+?)\s*$`, "gmi") },
-    { label: "ORGANIZATION", regex: new RegExp(String.raw`^${mdFiller}Preferred pharmacy${mdSepOptionalColon}([^,\n\r]{2,80})`, "gmi") },
-    { label: "DOB", regex: new RegExp(String.raw`\b(?:DOB|D\.O\.B\.|Date of birth|Birth date)${mdSepOptionalColon}(${dateValue})`, "gi") },
-    // DOB with separators/quotes/HTML in the label ("date_of_birth":
-    // "June 13th, 1956", "<strong>Date of Birth:</strong>
-    // 1954-07-02T00:00:00") - same meaning as "DOB: <date>", only the
-    // punctuation differs.
-    { label: "DOB", regex: new RegExp(String.raw`\b(?:DOB|D\.O\.B\.|Date[_\s]+of[_\s]+birth|Birth[_\s]+date)(?:\s*<[^>]*>)?\s*["']?\s*[:=]\s*(?:<[^>]*>)?\s*["']?(${dateValue})`, "gi") },
-    { label: "PATIENT NAME", regex: /\b(?:Patient(?: Name)?|Pt(?: Name)?)\s+(?!is\b|was\b|reports\b|states\b)([A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,3})(?=\s+(?:MRN|Medical Record(?: Number)?|DOB|Date of birth|Birth date)\b|[,:;\n\r]|$)/gi },
-    { label: "PATIENT NAME", regex: /\bPATIENT\s*:\s*([A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,3})(?=\s*\|)/gi },
-    { label: "PATIENT NAME", regex: new RegExp(String.raw`\bPreferred Name${mdSepOptionalColon}([A-Z][A-Za-z.'’-]+)`, "gi") },
-    { label: "MRN", regex: new RegExp(String.raw`\b(?:MRN|Medical Record(?: Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
-    { label: "MRN", regex: /\bMRN\s*=\s*((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})/gi },
-    { label: "ENCOUNTER ID", regex: new RegExp(String.raw`\b(?:CSN|FIN|HAR|Encounter(?: ID| Number))${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
-    { label: "ID", regex: new RegExp(String.raw`\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Group(?: Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
-    { label: "FACILITY", regex: new RegExp(String.raw`\b(?:Facility|Campus|Hospital|Clinic|Service location|Lab location|Ordering location)${mdSep}([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)`, "gi") },
-    { label: "PATIENT NAME", regex: /\balso documented as\s+([^,;\n\r]{2,80})/gi },
-    { label: "PROVIDER NAME", regex: /\bseen by\s+((?:Dr|Doctor)\.?\s+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+(?:[ \t]+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+){1,2})/gi },
-    { label: "ROOM", regex: new RegExp(String.raw`\b(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|ICU room|ED room|Location)${mdSep}([A-Z0-9][A-Z0-9 \t-]{0,30}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|Phone|Email|Address|Primary|Preferred)\s*[:#]|[.,;\n\r]|$)`, "gi") },
-    { label: "ORGANIZATION", regex: new RegExp(String.raw`\bInsurance${mdSepOptionalColon}([^,\n\r]+?)(?=\s+(?:PPO|HMO|EPO|POS|HDHP)\b(?:\s|$)|[\n\r]|$)`, "gi") },
-    { label: "ORGANIZATION", regex: new RegExp(String.raw`\bEmployer${mdSepOptionalColon}([^,\n\r]+)`, "gi") },
-    { label: "OCCUPATION", regex: new RegExp(String.raw`\b(?:Occupation|Profession|Job title)${mdSep}([^,\n\r]+)`, "gi") },
-    // Labeled building numbers ("Building": "174", "<Building>104</Building>",
-    // "Building: [547]") - the number alone is the BUILDING gold span.
-    { label: "ADDRESS", regex: /\b[Bb]uilding(?:[\s_-]*[Nn]umber)?\b\s*["']?\s*[:=]\s*["']?\[?(\d{1,6})\]?["']?/g },
-    { label: "ADDRESS", regex: /<[Bb]uilding>\s*(\d{1,6})\s*<\/[Bb]uilding>/g }
-  ];
-
-  capturedPatterns.forEach(({ label, regex }) => {
-    addCapturedEntity(rawText, entities, label, regex);
-  });
-
-  // TRACK-D (clinical): role-anchored provider names, labeled clinical IDs,
-  // care facilities, relative names. These run BEFORE the generic
-  // capturedPatterns so their precise spans/labels win: pushPatternEntity's
-  // covering check then skips the broader generic rules on the same span
-  // (e.g. the ORGANIZATION-on-Hospital regex would otherwise cover a D4
-  // FACILITY and, winning the equal-span merge by insertion order, relabel
-  // it ORGANIZATION).
-  addTrackDProviderEntities(rawText, entities);
-  addTrackDIdEntities(rawText, entities);
-  addTrackDFacilityEntities(rawText, entities);
-  addTrackDRelativeNameEntities(rawText, entities);
-  addTrackDLocationEntities(rawText, entities);
-
-  const directPatterns = [
-    { label: "EMAIL", regex: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi },
-    { label: "URL", regex: /\b(?:https?:\/\/|www\.)[^\s<>()|,;]+/gi },
-    { label: "IP", regex: /\b(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}\b/g },
-    { label: "IP", regex: /\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b/g },
-    { label: "ID", regex: /\bDEV(?:ICE)?[:#=](?=[A-Z0-9:._\/-]*\d)[A-Z0-9][A-Z0-9:._\/-]{2,}\b/g },
-    // ISO-8601 timestamps without an explicit offset ("2020-06-04T00:00:00"):
-    // the offset is optional in ISO 8601. This runs before the free-text
-    // TIME patterns so a timestamp keeps its DATE label instead of
-    // contributing a clock-time sub-span.
-    { label: "DATE", regex: /\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?(?:Z|[+-]\d{2}:?\d{2})?\b/g },
-    // Numeric dates with 4-digit years ("09/12/2025", "21/01/2009") -
-    // explicit match so the date part survives even when chrono merges it
-    // with a following time or drops it downstream. Both M/D and D/M orders
-    // (same span either way); the year makes it unambiguous as a date.
-    { label: "DATE", regex: /\b(?:0?[1-9]|1[0-2])\/(?:0?[1-9]|[12]\d|3[01])\/\d{4}\b/g },
-    { label: "DATE", regex: /\b(?:0?[1-9]|[12]\d|3[01])\/(?:0?[1-9]|1[0-2])\/\d{4}\b/g },
-    // Month/year dates ("June/62", "September/64") - month name with a 2- or
-    // 4-digit year, slash-separated (card-expiry style).
-    { label: "DATE", regex: /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\/\d{2,4}\b/gi },
-    { label: "ID", regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-    // Presidio SSN patterns: broader than \d{3}-\d{2}-\d{4}
-    { label: "ID", regex: /\b(\d{3})[- .](\d{2})[- .](\d{4})\b/g },
-    // ZIP+4 ("12345-6789") is an address component, not an ID. The
-    // \d{5}-\d{4} shape is distinctive with very low collision rates.
-    { label: "ADDRESS", regex: /\b(\d{5})-(\d{4})\b/g },
-    // UK postcodes ("SW1A 1AA", "W1A 0AX", "M1 1AE") and Canadian
-    // postcodes ("K1A 0B1"): distinctive alphanumeric shapes with very
-    // low collision rates against non-address text.
-    { label: "ADDRESS", regex: /\b[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}\b/g },
-    // NPI: National Provider Identifier (10-digit, starts with 1-4)
-    { label: "ID", regex: /\bNPI\s*[:#]?\s*\d{10}\b/gi },
-    // Medical license number (DEA-like patterns)
-    { label: "ID", regex: /\b(?:DEA|License|Lic|NPI|State License)\s*[:#]\s*([A-Z0-9]{5,16})\b/gi },
-    // Credit card numbers (from Presidio CreditCardRecognizer)
-    { label: "ID", regex: /\b(?!1\d{12}(?!\d))((4\d{3})|(5[0-5]\d{2})|(6\d{3})|(1\d{3})|(3\d{3}))[- ]?(\d{3,4})[- ]?(\d{3,4})[- ]?(\d{3,5})\b/g },
-    // US driver license (from Presidio UsLicenseRecognizer)
-    { label: "ID", regex: /\b(?:[A-Z][0-9]{3,6}|[A-Z][0-9]{5,9}|[A-Z][0-9]{6,8}|[A-Z][0-9]{4,8}|[A-Z][0-9]{9,11}|[A-Z]{1,2}[0-9]{5,6}|H[0-9]{8}|V[0-9]{6}|X[0-9]{8}|[A-Z]{2}[0-9]{2,5}|[A-Z]{2}[0-9]{3,7}|[0-9]{2}[A-Z]{3}[0-9]{5,6}|[A-Z][0-9]{13,14}|[A-Z][0-9]{18}|[A-Z][0-9]{6}R|[A-Z][0-9]{9}|[0-9]{9}[A-Z]|[A-Z]{2}[0-9]{6}[A-Z]|[0-9]{8}[A-Z]{2}|[0-9]{3}[A-Z]{2}[0-9]{4}|[A-Z][0-9][A-Z][0-9][A-Z]|[0-9]{7,8}[A-Z])\b/g, skip: isLikelyIdentifierFalsePositive },
-    // US Passport (9 digits or letter+8 digits from Presidio)
-    { label: "ID", regex: /\b[A-Z][0-9]{8}\b/g },
-    // A 10-digit phone-shaped number explicitly marked as a non-phone
-    // identifier ("<socialnumber>738 958 6793</socialnumber>",
-    // 'Social Security Number: "435 124 5380"') is an ID, not a phone
-    // number - the markup says what the number is. This runs before the
-    // US phone rule and claims those spans so they are not dropped.
-    { label: "ID", regex: /(?:\+?1[-.\s]?)?\(?\b\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g, skip: (rawText, start, end) => !isPhoneDisqualifiedByIdentifierMarkup(rawText, start, end) },
-    // US 10-digit numbers. A digit string explicitly wrapped in or labeled as
-    // a non-phone identifier (SSN, ID card, passport) is disqualified by the
-    // guard - the markup says what the number is.
-    { label: "PHONE", regex: /(?:\+?1[-.\s]?)?\(?\b\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g, skip: isPhoneDisqualifiedByIdentifierMarkup },
-    // International numbers: a leading "+" followed by digit groups in any
-    // separator mix ("+44 20 7946 0018", "+2380861.2896", "+84-839023188").
-    // The "+" anchor keeps this away from dates and other digit runs; the
-    // digit-count guard rejects fragments and over-long runs.
-    { label: "PHONE", regex: /\+\d(?:[-.\s]?\d){5,14}(?![\d])/g, skip: isValidInternationalPhone },
-    // "00"-prefixed international dialing ("0091 44 034 6283",
-    // "0031-01-494 3486") - the ITU international call prefix, as general
-    // as the "+" form above. The lookbehind keeps this from matching the
-    // tail of a longer digit run such as a year ("2009").
-    { label: "PHONE", regex: /(?<![\d])00\d(?:[-.\s]?\d){5,13}(?![\d])/g, skip: isValidInternationalPhone },
-    // Trunk-prefixed national numbers ("0134 599 154.0432", "08.59.79-66 48",
-    // "03-0460-0180") - a leading 0 plus 2-4 separated digit groups is the
-    // general non-NANP national shape. Date-shaped runs are excluded by the
-    // guard above.
-    { label: "PHONE", regex: /(?<![\d])0\d(?:[-.\s]?\d{1,6}){2,4}(?![\d])/g, skip: isTrunkPhoneFalsePositive },
-    // Labeled 7-digit phone numbers: "Phone: 555-0142" or "Tel: 555 0142".
-    // Without an area code they are ambiguous in free text, but in a labeled
-    // phone context they are clearly phone numbers (AV-06).
-    { label: "PHONE", regex: /\b(?:Phone|Tel|Telephone|Cell|Mobile|Fax|Pager|Callback)\s*[:#]?\s*\d{3}[-.\s]\d{4}\b/gi },
-    // Free-text clock times ("3:45 PM", "14:30", "09:15:00"). The chrono
-    // temporal pass deliberately drops bare clock times - they carry no
-    // calendar-date information for the clinical timeline - but a clock time
-    // is still temporal PHI, so it is detected here as TIME. The hour/minute
-    // ranges exclude ratio-like shapes ("1:2"); the ISO-timestamp DATE
-    // pattern above runs first, so datetimes keep their DATE label.
-    { label: "TIME", regex: /(?<!:)\b(?:[01]?\d|2[0-3]):[0-5]\d(?::[0-5]\d)?(?:\s*[AP]\.?M\.?)?\b/gi },
-    // "3 o'clock", "11 o'clock" - ordinary English time phrasing.
-    { label: "TIME", regex: /\b(?:0?[1-9]|1[0-2])\s*o'clock\b/gi },
-    // "3 PM", "11 AM" - hour with meridiem and no colon.
-    { label: "TIME", regex: /\b(?:0?[1-9]|1[0-2])\s*[AP]\.?M\.?\b/gi },
-    // Free-text date/time detection runs through chrono-node instead (see
-    // addTemporalPatternEntities below) - it covers every format this list
-    // used to enumerate by hand (ISO, slash/dash dates in any order, "Month
-    // Day, Year", ordinals, weekday-relative dates, "X days ago", ...) plus
-    // many phrasings this regex list never matched. What is left here is
-    // narrow clinical/fiscal shorthand chrono general-purpose grammar does
-    // not recognize at all: fiscal quarters and vague relative periods.
-    // Fiscal quarter: Q1 2026, Q2/2026, 2nd Quarter 2026
-    { label: "DATE", regex: /\bQ[1-4][/\s]?\d{2,4}\b/g },
-    { label: "DATE", regex: /\b(?:1st|2nd|3rd|4th)\s+[Qq]uarter\s+\d{2,4}\b/g },
-    // "last week", "next month", "previous quarter", "past year"
-    { label: "DATE", regex: /\b(?:last|next|this|previous|prior|past|upcoming|following)\s+(?:week|month|quarter|year|semester|trimester|decade|century)\b/gi },
-    // The optional city-name group's charset includes plain space (so a
-    // multi-word city matches at all), which makes it greedily swallow the
-    // separating space the zip group further down also needs - and since
-    // that zip group is itself optional, dropping it entirely is a valid
-    // match, so the engine has no reason to backtrack and give the space
-    // back. That silently truncates every address written without a comma
-    // before the zip ("...Springfield Oregon 97477" - the ordinary shape a
-    // spelled-out state name produces), leaving the zip for something else
-    // downstream to mislabel on its own. Letting the zip group's own leading
-    // separator be optional (zero-or-more, not one-or-more) means it still
-    // matches even when the city group already ate the only space there.
-    { label: "ADDRESS", regex: /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b(?:,?[ \t]+[A-Za-z .-]+)?(?:,?[ \t]+[A-Z]{2})?(?:[ \t]*\d{5}(?:-\d{4})?)?/gi, skip: isLikelyAddressFalsePositive },
-    // Bare street names without a house number ("Main St") are still address
-    // identifiers - and must never fall through to the person-name detector.
-    // The leading word stays case-sensitive so lowercase prose ("lives on
-    // Main St") cannot anchor a match; only the suffix is case-insensitive.
-    // Bare "Dr" is excluded: without a house number it overwhelmingly means
-    // a doctor title ("Provider Dr Chang"), not "Drive".
-    { label: "ADDRESS", regex: /\b[A-Z][A-Za-z0-9.'-]*(?:[ \t]+[A-Z][A-Za-z0-9.'-]+){0,2}[ \t]+(?i:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b/g, skip: isBareStreetAbbreviationFalsePositive },
-    // Secondary address units ("Suite 800", "Apartment 5", "Pod 300") -
-    // labeled address components that the street-number patterns miss.
-    { label: "ADDRESS", regex: /\b(?:Suite|Ste|Apt|Apartment|Unit|Floor|Fl|Lodge|Villa|Duplex|Ranch|Bungalow|Basement|Office|Chalet|Pod|PB|RV|House|Dept|Trailer|Box|Castle|Residence|Flat|Bldg|Triplex|Quadruplex|Fort)\.?\s+\d+[A-Z]?\b/g },
-    { label: "ROOM", regex: /\b(?:Room|Rm|Bed|ICU room|ED room)\b(?!\s*[:#])\s+[A-Z0-9-]*\d[A-Z0-9-]*\b/gi },
-    { label: "LOCATION", regex: /\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/g },
-    { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+[A-Z][A-Za-z&.'-]+){0,4}[ \t]+Laboratory,\s+(?:University|College|Institute) of [A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){0,4},\s+[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+)*,\s+[A-Z]{2}\b/g },
-    { label: "ORGANIZATION", regex: /\b(?:University|College|Institute) of [A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){0,4}\b/g },
-    { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Pharmacy|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g, skip: isLikelyOrganizationFalsePositive },
-    { label: "FACILITY", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){1,5}[ \t]+Pavilion(?:[ \t]+[A-Z0-9-]{1,12})?\b/g, skip: isLikelyOrganizationFalsePositive },
-    { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){1,5}[ \t]+Cooperative(?:[ \t]+[A-Z0-9-]{1,12})?\b/g, skip: isLikelyOrganizationFalsePositive },
-    { label: "PROVIDER NAME", regex: /\b(?:Dr|Doctor)\.?\s+[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){0,2}\b(?![A-Za-z0-9.'-])/g },
-    { label: "NAME", regex: /\b[A-Z][a-z]{2,}[ \t]+[A-Z]\.[ \t]+[A-Z][A-Za-z'-]{5,}\b/g, skip: isLikelyNonNamePhrase },
-    { label: "ID", regex: /\b(?!\d{4}-\d{2}-\d{2}T)(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)+\b/g, skip: isLikelyIdentifierFalsePositive },
-    { label: "ID", regex: /\b[A-F0-9]{12,}\b/g },
-    { label: "ID", regex: /\b[A-HJ-NPR-Z0-9]{17}\b/g }
-  ];
-
-  directPatterns.forEach(({ label, regex, skip }) => {
-    addRegexEntities(rawText, entities, label, regex, "structured identifier", skip);
-  });
-
-  addAgeEntities(rawText, entities);
-
-  // Labeled person names, tag-wrapped names, bracketed names, labeled
-  // locations, labeled IDs, and JSON name keys (high-precision structured
-  // patterns that the general patterns miss).
-  addTrackCLabeledNameEntities(rawText, entities);
-  addTrackCTagWrappedNameEntities(rawText, entities);
-  addTrackCBracketedNameEntities(rawText, entities);
-  addTrackCJsonNameEntities(rawText, entities);
-  addTrackCLabeledLocationEntities(rawText, entities);
-  addTrackCLabeledIdEntities(rawText, entities);
-  addTrackC8NumberedNameEntities(rawText, entities);
-
-
-  addTemporalPatternEntities(rawText, entities, relativeDate);
+  // Propose: every detector emits candidate spans independently.
+  const proposals = proposeStructuredEvidence(rawText, { relativeDate });
+  // Resolve: one explicit pass settles all overlap/conflict decisions.
+  // Pre-existing entities (bracket placeholders) participate in the covering
+  // check exactly as before, from the head of the acceptance order.
+  const resolved = resolveEvidenceProposals(proposals, rawText, entities);
 
   // The temporal layer folds a trailing clock time into its datetime entity
   // ("06/06/2026 04:02" -> "[Historical: 2026 at 04:02]"), preserving the
@@ -2250,10 +2426,10 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
   // [TIME]"), so drop the redundant TIME entity. Bare clock times with no
   // adjacent date ("3:45 PM", "14:30") produce no temporal entity and are
   // unaffected.
-  for (let i = entities.length - 1; i >= 0; i--) {
-    const entity = entities[i];
+  for (let i = resolved.length - 1; i >= 0; i--) {
+    const entity = resolved[i];
     if (entity.label !== "TIME" || !/structured/.test(entity.source || "")) continue;
-    const absorbedByDatetime = entities.some(
+    const absorbedByDatetime = resolved.some(
       (other) =>
         other !== entity &&
         other.source === "temporal" &&
@@ -2262,11 +2438,15 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
         entity.start >= other.start &&
         entity.end <= other.end
     );
-    if (absorbedByDatetime) entities.splice(i, 1);
+    if (absorbedByDatetime) resolved.splice(i, 1);
   }
 
+  // Unmerged, in original insertion order; the mutate-and-return contract is
+  // preserved so every caller behaves exactly as before.
+  for (const entity of stripProposalMetadata(resolved)) entities.push(entity);
   return entities;
 }
+
 
 function labelPriority(label) {
   const priorities = ["DOB", "EMAIL", "PHONE", "MRN", "ENCOUNTER ID", "ID", "ADDRESS", "ROOM", "PATIENT NAME", "PROVIDER NAME", "CONTACT NAME", "NAME", "OCCUPATION", "FACILITY", "ORGANIZATION", "LOCATION", "TIME", "DATE", "URL", "IP"];
@@ -4946,7 +5126,9 @@ export function createDeidentifier(options = {}) {
 
     reportProgress(onProgress, { stage: "structured", message: "Running structured redaction and date conversion...", percent: 0.76 });
     let structuredEntities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addStructuredSafeHarborEntities(rawText, bracketEntities, admissionDate, { relativeDate }), rawText));
-    modelEntities = modelEntities.filter((entity) => !overlapsAny(entity, structuredEntities));
+    const hybridResolved = resolveHybridEvidenceProposals(structuredEntities, modelEntities);
+    structuredEntities = hybridResolved.structured;
+    modelEntities = hybridResolved.model;
     reportProgress(onProgress, { stage: "aliases", message: "Checking repeated names and aliases...", percent: 0.84 });
     const graphResult = expandIdentityGraphEntities(rawText, [...structuredEntities, ...modelEntities], 3, { patientIdentity: runOptions.patientIdentity || null });
     // TRACK-D-D1: clinical age expressions (< 90 are dropped by the Safe
