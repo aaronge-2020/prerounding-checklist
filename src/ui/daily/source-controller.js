@@ -143,6 +143,9 @@ export function createDailySourceController(deps) {
       button.disabled = !String(value || "").trim();
       button.textContent = parseResult.detectedSectionCount ? "Review sections" : "Review note";
     });
+    document.querySelectorAll(`[data-action="clear-structured-note-paste"][data-note-scope="${scope}"]`).forEach((button) => {
+      button.disabled = !String(value || "").trim();
+    });
     const count = document.querySelector(`[data-structured-note-paste-count="${scope}"]`);
     if (count) count.textContent = `${String(value || "").length.toLocaleString()} characters · session only`;
     if (!String(value || "").trim()) {

@@ -391,7 +391,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
           </aside>
         </div>
         <div class="structured-note-paste-meta"><span data-structured-note-paste-count="${escapeHtml(scope)}">${pastedText.length.toLocaleString()} characters · session only</span></div>
-        <div class="structured-note-actions"><button type="button" class="button--quiet" data-action="clear-structured-note-paste" data-note-scope="${escapeHtml(scope)}" ${pastedText ? "" : "disabled"}>Clear</button><button type="button" class="button--primary" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>${parseResult.detectedSectionCount ? "Review sections" : "Review note"}</button></div>
+        <div class="structured-note-actions"><button type="button" class="button--quiet" data-action="clear-structured-note-paste" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>Clear</button><button type="button" class="button--primary" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>${parseResult.detectedSectionCount ? "Review sections" : "Review note"}</button></div>
       ` : `
         <div class="structured-note-section-layout">
           <nav class="structured-note-section-nav" aria-label="Note sections">
