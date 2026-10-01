@@ -417,7 +417,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     const models = vm.hardware?.recommendation?.models || [];
     const activeEntry = models.find((e) => e.model.key === llmStatus.activeModelKey);
     const activeLabel = activeEntry ? activeEntry.model.label : "";
-    const ready = llmStatus.status === "ready" && llmStatus.verified;
+    const ready = (llmStatus.status === "ready" && llmStatus.verified) || !!vm.demoArmed;
     return `
       <div class="aic-chatbar">
         <span class="aic-muted">${chat.messages?.length ? `${chat.messages.length} message${chat.messages.length === 1 ? "" : "s"}` : "New conversation"}</span>

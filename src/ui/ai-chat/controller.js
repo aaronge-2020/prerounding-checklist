@@ -603,6 +603,7 @@ export function createAiChatController({
       downloaded: state.downloaded,
       mode: state.mode,
       offlineMode: isOfflineMode(),
+      demoArmed: isDemoReplyArmed(),
       remote: {
         messages: state.remote.messages,
         sending: state.remote.sending,
@@ -2667,6 +2668,7 @@ export function createAiChatController({
       const input = form?.querySelector("[data-ai-chat-input]");
       const text = composerText(input);
       clearComposer(input);
+      if (maybeDemoReply(text)) return true;
       void sendChat(text);
       return true;
     }
@@ -2790,6 +2792,9 @@ export function createAiChatController({
     demoReplyAnswer = null;
     demoReplyCallback = null;
   }
+  function isDemoReplyArmed() {
+    return !!demoReplyAnswer;
+  }
   function maybeDemoReply(text) {
     if (!demoReplyAnswer) return false;
     const answer = demoReplyAnswer;
@@ -2848,6 +2853,7 @@ export function createAiChatController({
     clearDemoMessages,
     setDemoReply,
     clearDemoReply,
+    isDemoReplyArmed,
     // Test seam for the highlight-to-redact pill: recompute its visibility
     // and position from the current text selection.
     updateHipaaRedactFloat

@@ -29,9 +29,9 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "daily",
     targetSelector: '[data-action="keep-reviewed-redaction"]',
     title: "Check the day-one changes",
-    instruction: "Accept the highlighted change, then press Continue. Use Confirm all only when the remaining suggestions are correct.",
+    instruction: "Accept the highlighted change. Use Confirm all only when the remaining suggestions are correct.",
     calloutTitle: "Review this update separately",
-    callout: "The same review process applies to each hospital day. Keeping this update separate lets a progress-note prompt focus on today’s clinical decisions."
+    callout: "The same review process applies to each hospital day. Keeping this update separate lets a progress-note prompt focus on today's clinical decisions."
   },
   "parse-note": {
     view: "daily",
