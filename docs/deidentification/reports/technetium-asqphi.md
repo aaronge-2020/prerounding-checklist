@@ -1,6 +1,6 @@
 # Technetium-I and ASQ-PHI Benchmarks
 
-**Date:** 2026-09-30
+**Date:** 2026-09-30 to 2026-10-01 (Technetium-I runs completed 08:14 UTC Oct 1)
 **Pipeline:** browser de-identification pipeline (frozen site snapshot, `deid.bundle.js` sha256 `44673dde843ef048…`), all four base models run WITH the full Track D rule stack
 **Datasets:** Technetium-I test split (TeMLM Foundation, HF `temlm-foundation/Technetium-I`, DOI 10.57967/hf/8177) and ASQ-PHI (Weatherhead, Golovko & McCaffrey, *Data in Brief* 65:112586 (2026), doi:10.1016/j.dib.2026.112586)
 
@@ -45,7 +45,29 @@ All four models flag ~79% of the 219 hard negatives (Stanford 174, RoBERTa 173, 
 
 ### Technetium-I (1,500-note stratified sample; all models + Track D)
 
-<!-- TABLE TO FILL -->
+| Model (+ Track D) | Exact F1 | 95% CI | P | R | Overlap F1 | Char recall |
+|---|---|---|---|---|---|---|
+| Stanford | 0.5273 | [0.5256, 0.5293] | 0.5373 | 0.5177 | 0.7948 | 0.9971 |
+| OpenMed Small | 0.5273 | [0.5255, 0.5292] | 0.5371 | 0.5177 | 0.7946 | 0.9971 |
+| RoBERTa i2b2 | 0.5228 | [0.5209, 0.5247] | 0.5279 | 0.5177 | 0.7879 | 0.9972 |
+| ClinicalE5-33M | 0.5210 | [0.5192, 0.5229] | 0.5243 | 0.5177 | 0.7852 | 0.9971 |
+
+Three things stand out. First, the ranking is nearly flat: all four models sit within 0.006 F1 and every confidence interval overlaps. Stanford and OpenMed tie at 0.5273. Second, recall is identical for all four models (0.5177): the base model changes only the false positive count, never which gold spans are found. The template generated notes are dominated by structured identifiers that the rules find regardless of base model. Third, character recall is 0.997 for every model, meaning essentially every PHI character is covered even where exact span F1 sits near 0.52.
+
+Stanford + Track D per-type exact-span detail:
+
+| Gold type | n | P | R | F1 |
+|---|---|---|---|---|
+| DOB | 1,500 | 1.0000 | 1.0000 | 1.0000 |
+| EMAIL | 1,500 | 1.0000 | 1.0000 | 1.0000 |
+| PHONE | 1,500 | 0.9987 | 1.0000 | 0.9993 |
+| ID | 1,500 | 0.9881 | 1.0000 | 0.9940 |
+| DATE | 3,000 | 0.7922 | 1.0000 | 0.8840 |
+| NAME | 3,063 | 0.2866 | 0.4897 | 0.3616 |
+| AGE | 3,718 | 0.0000 | 0.0000 | 0.0000 |
+| LOCATION | 4,500 | 0.0000 | 0.0000 | 0.0000 |
+
+Structured identifiers (DOB, EMAIL, PHONE, ID) are essentially solved. The two zeros need explanation, not alarm. Gold AGE annotates the bare number ("40") while the pipeline emits the full expression ("40 years"), so no exact span ever matches even though the characters are covered. Gold LOCATION splits a full address into three spans (street, city, ZIP) while the pipeline merges them into one ADDRESS span. Both are boundary convention artifacts: character recall for the full run is 0.9971, so the PHI is being redacted, just not with gold's boundaries. NAME at 0.36 F1 is the same story in milder form: the template's regular name fields produce boundary differences that cost exact matches without costing coverage.
 
 ## Method
 
@@ -129,4 +151,17 @@ All 1,051 queries (832 PHI-positive + 219 hard negatives) run for all four model
 
 ## Comparison with MedDeID
 
-<!-- COMPARISON TO FILL -->
+Exact-span F1 across the three clinical datasets (all models + Track D):
+
+| Model | MedDeID (300 notes) | ASQ-PHI (1,051 queries) | Technetium-I (1,500 notes) |
+|---|---|---|---|
+| Stanford | 0.5337 | 0.6239 | 0.5273 |
+| RoBERTa i2b2 | 0.5229 | 0.6059 | 0.5228 |
+| OpenMed Small | 0.4849 | 0.5976 | 0.5273 |
+| ClinicalE5-33M | 0.4607 | 0.5974 | 0.5210 |
+
+The ASQ-PHI ranking reproduces the MedDeID ranking exactly: Stanford > RoBERTa > OpenMed > ClinicalE5, with Stanford's lead over RoBERTa small but consistent. This is the first independent replication of that order on a different clinical dataset, and it strengthens the case that Stanford is the better default base model for clinical text.
+
+Technetium-I tells a different story about discrimination, not about ranking. All four models land within 0.006 F1 with overlapping confidence intervals, so the dataset cannot separate them. The template generated notes are dominated by structured identifiers that the rule stack finds regardless of base model, which is why recall is identical (0.5177) across all four. The ranking still places Stanford joint first, but the honest read is that Technetium-I measures the rule stack, not the base models.
+
+Absolute levels are not comparable across datasets. Technetium-I uses 8 coarse gold types, ASQ-PHI uses 13 Safe Harbor style types, MedDeID uses 14 mapped labels. Character recall is the more portable number: 0.997 on Technetium-I, 0.91 to 0.93 on ASQ-PHI, 0.83 to 0.89 on MedDeID. The pattern is consistent: coverage stays high while exact span F1 moves with schema granularity and boundary conventions.
