@@ -73,12 +73,6 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       element.style.zIndex = "";
     });
     document.querySelectorAll("[data-demo-target]").forEach((element) => element.removeAttribute("data-demo-target"));
-    // Clean up lifted ancestors (see highlight code for why we lift them).
-    document.querySelectorAll("[data-demo-lifted]").forEach((element) => {
-      element.style.position = "";
-      element.style.zIndex = "";
-      element.removeAttribute("data-demo-lifted");
-    });
     document.querySelectorAll("[data-demo-callout]").forEach((element) => element.remove());
     document.querySelectorAll("[data-demo-dim]").forEach((element) => element.remove());
     document.querySelectorAll("[data-demo-guide]").forEach((element) => element.remove());
@@ -368,26 +362,6 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       // for action stages).
       t.style.position = "relative";
       t.style.zIndex = "95";
-      // Lift ancestors too: if any ancestor creates a stacking context
-      // (transform, filter, opacity, etc.), the target's z-index is contained
-      // within it and the dim overlay (z-index 90 at root) would still cover
-      // the target. Walking up ensures the entire chain sits above the dim.
-      let ancestor = t.parentElement;
-      while (ancestor && ancestor !== document.body) {
-        if (!ancestor.dataset.demoLifted) {
-          ancestor.dataset.demoLifted = "true";
-          // Only lift if not already above the dim; preserve existing layout
-          // by using relative positioning (does not change layout for static
-          // elements, and keeps positioned elements in place).
-          const computed = window.getComputedStyle(ancestor);
-          const currentZ = parseInt(computed.zIndex, 10);
-          if (isNaN(currentZ) || currentZ < 95) {
-            if (computed.position === "static") ancestor.style.position = "relative";
-            ancestor.style.zIndex = "95";
-          }
-        }
-        ancestor = ancestor.parentElement;
-      }
     }
     if (!routeMismatch) mountCallout(target, stage);
     requestAnimationFrame(() => {
