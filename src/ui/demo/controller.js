@@ -400,10 +400,9 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   function observeInput() {}
 
   function observeDraftSaved() {
-    const session = getSession();
-    if (!session || session.stage !== "write-note") return;
-    session.stage = "open-prompts";
-    renderApp();
+    // write-note is now an info stage (Step 16) with a Continue button.
+    // Do not auto-advance on draft save; the user advances via Continue.
+    // (Previously this skipped the Step 16 banner entirely.)
   }
 
   function observeNavigation(view) {
