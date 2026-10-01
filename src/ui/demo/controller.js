@@ -305,14 +305,13 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       const currentTargets = targetsForStage(stage, stageId, view, content);
       const currentTarget = currentTargets[0] || null;
       if (!currentTarget) return;
-      const timerHighlightForNav = isInfo && routeMismatch;
-      if (!isInfo || timerHighlightForNav) {
-        for (const t of currentTargets) {
-          t.classList.add("demo-next-action");
-          t.dataset.demoTarget = "true";
-          t.style.position = "relative";
-          t.style.zIndex = "95";
-        }
+      // Re-highlight for every stage (matches the initial highlight above):
+      // action stages show what to click, info stages show what to look at.
+      for (const t of currentTargets) {
+        t.classList.add("demo-next-action");
+        t.dataset.demoTarget = "true";
+        t.style.position = "relative";
+        t.style.zIndex = "95";
       }
       if (!routeMismatch) mountCallout(currentTarget, stage);
     }, 250);
