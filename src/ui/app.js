@@ -279,7 +279,7 @@ const demoController = createDemoController({
   // Lazy arrows: invoked only after full module evaluation, so referencing
   // controllers declared below is safe.
   getCheatSheetOpenId: () => cheatSheetsController.getOpenSheetId(),
-  seedAiChatDemo: ({ question, answer }) => aiChatController.seedDemoMessages({ question, answer }),
+  seedAiChatDemo: (samples) => aiChatController.seedDemoMessages(samples),
   clearAiChatDemo: () => aiChatController.clearDemoMessages()
 });
 const reviewController = createReviewController({ app, active, byId, presentation: reviewPresentation, patientRequiredMessage, persistVault, render, setStatus, showToast, copyText: clipboard.copyText, downloadText, isEphemeralDemo: () => Boolean(app.demoSession), onDraftSaved: () => demoController.observeDraftSaved(), currentPreferences });

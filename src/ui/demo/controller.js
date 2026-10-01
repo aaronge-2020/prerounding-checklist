@@ -148,6 +148,13 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     }
     const hint = document.querySelector("[data-demo-hint]");
     if (hint) {
+      // Info stages advance via Continue, not by clicking the highlight.
+      const session = getSession?.();
+      const stageId = session?.stage;
+      const isInfo = stageId && DEMO_INFO_STAGES.has(stageId);
+      hint.textContent = isInfo
+        ? "Press Continue to move on."
+        : "Click the highlighted control to continue the tour.";
       hint.hidden = false;
       clearTimeout(flashDemoHint.timer);
       flashDemoHint.timer = setTimeout(() => { hint.hidden = true; }, 2400);

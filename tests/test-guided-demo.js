@@ -158,7 +158,7 @@ assert.match(handoffGuide, /You check the app's suggestions before moving on/);
 
 const complete = presentation.renderGuide({ session: { stage: "done" }, currentView: "prompts" });
 assert.match(complete, /Demo complete/);
-assert.match(complete, /reviewed a bedside cheat sheet, wrote and encrypted a student note/i);
+assert.match(complete, /reviewed a bedside cheat sheet, reviewed the complete case note/i);
 assert.match(complete, /nothing from this demo was written to your vault/i);
 assert.match(complete, /data-action="exit-guided-demo"/);
 

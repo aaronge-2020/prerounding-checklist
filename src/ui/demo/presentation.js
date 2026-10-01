@@ -29,7 +29,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "daily",
     targetSelector: '[data-action="keep-reviewed-redaction"]',
     title: "Check the day-one changes",
-    instruction: "Accept the current highlighted change, then continue through the fields. Use Confirm all only when the remaining suggestions are correct.",
+    instruction: "Accept the highlighted change, then press Continue. Use Confirm all only when the remaining suggestions are correct.",
     calloutTitle: "Review this update separately",
     callout: "The same review process applies to each hospital day. Keeping this update separate lets a progress-note prompt focus on today’s clinical decisions."
   },
@@ -166,8 +166,8 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   done: {
     view: "prompts",
     title: "Demo complete",
-    instruction: "You followed the full sample workflow.",
-    helper: "You de-identified the source notes, parsed a pasted note, checked a drug interaction, toured AI Chat, met the voice scribe, reviewed a bedside cheat sheet, wrote and encrypted a student note, and prepared it for external feedback. Nothing from this demo was written to your vault."
+    instruction: "You followed the full sample workflow. Click Exit demo to finish.",
+    helper: "You de-identified the source notes, parsed a pasted note, checked a drug interaction, toured AI Chat, met the voice scribe, reviewed a bedside cheat sheet, reviewed the complete case note, and prepared a prompt for external feedback. Nothing from this demo was written to your vault."
   }
 });
 
