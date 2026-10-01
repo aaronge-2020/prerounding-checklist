@@ -13871,6 +13871,21 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 }
 .rag-status--busy { color: var(--text, #111827); }
 
+/* Sample Notes chart sections: tabs, tables, imaging reports (2026-10-01) */
+.sample-note-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.sample-note-tab { border: 1px solid var(--line); background: var(--surface-subtle); border-radius: 999px; padding: 4px 12px; font-size: 0.8rem; cursor: pointer; }
+.sample-note-tab--active { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); font-weight: 600; }
+.sample-section-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 2px 0 0; }
+.sample-section-head h4 { margin: 0; font-size: 0.95rem; }
+.sample-section-subhead { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.sample-section-subhead h4 { margin: 0; font-size: 0.9rem; }
+.sample-lab-panel { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.sample-table-wrap { overflow-x: auto; }
+.sample-chart-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.sample-chart-table th, .sample-chart-table td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+.sample-chart-table th { background: var(--surface-subtle); font-weight: 600; }
+.sample-flag { font-weight: 700; color: var(--danger); }
+.sample-imaging-report { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
 /* Guided demo: locked tour layer (appended 2026-09-30). */
 .demo-dim {
   position: fixed;
