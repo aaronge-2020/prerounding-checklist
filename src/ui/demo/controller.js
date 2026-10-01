@@ -6,7 +6,7 @@ import {
   DEMO_DRUG_CHECK_MEDS,
   DEMO_AI_CHAT_QUESTION,
   DEMO_AI_CHAT_ANSWER
-} from "./presentation.js?v=20260930-demo-v3";
+} from "./presentation.js?v=20261001-demo-fix-v1";
 import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20260930-demo-v3";
 
 export const DEMO_REVIEW_ACTIONS = Object.freeze(new Set([
