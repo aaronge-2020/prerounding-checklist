@@ -56,7 +56,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     instruction: "We filled in warfarin and fluconazole. Click Check interactions.",
     calloutTitle: "A Major interaction, found locally",
     callout: "The checker resolves both drugs to RxNorm ingredients and looks up every pair in the bundled database — 210,360 interaction pairs shipped with the app. Warfarin + fluconazole is Major: fluconazole inhibits warfarin metabolism and raises bleeding risk."
-  },,
+  },
   "open-scores": {
     view: "scores",
     navTarget: "scores",
