@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createDemoPatient, DEMO_ASSESSMENT, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS, DEMO_DAY_ID, DEMO_PATIENT_ID, DEMO_PLAN_PROBLEMS, attachDemoObjectiveData } from "../src/ui/demo/session.js";
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 import { DEMO_REVIEW_ACTIONS, demoReviewTransition, createDemoController } from "../src/ui/demo/controller.js";
-import { DEMO_GUIDE_STAGES, DEMO_INFO_STAGES, DEMO_STAGE_NEXT, DEMO_PARSE_NOTE_TEXT, DEMO_DRUG_CHECK_MEDS, createDemoPresentation, demoStage } from "../src/ui/demo/presentation.js";
+import { DEMO_GUIDE_STAGES, DEMO_INFO_STAGES, DEMO_STAGE_NEXT, DEMO_PARSE_NOTE_TEXT, DEMO_DRUG_CHECK_MEDS, DEMO_AI_CHAT_QUESTION, DEMO_AI_CHAT_ANSWER, DEMO_SCRIBE_TRANSCRIPT, DEMO_SCRIBE_NOTE, createDemoPresentation, demoStage } from "../src/ui/demo/presentation.js";
 
 const escapeHtml = (value = "") => String(value)
   .replace(/&/g, "&amp;")
@@ -69,16 +69,28 @@ assert.ok(stageOrder.indexOf("scribe-pro-voice") < stageOrder.indexOf("open-chea
 assert.ok(stageOrder.indexOf("browse-cheat-sheet") < stageOrder.indexOf("write-note"));
 assert.ok(stageOrder.indexOf("write-note") < stageOrder.indexOf("open-prompts"));
 // Info stages explain and advance via the guide bar's Continue button.
-assert.deepEqual([...DEMO_INFO_STAGES].sort(), ["ai-chat-ask", "ai-chat-models", "parse-note", "scribe-pro-voice"]);
+assert.deepEqual([...DEMO_INFO_STAGES].sort(), ["ai-chat-ask", "ai-chat-models", "open-scribe-pro", "parse-note", "scribe-pro-voice"]);
 assert.equal(DEMO_STAGE_NEXT["parse-note"], "open-drug-checks");
 assert.equal(DEMO_STAGE_NEXT["ai-chat-models"], "ai-chat-ask");
 assert.equal(DEMO_STAGE_NEXT["ai-chat-ask"], "open-scribe-pro");
+assert.equal(DEMO_STAGE_NEXT["open-scribe-pro"], "scribe-pro-voice");
 assert.equal(DEMO_STAGE_NEXT["scribe-pro-voice"], "open-cheat-sheets");
 // New feature stops carry the required hooks and prefills.
 assert.equal(demoStage("open-drug-checks").navTarget, "drugChecks");
 assert.equal(demoStage("open-ai-chat").navTarget, "aiChat");
-assert.equal(demoStage("open-scribe-pro").navTarget, "scribePro");
-assert.equal(demoStage("scribe-pro-voice").targetSelector, "#btnRecord");
+assert.equal(demoStage("open-scribe-pro").info, true);
+assert.equal(demoStage("scribe-pro-voice").info, true);
+// The scribe stops show pre-built samples instead of starting the engine.
+assert.equal(demoStage("open-scribe-pro").demoSample.kind, "transcript");
+assert.equal(demoStage("scribe-pro-voice").demoSample.kind, "note");
+assert.match(DEMO_SCRIBE_TRANSCRIPT, /NSTEMI/);
+assert.match(DEMO_SCRIBE_NOTE, /ASSESSMENT AND PLAN/);
+// The AI chat stop stages a grounded sample exchange.
+assert.match(DEMO_AI_CHAT_QUESTION, /NSTEMI/);
+assert.match(DEMO_AI_CHAT_ANSWER, /Fourth Universal Definition/);
+assert.match(DEMO_AI_CHAT_ANSWER, /86 → 364 → 312/);
+// The cheat-sheet stage names its sheet so an already-open sheet completes it.
+assert.equal(demoStage("browse-cheat-sheet").sheetId, "acute-coronary-syndrome");
 assert.equal(demoStage("check-interactions").targetSelector, '[data-action="drug-checks-check"]');
 assert.equal(demoStage("parse-note").targetSelector, '[data-structured-note-detected="admission"]');
 assert.match(DEMO_PARSE_NOTE_TEXT, /HISTORY OF PRESENT ILLNESS/);
@@ -154,4 +166,104 @@ console.log("Guided demo session tests passed");
   assert.equal(session.stage, "open-review", "opening the ACS sheet advances the demo");
 
   console.log("Guided demo cheat-sheet gate tests passed");
+}
+
+// Regression (Item 1): exiting the demo must remove the dim overlay, the
+// callout, and the highlight classes. Otherwise the screen stays dark and
+// unclickable after every exit path.
+{
+  const removedClasses = [];
+  const removedAttrs = [];
+  const removedNodes = [];
+  const fakeElement = () => ({
+    classList: { remove: (...cls) => removedClasses.push(cls.join(" ")) },
+    removeAttribute: (attr) => removedAttrs.push(attr),
+    remove: () => removedNodes.push(true)
+  });
+  const dimEl = fakeElement();
+  const calloutEl = fakeElement();
+  const targetEl = fakeElement();
+  const doc = globalThis.document;
+  const priorQuerySelectorAll = doc.querySelectorAll;
+  doc.querySelectorAll = (selector) => {
+    if (selector === "[data-demo-guide]") return [];
+    if (selector === ".demo-next-action") return [targetEl];
+    if (selector === "[data-demo-target]") return [targetEl];
+    if (selector === "[data-demo-callout]") return [calloutEl];
+    if (selector === "[data-demo-dim]") return [dimEl];
+    return [];
+  };
+  let clearedDemoChat = false;
+  const controller = createDemoController({
+    app: {},
+    byId: () => null,
+    escapeHtml: (value) => String(value),
+    getSession: () => null,
+    getView: () => "daily",
+    render: () => {},
+    selectDemoPacket: () => {},
+    clearAiChatDemo: () => { clearedDemoChat = true; }
+  });
+  controller.render();
+  assert.ok(removedNodes.length >= 2, "the dim overlay and callout must be removed when the demo exits");
+  assert.ok(removedClasses.some((c) => c.includes("demo-next-action")), "highlight classes must be cleared when the demo exits");
+  assert.ok(removedAttrs.includes("data-demo-target"), "demo target markers must be cleared when the demo exits");
+  assert.equal(clearedDemoChat, true, "demo-seeded chat messages must be cleared when the demo exits");
+  doc.querySelectorAll = priorQuerySelectorAll;
+
+  console.log("Guided demo exit-cleanup regression tests passed");
+}
+
+// Regression (Item 2): the cheat-sheets tab restores the last-viewed sheet,
+// so the ACS sheet can already be open when the tour reaches the
+// browse-cheat-sheet stage. The stage must complete through the same path as
+// a fresh click instead of dead-ending with no highlighted control.
+{
+  const doc = globalThis.document;
+  const priorQuerySelectorAll = doc.querySelectorAll;
+  const priorQuerySelector = doc.querySelector;
+  const priorCreateElement = doc.createElement;
+  doc.querySelectorAll = () => [];
+  doc.querySelector = () => null;
+  doc.createElement = () => ({ dataset: {}, addEventListener() {}, classList: { add() {} } });
+  doc.body ??= { appendChild() {} };
+
+  function makeController(session, openSheetId) {
+    const contentEl = { querySelectorAll: () => [], insertAdjacentHTML() {} };
+    return createDemoController({
+      app: { vault: { activePatientId: DEMO_PATIENT_ID, patients: [createDemoPatient()] } },
+      byId: (id) => (id === "cheatSheetsContent" ? contentEl : null),
+      escapeHtml: (value) => String(value),
+      getSession: () => session,
+      getView: () => "cheatSheets",
+      render: () => {},
+      selectDemoPacket: () => {},
+      getCheatSheetOpenId: () => openSheetId
+    });
+  }
+
+  const session = { stage: "browse-cheat-sheet" };
+  const controller = makeController(session, "acute-coronary-syndrome");
+  controller.render();
+  assert.equal(session.stage, "browse-cheat-sheet", "the first render only prepares the stage");
+  controller.render();
+  assert.equal(session.stage, "open-review", "an already-open ACS sheet must advance the demo");
+
+  const otherSession = { stage: "browse-cheat-sheet" };
+  const otherController = makeController(otherSession, "heart-failure");
+  otherController.render();
+  otherController.render();
+  assert.equal(otherSession.stage, "browse-cheat-sheet", "a different open sheet must not advance the demo");
+
+  const noneSession = { stage: "browse-cheat-sheet" };
+  const noneController = makeController(noneSession, null);
+  noneController.render();
+  noneController.render();
+  assert.equal(noneSession.stage, "browse-cheat-sheet", "no open sheet must not advance the demo");
+
+  doc.querySelectorAll = priorQuerySelectorAll;
+  doc.querySelector = priorQuerySelector;
+  doc.createElement = priorCreateElement;
+
+  console.log("Guided demo already-open sheet regression tests passed");
 }

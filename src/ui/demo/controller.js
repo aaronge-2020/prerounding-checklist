@@ -3,7 +3,9 @@ import {
   DEMO_STAGE_NEXT,
   DEMO_INFO_STAGES,
   DEMO_PARSE_NOTE_TEXT,
-  DEMO_DRUG_CHECK_MEDS
+  DEMO_DRUG_CHECK_MEDS,
+  DEMO_AI_CHAT_QUESTION,
+  DEMO_AI_CHAT_ANSWER
 } from "./presentation.js?v=20260930-demo-v3";
 import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20260930-demo-v3";
 
@@ -18,7 +20,7 @@ export function demoReviewTransition(action, hasRemainingReview) {
   return hasRemainingReview ? "preserve-review" : "complete-review";
 }
 
-export function createDemoController({ app, byId, escapeHtml, getSession, getView, render: renderApp, selectDemoPacket }) {
+export function createDemoController({ app, byId, escapeHtml, getSession, getView, render: renderApp, selectDemoPacket, getCheatSheetOpenId, seedAiChatDemo, clearAiChatDemo }) {
   const presentation = createDemoPresentation({ escapeHtml });
   let activeCalloutTarget = null;
   let calloutFrame = 0;
@@ -161,6 +163,11 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       app.drugChecks.dataState = "idle";
       app.drugChecks.dataError = "";
     }
+    if (stageId === "open-ai-chat") {
+      // Seed one pre-built exchange so the tour shows a grounded answer
+      // without running a live model. Seeded only once per demo run.
+      seedAiChatDemo?.({ question: DEMO_AI_CHAT_QUESTION, answer: DEMO_AI_CHAT_ANSWER });
+    }
   }
 
   function render() {
@@ -168,6 +175,11 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     clearTargetDecorations();
     const session = getSession();
     if (!session) {
+      // Every exit path funnels through here. The dim overlay, callout, and
+      // highlight classes must not survive the demo, or the screen stays dark
+      // and unclickable. Demo-seeded chat messages are ephemeral too.
+      clearTargetDecorations();
+      clearAiChatDemo?.();
       preparedStage = null;
       return;
     }
@@ -188,6 +200,13 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     const isComplete = stageId === "done";
     const targets = targetsForStage(stage, stageId, view, content);
     const target = targets[0] || null;
+    // The cheat-sheets tab restores the last-viewed sheet, so the stage's
+    // sheet can already be open with no clickable card in the DOM. Complete
+    // through the same path as a fresh click; only the exact sheet advances.
+    if (!target && stage.sheetId && getCheatSheetOpenId?.() === stage.sheetId) {
+      observeSheetOpened(stage.sheetId);
+      return;
+    }
     const routeMismatch = view !== stage.view;
     content.insertAdjacentHTML(
       "afterbegin",

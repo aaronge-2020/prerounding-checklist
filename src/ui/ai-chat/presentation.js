@@ -99,6 +99,11 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     return ` <span class="aic-tag" title="Summary${escapeHtml(count)} — the original messages were replaced to save context">summary</span>`;
   }
 
+  function renderDemoBadge(m) {
+    if (!m.demo) return "";
+    return ` <span class="aic-tag" title="Sample content staged for the guided demo — not a live model response">sample</span>`;
+  }
+
   // ── Topbar ──────────────────────────────────────────────
   // Minimal header bar: the mode segment, the local-model status pill,
   // the Model menu (local-model download/selection + advanced controls),
@@ -332,7 +337,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     const messages = (chat.messages || [])
       .map((m, index) => {
         const cls = m.role === "user" ? "aic-m--u" : "aic-m--a";
-        const label = m.role === "user" ? "" : `<span class="aic-m-label">${escapeHtml(activeLabel)}${renderSummaryBadge(m)}</span>`;
+        const label = m.role === "user" ? "" : `<span class="aic-m-label">${escapeHtml(activeLabel)}${renderSummaryBadge(m)}${renderDemoBadge(m)}</span>`;
         const body = m.role === "user" ? `<p>${escapeHtml(m.text)}</p>` : renderAssistantBody(m.text);
         // Revert control: removes this message and everything after it from
         // the conversation, i.e. from the model's context on the next send.

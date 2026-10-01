@@ -12,6 +12,21 @@ export function createDrugChecksPresentation({ escapeHtml }) {
     return `dc-sev-${SEVERITIES.includes(s) ? s : "unknown"}`;
   }
 
+  const MECH_CATEGORY_LABELS = {
+    absorption: "Absorption",
+    distribution: "Distribution",
+    metabolism: "Metabolism",
+    excretion: "Excretion",
+    synergistic_effect: "Synergistic effect",
+    antagonistic_effect: "Antagonistic effect",
+    others: "Other mechanism"
+  };
+
+  function prettyCategory(c) {
+    const key = String(c || "").trim();
+    return MECH_CATEGORY_LABELS[key] || key.replace(/_/g, " ");
+  }
+
   function renderStatus(state) {
     const text = String(state.status || "").trim();
     if (!text) return `<p class="dc-status" role="status" aria-live="polite"></p>`;
@@ -64,6 +79,9 @@ export function createDrugChecksPresentation({ escapeHtml }) {
     const mechanisms = (interaction.mechanisms || [])
       .map((m) => `<li>${escapeHtml(String(m || ""))}</li>`)
       .join("");
+    const categories = (interaction.mechanismCategories || [])
+      .map((c) => `<span class="dc-mech-cat">${escapeHtml(prettyCategory(c))}</span>`)
+      .join("");
     return `
       <article class="dc-card dc-interaction-card">
         <div class="dc-card-head">
@@ -71,6 +89,7 @@ export function createDrugChecksPresentation({ escapeHtml }) {
           <span class="dc-badge ${severityClass(severity)}">${escapeHtml(severity)}</span>
         </div>
         ${mechanisms ? `<ul class="dc-mech">${mechanisms}</ul>` : `<p class="dc-mech-none">No mechanism text in the database entry.</p>`}
+        ${categories ? `<p class="dc-mech-cats" aria-label="Mechanism categories">${categories}</p>` : ""}
         <p class="dc-caveat">No interaction found means &ldquo;not in this database&rdquo; &mdash; never &ldquo;proven safe.&rdquo;</p>
       </article>`;
   }

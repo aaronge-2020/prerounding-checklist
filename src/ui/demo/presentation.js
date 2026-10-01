@@ -77,27 +77,34 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "aiChat",
     info: true,
     targetSelector: '[data-action="ai-chat-context-inspector"]',
-    title: "You control the context",
-    instruction: "The Context button opens the inspector: tick exactly the pieces the chat may see, then type below and Send. Press Continue to move on.",
-    calloutTitle: "Only send what you select",
-    callout: "Nothing is sent implicitly. The inspector lists the available de-identified pieces — admission note, day updates, labs — and the chat sees only what you tick. That selection rule holds in both On-device and ChatGPT modes."
+    title: "A grounded answer, staged for the tour",
+    instruction: "We placed a sample question and answer in the chat below — notice how it cites the patient's documents and the literature. Press Continue to move on.",
+    calloutTitle: "Grounded twice over",
+    callout: "The sample answer cites Daniel's own chart (troponin trend, ECG, admission note) and the clinical literature (Fourth Universal Definition of MI). Live answers carry the same citations, and the Context inspector still controls exactly what the chat may see."
   },
   "open-scribe-pro": {
     view: "scribePro",
-    navTarget: "scribePro",
-    title: "Open the voice scribe",
-    instruction: "Click Scribe Pro in the sidebar.",
-    calloutTitle: "Dictate instead of typing",
-    callout: "Scribe Pro is the voice scribe: it transcribes speech on-device with the Parakeet model, so nothing you say is uploaded. Opening it never starts a recording on its own."
+    info: true,
+    title: "Meet the voice scribe",
+    instruction: "Scribe Pro transcribes dictation on-device and drafts the note. Below is a sample of its output — the tour starts nothing. Press Continue.",
+    calloutTitle: "Nothing recorded in this tour",
+    callout: "This tour does not start the engine: no model download, no microphone access, nothing recorded. On your own machine, download the models once, then press Record to dictate.",
+    demoSample: {
+      kind: "transcript",
+      label: "Sample dictation"
+    }
   },
   "scribe-pro-voice": {
     view: "scribePro",
     info: true,
-    targetSelector: "#btnRecord",
-    title: "Voice scribe, on-device",
-    instruction: "The Record button starts transcription once the engine is ready. Press Continue when you have seen it.",
-    calloutTitle: "Nothing recorded in this tour",
-    callout: "This tour does not start the engine: no model download, no microphone access, nothing recorded. On your own machine, download the models once, then press Record to dictate."
+    title: "From dictation to draft note",
+    instruction: "The same sample, structured into note sections — this is the format Scribe Pro produces. Press Continue.",
+    calloutTitle: "Sample output, not a live run",
+    callout: "What you see below was staged for the demo. In live use, the transcript comes from the on-device Parakeet model and the note sections are drafted from that transcript.",
+    demoSample: {
+      kind: "note",
+      label: "Sample structured note"
+    }
   },
   "open-cheat-sheets": {
     view: "cheatSheets",
@@ -110,6 +117,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   "browse-cheat-sheet": {
     view: "cheatSheets",
     targetSelector: '[data-cheat-sheets-open="acute-coronary-syndrome"]',
+    sheetId: "acute-coronary-syndrome",
     title: "Open the ACS cheat sheet",
     instruction: "Click the Acute coronary syndrome / NSTEMI/STEMI sheet.",
     helper: "Cheat sheets are read-only — no patient is needed.",
@@ -168,6 +176,7 @@ export const DEMO_STAGE_NEXT = Object.freeze({
   "parse-note": "open-drug-checks",
   "ai-chat-models": "ai-chat-ask",
   "ai-chat-ask": "open-scribe-pro",
+  "open-scribe-pro": "scribe-pro-voice",
   "scribe-pro-voice": "open-cheat-sheets"
 });
 
@@ -191,11 +200,76 @@ export const DEMO_PARSE_NOTE_TEXT = [
 
 export const DEMO_DRUG_CHECK_MEDS = "warfarin 5 mg PO daily\nfluconazole 200 mg PO daily\n";
 
+// Pre-built AI Chat exchange staged by the demo. The question is what a
+// clinician would ask; the answer cites the demo patient's own documents
+// (admission note, labs, ECG) and the clinical literature, demonstrating the
+// grounded-answer format without running a live model.
+export const DEMO_AI_CHAT_QUESTION = "Does this patient meet criteria for NSTEMI, and what supports it?";
+
+export const DEMO_AI_CHAT_ANSWER = [
+  "Yes — this presentation meets criteria for NSTEMI.",
+  "",
+  "From the chart:",
+  "• Typical ischemic symptoms: 6 hours of crushing substernal pressure (8/10) beginning with exertion, radiating to the left arm, neck, and jaw, with diaphoresis [admission note].",
+  "• Acute myocardial injury with a rise and fall: high-sensitivity troponin 86 → 364 → 312 ng/L (ref 0–19) [labs].",
+  "• Ischemic ECG changes without ST elevation: persistent 1 mm ST depressions in V4–V6 with T-wave inversions in I and aVL [ECG].",
+  "",
+  "From the literature:",
+  "• The Fourth Universal Definition of MI requires a troponin rise and/or fall plus at least one of: ischemic symptoms, new ischemic ECG changes, new Q waves, imaging evidence, or angiographic thrombus. This patient has the troponin pattern plus both symptoms and ECG changes.",
+  "• Without ST elevation this is NSTEMI rather than STEMI. ACC/AHA guidance supports an early invasive strategy here — coronary angiography is already planned — with dual antiplatelet therapy, therapeutic anticoagulation, and high-intensity statin. The chart shows aspirin, ticagrelor, heparin infusion, and atorvastatin 80 mg already on board [medications].",
+  "",
+  "Sample answer staged for the demo — not a live model response."
+].join("\n");
+
+// Pre-built Scribe Pro sample staged by the demo: a short dictation snippet
+// and the structured note it produces, showing the output format without
+// starting the engine, downloading models, or touching the microphone.
+export const DEMO_SCRIBE_TRANSCRIPT = [
+  "Sixty-one-year-old man, known coronary disease with a LAD stent in 2022,",
+  "here with three days of worsening exertional chest pressure — substernal,",
+  "radiating to the left arm. Troponin peaked at 364 and is downtrending, now",
+  "312. ECG shows persistent lateral ST depressions, no ST elevation. Echo: EF",
+  "48 percent with anterior wall hypokinesis. Assessment is NSTEMI. Plan:",
+  "continue heparin infusion, aspirin and ticagrelor, high-intensity statin,",
+  "cardiology for cath today, NPO after midnight."
+].join("\n");
+
+export const DEMO_SCRIBE_NOTE = [
+  "HISTORY OF PRESENT ILLNESS",
+  "61-year-old man with known CAD s/p LAD drug-eluting stent (2022) presenting",
+  "with 3 days of worsening exertional substernal chest pressure radiating to",
+  "the left arm.",
+  "",
+  "OBJECTIVE",
+  "• Vitals (most recent): BP 128/76, HR 82, SpO2 97%",
+  "• Labs: hs-troponin 86 → 364 → 312 ng/L (ref 0–19); creatinine stable at 1.0",
+  "• ECG: sinus rhythm, persistent 1 mm ST depressions V4–V6, T-wave inversions",
+  "  I/aVL, no ST elevation",
+  "• Echo: LVEF 48% with mild anterior-wall hypokinesis",
+  "",
+  "ASSESSMENT AND PLAN",
+  "NSTEMI, high risk. Continue therapeutic heparin, dual antiplatelet therapy",
+  "(aspirin 81 mg + ticagrelor 90 mg BID), atorvastatin 80 mg. Early invasive",
+  "coronary angiography today; NPO after midnight. Telemetry with serial ECGs."
+].join("\n");
+
 export function demoStage(stageId) {
   return DEMO_GUIDE_STAGES[stageId] || DEMO_GUIDE_STAGES["save-context"];
 }
 
 export function createDemoPresentation({ escapeHtml }) {
+  function renderSample(stage) {
+    const sample = stage.demoSample;
+    if (!sample) return "";
+    const text = sample.kind === "note" ? DEMO_SCRIBE_NOTE : DEMO_SCRIBE_TRANSCRIPT;
+    return `
+      <details class="guided-demo-sample" data-demo-sample>
+        <summary><span class="guided-demo-badge">Sample</span> ${escapeHtml(sample.label)} — staged for the demo, not a live run</summary>
+        <pre style="white-space:pre-wrap;font:inherit;margin:8px 0 0;padding:10px 12px;border:1px solid var(--border,#d8dee9);border-radius:8px;background:var(--surface,#f8fafc);">${escapeHtml(text)}</pre>
+      </details>
+    `;
+  }
+
   function renderGuide({ session, currentView, reviewAction = "", nextSectionLabel = "" }) {
     const stage = demoStage(session.stage);
     const stageIds = Object.keys(DEMO_GUIDE_STAGES);
@@ -222,6 +296,7 @@ export function createDemoPresentation({ escapeHtml }) {
             ${!routeMismatch && stage.helper ? `<span class="guided-demo-note">${escapeHtml(stage.helper)}</span>` : ""}
             <span class="guided-demo-hint" data-demo-hint hidden>Click the highlighted control to continue the tour.</span>
           </div>
+          ${renderSample(stage)}
         </div>
         <div class="guided-demo-actions">
           <span class="guided-demo-badge">Synthetic sample</span>

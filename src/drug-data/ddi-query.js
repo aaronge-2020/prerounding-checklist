@@ -2,7 +2,8 @@
 // (ddi-pairs.data.js). Pure module: no DOM, no storage, no network.
 //
 // The bundle maps canonical pair keys "rxcuiA|rxcuiB" (numerically sorted)
-// to { s: severity, m: mechanisms[], d: display names[] }.
+// to { s: severity, d: display names[], g: mechanism group IDs[] }.
+// DDI_MECHANISMS maps group IDs to { t: description text, c: [categories] }.
 //
 // NOTE on partial coverage: DDI_META.partial is true until all 8,466 DDInter
 // groups are downloaded. A "no interaction found" result therefore means
@@ -11,11 +12,12 @@
 
 import {
   DDI_PAIRS,
+  DDI_MECHANISMS,
   DDI_META,
   DDI_BUNDLE_TAG
-} from "./ddi-pairs.data.js?v=20260929-ddinter-v1";
+} from "./ddi-pairs.data.js?v=20261001-ddinter-v2";
 
-export const DDI_QUERY_TAG = "20260929-ddi-query-v1";
+export const DDI_QUERY_TAG = "20261001-ddi-query-v2";
 
 /** Canonical pair key: two RxCUIs sorted numerically, joined by "|". */
 export function ddiPairKey(rxcuiA, rxcuiB) {
@@ -30,7 +32,10 @@ export function ddiPairKey(rxcuiA, rxcuiB) {
 /**
  * Look up one drug pair. Returns null when the pair is not in the bundle.
  * The returned object always carries `bundlePartial` so callers know a
- * miss is not proof of safety.
+ * miss is not proof of safety. Mechanism descriptions come from DDInter's
+ * interaction-group records (DDI_MECHANISMS), joined through the pair's
+ * group IDs; a pair with no group reference has no mechanism text in the
+ * database, reported as an empty list (never invented).
  */
 export function lookupInteraction(rxcuiA, rxcuiB) {
   try {
@@ -38,11 +43,23 @@ export function lookupInteraction(rxcuiA, rxcuiB) {
     if (!key) return null;
     const entry = DDI_PAIRS[key];
     if (!entry) return null;
+    const mechanisms = [];
+    const mechanismCategories = [];
+    const groupIds = Array.isArray(entry.g) ? entry.g : [];
+    for (const gid of groupIds) {
+      const m = DDI_MECHANISMS ? DDI_MECHANISMS[String(gid)] : null;
+      if (!m || !m.t) continue;
+      if (!mechanisms.includes(m.t)) mechanisms.push(m.t);
+      for (const c of Array.isArray(m.c) ? m.c : []) {
+        if (!mechanismCategories.includes(c)) mechanismCategories.push(c);
+      }
+    }
     return {
       rxcuiA: key.split("|")[0],
       rxcuiB: key.split("|")[1],
       severity: String(entry.s || ""),
-      mechanisms: Array.isArray(entry.m) ? [...entry.m] : [],
+      mechanisms,
+      mechanismCategories,
       drugNames: Array.isArray(entry.d) ? [...entry.d] : [],
       bundlePartial: !!DDI_META?.partial,
       bundleTag: DDI_BUNDLE_TAG

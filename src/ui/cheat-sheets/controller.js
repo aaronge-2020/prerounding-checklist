@@ -165,5 +165,5 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     return false;
   }
 
-  return { render, click, input };
+  return { render, click, input, getOpenSheetId: () => state.sheetId };
 }

@@ -136,8 +136,8 @@ import { createDemoController } from "./demo/controller.js?v=20260930-demo-v3";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260930-demo-v3";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260930-demo-v3";
 import { createAiChatController } from "./ai-chat/controller.js?v=20260930-ai-chat-sidebar-collapse";
-import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20260930-drug-checks-v1";
-import { createDrugChecksController } from "./drug-checks/controller.js?v=20260930-drug-checks-v1";
+import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261001-drug-checks-v2";
+import { createDrugChecksController } from "./drug-checks/controller.js?v=20261001-drug-checks-v2";
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20260929-rag-v3";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
@@ -273,7 +273,12 @@ const demoController = createDemoController({
   selectDemoPacket: () => {
     dailySourceController.selectPacket("demo_day_guided_case");
     app.dailySourceKind = "other_chart_text"; app.dailySourceDraft = DEMO_DAILY_TEXTS.join("\n\n");
-  }
+  },
+  // Lazy arrows: invoked only after full module evaluation, so referencing
+  // controllers declared below is safe.
+  getCheatSheetOpenId: () => cheatSheetsController.getOpenSheetId(),
+  seedAiChatDemo: ({ question, answer }) => aiChatController.seedDemoMessages({ question, answer }),
+  clearAiChatDemo: () => aiChatController.clearDemoMessages()
 });
 const reviewController = createReviewController({ app, active, byId, presentation: reviewPresentation, patientRequiredMessage, persistVault, render, setStatus, showToast, copyText: clipboard.copyText, downloadText, isEphemeralDemo: () => Boolean(app.demoSession), onDraftSaved: () => demoController.observeDraftSaved(), currentPreferences });
 const demoSessionController = createDemoSessionController({

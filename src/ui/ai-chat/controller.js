@@ -2761,6 +2761,23 @@ export function createAiChatController({
     }, true);
   }
 
+
+  // Guided-demo seam: stage one pre-built exchange (flagged demo:true so it
+  // renders with a Sample badge) without running a live model. Messages live
+  // only in this in-memory state — never the vault — and the demo clears them
+  // on exit. Idempotent: seeding twice does not duplicate.
+  function seedDemoMessages({ question, answer }) {
+    if (!question || !answer) return;
+    if (state.chat.messages.some((m) => m.demo)) return;
+    state.chat.messages.push({ role: "user", text: question, demo: true });
+    state.chat.messages.push({ role: "assistant", text: answer, demo: true });
+  }
+
+  function clearDemoMessages() {
+    if (!state.chat.messages.some((m) => m.demo)) return;
+    state.chat.messages = state.chat.messages.filter((m) => !m.demo);
+  }
+
   return {
     render: renderView,
     click,
@@ -2784,6 +2801,8 @@ export function createAiChatController({
     // Thin test seam: the live on-device chat state. Lets tests assert
     // retrieval context, hard aborts, and fallback without a DOM.
     getChatState: () => state.chat,
+    seedDemoMessages,
+    clearDemoMessages,
     // Test seam for the highlight-to-redact pill: recompute its visibility
     // and position from the current text selection.
     updateHipaaRedactFloat

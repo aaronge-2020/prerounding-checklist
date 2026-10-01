@@ -22,7 +22,7 @@ export function createDrugChecksController({
 } = {}) {
   // Matches the cache-buster on the bundled data modules so the UI never
   // resolves against a stale bundle after a data refresh.
-  const DRUG_DATA_TAG = "20260930-drug-data-v1";
+  const DRUG_DATA_TAG = "20261001-drug-data-v2";
 
   function dc() {
     if (!app.drugChecks) {

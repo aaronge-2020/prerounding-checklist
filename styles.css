@@ -13919,6 +13919,8 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .dc-sev-unknown { background: color-mix(in srgb, var(--muted) 16%, var(--surface)); color: var(--muted-strong); }
 .dc-mech { margin: 0; padding-left: 18px; font-size: 14px; display: grid; gap: 4px; }
 .dc-mech-none { margin: 0; color: var(--muted); font-size: 14px; }
+.dc-mech-cats { margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.dc-mech-cat { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 12%, var(--surface)); color: var(--accent-strong, var(--accent)); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); }
 .dc-caveat { margin: 0; font-size: 12px; color: var(--muted); }
 .dc-none { font-size: 14px; }
 .dc-foot { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 10px; font-size: 12px; color: var(--muted); display: grid; gap: 4px; }
