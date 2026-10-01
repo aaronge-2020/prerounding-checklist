@@ -1776,7 +1776,11 @@ async function handleClick(event) {
   // data-pull-section but no data-action. Check before the data-action
   // early return below, otherwise these clicks are silently dropped.
   if (app.view === "review" && reviewController.click(event.target)) return;
-  if (app.view === "aiChat" && aiChatController.click(event.target)) return;
+  if (app.view === "aiChat" && aiChatController.click(event.target)) {
+    const demoActionTarget = event.target.closest("[data-action]");
+    if (demoActionTarget) demoController.observeAction(demoActionTarget.dataset.action);
+    return;
+  }
   if (app.view === "drugLookup" && drugLookupController.click(event.target)) return;
   if (app.view === "drugChecks" && drugChecksController.click(event.target)) return;
   if (app.view === "scores" && scoresController.click(event.target)) return;
