@@ -198,8 +198,10 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       prepareStage(session.stage);
       preparedStage = session.stage;
       preparing = false;
-      renderApp();
-      return;
+      // Do NOT return early here. The guide bar must be rendered even on
+      // the first pass after a stage change. Previously, the early return
+      // left the tour with no visible UI (guide bar cleared but not re-added),
+      // making it appear as if the tour had exited.
     }
     const view = getView();
     const content = byId(`${view}Content`);
