@@ -80,13 +80,9 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     info: true,
     targetSelector: '[data-action="ai-chat-context-inspector"]',
     title: "A grounded answer, staged for the tour",
-    instruction: "Below is the sample question and answer — notice how it cites the patient's documents and the literature. Press Continue to move on.",
+    instruction: "The chat below shows five staged sample exchanges — notice how each cites the patient's documents and the literature. Scroll through the conversation, then press Continue to move on.",
     calloutTitle: "Grounded twice over",
-    callout: "The sample answer cites Daniel's own chart (troponin trend, ECG, admission note) and the clinical literature (Fourth Universal Definition of MI). Live answers carry the same citations, and the Context inspector still controls exactly what the chat may see.",
-    demoSample: {
-      kind: "ai-chat",
-      label: "Sample Q&A"
-    }
+    callout: "The sample answers cite Daniel's own chart (troponin trend, ECG, admission note) and the clinical literature (Fourth Universal Definition of MI). Live answers carry the same citations, and the Context inspector still controls exactly what the chat may see."
   },
   "open-scribe-pro": {
     view: "scribePro",
@@ -200,125 +196,96 @@ export const DEMO_PARSE_NOTE_TEXT = DEMO_CONTEXT_TEXTS.join("\n\n");
 
 export const DEMO_DRUG_CHECK_MEDS = "warfarin 5 mg PO daily\nfluconazole 200 mg PO daily\n";
 
-// Pre-built AI Chat exchange staged by the demo. The question is what a
-// clinician would ask; the answer cites the demo patient's own documents
+// Pre-built AI Chat exchanges staged by the demo. Each question is what a
+// clinician would ask; each answer cites the demo patient's own documents
 // (admission note, labs, ECG) and the clinical literature, demonstrating the
-// grounded-answer format without running a live model.
-export const DEMO_AI_CHAT_QUESTION = "Does this patient meet criteria for NSTEMI, and what supports it?";
+// grounded-answer format without running a live model. Seeded into the actual
+// AI Chat UI (with markdown rendering) — not plain text in the guide banner.
+export const DEMO_AI_CHAT_SAMPLES = [
+  {
+    question: "Does this patient meet criteria for NSTEMI, and what supports it?",
+    answer: [
+      "Yes — this presentation meets criteria for NSTEMI.",
+      "",
+      "**From the chart:**",
+      "- Typical ischemic symptoms: 6 hours of crushing substernal pressure (8/10) beginning with exertion, radiating to the left arm, neck, and jaw, with diaphoresis [admission note].",
+      "- Acute myocardial injury with a rise and fall: high-sensitivity troponin 86 → 364 → 312 ng/L (ref 0–19) [labs].",
+      "- Ischemic ECG changes without ST elevation: persistent 1 mm ST depressions in V4–V6 with T-wave inversions in I and aVL [ECG].",
+      "",
+      "**From the literature:**",
+      "- The Fourth Universal Definition of MI requires a troponin rise and/or fall plus at least one of: ischemic symptoms, new ischemic ECG changes, new Q waves, imaging evidence, or angiographic thrombus. This patient has the troponin pattern plus both symptoms and ECG changes.",
+      "- Without ST elevation this is NSTEMI rather than STEMI. ACC/AHA guidance supports an early invasive strategy here — coronary angiography is already planned — with dual antiplatelet therapy, therapeutic anticoagulation, and high-intensity statin. The chart shows aspirin, ticagrelor, heparin infusion, and atorvastatin 80 mg already on board [medications].",
+      "",
+      "*Sample answer staged for the demo — not a live model response.*"
+    ].join("\n")
+  },
+  {
+    question: "What should the overnight team monitor for this NSTEMI patient?",
+    answer: [
+      "Overnight priorities for this NSTEMI patient awaiting morning catheterization:",
+      "",
+      "**From the chart:**",
+      "- **Recurrent ischemia:** chest discomfort improved from 8/10 to 2/10 but intermittent mild substernal pressure persists, responsive to nitroglycerin [HD1 note]. Any prolonged or severe recurrence warrants a repeat ECG and cardiology notification.",
+      "- **Rhythm:** no sustained arrhythmias on telemetry overnight, but continuous monitoring continues [HD1 note]. Admission ECG showed sinus tachycardia at 106 bpm.",
+      "- **Hemodynamics:** admission BP was 166/94 with HR 106. Watch for hypotension or instability, particularly with ongoing heparin and nitrates on board.",
+      "- **Bleeding:** therapeutic heparin infusion plus dual antiplatelet therapy (aspirin + ticagrelor) is triple antithrombotic therapy — inspect IV sites, monitor hemoglobin, and watch for melena or hematuria [medications].",
+      "- **NPO status:** the patient is NPO after midnight for coronary angiography in the morning [HD1 note].",
+      "- **Glycemia:** home metformin was held for contrast exposure; sliding-scale insulin was started. He has type 2 diabetes — monitor glucose overnight [medication changes].",
+      "",
+      "**From the literature:**",
+      "- ACC/AHA guidance for NSTEMI emphasizes serial ECGs and troponins to detect re-infarction or extension, continuous rhythm monitoring for malignant arrhythmias (most common in the first 24 hours), and bleeding vigilance on combined antiplatelet plus anticoagulant therapy.",
+      "",
+      "*Sample answer staged for the demo — not a live model response.*"
+    ].join("\n")
+  },
+  {
+    question: "Write a one-paragraph handoff summary for the night team.",
+    answer: [
+      "61-year-old man with known CAD (DES to LAD 2022) admitted with NSTEMI after 6 hours of crushing substernal chest pressure with troponin rise 86 to 364 ng/L now downtrending to 312, persistent 1 mm ST depressions V4-V6, and echo showing LVEF 48% with anterior hypokinesis [admission note, labs, ECG, HD1 note]. On dual antiplatelet therapy (aspirin + ticagrelor load) with therapeutic heparin infusion, high-intensity atorvastatin, and metoprolol; home metformin held for contrast with sliding-scale insulin started [medications]. Pain improved from 8/10 to 2/10 with intermittent mild discomfort responsive to NTG; hemodynamically stable, no sustained arrhythmias overnight [HD1 note]. NPO after midnight for coronary angiography in the morning with cardiology consulted. **Overnight:** monitor for recurrent chest pain, arrhythmia on telemetry, bleeding on triple therapy, and hypotension; repeat ECG with any concerning symptoms.",
+      "",
+      "*Sample answer staged for the demo — not a live model response.*"
+    ].join("\n")
+  },
+  {
+    question: "What anticoagulation is he on and what is the plan?",
+    answer: [
+      "**Current antithrombotic regimen and plan:**",
+      "",
+      "**From the chart:**",
+      "- **Therapeutic unfractionated heparin infusion**, maintained with therapeutic monitoring — started for acute coronary syndrome [admission plan, HD1 note].",
+      "- **Dual antiplatelet therapy:** aspirin 81 mg daily (continued from home) plus ticagrelor loading dose followed by maintenance dosing, initiated on hospital day 1 [medication changes].",
+      "- High-intensity atorvastatin 80 mg nightly continued [home medications].",
+      "- **Plan:** coronary angiography in the morning with cardiology consulted; the patient is NPO after midnight [HD1 note]. Peri-procedural anticoagulation management is per the interventional cardiology team.",
+      "",
+      "**From the literature:**",
+      "- ACC/AHA NSTEMI guidance supports an early invasive strategy with periprocedural anticoagulation plus DAPT. Combining DAPT with therapeutic heparin is effectively triple antithrombotic therapy, which raises major bleeding risk — hence the overnight bleeding checks. After PCI, the regimen typically de-escalates per cardiology (often DAPT alone, with duration guided by stent type and bleeding risk).",
+      "",
+      "*Sample answer staged for the demo — not a live model response.*"
+    ].join("\n")
+  },
+  {
+    question: "Which of his home meds need renal dose adjustment?",
+    answer: [
+      "**Renal review of home medications:**",
+      "",
+      "**From the chart:**",
+      "- Creatinine is stable at 1.0 mg/dL with no acute kidney injury [labs, HD1 note] — renal function is preserved, so **no home medication requires a renal dose reduction** right now.",
+      "- **Metformin ER 1000 mg twice daily was HELD** — not for renal impairment, but because iodinated contrast is planned for morning coronary angiography [medication changes]. Metformin is withheld around contrast procedures due to lactic acidosis risk if contrast-induced kidney injury occurs.",
+      "- **Lisinopril 20 mg daily** (ACE inhibitor): no dose change needed at this creatinine, but ACE inhibitors plus contrast dye raise acute kidney injury risk — monitor creatinine and potassium post-procedure [home medications].",
+      "- **Empagliflozin 25 mg daily:** SGLT2 inhibitors need no renal dose adjustment, but they are commonly held during acute illness, dehydration, or fasting (all present here — NPO, acute MI) because of euglycemic ketoacidosis risk.",
+      "- Atorvastatin 80 mg, metoprolol succinate 50 mg, omeprazole 20 mg: no renal dose adjustment required.",
+      "",
+      "**From the literature:**",
+      "- FDA labeling and ACC guidance: metformin should be withheld at the time of iodinated contrast in patients with eGFR <60, history of liver disease, alcoholism, or heart failure, and re-evaluated after 48 hours; SGLT2 inhibitors should be held 3–4 days before scheduled procedures and during acute illness. Creatinine should be rechecked after angiography before restarting either drug.",
+      "",
+      "*Sample answer staged for the demo — not a live model response.*"
+    ].join("\n")
+  }
+];
 
-export const DEMO_AI_CHAT_ANSWER = [
-  "Yes — this presentation meets criteria for NSTEMI.",
-  "",
-  "From the chart:",
-  "• Typical ischemic symptoms: 6 hours of crushing substernal pressure (8/10) beginning with exertion, radiating to the left arm, neck, and jaw, with diaphoresis [admission note].",
-  "• Acute myocardial injury with a rise and fall: high-sensitivity troponin 86 → 364 → 312 ng/L (ref 0–19) [labs].",
-  "• Ischemic ECG changes without ST elevation: persistent 1 mm ST depressions in V4–V6 with T-wave inversions in I and aVL [ECG].",
-  "",
-  "From the literature:",
-  "• The Fourth Universal Definition of MI requires a troponin rise and/or fall plus at least one of: ischemic symptoms, new ischemic ECG changes, new Q waves, imaging evidence, or angiographic thrombus. This patient has the troponin pattern plus both symptoms and ECG changes.",
-  "• Without ST elevation this is NSTEMI rather than STEMI. ACC/AHA guidance supports an early invasive strategy here — coronary angiography is already planned — with dual antiplatelet therapy, therapeutic anticoagulation, and high-intensity statin. The chart shows aspirin, ticagrelor, heparin infusion, and atorvastatin 80 mg already on board [medications].",
-  "",
-  "Sample answer staged for the demo — not a live model response."
-].join("\n");
-
-// Pre-generated sample answers for the "Try asking" examples. These are
-// staged for the demo (no live API calls); each cites the demo patient's
-// chart and the clinical literature in the same grounded format.
-export const DEMO_AI_CHAT_SAMPLE_OVERNIGHT_Q = "What should the overnight team monitor for this NSTEMI patient?";
-
-export const DEMO_AI_CHAT_SAMPLE_OVERNIGHT_A = [
-  "Overnight priorities for this NSTEMI patient awaiting morning catheterization:",
-  "",
-  "From the chart:",
-  "• Recurrent ischemia: chest discomfort improved from 8/10 to 2/10 but intermittent mild substernal pressure persists, responsive to nitroglycerin [HD1 note]. Any prolonged or severe recurrence warrants a repeat ECG and cardiology notification.",
-  "• Rhythm: no sustained arrhythmias on telemetry overnight, but continuous monitoring continues [HD1 note]. Admission ECG showed sinus tachycardia at 106 bpm.",
-  "• Hemodynamics: admission BP was 166/94 with HR 106. Watch for hypotension or instability, particularly with ongoing heparin and nitrates on board.",
-  "• Bleeding: therapeutic heparin infusion plus dual antiplatelet therapy (aspirin + ticagrelor) is triple antithrombotic therapy — inspect IV sites, monitor hemoglobin, and watch for melena or hematuria [medications].",
-  "• NPO status: the patient is NPO after midnight for coronary angiography in the morning [HD1 note].",
-  "• Glycemia: home metformin was held for contrast exposure; sliding-scale insulin was started. He has type 2 diabetes — monitor glucose overnight [medication changes].",
-  "",
-  "From the literature:",
-  "• ACC/AHA guidance for NSTEMI emphasizes serial ECGs and troponins to detect re-infarction or extension, continuous rhythm monitoring for malignant arrhythmias (most common in the first 24 hours), and bleeding vigilance on combined antiplatelet plus anticoagulant therapy.",
-  "",
-  "Sample answer staged for the demo — not a live model response."
-].join("\n");
-
-export const DEMO_AI_CHAT_SAMPLE_HANDOFF_Q = "Write a one-paragraph handoff summary for the night team.";
-
-export const DEMO_AI_CHAT_SAMPLE_HANDOFF_A = [
-  "61-year-old man with known CAD (DES to LAD 2022) admitted with NSTEMI after 6 hours of crushing substernal chest pressure with troponin rise 86 to 364 ng/L now downtrending to 312, persistent 1 mm ST depressions V4-V6, and echo showing LVEF 48% with anterior hypokinesis [admission note, labs, ECG, HD1 note]. On dual antiplatelet therapy (aspirin + ticagrelor load) with therapeutic heparin infusion, high-intensity atorvastatin, and metoprolol; home metformin held for contrast with sliding-scale insulin started [medications]. Pain improved from 8/10 to 2/10 with intermittent mild discomfort responsive to NTG; hemodynamically stable, no sustained arrhythmias overnight [HD1 note]. NPO after midnight for coronary angiography in the morning with cardiology consulted. Overnight: monitor for recurrent chest pain, arrhythmia on telemetry, bleeding on triple therapy, and hypotension; repeat ECG with any concerning symptoms.",
-  "",
-  "Sample answer staged for the demo — not a live model response."
-].join("\n");
-
-export const DEMO_AI_CHAT_SAMPLE_ANTICOAG_Q = "What anticoagulation is he on and what is the plan?";
-
-export const DEMO_AI_CHAT_SAMPLE_ANTICOAG_A = [
-  "Current antithrombotic regimen and plan:",
-  "",
-  "From the chart:",
-  "• Therapeutic unfractionated heparin infusion, maintained with therapeutic monitoring — started for acute coronary syndrome [admission plan, HD1 note].",
-  "• Dual antiplatelet therapy: aspirin 81 mg daily (continued from home) plus ticagrelor loading dose followed by maintenance dosing, initiated on hospital day 1 [medication changes].",
-  "• High-intensity atorvastatin 80 mg nightly continued [home medications].",
-  "• Plan: coronary angiography in the morning with cardiology consulted; the patient is NPO after midnight [HD1 note]. Peri-procedural anticoagulation management is per the interventional cardiology team.",
-  "",
-  "From the literature:",
-  "• ACC/AHA NSTEMI guidance supports an early invasive strategy with periprocedural anticoagulation plus DAPT. Combining DAPT with therapeutic heparin is effectively triple antithrombotic therapy, which raises major bleeding risk — hence the overnight bleeding checks. After PCI, the regimen typically de-escalates per cardiology (often DAPT alone, with duration guided by stent type and bleeding risk).",
-  "",
-  "Sample answer staged for the demo — not a live model response."
-].join("\n");
-
-export const DEMO_AI_CHAT_SAMPLE_RENAL_Q = "Which of his home meds need renal dose adjustment?";
-
-export const DEMO_AI_CHAT_SAMPLE_RENAL_A = [
-  "Renal review of home medications:",
-  "",
-  "From the chart:",
-  "• Creatinine is stable at 1.0 mg/dL with no acute kidney injury [labs, HD1 note] — renal function is preserved, so no home medication requires a renal dose reduction right now.",
-  "• Metformin ER 1000 mg twice daily was HELD — not for renal impairment, but because iodinated contrast is planned for morning coronary angiography [medication changes]. Metformin is withheld around contrast procedures due to lactic acidosis risk if contrast-induced kidney injury occurs.",
-  "• Lisinopril 20 mg daily (ACE inhibitor): no dose change needed at this creatinine, but ACE inhibitors plus contrast dye raise acute kidney injury risk — monitor creatinine and potassium post-procedure [home medications].",
-  "• Empagliflozin 25 mg daily: SGLT2 inhibitors need no renal dose adjustment, but they are commonly held during acute illness, dehydration, or fasting (all present here — NPO, acute MI) because of euglycemic ketoacidosis risk.",
-  "• Atorvastatin 80 mg, metoprolol succinate 50 mg, omeprazole 20 mg: no renal dose adjustment required.",
-  "",
-  "From the literature:",
-  "• FDA labeling and ACC guidance: metformin should be withheld at the time of iodinated contrast in patients with eGFR <60, history of liver disease, alcoholism, or heart failure, and re-evaluated after 48 hours; SGLT2 inhibitors should be held 3-4 days before scheduled procedures and during acute illness. Creatinine should be rechecked after angiography before restarting either drug.",
-  "",
-  "Sample answer staged for the demo — not a live model response."
-].join("\n");
-
-// Combined Q&A for the tour banner sample: the featured NSTEMI exchange plus
-// the four pre-generated "Try asking" examples. All staged for the demo —
-// no live API calls. Visible in the banner itself, since the dim overlay
-// blocks chat interaction.
-export const DEMO_AI_CHAT_QA = [
-  "Q: " + DEMO_AI_CHAT_QUESTION,
-  "",
-  DEMO_AI_CHAT_ANSWER,
-  "",
-  "---",
-  "",
-  "Q: " + DEMO_AI_CHAT_SAMPLE_OVERNIGHT_Q,
-  "",
-  DEMO_AI_CHAT_SAMPLE_OVERNIGHT_A,
-  "",
-  "---",
-  "",
-  "Q: " + DEMO_AI_CHAT_SAMPLE_HANDOFF_Q,
-  "",
-  DEMO_AI_CHAT_SAMPLE_HANDOFF_A,
-  "",
-  "---",
-  "",
-  "Q: " + DEMO_AI_CHAT_SAMPLE_ANTICOAG_Q,
-  "",
-  DEMO_AI_CHAT_SAMPLE_ANTICOAG_A,
-  "",
-  "---",
-  "",
-  "Q: " + DEMO_AI_CHAT_SAMPLE_RENAL_Q,
-  "",
-  DEMO_AI_CHAT_SAMPLE_RENAL_A
-].join("\n");
+// Legacy single Q&A (kept for backwards compatibility; prefer DEMO_AI_CHAT_SAMPLES).
+export const DEMO_AI_CHAT_QUESTION = DEMO_AI_CHAT_SAMPLES[0].question;
+export const DEMO_AI_CHAT_ANSWER = DEMO_AI_CHAT_SAMPLES[0].answer;
 
 // Pre-built Scribe Pro sample staged by the demo: a short dictation snippet
 // and the structured note it produces, showing the output format without
@@ -360,7 +327,7 @@ export function createDemoPresentation({ escapeHtml }) {
   function renderSample(stage) {
     const sample = stage.demoSample;
     if (!sample) return "";
-    const text = sample.kind === "note" ? DEMO_SCRIBE_NOTE : sample.kind === "ai-chat" ? DEMO_AI_CHAT_QA : DEMO_SCRIBE_TRANSCRIPT;
+    const text = sample.kind === "note" ? DEMO_SCRIBE_NOTE : DEMO_SCRIBE_TRANSCRIPT;
     return `
       <details class="guided-demo-sample" data-demo-sample open>
         <summary><span class="guided-demo-badge">Sample</span> ${escapeHtml(sample.label)} — staged for the demo, not a live run</summary>

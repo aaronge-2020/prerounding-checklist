@@ -4,8 +4,7 @@ import {
   DEMO_INFO_STAGES,
   DEMO_PARSE_NOTE_TEXT,
   DEMO_DRUG_CHECK_MEDS,
-  DEMO_AI_CHAT_QUESTION,
-  DEMO_AI_CHAT_ANSWER
+  DEMO_AI_CHAT_SAMPLES
 } from "./presentation.js?v=20261001-demo-v4";
 import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20261001-demo-v4";
 
@@ -181,9 +180,10 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       app.drugChecks.dataError = "";
     }
     if (stageId === "open-ai-chat") {
-      // Seed one pre-built exchange so the tour shows a grounded answer
+      // Seed all five pre-built exchanges so the tour shows a real sample
+      // conversation in the actual AI Chat UI (with markdown rendering)
       // without running a live model. Seeded only once per demo run.
-      seedAiChatDemo?.({ question: DEMO_AI_CHAT_QUESTION, answer: DEMO_AI_CHAT_ANSWER });
+      seedAiChatDemo?.(DEMO_AI_CHAT_SAMPLES);
     }
     if (stageId === "browse-cheat-sheet") {
       // Attach demo objective data when entering the cheat-sheet step.

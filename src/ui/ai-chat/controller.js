@@ -2768,15 +2768,21 @@ export function createAiChatController({
   }
 
 
-  // Guided-demo seam: stage one pre-built exchange (flagged demo:true so it
-  // renders with a Sample badge) without running a live model. Messages live
+  // Guided-demo seam: stage pre-built exchanges (flagged demo:true so they
+  // render with a Sample badge) without running a live model. Messages live
   // only in this in-memory state — never the vault — and the demo clears them
-  // on exit. Idempotent: seeding twice does not duplicate.
-  function seedDemoMessages({ question, answer }) {
-    if (!question || !answer) return;
+  // on exit. Idempotent: seeding twice does not duplicate. Accepts a single
+  // {question, answer} pair or an array of them.
+  function seedDemoMessages(samples) {
+    if (!samples) return;
+    const pairs = Array.isArray(samples) ? samples : [samples];
+    if (!pairs.length || !pairs[0].question || !pairs[0].answer) return;
     if (state.chat.messages.some((m) => m.demo)) return;
-    state.chat.messages.push({ role: "user", text: question, demo: true });
-    state.chat.messages.push({ role: "assistant", text: answer, demo: true });
+    for (const { question, answer } of pairs) {
+      if (!question || !answer) continue;
+      state.chat.messages.push({ role: "user", text: question, demo: true });
+      state.chat.messages.push({ role: "assistant", text: answer, demo: true });
+    }
   }
 
   function clearDemoMessages() {
