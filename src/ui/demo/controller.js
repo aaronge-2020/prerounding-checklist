@@ -184,7 +184,9 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   }
 
   function render() {
+    try { console.log("[demo] render() start, stage:", getSession()?.stage); } catch {}
     clearTargetDecorations();
+    try { console.log("[demo] decorations cleared"); } catch {}
     const session = getSession();
     if (!session) {
       // Every exit path funnels through here. The dim overlay, callout, and
@@ -194,11 +196,13 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       return;
     }
     if (!preparing && preparedStage !== session.stage) {
+      try { console.log("[demo] prepare block, stage:", session.stage); } catch {}
       preparing = true;
       prepareStage(session.stage);
       preparedStage = session.stage;
       preparing = false;
       renderApp();
+      try { console.log("[demo] prepare block done, renderApp called"); } catch {}
       // Do NOT return early here. The guide bar must be rendered even on
       // the first pass after a stage change. Previously, the early return
       // left the tour with no visible UI (guide bar cleared but not re-added),
@@ -227,9 +231,10 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     // used to delete the guide bar while leaving the dim overlay and callout
     // behind — a dead-end with no Continue/Exit controls. In body, the bar
     // survives re-renders; render() removes and re-inserts it each cycle.
-    document.body.insertAdjacentHTML(
-      "afterbegin",
-      presentation.renderGuide({
+    try {
+      // Remove any existing guide bar first (defensive, clearTargetDecorations should have done this)
+      document.querySelectorAll("[data-demo-guide]").forEach((el) => el.remove());
+      const guideHtml = presentation.renderGuide({
         session,
         currentView: view,
         reviewAction: target?.dataset.action || "",
@@ -238,8 +243,13 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
             ?.closest(".review-next-step")
             ?.querySelector("strong")
             ?.textContent?.replace(/^Next: review\s*/i, "") || ""
-      })
-    );
+      });
+      try { console.log("[demo] inserting guide bar, html length:", guideHtml.length, "stage:", session.stage); } catch {}
+      document.body.insertAdjacentHTML("afterbegin", guideHtml);
+      try { console.log("[demo] guide bar inserted, found:", !!document.querySelector("[data-demo-guide]")); } catch {}
+    } catch (err) {
+      try { console.error("[demo] guide bar insert failed:", err); } catch {}
+    }
     if (!isComplete) mountDim();
     if (stageId === "parse-note" && view === "daily") {
       // Fill the admission paste textarea after render so the deterministic
@@ -270,7 +280,17 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     repositionTimer = setTimeout(() => {
       repositionTimer = 0;
       if (getSession()?.stage !== stageId) return;
-      clearTargetDecorations();
+      try { console.log("[demo] reposition timer fired, stage:", stageId); } catch {}
+      // CRITICAL: Do NOT call clearTargetDecorations() here - it removes the guide bar
+      // ([data-demo-guide]) but this timer never re-renders it, leaving the tour with
+      // no Continue/Exit controls. Only clear the dim, callout, and spotlight;
+      // the guide bar in document.body must survive.
+      document.querySelectorAll(".demo-next-action").forEach((element) => element.classList.remove("demo-next-action", "demo-pulse"));
+      document.querySelectorAll("[data-demo-target]").forEach((element) => element.removeAttribute("data-demo-target"));
+      document.querySelectorAll("[data-demo-callout]").forEach((element) => element.remove());
+      document.querySelectorAll("[data-demo-dim]").forEach((element) => element.remove());
+      // Guide bar ([data-demo-guide]) is intentionally NOT removed here.
+      try { console.log("[demo] timer: guide bar preserved:", !!document.querySelector("[data-demo-guide]")); } catch {}
       if (getSession()?.stage !== "done") mountDim();
       const currentTargets = targetsForStage(stage, stageId, view, content);
       const currentTarget = currentTargets[0] || null;
