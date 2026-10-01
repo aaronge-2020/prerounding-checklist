@@ -142,7 +142,7 @@ assert.doesNotMatch(guide, /Restart demo/);
 assert.doesNotMatch(guide, /demo-answer|demo-generate-prompt|static/i);
 const noteGuide = presentation.renderGuide({ session: { stage: "write-note" }, currentView: "review" });
 assert.match(noteGuide, /Review the complete case note/);
-assert.match(noteGuide, /parsed one-liner, subjective, and exam/i);
+assert.match(noteGuide, /highlighted one-liner/i);
 const feedbackGuide = presentation.renderGuide({ session: { stage: "open-prompts" }, currentView: "review" });
 assert.match(feedbackGuide, /Open Prompts/i);
 assert.match(presentation.renderCallout({ stage: demoStage("open-prompts") }), /feedback on the note you wrote/i);

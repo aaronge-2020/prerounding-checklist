@@ -267,22 +267,18 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       }
     }
     if (!target) return;
-    // Action stages expose ONLY the highlighted controls above the dim layer;
-    // info stages keep the full dim and advance via the guide bar's Continue.
-    // Review stages may expose several valid actions (Accept, Confirm all).
-    // Issue 2 fix: info stages with a route mismatch (e.g. open-scribe-pro)
-    // still need their nav target clickable through the dim, so highlight it.
-    const highlightForNav = isInfo && routeMismatch;
-    if (!isInfo || highlightForNav) {
-      for (const t of targets) {
-        t.classList.add("demo-next-action");
-        t.dataset.demoTarget = "true";
-        // Issue 2 fix: ensure the target sits ABOVE the dim overlay (z-index 90).
-        // The CSS .demo-next-action has z-index 2 which is below the dim.
-        // Inline style overrides it to make the target clickable.
-        t.style.position = "relative";
-        t.style.zIndex = "95";
-      }
+    // Highlight the target above the dim layer for every stage: action stages
+    // show what to click; info stages show what to look at. Info stages still
+    // advance via the guide bar's Continue button.
+    for (const t of targets) {
+      t.classList.add("demo-next-action");
+      t.dataset.demoTarget = "true";
+      // Ensure the target sits ABOVE the dim overlay (z-index 90).
+      // The CSS .demo-next-action has z-index 2 which is below the dim.
+      // Inline style overrides it to make the target visible (and clickable
+      // for action stages).
+      t.style.position = "relative";
+      t.style.zIndex = "95";
     }
     if (!routeMismatch) mountCallout(target, stage);
     requestAnimationFrame(() => {

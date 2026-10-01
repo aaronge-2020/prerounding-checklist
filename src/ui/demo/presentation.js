@@ -91,8 +91,9 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   "open-scribe-pro": {
     view: "scribePro",
     info: true,
+    targetSelector: '#btnRecord',
     title: "Meet the voice scribe",
-    instruction: "Scribe Pro transcribes dictation on-device and drafts the note. Below is a sample of its output — the tour starts nothing. Press Continue.",
+    instruction: "Scribe Pro transcribes dictation on-device and drafts the note. The highlighted Record button is where you start — below is a sample of its output. The tour starts nothing. Press Continue.",
     calloutTitle: "Nothing recorded in this tour",
     callout: "This tour does not start the engine: no model download, no microphone access, nothing recorded. On your own machine, download the models once, then press Record to dictate.",
     demoSample: {
@@ -103,8 +104,9 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   "scribe-pro-voice": {
     view: "scribePro",
     info: true,
+    targetSelector: '#transcriptList',
     title: "From dictation to draft note",
-    instruction: "The same sample, structured into note sections — this is the format Scribe Pro produces. Press Continue.",
+    instruction: "The highlighted transcript area is where your dictation appears — the same sample, structured into note sections, is the format Scribe Pro produces. Press Continue.",
     calloutTitle: "Sample output, not a live run",
     callout: "What you see below was staged for the demo. In live use, the transcript comes from the on-device Parakeet model and the note sections are drafted from that transcript.",
     demoSample: {
@@ -142,9 +144,9 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   "write-note": {
     view: "review",
     info: true,
-    targetSelector: '[data-action="save-note-draft"]',
+    targetSelector: '[data-draft-section="one_liner"]',
     title: "Review the complete case note",
-    instruction: "Review the complete synthetic case note: the parsed one-liner, subjective, and exam; objective vitals, labs, and medications; and the full assessment and problem-oriented plan. Make any edits you want, then press Continue.",
+    instruction: "The highlighted one-liner starts the complete synthetic case note: parsed subjective and exam; objective vitals, labs, and medications; and the full assessment and problem-oriented plan below it. Make any edits you want, then press Continue.",
     helper: "The synthetic tutorial keeps this saved note only for the temporary demo session.",
     calloutTitle: "Review before asking for feedback",
     callout: "The draft note is the parsed sample case, not a stub: the admission note's one-liner, subjective, and exam, the day-one update, objective vitals, labs, and medications, plus a complete assessment and plan. Saving keeps the draft local; press Continue when you are done reviewing."
@@ -224,7 +226,14 @@ export const DEMO_AI_CHAT_ANSWER = [
 export const DEMO_AI_CHAT_QA = [
   "Q: " + DEMO_AI_CHAT_QUESTION,
   "",
-  DEMO_AI_CHAT_ANSWER
+  DEMO_AI_CHAT_ANSWER,
+  "",
+  "---",
+  "Try asking:",
+  "\u2022 \"What should the overnight team monitor for this NSTEMI patient?\"",
+  "\u2022 \"Write a one-paragraph handoff summary for the night team.\"",
+  "\u2022 \"What anticoagulation is he on and what is the plan?\"",
+  "\u2022 \"Which of his home meds need renal dose adjustment?\""
 ].join("\n");
 
 // Pre-built Scribe Pro sample staged by the demo: a short dictation snippet
@@ -269,7 +278,7 @@ export function createDemoPresentation({ escapeHtml }) {
     if (!sample) return "";
     const text = sample.kind === "note" ? DEMO_SCRIBE_NOTE : sample.kind === "ai-chat" ? DEMO_AI_CHAT_QA : DEMO_SCRIBE_TRANSCRIPT;
     return `
-      <details class="guided-demo-sample" data-demo-sample>
+      <details class="guided-demo-sample" data-demo-sample open>
         <summary><span class="guided-demo-badge">Sample</span> ${escapeHtml(sample.label)} — staged for the demo, not a live run</summary>
         <pre style="white-space:pre-wrap;font:inherit;margin:8px 0 0;padding:10px 12px;border:1px solid var(--border,#d8dee9);border-radius:8px;background:var(--surface,#f8fafc);">${escapeHtml(text)}</pre>
       </details>
