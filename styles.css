@@ -13790,6 +13790,22 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   .cs-list, .cs-detail { padding-left: 20px; padding-right: 20px; }
 }
 
+/* Sample Notes — synthetic fixture library for end to end testing (2026-10-01) */
+.sample-notes-panel { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.sample-notes-banner p { margin: 4px 0 0; font-size: 0.87rem; }
+.sample-notes-list { display: flex; flex-direction: column; gap: 12px; }
+.sample-note-card { display: flex; flex-direction: column; gap: 10px; }
+.sample-note-heading { align-items: flex-start; }
+.sample-note-heading h3 { margin: 0 0 4px; font-size: 1.05rem; }
+.sample-note-heading .muted { margin: 0; font-size: 0.87rem; }
+.sample-note-type-badge { flex: none; background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 3px 10px; font-size: 0.75rem; font-weight: 600; }
+.sample-note-preview { background: var(--surface-subtle); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 0.82rem; line-height: 1.5; white-space: pre-wrap; max-height: 420px; overflow: auto; margin: 0; }
+.sample-note-actions { flex-wrap: wrap; }
+@media (max-width: 560px) {
+  .sample-note-heading { flex-direction: column; }
+  .sample-note-type-badge { align-self: flex-start; }
+}
+
 
 /* ── AI Chat clinical-tool records ────────────────────────────────────
    Collapsed per-tool-call audit rows under a tool-mode assistant reply:
