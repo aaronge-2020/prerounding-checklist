@@ -133,9 +133,9 @@ import {
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20260929-deid-clinicale5";
 import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261001-llm-verifier-v1";
-import { createDemoController } from "./demo/controller.js?v=20261001-demo-fix-v1";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260930-demo-v3";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20260930-demo-v3";
+import { createDemoController } from "./demo/controller.js?v=20261001-demo-v4";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261001-demo-v4";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20261001-demo-v4";
 import { createAiChatController } from "./ai-chat/controller.js?v=20261001-ai-chat-drawer-sync";
 import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261001-drug-checks-v2";
 import { createDrugChecksController } from "./drug-checks/controller.js?v=20261001-drug-checks-v2";

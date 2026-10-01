@@ -36,15 +36,15 @@ try {
     }
   }
   assert.ok(loaded, "the app must render the vault gate after retries");
-  await page.waitForFunction(() => document.querySelectorAll('.primary-nav [data-view-target]').length === 12);
+  await page.waitForFunction(() => document.querySelectorAll('.primary-nav [data-view-target]').length === 13);
   assert.deepEqual(
     await page.locator('.primary-nav [data-view-target]').evaluateAll((buttons) => buttons.map((button) => button.dataset.viewTarget)),
-    ["vault", "daily", "review", "aiChat", "prompts", "quickDeid", "scribePro", "cheatSheets", "drugLookup", "drugChecks", "scores", "settings"],
+    ["vault", "daily", "review", "aiChat", "prompts", "quickDeid", "sampleNotes", "scribePro", "cheatSheets", "drugLookup", "drugChecks", "scores", "settings"],
     "the visible nav must keep Drug Lookup and add the offline Drug checks view"
   );
   assert.deepEqual(
     await page.locator('main .view').evaluateAll((views) => views.map((view) => view.id)),
-    ["vaultView", "dailyView", "cheatSheetsView", "reviewView", "promptsView", "quickDeidView", "aiChatView", "drugLookupView", "drugChecksView", "scoresView", "settingsView", "scribeProView"],
+    ["vaultView", "dailyView", "cheatSheetsView", "reviewView", "promptsView", "quickDeidView", "sampleNotesView", "aiChatView", "drugLookupView", "drugChecksView", "scoresView", "settingsView", "scribeProView"],
     "the document order must match the visible workflow"
   );
   await page.fill("#vaultPassphrase", "guided demo test passphrase");
@@ -85,6 +85,9 @@ try {
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Paste a note, get sections/);
   await page.waitForSelector('[data-structured-note-detected="admission"] .structured-note-detected-list', { timeout: 15000 });
   assert.match(await page.locator('[data-structured-note-detected="admission"]').innerText(), /History of present illness|Medications/i);
+  assert.match(await page.locator('[data-structured-note-detected="admission"]').innerText(), /One-liner/);
+  assert.match(await page.locator('[data-structured-note-detected="admission"]').innerText(), /Chief complaint/);
+  assert.match(await page.locator('[data-structured-note-detected="admission"]').innerText(), /Objective data/);
   await page.click('[data-action="advance-guided-demo"]');
   await page.waitForFunction(() => /Check drug interactions/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
 
@@ -131,8 +134,15 @@ try {
     page.waitForEvent("download"),
     page.click('[data-action="download-final-note"]')
   ]);
-  assert.doesNotMatch(await readFile(await download.path(), "utf8"), /pressure or squeezing feeling/, "cheat-sheet bedside questions must not leak into the note");
-  assert.match(await page.locator("[data-demo-guide]").innerText(), /Review the complete assessment and plan/);
+  const downloadedNote = await readFile(await download.path(), "utf8");
+  assert.doesNotMatch(downloadedNote, /pressure or squeezing feeling/, "cheat-sheet bedside questions must not leak into the note");
+  // The showcased draft must be the complete parsed case: one-liner,
+  // subjective events, exam, objective labs, and the assessment.
+  assert.match(downloadedNote, /Daniel Morgan is a 61-year-old male/, "the downloaded note must carry the parsed one-liner");
+  assert.match(downloadedNote, /troponin peaked at 364/, "the downloaded note must carry the day-one subjective update");
+  assert.match(downloadedNote, /Physical Exam/, "the downloaded note must carry the parsed exam");
+  assert.match(downloadedNote, /Troponin 86|High-sensitivity troponin/, "the downloaded note must carry objective labs");
+  assert.match(await page.locator("[data-demo-guide]").innerText(), /Review the complete case note/);
   assert.match(await page.locator("[data-draft-assessment]").innerText(), /high-risk NSTEMI/i);
   assert.equal(await page.locator(".plan-problem-card").count(), 3);
   assert.match(await page.locator('.plan-problem-card').first().locator('[data-problem-field="diagnosticPlan"]').innerText(), /Coronary angiography is planned today/i);
@@ -149,8 +159,12 @@ try {
   await page.selectOption("#reviewDataCategory", "all");
   await page.locator("[data-draft-assessment]").press("End");
   await page.locator("[data-draft-assessment]").pressSequentially(" X");
-  assert.match(await page.locator("[data-demo-guide]").innerText(), /Review the complete assessment and plan/, "typing must not advance the demo");
+  assert.match(await page.locator("[data-demo-guide]").innerText(), /Review the complete case note/, "typing must not advance the demo");
   await page.click('[data-action="save-note-draft"]');
+  // write-note is an info stage: saving does not advance the tour; the
+  // guide bar's Continue button does.
+  assert.match(await page.locator("[data-demo-guide]").innerText(), /Review the complete case note/, "saving must not advance the demo");
+  await page.click('[data-action="advance-guided-demo"]');
   await page.waitForFunction(() => /Open the prompt builder/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Open the prompt builder/);
 

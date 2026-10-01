@@ -1,5 +1,6 @@
 import { createPatientRecord, normalizeDay } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 import { normalizeSourceCapture } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
+import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20260925-one-liner-v1";
 
 export const DEMO_PATIENT_ID = "demo_patient_guided_case";
 export const DEMO_DAY_ID = "demo_day_guided_case";
@@ -231,11 +232,70 @@ The patient remained NPO after midnight in preparation for coronary angiography.
 ];
 
 const DEMO_CAPTURE_TIME = "2026-07-17T18:00:00.000Z";
+
+// The demo draft is not hand-written: it is built from the same deterministic
+// primary-note parses the tour showcases, so the Draft Note the user reviews
+// is the parsed case (admission H&P plus the day-one update), not a stub.
+const demoParsedSection = (value) => ({ deidentifiedText: String(value || "").trim() });
+
+// The day-one update keeps its subheadings ("Patient-Reported Symptoms",
+// "Other") inside the parser's broader sections, so route them to the right
+// progress-note fields by splitting on the exact subheading lines.
+function extractSubsection(body, heading, stopHeadings = []) {
+  const lines = String(body || "").split("\n");
+  const start = lines.findIndex((line) => line.trim() === heading);
+  if (start === -1) return "";
+  const stop = new Set(stopHeadings);
+  const collected = [];
+  for (const line of lines.slice(start + 1)) {
+    if (stop.has(line.trim())) break;
+    collected.push(line);
+  }
+  return collected.join("\n").trim();
+}
+
+const DEMO_CLOSING_FEN = "NPO after midnight in preparation for coronary angiography. Maintenance IV fluids while NPO; monitor ins/outs.";
+const DEMO_CLOSING_VTE = "Therapeutic heparin infusion for ACS; sequential compression devices while on bed rest.";
+const DEMO_CLOSING_DISPOSITION = "Admit to telemetry. Coronary angiography planned today; cardiology consulted.";
+
 function demoNoteDraft(patientId = DEMO_PATIENT_ID) {
+  const admission = parsePrimaryTeamNote(DEMO_CONTEXT_TEXTS.join("\n\n"), "hp");
+  const daily = parsePrimaryTeamNote(DEMO_DAILY_TEXTS.join("\n\n"), "progress");
+  const admissionSections = admission?.sections || {};
+  const dailySections = daily?.sections || {};
+  const dailyMedications = String(dailySections.medications || "");
   return {
     noteType: "progress",
     patientId,
     hospitalDayId: DEMO_DAY_ID,
+    sections: {
+      one_liner: demoParsedSection(admissionSections.one_liner),
+      interval_events: demoParsedSection(dailySections.interval_events),
+      patient_report: demoParsedSection(extractSubsection(dailyMedications, "Patient-Reported Symptoms", ["Other"])),
+      other: demoParsedSection(extractSubsection(dailyMedications, "Other")),
+      physical_exam: demoParsedSection(admissionSections.physical_exam),
+      // Admission H&P sections, carried so the H&P format switch in the
+      // review tab stays populated with the same parsed content.
+      chief_complaint: demoParsedSection(admissionSections.chief_complaint),
+      history_of_present_illness: demoParsedSection(admissionSections.history_of_present_illness),
+      medications: demoParsedSection(admissionSections.medications),
+      allergies: demoParsedSection(admissionSections.allergies),
+      past_medical_history: demoParsedSection(admissionSections.past_medical_history),
+      past_surgical_history: demoParsedSection(admissionSections.past_surgical_history),
+      family_history: demoParsedSection(admissionSections.family_history),
+      social_history: demoParsedSection(admissionSections.social_history)
+    },
+    objective: {
+      // Parsed admission labs and imaging; the objective data blocks
+      // (vitals, medications) are auto-selected by the review view itself.
+      manual: demoParsedSection(admissionSections.objective)
+    },
+    closing: {
+      fen: demoParsedSection(DEMO_CLOSING_FEN),
+      vte_prophylaxis: demoParsedSection(DEMO_CLOSING_VTE),
+      code_status: demoParsedSection("Full code."),
+      disposition: demoParsedSection(DEMO_CLOSING_DISPOSITION)
+    },
     assessment: DEMO_ASSESSMENT,
     problems: DEMO_PLAN_PROBLEMS
   };

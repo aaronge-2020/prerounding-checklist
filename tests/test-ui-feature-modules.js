@@ -1,8 +1,6 @@
 import assert from "node:assert/strict";
-import { createChecklistPresentation } from "../src/ui/checklist/presentation.js";
-import { checklistPhoneUrl, createPhoneTransferController } from "../src/ui/checklist/transfer.js";
+import { createCheatSheetsPresentation } from "../src/ui/cheat-sheets/presentation.js";
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "../src/ui/redaction/presentation.js";
-import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "../src/ui/workups/presentation.js";
 import { createDailyPresentation } from "../src/ui/daily/presentation.js";
 import { createDemoPresentation, demoStage } from "../src/ui/demo/presentation.js";
 import { createDemoPatient } from "../src/ui/demo/session.js";
@@ -103,8 +101,8 @@ const demoView = createDemoPresentation({ escapeHtml });
 const demoPatient = createDemoPatient();
 assert.equal(demoPatient.contextSections.length, 0, "the guided demo must begin with an empty admission source list");
 assert.equal(demoPatient.days[0].sourceCaptures.length, 0, "the guided demo must add the selected-day source through the normal workflow");
-assert.equal(demoStage("write-note").title, "Review the complete assessment and plan");
-assert.match(demoView.renderGuide({ session: { stage: "write-note" }, currentView: "review" }), /fully written synthetic assessment/i);
+assert.equal(demoStage("write-note").title, "Review the complete case note");
+assert.match(demoView.renderGuide({ session: { stage: "write-note" }, currentView: "review" }), /parsed one-liner/i);
 assert.match(demoView.renderCallout({ stage: demoStage("save-context") }), /Daniel Morgan is a synthetic 61-year-old/);
 const dailyRenderOptions = {
   patient: { contextSections: [{ id: "admission", label: "Admission context", deidentifiedText: "", residualWarnings: [], createdAt: "2026-01-01" }] },
@@ -243,53 +241,30 @@ const dailyMixedMarkup = dailyView.renderDaily({
 assert.match(dailyMixedMarkup, /De-identify and add 3 sources/);
 assert.equal(dailyMixedMarkup.indexOf("De-identify and add 3 sources") < dailyMixedMarkup.indexOf("Mixed Epic export recognized as 3 sources"), true, "the save action must remain visible before the structured review");
 
-const snapshot = {
-  id: "checklist_test",
-  workupTitles: ["Test workup"],
-  items: [
-    { id: "history_1", kind: "history", system: "General", text: "History item", workupTitle: "Test workup", choices: ["No", "Yes"], select: "one" },
-    { id: "exam_1", kind: "exam", system: "General", text: "Exam item", workupTitle: "Test workup", choices: ["Normal", "Abnormal"], select: "one" }
+const cheatSheetsView = createCheatSheetsPresentation({ escapeHtml });
+const sampleSheet = {
+  id: "chest-pain",
+  title: "Chest pain",
+  aliases: ["ACS"],
+  history: [
+    { id: "h1", system: "cardiac", question: "Is the pain pressure-like?", listenFor: ["Pressure quality"], meaning: "Typical ACS wording.", meaningSource: "standard" }
+  ],
+  exam: [
+    { id: "e1", system: "cardiac", maneuver: "Auscultate the heart", findings: ["New murmur"], how: "Bell at apex.", meaning: "", meaningSource: null }
   ]
 };
-const answers = { history_1: { selected: ["No"], note: "" }, exam_1: { selected: ["Normal"], note: "" } };
-
-const checklistView = createChecklistPresentation({ escapeHtml, icon });
-assert.equal(checklistView.completedCount(snapshot.items, answers), 2);
-assert.match(checklistView.renderDesktopChecklist({ day: { label: "Hospital day 1" }, snapshot, answers, phoneLink: "https://example.test/#phone=bundle" }), /data-action="share-phone-bundle"/);
-const phoneView = checklistView.buildPhoneChecklistView({ patientLabel: "A", snapshot, answers, phoneReturnReady: true, returnBundle: "return-token" });
-assert.equal(phoneView.readyToReturn, true);
-assert.match(phoneView.markup, /data-action="share-phone-return"/);
-
-assert.equal(normalizeWorkupCatalogQuery("  Acute Kidney  "), "acute kidney");
-const workupView = createWorkupPresentation({ escapeHtml, icon });
-const workup = {
-  id: "test-workup",
-  title: "Test workup",
-  aliases: [],
-  items: [
-    { id: "history", kind: "history", system: "general", text: "History question", choices: ["No", "Yes"], select: "one" },
-    { id: "exam", kind: "exam", system: "general", text: "Exam item", choices: ["Normal", "Abnormal"], select: "one" }
-  ]
-};
-const workupMarkup = workupView.renderWorkups({
-  catalog: [workup],
-  selectedIds: new Set([workup.id]),
-  matchingWorkupIds: null,
-  editorWorkup: workup,
-  hasDraftWorkup: false,
-  catalogQuery: "",
-  thoroughness: "standard",
-  hasSavedOpenAiKey: false,
-  openAiModelLabel: "gpt-4o-mini",
-  workspace: { status: "unconfigured", message: "Choose a workspace folder." },
-  workspaceBusy: false,
-  workupOverrides: {},
-  workupImportError: "",
-  workupApiBusy: false,
-  workupApiDeidConfirmed: false,
-  workupImportDraft: ""
-});
-assert.match(workupMarkup, /id="workupTitleInput"/);
+const sheetListMarkup = cheatSheetsView.sheetListHtml({ sheets: [sampleSheet], query: "", total: 1 });
+assert.match(sheetListMarkup, /data-cheat-sheets-search/);
+assert.match(sheetListMarkup, /data-cheat-sheets-open="chest-pain"/);
+assert.match(sheetListMarkup, /Chest pain/);
+assert.match(cheatSheetsView.emptyStateHtml(), /No cheat sheets available/);
+const sheetDetailMarkup = cheatSheetsView.sheetDetailHtml(sampleSheet);
+assert.match(sheetDetailMarkup, /data-action="cheat-sheets-back"/);
+assert.match(sheetDetailMarkup, /Is the pain pressure-like/);
+assert.match(sheetDetailMarkup, /Auscultate the heart/);
+assert.match(sheetDetailMarkup, /Why it matters/);
+assert.match(sheetDetailMarkup, /Clinical reasoning note pending review/);
+assert.doesNotMatch(sheetDetailMarkup, /<input|<textarea|<select/i);
 assert.equal(redactionPosition("Keep [NAME] safe", { placeholder: "[NAME]", occurrence: 0 }), 5);
 assert.equal(warningDescription({ type: "Name", snippet: "Jane" }), "Name: Jane");
 assert.equal(warningSnippet({ snippet: " Jane " }), "Jane");
@@ -339,37 +314,5 @@ class FakeFile {
     this.type = options.type;
   }
 }
-
-const transferEvents = [];
-const checklistBundle = { schema: "prerounding_phone_checklist_bundle_v1", patientLabel: "A", checklist: snapshot, answers };
-const returnBundle = { schema: "prerounding_checklist_return_v1", checklistId: snapshot.id, answers };
-const fallbackTransfer = createPhoneTransferController({
-  FileConstructor: FakeFile,
-  getChecklistBundle: () => checklistBundle,
-  getReturnBundle: () => returnBundle,
-  location: { origin: "https://example.test", pathname: "/app" },
-  navigatorObject: {},
-  downloadJson: (name, body) => transferEvents.push({ name, body }),
-  setStatus: (message) => transferEvents.push({ message })
-});
-assert.match(checklistPhoneUrl({ origin: "https://example.test", pathname: "/app" }, checklistBundle), /^https:\/\/example\.test\/app#phone=/);
-await fallbackTransfer.shareChecklist();
-assert.equal(transferEvents[0].name, "prerounding-checklist.bundle.json");
-
-const shared = [];
-const sharedTransfer = createPhoneTransferController({
-  FileConstructor: FakeFile,
-  getChecklistBundle: () => checklistBundle,
-  getReturnBundle: () => returnBundle,
-  location: { origin: "https://example.test", pathname: "/app" },
-  navigatorObject: {
-    canShare: () => true,
-    share: async (payload) => shared.push(payload)
-  },
-  downloadJson: () => assert.fail("native sharing should not download"),
-  setStatus: () => {}
-});
-await sharedTransfer.shareReturn();
-assert.equal(shared[0].files[0].name, "prerounding-checklist-return.bundle.txt");
 
 console.log("UI feature module tests passed");

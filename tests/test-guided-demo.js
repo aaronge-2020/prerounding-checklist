@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { createDemoPatient, DEMO_ASSESSMENT, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS, DEMO_DAY_ID, DEMO_PATIENT_ID, DEMO_PLAN_PROBLEMS, attachDemoObjectiveData } from "../src/ui/demo/session.js";
+import { parsePrimaryTeamNote } from "../src/patient-context/primary-team-note-parser.js";
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 import { DEMO_REVIEW_ACTIONS, demoReviewTransition, createDemoController } from "../src/ui/demo/controller.js";
 import { DEMO_GUIDE_STAGES, DEMO_INFO_STAGES, DEMO_STAGE_NEXT, DEMO_PARSE_NOTE_TEXT, DEMO_DRUG_CHECK_MEDS, DEMO_AI_CHAT_QUESTION, DEMO_AI_CHAT_ANSWER, DEMO_SCRIBE_TRANSCRIPT, DEMO_SCRIBE_NOTE, createDemoPresentation, demoStage } from "../src/ui/demo/presentation.js";
@@ -69,7 +70,7 @@ assert.ok(stageOrder.indexOf("scribe-pro-voice") < stageOrder.indexOf("open-chea
 assert.ok(stageOrder.indexOf("browse-cheat-sheet") < stageOrder.indexOf("write-note"));
 assert.ok(stageOrder.indexOf("write-note") < stageOrder.indexOf("open-prompts"));
 // Info stages explain and advance via the guide bar's Continue button.
-assert.deepEqual([...DEMO_INFO_STAGES].sort(), ["ai-chat-ask", "ai-chat-models", "open-scribe-pro", "parse-note", "scribe-pro-voice"]);
+assert.deepEqual([...DEMO_INFO_STAGES].sort(), ["ai-chat-ask", "ai-chat-models", "browse-cheat-sheet", "open-scribe-pro", "parse-note", "scribe-pro-voice", "write-note"]);
 assert.equal(DEMO_STAGE_NEXT["parse-note"], "open-drug-checks");
 assert.equal(DEMO_STAGE_NEXT["ai-chat-models"], "ai-chat-ask");
 assert.equal(DEMO_STAGE_NEXT["ai-chat-ask"], "open-scribe-pro");
@@ -93,8 +94,30 @@ assert.match(DEMO_AI_CHAT_ANSWER, /86 → 364 → 312/);
 assert.equal(demoStage("browse-cheat-sheet").sheetId, "acute-coronary-syndrome");
 assert.equal(demoStage("check-interactions").targetSelector, '[data-action="drug-checks-check"]');
 assert.equal(demoStage("parse-note").targetSelector, '[data-structured-note-detected="admission"]');
-assert.match(DEMO_PARSE_NOTE_TEXT, /HISTORY OF PRESENT ILLNESS/);
-assert.match(DEMO_PARSE_NOTE_TEXT, /ASSESSMENT AND PLAN/);
+assert.match(DEMO_PARSE_NOTE_TEXT, /History of Present Illness/);
+assert.match(DEMO_PARSE_NOTE_TEXT, /Chief Complaint/);
+assert.match(DEMO_PARSE_NOTE_TEXT, /Laboratory Results/);
+assert.match(DEMO_PARSE_NOTE_TEXT, /Daniel Christopher Morgan/);
+// The parse-note stop pastes the complete admission note: the deterministic
+// parser must section the whole case, not a toy excerpt.
+const demoParse = parsePrimaryTeamNote(DEMO_PARSE_NOTE_TEXT, "hp");
+const expectedDemoFields = ["one_liner", "chief_complaint", "history_of_present_illness", "past_medical_history", "past_surgical_history", "medications", "allergies", "family_history", "social_history", "review_of_systems", "physical_exam", "objective", "assessment", "plan"];
+expectedDemoFields.forEach((fieldId) => {
+  assert.ok(demoParse.detectedFieldIds.includes(fieldId), `the demo parse must detect ${fieldId}`);
+  assert.ok(String(demoParse.sections[fieldId] || "").trim().length > 0, `the demo parse must fill ${fieldId}`);
+});
+// The Draft Note the tour showcases is built from those same parses, so it
+// must be a complete case: one-liner, subjective, exam, objective, A/P.
+const seededDraft = seededPatient.noteDrafts[DEMO_DAY_ID];
+const seededSections = seededDraft.sections || {};
+["one_liner", "interval_events", "patient_report", "physical_exam", "chief_complaint", "history_of_present_illness", "medications", "allergies", "past_medical_history", "family_history", "social_history"].forEach((sectionId) => {
+  assert.ok(String(seededSections[sectionId]?.deidentifiedText || "").trim().length > 0, `the demo draft must fill ${sectionId}`);
+});
+assert.ok(String(seededDraft.objective?.manual?.deidentifiedText || "").match(/troponin/i), "the demo draft objective must include the parsed labs");
+assert.ok(String(seededDraft.objective?.manual?.deidentifiedText || "").match(/ECG/i), "the demo draft objective must include the parsed imaging");
+assert.equal(String(seededSections.one_liner.deidentifiedText), String(demoParse.sections.one_liner).trim(), "the demo one-liner must come from the real parse");
+assert.ok(String(seededDraft.closing?.fen?.deidentifiedText || "").length > 0, "the demo draft must fill FEN");
+assert.ok(String(seededDraft.closing?.disposition?.deidentifiedText || "").length > 0, "the demo draft must fill disposition");
 assert.match(DEMO_DRUG_CHECK_MEDS, /warfarin/i);
 assert.match(DEMO_DRUG_CHECK_MEDS, /fluconazole/i);
 // Info stages render a Continue button; action stages must not.
@@ -111,15 +134,15 @@ const guide = presentation.renderGuide({ session: { stage: "browse-cheat-sheet" 
 assert.match(guide, /Guided demo/);
 assert.match(guide, /Open the ACS cheat sheet/);
 assert.match(guide, /guided-demo-instructions/);
-assert.match(guide, /Click the Acute coronary syndrome \/ NSTEMI\/STEMI sheet/);
+assert.match(guide, /scan the history questions and exam maneuvers/);
 assert.match(guide, /Cheat sheets are read-only/);
 assert.match(guide, /data-action="exit-guided-demo"/);
 assert.match(guide, />Exit demo</);
 assert.doesNotMatch(guide, /Restart demo/);
 assert.doesNotMatch(guide, /demo-answer|demo-generate-prompt|static/i);
 const noteGuide = presentation.renderGuide({ session: { stage: "write-note" }, currentView: "review" });
-assert.match(noteGuide, /Review the complete assessment and plan/);
-assert.match(noteGuide, /fully written synthetic assessment/i);
+assert.match(noteGuide, /Review the complete case note/);
+assert.match(noteGuide, /parsed one-liner, subjective, and exam/i);
 const feedbackGuide = presentation.renderGuide({ session: { stage: "open-prompts" }, currentView: "review" });
 assert.match(feedbackGuide, /Open Prompts/i);
 assert.match(presentation.renderCallout({ stage: demoStage("open-prompts") }), /feedback on the note you wrote/i);
@@ -177,6 +200,7 @@ console.log("Guided demo session tests passed");
   const removedNodes = [];
   const fakeElement = () => ({
     classList: { remove: (...cls) => removedClasses.push(cls.join(" ")) },
+    style: {},
     removeAttribute: (attr) => removedAttrs.push(attr),
     remove: () => removedNodes.push(true)
   });
@@ -216,8 +240,9 @@ console.log("Guided demo session tests passed");
 
 // Regression (Item 2): the cheat-sheets tab restores the last-viewed sheet,
 // so the ACS sheet can already be open when the tour reaches the
-// browse-cheat-sheet stage. The stage must complete through the same path as
-// a fresh click instead of dead-ending with no highlighted control.
+// browse-cheat-sheet stage. browse-cheat-sheet is an info stage: it must
+// never auto-advance on render, and the guide bar's Continue button must
+// complete it, so the tour cannot dead-end with no highlighted control.
 {
   const doc = globalThis.document;
   const priorQuerySelectorAll = doc.querySelectorAll;
@@ -247,7 +272,8 @@ console.log("Guided demo session tests passed");
   controller.render();
   assert.equal(session.stage, "browse-cheat-sheet", "the first render only prepares the stage");
   controller.render();
-  assert.equal(session.stage, "open-review", "an already-open ACS sheet must advance the demo");
+  assert.equal(session.stage, "browse-cheat-sheet", "an info stage must not auto-advance on an already-open sheet");
+  assert.equal(DEMO_STAGE_NEXT["browse-cheat-sheet"], "open-review", "Continue must complete the cheat-sheet stage");
 
   const otherSession = { stage: "browse-cheat-sheet" };
   const otherController = makeController(otherSession, "heart-failure");

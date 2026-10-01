@@ -1,3 +1,5 @@
+import { DEMO_CONTEXT_TEXTS } from "./session.js?v=20261001-demo-v4";
+
 export const DEMO_GUIDE_STAGES = Object.freeze({
   "save-context": {
     view: "daily",
@@ -36,9 +38,9 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     info: true,
     targetSelector: '[data-structured-note-detected="admission"]',
     title: "Paste a note, get sections",
-    instruction: "We pasted a sample admission note for you — heading detection sorted it into sections instantly. With a local AI model loaded, “Parse with local AI” sorts it into verified sections instead. Press Continue.",
+    instruction: "We pasted the full sample admission note for you — heading detection sorted it into sections instantly: one-liner, chief complaint, HPI, histories, meds, exam, labs, assessment, and plan. With a local AI model loaded, “Parse with local AI” sorts it into verified sections instead. Press Continue.",
     calloutTitle: "Note parsing, two speeds",
-    callout: "The deterministic parser finds headings like HPI, Medications, and Assessment and Plan the moment text is pasted — no model needed. Load an on-device model and the Parse with local AI button appears here, sorting the note into verified verbatim sections for de-identification and prompts."
+    callout: "The deterministic parser finds headings like HPI, Medications, and Assessment and Plan the moment text is pasted — no model needed, and the section list on the note shows everything it found. Load an on-device model and the Parse with local AI button appears here, sorting the note into verified verbatim sections for de-identification and prompts."
   },
   "open-drug-checks": {
     view: "drugChecks",
@@ -141,11 +143,11 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "review",
     info: true,
     targetSelector: '[data-action="save-note-draft"]',
-    title: "Review the complete assessment and plan",
-    instruction: "Review the fully written synthetic assessment and problem-oriented plan below. The demo keeps this note only for the temporary session — nothing is saved to your vault. Press Continue.",
+    title: "Review the complete case note",
+    instruction: "Review the complete synthetic case note: the parsed one-liner, subjective, and exam; objective vitals, labs, and medications; and the full assessment and problem-oriented plan. Make any edits you want, then press Continue.",
     helper: "The synthetic tutorial keeps this saved note only for the temporary demo session.",
     calloutTitle: "Review before asking for feedback",
-    callout: "The demo supplies complete synthetic clinical reasoning so you can inspect the whole note. In live use, saving keeps the draft encrypted in your vault."
+    callout: "The draft note is the parsed sample case, not a stub: the admission note's one-liner, subjective, and exam, the day-one update, objective vitals, labs, and medications, plus a complete assessment and plan. Saving keeps the draft local; press Continue when you are done reviewing."
   },
   "open-prompts": {
     view: "prompts",
@@ -188,23 +190,11 @@ export const DEMO_STAGE_NEXT = Object.freeze({
   "write-note": "open-prompts"
 });
 
-// Prefill text staged by the demo controller when entering feature stops.
-export const DEMO_PARSE_NOTE_TEXT = [
-  "HISTORY OF PRESENT ILLNESS:",
-  "Daniel Morgan is a 61-year-old man with coronary artery disease who presents with worsening exertional chest pain and shortness of breath for 3 days. Pain is substernal, pressure-like, radiates to the left arm.",
-  "",
-  "PAST MEDICAL HISTORY:",
-  "Coronary artery disease, hypertension, hyperlipidemia.",
-  "",
-  "MEDICATIONS:",
-  "Aspirin 81 mg daily, atorvastatin 80 mg daily, metoprolol 50 mg twice daily.",
-  "",
-  "PHYSICAL EXAM:",
-  "BP 148/92, HR 96, RR 18, SpO2 96% on room air. Lungs clear. No peripheral edema.",
-  "",
-  "ASSESSMENT AND PLAN:",
-  "NSTEMI — start heparin infusion, cardiology consult for cath."
-].join("\n");
+// The parse-note stop pastes the same complete admission note the tour's
+// first steps de-identify, so the parser showcase runs on the full synthetic
+// case: one-liner, chief complaint, HPI, histories, meds, exam, labs,
+// assessment, and plan.
+export const DEMO_PARSE_NOTE_TEXT = DEMO_CONTEXT_TEXTS.join("\n\n");
 
 export const DEMO_DRUG_CHECK_MEDS = "warfarin 5 mg PO daily\nfluconazole 200 mg PO daily\n";
 
