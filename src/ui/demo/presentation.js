@@ -78,9 +78,13 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     info: true,
     targetSelector: '[data-action="ai-chat-context-inspector"]',
     title: "A grounded answer, staged for the tour",
-    instruction: "We placed a sample question and answer in the chat below — notice how it cites the patient's documents and the literature. Press Continue to move on.",
+    instruction: "Below is the sample question and answer — notice how it cites the patient's documents and the literature. Press Continue to move on.",
     calloutTitle: "Grounded twice over",
-    callout: "The sample answer cites Daniel's own chart (troponin trend, ECG, admission note) and the clinical literature (Fourth Universal Definition of MI). Live answers carry the same citations, and the Context inspector still controls exactly what the chat may see."
+    callout: "The sample answer cites Daniel's own chart (troponin trend, ECG, admission note) and the clinical literature (Fourth Universal Definition of MI). Live answers carry the same citations, and the Context inspector still controls exactly what the chat may see.",
+    demoSample: {
+      kind: "ai-chat",
+      label: "Sample Q&A"
+    }
   },
   "open-scribe-pro": {
     view: "scribePro",
@@ -116,13 +120,14 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   },
   "browse-cheat-sheet": {
     view: "cheatSheets",
+    info: true,
     targetSelector: '[data-cheat-sheets-open="acute-coronary-syndrome"]',
     sheetId: "acute-coronary-syndrome",
     title: "Open the ACS cheat sheet",
-    instruction: "Click the Acute coronary syndrome / NSTEMI/STEMI sheet.",
+    instruction: "The Acute coronary syndrome / NSTEMI/STEMI sheet is open below — scan the history questions and exam maneuvers. Opening it attached the sample case's vitals, labs, ECG, echo, and medications to the hospital day. Press Continue.",
     helper: "Cheat sheets are read-only — no patient is needed.",
     calloutTitle: "Scan the bedside approach",
-    callout: "The ACS sheet lists the history questions to ask and the maneuvers to perform, with why each one matters. Opening it attaches the sample case's vitals, labs, ECG, echo, and medications to the hospital day, so the note-writing step has objective data."
+    callout: "The ACS sheet lists the history questions to ask and the maneuvers to perform, with why each one matters. The sample objective data is now attached to the hospital day, so the note-writing step has what it needs."
   },
   "open-review": {
     view: "review",
@@ -134,12 +139,13 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   },
   "write-note": {
     view: "review",
+    info: true,
     targetSelector: '[data-action="save-note-draft"]',
     title: "Review the complete assessment and plan",
-    instruction: "Review the fully written synthetic assessment and problem-oriented plan, make any edits you want, then click Save encrypted draft.",
+    instruction: "Review the fully written synthetic assessment and problem-oriented plan below. The demo keeps this note only for the temporary session — nothing is saved to your vault. Press Continue.",
     helper: "The synthetic tutorial keeps this saved note only for the temporary demo session.",
     calloutTitle: "Review before asking for feedback",
-    callout: "The demo supplies complete synthetic clinical reasoning so you can inspect the whole note. Saving keeps the draft local and advances only when you explicitly click the button; typing alone never moves the walkthrough forward."
+    callout: "The demo supplies complete synthetic clinical reasoning so you can inspect the whole note. In live use, saving keeps the draft encrypted in your vault."
   },
   "open-prompts": {
     view: "prompts",
@@ -177,7 +183,9 @@ export const DEMO_STAGE_NEXT = Object.freeze({
   "ai-chat-models": "ai-chat-ask",
   "ai-chat-ask": "open-scribe-pro",
   "open-scribe-pro": "scribe-pro-voice",
-  "scribe-pro-voice": "open-cheat-sheets"
+  "scribe-pro-voice": "open-cheat-sheets",
+  "browse-cheat-sheet": "open-review",
+  "write-note": "open-prompts"
 });
 
 // Prefill text staged by the demo controller when entering feature stops.
@@ -221,6 +229,14 @@ export const DEMO_AI_CHAT_ANSWER = [
   "Sample answer staged for the demo — not a live model response."
 ].join("\n");
 
+// Combined Q&A for the tour banner sample (Issue 1 fix: staged answer must be
+// visible in the banner itself, since the dim overlay blocks chat interaction).
+export const DEMO_AI_CHAT_QA = [
+  "Q: " + DEMO_AI_CHAT_QUESTION,
+  "",
+  DEMO_AI_CHAT_ANSWER
+].join("\n");
+
 // Pre-built Scribe Pro sample staged by the demo: a short dictation snippet
 // and the structured note it produces, showing the output format without
 // starting the engine, downloading models, or touching the microphone.
@@ -261,7 +277,7 @@ export function createDemoPresentation({ escapeHtml }) {
   function renderSample(stage) {
     const sample = stage.demoSample;
     if (!sample) return "";
-    const text = sample.kind === "note" ? DEMO_SCRIBE_NOTE : DEMO_SCRIBE_TRANSCRIPT;
+    const text = sample.kind === "note" ? DEMO_SCRIBE_NOTE : sample.kind === "ai-chat" ? DEMO_AI_CHAT_QA : DEMO_SCRIBE_TRANSCRIPT;
     return `
       <details class="guided-demo-sample" data-demo-sample>
         <summary><span class="guided-demo-badge">Sample</span> ${escapeHtml(sample.label)} — staged for the demo, not a live run</summary>

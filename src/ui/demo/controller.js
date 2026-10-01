@@ -60,7 +60,11 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   }
 
   function clearTargetDecorations() {
-    document.querySelectorAll(".demo-next-action").forEach((element) => element.classList.remove("demo-next-action", "demo-pulse"));
+    document.querySelectorAll(".demo-next-action").forEach((element) => {
+      element.classList.remove("demo-next-action", "demo-pulse");
+      element.style.position = "";
+      element.style.zIndex = "";
+    });
     document.querySelectorAll("[data-demo-target]").forEach((element) => element.removeAttribute("data-demo-target"));
     document.querySelectorAll("[data-demo-callout]").forEach((element) => element.remove());
     document.querySelectorAll("[data-demo-dim]").forEach((element) => element.remove());
@@ -181,12 +185,20 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       // without running a live model. Seeded only once per demo run.
       seedAiChatDemo?.({ question: DEMO_AI_CHAT_QUESTION, answer: DEMO_AI_CHAT_ANSWER });
     }
+    if (stageId === "browse-cheat-sheet") {
+      // Attach demo objective data when entering the cheat-sheet step.
+      // Previously done in observeSheetOpened, but browse-cheat-sheet is now
+      // an info stage (Issue 3 fix) so the user advances via Continue.
+      app.vault = {
+        ...app.vault,
+        patients: (app.vault?.patients || []).map((patient) => patient.id === app.vault.activePatientId ? attachDemoObjectiveData(patient) : patient)
+      };
+    }
   }
 
   function render() {
     try { console.log("[demo] render() start, stage:", getSession()?.stage); } catch {}
     clearTargetDecorations();
-    try { console.log("[demo] decorations cleared"); } catch {}
     const session = getSession();
     if (!session) {
       // Every exit path funnels through here. The dim overlay, callout, and
@@ -202,8 +214,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       preparedStage = session.stage;
       preparing = false;
       renderApp();
-      try { console.log("[demo] prepare block done, renderApp called"); } catch {}
-      // Do NOT return early here. The guide bar must be rendered even on
+        // Do NOT return early here. The guide bar must be rendered even on
       // the first pass after a stage change. Previously, the early return
       // left the tour with no visible UI (guide bar cleared but not re-added),
       // making it appear as if the tour had exited.
@@ -218,13 +229,9 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     const isComplete = stageId === "done";
     const targets = targetsForStage(stage, stageId, view, content);
     const target = targets[0] || null;
-    // The cheat-sheets tab restores the last-viewed sheet, so the stage's
-    // sheet can already be open with no clickable card in the DOM. Complete
-    // through the same path as a fresh click; only the exact sheet advances.
-    if (!target && stage.sheetId && getCheatSheetOpenId?.() === stage.sheetId) {
-      observeSheetOpened(stage.sheetId);
-      return;
-    }
+    // Note: browse-cheat-sheet is now an info stage (Issue 3 fix), so we do
+    // NOT auto-advance here. The user presses Continue to advance, ensuring
+    // the banner is always displayed.
     const routeMismatch = view !== stage.view;
     // The guide bar lives in document.body, NOT inside the view's content div.
     // View re-renders (e.g. AI Chat async init) wipe the content div, which
@@ -248,7 +255,6 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       document.body.insertAdjacentHTML("afterbegin", guideHtml);
       try { console.log("[demo] guide bar inserted, found:", !!document.querySelector("[data-demo-guide]")); } catch {}
     } catch (err) {
-      try { console.error("[demo] guide bar insert failed:", err); } catch {}
     }
     if (!isComplete) mountDim();
     if (stageId === "parse-note" && view === "daily") {
@@ -264,10 +270,18 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     // Action stages expose ONLY the highlighted controls above the dim layer;
     // info stages keep the full dim and advance via the guide bar's Continue.
     // Review stages may expose several valid actions (Accept, Confirm all).
-    if (!isInfo) {
+    // Issue 2 fix: info stages with a route mismatch (e.g. open-scribe-pro)
+    // still need their nav target clickable through the dim, so highlight it.
+    const highlightForNav = isInfo && routeMismatch;
+    if (!isInfo || highlightForNav) {
       for (const t of targets) {
         t.classList.add("demo-next-action");
         t.dataset.demoTarget = "true";
+        // Issue 2 fix: ensure the target sits ABOVE the dim overlay (z-index 90).
+        // The CSS .demo-next-action has z-index 2 which is below the dim.
+        // Inline style overrides it to make the target clickable.
+        t.style.position = "relative";
+        t.style.zIndex = "95";
       }
     }
     if (!routeMismatch) mountCallout(target, stage);
@@ -295,10 +309,13 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       const currentTargets = targetsForStage(stage, stageId, view, content);
       const currentTarget = currentTargets[0] || null;
       if (!currentTarget) return;
-      if (!isInfo) {
+      const timerHighlightForNav = isInfo && routeMismatch;
+      if (!isInfo || timerHighlightForNav) {
         for (const t of currentTargets) {
           t.classList.add("demo-next-action");
           t.dataset.demoTarget = "true";
+          t.style.position = "relative";
+          t.style.zIndex = "95";
         }
       }
       if (!routeMismatch) mountCallout(currentTarget, stage);
@@ -308,6 +325,14 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   function observeAction(action) {
     const session = getSession();
     if (!session) return;
+    // Issue 4 fix: Handle exit-guided-demo directly in the controller.
+    // Previously relied on the main app, but vault interaction during demo
+    // could leave the banner orphaned with a non-responsive Exit button.
+    if (action === "exit-guided-demo") {
+      forceCleanup();
+      renderApp();
+      return;
+    }
     if (action === "advance-guided-demo") {
       const next = DEMO_STAGE_NEXT[session.stage];
       if (next) {
