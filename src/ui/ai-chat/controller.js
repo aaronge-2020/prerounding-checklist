@@ -2524,12 +2524,18 @@ export function createAiChatController({
       return true;
     }
     if (action === "ai-chat-sidebar-open") {
+      // Keep the two drawer flags in sync: the narrow Context toggle reads
+      // inspectorOpen, so opening the drawer through any path must set it.
       state.sidebarOpen = true;
+      state.chat.inspectorOpen = true;
       render();
       return true;
     }
     if (action === "ai-chat-sidebar-close") {
+      // Reset both flags: leaving inspectorOpen=true would make the next
+      // narrow Context click toggle it true->false and keep the drawer shut.
       state.sidebarOpen = false;
+      state.chat.inspectorOpen = false;
       render();
       return true;
     }

@@ -194,11 +194,11 @@ const { createAiChatPresentation } = await import("../src/ui/ai-chat/presentatio
   const indexHtml = read("index.html");
   const appJs = read("src/ui/app.js");
   const controllerJs = read("src/ui/ai-chat/controller.js");
-  assert.ok(indexHtml.includes("aichat=v14"), "index.html carries aichat=v14");
-  assert.ok(!indexHtml.includes("aichat=v8"), "no stale aichat=v8 in index.html");
-  assert.ok(appJs.includes("ai-chat/controller.js?v=20260929-ai-chat-v14"), "app.js imports controller v14");
+  assert.ok(indexHtml.includes("aichat=v17"), "index.html carries aichat=v17");
+  assert.ok(!indexHtml.includes("aichat=v16"), "no stale aichat=v16 in index.html");
+  assert.ok(appJs.includes("ai-chat/controller.js?v=20261001-ai-chat-drawer-sync"), "app.js imports controller drawer-sync");
   assert.ok(!appJs.includes("ai-chat-v8"), "no stale v8 in app.js");
-  assert.ok(controllerJs.includes("presentation.js?v=20260929-ai-chat-v14"), "controller imports presentation v14");
+  assert.ok(controllerJs.includes("presentation.js?v=20261001-ai-chat-fix-v1"), "controller imports presentation fix-v1");
   assert.ok(!controllerJs.includes("ai-chat-v8"), "no stale v8 in controller");
   console.log("ok - ai chat cache chain");
 }

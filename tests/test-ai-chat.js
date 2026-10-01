@@ -520,6 +520,44 @@ const base = {
   assert.ok(html.includes('aria-pressed="true"'), "toggle defaults to pressed for older view models");
 }
 
+// ---------------------------------------------------------------------------
+// Sidebar toggle state machine (controller): desktop collapse/expand and the
+// narrow drawer open -> close -> reopen cycle. Regression coverage for the
+// close/reopen state sync: closing the drawer must reset inspectorOpen, or
+// the next Context click toggles it true->false and the drawer stays shut.
+// ---------------------------------------------------------------------------
+
+{
+  // Desktop: Context click collapses the sidebar column; clicking again
+  // re-expands it.
+  const h = makeHarness();
+  assert.ok(!h.html().includes("is-collapsed"), "desktop sidebar starts expanded");
+  h.ctrl.click(actionTarget("ai-chat-context-inspector"));
+  assert.ok(h.html().includes("aic-sidebar is-collapsed"), "desktop Context click collapses the sidebar");
+  h.ctrl.click(actionTarget("ai-chat-context-inspector"));
+  assert.ok(!h.html().includes("is-collapsed"), "second desktop Context click re-expands the sidebar");
+}
+
+{
+  // Narrow: Context opens the drawer, Close closes it, Context reopens it.
+  const h = makeHarness();
+  const realWindow = globalThis.window;
+  globalThis.window = { matchMedia: () => ({ matches: true }) };
+  try {
+    h.ctrl.click(actionTarget("ai-chat-context-inspector"));
+    assert.ok(h.html().includes("aic-sidebar is-open"), "narrow Context click opens the drawer");
+    assert.ok(h.html().includes("aic-side-backdrop"), "drawer renders its backdrop");
+    h.ctrl.click(actionTarget("ai-chat-sidebar-close"));
+    assert.ok(!h.html().includes("aic-sidebar is-open"), "drawer Close hides the drawer");
+    assert.ok(!h.html().includes("aic-side-backdrop"), "drawer Close removes the backdrop");
+    h.ctrl.click(actionTarget("ai-chat-context-inspector"));
+    assert.ok(h.html().includes("aic-sidebar is-open"), "Context reopens the drawer after Close");
+  } finally {
+    if (realWindow === undefined) delete globalThis.window;
+    else globalThis.window = realWindow;
+  }
+}
+
 {
   // Failed de-identification: fail-closed error state, no content, no send.
   const failed = {
