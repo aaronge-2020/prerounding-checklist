@@ -132,6 +132,7 @@ import {
 } from "./redaction/presentation.js?v=20260921-medication-card-v4";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20260929-deid-clinicale5";
+import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261001-llm-verifier-v1";
 import { createDemoController } from "./demo/controller.js?v=20260930-demo-v3";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20260930-demo-v3";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20260930-demo-v3";
@@ -182,7 +183,7 @@ const app = {
   presentationSpecialty: "",
   tokenColorOverrides: loadTokenColorOverrides(),
   smartMenuOpen: false,
-  quickDeid: { input: "", output: "", warnings: [], status: "", review: null, admissionDate: "" },
+  quickDeid: { input: "", output: "", warnings: [], status: "", review: null, admissionDate: "", verifyWithLlm: false },
   drugChecks: { medInput: "", status: "", dataState: "idle", dataError: "", result: null },
   quickDeidBusy: false,
   phiReviews: new Map(),
@@ -1268,7 +1269,7 @@ function clearPhiReviews(scope = "") {
 }
 
 function clearQuickDeidSession() {
-  app.quickDeid = { input: "", output: "", warnings: [], status: "", review: null, admissionDate: "" };
+  app.quickDeid = { input: "", output: "", warnings: [], status: "", review: null, admissionDate: "", verifyWithLlm: Boolean(app.quickDeid.verifyWithLlm) };
 }
 
 // The same annotated document is used by Quick De-ID and Hospital Stay. It is
@@ -1629,12 +1630,16 @@ function renderQuickModelControl() {
 
 function renderQuickDeid() {
   const hasReview = Boolean(app.quickDeid.review);
+  const verifierModel = selectedLlmVerifierModel();
   replaceViewContent(byId("quickDeidContent"), quickDeidPresentation.renderQuickDeid({
     hasReview,
     disabled: Boolean(app.modelPackBusyKey || app.quickDeidBusy),
     busy: app.quickDeidBusy,
     admissionDate: app.quickDeid.admissionDate,
     quickDeidInput: app.quickDeid.input,
+    verifyWithLlm: Boolean(app.quickDeid.verifyWithLlm),
+    verifierModelLabel: verifierModel?.label || "",
+    verifierAvailable: Boolean(verifierModel),
     renderQuickModelControlHtml: renderQuickModelControl(),
     renderQuickDeidReviewHtml: hasReview ? renderQuickDeidReview() : ""
   }));
@@ -3376,6 +3381,7 @@ function insertPromptVariable(token) {
 
 async function runQuickDeid() {
   app.quickDeid.input = byId("quickDeidInput")?.value || "";
+  app.quickDeid.verifyWithLlm = byId("quickDeidVerifyLlm")?.checked ?? app.quickDeid.verifyWithLlm;
   if (!app.quickDeid.input.trim()) {
     setStatus("Paste or type some text to de-identify first.");
     return;
@@ -3389,18 +3395,29 @@ async function runQuickDeid() {
   try {
     await ensureSelectedDeidReady();
     const result = await deidSession.deidentify(app.quickDeid.input, { admissionDate: quickAdmissionDate, skipAdmissionGate: true });
+    let verifierStatus = "";
+    if (app.quickDeid.verifyWithLlm) {
+      verifierStatus = await runQuickDeidLlmVerification({
+        sourceText: app.quickDeid.input,
+        result,
+        currentDate: quickAdmissionDate || null,
+        onStatus: setStatus
+      });
+    }
     app.quickDeid = {
       input: app.quickDeid.input,
+      verifyWithLlm: app.quickDeid.verifyWithLlm,
       output: result.text || "",
       warnings: result.residualWarnings || result.flags || [],
       status: result.modelId ? `Model used: ${result.modelId}` : result.modelStatus || "Structured redaction complete.",
       review: createEphemeralRedactionReview(app.quickDeid.input, result)
     };
-    setStatus("Quick de-identification complete.");
+    setStatus(verifierStatus || "Quick de-identification complete.");
   } catch (error) {
     const message = error instanceof Error ? error.message : "De-identification failed.";
     app.quickDeid = {
       input: app.quickDeid.input,
+      verifyWithLlm: app.quickDeid.verifyWithLlm,
       output: "",
       warnings: [message],
       status: message,

@@ -109,12 +109,30 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
     `;
   }
 
+  function renderQuickDeidVerify({ verifyWithLlm, verifierModelLabel, verifierAvailable }) {
+    const note = verifierAvailable
+      ? `${verifierModelLabel} rereads the note as a second privacy reviewer and flags anything the first pass missed.`
+      : "Select and verify a model in the Local AI view to enable this option.";
+    return `
+      <div class="quick-deid-verify">
+        <label class="quick-deid-verify-label" for="quickDeidVerifyLlm">
+          <input type="checkbox" id="quickDeidVerifyLlm"${verifyWithLlm ? " checked" : ""}${verifierAvailable ? "" : " disabled"}>
+          Verify with local AI (slower)
+        </label>
+        <p class="muted">${escapeHtml(note)}</p>
+      </div>
+    `;
+  }
+
   function renderQuickDeid({
     hasReview,
     disabled,
     busy,
     admissionDate,
     quickDeidInput,
+    verifyWithLlm,
+    verifierModelLabel,
+    verifierAvailable,
     renderQuickModelControlHtml,
     renderQuickDeidReviewHtml
   }) {
@@ -147,6 +165,7 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
           <section class="quick-deid-start">
             <label for="quickDeidInput">Source text</label>
             <textarea id="quickDeidInput" aria-label="Source text" spellcheck="false" placeholder="Paste text from any source">${escapeHtml(quickDeidInput)}</textarea>
+            ${renderQuickDeidVerify({ verifyWithLlm, verifierModelLabel, verifierAvailable })}
             <div class="quick-deid-start-footer">
               <span class="muted">The selected model runs locally. Your text isn't saved by this tool.</span>
               <button class="button--primary" type="button" data-action="run-quick-deid" ${disabled ? "disabled" : ""}>${busy ? '<span class="spinner" aria-hidden="true"></span> De-identifying...' : `${icon("shield")} Run de-identification`}</button>

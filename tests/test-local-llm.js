@@ -27,6 +27,17 @@ import {
   SECTION_SPLIT_VERSION
 } from "../src/local-llm/section-split.js";
 import { splitNoteSectionsWithLlm } from "../src/local-llm/parse.js";
+import {
+  VERIFIER_ALLOWED_TYPES,
+  VERIFIER_CONFIDENCE,
+  VERIFIER_MAX_NOTE_CHARS,
+  VERIFIER_SOURCE,
+  buildVerifierPrompt,
+  dedupeVerifierEntities,
+  extractVerifierJsonArray,
+  mapVerifierSpansToOffsets,
+  runLlmVerifier
+} from "../src/local-llm/verifier.js";
 import { splitThinking, stripThinking } from "../src/local-llm/thinking.js";
 import { MAX_PATIENT_CONTEXT_CHARS, buildPatientContextText } from "../src/local-llm/patient-context.js";
 import { MAX_PRIMARY_NOTE_CHARS, buildPrimaryTeamNoteText } from "../src/local-llm/patient-context.js";
@@ -1065,3 +1076,124 @@ console.log("local-llm import alignment tests passed");
 }
 
 console.log("local-llm parse liveness tests passed");
+
+// --- verifier: prompt, JSON extraction, span mapping, dedupe, soft failure -
+// The LLM verifier is the WebLLM port of the wllama prototype: the local
+// model rereads the note and returns PHI spans as JSON. All fixtures are
+// synthetic and PHI free in the sense that they are invented test strings.
+{
+  // Prompt shape.
+  const { system, user } = buildVerifierPrompt("Note about Jane Smith.");
+  assert.ok(system.includes("ONLY a JSON array"), "system prompt demands a JSON array");
+  for (const type of VERIFIER_ALLOWED_TYPES) {
+    assert.ok(system.includes(type), `system prompt lists ${type}`);
+  }
+  assert.equal(VERIFIER_ALLOWED_TYPES.length, 15, "verifier covers the 15 PHI types");
+  assert.ok(user.startsWith("NOTE:\n<<<\n"), "user message opens the note fence");
+  assert.ok(user.endsWith("\n>>>"), "user message closes the note fence");
+  assert.ok(user.includes("Note about Jane Smith."), "user message carries the note");
+
+  // JSON extraction.
+  assert.deepEqual(
+    extractVerifierJsonArray('[{"text": "Jane Smith", "type": "PATIENT NAME"}]'),
+    [{ text: "Jane Smith", type: "PATIENT NAME" }],
+    "clean array parses"
+  );
+  assert.deepEqual(
+    extractVerifierJsonArray('Here is what I found:\n[{"text": "Jane", "type": "NAME"}]\nDone.'),
+    [{ text: "Jane", type: "NAME" }],
+    "array wrapped in prose parses"
+  );
+  assert.equal(extractVerifierJsonArray("no brackets here"), null, "missing brackets fail");
+  assert.equal(extractVerifierJsonArray("[not json}"), null, "malformed JSON fails");
+  assert.equal(extractVerifierJsonArray('{"text": "x"}'), null, "non array JSON fails");
+
+  // Span mapping.
+  const note = "Jane Smith saw Dr. Alan Ortiz. Jane Smith returns tomorrow.";
+  const mapped = mapVerifierSpansToOffsets(note, [
+    { text: "Jane Smith", type: "PATIENT NAME" },
+    { text: "Alan Ortiz", type: "PROVIDER NAME" },
+    { text: "Nobody Here", type: "NAME" },
+    { text: "Jane Smith", type: "NOT A TYPE" },
+    { text: "", type: "NAME" }
+  ]);
+  assert.equal(mapped.entities.length, 3, "two occurrences of Jane Smith plus Alan Ortiz");
+  assert.deepEqual(
+    mapped.entities[0],
+    { start: 0, end: 10, label: "PATIENT NAME", source: VERIFIER_SOURCE, confidence: VERIFIER_CONFIDENCE },
+    "first occurrence maps to offsets"
+  );
+  assert.deepEqual(
+    [mapped.entities[0].start, mapped.entities[1].start, mapped.entities[2].start],
+    [0, 31, 19],
+    "repeated spans map in source order per item"
+  );
+  assert.equal(mapped.stats.items, 5, "stats count every predicted item");
+  assert.equal(mapped.stats.unmatched, 1, "unmatched predictions are counted");
+  assert.equal(mapped.stats.ambiguous, 1, "repeated spans are counted as ambiguous");
+  assert.equal(mapped.stats.badType, 2, "bad types and empty text are counted");
+
+  // Case sensitivity: the model must copy substrings exactly.
+  const cased = mapVerifierSpansToOffsets("Jane smith", [{ text: "Jane Smith", type: "NAME" }]);
+  assert.equal(cased.entities.length, 0, "mapping is case sensitive");
+  assert.equal(cased.stats.unmatched, 1, "case mismatch counts as unmatched");
+
+  // Dedupe against the first pass.
+  const firstPass = [{ start: 0, end: 10, label: "PATIENT NAME" }];
+  const verifierSpans = [
+    { start: 2, end: 8, label: "NAME", source: VERIFIER_SOURCE },
+    { start: 0, end: 10, label: "PATIENT NAME", source: VERIFIER_SOURCE },
+    { start: 8, end: 20, label: "NAME", source: VERIFIER_SOURCE },
+    { start: 30, end: 40, label: "PHONE", source: VERIFIER_SOURCE },
+    { start: 50, end: 50, label: "ID", source: VERIFIER_SOURCE }
+  ];
+  const novel = dedupeVerifierEntities(firstPass, verifierSpans);
+  assert.deepEqual(
+    novel.map((e) => [e.start, e.end]),
+    [[30, 40]],
+    "covered, identical, and overlapping spans are dropped; disjoint and empty spans handled"
+  );
+  assert.deepEqual(dedupeVerifierEntities([], verifierSpans.slice(3, 4)).length, 1, "no first pass keeps disjoint spans");
+  assert.deepEqual(dedupeVerifierEntities(null, null), [], "null inputs are safe");
+
+  // Orchestration with a stubbed chat function.
+  const seen = [];
+  const fakeChat = async (messages, opts) => {
+    seen.push({ messages, opts });
+    return '[{"text": "Jane Smith", "type": "PATIENT NAME"}]';
+  };
+  const ok = await runLlmVerifier(fakeChat, note);
+  assert.equal(ok.entities.length, 2, "orchestrator maps stubbed JSON to entities");
+  assert.equal(ok.stats.parseFailed, false, "clean run is not a parse failure");
+  assert.equal(ok.stats.error, "", "clean run has no error");
+  assert.equal(seen.length, 1, "one model call per verification");
+  assert.equal(seen[0].messages.length, 2, "system plus user messages");
+  assert.equal(seen[0].opts.temperature, 0, "verification is deterministic");
+  assert.equal(
+    seen[0].opts.chatOpts?.extraBody?.enable_thinking,
+    false,
+    "verification disables chain of thought so the token budget goes to JSON"
+  );
+  assert.ok(seen[0].opts.timeoutMs > 0, "verification sets a generation timeout");
+  assert.ok(seen[0].opts.maxTokens > 0, "verification sets an output budget");
+
+  // Soft failure: the chat throws.
+  const failing = await runLlmVerifier(async () => { throw new Error("engine exploded"); }, note);
+  assert.deepEqual(failing.entities, [], "chat failure yields no entities");
+  assert.match(failing.stats.error, /engine exploded/, "chat failure reason is reported");
+
+  // Soft failure: unparseable model output.
+  const garbled = await runLlmVerifier(async () => "no json here", note);
+  assert.deepEqual(garbled.entities, [], "unparseable output yields no entities");
+  assert.equal(garbled.stats.parseFailed, true, "unparseable output is flagged");
+
+  // Long notes are truncated with disclosure.
+  const long = await runLlmVerifier(fakeChat, "x".repeat(VERIFIER_MAX_NOTE_CHARS + 10));
+  assert.equal(long.stats.truncated, true, "overlong notes are truncated");
+  assert.ok(
+    seen[seen.length - 1].messages[1].content.length <= VERIFIER_MAX_NOTE_CHARS + 20,
+    "truncated note fits the context budget"
+  );
+}
+
+console.log("local-llm verifier tests passed");
