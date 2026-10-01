@@ -56,22 +56,6 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     instruction: "We filled in warfarin and fluconazole. Click Check interactions.",
     calloutTitle: "A Major interaction, found locally",
     callout: "The checker resolves both drugs to RxNorm ingredients and looks up every pair in the bundled database — 210,360 interaction pairs shipped with the app. Warfarin + fluconazole is Major: fluconazole inhibits warfarin metabolism and raises bleeding risk."
-  },,
-  "open-scores": {
-    view: "scores",
-    navTarget: "scores",
-    title: "Clinical calculators",
-    instruction: "Click Models in the sidebar.",
-    calloutTitle: "Native scores, no MDCalc needed",
-    callout: "The Models page runs clinical calculators locally — GRACE, HEART, TIMI, CHA2DS2-VASc, ASCVD, and more. They match MDCalc exactly, pull values from your patient's chart, and never send data anywhere."
-  },
-  "calculate-grace": {
-    view: "scores",
-    targetSelector: '[data-score-open="grace"]',
-    title: "Run the GRACE score",
-    instruction: "Click GRACE. The inputs are already filled from his chart — age 61, heart rate 82, systolic 128, creatinine 1.0, Killip I, ST deviation, positive troponin.",
-    calloutTitle: "Risk-stratify the NSTEMI",
-    callout: "GRACE estimates his risk of death or MI at 6 months. The inputs pull from the vitals and labs you saved — calculators read your chart automatically. Every score here matches MDCalc exactly and runs fully on-device."
   },
   "open-ai-chat": {
     view: "aiChat",
@@ -188,7 +172,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "prompts",
     title: "You know the workflow",
     instruction: "You did every step yourself. Here is what you can now do on a real case.",
-    helper: "You can now: De-identify a note and review every redaction before saving. Parse a pasted note into sections. Check drug interactions. Calculate clinical scores like GRACE from chart data. Ask the AI Chat a question and read a cited answer. Dictate with Scribe Pro. Pull up a bedside cheat sheet. Edit your draft note. Build a de-identified prompt for feedback. The rule held throughout: de-identify first, work second. Nothing from this demo was written to your vault. Click Exit demo, then try the Sample Notes library (9 more charts), Drug Lookup, Quick De-ID, or the Vault roster.",
+    helper: "You can now: De-identify a note and review every redaction before saving. Parse a pasted note into sections. Check drug interactions. Ask the AI Chat a question and read a cited answer. Dictate with Scribe Pro. Pull up a bedside cheat sheet. Edit your draft note. Build a de-identified prompt for feedback. The rule held throughout: de-identify first, work second. Nothing from this demo was written to your vault. Click Exit demo, then try it with your own case.",
     calloutTitle: "Try it yourself",
     callout: "Exit the demo and run the same workflow: add your own admission note, de-identify it, parse it, check interactions, and draft your note. The Models page has the local AI models when you are ready."
   }

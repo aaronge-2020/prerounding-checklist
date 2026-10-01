@@ -57,14 +57,12 @@ assert.equal(demoReviewTransition("continue-section-review", true), "preserve-re
 assert.equal(demoReviewTransition("keep-reviewed-redaction", false), "complete-review");
 assert.equal(demoReviewTransition("copy-prompt", false), "unrelated");
 assert.match(demoStage("context-review").instruction, /Accept.*one change at a time/i);
-assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 22);
+assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 20);
 const stageOrder = Object.keys(DEMO_GUIDE_STAGES);
 assert.ok(stageOrder.indexOf("daily-review") < stageOrder.indexOf("parse-note"));
 assert.ok(stageOrder.indexOf("parse-note") < stageOrder.indexOf("open-drug-checks"));
 assert.ok(stageOrder.indexOf("open-drug-checks") < stageOrder.indexOf("check-interactions"));
-assert.ok(stageOrder.indexOf("check-interactions") < stageOrder.indexOf("open-scores"));
-assert.ok(stageOrder.indexOf("open-scores") < stageOrder.indexOf("calculate-grace"));
-assert.ok(stageOrder.indexOf("calculate-grace") < stageOrder.indexOf("open-ai-chat"));
+assert.ok(stageOrder.indexOf("check-interactions") < stageOrder.indexOf("open-ai-chat"));
 assert.ok(stageOrder.indexOf("ai-chat-models") < stageOrder.indexOf("ai-chat-ask"));
 assert.ok(stageOrder.indexOf("ai-chat-ask") < stageOrder.indexOf("open-scribe-pro"));
 assert.ok(stageOrder.indexOf("open-scribe-pro") < stageOrder.indexOf("scribe-pro-voice"));
@@ -78,9 +76,7 @@ assert.equal(DEMO_STAGE_NEXT["open-scribe-pro"], "scribe-pro-voice");
 assert.equal(DEMO_STAGE_NEXT["scribe-pro-voice"], "open-cheat-sheets");
 // New feature stops carry the required hooks and prefills.
 assert.equal(demoStage("open-drug-checks").navTarget, "drugChecks");
-assert.equal(demoStage("open-scores").navTarget, "scores");
 assert.equal(demoStage("open-ai-chat").navTarget, "aiChat");
-assert.equal(demoStage("calculate-grace").targetSelector, '[data-score-open="grace"]');
 assert.equal(demoStage("open-scribe-pro").info, true);
 assert.equal(demoStage("scribe-pro-voice").info, true);
 // The scribe stops show pre-built samples instead of starting the engine.
