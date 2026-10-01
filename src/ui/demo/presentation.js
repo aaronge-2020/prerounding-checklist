@@ -56,7 +56,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     instruction: "We filled in warfarin and fluconazole. Click Check interactions.",
     calloutTitle: "A Major interaction, found locally",
     callout: "The checker resolves both drugs to RxNorm ingredients and looks up every pair in the bundled database — 210,360 interaction pairs shipped with the app. Warfarin + fluconazole is Major: fluconazole inhibits warfarin metabolism and raises bleeding risk."
-  },
+  },,
   "open-scores": {
     view: "scores",
     navTarget: "scores",
@@ -72,7 +72,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     instruction: "Click GRACE. The inputs are already filled from his chart — age 61, heart rate 82, systolic 128, creatinine 1.0, Killip I, ST deviation, positive troponin.",
     calloutTitle: "Risk-stratify the NSTEMI",
     callout: "GRACE estimates his risk of death or MI at 6 months. The inputs pull from the vitals and labs you saved — calculators read your chart automatically. Every score here matches MDCalc exactly and runs fully on-device."
-  }
+  },
   "open-ai-chat": {
     view: "aiChat",
     navTarget: "aiChat",
