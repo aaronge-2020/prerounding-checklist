@@ -1940,7 +1940,8 @@ async function unlockVault() {
     showVaultUnlockError("Enter the vault passphrase to continue.");
     return;
   }
-  if (!readEncryptedVaultRecord() && passphrase.length < 12) {
+  const isCreatingVault = !readEncryptedVaultRecord();
+  if (isCreatingVault && passphrase.length < 12) {
     showVaultUnlockError("Use a passphrase with at least 12 characters to create this vault.");
     return;
   }
@@ -1948,7 +1949,11 @@ async function unlockVault() {
   try {
     vault = await loadOrCreateVault(passphrase);
   } catch {
-    showVaultUnlockError("Could not unlock this vault. Check the passphrase and try again.");
+    if (isCreatingVault) {
+      showVaultUnlockError("Could not create this vault. Try a different passphrase.");
+    } else {
+      showVaultUnlockError("Could not unlock this vault. Check the passphrase and try again.");
+    }
     return;
   }
   // Decryption succeeded, so the vault is unlocked as of here. The guideline

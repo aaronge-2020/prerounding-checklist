@@ -8,6 +8,10 @@
 // - The old NLM RxNav Interaction API was discontinued 2024-01-02; pairwise
 //   checking here uses the DDInter 2.0 dataset (Xiong et al., Nucleic Acids
 //   Res. 2025) in interactions-data.js, keyed by ingredient RxCUI.
+// Mechanism text comes from the full DDInter bundle via ddi-query.js
+// (lookupInteraction), which joins pair records to mechanism descriptions.
+
+import { lookupInteraction } from "../../drug-data/ddi-query.js?v=20261001-drug-data-v2";
 
 export const RXNAV_BASE = "https://rxnav.nlm.nih.gov/REST";
 export const OPENFDA_BASE = "https://api.fda.gov/drug/label.json";
@@ -180,6 +184,8 @@ export function checkPairs(resolvedDrugs, ddiLookup) {
       const leftKeys = new Set([left.rxcui, ...(left.ingredientRxcuis || []).map((x) => x.rxcui)].filter(Boolean).map(String));
       const rightKeys = new Set([right.rxcui, ...(right.ingredientRxcuis || []).map((x) => x.rxcui)].filter(Boolean).map(String));
       let bestSeverity = -1;
+      let bestKeyA = null;
+      let bestKeyB = null;
       for (const lk of leftKeys) {
         for (const rk of rightKeys) {
           if (lk === rk) continue;
@@ -187,6 +193,8 @@ export function checkPairs(resolvedDrugs, ddiLookup) {
           const s = lookupMap.get(key);
           if (s !== undefined && (bestSeverity === -1 || s < bestSeverity)) {
             bestSeverity = s;
+            bestKeyA = lk;
+            bestKeyB = rk;
           }
         }
       }
@@ -195,11 +203,18 @@ export function checkPairs(resolvedDrugs, ddiLookup) {
       if (seen.has(pairKey)) continue;
       seen.add(pairKey);
       const severityLabel = DDI_SEVERITY_LABEL[bestSeverity] || "moderate";
+      // Mechanism text from the full DDInter bundle, joined on the specific
+      // RxCUIs that matched. lookupInteraction returns null when the pair
+      // isn't in the bundle; the finding then carries empty lists and the
+      // view omits the mechanism section (never invented).
+      const detail = bestKeyA && bestKeyB ? lookupInteraction(bestKeyA, bestKeyB) : null;
       findings.push({
         drugA: left.name || left.input,
         drugB: right.name || right.input,
         severity: severityLabel,
         description: ddiDescription(severityLabel),
+        mechanisms: detail?.mechanisms || [],
+        mechanismCategories: detail?.mechanismCategories || [],
         source: "DDInter 2.0"
       });
     }

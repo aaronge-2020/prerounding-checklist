@@ -36,6 +36,21 @@ export function createDrugLookupPresentation({ escapeHtml, icon }) {
     return `<span class="severity-badge severity-badge--${level}">${label}</span>`;
   }
 
+  const MECH_CATEGORY_LABELS = {
+    absorption: "Absorption",
+    distribution: "Distribution",
+    metabolism: "Metabolism",
+    excretion: "Excretion",
+    synergistic_effect: "Synergistic effect",
+    antagonistic_effect: "Antagonistic effect",
+    others: "Other mechanism"
+  };
+
+  function prettyCategory(c) {
+    const key = String(c || "").trim();
+    return MECH_CATEGORY_LABELS[key] || key.replace(/_/g, " ");
+  }
+
   function renderFindings(findings) {
     if (!findings.length) {
       return `
@@ -48,25 +63,43 @@ export function createDrugLookupPresentation({ escapeHtml, icon }) {
     }
     return `
       <ul class="interaction-list">
-        ${findings.map((finding) => `
+        ${findings.map((finding) => {
+          const mechanisms = (finding.mechanisms || [])
+            .map((m) => `<li>${escapeHtml(String(m || ""))}</li>`)
+            .join("");
+          const categories = (finding.mechanismCategories || [])
+            .map((c) => `<span class="dc-mech-cat">${escapeHtml(prettyCategory(c))}</span>`)
+            .join("");
+          return `
           <li class="interaction-card interaction-card--${String(finding.severity || "").toLowerCase()}">
             <div class="interaction-card-head">
               ${renderSeverityBadge(finding.severity)}
               <strong>${escapeHtml(finding.drugA)} + ${escapeHtml(finding.drugB)}</strong>
             </div>
             <p>${escapeHtml(finding.description)}</p>
+            ${mechanisms ? `<ul class="dc-mech">${mechanisms}</ul>` : ""}
+            ${categories ? `<p class="dc-mech-cats" aria-label="Mechanism categories">${categories}</p>` : ""}
             <p class="muted"><small>Source: ${escapeHtml(finding.source)}</small></p>
-          </li>`).join("")}
+          </li>`;
+        }).join("")}
       </ul>`;
   }
 
   function renderChecker(state) {
-    const { drugs, busy, error, findings, checked, patientLabel } = state;
+    const { drugs, busy, error, findings, checked, patientLabel, drugsSource } = state;
     const hasMeds = drugs.length > 0;
+    // The subtitle names where the list actually came from: the MAR, manual
+    // entry, or a mix of both — never claims "pulled from the MAR" when the
+    // user typed the drugs in by hand.
+    const sourceText = drugsSource === "mar"
+      ? "pulled automatically from the MAR on this device"
+      : drugsSource === "mixed"
+        ? "from the MAR on this device plus drugs added manually"
+        : "entered manually";
     return `
       <section class="card" aria-labelledby="drug-checker-heading">
         <h3 id="drug-checker-heading">Interaction checker</h3>
-        ${hasMeds ? `<p class="muted">Checking ${drugs.length} medication${drugs.length === 1 ? "" : "s"}${patientLabel ? ` for <strong>${escapeHtml(patientLabel)}</strong>` : ""}, pulled automatically from the MAR on this device.</p>` : `
+        ${hasMeds ? `<p class="muted">Checking ${drugs.length} medication${drugs.length === 1 ? "" : "s"}${patientLabel ? ` for <strong>${escapeHtml(patientLabel)}</strong>` : ""}, ${sourceText}.</p>` : `
         <p class="muted">No medications on file — open a patient with a MAR, or add drugs below to check manually.</p>`}
         <p class="muted">Each drug is matched against RxNorm, then checked pairwise against
         DDInter 2.0 (major + moderate interactions).</p>

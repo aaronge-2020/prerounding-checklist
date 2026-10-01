@@ -26,6 +26,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   let calloutFrame = 0;
   let preparedStage = null;
   let preparing = false;
+  let repositionTimer = 0;
 
   function visibleTarget(container, selector) {
     return [...(container?.querySelectorAll(selector) || [])].find((element) => element.getClientRects().length > 0) || null;
@@ -63,9 +64,21 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     document.querySelectorAll("[data-demo-target]").forEach((element) => element.removeAttribute("data-demo-target"));
     document.querySelectorAll("[data-demo-callout]").forEach((element) => element.remove());
     document.querySelectorAll("[data-demo-dim]").forEach((element) => element.remove());
+    document.querySelectorAll("[data-demo-guide]").forEach((element) => element.remove());
     activeCalloutTarget = null;
     if (calloutFrame) cancelAnimationFrame(calloutFrame);
     calloutFrame = 0;
+    if (repositionTimer) clearTimeout(repositionTimer);
+    repositionTimer = 0;
+  }
+
+  // Explicit teardown for exit paths: removes every tour DOM node even if the
+  // render cycle is interrupted or a view re-render wiped the guide bar.
+  // Safe to call when no tour is active.
+  function forceCleanup() {
+    clearTargetDecorations();
+    try { clearAiChatDemo?.(); } catch { /* ephemeral; never block exit */ }
+    preparedStage = null;
   }
 
   function positionCallout() {
@@ -171,16 +184,13 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   }
 
   function render() {
-    document.querySelectorAll("[data-demo-guide]").forEach((element) => element.remove());
     clearTargetDecorations();
     const session = getSession();
     if (!session) {
       // Every exit path funnels through here. The dim overlay, callout, and
       // highlight classes must not survive the demo, or the screen stays dark
       // and unclickable. Demo-seeded chat messages are ephemeral too.
-      clearTargetDecorations();
-      clearAiChatDemo?.();
-      preparedStage = null;
+      forceCleanup();
       return;
     }
     if (!preparing && preparedStage !== session.stage) {
@@ -208,7 +218,12 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       return;
     }
     const routeMismatch = view !== stage.view;
-    content.insertAdjacentHTML(
+    // The guide bar lives in document.body, NOT inside the view's content div.
+    // View re-renders (e.g. AI Chat async init) wipe the content div, which
+    // used to delete the guide bar while leaving the dim overlay and callout
+    // behind — a dead-end with no Continue/Exit controls. In body, the bar
+    // survives re-renders; render() removes and re-inserts it each cycle.
+    document.body.insertAdjacentHTML(
       "afterbegin",
       presentation.renderGuide({
         session,
@@ -247,7 +262,9 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       if (!stage.navTarget && view === stage.view) target.scrollIntoView({ block: "center", behavior: "smooth" });
       scheduleCalloutPosition();
     });
-    setTimeout(() => {
+    if (repositionTimer) clearTimeout(repositionTimer);
+    repositionTimer = setTimeout(() => {
+      repositionTimer = 0;
       if (getSession()?.stage !== stageId) return;
       clearTargetDecorations();
       if (getSession()?.stage !== "done") mountDim();
@@ -352,5 +369,5 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     renderApp();
   }
 
-  return { observeAction, observeChange, observeDraftSaved, observeInput, observeNavigation, observeSheetOpened, render };
+  return { observeAction, observeChange, observeDraftSaved, observeInput, observeNavigation, observeSheetOpened, render, forceCleanup };
 }

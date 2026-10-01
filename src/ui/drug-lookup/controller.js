@@ -26,6 +26,11 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
     checked: false,
     autoLoadedFor: null,
     patientLabel: "",
+    // Where the drug list came from: "mar" (auto-loaded), "manual" (typed
+    // by hand), "mixed" (MAR base plus manual adds), or "" (empty/unknown).
+    // Drives the checker's subtitle so it never claims MAR when the user
+    // typed the drugs in.
+    drugsSource: "",
     datasetSource: `${DDI_DATASET_SOURCE} (dataset ${DDI_DATASET_VERSION})`,
     indicationLookup: { query: "", busy: false, error: "", result: null, searched: false }
   };
@@ -135,6 +140,7 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
       return;
     }
     setDrugsFromNames(names);
+    state.drugsSource = "mar";
     state.checked = false;
     state.error = "";
     // Run the check in the background; render() is called by checkInteractions.
@@ -150,6 +156,10 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
     }
     state.drugs.push({ input, name: "", rxcui: null, ingredientRxcuis: [], unresolved: false, pending: true });
     state.checked = false;
+    // Track the list's provenance for the subtitle: a manual add on top of
+    // a MAR-loaded list makes it mixed; otherwise it's manual entry.
+    if (state.drugsSource === "mar") state.drugsSource = "mixed";
+    else if (!state.drugsSource) state.drugsSource = "manual";
     // The auto-load key is left alone: as long as the MAR itself hasn't
     // changed, re-renders keep the manually edited list. Run the check on
     // the current list so the new drug is actually evaluated.
@@ -216,6 +226,7 @@ export function createDrugLookupController({ presentation, render, setStatus, ge
       state.checked = false;
       state.error = "";
       state.checkQueued = false;
+      state.drugsSource = "";
       render();
       return true;
     }
