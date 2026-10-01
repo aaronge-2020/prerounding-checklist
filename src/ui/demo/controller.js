@@ -305,12 +305,35 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       }
     }
     if (stageId === "ai-chat-ask" && view === "aiChat") {
+      // Ensure the staged reply is armed (re-arm on every render in case the
+      // stage was re-entered without prepareStage running).
+      setAiChatDemoReply?.(DEMO_AI_CHAT_HANDS_ON_ANSWER, () => {
+        try {
+          const session = getSession?.();
+          if (session && session.stage === "ai-chat-ask") {
+            session.stage = "ai-chat-read";
+          }
+        } catch {}
+      });
       // Pre-fill the chat composer with the suggested question (only if empty).
       const input = content.querySelector("[data-ai-chat-input]");
       if (input && !String(input.value || input.textContent || "").trim()) {
         if ("value" in input) input.value = DEMO_AI_CHAT_HANDS_ON_QUESTION;
         else input.textContent = DEMO_AI_CHAT_HANDS_ON_QUESTION;
         input.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+      // Ensure the composer and Send button are enabled for the demo, even
+      // with no model installed. The tour promises "no model needed", so we
+      // directly enable the controls via DOM (more reliable than the render
+      // flag, which can miss re-renders).
+      if (input) {
+        input.setAttribute("contenteditable", "true");
+        input.removeAttribute("disabled");
+      }
+      const sendBtn = content.querySelector('[data-action="ai-chat-send"]');
+      if (sendBtn) {
+        sendBtn.removeAttribute("disabled");
+        sendBtn.removeAttribute("aria-disabled");
       }
     }
     if (!target) return;
