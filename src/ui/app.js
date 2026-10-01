@@ -1854,7 +1854,10 @@ async function handleClick(event) {
       dailySourceController.selectSourceKind("admission", target.dataset.sourceKind || DEFAULT_DAILY_SOURCE_KIND);
       // Surgical: see above.
     }
-    if (dailySourceController.handleStructuredNoteAction(target)) return;
+    if (dailySourceController.handleStructuredNoteAction(target)) {
+      demoController.observeAction(action);
+      return;
+    }
     if (action === "move-section-up")
       await mutateSections(target.dataset.scope, (sections) => reorderSections(sections, target.dataset.sectionId, "up"));
     if (action === "move-section-down")
