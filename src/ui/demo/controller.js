@@ -73,6 +73,12 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       element.style.zIndex = "";
     });
     document.querySelectorAll("[data-demo-target]").forEach((element) => element.removeAttribute("data-demo-target"));
+    // Clean up adaptively lifted ancestors.
+    document.querySelectorAll("[data-demo-lifted]").forEach((element) => {
+      element.style.position = "";
+      element.style.zIndex = "";
+      element.removeAttribute("data-demo-lifted");
+    });
     document.querySelectorAll("[data-demo-callout]").forEach((element) => element.remove());
     document.querySelectorAll("[data-demo-dim]").forEach((element) => element.remove());
     document.querySelectorAll("[data-demo-guide]").forEach((element) => element.remove());
@@ -362,6 +368,35 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       // for action stages).
       t.style.position = "relative";
       t.style.zIndex = "95";
+      // If an ancestor creates a stacking context (transform, filter, etc.),
+      // the target's z-index is contained and the dim may still cover it.
+      // Check via elementFromPoint and lift ancestors minimally, only if needed.
+      // (Lifting all ancestors unconditionally breaks the dim for other steps.)
+      requestAnimationFrame(() => {
+        try {
+          const rect = t.getBoundingClientRect();
+          if (rect.width === 0 || rect.height === 0) return;
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const topEl = document.elementFromPoint(cx, cy);
+          if (topEl && (topEl === t || t.contains(topEl))) return; // Already on top
+          // Target is obscured: lift ancestors one by one until visible.
+          let ancestor = t.parentElement;
+          while (ancestor && ancestor !== document.body) {
+            const computed = window.getComputedStyle(ancestor);
+            const currentZ = parseInt(computed.zIndex, 10);
+            if (isNaN(currentZ) || currentZ < 95) {
+              if (computed.position === "static") ancestor.style.position = "relative";
+              ancestor.style.zIndex = "95";
+              ancestor.dataset.demoLifted = "true";
+            }
+            // Re-check if target is now on top
+            const newTop = document.elementFromPoint(cx, cy);
+            if (newTop && (newTop === t || t.contains(newTop))) break;
+            ancestor = ancestor.parentElement;
+          }
+        } catch {}
+      });
     }
     if (!routeMismatch) mountCallout(target, stage);
     requestAnimationFrame(() => {
