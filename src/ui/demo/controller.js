@@ -28,6 +28,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   let preparedStage = null;
   let preparing = false;
   let repositionTimer = 0;
+  let sendButtonObserver = null;
 
   function visibleTarget(container, selector) {
     return [...(container?.querySelectorAll(selector) || [])].find((element) => element.getClientRects().length > 0) || null;
@@ -61,6 +62,11 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   }
 
   function clearTargetDecorations() {
+    // Disconnect the Send button observer when leaving the stage.
+    if (sendButtonObserver) {
+      sendButtonObserver.disconnect();
+      sendButtonObserver = null;
+    }
     document.querySelectorAll(".demo-next-action").forEach((element) => {
       element.classList.remove("demo-next-action", "demo-pulse");
       element.style.position = "";
@@ -323,17 +329,30 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
         input.dispatchEvent(new Event("input", { bubbles: true }));
       }
       // Ensure the composer and Send button are enabled for the demo, even
-      // with no model installed. The tour promises "no model needed", so we
-      // directly enable the controls via DOM (more reliable than the render
-      // flag, which can miss re-renders).
-      if (input) {
-        input.setAttribute("contenteditable", "true");
-        input.removeAttribute("disabled");
-      }
-      const sendBtn = content.querySelector('[data-action="ai-chat-send"]');
-      if (sendBtn) {
-        sendBtn.removeAttribute("disabled");
-        sendBtn.removeAttribute("aria-disabled");
+      // with no model installed. The tour promises "no model needed".
+      // Use a MutationObserver to persistently keep the Send button enabled,
+      // since the ai-chat view may re-render and re-disable it.
+      const enableSendButton = () => {
+        const sendBtn = content.querySelector('[data-action="ai-chat-send"]');
+        if (sendBtn && sendBtn.hasAttribute("disabled")) {
+          sendBtn.removeAttribute("disabled");
+          sendBtn.removeAttribute("aria-disabled");
+        }
+        if (input) {
+          input.setAttribute("contenteditable", "true");
+          input.removeAttribute("disabled");
+        }
+      };
+      enableSendButton();
+      // Set up observer to re-enable if the view re-renders.
+      if (!sendButtonObserver) {
+        sendButtonObserver = new MutationObserver(enableSendButton);
+        sendButtonObserver.observe(content, {
+          attributes: true,
+          attributeFilter: ["disabled"],
+          subtree: true,
+          childList: true
+        });
       }
     }
     if (!target) return;
