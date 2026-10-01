@@ -361,6 +361,12 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   function observeAction(action) {
     const session = getSession();
     if (!session) return;
+    // GRACE score selection advances the tour
+    if (action === "score-open-grace") {
+      if (session.stage === "calculate-grace") session.stage = "open-ai-chat";
+      renderApp();
+      return;
+    }
     // Issue 4 fix: Handle exit-guided-demo directly in the controller.
     // Previously relied on the main app, but vault interaction during demo
     // could leave the banner orphaned with a non-responsive Exit button.
@@ -405,7 +411,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       // a successful check whose results are already painted. Never advance
       // on the click alone (the check is async); and only from the matching
       // stage so stray checks can't skip the tour ahead.
-      if (session.stage === "check-interactions") session.stage = "open-ai-chat";
+      if (session.stage === "check-interactions") session.stage = "open-scores";
       renderApp();
       return;
     }
@@ -457,6 +463,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     const session = getSession();
     if (!session) return;
     if (session.stage === "open-drug-checks" && view === "drugChecks") session.stage = "check-interactions";
+    if (session.stage === "open-scores" && view === "scores") session.stage = "calculate-grace";
     if (session.stage === "open-ai-chat" && view === "aiChat") session.stage = "ai-chat-models";
     if (session.stage === "open-cheat-sheets" && view === "cheatSheets") session.stage = "browse-cheat-sheet";
     if (session.stage === "open-review" && view === "review") session.stage = "write-note";
