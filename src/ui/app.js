@@ -447,7 +447,8 @@ const sampleNotesController = createSampleNotesController({
   updateDeidOperation,
   persistVault,
   setSectionDraftText,
-  beginSectionReview
+  beginSectionReview,
+  clearPatientScopedSession
 });
 const dailySourceController = createDailySourceController({
   app,

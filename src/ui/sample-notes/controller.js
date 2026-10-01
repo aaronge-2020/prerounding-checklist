@@ -40,7 +40,8 @@ export function createSampleNotesController({
   updateDeidOperation,
   persistVault,
   setSectionDraftText,
-  beginSectionReview
+  beginSectionReview,
+  clearPatientScopedSession
 }) {
   const presentation = createSampleNotesPresentation({ escapeHtml, icon });
   const state = { expandedId: null, sections: {}, importing: null, addAllRunning: false };
@@ -126,6 +127,11 @@ export function createSampleNotesController({
   }
 
   function openPatientInHospitalStay(patient, message) {
+    // Patient boundary: opening an already-imported chart switches the
+    // active patient, so the previous patient's in-memory draft/review
+    // session must not leak into the newly opened chart. The guard keeps a
+    // re-open of the already-active patient from wiping its own session.
+    if (app.vault?.activePatientId !== patient.id) clearPatientScopedSession();
     app.vault = upsertPatient(app.vault, patient, { activate: true });
     beginSectionReview("context");
     app.view = "daily";
@@ -195,6 +201,13 @@ export function createSampleNotesController({
           importedAt: new Date().toISOString()
         }
       });
+      // Patient boundary: the import activates a brand-new patient, so the
+      // previous patient's in-memory draft/review session must not survive.
+      // This runs only after every source de-identified cleanly, so a failed
+      // import leaves the still-active patient's session untouched. The new
+      // patient's ephemeral reviews are registered after the clear below.
+      clearPatientScopedSession();
+      app.vault = upsertPatient(app.vault, patient, { activate: true });
       // Ephemeral review state per imported source: raw fixture text stays
       // in memory only, exactly like a freshly de-identified paste.
       sections.forEach((section, index) => {
@@ -202,7 +215,6 @@ export function createSampleNotesController({
         app.phiReviews.set(reviewKey("context", section.id), createEphemeralRedactionReview(part.sourceText, result));
         setSectionDraftText("context", section.id, section.deidentifiedText);
       });
-      app.vault = upsertPatient(app.vault, patient, { activate: true });
       await persistVault(`"${note.title}" de-identified and added to your vault as ${sections.length} admission sources.`);
       updateDeidOperation({ active: false, message: `${sections.length} sources de-identified and saved locally.` });
       state.importing = null;
