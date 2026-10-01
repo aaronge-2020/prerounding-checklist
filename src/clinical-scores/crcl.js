@@ -40,7 +40,8 @@ export const CRCL_INPUTS = [
     options: [
       { value: "male", label: "Male" },
       { value: "female", label: "Female" }
-    ]
+    ],
+    pull: { kind: "demographic", field: "sex" }
   },
   {
     key: "ageYears",

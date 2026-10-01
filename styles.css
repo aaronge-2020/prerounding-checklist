@@ -13956,3 +13956,12 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .dc-none { font-size: 14px; }
 .dc-foot { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 10px; font-size: 12px; color: var(--muted); display: grid; gap: 4px; }
 .dc-foot p { margin: 0; }
+
+/* Sample Notes "Try with this chart" coverage (2026-10-01) */
+.sample-note-coverage { background: var(--surface-subtle); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.sample-note-coverage-title { font-size: 0.8rem; font-weight: 700; color: var(--accent); }
+.sample-note-coverage-group { display: flex; flex-direction: column; gap: 4px; }
+.sample-note-coverage-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+.sample-note-coverage-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.sample-note-tag { background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 600; }
+.sample-note-coverage-list { margin: 0; padding-left: 18px; font-size: 0.82rem; line-height: 1.5; }

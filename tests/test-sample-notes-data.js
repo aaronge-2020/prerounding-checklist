@@ -34,14 +34,22 @@ const fromJson = JSON.parse(readFileSync(join(root, "src", "data", "sample-notes
 assert.deepStrictEqual(SAMPLE_NOTES_DATA, fromJson, "sample-notes.data.js drifted from sample-notes.json");
 
 assert.ok(Array.isArray(fromJson), "sample-notes.json must be a top-level array");
-assert.strictEqual(fromJson.length, 6, "expected six sample charts");
+assert.strictEqual(fromJson.length, 9, "expected nine sample charts");
 
-const EXPECTED_IDS = ["adhf-hp", "lapchole-pod2", "cap-discharge", "ed-chest-pain", "icu-septic-shock", "clinic-dm-htn"];
+const EXPECTED_IDS = ["adhf-hp", "lapchole-pod2", "cap-discharge", "ed-chest-pain", "icu-septic-shock", "clinic-dm-htn", "cirrhosis-etoh", "ugi-bleed", "pe-workup"];
 assert.deepStrictEqual(
   fromJson.map((note) => note.id),
   EXPECTED_IDS,
   "sample chart ids changed; update the expected list deliberately if charts are added or removed"
 );
+
+// Every chart carries coverage metadata ("Try with this chart") so the UI can
+// show which calculators, cheat sheets, and drug interactions the chart
+// exercises. Coverage ids must be real: calculators from the clinical-scores
+// registry, cheat sheets from cheat-sheets.json.
+const KNOWN_CALCULATORS = new Set(["ascvd", "chadsvasc", "hasbled", "heart", "timi", "grace", "wells-dvt", "wells-pe", "perc", "curb65", "lights", "meldna", "child-pugh", "fib4", "fena", "crcl", "qsofa", "sofa", "blatchford", "anion-gap", "corrected-calcium"]);
+const cheatSheets = JSON.parse(readFileSync(new URL("../src/data/cheat-sheets.json", import.meta.url), "utf8"));
+const KNOWN_SHEETS = new Set(cheatSheets.sheets.map((s) => s.id));
 
 const seenIds = new Set();
 const seenMrns = new Set();
@@ -126,6 +134,21 @@ for (const note of fromJson) {
   assert.strictEqual(keys.includes("imaging"), note.id !== "clinic-dm-htn", `chart ${note.id} imaging tab visibility is wrong`);
   assert.strictEqual(resolveSection(note, "nope"), "note", "unknown section must resolve to the note");
   assert.strictEqual(resolveSection(note, "labs"), "labs", "known section must resolve");
+
+  // Coverage metadata ("Try with this chart"): every chart declares which
+  // calculators, cheat sheets, and drug interactions it exercises.
+  const coverage = note.coverage;
+  assert.ok(coverage && typeof coverage === "object", `chart ${note.id} needs coverage metadata`);
+  assert.ok(Array.isArray(coverage.calculators) && coverage.calculators.length > 0, `chart ${note.id} needs calculator coverage`);
+  for (const calc of coverage.calculators) {
+    assert.ok(KNOWN_CALCULATORS.has(calc), `chart ${note.id} references unknown calculator ${calc}`);
+  }
+  assert.ok(Array.isArray(coverage.cheatSheets) && coverage.cheatSheets.length > 0, `chart ${note.id} needs cheat-sheet coverage`);
+  for (const sheet of coverage.cheatSheets) {
+    assert.ok(KNOWN_SHEETS.has(sheet), `chart ${note.id} references unknown cheat sheet ${sheet}`);
+  }
+  assert.ok(Array.isArray(coverage.drugInteractions), `chart ${note.id} needs a drugInteractions array`);
+  assert.ok(Array.isArray(coverage.workflows) && coverage.workflows.length > 0, `chart ${note.id} needs workflow coverage`);
 
   // Section text and full chart text keep synthetic PHI so they test de-id.
   for (const key of keys) {

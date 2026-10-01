@@ -50,7 +50,8 @@ export const ANION_GAP_INPUTS = [
     min: 0,
     max: 250,
     step: 0.1,
-    placeholder: "e.g. 140"
+    placeholder: "e.g. 140",
+    pull: { kind: "lab", match: [/^sodium$/i], exclude: [/urine/i] }
   },
   {
     key: "chloride",
@@ -60,7 +61,8 @@ export const ANION_GAP_INPUTS = [
     min: 0,
     max: 250,
     step: 0.1,
-    placeholder: "e.g. 105"
+    placeholder: "e.g. 105",
+    pull: { kind: "lab", match: [/chloride/i] }
   },
   {
     key: "bicarbonate",
@@ -70,7 +72,8 @@ export const ANION_GAP_INPUTS = [
     min: 0,
     max: 100,
     step: 0.1,
-    placeholder: "e.g. 24"
+    placeholder: "e.g. 24",
+    pull: { kind: "lab", match: [/bicarbonate/i, /\bco2\b/i] }
   },
   {
     key: "albumin",
@@ -82,7 +85,8 @@ export const ANION_GAP_INPUTS = [
     step: 0.1,
     placeholder: "Optional",
     required: false,
-    hint: "Optional. Adds the albumin-corrected anion gap, delta gap, and delta ratio."
+    hint: "Optional. Adds the albumin-corrected anion gap, delta gap, and delta ratio.",
+    pull: { kind: "lab", match: [/albumin/i] }
   }
 ];
 

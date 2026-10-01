@@ -128,7 +128,20 @@ export function createScoresController({
       if (!binding || state.overridden.has(input.key)) continue;
       if (binding && input.pull?.modes && mode && !input.pull.modes.includes(mode)) continue;
       values[input.key] = binding.value;
-      if (binding.unit) values[`${input.key}Unit`] = binding.unit;
+      if (binding.unit) {
+        if (input.units) {
+          // Only accept a pulled unit the input can actually display (e.g.
+          // labs saved as "mg/dl" still map to the input's "mg/dL" option).
+          // A unit the input does not offer leaves the default in place
+          // instead of selecting a phantom option.
+          const canonical = input.units.find(
+            (unit) => String(unit).toLowerCase() === String(binding.unit).toLowerCase()
+          );
+          if (canonical) values[`${input.key}Unit`] = canonical;
+        } else {
+          values[`${input.key}Unit`] = binding.unit;
+        }
+      }
     }
     for (const [key, value] of Object.entries(state.values)) values[key] = value;
     return values;

@@ -17,6 +17,7 @@ function test(name, fn) {
 
 // Complete band sets observed from each definition's interpret() function.
 const BANDS = {
+  "ascvd": ["low", "borderline", "intermediate", "high"],
   "bishop": ["favorable", "intermediate", "unfavorable"],
   "apgar": ["reassuring", "moderately-abnormal", "low"],
   "vbac-flamm": ["high", "moderate", "lower"],
@@ -47,7 +48,7 @@ const BANDS = {
 const definitions = listScoreDefinitions();
 
 test("every calculator has a guide entry", () => {
-  assert.equal(Object.keys(SCORE_GUIDES).length, 25, "25 guide entries");
+  assert.equal(Object.keys(SCORE_GUIDES).length, 26, "26 guide entries");
   for (const definition of definitions) {
     assert.ok(SCORE_GUIDES[definition.id], `guide for ${definition.id}`);
   }

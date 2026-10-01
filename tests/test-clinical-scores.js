@@ -12,10 +12,12 @@ import { calculateFlamm, flammProbabilityPercent } from "../src/clinical-scores/
 import { calculateVbacMfmu, formatMfmuPercent } from "../src/clinical-scores/vbac-mfmu.js";
 import { calculateDueDates, formatEgaLong, formatLongDate } from "../src/clinical-scores/due-dates.js";
 import {
+  latestLabValue,
   latestVitalValue,
   parseAgeYears,
   parseEgaParts,
   parseLmpISO,
+  parseSex,
   resolveScoreBindings
 } from "../src/clinical-scores/patient-bindings.js";
 
@@ -304,6 +306,121 @@ import {
   assert.equal(cBindings["autoscore-mortality"].temperature.value, 37.2);
   const unmarkedBindings = resolveScoreBindings(tempPatient("Vitals\nTemp 37.0"), "");
   assert.equal(unmarkedBindings["autoscore-mortality"]?.temperature, undefined, "unmarked temp is not guessed");
+}
+
+import { calculateAscvd } from "../src/clinical-scores/ascvd.js";
+
+// ---- ASCVD 2013 Risk (MDCalc 3398, Pooled Cohort Equations) ----
+// Coefficients verified 2026-10-01 against the published Goff et al.
+// equations (rdrr.io/cran/PooledCohort, mirroring the Cerner reference
+// implementation), including the ln(age)^2 term for White women.
+{
+  const base = {
+    ageYears: 55, sex: "male", race: "white",
+    totalCholesterol: 213, totalCholesterolUnit: "mg/dL",
+    hdl: 50, hdlUnit: "mg/dL",
+    systolicBp: 140, bpTreatment: 0, diabetes: 0, smoker: 0
+  };
+  // Worked example from the equation's own published arithmetic:
+  // 55y white man, TC 213, HDL 50, SBP 140 untreated, non-smoker,
+  // no diabetes -> 10-year risk 7.0% (borderline band).
+  const example = calculateAscvd(base);
+  assert.equal(example.complete, true);
+  assert.equal(example.riskPercent, 7);
+  assert.equal(example.interpretation.band, "borderline");
+  assert.equal(example.interpretation.headline, "7% 10-year ASCVD risk");
+
+  // Unit conversion is transparent: the same lipids in mmol/L agree.
+  const mmol = calculateAscvd({
+    ...base,
+    totalCholesterol: 213 / 38.67, totalCholesterolUnit: "mmol/L",
+    hdl: 50 / 38.67, hdlUnit: "mmol/L"
+  });
+  assert.equal(mmol.riskPercent, 7);
+
+  // "Other" race uses the White equations explicitly (per the guideline).
+  const other = calculateAscvd({ ...base, race: "other" });
+  assert.equal(other.riskPercent, example.riskPercent);
+  assert.match(other.interpretation.detail, /using the White equations/);
+
+  // All four sex/race equation groups produce sane 0-100% results.
+  const groups = [
+    { sex: "male", race: "black", ageYears: 45, totalCholesterol: 180, hdl: 55, systolicBp: 120, bpTreatment: 0, diabetes: 0, smoker: 0 },
+    { sex: "female", race: "white", ageYears: 70, totalCholesterol: 260, hdl: 35, systolicBp: 160, bpTreatment: 0, diabetes: 1, smoker: 0 },
+    { sex: "female", race: "black", ageYears: 65, totalCholesterol: 240, hdl: 40, systolicBp: 150, bpTreatment: 1, diabetes: 1, smoker: 1 }
+  ];
+  for (const group of groups) {
+    const result = calculateAscvd({ ...group, totalCholesterolUnit: "mg/dL", hdlUnit: "mg/dL" });
+    assert.equal(result.complete, true);
+    assert.ok(result.riskPercent > 0 && result.riskPercent < 100, `${group.race}-${group.sex} risk in range`);
+    assert.ok(["low", "borderline", "intermediate", "high"].includes(result.interpretation.band));
+  }
+  // Spot checks: low-risk young black man, high-risk older white woman.
+  assert.equal(calculateAscvd({ ...groups[0], totalCholesterolUnit: "mg/dL", hdlUnit: "mg/dL" }).riskPercent, 3.5);
+  assert.equal(calculateAscvd({ ...groups[1], totalCholesterolUnit: "mg/dL", hdlUnit: "mg/dL" }).riskPercent, 29.9);
+  assert.equal(calculateAscvd({ ...groups[2], totalCholesterolUnit: "mg/dL", hdlUnit: "mg/dL" }).riskPercent, 57.7);
+
+  // The equations validate only for ages 40-75; outside that is incomplete.
+  assert.equal(calculateAscvd({ ...base, ageYears: 39 }).complete, false);
+  assert.equal(calculateAscvd({ ...base, ageYears: 76 }).complete, false);
+  assert.match(calculateAscvd({ ...base, ageYears: 39 }).interpretation.detail, /40-75/);
+
+  // Missing fields name themselves.
+  const partial = calculateAscvd({ ageYears: 55 });
+  assert.equal(partial.complete, false);
+  assert.deepEqual(partial.missing, ["Sex", "Race", "Total cholesterol", "HDL cholesterol", "Systolic blood pressure", "Treatment for hypertension", "Diabetes", "Current smoker"]);
+}
+
+// ---- Sex parsing + lab pulls for patient bindings ----
+{
+  assert.equal(parseSex("Sex: Male"), "male");
+  assert.equal(parseSex("Sex: Female"), "female");
+  assert.equal(parseSex("74 year old man with heart failure"), "male");
+  assert.equal(parseSex("58-year-old woman"), "female");
+  assert.equal(parseSex("58F admitted"), "female");
+  assert.equal(parseSex("no demographic text here"), null);
+
+  const labPatient = (labsText) => ({
+    contextSections: [{ sourceKind: "laboratory_results", label: "Labs", deidentifiedText: labsText }],
+    days: []
+  });
+
+  // Latest numeric row wins; non-numeric rows are skipped.
+  const labs = labPatient("Labs\nBUN: 18 mg/dL\nBUN: 24 mg/dL\nCreatinine: 1.1 mg/dL\nPotassium: pending");
+  const bindings = resolveScoreBindings(labs, "");
+  assert.equal(bindings["curb65"].bunOver19.value, 1, "BUN 24 > 19 -> 1");
+  assert.equal(bindings["ascvd"]?.totalCholesterol, undefined, "no cholesterol in this panel");
+
+  const low = resolveScoreBindings(labPatient("Labs\nBUN: 12 mg/dL"), "");
+  assert.equal(low["curb65"].bunOver19.value, 0, "BUN 12 <= 19 -> 0");
+
+  // Serum-only matchers skip urine contexts.
+  const sodium = resolveScoreBindings(labPatient("Labs\nSodium: 138 mEq/L\nUrine sodium: 42 mEq/L"), "");
+  assert.equal(sodium["anion-gap"].sodium.value, 138);
+
+  // Cholesterol and HDL pull through with their saved unit.
+  const lipids = resolveScoreBindings(labPatient("Labs\nTotal cholesterol: 213 mg/dL\nHDL: 50 mg/dL"), "");
+  assert.equal(lipids["ascvd"].totalCholesterol.value, 213);
+  assert.equal(lipids["ascvd"].totalCholesterol.unit, "mg/dL");
+  assert.equal(lipids["ascvd"].hdl.value, 50);
+
+  // Sex and age pulls feed the radio inputs they target.
+  const demoPatient = {
+    contextSections: [{ sourceKind: "primary_note", label: "H&P", deidentifiedText: "Patient: Jane Doe\nSex: Female\n\nMs. Doe is a 67 year old woman with pneumonia." }],
+    days: []
+  };
+  const demo = resolveScoreBindings(demoPatient, "");
+  assert.equal(demo["chadsvasc"].sex.value, 1, "female -> chadsvasc 1");
+  assert.equal(demo["crcl"].sex.value, "female");
+  assert.equal(demo["ascvd"].sex.value, "female");
+  assert.equal(demo["ascvd"].ageYears.value, 67);
+  assert.equal(demo["curb65"].ageAtLeast65.value, 1, "67 >= 65 -> 1");
+  const young = resolveScoreBindings({
+    contextSections: [{ sourceKind: "primary_note", label: "H&P", deidentifiedText: "Sex: Male\n50 year old man" }],
+    days: []
+  }, "");
+  assert.equal(young["curb65"].ageAtLeast65.value, 0, "50 < 65 -> 0");
+  assert.equal(young["chadsvasc"].sex.value, 0, "male -> chadsvasc 0");
 }
 
 console.log("clinical score parity tests passed");

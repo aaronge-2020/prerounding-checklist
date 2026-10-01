@@ -302,9 +302,57 @@ export function createSampleNotesPresentation({ escapeHtml, icon }) {
     }
   }
 
-  function renderCard(note, expanded, activeSection) {
+  function humanizeTag(tag) {
+    return String(tag || "")
+      .replace(/[-_]+/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+      .trim();
+  }
+
+  // "Try with this chart": what the chart exercises across the app. Renders
+  // defensively — older fixtures without coverage metadata simply show
+  // nothing here.
+  function renderCoverage(note) {
+    const coverage = note && typeof note.coverage === "object" ? note.coverage : null;
+    if (!coverage) return "";
+    const groups = [];
+    const calculators = Array.isArray(coverage.calculators) ? coverage.calculators.filter(Boolean) : [];
+    if (calculators.length) {
+      groups.push(`
+        <div class="sample-note-coverage-group">
+          <span class="sample-note-coverage-label">Calculators</span>
+          <span class="sample-note-coverage-tags">${calculators.map((tag) => `<span class="sample-note-tag">${escapeHtml(humanizeTag(tag))}</span>`).join("")}</span>
+        </div>`);
+    }
+    const sheets = Array.isArray(coverage.cheatSheets) ? coverage.cheatSheets.filter(Boolean) : [];
+    if (sheets.length) {
+      groups.push(`
+        <div class="sample-note-coverage-group">
+          <span class="sample-note-coverage-label">Cheat sheets</span>
+          <span class="sample-note-coverage-tags">${sheets.map((tag) => `<span class="sample-note-tag">${escapeHtml(humanizeTag(tag))}</span>`).join("")}</span>
+        </div>`);
+    }
+    const interactions = Array.isArray(coverage.drugInteractions) ? coverage.drugInteractions.filter(Boolean) : [];
+    if (interactions.length) {
+      groups.push(`
+        <div class="sample-note-coverage-group">
+          <span class="sample-note-coverage-label">Drug interactions</span>
+          <ul class="sample-note-coverage-list">${interactions.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+        </div>`);
+    }
+    if (!groups.length) return "";
+    return `
+      <div class="sample-note-coverage">
+        <div class="sample-note-coverage-title">Try with this chart</div>
+        ${groups.join("")}
+      </div>
+    `;
+  }
+
+  function renderCard(note, expanded, activeSection, importingId) {
     const id = escapeHtml(note.id);
     const section = resolveSection(note, activeSection);
+    const importing = importingId != null && String(importingId) === String(note.id);
     const body = expanded
       ? `${renderTabs(note, section)}${renderSection(note, section, expanded)}`
       : renderNoteSection(note, false);
@@ -318,9 +366,13 @@ export function createSampleNotesPresentation({ escapeHtml, icon }) {
           <span class="sample-note-type-badge">${escapeHtml(note.type || "Note")}</span>
         </div>
         ${body}
+        ${renderCoverage(note)}
         <div class="button-row sample-note-actions">
           <button class="button--quiet" type="button" data-action="sample-notes-toggle" data-note-id="${id}">
             ${icon(expanded ? "chevron" : "plus")} ${expanded ? "Collapse" : "Show full chart"}
+          </button>
+          <button class="button--primary" type="button" data-action="sample-notes-add" data-note-id="${id}"${importing ? " disabled" : ""}>
+            ${icon("plus")} ${importing ? "Adding to vault…" : "Add to vault"}
           </button>
           <button class="button--secondary" type="button" data-action="sample-notes-use" data-note-id="${id}">
             ${icon("wand")} Use in Quick De-ID
@@ -333,17 +385,20 @@ export function createSampleNotesPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function renderSampleNotes({ notes, expandedId, sections }) {
+  function renderSampleNotes({ notes, expandedId, sections, importingId, addAllRunning }) {
     const cards = (notes || [])
-      .map((note) => renderCard(note, expandedId === note.id, sections ? sections[note.id] : undefined))
+      .map((note) => renderCard(note, expandedId === note.id, sections ? sections[note.id] : undefined, importingId))
       .join("");
     return `
       <section class="panel sample-notes-panel">
         <div class="section-heading">
           <div>
             <h2>Sample Notes</h2>
-            <p class="muted">Fictional patient charts for end to end testing. Expand a chart to browse its note, labs, medications, vitals, and imaging, then load the full chart into Quick De-ID or copy any section.</p>
+            <p class="muted">Fictional patient charts for end to end testing. Expand a chart to browse its note, labs, medications, vitals, and imaging. Add a chart to your vault to get a fully de-identified patient you can round on, or load the full chart into Quick De-ID.</p>
           </div>
+          <button class="button--secondary" type="button" data-action="sample-notes-add-all"${addAllRunning ? " disabled" : ""}>
+            ${icon("plus")} ${addAllRunning ? "Adding charts…" : "Add all to vault"}
+          </button>
         </div>
         ${renderBanner()}
         <div class="sample-notes-list">

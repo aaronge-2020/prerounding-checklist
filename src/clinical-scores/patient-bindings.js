@@ -183,6 +183,69 @@ function firstTextHit(sources, parser) {
   return null;
 }
 
+// Conservative sex extraction from narrative text ("Sex: Male",
+// "74 year old man", "58F"). Returns "male"/"female" or null.
+export function parseSex(text) {
+  const source = cleanText(text);
+  const patterns = [
+    /\bsex\s*[:=\-]\s*(female|male|woman|man)\b/i,
+    /(\d{1,3})\s*-\s*year\s*-\s*old\s+(woman|man|female|male)\b/i,
+    /(\d{1,3})\s+years?\s+old\s+(woman|man|female|male)\b/i,
+    /\b(\d{2,3})\s*([FfMm])\b/
+  ];
+  for (const pattern of patterns) {
+    const match = pattern.exec(source);
+    if (!match) continue;
+    const token = (match[match.length - 1] || "").toLowerCase();
+    if (token === "f" || token === "female" || token === "woman") return "female";
+    if (token === "m" || token === "male" || token === "man") return "male";
+  }
+  return null;
+}
+
+// Split a labs result cell like "18 mg/dL", "<0.1", or "18" (with a
+// separate unit cell) into { value, unit }. The canonical labs parser
+// leaves plain "18 mg/dL" as one cell, so the unit is read from
+// whichever cell carries it. Returns null for non-numeric results
+// like "pending" or "positive".
+function parseLabResultCell(resultCell, unitCell) {
+  const match = resultCell.match(/^(?:[<>]=?\s*)?([-+]?(?:\d+(?:\.\d+)?|\.\d+))(?:\s+(.+))?$/);
+  if (!match) return null;
+  const value = Number(match[1]);
+  if (!Number.isFinite(value)) return null;
+  return { value, unit: cleanText(unitCell || match[2] || "") };
+}
+
+// Latest numeric value for a lab whose name matches any matcher regex,
+// parsed through the same canonical labs parser the Review UI uses.
+// Optional `exclude` regexes skip contexts like "Urine" for serum sodium.
+// Returns { value, unit, source } or null.
+export function latestLabValue(sources, matchers, exclude = []) {
+  const candidates = [];
+  for (const source of sources) {
+    if (source.sourceKind && source.sourceKind !== "laboratory_results") continue;
+    let model = null;
+    try {
+      model = clinicalDisplayModelFromPromptText("laboratory_results", source.text);
+    } catch {
+      model = null;
+    }
+    for (const group of model?.groups || []) {
+      for (const row of group?.rows || []) {
+        const cells = row?.cells || [];
+        const name = cleanText(cells[0] || "");
+        if (!name) continue;
+        if (!matchers.some((matcher) => matcher.test(normalizeName(name)))) continue;
+        if (exclude.some((matcher) => matcher.test(name))) continue;
+        const parsed = parseLabResultCell(cleanText(cells[1] || ""), cleanText(cells[2] || ""));
+        if (!parsed) continue;
+        candidates.push({ value: parsed.value, unit: parsed.unit, source: source.label });
+      }
+    }
+  }
+  return candidates.at(-1) || null;
+}
+
 function resolvePull(pull, sources) {
   if (!pull) return null;
   if (pull.kind === "demographic" && pull.field === "ageYears") {

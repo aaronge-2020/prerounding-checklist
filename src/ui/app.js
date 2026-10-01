@@ -209,7 +209,7 @@ const app = {
   demoPreviewMode: false,
   admissionDate: "" // in-memory copy of the encrypted patient's admission-date anchor
 };
-const viewIds = ["vault", "daily", "cheatSheets", "review", "prompts", "quickDeid", "sampleNotes", "aiChat", "drugLookup", "drugChecks", "scores", "scribePro", "settings"];
+const viewIds = ["vault", "daily", "cheatSheets", "review", "sampleNotes", "prompts", "quickDeid", "aiChat", "drugLookup", "drugChecks", "scores", "scribePro", "settings"];
 const viewTitles = {
   vault: "Vault / Roster", daily: "Hospital Stay", review: "Review Data / Draft Note",
   cheatSheets: "Cheat Sheets", prompts: "Prompts",
@@ -413,7 +413,6 @@ const scoresController = createScoresController({
   updateActivePatient
 });
 const cheatSheetsController = createCheatSheetsController({ app, byId, escapeHtml, replaceViewContent });
-const sampleNotesController = createSampleNotesController({ app, byId, escapeHtml, icon, replaceViewContent, render, setStatus, copyText: clipboard.copyText });
 const admissionDateAnchor = createAdmissionDateAnchor({ state: app, active, sortDays });
 const promptTaskController = createPromptTaskController({ state: app, setStatus, renderPrompts, refreshPromptPreview, byId });
 const guidelineSetsController = createGuidelineSetsController({ state: app, setStatus, renderSettings, renderPrompts, byId });
@@ -433,6 +432,23 @@ const deidSession = createDeidSessionCoordinator({ state: app, admissionDateAnch
   if (!String(name || "").trim() && !String(dob || "").trim()) return null;
   return { name: String(name || ""), dob: String(dob || "") };
 } });
+const sampleNotesController = createSampleNotesController({
+  app,
+  byId,
+  escapeHtml,
+  icon,
+  replaceViewContent,
+  render,
+  setStatus,
+  copyText: clipboard.copyText,
+  vaultIsUnlocked,
+  ensureSelectedDeidReady,
+  deidentify: deidSession.deidentify,
+  updateDeidOperation,
+  persistVault,
+  setSectionDraftText,
+  beginSectionReview
+});
 const dailySourceController = createDailySourceController({
   app,
   active,

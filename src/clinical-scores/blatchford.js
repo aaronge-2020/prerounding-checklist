@@ -79,7 +79,8 @@ export const BLATCHFORD_INPUTS = [
       { value: "male", label: "Male" },
       { value: "female", label: "Female" }
     ],
-    hint: "Hemoglobin scoring is sex-specific."
+    hint: "Hemoglobin scoring is sex-specific.",
+    pull: { kind: "demographic", field: "sex" }
   },
   {
     key: "heartRate",

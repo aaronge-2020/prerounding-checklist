@@ -12,6 +12,7 @@
 // pays their parse cost until this view is actually used. Import failures
 // fail closed with state.dataState === "error" — this controller never
 // throws.
+import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 export function createDrugChecksController({
   app,
   byId,
@@ -209,23 +210,28 @@ export function createDrugChecksController({
       renderView();
       return;
     }
-    const patient = app.vault?.patients?.[app.vault?.activePatientId];
-    const days = Array.isArray(patient?.days) ? patient.days : [];
+    const patient = activePatient(app.vault);
+    // Medication captures can live on admission (contextSections) or on any
+    // hospital day (sourceCaptures): sweep both so an imported sample chart
+    // de-identified at admission is picked up too.
+    const sources = [...(patient?.contextSections || [])];
+    for (const day of Array.isArray(patient?.days) ? patient.days : []) {
+      for (const capture of Array.isArray(day?.sourceCaptures) ? day.sourceCaptures : []) {
+        sources.push(capture);
+      }
+    }
     const meds = [];
     const seen = new Set();
-    for (const day of days) {
-      const captures = Array.isArray(day?.sourceCaptures) ? day.sourceCaptures : [];
-      for (const capture of captures) {
-        if (capture?.sourceKind !== "medication_activity") continue;
-        const text = String(capture?.deidentifiedText || "");
-        for (const rawLine of text.split("\n")) {
-          const name = extractMedName(rawLine);
-          if (!name) continue;
-          const key = name.toLowerCase();
-          if (seen.has(key)) continue;
-          seen.add(key);
-          meds.push(name);
-        }
+    for (const source of sources) {
+      if (source?.sourceKind !== "medication_activity") continue;
+      const text = String(source?.deidentifiedText || "");
+      for (const rawLine of text.split("\n")) {
+        const name = extractMedName(rawLine);
+        if (!name) continue;
+        const key = name.toLowerCase();
+        if (seen.has(key)) continue;
+        seen.add(key);
+        meds.push(name);
       }
     }
     if (!meds.length) {
