@@ -4,7 +4,9 @@ import {
   DEMO_INFO_STAGES,
   DEMO_PARSE_NOTE_TEXT,
   DEMO_DRUG_CHECK_MEDS,
-  DEMO_AI_CHAT_SAMPLES
+  DEMO_AI_CHAT_SAMPLES,
+  DEMO_AI_CHAT_HANDS_ON_QUESTION,
+  DEMO_AI_CHAT_HANDS_ON_ANSWER
 } from "./presentation.js?v=20261001-demo-v4";
 import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20261001-demo-v4";
 
@@ -19,7 +21,7 @@ export function demoReviewTransition(action, hasRemainingReview) {
   return hasRemainingReview ? "preserve-review" : "complete-review";
 }
 
-export function createDemoController({ app, byId, escapeHtml, getSession, getView, render: renderApp, selectDemoPacket, getCheatSheetOpenId, seedAiChatDemo, clearAiChatDemo }) {
+export function createDemoController({ app, byId, escapeHtml, getSession, getView, render: renderApp, selectDemoPacket, getCheatSheetOpenId, seedAiChatDemo, clearAiChatDemo, setAiChatDemoReply, clearAiChatDemoReply }) {
   const presentation = createDemoPresentation({ escapeHtml });
   let activeCalloutTarget = null;
   let calloutFrame = 0;
@@ -139,6 +141,17 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   document.addEventListener("scroll", scheduleCalloutPosition, true);
   window.addEventListener("resize", scheduleCalloutPosition);
 
+  // Hands-on edit detection for the write-note stage: when the user types in
+  // any draft section, advance to the prompts step.
+  document.addEventListener("input", (event) => {
+    const session = getSession?.();
+    if (!session || session.stage !== "write-note") return;
+    const target = event.target?.closest?.("[data-draft-section]");
+    if (!target) return;
+    session.stage = "open-prompts";
+    renderApp();
+  });
+
   function flashDemoHint() {
     const target = document.querySelector("[data-demo-target]");
     if (target) {
@@ -191,6 +204,18 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       // conversation in the actual AI Chat UI (with markdown rendering)
       // without running a live model. Seeded only once per demo run.
       seedAiChatDemo?.(DEMO_AI_CHAT_SAMPLES);
+    }
+    if (stageId === "ai-chat-ask") {
+      // Hands-on: arm a one-shot staged reply so the user's sent question
+      // gets a grounded answer without a live model. The callback advances
+      // to the read stage after the answer lands.
+      setAiChatDemoReply?.(DEMO_AI_CHAT_HANDS_ON_ANSWER, () => {
+        const session = getSession?.();
+        if (session?.stage === "ai-chat-ask") {
+          session.stage = "ai-chat-read";
+          renderApp();
+        }
+      });
     }
     if (stageId === "browse-cheat-sheet") {
       // Attach demo objective data when entering the cheat-sheet step.
@@ -271,6 +296,15 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       if (textarea && !String(textarea.value || "").trim()) {
         textarea.value = DEMO_PARSE_NOTE_TEXT;
         textarea.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    }
+    if (stageId === "ai-chat-ask" && view === "aiChat") {
+      // Pre-fill the chat composer with the suggested question (only if empty).
+      const input = content.querySelector("[data-ai-chat-input]");
+      if (input && !String(input.value || input.textContent || "").trim()) {
+        if ("value" in input) input.value = DEMO_AI_CHAT_HANDS_ON_QUESTION;
+        else input.textContent = DEMO_AI_CHAT_HANDS_ON_QUESTION;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
       }
     }
     if (!target) return;
@@ -372,6 +406,18 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       // on the click alone (the check is async); and only from the matching
       // stage so stray checks can't skip the tour ahead.
       if (session.stage === "check-interactions") session.stage = "open-ai-chat";
+      renderApp();
+      return;
+    }
+    if (action === "review-structured-note-sections") {
+      // User reviewed the parsed sections — advance to drug checks.
+      if (session.stage === "parse-note") session.stage = "open-drug-checks";
+      renderApp();
+      return;
+    }
+    if (action === "ai-chat-mode") {
+      // User clicked a chat mode tab — advance to the hands-on question.
+      if (session.stage === "ai-chat-models") session.stage = "ai-chat-ask";
       renderApp();
       return;
     }

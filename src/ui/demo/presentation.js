@@ -6,8 +6,8 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     targetSelector: '[data-action="add-admission-source"]',
     title: "Start with the sample case",
     instruction: "Click De-identify and add source.",
-    calloutTitle: "Meet the sample patient",
-    callout: "Daniel Morgan is a synthetic 61-year-old man with coronary artery disease, admitted with worsening chest pain and shortness of breath concerning for NSTEMI. The note includes realistic sample identifiers. The selected local model scans this source in your browser, proposes replacements, and asks for your review before saving."
+    calloutTitle: "The rule for everything here",
+    callout: "Daniel Morgan is a synthetic 61-year-old man with coronary artery disease, admitted with worsening chest pain concerning for NSTEMI. The note includes realistic sample identifiers. Here is the rule you will follow for the entire workflow: de-identify first, work second. The local model scans this source in your browser, proposes replacements, and asks for your review before anything is saved."
   },
   "context-review": {
     view: "daily",
@@ -35,12 +35,11 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   },
   "parse-note": {
     view: "daily",
-    info: true,
-    targetSelector: '[data-structured-note-detected="admission"]',
+    targetSelector: '[data-action="review-structured-note-sections"][data-note-scope="admission"]',
     title: "Paste a note, get sections",
-    instruction: "We pasted the full sample admission note for you — heading detection sorted it into sections instantly: one-liner, chief complaint, HPI, histories, meds, exam, labs, assessment, and plan. With a local AI model loaded, “Parse with local AI” sorts it into verified sections instead. Press Continue.",
+    instruction: "We pasted the full sample admission note — heading detection sorted it into sections instantly. Click Review sections to inspect what the parser found.",
     calloutTitle: "Note parsing, two speeds",
-    callout: "The deterministic parser finds headings like HPI, Medications, and Assessment and Plan the moment text is pasted — no model needed, and the section list on the note shows everything it found. Load an on-device model and the Parse with local AI button appears here, sorting the note into verified verbatim sections for de-identification and prompts."
+    callout: "The deterministic parser finds headings like HPI, Medications, and Assessment and Plan the moment text is pasted — no model needed. Load an on-device model and the Parse with local AI button appears here, sorting the note into verified verbatim sections for de-identification and prompts."
   },
   "open-drug-checks": {
     view: "drugChecks",
@@ -68,21 +67,28 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   },
   "ai-chat-models": {
     view: "aiChat",
-    info: true,
     targetSelector: '[data-action="ai-chat-mode"][data-mode="local"]',
     title: "On-device or ChatGPT",
-    instruction: "Pick On-device to download a model into your browser, or ChatGPT to use OpenAI with automatic de-identification. Press Continue when you have seen the options.",
+    instruction: "Click On-device to see the local model options. Everything stays in your browser — or switch to ChatGPT for OpenAI with automatic de-identification.",
     calloutTitle: "Two engines, one rule",
     callout: "On-device keeps everything in this browser. ChatGPT mode automatically downloads the clinical redaction model and strips identifiers before anything is sent — and it only ever sends what you select in the Context inspector."
   },
   "ai-chat-ask": {
     view: "aiChat",
-    info: true,
-    targetSelector: '[data-action="ai-chat-context-inspector"]',
-    title: "A grounded answer, staged for the tour",
-    instruction: "The chat below shows five staged sample exchanges — notice how each cites the patient's documents and the literature. Scroll through the conversation, then press Continue to move on.",
+    targetSelector: '[data-action="ai-chat-send"]',
+    title: "Ask your own question",
+    instruction: "We filled in a question for you — click Send (or type your own question first). You will get a staged answer that cites the chart and the literature, no model needed.",
     calloutTitle: "Grounded twice over",
     callout: "The sample answers cite Daniel's own chart (troponin trend, ECG, admission note) and the clinical literature (Fourth Universal Definition of MI). Live answers carry the same citations, and the Context inspector still controls exactly what the chat may see."
+  },
+  "ai-chat-read": {
+    view: "aiChat",
+    info: true,
+    targetSelector: '[data-ai-chat-messages]',
+    title: "A grounded answer",
+    instruction: "Read the staged answer — notice how it cites the patient's documents and the literature. Every live answer works the same way. Press Continue.",
+    calloutTitle: "You control the context",
+    callout: "The Context inspector decides exactly what the chat may see. In ChatGPT mode, everything is de-identified before it leaves your browser — you approve exactly what gets sent."
   },
   "open-scribe-pro": {
     view: "scribePro",
@@ -139,13 +145,12 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   },
   "write-note": {
     view: "review",
-    info: true,
     targetSelector: '[data-draft-section="one_liner"]',
-    title: "Review the complete case note",
-    instruction: "The highlighted one-liner starts the complete synthetic case note: parsed subjective and exam; objective vitals, labs, and medications; and the full assessment and problem-oriented plan below it. Make any edits you want, then press Continue.",
+    title: "Make the note yours",
+    instruction: "Click the highlighted one-liner and type — add your initials, tweak the wording, make it yours. This is your note to edit.",
     helper: "The synthetic tutorial keeps this saved note only for the temporary demo session.",
     calloutTitle: "Review before asking for feedback",
-    callout: "The draft note is the parsed sample case, not a stub: the admission note's one-liner, subjective, and exam, the day-one update, objective vitals, labs, and medications, plus a complete assessment and plan. Saving keeps the draft local; press Continue when you are done reviewing."
+    callout: "The draft note is the parsed sample case, not a stub: the admission note's one-liner, subjective, and exam, the day-one update, objective vitals, labs, and medications, plus a complete assessment and plan. Edit it freely — saving keeps the draft local."
   },
   "open-prompts": {
     view: "prompts",
@@ -165,9 +170,11 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   },
   done: {
     view: "prompts",
-    title: "Demo complete",
-    instruction: "You followed the full sample workflow. Click Exit demo to finish.",
-    helper: "You de-identified the source notes, parsed a pasted note, checked a drug interaction, toured AI Chat, met the voice scribe, reviewed a bedside cheat sheet, reviewed the complete case note, and prepared a prompt for external feedback. Nothing from this demo was written to your vault."
+    title: "You know the workflow",
+    instruction: "You did every step yourself. Here is what you can now do on a real case.",
+    helper: "You can now: De-identify a note and review every redaction before saving. Parse a pasted note into sections. Check drug interactions. Ask the AI Chat a question and read a cited answer. Dictate with Scribe Pro. Pull up a bedside cheat sheet. Edit your draft note. Build a de-identified prompt for feedback. The rule held throughout: de-identify first, work second. Nothing from this demo was written to your vault. Click Exit demo, then try it with your own case.",
+    calloutTitle: "Try it yourself",
+    callout: "Exit the demo and run the same workflow: add your own admission note, de-identify it, parse it, check interactions, and draft your note. The Models page has the local AI models when you are ready."
   }
 });
 
@@ -181,11 +188,10 @@ export const DEMO_INFO_STAGES = Object.freeze(
 export const DEMO_STAGE_NEXT = Object.freeze({
   "parse-note": "open-drug-checks",
   "ai-chat-models": "ai-chat-ask",
-  "ai-chat-ask": "open-scribe-pro",
+  "ai-chat-read": "open-scribe-pro",
   "open-scribe-pro": "scribe-pro-voice",
   "scribe-pro-voice": "open-cheat-sheets",
-  "browse-cheat-sheet": "open-review",
-  "write-note": "open-prompts"
+  "browse-cheat-sheet": "open-review"
 });
 
 // The parse-note stop pastes the same complete admission note the tour's
@@ -282,6 +288,22 @@ export const DEMO_AI_CHAT_SAMPLES = [
     ].join("\n")
   }
 ];
+
+// Hands-on demo question: the user sends this (or their own question) and
+// gets this staged grounded answer without needing a live model.
+export const DEMO_AI_CHAT_HANDS_ON_QUESTION = "What is his bleeding risk on triple therapy?";
+export const DEMO_AI_CHAT_HANDS_ON_ANSWER = [
+  "**Bleeding risk on triple therapy (heparin + aspirin + ticagrelor)**",
+  "",
+  "Mr. Morgan is on triple therapy pending cath, which raises bleeding risk:",
+  "",
+  "- **Chart context:** No prior bleeding history documented; baseline Hgb 14.2 g/dL; platelets 245K. He is 61 with normal renal function (creatinine 1.0 mg/dL).",
+  "- **Risk factors:** Triple therapy itself is the main risk — especially at arterial puncture sites, plus GI bleeding risk with DAPT.",
+  "- **Mitigation in the plan:** PPI for GI protection is standard with DAPT; monitor Hgb/Hct; watch access sites; heparin infusion allows rapid reversal if needed.",
+  "- **Literature:** Peri-PCI triple therapy increases major bleeding vs DAPT alone; current guidance favors minimizing triple-therapy duration (e.g., WOEST, PIONEER AF-PCI trials support dropping aspirin early in selected patients).",
+  "",
+  "*Sample answer staged for the demo — not a live model response.*"
+].join("\n");
 
 // Legacy single Q&A (kept for backwards compatibility; prefer DEMO_AI_CHAT_SAMPLES).
 export const DEMO_AI_CHAT_QUESTION = DEMO_AI_CHAT_SAMPLES[0].question;

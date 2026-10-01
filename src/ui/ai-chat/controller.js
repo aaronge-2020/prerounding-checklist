@@ -2735,6 +2735,7 @@ export function createAiChatController({
     const input = form.querySelector("[data-ai-chat-input]");
     const text = composerText(input);
     clearComposer(input);
+    if (maybeDemoReply(text)) return true;
     if (state.mode === "remote") void sendRemoteChat(text);
     else void sendChat(text);
     return true;
@@ -2749,6 +2750,7 @@ export function createAiChatController({
     event.preventDefault();
     const text = composerText(input);
     clearComposer(input);
+    if (maybeDemoReply(text)) return true;
     if (state.mode === "remote") void sendRemoteChat(text);
     else void sendChat(text);
     return true;
@@ -2773,6 +2775,35 @@ export function createAiChatController({
   // only in this in-memory state — never the vault — and the demo clears them
   // on exit. Idempotent: seeding twice does not duplicate. Accepts a single
   // {question, answer} pair or an array of them.
+  //
+  // Hands-on demo reply: setDemoReply(answer) arms a one-shot staged reply.
+  // The next user message sent while armed gets the staged answer instead of
+  // a live model call. The demo uses this so the user can send a real
+  // question and see a grounded, cited answer without needing a model.
+  let demoReplyAnswer = null;
+  let demoReplyCallback = null;
+  function setDemoReply(answer, onReply) {
+    demoReplyAnswer = answer || null;
+    demoReplyCallback = typeof onReply === "function" ? onReply : null;
+  }
+  function clearDemoReply() {
+    demoReplyAnswer = null;
+    demoReplyCallback = null;
+  }
+  function maybeDemoReply(text) {
+    if (!demoReplyAnswer) return false;
+    const answer = demoReplyAnswer;
+    const cb = demoReplyCallback;
+    demoReplyAnswer = null;
+    demoReplyCallback = null;
+    state.chat.messages.push({ role: "user", text });
+    state.chat.messages.push({ role: "assistant", text: answer, demo: true });
+    renderView();
+    if (cb) {
+      try { cb(text); } catch { /* noop */ }
+    }
+    return true;
+  }
   function seedDemoMessages(samples) {
     if (!samples) return;
     const pairs = Array.isArray(samples) ? samples : [samples];
@@ -2815,6 +2846,8 @@ export function createAiChatController({
     getChatState: () => state.chat,
     seedDemoMessages,
     clearDemoMessages,
+    setDemoReply,
+    clearDemoReply,
     // Test seam for the highlight-to-redact pill: recompute its visibility
     // and position from the current text selection.
     updateHipaaRedactFloat

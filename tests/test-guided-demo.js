@@ -57,7 +57,7 @@ assert.equal(demoReviewTransition("continue-section-review", true), "preserve-re
 assert.equal(demoReviewTransition("keep-reviewed-redaction", false), "complete-review");
 assert.equal(demoReviewTransition("copy-prompt", false), "unrelated");
 assert.match(demoStage("context-review").instruction, /Accept.*one change at a time/i);
-assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 19);
+assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 20);
 const stageOrder = Object.keys(DEMO_GUIDE_STAGES);
 assert.ok(stageOrder.indexOf("daily-review") < stageOrder.indexOf("parse-note"));
 assert.ok(stageOrder.indexOf("parse-note") < stageOrder.indexOf("open-drug-checks"));
@@ -70,10 +70,8 @@ assert.ok(stageOrder.indexOf("scribe-pro-voice") < stageOrder.indexOf("open-chea
 assert.ok(stageOrder.indexOf("browse-cheat-sheet") < stageOrder.indexOf("write-note"));
 assert.ok(stageOrder.indexOf("write-note") < stageOrder.indexOf("open-prompts"));
 // Info stages explain and advance via the guide bar's Continue button.
-assert.deepEqual([...DEMO_INFO_STAGES].sort(), ["ai-chat-ask", "ai-chat-models", "browse-cheat-sheet", "open-scribe-pro", "parse-note", "scribe-pro-voice", "write-note"]);
-assert.equal(DEMO_STAGE_NEXT["parse-note"], "open-drug-checks");
-assert.equal(DEMO_STAGE_NEXT["ai-chat-models"], "ai-chat-ask");
-assert.equal(DEMO_STAGE_NEXT["ai-chat-ask"], "open-scribe-pro");
+assert.deepEqual([...DEMO_INFO_STAGES].sort(), ["ai-chat-read", "browse-cheat-sheet", "open-scribe-pro", "scribe-pro-voice"]);
+assert.equal(DEMO_STAGE_NEXT["ai-chat-read"], "open-scribe-pro");
 assert.equal(DEMO_STAGE_NEXT["open-scribe-pro"], "scribe-pro-voice");
 assert.equal(DEMO_STAGE_NEXT["scribe-pro-voice"], "open-cheat-sheets");
 // New feature stops carry the required hooks and prefills.
@@ -93,7 +91,7 @@ assert.match(DEMO_AI_CHAT_ANSWER, /86 → 364 → 312/);
 // The cheat-sheet stage names its sheet so an already-open sheet completes it.
 assert.equal(demoStage("browse-cheat-sheet").sheetId, "acute-coronary-syndrome");
 assert.equal(demoStage("check-interactions").targetSelector, '[data-action="drug-checks-check"]');
-assert.equal(demoStage("parse-note").targetSelector, '[data-structured-note-detected="admission"]');
+assert.equal(demoStage("parse-note").targetSelector, '[data-action="review-structured-note-sections"][data-note-scope="admission"]');
 assert.match(DEMO_PARSE_NOTE_TEXT, /History of Present Illness/);
 assert.match(DEMO_PARSE_NOTE_TEXT, /Chief Complaint/);
 assert.match(DEMO_PARSE_NOTE_TEXT, /Laboratory Results/);
@@ -121,7 +119,7 @@ assert.ok(String(seededDraft.closing?.disposition?.deidentifiedText || "").lengt
 assert.match(DEMO_DRUG_CHECK_MEDS, /warfarin/i);
 assert.match(DEMO_DRUG_CHECK_MEDS, /fluconazole/i);
 // Info stages render a Continue button; action stages must not.
-const infoGuide = presentation.renderGuide({ session: { stage: "parse-note" }, currentView: "daily" });
+const infoGuide = presentation.renderGuide({ session: { stage: "ai-chat-read" }, currentView: "aiChat" });
 assert.match(infoGuide, /data-action="advance-guided-demo"/);
 assert.match(infoGuide, /data-demo-hint/);
 const actionGuide = presentation.renderGuide({ session: { stage: "check-interactions" }, currentView: "drugChecks" });
@@ -141,7 +139,7 @@ assert.match(guide, />Exit demo</);
 assert.doesNotMatch(guide, /Restart demo/);
 assert.doesNotMatch(guide, /demo-answer|demo-generate-prompt|static/i);
 const noteGuide = presentation.renderGuide({ session: { stage: "write-note" }, currentView: "review" });
-assert.match(noteGuide, /Review the complete case note/);
+assert.match(noteGuide, /Make the note yours/);
 assert.match(noteGuide, /highlighted one-liner/i);
 const feedbackGuide = presentation.renderGuide({ session: { stage: "open-prompts" }, currentView: "review" });
 assert.match(feedbackGuide, /Open Prompts/i);
@@ -157,8 +155,8 @@ assert.match(handoffGuide, /Medications/);
 assert.match(handoffGuide, /You check the app's suggestions before moving on/);
 
 const complete = presentation.renderGuide({ session: { stage: "done" }, currentView: "prompts" });
-assert.match(complete, /Demo complete/);
-assert.match(complete, /reviewed a bedside cheat sheet, reviewed the complete case note/i);
+assert.match(complete, /You know the workflow/);
+assert.match(complete, /You can now: De-identify a note/i);
 assert.match(complete, /nothing from this demo was written to your vault/i);
 assert.match(complete, /data-action="exit-guided-demo"/);
 
