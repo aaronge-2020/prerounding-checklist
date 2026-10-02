@@ -1,0 +1,4513 @@
+[
+ {
+  "id": "en-gb-synthetic-00042",
+  "spans": [
+   {
+    "begin": 55,
+    "end": 73,
+    "text": "phoebe-marie ahmad",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 79,
+    "end": 94,
+    "text": "17 January 1986",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 101,
+    "end": 111,
+    "text": "1 Apr 2023",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 127,
+    "end": 144,
+    "text": "daryle williamson",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 258,
+    "end": 272,
+    "text": "HARDEEP HUGHES",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-00049",
+  "spans": [
+   {
+    "begin": 9,
+    "end": 19,
+    "text": "Z. Herbert",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 25,
+    "end": 34,
+    "text": "018703/98",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 47,
+    "end": 66,
+    "text": "University lecturer",
+    "type": "OCCUPATION",
+    "meddeid_label": "Profession"
+   },
+   {
+    "begin": 76,
+    "end": 103,
+    "text": "Medical Centre Raf Cranwell",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 115,
+    "end": 124,
+    "text": "DEVI CLAY",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 2416,
+    "end": 2425,
+    "text": "DEVI CLAY",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 2429,
+    "end": 2456,
+    "text": "Medical Centre Raf Cranwell",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-00168",
+  "spans": [
+   {
+    "begin": 47,
+    "end": 57,
+    "text": "0003264379",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 64,
+    "end": 79,
+    "text": "6th August 2021",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 89,
+    "end": 97,
+    "text": "Kimon J.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 103,
+    "end": 114,
+    "text": "26 Aug 1954",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 1422,
+    "end": 1439,
+    "text": "NAFISHA SUTCLIFFE",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 2212,
+    "end": 2229,
+    "text": "andreana johnston",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-00185",
+  "spans": [
+   {
+    "begin": 30,
+    "end": 42,
+    "text": "000 649 5673",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 53,
+    "end": 58,
+    "text": "Omari",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 80,
+    "end": 88,
+    "text": "03067876",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 109,
+    "end": 137,
+    "text": "THE ROYAL VICTORIA INFIRMARY",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 2088,
+    "end": 2099,
+    "text": "8 July 2022",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 2233,
+    "end": 2247,
+    "text": "harriette kane",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-00190",
+  "spans": [
+   {
+    "begin": 29,
+    "end": 39,
+    "text": "21/06/2028",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 70,
+    "end": 79,
+    "text": "AOUS SHAW",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 101,
+    "end": 109,
+    "text": "07394047",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 184,
+    "end": 193,
+    "text": "AOUS SHAW",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 2894,
+    "end": 2922,
+    "text": "ROYAL INFIRMARY OF EDINBURGH",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 2944,
+    "end": 2953,
+    "text": "R. Baines",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 2974,
+    "end": 3002,
+    "text": "ROYAL INFIRMARY OF EDINBURGH",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-00221",
+  "spans": [
+   {
+    "begin": 28,
+    "end": 36,
+    "text": "B. Hobbs",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 58,
+    "end": 66,
+    "text": "08538226",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1681,
+    "end": 1691,
+    "text": "6 Apr 2026",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1813,
+    "end": 1825,
+    "text": "J. PRIESTLEY",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1877,
+    "end": 1884,
+    "text": "0952126",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-00321",
+  "spans": [
+   {
+    "begin": 27,
+    "end": 39,
+    "text": "000 583 0444",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 50,
+    "end": 61,
+    "text": "Kathir Shaw",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 67,
+    "end": 77,
+    "text": "18/09/1928",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 87,
+    "end": 126,
+    "text": "34 East Duck Lees Lane, Hackney, E9 5AA",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 136,
+    "end": 148,
+    "text": "07700 900035",
+    "type": "PHONE",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 1722,
+    "end": 1744,
+    "text": "Dr Vedant FISHER, MBBS",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-00375",
+  "spans": [
+   {
+    "begin": 27,
+    "end": 39,
+    "text": "000 105 2030",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 50,
+    "end": 57,
+    "text": "Anda Y.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 63,
+    "end": 75,
+    "text": "MRN-02141930",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 95,
+    "end": 110,
+    "text": "chidozie mercer",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 120,
+    "end": 143,
+    "text": "anda.yusuf82@icloud.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 1468,
+    "end": 1492,
+    "text": "Royal Alexandra Hospital",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 1670,
+    "end": 1685,
+    "text": "chidozie mercer",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-00522",
+  "spans": [
+   {
+    "begin": 9,
+    "end": 25,
+    "text": "ISLA-SKYE SALEEM",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 35,
+    "end": 72,
+    "text": "178 Chapelton View, Larkhall, ML9 1AA",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 78,
+    "end": 87,
+    "text": "073019954",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 117,
+    "end": 124,
+    "text": "82-year",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 1553,
+    "end": 1560,
+    "text": "0390568",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-00608",
+  "spans": [
+   {
+    "begin": 30,
+    "end": 40,
+    "text": "0009692453",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 51,
+    "end": 61,
+    "text": "K. Golding",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 83,
+    "end": 98,
+    "text": "ULSTER HOSPITAL",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 120,
+    "end": 129,
+    "text": "012414516",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 2779,
+    "end": 2791,
+    "text": "D. Pickering",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 2804,
+    "end": 2815,
+    "text": "GMC 0399628",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-00623",
+  "spans": [
+   {
+    "begin": 46,
+    "end": 56,
+    "text": "F. Kennedy",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 83,
+    "end": 92,
+    "text": "063073971",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 107,
+    "end": 113,
+    "text": "87 y/o",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 159,
+    "end": 174,
+    "text": "10th April 2035",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1560,
+    "end": 1571,
+    "text": "TIAMII DYER",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-00728",
+  "spans": [
+   {
+    "begin": 30,
+    "end": 42,
+    "text": "000 276 8284",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 53,
+    "end": 61,
+    "text": "V. Myers",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 67,
+    "end": 75,
+    "text": "H4741379",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 116,
+    "end": 131,
+    "text": "Ulster Hospital",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 2363,
+    "end": 2378,
+    "text": "Aisleen Goddard",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 2395,
+    "end": 2406,
+    "text": "GMC 0869345",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-00844",
+  "spans": [
+   {
+    "begin": 21,
+    "end": 36,
+    "text": "Mahdia CHADWICK",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 384,
+    "end": 399,
+    "text": "Mahdia CHADWICK",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 1959,
+    "end": 1980,
+    "text": "Dr Arista Field, MBBS",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1981,
+    "end": 1991,
+    "text": "LOUGHGUILE",
+    "type": "LOCATION",
+    "meddeid_label": "Address_Location:Caregiver"
+   },
+   {
+    "begin": 1992,
+    "end": 1999,
+    "text": "0192796",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   },
+   {
+    "begin": 2000,
+    "end": 2021,
+    "text": "Belfast City Hospital",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01051",
+  "spans": [
+   {
+    "begin": 72,
+    "end": 81,
+    "text": "GB535023D",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 92,
+    "end": 103,
+    "text": "Grayson-Lee",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 109,
+    "end": 119,
+    "text": "19/10/1933",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 125,
+    "end": 133,
+    "text": "H2244263",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1331,
+    "end": 1365,
+    "text": "grayson-lee.webster56@fastmail.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 1404,
+    "end": 1414,
+    "text": "9 Jun 2024",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01076",
+  "spans": [
+   {
+    "begin": 28,
+    "end": 35,
+    "text": "Babette",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 50,
+    "end": 69,
+    "text": "5 QUAYMOUNT, FINNIS",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 79,
+    "end": 91,
+    "text": "07700 900455",
+    "type": "PHONE",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 106,
+    "end": 112,
+    "text": "28 y/o",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 139,
+    "end": 149,
+    "text": "1 May 2012",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01105",
+  "spans": [
+   {
+    "begin": 49,
+    "end": 59,
+    "text": "0001110609",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 70,
+    "end": 81,
+    "text": "kobey iqbal",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 87,
+    "end": 97,
+    "text": "1936-11-26",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 119,
+    "end": 128,
+    "text": "006119428",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 138,
+    "end": 167,
+    "text": "kobey.iqbal33@virginmedia.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 169,
+    "end": 180,
+    "text": "kobey iqbal",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 1600,
+    "end": 1616,
+    "text": "19 February 1988",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01157",
+  "spans": [
+   {
+    "begin": 53,
+    "end": 66,
+    "text": "KN 27 80 11 B",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 77,
+    "end": 88,
+    "text": "ILIYAS NUNN",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 94,
+    "end": 103,
+    "text": "085979596",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 124,
+    "end": 145,
+    "text": "GATWICK PARK HOSPITAL",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 192,
+    "end": 203,
+    "text": "26 Sep 2018",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1100,
+    "end": 1113,
+    "text": "Eshah McNally",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1153,
+    "end": 1164,
+    "text": "26 Sep 2018",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01210",
+  "spans": [
+   {
+    "begin": 44,
+    "end": 56,
+    "text": "000 865 3683",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 62,
+    "end": 74,
+    "text": "Laila-Rae H.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 96,
+    "end": 104,
+    "text": "01767639",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1586,
+    "end": 1599,
+    "text": "23 April 2023",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1656,
+    "end": 1669,
+    "text": "KHALAN BASHIR",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1670,
+    "end": 1705,
+    "text": "Queen Elizabeth University Hospital",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01281",
+  "spans": [
+   {
+    "begin": 42,
+    "end": 51,
+    "text": "ZZ910893D",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 62,
+    "end": 75,
+    "text": "nuriyah islam",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 81,
+    "end": 91,
+    "text": "23/10/1898",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 101,
+    "end": 138,
+    "text": "74 Harrington Place, Bordon, GU35 0AA",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 148,
+    "end": 160,
+    "text": "07700 900329",
+    "type": "PHONE",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 1861,
+    "end": 1868,
+    "text": "N. WONG",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01392",
+  "spans": [
+   {
+    "begin": 9,
+    "end": 19,
+    "text": "Meher LOWE",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 23,
+    "end": 30,
+    "text": "29-year",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 85,
+    "end": 98,
+    "text": "NK 28 88 97 A",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 151,
+    "end": 164,
+    "text": "TEAGHAN JONES",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 1132,
+    "end": 1146,
+    "text": "31st July 2045",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1164,
+    "end": 1177,
+    "text": "Imelda MCCANN",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01435",
+  "spans": [
+   {
+    "begin": 36,
+    "end": 43,
+    "text": "S. Monk",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 56,
+    "end": 69,
+    "text": "Postal worker",
+    "type": "OCCUPATION",
+    "meddeid_label": "Profession"
+   },
+   {
+    "begin": 91,
+    "end": 100,
+    "text": "080405783",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1019,
+    "end": 1040,
+    "text": "Dr Abiola North, MBBS",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1042,
+    "end": 1069,
+    "text": "Chepstow Community Hospital",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01509",
+  "spans": [
+   {
+    "begin": 22,
+    "end": 34,
+    "text": "000 164 2775",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 35,
+    "end": 47,
+    "text": "Omobolaji S.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 49,
+    "end": 102,
+    "text": "34 Lower Evingar Road, Wainfleet All Saints, PE24 4AA",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 213,
+    "end": 241,
+    "text": "omobolaji.spence20@gmail.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 261,
+    "end": 273,
+    "text": "JOCCOAA TODD",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 829,
+    "end": 839,
+    "text": "0663595511",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01552",
+  "spans": [
+   {
+    "begin": 6,
+    "end": 16,
+    "text": "8 May 2045",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 21,
+    "end": 32,
+    "text": "Giavanna T.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 47,
+    "end": 76,
+    "text": "153 Glenview Terrace, CALEDON",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 98,
+    "end": 106,
+    "text": "02484287",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 174,
+    "end": 185,
+    "text": "Giavanna T.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 1505,
+    "end": 1517,
+    "text": "KORTNEY OMAR",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01603",
+  "spans": [
+   {
+    "begin": 38,
+    "end": 50,
+    "text": "000 755 7718",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 60,
+    "end": 66,
+    "text": "Priyam",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 79,
+    "end": 88,
+    "text": "Carpenter",
+    "type": "OCCUPATION",
+    "meddeid_label": "Profession"
+   },
+   {
+    "begin": 99,
+    "end": 126,
+    "text": "Llangunllo Community Centre",
+    "type": "ORGANIZATION",
+    "meddeid_label": "Organization:Other"
+   },
+   {
+    "begin": 136,
+    "end": 176,
+    "text": "107 Crawford Close, Porthmadog, LL49 9AA",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 186,
+    "end": 215,
+    "text": "priyam.o'neill15@talktalk.net",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01652",
+  "spans": [
+   {
+    "begin": 41,
+    "end": 46,
+    "text": "Alyse",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 56,
+    "end": 84,
+    "text": "27 Grosvenor Court, DUNMURRY",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 100,
+    "end": 125,
+    "text": "alyse.barry74@hotmail.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 2181,
+    "end": 2190,
+    "text": "T. SENIOR",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 2207,
+    "end": 2218,
+    "text": "GMC 0316295",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01775",
+  "spans": [
+   {
+    "begin": 36,
+    "end": 48,
+    "text": "Zelah RHODES",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 54,
+    "end": 65,
+    "text": "067 398 114",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 82,
+    "end": 92,
+    "text": "27/06/2035",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 441,
+    "end": 448,
+    "text": "50-year",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 1760,
+    "end": 1778,
+    "text": "halima-sadia ahmed",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01777",
+  "spans": [
+   {
+    "begin": 33,
+    "end": 45,
+    "text": "Bhadra North",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 51,
+    "end": 63,
+    "text": "MRN-04700394",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 76,
+    "end": 83,
+    "text": "Barista",
+    "type": "OCCUPATION",
+    "meddeid_label": "Profession"
+   },
+   {
+    "begin": 1322,
+    "end": 1335,
+    "text": "K. Rutherford",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1361,
+    "end": 1395,
+    "text": "OTTERY ST. MARY COMMUNITY HOSPITAL",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01825",
+  "spans": [
+   {
+    "begin": 40,
+    "end": 52,
+    "text": "000 220 6952",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 63,
+    "end": 75,
+    "text": "Emie-Rose O.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 81,
+    "end": 91,
+    "text": "1931-01-10",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 113,
+    "end": 123,
+    "text": "0629535818",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1585,
+    "end": 1600,
+    "text": "2 December 1988",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1635,
+    "end": 1666,
+    "text": "emie-rose.o'neill80@yahoo.co.uk",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-01926",
+  "spans": [
+   {
+    "begin": 38,
+    "end": 43,
+    "text": "Zosha",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 49,
+    "end": 59,
+    "text": "18/07/1939",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 69,
+    "end": 105,
+    "text": "34 Cassel's Lane, Kinbrace, KW11 6UA",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 127,
+    "end": 136,
+    "text": "045264422",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1576,
+    "end": 1583,
+    "text": "0601244",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02086",
+  "spans": [
+   {
+    "begin": 60,
+    "end": 73,
+    "text": "sepehr arnold",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 79,
+    "end": 91,
+    "text": "MRN-06977374",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 116,
+    "end": 140,
+    "text": "Aberdeen Royal Infirmary",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 1822,
+    "end": 1835,
+    "text": "chimdi foster",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1836,
+    "end": 1843,
+    "text": "0361509",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02130",
+  "spans": [
+   {
+    "begin": 55,
+    "end": 66,
+    "text": "A. O'REILLY",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 83,
+    "end": 89,
+    "text": "60 y/o",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 116,
+    "end": 125,
+    "text": "F. Austin",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 1421,
+    "end": 1437,
+    "text": "21 February 1996",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1454,
+    "end": 1465,
+    "text": "J. Fletcher",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02133",
+  "spans": [
+   {
+    "begin": 61,
+    "end": 69,
+    "text": "Hamta W.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 75,
+    "end": 82,
+    "text": "0818945",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 92,
+    "end": 135,
+    "text": "84 Abercrombie Drive, Chipperfield, WD4 4AG",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 145,
+    "end": 157,
+    "text": "07700 900469",
+    "type": "PHONE",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 267,
+    "end": 275,
+    "text": "D. Milne",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 1139,
+    "end": 1147,
+    "text": "D. Milne",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02186",
+  "spans": [
+   {
+    "begin": 45,
+    "end": 54,
+    "text": "KN016878A",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 65,
+    "end": 73,
+    "text": "Klyne W.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 79,
+    "end": 86,
+    "text": "0164884",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 128,
+    "end": 156,
+    "text": "ROYAL INFIRMARY OF EDINBURGH",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 1080,
+    "end": 1108,
+    "text": "ROYAL INFIRMARY OF EDINBURGH",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 1318,
+    "end": 1329,
+    "text": "Tullichewan",
+    "type": "LOCATION",
+    "meddeid_label": "Address_Location:Other"
+   },
+   {
+    "begin": 1355,
+    "end": 1362,
+    "text": "L. Lamb",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02205",
+  "spans": [
+   {
+    "begin": 23,
+    "end": 74,
+    "text": "University Hospital Bristol and Weston Virtual Site",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 81,
+    "end": 91,
+    "text": "30/12/2026",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 101,
+    "end": 111,
+    "text": "S. Vincent",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 118,
+    "end": 126,
+    "text": "53 years",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 1039,
+    "end": 1051,
+    "text": "NAHAL WESTON",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02258",
+  "spans": [
+   {
+    "begin": 54,
+    "end": 67,
+    "text": "BG 04 03 62 C",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 78,
+    "end": 90,
+    "text": "VIRAAJ LLOYD",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 122,
+    "end": 128,
+    "text": "3 days",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 160,
+    "end": 165,
+    "text": "Yagna",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 183,
+    "end": 195,
+    "text": "07700 900176",
+    "type": "PHONE",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 1648,
+    "end": 1658,
+    "text": "1996-04-03",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1668,
+    "end": 1673,
+    "text": "Yagna",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02262",
+  "spans": [
+   {
+    "begin": 45,
+    "end": 58,
+    "text": "MIKYLE BASHIR",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 101,
+    "end": 125,
+    "text": "Aberdeen Royal Infirmary",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 154,
+    "end": 169,
+    "text": "adeniyi delaney",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 187,
+    "end": 214,
+    "text": "mikyle.bashir37@hotmail.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 229,
+    "end": 277,
+    "text": "115 Margaret Lindsay Place, Drumlemble, PA28 6AA",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02267",
+  "spans": [
+   {
+    "begin": 41,
+    "end": 53,
+    "text": "000 000 3485",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 64,
+    "end": 71,
+    "text": "Kabe W.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 108,
+    "end": 115,
+    "text": "3 years",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 228,
+    "end": 238,
+    "text": "1 Mar 2024",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 260,
+    "end": 269,
+    "text": "012792692",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1062,
+    "end": 1071,
+    "text": "A. Foster",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02341",
+  "spans": [
+   {
+    "begin": 46,
+    "end": 58,
+    "text": "000 620 9026",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 69,
+    "end": 78,
+    "text": "Sumayo H.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 93,
+    "end": 100,
+    "text": "2 years",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 124,
+    "end": 140,
+    "text": "EXCELLENT BOWERS",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 155,
+    "end": 191,
+    "text": "159 Adwalton Grove, Worksop, S80 1AA",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 220,
+    "end": 247,
+    "text": "Turpin Green Public Library",
+    "type": "ORGANIZATION",
+    "meddeid_label": "Organization:Other"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02424",
+  "spans": [
+   {
+    "begin": 9,
+    "end": 23,
+    "text": "Mansur STANLEY",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 29,
+    "end": 47,
+    "text": "20th November 2010",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 64,
+    "end": 73,
+    "text": "Iyla-Jane",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 91,
+    "end": 118,
+    "text": "mansur.stanley49@icloud.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 138,
+    "end": 161,
+    "text": "ROYAL VICTORIA HOSPITAL",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02434",
+  "spans": [
+   {
+    "begin": 32,
+    "end": 43,
+    "text": "T. Humphrey",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 53,
+    "end": 95,
+    "text": "60 Buckstone Gate, Newport-on-Tay, DD6 8AA",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 108,
+    "end": 118,
+    "text": "bus driver",
+    "type": "OCCUPATION",
+    "meddeid_label": "Profession"
+   },
+   {
+    "begin": 1749,
+    "end": 1759,
+    "text": "24/06/1996",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1780,
+    "end": 1800,
+    "text": "Dr Sadaa Hasan, MBBS",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02722",
+  "spans": [
+   {
+    "begin": 21,
+    "end": 30,
+    "text": "Mazlum C.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 546,
+    "end": 558,
+    "text": "anesia firth",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 1546,
+    "end": 1557,
+    "text": "RIMON AYRES",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1561,
+    "end": 1570,
+    "text": "Mid Walls",
+    "type": "LOCATION",
+    "meddeid_label": "Address_Location:Caregiver"
+   },
+   {
+    "begin": 1596,
+    "end": 1603,
+    "text": "0134248",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02729",
+  "spans": [
+   {
+    "begin": 41,
+    "end": 57,
+    "text": "HARRISON DANIELS",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 63,
+    "end": 71,
+    "text": "08121251",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 87,
+    "end": 97,
+    "text": "2022-07-08",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 142,
+    "end": 148,
+    "text": "14 y/o",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 1341,
+    "end": 1354,
+    "text": "kalan kennedy",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1399,
+    "end": 1409,
+    "text": "2022-07-08",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02786",
+  "spans": [
+   {
+    "begin": 51,
+    "end": 57,
+    "text": "Ayaath",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 203,
+    "end": 209,
+    "text": "Aywick",
+    "type": "LOCATION",
+    "meddeid_label": "Address_Location:Other"
+   },
+   {
+    "begin": 238,
+    "end": 262,
+    "text": "Aberdeen Royal Infirmary",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 284,
+    "end": 295,
+    "text": "S26-0698175",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1562,
+    "end": 1582,
+    "text": "Dr Ishna Berry, MBBS",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02795",
+  "spans": [
+   {
+    "begin": 39,
+    "end": 49,
+    "text": "J. Coombes",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 55,
+    "end": 65,
+    "text": "2024-01-24",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 281,
+    "end": 290,
+    "text": "000643274",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1044,
+    "end": 1057,
+    "text": "14 March 2024",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1085,
+    "end": 1103,
+    "text": "TIANNA-MARIE LATIF",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-02980",
+  "spans": [
+   {
+    "begin": 60,
+    "end": 73,
+    "text": "GB 13 28 92 C",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 79,
+    "end": 88,
+    "text": "Shukri K.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 94,
+    "end": 104,
+    "text": "2009-06-10",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 437,
+    "end": 449,
+    "text": "AYLISH LATIF",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 739,
+    "end": 765,
+    "text": "DUNGANNON Community Centre",
+    "type": "ORGANIZATION",
+    "meddeid_label": "Organization:Other"
+   },
+   {
+    "begin": 1801,
+    "end": 1820,
+    "text": "Dr Kiyah NEAL, MBBS",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-03128",
+  "spans": [
+   {
+    "begin": 41,
+    "end": 53,
+    "text": "000 634 1447",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 64,
+    "end": 75,
+    "text": "heny fisher",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 81,
+    "end": 92,
+    "text": "12 Nov 2017",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 98,
+    "end": 107,
+    "text": "075545705",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 124,
+    "end": 137,
+    "text": "Eiryn Sanders",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 164,
+    "end": 179,
+    "text": "ULSTER HOSPITAL",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 2106,
+    "end": 2119,
+    "text": "Eiryn Sanders",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-03147",
+  "spans": [
+   {
+    "begin": 24,
+    "end": 35,
+    "text": "15 Jan 2024",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 37,
+    "end": 56,
+    "text": "Marnie-Rose Ritchie",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 124,
+    "end": 132,
+    "text": "D. LYONS",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 188,
+    "end": 211,
+    "text": "Cardiff Royal Infirmary",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 1631,
+    "end": 1646,
+    "text": "jaevon atkinson",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-03186",
+  "spans": [
+   {
+    "begin": 38,
+    "end": 50,
+    "text": "000 716 0209",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 61,
+    "end": 77,
+    "text": "leo-thomas white",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 92,
+    "end": 133,
+    "text": "81 Chalmerston Road, Kirknewton, EH27 8AA",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 148,
+    "end": 154,
+    "text": "55 y/o",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 176,
+    "end": 185,
+    "text": "039132648",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1155,
+    "end": 1162,
+    "text": "0496247",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-03208",
+  "spans": [
+   {
+    "begin": 42,
+    "end": 54,
+    "text": "000 135 8872",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 65,
+    "end": 73,
+    "text": "R. Hills",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 98,
+    "end": 119,
+    "text": "Belfast City Hospital",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 141,
+    "end": 150,
+    "text": "L24A86987",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1583,
+    "end": 1593,
+    "text": "2021-09-19",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1660,
+    "end": 1688,
+    "text": "Dr Frankie-Jo MATTHEWS, MBBS",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-gb-synthetic-03219",
+  "spans": [
+   {
+    "begin": 44,
+    "end": 54,
+    "text": "0003656790",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 65,
+    "end": 80,
+    "text": "Rishabh Vaughan",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 105,
+    "end": 112,
+    "text": "0588601",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 127,
+    "end": 177,
+    "text": "90 Tynant Road, Caerfyrddin / Carmarthen, SA31 1AD",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 195,
+    "end": 207,
+    "text": "07700 900712",
+    "type": "PHONE",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 246,
+    "end": 252,
+    "text": "74 y/o",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-00158",
+  "spans": [
+   {
+    "begin": 23,
+    "end": 34,
+    "text": "666 85 9708",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 45,
+    "end": 60,
+    "text": "skailar proszek",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 66,
+    "end": 78,
+    "text": "Feb 25, 1965",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 80,
+    "end": 95,
+    "text": "skailar proszek",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 1161,
+    "end": 1176,
+    "text": "kaiyer pessagno",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 2641,
+    "end": 2651,
+    "text": "2029-01-20",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 2697,
+    "end": 2722,
+    "text": "skailar.proszek52@att.net",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-00204",
+  "spans": [
+   {
+    "begin": 28,
+    "end": 38,
+    "text": "2025-03-15",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 48,
+    "end": 61,
+    "text": "FORREST GATES",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 67,
+    "end": 84,
+    "text": "October 5th, 1947",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 104,
+    "end": 114,
+    "text": "nasli abro",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1370,
+    "end": 1380,
+    "text": "nasli abro",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1497,
+    "end": 1507,
+    "text": "Jeter Rail",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-00292",
+  "spans": [
+   {
+    "begin": 32,
+    "end": 43,
+    "text": "666-20-0263",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 54,
+    "end": 64,
+    "text": "H. Mcevers",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 70,
+    "end": 77,
+    "text": "0972902",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 92,
+    "end": 128,
+    "text": "684 Colorado Ave, Gilcrest, CO 80623",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 1871,
+    "end": 1886,
+    "text": "April 7th, 2012",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1910,
+    "end": 1930,
+    "text": "Brenham Gledhill, MD",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-00297",
+  "spans": [
+   {
+    "begin": 42,
+    "end": 53,
+    "text": "Yuriy Horii",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 75,
+    "end": 83,
+    "text": "01829112",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 137,
+    "end": 148,
+    "text": "Yuriy Horii",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 424,
+    "end": 436,
+    "text": "jyair deziel",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 1482,
+    "end": 1490,
+    "text": "01829112",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 2208,
+    "end": 2232,
+    "text": "MOLOKAI GENERAL HOSPITAL",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 2236,
+    "end": 2251,
+    "text": "April 1st, 2022",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-00349",
+  "spans": [
+   {
+    "begin": 41,
+    "end": 50,
+    "text": "958962702",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 61,
+    "end": 76,
+    "text": "crockett mohawk",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 86,
+    "end": 100,
+    "text": "(212) 555-0130",
+    "type": "PHONE",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 117,
+    "end": 127,
+    "text": "2026-03-13",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 149,
+    "end": 158,
+    "text": "A22Z60687",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 179,
+    "end": 185,
+    "text": "67 y/o",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-00438",
+  "spans": [
+   {
+    "begin": 48,
+    "end": 59,
+    "text": "923 97 9622",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 70,
+    "end": 77,
+    "text": "T. Jugo",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 83,
+    "end": 94,
+    "text": "Jul 7, 1964",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 232,
+    "end": 246,
+    "text": "KEOMI STEIDLEY",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 2246,
+    "end": 2256,
+    "text": "2019-02-19",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 2338,
+    "end": 2353,
+    "text": "Eloa Farnsworth",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-00471",
+  "spans": [
+   {
+    "begin": 53,
+    "end": 74,
+    "text": "DARIANNY TIERRABLANCA",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 115,
+    "end": 124,
+    "text": "079260882",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 148,
+    "end": 172,
+    "text": "PAINTSVILLE ARH HOSPITAL",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 174,
+    "end": 195,
+    "text": "DARIANNY TIERRABLANCA",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 533,
+    "end": 546,
+    "text": "parsa manship",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 634,
+    "end": 667,
+    "text": "darianny.tierrablanca53@gmail.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 2204,
+    "end": 2228,
+    "text": "PAINTSVILLE ARH HOSPITAL",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 2577,
+    "end": 2590,
+    "text": "parsa manship",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-00486",
+  "spans": [
+   {
+    "begin": 43,
+    "end": 55,
+    "text": "cabot oleson",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 70,
+    "end": 109,
+    "text": "823 S Harbor Rd, Vermontville, NY 12989",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 131,
+    "end": 141,
+    "text": "0359500097",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 160,
+    "end": 168,
+    "text": "36 years",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 1888,
+    "end": 1899,
+    "text": "LIC24111767",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-00558",
+  "spans": [
+   {
+    "begin": 9,
+    "end": 21,
+    "text": "Trelyn Godoi",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 27,
+    "end": 39,
+    "text": "Feb 14, 1988",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 54,
+    "end": 93,
+    "text": "196 Johnstown Rd, Paynesville, WV 24873",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 148,
+    "end": 158,
+    "text": "0585653847",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 2019,
+    "end": 2028,
+    "text": "069735638",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-00559",
+  "spans": [
+   {
+    "begin": 9,
+    "end": 19,
+    "text": "Rashaad T.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 32,
+    "end": 60,
+    "text": "State Highway Police Officer",
+    "type": "OCCUPATION",
+    "meddeid_label": "Profession"
+   },
+   {
+    "begin": 71,
+    "end": 100,
+    "text": "Neillsville Community College",
+    "type": "ORGANIZATION",
+    "meddeid_label": "Organization:Other"
+   },
+   {
+    "begin": 115,
+    "end": 155,
+    "text": "870 E Windlake Rd, Three Lakes, WI 54562",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 175,
+    "end": 200,
+    "text": "rashaad.toder52@gmail.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 207,
+    "end": 217,
+    "text": "Rashaad T.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-00661",
+  "spans": [
+   {
+    "begin": 38,
+    "end": 54,
+    "text": "TYREKE SHUGARMAN",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 76,
+    "end": 85,
+    "text": "033024132",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 98,
+    "end": 129,
+    "text": "Agricultural Equipment Mechanic",
+    "type": "OCCUPATION",
+    "meddeid_label": "Profession"
+   },
+   {
+    "begin": 139,
+    "end": 168,
+    "text": "Roger Williams Medical Center",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 180,
+    "end": 191,
+    "text": "C. Muchmore",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-00705",
+  "spans": [
+   {
+    "begin": 24,
+    "end": 36,
+    "text": "Sajda Conney",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 51,
+    "end": 57,
+    "text": "48 y/o",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 72,
+    "end": 108,
+    "text": "679 Bennington Rd, Oakland, NE 68045",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 118,
+    "end": 144,
+    "text": "sajda.conney13@outlook.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 1636,
+    "end": 1654,
+    "text": "Henzley Iselin, MD",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-00857",
+  "spans": [
+   {
+    "begin": 41,
+    "end": 50,
+    "text": "666752955",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 61,
+    "end": 70,
+    "text": "K. Witsoe",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 76,
+    "end": 87,
+    "text": "075 751 755",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 112,
+    "end": 136,
+    "text": "Pali Momi Medical Center",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 1605,
+    "end": 1622,
+    "text": "CATALENA LABORIEL",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1754,
+    "end": 1771,
+    "text": "August 27th, 2022",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-00867",
+  "spans": [
+   {
+    "begin": 44,
+    "end": 61,
+    "text": "Timote Hennenfent",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 79,
+    "end": 87,
+    "text": "77 years",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 141,
+    "end": 177,
+    "text": "205 Village St, Somerville, MA 02143",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 187,
+    "end": 219,
+    "text": "timote.hennenfent10@fastmail.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 1656,
+    "end": 1666,
+    "text": "0752849525",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01069",
+  "spans": [
+   {
+    "begin": 9,
+    "end": 22,
+    "text": "ELLY GUBITOSI",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 32,
+    "end": 59,
+    "text": "elly.gubitosi46@outlook.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 136,
+    "end": 143,
+    "text": "54-year",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 677,
+    "end": 685,
+    "text": "02583661",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1411,
+    "end": 1421,
+    "text": "08/30/2026",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01182",
+  "spans": [
+   {
+    "begin": 11,
+    "end": 20,
+    "text": "J. Chiroy",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 181,
+    "end": 207,
+    "text": "Commonwealth Health Center",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 221,
+    "end": 226,
+    "text": "Yakov",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 1254,
+    "end": 1268,
+    "text": "(670) 555-0138",
+    "type": "PHONE",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 1284,
+    "end": 1319,
+    "text": "722 Chalan Matuis, Saipan, MP 96950",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01350",
+  "spans": [
+   {
+    "begin": 54,
+    "end": 69,
+    "text": "hadicha iadanza",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 84,
+    "end": 89,
+    "text": "8 y/o",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 95,
+    "end": 103,
+    "text": "M0776881",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 123,
+    "end": 139,
+    "text": "ezlynn corbeille",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 154,
+    "end": 186,
+    "text": "137 Matansa Dr, Saipan, MP 96950",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01436",
+  "spans": [
+   {
+    "begin": 23,
+    "end": 34,
+    "text": "666 36 0253",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 45,
+    "end": 50,
+    "text": "Tamaj",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 65,
+    "end": 100,
+    "text": "537 W Union Tpke, Brielle, NJ 08730",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 110,
+    "end": 124,
+    "text": "(617) 555-0139",
+    "type": "PHONE",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 231,
+    "end": 238,
+    "text": "58-year",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 1584,
+    "end": 1596,
+    "text": "Sep 18, 2025",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01490",
+  "spans": [
+   {
+    "begin": 28,
+    "end": 40,
+    "text": "J. Barrineau",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 55,
+    "end": 80,
+    "text": "858 I-80, Nixon, NV 89424",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 594,
+    "end": 603,
+    "text": "073063378",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1467,
+    "end": 1478,
+    "text": "easton seed",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1497,
+    "end": 1508,
+    "text": "LIC31239944",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01508",
+  "spans": [
+   {
+    "begin": 35,
+    "end": 46,
+    "text": "ZELLA FLOCH",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 61,
+    "end": 74,
+    "text": "day 3 of life",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 94,
+    "end": 103,
+    "text": "Alhussein",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 146,
+    "end": 179,
+    "text": "Riverside Regional Medical Center",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 550,
+    "end": 558,
+    "text": "02635034",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1475,
+    "end": 1508,
+    "text": "Riverside Regional Medical Center",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01575",
+  "spans": [
+   {
+    "begin": 42,
+    "end": 58,
+    "text": "lucillia sudbury",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 68,
+    "end": 82,
+    "text": "(202) 555-0114",
+    "type": "PHONE",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 148,
+    "end": 156,
+    "text": "Yitzchok",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 182,
+    "end": 202,
+    "text": "ST VINCENT'S CHILTON",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 224,
+    "end": 234,
+    "text": "0832999287",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01644",
+  "spans": [
+   {
+    "begin": 27,
+    "end": 38,
+    "text": "953-82-5017",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 49,
+    "end": 56,
+    "text": "Elio S.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 63,
+    "end": 73,
+    "text": "2025-11-10",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 123,
+    "end": 131,
+    "text": "49 years",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 166,
+    "end": 178,
+    "text": "A. Zaniewski",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 1467,
+    "end": 1482,
+    "text": "arista darveaux",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01669",
+  "spans": [
+   {
+    "begin": 9,
+    "end": 23,
+    "text": "zaylin mackell",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 29,
+    "end": 38,
+    "text": "000914229",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 44,
+    "end": 51,
+    "text": "0161541",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 100,
+    "end": 116,
+    "text": "Newport Hospital",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 129,
+    "end": 152,
+    "text": "Certified Personal Chef",
+    "type": "OCCUPATION",
+    "meddeid_label": "Profession"
+   },
+   {
+    "begin": 1320,
+    "end": 1336,
+    "text": "Newport Hospital",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 1579,
+    "end": 1590,
+    "text": "FADI MOHLER",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01702",
+  "spans": [
+   {
+    "begin": 42,
+    "end": 53,
+    "text": "912 02 0133",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 59,
+    "end": 68,
+    "text": "Kennay T.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 102,
+    "end": 111,
+    "text": "Kennay T.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 246,
+    "end": 255,
+    "text": "18 months",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 284,
+    "end": 293,
+    "text": "M. Tacoma",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 1563,
+    "end": 1575,
+    "text": "Relena Duzan",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1597,
+    "end": 1605,
+    "text": "Freeport",
+    "type": "LOCATION",
+    "meddeid_label": "Address_Location:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01727",
+  "spans": [
+   {
+    "begin": 46,
+    "end": 58,
+    "text": "ADHIRA ONKKA",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 80,
+    "end": 92,
+    "text": "LAB-06197855",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 315,
+    "end": 323,
+    "text": "73 years",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 1016,
+    "end": 1035,
+    "text": "November 15th, 2035",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1052,
+    "end": 1066,
+    "text": "Zero Poola, MD",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01838",
+  "spans": [
+   {
+    "begin": 23,
+    "end": 34,
+    "text": "938 59 9428",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 45,
+    "end": 58,
+    "text": "Gaston Bernth",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 85,
+    "end": 100,
+    "text": "July 12th, 2028",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 110,
+    "end": 135,
+    "text": "gaston.bernth43@gmail.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 177,
+    "end": 184,
+    "text": "Delayne",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 700,
+    "end": 708,
+    "text": "47 years",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01891",
+  "spans": [
+   {
+    "begin": 33,
+    "end": 47,
+    "text": "Genius Stempky",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 60,
+    "end": 83,
+    "text": "Certified Personal Chef",
+    "type": "OCCUPATION",
+    "meddeid_label": "Profession"
+   },
+   {
+    "begin": 94,
+    "end": 118,
+    "text": "Toledo Housing Authority",
+    "type": "ORGANIZATION",
+    "meddeid_label": "Organization:Other"
+   },
+   {
+    "begin": 133,
+    "end": 164,
+    "text": "707 Umpqua Ave, Plush, OR 97637",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 174,
+    "end": 188,
+    "text": "(212) 555-0112",
+    "type": "PHONE",
+    "meddeid_label": "Contactdetails"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01936",
+  "spans": [
+   {
+    "begin": 45,
+    "end": 62,
+    "text": "ender lingerfeldt",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 77,
+    "end": 109,
+    "text": "873 Truck Byp, Mc Leod, MT 59052",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 122,
+    "end": 141,
+    "text": "Dental Receptionist",
+    "type": "OCCUPATION",
+    "meddeid_label": "Profession"
+   },
+   {
+    "begin": 152,
+    "end": 179,
+    "text": "Kalispell Transit Authority",
+    "type": "ORGANIZATION",
+    "meddeid_label": "Organization:Other"
+   },
+   {
+    "begin": 1444,
+    "end": 1457,
+    "text": "Abra Lippiatt",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-01952",
+  "spans": [
+   {
+    "begin": 23,
+    "end": 34,
+    "text": "978-34-2118",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 45,
+    "end": 56,
+    "text": "luxe longhi",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 62,
+    "end": 77,
+    "text": "August 22, 2043",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 116,
+    "end": 121,
+    "text": "Macee",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 133,
+    "end": 143,
+    "text": "M. Mulenga",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 161,
+    "end": 170,
+    "text": "074084919",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   },
+   {
+    "begin": 1625,
+    "end": 1635,
+    "text": "M. Mulenga",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02026",
+  "spans": [
+   {
+    "begin": 35,
+    "end": 52,
+    "text": "NAVARRO LONGCRIER",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 84,
+    "end": 101,
+    "text": "NAVARRO LONGCRIER",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 107,
+    "end": 114,
+    "text": "6 years",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 250,
+    "end": 264,
+    "text": "Holmes Bunkley",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 1761,
+    "end": 1774,
+    "text": "Edwin Scheers",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1776,
+    "end": 1785,
+    "text": "005361746",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02060",
+  "spans": [
+   {
+    "begin": 28,
+    "end": 38,
+    "text": "Amiylah S.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 44,
+    "end": 54,
+    "text": "1985-10-15",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 81,
+    "end": 91,
+    "text": "09/03/2025",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 344,
+    "end": 354,
+    "text": "G. Pickner",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 361,
+    "end": 371,
+    "text": "Jim Thorpe",
+    "type": "LOCATION",
+    "meddeid_label": "Address_Location:Other"
+   },
+   {
+    "begin": 1655,
+    "end": 1665,
+    "text": "09/03/2025",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02145",
+  "spans": [
+   {
+    "begin": 36,
+    "end": 46,
+    "text": "Heysell A.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 61,
+    "end": 67,
+    "text": "21 y/o",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 77,
+    "end": 117,
+    "text": "15 Sand Island Access Rd, Kula, HI 96790",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 127,
+    "end": 153,
+    "text": "heysell.agnone45@yahoo.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 1488,
+    "end": 1501,
+    "text": "Zakir Cup, MD",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02250",
+  "spans": [
+   {
+    "begin": 53,
+    "end": 62,
+    "text": "A. Gunkle",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 77,
+    "end": 106,
+    "text": "572 Co Rd 182, Ozan, AR 71855",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 120,
+    "end": 128,
+    "text": "18 years",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 217,
+    "end": 227,
+    "text": "0397628150",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1346,
+    "end": 1355,
+    "text": "074340417",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02319",
+  "spans": [
+   {
+    "begin": 31,
+    "end": 40,
+    "text": "666394911",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 51,
+    "end": 66,
+    "text": "ABDELAZIZ KIYAN",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 76,
+    "end": 113,
+    "text": "293 Sunshine Rd, Sandy Hook, KY 41171",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 238,
+    "end": 246,
+    "text": "29 years",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 1536,
+    "end": 1546,
+    "text": "11/10/2035",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1557,
+    "end": 1571,
+    "text": "gambit searcey",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02360",
+  "spans": [
+   {
+    "begin": 28,
+    "end": 40,
+    "text": "RAMAZAN ZENA",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 55,
+    "end": 61,
+    "text": "38 y/o",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 1342,
+    "end": 1355,
+    "text": "July 24, 2021",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1384,
+    "end": 1390,
+    "text": "Hinson",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 1401,
+    "end": 1410,
+    "text": "Fairbanks",
+    "type": "LOCATION",
+    "meddeid_label": "Address_Location:Other"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02363",
+  "spans": [
+   {
+    "begin": 28,
+    "end": 38,
+    "text": "Cormick D.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 44,
+    "end": 51,
+    "text": "0540539",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 821,
+    "end": 838,
+    "text": "Nahmari Blitz, MD",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 840,
+    "end": 849,
+    "text": "016255796",
+    "type": "ID",
+    "meddeid_label": "ID:Caregiver"
+   },
+   {
+    "begin": 868,
+    "end": 878,
+    "text": "2024-09-23",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02405",
+  "spans": [
+   {
+    "begin": 33,
+    "end": 42,
+    "text": "666586463",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 53,
+    "end": 62,
+    "text": "A. Yancer",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 77,
+    "end": 83,
+    "text": "12 y/o",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 166,
+    "end": 176,
+    "text": "0302996014",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1408,
+    "end": 1423,
+    "text": "October 3, 2018",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1440,
+    "end": 1456,
+    "text": "Daesyn Basar, MD",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02493",
+  "spans": [
+   {
+    "begin": 42,
+    "end": 49,
+    "text": "Nylayah",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 51,
+    "end": 57,
+    "text": "54 y/o",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 121,
+    "end": 148,
+    "text": "Community Memorial Hospital",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 1283,
+    "end": 1293,
+    "text": "2026-08-30",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1307,
+    "end": 1322,
+    "text": "CHANNEL YARGEAU",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02548",
+  "spans": [
+   {
+    "begin": 6,
+    "end": 25,
+    "text": "December 16th, 2012",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 31,
+    "end": 42,
+    "text": "000-54-8272",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 49,
+    "end": 94,
+    "text": "University of Michigan Health - Sparrow Eaton",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 104,
+    "end": 114,
+    "text": "Prinsha R.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 120,
+    "end": 132,
+    "text": "MRN-07760610",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 1418,
+    "end": 1437,
+    "text": "Mionna Tomcheck, MD",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02639",
+  "spans": [
+   {
+    "begin": 48,
+    "end": 60,
+    "text": "E. Tarawally",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 82,
+    "end": 91,
+    "text": "079584841",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 285,
+    "end": 293,
+    "text": "72 years",
+    "type": "AGE",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 1534,
+    "end": 1544,
+    "text": "02/03/2036",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1607,
+    "end": 1621,
+    "text": "kween multhauf",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02712",
+  "spans": [
+   {
+    "begin": 61,
+    "end": 72,
+    "text": "zenani coby",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 87,
+    "end": 127,
+    "text": "664 Magnolia Dr, Bordelonville, LA 71320",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 145,
+    "end": 169,
+    "text": "zenani.coby23@icloud.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 195,
+    "end": 227,
+    "text": "Leonard J Chabert Medical Center",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 1362,
+    "end": 1367,
+    "text": "Diing",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02758",
+  "spans": [
+   {
+    "begin": 34,
+    "end": 39,
+    "text": "Noemy",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 45,
+    "end": 57,
+    "text": "Dec 19, 2019",
+    "type": "DOB",
+    "meddeid_label": "Age_Birthdate"
+   },
+   {
+    "begin": 77,
+    "end": 87,
+    "text": "amira shum",
+    "type": "NAME",
+    "meddeid_label": "Name:Other"
+   },
+   {
+    "begin": 151,
+    "end": 156,
+    "text": "Noemy",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 1180,
+    "end": 1205,
+    "text": "Ocean View Youth Services",
+    "type": "ORGANIZATION",
+    "meddeid_label": "Organization:Other"
+   },
+   {
+    "begin": 1529,
+    "end": 1547,
+    "text": "Ghalia Cardoso, MD",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02773",
+  "spans": [
+   {
+    "begin": 41,
+    "end": 52,
+    "text": "985 92 3237",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 63,
+    "end": 77,
+    "text": "LILLAH WOLFSON",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 98,
+    "end": 126,
+    "text": "Geriatric Physical Therapist",
+    "type": "OCCUPATION",
+    "meddeid_label": "Profession"
+   },
+   {
+    "begin": 137,
+    "end": 158,
+    "text": "Swatara Senior Center",
+    "type": "ORGANIZATION",
+    "meddeid_label": "Organization:Other"
+   },
+   {
+    "begin": 173,
+    "end": 204,
+    "text": "653 E 5th St, Sunburg, MN 56289",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 222,
+    "end": 248,
+    "text": "lillah.wolfson49@gmail.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02807",
+  "spans": [
+   {
+    "begin": 46,
+    "end": 59,
+    "text": "C. Bentivenga",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 65,
+    "end": 74,
+    "text": "095324/32",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 93,
+    "end": 118,
+    "text": "Medical Center Enterprise",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 176,
+    "end": 187,
+    "text": "Jan 6, 2020",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1645,
+    "end": 1661,
+    "text": "Irfan Sturza, MD",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-02965",
+  "spans": [
+   {
+    "begin": 36,
+    "end": 47,
+    "text": "941-84-8756",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 58,
+    "end": 64,
+    "text": "Kelson",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 77,
+    "end": 87,
+    "text": "bus driver",
+    "type": "OCCUPATION",
+    "meddeid_label": "Profession"
+   },
+   {
+    "begin": 109,
+    "end": 117,
+    "text": "04823737",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 146,
+    "end": 168,
+    "text": "CAPITAL MEDICAL CENTER",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 180,
+    "end": 194,
+    "text": "aesir benkoski",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-03065",
+  "spans": [
+   {
+    "begin": 47,
+    "end": 58,
+    "text": "J. Vanstrom",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 80,
+    "end": 92,
+    "text": "LAB-09554628",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 117,
+    "end": 127,
+    "text": "01/07/2022",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 150,
+    "end": 170,
+    "text": "WOOD COUNTY HOSPITAL",
+    "type": "FACILITY",
+    "meddeid_label": "Organization:Healthcare"
+   },
+   {
+    "begin": 1662,
+    "end": 1675,
+    "text": "skylyn gamper",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   },
+   {
+    "begin": 1715,
+    "end": 1725,
+    "text": "01/07/2022",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-03154",
+  "spans": [
+   {
+    "begin": 6,
+    "end": 16,
+    "text": "1996-05-05",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 65,
+    "end": 74,
+    "text": "Caisen B.",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 420,
+    "end": 448,
+    "text": "Geriatric Physical Therapist",
+    "type": "OCCUPATION",
+    "meddeid_label": "Profession"
+   },
+   {
+    "begin": 463,
+    "end": 496,
+    "text": "665 W Grove St, Marsing, ID 83639",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 1633,
+    "end": 1641,
+    "text": "R. Chunn",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-03214",
+  "spans": [
+   {
+    "begin": 6,
+    "end": 16,
+    "text": "02/06/2029",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 22,
+    "end": 33,
+    "text": "666 59 4639",
+    "type": "ID",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 108,
+    "end": 123,
+    "text": "dennis sagapolu",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 138,
+    "end": 175,
+    "text": "123 State Hwy 195, Goodland, KS 67735",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 188,
+    "end": 206,
+    "text": "software developer",
+    "type": "OCCUPATION",
+    "meddeid_label": "Profession"
+   },
+   {
+    "begin": 259,
+    "end": 274,
+    "text": "dennis sagapolu",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 1720,
+    "end": 1730,
+    "text": "02/06/2029",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 1745,
+    "end": 1765,
+    "text": "Salani Honerkamp, MD",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-03232",
+  "spans": [
+   {
+    "begin": 36,
+    "end": 48,
+    "text": "Apr 12, 2045",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 58,
+    "end": 61,
+    "text": "Iza",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 67,
+    "end": 76,
+    "text": "079878150",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 91,
+    "end": 124,
+    "text": "681 7th St S, Caledonia, ND 58219",
+    "type": "ADDRESS",
+    "meddeid_label": "Address_Location:Patient"
+   },
+   {
+    "begin": 1424,
+    "end": 1436,
+    "text": "KHOEN HOOKEY",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ },
+ {
+  "id": "en-us-synthetic-03299",
+  "spans": [
+   {
+    "begin": 28,
+    "end": 31,
+    "text": "Ian",
+    "type": "PATIENT NAME",
+    "meddeid_label": "Name:Patient"
+   },
+   {
+    "begin": 37,
+    "end": 45,
+    "text": "03248594",
+    "type": "MRN",
+    "meddeid_label": "ID:Patient"
+   },
+   {
+    "begin": 63,
+    "end": 88,
+    "text": "ian.wasnick16@hotmail.com",
+    "type": "EMAIL",
+    "meddeid_label": "Contactdetails"
+   },
+   {
+    "begin": 945,
+    "end": 955,
+    "text": "05/25/2004",
+    "type": "DATE",
+    "meddeid_label": "Date"
+   },
+   {
+    "begin": 971,
+    "end": 980,
+    "text": "I. Bizjak",
+    "type": "PROVIDER NAME",
+    "meddeid_label": "Name:Caregiver"
+   }
+  ]
+ }
+]
