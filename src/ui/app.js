@@ -1398,6 +1398,31 @@ async function clearOpenAiByok() {
   render();
 }
 
+// App-wide offline mode: one boolean in localStorage that the network gate
+// enforces on every remote request. The AI Chat controller subscribes to the
+// same event and degrades ChatGPT chat to the on-device model; here we just
+// reflect the toggle in the header pill and re-render the Settings panel.
+function toggleOfflineMode() {
+  const next = !isOfflineMode();
+  setOfflineMode(next);
+  renderOfflineModePill();
+  renderSettings();
+  setStatus(next
+    ? "Offline mode is on. OpenAI calls, ChatGPT chat, and model downloads are blocked; everything on-device keeps working."
+    : "Offline mode is off. Cloud features are available again.");
+}
+
+function renderOfflineModePill() {
+  const pill = byId("offlineModePill");
+  if (!pill) return;
+  const offline = isOfflineMode();
+  pill.textContent = offline ? "Offline mode" : "Online";
+  pill.classList.toggle("is-offline", offline);
+  pill.title = offline
+    ? "Offline mode is on — no network requests will be sent. Change it in Settings."
+    : "Online — cloud features are available. Change it in Settings.";
+}
+
 function refreshPromptPreview() {
   const patient = active();
   const highlighted = byId("promptOutputHighlighted");

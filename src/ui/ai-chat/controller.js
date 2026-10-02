@@ -55,7 +55,8 @@ import {
   locateManualSpan,
   buildTransmitPayload,
   locateTruncation,
-  effectiveGuidelinesText
+  effectiveGuidelinesText,
+  effectiveRemoteGuidelinesText
 } from "./delta-review.js?v=20260929-ai-chat-v4";
 
 // Fresh per-conversation OpenAI usage accumulator. All token counts come
@@ -365,7 +366,8 @@ export function createAiChatController({
       },
       sidebarOpen: state.sidebarOpen,
       clinicalService: clinicalServiceInfo(),
-      sidebarGuidelinesText: String(settings().systemGuidelines || "")
+      sidebarGuidelinesText: String(settings().systemGuidelines || ""),
+      sidebarGuidelinesRemoteText: String(settings().systemGuidelinesRemote || "")
     });
     const messages = root.querySelector("[data-ai-chat-messages]");
     if (messages) messages.scrollTop = messages.scrollHeight;
@@ -881,12 +883,14 @@ export function createAiChatController({
       review.messageCounts = messageResult.counts || {};
       review.messageFlags = (messageResult.flags || []).slice(0, 6);
       advanceProgress(review, "De-identifying your custom instructions…");
-      // (b) Custom instructions (system guidelines) — reviewed like any piece.
+      // (b) Custom instructions for the ChatGPT path — reviewed like any piece.
+      // These are stored separately from the on-device guidelines so the
+      // local-execution identity claims are never sent to OpenAI.
       review.guidelines = await prepareReviewPiece(review, {
         id: "guidelines",
-        title: "Custom instructions",
+        title: "Custom instructions (ChatGPT)",
         group: "Settings",
-        rawText: effectiveGuidelinesText(settings())
+        rawText: effectiveRemoteGuidelinesText(settings())
       }, deidKey);
       // (c) Patient header + each selected chart piece, sequentially.
       for (const target of contextTargets) {
@@ -1592,6 +1596,10 @@ export function createAiChatController({
     }
     if (target.matches?.("[data-ai-chat-guidelines]")) {
       writeLocalLlmSettings({ systemGuidelines: String(target.value ?? "") });
+      return true;
+    }
+    if (target.matches?.("[data-ai-chat-guidelines-remote]")) {
+      writeLocalLlmSettings({ systemGuidelinesRemote: String(target.value ?? "") });
       return true;
     }
     if (target.matches?.("[data-ai-chat-hipaa-ack]")) {

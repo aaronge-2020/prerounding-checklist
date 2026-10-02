@@ -69,6 +69,11 @@ export function readLocalLlmSettings() {
     // Editable system guidelines (Settings > Local AI guidelines). Empty
     // means "use the built-in default" — see DEFAULT_SYSTEM_GUIDELINES.
     systemGuidelines: typeof stored.systemGuidelines === "string" ? stored.systemGuidelines : "",
+    // Editable custom instructions for the ChatGPT path. Empty means "use
+    // the built-in default" — see DEFAULT_REMOTE_SYSTEM_GUIDELINES. Kept
+    // separate from systemGuidelines so the on-device identity claims are
+    // never sent to ChatGPT.
+    systemGuidelinesRemote: typeof stored.systemGuidelinesRemote === "string" ? stored.systemGuidelinesRemote : "",
     // AI Chat mode: "local" (on-device) or "remote" (ChatGPT). Persisted so
     // the student's choice survives reloads.
     chatMode: stored.chatMode === "remote" ? "remote" : "local"

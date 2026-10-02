@@ -393,7 +393,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
   }
 
   function renderSidebar(vm) {
-    const { contextInspector, patientContext, clinicalService, sidebarGuidelinesText, sidebarOpen } = vm;
+    const { contextInspector, patientContext, clinicalService, sidebarGuidelinesText, sidebarGuidelinesRemoteText, sidebarOpen } = vm;
     const guidelinesTokens = Number(contextInspector?.guidelinesTokens || 0);
     return `
       ${sidebarOpen ? `<button type="button" class="aic-side-backdrop" data-action="ai-chat-sidebar-close" aria-label="Close sidebar"></button>` : ""}
@@ -424,8 +424,11 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
         </section>
         <section class="aic-side-sec" aria-label="Custom guidelines">
           <h3 class="aic-side-title">Guidelines</h3>
-          <textarea class="aic-guide" data-ai-chat-guidelines rows="6" aria-label="Custom chat guidelines" placeholder="Extra instructions for both chats — reviewed by you before anything is sent to ChatGPT.">${escapeHtml(sidebarGuidelinesText || "")}</textarea>
-          <p class="aic-muted aic-side-sub">~${guidelinesTokens.toLocaleString()} tokens</p>
+          <label class="aic-muted aic-side-sub" for="aic-guidelines-local">On-device chat</label>
+          <textarea id="aic-guidelines-local" class="aic-guide" data-ai-chat-guidelines rows="6" aria-label="Custom guidelines for the on-device chat" placeholder="Extra instructions for the on-device chat.">${escapeHtml(sidebarGuidelinesText || "")}</textarea>
+          <label class="aic-muted aic-side-sub" for="aic-guidelines-remote">ChatGPT</label>
+          <textarea id="aic-guidelines-remote" class="aic-guide" data-ai-chat-guidelines-remote rows="6" aria-label="Custom guidelines for ChatGPT" placeholder="Extra instructions for ChatGPT — reviewed by you once, then remembered. Never claims on-device execution.">${escapeHtml(sidebarGuidelinesRemoteText || "")}</textarea>
+          <p class="aic-muted aic-side-sub">~${guidelinesTokens.toLocaleString()} tokens in the active mode</p>
         </section>
       </aside>`;
   }
@@ -720,6 +723,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       contextInspector = {},
       clinicalService = {},
       sidebarGuidelinesText = "",
+      sidebarGuidelinesRemoteText = "",
       offlineMode = false
     } = vm;
     const isRemote = mode === "remote";
@@ -736,7 +740,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
           <div class="aic-main">
             ${isRemote ? renderRemoteMain({ remote, hasApiKey }) : renderLocalMain({ hardware, settings, llmStatus, chat })}
           </div>
-          ${renderSidebar({ contextInspector, patientContext, clinicalService, sidebarGuidelinesText, sidebarOpen })}
+          ${renderSidebar({ contextInspector, patientContext, clinicalService, sidebarGuidelinesText, sidebarGuidelinesRemoteText, sidebarOpen })}
         </div>
         ${renderHipaaReview(remote.review)}
       </div>`;
