@@ -186,6 +186,48 @@ const BATCH1_GUIDES = {
 };
 
 const BATCH2_GUIDES = {
+  ascvd: {
+    description:
+      "Estimates 10-year risk of hard ASCVD (myocardial infarction, stroke, or coronary/stroke death) in adults 40-75 without known ASCVD, using the 2013 ACC/AHA Pooled Cohort Equations, to guide statin decisions in primary prevention.",
+    instructions:
+      "Enter age (40-75 only), sex, race, total and HDL cholesterol, systolic blood pressure, whether the patient is treated for hypertension, diabetes status, and smoking status. The calculator selects the matching sex/race equation automatically.",
+    whenToUse: [
+      "Adults 40-75 without established ASCVD when deciding whether to start a statin for primary prevention.",
+      "Annual or periodic prevention visits where an absolute 10-year risk number supports shared decision-making about lipid-lowering therapy.",
+      "Reassessment every 4-6 years, or after major risk-factor changes such as smoking cessation or new diabetes."
+    ],
+    pearlsPitfalls: [
+      "Do not use in patients with known ASCVD, LDL >=190 mg/dL, or age outside 40-75 — the equations were not derived for those groups.",
+      "The equations were derived in non-Hispanic White and African American cohorts; for other races the guideline directs using the White equations, which this calculator does explicitly.",
+      "As of 2026 the ACC/AHA dyslipidemia guidelines recommend the race-free PREVENT equations over this tool for primary prevention; PREVENT typically gives risk estimates 40-50% lower for the same profile.",
+      "Smoking, systolic pressure, and diabetes dominate the estimate — a patient who quits smoking can drop an entire risk band, which is worth showing them the number."
+    ],
+    whyUse:
+      "Statins prevent heart attacks and strokes, but only when the right patients take them. ASCVD risk converts a scattered risk-factor list into one number and a treatment threshold, so the statin conversation is about absolute benefit instead of vibes.",
+    nextSteps: {
+      low: "Low risk (<5%). Emphasize lifestyle modification and reassess risk factors every 4-6 years.",
+      borderline:
+        "Borderline risk (5% to <7.5%). Evaluate risk-enhancing factors (family history of premature ASCVD, LDL >=160, metabolic syndrome, CKD, chronic inflammatory disorders, high-risk ethnicity, triglycerides >=175) and consider statin therapy if present; coronary artery calcium scoring can refine the decision.",
+      intermediate:
+        "Intermediate risk (7.5% to <20%). After clinician-patient discussion, consider moderate-intensity statin therapy to reduce LDL-C by 30% or more.",
+      high: "High risk (>=20%). Consider high-intensity statin therapy to reduce LDL-C by 50% or more, after clinician-patient discussion.",
+      incomplete: "Complete all required fields to calculate the score.",
+      default:
+        "Match the statin decision to the risk band per current dyslipidemia guidance, discuss absolute benefit and patient preferences, and recheck lipids 4-12 weeks after starting or adjusting therapy."
+    },
+    evidence: [
+      {
+        label: "Goff DC Jr et al. Circulation 2014 — 2013 ACC/AHA Guideline on the Assessment of Cardiovascular Risk",
+        url: "https://doi.org/10.1161/01.cir.0000437741.48606.98"
+      },
+      {
+        label: "MDCalc — ASCVD 2013 Risk Calculator from AHA/ACC",
+        url: "https://www.mdcalc.com/calc/3398/ascvd-atherosclerotic-cardiovascular-disease-2013-risk-calculator-aha-acc"
+      }
+    ],
+    creator:
+      "Developed by the 2013 ACC/AHA Risk Assessment Work Group (Goff, Lloyd-Jones, Bennett and colleagues) from pooled prospective cohort data."
+  },
   chadsvasc: {
     description:
       "Estimates annual stroke risk in patients with non-valvular atrial fibrillation to guide decisions about oral anticoagulation.",
@@ -229,48 +271,6 @@ const BATCH2_GUIDES = {
     ],
     creator:
       "Developed by Gregory Lip and colleagues and published in 2010, refining the older CHADS2 scheme by adding vascular disease, age 65\u201374, and female sex as risk modifiers."
-  },
-  ascvd: {
-    description:
-      "Estimates 10-year risk of hard ASCVD (myocardial infarction, stroke, or coronary/stroke death) in adults 40-75 without known ASCVD, using the 2013 ACC/AHA Pooled Cohort Equations, to guide statin decisions in primary prevention.",
-    instructions:
-      "Enter age (40-75 only), sex, race, total and HDL cholesterol, systolic blood pressure, whether the patient is treated for hypertension, diabetes status, and smoking status. The calculator selects the matching sex/race equation automatically.",
-    whenToUse: [
-      "Adults 40-75 without established ASCVD when deciding whether to start a statin for primary prevention.",
-      "Annual or periodic prevention visits where an absolute 10-year risk number supports shared decision-making about lipid-lowering therapy.",
-      "Reassessment every 4-6 years, or after major risk-factor changes such as smoking cessation or new diabetes."
-    ],
-    pearlsPitfalls: [
-      "Do not use in patients with known ASCVD, LDL >=190 mg/dL, or age outside 40-75 — the equations were not derived for those groups.",
-      "The equations were derived in non-Hispanic White and African American cohorts; for other races the guideline directs using the White equations, which this calculator does explicitly.",
-      "As of 2026 the ACC/AHA dyslipidemia guidelines recommend the race-free PREVENT equations over this tool for primary prevention; PREVENT typically gives risk estimates 40-50% lower for the same profile.",
-      "Smoking, systolic pressure, and diabetes dominate the estimate — a patient who quits smoking can drop an entire risk band, which is worth showing them the number."
-    ],
-    whyUse:
-      "Statins prevent heart attacks and strokes, but only when the right patients take them. ASCVD risk converts a scattered risk-factor list into one number and a treatment threshold, so the statin conversation is about absolute benefit instead of vibes.",
-    nextSteps: {
-      low: "Low risk (<5%). Emphasize lifestyle modification and reassess risk factors every 4-6 years.",
-      borderline:
-        "Borderline risk (5% to <7.5%). Evaluate risk-enhancing factors (family history of premature ASCVD, LDL >=160, metabolic syndrome, CKD, chronic inflammatory disorders, high-risk ethnicity, triglycerides >=175) and consider statin therapy if present; coronary artery calcium scoring can refine the decision.",
-      intermediate:
-        "Intermediate risk (7.5% to <20%). After clinician-patient discussion, consider moderate-intensity statin therapy to reduce LDL-C by 30% or more.",
-      high: "High risk (>=20%). Consider high-intensity statin therapy to reduce LDL-C by 50% or more, after clinician-patient discussion.",
-      incomplete: "Complete all required fields to calculate the score.",
-      default:
-        "Match the statin decision to the risk band per current dyslipidemia guidance, discuss absolute benefit and patient preferences, and recheck lipids 4-12 weeks after starting or adjusting therapy."
-    },
-    evidence: [
-      {
-        label: "Goff DC Jr et al. Circulation 2014 — 2013 ACC/AHA Guideline on the Assessment of Cardiovascular Risk",
-        url: "https://doi.org/10.1161/01.cir.0000437741.48606.98"
-      },
-      {
-        label: "MDCalc — ASCVD 2013 Risk Calculator from AHA/ACC",
-        url: "https://www.mdcalc.com/calc/3398/ascvd-atherosclerotic-cardiovascular-disease-2013-risk-calculator-aha-acc"
-      }
-    ],
-    creator:
-      "Developed by the 2013 ACC/AHA Risk Assessment Work Group (Goff, Lloyd-Jones, Bennett and colleagues) from pooled prospective cohort data."
   },
   hasbled: {
     description:

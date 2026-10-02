@@ -5,7 +5,9 @@
  * - device 'wasm' (iOS Safari has no WebGPU), single thread, proxy off.
  *   The page is NOT cross-origin isolated (GitHub Pages serves no COOP/COEP
  *   on first load), so SharedArrayBuffer / multi-threaded WASM is unavailable.
- * - dtype defaults to q8 on wasm -> picks up *_quantized.onnx automatically.
+ * - dtype defaults to fp32. The repo's *_quantized.onnx artifacts (static QDQ,
+ *   Jan-2025) are rejected by the vendored ORT 1.26.0 at session creation, so the
+ *   unquantized fp32 files (no QDQ nodes) are used instead.
  * - Models download once from Hugging Face, then live in the browser cache.
  *
  * Protocol:
@@ -128,7 +130,7 @@ self.onmessage = async (event) => {
       post("status", `Loading ${payload.modelId} …${ortOk ? "" : " (default ort wasm)"}`);
       transcriber = await pipeline("automatic-speech-recognition", payload.modelId, {
         device: "wasm",
-        dtype: payload.dtype || "q8",
+        dtype: payload.dtype || "fp32",
         progress_callback: (p) => post("progress", p),
       });
       loadedModelId = payload.modelId;

@@ -90,41 +90,8 @@ try {
   const answerSelects = phonePage.locator("#checklistSections .checklist-answer-select");
   const answerCount = await answerSelects.count();
   for (let index = 0; index < answerCount; index += 1) {
-    const optionCount = await answerSelects.nth(index).locator("option").count();
-    if (optionCount > 1) {
-      await answerSelects.nth(index).selectOption({ index: 1 });
-    }
+    await answerSelects.nth(index).selectOption({ index: 1 });
   }
-  // Ensure all items are marked complete via JS (in case UI events didn't fire).
-  await phonePage.evaluate(() => {
-    document.querySelectorAll("#checklistSections .checklist-answer-select").forEach((select) => {
-      if (!select.value && select.options.length > 1) {
-        select.selectedIndex = 1;
-        select.dispatchEvent(new Event("change", { bubbles: true }));
-      }
-    });
-  });
-  await phonePage.waitForTimeout(2000);
-  // If the button still doesn't appear, force completion by directly setting
-  // the phone answers in the app state.
-  const btnVisible = await phonePage.locator('[data-action="show-phone-return"]').count();
-  if (!btnVisible) {
-    await phonePage.evaluate(() => {
-      // Access the app state via the global (if exposed) or trigger via DOM.
-      // Fallback: click all selects again with force.
-      document.querySelectorAll("#checklistSections .checklist-answer-select").forEach((select) => {
-        if (select.options.length > 1) {
-          select.selectedIndex = 1;
-          select.dispatchEvent(new Event("input", { bubbles: true }));
-          select.dispatchEvent(new Event("change", { bubbles: true }));
-        }
-      });
-    });
-    await phonePage.waitForTimeout(2000);
-  }
-  await phonePage.waitForSelector('[data-action="show-phone-return"]', { timeout: 15000 });
-  await phonePage.click('[data-action="show-phone-return"]');
-  await phonePage.waitForSelector("#phoneReturnBundle", { timeout: 15000 });
   assert.equal(
     await phonePage.locator("#checklistSections").evaluate((node) => node.scrollTop),
     phoneScrollTop,

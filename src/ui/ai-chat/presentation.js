@@ -3,7 +3,11 @@
 // src/ui/ai-chat/controller.js.
 
 import { splitThinking } from "../../local-llm/thinking.js?v=20260927-local-llm-v4";
-import { renderChatMarkdown } from "../../local-llm/markdown.js?v=20260928-local-llm-v2";
+import { renderChatMarkdown } from "../../local-llm/markdown.js?v=20260929-local-llm-v3";
+import {
+  sentinelizeSectionCitations,
+  sectionCitationChipHtml
+} from "./section-citations.js?v=20260929-ai-chat-v14";
 
 export function createAiChatPresentation({ escapeHtml, icon }) {
   // Assistant reply body: reasoning goes in a collapsed dropdown (hidden by
@@ -160,8 +164,41 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       ${webgpu ? "" : `<p class="aic-warnline">${icon("alert")} Needs WebGPU — Chrome/Edge 113+, Safari 26+, or Firefox 141+.</p>`}`;
   }
 
+  // ChatGPT-style model picker for remote (OpenAI) mode: the curated model
+  // list with per-model prices, rendered inside the same Model dropdown.
+  function renderRemoteModelMenuList(items) {
+    const rows = (items || []).map((item) => {
+      const sel = item.selected ? " is-sel" : "";
+      const clickable = item.selected
+        ? ""
+        : ` role="button" tabindex="0" data-action="ai-chat-remote-model" data-model-value="${escapeHtml(item.value)}"`;
+      const badge = item.selected ? `<span class="aic-ok">${icon("check")} Active</span>` : "";
+      return `
+        <div class="aic-modelrow${sel}"${clickable}>
+          <div class="aic-modelrow-info">
+            <strong>${escapeHtml(item.label)}</strong>
+            <span>${escapeHtml(item.description || "")}</span>
+            <span class="aic-muted">${escapeHtml(item.price || "")}</span>
+          </div>
+          <div class="aic-modelrow-act">${badge}</div>
+        </div>`;
+    }).join("");
+    return `
+      <p class="aic-menu-title">ChatGPT model</p>
+      ${rows || `<p class="aic-muted aic-side-sub">No models available.</p>`}
+      <p class="aic-specs">Billed to your OpenAI key · prices per 1M tokens</p>`;
+  }
+
   function renderTopbar(vm) {
     const { mode, hardware, settings, llmStatus, downloaded, remote, patientContext, offlineMode } = vm;
+    // Whether the topbar Context toggle reads as "on" (sidebar visible).
+    // The controller derives this per render: on narrow screens the sidebar
+    // is a drawer driven by sidebarOpen; on desktop it is a persistent
+    // column driven by sidebarCollapsed. Default to visible for older
+    // view-model shapes that don't carry the field.
+    const sidebarToggleOn = typeof vm.sidebarToggleOn === "boolean"
+      ? vm.sidebarToggleOn
+      : vm.sidebarCollapsed !== true;
     const local = mode !== "remote";
     const models = hardware?.recommendation?.models || [];
     const recommendedKey = hardware?.recommendation?.recommendedKey;
@@ -177,9 +214,11 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
         <span class="aic-topbar-spacer"></span>
         ${local ? renderStatusPill(llmStatus, activeLabel) : ""}
         <details class="aic-modelwrap">
-          <summary class="aic-modelbtn" aria-label="Model and chat options"><span>Model</span>${activeLabel ? `<strong>${escapeHtml(activeLabel)}</strong>` : ""}${icon("chevron")}</summary>
+          <summary class="aic-modelbtn" aria-label="Model and chat options"><span>Model</span>${local ? (activeLabel ? `<strong>${escapeHtml(activeLabel)}</strong>` : "") : (remote.modelLabel ? `<strong>${escapeHtml(remote.modelLabel)}</strong>` : "")}${icon("chevron")}</summary>
           <div class="aic-model-menu">
-            ${renderModelMenuList(models, llmStatus, settings.selectedModelKey, recommendedKey, hardware, downloaded)}
+            ${local
+              ? renderModelMenuList(models, llmStatus, settings.selectedModelKey, recommendedKey, hardware, downloaded)
+              : renderRemoteModelMenuList(remote.modelOptions)}
             <p class="aic-menu-title">Advanced</p>
             <label class="aic-parse-row">
               <span class="aic-parse-txt"><strong>Web search</strong><span class="aic-muted">Ground ChatGPT citations in real sources.</span></span>
@@ -189,15 +228,22 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
               </span>
             </label>
             <label class="aic-parse-row">
-              <span class="aic-parse-txt"><strong>Patient context</strong><span class="aic-muted">Attach selected chart documents to both chats.</span></span>
+              <span class="aic-parse-txt"><strong>Clinical tools</strong><span class="aic-muted">Let ChatGPT run the 25 calculators and 7 AI models locally, in-chat.</span></span>
               <span class="aic-sw">
-                <input type="checkbox" data-ai-chat-context-toggle ${settings.patientContextEnabled ? "checked" : ""} ${patientContext.hasPatient ? "" : "disabled"}>
+                <input type="checkbox" data-ai-chat-tools-toggle ${remote.toolsEnabled ? "checked" : ""}>
+                <span class="aic-sw-t" aria-hidden="true"></span>
+              </span>
+            </label>
+            <label class="aic-parse-row">
+              <span class="aic-parse-txt"><strong>Patient context</strong><span class="aic-muted">Attach the selected documents to the chat. ChatGPT mode reviews the de-identified text before sending.</span></span>
+              <span class="aic-sw">
+                <input type="checkbox" data-ai-chat-context-toggle ${settings.patientContextEnabled ? "checked" : ""} ${!patientContext.hasPatient ? "disabled" : ""}>
                 <span class="aic-sw-t" aria-hidden="true"></span>
               </span>
             </label>
           </div>
         </details>
-        <button type="button" class="aic-sidebtn" data-action="ai-chat-context-inspector">${icon("chevron")} Context</button>
+        <button type="button" class="aic-sidebtn" data-action="ai-chat-context-inspector" aria-pressed="${sidebarToggleOn ? "true" : "false"}" title="${sidebarToggleOn ? "Hide the context sidebar" : "Show the context sidebar"}">${icon("chevron")} Context</button>
       </div>
       <p class="aic-modesub aic-muted">${
         local
@@ -208,6 +254,85 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
 
   // ── Conversation ────────────────────────────────────────
 
+  // Auditable tool records: one compact row per tool call the model made
+  // while composing a reply. The headline says WHAT the tool did in plain
+  // language — never the raw API name — and the query is front and center
+  // for web searches. Details expand for audit.
+  function truncateText(text, max) {
+    const s = String(text || "");
+    if (s.length <= max) return s;
+    return s.slice(0, max - 1).trimEnd() + "…";
+  }
+
+  function webSearchQuery(rec) {
+    const input = rec && rec.input;
+    if (input && typeof input === "object") {
+      const q = String(input.query || input.q || input.search_query || "").trim();
+      if (q) return q;
+    }
+    if (typeof input === "string" && input.trim()) return input.trim();
+    return "";
+  }
+
+  function toolRecordHeadline(rec) {
+    const det = rec && rec.deterministic ? rec.deterministic : {};
+    if (det.kind === "calculator-run" || det.kind === "ai-model-run") {
+      const what = det.kind === "calculator-run" ? "calculator" : "model";
+      if (det.found === false) return `Unknown ${what} “${det.calculatorId || det.modelId || ""}”`;
+      if (det.error) return `Failed: ${det.error}`;
+      if (!det.complete) return `Incomplete — missing: ${(det.missing || []).join(", ") || "unknown"}`;
+      return det.headline || det.title || "complete";
+    }
+    if (det.kind === "calculator-list") return `${det.count} calculators listed`;
+    if (det.kind === "ai-model-list") return `${det.count} AI models listed`;
+    if (rec && rec.toolName === "web_search") {
+      const q = webSearchQuery(rec);
+      return q ? `Searched the web for “${truncateText(q, 80)}”` : "Searched the web";
+    }
+    const name = String((rec && rec.toolName) || "").trim();
+    return name ? `Ran ${name}` : "Ran a tool";
+  }
+
+  function toolRecordIcon(rec) {
+    if (rec && rec.toolName === "web_search") return "search";
+    return "wand";
+  }
+
+  function renderToolRecords(records) {
+    const items = (records || []).map((rec) => {
+      const isWebSearch = rec && rec.toolName === "web_search";
+      const toolName = String((rec && rec.toolName) || "").trim();
+      const query = isWebSearch ? webSearchQuery(rec) : "";
+      const resultText = rec && typeof rec.text === "string" ? rec.text.trim() : "";
+      const detJson = rec && rec.deterministic && !isWebSearch ? JSON.stringify(rec.deterministic) : "";
+      return `<details class="aic-toolrec">` +
+        `<summary>${icon(toolRecordIcon(rec))}<span>${escapeHtml(toolRecordHeadline(rec))}</span></summary>` +
+        `<div class="aic-toolrec-body">` +
+        (query ? `<p class="aic-toolrec-query">“${escapeHtml(query)}”</p>` : "") +
+        (resultText ? `<p>${escapeHtml(truncateText(resultText, 600))}</p>` : "") +
+        (detJson ? `<p><strong>Verified output</strong></p><pre>${escapeHtml(detJson.slice(0, 1200))}</pre>` : "") +
+        (toolName && !isWebSearch ? `<p class="aic-toolrec-meta">Tool: <code>${escapeHtml(toolName)}</code></p>` : "") +
+        `</div></details>`;
+    }).join("");
+    return `<div class="aic-toolrecs" aria-label="Tool calls used in this reply">${items}</div>`;
+  }
+
+  // Local-path RAG notice: one-tap download for the chart-search
+  // (embedding) model. The 4K on-device window needs top-k retrieval;
+  // without the model, local chat falls back to selected pieces.
+  function renderLocalRagNotice(rag) {
+    if (!rag) return "";
+    const status = rag.status;
+    if (status === "ready") return "";
+    if (status === "downloading") {
+      return `<p class="rag-notice rag-status--busy" role="status">Downloading the chart-search model… you can keep chatting.</p>`;
+    }
+    const error = rag.retrievalError
+      ? ` <span class="aic-muted">${escapeHtml(rag.retrievalError)}</span>`
+      : "";
+    return `<p class="rag-notice" role="status">Smarter chart answers need the on-device chart-search model.${error} <button type="button" class="rag-cite-chip" data-action="ai-chat-download-rag-model">Download chart-search model</button></p>`;
+  }
+
   function renderLocalMessages(chat, activeLabel) {
     const messages = (chat.messages || [])
       .map((m, index) => {
@@ -217,7 +342,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
         // Revert control: removes this message and everything after it from
         // the conversation, i.e. from the model's context on the next send.
         const revert = `<button type="button" class="aic-m-revert" data-action="ai-chat-revert-message" data-message-index="${index}" title="Revert to here — remove this message and everything after it">${icon("undo")} revert</button>`;
-        return `<div class="aic-m ${cls}">${label}${body}${revert}</div>`;
+        return `<div class="aic-m ${cls}"${m.demo ? ' data-demo-message="true"' : ''}>${label}${body}${revert}</div>`;
       })
       .join("");
     // Before the first token arrives the model is prefilling the prompt
@@ -240,14 +365,42 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     return `${messages}${streaming}${empty}`;
   }
 
+  // Render assistant text with section-grounded citations. The model cites
+  // patient facts as per [Section Label]: 'short quote'. Each becomes a
+  // clickable chip PLUS the verbatim quote (a <q> element) — the quote is
+  // never dropped. `citations` is the message's sectionCitations metadata
+  // (matched at send time against the reviewed chart pieces), zipped with
+  // the parse by match order. A citation whose label matched no reviewed
+  // section renders as inert text — never clickable — so a hallucinated
+  // citation can't open a fake source. The sentinel approach keeps Markdown
+  // formatting intact around citations.
+  function renderCitedMarkdown(text, citations, messageIndex) {
+    const metas = Array.isArray(citations) ? citations : [];
+    const { text: sentinelized, cites } = sentinelizeSectionCitations(text);
+    let html = renderChatMarkdown(sentinelized);
+    for (let i = 0; i < cites.length; i += 1) {
+      const sentinel = `\uE000SECITE${i}\uE001`;
+      const chip = sectionCitationChipHtml(cites[i], metas[i] || null, escapeHtml, messageIndex);
+      html = html.split(sentinel).join(chip);
+    }
+    return html;
+  }
+
   function renderRemoteMessages(remote) {
     const messages = (remote.messages || [])
       .map((m, index) => {
         const cls = m.role === "user" ? "aic-m--u" : "aic-m--a";
-        const label = m.role === "user" ? "" : `<span class="aic-m-label">ChatGPT${m.webSearch ? " · web search" : ""}${renderSummaryBadge(m)}</span>`;
-        const body = m.role === "user" ? `<p>${escapeHtml(m.text)}</p>` : `<div class="aic-m-body">${renderChatMarkdown(m.text)}</div>`;
+        const toolBadge = m.toolsUsed ? " · tools" : "";
+        const label = m.role === "user" ? "" : `<span class="aic-m-label">ChatGPT${m.webSearch ? " · web search" : ""}${toolBadge}${renderSummaryBadge(m)}</span>`;
+        const records = m.role !== "user" && Array.isArray(m.toolRecords) && m.toolRecords.length
+          ? renderToolRecords(m.toolRecords)
+          : "";
+        const citedBody = m.role !== "user"
+          ? renderCitedMarkdown(m.text, m.sectionCitations, index)
+          : renderChatMarkdown(m.text);
+        const body = m.role === "user" ? `<p>${escapeHtml(m.text)}</p>` : `<div class="aic-m-body">${citedBody}</div>${records}`;
         const revert = `<button type="button" class="aic-m-revert" data-action="ai-chat-revert-remote" data-message-index="${index}" title="Revert to here — remove this message and everything after it">${icon("undo")} revert</button>`;
-        return `<div class="aic-m ${cls}">${label}${body}${revert}</div>`;
+        return `<div class="aic-m ${cls}"${m.demo ? ' data-demo-message="true"' : ''}>${label}${body}${revert}</div>`;
       })
       .join("");
     const sending = remote.sending
@@ -264,7 +417,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     const models = vm.hardware?.recommendation?.models || [];
     const activeEntry = models.find((e) => e.model.key === llmStatus.activeModelKey);
     const activeLabel = activeEntry ? activeEntry.model.label : "";
-    const ready = llmStatus.status === "ready" && llmStatus.verified;
+    const ready = (llmStatus.status === "ready" && llmStatus.verified) || !!vm.demoArmed;
     return `
       <div class="aic-chatbar">
         <span class="aic-muted">${chat.messages?.length ? `${chat.messages.length} message${chat.messages.length === 1 ? "" : "s"}` : "New conversation"}</span>
@@ -273,6 +426,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
           <button type="button" class="aic-newchat" data-action="ai-chat-new-chat" ${chat.streaming ? "disabled" : ""}>${icon("plus")} New chat</button>
         </span>
       </div>
+      ${renderLocalRagNotice(chat.rag)}
       <div class="aic-messages" data-ai-chat-messages aria-live="polite">${renderLocalMessages(chat, activeLabel)}</div>
       ${renderContextMeter(chat)}
       <div class="aic-composer">
@@ -335,25 +489,37 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
 
   function renderSidebarPieces(contextInspector) {
     const info = contextInspector || {};
+    // Both modes send exactly the inspector-selected pieces: every piece
+    // is interactive, gated only by the attach toggle.
     const pieces = Array.isArray(info.pieces) ? info.pieces : [];
+    const groups = Array.isArray(info.groups) ? info.groups : [];
     if (!info.hasPatient) {
       return `<p class="aic-muted aic-side-sub">No active patient — open the Vault to attach patient context.</p>`;
     }
     if (!pieces.length) {
       return `<p class="aic-muted aic-side-sub">No saved chart documents yet — add them in Hospital Stay.</p>`;
     }
-    let lastGroup = "";
-    const rows = pieces.map((piece) => {
-      const sub = piece.group !== lastGroup
-        ? `<div class="aic-side-group">${escapeHtml(piece.group || "Other")}</div>`
-        : "";
-      lastGroup = piece.group;
-      return `${sub}<label class="aic-ctx-piece${piece.selected ? "" : " is-off"}">
-        <input type="checkbox" data-ai-chat-context-piece="${escapeHtml(piece.id)}" ${piece.selected ? "checked" : ""} ${info.enabled ? "" : "disabled"}>
+    const rows = groups.map((groupName, groupIndex) => {
+      const groupPieces = pieces.filter((p) => (p.group || "Other") === groupName);
+      const allSelected = groupPieces.length > 0 && groupPieces.every((p) => p.selected);
+      const noneSelected = groupPieces.every((p) => !p.selected);
+      const groupLocked = !info.enabled;
+      const head = `<div class="aic-side-group">
+        <span class="aic-side-group-name">${escapeHtml(groupName)}</span>
+        <span class="aic-side-group-actions">
+          <button type="button" class="aic-link" data-action="ai-chat-context-group" data-group-index="${groupIndex}" data-select="1" ${groupLocked || allSelected ? "disabled" : ""}>Select all</button>
+          <button type="button" class="aic-link" data-action="ai-chat-context-group" data-group-index="${groupIndex}" data-select="0" ${groupLocked || noneSelected ? "disabled" : ""}>Deselect all</button>
+        </span>
+      </div>`;
+      const labels = groupPieces.map((piece) => {
+        const pieceLocked = !info.enabled;
+        return `<label class="aic-ctx-piece${piece.selected ? "" : " is-off"}">
+        <input type="checkbox" data-ai-chat-context-piece="${escapeHtml(piece.id)}" ${piece.selected ? "checked" : ""} ${pieceLocked ? "disabled" : ""}>
         <span class="aic-ctx-piece-label">${escapeHtml(piece.label)}</span>
         ${piece.primary ? `<span class="aic-tag">primary</span>` : ""}
         <span class="aic-muted aic-ctx-tok">~${Number(piece.tokens || 0).toLocaleString()}</span>
-      </label>`;
+      </label>`;}).join("");
+      return head + labels;
     }).join("");
     return rows;
   }
@@ -361,17 +527,20 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
   function renderBudgetMeter(contextInspector) {
     const info = contextInspector || {};
     const guidelines = Number(info.guidelinesTokens || 0);
+    // The meter counts the inspector selection in both modes; the attach
+    // toggle gates it (off = no patient context counted).
     const patient = info.enabled ? Number(info.selectedTokens || 0) : 0;
     const history = Number(info.historyTokens || 0);
     const total = guidelines + patient + history;
     const windowSize = Number(info.contextWindow || 0) || 4096;
+    const windowName = info.windowLabel ? ` · ${escapeHtml(info.windowLabel)}` : "";
     const pct = Math.max(total > 0 ? 1 : 0, Math.min(100, Math.round((total / windowSize) * 100)));
     return `
       <div class="aic-meter">
         <span class="aic-meter-bar" aria-hidden="true"><span style="width:${pct}%"></span></span>
         <span class="aic-meter-label">~${total.toLocaleString()} / ${windowSize.toLocaleString()} tokens (${pct}%)</span>
       </div>
-      <p class="aic-muted aic-side-sub">Guidelines ~${guidelines.toLocaleString()} · Patient ~${patient.toLocaleString()} · Conversation ~${history.toLocaleString()}${info.historyCount ? ` (${info.historyCount} message${info.historyCount === 1 ? "" : "s"})` : ""}</p>`;
+      <p class="aic-muted aic-side-sub">Guidelines ~${guidelines.toLocaleString()} · Patient ~${patient.toLocaleString()} · Conversation ~${history.toLocaleString()}${info.historyCount ? ` (${info.historyCount} message${info.historyCount === 1 ? "" : "s"})` : ""}${windowName}</p>`;
   }
 
   function renderSidebarService(clinicalService) {
@@ -394,10 +563,13 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
 
   function renderSidebar(vm) {
     const { contextInspector, patientContext, clinicalService, sidebarGuidelinesText, sidebarGuidelinesRemoteText, sidebarOpen } = vm;
+    // Desktop collapse state: the column is hidden via CSS when collapsed.
+    // Narrow screens ignore it (the drawer is driven by sidebarOpen).
+    const sidebarCollapsed = vm.sidebarCollapsed === true;
     const guidelinesTokens = Number(contextInspector?.guidelinesTokens || 0);
     return `
       ${sidebarOpen ? `<button type="button" class="aic-side-backdrop" data-action="ai-chat-sidebar-close" aria-label="Close sidebar"></button>` : ""}
-      <aside class="aic-sidebar${sidebarOpen ? " is-open" : ""}" aria-label="Chat context sidebar">
+      <aside class="aic-sidebar${sidebarOpen ? " is-open" : ""}${sidebarCollapsed ? " is-collapsed" : ""}" aria-label="Chat context sidebar">
         <div class="aic-side-head">
           <strong>Context &amp; options</strong>
           <button type="button" class="aic-side-close" data-action="ai-chat-sidebar-close" aria-label="Close sidebar">${icon("chevron")} Close</button>
@@ -408,10 +580,11 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
           <label class="aic-parse-row">
             <span class="aic-parse-txt"><strong>Attach to chat</strong><span class="aic-muted">Include the selected documents below in the model's context.</span></span>
             <span class="aic-sw">
-              <input type="checkbox" data-ai-chat-context-toggle ${patientContext.enabled ? "checked" : ""} ${patientContext.hasPatient ? "" : "disabled"}>
+              <input type="checkbox" data-ai-chat-context-toggle ${patientContext.enabled ? "checked" : ""} ${!patientContext.hasPatient ? "disabled" : ""}>
               <span class="aic-sw-t" aria-hidden="true"></span>
             </span>
           </label>
+          ${contextInspector?.isRemote ? `<p class="aic-muted aic-side-sub">Only the selected context above is sent — you'll review the de-identified text before anything is sent.</p>` : ""}
           ${renderSidebarPieces(contextInspector)}
         </section>
         <section class="aic-side-sec" aria-label="Context budget">
@@ -448,6 +621,8 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       html = html.replace(new RegExp(`\\[(${pat})\\]`, "g"), '<mark class="aic-hipaa-mark">[$1]</mark>');
     }
     html = html.replace(/\[(Hospital Day [^\]]+)\]/g, '<mark class="aic-hipaa-mark aic-hipaa-mark--date">[$1]</mark>');
+    // Manual redactions always render as [REDACTED], whatever the labels are.
+    html = html.replace(/\[REDACTED\]/g, '<mark class="aic-hipaa-mark">[REDACTED]</mark>');
     return html;
   }
 
@@ -474,21 +649,22 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
   // the proposed replacement, a label chip, and Accept/Reject. Reviewed
   // rows show their status plus Undo/Restore/Accept depending on status.
   function renderSuggestionRow(pieceId, redaction, labels, reviewed) {
-    const rid = String(redaction.id || "");
+    const safeRedaction = (redaction && typeof redaction === "object") ? redaction : {};
+    const rid = String(safeRedaction.id || "");
     const text = `
       <div class="aic-hipaa-sug-text">
-        <span class="aic-hipaa-sug-orig">${escapeHtml(redaction.originalSnippet || "")}</span>
+        <span class="aic-hipaa-sug-orig">${escapeHtml(safeRedaction.originalSnippet || "")}</span>
         <span class="aic-hipaa-sug-arrow" aria-hidden="true">→</span>
-        <span class="aic-hipaa-sug-repl">${highlightHipaaRedactions(escapeHtml(redaction.replacement || ""), labels)}</span>
+        <span class="aic-hipaa-sug-repl">${highlightHipaaRedactions(escapeHtml(safeRedaction.replacement || ""), labels)}</span>
       </div>
       <div class="aic-hipaa-sug-meta">
-        ${redaction.label ? `<span class="aic-hipaa-chip">${escapeHtml(redaction.label)}</span>` : ""}
-        <span class="aic-hipaa-sug-act">${reviewed ? renderReviewedActions(pieceId, rid, redaction.status) : `
+        ${safeRedaction.label ? `<span class="aic-hipaa-chip">${escapeHtml(safeRedaction.label)}</span>` : ""}
+        <span class="aic-hipaa-sug-act">${reviewed ? renderReviewedActions(pieceId, rid, safeRedaction.status) : `
           <button type="button" class="aic-btn aic-btn--sm" data-action="ai-chat-hipaa-accept" data-piece="${escapeHtml(pieceId)}" data-redaction="${escapeHtml(rid)}">Accept</button>
           <button type="button" class="aic-btn aic-btn--sm" data-action="ai-chat-hipaa-reject" data-piece="${escapeHtml(pieceId)}" data-redaction="${escapeHtml(rid)}">Reject</button>`}
         </span>
       </div>`;
-    return `<div class="aic-hipaa-sug${reviewed ? " is-reviewed" : ""}">${reviewed ? `<span class="aic-hipaa-chip aic-hipaa-chip--status">${escapeHtml(String(redaction.status || "reviewed"))}</span>` : ""}${text}</div>`;
+    return `<div class="aic-hipaa-sug${reviewed ? " is-reviewed" : ""}">${reviewed ? `<span class="aic-hipaa-chip aic-hipaa-chip--status">${escapeHtml(String(safeRedaction.status || "reviewed"))}</span>` : ""}${text}</div>`;
   }
 
   function renderReviewedActions(pieceId, rid, status) {
@@ -505,37 +681,73 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
   // chips), new-suggestion rows with Accept all/Reject all, the
   // already-reviewed list, and the highlighted approved-text preview with
   // a "Redact selection" control for manual fixes.
+  // One review piece card: bulletproof rendering that ALWAYS shows visible
+  // content. Defensive against malformed piece data — never renders empty.
   function renderReviewPiece(piece, ctx, opts = {}) {
-    const pieceId = String(piece.id || "");
-    const isOpen = ctx.expanded.has(pieceId);
-    const reviewedOpen = ctx.reviewedOpen.has(pieceId);
-    const counts = piece.counts || {};
+    // Defensive: handle null/undefined/malformed piece objects.
+    const safePiece = (piece && typeof piece === "object") ? piece : {};
+    const pieceId = String(safePiece.id || opts.fallbackId || "piece");
+    const expanded = ctx && ctx.expanded instanceof Set ? ctx.expanded : new Set();
+    const reviewedOpenSet = ctx && ctx.reviewedOpen instanceof Set ? ctx.reviewedOpen : new Set();
+    const isOpen = expanded.has(pieceId);
+    const reviewedOpen = reviewedOpenSet.has(pieceId);
+    const counts = (safePiece.counts && typeof safePiece.counts === "object") ? safePiece.counts : {};
     const labels = Object.keys(counts);
     const chips = Object.entries(counts)
-      .filter(([, n]) => n > 0)
-      .map(([kind, n]) => `<span class="aic-hipaa-chip aic-hipaa-chip--red">${escapeHtml(kind)} × ${n}</span>`)
+      .filter(([, n]) => Number(n) > 0)
+      .map(([kind, n]) => `<span class="aic-hipaa-chip aic-hipaa-chip--red">${escapeHtml(String(kind))} × ${Number(n)}</span>`)
       .join("");
     const badgeNames = { new: "New", changed: "Changed", reviewed: "Reviewed" };
-    const badge = piece.badge
-      ? `<span class="aic-hipaa-badge aic-hipaa-badge--${escapeHtml(piece.badge)}">${escapeHtml(badgeNames[piece.badge] || piece.badge)}</span>`
+    const badgeKey = String(safePiece.badge || "");
+    const badge = badgeKey
+      ? `<span class="aic-hipaa-badge aic-hipaa-badge--${escapeHtml(badgeKey)}">${escapeHtml(badgeNames[badgeKey] || badgeKey)}</span>`
       : "";
-    const approvedText = piece.approvedText ?? piece.text ?? "";
-    const chars = Number(piece.chars ?? String(approvedText).length ?? 0);
-    // Contract (v4): pieces carry modelRecords/manualRecords with
-    // { id, start, end, originalText, replacement, label, source, status }.
-    // Derive the pending/reviewed row lists here; keep the legacy
-    // pending/reviewed arrays as a fallback for older view-models.
-    const allRecords = [
-      ...(Array.isArray(piece.modelRecords) ? piece.modelRecords : []),
-      ...(Array.isArray(piece.manualRecords) ? piece.manualRecords : []),
-    ].map((r) => ({ ...r, originalSnippet: r.originalSnippet ?? r.originalText ?? "" }));
-    const pending = Array.isArray(piece.pending)
-      ? piece.pending
-      : allRecords.filter((r) => String(r.status || "pending") === "pending");
-    const reviewed = Array.isArray(piece.reviewed)
-      ? piece.reviewed
-      : allRecords.filter((r) => String(r.status || "") !== "pending");
-    const hasDateRedaction = pending.some((r) => /date/i.test(String(r.label || "")));
+    // Title: NEVER empty — fall back through multiple options.
+    const rawTitle = opts.title || safePiece.title || safePiece.label || "";
+    const title = String(rawTitle).trim() || "Untitled document";
+    // Content: NEVER empty — show a clear message if there's no text.
+    const rawText = safePiece.approvedText ?? safePiece.text ?? "";
+    const approvedText = String(rawText);
+    const hasContent = approvedText.trim().length > 0;
+    let chars = 0;
+    try {
+      chars = Number(safePiece.chars ?? approvedText.length ?? 0) || 0;
+    } catch (e) { chars = approvedText.length; }
+    // Redaction records: defensive against malformed arrays.
+    let allRecords = [];
+    try {
+      const modelRecs = Array.isArray(safePiece.modelRecords) ? safePiece.modelRecords : [];
+      const manualRecs = Array.isArray(safePiece.manualRecords) ? safePiece.manualRecords : [];
+      allRecords = [...modelRecs, ...manualRecs].map((r) => {
+        const rec = (r && typeof r === "object") ? r : {};
+        return { ...rec, originalSnippet: rec.originalSnippet ?? rec.originalText ?? "" };
+      });
+    } catch (e) { allRecords = []; }
+    let pending = [];
+    let reviewed = [];
+    try {
+      pending = Array.isArray(safePiece.pending)
+        ? safePiece.pending
+        : allRecords.filter((r) => String(r.status || "pending") === "pending");
+      reviewed = Array.isArray(safePiece.reviewed)
+        ? safePiece.reviewed
+        : allRecords.filter((r) => String(r.status || "") !== "pending");
+    } catch (e) { pending = []; reviewed = []; }
+    let hasDateRedaction = false;
+    try {
+      hasDateRedaction = pending.some((r) => /date/i.test(String((r && r.label) || "")));
+    } catch (e) { hasDateRedaction = false; }
+    let suggestionRows = "";
+    try {
+      suggestionRows = pending.map((r) => renderSuggestionRow(pieceId, r, labels, false)).join("");
+    } catch (e) { suggestionRows = ""; }
+    let reviewedRows = "";
+    try {
+      reviewedRows = reviewed.map((r) => renderSuggestionRow(pieceId, r, labels, true)).join("");
+    } catch (e) { reviewedRows = ""; }
+    const previewHtml = hasContent
+      ? highlightHipaaRedactions(escapeHtml(approvedText), labels)
+      : `<span class="aic-muted">No content in this document.</span>`;
     const body = isOpen ? `
       <div class="aic-hipaa-piece-body">
         ${pending.length ? `
@@ -548,27 +760,28 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
             </span>
           </div>
           ${hasDateRedaction ? `<p class="aic-hipaa-note">${icon("alert")} Date redactions use relative timeline markers (e.g. [Hospital Day N]) — check the preview below.</p>` : ""}
-          ${pending.map((r) => renderSuggestionRow(pieceId, r, labels, false)).join("")}` : ""}
+          ${suggestionRows}` : ""}
         ${reviewed.length ? `
           <button type="button" class="aic-hipaa-reviewed-head" data-action="ai-chat-hipaa-toggle-reviewed" data-piece="${escapeHtml(pieceId)}" aria-expanded="${reviewedOpen ? "true" : "false"}">
             <span class="aic-hipaa-chev${reviewedOpen ? " is-open" : ""}">${icon("chevron")}</span>
             <strong>Already reviewed</strong>
             <span class="aic-muted">${reviewed.length}</span>
           </button>
-          ${reviewedOpen ? `<div class="aic-hipaa-reviewed">${reviewed.map((r) => renderSuggestionRow(pieceId, r, labels, true)).join("")}</div>` : ""}` : ""}
-        <div class="aic-hipaa-preview" data-hipaa-piece-preview data-piece="${escapeHtml(pieceId)}">${highlightHipaaRedactions(escapeHtml(approvedText), labels)}</div>
+          ${reviewedOpen ? `<div class="aic-hipaa-reviewed">${reviewedRows}</div>` : ""}` : ""}
+        <div class="aic-hipaa-preview" data-hipaa-piece-preview data-piece="${escapeHtml(pieceId)}">${previewHtml}</div>
         <div class="aic-hipaa-preview-act">
           <button type="button" class="aic-btn aic-btn--sm" data-action="ai-chat-hipaa-redact-selection" data-piece="${escapeHtml(pieceId)}">${icon("wand")} Redact selection</button>
           <span class="aic-muted">Select text in the preview, then redact it.</span>
         </div>
-        ${piece.truncated ? `<p class="aic-hipaa-note">${icon("alert")} This piece was truncated to fit the size budget — what you see above is the complete text that will be sent.</p>` : ""}
+        ${safePiece.truncated ? `<p class="aic-hipaa-note">${icon("alert")} This piece was truncated to fit the size budget — what you see above is the complete text that will be sent.</p>` : ""}
       </div>` : "";
+    // The header ALWAYS renders with a visible title and char count.
     return `
-      <div class="aic-hipaa-piece${isOpen ? " is-open" : ""}">
+      <div class="aic-hipaa-piece${isOpen ? " is-open" : ""}" data-hipaa-piece-id="${escapeHtml(pieceId)}">
         <button type="button" class="aic-hipaa-piece-head" data-action="ai-chat-hipaa-piece" data-piece="${escapeHtml(pieceId)}" aria-expanded="${isOpen ? "true" : "false"}">
           <span class="aic-hipaa-chev${isOpen ? " is-open" : ""}">${icon("chevron")}</span>
           ${badge}
-          <span class="aic-hipaa-piece-title">${escapeHtml(opts.title || piece.title || "Context")}</span>
+          <span class="aic-hipaa-piece-title">${escapeHtml(title)}</span>
           <span class="aic-hipaa-chips">${chips}<span class="aic-hipaa-chip">${chars.toLocaleString()} chars</span></span>
         </button>
         ${body}
@@ -627,8 +840,15 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
 
     // Ready: the full delta-review modal.
     const pieces = Array.isArray(review.pieces) ? review.pieces : [];
+    const expandedIds = Array.isArray(review.expanded) ? review.expanded : [];
+    // Safety: if nothing is expanded, expand the first piece so the user
+    // always sees content immediately (never an empty-looking modal).
+    if (expandedIds.length === 0 && pieces.length > 0) {
+      const firstId = pieces[0] && pieces[0].id ? String(pieces[0].id) : "";
+      if (firstId) expandedIds.push(firstId);
+    }
     const ctx = {
-      expanded: new Set(review.expanded || []),
+      expanded: new Set(expandedIds),
       reviewedOpen: new Set(review.reviewedOpen || [])
     };
     const totalRedactions = Number(review.redactionTotal || 0);
@@ -651,6 +871,26 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     const guidelines = review.guidelines;
     const history = Array.isArray(review.history) ? review.history : [];
     const canSend = !!review.canSend && !!review.ack;
+    // One-click review bar: always visible between the stats and the
+    // scrollable body, so the student never hunts through cards for the
+    // decision buttons. Accept all clears every pending suggestion at once;
+    // the floating Redact pill (summoned by any text selection) handles what
+    // the model missed. The presentation receives the view-model review, so
+    // pending counts come from the piece view-models' pending arrays.
+    const pendingCount = [guidelines, ...pieces]
+      .filter(Boolean)
+      .reduce((n, piece) => n + (Array.isArray(piece.pending) ? piece.pending.length : 0), 0);
+    const actionBar = `
+      <div class="aic-hipaa-actionbar">
+        ${pendingCount > 0 ? `
+          <span class="aic-hipaa-actionbar-tx"><strong>${pendingCount}</strong> suggestion${pendingCount === 1 ? "" : "s"} to review</span>
+          <span class="aic-hipaa-actionbar-btns">
+            <button type="button" class="aic-btn aic-btn--sm aic-btn--primary" data-action="ai-chat-hipaa-accept-all-pending">Accept all</button>
+            <button type="button" class="aic-btn aic-btn--sm" data-action="ai-chat-hipaa-reject-all-pending">Reject all</button>
+          </span>` : `
+          <span class="aic-hipaa-actionbar-tx">${icon("check")} All suggestions reviewed</span>`}
+        <span class="aic-hipaa-actionbar-hint">Highlight any text to redact it instantly.</span>
+      </div>`;
     return `
       <div class="aic-hipaa-backdrop" data-action="ai-chat-hipaa-cancel">
         <div class="aic-hipaa-modal" role="dialog" aria-modal="true" aria-labelledby="aicHipaaTitle">
@@ -661,9 +901,10 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
             ${hipaaStat("wand", "Redactions", `${totalRedactions} applied`, totalRedactions ? "" : "ok")}
             ${hipaaStat("alert", "Warnings", warningCount ? `${warningCount} to check` : "none", warningCount ? "warn" : "ok")}
           </div>
+          ${actionBar}
           <div class="aic-hipaa-body">
             <h3 class="aic-hipaa-sec-title">Your message — de-identified before sending</h3>
-            <div class="aic-hipaa-msg">
+            <div class="aic-hipaa-msg" data-hipaa-message="1">
               ${highlightHipaaRedactions(escapeHtml(messageText), Object.keys(messageCounts))}
               ${messageChips ? `<div class="aic-hipaa-chips">${messageChips}</div>` : ""}
               ${messageFlags.length ? `<ul class="aic-hipaa-msgflags">${messageFlags.map((f) => `<li>${escapeHtml(f)}</li>`).join("")}</ul>` : ""}
@@ -675,6 +916,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
             ${pieces.map((piece) => renderReviewPiece(piece, ctx)).join("") || `<p class="aic-muted">No context pieces.</p>`}
             <h3 class="aic-hipaa-sec-title">What will be sent</h3>
             <pre class="aic-hipaa-transmit">${escapeHtml(review.transmitText || "")}</pre>
+            ${review.toolsEnabled ? `<p class="aic-hipaa-note">${icon("wand")} <strong>Clinical tools on</strong> — ChatGPT may run the 25 local calculators and 7 on-device AI models while composing this reply. Every calculation runs in this browser; only the de-identified text above is sent.</p>` : ""}
             ${review.truncationNote ? `<p class="aic-hipaa-note">${icon("alert")} ${escapeHtml(review.truncationNote)}</p>` : ""}
             <div class="aic-hipaa-flags${flagItems.length ? "" : " aic-hipaa-flags--ok"}">
               <strong>${icon("alert")} Review flags</strong>
@@ -705,6 +947,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
             </label>
             <button type="button" class="aic-btn aic-btn--primary" data-action="ai-chat-hipaa-confirm"${canSend ? "" : " disabled"}>${icon("send")} Send to ChatGPT</button>
           </div>
+          <button type="button" class="aic-hipaa-redact-float" data-hipaa-redact-float data-action="ai-chat-hipaa-redact-float" data-target="" hidden>${icon("wand")} Redact</button>
         </div>
       </div>`;
   }
@@ -732,7 +975,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     const sidebarOpen = typeof vm.sidebarOpen === "boolean"
       ? vm.sidebarOpen
       : !!(contextInspector && contextInspector.open);
-    const topVm = { mode, hardware, settings, llmStatus, downloaded, remote, patientContext, offlineMode };
+    const topVm = { mode, hardware, settings, llmStatus, downloaded, remote, patientContext, offlineMode, sidebarCollapsed: vm.sidebarCollapsed, sidebarToggleOn: vm.sidebarToggleOn };
     return `
       <div class="aic-shell">
         ${renderTopbar(topVm)}
@@ -740,7 +983,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
           <div class="aic-main">
             ${isRemote ? renderRemoteMain({ remote, hasApiKey }) : renderLocalMain({ hardware, settings, llmStatus, chat })}
           </div>
-          ${renderSidebar({ contextInspector, patientContext, clinicalService, sidebarGuidelinesText, sidebarGuidelinesRemoteText, sidebarOpen })}
+          ${renderSidebar({ contextInspector, patientContext, clinicalService, sidebarGuidelinesText, sidebarGuidelinesRemoteText, sidebarOpen, sidebarCollapsed: vm.sidebarCollapsed })}
         </div>
         ${renderHipaaReview(remote.review)}
       </div>`;

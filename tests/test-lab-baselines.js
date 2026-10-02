@@ -60,7 +60,7 @@ import { buildClinicalReviewIndex } from "../src/review-data/index.js";
     unit: "%",
     baseline: { value: "7.2", unit: "%", dateLabel: "Jun 2024" }
   });
-  assert.equal(baselineOnly.detail, "8.1% (baseline 7.2% · Jun 2024)");
+  assert.equal(baselineOnly.detail, "8.1 % (baseline 7.2 % · Jun 2024)");
 }
 
 // The review index attaches patient baselines to lab rows and note details.

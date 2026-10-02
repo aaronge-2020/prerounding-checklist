@@ -1,7 +1,7 @@
 // Shared OpenAI Responses-API calling core. Feature-specific validation
-// messages, prompt text, and JSON schemas stay with their own callers -
-// this module only knows how to make the structured-output request and
-// parse the reply.
+// messages, prompt text, and JSON schemas stay with their own callers (see
+// openai-workup-api.js and openai-checklist-api.js) - this module only knows
+// how to make the structured-output request and parse the reply.
 //
 // All requests flow through the central network gate: when offline mode is
 // on, the call fails fast with OfflineBlockedError instead of hanging.

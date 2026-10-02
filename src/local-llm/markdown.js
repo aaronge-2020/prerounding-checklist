@@ -9,7 +9,20 @@ function escapeHtmlText(s) {
   return String(s ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+// [label](https://…) → a safe hyperlink. Runs on already-escaped text, so
+// the URL and label can't break out of the attribute or tag. Only http(s)
+// URLs become links; javascript:/data: stay inert text.
+function renderLinks(h) {
+  const stash = [];
+  h = h.replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g, (m, label, url) => {
+    stash.push(`<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`);
+    return "\x00LINK" + (stash.length - 1) + "\x00";
+  });
+  return { html: h, restore: (done) => done.replace(/\x00LINK(\d+)\x00/g, (m, i) => stash[Number(i)]) };
 }
 
 function renderInline(h) {
@@ -19,9 +32,13 @@ function renderInline(h) {
     stash.push(`<code>${code}</code>`);
     return "\x00CODE" + (stash.length - 1) + "\x00";
   });
+  // Links next, also stashed so bold/italic can't corrupt the href.
+  const links = renderLinks(h);
+  h = links.html;
   h = h.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   h = h.replace(/(^|[^*\w])\*([^*\n]+)\*/g, "$1<em>$2</em>");
   h = h.replace(/(^|[^_\w])_([^_\n]+)_/g, "$1<em>$2</em>");
+  h = links.restore(h);
   h = h.replace(/\x00CODE(\d+)\x00/g, (m, i) => stash[Number(i)]);
   return h;
 }

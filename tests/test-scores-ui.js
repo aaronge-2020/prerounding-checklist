@@ -846,25 +846,6 @@ test("mdc-opt is positioned: absolute radio input stays inside the label", () =>
   assert.match(inputMatch[1], /opacity\s*:\s*0/, ".mdc-opt input stays invisible");
 });
 
-test("mdc-numberwrap: number input fills the row, unit select stays compact", () => {
-  // Root-cause regression contract for the collapsed number-input bug
-  // (2026-09-27): the global `input, select, textarea { width: 100% }` reset
-  // makes the unit <select>'s flex-basis 100% of .mdc-numberwrap, so the
-  // select hogs the whole flex row and the flex:1 number input collapses to
-  // a ~26px sliver ("forms not even being rendered"). The select must opt
-  // out of the global width and stay content-sized; the input keeps flex:1
-  // (plus min-width:0 so it can shrink inside the flex row on narrow screens).
-  const here = dirname(fileURLToPath(import.meta.url));
-  const css = readFileSync(join(here, "..", "styles.css"), "utf8");
-  const selMatch = css.match(/\.mdc-numberwrap\s+\.mdc-unitsel\s*\{([^}]*)\}/);
-  assert.ok(selMatch, ".mdc-numberwrap .mdc-unitsel rule exists in styles.css");
-  assert.match(selMatch[1], /width\s*:\s*auto/, "unit select must override the global width:100% with width:auto");
-  assert.match(selMatch[1], /flex\s*:\s*0\s+0\s+auto/, "unit select must not grow (flex: 0 0 auto)");
-  const numMatch = css.match(/\.mdc-numberwrap\s+\.mdc-number\s*\{([^}]*)\}/);
-  assert.ok(numMatch, ".mdc-numberwrap .mdc-number rule exists in styles.css");
-  assert.match(numMatch[1], /flex\s*:\s*1/, "number input keeps flex:1 to fill the row");
-});
-
 for (const [name, fn] of tests) {
   try {
     await fn();

@@ -17,13 +17,13 @@ function test(name, fn) {
 
 // Complete band sets observed from each definition's interpret() function.
 const BANDS = {
+  "ascvd": ["low", "borderline", "intermediate", "high"],
   "bishop": ["favorable", "intermediate", "unfavorable"],
   "apgar": ["reassuring", "moderately-abnormal", "low"],
   "vbac-flamm": ["high", "moderate", "lower"],
   "vbac-mfmu": ["higher", "lower"],
   "due-dates": ["calculated"],
   "chadsvasc": ["low", "moderate", "high"],
-  "ascvd": ["low", "borderline", "intermediate", "high"],
   "hasbled": ["low", "moderate", "high", "very-high"],
   "heart": ["low", "moderate", "high"],
   "timi": ["low", "moderate", "high"],

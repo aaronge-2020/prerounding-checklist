@@ -80,7 +80,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
           ${creatingVault ? `
           <section class="vault-pitch surface-panel">
             <h1 class="vault-pitch-title">Preround</h1>
-            <p class="vault-pitch-lede">A local workspace for inpatient pre-rounding: organize hospital-day updates, browse bedside cheat sheets, and draft OpenEvidence prompts &mdash; everything encrypted in your browser. Nothing is sent to a server.</p>
+            <p class="vault-pitch-lede">A local workspace for inpatient pre-rounding: organize hospital-day updates, build bedside checklists, and draft OpenEvidence prompts &mdash; everything encrypted in your browser. Nothing is sent to a server.</p>
             <div class="vault-edu-disclaimer" role="note">
               ${icon("shield")}
               <span><strong>Educational use only.</strong> Use de-identified room labels and synthetic details &mdash; never real patient names, MRNs, or other identifiers. This is a personal study aid, not audited PHI storage or a hospital system of record.</span>
@@ -94,7 +94,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
             <div class="section-heading vault-access-heading">
               <div>
                 <h2 id="vault-heading">${creatingVault ? "Or create your local vault" : "Unlock your local vault"}</h2>
-                <p class="muted">${creatingVault ? "Choose one passphrase to protect this browser's data so you can save your own de-identified patients." : "Your passphrase decrypts patient, hospital-day, and prompt data stored on this device. Nothing loads until you unlock it."}</p>
+                <p class="muted">${creatingVault ? "Choose one passphrase to protect this browser's data so you can save your own de-identified patients." : "Your passphrase decrypts patient, workup, checklist, and prompt data stored on this device. Nothing loads until you unlock it."}</p>
               </div>
               <div class="transfer-actions">
                 <button class="button--secondary button--transfer" type="button" data-action="restore-vault">${icon("upload")} Restore vault</button>
@@ -200,11 +200,12 @@ export function createVaultPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function patientRequiredMessage() {
+  function patientRequiredMessage({ allowPhoneBundleImport = false } = {}) {
     return `
       <div class="empty-state next-step">
         <strong>Next step: unlock the vault and add a patient.</strong>
         <span>Use a de-identified room label to begin a new hospital stay.</span>
+        ${allowPhoneBundleImport ? `<div class="transfer-actions"><button class="button--secondary button--transfer" type="button" data-action="choose-phone-bundle-file">${icon("upload")} Open shared checklist file</button><input id="phoneBundleFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden></div>` : ""}
       </div>
     `;
   }

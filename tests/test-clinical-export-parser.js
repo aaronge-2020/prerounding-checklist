@@ -14,11 +14,11 @@ import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
 const parserRevision = "20260921-medication-card-v4";
 const epicParserRevision = "20260925-mixed-unparsed-v1";
-const clinicalParserRevision = "20260925-negative-lab-v1";
+const clinicalParserRevision = "20260929-rxnorm-mar-v1";
 const primaryNoteRevision = "20260921-medication-card-v4";
 const sourceControllerRevision = "20260923-plan-problems-v1";
-const appRevision = "20260929-deid-r2";
-const styleRevision = "20260928-ap-suggestions-v1";
+const appRevision = "20260929-deid-clinicale5";
+const styleRevision = "20260924-helptip-position-v1";
 const runtimeSources = {
   index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
   app: readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8"),
@@ -34,6 +34,8 @@ const runtimeSources = {
   openEvidence: readFileSync(new URL("../src/prompts/open-evidence.js", import.meta.url), "utf8"),
   promptController: readFileSync(new URL("../src/ui/prompts/controller.js", import.meta.url), "utf8"),
   promptPresentation: readFileSync(new URL("../src/ui/prompts/presentation.js", import.meta.url), "utf8"),
+  phoneSession: readFileSync(new URL("../src/ui/checklist/phone-session.js", import.meta.url), "utf8"),
+  examFindings: readFileSync(new URL("../src/ui/checklist/exam-findings-controller.js", import.meta.url), "utf8"),
   parser: readFileSync(new URL("../src/patient-context/clinical-export-parser.js", import.meta.url), "utf8"),
   epicParser: readFileSync(new URL("../src/patient-context/epic-clinical-export-parser.js", import.meta.url), "utf8")
 };
@@ -67,6 +69,9 @@ assert.match(runtimeSources.openEvidence, new RegExp(`patient-context/sections\\
 assert.match(runtimeSources.promptController, new RegExp(`custom-templates\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.promptController, new RegExp(`open-evidence\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.promptPresentation, new RegExp(`custom-templates\\.js\\?v=${parserRevision}`));
+assert.match(runtimeSources.phoneSession, new RegExp(`daily-updates/days\\.js\\?v=${parserRevision}`));
+assert.match(runtimeSources.examFindings, new RegExp(`daily-updates/days\\.js\\?v=${parserRevision}`));
+assert.match(runtimeSources.examFindings, new RegExp(`app/state/vault\\.js\\?v=${parserRevision}`));
 assert.match(runtimeSources.app, new RegExp(`clinical-export-parser\\.js\\?v=${clinicalParserRevision}`));
 assert.match(runtimeSources.parser, new RegExp(`epic-clinical-export-parser\\.js\\?v=${epicParserRevision}`));
 assert.match(runtimeSources.parser, new RegExp(`structured-clinical-data\\.js\\?v=${parserRevision}`));

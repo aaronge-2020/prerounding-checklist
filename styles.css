@@ -277,6 +277,25 @@ p {
   overflow-y: auto;
 }
 
+.nav-group {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+}
+
+.nav-group-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 10px 8px 2px;
+}
+
+.nav-group:first-child .nav-group-label {
+  margin-top: 2px;
+}
+
 .primary-nav button {
   display: grid;
   grid-template-columns: 16px minmax(0, 1fr);
@@ -302,10 +321,28 @@ p {
   padding-left: 5px;
 }
 
+.primary-nav .nav-note {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
 @media (min-width: 1041px) {
   .app-shell {
     grid-template-columns: 64px minmax(0, 1fr);
     transition: grid-template-columns 160ms ease;
+  }
+
+  /* Group labels hide with the button labels on the collapsed icon rail. */
+  .nav-group-label {
+    display: none;
+  }
+
+  .app-shell:has(.side-nav:hover) .nav-group-label,
+  .app-shell:has(.side-nav:focus-within) .nav-group-label {
+    display: block;
   }
 
   .app-shell:has(.side-nav:hover),
@@ -550,25 +587,35 @@ p {
   font-weight: 600;
 }
 
-/* Offline-mode header pill: restrained on/off status, no per-feature badges. */
+/* Offline-mode header pill. Reuses the topbar-trust slot; the is-offline
+   state gets a distinct, restrained treatment (no alarm colors). */
 .offline-pill {
-  padding: 2px 10px;
-  border: 1px solid var(--border);
+  padding: 0 10px;
+  border: 1px solid var(--border-strong);
   border-radius: 999px;
-  min-height: 24px;
+  color: var(--muted);
+  cursor: default;
+  background: transparent;
 }
 .offline-pill.is-offline {
-  border-color: #b45309;
-  color: #92400e;
-  background: #fef3c7;
-  font-weight: 700;
+  color: #0f766e;
+  border-color: #0f766e;
+  background: #f0fdfa;
+}
+@media (prefers-color-scheme: dark) {
+  .offline-pill.is-offline {
+    color: #5eead4;
+    border-color: #2dd4bf;
+    background: rgba(45, 212, 191, 0.12);
+  }
 }
 
 /* Settings > "Where does my data go?" disclosure list. */
 .data-flow-list {
+  margin: 12px 0 0;
+  padding: 0;
   display: grid;
   gap: 10px;
-  margin: 0 0 12px;
 }
 .data-flow-list > div {
   display: grid;
@@ -576,9 +623,11 @@ p {
 }
 .data-flow-list dt {
   font-weight: 600;
+  font-size: 13px;
 }
 .data-flow-list dd {
   margin: 0;
+  font-size: 13px;
   color: var(--muted);
 }
 
@@ -7495,7 +7544,7 @@ button.var-fill:focus-visible {
 .guided-demo-bar {
   position: sticky;
   top: 0;
-  z-index: 95;
+  z-index: 5;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
@@ -12634,18 +12683,28 @@ details.ed-section .ed-section-summary .ed-label { display: inline-flex; }
 .aic-newchat:hover:not(:disabled) { border-color: var(--primary); }
 .aic-newchat:disabled { opacity: .4; cursor: default; }
 .aic-newchat svg { width: 13px; height: 13px; }
+.aic-chatbar-actions { display: inline-flex; align-items: center; gap: 8px; }
+.aic-compress { display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; font-weight: 600; color: var(--muted); background: none; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.aic-compress:hover:not(:disabled) { border-color: var(--muted); color: var(--text); }
+.aic-compress:disabled { opacity: .4; cursor: default; }
+.aic-compress.is-armed { color: var(--warning); border-color: var(--warning); }
+.aic-compress.is-armed:hover { background: var(--warning-bg); }
+.aic-cost { display: flex; align-items: center; justify-content: flex-end; padding: 6px 14px 0; font-size: 0.72rem; color: var(--muted); }
+.aic-cost-label { white-space: nowrap; }
 /* Per-message "revert" control: removes the message and everything after it
    from the conversation (the model's context on the next send). Absolutely
    positioned so showing it never shifts the layout; revealed on hover, and
    always faintly visible on touch devices. */
 .aic-m { position: relative; }
-.aic-m-revert { position: absolute; bottom: -7px; z-index: 2; display: inline-flex; align-items: center; gap: 3px; font-size: 0.68rem; font-weight: 600; color: var(--muted); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; cursor: pointer; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s; }
-.aic-m--u .aic-m-revert { right: 6px; }
-.aic-m--a .aic-m-revert { left: 6px; }
-.aic-m:hover .aic-m-revert, .aic-m-revert:focus-visible { opacity: 1; pointer-events: auto; }
+/* Revert sits in the normal flow BELOW the message content (never overlaid
+   on top of it) and appears on hover. The flex column keeps it under the
+   text, tool records, and citations alike. */
+.aic-m-revert { display: none; align-items: center; gap: 3px; font-size: 0.68rem; font-weight: 600; color: var(--muted); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; cursor: pointer; white-space: nowrap; margin-top: 4px; align-self: flex-start; }
+.aic-m--u .aic-m-revert { align-self: flex-end; }
+.aic-m:hover .aic-m-revert, .aic-m-revert:focus-visible { display: inline-flex; }
 .aic-m-revert:hover { color: var(--text); border-color: var(--muted); }
 .aic-m-revert svg { width: 11px; height: 11px; }
-@media (hover: none) { .aic-m-revert { opacity: .8; pointer-events: auto; } }
+@media (hover: none) { .aic-m-revert { display: inline-flex; } }
 /* "Context" inspector: exactly what will be loaded into the model's context
    on the next send, with per-piece include/exclude checkboxes. */
 .aic-ctx { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); overflow: hidden; }
@@ -13012,8 +13071,8 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   margin-top: 8px;
 }
 
-/* HIPAA review modal */
-.aic-review-backdrop {
+/* HIPAA review modal — pre-send gate for ChatGPT mode */
+.aic-hipaa-backdrop {
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.55);
@@ -13021,90 +13080,677 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 12px;
 }
-.aic-review {
+/* Compact review modal: wider than tall content needs, tight vertical
+   rhythm, ONE scrollbar (the body). Head/stats/actionbar/foot are
+   flex:none siblings that stay pinned; per-piece nested scrollers are
+   gone so nothing hides inside nested viewports. */
+.aic-hipaa-modal {
   background: var(--surface, #fff);
   color: var(--ink, #0f172a);
   border-radius: 14px;
-  max-width: 640px;
   width: 100%;
-  max-height: 88vh;
-  overflow-y: auto;
-  padding: 22px 24px;
-  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.35);
+  max-width: 1080px;
+  max-height: 94dvh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.4);
+  overflow: hidden;
 }
-.aic-review h3 {
-  margin: 0 0 4px;
-  font-size: 17px;
+.aic-hipaa-head {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 16px 0;
+  flex: none;
+}
+.aic-hipaa-shield {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #dbeafe;
+  color: #1d4ed8;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
 }
-.aic-review h3 svg { width: 18px; height: 18px; color: #b45309; }
-.aic-review-sub { font-size: 13px; color: var(--muted, #64748b); margin-bottom: 14px; }
-.aic-review-sec { margin-bottom: 14px; }
-.aic-review-sec > strong { display: block; font-size: 13px; margin-bottom: 6px; }
-.aic-review-pre {
-  font-size: 12.5px;
-  line-height: 1.55;
+.aic-hipaa-shield svg { width: 20px; height: 20px; }
+.aic-hipaa-head h2 { margin: 0; font-size: 17px; letter-spacing: -0.01em; }
+.aic-hipaa-head p { margin: 2px 0 0; font-size: 12.5px; color: var(--muted, #64748b); }
+.aic-hipaa-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 10px 16px 0;
+  flex: none;
+}
+.aic-hipaa-stat {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 8px;
+  padding: 7px 10px;
+  background: var(--surface-2, #f8fafc);
+}
+.aic-hipaa-stat-ic {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #e0e7ff;
+  color: #4338ca;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.aic-hipaa-stat-ic svg { width: 16px; height: 16px; }
+.aic-hipaa-stat--warn .aic-hipaa-stat-ic { background: #fef3c7; color: #b45309; }
+.aic-hipaa-stat--ok .aic-hipaa-stat-ic { background: #dcfce7; color: #15803d; }
+.aic-hipaa-stat-tx { display: flex; flex-direction: column; line-height: 1.25; }
+.aic-hipaa-stat-tx span { font-size: 12px; color: var(--muted, #64748b); }
+.aic-hipaa-stat-tx strong { font-size: 14.5px; }
+.aic-hipaa-body {
+  padding: 10px 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+}
+.aic-hipaa-sec-title {
+  margin: 4px 0 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted, #64748b);
+}
+.aic-hipaa-msg {
+  font-size: 13px;
   background: var(--surface-2, #f8fafc);
   border: 1px solid var(--border, #e2e8f0);
   border-radius: 8px;
-  padding: 10px 12px;
+  padding: 9px 12px;
   white-space: pre-wrap;
   word-break: break-word;
-  max-height: 220px;
-  overflow-y: auto;
-  margin: 0;
+  flex: none;
 }
-.aic-review-meta { font-size: 13px; color: var(--muted, #64748b); }
-.aic-review-warns { margin: 6px 0 0; padding-left: 18px; font-size: 13px; color: #92400e; }
-.aic-review-actions {
+.aic-hipaa-note {
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 18px;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 12.5px;
+  color: #92400e;
+  margin: 6px 0 0;
 }
-.aic-review-cancel {
+.aic-hipaa-note svg { flex: none; width: 15px; height: 15px; margin-top: 1px; }
+.aic-hipaa-piece {
   border: 1px solid var(--border, #e2e8f0);
+  border-radius: 10px;
   background: var(--surface, #fff);
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--ink, #0f172a);
+  overflow: hidden;
+  /* Never let flex layout crush review cards to a sliver: the modal body
+     scrolls instead. (overflow:hidden zeroes the automatic minimum size,
+     so without this the cards collapse to their 2px borders.) */
+  flex-shrink: 0;
 }
-.aic-review-confirm {
+.aic-hipaa-piece-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--surface-2, #f8fafc);
   border: 0;
-  background: #b45309;
-  color: #fff;
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 700;
   cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+.aic-hipaa-piece-head:hover { background: #eef2f7; }
+.aic-hipaa-chev { flex: none; color: var(--muted, #64748b); display: flex; }
+.aic-hipaa-chev svg { width: 16px; height: 16px; transition: transform 0.15s ease; }
+.aic-hipaa-piece.is-open .aic-hipaa-chev svg { transform: rotate(90deg); }
+.aic-hipaa-piece-title { font-weight: 650; font-size: 13.5px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aic-hipaa-chips { display: flex; gap: 6px; flex: none; }
+.aic-hipaa-chip {
+  font-size: 11.5px;
+  font-weight: 600;
+  background: #e2e8f0;
+  color: #475569;
+  border-radius: 999px;
+  padding: 2px 9px;
+  white-space: nowrap;
+}
+.aic-hipaa-chip--red { background: #fde68a; color: #92400e; }
+.aic-hipaa-piece-body {
+  font-size: 12.5px;
+  line-height: 1.55;
+  padding: 8px 12px;
+  /* Normal whitespace: the presentation's indented template literals leave
+     whitespace-only text nodes between elements, and pre-wrap rendered those
+     as blank lines (36px and 17px gaps in Chromium). Actual preformatted text
+     keeps pre-wrap via .aic-hipaa-preview below. */
+  white-space: normal;
+  word-break: break-word;
+  /* No nested scroller: the modal body owns the single scrollbar, so long
+     documents never hide inside a 260px viewport. */
+  border-top: 1px solid var(--border, #e2e8f0);
+  color: #334155;
+}
+.aic-hipaa-mark {
+  background: #fde68a;
+  color: #78350f;
+  border-radius: 5px;
+  padding: 0 5px;
+  font-weight: 700;
+  font-size: 0.92em;
+  white-space: nowrap;
+}
+.aic-hipaa-mark--date { background: #dbeafe; color: #1e40af; }
+.aic-hipaa-flags {
+  border: 1px solid #fcd34d;
+  background: #fffbeb;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  color: #78350f;
+  flex: none;
+}
+.aic-hipaa-flags > strong { display: flex; align-items: center; gap: 8px; font-size: 13.5px; margin-bottom: 6px; }
+.aic-hipaa-flags > strong svg { width: 16px; height: 16px; }
+.aic-hipaa-flags ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.aic-hipaa-flags--ok { border-color: #bbf7d0; background: #f0fdf4; color: #166534; }
+.aic-hipaa-flags p { margin: 0; }
+.aic-hipaa-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border, #e2e8f0);
+  background: var(--surface, #fff);
+  flex: none;
+}
+.aic-hipaa-ack {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 550;
+  cursor: pointer;
+  user-select: none;
+}
+.aic-hipaa-ack input { width: 17px; height: 17px; accent-color: #1d4ed8; cursor: pointer; }
+.aic-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+@media (max-width: 640px) {
+  .aic-hipaa-stats { grid-template-columns: repeat(2, 1fr); }
+  .aic-hipaa-foot { flex-wrap: wrap; }
+  .aic-hipaa-ack { flex: 1 1 100%; order: -1; }
+}
+
+/* ==========================================================================
+   AI Chat v3 — full-screen layout + delta review
+   Appended 2026-09-29. Existing rules above are untouched; everything below
+   is new classes for the ChatGPT-style full-screen chat shell, the sidebar,
+   the Model menu, the de-identification gate, and the delta-review modal.
+   ========================================================================== */
+
+/* The aiChat view becomes a flex column with hidden overflow so the
+   conversation scroller owns the scrolling, ChatGPT-style. Scoped to this
+   view only; other views keep their existing behavior. */
+#aiChatView.active { display: flex; flex-direction: column; overflow: hidden; padding: 0; }
+#aiChatContent { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+.aic-shell { flex: 1; min-height: 0; display: flex; flex-direction: column; background: var(--background, #fff); }
+
+/* ── Topbar ── */
+.aic-topbar { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--border, #e2e8f0); flex: none; background: var(--surface, #fff); }
+.aic-topbar-spacer { flex: 1; }
+.aic-modeseg { display: inline-flex; background: color-mix(in srgb, var(--text, #0f172a) 7%, transparent); border-radius: 999px; padding: 3px; gap: 2px; }
+.aic-modeseg-btn { border: none; background: transparent; color: var(--muted, #64748b); font: inherit; font-size: 0.82rem; font-weight: 650; padding: 6px 14px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.aic-modeseg-btn svg { width: 14px; height: 14px; }
+.aic-modeseg-btn.is-on { background: var(--surface, #fff); color: var(--text, #0f172a); box-shadow: 0 1px 3px rgba(0,0,0,.14); }
+.aic-modesub { margin: 0; padding: 8px 16px 0; font-size: 0.78rem; }
+
+/* Model menu: a native <details> popover so no extra data-action is needed. */
+.aic-modelwrap { position: relative; }
+.aic-modelwrap > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 650; padding: 7px 12px; border: 1px solid var(--border, #e2e8f0); border-radius: 999px; background: var(--surface, #fff); color: var(--text, #0f172a); user-select: none; }
+.aic-modelwrap > summary::-webkit-details-marker { display: none; }
+.aic-modelwrap > summary::marker { content: none; }
+.aic-modelwrap > summary svg { width: 13px; height: 13px; color: var(--muted, #64748b); }
+.aic-modelwrap > summary strong { font-weight: 700; }
+.aic-model-menu { position: absolute; right: 0; top: calc(100% + 8px); width: min(400px, 92vw); max-height: min(72vh, 600px); overflow-y: auto; background: var(--surface, #fff); border: 1px solid var(--border, #e2e8f0); border-radius: 14px; box-shadow: 0 12px 32px rgba(0,0,0,.16); padding: 14px; z-index: 60; display: flex; flex-direction: column; gap: 8px; }
+.aic-menu-title { margin: 6px 0 2px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted, #64748b); font-weight: 700; }
+.aic-modelrow { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border: 1px solid var(--border, #e2e8f0); border-radius: 10px; }
+.aic-modelrow.is-sel { border-color: var(--primary, #1d4ed8); }
+.aic-modelrow.is-off { opacity: .55; }
+.aic-modelrow-info { flex: 1; min-width: 0; }
+.aic-modelrow-info strong { font-size: 0.85rem; display: block; }
+.aic-modelrow-info > span { font-size: 0.75rem; color: var(--muted, #64748b); display: block; margin-top: 2px; }
+.aic-modelrow-act { flex: none; display: flex; align-items: center; gap: 8px; }
+.aic-warnline { display: flex; gap: 6px; align-items: flex-start; font-size: 0.78rem; color: var(--warning, #b45309); margin: 0; }
+.aic-warnline svg { flex: none; width: 14px; height: 14px; margin-top: 1px; }
+
+/* Narrow-screen button that opens the sidebar drawer (hidden on desktop). */
+.aic-sidebtn { display: none; align-items: center; gap: 6px; font: inherit; font-size: 0.82rem; font-weight: 650; padding: 7px 12px; border: 1px solid var(--border, #e2e8f0); border-radius: 999px; background: var(--surface, #fff); color: var(--text, #0f172a); cursor: pointer; }
+.aic-sidebtn svg { width: 13px; height: 13px; color: var(--muted, #64748b); }
+
+/* ── Body: conversation column + sidebar ── */
+.aic-body { flex: 1; min-height: 0; display: flex; }
+.aic-main { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+.aic-chatbar { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; flex: none; }
+.aic-messages { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.aic-composer { flex: none; border-top: 1px solid var(--border, #e2e8f0); background: var(--surface, #fff); padding: 10px 16px 4px; }
+.aic-composer .aic-form { border-top: none; padding: 0; }
+.aic-composer .aic-disclaimer { padding-left: 2px; padding-right: 2px; }
+
+/* De-identification gate banner (ChatGPT mode). */
+.aic-deid-banner { flex: none; display: flex; align-items: center; gap: 12px; margin: 10px 16px 0; padding: 12px 14px; border: 1px solid #fcd34d; background: #fffbeb; border-radius: 12px; color: #92400e; }
+.aic-deid-ic { flex: none; display: flex; }
+.aic-deid-ic svg { width: 20px; height: 20px; }
+.aic-deid-tx { flex: 1; min-width: 0; }
+.aic-deid-tx strong { display: block; font-size: 0.85rem; }
+.aic-deid-tx p { margin: 2px 0 0; font-size: 0.8rem; }
+
+/* ── Sidebar ── */
+.aic-sidebar { width: 320px; flex: none; border-left: 1px solid var(--border, #e2e8f0); background: var(--surface, #fff); overflow-y: auto; padding: 14px 16px 24px; display: flex; flex-direction: column; gap: 18px; }
+.aic-side-head { display: flex; align-items: center; justify-content: space-between; }
+.aic-side-head strong { font-size: 0.9rem; }
+.aic-side-close { display: none; align-items: center; gap: 4px; background: none; border: none; font: inherit; font-size: 0.8rem; font-weight: 600; color: var(--muted, #64748b); cursor: pointer; padding: 4px; }
+.aic-side-close svg { width: 13px; height: 13px; }
+.aic-side-backdrop { display: none; }
+.aic-side-sec { display: flex; flex-direction: column; gap: 6px; }
+.aic-side-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted, #64748b); font-weight: 700; margin: 0 0 2px; }
+.aic-side-sub { font-size: 0.8rem; margin: 0; }
+.aic-side-hint { font-size: 0.75rem; margin: 4px 0 0; font-style: italic; }
+.aic-side-patient { font-size: 0.85rem; font-weight: 650; margin: 0; }
+.aic-side-group { font-size: 0.75rem; font-weight: 700; color: var(--muted, #64748b); margin: 8px 0 2px; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.aic-side-group-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.aic-side-group-actions { display: flex; gap: 8px; flex: none; }
+.aic-side-group-actions .aic-link:disabled { opacity: 0.4; cursor: default; text-decoration: none; }
+.aic-side-kv { display: flex; flex-direction: column; gap: 1px; font-size: 0.82rem; margin: 0; }
+.aic-side-kv .aic-muted { font-size: 0.72rem; }
+.aic-side-svc { font-size: 0.85rem; margin: 0; }
+
+/* Context budget meter. */
+.aic-meter { display: flex; flex-direction: column; gap: 5px; }
+.aic-meter-bar { display: block; height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--text, #0f172a) 9%, transparent); overflow: hidden; }
+.aic-meter-bar > span { display: block; height: 100%; border-radius: 999px; background: var(--primary, #1d4ed8); }
+.aic-meter-label { font-size: 0.8rem; font-weight: 650; }
+
+/* Editable custom guidelines textarea. */
+.aic-guide { width: 100%; box-sizing: border-box; border: 1px solid var(--border, #e2e8f0); border-radius: 10px; padding: 9px 11px; font: inherit; font-size: 0.82rem; line-height: 1.5; background: var(--background, #fff); color: var(--text, #0f172a); resize: vertical; min-height: 110px; }
+.aic-guide:focus { outline: none; border-color: var(--primary, #1d4ed8); }
+
+/* ── HIPAA delta-review additions ── */
+.aic-hipaa-badge { flex: none; font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 2px 8px; border-radius: 999px; }
+.aic-hipaa-badge--new { background: #dbeafe; color: #1d4ed8; }
+.aic-hipaa-badge--changed { background: #fef3c7; color: #b45309; }
+.aic-hipaa-badge--reviewed { background: #dcfce7; color: #15803d; }
+.aic-hipaa-sughead { display: flex; align-items: center; justify-content: space-between; margin: 8px 0 4px; }
+.aic-hipaa-sughead strong { font-size: 0.85rem; }
+.aic-hipaa-sug-all { display: inline-flex; align-items: center; gap: 4px; font-size: 0.78rem; }
+.aic-hipaa-sug { border: 1px solid var(--border, #e2e8f0); border-radius: 8px; padding: 6px 10px; margin-bottom: 4px; display: flex; flex-direction: column; gap: 4px; background: var(--surface, #fff); }
+.aic-hipaa-sug.is-reviewed { background: color-mix(in srgb, var(--text, #0f172a) 3%, var(--surface, #fff)); }
+.aic-hipaa-sug-text { display: flex; align-items: baseline; gap: 8px; font-size: 0.83rem; flex-wrap: wrap; }
+.aic-hipaa-sug-orig { text-decoration: line-through; color: var(--muted, #64748b); word-break: break-word; }
+.aic-hipaa-sug-arrow { color: var(--muted, #64748b); flex: none; }
+.aic-hipaa-sug-repl { font-weight: 650; word-break: break-word; }
+.aic-hipaa-sug-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.aic-hipaa-sug-act { margin-left: auto; display: inline-flex; gap: 6px; }
+.aic-hipaa-reviewed-head { display: flex; align-items: center; gap: 8px; width: 100%; background: none; border: none; font: inherit; cursor: pointer; padding: 8px 0; color: var(--text, #0f172a); text-align: left; }
+.aic-hipaa-reviewed-head strong { font-size: 0.85rem; }
+.aic-hipaa-reviewed { display: flex; flex-direction: column; }
+.aic-hipaa-preview { border: 1px dashed var(--border, #e2e8f0); border-radius: 10px; padding: 10px 12px; font-size: 0.83rem; line-height: 1.55; white-space: pre-wrap; word-break: break-word; margin: 10px 0 8px; user-select: text; }
+.aic-hipaa-preview-act { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.aic-hipaa-preview-act .aic-muted { font-size: 0.76rem; }
+.aic-hipaa-transmit { background: color-mix(in srgb, var(--text, #0f172a) 4%, var(--surface, #fff)); border: 1px solid var(--border, #e2e8f0); border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 0.8rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word; max-height: 260px; overflow-y: auto; margin: 0; }
+.aic-hipaa-details { margin-top: 10px; }
+.aic-hipaa-details > summary { cursor: pointer; font-weight: 650; font-size: 0.85rem; padding: 6px 0; }
+.aic-hipaa-history { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.aic-hipaa-hist { border: 1px solid var(--border, #e2e8f0); border-radius: 10px; padding: 8px 10px; }
+.aic-hipaa-hist strong { font-size: 0.78rem; display: block; margin-bottom: 3px; }
+.aic-hipaa-hist p { margin: 0; font-size: 0.82rem; white-space: pre-wrap; word-break: break-word; }
+.aic-hipaa-msgflags { margin: 8px 0 0; padding-left: 18px; font-size: 0.82rem; display: flex; flex-direction: column; gap: 3px; }
+.aic-hipaa-progress { text-align: center; padding: 28px 12px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.aic-hipaa-progress strong { font-size: 0.95rem; }
+.aic-hipaa-progress p { margin: 0; }
+.aic-hipaa-progressbar { width: 100%; max-width: 340px; height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--text, #0f172a) 10%, transparent); overflow: hidden; }
+.aic-hipaa-progressbar > span { display: block; height: 100%; background: var(--primary, #1d4ed8); border-radius: 999px; transition: width .2s ease; }
+
+/* Small button variant used for suggestion rows. */
+.aic-btn--sm { padding: 4px 10px; font-size: 0.78rem; }
+
+/* Review action bar: the one-click review controls live here, always visible
+   between the stats and the scrollable body — no hunting through cards for
+   the decision buttons. */
+.aic-hipaa-actionbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: var(--surface-2, #f8fafc);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 8px;
+  padding: 7px 12px;
+  margin: 8px 16px 0;
+  flex: none;
+}
+.aic-hipaa-actionbar-tx { font-size: 13px; }
+.aic-hipaa-actionbar-tx strong { font-weight: 750; }
+.aic-hipaa-actionbar-btns { display: inline-flex; gap: 8px; }
+.aic-hipaa-actionbar-hint { margin-left: auto; font-size: 12px; color: var(--muted, #64748b); }
+/* Floating highlight-to-redact pill: summoned next to any text selection in
+   the review modal. position:fixed so it tracks the viewport rather than the
+   modal's internal scroll; z-index sits above the modal backdrop. */
+.aic-hipaa-redact-float {
+  position: fixed;
+  z-index: 300;
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  background: #1d4ed8;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(29, 78, 216, 0.45);
+  white-space: nowrap;
 }
-.aic-review-confirm svg { width: 15px; height: 15px; }
-@media (max-width: 560px) {
-  .aic-head-row { flex-direction: column; align-items: stretch; }
-  .aic-review { padding: 18px; }
+.aic-hipaa-redact-float[hidden] { display: none; }
+.aic-hipaa-redact-float:hover { background: #1e40af; }
+.aic-hipaa-redact-float svg { width: 14px; height: 14px; }
+
+/* ── Mobile: sidebar becomes a drawer ── */
+@media (max-width: 1023px) {
+  .aic-topbar { padding: 8px 12px; gap: 8px; }
+  .aic-modesub { padding: 6px 12px 0; }
+  .aic-messages { padding: 12px; }
+  .aic-composer { padding: 8px 12px 2px; }
+  .aic-chatbar { padding: 6px 12px; }
+  .aic-sidebtn { display: inline-flex; }
+  .aic-sidebar { position: fixed; top: 0; right: 0; bottom: 0; width: min(360px, 88vw); z-index: 70; transform: translateX(105%); transition: transform .22s ease; box-shadow: -8px 0 24px rgba(0,0,0,.14); }
+  .aic-sidebar.is-open { transform: none; }
+  .aic-side-backdrop { display: block; position: fixed; inset: 0; z-index: 65; background: rgba(15,23,42,.38); border: none; padding: 0; cursor: pointer; }
+  .aic-side-close { display: inline-flex; }
+  .aic-deid-banner { margin: 8px 12px 0; flex-wrap: wrap; }
 }
 
+@media (max-width: 640px) {
+  .aic-topbar { flex-wrap: wrap; }
+  .aic-modesub { display: none; }
+  .aic-model-menu { position: fixed; left: 12px; right: 12px; top: 64px; width: auto; max-height: 70vh; }
+  .aic-hipaa-sug-act { margin-left: 0; }
+}
+
+/* ── Desktop: collapsible sidebar column ── */
+/* The topbar Context button is hidden on desktop by default; showing it
+   gives a collapse/expand toggle for the persistent sidebar column.
+   Narrow screens keep the drawer behavior (max-width: 1023px above). */
+@media (min-width: 1024px) {
+  .aic-sidebtn { display: inline-flex; }
+  .aic-sidebtn[aria-pressed="true"] { background: color-mix(in srgb, var(--primary, #1d4ed8) 10%, var(--surface, #fff)); border-color: color-mix(in srgb, var(--primary, #1d4ed8) 45%, var(--border, #e2e8f0)); }
+  .aic-sidebar.is-collapsed { display: none; }
+}
+
+/* Drug Lookup view styles */
+.drug-lookup .card { margin-bottom: 1rem; }
+.drug-add-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+.drug-add-row input { flex: 1 1 12rem; }
+.drug-chip-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.drug-chip { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.6rem; border: 1px solid var(--border, #ccc); border-radius: 999px; }
+.drug-chip-flag { font-size: 0.75em; color: var(--warning, #a60); }
+.interaction-list { list-style: none; padding: 0; display: grid; gap: 0.75rem; }
+.interaction-card { border: 1px solid var(--border, #ccc); border-left-width: 4px; border-radius: 6px; padding: 0.75rem; }
+.interaction-card--major { border-left-color: #c0392b; }
+.interaction-card--moderate { border-left-color: #e67e22; }
+.interaction-card--minor { border-left-color: #f1c40f; }
+.interaction-card-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
+.severity-badge { font-size: 0.75em; font-weight: 700; text-transform: uppercase; padding: 0.15em 0.6em; border-radius: 999px; }
+.severity-badge--major { background: #c0392b; color: #fff; }
+.severity-badge--moderate { background: #e67e22; color: #fff; }
+.severity-badge--minor { background: #f1c40f; color: #333; }
+.indication-text { white-space: pre-wrap; }
+.drug-lookup-privacy { display: flex; gap: 0.6rem; align-items: flex-start; }
+
+
+/* Smart `@` drug autocomplete dropdown */
+.drug-autocomplete-dropdown {
+  position: absolute;
+  z-index: 1000;
+  min-width: 280px;
+  max-width: 420px;
+  max-height: 320px;
+  overflow-y: auto;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, #e0e0e0);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  padding: 4px;
+}
+
+.drug-autocomplete-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.drug-autocomplete-item:hover,
+.drug-autocomplete-item.is-selected {
+  background: var(--surface-hover, #f0f4f8);
+}
+
+.drug-autocomplete-name {
+  font-weight: 600;
+  color: var(--ink, #1a1a1a);
+  white-space: nowrap;
+}
+
+.drug-autocomplete-brand {
+  color: var(--muted, #666);
+  font-size: 12px;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+
+.drug-autocomplete-loading {
+  padding: 12px;
+  text-align: center;
+  color: var(--muted, #666);
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* Drug detail modal */
+.drug-detail-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.drug-detail-modal-backdrop[hidden] {
+  display: none;
+}
+
+.drug-detail-modal {
+  background: var(--surface, #ffffff);
+  border-radius: 12px;
+  max-width: 640px;
+  width: 100%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.drug-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border, #e0e0e0);
+}
+
+.drug-detail-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink, #1a1a1a);
+}
+
+.drug-detail-brand {
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--muted, #666);
+}
+
+.drug-detail-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--muted, #666);
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+.drug-detail-close:hover {
+  background: var(--surface-hover, #f0f4f8);
+  color: var(--ink, #1a1a1a);
+}
+
+.drug-detail-body {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.drug-detail-section {
+  margin-bottom: 24px;
+}
+
+.drug-detail-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted, #666);
+}
+
+.drug-detail-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.drug-detail-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-light, #f0f0f0);
+}
+
+.drug-detail-list li:last-child {
+  border-bottom: none;
+}
+
+.drug-detail-text {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink, #1a1a1a);
+}
+
+.drug-insert-btn {
+  flex-shrink: 0;
+  background: var(--primary, #0066cc);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.drug-insert-btn:hover {
+  background: var(--primary-dark, #0052a3);
+}
+
+.drug-insert-name {
+  background: var(--surface-hover, #f0f4f8);
+  color: var(--ink, #1a1a1a);
+  border: 1px solid var(--border, #e0e0e0);
+}
+
+.drug-insert-name:hover {
+  background: var(--border, #e0e0e0);
+}
+
+.drug-detail-footer {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border, #e0e0e0);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.drug-detail-source {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted, #666);
+  font-style: italic;
+}
+
+.drug-detail-empty {
+  color: var(--muted, #666);
+  font-style: italic;
+  font-size: 14px;
+}
 /* Cheat Sheets — mobile-first read-only pocket reference (2026-09-29) */
 .cs-list { display: flex; flex-direction: column; gap: 12px; max-width: 720px; margin: 0 auto; padding: 12px 12px 32px; }
 .cs-title { margin: 4px 2px 0; font-size: 1.25rem; }
 .cs-count { color: var(--muted); font-size: 0.85rem; margin: 0 2px; }
-.cs-searchbar { position: sticky; top: 0; z-index: 5; padding: 8px 0; background: var(--bg); }
-.cs-search { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 12px; padding: 0 12px; }
-.cs-search-icon { color: var(--muted); flex: none; }
-.cs-search input { flex: 1; min-height: 44px; border: 0; background: transparent; font-size: 1rem; color: var(--text); }
-.cs-search input:focus { outline: none; }
-.cs-search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.cs-searchbar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 12px; padding: 0 12px; margin: 8px 0; }
+.cs-searchbar:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.cs-search-icon { color: var(--muted); flex: none; display: inline-flex; width: 18px; height: 18px; }
+.cs-search-icon svg { width: 100%; height: 100%; display: block; }
+.cs-search { flex: 1; min-width: 0; min-height: 44px; border: 0; background: transparent; font-size: 1rem; color: var(--text); }
+.cs-search:focus { outline: none; }
 .cs-search-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .cs-cards { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .cs-card { width: 100%; display: flex; align-items: center; gap: 10px; min-height: 52px; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; cursor: pointer; }
@@ -13155,18 +13801,76 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .sample-note-type-badge { flex: none; background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 3px 10px; font-size: 0.75rem; font-weight: 600; }
 .sample-note-preview { background: var(--surface-subtle); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 0.82rem; line-height: 1.5; white-space: pre-wrap; max-height: 420px; overflow: auto; margin: 0; }
 .sample-note-actions { flex-wrap: wrap; }
-/* Sample Notes "Try with this chart" coverage (2026-10-01) */
-.sample-note-coverage { background: var(--surface-subtle); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
-.sample-note-coverage-title { font-size: 0.8rem; font-weight: 700; color: var(--accent); }
-.sample-note-coverage-group { display: flex; flex-direction: column; gap: 4px; }
-.sample-note-coverage-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
-.sample-note-coverage-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.sample-note-tag { background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 600; }
-.sample-note-coverage-list { margin: 0; padding-left: 18px; font-size: 0.82rem; line-height: 1.5; }
 @media (max-width: 560px) {
   .sample-note-heading { flex-direction: column; }
   .sample-note-type-badge { align-self: flex-start; }
 }
+
+
+/* ── AI Chat clinical-tool records ────────────────────────────────────
+   Collapsed per-tool-call audit rows under a tool-mode assistant reply:
+   which tool ran, with what inputs, and the deterministic result it
+   returned. Styled after .aic-think disclosures. */
+.aic-toolrecs { display: flex; flex-direction: column; gap: 6px; margin: 10px 0 2px; }
+.aic-toolrec { border: 1px solid var(--border); border-radius: 10px; background: color-mix(in srgb, var(--text) 4%, var(--surface)); overflow: hidden; }
+.aic-toolrec > summary { display: flex; align-items: center; gap: 8px; padding: 7px 12px; font-size: 0.78rem; font-weight: 600; color: var(--muted); cursor: pointer; list-style: none; }
+.aic-toolrec > summary::-webkit-details-marker { display: none; }
+.aic-toolrec > summary svg { width: 13px; height: 13px; flex-shrink: 0; }
+.aic-toolrec > summary code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.75rem; color: var(--text); background: color-mix(in srgb, var(--text) 8%, transparent); border-radius: 6px; padding: 1px 6px; }
+.aic-toolrec > summary span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aic-toolrec > summary:hover { color: var(--text); }
+.aic-toolrec-body { padding: 2px 12px 10px; font-size: 0.78rem; line-height: 1.5; color: var(--muted); }
+.aic-toolrec-body p { margin: 8px 0 4px; }
+.aic-toolrec-query { font-size: 0.85rem; color: var(--text); font-style: italic; }
+.aic-toolrec-meta { font-size: 0.72rem; }
+.aic-toolrec-meta code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.72rem; color: var(--text); background: color-mix(in srgb, var(--text) 8%, transparent); border-radius: 6px; padding: 1px 6px; }
+.aic-toolrec-body pre { margin: 0; padding: 8px 10px; border-radius: 8px; background: color-mix(in srgb, var(--text) 5%, transparent); white-space: pre-wrap; word-break: break-word; max-height: 220px; overflow-y: auto; font-size: 0.74rem; }
+
+/* ── Chart-grounded RAG (Phase 2): citation chips, disclosure panel, model notice ── */
+.rag-cite-chip {
+  display: inline-block;
+  margin: 0 2px;
+  padding: 1px 7px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent, #4da3ff) 12%, transparent);
+  color: var(--text);
+  font-size: 0.75em;
+  font-weight: 600;
+  cursor: pointer;
+  vertical-align: baseline;
+}
+.rag-cite-chip:hover {
+  background: color-mix(in srgb, var(--accent, #4da3ff) 22%, transparent);
+}
+/* Section-grounded citation quote: the model's verbatim quote stays
+   visible next to the chip. <q> adds quotation marks; keep it inline so
+   it flows with the surrounding sentence. */
+.aic-cite-quote {
+  font-style: italic;
+  color: var(--muted);
+  quotes: "“" "”" "‘" "’";
+}
+/* Citation navigation target flash: the chart section briefly highlights
+   when a citation chip is clicked. */
+.aic-flash-section {
+  animation: aic-flash-section 1.6s ease-out;
+  border-radius: 8px;
+}
+@keyframes aic-flash-section {
+  0%, 30% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #4da3ff) 65%, transparent); background: color-mix(in srgb, var(--accent, #4da3ff) 10%, transparent); }
+  100% { box-shadow: none; background: transparent; }
+}
+.rag-notice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  color: var(--muted, #6b7280);
+}
+.rag-status--busy { color: var(--text, #111827); }
+
 /* Sample Notes chart sections: tabs, tables, imaging reports (2026-10-01) */
 .sample-note-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
 .sample-note-tab { border: 1px solid var(--line); background: var(--surface-subtle); border-radius: 999px; padding: 4px 12px; font-size: 0.8rem; cursor: pointer; }
@@ -13252,3 +13956,12 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .dc-none { font-size: 14px; }
 .dc-foot { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 10px; font-size: 12px; color: var(--muted); display: grid; gap: 4px; }
 .dc-foot p { margin: 0; }
+
+/* Sample Notes "Try with this chart" coverage (2026-10-01) */
+.sample-note-coverage { background: var(--surface-subtle); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.sample-note-coverage-title { font-size: 0.8rem; font-weight: 700; color: var(--accent); }
+.sample-note-coverage-group { display: flex; flex-direction: column; gap: 4px; }
+.sample-note-coverage-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+.sample-note-coverage-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.sample-note-tag { background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 600; }
+.sample-note-coverage-list { margin: 0; padding-left: 18px; font-size: 0.82rem; line-height: 1.5; }

@@ -278,30 +278,6 @@ const VITAL_PATTERNS = [
       return `${value}`;
     }
   },
-  {
-    name: "Height",
-    // Height in cm is the review convention (mirrors the Weight entry, which
-    // normalizes to kg at the boundary). Accepts "160 cm", "63 in",
-    // "5' 3"", "5 ft 3 in", and "5 ft"; inches/feet convert to cm.
-    regex: vitalPattern(
-      String.raw`Ht|Height`,
-      String.raw`\d{1,2}'\s*\d{1,2}(?:\.\d+)?"?|\d+(?:\.\d+)?\s*(?:cm|centimeters?|in(?:ch(?:es)?)?|"|ft|feet|')`
-    ),
-    format: (m) => {
-      const round1 = (value) => Math.round(value * 10) / 10;
-      const feetInches = m[1].match(/^(\d{1,2})'\s*(\d{1,2}(?:\.\d+)?)"?$/);
-      if (feetInches) {
-        return `${round1((Number(feetInches[1]) * 12 + Number(feetInches[2])) * 2.54)} cm`;
-      }
-      const parts = m[1].match(/^(\d+(?:\.\d+)?)\s*(cm|centimeters?|in(?:ch(?:es)?)?|"|ft|feet|')$/i);
-      if (!parts) return m[1];
-      const value = Number(parts[1]);
-      const unit = parts[2].toLowerCase();
-      if (unit.startsWith("cm") || unit.startsWith("centi")) return `${value} cm`;
-      const inches = unit.startsWith("f") || unit === "'" ? value * 12 : value;
-      return `${round1(inches * 2.54)} cm`;
-    }
-  },
   { name: "Pain", regex: vitalPattern(String.raw`Pain`, String.raw`(\d{1,2})\s*\/\s*10`), format: (m) => m[2] }
 ];
 

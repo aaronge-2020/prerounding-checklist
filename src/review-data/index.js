@@ -451,7 +451,7 @@ function compactLaboratoryTrend(result) {
   });
   const latest = observations.at(-1);
   const flag = latest?.flag ? ` [${latest.flag}]` : latest?.status && !["normal", "unknown"].includes(latest.status) ? ` [${latest.status}]` : "";
-  const baselineValue = joinValueUnit(clean(result?.baseline?.value), clean(result?.baseline?.unit));
+  const baselineValue = [clean(result?.baseline?.value), clean(result?.baseline?.unit)].filter(Boolean).join(" ");
   const baseline = baselineValue
     ? ` (baseline ${baselineValue}${clean(result?.baseline?.dateLabel) ? ` · ${clean(result?.baseline?.dateLabel)}` : ""})`
     : "";

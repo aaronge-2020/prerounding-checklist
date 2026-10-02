@@ -36,7 +36,7 @@ const LDA_START_REGEX = /^(?:patient\s+)?lines[\s/]+drains[\s/]+airways|active\s
 // "The patient needs...". Used to tell a bare numbered recommendation list
 // ("1. Continue with vancomycin...") apart from a problem list whose items
 // carry their own titles ("1. Diabetes mellitus type 1: We will...").
-export const ACTION_LEAD = /^(?:continue|resume|re-?start|begin|stop|hold|withhold|discontinue|d\/c|wean|titrate|increase|decrease|adjust|monitor|watch|check|obtain|get|order|send|repeat|recheck|follow|reassess|re-?evaluate|evaluate|assess|consult|refer|recommend|advise|counsel|educate|encourage|discuss|review|ensure|provide|give|administer|prescribe|add|change|switch|maintain|avoid|consider|plan|schedule|arrange|admit|discharge|transfer|agree|we\s+will|i\s+will|the\s+patient\s+(?:needs|requires|should|will))\b/i;
+const ACTION_LEAD = /^(?:continue|resume|re-?start|begin|stop|hold|withhold|discontinue|d\/c|wean|titrate|increase|decrease|adjust|monitor|watch|check|obtain|get|order|send|repeat|recheck|follow|reassess|re-?evaluate|evaluate|assess|consult|refer|recommend|advise|counsel|educate|encourage|discuss|review|ensure|provide|give|administer|prescribe|add|change|switch|maintain|avoid|consider|plan|schedule|arrange|admit|discharge|transfer|agree|we\s+will|i\s+will|the\s+patient\s+(?:needs|requires|should|will))\b/i;
 
 // Labels that look like "Title: ..." but are not problems ("Differential:
 // ...", "Assessment: ...").
@@ -47,19 +47,8 @@ export const NON_PROBLEM_LABEL = /^(?:differential|differentials|ddx|assessment|
 const SIGNOFF_LEAD = /^(?:as\s+always[\s,]|we\s+(?:greatly\s+)?appreciate|thank\s+you\s+for|please\s+(?:do\s+not\s+hesitate|feel\s+free|contact)|sincerely|respectfully)[\s,]/i;
 
 function firstSentence(text) {
-  const src = String(text || "");
-  // A period inside a single-letter run ("t.i.d.", "q.i.d.", "b.i.d.") is a
-  // dosing abbreviation, not a sentence boundary. Find the first terminator
-  // outside such runs.
-  for (let i = 0; i < src.length; i++) {
-    const ch = src[i];
-    if (ch !== "." && ch !== "!" && ch !== "?") continue;
-    const before = src.slice(0, i);
-    const after = src.slice(i + 1);
-    if (/[a-z]$/i.test(before) && /^[a-z]\b/i.test(after)) continue;
-    return src.slice(0, i + 1).trim();
-  }
-  return src.trim();
+  const match = String(text || "").match(/^[^.!?]+[.!?]/);
+  return (match ? match[0] : String(text || "")).trim();
 }
 
 /** Drops professional sign-off paragraphs from plan/consult text. */
@@ -106,25 +95,8 @@ export function isBareActionItem(itemText) {
   if (!text) return true;
   const colon = text.match(/^([^:]{3,60}):\s*\S/);
   if (colon && !NON_PROBLEM_LABEL.test(colon[1].trim())) return false;
-  // "Upper GI bleed on apixaban — hold apixaban, ..." — an inline dash
-  // splits a problem title from its plan (mirrors parseClinicalPlanProblems).
-  // An action-led left side ("Continue heparin — monitor PTT") is still a
-  // bare action.
-  const dashSplit = text.match(/^(.*?)\s+[—–-]\s+(\S[\s\S]*)$/);
-  if (dashSplit && dashSplit[1].trim().length >= 3 && !ACTION_LEAD.test(dashSplit[1].trim())) return false;
-  let first = firstSentence(text);
-  let rest = text.slice(first.length).trim();
-  if (!rest) {
-    // No sentence terminator (common when actions are dash bullets under the
-    // title): fall back to the first line as the title candidate so
-    // "Viral syndrome, resolving\n- Supportive care" is seen as a titled
-    // problem, not a bare action.
-    const newline = text.indexOf("\n");
-    if (newline > 0) {
-      first = text.slice(0, newline).trim();
-      rest = text.slice(newline + 1).trim();
-    }
-  }
+  const first = firstSentence(text);
+  const rest = text.slice(first.length).trim();
   if (rest && first.length <= 60 && !ACTION_LEAD.test(first)) return false;
   return true;
 }

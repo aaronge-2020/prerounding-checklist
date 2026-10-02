@@ -44,13 +44,14 @@ export function createSettingsPresentation({ escapeHtml }) {
             </div>
           </div>
           <dl class="data-flow-list">
-            <div><dt>Patient records and notes</dt><dd>Never leave this browser. Stored encrypted in the vault on this device. Vault backups are files you save yourself, and they stay encrypted.</dd></div>
+            <div><dt>Patient records, notes, and checklists</dt><dd>Never leave this browser. Stored encrypted in the vault on this device. Vault backups are files you save yourself, and they stay encrypted.</dd></div>
             <div><dt>Calculators (Models tab)</dt><dd>Run entirely on-device. No network.</dd></div>
             <div><dt>De-identification</dt><dd>Runs on-device after a one-time model download from Hugging Face (pinned files, started only by you). Nothing is sent anywhere during redaction.</dd></div>
             <div><dt>On-device chat and note parsing</dt><dd>Run on-device after a one-time model download. Nothing leaves the browser.</dd></div>
             <div><dt>OpenAI features (formatting, per-problem plans, ChatGPT chat)</dt><dd>Sent to api.openai.com using your saved key. Text is de-identified on-device first, and ChatGPT chat shows you exactly what will be sent for your review before anything transmits. Blocked while offline mode is on.</dd></div>
             <div><dt>OpenEvidence / Doximity buttons</dt><dd>These open those sites in a new tab (they need a connection to load). The app sends them nothing — you paste whatever you choose.</dd></div>
             <div><dt>Model downloads</dt><dd>One-time downloads from Hugging Face when you explicitly start them. Blocked while offline mode is on.</dd></div>
+            <div><dt>Drug lookups</dt><dd>When you search a drug name, only the name is sent to the FDA drug database (api.fda.gov) for reference information. Never patient context. Blocked while offline mode is on.</dd></div>
           </dl>
           <p class="muted settings-helper">No accounts, no sync, no analytics. If it is not listed above as leaving, it stays.</p>
           </section>
@@ -58,7 +59,7 @@ export function createSettingsPresentation({ escapeHtml }) {
           <div class="section-heading">
             <div>
               <h2>Bring your own OpenAI key</h2>
-              <p class="muted">Use your own key to generate per-problem assessment &amp; plans (differential, diagnostic and therapeutic plans with citations) from de-identified draft context, or to format a reviewed, de-identified OpenEvidence draft.</p>
+              <p class="muted">Use your own key to generate per-problem assessment &amp; plans (differential, diagnostic and therapeutic plans with citations) from de-identified draft context, or to chat with ChatGPT about de-identified context you review before sending.</p>
             </div>
           </div>
           <div class="notice settings-security-note">
@@ -79,7 +80,6 @@ export function createSettingsPresentation({ escapeHtml }) {
             <button class="button--primary" type="button" data-action="save-openai-byok">Save encrypted key</button>
             <button class="button--quiet" type="button" data-action="clear-openai-byok" ${apiKeySaved ? "" : "disabled"}>Remove saved key</button>
           </div>
-          <p class="muted settings-helper">Without a saved key, AI generation falls back to the copy-and-paste ChatGPT formatter prompt.</p>
           </section>
 
           <section class="panel settings-panel settings-panel--backup">

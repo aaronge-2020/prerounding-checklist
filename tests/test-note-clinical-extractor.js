@@ -64,49 +64,6 @@ import { clinicalDisplayModelFromPromptText } from "../src/patient-context/struc
   assert.equal(extractNoteVitals(""), "");
 }
 
-// Vitals: Epic "Most Recent Value" tab-delimited vitals block (BP/Pulse/Resp/
-// Temp/SpO2/Weight/Height with "as of" timestamps, abnormal flags, missing
-// "—" cells, and metric/imperial parentheticals). Height is captured.
-{
-  const epic = [
-    "Most Recent Value\t9/30/2026",
-    "1700\t9/30/2026",
-    "1601\t9/30/2026",
-    "1521\t",
-    "",
-    "BP:\t95/60 Abnormal   as of 9/30/2026\t—\t—\t—",
-    "Pulse:\t95  as of 9/30/2026\t—\t—\t—",
-    "Resp:\t17  as of 9/30/2026\t17\t17\t17",
-    "Temp:\t36.9 °C (98.4 °F)  as of 9/30/2026\t—\t—\t—",
-    "Temp src:\tOral  as of 9/30/2026\t—\t—\t—",
-    "SpO2:\t94%  as of 9/30/2026\t—\t—\t—",
-    "Weight:\t77.1 kg (170 lb)  as of 9/23/2026\t—\t—\t—",
-    "Height:\t160 cm (5' 3\")  as of 9/23/2026\t—\t—\t—"
-  ].join("\n");
-  const vitals = extractNoteVitals(epic);
-  assert.equal(
-    vitals,
-    "Vitals\nBP 95/60; HR 95; Temp 36.9 °C; RR 17; SpO2 94; Weight 77.1; Height 160 cm",
-    `unexpected Epic vitals output: ${vitals}`
-  );
-  const model = clinicalDisplayModelFromPromptText("vital_signs", vitals);
-  assert.equal(model?.type, "vitals");
-  const byName = Object.fromEntries(
-    model.groups.flatMap((group) => group.rows).map((row) => [row.cells[1], row.cells[2]])
-  );
-  assert.equal(byName["Height"], "160", `height row missing: ${JSON.stringify(byName)}`);
-  const heightRow = model.groups.flatMap((group) => group.rows).find((row) => row.cells[1] === "Height");
-  const heightSeries = model.series.find((entry) => entry.name === "Height");
-  assert.equal(heightSeries?.unit, "cm", `height unit not cm: ${JSON.stringify(heightSeries)}`);
-  assert.equal(heightRow?.unitUnmarked, false, "labeled-cm height is not unit-unmarked");
-
-  // Height unit variants normalize to cm at the boundary.
-  assert.ok(extractNoteVitals("Ht 5'3\"").includes("Height 160 cm"), extractNoteVitals("Ht 5'3\""));
-  assert.ok(extractNoteVitals("Height: 63 in").includes("Height 160 cm"), extractNoteVitals("Height: 63 in"));
-  assert.ok(extractNoteVitals("Height 178 cm").includes("Height 178 cm"), extractNoteVitals("Height 178 cm"));
-  assert.ok(extractNoteVitals("Ht: 170 centimeters").includes("Height 170 cm"), extractNoteVitals("Ht: 170 centimeters"));
-}
-
 // Labs: narrative lab lines; flags; rpt/pending placeholders.
 {
   const labs = extractNoteLabs(

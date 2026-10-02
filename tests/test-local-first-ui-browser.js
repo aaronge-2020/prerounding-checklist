@@ -309,7 +309,7 @@ try {
   await page.click('[data-view-target="prompts"]');
   await page.waitForSelector("#promptOutputHighlighted");
   assert.equal(await page.locator('#promptTaskSelect option', { hasText: "Discharge summary" }).count(), 0, "deleting a Settings guideline must remove its matching prompt option");
-  await page.selectOption("#promptTaskSelect", "daily_progress_note");
+  await page.selectOption("#promptTaskSelect", "preround_bedside_exam");
   const selectedDayPreviewToken = page.locator('#promptOutputHighlighted button.var-fill[data-token="@selected-day"]');
   assert.equal(await selectedDayPreviewToken.count(), 1, "selected-day must render as one clickable preview target");
   await page.evaluate(() => { document.querySelector("#promptOutputHighlighted").scrollTop = 0; });
@@ -329,9 +329,7 @@ try {
     return view.scrollTop;
   });
   assert.equal(noteSectionScroll > 0, true, "the Hospital Stay route must be scrollable for the navigation regression test");
-  // DOM .click() avoids Playwright's auto-scroll-into-view, so the scroll
-  // position we set is the position the handler actually sees.
-  await page.evaluate(() => document.querySelector('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="history_of_present_illness"]').click());
+  await page.locator('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="history_of_present_illness"]').click();
   await page.waitForSelector('[data-structured-note-scope="admission"][data-structured-note-field="history_of_present_illness"]');
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   assert.equal(
@@ -339,7 +337,7 @@ try {
     noteSectionScroll,
     "choosing an HPI section must not move the Hospital Stay scroll position"
   );
-  await page.evaluate(() => document.querySelector('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="one_liner"]').click());
+  await page.locator('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="one_liner"]').first().click();
   await page.waitForSelector('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]');
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   assert.equal(

@@ -80,19 +80,13 @@ assert.equal(Object.keys(emptyPatientVariables).some((token) => /@admission-othe
   assert.doesNotMatch(admissionSelected["@selected-day-physical-exam"], /Current lungs clear/);
 }
 
-// Legacy checklist-only records are ignored: the answers stay decryptable in
-// older vaults but no longer feed prompts. The dedicated exam note is the
-// surviving selected-day exam source.
+// Legacy checklist-only records still resolve until their packet is edited.
 {
   const variables = buildPromptVariableMap({
-    patient: patientWithDay({
-      answers: { gen_appearance: { selected: ["Normal"], note: "" } },
-      openEvidenceExamNote: { text: "HD1: lungs clear to auscultation." }
-    }),
+    patient: patientWithDay({ answers: { gen_appearance: { selected: ["Normal"], note: "" } } }),
     selectedDayId: "day1"
   });
-  assert.match(variables["@selected-day-physical-exam"], /HD1: lungs clear to auscultation\./);
-  assert.doesNotMatch(variables["@selected-day-physical-exam"], /General appearance/);
+  assert.match(variables["@selected-day-physical-exam"], /General appearance[\s\S]*Answer: Normal/);
 }
 
 assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.initial_admission_rounds, /@admission-physical-exam/);

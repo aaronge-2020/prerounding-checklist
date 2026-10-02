@@ -51,28 +51,13 @@ const pageErrors = [];
 page.on("pageerror", (error) => pageErrors.push(error.message));
 
 async function addDailySource(kind, text, expectedCount) {
+  console.log("selecting kind:", kind, "buttons:", await page.locator('[data-action="select-daily-source-kind"]').count());
   await page.click(`[data-action="select-daily-source-kind"][data-source-kind="${kind}"]`);
-  if (kind === "primary_note") {
-    // Primary notes use the structured paste composer, not #dailySourceDraft.
-    // They save to the packet (not as source-capture-editors).
-    await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
-    await page.fill('[data-structured-note-paste][data-structured-note-scope="daily"]', text);
-    await page.click('[data-action="review-structured-note-sections"][data-note-scope="daily"]');
-    // Redaction review may appear for content with PHI; confirm if it does.
-    await page.waitForTimeout(2000);
-    const confirmBtn = page.locator('.section-editor.is-expanded [data-action="confirm-all-section-redactions"]');
-    if (await confirmBtn.count()) {
-      await confirmBtn.click();
-      await page.waitForTimeout(1000);
-    }
-    await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
-    await page.waitForFunction(() => /Primary-team note saved/.test(document.querySelector("#statusLine")?.textContent || ""), { timeout: 30000 });
-  } else {
-    await page.waitForSelector("#dailySourceDraft", { timeout: 10000 });
-    await page.fill("#dailySourceDraft", text);
-    await page.click('[data-action="add-daily-source"]');
-    await page.waitForFunction((count) => document.querySelectorAll("#dailySources .source-capture-editor").length === count, expectedCount);
-  }
+  console.log("clicked; draft count:", await page.locator("#dailySourceDraft").count());
+  await page.waitForSelector("#dailySourceDraft", { timeout: 10000 }).catch(async () => console.log("draft never appeared; composer count:", await page.locator(".source-capture-composer").count()));
+  await page.fill("#dailySourceDraft", text);
+  await page.click('[data-action="add-daily-source"]');
+  await page.waitForFunction((count) => document.querySelectorAll("#dailySources .source-capture-editor").length === count, expectedCount);
   await page.waitForTimeout(800);
 }
 
@@ -97,27 +82,21 @@ try {
 
   // P6: plain-line labs paste.
   await addDailySource("laboratory_results", plainLineLabs, 1);
-  // P1: two-column A&P primary note. (Primary notes save to the packet, not
-  // as source-capture-editors, so the editor count stays at 1.)
-  await addDailySource("primary_note", twoColumnNote, 1);
+  // P1: two-column A&P primary note.
+  await addDailySource("primary_note", twoColumnNote, 2);
+  // P2/P3: markdown A&P table primary note.
+  await addDailySource("primary_note", markdownTableNote, 3);
 
   // Pending shadowing: day 2 actuals...
-  await addDailySource("laboratory_results", dayTwoLabs, 2);
+  await addDailySource("laboratory_results", dayTwoLabs, 4);
   // ...day 3 newer collection.
   await addDay("2026-09-20", "Hospital day 3");
   await addDailySource("laboratory_results", dayThreeLabs, 1);
-  // P2/P3: markdown A&P table primary note (on day 3 to avoid overwriting).
-  await addDailySource("primary_note", markdownTableNote, 1);
 
   // Open review.
   await page.click('[data-action="open-progress-note"]');
   await page.waitForSelector("#reviewContent .review-workspace", { timeout: 30000 });
   await page.waitForTimeout(1500);
-
-  // Select Hospital day 2 for the P1 pull (two-column note).
-  const day2Value = await page.locator('#reviewPacketSelect option').filter({ hasText: "Hospital day 2" }).getAttribute("value");
-  await page.selectOption("#reviewPacketSelect", day2Value);
-  await page.waitForTimeout(1000);
 
   // P6: plain-line labs became rows on the sheet.
   const sheetText = await page.locator(".review-data-panel").innerText();
@@ -153,13 +132,9 @@ try {
   console.log("PASS P1: two-column rows pulled as three problems");
 
   // P2/P3: pull the markdown table note too (adds two more problems).
-  // Switch to Hospital day 3 for the markdown note.
-  const day3Value = await page.locator('#reviewPacketSelect option').filter({ hasText: "Hospital day 3" }).getAttribute("value");
-  await page.selectOption("#reviewPacketSelect", day3Value);
-  await page.waitForTimeout(1000);
   const pulls = page.locator('[data-pull-section="plan"]');
-  await pulls.first().click();
-  await page.waitForFunction(() => document.querySelectorAll(".plan-problem-card").length >= 2, null, { timeout: 15000 });
+  await pulls.nth(1).click();
+  await page.waitForFunction(() => document.querySelectorAll(".plan-problem-card").length >= 5, null, { timeout: 15000 });
   const allProblems = (await page.locator(".plan-problem-card").allInnerTexts()).join("\n");
   for (const title of ["Upper GI bleed", "Hemorrhagic shock"]) {
     assert.ok(allProblems.includes(title), `P2/P3: pulled problem must include "${title}"`);

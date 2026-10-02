@@ -27,8 +27,7 @@ function patientWithVitals(text) {
   const temp = index.vitals.find((candidate) => /temperature/i.test(candidate.name));
   assert.equal(temp.unit, "°C");
   assert.equal(temp.unitUnmarked, false);
-  // U16: no space before ° in the joined value ("37°C"), matching clinical convention.
-  assert.ok(/37 ?°C/.test(temp.insertionText), `explicit unit in insertion text: ${temp.insertionText}`);
+  assert.ok(/37 °C/.test(temp.insertionText), `explicit unit in insertion text: ${temp.insertionText}`);
 }
 
 // 3. Confirming a unit via temperatureUnits override resolves the candidate:
@@ -43,7 +42,7 @@ function patientWithVitals(text) {
   assert.equal(tempAfter.id, tempBefore.id, "candidate id is stable across confirmation");
   assert.equal(tempAfter.unit, "°F");
   assert.equal(tempAfter.unitUnmarked, false);
-  assert.ok(/98\.6 ?°F/.test(tempAfter.insertionText), `confirmed unit in insertion text: ${tempAfter.insertionText}`);
+  assert.ok(/98\.6 °F/.test(tempAfter.insertionText), `confirmed unit in insertion text: ${tempAfter.insertionText}`);
   assert.notEqual(tempAfter.fingerprint, tempBefore.fingerprint, "fingerprint rotates after unit confirmation");
 }
 

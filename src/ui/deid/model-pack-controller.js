@@ -11,13 +11,13 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../../patient-context/deid-client.js?v=20260929-deid-r2";
+} from "../../patient-context/deid-client.js?v=20260929-deid-clinicale5";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../../patient-context/deid-model-options.js?v=20260921-medication-card-v4";
+} from "../../patient-context/deid-model-options.js?v=20260930-deid-trackd";
 import {
   ensureModelPackServiceWorker,
   getModelPackState,

@@ -65,11 +65,6 @@ try {
   console.log("PASS: confirmation toast/status shown");
 
   // The temperature should now appear with °F in the vitals area.
-  // Re-open the review to rebuild the draft with the confirmed unit.
-  await page.click('[data-view-target="daily"]');
-  await page.waitForTimeout(500);
-  await page.click('[data-action="open-progress-note"]');
-  await page.waitForSelector("#reviewContent .review-workspace", { timeout: 30000 });
   await page.waitForTimeout(1000);
   const vitalRows = await page.locator(".lab-row.vital-row").allInnerTexts();
   const tempText = vitalRows.join(" | ");

@@ -4,10 +4,9 @@ import { CONTEXT_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRol
 import { migrateLegacyDailySections, normalizeDiagnosticResultCategory, normalizeSourceCapture, normalizeSourceKindForScope } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
 import { normalizePrimaryTeamNote } from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
 import { normalizeLabBaselines } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
-import { normalizeSavedScores } from "../../clinical-scores/saved-scores.js";
-import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
+import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
 
-export const VAULT_SCHEMA_VERSION = 6;
+export const VAULT_SCHEMA_VERSION = 5;
 
 export const DEFAULT_CONTEXT_SECTION_LABELS = CONTEXT_PACKET_ROLES.map(({ label }) => label);
 
@@ -30,7 +29,7 @@ export function createEmptyVaultState({ now = timestampNow } = {}) {
   };
 }
 
-export function createTextSection(label, { id = createLocalId("section"), text = "", role = "", scope = "context", sourceKind = "other_chart_text", resultCategory = "", resultDate = "", resultContext = "", now = timestampNow } = {}) {
+export function createTextSection(label, { id = createLocalId("section"), text = "", role = "", scope = "context", sourceKind = "other_chart_text", resultCategory = "", resultDate = "", resultContext = "", deidentificationSkipped = false, now = timestampNow } = {}) {
   const timestamp = now();
   const normalizedSourceKind = normalizeSourceKindForScope(scope, sourceKind);
   return {
@@ -43,6 +42,7 @@ export function createTextSection(label, { id = createLocalId("section"), text =
     resultContext: normalizedSourceKind === "results" ? String(resultContext || "") : "",
     deidentifiedText: String(text || ""),
     residualWarnings: [],
+    deidentificationSkipped: deidentificationSkipped === true,
     createdAt: timestamp,
     updatedAt: timestamp
   };
@@ -71,7 +71,6 @@ export function createPatientRecord(
     contextSections,
     days,
     labBaselines: {},
-    savedScores: [],
     archivedAt: "",
     createdAt: timestamp,
     updatedAt: timestamp
@@ -112,10 +111,10 @@ export function normalizeDay(day, index = 0, { now = timestampNow } = {}) {
     // not carried forward: old vaults still decrypt because normalization
     // only reads known fields, but new day records ignore them entirely.
     openEvidenceOutputs: day?.openEvidenceOutputs && typeof day.openEvidenceOutputs === "object" ? day.openEvidenceOutputs : {},
-    // A de-identified OpenEvidence exam note the user pasted in as
-    // physical-exam source material like `sections`, never AI-generated
-    // output, so persisting it is consistent with "no OpenEvidence output
-    // in the vault."
+    // A de-identified OpenEvidence exam note the user pasted in as a
+    // physical-exam alternative to the checklist - source material like
+    // `sections`, never AI-generated output, so persisting it is consistent
+    // with "no OpenEvidence output in the vault."
     openEvidenceExamNote: day?.openEvidenceExamNote && typeof day.openEvidenceExamNote === "object"
       ? {
           text: String(day.openEvidenceExamNote.text || ""),
@@ -176,7 +175,6 @@ export function normalizePatient(patient, index = 0, { now = timestampNow } = {}
     admissionPrimaryTeamNote: normalizeOptionalPrimaryTeamNote(patient?.admissionPrimaryTeamNote, NOTE_TYPES.H_AND_P, { now, patientId: id }),
     noteDrafts: normalizeSavedNoteDrafts(patient?.noteDrafts, { ...patient, id }, { now }),
     labBaselines: normalizeLabBaselines(patient?.labBaselines),
-    savedScores: normalizeSavedScores(patient?.savedScores),
     temperatureUnits: normalizeTemperatureUnits(patient?.temperatureUnits),
     days: Array.isArray(patient?.days)
       ? patient.days.map((day, dayIndex) => {

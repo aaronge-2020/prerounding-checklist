@@ -5,6 +5,10 @@
 // Privacy: the caller must supply ONLY de-identified text. This module never
 // sees raw chart data; it formats whatever context strings it is given.
 
+import { resolveMedicationConcepts } from "../patient-context/rxnorm-resolve.js?v=20260929-rxnorm-official-v3";
+import { buildLabelExcerptsBlock } from "../patient-context/dailymed.js?v=20260929-dailymed-v1";
+import { lookupInteraction } from "../patient-context/ddi-query.js?v=20260929-ddi-query-v1";
+
 export const AP_RESPONSE_SCHEMA = {
   type: "object",
   additionalProperties: false,
@@ -239,6 +243,97 @@ function planLines(text) {
 // the note-level assessment and compact objective data — never other
 // problems, never the full draft. The whole prompt is shown to the student
 // in an editable textarea before anything is sent.
+// Deterministic medication context for the per-problem consult.
+// Resolves each medication order string to RxNorm concepts (ingredient-level
+// RxCUIs via src/patient-context/rxnorm-resolve.js — offline, never throws)
+// and renders one line per concept:
+//
+//   MEDICATION CONTEXT (RxNorm-coded, deterministic):
+//   - Lipitor 20 mg PO daily → atorvastatin (RxCUI 83367) — 20 mg, PO
+//
+// Combination products emit one line per ingredient. Medications that do not
+// resolve are NEVER dropped: each one renders a visible safety flag
+// ("could not be coded to RxNorm — NOT checked for interactions") so the
+// absence of a result is never presented as evidence of safety. Unresolved
+// flags sort BEFORE resolved lines so the 4,000-character truncation cannot
+// hide them; when nothing at all is provided the block is omitted entirely.
+// The block contains only coded concepts and public terminology (no PHI), and
+// it is injected into the prompt BEFORE the student reviews the exact outbound
+// text in the confirm modal — the existing review gate stays authoritative.
+//
+// EXTENSION CONTRACT (append-only; no dead code shipped):
+// - Interaction flags (DDInter bundle, download in progress) append under an
+//   "INTERACTION FLAGS:" subheader as:
+//     ! <severity>: <drug A> + <drug B> — <mechanism / management>
+// - DailyMed label excerpts (src/patient-context/dailymed.js) append under a
+//   "LABEL EXCERPTS:" subheader as:
+//     • <ingredient>: <section> — <excerpt> (<citation>)
+//   Label data is fetched on demand by the UI via fetchLabelSections() and
+//   passed in as already-retrieved, de-identified labelData — this module
+//   never touches the network; the block stays deterministic.
+export function buildMedicationContextBlock(medications = [], labelData = []) {
+  const seen = new Set();
+  const resolvedLines = [];
+  const unresolvedLines = [];
+  const resolvedRxcuis = []; // For DDInter pair checking
+  const list = Array.isArray(medications) ? medications : [];
+  for (const entry of list) {
+    const text = typeof entry === "string" ? entry : String(entry?.orderText ?? entry?.name ?? "");
+    if (!text.trim()) continue;
+    let concepts = [];
+    try {
+      concepts = resolveMedicationConcepts(text) || [];
+    } catch {
+      concepts = [];
+    }
+    const valid = concepts.filter(
+      (concept) => String(concept?.rxcui || "").trim() && String(concept?.name || "").trim()
+    );
+    if (!valid.length) {
+      // Visible safety flag: this medication was NOT checked for interactions.
+      // Unresolved lines sort first so truncation can never hide them.
+      unresolvedLines.push(
+        `- ${clean(text, 120)} \u2192 could not be coded to RxNorm \u2014 NOT checked for interactions`
+      );
+      continue;
+    }
+    for (const concept of valid) {
+      const rxcui = String(concept.rxcui).trim();
+      const name = String(concept.name).trim();
+      const detail = [concept?.strength, concept?.doseForm, concept?.route]
+        .map((part) => String(part || "").trim())
+        .filter(Boolean)
+        .join(", ");
+      const dedupeKey = `${rxcui}|${detail}`;
+      if (seen.has(dedupeKey)) continue;
+      seen.add(dedupeKey);
+      resolvedLines.push(`- ${clean(text, 120)} \u2192 ${name} (RxCUI ${rxcui})${detail ? ` \u2014 ${detail}` : ""}`);
+      if (!resolvedRxcuis.includes(rxcui)) resolvedRxcuis.push(rxcui);
+    }
+  }
+  // DDInter interaction checking: all pairs of resolved RxCUIs.
+  const interactionLines = [];
+  for (let i = 0; i < resolvedRxcuis.length; i++) {
+    for (let j = i + 1; j < resolvedRxcuis.length; j++) {
+      let hit = null;
+      try { hit = lookupInteraction(resolvedRxcuis[i], resolvedRxcuis[j]); } catch { hit = null; }
+      if (hit) {
+        const names = hit.drugNames.length ? hit.drugNames.join(" + ") : `${hit.rxcuiA} + ${hit.rxcuiB}`;
+        interactionLines.push(`- \u26a0\ufe0f ${names}: ${hit.severity} interaction (DDInter 2.0)`);
+      }
+    }
+  }
+  const lines = [...unresolvedLines, ...resolvedLines];
+  if (interactionLines.length) {
+    lines.push("", "DRUG-DRUG INTERACTIONS (DDInter 2.0, deterministic):", ...interactionLines);
+  }
+  if (!lines.length && !labelData?.length) return "";
+  const block = clean(`MEDICATION CONTEXT (RxNorm-coded, deterministic):\n${lines.join("\n")}`, 8000);
+  if (!lines.length) return buildLabelExcerptsBlock(labelData);
+  const excerpts = buildLabelExcerptsBlock(labelData);
+  return excerpts ? `${block}\n\n${excerpts}` : block;
+}
+
 export function buildApRevisionPrompt({
   problem,
   keyContext,
@@ -249,7 +344,9 @@ export function buildApRevisionPrompt({
   therapeuticPlan,
   assessment,
   vitals,
-  keyLabs
+  keyLabs,
+  medications,
+  labelData
 } = {}) {
   const problemName = clean(problem, 300) || "(problem not named)";
   const context = clean(keyContext, 1500);
@@ -271,6 +368,7 @@ export function buildApRevisionPrompt({
   const objectiveBits = [];
   if (clean(vitals, 1500)) objectiveBits.push(`Vitals: ${clean(vitals, 1500)}`);
   if (clean(keyLabs, 3000)) objectiveBits.push(`Key labs / diagnostics: ${clean(keyLabs, 3000)}`);
+  const medicationBlock = buildMedicationContextBlock(medications, labelData);
 
   return `You are an expert clinical assistant helping a medical student refine the assessment and plan for ONE clinical problem. All patient context below is DE-IDENTIFIED. Base every suggestion on the context given; do not invent patient data.
 
@@ -292,6 +390,7 @@ ${txLines.length ? txLines.map((line) => `- ${line}`).join("\n") : "(none writte
 STUDENT'S ASSESSMENT SYNTHESIS (note-level):
 ${assessmentText || "(none written yet)"}
 ${objectiveBits.length ? `\nDE-IDENTIFIED OBJECTIVE DATA:\n${objectiveBits.join("\n")}\n` : ""}
+${medicationBlock ? `\n${medicationBlock}\n` : ""}
 TASK — return suggestions as a JSON object with a "suggestions" array. Each suggestion revises ONE thing:
 
 - "target": one of "differential", "diagnostic_plan", "therapeutic_plan".
