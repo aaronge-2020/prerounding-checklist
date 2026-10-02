@@ -378,6 +378,11 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
           if (rect.width === 0 || rect.height === 0) return;
           const cx = rect.left + rect.width / 2;
           const cy = rect.top + rect.height / 2;
+          // Skip the obscured check if the target is off-screen (not yet
+          // scrolled into view). elementFromPoint with off-screen coordinates
+          // returns null/wrong elements, which would cause us to lift all
+          // ancestors to body and break the dim overlay.
+          if (cx < 0 || cx >= window.innerWidth || cy < 0 || cy >= window.innerHeight) return;
           const topEl = document.elementFromPoint(cx, cy);
           if (topEl && (topEl === t || t.contains(topEl))) return; // Already on top
           // Target is obscured: lift ancestors one by one until visible.
