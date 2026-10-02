@@ -4,7 +4,7 @@
 import {
   AP_SUGGESTION_SCHEMA,
   parseApSuggestions
-} from "../ai/ap-generator.js?v=20260929-ap-medcontext-v1";
+} from "../ai/ap-generator.js?v=20260928-ap-suggestions-v1";
 import { DEFAULT_OPENAI_WORKUP_MODEL, openAiWorkupModelOption } from "../app/preferences.js";
 import { requestOpenAiStructuredJson } from "./openai-client.js";
 

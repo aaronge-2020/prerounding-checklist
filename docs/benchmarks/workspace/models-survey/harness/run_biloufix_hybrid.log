@@ -1,6 +1,0 @@
-loaded 1000 sampled texts for model onnx-community/deid_bert_i2b2-ONNX (batch=10)
-model (re)loaded: {"ms":12607.760000000708,"modelId":"onnx-community/deid_bert_i2b2-ONNX"}
-deid-bert-i2b2-biloufix/hybrid: resuming with 920 docs already done
-deid-bert-i2b2-biloufix/hybrid: 1000/1000 (95s)
-deid-bert-i2b2-biloufix/hybrid done in 95s -> raw_deid-bert-i2b2-biloufix_hybrid.json
-all done

@@ -10,10 +10,6 @@ export const DEFAULT_FALLBACK_MODEL_ID = "rtrigoso/bert-small-pii-detection-ONNX
 export const OPENMED_MODEL_ID = "Wismut/openmed-onnx/large";
 export const OPENMED_BASE_MODEL_ID = "Wismut/openmed-onnx/base";
 export const OPENMED_SMALL_MODEL_ID = "Wismut/openmed-onnx/small";
-export const CLINICALE5_SMALL_MODEL_ID = "OpenMed/OpenMed-PII-ClinicalE5-Small-33M-v1-onnx-android";
-// Community q8 ONNX export of obi/deid_roberta_i2b2 (i2b2 2014). Pinned revision;
-// browser inference never resolves a mutable remote `main` revision.
-export const ROBERTA_I2B2_Q8_MODEL_ID = "thinkingface/deid_roberta_i2b2_q";
 export const MULTILANG_PII_MODEL_ID = "onnx-community/multilang-pii-ner-ONNX";
 export const I2B2_CLINICALBERT_MODEL_ID = "onnx-community/deid_bert_i2b2-ONNX";
 export const DEFAULT_DTYPE = "q8";
@@ -29,7 +25,7 @@ export const MODEL_PROFILES = {
     id: DEFAULT_PRIMARY_MODEL_ID,
     mobileFeasible: false,
     expectedQuantizedBytes: 109651017,
-    notes: "Bundled clinical deidentifier; retained as a selectable fallback after the 2026-09-29 benchmark selected the i2b2 model as default."
+    notes: "Clinical deidentifier primary; larger, but selected by the current benchmark gate."
   },
   openmed: {
     id: OPENMED_MODEL_ID,
@@ -49,12 +45,6 @@ export const MODEL_PROFILES = {
     expectedQuantizedBytes: 171750792,
     notes: "Direct ONNX export of OpenMed SuperClinical Small (44M). Its int8 export is the explicit CPU/WASM fallback for older devices."
   },
-  clinicalE5Small: {
-    id: CLINICALE5_SMALL_MODEL_ID,
-    mobileFeasible: true,
-    expectedQuantizedBytes: 69638018,
-    notes: "OpenMed-PII ClinicalE5 Small (33M) int8. Round-2 benchmark winner (F1 0.672 on 1,000 synthetic texts, strict exact-span): highest recall, 390 ms/doc median, 67 MB download. Default browser model since 2026-09-29."
-  },
   multilang: {
     id: MULTILANG_PII_MODEL_ID,
     mobileFeasible: false,
@@ -64,8 +54,8 @@ export const MODEL_PROFILES = {
   i2b2: {
     id: I2B2_CLINICALBERT_MODEL_ID,
     mobileFeasible: false,
-    expectedQuantizedBytes: 108507617,
-    notes: "ClinicalBERT fine-tuned on i2b2 2014 de-id; 11 HIPAA entity types. Default browser model since the 2026-09-29 benchmark; shipped config rewritten BILOU to BIOES for the vendored aggregator."
+    expectedQuantizedBytes: 109651017,
+    notes: "ClinicalBERT fine-tuned on i2b2 2014 de-id; 11 HIPAA entity types, BILOU tagging."
   },
   gliner: {
     id: GLINER_PII_MODEL_ID,

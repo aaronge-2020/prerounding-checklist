@@ -1,7 +1,0 @@
-session=warm base=http://127.0.0.1:8904/
-app booted
-vault unlocked
-de-identified 1 notes
-  note-1: HPI: [PATIENT NAME] is a 68-year-old woman (DOB [DOB], MRN [...
-wrote captures/warm.cdp.json (268 requests)
-EXIT=0

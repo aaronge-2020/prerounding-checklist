@@ -1,8 +1,0 @@
-[shard 0/2] 350 docs (dev set = 700)
-[shard 0] model loaded in 13.3s
-[shard 0] resuming with 175 docs
-[shard 0] 200/350 (34s)
-[shard 0] 250/350 (84s)
-[shard 0] 300/350 (136s)
-[shard 0] 350/350 (217s)
-[shard 0] done in 217s

@@ -14,20 +14,19 @@ const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => 
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 }[char]));
 
-globalThis.CSS = { escape: (s) => String(s).replace(/[^a-zA-Z0-9_-]/g, (c) => "\\" + c) };
+// Minimal CSS.escape for the controller's attribute-selector escaping.
+globalThis.CSS = { escape: (value) => String(value ?? "").replace(/["\\]/g, "\\$&") };
 
 globalThis.document = {
   createElement: () => ({
     set innerHTML(value) { this._html = value; },
-    content: { querySelector: () => null },
-    addEventListener: () => {},
-    removeEventListener: () => {},
-    querySelector: () => null,
-    querySelectorAll: () => []
+    content: { querySelector: () => null }
   }),
+  // lab-autocomplete attaches a document-level click listener on render.
   addEventListener: () => {},
   removeEventListener: () => {},
-  querySelector: () => null
+  getElementById: () => null,
+  activeElement: null
 };
 
 const patient = {
@@ -66,7 +65,13 @@ Patient improving on antibiotics. Likely bacterial CAP.
   }]
 };
 
-const reviewContent = { innerHTML: "", querySelector: () => null, querySelectorAll: () => [], addEventListener: () => {}, removeEventListener: () => {} };
+const reviewContent = {
+  innerHTML: "",
+  querySelector: () => null,
+  // lab-autocomplete attaches input/keydown listeners to the review container.
+  addEventListener: () => {},
+  removeEventListener: () => {}
+};
 const app = {
   noteDraftSessions: new Map(),
   reviewPacketId: "day_one",

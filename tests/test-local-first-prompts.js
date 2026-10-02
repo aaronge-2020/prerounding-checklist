@@ -3,7 +3,6 @@ import { readFileSync } from "node:fs";
 import { createDailyRecord, upsertDay } from "../src/daily-updates/days.js";
 import { createPatientRecord } from "../src/app/state/vault.js";
 import {
-  buildChecklistRefinementPrompt,
   buildDailyProgressPrompt,
   buildInitialAdmissionPrompt,
   buildMedicationExplainerPrompt,
@@ -111,7 +110,6 @@ assert.match(DEFAULT_PROMPT_TEMPLATES.attending_presentation_critique, /^@presen
 assert.match(DEFAULT_PROMPT_TEMPLATES.attending_presentation_critique, /@specialty-team[\s\S]*@presentation-to-edit/, "presentation critique must include the tab-only specialty and learner draft");
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /^@medication-explainer-guidelines\b/, "medication teaching instructions must come from the editable Settings guideline");
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /^@medication-safety-guidelines\b/, "medication safety instructions must come from the editable Settings guideline");
-assert.match(DEFAULT_PROMPT_TEMPLATES.checklist_workup_refinement, /^@checklist-refinement-guidelines\b/, "checklist refinement instructions must come from the editable Settings guideline");
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /@admission-packet/, "medication teaching defaults need patient context to establish indication");
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /@admission-packet/, "medication safety defaults need patient context for contraindications and verification");
 const customTeamInstructions = "Write only the highest-yield active problems and keep the plan action-focused.";
@@ -217,8 +215,8 @@ assert.match(guidelines.admission, /timing is not documented rather than inventi
 assert.doesNotMatch(guidelines.admission, /Plan — total bullets|total bullets do not exceed/i);
 assert.doesNotMatch(guidelines.admission, /Bullets carry actions only|Never append a because|bullets contain actions only/i);
 assert.match(admission, /Admission context/);
-assert.match(admission, /Chest pain\?/);
-assert.match(admission, /Patient mentioned new hip pain unrelated to admission\./);
+assert.doesNotMatch(admission, /Chest pain\?/, "legacy checklist answers must not leak into prompts");
+assert.doesNotMatch(admission, /Patient mentioned new hip pain unrelated to admission\./, "legacy quick notes must not leak into prompts");
 
 const progress = buildOpenEvidencePrompt("daily_progress_note", { patient, selectedDayId: day.id, guidelines });
 assert.match(progress, /daily progress note/i);
@@ -274,7 +272,7 @@ assert.match(guidelines.progress, /A problem is active when it is being treated,
 assert.match(guidelines.progress, /Exclude dormant past medical history/i);
 assert.doesNotMatch(guidelines.progress, /Plan — total bullets|total bullets do not exceed/i);
 assert.doesNotMatch(guidelines.progress, /Bullets carry actions only|Never append a because|bullets contain actions only/i);
-assert.match(progress, /Patient mentioned new hip pain unrelated to admission\./);
+assert.doesNotMatch(progress, /Patient mentioned new hip pain unrelated to admission\./, "legacy quick notes must not leak into prompts");
 assert.match(progress, /Feels less short of breath/);
 assert.match(progress, /Selected hospital day/, "daily progress prompt must identify the selected day explicitly");
 assert.match(admission, /Prior course/i, "admission prompt must separate the prior story from today's report");
@@ -323,7 +321,7 @@ assert.match(medicationSafety, /route/i);
 assert.match(medicationSafety, /frequency/i);
 assert.match(medicationSafety, /insufficient information/);
 
-for (const prompt of [admission, progress, teaching, medicationOrganizer, medicationSafety, buildOpenEvidencePrompt("checklist_workup_refinement", { patient })]) {
+for (const prompt of [admission, progress, teaching, medicationOrganizer, medicationSafety]) {
   assert.match(prompt, new RegExp(ATTENDING_HOSPITALIST_PERSONA.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"), "every generated prompt must carry the attending-hospitalist persona");
   assert.doesNotMatch(prompt, /[\[\]{}<>()`]/, "OpenEvidence prompts must stay in natural language without brackets or code syntax");
   assert.doesNotMatch(prompt, /^\s*(?:#|[-*]|\d+[.)])\s/m, "OpenEvidence prompts must not use Markdown or numbered-list syntax");
@@ -334,8 +332,7 @@ for (const directPrompt of [
   buildDailyProgressPrompt({ patient, selectedDayId: day.id, guidelines }),
   buildTeachingTrajectoryPrompt({ patient, selectedDayId: day.id }),
   buildMedicationExplainerPrompt({ patient, selectedDayId: day.id }),
-  buildMedicationSafetyPrompt({ patient, selectedDayId: day.id }),
-  buildChecklistRefinementPrompt({ patient, selectedDayId: day.id })
+  buildMedicationSafetyPrompt({ patient, selectedDayId: day.id })
 ]) {
   assert.equal(directPrompt.match(/Act as an attending hospitalist with over 30 years of inpatient experience/gi)?.length, 1, "every exported prompt builder must enforce the persona exactly once");
 }
@@ -427,15 +424,6 @@ assert.match(consulting, /routine, about 24 hours; urgent; or emergent/i);
 assert.match(consulting, /consulting-guidelines|Consulting/);
 assert.doesNotMatch(consulting, /@consulting-guidelines/);
 assert.doesNotMatch(consulting, /-exam-findings/, "a shorter token must not corrupt a longer token with the same prefix");
-
-const checklistAnswersPrompt = buildCustomOpenEvidencePrompt({
-  taskId: "checklist_workup_refinement",
-  template: "Review @checklist-answers only.",
-  patient,
-  selectedDayId: day.id
-});
-assert.match(checklistAnswersPrompt, /Chest pain\?/);
-assert.match(checklistAnswersPrompt, /Patient mentioned new hip pain unrelated to admission\./);
 
 const fieldVariables = promptVariablesForPatient(patient);
 assert.equal(fieldVariables.filter((variable) => variable.sectionId).length, patient.contextSections.length);

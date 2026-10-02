@@ -9,7 +9,7 @@
 // the same ids — the review gate's session store keys on content hashes and
 // ids, and stable ids keep unchanged chunks reusable across sends.
 
-export const CHART_CHUNKS_VERSION = "20260929-rag-v2";
+export const CHART_CHUNKS_VERSION = "20260929-rag-v1";
 
 // Token estimate shared with the rest of the chat code: ~4 chars/token.
 export const CHARS_PER_TOKEN = 4;
@@ -21,10 +21,22 @@ export function estimateTokens(text) {
   return Math.ceil(String(text || "").length / CHARS_PER_TOKEN);
 }
 
-// Canonical sentence splitter shared with the rest of the chat code.
-// Re-exported here so existing importers keep working.
-import { splitSentences } from "../local-llm/section-split.js?v=20260927-local-llm-v4";
-export { splitSentences };
+// Split text into sentences. Newlines are strong boundaries (clinical notes
+// are line-oriented); within a line, split on sentence-ending punctuation
+// followed by a capital letter, digit, or quote.
+export function splitSentences(text) {
+  const sentences = [];
+  for (const line of String(text || "").split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    const parts = trimmed.split(/(?<=[.!?;])\s+(?=[A-Z0-9"'(])/);
+    for (const part of parts) {
+      const sentence = part.trim();
+      if (sentence) sentences.push(sentence);
+    }
+  }
+  return sentences;
+}
 
 function packSentences(sentences, maxTokens, overlapTokens) {
   const chunks = [];
@@ -124,16 +136,66 @@ export function hashChunkSet(chunks) {
   return hashContent((chunks || []).map((c) => `${c.id}\n${c.text}`).join("\n"));
 }
 
-// Canonical piece-text resolver shared with the rest of the chat code.
-// Re-exported as resolvePieceText so existing importers keep working.
-import { pieceText } from "../local-llm/patient-context.js?v=20260929-local-llm-v12";
-export { pieceText };
-export const resolvePieceText = pieceText;
+// Resolve the raw (pre-de-identification) text for one Context-inspector
+// piece from the vault patient record. The piece id scheme mirrors
+// listPatientContextPieces in src/local-llm/patient-context.js
+// ("admission:<id>", "day:<dayId>:<captureId>", "day:<dayId>:quicknotes",
+// "draft:current"); this resolver duplicates that scheme so the RAG modules
+// stay decoupled from the in-flight AI Chat controller files.
+function textOf(value) {
+  return String(value ?? "").trim();
+}
+
+function captureText(capture) {
+  return textOf(capture?.deidentifiedText);
+}
+
+export function resolvePieceText(patient, piece, { draftNoteText = "" } = {}) {
+  if (!patient || typeof patient !== "object" || !piece) return "";
+  const id = String(piece?.id || "");
+  if (id === "draft:current") {
+    const draft = textOf(draftNoteText);
+    return draft ? `## Current draft note (in progress)\n${draft}` : "";
+  }
+  if (id.startsWith("admission:")) {
+    const section = (patient.contextSections || []).find(
+      (candidate) => `admission:${textOf(candidate?.id)}` === id
+    ) || (patient.contextSections || []).find(
+      (candidate) => (textOf(candidate?.label) || "Admission note") === piece.label && captureText(candidate)
+    );
+    return section ? `## ${textOf(section.label) || "Admission note"}\n${captureText(section)}` : "";
+  }
+  if (id.startsWith("day:")) {
+    const rest = id.slice(4);
+    const dayId = rest.slice(0, rest.lastIndexOf(":"));
+    const captureId = rest.slice(rest.lastIndexOf(":") + 1);
+    const day = (patient.days || []).find((candidate) => textOf(candidate?.id) === dayId)
+      || (patient.days || []).find((candidate) => {
+        const label = textOf(candidate?.label) || "Hospital day";
+        const date = textOf(candidate?.date);
+        return (date ? `${label} (${date})` : label) === piece.group;
+      });
+    if (!day) return "";
+    if (captureId === "quicknotes") {
+      const quickNotes = (day?.quickNotes || []).map(textOf).filter(Boolean);
+      if (!quickNotes.length) return "";
+      return `### ${piece.group} — Quick notes\n${quickNotes.map((note) => `- ${note}`).join("\n")}`;
+    }
+    const capture = (day?.sourceCaptures || []).find(
+      (candidate) => textOf(candidate?.id) === captureId
+    ) || (day?.sourceCaptures || []).find(
+      (candidate) => (textOf(candidate?.label) || "Note") === piece.label && captureText(candidate)
+    );
+    if (!capture || !captureText(capture)) return "";
+    return `### ${piece.group} — ${textOf(capture.label) || "Note"}\n${captureText(capture)}`;
+  }
+  return "";
+}
 
 // Convenience: resolve raw text for every piece descriptor (the shape
 // listPatientContextPieces returns) and attach it as rawText.
-export function piecesWithRawText(patient, pieceDescriptors, { draftNoteText = "", draftNoteSections = null } = {}) {
+export function piecesWithRawText(patient, pieceDescriptors, { draftNoteText = "" } = {}) {
   return (pieceDescriptors || [])
-    .map((piece) => ({ ...piece, rawText: resolvePieceText(patient, piece, { draftNoteText, draftNoteSections }) }))
+    .map((piece) => ({ ...piece, rawText: resolvePieceText(patient, piece, { draftNoteText }) }))
     .filter((piece) => piece.rawText);
 }

@@ -69,11 +69,6 @@ export function readLocalLlmSettings() {
     // Editable system guidelines (Settings > Local AI guidelines). Empty
     // means "use the built-in default" — see DEFAULT_SYSTEM_GUIDELINES.
     systemGuidelines: typeof stored.systemGuidelines === "string" ? stored.systemGuidelines : "",
-    // Editable custom instructions for the ChatGPT path. Empty means "use
-    // the built-in default" — see DEFAULT_REMOTE_SYSTEM_GUIDELINES. Kept
-    // separate from systemGuidelines so the on-device identity claims are
-    // never sent to ChatGPT.
-    systemGuidelinesRemote: typeof stored.systemGuidelinesRemote === "string" ? stored.systemGuidelinesRemote : "",
     // AI Chat mode: "local" (on-device) or "remote" (ChatGPT). Persisted so
     // the student's choice survives reloads.
     chatMode: stored.chatMode === "remote" ? "remote" : "local"
@@ -291,24 +286,12 @@ export function createLocalLlmClient() {
     if (!model) throw new Error(`Unknown local model: ${modelKey}`);
     // Offline mode must not trigger a multi-hundred-megabyte download the
     // student didn't ask for: fail fast with a clear explanation when the
-    // weights aren't already in this browser's cache. The registry is only
-    // a hint, so reconcile it against the worker's ground-truth cache
-    // check first — a model whose weights are actually in Cache Storage
-    // stays usable offline even if its registry entry is missing.
+    // weights aren't already in this browser's cache.
     if (isOfflineMode() && !readLocalLlmDownloaded()[modelKey]) {
-      let actuallyCached = false;
-      try {
-        actuallyCached = (await cachedModels())[modelKey] === true;
-      } catch {
-        // Ground-truth check unavailable (no worker); fall through to the
-        // refusal rather than risking a blocked multi-hundred-MB download.
-      }
-      if (!actuallyCached) {
-        throw new Error(
-          `Offline mode is on and ${model.label} hasn't been downloaded in this browser yet. ` +
-          "Turn offline mode off in Settings to download it once — afterwards it runs fully offline."
-        );
-      }
+      throw new Error(
+        `Offline mode is on and ${model.label} hasn't been downloaded in this browser yet. ` +
+        "Turn offline mode off in Settings to download it once — afterwards it runs fully offline."
+      );
     }
     if (status === "ready" && activeModelKey === modelKey && verifiedModelKey === modelKey) {
       return getStatus();

@@ -50,7 +50,7 @@ try {
   // Pull each section and verify the draft receives the primary-note text.
   const pullChecks = [
     { field: "interval_events", draft: '[data-draft-section="interval_events"]', expect: /No acute overnight events/ },
-    { field: "physical_exam", draft: '[data-draft-section="physical_exam"]', expect: /craniectomy flap/ },
+    { field: "physical_exam", draft: '[data-smart-exam-notes]', expect: /craniectomy flap/ },
     { field: "objective", draft: '[data-draft-objective-manual]', expect: /Hemoglobin|6\.5/ },
     { field: "assessment", draft: '[data-draft-assessment]', expect: /ischemic.*stroke|MCA/i },
     { field: "code_status", draft: '[data-draft-closing="code_status"]', expect: /Full Code/ },
@@ -102,7 +102,7 @@ try {
 
   const assessmentText = await editorText(page.locator('[data-draft-assessment]').first());
   assert.match(assessmentText, /ischemic.*stroke|MCA/i, "assessment should survive reload");
-  const peText = await editorText(page.locator('[data-draft-section="physical_exam"]').first());
+  const peText = await editorText(page.locator('[data-smart-exam-notes]').first());
   assert.match(peText, /craniectomy flap/, "physical exam should survive reload");
   const problemCount3 = await page.locator(".plan-problem-card").count();
   assert.equal(problemCount3, problemCount, `plan problems should survive reload (${problemCount} -> ${problemCount3})`);

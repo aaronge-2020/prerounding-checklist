@@ -102,15 +102,14 @@ export function normalizeSourceCapture(capture, { now = () => new Date().toISOSt
     resultContext: sourceKind === "results" ? String(capture?.resultContext || "") : "",
     deidentifiedText: String(capture?.deidentifiedText || ""),
     residualWarnings: sanitizeResidualWarningMetadata(Array.isArray(capture?.residualWarnings) ? capture.residualWarnings : []),
-    deidentificationSkipped: capture?.deidentificationSkipped === true,
     capturedAt: String(capture?.capturedAt || capture?.createdAt || timestamp),
     createdAt: String(capture?.createdAt || capture?.capturedAt || timestamp),
     updatedAt: String(capture?.updatedAt || capture?.createdAt || capture?.capturedAt || timestamp)
   };
 }
 
-export function createSourceCapture({ sourceKind = DEFAULT_DAILY_SOURCE_KIND, label = "", resultCategory = "", resultDate = "", resultContext = "", text = "", residualWarnings = [], deidentificationSkipped = false, now = () => new Date().toISOString() } = {}) {
-  return normalizeSourceCapture({ sourceKind, label, resultCategory, resultDate, resultContext, deidentifiedText: text, residualWarnings, deidentificationSkipped }, { now });
+export function createSourceCapture({ sourceKind = DEFAULT_DAILY_SOURCE_KIND, label = "", resultCategory = "", resultDate = "", resultContext = "", text = "", residualWarnings = [], now = () => new Date().toISOString() } = {}) {
+  return normalizeSourceCapture({ sourceKind, label, resultCategory, resultDate, resultContext, deidentifiedText: text, residualWarnings }, { now });
 }
 
 // This is a one-time exact migration from the previous controlled role IDs.

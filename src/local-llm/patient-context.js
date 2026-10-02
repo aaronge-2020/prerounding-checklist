@@ -8,7 +8,7 @@
 
 export const MAX_PATIENT_CONTEXT_CHARS = 6000;
 
-export function textOf(value) {
+function textOf(value) {
   return String(value ?? "").trim();
 }
 
@@ -81,9 +81,7 @@ export function buildPatientContextText(patient, { maxChars = MAX_PATIENT_CONTEX
 //
 // A piece is { id, group, label, kind, chars, primary }:
 //   id      stable selector, "admission:<sectionId>" | "day:<dayId>:<captureId>"
-//           | "day:<dayId>:quicknotes" | "draft:current" (legacy whole-note
-//           piece) | "draft:<sectionKey>" (one entry per draft note section,
-//           e.g. "draft:section:one-liner", "draft:plan:acute-kidney-injury")
+//           | "day:<dayId>:quicknotes" | "draft:current"
 //   group   "Admission", the hospital-day label (with date), or "Draft note"
 //   label   the section/capture label shown in the inspector
 //   kind    the vault sourceKind (primary_note, laboratory_results, ...)
@@ -95,20 +93,8 @@ export function buildPatientContextText(patient, { maxChars = MAX_PATIENT_CONTEX
 // plain text by the Review controller) is appended as one opt-in piece when
 // non-empty. It is never selected by default: it is in-progress work, so the
 // user attaches it explicitly.
-//
-// When draftNoteSections is a non-empty array of { key, label, text }
-// entries (see renderNoteSectionEntries in note-drafts/render.js), the draft
-// is instead listed as one piece per section — the one-liner, each plan
-// problem, and so on — so the user can attach just the part of the note
-// they need. Callers that only have the plain text keep the legacy single
-// "draft:current" piece.
 
-function validDraftSections(draftNoteSections) {
-  if (!Array.isArray(draftNoteSections)) return [];
-  return draftNoteSections.filter((entry) => textOf(entry?.text));
-}
-
-export function listPatientContextPieces(patient, { draftNoteText = "", draftNoteSections = null } = {}) {
+export function listPatientContextPieces(patient, { draftNoteText = "" } = {}) {
   if (!patient || typeof patient !== "object") return [];
   const pieces = [];
   for (const section of patient.contextSections || []) {
@@ -153,21 +139,7 @@ export function listPatientContextPieces(patient, { draftNoteText = "", draftNot
     }
   }
   const draft = textOf(draftNoteText);
-  const draftSections = validDraftSections(draftNoteSections);
-  if (draftSections.length) {
-    for (const entry of draftSections) {
-      const text = textOf(entry.text);
-      pieces.push({
-        id: `draft:${textOf(entry.key) || pieces.length}`,
-        sectionKey: textOf(entry.key),
-        group: "Draft note",
-        label: textOf(entry.label) || textOf(entry.heading) || "Note section",
-        kind: "draft_note",
-        chars: text.length,
-        primary: false
-      });
-    }
-  } else if (draft) {
+  if (draft) {
     pieces.push({
       id: "draft:current",
       group: "Draft note",
@@ -191,16 +163,11 @@ export function defaultSelectedPieceIds(patient) {
   return pieces.filter((piece) => piece.group === "Admission").map((piece) => piece.id);
 }
 
-export function pieceText(patient, piece, { draftNoteText = "", draftNoteSections = null } = {}) {
+function pieceText(patient, piece, { draftNoteText = "" } = {}) {
   if (!patient || !piece) return "";
   if (piece.id === "draft:current") {
     const draft = textOf(draftNoteText);
     return draft ? `## Current draft note (in progress)\n${draft}` : "";
-  }
-  if (String(piece.id || "").startsWith("draft:")) {
-    const key = textOf(piece.sectionKey) || String(piece.id).slice("draft:".length);
-    const entry = validDraftSections(draftNoteSections).find((candidate) => textOf(candidate?.key) === key);
-    return textOf(entry?.text);
   }
   if (piece.id.startsWith("admission:")) {
     const section = (patient.contextSections || []).find(
@@ -240,7 +207,8 @@ export function pieceText(patient, piece, { draftNoteText = "", draftNoteSection
 // Unknown/stale ids are ignored; empty selection yields "". Rebuilt on
 // every send, never persisted.
 export const MAX_SELECTED_PIECES_CHARS = 6000;
-export function buildPatientContextFromPieces(patient, selectedIds, { maxChars = MAX_SELECTED_PIECES_CHARS, draftNoteText = "", draftNoteSections = null } = {}) {
+
+export function buildPatientContextFromPieces(patient, selectedIds, { maxChars = MAX_SELECTED_PIECES_CHARS, draftNoteText = "" } = {}) {
   if (!patient || typeof patient !== "object") return "";
   const budget = Math.max(500, Number(maxChars) || MAX_SELECTED_PIECES_CHARS);
   const wanted = new Set(Array.isArray(selectedIds) ? selectedIds.map(String) : []);
@@ -251,7 +219,7 @@ export function buildPatientContextFromPieces(patient, selectedIds, { maxChars =
   if (admissionDate) headerBits.push(`Admitted: ${admissionDate}`);
 
   const parts = [];
-  const pieceOpts = { draftNoteText, draftNoteSections };
+  const pieceOpts = { draftNoteText };
   for (const piece of listPatientContextPieces(patient, pieceOpts)) {
     if (!wanted.has(piece.id)) continue;
     const text = pieceText(patient, piece, pieceOpts);
@@ -262,15 +230,6 @@ export function buildPatientContextFromPieces(patient, selectedIds, { maxChars =
   if (out.length > budget) out = `${out.slice(0, budget - 3).trimEnd()}...`;
   return out;
 }
-// ---------------------------------------------------------------------------
-// Chart budget constant: the controller derives the real per-model budget
-// from the selected API model's context window (fullChartBudgetChars in
-// ui/ai-chat/delta-review.js), reserving headroom for the system prompt,
-// history, question, and reply. MAX_FULL_CHART_CHARS survives only as the
-// conservative fallback for an unknown model and as the default budget of
-// the transmit builder.
-export const MAX_FULL_CHART_CHARS = 200000;
-
 export const MAX_PRIMARY_NOTE_CHARS = 3000;
 
 export function buildPrimaryTeamNoteText(patient, { maxChars = MAX_PRIMARY_NOTE_CHARS } = {}) {

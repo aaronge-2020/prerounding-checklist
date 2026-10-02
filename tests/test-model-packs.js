@@ -30,13 +30,6 @@ assert.deepEqual(stanford.bundledChunks["onnx/model_quantized.onnx"], {
   count: 14,
   bytes: 109651017
 });
-const obi = deidModelOptionByKey("obi-deid-bert-i2b2");
-assert.equal(isInstallableModel(obi), false);
-assert.deepEqual(obi.bundledChunks["onnx/model_quantized.onnx"], {
-  directory: "onnx/model_quantized.chunks",
-  count: 13,
-  bytes: 108507617
-});
 assert.equal(hasAutomaticModelDownload(openmedSmall), true);
 assert.equal(openmedSmall.allowSelfHosted, true, "OpenMed Small must prefer packaged same-origin files on managed devices");
 assert.deepEqual(openmedSmall.bundledChunks["onnx/model_int8.onnx"], {
@@ -45,16 +38,6 @@ assert.deepEqual(openmedSmall.bundledChunks["onnx/model_int8.onnx"], {
   bytes: 171750792
 });
 assert.equal(hasAutomaticModelDownload(gliner), true);
-const clinicalE5 = deidModelOptionByKey("openmed-clinicale5-small");
-assert.equal(isInstallableModel(clinicalE5), true);
-assert.equal(hasAutomaticModelDownload(clinicalE5), true);
-assert.deepEqual(requiredModelPackFiles(clinicalE5), ["config.json", "tokenizer.json", "tokenizer_config.json", "onnx/model_int8.onnx"]);
-assert.equal(modelDownloadPlan(clinicalE5).at(-1).sourcePath, "model_int8.onnx");
-assert.equal(modelDownloadBytes(clinicalE5), 70356618);
-assert.match(
-  modelDownloadUrl(clinicalE5, modelDownloadPlan(clinicalE5).at(-1)),
-  /OpenMed\/OpenMed-PII-ClinicalE5-Small-33M-v1-onnx-android\/resolve\/79f7db205869b1be4be23ac4f42aa95bdedc5aee\/model_int8\.onnx$/
-);
 assert.deepEqual(requiredModelPackFiles(openmedSmall), ["config.json", "special_tokens_map.json", "tokenizer.json", "tokenizer_config.json", "onnx/model_int8.onnx"]);
 assert.equal(modelDownloadPlan(openmedSmall).at(-1).sourcePath, "small/model_int8.onnx");
 assert.equal(modelDownloadPlan(openmedSmall).at(-1).etag, "cf6756eacfd73377130e1203b7e14ddd357a5b1f7f88c54d6428cdb677e7a5a0");

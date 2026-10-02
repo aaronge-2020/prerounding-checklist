@@ -53,19 +53,9 @@ export const PRESENTATION_DETAIL_OPTIONS = [
 // to support reliably.
 export const OPENAI_WORKUP_MODEL_OPTIONS = [
   {
-    value: "gpt-6-luna",
-    label: "GPT-6 Luna",
-    description: "Cheapest high-quality option — default"
-  },
-  {
-    value: "gpt-6-sol",
-    label: "GPT-6 Sol",
-    description: "Best quality per dollar for complex work"
-  },
-  {
     value: "gpt-5.6",
     label: "GPT-5.6 Sol",
-    description: "Previous-generation flagship"
+    description: "Highest-quality current option"
   },
   {
     value: "gpt-5.6-terra",
@@ -75,7 +65,7 @@ export const OPENAI_WORKUP_MODEL_OPTIONS = [
   {
     value: "gpt-5.6-luna",
     label: "GPT-5.6 Luna",
-    description: "Lower-cost previous option"
+    description: "Lower-cost current option"
   },
   {
     value: "gpt-5.4",
@@ -94,7 +84,7 @@ export const OPENAI_WORKUP_MODEL_OPTIONS = [
   }
 ];
 
-export const DEFAULT_OPENAI_WORKUP_MODEL = "gpt-6-luna";
+export const DEFAULT_OPENAI_WORKUP_MODEL = "gpt-5.6";
 
 export const DEFAULT_USER_PREFERENCES = Object.freeze({
   openAiApiKey: "",

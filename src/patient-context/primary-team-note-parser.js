@@ -1,6 +1,7 @@
 import { primaryTeamNoteFields } from "./primary-team-note.js?v=20260921-medication-card-v4";
 import { transformClinicalTablesInText } from "./clinical-table-parser.js";
 import {
+  ACTION_LEAD,
   NON_PROBLEM_LABEL,
   normalizeTwoColumnEhrText,
   parseClinicalPlanProblems,
@@ -165,10 +166,30 @@ function assessmentItemTitle(text) {
 // type 1: ..."). Used for the single-assessment case, where a colon title is
 // the reliable signal that the plan item is a problem rather than an action
 // on the assessment.
-function planItemHasProblemTitle(itemText) {
+/**
+ * True when a numbered plan item carries its own problem title, as opposed to
+ * being a bare action/order. Title signals:
+ * - "Diabetes mellitus type 1: Continue insulin." (colon)
+ * - "Upper GI bleed on apixaban — hold apixaban, ..." (dash)
+ * - "Acute coronary syndrome, likely STEMI\n- Cardiology consult, ..." (a
+ *   noun-led first line with plan detail beneath it)
+ * A single-line item without a colon/dash split ("Motrin 800 mg t.i.d.",
+ * "Tylenol 1 gm q.i.d. as needed.") is a bare order, not a titled problem.
+ */
+function planItemCarriesTitle(itemText) {
   const text = String(itemText || "").trim();
+  if (!text) return false;
   const colon = text.match(/^([^:]{3,60}):\s*\S/);
-  return !!(colon && !NON_PROBLEM_LABEL.test(colon[1].trim()));
+  if (colon && !NON_PROBLEM_LABEL.test(colon[1].trim())) return true;
+  const dashSplit = text.match(/^(.*?)\s+[—–-]\s+(\S[\s\S]*)$/);
+  if (dashSplit && dashSplit[1].trim().length >= 3 && !ACTION_LEAD.test(dashSplit[1].trim())) return true;
+  const newline = text.indexOf("\n");
+  if (newline > 0) {
+    const firstLine = text.slice(0, newline).trim();
+    const rest = text.slice(newline + 1).trim();
+    if (rest && firstLine.length >= 3 && firstLine.length <= 60 && !ACTION_LEAD.test(firstLine)) return true;
+  }
+  return false;
 }
 
 function makePairedProblem(assessmentItemText, planItemText) {
@@ -241,16 +262,22 @@ function pairAssessmentPlanProblems(assessmentText, planText, parsedProblems) {
   }
 
   if (assessmentItems.length === 0 && planItems.length === 0) {
+    // A system-based plan ("Neurologic: ...\nCardiovascular: ...") has no
+    // numbered items but the plan parser already split it into per-system
+    // problems: keep those instead of collapsing to one one-liner problem.
+    if (parsedProblems.length > 1) return parsedProblems;
     return [makePairedProblem(assessment, plan)];
   }
 
   // Single assessment paragraph ("Right ankle sprain.") with a numbered
   // plan: one problem carrying all the plan items, unless the plan items
-  // carry their own problem titles.
+  // carry their own problem titles (colon-titled, dash-titled, or a noun-led
+  // first line with plan detail beneath it). Bare orders ("Motrin 800 mg
+  // t.i.d.") collapse; titled problems keep the plan's own parse.
   if (
     assessmentItems.length === 0 &&
     planItems.length > 0 &&
-    !planItems.some((item) => planItemHasProblemTitle(item.text))
+    !planItems.some((item) => planItemCarriesTitle(item.text))
   ) {
     return [makePairedProblem(assessment, planItems.map((item) => item.text).join("\n"))];
   }
@@ -497,11 +524,15 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
     // Subjective/Other content.
     if (activeField === fallbackField && NOTE_HEADER_METADATA.test(line.trim())) continue;
     // Inside an Assessment/Plan section, "#..." lines are problem entries for
-    // parseClinicalPlanProblems, not markdown headings. Without this guard a
-    // line like "#DVT prophylaxis" is stolen as a VTE-prophylaxis section
-    // heading and everything after it is swallowed into the wrong field.
+    // parseClinicalPlanProblems, not markdown headings, and "- ..." bullets
+    // are plan-item actions/details — not section boundaries. Without this
+    // guard a line like "#DVT prophylaxis" is stolen as a VTE-prophylaxis
+    // section heading, and a sub-bullet like "- DVT prophylaxis: heparin ..."
+    // under "#1 Postoperative recovery" ends the plan early and swallows the
+    // remaining problems into the wrong field.
     const inPlanSection = activeField === "plan";
-    const rawMatch = inPlanSection && /^#/.test(line.trim()) ? null : headingMatch(line);
+    const planContentLine = inPlanSection && /^(?:#|[-•>])/.test(line.trim());
+    const rawMatch = planContentLine ? null : headingMatch(line);
     const match = rawMatch && isNoDataHeader(rawMatch) ? null : rawMatch;
     if (!match) {
       activeLines.push(line);

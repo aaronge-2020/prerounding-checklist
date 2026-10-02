@@ -31,23 +31,6 @@ const WORKER_URL = new URL("./rag-worker.js", import.meta.url);
 let worker = null;
 let nextCallId = 1;
 const pendingCalls = new Map();
-// Patient ids whose chart vectors are (or were, this session) indexed.
-// The worker holds one patient's vectors at a time; the IndexedDB cache is
-// keyed per patient so one patient's vectors are never read back under
-// another patient's id.
-const indexedPatientIds = new Set();
-// Serialize multi-step service operations (index, query, clear) through one
-// queue. The worker serializes its own messages, but service operations span
-// multiple worker calls plus IndexedDB writes — without this, a patient
-// switch or vault lock could interleave with an in-flight ensure+query and
-// leave one patient's vectors readable under another patient's id.
-let serviceQueue = Promise.resolve();
-function enqueueServiceOperation(operation) {
-  const run = serviceQueue.then(operation, operation);
-  // The queue itself never rejects; callers get their own promise.
-  serviceQueue = run.catch(() => {});
-  return run;
-}
 
 function getWorker() {
   if (!worker) {
@@ -122,48 +105,14 @@ function idbPut(db, key, value) {
   });
 }
 
-async function _clearPatientIndex(patientId) {
+export async function clearPatientIndex(patientId) {
   const db = await openIndexDb();
-  indexedPatientIds.delete(String(patientId || "unknown"));
   return new Promise((resolve, reject) => {
     const tx = db.transaction(RAG_INDEX_STORE, "readwrite");
     tx.objectStore(RAG_INDEX_STORE).delete(`patient:${patientId}`);
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error || new Error("RAG index delete failed."));
   });
-}
-
-// Drop the in-memory worker index without touching the IndexedDB cache.
-// Used on patient switch: the next retrieval re-indexes for the new
-// patient, so stale vectors can never leak across patients. Never creates
-// the worker just to clear it.
-async function _clearRagWorkerMemory() {
-  if (!worker) return;
-  await callRagWorker("clear", {});
-}
-
-// Vault-lock cleanup: drop the in-memory worker vectors AND every cached
-// chart index in IndexedDB, then forget which patients were indexed.
-// Called from clearSensitiveSession (vault lock / vault deletion). Never
-// throws — lock must not fail because cleanup did.
-async function _clearAllRagIndexes() {
-  try {
-    if (worker) await callRagWorker("clear", {});
-  } catch {
-    // Worker teardown is best-effort during lock.
-  }
-  try {
-    const db = await openIndexDb();
-    await new Promise((resolve, reject) => {
-      const tx = db.transaction(RAG_INDEX_STORE, "readwrite");
-      tx.objectStore(RAG_INDEX_STORE).clear();
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error || new Error("RAG index clear failed."));
-    });
-  } catch {
-    // IndexedDB cleanup is best-effort during lock.
-  }
-  indexedPatientIds.clear();
 }
 
 // --- Index lifecycle ---------------------------------------------------
@@ -176,27 +125,13 @@ function chunkIndexKey(patientId) {
 // pieces: [{ id, label, group, rawText }]. Returns { chunkCount, dims,
 // modelId, reused }.
 //
-// allowDownload: the embedding model downloads ONLY on the explicit user
-// tap (the one-tap "Download chart-search model" affordance). Every other
-// caller — ordinary chat, status probes, index warming — passes false and
-// fails closed with { modelNotReady: true } when the model isn't already
-// loaded, instead of triggering a download.
-//
 // testRemoteHost is a test/dev override: redirect the model file host
 // (e.g. a local server in offline compat runs). Production callers omit it.
-async function _ensureChartIndex({ patientId, pieces, testRemoteHost = null, allowDownload = false }) {
+export async function ensureChartIndex({ patientId, pieces, testRemoteHost = null }) {
   const chunks = chunkChartPieces(pieces || []);
   if (!chunks.length) {
     await callRagWorker("clear", {});
     return { chunkCount: 0, dims: 0, modelId: null, reused: false, chunks: [] };
-  }
-  if (!allowDownload) {
-    // Probe only — creating the worker is free, but ensure-model (the
-    // download) is off-limits on this path.
-    const status = await callRagWorker("status", {}).catch(() => ({ ready: false }));
-    if (!status || status.ready !== true) {
-      return { chunkCount: 0, dims: 0, modelId: null, reused: false, chunks: [], modelNotReady: true };
-    }
   }
   const contentHash = hashChunkSet(chunks);
   const modelKey = RAG_MODEL_KEY;
@@ -219,7 +154,6 @@ async function _ensureChartIndex({ patientId, pieces, testRemoteHost = null, all
       ids: cached.ids,
       buffers: cached.buffers.map((buf) => buf.slice(0))
     });
-    indexedPatientIds.add(String(patientId || "unknown"));
     return { chunkCount: chunks.length, dims: RAG_EMBEDDING_MODELS[modelKey].dims, modelId, reused: true, chunks };
   }
 
@@ -242,21 +176,17 @@ async function _ensureChartIndex({ patientId, pieces, testRemoteHost = null, all
     // A failed cache write must not fail the retrieval; the in-memory
     // worker index is still valid for this session.
   });
-  indexedPatientIds.add(String(patientId || "unknown"));
   return { chunkCount: indexed.count, dims: indexed.dims, modelId, reused: false, chunks };
 }
 
 // Retrieve the top-k chart chunks for a query. Ensures the index first
 // (rebuilding only when the chart changed). Returns chunks numbered [C1..]
 // in score order: [{ n, id, pieceId, label, group, text, score }].
-// Never downloads the embedding model: with allowDownload false (the only
-// value ordinary chat uses), a cold worker yields [] and the caller falls
-// back to the selected chart pieces.
-async function _retrieveChartChunks({ patientId, pieces, query, k = 6, testRemoteHost = null, allowDownload = false }) {
+export async function retrieveChartChunks({ patientId, pieces, query, k = 6, testRemoteHost = null }) {
   const question = String(query || "").trim();
   if (!question) return [];
-  const { chunks, modelNotReady } = await _ensureChartIndex({ patientId, pieces, testRemoteHost, allowDownload });
-  if (modelNotReady || !chunks.length) return [];
+  const { chunks } = await ensureChartIndex({ patientId, pieces, testRemoteHost });
+  if (!chunks.length) return [];
   const byId = new Map(chunks.map((c) => [c.id, c]));
   const hits = await callRagWorker("query", { text: question, k });
   return hits
@@ -274,43 +204,4 @@ async function _retrieveChartChunks({ patientId, pieces, query, k = 6, testRemot
       };
     })
     .filter(Boolean);
-}
-
-// --- Queued public API ---------------------------------------------------
-// Every public operation runs through the service queue so index, query,
-// and clear operations are atomic relative to each other. Internal helpers
-// (prefixed _) do the real work without re-entering the queue.
-//
-// Explicit-download-only rule, enforced here (not left to callers):
-// ensureChartIndex is the ONE route that may download the embedding model
-// (it runs only from the explicit one-tap download affordance).
-// retrieveChartChunks never downloads — a cold worker returns [].
-
-export function ensureChartIndex(args) {
-  return enqueueServiceOperation(() => _ensureChartIndex({ ...(args || {}), allowDownload: true }));
-}
-
-export function retrieveChartChunks(args) {
-  return enqueueServiceOperation(() => _retrieveChartChunks({ ...(args || {}), allowDownload: false }));
-}
-
-export function warmChartIndex(args) {
-  // Best-effort pre-build of the current patient's embedding index so the
-  // first chat doesn't wait. Never downloads: on a cold worker the status
-  // probe fails closed and the warm is skipped.
-  return enqueueServiceOperation(() => _ensureChartIndex({ ...(args || {}), allowDownload: false }));
-}
-
-export function clearPatientIndex(patientId) {
-  // Queued like every other index mutation: a per-patient cache delete
-  // must not interleave with an in-flight index/query for that patient.
-  return enqueueServiceOperation(() => _clearPatientIndex(patientId));
-}
-
-export function clearRagWorkerMemory() {
-  return enqueueServiceOperation(() => _clearRagWorkerMemory());
-}
-
-export function clearAllRagIndexes() {
-  return enqueueServiceOperation(() => _clearAllRagIndexes());
 }

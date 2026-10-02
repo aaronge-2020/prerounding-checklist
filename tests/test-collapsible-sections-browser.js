@@ -40,7 +40,7 @@ try {
   console.log("PASS: section collapses on click");
 
   // Trigger a re-render (click a toast-producing button) and verify collapse persists.
-  await page.click('[data-action="exam-findings-all-normal"]');
+  await page.click('[data-action="smart-exam-all-normal"]');
   await page.waitForTimeout(500);
   const stillClosed = await page.locator('details.ed-section[data-draft-section-id="assessment"]').evaluate((el) => !el.open);
   assert.ok(stillClosed, "collapse state should survive re-render");

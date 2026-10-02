@@ -213,6 +213,16 @@ export function normalizeObjectiveBlock(block) {
   return normalized;
 }
 
+export function normalizeChecklistFindingBlock(block) {
+  return {
+    ...normalizeObjectiveBlock(block),
+    kind: block?.kind === "exam" ? "exam" : "history",
+    question: text(block?.question),
+    sourceDayLabel: text(block?.sourceDayLabel),
+    workupTitle: text(block?.workupTitle)
+  };
+}
+
 function normalizeDifferential(differential, { timestamp, idFactory }) {
   return {
     id: text(differential?.id).trim() || idFactory("differential"),
@@ -268,6 +278,11 @@ export function normalizeNoteDraft(draft, { now = timestampNow, idFactory = loca
     },
     sectionVisibility: normalizeSectionVisibility(draft?.sectionVisibility),
     layout: normalizeLayout(draft?.layout, noteType),
+    checklistFindings: {
+      selectedBlocks: (Array.isArray(draft?.checklistFindings?.selectedBlocks) ? draft.checklistFindings.selectedBlocks : [])
+        .map(normalizeChecklistFindingBlock)
+        .filter((block) => block.selectionId)
+    },
     assessment: normalizeDraftText(draft?.assessment ?? "", { timestamp }),
     problems: (Array.isArray(draft?.problems) ? draft.problems : []).map((problem) =>
       normalizePlanProblem(problem, { timestamp, idFactory })
@@ -301,6 +316,7 @@ export function createNoteDraft(noteType, {
     noteType: normalizedType,
     sections: Object.fromEntries(fieldsForNoteType(normalizedType).map(({ id: fieldId }) => [fieldId, blankText(timestamp)])),
     objective: { manual: blankText(timestamp), selectedBlocks: [] },
+    checklistFindings: { selectedBlocks: [] },
     assessment: blankText(timestamp),
     problems: [],
     closing: Object.fromEntries(CLOSING_SECTION_FIELDS.map(({ id: fieldId }) => [fieldId, blankText(timestamp)])),
@@ -812,5 +828,79 @@ export function removeObjectiveGroupWithMemory(draft, groupKey, { now = timestam
   for (const id of ids) deselectedIds.add(id);
   return touch(next, {
     objective: { ...next.objective, deselectedIds: [...deselectedIds] }
+  }, now);
+}
+
+function normalizedChecklistFindingInput(selection) {
+  return {
+    ...normalizedSelectionInput(selection),
+    kind: selection?.kind === "exam" ? "exam" : "history",
+    question: text(selection?.question),
+    sourceDayLabel: text(selection?.sourceDayLabel),
+    workupTitle: text(selection?.workupTitle)
+  };
+}
+
+export function selectChecklistFinding(draft, selection, { now = timestampNow } = {}) {
+  const input = normalizedChecklistFindingInput(selection);
+  const existing = draft.checklistFindings.selectedBlocks.find((block) => block.selectionId === input.selectionId);
+  if (existing) return reconcileChecklistFinding(draft, input, { now });
+  return touch(draft, {
+    checklistFindings: {
+      selectedBlocks: [...draft.checklistFindings.selectedBlocks, normalizeChecklistFindingBlock({ ...input, editedText: input.generatedText, state: "synced" })]
+    }
+  }, now);
+}
+
+export function deselectChecklistFinding(draft, selectionId, { now = timestampNow } = {}) {
+  return touch(draft, {
+    checklistFindings: { selectedBlocks: draft.checklistFindings.selectedBlocks.filter((block) => block.selectionId !== selectionId) }
+  }, now);
+}
+
+export function editChecklistFinding(draft, selectionId, editedText, { now = timestampNow } = {}) {
+  return touch(draft, {
+    checklistFindings: {
+      selectedBlocks: draft.checklistFindings.selectedBlocks.map((block) => block.selectionId === selectionId
+        ? normalizeChecklistFindingBlock({ ...block, editedText: text(editedText), state: block.state === "stale" ? "stale" : (text(editedText) === block.generatedText ? "synced" : "edited") })
+        : block)
+    }
+  }, now);
+}
+
+export function reconcileChecklistFinding(draft, selection, { now = timestampNow } = {}) {
+  const input = normalizedChecklistFindingInput(selection);
+  return touch(draft, {
+    checklistFindings: {
+      selectedBlocks: draft.checklistFindings.selectedBlocks.map((block) => {
+        if (block.selectionId !== input.selectionId) return block;
+        if (block.sourceFingerprint === input.sourceFingerprint) return block;
+        if (block.state === "synced" && block.editedText === block.generatedText)
+          return normalizeChecklistFindingBlock({ ...input, editedText: input.generatedText, state: "synced" });
+        return normalizeChecklistFindingBlock({ ...block, state: "stale", pendingSourceFingerprint: input.sourceFingerprint, pendingGeneratedText: input.generatedText });
+      })
+    }
+  }, now);
+}
+
+export function refreshChecklistFinding(draft, selectionId, { now = timestampNow } = {}) {
+  return touch(draft, {
+    checklistFindings: {
+      selectedBlocks: draft.checklistFindings.selectedBlocks.map((block) => block.selectionId === selectionId && block.state === "stale"
+        ? normalizeChecklistFindingBlock({ ...block, sourceFingerprint: block.pendingSourceFingerprint, generatedText: block.pendingGeneratedText, editedText: block.pendingGeneratedText, state: "synced" })
+        : block)
+    }
+  }, now);
+}
+
+export function keepChecklistFinding(draft, selectionId, { now = timestampNow } = {}) {
+  return touch(draft, {
+    checklistFindings: {
+      selectedBlocks: draft.checklistFindings.selectedBlocks.map((block) => {
+        if (block.selectionId !== selectionId || block.state !== "stale") return block;
+        const generatedText = text(block.pendingGeneratedText);
+        return normalizeChecklistFindingBlock({ ...block, sourceFingerprint: block.pendingSourceFingerprint, generatedText, state: block.editedText === generatedText ? "synced" : "edited" });
+      })
+    }
   }, now);
 }

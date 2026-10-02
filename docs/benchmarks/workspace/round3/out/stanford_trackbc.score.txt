@@ -1,1 +1,0 @@
-stanford_trackbc: P=0.7715 R=0.7291 F1=0.7497 CI=[0.7437,0.7556] tp=31077 fp=9206 fn=11548 lat_med=555.1ms p95=912.2ms

@@ -28,7 +28,7 @@ import {
   reorderSectionsById,
   replaceSectionsFromFormAsync
 } from "../patient-context/sections.js?v=20260921-medication-card-v4";
-import { clinicalParseWarning, parseClinicalExport } from "../patient-context/clinical-export-parser.js?v=20260929-rxnorm-official-v3";
+import { clinicalParseWarning } from "../patient-context/clinical-export-parser.js?v=20260925-negative-lab-v1";
 import {
   createEphemeralRedactionReview,
   refreshEphemeralRedactionReview,
@@ -42,7 +42,7 @@ import {
   quickWarningIndex,
   reviewKey,
   synchronizeReviewPlaceholders
-} from "../patient-context/review.js?v=20260929-deid-clinicale5";
+} from "../patient-context/review.js?v=20260723-review-refresh";
 import {
   crossOriginIsolationBlocker,
   deidentifyText,
@@ -51,13 +51,13 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../patient-context/deid-client.js?v=20260929-deid-clinicale5";
+} from "../patient-context/deid-client.js?v=20260929-deid-r2";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../patient-context/deid-model-options.js?v=20260930-deid-trackd";
+} from "../patient-context/deid-model-options.js?v=20260921-medication-card-v4";
 import {
   canAutomaticallyInstallModel,
   ensureModelPackServiceWorker,
@@ -98,13 +98,13 @@ import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTea
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences
-} from "../app/preferences.js?v=20260929-gpt6-models";
-import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1&icon=search-v1";
-import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=section-scroll-v3&parser=table-v6&local-llm-v1&clear-btn-v1";
-import { createDailySourceController } from "./daily/source-controller.js?v=20260923-plan-problems-v1&scroll=preserve-section-scroll-v3&parser=table-v7&local-llm-v3&clear-btn-v1";
+} from "../app/preferences.js?v=20260722-guideline-library";
+import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1";
+import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=section-scroll-v3&parser=table-v6&local-llm-v1";
+import { createDailySourceController } from "./daily/source-controller.js?v=20260923-plan-problems-v1&scroll=preserve-section-scroll-v3&parser=table-v7&local-llm-v3";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20260928-ap-suggestions-v1&trend=concise-v3";
-import { createReviewController } from "./review/controller.js?v=20260928-ap-suggestions-v1&labs=analyte-selection-v3&rxnorm=v2&draft=sections-v1&pull=stay-fallback-v1";
+import { createReviewController } from "./review/controller.js?v=20260928-ap-suggestions-v1&labs=analyte-selection-v3";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-medication-card-v4";
 import {
   createPromptTaskController,
@@ -131,19 +131,16 @@ import {
   warningSnippet
 } from "./redaction/presentation.js?v=20260921-medication-card-v4";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
-import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20260929-deid-clinicale5";
+import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20260929-deid-r2";
 import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261001-llm-verifier-v1";
 import { createDemoController } from "./demo/controller.js?v=20261001-demo-v4";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261001-demo-v4";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20261001-demo-v4";
-import { createAiChatController } from "./ai-chat/controller.js?v=20261001-ai-chat-drawer-sync";
+import { createAiChatController } from "./ai-chat/controller.js?v=20260929-deid-r2";
 import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261001-drug-checks-v2";
 import { createDrugChecksController } from "./drug-checks/controller.js?v=20261001-drug-checks-v2";
-import { clearAllRagIndexes } from "../rag/rag-service.js?v=20260929-rag-v3";
-import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
-import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
 import { createScoresController } from "./scores/controller.js?v=20260927-models-v2";
-import { createCheatSheetsController } from "./cheat-sheets/controller.js?v=20261001-cheatsheets-fix-v1";
+import { createCheatSheetsController } from "./cheat-sheets/controller.js?v=20260929-cheat-sheets-v1";
 import { createSampleNotesController } from "./sample-notes/controller.js?v=20261001-sample-notes-v2";
 import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20260928-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260928-local-llm-v10";
@@ -209,11 +206,11 @@ const app = {
   demoPreviewMode: false,
   admissionDate: "" // in-memory copy of the encrypted patient's admission-date anchor
 };
-const viewIds = ["vault", "daily", "cheatSheets", "review", "sampleNotes", "prompts", "quickDeid", "aiChat", "drugLookup", "drugChecks", "scores", "scribePro", "settings"];
+const viewIds = ["vault", "daily", "cheatSheets", "review", "sampleNotes", "prompts", "quickDeid", "aiChat", "drugChecks", "scores", "settings"];
 const viewTitles = {
   vault: "Vault / Roster", daily: "Hospital Stay", review: "Review Data / Draft Note",
   cheatSheets: "Cheat Sheets", prompts: "Prompts",
-  quickDeid: "Quick De-ID Tool", sampleNotes: "Sample Notes", aiChat: "AI Chat", drugLookup: "Drug Lookup", drugChecks: "Drug checks", scores: "Models", settings: "Settings"
+  quickDeid: "Quick De-ID Tool", aiChat: "AI Chat", drugChecks: "Drug checks", scores: "Models", sampleNotes: "Sample Notes", settings: "Settings"
 };
 let draggedSectionRow = null;
 let sectionDragSaved = false;
@@ -252,7 +249,6 @@ const dailyPresentation = createDailyPresentation({ escapeHtml, icon, localAiPar
 const reviewPresentation = createReviewPresentation({ escapeHtml, icon });
 const redactionPresentation = createRedactionPresentation({ escapeHtml, icon });
 const quickDeidPresentation = createQuickDeidPresentation({ escapeHtml, icon });
-const drugLookupPresentation = createDrugLookupPresentation({ escapeHtml, icon });
 const promptsPresentation = createPromptsPresentation({ escapeHtml });
 const settingsPresentation = createSettingsPresentation({ escapeHtml });
 const vaultPresentation = createVaultPresentation({ escapeHtml, icon });
@@ -279,10 +275,8 @@ const demoController = createDemoController({
   // Lazy arrows: invoked only after full module evaluation, so referencing
   // controllers declared below is safe.
   getCheatSheetOpenId: () => cheatSheetsController.getOpenSheetId(),
-  seedAiChatDemo: (samples) => aiChatController.seedDemoMessages(samples),
-  clearAiChatDemo: () => aiChatController.clearDemoMessages(),
-  setAiChatDemoReply: (answer, onReply) => aiChatController.setDemoReply(answer, onReply),
-  clearAiChatDemoReply: () => aiChatController.clearDemoReply()
+  seedAiChatDemo: ({ question, answer }) => aiChatController.seedDemoMessages({ question, answer }),
+  clearAiChatDemo: () => aiChatController.clearDemoMessages()
 });
 const reviewController = createReviewController({ app, active, byId, presentation: reviewPresentation, patientRequiredMessage, persistVault, render, setStatus, showToast, copyText: clipboard.copyText, downloadText, isEphemeralDemo: () => Boolean(app.demoSession), onDraftSaved: () => demoController.observeDraftSaved(), currentPreferences });
 const demoSessionController = createDemoSessionController({
@@ -294,45 +288,6 @@ const demoSessionController = createDemoSessionController({
   render,
   setStatus
 });
-// Section-citation navigation: clicking a "per [Section]" chip in AI Chat
-// opens the matching saved chart source. The target ({ scope, dayId,
-// sectionId }) comes from the reviewed chart pieces, so it always points at
-// a real saved source — never a vector chunk. Admission sections and
-// hospital-day captures both live in the Hospital Stay view under
-// #contextSections / #dailySources.
-function navigateToChartSection(target) {
-  if (!target || !active()) return;
-  if (target.scope === "context") {
-    app.selectedStayPacketId = "admission";
-  } else if (target.scope === "daily" && target.dayId) {
-    app.selectedDayId = target.dayId;
-    app.selectedStayPacketId = target.dayId;
-  } else {
-    return;
-  }
-  app.view = "daily";
-  render();
-  // The daily view renders synchronously inside render(); scroll and flash
-  // the matching saved source on the next frame.
-  requestAnimationFrame(() => {
-    const listId = target.scope === "daily" ? "dailySources" : "contextSections";
-    let el = null;
-    if (target.sectionId) {
-      el = document.querySelector(
-        `#${listId} .section-editor[data-section-id="${CSS.escape(String(target.sectionId))}"]`
-      );
-    }
-    // Day-level pieces (e.g. quick notes) anchor the packet's section list.
-    if (!el) el = document.getElementById(listId);
-    if (!el) return;
-    el.scrollIntoView({ block: "center", behavior: "smooth" });
-    el.classList.remove("aic-flash-section");
-    void el.offsetWidth;
-    el.classList.add("aic-flash-section");
-    setTimeout(() => el.classList.remove("aic-flash-section"), 1700);
-  });
-}
-
 const aiChatController = createAiChatController({
   app,
   byId,
@@ -341,54 +296,11 @@ const aiChatController = createAiChatController({
   setStatus,
   render: renderAiChat,
   getDraftNoteText: () => reviewController.getDraftNoteText(),
-  getDraftNoteSections: () => reviewController.getDraftNoteSections(),
   currentPreferences,
   onChatServiceChange: (value) => {
     setVaultPreferences({ ...currentPreferences(), chatService: value });
     persistVault("Chat service updated.").then(() => render());
-  },
-  onOpenAiModelChange: (value) => {
-    setVaultPreferences({ ...currentPreferences(), openAiModel: value });
-    persistVault("ChatGPT model updated.").then(() => render());
-  },
-  onNavigateToChartSection: navigateToChartSection
-});
-// Medication names for the active patient, pulled from parsed medication
-// captures on this device. Only names are returned; the caller sends just
-// those names to NLM for RxCUI matching, never patient context.
-function getPatientMedicationNames() {
-  const patient = active();
-  if (!patient) return [];
-  const names = [];
-  const seen = new Set();
-  for (const day of patient.days || []) {
-    for (const capture of day.sourceCaptures || []) {
-      if (capture?.sourceKind !== "medication_activity") continue;
-      const text = capture.deidentifiedText || "";
-      if (!text.trim()) continue;
-      try {
-        const parsed = parseClinicalExport(text, { sourceKind: "medication_activity" });
-        for (const group of parsed?.displayModel?.groups || []) {
-          for (const row of group.rows || []) {
-            const name = String(row?.name || "").trim();
-            if (name && !seen.has(name.toLowerCase())) {
-              seen.add(name.toLowerCase());
-              names.push(name);
-            }
-          }
-        }
-      } catch {
-        // Skip captures that do not parse; never break the view.
-      }
-    }
   }
-  return names;
-}
-const drugLookupController = createDrugLookupController({
-  presentation: drugLookupPresentation,
-  render: renderDrugLookup,
-  setStatus,
-  getPatientMedicationNames
 });
 const drugChecksPresentation = createDrugChecksPresentation({ escapeHtml });
 const drugChecksController = createDrugChecksController({
@@ -396,10 +308,7 @@ const drugChecksController = createDrugChecksController({
   byId,
   escapeHtml,
   render: renderDrugChecks,
-  vaultIsUnlocked,
-  onCheckComplete: (ok) => {
-    if (ok) demoController.observeAction("drug-checks-check");
-  }
+  vaultIsUnlocked
 });
 const scoresController = createScoresController({
   app,
@@ -432,24 +341,6 @@ const deidSession = createDeidSessionCoordinator({ state: app, admissionDateAnch
   if (!String(name || "").trim() && !String(dob || "").trim()) return null;
   return { name: String(name || ""), dob: String(dob || "") };
 } });
-const sampleNotesController = createSampleNotesController({
-  app,
-  byId,
-  escapeHtml,
-  icon,
-  replaceViewContent,
-  render,
-  setStatus,
-  copyText: clipboard.copyText,
-  vaultIsUnlocked,
-  ensureSelectedDeidReady,
-  deidentify: deidSession.deidentify,
-  updateDeidOperation,
-  persistVault,
-  setSectionDraftText,
-  beginSectionReview,
-  clearPatientScopedSession
-});
 const dailySourceController = createDailySourceController({
   app,
   active,
@@ -478,6 +369,26 @@ const dailySourceController = createDailySourceController({
   persistVault,
   render,
   applyApprovedRedactions
+});
+// Sample Notes needs the de-identification session, so it is created after
+// deidSession (const bindings are not hoisted).
+const sampleNotesController = createSampleNotesController({
+  app,
+  byId,
+  escapeHtml,
+  icon,
+  replaceViewContent,
+  render,
+  setStatus,
+  copyText: clipboard.copyText,
+  vaultIsUnlocked,
+  ensureSelectedDeidReady,
+  deidentify: deidSession.deidentify,
+  updateDeidOperation,
+  persistVault,
+  setSectionDraftText,
+  beginSectionReview,
+  clearPatientScopedSession
 });
 const tokenColorPicker = createTokenColorPickerController({
   byId,
@@ -957,12 +868,9 @@ function decorateNavigation() {
   document.querySelectorAll(".primary-nav [data-icon]").forEach((button) => {
     if (button.dataset.decorated) return;
     const label = button.textContent.trim();
-    const note = (button.dataset.note || "").trim();
-    const noteHtml = note ? `<small class="nav-note">${escapeHtml(note)}</small>` : "";
-    button.innerHTML = `${icon(button.dataset.icon)}<span>${escapeHtml(label)}${noteHtml}</span>`;
-    const accessible = note ? `${label} — ${note}` : label;
-    button.setAttribute("aria-label", accessible);
-    button.title = accessible;
+    button.innerHTML = `${icon(button.dataset.icon)}<span>${escapeHtml(label)}</span>`;
+    button.setAttribute("aria-label", label);
+    button.title = label;
     button.dataset.decorated = "true";
   });
 }
@@ -1025,10 +933,6 @@ function clearPatientScopedSession() {
 }
 
 function clearSensitiveSession() {
-  // Chart-grounded RAG: drop the in-memory embedding vectors and the cached
-  // per-patient chart indexes BEFORE protected state is discarded.
-  // Fire-and-forget — lock must not wait on it.
-  void clearAllRagIndexes().catch(() => {});
   if (vaultInactivityTimer) {
     clearTimeout(vaultInactivityTimer);
     vaultInactivityTimer = null;
@@ -1144,7 +1048,7 @@ function render() {
   // cached data) must never prevent renderStatusBar() below from running -
   // that's what reflects patient selection, so a single broken view previously
   // made the whole app look like patient selection had stopped working.
-  for (const renderView of [renderVault, renderDaily, renderReview, renderCheatSheets, renderPrompts, renderQuickDeid, renderSampleNotes, renderAiChat, renderDrugLookup, renderDrugChecks, renderScores, renderScribePro, renderSettings]) {
+  for (const renderView of [renderVault, renderDaily, renderReview, renderCheatSheets, renderPrompts, renderQuickDeid, renderAiChat, renderDrugChecks, renderScores, renderSampleNotes, renderSettings]) {
     try {
       renderView();
     } catch (error) {
@@ -1461,9 +1365,7 @@ function renderSettings() {
     guidelineOpenId: app.guidelineOpenId,
     guidelineCreateDraft: app.guidelineCreateDraft,
     OPENAI_WORKUP_MODEL_OPTIONS,
-    colorOverrides: app.tokenColorOverrides,
-    localAiGuidelines: readLocalLlmSettings().systemGuidelines || DEFAULT_SYSTEM_GUIDELINES,
-    offlineMode: isOfflineMode()
+    colorOverrides: app.tokenColorOverrides
   }));
 }
 
@@ -1493,42 +1395,6 @@ async function clearOpenAiByok() {
   const preferences = currentPreferences();
   setVaultPreferences({ ...preferences, openAiApiKey: "" });
   await persistVault("Saved OpenAI key removed from the encrypted local vault.");
-  render();
-}
-
-// App-wide offline mode: one boolean in localStorage that the network gate
-// enforces on every remote request. The AI Chat controller subscribes to the
-// same event and degrades ChatGPT chat to the on-device model; here we just
-// reflect the toggle in the header pill and re-render the Settings panel.
-function toggleOfflineMode() {
-  const next = !isOfflineMode();
-  setOfflineMode(next);
-  renderOfflineModePill();
-  renderSettings();
-  setStatus(next
-    ? "Offline mode is on. OpenAI calls, ChatGPT chat, and model downloads are blocked; everything on-device keeps working."
-    : "Offline mode is off. Cloud features are available again.");
-}
-
-function renderOfflineModePill() {
-  const pill = byId("offlineModePill");
-  if (!pill) return;
-  const offline = isOfflineMode();
-  pill.textContent = offline ? "Offline mode" : "Online";
-  pill.classList.toggle("is-offline", offline);
-  pill.title = offline
-    ? "Offline mode is on — no network requests will be sent. Change it in Settings."
-    : "Online — cloud features are available. Change it in Settings.";
-}
-
-function saveLocalAiGuidelines() {
-  const value = String(byId("localAiGuidelinesInput")?.value ?? "");
-  writeLocalLlmSettings({ systemGuidelines: value });
-  render();
-}
-
-function resetLocalAiGuidelines() {
-  writeLocalLlmSettings({ systemGuidelines: "" });
   render();
 }
 
@@ -1667,6 +1533,10 @@ function renderQuickDeid() {
   scheduleQuickReviewFocus();
 }
 
+function renderLocalAi() {
+  localAiController.render();
+}
+
 function renderScores() {
   scoresController.render();
 }
@@ -1683,34 +1553,6 @@ function renderAiChat() {
   aiChatController.render();
 }
 
-// Scribe Pro (src/scribe-parakeet/) is a first-class in-app view. Its DOM lives
-// in index.html (#scribeProView); the module wires itself up on first import,
-// so it loads lazily the first time the view is shown. Like the other
-// workspace views it requires the vault to be unlocked.
-let scribeProBoot = null;
-function ensureScribePro() {
-  if (!scribeProBoot) {
-    scribeProBoot = import("../scribe-parakeet/app.js").catch((error) => {
-      scribeProBoot = null;
-      throw error;
-    });
-  }
-  return scribeProBoot;
-}
-
-function renderScribePro() {
-  if (app.view === "scribePro") {
-    ensureScribePro().catch((error) => {
-      console.error(error);
-      setStatus(`Scribe Pro failed to start: ${error instanceof Error ? error.message : "unknown error"}`);
-    });
-  }
-}
-
-function renderDrugLookup() {
-  drugLookupController.ensureAutoLoaded();
-  replaceViewContent(byId("drugLookupContent"), drugLookupController.renderView());
-}
 function renderDrugChecks() {
   replaceViewContent(byId("drugChecksContent"), drugChecksPresentation.renderDrugChecks({ state: app.drugChecks }));
 }
@@ -1776,12 +1618,7 @@ async function handleClick(event) {
   // data-pull-section but no data-action. Check before the data-action
   // early return below, otherwise these clicks are silently dropped.
   if (app.view === "review" && reviewController.click(event.target)) return;
-  if (app.view === "aiChat" && aiChatController.click(event.target)) {
-    const demoActionTarget = event.target.closest("[data-action]");
-    if (demoActionTarget) demoController.observeAction(demoActionTarget.dataset.action);
-    return;
-  }
-  if (app.view === "drugLookup" && drugLookupController.click(event.target)) return;
+  if (app.view === "aiChat" && aiChatController.click(event.target)) return;
   if (app.view === "drugChecks" && drugChecksController.click(event.target)) return;
   if (app.view === "scores" && scoresController.click(event.target)) return;
   if (app.view === "cheatSheets" && cheatSheetsController.click(event.target)) {
@@ -1859,10 +1696,7 @@ async function handleClick(event) {
       dailySourceController.selectSourceKind("admission", target.dataset.sourceKind || DEFAULT_DAILY_SOURCE_KIND);
       // Surgical: see above.
     }
-    if (dailySourceController.handleStructuredNoteAction(target)) {
-      demoController.observeAction(action);
-      return;
-    }
+    if (dailySourceController.handleStructuredNoteAction(target)) return;
     if (action === "move-section-up")
       await mutateSections(target.dataset.scope, (sections) => reorderSections(sections, target.dataset.sectionId, "up"));
     if (action === "move-section-down")
@@ -1891,9 +1725,7 @@ async function handleClick(event) {
     if (action === "save-structured-note-to-draft") await dailySourceController.saveStructuredNoteToDraft(target.dataset.noteScope || "daily");
     if (action === "add-day") await addDay();
     if (action === "add-daily-source") await dailySourceController.addSource();
-    if (action === "add-daily-source-raw") await dailySourceController.addSource({ deidentify: false });
     if (action === "add-admission-source") await dailySourceController.addAdmissionSource();
-    if (action === "add-admission-source-raw") await dailySourceController.addAdmissionSource({ deidentify: false });
     if (action === "select-day" || action === "select-admission")
       dailySourceController.selectPacket(action === "select-admission" ? "admission" : target.dataset.dayId);
     if (action === "save-day") await dailySourceController.saveSources();
@@ -1966,8 +1798,7 @@ async function unlockVault() {
     showVaultUnlockError("Enter the vault passphrase to continue.");
     return;
   }
-  const isCreatingVault = !readEncryptedVaultRecord();
-  if (isCreatingVault && passphrase.length < 12) {
+  if (!readEncryptedVaultRecord() && passphrase.length < 12) {
     showVaultUnlockError("Use a passphrase with at least 12 characters to create this vault.");
     return;
   }
@@ -1975,11 +1806,7 @@ async function unlockVault() {
   try {
     vault = await loadOrCreateVault(passphrase);
   } catch {
-    if (isCreatingVault) {
-      showVaultUnlockError("Could not create this vault. Try a different passphrase.");
-    } else {
-      showVaultUnlockError("Could not unlock this vault. Check the passphrase and try again.");
-    }
+    showVaultUnlockError("Could not unlock this vault. Check the passphrase and try again.");
     return;
   }
   // Decryption succeeded, so the vault is unlocked as of here. The guideline
@@ -3705,18 +3532,12 @@ function bindEvents() {
         render();
         return;
       }
-      if (app.demoSession && !["daily", "cheatSheets", "review", "prompts", "drugChecks", "aiChat", "scribePro"].includes(button.dataset.viewTarget))
+      if (app.demoSession && !["daily", "cheatSheets", "review", "prompts", "drugChecks", "aiChat"].includes(button.dataset.viewTarget))
         demoSessionController.exit({ renderAfter: false });
       if (button.dataset.viewTarget === "review") reviewController.prepare(app.selectedStayPacketId || app.selectedDayId || "admission");
       app.view = button.dataset.viewTarget;
       app.smartMenuOpen = false; render();
       demoController.observeNavigation(app.view);
-      if (button.dataset.viewTarget === "aiChat" && !isOfflineMode() && aiChatController.isRemoteMode?.()) {
-        // Warm the best de-identification system in the background so the
-        // first ChatGPT send doesn't wait on its one-time download. A
-        // failure only surfaces as status text; the send path retries.
-        void aiChatController.ensureDeidReady().catch(() => {});
-      }
     });
   });
 }

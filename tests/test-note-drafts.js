@@ -17,10 +17,13 @@ import {
   changeNoteDraftType,
   containsExcludedGuidanceLanguage,
   createNoteDraft,
+  deselectChecklistFinding,
   deselectObjectiveBlock,
   editObjectiveBlock,
   editObjectiveGroup,
+  editChecklistFinding,
   fieldsForNoteType,
+  keepChecklistFinding,
   keepObjectiveBlock,
   normalizeNoteDraft,
   objectiveEditorGroups,
@@ -29,7 +32,9 @@ import {
   refreshObjectiveGroup,
   removeObjectiveGroup,
   removeObjectiveGroupWithMemory,
+  refreshChecklistFinding,
   refreshObjectiveBlock,
+  reconcileChecklistFinding,
   reconcileObjectiveBlock,
   removeDifferential,
   removePlanProblem,
@@ -40,6 +45,7 @@ import {
   reorderPlanProblems,
   SECTION_VISIBILITY_KEYS,
   selectObjectiveBlock,
+  selectChecklistFinding,
   setSectionVisibility,
   studentGuidance,
   updateAssessment,
@@ -99,7 +105,7 @@ const options = { now: fixedNow, idFactory: fixedId };
   assert.equal(hp.sections.one_liner.deidentifiedText, "");
   assert.equal(hp.sections.other.deidentifiedText, "");
   assert.deepEqual(hp.objective.selectedBlocks, []);
-  assert.equal(hp.checklistFindings, undefined);
+  assert.deepEqual(hp.checklistFindings.selectedBlocks, []);
   assert.deepEqual(hp.problems, []);
   assert.equal(renderFinalNote(hp), "");
 
@@ -108,30 +114,41 @@ const options = { now: fixedNow, idFactory: fixedId };
   assert.throws(() => updateNoteSection(progress, "past_medical_history", "Should not be accepted", { now: fixedNow }), /not available/);
 }
 
-// Legacy checklistFindings stored in old encrypted drafts are dropped on
-// normalize: the interactive checklist is gone, so no new candidates are ever
-// built and old findings never render into the note.
+// Saved finding blocks stay chart-ready in legacy drafts without copying the
+// bedside questions into the note. (The interactive checklist is gone, so no
+// new candidates are ever built; these blocks come from previously saved
+// drafts and remain manageable.)
 {
-  const normalized = normalizeNoteDraft({
-    id: "legacy_checklist",
-    patientId: "patient_legacy",
-    noteType: NOTE_TYPES.PROGRESS,
-    checklistFindings: {
-      selectedBlocks: [
-        {
-          selectionId: "checklist:day_checklist:chest_pain",
-          sourceFingerprint: "fp_chest_pain",
-          kind: "history",
-          question: "Chest pain now?",
-          generatedText: "No \u00b7 Denies pressure.",
-          editedText: "No \u00b7 Denies pressure.",
-          state: "synced"
-        }
-      ]
+  const selections = [
+    {
+      selectionId: "checklist:day_checklist:chest_pain",
+      sourceFingerprint: "fp_chest_pain",
+      kind: "history",
+      question: "Chest pain now?",
+      generatedText: "No · Denies pressure."
+    },
+    {
+      selectionId: "checklist:day_checklist:edema",
+      sourceFingerprint: "fp_edema",
+      kind: "exam",
+      question: "Lower-extremity edema",
+      generatedText: "None"
     }
-  }, { ...options, now: fixedNow });
-  assert.equal(normalized.checklistFindings, undefined);
-  assert.doesNotMatch(renderFinalNote(normalized), /Denies pressure/);
+  ];
+  let draft = createNoteDraft(NOTE_TYPES.PROGRESS, { ...options, id: "checklist_import" });
+  draft = selectChecklistFinding(draft, selections[0], { now: fixedNow });
+  draft = selectChecklistFinding(draft, selections[1], { now: fixedNow });
+  draft = editChecklistFinding(draft, selections[1].selectionId, "No lower-extremity edema bilaterally.", { now: fixedNow });
+  const rendered = renderFinalNote(draft);
+  assert.match(rendered, /\*\*Subjective\*\*[\s\S]*No · Denies pressure/);
+  assert.doesNotMatch(rendered, /Chest pain now\?|Lower-extremity edema:/);
+  assert.match(rendered, /\*\*Physical Exam\*\*[\s\S]*No lower-extremity edema bilaterally/);
+  const plain = renderFinalNotePlainText(draft);
+  assert.match(plain, /^Subjective$/m);
+  assert.doesNotMatch(plain, /\*\*/);
+  draft = deselectChecklistFinding(draft, selections[0].selectionId, { now: fixedNow });
+  assert.doesNotMatch(renderFinalNote(draft), /Denies pressure/);
+  assert.match(renderFinalNote(draft), /No lower-extremity edema/);
 }
 
 // Switching the selected note format changes the available sections while
@@ -145,6 +162,45 @@ const options = { now: fixedNow, idFactory: fixedId };
   assert.equal(draft.sections.one_liner.deidentifiedText, "Synthetic one-liner");
   assert.equal(draft.sections.patient_report.deidentifiedText, "Chest discomfort improved.");
   assert.equal(draft.sections.chief_complaint, undefined);
+}
+
+// Student edits to imported checklist findings are preserved when the source
+// answer changes, with explicit refresh or keep actions.
+{
+  let draft = createNoteDraft(NOTE_TYPES.PROGRESS, { ...options, id: "checklist_stale" });
+  draft = selectChecklistFinding(draft, {
+    selectionId: "checklist:day_2:edema",
+    sourceFingerprint: "v1",
+    kind: "exam",
+    question: "Lower-extremity edema",
+    generatedText: "Lower-extremity edema: None"
+  }, { now: fixedNow });
+  draft = editChecklistFinding(draft, "checklist:day_2:edema", "No lower-extremity edema bilaterally.", { now: fixedNow });
+  draft = reconcileChecklistFinding(draft, {
+    selectionId: "checklist:day_2:edema",
+    sourceFingerprint: "v2",
+    kind: "exam",
+    question: "Lower-extremity edema",
+    generatedText: "Lower-extremity edema: Trace"
+  }, { now: fixedNow });
+  assert.equal(draft.checklistFindings.selectedBlocks[0].state, "stale");
+  assert.equal(draft.checklistFindings.selectedBlocks[0].editedText, "No lower-extremity edema bilaterally.");
+  assert.equal(draft.checklistFindings.selectedBlocks[0].pendingGeneratedText, "Lower-extremity edema: Trace");
+
+  const kept = keepChecklistFinding(draft, "checklist:day_2:edema", { now: fixedNow });
+  assert.equal(kept.checklistFindings.selectedBlocks[0].state, "edited");
+  assert.equal(kept.checklistFindings.selectedBlocks[0].sourceFingerprint, "v2");
+
+  const staleAgain = reconcileChecklistFinding(kept, {
+    selectionId: "checklist:day_2:edema",
+    sourceFingerprint: "v3",
+    kind: "exam",
+    question: "Lower-extremity edema",
+    generatedText: "Lower-extremity edema: 1+"
+  }, { now: fixedNow });
+  const refreshed = refreshChecklistFinding(staleAgain, "checklist:day_2:edema", { now: fixedNow });
+  assert.equal(refreshed.checklistFindings.selectedBlocks[0].state, "synced");
+  assert.equal(refreshed.checklistFindings.selectedBlocks[0].editedText, "Lower-extremity edema: 1+");
 }
 
 // Persisted text is explicitly de-identified, keeps timestamps, and strips

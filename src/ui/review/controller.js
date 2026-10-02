@@ -2,7 +2,24 @@ import { sortDays } from "../../daily-updates/days.js?v=20260921-medication-card
 import { updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20260924-optional-sections-v1&labs=20260925-trend-specimen-v1";
 import { createLabAutocomplete } from "./lab-autocomplete.js?v=20260924-dollar-autocomplete-v1";
-import { createDrugAutocomplete } from "./drug-autocomplete.js?v=20260929-drug-autocomplete-v1";
+import {
+  formatSavedScoreForNote,
+  listSavedScores,
+  removeSavedScore
+} from "../../clinical-scores/saved-scores.js";
+import {
+  addDraftCustomSection,
+  applyTemplateToDraft,
+  createNoteTemplate,
+  getLayout,
+  hideDraftSection,
+  moveDraftSection,
+  moveDraftSectionBy,
+  normalizeNoteTemplates,
+  removeDraftCustomSection,
+  removeNoteTemplate,
+  restoreDraftSection
+} from "../../note-drafts/layout.js";
 import {
   compileSmartExam,
   EXAM_SYSTEMS,
@@ -33,7 +50,6 @@ import {
   removePlanProblem,
   renderFinalNoteHtml,
   renderFinalNotePlainText,
-  renderNoteSectionEntries,
   reorderDifferentials,
   reorderPlanProblems,
   reselectObjectiveBlock,
@@ -47,7 +63,7 @@ import {
   updateManualObjective,
   updateNoteSection,
   updatePlanProblem
-} from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
+} from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20260925-plan-rows-v1";
 import {
   clearLabBaseline,
@@ -55,9 +71,8 @@ import {
 } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import {
   buildApRevisionPrompt
-} from "../../ai/ap-generator.js?v=20260929-ap-medcontext-v3";
+} from "../../ai/ap-generator.js?v=20260928-ap-suggestions-v1";
 import { generateProblemApRevisionsWithOpenAi } from "../openai-ap-api.js?v=20260928-ap-suggestions-v1";
-import { createDifferential } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
 
 function packetKey(value) {
   return String(value || "admission");
@@ -113,22 +128,6 @@ function moveId(ids, id, direction) {
 function sourceNoteForPacket(patient, selectedPacketId) {
   if (selectedPacketId === "admission") return patient?.admissionPrimaryTeamNote || null;
   return patient?.days?.find((day) => day.id === selectedPacketId)?.primaryTeamNote || null;
-}
-
-// Resolve which saved primary note a pull reads. The admission H&P is the
-// stay's canonical primary note: when the selected packet is a hospital day
-// with no saved primary note of its own, the pull reads the admission H&P
-// instead of failing — the student thinks of "the primary note" as one note,
-// and the H&P is the only one that exists. A day WITH a saved note keeps
-// strict packet scoping: its sections are authoritative for that day.
-function primaryNoteSourceForPull(patient, packet) {
-  const own = sourceNoteForPacket(patient, packet.id);
-  if (own) return { source: own, sourcePacketId: packet.id, sourceLabel: packet.label };
-  if (packet.id !== "admission") {
-    const admissionNote = patient?.admissionPrimaryTeamNote || null;
-    if (admissionNote) return { source: admissionNote, sourcePacketId: "admission", sourceLabel: "Admission H&P" };
-  }
-  return { source: null, sourcePacketId: packet.id, sourceLabel: packet.label };
 }
 
 // Saved note sections cross a state boundary: a fresh parse stores plain
@@ -194,14 +193,13 @@ export function createReviewController(deps) {
   // the saved baselines themselves live on the patient record in the vault.
   let baselineEditorId = "";
   // Per-problem AI Assessment & Plan generation state. Local UI state only:
-  // which problem is awaiting generation, and the pending de-identification
-  // confirmation ({ problemId, problemName, contextText }) shown in the modal.
-  // Nothing here is persisted; generated content lands in the draft on success.
-  let generatingApProblemId = "";
-  let apConfirmState = null;
-  // Pending per-problem revision suggestions
+  // which problem is awaiting generation, the pending editable-prompt
+  // confirmation ({ problemId, problemName, promptText }) shown in the modal,
+  // and the pending per-problem revision suggestions
   // ({ [problemId]: { suggestions, references } }) awaiting approve/reject.
   // Nothing here is persisted; approved suggestions land in the draft.
+  let generatingApProblemId = "";
+  let apConfirmState = null;
   let apSuggestionsState = {};
   // Which lab families / flagged sections are collapsed on the data sheet.
   // Local UI state only; it survives re-renders and the search-only DOM patch.
@@ -210,6 +208,51 @@ export function createReviewController(deps) {
   // Whether the Clinical Data panel is collapsed (user can focus on the note).
   // Local UI state only; survives re-renders.
   let clinicalDataCollapsed = false;
+
+  // Last known cursor position inside a draft editable region, captured on
+  // selectionchange. Clicking the "Insert score" picker moves focus to the
+  // Custom-section removal: sections with text ask for confirmation first so
+  // typed content can't be deleted by an accidental click. The pending id is
+  // stashed module-side (like lastDraftSelection) because the dialog lives in
+  // index.html, outside the re-rendered draft panel.
+  let pendingCustomSectionId = null;
+
+  function requestRemoveCustomSection(sectionId) {
+    const current = model();
+    if (!current.draft || !sectionId) return false;
+    const label = getLayout(current.draft).custom.find((entry) => entry.id === sectionId)?.label || "this section";
+    const text = String(current.draft.sections?.[sectionId] || "").trim();
+    if (!text) {
+      // Empty custom section: nothing to lose, remove immediately.
+      return applyLayoutMutation(
+        (draft) => removeDraftCustomSection(draft, sectionId),
+        "Section removed."
+      );
+    }
+    pendingCustomSectionId = sectionId;
+    const dialog = deps.byId("removeCustomSectionConfirmDialog");
+    const message = dialog?.querySelector("#removeCustomSectionConfirmText");
+    if (message) message.textContent = `Remove section "${label}"? Its text will be deleted. This can't be undone.`;
+    dialog?.showModal();
+    return true;
+  }
+
+  // picker button, so the live selection is stale by insert time — this
+  // stash lets score text land exactly where the cursor was.
+  let lastDraftSelection = null;
+  if (typeof document !== "undefined" && typeof document.addEventListener === "function") {
+    document.addEventListener("selectionchange", () => {
+      const selection = document.getSelection();
+      if (!selection || !selection.rangeCount) return;
+      const node = selection.anchorNode;
+      const element = node?.nodeType === 1 ? node : node?.parentElement;
+      const editable = element?.closest?.("[data-draft-section], [data-draft-assessment], [data-draft-objective-manual], [data-draft-closing]");
+      const panel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
+      if (editable && panel && panel.contains(editable) && !editable.closest("[data-score-picker]")) {
+        lastDraftSelection = { element: editable, range: selection.getRangeAt(0).cloneRange() };
+      }
+    });
+  }
 
   // Find the nearest ancestor (or self) that is actually scrolled —
   // the element whose scrollTop reflects the user's scroll position.
@@ -274,10 +317,6 @@ export function createReviewController(deps) {
       return [...(latestIndex.labs || []), ...(latestIndex.vitals || [])];
     }
   });
-
-  // Smart `@` autocomplete for drug lookup via OpenFDA.
-  // Attaches via event delegation so it survives full re-renders.
-  const drugAutocomplete = createDrugAutocomplete();
 
   // Only the 5 core vitals are auto-selected: BP, SpO2, HR, RR, Temp.
   // Medications are also auto-added. Labs and other vitals (weight, MAP, etc.)
@@ -358,6 +397,9 @@ export function createReviewController(deps) {
       const candidate = candidates.get(block.selectionId);
       if (candidate) draft = reconcileObjectiveBlock(draft, selectionInputFor(candidate));
     }
+    // The interactive checklist is gone: legacy selected finding blocks stay
+    // in the draft untouched (they remain part of the saved note), and no new
+    // checklist candidates are ever generated.
     // Auto-include every vital and medication candidate the student has not
     // explicitly unchecked. Explicit deselections survive re-renders, packet
     // switches, and saved-draft reloads through objective.deselectedIds.
@@ -421,6 +463,8 @@ export function createReviewController(deps) {
       generatingApProblemId,
       apConfirm: apConfirmState,
       apSuggestions: apSuggestionsState,
+      savedScores: listSavedScores(current.patient),
+      noteTemplates: normalizeNoteTemplates(deps.app.vault?.preferences?.noteTemplates)
     };
   }
 
@@ -532,10 +576,7 @@ export function createReviewController(deps) {
     }
     // Attach the `$` lab autocomplete via event delegation. Safe to call on
     // every render; it no-ops if already attached to this container.
-    if (container) {
-      labAutocomplete.attach(container);
-      drugAutocomplete.attach(container);
-    }
+    if (container) labAutocomplete.attach(container);
   }
 
   // Surgical update: refresh ONLY the draft note panel (right column),
@@ -567,6 +608,8 @@ export function createReviewController(deps) {
       generatingApProblemId: vm.generatingApProblemId,
       apConfirm: vm.apConfirm,
       apSuggestions: vm.apSuggestions,
+      savedScores: vm.savedScores,
+      noteTemplates: vm.noteTemplates
     });
     const template = document.createElement("template");
     template.innerHTML = draftHtml;
@@ -687,6 +730,8 @@ export function createReviewController(deps) {
       generatingApProblemId: vm.generatingApProblemId,
       apConfirm: vm.apConfirm,
       apSuggestions: vm.apSuggestions,
+      savedScores: vm.savedScores,
+      noteTemplates: vm.noteTemplates
     });
     // Preserve the draft panel's own scroll position across the update.
     const scrollTop = draftPanel.scrollTop;
@@ -927,49 +972,18 @@ export function createReviewController(deps) {
   let autoSaveIndicatorTimer = null;
   function scheduleAutoSave() {
     if (autoSaveTimer) clearTimeout(autoSaveTimer);
-    // Capture the patient/packet/draft now. If the student switches patients
-    // before the debounce fires, the save must go to the captured patient,
-    // not the new current one (and the in-flight edits must not be lost).
-    const sched = model();
-    const scheduled = sched.patient ? {
-      patientId: sched.patient.id,
-      packetId: sched.packet?.id,
-      draft: sched.draft,
-    } : null;
-    autoSaveTimer = setTimeout(() => { void persistDraftToVault(scheduled); }, 1500);
+    autoSaveTimer = setTimeout(() => { void persistDraftToVault(); }, 1500);
+    // Show "Saving…" indicator immediately
     const indicator = document.querySelector("[data-autosave-indicator]");
     if (indicator) {
-      indicator.textContent = "Saving\u2026";
+      indicator.textContent = "Saving…";
       indicator.dataset.state = "saving";
     }
   }
-  async function persistDraftToVault(scheduled) {
+  async function persistDraftToVault() {
     autoSaveTimer = null;
     const current = model();
     if (!current.patient) return;
-    // Patient switched mid-debounce: the in-flight edits belong to the
-    // scheduled patient. Redirect the save there instead of writing the
-    // new patient's (empty) draft or dropping the edits.
-    if (scheduled && scheduled.patientId && current.patient.id !== scheduled.patientId) {
-      if (!scheduled.packetId) return;
-      const savedDraft = normalizeNoteDraft(scheduled.draft);
-      const vault = deps.app.vault || {};
-      const patients = (vault.patients || []).map((entry) => (
-        entry.id === scheduled.patientId
-          ? { ...entry, noteDrafts: { ...(entry.noteDrafts || {}), [scheduled.packetId]: savedDraft }, updatedAt: Date.now() }
-          : entry
-      ));
-      deps.app.vault = { ...vault, patients, updatedAt: Date.now() };
-      const ephemeralDemo = deps.isEphemeralDemo?.();
-      if (!ephemeralDemo) await deps.persistVault();
-      deps.onDraftSaved?.();
-      const indicator = document.querySelector("[data-autosave-indicator]");
-      if (indicator) {
-        indicator.textContent = ephemeralDemo ? "Demo \u2014 not saved" : "Saved";
-        indicator.dataset.state = "saved";
-      }
-      return;
-    }
     const savedDraft = normalizeNoteDraft(current.draft);
     deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({
       ...patient,
@@ -981,9 +995,10 @@ export function createReviewController(deps) {
     deps.onDraftSaved?.();
     const indicator = document.querySelector("[data-autosave-indicator]");
     if (indicator) {
-      indicator.textContent = ephemeralDemo ? "Demo \u2014 not saved" : "Saved";
+      indicator.textContent = ephemeralDemo ? "Demo — not saved" : "Saved";
       indicator.dataset.state = "saved";
       if (autoSaveIndicatorTimer) clearTimeout(autoSaveIndicatorTimer);
+      // Fade back to subtle "Auto-save on" after a moment
       autoSaveIndicatorTimer = setTimeout(() => {
         const el = document.querySelector("[data-autosave-indicator]");
         if (el && el.dataset.state === "saved") {
@@ -1059,7 +1074,10 @@ export function createReviewController(deps) {
     }
   }
 
-  // --- Per-problem AI Assessment & Plan generation ---
+  // --- Per-problem AI Assessment & Plan: suggested-edits flow ---
+  // The AI never rewrites the plan. It proposes targeted revisions (add /
+  // revise / remove) against this problem's CURRENT plan, and the student
+  // approves or rejects each suggestion individually, Google-Docs style.
   // Extract plain text from a draft field (string or { deidentifiedText }).
   function apDraftText(value) {
     if (typeof value === "string") return value;
@@ -1108,12 +1126,7 @@ export function createReviewController(deps) {
       therapeuticPlan: apPlanFieldText(problem, "therapeuticPlan"),
       assessment: apDraftText(draft.assessment),
       vitals: apDraftText(draft.vitalsSummary),
-      keyLabs: apDraftText(draft.keyLabsSummary),
-      // Active medication list (MAR + home meds, coalesced by the review
-      // index). No problem→medication association exists, so the whole active
-      // list is passed; the prompt builder resolves each entry to RxNorm
-      // concepts and silently drops anything unresolvable.
-      medications: (current.index?.medications || []).map((m) => m?.name).filter(Boolean)
+      keyLabs: apDraftText(draft.keyLabsSummary)
     });
     apConfirmState = { problemId, problemName: problemName || "(unnamed problem)", promptText };
     // Insert just the modal node — no re-render. The modal lives at the end
@@ -1146,11 +1159,11 @@ export function createReviewController(deps) {
     apConfirmState = null;
     generatingApProblemId = problemId;
     // Remove the modal node and re-render the card to show the prominent
-    // loading banner (plus the Consulting button state).
+    // loading banner (plus the Generating button state).
     const panel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
     panel?.querySelector("[data-ap-confirm-overlay]")?.remove();
     refreshProblemCard(problemId);
-    deps.setStatus(`Consulting AI on "${pending.problemName}"…`);
+    deps.setStatus(`Asking AI for suggested revisions to "${pending.problemName}"…`);
     try {
       const preferences = deps.currentPreferences ? deps.currentPreferences() : {};
       const result = await generateProblemApRevisionsWithOpenAi({
@@ -1158,9 +1171,7 @@ export function createReviewController(deps) {
         model: preferences.openAiModel,
         prompt: finalPrompt
       });
-      generatingApProblemId = "";
       if (!result.suggestions.length) {
-        refreshProblemCard(problemId);
         deps.setStatus(`AI found no revisions worth suggesting for "${pending.problemName}" — the current plan stands.`);
         return;
       }
@@ -1168,17 +1179,27 @@ export function createReviewController(deps) {
         ...apSuggestionsState,
         [problemId]: { suggestions: result.suggestions, references: result.references }
       };
-      // Swap just this card's node with its fresh render, which now includes
-      // the suggestion list. Input events sync edits to the model on every
-      // keystroke, so the fresh render already includes the student's text.
-      refreshProblemCard(problemId);
       deps.setStatus(`${result.suggestions.length} suggestion${result.suggestions.length === 1 ? "" : "s"} for "${pending.problemName}" — approve or reject each one.`);
     } catch (error) {
-      generatingApProblemId = "";
-      // Restore the Consult button from a fresh render of just the card.
-      refreshProblemCard(problemId);
       const message = error instanceof Error ? error.message : "Suggestion generation failed.";
       deps.setStatus(message);
+    } finally {
+      // Always clear the generating flag and restore the card, even if the
+      // API call, parsing, or status update threw. A stuck "Generating…"
+      // button is worse than any error message.
+      generatingApProblemId = "";
+      try {
+        refreshProblemCard(problemId);
+      } catch {
+        // If the fresh render itself fails, fall back to restoring just the
+        // button directly so the student can retry.
+        const fallbackBtn = deps.byId("reviewContent")?.querySelector(`[data-problem-id="${CSS.escape(problemId)}"] [data-action="generate-ap"]`);
+        if (fallbackBtn) {
+          fallbackBtn.disabled = false;
+          const svg = fallbackBtn.querySelector("svg")?.outerHTML || "";
+          fallbackBtn.innerHTML = `${svg} Generate`;
+        }
+      }
     }
   }
 
@@ -1329,6 +1350,8 @@ export function createReviewController(deps) {
     deps.setStatus("Suggestion rejected.");
   }
 
+
+
   async function saveLabBaseline(analyte, fields, { clear = false } = {}) {    const current = model();
     if (!current.patient) return;
     deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({
@@ -1341,28 +1364,22 @@ export function createReviewController(deps) {
     // Refresh just the data list (children replacement preserves the
     // list's own scrollTop). The saved baseline now shows on the row.
     patchDataList();
+    // Reconcile objective blocks against the fresh index so the review sheet
+    // reflects the new baseline (synced blocks update, edited blocks go stale).
+    const refreshed = model();
+    if (refreshed.patient) {
+      setDraft(refreshed.draft);
+      const container = deps.byId("reviewContent");
+      container?.querySelectorAll('.note-draft-panel [data-objective-group]').forEach((node) => {
+        const next = freshDraftNode(`[data-objective-group="${CSS.escape(node.dataset.objectiveGroup)}"]`);
+        if (next) node.replaceWith(next);
+      });
+    }
     const ephemeralDemo = deps.isEphemeralDemo?.();
     if (!ephemeralDemo) await deps.persistVault(clear ? "Baseline cleared." : "Baseline saved.");
     deps.setStatus(ephemeralDemo
       ? "Baseline change kept only for this temporary walkthrough."
       : clear ? "Baseline cleared." : "Baseline saved — the review sheet and note now show it.");
-  }
-
-  // Unsaved primary-note input (typed sections or pasted text that was never
-  // de-identified and saved) is the most common reason a pull finds "no note".
-  // Name it so the student knows exactly which button to press. The transient
-  // maps are cleared on patient switch and on successful save, so content here
-  // with no saved note is genuinely unsaved input for this patient.
-  function unsavedPrimaryNoteMessage(packet) {
-    const key = packet.id === "admission" ? "admission" : packet.id;
-    const drafts = deps.app.structuredNoteDrafts?.get(key) || {};
-    const composer = deps.app.structuredNoteComposers?.get(key) || {};
-    const hasDraftText = Object.values(drafts).some((value) => String(value ?? "").trim());
-    const hasPastedText = String(composer.pastedText ?? "").trim();
-    if (hasDraftText || hasPastedText) {
-      return `Your primary-note text for ${packet.label} isn't saved yet — click "De-identify & save" under Hospital Stay first, then pull.`;
-    }
-    return "";
   }
 
   // Pull the corresponding section text from the primary team note (for the
@@ -1371,12 +1388,10 @@ export function createReviewController(deps) {
   function pullFromPrimaryNote(fieldId) {
     const current = model();
     if (!current.patient) return;
-    const packet = current.packet;
+    const source = sourceNoteForPacket(current.patient, current.packet.id);
     const fieldLabel = fieldId.replace(/_/g, " ");
-    const { source, sourcePacketId, sourceLabel } = primaryNoteSourceForPull(current.patient, packet);
     if (!source) {
-      const message = unsavedPrimaryNoteMessage(packet)
-        || `No primary team note for ${packet.label} — paste one under Hospital Stay first, then pull.`;
+      const message = "No primary team note for this day — paste one under Hospital Stay first, then pull.";
       deps.setStatus(message);
       deps.showToast?.(message, { type: "warning" });
       return;
@@ -1484,18 +1499,14 @@ export function createReviewController(deps) {
       noteDrafts: { ...(patient.noteDrafts || {}), [current.packet.id]: normalizedPull }
     }));
     setDraft(normalizedPull);
-    const successMessage = sourcePacketId === packet.id
-      ? `Pulled ${fieldLabel} from primary note.`
-      : `Pulled ${fieldLabel} from ${sourceLabel} (no primary note saved for ${packet.label}).`;
-    deps.setStatus(successMessage);
-    deps.showToast?.(successMessage, { type: "success", durationMs: 2500 });
     if (!deps.isEphemeralDemo?.()) {
-      // Pass the same message to the vault persist so its completion status
-      // does not clobber the informative message above with a generic one.
-      void deps.persistVault(successMessage).catch(() => {
+      void deps.persistVault("Pulled section saved.").catch(() => {
         deps.showToast?.("Pulled content is shown, but the vault save failed — your changes may not persist.", { type: "error" });
       });
     }
+    const successMessage = `Pulled ${fieldLabel} from primary note.`;
+    deps.setStatus(successMessage);
+    deps.showToast?.(successMessage, { type: "success", durationMs: 2500 });
     // Surgical: refresh only the affected region(s) — no re-render, so
     // both the clinical-data list and the draft panel keep their scroll.
     const livePanel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
@@ -1961,6 +1972,178 @@ export function createReviewController(deps) {
     return false;
   }
 
+  // ---- Saved-score insertion ----
+  // The "Insert score" picker lists only this patient's saved calculations.
+  // Insertion lands at the stashed cursor (see lastDraftSelection); the
+  // dispatched input event flows through updateInput so the model saves.
+  function scorePickerPanel() {
+    return deps.byId("reviewContent")?.querySelector(".note-draft-panel [data-score-picker]");
+  }
+
+  function toggleScorePicker() {
+    const picker = scorePickerPanel();
+    if (picker) picker.hidden = !picker.hidden;
+  }
+
+  function hideScorePicker() {
+    const picker = scorePickerPanel();
+    if (picker) picker.hidden = true;
+  }
+
+  function insertSavedScore(recordId) {
+    const current = model();
+    if (!current.patient || typeof document === "undefined") return false;
+    const record = listSavedScores(current.patient).find((entry) => entry.id === recordId);
+    if (!record) return false;
+    const panel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
+    if (!panel) return false;
+    let element = null;
+    let range = null;
+    if (lastDraftSelection?.element?.isConnected && panel.contains(lastDraftSelection.element)) {
+      element = lastDraftSelection.element;
+      range = lastDraftSelection.range;
+    } else {
+      // Sensible fallback: scores usually belong in the Assessment.
+      element = panel.querySelector("[data-draft-assessment]");
+    }
+    if (!element) return false;
+    element.focus();
+    const selection = window.getSelection();
+    if (!selection) return false;
+    selection.removeAllRanges();
+    let placed = false;
+    if (range) {
+      try {
+        selection.addRange(range);
+        placed = true;
+      } catch {
+        placed = false;
+      }
+    }
+    if (!placed) {
+      selection.selectAllChildren(element);
+      selection.collapseToEnd();
+    }
+    const activeRange = selection.getRangeAt(0);
+    const textNode = document.createTextNode(formatSavedScoreForNote(record));
+    activeRange.insertNode(textNode);
+    const newRange = document.createRange();
+    newRange.setStartAfter(textNode);
+    newRange.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(newRange);
+    element.dispatchEvent(new InputEvent("input", { bubbles: true }));
+    hideScorePicker();
+    deps.setStatus(`Inserted ${record.title || "score"} into the note.`);
+    return true;
+  }
+
+  function removeSavedScoreRecord(recordId) {
+    deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({
+      ...patient,
+      savedScores: removeSavedScore(patient.savedScores, recordId)
+    }));
+    renderDraftPanelOnly();
+    if (typeof deps.persistVault === "function") {
+      void deps.persistVault("Saved score removed.").catch(() => {});
+    }
+  }
+
+  // ---- Note layout ----
+  // Section order/visibility/custom sections live on draft.layout (pure
+  // helpers in note-drafts/layout.js). Mutations update the session draft and
+  // re-render just the draft panel; persistence happens via auto-save.
+  function layoutPanelNode() {
+    return deps.byId("reviewContent")?.querySelector(".note-draft-panel [data-layout-panel]");
+  }
+
+  function layoutInputValue(selector) {
+    const input = layoutPanelNode()?.querySelector(selector);
+    return input ? String(input.value || "").trim() : "";
+  }
+
+  function currentTemplates() {
+    return normalizeNoteTemplates(deps.app.vault?.preferences?.noteTemplates);
+  }
+
+  function persistTemplates(templates) {
+    const vault = deps.app.vault;
+    deps.app.vault = {
+      ...vault,
+      preferences: { ...(vault?.preferences || {}), noteTemplates: normalizeNoteTemplates(templates) }
+    };
+    if (typeof deps.persistVault === "function") {
+      void deps.persistVault("Layout template updated.").catch(() => {});
+    }
+  }
+
+  function applyLayoutMutation(mutator, statusMessage) {
+    const current = model();
+    if (!current.draft) return false;
+    const next = mutator(current.draft);
+    if (next === current.draft) return true;
+    current.draft = next;
+    setDraft(next);
+    renderDraftPanelOnly();
+    if (statusMessage) deps.setStatus(statusMessage);
+    return true;
+  }
+
+  // Drag-and-drop section reorder. Only drags that start on the ⠿ handle
+  // reorder; anything else (text selection, content drags) is cancelled so
+  // editing inside a section never triggers a reorder.
+  function clearDropIndicators() {
+    deps.byId("reviewContent")?.querySelectorAll(".ed-section--drop-target")
+      .forEach((el) => el.classList.remove("ed-section--drop-target"));
+  }
+
+  function dragstart(event) {
+    const target = event.target;
+    const section = target?.closest?.("details.ed-section[data-draft-section-id]");
+    if (!section) return false;
+    const handle = target?.closest?.(".ed-drag-handle");
+    if (!handle) {
+      event.preventDefault();
+      return true;
+    }
+    event.dataTransfer.setData("text/plain", section.dataset.draftSectionId || "");
+    event.dataTransfer.effectAllowed = "move";
+    return true;
+  }
+
+  function dragover(event) {
+    const section = event.target?.closest?.("details.ed-section[data-draft-section-id]");
+    if (!section) return false;
+    event.preventDefault();
+    if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+    clearDropIndicators();
+    section.classList.add("ed-section--drop-target");
+    return true;
+  }
+
+  function drop(event) {
+    const section = event.target?.closest?.("details.ed-section[data-draft-section-id]");
+    clearDropIndicators();
+    if (!section) return false;
+    event.preventDefault();
+    const draggedId = event.dataTransfer ? event.dataTransfer.getData("text/plain") : "";
+    const targetId = section.dataset.draftSectionId;
+    if (!draggedId || !targetId || draggedId === targetId) return true;
+    const current = model();
+    if (!current.draft) return true;
+    const targetIndex = getLayout(current.draft).order.indexOf(targetId);
+    if (targetIndex === -1) return true;
+    return applyLayoutMutation(
+      (draft) => moveDraftSection(draft, draggedId, targetIndex),
+      "Section moved."
+    );
+  }
+
+  function dragend() {
+    clearDropIndicators();
+    return true;
+  }
+
   function click(target) {
     // Citation links: let [n] references open in a new tab even inside
     // contenteditable plan fields (where a plain click would just move the caret).
@@ -2132,7 +2315,7 @@ export function createReviewController(deps) {
       panel?.querySelectorAll('[data-action="toggle-clinical-data"]').forEach((btn) => {
         btn.setAttribute("aria-expanded", String(!nowCollapsed));
       });
-      if (panel && !nowCollapsed) {
+      if (panel) {
         const restoreTo = Number(panel.dataset.savedScrollTop || 0);
         const scrollerIsDocument = panel.dataset.scrollerIsDocument === "true";
         const ident = (el) => el ? `${el.tagName}.${(el.className || "").toString().split(" ")[0]}` : "(null)";
@@ -2245,6 +2428,94 @@ export function createReviewController(deps) {
       const region = draftPanelNode()?.querySelector('[data-draft-section="interval_events"]');
       const fresh = freshDraftNode('[data-draft-section="interval_events"]');
       if (region && fresh) region.innerHTML = fresh.innerHTML;
+      return true;
+    }
+    if (action === "insert-score") {
+      toggleScorePicker();
+      return true;
+    }
+    if (action === "insert-saved-score") {
+      return insertSavedScore(button.dataset.scoreRecordId);
+    }
+    if (action === "remove-saved-score") {
+      removeSavedScoreRecord(button.dataset.scoreRecordId);
+      return true;
+    }
+    if (action === "toggle-layout-panel") {
+      const panel = layoutPanelNode();
+      if (panel) panel.hidden = !panel.hidden;
+      return true;
+    }
+    if (action === "move-section-up" || action === "move-section-down") {
+      return applyLayoutMutation(
+        (draft) => moveDraftSectionBy(draft, button.dataset.sectionId, action === "move-section-up" ? -1 : 1),
+        "Section moved."
+      );
+    }
+    if (action === "hide-section") {
+      return applyLayoutMutation(
+        (draft) => hideDraftSection(draft, button.dataset.sectionId),
+        "Section hidden — restore it from the Layout panel."
+      );
+    }
+    if (action === "restore-section") {
+      return applyLayoutMutation(
+        (draft) => restoreDraftSection(draft, button.dataset.sectionId),
+        "Section restored."
+      );
+    }
+    if (action === "remove-custom-section") {
+      return requestRemoveCustomSection(button.dataset.sectionId);
+    }
+    if (action === "confirm-remove-custom-section") {
+      const pendingId = pendingCustomSectionId;
+      pendingCustomSectionId = null;
+      deps.byId("removeCustomSectionConfirmDialog")?.close();
+      if (!pendingId) return true;
+      return applyLayoutMutation(
+        (draft) => removeDraftCustomSection(draft, pendingId),
+        "Section removed."
+      );
+    }
+    if (action === "add-custom-section") {
+      const label = layoutInputValue("[data-layout-new-section]");
+      if (!label) {
+        deps.setStatus("Enter a label for the new section.");
+        return true;
+      }
+      return applyLayoutMutation(
+        (draft) => addDraftCustomSection(draft, label).draft,
+        `Section “${label}” added.`
+      );
+    }
+    if (action === "save-layout-template") {
+      const name = layoutInputValue("[data-layout-template-name]");
+      const current = model();
+      const template = current.draft ? createNoteTemplate({ name, noteType: current.draft.noteType, layout: getLayout(current.draft) }) : null;
+      if (!template) {
+        deps.setStatus("Enter a name for the template.");
+        return true;
+      }
+      persistTemplates([...currentTemplates(), template]);
+      renderDraftPanelOnly();
+      deps.setStatus(`Template “${template.name}” saved.`);
+      return true;
+    }
+    if (action === "apply-layout-template") {
+      const template = currentTemplates().find((entry) => entry.id === button.dataset.templateId);
+      if (!template) {
+        deps.setStatus("That template is no longer available.");
+        return true;
+      }
+      return applyLayoutMutation(
+        (draft) => applyTemplateToDraft(draft, template),
+        `Template “${template.name}” applied.`
+      );
+    }
+    if (action === "delete-layout-template") {
+      persistTemplates(removeNoteTemplate(currentTemplates(), button.dataset.templateId));
+      renderDraftPanelOnly();
+      deps.setStatus("Template deleted.");
       return true;
     }
     if (action === "add-plan-problem") {
@@ -2436,7 +2707,6 @@ export function createReviewController(deps) {
     return false;
   }
 
-
   // The student's current draft note as plain text, for optional attachment
   // to Local AI chat context. In-memory only, never persisted by this call;
   // "" when there is no patient or the draft is empty. The draft is built
@@ -2457,26 +2727,7 @@ export function createReviewController(deps) {
     }
   }
 
-  // The student's current draft note as individually selectable
-  // sections (one-liner, each plan problem, ...), for granular AI Chat
-  // context. [] when there is no patient or the draft is empty. Entries
-  // are { key, heading, label, text }; see renderNoteSectionEntries.
-  function getDraftNoteSections() {
-    let current;
-    try {
-      current = model();
-    } catch {
-      return [];
-    }
-    if (!current?.patient || !current.draft) return [];
-    if (!noteDraftHasContent(current.draft)) return [];
-    try {
-      return renderNoteSectionEntries(current.draft) || [];
-    } catch {
-      return [];
-    }
-  }
-
+  // Any handler that reports it mutated state also schedules a vault persist.
   function withAutoSave(fn) {
     return function (target, ...rest) {
       const handled = fn.call(this, target, ...rest);
@@ -2484,5 +2735,5 @@ export function createReviewController(deps) {
       return handled;
     };
   }
-  return Object.freeze({ change: withAutoSave(change), click: withAutoSave(click), input, keydown, open, prepare, render, saveDraft, toggle: withAutoSave(toggle), getDraftNoteText, getDraftNoteSections });
+  return Object.freeze({ change: withAutoSave(change), click: withAutoSave(click), dragend, dragover, dragstart, drop, input, keydown, open, prepare, render, saveDraft, toggle: withAutoSave(toggle), getDraftNoteText });
 }

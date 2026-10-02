@@ -1,7 +1,0 @@
-stanford_trackb: installed bundle /home/hatch/workspace/deid-benchmark/meddeid/bundles/trackb.bundle.js
-stanford_trackb: loaded 300 notes
-stanford_trackb: model (re)loaded: {"ms":7580.60000000149,"modelId":"onnx-community/stanford-deidentifier-base-ONNX"}
-stanford_trackb: resuming with stanford_trackb: 100/stanford_trstanford_trackb: 150stanford_trastanford_trackb: 200stanford_trastanford_trackb: 250/300 (608s)
-stanford_trackb: 300/300 (690s)
-stanford_trackb: done in 690s -> out/stanford_trackb.json (mean 2297.9ms, median 2178.3ms, p95 3921.0ms)
-stanford_trackb: all done

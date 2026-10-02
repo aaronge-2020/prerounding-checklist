@@ -2,31 +2,18 @@ import {
   DEFAULT_DTYPE,
   DEFAULT_PRIMARY_MODEL_ID,
   ETTIN_68M_NEMOTRON_PII_MODEL_ID,
-  I2B2_CLINICALBERT_MODEL_ID,
   OPENMED_BASE_MODEL_ID,
   OPENMED_MODEL_ID,
   OPENMED_SMALL_MODEL_ID,
-  CLINICALE5_SMALL_MODEL_ID,
-  ROBERTA_I2B2_Q8_MODEL_ID,
   OPENAI_PRIVACY_FILTER_MODEL_ID
-} from "../vault/deid/model-config.js?v=20260930-deid-trackd";
+} from "../vault/deid/model-config.js?v=20260711-functional-remediation-15";
 
 export const STRUCTURED_DEID_MODE = "structured";
 // Only browser configurations that have a supported local execution path are
 // offered in the clinician UI. Large WebGPU packs that repeatedly failed their
 // own self-test are deliberately not selectable; a model is useful only when
 // this app can verify a real local inference session.
-// Default selected by the 2026-09-29 de-identification benchmark
-// (obi/deid_bert_i2b2, MIT): strongest redaction-relevant recall on
-// facilities, ages, and locations — the identifiers the structured
-// layer cannot recover on its own.
-export const DEFAULT_DEID_MODEL_KEY =
-  // Track D (2026-09-30): Stanford + the full algorithmic rule stack
-  // (labeled/bracketed/tag-wrapped names, clinical ages, role-anchored
-  // provider names, labeled clinical IDs, care facilities, relatives'
-  // names) is the winning system at 0.802 exact-span F1 on the held-out
-  // benchmark split.
-  "stanford-clinical";
+export const DEFAULT_DEID_MODEL_KEY = "stanford-clinical";
 
 const ALL_DEID_MODEL_OPTIONS = [
   {
@@ -170,73 +157,6 @@ const ALL_DEID_MODEL_OPTIONS = [
     }
   },
   {
-    key: "obi-deid-bert-i2b2",
-    label: "obi clinical de-identification",
-    shortLabel: "obi de-id",
-    modelId: I2B2_CLINICALBERT_MODEL_ID,
-    engine: "transformers-token-classification",
-    dtype: DEFAULT_DTYPE,
-    browserRunnable: true,
-    assetMode: "bundled",
-    sizeLabel: "104 MB bundled",
-    localOnly: true,
-    description: "Clinical de-identification model (obi/deid_bert_i2b2, BERT-base, MIT) fine-tuned on i2b2 2014 notes. Selected as the default browser model by the benchmark for its redaction-relevant recall on facilities, ages, and locations. Delivered in small same-site pieces for compatibility with restricted workplace networks.",
-    bundledChunks: {
-      "onnx/model_quantized.onnx": {
-        directory: "onnx/model_quantized.chunks",
-        count: 13,
-        bytes: 108507617
-      }
-    },
-    candidates: [
-      { modelId: I2B2_CLINICALBERT_MODEL_ID, options: { dtype: DEFAULT_DTYPE, local_files_only: true }, inferenceOptions: { aggregation_strategy: "simple" } }
-    ]
-  },
-  {
-    key: "openmed-clinicale5-small",
-    label: "OpenMed ClinicalE5 Small",
-    shortLabel: "ClinicalE5 Small",
-    modelId: CLINICALE5_SMALL_MODEL_ID,
-    engine: "transformers-token-classification",
-    dtype: "int8",
-    // Round-2 benchmark winner (2026-09-29, 1,000 synthetic texts, strict
-    // exact-span scoring): highest F1 (0.672) and recall, 390 ms/doc median,
-    // 67 MB int8 download. Standard single-thread wasm runtime like the
-    // other OpenMed CPU option - the threaded asyncify wasm path traps on
-    // unaligned atomics in some Chromium worker environments.
-    device: "wasm",
-    wasmRuntime: "standard",
-    browserRunnable: true,
-    assetMode: "installable",
-    sizeLabel: "67 MB ONNX",
-    localOnly: true,
-    description: "Round-2 benchmark winner: 33M clinical PII model, highest F1 and recall on the 1,000-text synthetic benchmark, 390 ms/doc median, 67 MB download. Runs on CPU/WASM - no WebGPU needed.",
-    candidates: [
-      {
-        modelId: CLINICALE5_SMALL_MODEL_ID,
-        options: { dtype: "int8", device: "wasm", local_files_only: true },
-        inferenceOptions: { aggregation_strategy: "simple" }
-      }
-    ],
-    requiredFiles: [
-      "config.json",
-      "tokenizer.json",
-      "tokenizer_config.json",
-      "onnx/model_int8.onnx"
-    ],
-    download: {
-      provider: "Hugging Face",
-      repository: "OpenMed/OpenMed-PII-ClinicalE5-Small-33M-v1-onnx-android",
-      revision: "79f7db205869b1be4be23ac4f42aa95bdedc5aee",
-      assets: [
-        { path: "config.json", sourcePath: "config.json", bytes: 6440 },
-        { path: "tokenizer.json", sourcePath: "tokenizer.json", bytes: 711661 },
-        { path: "tokenizer_config.json", sourcePath: "tokenizer_config.json", bytes: 499 },
-        { path: "onnx/model_int8.onnx", sourcePath: "model_int8.onnx", bytes: 69638018 }
-      ]
-    }
-  },
-  {
     key: "stanford-clinical",
     label: "Stanford clinical deidentifier",
     shortLabel: "Stanford clinical",
@@ -257,62 +177,6 @@ const ALL_DEID_MODEL_OPTIONS = [
     },
     candidates: [
       { modelId: DEFAULT_PRIMARY_MODEL_ID, options: { dtype: DEFAULT_DTYPE, local_files_only: true }, inferenceOptions: { aggregation_strategy: "simple" } }
-    ]
-  },
-  {
-    key: "roberta-i2b2-q8",
-    label: "RoBERTa i2b2 clinical",
-    shortLabel: "RoBERTa i2b2",
-    modelId: ROBERTA_I2B2_Q8_MODEL_ID,
-    engine: "transformers-token-classification",
-    dtype: "q8",
-    browserRunnable: true,
-    assetMode: "installable",
-    sizeLabel: "340 MB ONNX",
-    localOnly: true,
-    description: "RoBERTa fine-tuned on i2b2 2014 notes (community q8 ONNX export). Strong recall on clinical text, slower than Stanford. Downloads once, then runs fully in your browser.",
-    candidates: [
-      { modelId: ROBERTA_I2B2_Q8_MODEL_ID, options: { dtype: "q8", device: "wasm", local_files_only: true }, inferenceOptions: { aggregation_strategy: "simple" } }
-    ],
-    requiredFiles: [
-      "config.json",
-      "tokenizer.json",
-      "tokenizer_config.json",
-      "special_tokens_map.json",
-      "vocab.json",
-      "merges.txt",
-      "model_quantized.onnx"
-    ],
-    download: {
-      provider: "Hugging Face",
-      repository: "thinkingface/deid_roberta_i2b2_q",
-      revision: "bfc43a231568364a7f1aedea14196f62a2febae7",
-      assets: [
-        { path: "config.json", bytes: 2500 },
-        { path: "tokenizer.json", bytes: 2108715 },
-        { path: "tokenizer_config.json", bytes: 1352 },
-        { path: "special_tokens_map.json", bytes: 964 },
-        { path: "vocab.json", bytes: 798293 },
-        { path: "merges.txt", bytes: 456318 },
-        { path: "model_quantized.onnx", bytes: 356334804 }
-      ]
-    }
-  },
-  {
-    key: "stanford-roberta-ensemble",
-    label: "Stanford + RoBERTa ensemble",
-    shortLabel: "Ensemble",
-    modelId: "ensemble/stanford-roberta-i2b2",
-    engine: "ensemble",
-    ensembleOf: ["stanford-clinical", "roberta-i2b2-q8"],
-    dtype: "q8",
-    browserRunnable: true,
-    assetMode: "installable",
-    sizeLabel: "110 MB bundled + 340 MB download",
-    localOnly: true,
-    description: "Runs the Stanford deidentifier and the RoBERTa i2b2 model side by side and unions their spans (higher score wins on overlap). The highest-recall option, but roughly 4x slower and needs a desktop-class machine. Install the RoBERTa model pack first. Best for a second-opinion pass, not routine use.",
-    candidates: [
-      { modelId: "ensemble/stanford-roberta-i2b2", options: { dtype: "q8", local_files_only: true }, inferenceOptions: { aggregation_strategy: "simple" } }
     ]
   },
   {
@@ -451,11 +315,7 @@ const ALL_DEID_MODEL_OPTIONS = [
 ];
 
 export const DEID_MODEL_OPTIONS = ALL_DEID_MODEL_OPTIONS.filter((option) => [
-  "openmed-clinicale5-small",
-  "obi-deid-bert-i2b2",
   "stanford-clinical",
-  "roberta-i2b2-q8",
-  "stanford-roberta-ensemble",
   "openmed-superclinical-small",
   "gliner-multi-pii"
 ].includes(option.key));

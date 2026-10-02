@@ -8,6 +8,7 @@ import {
   OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY,
   PRESENTATION_COACH_GUIDELINE_SET_SEED_KEY,
   PRE_OP_PREP_GUIDELINE_SET_SEED_KEY,
+  RETIRED_CHECKLIST_GUIDELINE_SETS_REMOVED_KEY,
   TEACHING_GUIDELINE_SET_SEED_KEY,
   addGuidelineSet,
   createGuidelineSet,
@@ -16,6 +17,7 @@ import {
   ensureOpenEvidenceTaskGuidelineSets,
   ensurePreOpPrepGuidelineSet,
   ensurePresentationCoachGuidelineSet,
+  ensureRetiredChecklistGuidelineSetsRemoved,
   ensureTeachingGuidelineSet,
   guidelineSetMatchesQuery,
   loadGuidelineSets,
@@ -38,7 +40,6 @@ function fakeStorage(initial = {}) {
 
 const expectedTokens = [
   "@admission-guidelines",
-  "@pre-round-checklist-guidelines",
   "@discharge-instructions-guidelines",
   "@consulting-guidelines",
   "@team-preferences",
@@ -50,15 +51,13 @@ const expectedTokens = [
   "@presentation-editor-guidelines",
   "@presentation-critique-guidelines",
   "@medication-explainer-guidelines",
-  "@medication-safety-guidelines",
-  "@checklist-refinement-guidelines"
+  "@medication-safety-guidelines"
 ];
 
 assert.deepEqual(DEFAULT_GUIDELINE_SET_SOURCES.map((source) => source.token), expectedTokens);
 assert.equal(new Set(expectedTokens).size, expectedTokens.length, "default guideline tokens must be unique");
 const taskOrders = DEFAULT_GUIDELINE_SET_SOURCES.filter((source) => source.task).map((source) => source.task.order);
 assert.equal(new Set(taskOrders).size, taskOrders.length, "built-in prompt task ordering must be deterministic and unique");
-assert.match(DEFAULT_PROMPT_TEMPLATES.preround_bedside_exam, /@pre-round-checklist-guidelines/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.discharge_instructions, /@discharge-instructions-guidelines/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.obgyn_history_and_physical, /^@team-preferences\b[\s\S]*@obgyn-hp-guidelines\b[\s\S]*@admission-packet\b/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.obgyn_soap_note, /^@team-preferences\b[\s\S]*@obgyn-soap-guidelines\b[\s\S]*@progress-note-packet\b/);
@@ -68,7 +67,6 @@ assert.match(DEFAULT_PROMPT_TEMPLATES.presentation_quality_editor, /^@presentati
 assert.match(DEFAULT_PROMPT_TEMPLATES.attending_presentation_critique, /^@presentation-critique-guidelines\b[\s\S]*@specialty-team\b[\s\S]*@presentation-to-edit\b/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_explainer_by_problem, /^@medication-explainer-guidelines\b/);
 assert.match(DEFAULT_PROMPT_TEMPLATES.medication_safety_audit, /^@medication-safety-guidelines\b/);
-assert.match(DEFAULT_PROMPT_TEMPLATES.checklist_workup_refinement, /^@checklist-refinement-guidelines\b/);
 assert.doesNotMatch(Object.values(DEFAULT_PROMPT_TEMPLATES).join("\n"), /updated-guidelines/);
 for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter((entry) => entry.path)) {
   const deployedSeed = readFileSync(source.path.replace(/^\.\//, ""), "utf8");
@@ -264,8 +262,7 @@ for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter((entry) => entry.path)
       "@progress-guidelines",
       "@presentation-editor-guidelines",
       "@medication-explainer-guidelines",
-      "@medication-safety-guidelines",
-      "@checklist-refinement-guidelines"
+      "@medication-safety-guidelines"
     ]);
     assert.equal(storage.getItem(OPEN_EVIDENCE_TASK_GUIDELINES_SEED_KEY), "1");
     assert.equal(seeded.some(({ token }) => token === "@admission-guidelines"), false, "the migration must not restore unrelated deleted defaults");
@@ -357,12 +354,29 @@ for (const source of DEFAULT_GUIDELINE_SET_SOURCES.filter((entry) => entry.path)
         token: "@discharge-instructions-updated-guidelines"
       })
     ], { storage });
-    assert.equal(canonical.find((set) => set.token === "@pre-round-checklist-guidelines")?.text, "My edited checklist text.");
+    assert.equal(canonical.some((set) => set.token.includes("checklist")), false, "retired checklist guideline leftovers must not survive the canonical migration");
     assert.equal(canonical.find((set) => set.token === "@discharge-instructions-guidelines")?.text, "My edited discharge text.");
     assert.equal(canonical.some((set) => set.token.includes("updated-guidelines")), false);
   } finally {
     globalThis.fetch = originalFetch;
   }
+}
+
+// The one-time retirement migration removes the app-managed checklist
+// guideline sets from existing installs without touching custom or kept
+// defaults, and never runs twice.
+{
+  const storage = fakeStorage({ [GUIDELINE_SET_STORAGE_KEY]: "[]" });
+  const existing = [
+    createGuidelineSet("Pre-round checklist", "Old checklist text.", { token: "@pre-round-checklist-guidelines" }),
+    createGuidelineSet("Checklist/workup refinement", "Old refinement text.", { token: "@checklist-refinement-guidelines" }),
+    createGuidelineSet("Progress notes", "Keep me.", { token: "@progress-guidelines" }),
+    createGuidelineSet("My own notes", "Keep me too.", { token: "@my-own-guidelines" })
+  ];
+  const migrated = await ensureRetiredChecklistGuidelineSetsRemoved(existing, { storage });
+  assert.deepEqual(migrated.map(({ token }) => token), ["@progress-guidelines", "@my-own-guidelines"]);
+  assert.equal(storage.getItem(RETIRED_CHECKLIST_GUIDELINE_SETS_REMOVED_KEY), "1");
+  assert.deepEqual(await ensureRetiredChecklistGuidelineSetsRemoved(migrated, { storage }), migrated, "the retirement migration must be idempotent");
 }
 
 // Duplicate stored identities produce one canonical variable identity.

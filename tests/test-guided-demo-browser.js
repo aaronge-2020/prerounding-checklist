@@ -36,15 +36,15 @@ try {
     }
   }
   assert.ok(loaded, "the app must render the vault gate after retries");
-  await page.waitForFunction(() => document.querySelectorAll('.primary-nav [data-view-target]').length === 13);
+  await page.waitForFunction(() => document.querySelectorAll('.primary-nav [data-view-target]').length === 12);
   assert.deepEqual(
     await page.locator('.primary-nav [data-view-target]').evaluateAll((buttons) => buttons.map((button) => button.dataset.viewTarget)),
-    ["vault", "daily", "review", "aiChat", "prompts", "quickDeid", "sampleNotes", "scribePro", "cheatSheets", "drugLookup", "drugChecks", "scores", "settings"],
+    ["vault", "daily", "review", "aiChat", "prompts", "quickDeid", "scribePro", "cheatSheets", "drugLookup", "drugChecks", "scores", "settings"],
     "the visible nav must keep Drug Lookup and add the offline Drug checks view"
   );
   assert.deepEqual(
     await page.locator('main .view').evaluateAll((views) => views.map((view) => view.id)),
-    ["vaultView", "dailyView", "cheatSheetsView", "reviewView", "promptsView", "quickDeidView", "sampleNotesView", "aiChatView", "drugLookupView", "drugChecksView", "scoresView", "settingsView", "scribeProView"],
+    ["vaultView", "dailyView", "cheatSheetsView", "reviewView", "promptsView", "quickDeidView", "aiChatView", "drugLookupView", "drugChecksView", "scoresView", "settingsView", "scribeProView"],
     "the document order must match the visible workflow"
   );
   await page.fill("#vaultPassphrase", "guided demo test passphrase");
@@ -87,7 +87,7 @@ try {
   assert.match(await page.locator('[data-structured-note-detected="admission"]').innerText(), /History of present illness|Medications/i);
   assert.match(await page.locator('[data-structured-note-detected="admission"]').innerText(), /One-liner/);
   assert.match(await page.locator('[data-structured-note-detected="admission"]').innerText(), /Chief complaint/);
-  assert.match(await page.locator('[data-structured-note-detected="admission"]').innerText(), /Objective data/);
+  assert.match(await page.locator('[data-structured-note-detected="admission"]').innerText(), /Laboratory results/);
   await page.click('[data-action="advance-guided-demo"]');
   await page.waitForFunction(() => /Check drug interactions/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
 
@@ -161,10 +161,6 @@ try {
   await page.locator("[data-draft-assessment]").pressSequentially(" X");
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Review the complete case note/, "typing must not advance the demo");
   await page.click('[data-action="save-note-draft"]');
-  // write-note is an info stage: saving does not advance the tour; the
-  // guide bar's Continue button does.
-  assert.match(await page.locator("[data-demo-guide]").innerText(), /Review the complete case note/, "saving must not advance the demo");
-  await page.click('[data-action="advance-guided-demo"]');
   await page.waitForFunction(() => /Open the prompt builder/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Open the prompt builder/);
 

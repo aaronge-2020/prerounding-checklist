@@ -57,7 +57,7 @@ assert.equal(demoReviewTransition("continue-section-review", true), "preserve-re
 assert.equal(demoReviewTransition("keep-reviewed-redaction", false), "complete-review");
 assert.equal(demoReviewTransition("copy-prompt", false), "unrelated");
 assert.match(demoStage("context-review").instruction, /Accept.*one change at a time/i);
-assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 20);
+assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 19);
 const stageOrder = Object.keys(DEMO_GUIDE_STAGES);
 assert.ok(stageOrder.indexOf("daily-review") < stageOrder.indexOf("parse-note"));
 assert.ok(stageOrder.indexOf("parse-note") < stageOrder.indexOf("open-drug-checks"));
@@ -70,8 +70,10 @@ assert.ok(stageOrder.indexOf("scribe-pro-voice") < stageOrder.indexOf("open-chea
 assert.ok(stageOrder.indexOf("browse-cheat-sheet") < stageOrder.indexOf("write-note"));
 assert.ok(stageOrder.indexOf("write-note") < stageOrder.indexOf("open-prompts"));
 // Info stages explain and advance via the guide bar's Continue button.
-assert.deepEqual([...DEMO_INFO_STAGES].sort(), ["ai-chat-read", "browse-cheat-sheet", "open-scribe-pro", "scribe-pro-voice"]);
-assert.equal(DEMO_STAGE_NEXT["ai-chat-read"], "open-scribe-pro");
+assert.deepEqual([...DEMO_INFO_STAGES].sort(), ["ai-chat-ask", "ai-chat-models", "open-scribe-pro", "parse-note", "scribe-pro-voice"]);
+assert.equal(DEMO_STAGE_NEXT["parse-note"], "open-drug-checks");
+assert.equal(DEMO_STAGE_NEXT["ai-chat-models"], "ai-chat-ask");
+assert.equal(DEMO_STAGE_NEXT["ai-chat-ask"], "open-scribe-pro");
 assert.equal(DEMO_STAGE_NEXT["open-scribe-pro"], "scribe-pro-voice");
 assert.equal(DEMO_STAGE_NEXT["scribe-pro-voice"], "open-cheat-sheets");
 // New feature stops carry the required hooks and prefills.
@@ -91,7 +93,7 @@ assert.match(DEMO_AI_CHAT_ANSWER, /86 → 364 → 312/);
 // The cheat-sheet stage names its sheet so an already-open sheet completes it.
 assert.equal(demoStage("browse-cheat-sheet").sheetId, "acute-coronary-syndrome");
 assert.equal(demoStage("check-interactions").targetSelector, '[data-action="drug-checks-check"]');
-assert.equal(demoStage("parse-note").targetSelector, '[data-action="review-structured-note-sections"][data-note-scope="admission"]');
+assert.equal(demoStage("parse-note").targetSelector, '[data-structured-note-detected="admission"]');
 assert.match(DEMO_PARSE_NOTE_TEXT, /History of Present Illness/);
 assert.match(DEMO_PARSE_NOTE_TEXT, /Chief Complaint/);
 assert.match(DEMO_PARSE_NOTE_TEXT, /Laboratory Results/);
@@ -119,7 +121,7 @@ assert.ok(String(seededDraft.closing?.disposition?.deidentifiedText || "").lengt
 assert.match(DEMO_DRUG_CHECK_MEDS, /warfarin/i);
 assert.match(DEMO_DRUG_CHECK_MEDS, /fluconazole/i);
 // Info stages render a Continue button; action stages must not.
-const infoGuide = presentation.renderGuide({ session: { stage: "ai-chat-read" }, currentView: "aiChat" });
+const infoGuide = presentation.renderGuide({ session: { stage: "parse-note" }, currentView: "daily" });
 assert.match(infoGuide, /data-action="advance-guided-demo"/);
 assert.match(infoGuide, /data-demo-hint/);
 const actionGuide = presentation.renderGuide({ session: { stage: "check-interactions" }, currentView: "drugChecks" });
@@ -132,15 +134,15 @@ const guide = presentation.renderGuide({ session: { stage: "browse-cheat-sheet" 
 assert.match(guide, /Guided demo/);
 assert.match(guide, /Open the ACS cheat sheet/);
 assert.match(guide, /guided-demo-instructions/);
-assert.match(guide, /scan the history questions and exam maneuvers/);
+assert.match(guide, /Click the Acute coronary syndrome \/ NSTEMI\/STEMI sheet/);
 assert.match(guide, /Cheat sheets are read-only/);
 assert.match(guide, /data-action="exit-guided-demo"/);
 assert.match(guide, />Exit demo</);
 assert.doesNotMatch(guide, /Restart demo/);
 assert.doesNotMatch(guide, /demo-answer|demo-generate-prompt|static/i);
 const noteGuide = presentation.renderGuide({ session: { stage: "write-note" }, currentView: "review" });
-assert.match(noteGuide, /Make the note yours/);
-assert.match(noteGuide, /highlighted one-liner/i);
+assert.match(noteGuide, /Review the complete case note/);
+assert.match(noteGuide, /parsed one-liner, subjective, and exam/i);
 const feedbackGuide = presentation.renderGuide({ session: { stage: "open-prompts" }, currentView: "review" });
 assert.match(feedbackGuide, /Open Prompts/i);
 assert.match(presentation.renderCallout({ stage: demoStage("open-prompts") }), /feedback on the note you wrote/i);
@@ -155,8 +157,8 @@ assert.match(handoffGuide, /Medications/);
 assert.match(handoffGuide, /You check the app's suggestions before moving on/);
 
 const complete = presentation.renderGuide({ session: { stage: "done" }, currentView: "prompts" });
-assert.match(complete, /You know the workflow/);
-assert.match(complete, /You can now: De-identify a note/i);
+assert.match(complete, /Demo complete/);
+assert.match(complete, /reviewed a bedside cheat sheet, wrote and encrypted a student note/i);
 assert.match(complete, /nothing from this demo was written to your vault/i);
 assert.match(complete, /data-action="exit-guided-demo"/);
 
@@ -198,7 +200,6 @@ console.log("Guided demo session tests passed");
   const removedNodes = [];
   const fakeElement = () => ({
     classList: { remove: (...cls) => removedClasses.push(cls.join(" ")) },
-    style: {},
     removeAttribute: (attr) => removedAttrs.push(attr),
     remove: () => removedNodes.push(true)
   });
@@ -238,9 +239,8 @@ console.log("Guided demo session tests passed");
 
 // Regression (Item 2): the cheat-sheets tab restores the last-viewed sheet,
 // so the ACS sheet can already be open when the tour reaches the
-// browse-cheat-sheet stage. browse-cheat-sheet is an info stage: it must
-// never auto-advance on render, and the guide bar's Continue button must
-// complete it, so the tour cannot dead-end with no highlighted control.
+// browse-cheat-sheet stage. The stage must complete through the same path as
+// a fresh click instead of dead-ending with no highlighted control.
 {
   const doc = globalThis.document;
   const priorQuerySelectorAll = doc.querySelectorAll;
@@ -270,8 +270,7 @@ console.log("Guided demo session tests passed");
   controller.render();
   assert.equal(session.stage, "browse-cheat-sheet", "the first render only prepares the stage");
   controller.render();
-  assert.equal(session.stage, "browse-cheat-sheet", "an info stage must not auto-advance on an already-open sheet");
-  assert.equal(DEMO_STAGE_NEXT["browse-cheat-sheet"], "open-review", "Continue must complete the cheat-sheet stage");
+  assert.equal(session.stage, "open-review", "an already-open ACS sheet must advance the demo");
 
   const otherSession = { stage: "browse-cheat-sheet" };
   const otherController = makeController(otherSession, "heart-failure");

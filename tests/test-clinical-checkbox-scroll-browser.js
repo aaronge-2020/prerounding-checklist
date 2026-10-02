@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
-import { fileAppUrl } from "./browser/app-harness.js";
+import { fileAppUrl, openRealApp, unlockAndCreatePatient } from "./browser/app-harness.js";
 
 // Regression test: clicking REAL clinical-data checkboxes (lab results,
 // lab panels, vitals, meds — [data-objective-selection-id]) must preserve
@@ -20,30 +20,47 @@ async function setupPage(viewportWidth) {
   const consoleErrors = [];
   page.on("pageerror", (error) => consoleErrors.push(String(error)));
 
-  await page.goto(fileAppUrl());
-  await page.waitForSelector("#vaultPassphrase", { timeout: 60000 });
-  await page.fill("#vaultPassphrase", "checkbox scroll regression passphrase");
-  await page.click('[data-action="unlock-vault"]');
-  await page.waitForFunction(
-    () => /Vault unlocked/.test(document.querySelector("#statusLine")?.textContent || ""),
-    { timeout: 30000 }
-  );
-  await page.click('[data-action="start-guided-demo"]');
-  await page.waitForTimeout(1500);
+  await openRealApp(page, fileAppUrl());
+  await unlockAndCreatePatient(page, { passphrase: "checkbox scroll regression passphrase" });
+
+  // Seed clinical data (labs + vitals) through the Hospital Stay admission
+  // workspace so the review's clinical-data panel renders real checkboxes.
+  const dayOneLabs = [
+    "Results from EPIC:",
+    "WBC: 12.5",
+    "Hemoglobin: 10.2",
+    "Platelets: 242",
+    "Creatinine: 1.4",
+    "Sodium: 137"
+  ].join("\n");
+  await page.click('[data-action="select-admission-source-kind"][data-source-kind="laboratory_results"]');
+  await page.fill("#admissionSourceDraft", dayOneLabs);
+  await page.click('[data-action="add-admission-source"]');
+  await page.waitForFunction(() => document.querySelectorAll(".source-capture-editor").length === 1, { timeout: 30000 });
+
+  const vitals = [
+    "Temp: 37.2 C",
+    "Heart rate: 88",
+    "Blood pressure: 120/80",
+    "SpO2: 98% on room air"
+  ].join("\n");
+  await page.click('[data-action="select-admission-source-kind"][data-source-kind="vital_signs"]');
+  await page.fill("#admissionSourceDraft", vitals);
+  await page.click('[data-action="add-admission-source"]');
+  await page.waitForFunction(() => document.querySelectorAll(".source-capture-editor").length === 2, { timeout: 30000 });
+
   // DOM .click() avoids Playwright's auto-scroll-into-view, so the scroll
   // position we set is the position the render path actually sees.
   await page.evaluate(() => document.querySelector('[data-view-target="review"]').click());
   await page.waitForSelector("[data-smart-exam]", { timeout: 30000 });
-  // Expand the clinical-data section to reveal checkboxes.
-  // When collapsed, only the rail toggle exists. Click it to expand,
-  // which renders the section body with checkboxes.
+  // Expand the clinical-data section to reveal checkboxes if collapsed.
   await page.evaluate(() => {
-    // If collapsed, click the rail toggle first
+    const panel = document.querySelector(".review-data-panel");
+    if (panel?.dataset.clinicalDataCollapsed !== "true") return;
     const railToggle = document.querySelector('.clinical-data-rail-toggle[data-action="toggle-clinical-data"]');
     if (railToggle) {
       railToggle.click();
     } else {
-      // Already expanded, ensure section toggle shows expanded state
       const sectionToggle = document.querySelector('.section-heading [data-action="toggle-clinical-data"]');
       if (sectionToggle && sectionToggle.getAttribute("aria-expanded") !== "true") sectionToggle.click();
     }

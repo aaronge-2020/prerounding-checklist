@@ -469,7 +469,7 @@ export function labNoteItem(result) {
   if (points.length >= 2 && points[0] !== points[points.length - 1]) {
     suffixes.push(`${points[0]} → ${points[points.length - 1]}`);
   }
-  const baselineValue = [cleanText(result?.baseline?.value), cleanText(result?.baseline?.unit)].filter(Boolean).join(" ");
+  const baselineValue = joinValueUnit(result?.baseline?.value, result?.baseline?.unit);
   if (baselineValue) {
     const when = cleanText(result?.baseline?.dateLabel);
     suffixes.push(`baseline ${baselineValue}${when ? ` · ${when}` : ""}`);

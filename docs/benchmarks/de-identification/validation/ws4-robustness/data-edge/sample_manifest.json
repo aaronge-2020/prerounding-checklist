@@ -1,9 +1,0 @@
-{
-  "dataset": "ws4 edge-case suite; ALL SYNTHETIC",
-  "dataset_doi": null,
-  "split_file": "data-edge/sample.jsonl",
-  "seed": 777,
-  "sampled_n": 27,
-  "generator": "notes/gen_edge.py",
-  "license": "synthetic fixture, no license restriction"
-}

@@ -1,4 +1,4 @@
-import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES, objectiveEditorGroups, SECTION_VISIBILITY_KEYS } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
+import { CLOSING_SECTION_FIELDS, fieldsForNoteType, hiddenSections, NOTE_TYPES, objectiveEditorGroups, orderedVisibleSections, SECTION_VISIBILITY_KEYS } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 import {
   abnormalTone,
   compactLabTrendLine,
@@ -6,7 +6,7 @@ import {
   displayVitalName,
   joinValueUnit
 } from "../../review-data/compact-summary.js?v=20260924-optional-sections-v1";
-import { sanitizeProblemTitle } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
+import { sanitizeProblemTitle } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 import { baselineDisplayText, baselinePriorityFor } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import {
   EXAM_SYSTEMS,
@@ -409,13 +409,30 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   // labels in final-note order. Editable regions are inline contenteditable
   // areas with no per-section boxes, so the whole note fits on roughly one
   // page. Structured pieces (objective blocks, problems, medications,
-  // selected findings) render compactly inside the same document flow.
+  // checklist findings) render compactly inside the same document flow.
 
   // Plain-text model value -> editor HTML. Newlines become <br> so the text
   // the student sees round-trips through innerText when the controller reads
   // an edit back into the draft model.
   function editorHtml(value) {
     return escapeHtml(valueText(value)).replace(/\r?\n/g, "<br>");
+  }
+
+  // Render plain text with [n] citation markers converted to hyperlinks.
+  // Used for plan fields so approved AI suggestions show clickable citations.
+  // References come from draft.apReferences (persisted when suggestions are
+  // approved). Markers without a matching reference render as plain text.
+  function renderTextWithCitationLinks(value, references) {
+    const escaped = escapeHtml(valueText(value));
+    if (!references?.length) return escaped.replace(/\r?\n/g, "<br>");
+    const byId = new Map(references.map((r) => [String(r.id), r]));
+    const linked = escaped.replace(/\[(\d+)\]/g, (match, id) => {
+      const ref = byId.get(id);
+      if (!ref?.url) return match;
+      const title = [ref.authors, ref.title, ref.journal, ref.year].filter(Boolean).join(". ");
+      return `<a href="${escapeHtml(ref.url)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(title)}">[${escapeHtml(id)}]</a>`;
+    });
+    return linked.replace(/\r?\n/g, "<br>");
   }
 
   function editorRegion(attr, value, placeholder) {
@@ -432,17 +449,40 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     // preserve which sections the student opened/closed.
     const id = sectionId || String(labelText).toLowerCase().replace(/[^a-z0-9]+/g, "-");
     const isCollapsed = activeCollapsedSections instanceof Set ? activeCollapsedSections.has(id) : false;
+    // draggable: sections reorder via the drag handle in the label row. The
+    // controller gates dragstart on the handle so text selection and editing
+    // inside the section never start a drag.
     // A11y: interactive controls (help/pull buttons, visibility toggle, add-
     // problem) must NOT live inside <summary> — interactive descendants of
     // <summary> are an accessibility violation. They render as a direct child
     // of <details> (sibling of <summary>), laid out in the header row via CSS
     // grid. <summary> stays a direct child so native disclosure toggle works.
     const actions = labelExtra ? `<div class="ed-section-actions">${labelExtra}</div>` : "";
-    return `<details class="ed-section"${isCollapsed ? "" : " open"}${sectionAttr} data-draft-section-id="${escapeHtml(id)}"><summary class="ed-section-summary">${editorLabel(labelText)}</summary>${actions}<div class="ed-section-body">${bodyHtml}</div></details>`;
+    return `<details class="ed-section"${isCollapsed ? "" : " open"} draggable="true"${sectionAttr} data-draft-section-id="${escapeHtml(id)}"><summary class="ed-section-summary">${editorLabel(labelText)}</summary>${actions}<div class="ed-section-body">${bodyHtml}</div></details>`;
+  }
+
+  // Reorder / hide / remove controls rendered on every draft-section label.
+  // Core sections hide (restorable from the Layout panel); user-added custom
+  // sections are removed outright.
+  function layoutControls(sectionId, custom) {
+    const id = escapeHtml(sectionId);
+    return `<span class="ed-section-controls"><span class="ed-drag-handle" title="Drag to reorder" aria-hidden="true">⠿</span>`
+      + `<button type="button" class="ed-mini" data-action="move-section-up" data-section-id="${id}" title="Move section up" aria-label="Move section up">↑</button>`
+      + `<button type="button" class="ed-mini" data-action="move-section-down" data-section-id="${id}" title="Move section down" aria-label="Move section down">↓</button>`
+      + (custom
+        ? `<button type="button" class="ed-mini ed-mini--danger" data-action="remove-custom-section" data-section-id="${id}" title="Remove this section" aria-label="Remove section">✕</button>`
+        : `<button type="button" class="ed-mini" data-action="hide-section" data-section-id="${id}" title="Hide this section (restorable from Layout)">Hide</button>`)
+      + `</span>`;
   }
 
   function editorSubRegion(fieldAttr, subLabel, value, placeholder) {
     return `<div class="ed-sub"><span class="ed-sub-label">${escapeHtml(subLabel)}</span>${editorRegion(fieldAttr, value, placeholder)}</div>`;
+  }
+
+  function checklistFindingsEditor(draft, kind, emptyHint) {
+    const blocks = (draft.checklistFindings?.selectedBlocks || []).filter((block) => block.kind === kind);
+    if (!blocks.length) return `<p class="ed-empty">${escapeHtml(emptyHint)}</p>`;
+    return `<ul class="ed-checklist">${blocks.map((block) => `<li>${escapeHtml(String(block.editedText || "").trim())}</li>`).join("")}</ul>`;
   }
 
   // Only the optional sections get an on/off toggle, rendered next to the
@@ -544,31 +584,24 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   // (instructions, context, scope) before confirming.
   function renderApConfirmModal(apConfirm) {
     return `<div class="ap-confirm-overlay" data-ap-confirm-overlay>
-      <div class="ap-confirm-modal" role="dialog" aria-modal="true" aria-label="Review and send the AI consult">
-        <h3>Consult AI &mdash; &ldquo;${escapeHtml(apConfirm.problemName)}&rdquo;</h3>
+      <div class="ap-confirm-modal" role="dialog" aria-modal="true" aria-label="Review and edit the AI prompt">
+        <h3>AI suggestions for &ldquo;${escapeHtml(apConfirm.problemName)}&rdquo;</h3>
         <p class="muted">The prompt below is exactly what will be sent to OpenAI using your saved API key. <strong>Edit anything</strong> — instructions, wording, or the patient data — before sending. Confirm it contains <strong>no protected health information</strong> (no names, dates, MRNs, locations).</p>
         <div class="ap-consult-questions">
-          <label for="apConsultQuestions"><strong>Reason for consult</strong> <span class="muted">(optional)</span></label>
+          <label for="apConsultQuestions"><strong>Specific consult questions</strong> <span class="muted">(optional)</span></label>
           <textarea id="apConsultQuestions" class="ap-consult-input" data-ap-consult-questions rows="3" spellcheck="true" placeholder="e.g. What is the best medication regimen for this problem? What dose should I use? Should I consult a specialist?" aria-label="Specific consult questions for the AI">${escapeHtml(apConfirm.consultQuestions || "")}</textarea>
-          <p class="muted ap-consult-hint">What do you want the consultant to address? It will answer these along with suggesting plan revisions.</p>
+          <p class="muted ap-consult-hint">Ask focused questions — the AI will address them along with suggesting plan revisions.</p>
         </div>
         <textarea class="ap-prompt-editor" data-ap-prompt-editor rows="18" spellcheck="false" aria-label="Editable AI prompt">${escapeHtml(apConfirm.promptText)}</textarea>
-        <p class="muted ap-confirm-note">The consultant proposes targeted revisions to this problem's current plan — never a rewrite. Each recommendation appears below the problem for you to approve or reject individually.</p>
+        <p class="muted ap-confirm-note">The AI proposes targeted revisions to this problem's current plan — never a rewrite. Each suggestion appears below the problem for you to approve or reject individually.</p>
         <div class="button-row">
-          <button type="button" class="button--primary button--small" data-action="ap-confirm-generate" data-problem-id="${escapeHtml(apConfirm.problemId)}">Send consult</button>
+          <button type="button" class="button--primary button--small" data-action="ap-confirm-generate" data-problem-id="${escapeHtml(apConfirm.problemId)}">Send to AI</button>
           <button type="button" class="button--secondary button--small" data-action="ap-copy-prompt">Copy prompt</button>
           <button type="button" class="button--secondary button--small" data-action="ap-confirm-cancel">Cancel</button>
         </div>
       </div>
     </div>`;
   }
-
-  const AP_SUGGESTION_TARGET_LABELS = {
-    differential: "Differential",
-    diagnostic_plan: "Diagnostic plan",
-    therapeutic_plan: "Therapeutic plan"
-  };
-  const AP_SUGGESTION_ACTION_LABELS = { add: "Add", revise: "Revise", remove: "Remove" };
 
   function apSuggestionCitations(suggestion, references) {
     const ids = (suggestion.citationIds || []).filter((id) => (references || []).some((r) => r.id === id));
@@ -589,8 +622,8 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return `<div class="ap-loading-banner" data-ap-loading role="status" aria-live="polite">
       <div class="ap-spinner" aria-hidden="true"></div>
       <div class="ap-loading-text">
-        <p><strong>Consult in progress…</strong></p>
-        <p class="muted">The consultant is searching references and drafting recommendations. This can take 1–2 minutes with web search.</p>
+        <p><strong>AI is reviewing your plan…</strong></p>
+        <p class="muted">Searching references and drafting targeted revisions. This can take 1–2 minutes with web search.</p>
       </div>
     </div>`;
   }
@@ -733,23 +766,6 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     }).join("")}</ol></div>`;
   }
 
-  // Render plain text with [n] citation markers converted to hyperlinks.
-  // Used for plan fields so approved AI suggestions show clickable citations.
-  // References come from draft.apReferences (persisted when suggestions are
-  // approved). Markers without a matching reference render as plain text.
-  function renderTextWithCitationLinks(value, references) {
-    const escaped = escapeHtml(valueText(value));
-    if (!references?.length) return escaped.replace(/\r?\n/g, "<br>");
-    const byId = new Map(references.map((r) => [String(r.id), r]));
-    const linked = escaped.replace(/\[(\d+)\]/g, (match, id) => {
-      const ref = byId.get(id);
-      if (!ref?.url) return match;
-      const title = [ref.authors, ref.title, ref.journal, ref.year].filter(Boolean).join(". ");
-      return `<a href="${escapeHtml(ref.url)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(title)}">[${escapeHtml(id)}]</a>`;
-    });
-    return linked.replace(/\r?\n/g, "<br>");
-  }
-
   function renderProblemEditor(problem, index, guidanceFor, options = {}) {
     const known = problem.etiologyStatus === "known";
     const generating = options.generatingApProblemId === problem.id;
@@ -771,7 +787,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       : renderTextWithCitationLinks(problem.therapeuticPlan, apReferences);
     const referencesHtml = references.length ? renderApReferences(references) : "";
     return `<article class="plan-problem-card" data-problem-id="${escapeHtml(problem.id)}">
-      <div class="ed-problem-bar"><strong>Problem ${index + 1}</strong><span class="ed-mini-row"><button type="button" class="ed-mini" data-action="generate-ap" data-problem-id="${escapeHtml(problem.id)}" ${generating ? "disabled" : ""} title="${escapeHtml(generating ? "Consulting AI on this problem…" : "Consult AI on this problem's plan (uses your saved OpenAI key; only de-identified context is sent; you review the consult request first)")}">${icon("phone")} ${generating ? "Consulting…" : "Consult"}</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="-1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem up">↑</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-plan-problem" data-problem-id="${escapeHtml(problem.id)}">Remove</button></span></div>
+      <div class="ed-problem-bar"><strong>Problem ${index + 1}</strong><span class="ed-mini-row"><button type="button" class="ed-mini" data-action="generate-ap" data-problem-id="${escapeHtml(problem.id)}" ${generating ? "disabled" : ""} title="${escapeHtml(generating ? "Asking AI for suggested revisions…" : "Ask AI for suggested revisions to this problem's plan (uses your saved OpenAI key; only de-identified context is sent; you review the editable prompt first)")}">${icon("wand")} ${generating ? "Generating…" : "Generate"}</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="-1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem up">↑</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-plan-problem" data-problem-id="${escapeHtml(problem.id)}">Remove</button></span></div>
       ${generating ? renderApLoadingBanner() : ""}
       <div class="ed-sub"><span class="ed-sub-label">Clinical problem</span><div class="ed-body ed-body--strong" contenteditable="true" data-problem-field="problem" data-placeholder="Name the clinical problem, not a test or treatment" spellcheck="true">${editorHtml(sanitizeProblemTitle(valueText(problem.problem)))}</div></div>
       <div class="ed-sub"><span class="ed-sub-label">Key context</span><div class="ed-body" contenteditable="true" data-problem-field="keyContext" data-placeholder="Optional concise context" spellcheck="true">${editorHtml(problem.keyContext)}</div></div>
@@ -794,7 +810,66 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     ["other", "Other relevant history"]
   ]);
 
-  function renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions }) {
+  // Human labels for core sections, used by the Layout panel's hidden-section
+  // list (custom section labels come from the layout itself).
+  const CORE_SECTION_LABELS = {
+    "one-liner": "One-Liner",
+    "chief-complaint": "Chief Complaint",
+    "history-of-present-illness": "History of Present Illness",
+    "review-of-systems": "Review of Systems",
+    "relevant-history": "Relevant History",
+    "diet-and-exercise": "Diet and Exercise",
+    "subjective": "Subjective",
+    "physical-exam": "Physical Exam",
+    "objective": "Objective",
+    "assessment": "Assessment",
+    "plan": "Plan",
+    "fen": "FEN",
+    "ins-outs": "Ins/Outs",
+    "vte-prophylaxis": "VTE Prophylaxis",
+    "code-status": "Code Status",
+    "disposition": "Disposition",
+    "medication-regimens": "Medication Regimens",
+    "medications": "Medications"
+  };
+
+  function renderLayoutPanel(draft, noteTemplates) {
+    const templates = (noteTemplates || []).filter((template) => template.noteType === draft.noteType);
+    const hidden = hiddenSections(draft, (id) => CORE_SECTION_LABELS[id] || id);
+    return `<div class="score-insert-picker layout-panel" data-layout-panel hidden>
+      <p class="score-insert-heading">Note layout — drag sections by the ⠿ handle, or use ↑ ↓</p>
+      <p class="score-insert-heading">Save current layout as template</p>
+      <div class="layout-row"><input type="text" class="layout-input" data-layout-template-name placeholder="Template name…" maxlength="80" aria-label="Template name"><button type="button" class="button--secondary button--small" data-action="save-layout-template">Save</button></div>
+      ${templates.length ? `<p class="score-insert-heading">My templates (${draft.noteType === NOTE_TYPES.H_AND_P ? "H&amp;P" : "Progress note"})</p>${templates.map((template) => `
+        <div class="score-insert-row"><button type="button" class="score-insert-option" data-action="apply-layout-template" data-template-id="${escapeHtml(template.id)}"><strong>${escapeHtml(template.name)}</strong><span>${template.layout.order.length} sections</span></button><button type="button" class="score-insert-remove" data-action="delete-layout-template" data-template-id="${escapeHtml(template.id)}" title="Delete template" aria-label="Delete template ${escapeHtml(template.name)}">✕</button></div>`).join("")}` : ""}
+      <p class="score-insert-heading">Add a section</p>
+      <div class="layout-row"><input type="text" class="layout-input" data-layout-new-section placeholder="New section label…" maxlength="80" aria-label="New section label"><button type="button" class="button--secondary button--small" data-action="add-custom-section">Add</button></div>
+      ${hidden.length ? `<p class="score-insert-heading">Hidden sections</p>${hidden.map((entry) => `
+        <div class="score-insert-row"><span class="score-insert-option"><strong>${escapeHtml(entry.label)}</strong></span><button type="button" class="score-insert-remove" data-action="restore-section" data-section-id="${escapeHtml(entry.id)}" title="Restore section" aria-label="Restore ${escapeHtml(entry.label)}">↩</button></div>`).join("")}` : ""}
+    </div>`;
+  }
+
+  function renderScorePicker(savedScores) {
+    const scores = Array.isArray(savedScores) ? savedScores : [];
+    const rows = scores.map((record) => {
+      const id = escapeHtml(record.id || "");
+      const savedDate = escapeHtml(String(record.savedAt || "").slice(0, 10));
+      return `<div class="score-insert-row">
+        <button type="button" class="score-insert-option" data-action="insert-saved-score" data-score-record-id="${id}" title="Insert into the note at your cursor">
+          <strong>${escapeHtml(record.title || "Clinical score")}</strong>
+          <span>${escapeHtml(record.headline || "")}</span>
+          ${savedDate ? `<span class="muted">${savedDate}</span>` : ""}
+        </button>
+        <button type="button" class="score-insert-remove" data-action="remove-saved-score" data-score-record-id="${id}" title="Remove this saved score" aria-label="Remove saved score">\u00d7</button>
+      </div>`;
+    }).join("");
+    return `<div class="score-insert-picker" data-score-picker hidden>
+      <p class="score-insert-heading">Saved scores for this patient</p>
+      ${rows || `<p class="ed-empty">No saved scores yet. Calculate a score in Models and tap \u201cSave to patient\u201d.</p>`}
+    </div>`;
+  }
+
+  function renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions, savedScores, noteTemplates }) {
     // Make the collapse set visible to editorSection for this render.
     activeCollapsedSections = collapsedDraftSections instanceof Set ? collapsedDraftSections : new Set();
     const visibility = draft.sectionVisibility || {};
@@ -894,50 +969,76 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         <label class="se-notes-label">Additional exam notes <span class="muted">(free text)</span><textarea class="se-notes" data-smart-exam-notes rows="2" placeholder="Anything not covered by the templates">${escapeHtml(freeText)}</textarea></label>
       </div>`;
     };
+    // Legacy checklist finding blocks render read-only; the interactive
+    // checklist is gone, so these sections can no longer be repopulated.
+    const legacyFindingsTag = `<span class="ed-tag">saved findings</span>`;
 
-    const frontSections = isHP ? [
-      editorSection("One-Liner", editorRegion(`data-draft-section="one_liner"`, fields.one_liner, "One-sentence summary"), { labelExtra: helpFor("one_liner", "One-Liner") }),
-      editorSection("Chief Complaint", editorRegion(`data-draft-section="chief_complaint"`, fields.chief_complaint), { labelExtra: helpFor("chief_complaint", "Chief Complaint") }),
-      editorSection("History of Present Illness", editorRegion(`data-draft-section="history_of_present_illness"`, fields.history_of_present_illness), { labelExtra: helpFor("history_of_present_illness", "HPI") }),
-      editorSection("Relevant History", RELEVANT_HISTORY_SUBFIELDS.map(([fieldId, subLabel]) => editorSubRegion(`data-draft-section="${fieldId}"`, subLabel, fields[fieldId])).join(""), { labelExtra: helpFor("past_medical_history", "Relevant History") }),
-      editorSection("Diet and Exercise", editorRegion(`data-draft-section="diet_and_exercise"`, fields.diet_and_exercise), { labelExtra: `${helpFor("diet_and_exercise", "Diet and Exercise")}${optionalSectionToggle("diet_and_exercise", visibility)}` })
-    ] : [
-      editorSection("One-Liner", editorRegion(`data-draft-section="one_liner"`, fields.one_liner, "One-sentence summary"), { labelExtra: helpFor("one_liner", "One-Liner") }),
-      editorSection("Subjective", [
-        `<div class="ed-sub"><span class="ed-sub-label">Events ${draft.noteType === NOTE_TYPES.PROGRESS ? `<button type="button" class="ed-insert-chip" data-action="insert-no-acute-events" title="Insert the text “No acute events overnight.” into Events">${icon("plus")} Insert: No acute events overnight</button>` : ""}</span>${editorRegion(`data-draft-section="interval_events"`, fields.interval_events)}</div>`,
+    // Section definitions keyed by layout section id. The editor renders them
+    // in the draft's layout order (orderedVisibleSections), so students can
+    // reorder, hide, and add sections freely. Custom sections render from the
+    // layout's stored labels with plain editable regions.
+    const sectionDefs = new Map();
+    const define = (id, label, body, opts = {}) => sectionDefs.set(id, { label, body, ...opts });
+    if (isHP) {
+      define("one-liner", "One-Liner", editorRegion(`data-draft-section="one_liner"`, fields.one_liner, "One-sentence summary"), { labelExtra: helpFor("one_liner", "One-Liner") });
+      define("chief-complaint", "Chief Complaint", editorRegion(`data-draft-section="chief_complaint"`, fields.chief_complaint), { labelExtra: helpFor("chief_complaint", "Chief Complaint") });
+      define("history-of-present-illness", "History of Present Illness", editorRegion(`data-draft-section="history_of_present_illness"`, fields.history_of_present_illness), { labelExtra: helpFor("history_of_present_illness", "HPI") });
+      define("review-of-systems", "Review of Systems", checklistFindingsEditor(draft, "history", "No saved history findings."), { labelExtra: legacyFindingsTag, sectionAttr: ` data-checklist-finding-kind="history"` });
+      define("relevant-history", "Relevant History", RELEVANT_HISTORY_SUBFIELDS.map(([fieldId, subLabel]) => editorSubRegion(`data-draft-section="${fieldId}"`, subLabel, fields[fieldId])).join(""), { labelExtra: helpFor("past_medical_history", "Relevant History") });
+      define("diet-and-exercise", "Diet and Exercise", editorRegion(`data-draft-section="diet_and_exercise"`, fields.diet_and_exercise), { labelExtra: `${helpFor("diet_and_exercise", "Diet and Exercise")}${optionalSectionToggle("diet_and_exercise", visibility)}` });
+    } else {
+      define("one-liner", "One-Liner", editorRegion(`data-draft-section="one_liner"`, fields.one_liner, "One-sentence summary"), { labelExtra: helpFor("one_liner", "One-Liner") });
+      define("subjective", "Subjective", [
+        `<div class="ed-sub"><span class="ed-sub-label">Events ${draft.noteType === NOTE_TYPES.PROGRESS ? `<button type="button" class="ed-insert-chip" data-action="insert-no-acute-events" title="Insert the text \u201cNo acute events overnight.\u201d into Events">${icon("plus")} Insert: No acute events overnight</button>` : ""}</span>${editorRegion(`data-draft-section="interval_events"`, fields.interval_events)}</div>`,
         editorSubRegion(`data-draft-section="patient_report"`, "Patient report", fields.patient_report),
         editorSubRegion(`data-draft-section="nursing_report"`, "Nursing report", fields.nursing_report),
         editorSubRegion(`data-draft-section="pertinent_symptoms"`, "Pertinent symptoms", fields.pertinent_symptoms),
-        editorSubRegion(`data-draft-section="other"`, "Other subjective information", fields.other)
-      ].join(""), { labelExtra: helpFor("interval_events", "Subjective") }),
-    ];
+        editorSubRegion(`data-draft-section="other"`, "Other subjective information", fields.other),
+        `<div class="ed-sub"><span class="ed-sub-label">Bedside history ${legacyFindingsTag}</span><div class="ed-readonly" data-checklist-finding-kind="history">${checklistFindingsEditor(draft, "history", "No saved history findings.")}</div></div>`
+      ].join(""), { labelExtra: helpFor("interval_events", "Subjective") });
+    }
 
     const objectiveBlocks = renderObjectiveBlocksEditor(draft, collapsedObjectiveGroups);
     const objectiveBody = `<p class="ed-hint">Vitals are in the note automatically. Check labs or diagnostic results under Clinical data to add them here.</p>`
       + (objectiveBlocks || `<p class="ed-empty">Choose items from Clinical data to add Objective content.</p>`)
       + `<div class="ed-sub"><span class="ed-sub-label">Student-authored Objective text</span>${editorRegion("data-draft-objective-manual", draft.objective?.manual, "Optional exam findings, intake/output, or other directly observed data")}</div>`;
 
-    const planBody = `<p class="ed-hint">Order problems by decisional importance. Add only reasoning and actions you support.</p><div class="plan-problem-list" data-plan-problem-list>${draft.problems.map((problem, index) => renderProblemEditor(problem, index, guidanceFor, { generatingApProblemId, apSuggestions: (apSuggestions || {})[problem.id], apReferences: draft.apReferences })).join("") || `<p class="ed-empty">No problems added yet.</p><p class="ed-hint">If you pulled from the primary note and expected problems here, the Assessment &amp; Plan may not have parsed — use the ⤓ pull button on the Plan section header or add a problem manually.</p>`}</div>${apConfirm ? renderApConfirmModal(apConfirm) : ""}`;
+    const planBody = `<p class="ed-hint">Order problems by decisional importance. Add only reasoning and actions you support.</p><div class="plan-problem-list" data-plan-problem-list>${draft.problems.map((problem, index) => renderProblemEditor(problem, index, guidanceFor, { generatingApProblemId, apSuggestions: (apSuggestions || {})[problem.id], apReferences: draft.apReferences })).join("") || `<p class="ed-empty">No problems added yet.</p><p class="ed-hint">If you pulled from the primary note and expected problems here, the Assessment &amp; Plan may not have parsed \u2014 use the \u2933 pull button on the Plan section header or add a problem manually.</p>`}</div>${apConfirm ? renderApConfirmModal(apConfirm) : ""}`;
+
+    define("physical-exam", "Physical Exam", `${smartExamBlock(draft, smartExamUi)}<div class="ed-sub"><span class="ed-sub-label">Saved findings ${legacyFindingsTag}</span><div class="ed-readonly" data-checklist-finding-kind="exam">${checklistFindingsEditor(draft, "exam", "No saved exam findings.")}</div></div>`, { labelExtra: helpFor("physical_exam", "Physical Exam"), sectionAttr: ` data-checklist-finding-kind="exam"` });
+    define("objective", "Objective", objectiveBody, { labelExtra: helpFor("objective", "Objective") });
+    define("assessment", "Assessment", editorRegion("data-draft-assessment", draft.assessment, "Your concise synthesis"), { labelExtra: helpFor("assessment", "Assessment") });
+    define("plan", "Plan", planBody, { labelExtra: `${helpFor("plan", "Plan")}<button type="button" class="ed-mini" data-action="add-plan-problem">${icon("plus")} Add problem</button>` });
+    for (const field of CLOSING_SECTION_FIELDS) {
+      const slug = String(field.label).toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      define(slug, field.label, editorRegion(`data-draft-closing="${field.id}"`, draft.closing?.[field.id]), { labelExtra: `${helpFor(field.id, field.label)}${optionalSectionToggle(field.id, visibility)}` });
+    }
+    define("medications", "Medications", renderMedicationsEditor(draft), { labelExtra: helpOnly("medications", "Medications") });
+
+    const orderedSectionHtml = orderedVisibleSections(draft).map(({ id, custom, label }) => {
+      if (custom) {
+        return editorSection(label, editorRegion(`data-draft-section="${escapeHtml(id)}"`, fields[id], "Optional \u2014 click to write"), { sectionId: id, labelExtra: layoutControls(id, true) });
+      }
+      const def = sectionDefs.get(id);
+      if (!def) return "";
+      return editorSection(def.label, def.body, { sectionId: id, labelExtra: `${def.labelExtra || ""}${layoutControls(id, false)}`, sectionAttr: def.sectionAttr || "" });
+    }).join("");
 
     return `<section class="note-draft-panel panel" aria-labelledby="draftNoteHeading">
       <div class="note-editor-toolbar">
         <div class="note-editor-title"><h2 id="draftNoteHeading">Draft note</h2><label class="note-type-control"><span>Format</span><select id="reviewNoteType"><option value="${NOTE_TYPES.PROGRESS}" ${draft.noteType === NOTE_TYPES.PROGRESS ? "selected" : ""}>Progress note</option><option value="${NOTE_TYPES.H_AND_P}" ${draft.noteType === NOTE_TYPES.H_AND_P ? "selected" : ""}>H&amp;P</option></select></label></div>
-        <div class="note-editor-actions"><span class="autosave-indicator" data-autosave-indicator data-state="idle" title="Your note saves automatically to the encrypted vault as you type">Auto-save on</span><button type="button" class="button--secondary button--small" data-action="copy-final-note">Copy for Epic</button><button type="button" class="button--secondary button--small" data-action="copy-rich-note">Copy rich text</button><button type="button" class="button--secondary button--small" data-action="download-final-note">${icon("download")} Download .txt</button></div>
+        <div class="note-editor-actions"><span class="autosave-indicator" data-autosave-indicator data-state="idle" title="Your note saves automatically to the encrypted vault as you type">Auto-save on</span><button type="button" class="button--secondary button--small" data-action="toggle-layout-panel" title="Reorder, add, or hide sections; save and apply layout templates">Layout</button><button type="button" class="button--secondary button--small" data-action="insert-score" ${savedScores?.length ? "" : "disabled"} title="${savedScores?.length ? "Insert a score you saved for this patient" : "No saved scores for this patient yet"}">Insert score${savedScores?.length ? ` (${savedScores.length})` : ""}</button><button type="button" class="button--secondary button--small" data-action="copy-final-note">Copy for Epic</button><button type="button" class="button--secondary button--small" data-action="copy-rich-note">Copy rich text</button><button type="button" class="button--secondary button--small" data-action="download-final-note">${icon("download")} Download .txt</button></div>
       </div>
+      ${renderScorePicker(savedScores)}
+      ${renderLayoutPanel(draft, noteTemplates)}
       <p class="ed-toolbar-note">One editor for the whole note — section labels included. Type <kbd>$</kbd> to pull a lab or vital into the note. Saving encrypts the draft without running de-identification.</p>
       <div class="note-editor" id="noteEditor" role="group" aria-label="Note editor">
-        ${frontSections.join("")}
-        ${editorSection("Physical Exam", smartExamBlock(draft, smartExamUi), { labelExtra: helpFor("physical_exam", "Physical Exam") })}
-        ${editorSection("Objective", objectiveBody, { labelExtra: helpFor("objective", "Objective") })}
-        ${editorSection("Assessment", editorRegion("data-draft-assessment", draft.assessment, "Your concise synthesis"), { labelExtra: helpFor("assessment", "Assessment") })}
-        ${editorSection("Plan", planBody, { labelExtra: `${helpFor("plan", "Plan")}<button type="button" class="ed-mini" data-action="add-plan-problem">${icon("plus")} Add problem</button>` })}
-        ${CLOSING_SECTION_FIELDS.map((field) => editorSection(field.label, editorRegion(`data-draft-closing="${field.id}"`, draft.closing?.[field.id]), { labelExtra: `${helpFor(field.id, field.label)}${optionalSectionToggle(field.id, visibility)}` })).join("")}
-        ${editorSection("Medications", renderMedicationsEditor(draft), { labelExtra: helpOnly("medications", "Medications") })}
+        ${orderedSectionHtml}
       </div>
     </section>`;
   }
 
-  function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm, apSuggestions }) {
+  function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm, apSuggestions, savedScores, noteTemplates }) {
     if (!draft) return patientRequiredMessage;
     const selectedIds = new Set((draft.objective?.selectedBlocks || []).map((block) => block.selectionId));
     // Banner calling out free-text results that pasted as a status only —
@@ -953,7 +1054,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         <label class="review-packet-label">Note packet<select id="reviewPacketSelect">${packets.map((packet) => `<option value="${escapeHtml(packet.id)}" ${packet.id === selectedPacketId ? "selected" : ""}>${escapeHtml(packet.label)}</option>`).join("")}</select></label>
       </header>
       ${flaggedBanner}
-      <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions })}</div>
+      <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions, savedScores, noteTemplates })}</div>
     </div>`;
   }
 

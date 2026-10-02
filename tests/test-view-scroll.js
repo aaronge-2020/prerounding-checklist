@@ -3,7 +3,6 @@
 import assert from "node:assert/strict";
 import {
   captureScrollPositions,
-  preserveViewScroll,
   relativeSelector,
   restoreScrollPositions,
 } from "../src/ui/view-scroll.js";
@@ -53,6 +52,7 @@ function mockEl({
     id,
     parentElement: null,
     children,
+    attrs,
     scrollTop,
     scrollLeft,
     scrollHeight: scrollable ? 600 : 100,
@@ -129,7 +129,6 @@ const freshList = fresh.querySelector(snapshot[0].selector);
 assert.equal(freshList.scrollTop, 713, "restore re-applies the list scroll in the new tree");
 
 // relativeSelector prefers stable data hooks over positional paths.
-const scoped = root.querySelector(':scope');
 assert.equal(relativeSelector(root, root), ":scope");
 assert.ok(
   relativeSelector(root, root.children[0]).includes('[data-note-scope="admission"]'),

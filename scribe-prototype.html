@@ -15,8 +15,6 @@
   body { margin: 0; font-family: -apple-system, system-ui, "Segoe UI", sans-serif; background: #f4f4f2; color: #1c1c1c; }
   .wrap { max-width: 640px; margin: 0 auto; padding: 12px 14px 48px; }
   .proto-banner { background: #3a2b00; color: #ffd970; border-radius: 10px; padding: 10px 14px; font-size: 13px; line-height: 1.45; margin-bottom: 12px; }
-  .backnav { margin: 0 0 10px; font-size: 14px; }
-  .backnav a { color: #1c1c1c; font-weight: 600; }
   .proto-banner strong { display: block; font-size: 14px; margin-bottom: 2px; }
   h1 { font-size: 20px; margin: 4px 0 2px; }
   .sub { color: #5a5a5a; font-size: 13px; margin: 0 0 14px; line-height: 1.5; }
@@ -47,9 +45,8 @@
 <div class="wrap">
   <div class="proto-banner">
     <strong>PROTOTYPE — on-device scribe experiment</strong>
-    This page is a standalone experiment and a laptop fallback for the phone-first scribe. It shares no patient data with the app. Audio never leaves this device.
+    This page is a standalone test. It is not linked from the app and shares no patient data with it. Audio never leaves this device.
   </div>
-  <p class="backnav"><a href="./mobile.html?bedside=1">← Bedside cheat sheets</a></p>
 
   <h1>On-device scribe prototype</h1>
   <p class="sub">Record from the mic (or load a test clip), transcribe fully on-device with Moonshine via Transformers.js + WASM. Phone-first: no WebGPU, single thread, small model.</p>
@@ -58,8 +55,8 @@
     <h2>1 · Model</h2>
     <label for="modelSel">Transcription model (downloads once, then cached)</label>
     <select id="modelSel">
-      <option value="onnx-community/moonshine-tiny-ONNX" selected>Moonshine tiny — ~180 MB fp32, fastest (recommended)</option>
-      <option value="onnx-community/moonshine-base-ONNX">Moonshine base — ~320 MB fp32, best accuracy (experimental)</option>
+      <option value="onnx-community/moonshine-tiny-ONNX" selected>Moonshine tiny — ~28 MB, fastest (recommended)</option>
+      <option value="onnx-community/moonshine-base-ONNX">Moonshine base — ~63 MB, best accuracy (experimental)</option>
     </select>
     <div class="btnrow">
       <button id="loadBtn" class="primary">Load model</button>
@@ -149,11 +146,7 @@ loadBtn.addEventListener("click", async () => {
   loadBtn.disabled = true;
   try {
     const t0 = performance.now();
-    // fp32: the repo's Jan-2025 static-quantized (*_quantized.onnx) artifacts use a QDQ
-    // weight layout that the vendored ONNX Runtime (1.26.0) rejects at session creation
-    // ("Missing required scale" from TransposeDQWeightsForMatMulNBits). fp32 has no QDQ
-    // nodes and loads cleanly. Verified end-to-end 2026-09-29 (desktop + phone emulation).
-    const r = await callWorker("load", { modelId: modelSel.value, dtype: "fp32" });
+    const r = await callWorker("load", { modelId: modelSel.value, dtype: "q8" }); // q8 = phone download budget
     modelReady = true; modelLoadMs = r.ms;
     dlProgress.style.display = "none";
     modelStatus.textContent = `Ready: ${modelSel.selectedOptions[0].text} (loaded in ${(r.ms / 1000).toFixed(1)}s)`;

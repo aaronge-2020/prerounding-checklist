@@ -11,6 +11,7 @@ import { evaluatePacketCompleteness, packetReviewRequirement } from "../src/dail
 import { sourceCapturePacketCheck } from "../src/patient-context/source-captures.js";
 import { replaceViewContent } from "../src/ui/view-scroll.js";
 
+
 const escapeHtml = (value = "") => String(value)
   .replace(/&/g, "&amp;")
   .replace(/</g, "&lt;")
@@ -247,10 +248,10 @@ const sampleSheet = {
   title: "Chest pain",
   aliases: ["ACS"],
   history: [
-    { id: "h1", system: "cardiac", question: "Is the pain pressure-like?", listenFor: ["Pressure quality"], meaning: "Typical ACS wording.", meaningSource: "standard" }
+    { id: "h1", system: "cardiac", question: "Is the pain pressure-like?", listenFor: ["Pressure quality"], why: "Typical ACS wording.", whySource: "standard" }
   ],
   exam: [
-    { id: "e1", system: "cardiac", maneuver: "Auscultate the heart", findings: ["New murmur"], how: "Bell at apex.", meaning: "", meaningSource: null }
+    { id: "e1", system: "cardiac", maneuver: "Auscultate the heart", findings: ["New murmur"], how: "Bell at apex.", why: null, whySource: null }
   ]
 };
 const sheetListMarkup = cheatSheetsView.sheetListHtml({ sheets: [sampleSheet], query: "", total: 1 });
@@ -265,6 +266,7 @@ assert.match(sheetDetailMarkup, /Auscultate the heart/);
 assert.match(sheetDetailMarkup, /Why it matters/);
 assert.match(sheetDetailMarkup, /Clinical reasoning note pending review/);
 assert.doesNotMatch(sheetDetailMarkup, /<input|<textarea|<select/i);
+
 assert.equal(redactionPosition("Keep [NAME] safe", { placeholder: "[NAME]", occurrence: 0 }), 5);
 assert.equal(warningDescription({ type: "Name", snippet: "Jane" }), "Name: Jane");
 assert.equal(warningSnippet({ snippet: " Jane " }), "Jane");
@@ -306,13 +308,4 @@ const editableWithoutReviewMarkup = redactionView.renderSectionSurface({
 });
 assert.match(editableWithoutReviewMarkup, /data-action="resume-section-review"/);
 assert.match(editableWithoutReviewMarkup, /Save and re-run redaction review/);
-
-class FakeFile {
-  constructor(parts, name, options) {
-    this.parts = parts;
-    this.name = name;
-    this.type = options.type;
-  }
-}
-
 console.log("UI feature module tests passed");

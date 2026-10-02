@@ -350,6 +350,8 @@ const SAVED_VITAL_NAMES = [
   "Temperature",
   "Respirations",
   "Weight (kg)",
+  "Weight",
+  "Height",
   "RASS Score",
   "Braden Scale",
   "O2 Device",
@@ -364,6 +366,7 @@ const SAVED_VITAL_NAMES = [
   "MAP",
   "BP",
   "HR",
+  "Ht",
   "RR"
 ].sort((left, right) => right.length - left.length);
 
@@ -379,6 +382,7 @@ const SAVED_VITAL_LABELS = new Map([
   ["Art DBP", "Arterial Diastolic BP"],
   ["Art MAP", "MAP (arterial)"],
   ["O2 flow", "O2 Flow Rate"],
+  ["Ht", "Height"],
   ["MAP", "MAP (cuff)"]
 ]);
 
@@ -403,7 +407,8 @@ const SAVED_VITAL_UNITS = new Map([
   ["FiO2", "%"],
   ["O2 Flow Rate", "L/min"],
   ["Weight", "kg"],
-  ["Weight (kg)", "kg"]
+  ["Weight (kg)", "kg"],
+  ["Height", "cm"]
 ]);
 
 function savedLaboratoryModel(lines) {
@@ -443,7 +448,7 @@ function savedLaboratoryModel(lines) {
 
 // Explicit unit tokens the saved "Vitals" text may carry. Parsed back
 // verbatim so an explicit °F never degrades into the legacy °C assumption.
-const EXPLICIT_VITAL_UNIT_PATTERN = /(°F|°C|breaths\/min|L\/min|mmHg|bpm|kg|%)(?=\s*$)/i;
+const EXPLICIT_VITAL_UNIT_PATTERN = /(°F|°C|breaths\/min|L\/min|mmHg|bpm|kg|cm|%)(?=\s*$)/i;
 
 function splitSavedVitalValue(text) {
   const remainder = clean(text);

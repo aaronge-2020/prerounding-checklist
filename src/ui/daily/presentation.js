@@ -1,7 +1,7 @@
 import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-medication-card-v4";
-import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260929-rxnorm-mar-v1";
+import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260925-negative-lab-v1";
 import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-medication-card-v4";
-import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
+import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260924-optional-sections-v1";
 import { primaryTeamNoteFields, primaryTeamNoteHasContent } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
 import { DIAGNOSTIC_RESULT_CATEGORIES, sourceCapturePacketCheck } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
 import { joinValueUnit } from "../../review-data/compact-summary.js?v=20260924-optional-sections-v1";
@@ -391,7 +391,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
           </aside>
         </div>
         <div class="structured-note-paste-meta"><span data-structured-note-paste-count="${escapeHtml(scope)}">${pastedText.length.toLocaleString()} characters · session only</span></div>
-        <div class="structured-note-actions"><button type="button" class="button--quiet" data-action="clear-structured-note-paste" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>Clear</button><button type="button" class="button--primary" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>${parseResult.detectedSectionCount ? "Review sections" : "Review note"}</button></div>
+        <div class="structured-note-actions"><button type="button" class="button--quiet" data-action="clear-structured-note-paste" data-note-scope="${escapeHtml(scope)}" ${pastedText ? "" : "disabled"}>Clear</button><button type="button" class="button--primary" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>${parseResult.detectedSectionCount ? "Review sections" : "Review note"}</button></div>
       ` : `
         <div class="structured-note-section-layout">
           <nav class="structured-note-section-nav" aria-label="Note sections">
@@ -455,10 +455,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
         </label>
         <div class="source-draft-footer">
           <span class="muted" data-${prefix}-source-draft-count>${sourceDraft.length.toLocaleString()} characters · ${escapeHtml(selectedSource.description)}</span>
-          <div class="button-row">
-            <button class="button--secondary" type="button" data-action="${addAction}-raw" ${!sourceDraft.trim() ? "disabled" : ""} title="Save this source as-is without running de-identification, so you can redact false positives manually">Save without de-identifying</button>
-            <button class="button--primary" type="button" data-action="${addAction}" ${deidBusy || !sourceDraft.trim() ? "disabled" : ""}>${deidBusy ? "De-identifying…" : addLabel}</button>
-          </div>
+          <button class="button--primary" type="button" data-action="${addAction}" ${deidBusy || !sourceDraft.trim() ? "disabled" : ""}>${deidBusy ? "De-identifying…" : addLabel}</button>
         </div>
         <div data-source-parse-preview="${prefix}">${renderSourceParsePreview({ scope, parseResult: sourceParse })}</div>
       </section>`;

@@ -29,7 +29,7 @@ import {
 } from "../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import {
   extractNoteClinicalData
-} from "../patient-context/note-clinical-extractor.js?v=20260928-mar-tags-v1";
+} from "../patient-context/note-clinical-extractor.js?v=20260925-med-filters-v1";
 import {
   primaryTeamNoteHasContent
 } from "../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
@@ -451,7 +451,7 @@ function compactLaboratoryTrend(result) {
   });
   const latest = observations.at(-1);
   const flag = latest?.flag ? ` [${latest.flag}]` : latest?.status && !["normal", "unknown"].includes(latest.status) ? ` [${latest.status}]` : "";
-  const baselineValue = [clean(result?.baseline?.value), clean(result?.baseline?.unit)].filter(Boolean).join(" ");
+  const baselineValue = joinValueUnit(clean(result?.baseline?.value), clean(result?.baseline?.unit));
   const baseline = baselineValue
     ? ` (baseline ${baselineValue}${clean(result?.baseline?.dateLabel) ? ` · ${clean(result?.baseline?.dateLabel)}` : ""})`
     : "";

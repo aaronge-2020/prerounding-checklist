@@ -5,13 +5,13 @@
 // (same inputs, same point values, same formulas, same interpretations).
 // The registry is the single source the MD Calc tab renders from.
 
-import { ascvdDefinition } from "./ascvd.js";
 import { bishopDefinition } from "./bishop.js";
 import { apgarDefinition } from "./apgar.js";
 import { vbacFlammDefinition } from "./vbac-flamm.js";
 import { vbacMfmuDefinition } from "./vbac-mfmu.js";
 import { dueDatesDefinition } from "./due-dates.js";
 import { chadsvascDefinition } from "./chadsvasc.js";
+import { ascvdDefinition } from "./ascvd.js";
 import { hasbledDefinition } from "./hasbled.js";
 import { heartDefinition } from "./heart.js";
 import { timiDefinition } from "./timi.js";
@@ -39,13 +39,13 @@ function attachGuide(definition) {
 }
 
 export const CLINICAL_SCORES = Object.freeze([
-  attachGuide(ascvdDefinition),
   attachGuide(bishopDefinition),
   attachGuide(apgarDefinition),
   attachGuide(vbacFlammDefinition),
   attachGuide(vbacMfmuDefinition),
   attachGuide(dueDatesDefinition),
   attachGuide(chadsvascDefinition),
+  attachGuide(ascvdDefinition),
   attachGuide(hasbledDefinition),
   attachGuide(heartDefinition),
   attachGuide(timiDefinition),

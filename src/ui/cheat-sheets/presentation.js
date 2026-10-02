@@ -15,19 +15,25 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
 
   // --- shared bits ---
 
-  // Pearl callout: clinical reasoning for the question/maneuver — why it is
-  // asked and what the answer means. AI-drafted meanings are labeled as such;
-  // the sheet-level review banner carries the clinician-review requirement.
-  function meaningPearl(meaning, meaningSource) {
-    if (meaning && String(meaning).trim()) {
-      const src = meaningSource === "ai-draft"
-        ? "AI-drafted \u2014 needs clinician review"
-        : (meaningSource && String(meaningSource).trim() ? `Source: ${meaningSource}` : "");
+  function chips(values, label) {
+    const items = (values || []).filter((value) => value && String(value).trim());
+    if (!items.length) return "";
+    return `
+      <div class="cs-chips" role="list" aria-label="${escapeHtml(label)}">
+        ${items.map((value) => `<span class="cs-chip" role="listitem">${escapeHtml(String(value))}</span>`).join("")}
+      </div>`;
+  }
+
+  // Pearl callout: "why this question/maneuver matters" in the cheat-sheet's
+  // voice. When why is absent, the data says so (why: null) — we render a
+  // subtle marker instead and NEVER invent the reasoning.
+  function whyPearl(why, whySource) {
+    if (why && String(why).trim()) {
       return `
         <aside class="cs-pearl">
           <span class="cs-pearl-label">Why it matters</span>
-          <p>${escapeHtml(String(meaning))}</p>
-          ${src ? `<p class="cs-pearl-source">${escapeHtml(src)}</p>` : ""}
+          <p>${escapeHtml(String(why))}</p>
+          ${whySource && String(whySource).trim() ? `<p class="cs-pearl-source">Source: ${escapeHtml(String(whySource))}</p>` : ""}
         </aside>`;
     }
     return `<p class="cs-pending">Clinical reasoning note pending review.</p>`;
@@ -55,7 +61,8 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
     return `
       <li class="cs-q">
         <p class="cs-q-text">${escapeHtml(String(item.question ?? ""))}</p>
-        ${meaningPearl(item.meaning, item.meaningSource)}
+        ${chips(item.listenFor, "Listen for")}
+        ${whyPearl(item.why, item.whySource)}
       </li>`;
   }
 
@@ -83,7 +90,8 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
         <p class="cs-exam-name">${escapeHtml(String(item.maneuver ?? ""))}</p>
         ${item.how && String(item.how).trim() ? `
         <p class="cs-how"><span class="cs-how-label">How to</span> ${escapeHtml(String(item.how))}</p>` : ""}
-        ${meaningPearl(item.meaning, item.meaningSource)}
+        ${chips(item.findings, "Expected findings")}
+        ${whyPearl(item.why, item.whySource)}
       </li>`;
   }
 

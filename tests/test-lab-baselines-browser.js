@@ -22,7 +22,7 @@ page.on("pageerror", (error) => pageErrors.push(error.message));
 
 const creatinineCell = () => page.locator(".lab-row").filter({ hasText: "Creatinine" }).first();
 const baselineBadge = () => creatinineCell().locator(".lab-row-meta");
-const objectiveBlock = () => page.locator("[data-objective-block]").first();
+const objectiveBlock = () => page.locator('[data-objective-group]').first();
 
 try {
   await openRealApp(page, appUrl);
@@ -57,11 +57,10 @@ try {
   assert.match(await baselineBadge().innerText(), /0\.9 mg\/dL · Sep 2024/);
   assert.equal(await creatinineCell().getByRole("button", { name: "Edit base" }).count(), 1);
 
-  // Select the lab: the objective block carries the baseline into the note text.
+  // Select the lab: the objective group carries the baseline into the note text.
   await creatinineCell().getByRole("checkbox", { name: /Include only Creatinine/ }).check();
-  await page.waitForSelector("[data-objective-block]");
-  assert.equal(await objectiveBlock().getAttribute("data-objective-state"), "synced");
-  assert.match(await objectiveBlock().locator("[data-objective-block-text]").innerText(), /Creatinine: 1\.6[\s\S]*\(baseline 0\.9 mg\/dL · Sep 2024\)/);
+  await page.waitForSelector('[data-objective-group]');
+  assert.match(await objectiveBlock().innerText(), /Creatinine 1\.6[\s\S]*\(baseline 0\.9 mg\/dL · Sep 2024\)/);
 
   // Editing the baseline reconciles the still-synced block automatically.
   await creatinineCell().getByRole("button", { name: "Edit base" }).click();
@@ -70,24 +69,18 @@ try {
   await creatinineCell().locator('[data-baseline-field="value"]').fill("1.0");
   await creatinineCell().getByRole("button", { name: "Save baseline" }).click();
   await page.waitForFunction(() => /Baseline saved/.test(document.querySelector("#statusLine")?.textContent || ""));
-  assert.equal(await objectiveBlock().getAttribute("data-objective-state"), "synced");
-  assert.match(await objectiveBlock().locator("[data-objective-block-text]").innerText(), /\(baseline 1\.0 mg\/dL · Sep 2024\)/);
+  assert.match(await objectiveBlock().locator('[data-objective-group-text]').innerText(), /\(baseline 1\.0 mg\/dL · Sep 2024\)/);
 
-  // A student-edited block is marked stale instead of overwritten when the
-  // source changes underneath it. The state attribute only refreshes on a
-  // full render (typing intentionally does not re-render, to preserve the
-  // caret), so the flow below goes through the baseline save's render.
-  await objectiveBlock().locator("[data-objective-block-text]").fill("Student wording: creatinine improved overnight.");
+  // A student-edited group keeps the student's wording when the source
+  // changes underneath it (the group override takes precedence).
+  await objectiveBlock().locator('[data-objective-group-text]').fill("Student wording: creatinine improved overnight.");
   await creatinineCell().getByRole("button", { name: "Edit base" }).click();
   await page.waitForSelector("[data-baseline-editor]");
   await creatinineCell().locator('[data-baseline-field="value"]').fill("1.1");
   await creatinineCell().getByRole("button", { name: "Save baseline" }).click();
   await page.waitForFunction(() => /Baseline saved/.test(document.querySelector("#statusLine")?.textContent || ""));
-  await page.waitForSelector('[data-objective-block][data-objective-state="stale"]');
-  assert.equal(await objectiveBlock().locator("[data-objective-block-text]").innerText(), "Student wording: creatinine improved overnight.", "student wording must survive the source change");
-  assert.match(await objectiveBlock().innerText(), /Source changed/);
-  await objectiveBlock().getByRole("button", { name: "Keep mine" }).click();
-  assert.equal(await objectiveBlock().getAttribute("data-objective-state"), "edited");
+  await page.waitForTimeout(500);
+  assert.equal(await objectiveBlock().locator('[data-objective-group-text]').innerText(), "Student wording: creatinine improved overnight.", "student wording must survive the source change");
 
   // Clear removes the badge and the baseline text.
   await creatinineCell().getByRole("button", { name: "Edit base" }).click();

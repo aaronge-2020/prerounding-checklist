@@ -66,7 +66,7 @@ try {
   await page.selectOption("[data-smart-exam-select]", "heent");
   await userClick('[data-action="smart-exam-insert"]');
   await page.waitForSelector('[data-smart-system="heent"]', { timeout: 5000 });
-  const prose = await page.locator('[data-smart-system="heent"] .se-prose').innerText();
+  const prose = await page.locator('[data-smart-system="heent"] .se-editor').innerText();
   assert.ok(prose.startsWith("HEENT:"), `prose starts with HEENT: (got ${prose.slice(0, 40)})`);
   assert.ok(await page.locator(pill("heent", "palpation")).count(), "palpation pill rendered inline");
 

@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>local-llm bench harness (temporary, not shipped)</title></head>
+<body>
+<script type="module">
+// Test harness driving the SHIPPED local-LLM modules:
+//   - src/local-llm/worker.js      (real WebLLM worker, real protocol)
+//   - src/local-llm/parse.js       (real splitNoteSectionsWithLlm orchestration)
+//   - src/local-llm/section-split.js (real prompts, verifier, chunking)
+//   - vendor/web-llm/index.js      (real vendored WebLLM runtime)
+// The only deviation from the shipped UI path is the model id: the harness
+// loads Qwen3-0.6B (same Qwen3 family / MLC runtime) because this test box
+// has ~1.2 GB free RAM and no GPU, while the shipped 1.7B needs ~2 GB + GPU.
+import { splitNoteSectionsWithLlm } from "/src/local-llm/parse.js?v=20260927-local-llm-v3";
+
+const WORKER_URL = "/src/local-llm/worker.js?v=20260927-local-llm-v3";
+const MODEL_ID = "Qwen3-0.6B-q4f16_1-MLC";
+
+let worker = null;
+let nextId = 1;
+const pending = new Map();
+let lastProgress = { progress: 0, text: "" };
+
+function ensureWorker() {
+  if (worker) return worker;
+  worker = new Worker(WORKER_URL, { type: "module" });
+  worker.onmessage = (event) => {
+    const message = event.data || {};
+    const entry = pending.get(message.id);
+    if (message.type === "progress") {
+      lastProgress = { progress: message.progress, text: message.text };
+      window.__benchProgress = lastProgress;
+      return;
+    }
+    if (message.type === "token") {
+      entry?.onToken?.(message.token);
+      return;
+    }
+    if (!entry) return;
+    pending.delete(message.id);
+    if (message.type === "error") entry.reject(new Error(message.message));
+    else entry.resolve(message);
+  };
+  worker.onerror = (event) => {
+    const message = event?.message || "worker failed";
+    for (const entry of pending.values()) entry.reject(new Error(message));
+    pending.clear();
+  };
+  return worker;
+}
+
+function send(message, { onToken } = {}) {
+  const w = ensureWorker();
+  const id = nextId++;
+  return new Promise((resolve, reject) => {
+    pending.set(id, { resolve, reject, onToken });
+    w.postMessage({ ...message, id });
+  });
+}
+
+// Minimal client shim exposing exactly what parse.js needs: chat(messages, opts).
+const clientShim = {
+  async chat(messages, { onToken, maxTokens = 1024, temperature = 0.7 } = {}) {
+    const reply = await send({ type: "chat", messages, maxTokens, temperature }, { onToken });
+    return reply.text;
+  }
+};
+
+window.bench = {
+  modelId: MODEL_ID,
+  progress: () => lastProgress,
+  async init() {
+    const reply = await send({ type: "init", modelId: MODEL_ID });
+    return reply;
+  },
+  async selfTest() {
+    const marker = "LOCAL-LLM-SELFTEST-OK";
+    const reply = await send({
+      type: "chat",
+      messages: [{ role: "user", content: `Reply with exactly this and nothing else: ${marker}` }],
+      maxTokens: 32,
+      temperature: 0
+    });
+    return { ok: String(reply.text || "").includes(marker), text: reply.text };
+  },
+  async chat(messages, opts, onTokenShim) {
+    const tokens = [];
+    const text = await clientShim.chat(messages, {
+      ...opts,
+      onToken: (t) => { tokens.push(t); onTokenShim?.(t); }
+    });
+    return { text, tokenCount: tokens.length, streamed: tokens.length > 0 };
+  },
+  async reset() {
+    await send({ type: "reset" });
+  },
+  async parseNote(noteText, noteType, onChunk) {
+    return splitNoteSectionsWithLlm(clientShim, noteText, noteType, { onChunk });
+  }
+};
+window.benchReady = true;
+</script>
+</body>
+</html>

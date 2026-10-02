@@ -224,49 +224,6 @@ console.log("openai client tests passed");
   setOfflineMode(false);
 }
 
-// Ground truth beats the registry hint: when the worker reports the
-// weights ARE in Cache Storage, ensureReady must not refuse — it gets
-// past the offline check (and fails later only on the missing WebGPU in
-// this Node environment, which proves the refusal was skipped).
-{
-  setOfflineMode(true);
-  const seenWorkerUrls = [];
-  globalThis.Worker = class {
-    constructor(url) {
-      seenWorkerUrls.push(String(url));
-    }
-    postMessage(message) {
-      if (message.type === "cached") {
-        queueMicrotask(() =>
-          this.onmessage({
-            data: {
-              id: message.id,
-              type: "cached",
-              results: { "Qwen3-1.7B-q4f16_1-MLC": true }
-            }
-          })
-        );
-      }
-    }
-    terminate() {}
-  };
-  try {
-    const client = createLocalLlmClient();
-    await assert.rejects(
-      () => client.ensureReady("qwen3-1.7b"),
-      (err) => /WebGPU is required/.test(err.message),
-      "actually-cached model passes the offline refusal (fails later on WebGPU, as expected in Node)"
-    );
-    assert.ok(
-      seenWorkerUrls.some((u) => u.includes("worker.js")),
-      "the ground-truth check consulted the worker"
-    );
-  } finally {
-    delete globalThis.Worker;
-    setOfflineMode(false);
-  }
-}
-
 console.log("local-llm offline pre-check tests passed");
 
 // ---------------------------------------------------------------------------

@@ -127,20 +127,9 @@ function status() {
   };
 }
 
-// Serialize message handling: an async onmessage does NOT block the next
-// message — without this, a "clear" (patient switch / vault lock) could run
-// while an "index" is still embedding, and the late-finishing index would
-// repopulate the worker with the previous patient's vectors after the clear.
-// Chaining every message through one promise keeps index/clear/query atomic
-// relative to each other.
-let messageChain = Promise.resolve();
-self.onmessage = (event) => {
+self.onmessage = async (event) => {
   const { id, type, payload = {} } = event.data || {};
   if (id == null || !type) return;
-  messageChain = messageChain.then(() => handleMessage(id, type, payload)).catch(() => {});
-};
-
-async function handleMessage(id, type, payload) {
   try {
     let value;
     if (type === "status") {
@@ -177,4 +166,4 @@ async function handleMessage(id, type, payload) {
       stack: error instanceof Error ? String(error.stack || "") : ""
     });
   }
-}
+};

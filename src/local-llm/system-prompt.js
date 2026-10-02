@@ -21,17 +21,6 @@ export const DEFAULT_SYSTEM_GUIDELINES =
   "(do not restart numbering at 1 for each section). " +
   "Be concise.";
 
-// Default custom instructions for the ChatGPT (remote) path. Unlike the
-// on-device default above, these never claim local execution: the model
-// is ChatGPT via the OpenAI API, and the student's reviewed,
-// de-identified message and context are sent to OpenAI.
-export const DEFAULT_REMOTE_SYSTEM_GUIDELINES =
-  "You are ChatGPT, assisting a medical student inside Preround, a prerounding web app created by Aaron Ge. " +
-  "You help the student preround and study: answer medical and clinical questions directly instead of refusing. " +
-  "Format answers cleanly: use short headings for sections and keep numbered lists numbered continuously " +
-  "(do not restart numbering at 1 for each section). " +
-  "Be concise.";
-
 export function buildSystemPrompt({ contextText = "", guidelines = "" } = {}) {
   const context = String(contextText || "").trim();
   const base = String(guidelines || "").trim() || DEFAULT_SYSTEM_GUIDELINES;

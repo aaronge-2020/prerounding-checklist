@@ -246,13 +246,44 @@ export function latestLabValue(sources, matchers, exclude = []) {
   return candidates.at(-1) || null;
 }
 
+// Derive a yes/no radio value (1/0) from a numeric pull, e.g. derive "gt19"
+// means value > 19 ? 1 : 0. Supports gt/gte/lt/lte thresholds.
+function deriveThreshold(pull, value) {
+  const match = /^([gl]te?)(\d+(?:\.\d+)?)$/.exec(pull.derive || "");
+  if (!match || !Number.isFinite(value)) return null;
+  const threshold = Number(match[2]);
+  const op = match[1];
+  const passes =
+    op === "gt" ? value > threshold :
+    op === "gte" ? value >= threshold :
+    op === "lt" ? value < threshold :
+    value <= threshold;
+  return passes ? 1 : 0;
+}
+
 function resolvePull(pull, sources) {
   if (!pull) return null;
   if (pull.kind === "demographic" && pull.field === "ageYears") {
     const hit = firstTextHit(sources, parseAgeYears);
     if (!hit) return null;
     if (pull.derive === "lt40") return { value: hit.value < 40 ? 2 : 0, source: hit.source };
+    const derived = pull.derive ? deriveThreshold(pull, hit.value) : null;
+    if (derived !== null) return { value: derived, source: hit.source };
     return { value: hit.value, source: hit.source };
+  }
+  if (pull.kind === "demographic" && pull.field === "sex") {
+    const hit = firstTextHit(sources, parseSex);
+    if (!hit) return null;
+    const value = pull.valueMap ? pull.valueMap[hit.value] : hit.value;
+    if (value === undefined || value === null) return null;
+    return { value, source: hit.source };
+  }
+  if (pull.kind === "lab") {
+    const hit = latestLabValue(sources, pull.match || [], pull.exclude || []);
+    if (!hit) return null;
+    const derived = pull.derive ? deriveThreshold(pull, hit.value) : null;
+    if (derived !== null) return { value: derived, source: hit.source };
+    return { value: hit.value, unit: hit.unit, source: hit.source };
   }
   if (pull.kind === "vital") {
     const hit = latestVitalValue(sources, pull.match || []);

@@ -16,7 +16,7 @@
 // covers the cases render() can actually reach: a present-but-empty payload
 // ({ "sheets": [] }), a malformed payload, or a persisted sheet id that no
 // longer exists.
-import { CHEAT_SHEETS_DATA } from "../../data/cheat-sheets.data.js?v=20260929-cheatsheets-v2";
+import { CHEAT_SHEETS_DATA } from "../../data/cheat-sheets.data.js?v=20260929-cheat-sheets-v1";
 import { searchSheets, getSheetById } from "./search.js?v=20260929-cheat-sheets-v1";
 import { createCheatSheetsPresentation } from "./presentation.js?v=20260929-cheat-sheets-v1";
 

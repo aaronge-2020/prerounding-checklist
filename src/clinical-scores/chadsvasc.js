@@ -54,8 +54,7 @@ const chadsvascDefinition = {
         { value: 0, label: "<65" },
         { value: 1, label: "65–74" },
         { value: 2, label: "≥75" }
-      ],
-      pull: { kind: "demographic", field: "sex", valueMap: { male: 0, female: 1 } }
+      ]
     },
     {
       key: "sex",
@@ -64,7 +63,8 @@ const chadsvascDefinition = {
       options: [
         { value: 0, label: "Male" },
         { value: 1, label: "Female" }
-      ]
+      ],
+      pull: { kind: "demographic", field: "sex", valueMap: { male: 0, female: 1 } }
     },
     {
       key: "chf",

@@ -1,29 +1,7 @@
 const MODEL_PACK_CACHE_NAME = "prerounding-local-model-packs-v1";
 const MODEL_PACK_ROUTE = "/__prerounding-models/";
 
-self.addEventListener("install", (event) => {
-  self.skipWaiting();
-  // scribe-parakeet static shell (additive precache; nothing else changes).
-  // All files are vendored/committed, so addAll is atomic-safe. The full
-  // ORT runtime (wasm + jsep) is included: the worker loads it from
-  // /vendor/ort-1.22.0/ at init, and offline use needs it cached.
-  event.waitUntil(
-    caches.open("scribe-parakeet-v1").then((cache) =>
-      cache.addAll([
-        "./scribe-parakeet.html",
-        "./src/scribe-parakeet/app.js",
-        "./src/scribe-parakeet/pipeline.js",
-        "./src/scribe-parakeet/model-manager.js",
-        "./src/scribe-parakeet/parakeet-worker.js",
-        "./vendor/ort-1.22.0/ort.all.min.js",
-        "./vendor/ort-1.22.0/ort-wasm-simd-threaded.mjs",
-        "./vendor/ort-1.22.0/ort-wasm-simd-threaded.wasm",
-        "./vendor/ort-1.22.0/ort-wasm-simd-threaded.jsep.mjs",
-        "./vendor/ort-1.22.0/ort-wasm-simd-threaded.jsep.wasm",
-      ])
-    )
-  );
-});
+self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => event.waitUntil(self.clients.claim()));
 
 // The local redaction models run through onnxruntime-web's threaded WASM

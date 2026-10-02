@@ -1,8 +1,0 @@
-{
-  "node": "v24.20.0",
-  "cpuModel": "AMD EPYC 9D25 126-Core Processor",
-  "logicalCpus": 2,
-  "memTotalMiB": 7936,
-  "chromium": "/home/hatch/.cache/ms-playwright/chromium_headless_shell-1193/chrome-linux/headless_shell",
-  "notesFile": "/home/hatch/workspace/deid-validation/ws3-envelope/data/notes_ws3.jsonl"
-}

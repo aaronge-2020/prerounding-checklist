@@ -302,6 +302,19 @@ function objectiveText(draft) {
   return parts.join("\n\n");
 }
 
+function checklistFindingText(draft, kind) {
+  return (draft.checklistFindings?.selectedBlocks || [])
+    .filter((block) => block.kind === kind)
+    .map((block) => String(block.editedText || "").trim())
+    .filter(Boolean)
+    .map((finding) => `- ${finding}`)
+    .join("\n");
+}
+
+function appendChecklistFindings(body, findings) {
+  return [body, findings].filter(Boolean).join("\n\n");
+}
+
 function relevantHistoryText(sections) {
   return [
     labeledLine("Past medical history", sections.past_medical_history),
@@ -404,14 +417,14 @@ function finalNoteSectionList(draft) {
     put("one-liner", { heading: "One-Liner", body: oneLiner });
     put("chief-complaint", { heading: "Chief Complaint", body: valueText(fields.chief_complaint) });
     put("history-of-present-illness", { heading: "HPI", body: dedupeOneLiner(oneLiner, valueText(fields.history_of_present_illness)) });
-    put("review-of-systems", { heading: "Review of Systems", body: "" });
+    put("review-of-systems", { heading: "Review of Systems", body: checklistFindingText(draft, "history") });
     put("relevant-history", { heading: "Relevant History", body: relevantHistoryText(fields) });
     put("diet-and-exercise", { heading: "Diet and Exercise", body: valueText(fields.diet_and_exercise), visibility: "diet_and_exercise" });
   } else {
     put("one-liner", { heading: "One-Liner", body: oneLiner });
-    put("subjective", { heading: "Subjective", body: subjectiveText(fields) });
+    put("subjective", { heading: "Subjective", body: appendChecklistFindings(subjectiveText(fields), checklistFindingText(draft, "history")) });
   }
-  put("physical-exam", { heading: "Physical Exam", body: valueText(fields.physical_exam) });
+  put("physical-exam", { heading: "Physical Exam", body: appendChecklistFindings(valueText(fields.physical_exam), checklistFindingText(draft, "exam")) });
   put("objective", { heading: "Objective", objective: true });
   // U12: drop an Assessment that merely repeats the plan's problem titles.
   put("assessment", { heading: "Assessment", body: assessmentWithoutDuplicateProblems(valueText(draft.assessment), draft.problems) });
@@ -459,70 +472,7 @@ export function renderFinalNote(draft) {
 }
 
 export function renderFinalNotePlainText(draft) {
-  return plainTextFromMarkdown(renderFinalNote(draft));
-}
-
-// The draft note as individually selectable entries for AI Chat context:
-// one entry per rendered note section, with the Plan split into one entry
-// per problem. Each entry is { key, heading, label, text } where `text` is
-// the plain-text rendering of that entry alone (heading line included), so
-// it reads as the same slice inside renderFinalNotePlainText. Keys are
-// stable slugs of the heading / problem name, deduplicated within the
-// note. Entries with no text are omitted, matching the whole-note render.
-export function renderNoteSectionEntries(draft) {
-  assertNoteType(draft);
-  const entries = [];
-  const usedKeys = new Set();
-  const uniqueKey = (base) => {
-    let key = base;
-    let n = 2;
-    while (usedKeys.has(key)) key = `${base}-${n++}`;
-    usedKeys.add(key);
-    return key;
-  };
-  for (const { heading, body, objective, medications } of finalNoteSectionList(draft)) {
-    if (heading === "Plan") {
-      for (const problem of draft.problems || []) {
-        const name = sanitizeProblemTitle(valueText(problem.problem));
-        const problemMd = renderProblem(problem);
-        if (!name || !problemMd) continue;
-        const text = plainTextFromMarkdown(problemMd);
-        if (!text) continue;
-        entries.push({
-          key: uniqueKey(`plan:${slugifyNoteSection(name)}`),
-          heading: "Plan",
-          label: `Plan — ${name}`,
-          text
-        });
-      }
-      continue;
-    }
-    const content = objective ? objectiveText(draft) : medications ? medicationsText(draft) : body;
-    const md = section(heading, content);
-    if (!md) continue;
-    const text = plainTextFromMarkdown(md);
-    if (!text) continue;
-    entries.push({
-      key: uniqueKey(`section:${slugifyNoteSection(heading)}`),
-      heading,
-      label: heading,
-      text
-    });
-  }
-  return entries;
-}
-
-function slugifyNoteSection(value) {
-  const slug = String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-  return slug || "section";
-}
-
-// The plain-text pipeline shared by the whole-note and per-section
-// renderers: markdown table separators are dropped, table rows are
-// flattened, bold/italic markers are stripped, <br> becomes a newline,
-// runs of 3+ newlines collapse, and the result is trimmed.
-function plainTextFromMarkdown(markdown) {
-  return String(markdown || "")
+  return renderFinalNote(draft)
     .split(/\r?\n/)
     .filter((line) => !/^\|\s*-+(?:\s*\|\s*-+)+\s*\|?$/.test(line.trim()))
     .map((line) => {

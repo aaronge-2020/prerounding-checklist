@@ -1131,7 +1131,7 @@ assert.ok(priorAdmissionResult.text.includes("Previously admitted on [Historical
 assert.ok(priorAdmissionResult.text.includes("Current labs [Historical: 2026] normal"), "a reading-date cue must not invent a hospital admission anchor");
 assert.ok(!/Hospital Day \d+|prior to hospital admission/.test(priorAdmissionResult.text), "no admission timeline may be inferred from prior-admission or reading-date cues");
 
-// 20260929-deid-clinicale5 regressions: BILOU label normalization (L-/U- prefixes
+// 20260929-deid-r2 regressions: BILOU label normalization (L-/U- prefixes
 // from the deid_bert_i2b2-ONNX model) plus the ten benchmark-winning rule
 // improvements (T1/P1/P2/P3/P4/D1/B1/A1/D2/A2) and their integration fixes.
 assert.equal(normalizePhiLabel("L-PATIENT"), "PATIENT NAME", "L- prefix must normalize like B-/I- (BILOU)");
@@ -1157,7 +1157,7 @@ assert.ok(noDoubleTime.includes("[Historical: 2026 at 04:02]"), "datetime placeh
 assert.ok(!noDoubleTime.includes("[TIME]"), "folded clock time must not double-redact as [TIME]");
 assert.equal((noDoubleTime.match(/04:02/g) || []).length, 1, "the clock time must appear exactly once, inside the datetime placeholder");
 
-// 20260929-deid-clinicale5 regressions: TRACK B round 2 (B1/B2/B3/B4/B5/B7).
+// 20260929-deid-r2 regressions: TRACK B round 2 (B1/B2/B3/B4/B5/B7).
 
 // B1: patient-specific lexicon. Variants cover full name, first+last,
 // middle initial, comma-reversed chart headers, and initial+last.
@@ -1321,51 +1321,4 @@ assertTrackCRedacts('{"givenname1": "Ossi"}', "Ossi", "C7 json givenname");
 assertTrackCPreserves('{"Status": "Active"}', "Active", "C7 non-name key not a name");
 assertTrackCPreserves('{"Patient_ID": "12345"}', "12345", "C7 non-name value not a name");
 
-// C8: numbered/underscored name labels (given_name1:, LN2:, Last Name 1:)
-assertTrackCRedacts('given_name1: Sicking', "Sicking", "C8 numbered given_name1");
-assertTrackCRedacts('LN2: Ossi', "Ossi", "C8 numbered LN2");
-assertTrackCRedacts('Last Name 1: Golding', "Golding", "C8 numbered Last Name 1");
-assertTrackCRedacts('GivenName2: Ariadna', "Ariadna", "C8 GivenName2");
-
 console.log("Track C structured-pattern tests passed.");
-
-// Track D: clinical-text rule winners (measured 0.802 exact-span F1 on the
-// held-out split as Stanford + full rule stack). Same structured-only path
-// as Track C: the D rules live in addStructuredSafeHarborEntities.
-function trackDRedacted(text) {
-  return deidentifyTextStructuredOnly(text).text;
-}
-function assertTrackDRedacts(text, value, id) {
-  const out = trackDRedacted(text);
-  assert.ok(!out.includes(value), `${id}: expected ${JSON.stringify(value)} to be redacted in ${JSON.stringify(out)}`);
-}
-
-// D1: clinical ages re-added post-filter (Safe Harbor suppresses < 90)
-assertTrackDRedacts("Patient is 43 y/o male", "43", "D1 clinical age 43 y/o");
-assertTrackDRedacts("18-year-old female presented", "18-year-old", "D1 clinical age 18-year-old");
-assertTrackDRedacts("aged 67 years", "67", "D1 clinical age aged 67");
-
-// D2: role-anchored provider names (gold keeps ", MD" / ", MBBS")
-assertTrackDRedacts("Dr. Smith examined the patient", "Smith", "D2 Dr. anchor");
-assertTrackDRedacts("Attending: Jane Doe", "Jane Doe", "D2 attending anchor");
-assertTrackDRedacts("Yours sincerely, Michaiah Krawczuk, MD", "Krawczuk", "D2 signoff with credential");
-
-// D3: labeled clinical IDs
-assertTrackDRedacts("NHS number: 000 327 0743", "000 327 0743", "D3 NHS number");
-assertTrackDRedacts("Report ID: 048015141", "048015141", "D3 report ID");
-
-// D4: care facilities
-assertTrackDRedacts("Transferred to Royal Victoria Hospital", "Royal Victoria Hospital", "D4 facility");
-
-// D5: relatives' names
-assertTrackDRedacts("Mother: Mary Smith", "Mary Smith", "D5 relative name");
-assertTrackDRedacts("Next of kin: John Doe", "John Doe", "D5 next of kin");
-
-// D-location: locality anchors and residence verbs
-assertTrackDRedacts("lives in Citadel", "Citadel", "D location residence verb");
-
-// Production safety: a full 5-digit ZIP is a HIPAA identifier and stays
-// redacted (the benchmark's ST-ZIP suppression is NOT shipped).
-assertTrackDRedacts("Patient lives in WI 53023", "53023", "D ZIP stays redacted");
-
-console.log("Track D clinical-rule tests passed.");

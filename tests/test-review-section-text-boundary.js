@@ -8,6 +8,23 @@ import { createReviewController } from "../src/ui/review/controller.js";
 // object onward and String(object) seeded the draft assessment with the
 // literal text "[object Object]".
 
+// Minimal CSS.escape for the controller's attribute-selector escaping.
+globalThis.CSS = { escape: (value) => String(value ?? "").replace(/["\\]/g, "\\$&") };
+
+// The controller attaches lab-autocomplete listeners on render; stub the
+// document and container event APIs it touches.
+globalThis.document = {
+  addEventListener: () => {},
+  removeEventListener: () => {},
+  getElementById: () => null,
+  activeElement: null
+};
+const stubContainer = () => ({
+  innerHTML: "",
+  addEventListener: () => {},
+  removeEventListener: () => {}
+});
+
 function buildController(patient, packetId) {
   let capturedModel = null;
   const controller = createReviewController({
@@ -19,7 +36,7 @@ function buildController(patient, packetId) {
       reviewPage: 0
     },
     active: () => patient,
-    byId: () => ({ innerHTML: "" }),
+    byId: () => stubContainer(),
     presentation: {
       renderReview: (data) => {
         capturedModel = data;
