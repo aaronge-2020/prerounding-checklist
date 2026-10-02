@@ -1,0 +1,28 @@
+DISCHARGE SUMMARY
+
+Patient: Michelle Campbell    DOB: 04/03/1977
+MRN: 2193993
+Admission: 02/24/2026    Discharge: 04/25/2026
+Attending Physician: Dr. Brian Gibson
+Facility: Cedar Park Hospital
+
+PRINCIPAL DIAGNOSIS: type 2 diabetes mellitus with hyperglycemia
+
+HISTORY OF PRESENT ILLNESS:
+49-year-old man with type 2 diabetes mellitus, ischemic stroke, asthma presented with frequent urination, increased thirst, and fatigue. Point-of-care glucose 359 mg/dL on arrival. hemoglobin A1c 9.7 %. He reported missing insulin doses for several days. Denied palpitations, shortness of breath.
+
+HOSPITAL COURSE:
+Treated with intravenous fluids and an insulin infusion, transitioned to basal-bolus insulin (azithromycin 500 mg daily for 3 days). Diabetes education provided by the inpatient team. Nephrology consulted for chronic kidney disease stage 3; renal ultrasound on 02/16/2026 unremarkable. Discharged on a simplified regimen.
+
+DISCHARGE MEDICATIONS:
+- tramadol 50 mg every 6 hours as needed
+- cephalexin 500 mg four times daily
+- digoxin 0.125 mg daily
+- trazodone 50 mg at bedtime as needed
+- ezetimibe 10 mg daily
+- ibuprofen 400 mg every 6 hours as needed
+
+DIABETES EDUCATION:
+Home glucose monitoring twice daily. Hypoglycemia action plan reviewed. Follow up with endocrinology (Dr. Alan Choi) in 2 weeks. Patient address on file: 2714 River Road, Columbia, MD 21044.
+
+Signed: Dr. Brian Gibson on 04/25/2026.

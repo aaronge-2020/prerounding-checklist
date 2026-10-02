@@ -1,0 +1,26 @@
+DISCHARGE SUMMARY
+
+Patient Name: Karen Carter   DOB: 03/21/1991
+MRN 1149764   Encounter ID 68935157
+Admit Date: 09/06/2026   Discharge Date: 04/17/2026
+Attending: Dr. Rachel Hayes, Gastroenterology
+Hospital: Harborview Medical Center
+
+REASON FOR ADMISSION: community-acquired pneumonia
+
+HISTORY OF PRESENT ILLNESS:
+35-year-old woman with transient ischemic attack, urinary tract infection, hyperlipidemia presented with chest pain, chills, and fever for 6 days. Initial vitals: temperature 101.3 F, heart rate 116, respiratory rate 28, oxygen saturation 91 percent on room air. Chest CT on 09/01/2026 demonstrated right lower lobe consolidation. Blood cultures drawn; INR 1.1 on admission. 
+
+HOSPITAL COURSE:
+Treated with spironolactone 25 mg daily and metoprolol succinate 50 mg daily. Required 3 liters nasal cannula initially, weaned to room air by hospital day 4. Respiratory status improved steadily. Repeat labs: white blood cell count 11.4 K/uL; glucose 96 mg/dL; creatinine 2.1 mg/dL. 
+
+DISCHARGE MEDICATIONS:
+- pantoprazole 40 mg daily
+- rosuvastatin 20 mg at bedtime
+- azithromycin 500 mg daily for 3 days
+- amlodipine 5 mg daily
+
+FOLLOW-UP:
+Primary care with Dr. Laura Barnes in 1 week. Repeat chest imaging in 6 weeks to document resolution. Patient verbalized understanding. Emergency contact: Anthony Ramirez, 410-555-1112.
+
+Dictated by Dr. Rachel Hayes.

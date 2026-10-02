@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ws5 utility harness</title></head>
+<body>
+<script type="module">
+// Drives the ACTUAL shipped pipeline code (site/src/vault/deid.js — copied verbatim
+// from the app repo, bundled with esbuild into deid.bundle.js with ONLY the
+// "transformers" specifier external; every line of pipeline logic is the app's
+// own code, byte-identical apart from module concatenation) in a real Chromium
+// with the real ONNX model. This mirrors the app's deid-service.js runtime
+// wiring for the default "stanford-clinical" model: transformers.js
+// token-classification pipeline, dtype q8, wasm backend, aggregation_strategy
+// simple.
+import * as transformers from "./vendor/transformers-web.js";
+import { createDeidentifier } from "./src/vault/deid.bundle.js";
+
+const MODEL_ID = "onnx-community/stanford-deidentifier-base-ONNX";
+
+let deidentifier = null;
+
+async function load() {
+  const t0 = performance.now();
+  const base = new URL("./", location.href).href;
+  transformers.env.allowLocalModels = true;
+  // This vendored transformers build only probes "remote" metadata for http(s)
+  // local paths, so — exactly like the app's deid-service.js — remote model is
+  // allowed but every Hugging Face request is remapped to the same-origin
+  // local model directory. No network traffic leaves the machine.
+  transformers.env.allowRemoteModels = true;
+  transformers.env.localModelPath = new URL("models/", base).href;
+  const nativeFetch = fetch.bind(globalThis);
+  transformers.env.fetch = async (input, init) => {
+    const raw = typeof input === "string" ? input : input.url;
+    const m = /^https:\/\/huggingface\.co\/([^/]+\/[^/]+)\/resolve\/[^/]+\/(.+)$/.exec(raw);
+    if (m) return nativeFetch(new URL(`models/${m[1]}/${m[2]}`, base), init);
+    return nativeFetch(input, init);
+  };
+  transformers.env.useBrowserCache = false;
+  if (transformers.env.backends?.onnx?.wasm) {
+    transformers.env.backends.onnx.wasm.wasmPaths = {
+      mjs: new URL("vendor/ort-wasm-simd-threaded.asyncify.mjs", base).href,
+      wasm: new URL("vendor/ort-wasm-simd-threaded.asyncify.wasm", base).href
+    };
+    transformers.env.backends.onnx.wasm.proxy = false;
+  }
+  const pipelineFactory = (task, modelId, options) =>
+    transformers.pipeline(task, modelId, options);
+  deidentifier = createDeidentifier({
+    pipelineFactory,
+    mode: "hybrid",
+    modelCandidates: [
+      {
+        modelId: MODEL_ID,
+        // Identical to the app's stanford-clinical candidate in deid-model-options.js
+        options: { dtype: "q8", local_files_only: true },
+        inferenceOptions: { aggregation_strategy: "simple" }
+      }
+    ]
+  });
+  await deidentifier.loadModel();
+  // Warm-up inference so benchmark timings exclude one-time session setup.
+  await deidentifier.deidentifyText("Warm up. Jane Smith, 555-0100.", { mode: "hybrid" });
+  return { ms: performance.now() - t0, modelId: deidentifier.getLoadedModel()?.modelId || null };
+}
+
+async function run(texts, mode) {
+  // mode: "hybrid" only for ws5. Returns the pipeline's real redacted text
+  // (result.text — exactly what the app renders) alongside entity spans, so
+  // utility metrics measure the authentic output, not a reconstruction.
+  const out = [];
+  for (const text of texts) {
+    const t0 = performance.now();
+    const result = await deidentifier.deidentifyText(text, { mode });
+    out.push({
+      ms: performance.now() - t0,
+      redacted: result.text,
+      entities: (result.entities || []).map((e) => ({
+        start: e.start,
+        end: e.end,
+        label: e.label,
+        rendered: e.renderedPlaceholder || null,
+        score: typeof e.score === "number" ? e.score : null,
+        source: e.source || null
+      }))
+    });
+  }
+  return out;
+}
+
+window.__bench = { load, run };
+window.__benchReady = true;
+</script>
+</body>
+</html>

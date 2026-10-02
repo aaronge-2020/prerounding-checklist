@@ -1,0 +1,19 @@
+PRIMARY CARE PROGRESS NOTE
+
+Patient: Derek Brown  DOB: 05/10/1978  MRN: 7315961
+Date: 1/8/26  Provider: Dr. Daniel Ellis
+
+CHIEF COMPLAINT: routine follow-up
+
+SUBJECTIVE:
+48-year-old woman here for chronic disease management. Reports chills and muscle aches. Review of systems: denies diplopia, hemoptysis, nocturia, melena. Social: lives at 9879 River Road, Frederick, MD 21701. Works as an accountant. No tobacco, alcohol socially. Family history: mother with hypertension, father with coronary artery disease. Health maintenance: colonoscopy due next year; mammogram up to date; flu shot this season.
+
+OBJECTIVE:
+BP 124/81, HR 80, BMI 35.5. General: no acute distress. HEENT: unremarkable. Heart: regular rhythm. Lungs: clear. Abdomen: soft, nontender. Skin: no rash. Neurologic: alert and oriented, cranial nerves intact, strength full throughout.
+Recent labs: INR 1.1; estimated glomerular filtration rate 58 mL/min; potassium 4.2 mmol/L; potassium 5.1 mmol/L. 
+
+ASSESSMENT AND PLAN:
+1. Acute Cholecystitis: continue sertraline 100 mg daily; labs rechecked in 3 months. 2. Vitamin D Deficiency: lifestyle counseling provided. 3. Coronary Artery Disease: continue spironolactone 25 mg daily; dose adjusted as below. 
+Return visit in 6 months. Contact the office at 410-555-1461 with questions. Email: derek.brown72@example.com on file.
+
+Signed: Dr. Daniel Ellis

@@ -1,0 +1,14 @@
+loaded 1000 sampled texts for model onnx-community/deid_bert_i2b2-ONNX (batch=10)
+model (re)loaded: {"ms":5516.610000000335,"modelId":"onnx-community/deid_bert_i2b2-ONNX"}
+deid-bert-i2b2-biloufix/model-only: 100/1000 (87s)
+deid-bert-i2b2-biloufix/model-only: 200/1000 (162s)
+deid-bert-i2b2-biloufix/model-only: 300/1000 (241s)
+deid-bert-i2b2-biloufix/model-only: 400/1000 (321s)
+deid-bert-i2b2-biloufix/model-only: 500/1000 (398s)
+deid-bert-i2b2-biloufix/model-only: 600/1000 (472s)
+deid-bert-i2b2-biloufix/model-only: 700/1000 (536s)
+deid-bert-i2b2-biloufix/model-only: 800/1000 (669s)
+deid-bert-i2b2-biloufix/model-only: 900/1000 (833s)
+deid-bert-i2b2-biloufix/model-only: 1000/1000 (1012s)
+deid-bert-i2b2-biloufix/model-only done in 1012s -> raw_deid-bert-i2b2-biloufix_model-only.json
+all done

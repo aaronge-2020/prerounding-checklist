@@ -1,0 +1,37 @@
+DISCHARGE SUMMARY
+
+Patient: Jeffrey Cooper
+DOB: 05/22/1991   Age: 35   Sex: Female
+MRN: 9516777
+Admission Date: 03/14/2026   Discharge Date: 6/16/26
+Attending Physician: Dr. Meera Ellis
+Facility: Lakeside General Hospital
+
+CHIEF COMPLAINT: nosebleeds
+
+HISTORY OF PRESENT ILLNESS:
+35-year-old woman with bacteremia, major depressive disorder, and cellulitis presented with nosebleeds and ankle edema. Symptoms began 5 days prior to admission and progressively worsened. On arrival the patient was in mild distress. She denied headache, chills, leg swelling. No recent travel, sick contacts, or known exposures.
+
+PAST MEDICAL HISTORY: Bacteremia; Major Depressive Disorder; Cellulitis.
+
+HOME MEDICATIONS:
+- semaglutide 1 mg weekly by injection
+- pantoprazole 40 mg daily
+- lisinopril 10 mg daily
+- carvedilol 12.5 mg twice daily
+- acetaminophen 650 mg every 6 hours as needed
+
+HOSPITAL COURSE:
+Admitted on 03/14/2026 for acute decompensation. Wound Debridement performed on 07/15/2026 showed a reduced ejection fraction of 35 percent. Diuresed with good response. Labs on discharge: triglycerides 164 mg/dL; bicarbonate 21 mmol/L; total bilirubin 1.1 mg/dL; glucose 96 mg/dL. Discharged in stable condition on 6/16/26.
+
+DISCHARGE MEDICATIONS:
+- levetiracetam 500 mg twice daily
+- azithromycin 500 mg daily for 3 days
+- omeprazole 20 mg daily
+- metformin 1000 mg twice daily
+- hydrochlorothiazide 25 mg daily
+
+DISCHARGE INSTRUCTIONS:
+Follow up with Dr. Sarah Wilson in 1 weeks. Low-salt diet, daily weights, and medication adherence reviewed. Return for worsening nosebleeds, ankle edema, or fever. Questions: call 301-555-1552.
+
+Electronically signed by Dr. Meera Ellis on 6/16/26.

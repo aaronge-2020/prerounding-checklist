@@ -6,8 +6,8 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     targetSelector: '[data-action="add-admission-source"]',
     title: "Start with the sample case",
     instruction: "Click De-identify and add source.",
-    calloutTitle: "Meet the sample patient",
-    callout: "Daniel Morgan is a synthetic 61-year-old man with coronary artery disease, admitted with worsening chest pain and shortness of breath concerning for NSTEMI. The note includes realistic sample identifiers. The selected local model scans this source in your browser, proposes replacements, and asks for your review before saving."
+    calloutTitle: "The rule for everything here",
+    callout: "Daniel Morgan is a synthetic 61-year-old man with coronary artery disease, admitted with worsening chest pain concerning for NSTEMI. The note includes realistic sample identifiers. Here is the rule you will follow for the entire workflow: de-identify first, work second. The local model scans this source in your browser, proposes replacements, and asks for your review before anything is saved."
   },
   "context-review": {
     view: "daily",
@@ -29,18 +29,17 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "daily",
     targetSelector: '[data-action="keep-reviewed-redaction"]',
     title: "Check the day-one changes",
-    instruction: "Accept the current highlighted change, then continue through the fields. Use Confirm all only when the remaining suggestions are correct.",
+    instruction: "Accept the highlighted change. Use Confirm all only when the remaining suggestions are correct.",
     calloutTitle: "Review this update separately",
-    callout: "The same review process applies to each hospital day. Keeping this update separate lets a progress-note prompt focus on today’s clinical decisions."
+    callout: "The same review process applies to each hospital day. Keeping this update separate lets a progress-note prompt focus on today's clinical decisions."
   },
   "parse-note": {
     view: "daily",
-    info: true,
-    targetSelector: '[data-structured-note-detected="admission"]',
+    targetSelector: '[data-action="review-structured-note-sections"][data-note-scope="admission"]',
     title: "Paste a note, get sections",
-    instruction: "We pasted the full sample admission note for you — heading detection sorted it into sections instantly: one-liner, chief complaint, HPI, histories, meds, exam, labs, assessment, and plan. With a local AI model loaded, “Parse with local AI” sorts it into verified sections instead. Press Continue.",
+    instruction: "We pasted the full sample admission note — heading detection sorted it into sections instantly. Click Review sections to inspect what the parser found.",
     calloutTitle: "Note parsing, two speeds",
-    callout: "The deterministic parser finds headings like HPI, Medications, and Assessment and Plan the moment text is pasted — no model needed, and the section list on the note shows everything it found. Load an on-device model and the Parse with local AI button appears here, sorting the note into verified verbatim sections for de-identification and prompts."
+    callout: "The deterministic parser finds headings like HPI, Medications, and Assessment and Plan the moment text is pasted — no model needed. Load an on-device model and the Parse with local AI button appears here, sorting the note into verified verbatim sections for de-identification and prompts."
   },
   "open-drug-checks": {
     view: "drugChecks",
@@ -68,27 +67,35 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   },
   "ai-chat-models": {
     view: "aiChat",
-    info: true,
     targetSelector: '[data-action="ai-chat-mode"][data-mode="local"]',
     title: "On-device or ChatGPT",
-    instruction: "Pick On-device to download a model into your browser, or ChatGPT to use OpenAI with automatic de-identification. Press Continue when you have seen the options.",
+    instruction: "Click On-device to see the local model options. Everything stays in your browser — or switch to ChatGPT for OpenAI with automatic de-identification.",
     calloutTitle: "Two engines, one rule",
     callout: "On-device keeps everything in this browser. ChatGPT mode automatically downloads the clinical redaction model and strips identifiers before anything is sent — and it only ever sends what you select in the Context inspector."
   },
   "ai-chat-ask": {
     view: "aiChat",
-    info: true,
-    targetSelector: '[data-action="ai-chat-context-inspector"]',
-    title: "A grounded answer, staged for the tour",
-    instruction: "We placed a sample question and answer in the chat below — notice how it cites the patient's documents and the literature. Press Continue to move on.",
+    targetSelector: '[data-action="ai-chat-send"]',
+    title: "Ask your own question",
+    instruction: "We filled in a question for you — click Send (or type your own question first). You will get a staged answer that cites the chart and the literature, no model needed.",
     calloutTitle: "Grounded twice over",
-    callout: "The sample answer cites Daniel's own chart (troponin trend, ECG, admission note) and the clinical literature (Fourth Universal Definition of MI). Live answers carry the same citations, and the Context inspector still controls exactly what the chat may see."
+    callout: "The sample answers cite Daniel's own chart (troponin trend, ECG, admission note) and the clinical literature (Fourth Universal Definition of MI). Live answers carry the same citations, and the Context inspector still controls exactly what the chat may see."
+  },
+  "ai-chat-read": {
+    view: "aiChat",
+    info: true,
+    targetSelector: '[data-demo-message="true"]',
+    title: "A grounded answer",
+    instruction: "Read the staged answer — notice how it cites the patient's documents and the literature. Every live answer works the same way. Press Continue.",
+    calloutTitle: "You control the context",
+    callout: "The Context inspector decides exactly what the chat may see. In ChatGPT mode, everything is de-identified before it leaves your browser — you approve exactly what gets sent."
   },
   "open-scribe-pro": {
     view: "scribePro",
     info: true,
+    targetSelector: '#btnRecord',
     title: "Meet the voice scribe",
-    instruction: "Scribe Pro transcribes dictation on-device and drafts the note. Below is a sample of its output — the tour starts nothing. Press Continue.",
+    instruction: "Scribe Pro transcribes dictation on-device and drafts the note. The highlighted Record button is where you start — below is a sample of its output. The tour starts nothing. Press Continue.",
     calloutTitle: "Nothing recorded in this tour",
     callout: "This tour does not start the engine: no model download, no microphone access, nothing recorded. On your own machine, download the models once, then press Record to dictate.",
     demoSample: {
@@ -99,8 +106,9 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   "scribe-pro-voice": {
     view: "scribePro",
     info: true,
+    targetSelector: '#transcriptList',
     title: "From dictation to draft note",
-    instruction: "The same sample, structured into note sections — this is the format Scribe Pro produces. Press Continue.",
+    instruction: "The highlighted transcript area is where your dictation appears — the same sample, structured into note sections, is the format Scribe Pro produces. Press Continue.",
     calloutTitle: "Sample output, not a live run",
     callout: "What you see below was staged for the demo. In live use, the transcript comes from the on-device Parakeet model and the note sections are drafted from that transcript.",
     demoSample: {
@@ -118,13 +126,14 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   },
   "browse-cheat-sheet": {
     view: "cheatSheets",
+    info: true,
     targetSelector: '[data-cheat-sheets-open="acute-coronary-syndrome"]',
     sheetId: "acute-coronary-syndrome",
     title: "Open the ACS cheat sheet",
-    instruction: "Click the Acute coronary syndrome / NSTEMI/STEMI sheet.",
+    instruction: "The Acute coronary syndrome / NSTEMI/STEMI sheet is open below — scan the history questions and exam maneuvers. Opening it attached the sample case's vitals, labs, ECG, echo, and medications to the hospital day. Press Continue.",
     helper: "Cheat sheets are read-only — no patient is needed.",
     calloutTitle: "Scan the bedside approach",
-    callout: "The ACS sheet lists the history questions to ask and the maneuvers to perform, with why each one matters. Opening it attaches the sample case's vitals, labs, ECG, echo, and medications to the hospital day, so the note-writing step has objective data."
+    callout: "The ACS sheet lists the history questions to ask and the maneuvers to perform, with why each one matters. The sample objective data is now attached to the hospital day, so the note-writing step has what it needs."
   },
   "open-review": {
     view: "review",
@@ -136,12 +145,12 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   },
   "write-note": {
     view: "review",
-    targetSelector: '[data-action="save-note-draft"]',
-    title: "Review the complete case note",
-    instruction: "Review the complete synthetic case note: the parsed one-liner, subjective, and exam; objective vitals, labs, and medications; and the full assessment and problem-oriented plan. Make any edits you want, then click Save encrypted draft.",
+    targetSelector: '[data-draft-section="one_liner"]',
+    title: "Make the note yours",
+    instruction: "Click the highlighted one-liner and type — add your initials, tweak the wording, make it yours. This is your note to edit.",
     helper: "The synthetic tutorial keeps this saved note only for the temporary demo session.",
     calloutTitle: "Review before asking for feedback",
-    callout: "The draft note is the parsed sample case, not a stub: the admission note's one-liner, subjective, and exam, the day-one update, objective vitals, labs, and medications, plus a complete assessment and plan. Saving keeps the draft local and advances only when you explicitly click the button; typing alone never moves the walkthrough forward."
+    callout: "The draft note is the parsed sample case, not a stub: the admission note's one-liner, subjective, and exam, the day-one update, objective vitals, labs, and medications, plus a complete assessment and plan. Edit it freely — saving keeps the draft local."
   },
   "open-prompts": {
     view: "prompts",
@@ -161,9 +170,11 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   },
   done: {
     view: "prompts",
-    title: "Demo complete",
-    instruction: "You followed the full sample workflow.",
-    helper: "You de-identified the source notes, parsed a pasted note, checked a drug interaction, toured AI Chat, met the voice scribe, reviewed a bedside cheat sheet, wrote and encrypted a student note, and prepared it for external feedback. Nothing from this demo was written to your vault."
+    title: "You know the workflow",
+    instruction: "You did every step yourself. Here is what you can now do on a real case.",
+    helper: "You can now: De-identify a note and review every redaction before saving. Parse a pasted note into sections. Check drug interactions. Ask the AI Chat a question and read a cited answer. Dictate with Scribe Pro. Pull up a bedside cheat sheet. Edit your draft note. Build a de-identified prompt for feedback. The rule held throughout: de-identify first, work second. Nothing from this demo was written to your vault. Click Exit demo, then try it with your own case.",
+    calloutTitle: "Try it yourself",
+    callout: "Exit the demo and run the same workflow: add your own admission note, de-identify it, parse it, check interactions, and draft your note. The Models page has the local AI models when you are ready."
   }
 });
 
@@ -177,9 +188,10 @@ export const DEMO_INFO_STAGES = Object.freeze(
 export const DEMO_STAGE_NEXT = Object.freeze({
   "parse-note": "open-drug-checks",
   "ai-chat-models": "ai-chat-ask",
-  "ai-chat-ask": "open-scribe-pro",
+  "ai-chat-read": "open-scribe-pro",
   "open-scribe-pro": "scribe-pro-voice",
-  "scribe-pro-voice": "open-cheat-sheets"
+  "scribe-pro-voice": "open-cheat-sheets",
+  "browse-cheat-sheet": "open-review"
 });
 
 // The parse-note stop pastes the same complete admission note the tour's
@@ -190,26 +202,112 @@ export const DEMO_PARSE_NOTE_TEXT = DEMO_CONTEXT_TEXTS.join("\n\n");
 
 export const DEMO_DRUG_CHECK_MEDS = "warfarin 5 mg PO daily\nfluconazole 200 mg PO daily\n";
 
-// Pre-built AI Chat exchange staged by the demo. The question is what a
-// clinician would ask; the answer cites the demo patient's own documents
+// Pre-built AI Chat exchanges staged by the demo. Each question is what a
+// clinician would ask; each answer cites the demo patient's own documents
 // (admission note, labs, ECG) and the clinical literature, demonstrating the
-// grounded-answer format without running a live model.
-export const DEMO_AI_CHAT_QUESTION = "Does this patient meet criteria for NSTEMI, and what supports it?";
+// grounded-answer format without running a live model. Seeded into the actual
+// AI Chat UI (with markdown rendering) — not plain text in the guide banner.
+export const DEMO_AI_CHAT_SAMPLES = [
+  {
+    question: "Does this patient meet criteria for NSTEMI, and what supports it?",
+    answer: [
+      "Yes — this presentation meets criteria for NSTEMI.",
+      "",
+      "**From the chart:**",
+      "- Typical ischemic symptoms: 6 hours of crushing substernal pressure (8/10) beginning with exertion, radiating to the left arm, neck, and jaw, with diaphoresis [admission note].",
+      "- Acute myocardial injury with a rise and fall: high-sensitivity troponin 86 → 364 → 312 ng/L (ref 0–19) [labs].",
+      "- Ischemic ECG changes without ST elevation: persistent 1 mm ST depressions in V4–V6 with T-wave inversions in I and aVL [ECG].",
+      "",
+      "**From the literature:**",
+      "- The Fourth Universal Definition of MI requires a troponin rise and/or fall plus at least one of: ischemic symptoms, new ischemic ECG changes, new Q waves, imaging evidence, or angiographic thrombus. This patient has the troponin pattern plus both symptoms and ECG changes.",
+      "- Without ST elevation this is NSTEMI rather than STEMI. ACC/AHA guidance supports an early invasive strategy here — coronary angiography is already planned — with dual antiplatelet therapy, therapeutic anticoagulation, and high-intensity statin. The chart shows aspirin, ticagrelor, heparin infusion, and atorvastatin 80 mg already on board [medications].",
+      "",
+      "*Sample answer staged for the demo — not a live model response.*"
+    ].join("\n")
+  },
+  {
+    question: "What should the overnight team monitor for this NSTEMI patient?",
+    answer: [
+      "Overnight priorities for this NSTEMI patient awaiting morning catheterization:",
+      "",
+      "**From the chart:**",
+      "- **Recurrent ischemia:** chest discomfort improved from 8/10 to 2/10 but intermittent mild substernal pressure persists, responsive to nitroglycerin [HD1 note]. Any prolonged or severe recurrence warrants a repeat ECG and cardiology notification.",
+      "- **Rhythm:** no sustained arrhythmias on telemetry overnight, but continuous monitoring continues [HD1 note]. Admission ECG showed sinus tachycardia at 106 bpm.",
+      "- **Hemodynamics:** admission BP was 166/94 with HR 106. Watch for hypotension or instability, particularly with ongoing heparin and nitrates on board.",
+      "- **Bleeding:** therapeutic heparin infusion plus dual antiplatelet therapy (aspirin + ticagrelor) is triple antithrombotic therapy — inspect IV sites, monitor hemoglobin, and watch for melena or hematuria [medications].",
+      "- **NPO status:** the patient is NPO after midnight for coronary angiography in the morning [HD1 note].",
+      "- **Glycemia:** home metformin was held for contrast exposure; sliding-scale insulin was started. He has type 2 diabetes — monitor glucose overnight [medication changes].",
+      "",
+      "**From the literature:**",
+      "- ACC/AHA guidance for NSTEMI emphasizes serial ECGs and troponins to detect re-infarction or extension, continuous rhythm monitoring for malignant arrhythmias (most common in the first 24 hours), and bleeding vigilance on combined antiplatelet plus anticoagulant therapy.",
+      "",
+      "*Sample answer staged for the demo — not a live model response.*"
+    ].join("\n")
+  },
+  {
+    question: "Write a one-paragraph handoff summary for the night team.",
+    answer: [
+      "61-year-old man with known CAD (DES to LAD 2022) admitted with NSTEMI after 6 hours of crushing substernal chest pressure with troponin rise 86 to 364 ng/L now downtrending to 312, persistent 1 mm ST depressions V4-V6, and echo showing LVEF 48% with anterior hypokinesis [admission note, labs, ECG, HD1 note]. On dual antiplatelet therapy (aspirin + ticagrelor load) with therapeutic heparin infusion, high-intensity atorvastatin, and metoprolol; home metformin held for contrast with sliding-scale insulin started [medications]. Pain improved from 8/10 to 2/10 with intermittent mild discomfort responsive to NTG; hemodynamically stable, no sustained arrhythmias overnight [HD1 note]. NPO after midnight for coronary angiography in the morning with cardiology consulted. **Overnight:** monitor for recurrent chest pain, arrhythmia on telemetry, bleeding on triple therapy, and hypotension; repeat ECG with any concerning symptoms.",
+      "",
+      "*Sample answer staged for the demo — not a live model response.*"
+    ].join("\n")
+  },
+  {
+    question: "What anticoagulation is he on and what is the plan?",
+    answer: [
+      "**Current antithrombotic regimen and plan:**",
+      "",
+      "**From the chart:**",
+      "- **Therapeutic unfractionated heparin infusion**, maintained with therapeutic monitoring — started for acute coronary syndrome [admission plan, HD1 note].",
+      "- **Dual antiplatelet therapy:** aspirin 81 mg daily (continued from home) plus ticagrelor loading dose followed by maintenance dosing, initiated on hospital day 1 [medication changes].",
+      "- High-intensity atorvastatin 80 mg nightly continued [home medications].",
+      "- **Plan:** coronary angiography in the morning with cardiology consulted; the patient is NPO after midnight [HD1 note]. Peri-procedural anticoagulation management is per the interventional cardiology team.",
+      "",
+      "**From the literature:**",
+      "- ACC/AHA NSTEMI guidance supports an early invasive strategy with periprocedural anticoagulation plus DAPT. Combining DAPT with therapeutic heparin is effectively triple antithrombotic therapy, which raises major bleeding risk — hence the overnight bleeding checks. After PCI, the regimen typically de-escalates per cardiology (often DAPT alone, with duration guided by stent type and bleeding risk).",
+      "",
+      "*Sample answer staged for the demo — not a live model response.*"
+    ].join("\n")
+  },
+  {
+    question: "Which of his home meds need renal dose adjustment?",
+    answer: [
+      "**Renal review of home medications:**",
+      "",
+      "**From the chart:**",
+      "- Creatinine is stable at 1.0 mg/dL with no acute kidney injury [labs, HD1 note] — renal function is preserved, so **no home medication requires a renal dose reduction** right now.",
+      "- **Metformin ER 1000 mg twice daily was HELD** — not for renal impairment, but because iodinated contrast is planned for morning coronary angiography [medication changes]. Metformin is withheld around contrast procedures due to lactic acidosis risk if contrast-induced kidney injury occurs.",
+      "- **Lisinopril 20 mg daily** (ACE inhibitor): no dose change needed at this creatinine, but ACE inhibitors plus contrast dye raise acute kidney injury risk — monitor creatinine and potassium post-procedure [home medications].",
+      "- **Empagliflozin 25 mg daily:** SGLT2 inhibitors need no renal dose adjustment, but they are commonly held during acute illness, dehydration, or fasting (all present here — NPO, acute MI) because of euglycemic ketoacidosis risk.",
+      "- Atorvastatin 80 mg, metoprolol succinate 50 mg, omeprazole 20 mg: no renal dose adjustment required.",
+      "",
+      "**From the literature:**",
+      "- FDA labeling and ACC guidance: metformin should be withheld at the time of iodinated contrast in patients with eGFR <60, history of liver disease, alcoholism, or heart failure, and re-evaluated after 48 hours; SGLT2 inhibitors should be held 3–4 days before scheduled procedures and during acute illness. Creatinine should be rechecked after angiography before restarting either drug.",
+      "",
+      "*Sample answer staged for the demo — not a live model response.*"
+    ].join("\n")
+  }
+];
 
-export const DEMO_AI_CHAT_ANSWER = [
-  "Yes — this presentation meets criteria for NSTEMI.",
+// Hands-on demo question: the user sends this (or their own question) and
+// gets this staged grounded answer without needing a live model.
+export const DEMO_AI_CHAT_HANDS_ON_QUESTION = "What is his bleeding risk on triple therapy?";
+export const DEMO_AI_CHAT_HANDS_ON_ANSWER = [
+  "**Bleeding risk on triple therapy (heparin + aspirin + ticagrelor)**",
   "",
-  "From the chart:",
-  "• Typical ischemic symptoms: 6 hours of crushing substernal pressure (8/10) beginning with exertion, radiating to the left arm, neck, and jaw, with diaphoresis [admission note].",
-  "• Acute myocardial injury with a rise and fall: high-sensitivity troponin 86 → 364 → 312 ng/L (ref 0–19) [labs].",
-  "• Ischemic ECG changes without ST elevation: persistent 1 mm ST depressions in V4–V6 with T-wave inversions in I and aVL [ECG].",
+  "Mr. Morgan is on triple therapy pending cath, which raises bleeding risk:",
   "",
-  "From the literature:",
-  "• The Fourth Universal Definition of MI requires a troponin rise and/or fall plus at least one of: ischemic symptoms, new ischemic ECG changes, new Q waves, imaging evidence, or angiographic thrombus. This patient has the troponin pattern plus both symptoms and ECG changes.",
-  "• Without ST elevation this is NSTEMI rather than STEMI. ACC/AHA guidance supports an early invasive strategy here — coronary angiography is already planned — with dual antiplatelet therapy, therapeutic anticoagulation, and high-intensity statin. The chart shows aspirin, ticagrelor, heparin infusion, and atorvastatin 80 mg already on board [medications].",
+  "- **Chart context:** No prior bleeding history documented; baseline Hgb 14.2 g/dL; platelets 245K. He is 61 with normal renal function (creatinine 1.0 mg/dL).",
+  "- **Risk factors:** Triple therapy itself is the main risk — especially at arterial puncture sites, plus GI bleeding risk with DAPT.",
+  "- **Mitigation in the plan:** PPI for GI protection is standard with DAPT; monitor Hgb/Hct; watch access sites; heparin infusion allows rapid reversal if needed.",
+  "- **Literature:** Peri-PCI triple therapy increases major bleeding vs DAPT alone; current guidance favors minimizing triple-therapy duration (e.g., WOEST, PIONEER AF-PCI trials support dropping aspirin early in selected patients).",
   "",
-  "Sample answer staged for the demo — not a live model response."
+  "*Sample answer staged for the demo — not a live model response.*"
 ].join("\n");
+
+// Legacy single Q&A (kept for backwards compatibility; prefer DEMO_AI_CHAT_SAMPLES).
+export const DEMO_AI_CHAT_QUESTION = DEMO_AI_CHAT_SAMPLES[0].question;
+export const DEMO_AI_CHAT_ANSWER = DEMO_AI_CHAT_SAMPLES[0].answer;
 
 // Pre-built Scribe Pro sample staged by the demo: a short dictation snippet
 // and the structured note it produces, showing the output format without
@@ -253,7 +351,7 @@ export function createDemoPresentation({ escapeHtml }) {
     if (!sample) return "";
     const text = sample.kind === "note" ? DEMO_SCRIBE_NOTE : DEMO_SCRIBE_TRANSCRIPT;
     return `
-      <details class="guided-demo-sample" data-demo-sample>
+      <details class="guided-demo-sample" data-demo-sample open>
         <summary><span class="guided-demo-badge">Sample</span> ${escapeHtml(sample.label)} — staged for the demo, not a live run</summary>
         <pre style="white-space:pre-wrap;font:inherit;margin:8px 0 0;padding:10px 12px;border:1px solid var(--border,#d8dee9);border-radius:8px;background:var(--surface,#f8fafc);">${escapeHtml(text)}</pre>
       </details>

@@ -1,0 +1,28 @@
+NEPHROLOGY PROGRESS NOTE
+
+Patient Name: [PATIENT NAME]
+DOB: [DOB]   MRN: [MRN]
+Timeline: [Historical: 2026]
+Nephrologist: [PROVIDER NAME]
+
+SUBJECTIVE:
+79-year-old woman with chronic kidney disease stage 3, anemia of chronic disease, type 2 diabetes mellitus reports leg swelling and decreased urine output. Denies chest pain, fever, or dysuria. Fluid intake approximately 2 liters daily. Medication list reconciled.
+
+OBJECTIVE:
+BP 157/85, HR 90. Mild bilateral lower extremity edema. Lungs clear.
+Laboratory studies from [Historical: 2026]:
+- creatinine 2.3 mg/dL
+- bicarbonate 24 mmol/L
+- potassium 4.5 mmol/L
+- hemoglobin 11.0 g/dL
+- estimated glomerular filtration rate 35 mL/min
+
+Renal Ultrasound: no hydronephrosis.
+ASSESSMENT AND PLAN:
+1. Chronic kidney disease stage 3, likely diabetic and hypertensive: continue escitalopram 10 mg daily; avoid NSAIDs; low-salt diet.
+2. Anemia Of Chronic Disease: at goal.
+3. Type 2 Diabetes Mellitus: monitor.
+
+Follow up [Historical: 2027]. Labs beforehand. Patient may reach the office at [PHONE].
+
+Attending attestation: [PROVIDER NAME].

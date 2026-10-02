@@ -1,0 +1,242 @@
+[
+ {
+  "id": "52056",
+  "ctx": "nal_notes: \"Please consult with participant M regarding the 16 o'clock session for further information",
+  "got": "16",
+  "src": "model"
+ },
+ {
+  "id": "52056",
+  "ctx": "otes: \"Please consult with participant M regarding the 16 o'clock session for further information.\" ```",
+  "got": "clock",
+  "src": "model"
+ },
+ {
+  "id": "41230A",
+  "ctx": "Library Budget Request  Request Date: 10:56 AM  Requested by: - Name: 16/03/1953     -",
+  "got": "10:56 AM",
+  "src": "structured identifier"
+ },
+ {
+  "id": "41264B",
+  "ctx": "echniques    - username: \"passalia1951\"     social_number: \"30 15 05 51 P08 8\"     training_modules:       - module",
+  "got": "30 15 05 51 P08",
+  "src": "model"
+ },
+ {
+  "id": "41352B",
+  "ctx": "ar activities: Music Club, Drama Team - Volunteering hours: 40 hours at animal shelter  Name: Sevigny ",
+  "got": "40",
+  "src": "model"
+ },
+ {
+  "id": "42062B",
+  "ctx": "           \"Time_Tracked\": {                 \"Start_Time\": \"08:00 AM\",                 \"End_Time\": \"12:30 PM",
+  "got": "08:00 AM",
+  "src": "structured identifier"
+ },
+ {
+  "id": "42062B",
+  "ctx": "     \"Start_Time\": \"08:00 AM\",                 \"End_Time\": \"12:30 PM\",                 \"Duration\": \"4.5 hour",
+  "got": "12:30 PM",
+  "src": "structured identifier"
+ },
+ {
+  "id": "42062B",
+  "ctx": "   \"End_Time\": \"12:30 PM\",                 \"Duration\": \"4.5 hours\",                 \"Activity\": \"Studying",
+  "got": "hours",
+  "src": "model"
+ },
+ {
+  "id": "42441A",
+  "ctx": "               \"date\": \"March/48\",                 \"time\": \"9",
+  "got": "9",
+  "src": "model"
+ },
+ {
+  "id": "42671C",
+  "ctx": "8pm  ---  ## Form ID: 101010101  ### Update",
+  "got": "8pm",
+  "src": "structured identifier"
+ },
+ {
+  "id": "42936B",
+  "ctx": "ivational Interviewing\", \t\t\t\t\"SessionDuration\": \"45 minutes\", \t\t\t\t\"TimeSlot\": \"Afternoon\", ",
+  "got": "45",
+  "src": "model"
+ },
+ {
+  "id": "42936B",
+  "ctx": "Approach\": \"Medication Management\", \t\t\t\t\"SessionDuration\": \"30 minutes\", \t\t\t\t\"TimeSlot\": \"Evening\", \t\t",
+  "got": "30",
+  "src": "model"
+ },
+ {
+  "id": "42963E",
+  "ctx": "ame1\":\"Renas\"       }    ],    \"background\":{       \"time\":\"15 o'clock\",       \"state\":\"ENG\"    } }",
+  "got": "15",
+  "src": "model"
+ },
+ {
+  "id": "42963E",
+  "ctx": ":\"Renas\"       }    ],    \"background\":{       \"time\":\"15 o'clock\",       \"state\":\"ENG\"    } }",
+  "got": "clock",
+  "src": "model"
+ },
+ {
+  "id": "42988B",
+  "ctx": " Gangies Hill, Great Britain  |  Date: 03/04/1963  |  Time: 03:24:43  Join the conversation on lactation con",
+  "got": "03:24:43",
+  "src": "structured identifier"
+ },
+ {
+  "id": "43090C",
+  "ctx": "8:a218 - Password: d4F]  **User C:** - Se",
+  "got": "8",
+  "src": "model"
+ },
+ {
+  "id": "43179B",
+  "ctx": "icated accordingly.  Certification Coordinator: City: Dover Time: 10:30 PM",
+  "got": "Time",
+  "src": "model"
+ },
+ {
+  "id": "43179B",
+  "ctx": " accordingly.  Certification Coordinator: City: Dover Time: 10:30 PM",
+  "got": "10:30 PM",
+  "src": "structured identifier"
+ },
+ {
+  "id": "43304C",
+  "ctx": "}                 },                 {                     \"2-00-10-75183-049-36\": {                 ",
+  "got": "2",
+  "src": "model"
+ },
+ {
+  "id": "43374B",
+  "ctx": " Non-binary, loucia.clérigo, 330537948254 - Patient: Other, 1946AM, 123.810.0794 - Patient: Prefer not to ",
+  "got": "1946AM",
+  "src": "model"
+ },
+ {
+  "id": "43448B",
+  "ctx": "to your response,  Best regards, [bernadetta.paschold1956] [3:16pm]",
+  "got": "3:16pm",
+  "src": "structured identifier"
+ },
+ {
+  "id": "43705B",
+  "ctx": "9add 🔑 Password: qBK-acQ3T$5Y  📅 Background Info: ⏰ Time: 11:44pm 🗓️ Date: 19th May 2050  Join the discu",
+  "got": "11:44pm",
+  "src": "structured identifier"
+ },
+ {
+  "id": "43793C",
+  "ctx": "ollowUp\": {       \"date\": \"22nd March 2081\",       \"time\": \"1:30pm\",       \"dentist\": \"Mr\"     }   } }",
+  "got": "1:30pm",
+  "src": "structured identifier"
+ },
+ {
+  "id": "45473A",
+  "ctx": "ritain, do solemnly state the following:  On the 7:58 PM of the 10:44, in the ENG, I received a distressing p",
+  "got": "the 10:44",
+  "src": "model+structured identifier"
+ },
+ {
+  "id": "45549B",
+  "ctx": "be5:c813:59f0:cd0b    - Preferred Communication Time: 1 AM  Background Information: Our research project will ",
+  "got": "Background",
+  "src": "model"
+ },
+ {
+  "id": "45641C",
+  "ctx": "o hearing from you.  Warm regards,  The Telepsychology Team 6:21 AM",
+  "got": "6:21 AM",
+  "src": "structured identifier"
+ },
+ {
+  "id": "45702D",
+  "ctx": "ts. Client engaged actively in the metaphor of 'leaves on a stream' to practice",
+  "got": "stream",
+  "src": "model"
+ },
+ {
+  "id": "46729A",
+  "ctx": "890743  \\n   IP Address: 230.72.226.38  \\n   Last Accessed: 07:26:",
+  "got": "07:26",
+  "src": "structured identifier"
+ },
+ {
+  "id": "46838B",
+  "ctx": " for research purposes. - The study will last approximately 1 hour.  **Confidentiality**:  - Your personal",
+  "got": "1 hour",
+  "src": "model"
+ },
+ {
+  "id": "47309A",
+  "ctx": "ing Disabilities!  📅 Today's Date: 18th June 2040 🕗 Time: 8:02am 📍 Location: Online Platform  **Introdu",
+  "got": "8:02am",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47603C",
+  "ctx": "5 PM] Participant A: Let's start by reviewin",
+  "got": "5 PM",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47603C",
+  "ctx": "he essential documents required for teacher certification. [12:06 PM] Participant B: Agreed. I believe the p",
+  "got": "12:06 PM",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47603C",
+  "ctx": "ticipant B: Agreed. I believe the process varies by state. [12:08 PM] Participant C: Yes, it's crucial to un",
+  "got": "12:08 PM",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47603C",
+  "ctx": "nderstand the specific requirements in each jurisdiction.  [12:10 PM] Participant A: Shall we discuss the up",
+  "got": "12:10 PM",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47603C",
+  "ctx": "discuss the upcoming deadlines for application submission? [12:12 PM] Participant B: Absolutely, it's essent",
+  "got": "12:12 PM",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47603C",
+  "ctx": "s essential to stay informed and ensure timely submission. [12:14 PM",
+  "got": "12:14 PM",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47784A",
+  "ctx": "ent  This Agreement (\"Agreement\") is entered into as of the 02:13, by and between the following parties: ",
+  "got": "02:13",
+  "src": "structured identifier"
+ },
+ {
+  "id": "47913A",
+  "ctx": "ration Agreement (\"Agreement\") is made effective as of the [8:35 AM] (\"Effective Date\"), by and between the",
+  "got": "8:35 AM",
+  "src": "structured identifier"
+ },
+ {
+  "id": "48263B",
+  "ctx": "22202 - Telephone: +569-16-358 7938 - Parent Approval: Au6@7- - Time Collected: 10:39  Tutor Informa",
+  "got": "7",
+  "src": "model"
+ },
+ {
+  "id": "49085B",
+  "ctx": "acuationDate\": \"2022-10-14\",             \"evacuationTime\": \"14:45\",             \"injuryType\": \"Fractured ",
+  "got": "14:45",
+  "src": "structured identifier"
+ }
+]

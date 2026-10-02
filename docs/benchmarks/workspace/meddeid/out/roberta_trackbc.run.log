@@ -1,0 +1,17 @@
+loaded 300 MedDeID notes for model thinkingface/deid_roberta_i2b2_q (dtype=q8, batch=5, tag=roberta_trackbc)
+model (re)loaded: {"ms":10366.315000001341,"modelId":"thinkingface/deid_roberta_i2b2_q"}
+roberta_trackbc: 25/300 (225s)
+roberta_trackbc: 50/300 (425s)
+roberta_trackbc: 75/300 (593s)
+roberta_trackbc: 100/300 (760s)
+roberta_trackbc: 125/300 (928s)
+roberta_trackbc: 150/300 (1089s)
+roberta_trackbc: 175/300 (1336s)
+roberta_trackbc: 200/300 (1553s)
+roberta_trackbc: 225/300 (1728s)
+roberta_trackbc: 250/300 (1893s)
+roberta_trackbc: 275/300 (2058s)
+roberta_trackbc: 300/300 (2221s)
+roberta_trackbc done in 2221s -> out/roberta_trackbc.json
+latency: mean=7403ms median=7044ms p95=10851ms n=300
+all done

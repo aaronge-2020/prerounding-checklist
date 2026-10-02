@@ -1,0 +1,15 @@
+loaded 1000 sampled texts
+loading model...
+model loaded: {"ms":7357.230000000447,"modelId":"onnx-community/stanford-deidentifier-base-ONNX"}
+hybrid: 100/1000 (88s)
+hybrid: 200/1000 (254s)
+hybrid: 300/1000 (434s)
+hybrid: 400/1000 (633s)
+hybrid: 500/1000 (820s)
+hybrid: 600/1000 (960s)
+hybrid: 700/1000 (1127s)
+hybrid: 800/1000 (1317s)
+hybrid: 900/1000 (1526s)
+hybrid: 1000/1000 (1714s)
+hybrid done in 1714s -> raw_hybrid_r2_post.json
+all done

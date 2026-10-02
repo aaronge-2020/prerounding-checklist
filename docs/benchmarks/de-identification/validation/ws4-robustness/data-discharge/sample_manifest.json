@@ -1,0 +1,11 @@
+{
+  "dataset": "ws4 synthetic clinical notes (discharge); ALL SYNTHETIC, no real PHI",
+  "dataset_doi": null,
+  "split_file": "data-discharge/sample.jsonl",
+  "seed": 20260929,
+  "sampled_n": 25,
+  "note_type": "discharge",
+  "generator": "notes/gen_notes.py",
+  "phi_quota_per_note": "NAME x4-5, DATE x3-4, TIME x1, PHONE x1, DOB x1, ID x1, LOCATION x3, ADDRESS x1, EMAIL x1 in every 3rd note",
+  "license": "synthetic fixture, no license restriction"
+}

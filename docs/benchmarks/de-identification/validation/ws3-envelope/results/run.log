@@ -1,0 +1,51 @@
+machine: AMD EPYC 9D25 126-Core Processor | cpus: 2 | memMiB: 7936
+memory+latency done. latency: {"n":100,"min":965.99,"median":2457.53,"p95":3498.29,"max":16991.51,"mean":2589.55}
+cold run 1: page 3257 ms, load 22995 ms
+cold run 2: page 2496 ms, load 14787 ms
+cold run 3: page 1803 ms, load 15111 ms
+warm run 1: page 2375 ms, load 15689 ms
+warm run 2: page 1660 ms, load 17689 ms
+warm run 3: page 2049 ms, load 14087 ms
+startup done: {"cold":{"runs":[{"run":1,"pageLoadMs":3257,"modelLoadMs":22995,"modelId":"onnx-community/stanford-deidentifier-base-ONNX"},{"run":2,"pageLoadMs":2496,"modelLoadMs":14787,"modelId":"onnx-community/stanford-deidentifier-base-ONNX"},{"run":3,"pageLoadMs":1803,"modelLoadMs":15111,"modelId":"onnx-community/stanford-deidentifier-base-ONNX"}],"medianPageLoadMs":2496,"medianModelLoadMs":15111},"warm":{"runs":[{"run":1,"pageLoadMs":2375,"modelLoadMs":15689,"modelId":"onnx-community/stanford-deidentifier-base-ONNX"},{"run":2,"pageLoadMs":1660,"modelLoadMs":17689,"modelId":"onnx-community/stanford-deidentifier-base-ONNX"},{"run":3,"pageLoadMs":2049,"modelLoadMs":14087,"modelId":"onnx-community/stanford-deidentifier-base-ONNX"}],"medianPageLoadMs":2049,"medianModelLoadMs":15689},"note":"cold = fresh browser profile each run (empty cache), model fetched from local static server + init; warm = reused persistent profile after one pre-warm (server sends Cache-Control: no-store, so no HTTP caching; warm delta reflects OS page cache / repeat-fetch effects). harness load() includes one warm-up inference."}
+throttled: 5/50
+throttled: 10/50
+throttled: 15/50
+throttled: 20/50
+throttled: 25/50
+throttled: 30/50
+throttled: 35/50
+throttled: 40/50
+throttled: 45/50
+throttled: 50/50
+throttled done: {"n":50,"min":8309.35,"median":14045,"p95":17716.16,"max":21015.02,"mean":13923.23}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 60000ms exceeded.
+    at failClosedScenario (/home/hatch/workspace/deid-validation/ws3-envelope/scripts/ws3_run.mjs:324:16)
+    at async file:///home/hatch/workspace/deid-validation/ws3-envelope/scripts/ws3_run.mjs:342:5 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.20.0
+machine: AMD EPYC 9D25 126-Core Processor | cpus: 2 | memMiB: 7936
+overlay server up: http://127.0.0.1:8931/failclosed.html
+throttled: 5/50
+throttled: 10/50
+throttled: 15/50
+throttled: 20/50
+throttled: 25/50
+throttled: 30/50
+throttled: 35/50
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.evaluate: Target page, context or browser has been closed
+    at /home/hatch/workspace/deid-validation/ws3-envelope/scripts/ws3_run.mjs:317:30 {
+  log: []
+}
+
+Node.js v24.20.0

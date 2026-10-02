@@ -1,0 +1,39 @@
+loaded 1000 sampled texts for model thinkingface/deid_roberta_i2b2_q (batch=10)
+model (re)loaded: {"ms":15418.410000000149,"modelId":"thinkingface/deid_roberta_i2b2_q"}
+deid-roberta-i2b2/hybrid: 100/1000 (290s)
+deid-roberta-i2b2/hybrid: 200/1000 (968s)
+deid-roberta-i2b2/hybrid: 300/1000 (1721s)
+deid-roberta-i2b2/hybrid: 400/1000 (2451s)
+deid-roberta-i2b2/hybrid: 500/1000 (2947s)
+deid-roberta-i2b2/hybrid: 600/1000 (3561s)
+deid-roberta-i2b2/hybrid: 700/1000 (4091s)
+batch failed (attempt 1): page.evaluate: Target page, context or browser has been closed
+relaunching browser and resuming...
+loaded 1000 sampled texts for model thinkingface/deid_roberta_i2b2_q (batch=10)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:8903/survey2.html?model=thinkingface%2Fdeid_roberta_i2b2_q&dtype=q8
+Call log:
+  - navigating to "http://127.0.0.1:8903/survey2.html?model=thinkingface%2Fdeid_roberta_i2b2_q&dtype=q8", waiting until "load"
+
+    at launchBrowser (/home/hatch/workspace/deid-benchmark/models-survey/harness/survey2_driver.mjs:57:14)
+    at async file:///home/hatch/workspace/deid-benchmark/models-survey/harness/survey2_driver.mjs:64:21 {
+  log: [
+    '  - navigating to "http://127.0.0.1:8903/survey2.html?model=thinkingface%2Fdeid_roberta_i2b2_q&dtype=q8", waiting until "load"'
+  ],
+  name: 'Error'
+}
+
+Node.js v24.20.0
+EXIT: 1
+loaded 1000 sampled texts for model thinkingface/deid_roberta_i2b2_q (batch=10)
+model (re)loaded: {"ms":19183.125,"modelId":"thinkingface/deid_roberta_i2b2_q"}
+deid-roberta-i2b2/hybrid: resuming with 760 docs already done
+deid-roberta-i2b2/hybrid: 800/1000 (230s)
+deid-roberta-i2b2/hybrid: 900/1000 (801s)
+deid-roberta-i2b2/hybrid: 1000/1000 (1445s)
+deid-roberta-i2b2/hybrid done in 1445s -> raw_deid-roberta-i2b2_hybrid.json
+all done
+EXIT: 0

@@ -1,0 +1,11 @@
+clinicale5_trackb: installed bundle /home/hatch/workspace/deid-benchmark/meddeid/bundles/trackb.bundle.js
+clinicale5_trackb: loaded 300 notes
+clinicale5_trackb: model (re)loaded: {"ms":6343.599999997765,"modelId":"OpenMed/OpenMed-PII-ClinicalE5-Small-33M-v1-onnx-android"}
+clinicale5_trackb: 50/300 (61s)
+clinicale5_trackb: 100/300 (106s)
+clinicale5_trackb: 150/300 (149s)
+clinicale5_trackb: 200/300 (212s)
+clinicale5_trackb: 250/300 (258s)
+clinicale5_trackb: 300/300 (305s)
+clinicale5_trackb: done in 305s -> out/clinicale5_trackb.json (mean 1015.3ms, median 938.5ms, p95 1582.6ms)
+clinicale5_trackb: all done

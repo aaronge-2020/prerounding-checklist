@@ -1,0 +1,352 @@
+[
+ {
+  "id": "40783",
+  "got": "02870-56756",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "inzollitto22, ewgenij.inzollitto22@hotmail.com, VG30003PO, 236897938, 02870-56756 \""
+ },
+ {
+  "id": "41187",
+  "got": "952.547.4173",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": ". Feminine\\January/51\\danusa.somsky1951\\danusa.somsky1951@hotmail.com\\952.547.4173\\617867632\\GB\\313\\High Street\\Dunstable\\ENG\\LU5 6B"
+ },
+ {
+  "id": "41187",
+  "got": "301.245.0467",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "ose\\1961-06-08T00:00:00\\laura-gabriela.massoubre\\L0808@protonmail.com\\301.245.0467\\149738159\\United Kingdom\\950\\Wayside Close\\Romfor"
+ },
+ {
+  "id": "42335B",
+  "got": "001125 9 539",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "     - name: NATHA.456302.9.830     - name: REDA9 001125 9 539     - name: YIHUI8072279732     - name: XHYZI.809"
+ },
+ {
+  "id": "42812A",
+  "got": "058 5050993",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "{\"tel_id\":\"058 5050993 \",\"givenname1_id\":\"Hanif\",\"background_id\":\"1\"} {\""
+ },
+ {
+  "id": "42812A",
+  "got": "-",
+  "label": "PHONE",
+  "src": "model",
+  "ctx": "vinthan\",\"givenname2_id\":\"Abraão\",\"background_id\":\"1\"} {\"tel_id\":\"5060-959-9620\",\"givenname1_id\":\"Türker\",\"background_id\""
+ },
+ {
+  "id": "42812A",
+  "got": "9620",
+  "label": "PHONE",
+  "src": "model",
+  "ctx": "an\",\"givenname2_id\":\"Abraão\",\"background_id\":\"1\"} {\"tel_id\":\"5060-959-9620\",\"givenname1_id\":\"Türker\",\"background_id\":\"1\"} {\""
+ },
+ {
+  "id": "42847A",
+  "got": "04024-79708",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "50-742-3392\"     },     {       \"email\": \"E@gmail.com\",       \"tel\": \"04024-79708 \"     },     {       \"email\": \"HC@tutanota.com\", "
+ },
+ {
+  "id": "42847A",
+  "got": "009-709 509.037",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "-79708 \"     },     {       \"email\": \"HC@tutanota.com\",       \"tel\": \"009-709 509.037"
+ },
+ {
+  "id": "42895A",
+  "got": "02247.80845",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "0:00:00      - Social Security Number: 604 130 3281      - Telephone: 02247.80845       - Last Name: Fontanel  2. **Appointment Inf"
+ },
+ {
+  "id": "42905A",
+  "got": "+44123456789",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "Contact\": {         \"Email\": \"johndoe@example.com\",         \"Phone\": \"+44123456789\"       }     },     \"Therapist\": {       \"Name\": "
+ },
+ {
+  "id": "42915B",
+  "got": "8775.503",
+  "label": "PHONE",
+  "src": "model",
+  "ctx": "mail: 17C@outlook.com      - Passport: 535480977      - Phone Number: 8775.503.5851      - Country: GB      - Address: Oakford L"
+ },
+ {
+  "id": "42940B",
+  "got": "068-0229",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "Security Number: 131092067    - Passport: IR    - Contact Phone: 6944-068-0229    - Verification Password: 7b'Rn8mmy\\\\  ...and s"
+ },
+ {
+  "id": "42983A",
+  "got": "012141 9 353",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "l.com - **Social Number:** 603 933 4906 - **Driver's License:** AREGA 012141 9 353 - **Passport Number:** 244254688 - **Country:** G"
+ },
+ {
+  "id": "43007B",
+  "got": "058-1224",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "-058-1224):**    - After thorough evaluation of your case l"
+ },
+ {
+  "id": "43007B",
+  "got": "(0398916389",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "roved. Payment will be processed shortly.  3. **Feedback for Member C (0398916389):**    - Your claim status, matched with the eaef"
+ },
+ {
+  "id": "43204B",
+  "got": "+447512345678",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "_contact\": { \t\t\t\t\t\"contact_name\": \"Heavenly\", \t\t\t\t\t\"contact_number\": \"+447512345678\" \t\t\t\t} \t\t\t}, \t\t\t{ \t\t\t\t\"social_security_number\": \""
+ },
+ {
+  "id": "43204B",
+  "got": "+447598765432",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "ncy_contact\": { \t\t\t\t\t\"contact_name\": \"Davey\", \t\t\t\t\t\"contact_number\": \"+447598765432\" \t\t\t\t} \t\t\t}, \t\t\t{ \t\t\t\t\"social_security_number\": \""
+ },
+ {
+  "id": "43263A",
+  "got": "4828104363",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "  Non-binary       Mayor       1953béatrice.ewen@protonmail.com       4828104363       BÉATR5081039847       GB       349       Se"
+ },
+ {
+  "id": "43304C",
+  "got": "00-10-75183-049-36",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "        }                 },                 {                     \"2-00-10-75183-049-36\": {                         \"F4FRA01WO70745450702"
+ },
+ {
+  "id": "43374B",
+  "got": "791-403-1126",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "60502 - Patient: F, scarlet.ryckx25, 6237785073 - Patient: Male, LL3, 791-403-1126  Notes: Taken at 00:14 in Oldham on 30/11/2022."
+ },
+ {
+  "id": "43589A",
+  "got": "123-456-7890",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "}}\", \t\t\t\"contact\": { \t\t\t\t\"email\": \"eyvind@example.com\", \t\t\t\t\"phone\": \"123-456-7890\" \t\t\t} \t\t}, \t\t\"client_details\": { \t\t\t\"name\": \"Mr. "
+ },
+ {
+  "id": "43589C",
+  "got": "098-765-4321",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "\t\t\t\t\"name\": \"Jane Smith\", \t\t\t\t\"relationship\": \"Spouse\", \t\t\t\t\"phone\": \"098-765-4321\" \t\t\t} \t\t}, \t\t\"date\": \"2023-12-15\", \t\t\"authorizati"
+ },
+ {
+  "id": "43645C",
+  "got": "04.93.51.85 81",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "04.93.51.85 81</li>             </ul>             <p>Identificat"
+ },
+ {
+  "id": "44396A",
+  "got": "008035.9.925",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "ing the following individuals:  1. AMELY559143AG304 at 16:06 2. ILIYA.008035.9.925 at 8:46 AM 3. KENDA6071019044 at 18:11 4. HAYLA75"
+ },
+ {
+  "id": "44634A",
+  "got": "056024 9 543",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "DE, SECADDRESS, DATE\\n1, F, ouseavgb7370@yahoo.com, 2847621944, NIXHA 056024 9 543, +761-839 203-5160, GB, 899, Ely Road, Cambridge "
+ },
+ {
+  "id": "44799A",
+  "got": "08-33655-773-91",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": " Benefits Records**  **Personal Information:** - **Veteran ID**: 2-79-08-33655-773-91 - **Name**: Ymrane Metha Barthod-Malat - **Sex**:"
+ },
+ {
+  "id": "45473A",
+  "got": "+408 02 052 0013 21:17",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "PM of the 10:44, in the ENG, I received a distressing phone call from +408 02 052 0013 21:17. The female caller, Geraldes, identified herself "
+ },
+ {
+  "id": "45655B",
+  "got": "019-7268",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "umber: 3813152940    - ID Card Number: BA93481OR    - Telephone: 2418.019-7268    - Arrival Time: 15:50  2. Member B - Last Name"
+ },
+ {
+  "id": "45899B",
+  "got": "080-4696475",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "t details (795107443, 082786860), telephone numbers (+17-26 561.7352, 080-4696475 ), IP addresses (130.96.196.30, 221.45.39.234), l"
+ },
+ {
+  "id": "46555B",
+  "got": "04.10.84751.409.77",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "    - Non-binary    - 2.04.10.84751.409.77  4. Participant: Tolev    - M    - 548 941 5653  "
+ },
+ {
+  "id": "47434B",
+  "got": "5609",
+  "label": "PHONE",
+  "src": "model",
+  "ctx": "-04-5609</li>         <li>Telephone: +10 88.009-9343</li> "
+ },
+ {
+  "id": "47571A",
+  "got": "+1-123-456-7890",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "\"contact@xyzeducationservices.com\\\",                     \\\"Phone\\\": \\\"+1-123-456-7890\\\"                 }             },             \\\""
+ },
+ {
+  "id": "48263B",
+  "got": "22202",
+  "label": "PHONE",
+  "src": "model",
+  "ctx": "22202 - Telephone: +569-16-358 7938 - Parent Approval: "
+ },
+ {
+  "id": "48379A",
+  "got": "011-9348083",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "        <social_number>361-40-3538</social_number>         <telephone>011-9348083 </telephone>         <password>MFb<7b7@VPX</passw"
+ },
+ {
+  "id": "48743A",
+  "got": "025049745",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "il.com  - Gender: Feminine  - Driver's License: 09042024  - Passport: 025049745"
+ },
+ {
+  "id": "49390A",
+  "got": "011 9907",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": " Time: [03:58:08]  Patient Name:  - [Princess] [9suphit] - Tel: [7403 011 9907] - IP Address: [33.7.151.24]  Progress Evaluation"
+ },
+ {
+  "id": "49823A",
+  "got": "555-123-4567",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "\"F, LF@outlook.com, G1953026, 555-123-4567 Masculine, delantagne@protonmail.com, P90D4Y1OKTJ"
+ },
+ {
+  "id": "49823A",
+  "got": "555-234-5678",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "26, 555-123-4567 Masculine, delantagne@protonmail.com, P90D4Y1OKTJWW, 555-234-5678 M, rwhqqvtvwdh43@hotmail.com, B505324858474, 555-"
+ },
+ {
+  "id": "49823A",
+  "got": "555-345-6789",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "D4Y1OKTJWW, 555-234-5678 M, rwhqqvtvwdh43@hotmail.com, B505324858474, 555-345-6789 M, 45DT@gmail.com, 005594338, 555-456-7890 O, edv"
+ },
+ {
+  "id": "49823A",
+  "got": "555-456-7890",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "otmail.com, B505324858474, 555-345-6789 M, 45DT@gmail.com, 005594338, 555-456-7890 O, edvrawyc43@hotmail.com, L763793008409, 555-567"
+ },
+ {
+  "id": "49823A",
+  "got": "555-567-8901",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "om, 005594338, 555-456-7890 O, edvrawyc43@hotmail.com, L763793008409, 555-567-8901 Mascul"
+ },
+ {
+  "id": "49882C",
+  "got": "6983",
+  "label": "PHONE",
+  "src": "model",
+  "ctx": "7-6983\",         \"passport_number\": \"188965627\",        "
+ },
+ {
+  "id": "50014B",
+  "got": "090340478",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "ne Makeska, 683611595 4202:9c53:8e58:48f3:e092:832:e840:2b4 Cornaton, 090340478 d8c6:e031:2288:5557:f99d:ed3c:e17a:81db Nadeau Ch"
+ },
+ {
+  "id": "50014B",
+  "got": "080588708 30.136.183.113",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "zar, 711186168 cd45:1b69:b33d:e073:5989:ac8:6b74:d274 Semanas-Gillet, 080588708 30.136.183.113 Riccaboni...12 US DATE_BG(June/45\"."
+ },
+ {
+  "id": "50467B",
+  "got": "+40 13.716 5080",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "+40 13.716 5080]   - Country: [Nederland]   - Address: [212, Erve"
+ },
+ {
+  "id": "50875B",
+  "got": "71 487-1360",
+  "label": "PHONE",
+  "src": "model",
+  "ctx": "71 487-1360 - Password: +7Vxp$ - Time Stamp: 04:54 - Given Na"
+ },
+ {
+  "id": "51028A",
+  "got": "00149.045-905 7958",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "00149.045-905 7958\t080 6527.2555\t+212-71-566 7525\tUS\tyyT7.DaG\\\tUS\t02"
+ },
+ {
+  "id": "51028A",
+  "got": "+07.71 410.2857\t0141",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "2555\t+212-71-566 7525\tUS\tyyT7.DaG\\\tUS\t02/16/2006\t+10.69-847-1763\tw\\R2\t+07.71 410.2857\t0141.86.681 8822\t1h+E'@\t+212-71-566 7525\t;i51W\tGu!Ma*2"
+ },
+ {
+  "id": "51028A",
+  "got": "+08 6527-2555",
+  "label": "PHONE",
+  "src": "structured identifier",
+  "ctx": "+E'@\t+212-71-566 7525\t;i51W\tGu!Ma*2'\tld!.<~4:0\t;i51W\tld!.<~4:4:\tTITLE +08 6527-2555\tw\\R2\tld!.<~4:0G\t1141.86.681 8822\t1h+E'@\t09123-215"
+ }
+]

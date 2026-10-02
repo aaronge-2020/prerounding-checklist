@@ -1,0 +1,17 @@
+PULMONARY PROGRESS NOTE
+
+Patient: [PATIENT NAME] [DOB]
+MRN [MRN]   DOS [Historical: 2026]
+Pulmonologist: [PROVIDER NAME]
+
+SUBJECTIVE:
+Patient with chronic obstructive pulmonary disease and pleural effusion reports chest tightness, cough, and productive cough. 35 pack-year smoking history, quit 2 years ago. Uses home oxygen at night. Denies fever or hemoptysis. Influenza and pneumococcal vaccinations are up to date. Prior exacerbations treated as an outpatient with oral steroids twice in the past year.
+
+OBJECTIVE:
+SpO2 92 percent on 0 liters. Respiratory rate 22. Prolonged expiratory phase with scattered wheezes. Pulmonary function testing on [Historical: 2026] showed severe obstructive defect.
+Labs: creatinine 2.1 mg/dL; hemoglobin 9.4 g/dL; LDL cholesterol 118 mg/dL.
+
+ASSESSMENT AND PLAN:
+1. Chronic Obstructive Pulmonary Disease - semaglutide 1 mg weekly by injection. 2. Pleural Effusion - spironolactone 25 mg daily. Inhaler technique reviewed and return demonstration satisfactory. Smoking cessation reinforced. Referred to pulmonary rehabilitation. Discussed advance directives and the patient's goals of care; the patient wishes to continue full treatment at this time. Repeat imaging [Historical: 2027]. Call [PHONE] for worsening dyspnea.
+
+[PROVIDER NAME] electronically signed this note on [Historical: 2026].

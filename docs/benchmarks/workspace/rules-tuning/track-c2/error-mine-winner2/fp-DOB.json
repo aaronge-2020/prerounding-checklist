@@ -1,0 +1,30 @@
+[
+ {
+  "id": "43304C",
+  "got": "11-30-1990",
+  "label": "DOB",
+  "src": "structured identifier+temporal",
+  "ctx": "\"Name\": \"Sophie Brown\",                             \"Date_of_Birth\": \"11-30-1990\",                             \"Address\": \"789 Pin"
+ },
+ {
+  "id": "43304D",
+  "got": "03-18-1987",
+  "label": "DOB",
+  "src": "structured identifier+temporal",
+  "ctx": "           \"Date_of_Birth\": \"03-18-1987\",                             \"Address\": \"567 Elm"
+ },
+ {
+  "id": "43304D",
+  "got": "07-09-1995",
+  "label": "DOB",
+  "src": "structured identifier+temporal",
+  "ctx": "Name\": \"Amelia Wilson\",                             \"Date_of_Birth\": \"07-09-1995\",                             \"Address\": \"890 Bir"
+ },
+ {
+  "id": "43619B",
+  "got": "09/05/1988",
+  "label": "DOB",
+  "src": "structured identifier+temporal",
+  "ctx": ": 'Goossens Bougouin Marosvölgyi'   - Gender: 'M'   - Date of Birth: '09/05/1988'   - Address: '634, Airport Road West, Belfast, N"
+ }
+]

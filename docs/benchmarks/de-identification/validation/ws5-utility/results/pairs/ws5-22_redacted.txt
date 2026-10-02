@@ -1,0 +1,19 @@
+PRIMARY CARE PROGRESS NOTE
+
+Patient: [PATIENT NAME]  DOB: [DOB]  MRN: [MRN]
+Timeline: [Historical: 2026]  Provider: [PROVIDER NAME]
+
+CHIEF COMPLAINT: routine follow-up
+
+SUBJECTIVE:
+48-year-old woman here for chronic disease management. Reports chills and muscle aches. Review of systems: denies diplopia, hemoptysis, nocturia, melena. Social: lives at [ADDRESS]. Works as an accountant. No tobacco, alcohol socially. Family history: mother with hypertension, father with coronary artery disease. Health maintenance: colonoscopy due next year; mammogram up to date; flu shot this season.
+
+OBJECTIVE:
+BP 124/81, HR 80, BMI 35.5. General: no acute distress. HEENT: unremarkable. Heart: regular rhythm. Lungs: clear. Abdomen: soft, nontender. Skin: [NAME]. Neurologic: alert and oriented, cranial nerves intact, strength full throughout.
+Recent labs: INR 1.1; estimated glomerular filtration rate 58 mL/min; potassium 4.2 mmol/L; potassium 5.1 mmol/L.
+
+ASSESSMENT AND PLAN:
+1. Acute Cholecystitis: continue sertraline 100 mg daily; labs rechecked [Historical: 2026]. 2. Vitamin D Deficiency: lifestyle counseling provided. 3. Coronary Artery Disease: continue spironolactone 25 mg daily; dose adjusted as below.
+Return visit [Historical: 2027]. Contact the office at [PHONE] with questions. Email: [EMAIL] on file.
+
+Signed: [PROVIDER NAME]

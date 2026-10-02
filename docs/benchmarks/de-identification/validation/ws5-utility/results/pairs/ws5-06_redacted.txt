@@ -1,0 +1,19 @@
+PRIMARY CARE PROGRESS NOTE
+
+Patient: [PATIENT NAME]  DOB: [DOB]  MRN: [MRN]
+Timeline: [Historical: 2026]  Provider: [PROVIDER NAME]
+
+CHIEF COMPLAINT: routine follow-up
+
+SUBJECTIVE:
+37-year-old man here for chronic disease management. Reports [PATIENT NAME] and itching. Review of systems: denies nocturia, dysphagia, rhinorrhea, melena. Social: lives at [ADDRESS]. Works as a retail clerk. No tobacco, alcohol socially. Family history: mother with hypertension, father with coronary artery disease. Health maintenance: colonoscopy due next year; mammogram up to date; flu shot this season.
+
+OBJECTIVE:
+BP 124/86, HR 93, BMI 30.7. General: no acute distress. HEENT: unremarkable. Heart: regular rhythm. Lungs: clear. Abdomen: soft, nontender. Skin: [NAME]. Neurologic: alert and oriented, cranial nerves intact, strength full throughout.
+Recent labs: estimated glomerular filtration rate 58 mL/min; anion gap 14; platelet count 245 K/uL; white blood cell count 14.2 K/uL.
+
+ASSESSMENT AND PLAN:
+1. Peripheral Artery Disease: referral placed. 2. Pleural Effusion: continue tramadol 50 mg every 6 hours as needed; lifestyle counseling provided. 3. Liver Cirrhosis: continue vitamin D3 2000 IU daily; dose adjusted as below.
+Return visit [Historical: 2027]. Contact the office at [PHONE] with questions. Email: [EMAIL] on file.
+
+Signed: [PROVIDER NAME]

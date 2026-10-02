@@ -1,0 +1,379 @@
+function normalizedLabel(value) {
+  return String(value || "PHI").replace(/\s+/g, " ").trim() || "PHI";
+}
+
+function reviewPlaceholder(entity, label) {
+  return String(entity?.renderedPlaceholder || entity?.placeholder || `[${label}]`);
+}
+
+// B7: surface the least-certain detections first. Model spans carry their
+// classifier score (0-1); deterministic structured rules carry score 1. An
+// entity with no score is treated as fully confident (structured-equivalent).
+function reviewEntityConfidence(entity) {
+  const score = Number(entity?.score);
+  if (Number.isFinite(score)) return score;
+  const confidence = Number(entity?.confidence);
+  if (Number.isFinite(confidence)) return confidence;
+  return 1;
+}
+
+function reviewEntitySpecificity(entity, output = "") {
+  const label = normalizedLabel(entity?.label).toUpperCase();
+  const placeholder = reviewPlaceholder(entity, label).toUpperCase();
+  const source = String(entity?.source || "").toLowerCase();
+  let score = 0;
+  // Prefer the most specific presentation when multiple detectors identify
+  // precisely the same source characters. This changes only the active-tab
+  // review queue; the model result and stored de-identified output are left
+  // untouched.
+  if (label.includes("PATIENT NAME") || placeholder.includes("PATIENT NAME")) score += 40;
+  else if (label.includes("FULL NAME") || placeholder.includes("FULL NAME")) score += 30;
+  else if (label.includes("NAME") || placeholder.includes("NAME")) score += 20;
+  if (label !== "PHI") score += 5;
+  if (source.includes("manual")) score += 3;
+  if (entity?.renderedPlaceholder) score += 1;
+  // A result can occasionally carry duplicate detector metadata while its
+  // rendered text already has just one of their possible placeholders. Keep
+  // the representation that actually appears in the safe output.
+  if (placeholder && String(output || "").toUpperCase().includes(placeholder)) score += 100;
+  return score;
+}
+
+function uniqueReviewEntities(source, entities = [], output = "") {
+  const bySourceRange = new Map();
+  (entities || []).forEach((entity, sourceIndex) => {
+    const start = Number(entity?.start);
+    const end = Number(entity?.end);
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return;
+    const original = source.slice(start, end);
+    if (!original) return;
+    const candidate = {
+      sourceIndex,
+      start,
+      end,
+      label: normalizedLabel(entity.label),
+      source: String(entity.source || "local de-identification"),
+      original,
+      placeholder: reviewPlaceholder(entity, normalizedLabel(entity.label)),
+      confidence: reviewEntityConfidence(entity)
+    };
+    const key = `${start}:${end}`;
+    const existing = bySourceRange.get(key);
+    if (!existing || reviewEntitySpecificity(entity, output) > reviewEntitySpecificity(entities[existing.sourceIndex], output)) {
+      bySourceRange.set(key, candidate);
+    }
+  });
+  const candidates = [...bySourceRange.values()]
+    .sort((left, right) => left.start - right.start || left.end - right.end || left.sourceIndex - right.sourceIndex);
+  // Several model heads can report nested spans for one source value (for
+  // example `Ortiz`, `Ms. Ortiz`, and the same token-classifier span). A human
+  // should review that once, not once per overlapping detector result. Keep
+  // distinct occurrences at distinct character ranges.
+  return candidates.reduce((selected, candidate) => {
+    const overlapIndex = selected.findIndex((entry) => candidate.start < entry.end && candidate.end > entry.start);
+    if (overlapIndex < 0) return [...selected, candidate];
+    const existing = selected[overlapIndex];
+    const existingEntity = entities[existing.sourceIndex];
+    const candidateEntity = entities[candidate.sourceIndex];
+    if (reviewEntitySpecificity(candidateEntity, output) > reviewEntitySpecificity(existingEntity, output)) {
+      const next = [...selected];
+      next[overlapIndex] = candidate;
+      return next.sort((left, right) => left.start - right.start || left.end - right.end || left.sourceIndex - right.sourceIndex);
+    }
+    return selected;
+  }, []);
+}
+
+export function sanitizeResidualWarningMetadata(warnings = []) {
+  return (warnings || []).filter(isActionableResidualWarning).map((warning) => {
+    if (!warning || typeof warning !== "object") {
+      return {
+        severity: "review",
+        type: "Potential residual PHI",
+        reason: "Reprocess the source text in this tab to inspect the flagged value."
+      };
+    }
+    return {
+      severity: String(warning.severity || "review"),
+      type: String(warning.type || "Potential residual PHI"),
+      reason: String(warning.reason || "Reprocess the source text in this tab to inspect the flagged value.")
+    };
+  });
+}
+
+// The broad name-like fallback is intentionally not a user-facing residual
+// warning. It produces many clinical-phrase false positives after structured
+// redaction and gives the user no reliable action to take. Higher-confidence
+// identifier warnings remain visible and reviewable.
+export function isActionableResidualWarning(warning) {
+  return String(warning?.type || "").trim().toLowerCase() !== "possible full name";
+}
+
+// Counts non-overlapping occurrences of a literal placeholder token. Used to
+// offset occurrence numbers when a review only covers newly-appended text
+// that will be displayed concatenated after already-committed text sharing
+// the same placeholder vocabulary (see createEphemeralRedactionReview).
+function countPlaceholderOccurrences(haystack, placeholder) {
+  const text = String(haystack || "");
+  if (!placeholder) return 0;
+  let count = 0;
+  let cursor = 0;
+  for (;;) {
+    const position = text.indexOf(placeholder, cursor);
+    if (position < 0) return count;
+    count += 1;
+    cursor = position + placeholder.length;
+  }
+}
+
+export function createEphemeralRedactionReview(rawText, result = {}, { priorOutputText = "" } = {}) {
+  const source = String(rawText || "");
+  const redactions = uniqueReviewEntities(source, result.entities, result.text)
+    .map((redaction, index, entries) => {
+      // Dates can be normalized into relative text (for example, "2 days ago
+      // at 05:30") rather than a bracket token. Preserve the exact rendered
+      // replacement so the active-tab review can put the source and its
+      // replacement next to each other in one annotated document.
+      const placeholder = redaction.placeholder;
+      // When this review covers only appended text, prior already-committed
+      // text may contain earlier occurrences of the same placeholder. Those
+      // aren't part of `entries`, so the plain in-list count would understate
+      // the true occurrence position once this text is displayed appended
+      // after it - offset by however many times it already appears there.
+      const occurrence = countPlaceholderOccurrences(priorOutputText, placeholder)
+        + entries
+          .slice(0, index)
+          .filter((entry) => entry.placeholder === placeholder)
+          .length;
+      return {
+        ...redaction,
+        id: `redaction_${index}`,
+        placeholder,
+        occurrence,
+        state: "pending"
+      };
+    });
+
+  // B7: order the pending queue confidence-ascending so the least-certain
+  // detections are reviewed first. Occurrences above are computed in source
+  // order (repeated placeholders need their true position); only the
+  // presentation order changes. Tie-breaks are deterministic: source order,
+  // then the original entity index.
+  redactions.sort((left, right) =>
+    left.confidence - right.confidence ||
+    left.start - right.start ||
+    left.end - right.end ||
+    left.sourceIndex - right.sourceIndex);
+  redactions.forEach((redaction, index) => {
+    redaction.id = `redaction_${index}`;
+  });
+
+  const review = {
+    source,
+    redactions,
+    warnings: Array.isArray(result.residualWarnings) ? result.residualWarnings : [],
+    dismissedWarningIndexes: new Set(),
+    inspectedRedactionIndex: null,
+    activeWarningIndex: null,
+    approvedRedactionIndexes: new Set()
+  };
+  return synchronizeReviewPlaceholders(review, result.text || "");
+}
+
+function occurrencePosition(text, token, occurrence) {
+  const source = String(text || "");
+  const needle = String(token || "");
+  if (!needle || occurrence < 0) return -1;
+  let cursor = 0;
+  for (let index = 0; index <= occurrence; index += 1) {
+    const position = source.indexOf(needle, cursor);
+    if (position < 0) return -1;
+    if (index === occurrence) return position;
+    cursor = position + needle.length;
+  }
+  return -1;
+}
+
+function decisionKey(redaction) {
+  return `${String(redaction?.original || "")}\u0000${String(redaction?.placeholder || "")}`;
+}
+
+// A clinician edits the safe, currently displayed text. Re-running the model
+// must therefore retain decisions already represented in that text while
+// adding only fresh detections to the pending queue. This stays entirely in
+// the active-tab review object; neither originals nor decisions are persisted.
+export function refreshEphemeralRedactionReview(previousReview, rawText, result = {}) {
+  const refreshed = createEphemeralRedactionReview(rawText, result);
+  const priorRedactions = Array.isArray(previousReview?.redactions) ? previousReview.redactions : [];
+  const decisions = new Map();
+  priorRedactions
+    .filter((redaction) => redaction?.state === "confirmed" || redaction?.state === "restored")
+    .forEach((redaction) => {
+      const key = decisionKey(redaction);
+      const queue = decisions.get(key) || [];
+      queue.push(redaction.state);
+      decisions.set(key, queue);
+    });
+
+  // If an edited field contains an earlier raw value again, carry its prior
+  // decision forward one occurrence at a time. A newly added duplicate beyond
+  // the original count remains pending and still requires review.
+  refreshed.redactions.forEach((redaction) => {
+    const queue = decisions.get(decisionKey(redaction));
+    const state = queue?.shift();
+    if (state) redaction.state = state;
+  });
+
+  const safeText = String(rawText || "");
+  const carriedConfirmed = priorRedactions.flatMap((redaction, priorIndex) => {
+    if (redaction?.state !== "confirmed") return [];
+    const placeholder = String(redaction.placeholder || "");
+    const position = occurrencePosition(safeText, placeholder, Number(redaction.occurrence));
+    if (position < 0) return [];
+
+    // A detector must never turn an existing safe placeholder into a fresh
+    // pending decision. Remove that synthetic overlap and retain the accepted
+    // entry, which keeps its original available only for Undo in this tab.
+    refreshed.redactions = refreshed.redactions.filter(
+      (entry) => !(entry.start >= position && entry.end <= position + placeholder.length)
+    );
+    const insertedEarlier = refreshed.redactions.filter(
+      (entry) => entry.state === "pending" && entry.placeholder === placeholder && entry.start < position
+    ).length;
+    return [{
+      ...redaction,
+      id: `preserved_${priorIndex}`,
+      start: null,
+      end: null,
+      occurrence: Number(redaction.occurrence) + insertedEarlier,
+      state: "confirmed"
+    }];
+  });
+
+  refreshed.redactions.push(...carriedConfirmed);
+  refreshed.approvedRedactionIndexes = new Set(
+    refreshed.redactions
+      .map((redaction, index) => (redaction.state === "restored" ? index : -1))
+      .filter((index) => index >= 0)
+  );
+  refreshed.inspectedRedactionIndex = nextPendingRedactionIndex(refreshed);
+  return refreshed;
+}
+
+// Older active-tab reviews may have recorded a generic [DATE] token while the
+// final output already contains a relative date such as "2 days ago at 05:30".
+// Align untouched source fragments with the de-identified result to recover the
+// visible replacement. This stays in memory and makes existing review sessions
+// render and center their active change correctly after an app update.
+export function synchronizeReviewPlaceholders(review, outputText) {
+  if (!review?.source || !Array.isArray(review.redactions)) return review;
+  const source = String(review.source || "");
+  const output = String(outputText || "");
+  const ordered = review.redactions
+    .map((redaction, index) => ({ redaction, index }))
+    .filter(({ redaction }) => Number.isFinite(redaction?.start) && Number.isFinite(redaction?.end))
+    .sort((left, right) => left.redaction.start - right.redaction.start || left.index - right.index);
+  let outputCursor = 0;
+
+  ordered.forEach(({ redaction }, orderIndex) => {
+    const priorEnd = orderIndex ? ordered[orderIndex - 1].redaction.end : 0;
+    const before = source.slice(priorEnd, redaction.start);
+    if (before) {
+      const beforeIndex = output.indexOf(before, outputCursor);
+      if (beforeIndex >= 0) outputCursor = beforeIndex + before.length;
+    }
+
+    const next = ordered[orderIndex + 1]?.redaction;
+    const boundary = source.slice(redaction.end, next?.start ?? source.length);
+    const boundaryIndex = boundary ? output.indexOf(boundary, outputCursor) : -1;
+    const replacement = boundaryIndex >= outputCursor
+      ? output.slice(outputCursor, boundaryIndex)
+      : next ? "" : output.slice(outputCursor);
+    const current = String(redaction.placeholder || "");
+    const currentPosition = current ? output.indexOf(current, outputCursor) : -1;
+    if (replacement && replacement !== redaction.original && (currentPosition < 0 || /^\[DATE\]$/i.test(current))) {
+      redaction.placeholder = replacement;
+    }
+    const resolved = String(redaction.placeholder || "");
+    const resolvedPosition = resolved ? output.indexOf(resolved, outputCursor) : -1;
+    if (resolvedPosition >= outputCursor) outputCursor = resolvedPosition + resolved.length;
+  });
+
+  return review;
+}
+
+export function reviewKey(scope, sectionId) {
+  return `${String(scope || "context")}:${String(sectionId || "")}`;
+}
+
+// The review UI owns the mutable review objects, while this module owns the
+// deterministic traversal rules.  Keeping the cursor calculation pure makes
+// it possible to advance from one admission field to the next without tying
+// ordering to a DOM position or a rendered list of buttons.
+export function pendingReviewTargets(sectionEntries = []) {
+  return (sectionEntries || []).flatMap((entry, sectionIndex) =>
+    (entry?.review?.redactions || [])
+      .map((redaction, redactionIndex) => ({
+        scope: String(entry?.scope || "context"),
+        sectionId: String(entry?.sectionId || ""),
+        sectionIndex,
+        redactionIndex,
+        redaction
+      }))
+      .filter((target) => target.sectionId && target.redaction?.state === "pending")
+  );
+}
+
+// Return the next remaining review target in document order.  If a clinician
+// manually opens a later item, wrapping makes sure earlier unreviewed fields
+// are not silently skipped.
+export function nextPendingReviewTarget(targets = [], current = null) {
+  const ordered = [...(targets || [])].sort((left, right) => (
+    left.sectionIndex - right.sectionIndex || left.redactionIndex - right.redactionIndex
+  ));
+  if (!ordered.length) return null;
+  if (!current) return ordered[0];
+  return ordered.find((target) => (
+    target.sectionIndex > current.sectionIndex
+    || (target.sectionIndex === current.sectionIndex && target.redactionIndex > current.redactionIndex)
+  )) || ordered[0];
+}
+
+// Below: pure index-lookup helpers shared by the section-field review and the
+// Quick De-ID review, which both store their pending/confirmed/restored
+// decisions on a single review.redactions array of the same shape.
+export function nextPendingRedactionIndex(review, afterIndex = -1) {
+  const pending = (review?.redactions || [])
+    .map((redaction, index) => ({ redaction, index }))
+    .filter(({ redaction }) => redaction.state === "pending");
+  if (!pending.length) return -1;
+  return pending.find(({ index }) => index > afterIndex)?.index ?? pending[0].index;
+}
+
+export function inspectedRedactionIndex(review) {
+  const index = review?.inspectedRedactionIndex;
+  return Number.isInteger(index) && index >= 0 && review?.redactions?.[index] ? index : -1;
+}
+
+export function quickRedactionIndex(review, afterIndex = -1) {
+  const pending = (review?.redactions || [])
+    .map((redaction, index) => ({ redaction, index }))
+    .filter(({ redaction }) => redaction.state === "pending");
+  if (!pending.length) return -1;
+  const selected = inspectedRedactionIndex(review);
+  if (selected >= 0 && review.redactions[selected]?.state === "pending") return selected;
+  return nextPendingRedactionIndex(review, afterIndex);
+}
+
+export function quickSelectedRedactionIndex(review) {
+  const selected = inspectedRedactionIndex(review);
+  if (selected >= 0 && review?.redactions?.[selected]?.state !== "restored") return selected;
+  return quickRedactionIndex(review);
+}
+
+export function quickWarningIndex(review, activeWarnings, afterIndex = -1) {
+  if (!activeWarnings.length) return -1;
+  const selected = Number(review?.activeWarningIndex);
+  if (activeWarnings.some(({ index }) => index === selected)) return selected;
+  return activeWarnings.find(({ index }) => index > afterIndex)?.index ?? activeWarnings[0].index;
+}

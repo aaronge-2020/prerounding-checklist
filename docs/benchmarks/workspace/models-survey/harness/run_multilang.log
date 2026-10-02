@@ -1,0 +1,14 @@
+loaded 1000 sampled texts for model onnx-community/multilang-pii-ner-ONNX (batch=10)
+model (re)loaded: {"ms":28272.845000000205,"modelId":"onnx-community/multilang-pii-ner-ONNX"}
+multilang-pii-ner/model-only: 100/1000 (187s)
+multilang-pii-ner/model-only: 200/1000 (402s)
+multilang-pii-ner/model-only: 300/1000 (642s)
+multilang-pii-ner/model-only: 400/1000 (845s)
+multilang-pii-ner/model-only: 500/1000 (1001s)
+multilang-pii-ner/model-only: 600/1000 (1081s)
+multilang-pii-ner/model-only: 700/1000 (1163s)
+multilang-pii-ner/model-only: 800/1000 (1245s)
+multilang-pii-ner/model-only: 900/1000 (1317s)
+multilang-pii-ner/model-only: 1000/1000 (1394s)
+multilang-pii-ner/model-only done in 1394s -> raw_multilang-pii-ner_model-only.json
+all done

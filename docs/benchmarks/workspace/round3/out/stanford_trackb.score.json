@@ -1,0 +1,110 @@
+{
+  "config": "stanford_trackb",
+  "binary": {
+    "precision": 0.7495,
+    "recall": 0.642,
+    "f1": 0.6916,
+    "tp": 27366,
+    "fp": 9144,
+    "fn": 15259,
+    "f1_ci95": [
+      0.6855,
+      0.6978
+    ]
+  },
+  "per_category": {
+    "NAME": {
+      "precision": 0.0829,
+      "recall": 0.046,
+      "f1": 0.0591,
+      "tp": 267,
+      "fp": 2955,
+      "fn": 5541
+    },
+    "PHONE": {
+      "precision": 0.4772,
+      "recall": 0.9159,
+      "f1": 0.6274,
+      "tp": 1829,
+      "fp": 2004,
+      "fn": 168
+    },
+    "EMAIL": {
+      "precision": 0.9073,
+      "recall": 0.933,
+      "f1": 0.92,
+      "tp": 2437,
+      "fp": 249,
+      "fn": 175
+    },
+    "DATE": {
+      "precision": 0.3685,
+      "recall": 0.8519,
+      "f1": 0.5145,
+      "tp": 1450,
+      "fp": 2485,
+      "fn": 252
+    },
+    "TIME": {
+      "precision": 0.9163,
+      "recall": 0.6976,
+      "f1": 0.7921,
+      "tp": 2627,
+      "fp": 240,
+      "fn": 1139
+    },
+    "DOB": {
+      "precision": 0.9321,
+      "recall": 0.2132,
+      "f1": 0.347,
+      "tp": 494,
+      "fp": 36,
+      "fn": 1823
+    },
+    "LOCATION": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "tp": 0,
+      "fp": 10,
+      "fn": 7491
+    },
+    "ADDRESS": {
+      "precision": 0.6784,
+      "recall": 0.4733,
+      "f1": 0.5576,
+      "tp": 2230,
+      "fp": 1057,
+      "fn": 2482
+    },
+    "ID": {
+      "precision": 0.6598,
+      "recall": 0.6547,
+      "f1": 0.6572,
+      "tp": 6582,
+      "fp": 3393,
+      "fn": 3472
+    },
+    "IP": {
+      "precision": 0.9705,
+      "recall": 0.988,
+      "f1": 0.9792,
+      "tp": 2140,
+      "fp": 65,
+      "fn": 26
+    }
+  },
+  "latency": {
+    "mean_ms": 703.2,
+    "median_ms": 652.1,
+    "p95_ms": 1207.1,
+    "n": 7946
+  },
+  "unmapped_pred_labels": {
+    "FACILITY": 3350,
+    "ORGANIZATION": 221,
+    "ROOM": 377,
+    "URL": 11,
+    "OCCUPATION": 1
+  }
+}

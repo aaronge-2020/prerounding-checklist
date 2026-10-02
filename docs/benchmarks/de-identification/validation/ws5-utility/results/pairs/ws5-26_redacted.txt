@@ -1,0 +1,27 @@
+DISCHARGE SUMMARY
+
+Patient Name: [PATIENT NAME]   DOB: [74 years prior to hospital admission]
+MRN [MRN]   Encounter ID [ENCOUNTER ID]
+Timeline: [Hospital Day 1]   Discharge Date: [Hospital Day 151]
+Attending: [PROVIDER NAME], Primary Care
+Hospital: [FACILITY]
+
+REASON FOR ADMISSION: community-acquired pneumonia
+
+HISTORY OF PRESENT ILLNESS:
+75-year-old man with liver cirrhosis, atrial flutter, deep vein thrombosis presented with cough, fever, and chills [Hospital Day 213]. Initial vitals: temperature 101.3 F, heart rate 114, respiratory rate 24, oxygen saturation [ADDRESS] demonstrated right lower lobe consolidation. Blood cultures drawn; platelet count 245 K/uL on admission.
+
+HOSPITAL COURSE:
+Treated with levothyroxine 75 mcg daily and metoprolol succinate 50 mg daily. Required 3 liters nasal cannula initially, weaned to room air by hospital day 2. Respiratory status improved steadily. Repeat labs: ALT 38 U/L; hemoglobin 9.4 g/dL; NT-proBNP 2840 pg/mL.
+
+DISCHARGE MEDICATIONS:
+- tramadol 50 mg every 6 hours as needed
+- duloxetine 60 mg daily
+- losartan 50 mg daily
+- insulin glargine 22 units at bedtime
+- omeprazole 20 mg daily
+
+FOLLOW-UP:
+Primary care with [PROVIDER NAME] [Hospital Day 213]. Repeat chest imaging [Hospital Day 248] to document resolution. Patient verbalized understanding. Emergency contact: [CONTACT NAME], [PHONE].
+
+Dictated by [PROVIDER NAME].

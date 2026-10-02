@@ -1,0 +1,613 @@
+{
+  "model": "onnx-community/stanford-deidentifier-base-ONNX",
+  "n_notes": 60,
+  "accept_all_lower_bound": {
+    "binary_exact_span": {
+      "precision": 0.8685,
+      "recall": 0.8667,
+      "f1": 0.8676,
+      "tp": 416,
+      "fp": 63,
+      "fn": 64
+    },
+    "span_only_exact": {
+      "precision": 0.8685,
+      "recall": 0.8667,
+      "f1": 0.8676,
+      "tp": 416,
+      "fp": 63,
+      "fn": 64
+    },
+    "overlap_entity": {
+      "precision": 0.8768,
+      "recall": 0.875,
+      "f1": 0.8759,
+      "tp": 420,
+      "fp": 59,
+      "fn": 60
+    },
+    "char_level": {
+      "precision": 0.9106,
+      "recall": 0.9334,
+      "f1": 0.9218,
+      "tp": 6782,
+      "fp": 666,
+      "fn": 484
+    },
+    "per_category_exact_span": {
+      "PATIENT": {
+        "precision": 1.0,
+        "recall": 0.825,
+        "f1": 0.9041,
+        "tp": 66,
+        "fp": 0,
+        "fn": 14
+      },
+      "PROVIDER": {
+        "precision": 0.8731,
+        "recall": 0.975,
+        "f1": 0.9213,
+        "tp": 117,
+        "fp": 17,
+        "fn": 3
+      },
+      "DATE": {
+        "precision": 0.6289,
+        "recall": 1.0,
+        "f1": 0.7722,
+        "tp": 100,
+        "fp": 59,
+        "fn": 0
+      },
+      "PHONE": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 20,
+        "fp": 0,
+        "fn": 0
+      },
+      "ADDRESS": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 20,
+        "fp": 0,
+        "fn": 0
+      },
+      "ID": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 20,
+        "fp": 0,
+        "fn": 0
+      },
+      "AGE": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 60
+      },
+      "FACILITY": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 60,
+        "fp": 0,
+        "fn": 0
+      }
+    },
+    "per_note_type_exact_span": {
+      "discharge": {
+        "precision": 0.9,
+        "recall": 0.9,
+        "f1": 0.9,
+        "tp": 180,
+        "fp": 20,
+        "fn": 20
+      },
+      "nursing": {
+        "precision": 0.9379,
+        "recall": 0.85,
+        "f1": 0.8918,
+        "tp": 136,
+        "fp": 9,
+        "fn": 24
+      },
+      "progress": {
+        "precision": 0.7463,
+        "recall": 0.8333,
+        "f1": 0.7874,
+        "tp": 100,
+        "fp": 34,
+        "fn": 20
+      }
+    },
+    "residual_phi_spans": {
+      "AGE": 60
+    },
+    "residual_phi_chars": {
+      "AGE": 480
+    }
+  },
+  "oracle_upper_bound": {
+    "note": "By construction post-review precision=recall=F1=1.0: the oracle rejects every non-overlapping suggestion and manually redacts every uncovered gold character. The empirical finding is what had to be added manually.",
+    "post_review": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "suggestions_accepted": 420,
+    "suggestions_rejected": 59,
+    "manual_additions_by_category": {
+      "PATIENT": {
+        "spans_not_fully_covered": 0,
+        "uncovered_chars": 0
+      },
+      "PROVIDER": {
+        "spans_not_fully_covered": 1,
+        "uncovered_chars": 4
+      },
+      "DATE": {
+        "spans_not_fully_covered": 0,
+        "uncovered_chars": 0
+      },
+      "PHONE": {
+        "spans_not_fully_covered": 0,
+        "uncovered_chars": 0
+      },
+      "ADDRESS": {
+        "spans_not_fully_covered": 0,
+        "uncovered_chars": 0
+      },
+      "ID": {
+        "spans_not_fully_covered": 0,
+        "uncovered_chars": 0
+      },
+      "AGE": {
+        "spans_not_fully_covered": 60,
+        "uncovered_chars": 480
+      },
+      "FACILITY": {
+        "spans_not_fully_covered": 0,
+        "uncovered_chars": 0
+      }
+    },
+    "fully_missed_by_category": {
+      "AGE": 60
+    },
+    "overredacted_non_phi_chars": 23
+  },
+  "unmapped_predicted_labels": {},
+  "latency_ms": {
+    "mean": 6367.6,
+    "median": 6026,
+    "p95": 9827.4,
+    "max": 15448.9
+  },
+  "per_note": [
+    {
+      "id": "DS-001",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-002",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-003",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-004",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-005",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-006",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-007",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-008",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-009",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-010",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-011",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-012",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-013",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-014",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-015",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-016",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-017",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-018",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-019",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "DS-020",
+      "note_type": "discharge",
+      "n_gold": 10,
+      "n_suggested": 10,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-001",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 8,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-002",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-003",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-004",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 8,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-005",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-006",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 8,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-007",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-008",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-009",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-010",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-011",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-012",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 8,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-013",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-014",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 8,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-015",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-016",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-017",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-018",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-019",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "NN-020",
+      "note_type": "nursing",
+      "n_gold": 8,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-001",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 9,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-002",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 6,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-003",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-004",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 6,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-005",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 6,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-006",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 6,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-007",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-008",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-009",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 8,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-010",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-011",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-012",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 6,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-013",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 6,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-014",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 5,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-015",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 6,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-016",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 7,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-017",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 8,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-018",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 5,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-019",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 9,
+      "n_residual_spans": 1
+    },
+    {
+      "id": "PN-020",
+      "note_type": "progress",
+      "n_gold": 6,
+      "n_suggested": 6,
+      "n_residual_spans": 1
+    }
+  ]
+}

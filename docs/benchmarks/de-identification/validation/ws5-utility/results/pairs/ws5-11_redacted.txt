@@ -1,0 +1,30 @@
+DISCHARGE SUMMARY
+
+Patient: [PATIENT NAME]
+DOB [47 years prior to hospital admission]   MRN [MRN]
+Date of Admission: [Hospital Day 1]   Date of Discharge: [Hospital Day 204]
+Surgeon: [PROVIDER NAME]
+Facility: [FACILITY]
+
+PREOPERATIVE DIAGNOSIS: osteoarthritis
+POSTOPERATIVE DIAGNOSIS: same
+
+HISTORY:
+48-year-old woman presented with nausea, abdominal pain, and fever. Imaging confirmed the diagnosis. Past medical history includes mitral regurgitation and diverticulitis. Home medications include sertraline 100 mg daily, pantoprazole 40 mg daily, insulin lispro 8 units with meals. Allergies: no known drug allergies. Review of systems otherwise negative except as noted above.
+
+PHYSICAL EXAMINATION:
+Vital signs stable. General: no acute distress. Abdomen: tender in the right upper quadrant with a positive Murphy sign. No rebound or guarding. Bowel sounds present. Skin warm and dry.
+
+OPERATIVE COURSE:
+Total Knee Arthroplasty performed on [2 days prior to hospital admission] without complication. Estimated blood loss minimal. Tolerated the procedure well and recovered in the post-anesthesia care unit. Postoperative labs: erythrocyte sedimentation rate 32 mm/hr; potassium 5.1 mmol/L; procalcitonin 0.8 ng/mL. Pain controlled on oral analgesics. Ambulating with assistance. Wound clean, dry, and intact.
+
+DISCHARGE MEDICATIONS:
+- prednisone 10 mg daily
+- digoxin 0.125 mg daily
+- metoprolol succinate 50 mg daily
+- piperacillin-tazobactam 3.375 g intravenously every 6 hours
+
+DISCHARGE INSTRUCTIONS:
+Wound care reviewed. No heavy lifting for 3 [PROVIDER NAME]. Follow up with [PROVIDER NAME]. Call [PHONE] for fever, increasing pain, or wound drainage.
+
+Surgeon signature: [PROVIDER NAME].

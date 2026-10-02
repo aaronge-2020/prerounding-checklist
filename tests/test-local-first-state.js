@@ -3,7 +3,7 @@ import { createDailyRecord, localCalendarDate, removeDay, upsertDay } from "../s
 import { activePatient, createEmptyVaultState, createPatientRecord, migrateVaultState, updateActivePatient } from "../src/app/state/vault.js";
 import { deleteEncryptedVaultRecord, loadOrCreateVault, saveEncryptedVault, readEncryptedVaultRecord } from "../src/app/state/persistence.js";
 import { createEphemeralRedactionReview, sanitizeResidualWarningMetadata } from "../src/patient-context/review.js";
-import { createNoteDraft, selectChecklistFinding, updateNoteSection, NOTE_TYPES } from "../src/note-drafts/index.js";
+import { createNoteDraft, updateNoteSection, NOTE_TYPES } from "../src/note-drafts/index.js";
 
 function memoryStorage() {
   const store = new Map();
@@ -113,15 +113,6 @@ assert.deepEqual(
 const storage = memoryStorage();
 let admissionDraft = createNoteDraft(NOTE_TYPES.H_AND_P, { patientId: patient.id });
 admissionDraft = updateNoteSection(admissionDraft, "one_liner", "De-identified one-liner with pneumonia.");
-admissionDraft = selectChecklistFinding(admissionDraft, {
-  selectionId: "checklist:day_test:dyspnea",
-  sourceFingerprint: "dyspnea-v1",
-  kind: "history",
-  question: "Dyspnea now?",
-  generatedText: "Dyspnea now?: Improved with rest.",
-  sourceDayLabel: "Hospital day 1",
-  workupTitle: "Dyspnea"
-});
 const vaultWithDeidentifiedContext = updateActivePatient(normalized, (current) => ({
   ...current,
   contextSections: current.contextSections.map((section, index) =>
@@ -179,7 +170,7 @@ assert.equal(loaded.preferences.medicalService, "consult");
 assert.equal(loaded.patients[0].admissionPrimaryTeamNote.sections.one_liner.deidentifiedText, "De-identified one-liner with pneumonia.");
 assert.equal(loaded.patients[0].admissionPrimaryTeamNote.schema, "primary_team_note_source_v1");
 assert.equal(loaded.patients[0].noteDrafts.admission.schema, "student_note_draft_v2");
-assert.equal(loaded.patients[0].noteDrafts.admission.checklistFindings.selectedBlocks[0].editedText, "Dyspnea now?: Improved with rest.");
+assert.equal(loaded.patients[0].noteDrafts.admission.checklistFindings, undefined);
 assert.equal(loaded.patients[0].days[0].sourceCaptures[0].label, "CT Head/Neck Without Contrast");
 assert.equal(loaded.patients[0].days[0].sourceCaptures[0].resultCategory, "imaging");
 

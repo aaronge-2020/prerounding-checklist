@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f6f2">
+  <meta name="description" content="Preround bedside: searchable clinical cheat sheets and the on-device scribe. Reference only — no patient data, no vault unlock needed.">
+  <title>Preround · Bedside</title>
+  <link rel="icon" href="./favicon.ico">
+  <style>
+    :root {
+      --paper: #f7f6f2;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e1d8;
+      --accent: #1d4ed8;
+      --warn-bg: #fef3c7;
+      --warn-ink: #92400e;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.35;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+    button { font-family: inherit; }
+    .hidden { display: none !important; }
+
+    /* ---- list view ---- */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      padding: calc(8px + env(safe-area-inset-top, 0)) 12px 8px;
+    }
+    .topbar h1 {
+      margin: 0 0 6px;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+    }
+    #q {
+      width: 100%;
+      font-size: 17px; /* >=16px prevents iOS focus zoom */
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--card);
+      color: var(--ink);
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    #q:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .count { font-size: 11.5px; color: var(--muted); margin: 4px 2px 0; }
+
+    .scribe-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 10px 12px 2px;
+      padding: 11px 12px;
+      background: #111827;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .scribe-row small { font-weight: 400; color: #d1d5db; font-size: 12.5px; }
+    .scribe-row .go { margin-left: auto; font-size: 18px; line-height: 1; }
+
+    #list { padding: 6px 12px 24px; max-width: 640px; margin: 0 auto; }
+    .srow {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      width: 100%;
+      text-align: left;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 12px;
+      margin: 5px 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .srow .t {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .srow .m {
+      flex: none;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+    .badge {
+      flex: none;
+      font-size: 10.5px;
+      font-weight: 700;
+      background: var(--warn-bg);
+      color: var(--warn-ink);
+      border-radius: 999px;
+      padding: 2px 7px;
+    }
+
+    /* ---- detail view ---- */
+    .dstick {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      padding-top: env(safe-area-inset-top, 0);
+    }
+    .dbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px 6px;
+    }
+    .back {
+      flex: none;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 8px 12px;
+      min-height: 40px;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .dbar h2 {
+      flex: 1;
+      min-width: 0;
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .jump { display: flex; gap: 4px; flex: none; }
+    .jump a {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+    }
+    #sheetStrip {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 2px 12px 8px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    #sheetStrip::-webkit-scrollbar { display: none; }
+    .strip-chip {
+      flex: none;
+      max-width: 170px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .strip-chip[aria-current="true"] {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff;
+    }
+
+    #detailBody { padding: 2px 12px 32px; max-width: 640px; margin: 0 auto; }
+    .review-note {
+      font-size: 12.5px;
+      color: var(--warn-ink);
+      background: var(--warn-bg);
+      border-radius: 8px;
+      padding: 7px 10px;
+      margin: 8px 0 0;
+    }
+    h3.sec {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin: 14px 0 4px;
+      scroll-margin-top: 118px;
+    }
+    h3.sec .n { font-size: 11px; text-transform: none; letter-spacing: 0; }
+    .qrow {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 12px;
+      margin: 5px 0;
+      color: var(--ink);
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .qrow.static { cursor: default; }
+    .qrow .qr { display: flex; align-items: flex-start; gap: 8px; }
+    .qrow .qt { flex: 1; font-size: 15px; font-weight: 500; }
+    .qrow .chev {
+      flex: none;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.25;
+      transition: transform 0.15s ease;
+    }
+    .qrow[aria-expanded="true"] .chev { transform: rotate(90deg); }
+    .qrow .qx {
+      display: none;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--line);
+    }
+    .qrow[aria-expanded="true"] .qx { display: block; }
+    .why { font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+    .meaning-src { font-size: 12px; color: var(--muted); font-style: italic; margin: 0 0 6px; }
+    .how { font-size: 13px; margin: 0 0 6px; }
+    .lf { font-size: 12.5px; color: var(--muted); margin: 0; }
+    .lf .lbl { font-weight: 700; }
+
+    .status { text-align: center; color: var(--muted); font-size: 14px; padding: 24px 12px; }
+    .error { color: #b91c1c; }
+    footer {
+      text-align: center;
+      padding: 8px 16px calc(20px + env(safe-area-inset-bottom, 0));
+      font-size: 13px;
+      color: var(--muted);
+    }
+    footer a { color: var(--accent); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div id="listView">
+    <header class="topbar">
+      <h1>Bedside</h1>
+      <input id="q" type="search" placeholder="Search by chief complaint…" autocomplete="off"
+             autocapitalize="off" spellcheck="false" aria-label="Search cheat sheets">
+      <div class="count" id="count" aria-live="polite"></div>
+    </header>
+
+    <a class="scribe-row" href="./scribe-prototype.html" id="scribeLink">
+      <span>🎙️ Scribe</span><small>on-device transcription</small><span class="go" aria-hidden="true">→</span>
+    </a>
+
+    <div id="list"></div>
+
+    <footer>
+      <a href="./index.html?full=1" id="fullSiteLink">Full site</a>
+      &nbsp;·&nbsp;works offline after first load
+    </footer>
+  </div>
+
+  <div id="detailView" class="hidden">
+    <div class="dstick">
+      <div class="dbar">
+        <button class="back" id="backBtn" type="button">← All</button>
+        <h2 id="detailTitle"></h2>
+        <nav class="jump" id="jumpNav" aria-label="Jump to section"></nav>
+      </div>
+      <div id="sheetStrip" aria-label="Switch sheet"></div>
+    </div>
+    <div id="detailBody"></div>
+  </div>
+
+  <div id="status" class="status" role="status">Loading cheat sheets…</div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    // ---- phone scribe auto-load -------------------------------------------
+    // The phone-first scribe is the default phone experience: opening the app
+    // on a phone lands on this page (via the small-screen redirect) and goes
+    // straight to the scribe. ?bedside=1 (the "Bedside" link on the scribe
+    // page) opts out for that visit so the cheat sheets stay reachable.
+    var bedside = false;
+    try { bedside = new URLSearchParams(window.location.search).get('bedside') === '1'; } catch (e) {}
+    if (!bedside) {
+      try { window.location.replace('./scribe-prototype.html'); } catch (e) {}
+      return;
+    }
+
+    // ---- constants -------------------------------------------------------
+    var DATA_URL = './src/data/cheat-sheets.json?v=20260929-cheatsheets-v2';
+    var LAST_SHEET_KEY = 'prerounding.cheatSheets.lastSheetId.v1';
+    var MOBILE_CHOICE_KEY = 'prerounding.mobileChoice.v1';
+
+    // ---- tiny DOM helpers -------------------------------------------------
+    function $(id) { return document.getElementById(id); }
+    function esc(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    // ---- search ranking (mirrors src/ui/cheat-sheets/search.js tiers) -----
+    var TIER = { titlePrefix: 100, aliasPrefix: 80, idPrefix: 70, titleSub: 60,
+                 aliasSub: 45, idSub: 40, systemPrefix: 30, systemSub: 15 };
+
+    function normalizeQuery(q) { return String(q == null ? '' : q).trim().toLowerCase(); }
+
+    function systemNames(sheet) {
+      var seen = [];
+      function push(v) {
+        var name = String(v == null ? '' : v).trim().toLowerCase();
+        if (name && seen.indexOf(name) === -1) seen.push(name);
+      }
+      (sheet.history || []).forEach(function (i) { push(i && i.system); });
+      (sheet.exam || []).forEach(function (i) { push(i && i.system); });
+      return seen;
+    }
+
+    function scoreSheet(sheet, rawQuery) {
+      var q = normalizeQuery(rawQuery);
+      if (!q || !sheet) return 0;
+      var best = 0;
+      function consider(text, prefixTier, subTier) {
+        var t = String(text == null ? '' : text).trim().toLowerCase();
+        if (!t) return;
+        if (t.indexOf(q) === 0) best = Math.max(best, prefixTier);
+        else if (t.indexOf(q) !== -1) best = Math.max(best, subTier);
+      }
+      consider(sheet.title, TIER.titlePrefix, TIER.titleSub);
+      (sheet.aliases || []).forEach(function (a) { consider(a, TIER.aliasPrefix, TIER.aliasSub); });
+      consider(sheet.id, TIER.idPrefix, TIER.idSub);
+      systemNames(sheet).forEach(function (s) { consider(s, TIER.systemPrefix, TIER.systemSub); });
+      return best;
+    }
+
+    function searchSheets(sheets, rawQuery) {
+      var q = normalizeQuery(rawQuery);
+      if (!q) return sheets.slice();
+      var scored = [];
+      sheets.forEach(function (s) {
+        var score = scoreSheet(s, q);
+        if (score > 0) scored.push({ sheet: s, score: score });
+      });
+      scored.sort(function (a, b) {
+        if (b.score !== a.score) return b.score - a.score;
+        return String(a.sheet.title || '').localeCompare(String(b.sheet.title || ''));
+      });
+      return scored.map(function (r) { return r.sheet; });
+    }
+
+    // ---- state ------------------------------------------------------------
+    var sheets = [];
+    var currentId = null;
+
+    function readLastSheetId() {
+      try { return window.localStorage.getItem(LAST_SHEET_KEY); } catch (e) { return null; }
+    }
+    function writeLastSheetId(id) {
+      try {
+        if (id) window.localStorage.setItem(LAST_SHEET_KEY, String(id));
+        else window.localStorage.removeItem(LAST_SHEET_KEY);
+      } catch (e) { /* persistence is a nicety */ }
+    }
+
+    function findSheet(id) {
+      for (var i = 0; i < sheets.length; i++) {
+        if (String(sheets[i].id) === String(id)) return sheets[i];
+      }
+      return null;
+    }
+
+    // ---- rendering ---------------------------------------------------------
+    // One dense row per question. The tap-to-expand region shows the clinical
+    // reasoning (meaning): why the question/maneuver matters and what the
+    // answer means. Answer options (listenFor / findings) stay in the data
+    // for provenance but are never rendered.
+    function itemBlock(item, isExam) {
+      var prompt = isExam ? item.maneuver : item.question;
+      if (!prompt) return '';
+      var extra = '';
+      if (isExam && item.how) {
+        extra += '<p class="how"><strong>How:</strong> ' + esc(item.how) + '</p>';
+      }
+      if (item.meaning) {
+        extra += '<p class="why">' + esc(item.meaning) + '</p>';
+        if (item.meaningSource === 'ai-draft') {
+          extra += '<p class="meaning-src">AI-drafted \u2014 needs clinician review.</p>';
+        }
+      }
+      if (!extra) {
+        return '<div class="qrow static"><span class="qr"><span class="qt">' +
+          esc(prompt) + '</span></span></div>';
+      }
+      return '<button type="button" class="qrow" aria-expanded="false">' +
+        '<span class="qr"><span class="qt">' + esc(prompt) +
+        '</span><span class="chev" aria-hidden="true">›</span></span>' +
+        '<span class="qx">' + extra + '</span></button>';
+    }
+
+    function renderList(query) {
+      var results = searchSheets(sheets, query);
+      var list = $('list');
+      $('count').textContent = results.length + ' of ' + sheets.length + ' sheets';
+      if (!results.length) {
+        list.innerHTML = '<div class="status">No sheets match “' + esc(query) + '”.</div>';
+        return;
+      }
+      list.innerHTML = results.map(function (s) {
+        var nH = (s.history || []).length, nE = (s.exam || []).length;
+        var badge = s.reviewNeeded ? '<span class="badge">review</span>' : '';
+        return '<button type="button" class="srow" data-sheet-id="' + esc(s.id) + '">' +
+          '<span class="t">' + esc(s.title) + '</span>' + badge +
+          '<span class="m">' + nH + 'q · ' + nE + 'e</span></button>';
+      }).join('');
+    }
+
+    function renderDetail(sheet) {
+      $('detailTitle').textContent = sheet.title || sheet.id;
+
+      var history = sheet.history || [];
+      var exam = sheet.exam || [];
+
+      var jump = '';
+      if (history.length) jump += '<a href="#sec-history">Hx</a>';
+      if (exam.length) jump += '<a href="#sec-exam">Ex</a>';
+      $('jumpNav').innerHTML = jump;
+
+      $('sheetStrip').innerHTML = sheets.map(function (s) {
+        return '<button type="button" class="strip-chip" data-sheet-id="' + esc(s.id) + '"' +
+          (String(s.id) === String(sheet.id) ? ' aria-current="true"' : '') + '>' +
+          esc(s.title) + '</button>';
+      }).join('');
+
+      var html = '';
+      if (sheet.reviewNeeded) {
+        html += '<p class="review-note">Some items on this sheet are marked for clinician review before relying on them.</p>';
+      }
+      if (history.length) {
+        html += '<h3 class="sec" id="sec-history">History <span class="n">' +
+          history.length + ' questions</span></h3>';
+        history.forEach(function (h) { html += itemBlock(h, false); });
+      }
+      if (exam.length) {
+        html += '<h3 class="sec" id="sec-exam">Physical exam <span class="n">' +
+          exam.length + '</span></h3>';
+        exam.forEach(function (e) { html += itemBlock(e, true); });
+      }
+      if (!history.length && !exam.length) {
+        html += '<div class="status">This sheet has no items yet.</div>';
+      }
+      $('detailBody').innerHTML = html;
+      $('listView').classList.add('hidden');
+      $('detailView').classList.remove('hidden');
+      window.scrollTo(0, 0);
+    }
+
+    function showList() {
+      currentId = null;
+      writeLastSheetId(null);
+      $('detailView').classList.add('hidden');
+      $('listView').classList.remove('hidden');
+      renderList($('q').value);
+    }
+
+    function openSheet(id) {
+      var sheet = findSheet(id);
+      if (!sheet) { showList(); return; }
+      currentId = sheet.id;
+      writeLastSheetId(sheet.id);
+      renderDetail(sheet);
+    }
+
+    // ---- events --------------------------------------------------------------
+    $('q').addEventListener('input', function (e) { renderList(e.target.value); });
+    $('list').addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('[data-sheet-id]') : null;
+      if (btn) openSheet(btn.getAttribute('data-sheet-id'));
+    });
+    // Tap a question to expand/collapse its detail (accordion: one open at a time).
+    $('detailBody').addEventListener('click', function (e) {
+      var row = e.target.closest ? e.target.closest('.qrow') : null;
+      if (!row || row.classList.contains('static')) return;
+      var wasOpen = row.getAttribute('aria-expanded') === 'true';
+      var open = $('detailBody').querySelectorAll('.qrow[aria-expanded="true"]');
+      for (var i = 0; i < open.length; i++) open[i].setAttribute('aria-expanded', 'false');
+      row.setAttribute('aria-expanded', wasOpen ? 'false' : 'true');
+    });
+    $('sheetStrip').addEventListener('click', function (e) {
+      var chip = e.target.closest ? e.target.closest('[data-sheet-id]') : null;
+      if (chip) openSheet(chip.getAttribute('data-sheet-id'));
+    });
+    $('backBtn').addEventListener('click', showList);
+    $('fullSiteLink').addEventListener('click', function () {
+      try { window.localStorage.setItem(MOBILE_CHOICE_KEY, 'full'); } catch (e) {}
+      // href carries ?full=1 as a backup; the link navigates normally.
+    });
+
+    // ---- boot ------------------------------------------------------------------
+    function setStatus(msg, isError) {
+      var el = $('status');
+      el.textContent = msg;
+      el.classList.toggle('error', !!isError);
+      el.classList.toggle('hidden', !msg);
+    }
+
+    fetch(DATA_URL, { cache: 'force-cache' }).then(function (resp) {
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      return resp.json();
+    }).then(function (data) {
+      var raw = data && Array.isArray(data.sheets) ? data.sheets : [];
+      sheets = raw.filter(function (s) {
+        return s && s.id != null && String(s.title || '').trim() !== '';
+      });
+      if (!sheets.length) throw new Error('empty sheet list');
+      setStatus('', false);
+      var last = readLastSheetId();
+      if (last && findSheet(last)) { openSheet(last); return; }
+      renderList('');
+    }).catch(function (err) {
+      setStatus('Couldn’t load cheat sheets (' + (err && err.message ? err.message : 'network error') +
+        '). Connect once to cache them, then this page works offline.', true);
+    });
+  })();
+  </script>
+</body>
+</html>

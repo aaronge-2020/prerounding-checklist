@@ -1,0 +1,43 @@
+{
+  "ours_f1": 0.8718,
+  "n_notes": 100,
+  "seed": 20260930,
+  "comparisons": [
+    {
+      "model": "StanfordAIMI",
+      "model_f1": 0.5065,
+      "delta_f1": 0.3653,
+      "delta_ci95": [
+        0.3156,
+        0.4156
+      ],
+      "p_raw": 0.0,
+      "p_holm": 0.0,
+      "significant_holm_05": true
+    },
+    {
+      "model": "Longformer-NemPII",
+      "model_f1": 0.3723,
+      "delta_f1": 0.4995,
+      "delta_ci95": [
+        0.4616,
+        0.5382
+      ],
+      "p_raw": 0.0,
+      "p_holm": 0.0,
+      "significant_holm_05": true
+    },
+    {
+      "model": "OBI-BERT",
+      "model_f1": 0.1119,
+      "delta_f1": 0.7598,
+      "delta_ci95": [
+        0.7286,
+        0.7901
+      ],
+      "p_raw": 0.0,
+      "p_holm": 0.0,
+      "significant_holm_05": true
+    }
+  ]
+}

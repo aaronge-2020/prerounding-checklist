@@ -25,6 +25,7 @@ The app does not create accounts, synchronize data, host patient records, infer 
 - `src/ui/cheat-sheets/`: local search, read-only history/exam cards, and view wiring for the reference.
 - `src/prompts/`: pure OpenEvidence prompt and template functions.
 - `src/vault/deid/`: structured redaction rules and local model configuration.
+- `docs/deidentification/`: evaluation record for the browser-local de-identification system (experiment map, dataset manifest, frozen split, scorers, and committed results).
 - `data/clinical-guard-*`: generated vocabulary used by the structured redactor.
 - `models/onnx-community/` and `models/rtrigoso/`: Git LFS baseline de-identification assets published with the static site.
 - `models/openai/`, `models/kalyan-ks/`, and `models/knowledgator/`: optional local-only asset packs, intentionally ignored so large model binaries never enter ordinary Git history or the Pages artifact.

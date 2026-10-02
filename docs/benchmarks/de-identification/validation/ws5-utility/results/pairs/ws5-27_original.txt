@@ -1,0 +1,30 @@
+DISCHARGE SUMMARY
+
+Patient: Sarah Hernandez
+DOB 01/26/1967   MRN 5317752
+Date of Admission: May 20, 2026   Date of Discharge: 06/07/2026
+Surgeon: Dr. Nina Nguyen
+Facility: Harborview Medical Center
+
+PREOPERATIVE DIAGNOSIS: acute cholecystitis
+POSTOPERATIVE DIAGNOSIS: same
+
+HISTORY:
+59-year-old woman presented with nausea, abdominal pain, and fever. Imaging confirmed the diagnosis. Past medical history includes allergic rhinitis and coronary artery disease. Home medications include losartan 50 mg daily, loratadine 10 mg daily, lisinopril 10 mg daily. Allergies: sulfa drugs (hives). Review of systems otherwise negative except as noted above.
+
+PHYSICAL EXAMINATION:
+Vital signs stable. General: no acute distress. Abdomen: tender in the right upper quadrant with a positive Murphy sign. No rebound or guarding. Bowel sounds present. Skin warm and dry.
+
+OPERATIVE COURSE:
+Laparoscopic Cholecystectomy performed on 7/15/26 without complication. Estimated blood loss minimal. Tolerated the procedure well and recovered in the post-anesthesia care unit. Postoperative labs: lactate 2.1 mmol/L; platelet count 245 K/uL; bicarbonate 21 mmol/L. Pain controlled on oral analgesics. Ambulating with assistance. Wound clean, dry, and intact.
+
+DISCHARGE MEDICATIONS:
+- tamsulosin 0.4 mg daily
+- ferrous sulfate 325 mg daily
+- quetiapine 50 mg at bedtime
+- atorvastatin 40 mg at bedtime
+
+DISCHARGE INSTRUCTIONS:
+Wound care reviewed. No heavy lifting for 5 weeks. Follow up with Dr. Nina Nguyen in 2 weeks. Call 301-555-1983 for fever, increasing pain, or wound drainage.
+
+Surgeon signature: Dr. Nina Nguyen.

@@ -1,0 +1,111 @@
+{
+  "config": "clinicale5_trackb",
+  "binary": {
+    "precision": 0.7361,
+    "recall": 0.6807,
+    "f1": 0.7073,
+    "tp": 29013,
+    "fp": 10403,
+    "fn": 13612,
+    "f1_ci95": [
+      0.7014,
+      0.7131
+    ]
+  },
+  "per_category": {
+    "NAME": {
+      "precision": 0.0954,
+      "recall": 0.0518,
+      "f1": 0.0672,
+      "tp": 301,
+      "fp": 2854,
+      "fn": 5507
+    },
+    "PHONE": {
+      "precision": 0.4974,
+      "recall": 0.9159,
+      "f1": 0.6447,
+      "tp": 1829,
+      "fp": 1848,
+      "fn": 168
+    },
+    "EMAIL": {
+      "precision": 0.862,
+      "recall": 0.9326,
+      "f1": 0.8959,
+      "tp": 2436,
+      "fp": 390,
+      "fn": 176
+    },
+    "DATE": {
+      "precision": 0.3759,
+      "recall": 0.8449,
+      "f1": 0.5204,
+      "tp": 1438,
+      "fp": 2387,
+      "fn": 264
+    },
+    "TIME": {
+      "precision": 0.8627,
+      "recall": 0.7793,
+      "f1": 0.8189,
+      "tp": 2935,
+      "fp": 467,
+      "fn": 831
+    },
+    "DOB": {
+      "precision": 0.9031,
+      "recall": 0.2132,
+      "f1": 0.345,
+      "tp": 494,
+      "fp": 53,
+      "fn": 1823
+    },
+    "LOCATION": {
+      "precision": 0.7738,
+      "recall": 0.5242,
+      "f1": 0.625,
+      "tp": 3927,
+      "fp": 1148,
+      "fn": 3564
+    },
+    "ADDRESS": {
+      "precision": 0.6573,
+      "recall": 0.5711,
+      "f1": 0.6112,
+      "tp": 2691,
+      "fp": 1403,
+      "fn": 2021
+    },
+    "ID": {
+      "precision": 0.7128,
+      "recall": 0.5741,
+      "f1": 0.636,
+      "tp": 5772,
+      "fp": 2326,
+      "fn": 4282
+    },
+    "IP": {
+      "precision": 0.8869,
+      "recall": 0.9843,
+      "f1": 0.933,
+      "tp": 2132,
+      "fp": 272,
+      "fn": 34
+    }
+  },
+  "latency": {
+    "mean_ms": 197.8,
+    "median_ms": 184.8,
+    "p95_ms": 326.4,
+    "n": 7946
+  },
+  "unmapped_pred_labels": {
+    "ORGANIZATION": 531,
+    "OCCUPATION": 1245,
+    "ROOM": 377,
+    "FACILITY": 146,
+    "AGE": 2,
+    "URL": 12
+  }
+}

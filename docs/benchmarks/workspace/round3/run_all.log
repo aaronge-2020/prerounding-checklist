@@ -1,0 +1,33 @@
+=== START clinicale5_base attempt=1 Wed Sep 30 08:28:30 UTC 2026 ===
+=== END clinicale5_base attempt=1 exit=0 Wed Sep 30 08:54:47 UTC 2026 ===
+--- scoring clinicale5_base ---
+clinicale5_base: P=0.7345 R=0.6795 F1=0.7059 CI=[0.7000,0.7117] tp=28963 fp=10468 fn=13662 lat_med=184.4ms p95=325.9ms
+=== START clinicale5_trackb attempt=1 Wed Sep 30 08:55:22 UTC 2026 ===
+=== END clinicale5_trackb attempt=1 exit=0 Wed Sep 30 09:21:45 UTC 2026 ===
+--- scoring clinicale5_trackb ---
+clinicale5_trackb: P=0.7361 R=0.6807 F1=0.7073 CI=[0.7014,0.7131] tp=29013 fp=10403 fn=13612 lat_med=184.8ms p95=326.4ms
+=== START clinicale5_trackbc attempt=1 Wed Sep 30 09:22:19 UTC 2026 ===
+=== END clinicale5_trackbc attempt=1 exit=0 Wed Sep 30 09:48:59 UTC 2026 ===
+--- scoring clinicale5_trackbc ---
+clinicale5_trackbc: P=0.7579 R=0.7609 F1=0.7594 CI=[0.7538,0.7649] tp=32435 fp=10361 fn=10190 lat_med=187.4ms p95=333.9ms
+=== START openmed_base attempt=1 Wed Sep 30 09:49:34 UTC 2026 ===
+=== END openmed_base attempt=1 exit=0 Wed Sep 30 10:37:43 UTC 2026 ===
+--- scoring openmed_base ---
+openmed_base: P=0.7693 R=0.6428 F1=0.7004 CI=[0.6946,0.7063] tp=27401 fp=8215 fn=15224 lat_med=341.8ms p95=573.5ms
+=== START openmed_trackbc attempt=1 Wed Sep 30 10:38:17 UTC 2026 ===
+=== END openmed_trackbc attempt=1 exit=0 Wed Sep 30 11:26:41 UTC 2026 ===
+--- scoring openmed_trackbc ---
+openmed_trackbc: P=0.7934 R=0.7395 F1=0.7655 CI=[0.7599,0.7712] tp=31523 fp=8209 fn=11102 lat_med=343.7ms p95=576.2ms
+=== START stanford_base attempt=1 Wed Sep 30 11:27:18 UTC 2026 ===
+=== END stanford_base attempt=1 exit=0 Wed Sep 30 12:44:15 UTC 2026 ===
+--- scoring stanford_base ---
+stanford_base: P=0.7487 R=0.6419 F1=0.6912 CI=[0.6851,0.6973] tp=27361 fp=9185 fn=15264 lat_med=551.6ms p95=899.5ms
+=== START stanford_trackb attempt=1 Wed Sep 30 12:44:51 UTC 2026 ===
+=== END stanford_trackb attempt=1 exit=0 Wed Sep 30 14:18:14 UTC 2026 ===
+--- scoring stanford_trackb ---
+stanford_trackb: P=0.7495 R=0.6420 F1=0.6916 CI=[0.6855,0.6978] tp=27366 fp=9144 fn=15259 lat_med=652.1ms p95=1207.1ms
+=== START stanford_trackbc attempt=1 Wed Sep 30 14:19:05 UTC 2026 ===
+=== END stanford_trackbc attempt=1 exit=0 Wed Sep 30 15:36:45 UTC 2026 ===
+--- scoring stanford_trackbc ---
+stanford_trackbc: P=0.7715 R=0.7291 F1=0.7497 CI=[0.7437,0.7556] tp=31077 fp=9206 fn=11548 lat_med=555.1ms p95=912.2ms
+ALL ROUND3 CONFIGS COMPLETE Wed Sep 30 15:37:22 UTC 2026

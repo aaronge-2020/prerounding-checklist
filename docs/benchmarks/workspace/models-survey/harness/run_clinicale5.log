@@ -1,0 +1,15 @@
+loaded 1000 sampled texts for model OpenMed/OpenMed-PII-ClinicalE5-Small-33M-v1-onnx-android (batch=10)
+model (re)loaded: {"ms":4010.785000000149,"modelId":"OpenMed/OpenMed-PII-ClinicalE5-Small-33M-v1-onnx-android"}
+openmed-clinicale5-small/hybrid: 100/1000 (21s)
+openmed-clinicale5-small/hybrid: 200/1000 (76s)
+openmed-clinicale5-small/hybrid: 300/1000 (120s)
+openmed-clinicale5-small/hybrid: 400/1000 (174s)
+openmed-clinicale5-small/hybrid: 500/1000 (218s)
+openmed-clinicale5-small/hybrid: 600/1000 (266s)
+openmed-clinicale5-small/hybrid: 700/1000 (306s)
+openmed-clinicale5-small/hybrid: 800/1000 (355s)
+openmed-clinicale5-small/hybrid: 900/1000 (399s)
+openmed-clinicale5-small/hybrid: 1000/1000 (441s)
+openmed-clinicale5-small/hybrid done in 442s -> raw_openmed-clinicale5-small_hybrid.json
+all done
+EXIT: 0

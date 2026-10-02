@@ -1,0 +1,12 @@
+{
+  "stats": {
+    "n": 50,
+    "min": 3116.9,
+    "median": 8109.1,
+    "p95": 12603.5,
+    "max": 16766.32,
+    "mean": 7932.72
+  },
+  "throttledModelLoadMs": 32076,
+  "note": "CDP Emulation.setCPUThrottlingRate(4). SIMULATED PROXY ONLY — not a real low-end device test."
+}
