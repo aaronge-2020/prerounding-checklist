@@ -84,7 +84,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
   "ai-chat-read": {
     view: "aiChat",
     info: true,
-    targetSelector: '[data-ai-chat-messages]',
+    targetSelector: '[data-demo-message="true"]',
     title: "A grounded answer",
     instruction: "Read the staged answer — notice how it cites the patient's documents and the literature. Every live answer works the same way. Press Continue.",
     calloutTitle: "You control the context",

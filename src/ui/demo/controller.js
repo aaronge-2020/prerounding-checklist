@@ -53,6 +53,15 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       const fallback = visibleTarget(content, stage.targetSelector);
       return fallback ? [fallback] : [];
     }
+    // For ai-chat-read, highlight the LAST demo message (the hands-on answer
+    // from Step 10), not the first. The messages container is too large to
+    // spotlight usefully.
+    if (stageId === "ai-chat-read" && view === stage.view) {
+      const all = [...(content?.querySelectorAll(stage.targetSelector) || [])]
+        .filter((el) => el.getClientRects().length > 0);
+      const last = all.length ? all[all.length - 1] : null;
+      return last ? [last] : [];
+    }
     const single = stage.navTarget
       ? document.querySelector(`button[data-view-target="${CSS.escape(stage.navTarget)}"]`)
       : view === stage.view

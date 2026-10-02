@@ -342,7 +342,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
         // Revert control: removes this message and everything after it from
         // the conversation, i.e. from the model's context on the next send.
         const revert = `<button type="button" class="aic-m-revert" data-action="ai-chat-revert-message" data-message-index="${index}" title="Revert to here — remove this message and everything after it">${icon("undo")} revert</button>`;
-        return `<div class="aic-m ${cls}">${label}${body}${revert}</div>`;
+        return `<div class="aic-m ${cls}"${m.demo ? ' data-demo-message="true"' : ''}>${label}${body}${revert}</div>`;
       })
       .join("");
     // Before the first token arrives the model is prefilling the prompt
@@ -400,7 +400,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
           : renderChatMarkdown(m.text);
         const body = m.role === "user" ? `<p>${escapeHtml(m.text)}</p>` : `<div class="aic-m-body">${citedBody}</div>${records}`;
         const revert = `<button type="button" class="aic-m-revert" data-action="ai-chat-revert-remote" data-message-index="${index}" title="Revert to here — remove this message and everything after it">${icon("undo")} revert</button>`;
-        return `<div class="aic-m ${cls}">${label}${body}${revert}</div>`;
+        return `<div class="aic-m ${cls}"${m.demo ? ' data-demo-message="true"' : ''}>${label}${body}${revert}</div>`;
       })
       .join("");
     const sending = remote.sending
