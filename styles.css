@@ -415,6 +415,39 @@ p {
     padding: 12px 14px;
     border-top-color: var(--border);
   }
+
+  /* Guided demo: pin the icon rail expanded while the tour runs so the
+     highlighted sidebar targets never shift under the pointer. The
+     controller toggles body.demo-tour-active for the session duration. */
+  body.demo-tour-active .app-shell {
+    grid-template-columns: 178px minmax(0, 1fr);
+  }
+  body.demo-tour-active .nav-group-label {
+    display: block;
+  }
+  body.demo-tour-active .brand-lockup {
+    justify-content: flex-start;
+    padding-inline: 14px;
+  }
+  body.demo-tour-active .brand-lockup > div:last-child,
+  body.demo-tour-active .primary-nav button > span {
+    display: block;
+  }
+  body.demo-tour-active .primary-nav button {
+    grid-template-columns: 16px minmax(0, 1fr);
+    justify-content: initial;
+    padding-inline: 8px;
+  }
+  body.demo-tour-active .primary-nav button.active {
+    padding-left: 5px;
+  }
+  body.demo-tour-active .side-footer {
+    height: auto;
+    overflow: visible;
+    opacity: 1;
+    padding: 12px 14px;
+    border-top-color: var(--border);
+  }
 }
 
 .side-footer {

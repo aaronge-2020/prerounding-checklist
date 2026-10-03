@@ -105,6 +105,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     clearTargetDecorations();
     try { clearAiChatDemo?.(); } catch { /* ephemeral; never block exit */ }
     preparedStage = null;
+    try { document.body.classList.remove("demo-tour-active"); } catch {}
   }
 
   function positionCallout() {
@@ -163,11 +164,15 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   window.addEventListener("resize", scheduleCalloutPosition);
 
   // Hands-on edit detection for the write-note stage: when the user types in
-  // any draft section, advance to the prompts step.
+  // any draft section, advance to the prompts step. Draft regions use several
+  // attribute names (data-draft-section, data-draft-assessment,
+  // data-draft-closing, data-draft-objective), so match them all.
   document.addEventListener("input", (event) => {
     const session = getSession?.();
     if (!session || session.stage !== "write-note") return;
-    const target = event.target?.closest?.("[data-draft-section]");
+    const target = event.target?.closest?.(
+      "[data-draft-section], [data-draft-assessment], [data-draft-closing], [data-draft-objective]"
+    );
     if (!target) return;
     session.stage = "open-prompts";
     renderApp();
@@ -249,10 +254,36 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     }
   }
 
+  // Scroll the highlighted target into view. Uses an instant scroll (a
+  // smooth scroll can be cancelled by the re-renders that follow a stage
+  // change) and re-queries the live element. Retries with backoff until the
+  // target is actually visible, since the 250ms reposition timer re-mounts
+  // the dim/callout and can disrupt the scroll position.
+  function scrollTargetIntoView(target) {
+    let attempts = 0;
+    const scrollOnce = () => {
+      attempts += 1;
+      const el = target?.isConnected ? target : document.querySelector('[data-demo-target="true"]');
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const inView = rect.top >= 0 && rect.bottom <= window.innerHeight;
+      if (!inView) el.scrollIntoView({ block: "center" });
+      // Retry if still not visible (layout may still be settling)
+      if (!inView && attempts < 5) setTimeout(scrollOnce, 300);
+    };
+    scrollOnce();
+  }
+
   function render() {
     try { console.log("[demo] render() start, stage:", getSession()?.stage); } catch {}
     clearTargetDecorations();
     const session = getSession();
+    // Pin the desktop icon rail expanded while the tour runs: the rail
+    // expands on hover and the appearing group labels push the nav buttons
+    // down, so a highlighted sidebar target can jump away mid-approach.
+    // With the rail pinned, targets stay put. Removed on exit (see
+    // forceCleanup).
+    try { document.body.classList.toggle("demo-tour-active", Boolean(session)); } catch {}
     if (!session) {
       // Every exit path funnels through here. The dim overlay, callout, and
       // highlight classes must not survive the demo, or the screen stays dark
@@ -415,7 +446,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     if (!routeMismatch) mountCallout(target, stage);
     requestAnimationFrame(() => {
       if (!isInfo) target.focus({ preventScroll: true });
-      if (!stage.navTarget && view === stage.view) target.scrollIntoView({ block: "center", behavior: "smooth" });
+      if (!stage.navTarget && view === stage.view) scrollTargetIntoView(target);
       scheduleCalloutPosition();
     });
     if (repositionTimer) clearTimeout(repositionTimer);
@@ -446,6 +477,9 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
         t.style.zIndex = "95";
       }
       if (!routeMismatch) mountCallout(currentTarget, stage);
+      // Re-scroll the target into view after re-mounting, in case the
+      // dim/callout DOM changes disrupted the scroll position.
+      if (!stage.navTarget && view === stage.view) scrollTargetIntoView(currentTarget);
     }, 250);
   }
 

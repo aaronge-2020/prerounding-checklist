@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { chromium, firefox } from "playwright";
 import { fileAppUrl } from "./browser/app-harness.js";
 
@@ -16,7 +17,13 @@ const page = await browser.newPage({
 });
 const consoleErrors = [];
 page.on("console", (message) => {
-  if (message.type() === "error") consoleErrors.push(message.text());
+  if (message.type() !== "error") return;
+  const text = message.text();
+  // Benign: the vendored AI SDK probes `new Function("")` to detect eval
+  // support; the strict CSP blocks and logs it, the SDK catches it and
+  // carries on. Not a product defect.
+  if (/Content-Security-Policy/.test(text) && /ai-sdk-bundle/.test(text)) return;
+  consoleErrors.push(text);
 });
 
 try {
@@ -39,7 +46,7 @@ try {
   await page.waitForFunction(() => document.querySelectorAll('.primary-nav [data-view-target]').length === 13);
   assert.deepEqual(
     await page.locator('.primary-nav [data-view-target]').evaluateAll((buttons) => buttons.map((button) => button.dataset.viewTarget)),
-    ["vault", "daily", "review", "aiChat", "prompts", "quickDeid", "sampleNotes", "scribePro", "cheatSheets", "drugLookup", "drugChecks", "scores", "settings"],
+    ["vault", "daily", "review", "sampleNotes", "aiChat", "prompts", "quickDeid", "scribePro", "cheatSheets", "drugLookup", "drugChecks", "scores", "settings"],
     "the visible nav must keep Drug Lookup and add the offline Drug checks view"
   );
   assert.deepEqual(
@@ -88,7 +95,8 @@ try {
   assert.match(await page.locator('[data-structured-note-detected="admission"]').innerText(), /One-liner/);
   assert.match(await page.locator('[data-structured-note-detected="admission"]').innerText(), /Chief complaint/);
   assert.match(await page.locator('[data-structured-note-detected="admission"]').innerText(), /Objective data/);
-  await page.click('[data-action="advance-guided-demo"]');
+  // parse-note is an action stage: the tour advances via Review sections.
+  await page.click('[data-action="review-structured-note-sections"][data-note-scope="admission"]');
   await page.waitForFunction(() => /Check drug interactions/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
 
   // Drug-interaction stop: the tour prefilled warfarin + fluconazole and the
@@ -101,20 +109,23 @@ try {
   assert.match(await page.locator("#drugChecksResults").innerText(), /Major/i);
   await page.waitForFunction(() => /Open AI Chat/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
 
-  // AI Chat stops: two info stages gated on the guide bar's Continue button.
+  // AI Chat stops: hands-on action stages (pick a mode, send the staged
+  // question), then info stages with Continue buttons.
   await page.click('[data-view-target="aiChat"]');
   await page.waitForFunction(() => /On-device or ChatGPT/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   assert.equal(await page.locator('[data-action="ai-chat-mode"][data-mode="local"]').count(), 1);
   assert.equal(await page.locator('[data-action="ai-chat-mode"][data-mode="remote"]').count(), 1);
+  await page.click('[data-action="ai-chat-mode"][data-mode="local"]');
+  await page.waitForFunction(() => /Ask your own question/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
+  await page.click('[data-action="ai-chat-send"]');
+  await page.waitForFunction(() => /A grounded answer/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
+  assert.match(await page.locator("#aiChatView").innerText(), /NSTEMI/i);
   await page.click('[data-action="advance-guided-demo"]');
-  await page.waitForFunction(() => /You control the context/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
-  assert.equal(await page.locator('[data-action="ai-chat-context-inspector"]').count(), 1);
-  await page.click('[data-action="advance-guided-demo"]');
-  await page.waitForFunction(() => /Open the voice scribe/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
-  assert.match(await page.locator("[data-demo-guide]").innerText(), /Open the voice scribe/);
+  // open-scribe-pro is an info stage: navigating to Scribe Pro hands off to
+  // the scribe-pro-voice info stage.
   await page.click('[data-view-target="scribePro"]');
-  await page.waitForFunction(() => /Voice scribe, on-device/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
-  assert.match(await page.locator("[data-demo-guide]").innerText(), /Voice scribe, on-device/);
+  await page.waitForFunction(() => /From dictation to draft note/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
+  assert.match(await page.locator("[data-demo-guide]").innerText(), /From dictation to draft note/);
   // The tour must not start the engine: no model download, no microphone use.
   assert.equal(await page.locator("#btnRecord").count(), 1);
   await page.click('[data-action="advance-guided-demo"]');
@@ -142,29 +153,25 @@ try {
   assert.match(downloadedNote, /troponin peaked at 364/, "the downloaded note must carry the day-one subjective update");
   assert.match(downloadedNote, /Physical Exam/, "the downloaded note must carry the parsed exam");
   assert.match(downloadedNote, /Troponin 86|High-sensitivity troponin/, "the downloaded note must carry objective labs");
-  assert.match(await page.locator("[data-demo-guide]").innerText(), /Review the complete case note/);
+  assert.match(await page.locator("[data-demo-guide]").innerText(), /Make the note yours/);
   assert.match(await page.locator("[data-draft-assessment]").innerText(), /high-risk NSTEMI/i);
   assert.equal(await page.locator(".plan-problem-card").count(), 3);
   assert.match(await page.locator('.plan-problem-card').first().locator('[data-problem-field="diagnosticPlan"]').innerText(), /Coronary angiography is planned today/i);
   await page.selectOption("#reviewDataCategory", "vitals");
   // Vitals render as compact chips in the redesigned review UI.
-  assert.match(await page.locator(".review-data-list").innerText(), /Vital signs[\s\S]*saved/);
+  await page.waitForFunction(() => /Vital signs[\s\S]*saved/.test(document.querySelector(".review-data-list")?.textContent || ""));
   await page.selectOption("#reviewDataCategory", "labs");
   await page.fill("#reviewDataSearch", "troponin");
-  assert.match(await page.locator(".review-data-list").innerText(), /High-sensitivity troponin/i);
+  await page.waitForFunction(() => /High-sensitivity troponin/i.test(document.querySelector(".review-data-list")?.textContent || ""));
   await page.selectOption("#reviewDataCategory", "other_results");
   await page.fill("#reviewDataSearch", "ECG");
-  assert.match(await page.locator(".review-data-list").innerText(), /ECG interpretation[\s\S]*ST-segment depressions/i);
+  await page.waitForFunction(() => /ECG interpretation[\s\S]*ST-segment depressions/i.test(document.querySelector(".review-data-list")?.textContent || ""));
   await page.fill("#reviewDataSearch", "");
   await page.selectOption("#reviewDataCategory", "all");
-  await page.locator("[data-draft-assessment]").press("End");
-  await page.locator("[data-draft-assessment]").pressSequentially(" X");
-  assert.match(await page.locator("[data-demo-guide]").innerText(), /Review the complete case note/, "typing must not advance the demo");
-  await page.click('[data-action="save-note-draft"]');
-  // write-note is an info stage: saving does not advance the tour; the
-  // guide bar's Continue button does.
-  assert.match(await page.locator("[data-demo-guide]").innerText(), /Review the complete case note/, "saving must not advance the demo");
-  await page.click('[data-action="advance-guided-demo"]');
+  // write-note is a hands-on action stage: typing in the highlighted
+  // one-liner advances the tour to the prompt builder.
+  await page.locator('[data-draft-section="one_liner"]').press("End");
+  await page.locator('[data-draft-section="one_liner"]').pressSequentially(" X");
   await page.waitForFunction(() => /Open the prompt builder/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Open the prompt builder/);
 
@@ -196,7 +203,7 @@ try {
   assert.equal(await page.locator('[data-action="open-open-evidence"]').count(), 2);
   await page.click('[data-action="copy-prompt"]');
   assert.match(await page.evaluate(() => navigator.clipboard.readText()), /high-risk NSTEMI/i);
-  assert.match(await page.locator("[data-demo-guide]").innerText(), /Demo complete/);
+  assert.match(await page.locator("[data-demo-guide]").innerText(), /You know the workflow/);
   await page.click('[data-action="exit-guided-demo"]');
   await page.waitForFunction(() => !document.querySelector("[data-demo-guide]"));
   assert.equal(await page.locator("#vaultView").getAttribute("class"), "view active");
