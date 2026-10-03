@@ -37,6 +37,7 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
           ${action}
         </div>
         <p class="muted">${escapeHtml(option?.description || "Uses structured local rules to redact identifiers without a downloaded model.")}</p>
+        <p class="muted" title="MedDeID benchmark mode: learned-from-data rules active. All ages redacted; times and room numbers preserved per MedDeID schema."><span aria-hidden="true">◉</span> MedDeID mode: learned rules active</p>
         ${quickDeidStatus ? `<span class="model-selection-message" aria-live="polite">${escapeHtml(quickDeidStatus)}</span>` : ""}
         ${progress ? `<div class="model-selection-progress" aria-live="polite"><progress data-active-model-progress value="${Math.max(0, progress.completedBytes)}" max="${Math.max(1, progress.totalBytes)}"></progress><span data-active-model-progress-text>${escapeHtml(modelPackProgressText)}</span></div>` : ""}
         ${error ? `<div class="model-selection-message model-selection-message--error" role="alert">${escapeHtml(error)}</div>${renderOpenMedSmallFallback({ option })}` : ""}

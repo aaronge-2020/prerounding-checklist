@@ -94,6 +94,10 @@ import {
 } from "../patient-context/source-captures.js?v=20260921-medication-card-v4";
 import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260921-medication-card-v4";
 import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260910-pre-op-prep";
+import {
+  createAdaptiveStore,
+  learnFromCorrection
+} from "../vault/deid/adaptive.js?v=20261003-deid-100";
 import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260910-pre-op-prep";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
@@ -130,7 +134,7 @@ import {
   warningDescription,
   warningSnippet
 } from "./redaction/presentation.js?v=20260921-medication-card-v4";
-import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
+import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261003-meddeid-100";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20260929-deid-clinicale5";
 import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261001-llm-verifier-v1";
 import { createDemoController } from "./demo/controller.js?v=20261001-demo-v4";
@@ -152,6 +156,7 @@ const app = {
   vault: null,
   passphrase: "",
   view: "vault",
+  adaptiveStore: null,
   selectedDayId: "",
   selectedStayPacketId: "admission", selectedPromptTask: "presentation_quality_editor", promptDayId: "",
   promptDayFollowsSelectedDay: true,
@@ -1038,6 +1043,8 @@ function clearSensitiveSession() {
   app.passphrase = "";
   app.demoPreviewMode = false;
   app.vaultUnlockError = "";
+  // Session-only policy: drop the in-memory adaptive correction memory.
+  app.adaptiveStore = null;
   clearPatientScopedSession();
   clearQuickDeidSession();
 }
@@ -2405,11 +2412,25 @@ function loadDeidCorrectionLog() {
 
 const deidCorrectionLog = loadDeidCorrectionLog();
 
-function logDeidCorrection({ decision, original, placeholder, label, source }) {
+// In-memory adaptive store (session-only policy 2026-10-03: never persisted,
+// not even to the encrypted vault; vault lock clears it).
+function ensureAdaptiveStore() {
+  if (!app.adaptiveStore) {
+    app.adaptiveStore = createAdaptiveStore();
+  }
+  return app.adaptiveStore;
+}
+
+function scheduleAdaptivePersist() {
+  // Session-only policy (2026-10-03): correction memory holds identifiable
+  // PHI spans and is never persisted. This function is intentionally a no-op.
+}
+
+function logDeidCorrection({ decision, original, placeholder, label, source, textBefore, textAfter }) {
+  // Privacy: the persisted log holds metadata only, never the original span text.
   deidCorrectionLog.push({
     ts: Date.now(),
     decision,
-    original: String(original || "").slice(0, 200),
     placeholder: String(placeholder || "").slice(0, 120),
     label: String(label || ""),
     source: String(source || "")
@@ -2420,6 +2441,22 @@ function logDeidCorrection({ decision, original, placeholder, label, source }) {
     localStorage.setItem(DEID_CORRECTION_LOG_KEY, JSON.stringify(deidCorrectionLog));
   } catch {
     // Storage full or unavailable; the in-memory log still works for the session.
+  }
+  // Learn from the correction in the session-only adaptive store.
+  // The identifiable span text lives only in memory, never in storage.
+  try {
+    learnFromCorrection(ensureAdaptiveStore(), {
+      decision,
+      original,
+      placeholder,
+      label,
+      source,
+      textBefore,
+      textAfter
+    });
+    scheduleAdaptivePersist();
+  } catch {
+    // Learning must never break the review flow.
   }
 }
 

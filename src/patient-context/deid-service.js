@@ -1,7 +1,7 @@
 import {
   createDeidentifier,
-  deidentifyTextStructuredOnly
-} from "../vault/deid.js?v=20260930-deid-refactor";
+  deidentifyTextLearned
+} from "../vault/deid.js?v=20261003-deid-100";
 import {
   DEFAULT_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,
@@ -476,10 +476,10 @@ export async function verifyAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_KE
   }
 }
 
-export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, assetSource = "auto", admissionDate = null, relativeDate = null, patientIdentity = null, onStatus, onProgress } = {}) {
+export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, assetSource = "auto", admissionDate = null, relativeDate = null, patientIdentity = null, adaptiveStore = null, onStatus, onProgress } = {}) {
   const anchor = admissionDate ? new Date(admissionDate) : null;
   if (mode === STRUCTURED_DEID_MODE) {
-    return deidentifyTextStructuredOnly(rawText, anchor, { relativeDate: relativeDate ? new Date(relativeDate) : anchor, patientIdentity });
+    return deidentifyTextLearned(rawText, anchor, { relativeDate: relativeDate ? new Date(relativeDate) : anchor, patientIdentity, adaptiveStore });
   }
   const option = deidModelOptionByKey(mode === "advanced" ? DEFAULT_DEID_MODEL_KEY : mode);
   try {
@@ -524,6 +524,6 @@ export async function deidentifyText(rawText, { mode = "advanced", allowStructur
     if (!allowStructuredFallback) {
       throw new Error(message);
     }
-    return deidentifyTextStructuredOnly(rawText, anchor, { relativeDate: relativeDate ? new Date(relativeDate) : anchor });
+    return deidentifyTextLearned(rawText, anchor, { relativeDate: relativeDate ? new Date(relativeDate) : anchor });
   }
 }

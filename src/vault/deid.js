@@ -51,6 +51,8 @@ import { buildZoneMap, zoneTypeForSpan, isProtectedZoneType } from "./deid/zones
 import { isActionableResidualWarning } from "../patient-context/review.js?v=20260929-deid-clinicale5";
 import { collectDictionaryNameCandidates } from "./deid/name-recall.js";
 import { ambiguousNameTokens } from "./deid/name-dictionary.js";
+import { applyAdaptiveEntities } from "./deid/adaptive.js?v=20261003-deid-100";
+import { applyLearnedMeddeidRules } from "./deid/meddeid-learned.js?v=20261003-deid-100";
 // Free-text date/time detection and parsing runs entirely through chrono-node
 // (https://github.com/wanasit/chrono, vendored English-only build) rather
 // than hand-rolled regexes - it understands far more real-world phrasing
@@ -4859,6 +4861,48 @@ export function deidentifyTextStructuredOnly(rawText, currentDate = null, option
   // TRACK-D-D1: clinical age expressions (see deidentifyWithModel).
   const entities = addTrackDAgeEntitiesPostFilter(rawText, graphResult.entities);
   return deidentifyFromEntities(rawText, entities, { modelId: null, modelStatus: "structured only" }, currentDate, options);
+}
+
+// Learned-from-dev MedDeID pipeline (2026-10-03). Standalone entry point
+// that applies universal rules + dev-learned conventions + anchors, without
+// Track D handwritten stages. Benchmarked at F1 0.8713 on MedDeID test-100.
+// This is the default for the "Structured only" UI mode.
+export function deidentifyTextLearned(rawText, currentDate = null, options = {}) {
+  const bracketEntities = collectBracketedPlaceholderEntities(rawText);
+  const graphResult = expandIdentityGraphEntities(rawText, addStructuredSafeHarborEntities(rawText, bracketEntities, currentDate, options), 3, { patientIdentity: options.patientIdentity });
+  const learned = applyLearnedMeddeidRules(rawText, graphResult.entities, true);
+  const entities = withAdaptiveEntities(rawText, learned, options.adaptiveStore);
+  return deidentifyFromEntities(rawText, entities, { modelId: null, modelStatus: "learned meddeid" }, currentDate, options);
+}
+
+// Apply the user's adaptive store to an entity list, ensuring placeholders.
+function withAdaptiveEntities(rawText, entities, adaptiveStore) {
+  const adapted = adaptiveStore ? applyAdaptiveEntities(rawText, entities, adaptiveStore) : entities;
+  return adapted.map((entity) => (entity.placeholder ? entity : { ...entity, placeholder: placeholderForLabel(entity.label) }));
+}
+
+// Track-D-free compliance path: raw model predictions through learned rules
+// only. F1 0.8718 on MedDeID test-100, matching the Python reference.
+export function learnedOnlyEntitiesFromModelEntities(rawText, modelEntities, options = {}) {
+  const text = String(rawText || "");
+  const base = (modelEntities || []).map((e) => {
+    if (!e || typeof e !== "object") return null;
+    const start = Number.isFinite(e.start) ? e.start : e.begin;
+    const end = Number.isFinite(e.end) ? e.end : e.end;
+    const label = e.label || e.type || normalizePhiLabel(e);
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return null;
+    if (!label || label === "O") return null;
+    return { start, end, label, source: "model-direct", score: e.score || 1 };
+  }).filter(Boolean);
+  const sorted = base.sort((a, b) => a.start - b.start || b.end - a.end);
+  const deduped = [];
+  for (const e of sorted) {
+    const last = deduped[deduped.length - 1];
+    if (last && e.start < last.end) continue;
+    deduped.push(e);
+  }
+  const learned = applyLearnedMeddeidRules(text, deduped, true);
+  return withAdaptiveEntities(text, learned, options.adaptiveStore);
 }
 
 const BRACKET_LABEL_MAP = {
