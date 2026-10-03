@@ -2718,18 +2718,36 @@ function centerTextSnippetInDocument(documentElement, snippet) {
 }
 
 function renderQuickReviewAtCurrentPosition(focusRedactionIndex = inspectedRedactionIndex(app.quickDeid.review)) {
-  // `.view` owns route scrolling in this app. `window.scrollY` stays zero,
-  // which is why replacing this panel can jump a clinician to the top of the
-  // actual Quick De-ID scroll container. The annotated document is a second
-  // scroll owner, so capture both layers before replacing its DOM node.
+  // The Quick De-ID route scrolls inside `.quick-deid-panel` (height: 100%,
+  // overflow: auto), not `.view` — and `renderQuickDeid` replaces that panel
+  // node, so an element reference captured before the render is disconnected
+  // by restore time and silently skipped. Capture its position by selector
+  // instead; without this, every redaction click dropped the clinician back
+  // to the top of the panel. The annotated document is a second scroll owner,
+  // so capture both layers before replacing its DOM node.
+  const panelSelector = "#quickDeidContent .quick-deid-panel";
+  const readPanelScroll = () => {
+    const panel = document.querySelector(panelSelector);
+    return { top: panel?.scrollTop ?? 0, left: panel?.scrollLeft ?? 0 };
+  };
+  const panelScroll = readPanelScroll();
+  const restorePanelScroll = () => {
+    const panel = document.querySelector(panelSelector);
+    if (panel) {
+      panel.scrollTop = panelScroll.top;
+      panel.scrollLeft = panelScroll.left;
+    }
+  };
   const scrollOwner = byId("quickDeidView");
   const priorDocument = byId("quickDeidReviewDocument");
   const scrollSnapshot = captureScrollChain(priorDocument || scrollOwner);
   const documentTop = priorDocument?.scrollTop ?? 0;
   renderQuickDeid();
-  // Rendering replaces the document node. Restore the route and inner
-  // document scroll owners before centering the next decision.
+  // Rendering replaces the panel and document nodes. Restore the route panel
+  // (by selector — the node was replaced) and inner document scroll owners
+  // before centering the next decision.
   restoreScrollChain(scrollSnapshot);
+  restorePanelScroll();
   const documentElement = byId("quickDeidReviewDocument");
   if (documentElement) documentElement.scrollTop = documentTop;
   // An explicit -1 means "preserve the current position". This is used by
@@ -2741,6 +2759,7 @@ function renderQuickReviewAtCurrentPosition(focusRedactionIndex = inspectedRedac
     // current position. Restore both owners after the focused span is laid
     // out, especially for manual redaction where no focus target is centered.
     restoreScrollChain(scrollSnapshot);
+    restorePanelScroll();
     if (documentElement && focusIndex < 0) documentElement.scrollTop = documentTop;
   });
 }

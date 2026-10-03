@@ -819,6 +819,31 @@ Vitals
   await page.click('[data-action="dismiss-quick-warning"]');
   assert.match(await page.locator("#quickDeidContent .quick-redaction-review").innerText(), /Review complete|Flag \d+ of \d+/);
 
+  // Scroll regression: the Quick De-ID route scrolls inside .quick-deid-panel
+  // (height: 100%, overflow: auto), not .view — and clicking a redaction
+  // re-renders that panel node. The panel scroll position must survive the
+  // re-render instead of jumping back to the top.
+  await page.click('[data-action="start-new-quick-deid"]');
+  await page.selectOption("#quickDeidMode", "structured");
+  await page.fill("#quickDeidInput", "Jane Patient MRN 123456 was evaluated by Dr. Smith on 01/02/2024 at General Hospital. ".repeat(40));
+  await page.click('[data-action="run-quick-deid"]');
+  await page.waitForSelector("#quickDeidReviewDocument .redaction-change");
+  const quickPanelScroll = await page.locator(".quick-deid-panel").evaluate((panel) => {
+    panel.scrollTop = Math.min(300, panel.scrollHeight - panel.clientHeight);
+    return panel.scrollTop;
+  });
+  assert.equal(quickPanelScroll > 0, true, "the Quick De-ID panel must be scrollable for the redaction-click regression test");
+  // DOM .click() avoids Playwright's auto-scroll-into-view, so the scroll
+  // position we set is the position the handler actually sees.
+  await page.evaluate(() => document.querySelector('#quickDeidReviewDocument .redaction-change[data-redaction-index="5"]').click());
+  await page.waitForSelector('#quickDeidReviewDocument .redaction-change.is-inspected[data-redaction-index="5"]');
+  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  assert.equal(
+    await page.locator(".quick-deid-panel").evaluate((panel) => panel.scrollTop),
+    quickPanelScroll,
+    "clicking a redaction must not move the Quick De-ID panel scroll position"
+  );
+
   await page.click('[data-view-target="daily"]');
   await page.click('[data-view-target="quickDeid"]');
   assert.equal(await page.locator("#quickDeidInput").inputValue(), "");
