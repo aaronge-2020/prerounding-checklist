@@ -50,6 +50,10 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
 
     let cursor = 0;
     let markup = "";
+    // Inline per-item reject: section reviews restore via allow-reviewed-non-phi
+    // (needs scope + section id); the standalone Quick De-ID tool uses
+    // restore-quick-non-phi (index only).
+    const rejectAction = scope && sectionId ? "allow-reviewed-non-phi" : "restore-quick-non-phi";
     for (const { redaction, index, position } of resolved) {
       if (position < cursor) continue;
       const before = output.slice(cursor, position);
@@ -61,7 +65,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
       if (redaction.state === "confirmed") {
         markup += `<button type="button" class="redaction-change redaction-change--confirmed ${inspected}" data-action="${escapeHtml(action)}" ${attributes} data-redaction-index="${index}" title="Accepted redaction. Click to review or undo it." aria-label="Review accepted redaction ${escapeHtml(redaction.placeholder)}"><mark>${escapeHtml(redaction.placeholder)}</mark></button>`;
       } else {
-        markup += `<button type="button" class="redaction-change ${inspected}" data-action="${escapeHtml(action)}" ${attributes} data-redaction-index="${index}" data-original="${escapeHtml(redaction.original)}" title="Review this suggested replacement" aria-label="Review replacement ${escapeHtml(redaction.placeholder)}"><del>${escapeHtml(redaction.original)}</del><span class="redaction-change-arrow" aria-hidden="true">→</span><ins>${escapeHtml(redaction.placeholder)}</ins></button>`;
+        markup += `<span class="redaction-change-wrap"><button type="button" class="redaction-change ${inspected}" data-action="${escapeHtml(action)}" ${attributes} data-redaction-index="${index}" data-original="${escapeHtml(redaction.original)}" title="Review this suggested replacement" aria-label="Review replacement ${escapeHtml(redaction.placeholder)}"><del>${escapeHtml(redaction.original)}</del><span class="redaction-change-arrow" aria-hidden="true">→</span><ins>${escapeHtml(redaction.placeholder)}</ins></button><button type="button" class="redaction-reject" data-action="${rejectAction}" ${attributes} data-redaction-index="${index}" title="Reject — restore the original text" aria-label="Reject redaction of ${escapeHtml(redaction.original)}">✕</button></span>`;
       }
       cursor = replacementEnd;
     }

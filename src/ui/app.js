@@ -2385,10 +2385,50 @@ function inspectRedaction(scope, sectionId, redactionIndex) {
   moveToSectionReviewTarget(scope, sectionId, reviewTargetAt(scope, sectionId, redactionIndex));
 }
 
+// --- De-identification correction log ------------------------------------
+// Every accept/reject in the redaction review is a labeled example, recorded
+// on-device (localStorage, never uploaded). This is the fuel for real-time
+// per-user adaptation: personal gazetteers, per-user thresholds, and future
+// local training.
+const DEID_CORRECTION_LOG_KEY = "prerounding.deidCorrections.v1";
+const DEID_CORRECTION_LOG_MAX = 1000;
+
+function loadDeidCorrectionLog() {
+  try {
+    const raw = localStorage.getItem(DEID_CORRECTION_LOG_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+const deidCorrectionLog = loadDeidCorrectionLog();
+
+function logDeidCorrection({ decision, original, placeholder, label, source }) {
+  deidCorrectionLog.push({
+    ts: Date.now(),
+    decision,
+    original: String(original || "").slice(0, 200),
+    placeholder: String(placeholder || "").slice(0, 120),
+    label: String(label || ""),
+    source: String(source || "")
+  });
+  if (deidCorrectionLog.length > DEID_CORRECTION_LOG_MAX)
+    deidCorrectionLog.splice(0, deidCorrectionLog.length - DEID_CORRECTION_LOG_MAX);
+  try {
+    localStorage.setItem(DEID_CORRECTION_LOG_KEY, JSON.stringify(deidCorrectionLog));
+  } catch {
+    // Storage full or unavailable; the in-memory log still works for the session.
+  }
+}
+
 function keepReviewedRedaction(scope, sectionId) {
   const review = sectionReviewFor(scope, sectionId);
   const reviewedIndex = inspectedRedactionIndex(review);
   if (!review || reviewedIndex < 0 || !review.redactions[reviewedIndex]) return;
+  const redaction = review.redactions[reviewedIndex];
+  logDeidCorrection({ decision: "accepted", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "section-review" });
   review.redactions[reviewedIndex].state = "confirmed";
   const next = advanceSectionReview(scope, sectionId, reviewedIndex);
   setStatus(
@@ -2403,6 +2443,7 @@ function confirmAllSectionRedactions(scope, sectionId) {
   if (!review) return;
   const pending = review.redactions.filter((redaction) => redaction.state === "pending");
   pending.forEach((redaction) => {
+    logDeidCorrection({ decision: "accepted", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "section-review-bulk" });
     redaction.state = "confirmed";
   });
   review.inspectedRedactionIndex = -1;
@@ -2430,6 +2471,7 @@ function allowReviewedNonPhi(scope, sectionId, redactionIndex) {
   const nextText = `${currentText.slice(0, position)}${redaction.original}${currentText.slice(position + redaction.placeholder.length)}`;
   field.value = nextText;
   setSectionDraftText(scope, sectionId, nextText);
+  logDeidCorrection({ decision: "rejected", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "section-review" });
   review.approvedRedactionIndexes.add(redactionIndex);
   redaction.state = "restored";
   review.redactions.forEach((entry, index) => {
@@ -2768,7 +2810,10 @@ function confirmQuickRedaction() {
   const reviewedIndex = quickRedactionIndex(review);
   if (reviewedIndex < 0) return;
   const redaction = review.redactions[reviewedIndex];
-  if (redaction) redaction.state = "confirmed";
+  if (redaction) {
+    logDeidCorrection({ decision: "accepted", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "quick-deid" });
+    redaction.state = "confirmed";
+  }
   review.inspectedRedactionIndex = quickRedactionIndex(review, reviewedIndex);
   setStatus(
     review.inspectedRedactionIndex >= 0
@@ -2783,6 +2828,7 @@ function confirmAllQuickRedactions() {
   if (!review) return;
   const confirmed = review.redactions.filter((redaction) => redaction.state === "pending");
   confirmed.forEach((redaction) => {
+    logDeidCorrection({ decision: "accepted", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "quick-deid-bulk" });
     redaction.state = "confirmed";
   });
   review.inspectedRedactionIndex = -1;
@@ -2801,6 +2847,7 @@ function restoreQuickNonPhi(redactionIndex) {
   const position = redactionPosition(app.quickDeid.output, redaction);
   if (position < 0) throw new Error("This redaction is no longer present in the current output.");
   app.quickDeid.output = `${app.quickDeid.output.slice(0, position)}${redaction.original}${app.quickDeid.output.slice(position + redaction.placeholder.length)}`;
+  logDeidCorrection({ decision: "rejected", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "quick-deid" });
   redaction.state = "restored";
   review.redactions.forEach((entry, index) => {
     if (index !== redactionIndex && entry.placeholder === redaction.placeholder && entry.occurrence > redaction.occurrence)

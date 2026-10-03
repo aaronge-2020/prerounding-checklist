@@ -8866,6 +8866,34 @@ body.vault-locked .vault-access {
   outline: 1px solid #5c9472;
 }
 
+.redaction-change-wrap { display: inline; }
+
+.redaction-reject {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5em;
+  height: 1.5em;
+  margin-left: 3px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.8em;
+  line-height: 1;
+  vertical-align: 0.1em;
+}
+
+.redaction-reject:hover,
+.redaction-reject:focus-visible {
+  color: #b3503c;
+  border-color: #d8a08f;
+  background: #fdf0ec;
+  outline: none;
+}
+
 .quick-review-instruction { margin: 0; font-size: 12px; }
 
 .redaction-inline-actions { border-top: 1px solid #e2d3ad; padding-top: 8px; }
