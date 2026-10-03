@@ -11331,7 +11331,7 @@ body.vault-locked .vault-access {
   scroll-margin-block: 160px;
 }
 
-.demo-next-action[data-demo-target="true"]:not(.primary-button):not(.button--primary) {
+.demo-next-action[data-demo-target="true"]:not(.primary-button):not(.button--primary):not(.aic-send) {
   background-color: #fffdf2;
 }
 
