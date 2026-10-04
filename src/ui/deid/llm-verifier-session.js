@@ -14,7 +14,7 @@ import {
   dedupeVerifierEntities,
   runLlmVerifier
 } from "../../local-llm/verifier.js?v=20261001-local-llm-v5";
-import { redactFromEntities } from "../../vault/deid.js?v=20261003-deid-100";
+import { redactFromEntities } from "../../vault/deid.js?v=20261003-deid-101";
 
 export function selectedLlmVerifierModel() {
   const key = readLocalLlmSettings().selectedModelKey || "";

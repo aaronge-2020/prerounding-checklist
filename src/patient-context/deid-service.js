@@ -1,7 +1,7 @@
 import {
   createDeidentifier,
   deidentifyTextLearned
-} from "../vault/deid.js?v=20261003-deid-100";
+} from "../vault/deid.js?v=20261003-deid-101";
 import {
   DEFAULT_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,

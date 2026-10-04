@@ -2043,7 +2043,7 @@ const MD_SEP_OPTIONAL_COLON = String.raw`[\s*:#]+`;
 
 // Labeled-field patterns: capture group 1 is the entity value.
 const CAPTURED_PATTERNS = [
-  { label: "PATIENT NAME", regex: new RegExp(String.raw`^${MD_FILLER}(?:Patient(?: Name)?|Pt(?: Name)?|Name)${MD_SEP}([A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,3})\s*$`, "gmi") },
+  { label: "PATIENT NAME", regex: new RegExp(String.raw`^${MD_FILLER}(?:Patient(?: Name)?|Pt(?: Name)?|Name)${MD_SEP}([A-Z\u00C0-\u00DE][A-Za-z\u00C0-\u00FF.'’-]+(?:[ \t]+[A-Z\u00C0-\u00DE][A-Za-z\u00C0-\u00FF.'’-]+){1,3})\s*$`, "gmi") },
   { label: "PATIENT NAME", regex: new RegExp(String.raw`^${MD_FILLER}Preferred Name${MD_SEP_OPTIONAL_COLON}([A-Z][A-Za-z.'’-]+)\s*$`, "gmi") },
   { label: "PATIENT NAME", regex: new RegExp(String.raw`\bALIAS${MD_SEP}([^|\n\r;]{2,80})`, "gi") },
   { label: "PATIENT NAME", regex: /\bOCR HEADER\s*>{2,}\s*([A-Z][A-Z'-]+,\s+[A-Z][A-Z'-]+)(?=\s+(?:D0B|DOB|MRN)\b)/g },
@@ -2061,7 +2061,7 @@ const CAPTURED_PATTERNS = [
   { label: "ROOM", regex: new RegExp(String.raw`^${MD_FILLER}(?:Room|Rm|Bed|ICU room|ED room|Unit|Floor|Ward|Pod|Bay|Location)${MD_SEP}([A-Z0-9][A-Z0-9 \t-]*\d?[A-Z0-9-]*)\s*$`, "gmi") },
   { label: "PROVIDER NAME", regex: new RegExp(String.raw`^${MD_FILLER}(?:Primary endocrinologist|Provider|Attending|Resident|Fellow|Consultant|Surgeon|PCP|Primary care provider|Referring provider|Ordering provider)${MD_SEP_OPTIONAL_COLON}((?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){0,2}|[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,2})`, "gmi") },
   { label: "PROVIDER NAME", regex: new RegExp(String.raw`\bProvider${MD_SEP}((?:Dr|Doctor)\.?\s+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+(?:[ \t]+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+){1,2})`, "g") },
-  { label: "CONTACT NAME", regex: new RegExp(String.raw`^${MD_FILLER}(?:Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian|Caregiver)${MD_SEP_OPTIONAL_COLON}([A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,3})`, "gmi") },
+  { label: "CONTACT NAME", regex: new RegExp(String.raw`^${MD_FILLER}(?:Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian|Caregiver)${MD_SEP_OPTIONAL_COLON}([A-Z\u00C0-\u00DE][A-Za-z\u00C0-\u00FF.'’-]+(?:[ \t]+[A-Z\u00C0-\u00DE][A-Za-z\u00C0-\u00FF.'’-]+){1,3})`, "gmi") },
   { label: "CONTACT NAME", regex: new RegExp(String.raw`\b(?:contact${MD_SEP}|Emergency contact\s+)((?=[A-Za-z0-9.'-]*[A-Z])[A-Za-z0-9.'-]+(?:[ \t]+(?=[A-Za-z0-9.'-]*[A-Z])[A-Za-z0-9.'-]+){1,3})`, "g") },
   { label: "ORGANIZATION", regex: new RegExp(String.raw`^${MD_FILLER}Insurance${MD_SEP_OPTIONAL_COLON}([^,\n\r]+?)(?=\s+(?:PPO|HMO|EPO|POS|HDHP)\b\s*$|$)`, "gmi") },
   { label: "ORGANIZATION", regex: new RegExp(String.raw`^${MD_FILLER}Employer${MD_SEP_OPTIONAL_COLON}([^\n\r]+?)\s*$`, "gmi") },
@@ -2073,8 +2073,8 @@ const CAPTURED_PATTERNS = [
   // 1954-07-02T00:00:00") - same meaning as "DOB: <date>", only the
   // punctuation differs.
   { label: "DOB", regex: new RegExp(String.raw`\b(?:DOB|D\.O\.B\.|Date[_\s]+of[_\s]+birth|Birth[_\s]+date)(?:\s*<[^>]*>)?\s*["']?\s*[:=]\s*(?:<[^>]*>)?\s*["']?(${STRUCTURED_DATE_VALUE})`, "gi") },
-  { label: "PATIENT NAME", regex: /\b(?:Patient(?: Name)?|Pt(?: Name)?)\s+(?!is\b|was\b|reports\b|states\b)([A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,3})(?=\s+(?:MRN|Medical Record(?: Number)?|DOB|Date of birth|Birth date)\b|[,:;\n\r]|$)/gi },
-  { label: "PATIENT NAME", regex: /\bPATIENT\s*:\s*([A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){1,3})(?=\s*\|)/gi },
+  { label: "PATIENT NAME", regex: /\b(?:Patient(?: Name)?|Pt(?: Name)?)\s+(?!is\b|was\b|reports\b|states\b)([A-Z\u00C0-\u00DE][A-Za-z\u00C0-\u00FF.'’-]+(?:[ \t]+[A-Z\u00C0-\u00DE][A-Za-z\u00C0-\u00FF.'’-]+){1,3})(?=\s+(?:MRN|Medical Record(?: Number)?|DOB|Date of birth|Birth date)\b|[,:;\n\r]|$)/gi },
+  { label: "PATIENT NAME", regex: /\bPATIENT\s*:\s*([A-Z\u00C0-\u00DE][A-Za-z\u00C0-\u00FF.'’-]+(?:[ \t]+[A-Z\u00C0-\u00DE][A-Za-z\u00C0-\u00FF.'’-]+){1,3})(?=\s*\|)/gi },
   { label: "PATIENT NAME", regex: new RegExp(String.raw`\bPreferred Name${MD_SEP_OPTIONAL_COLON}([A-Z][A-Za-z.'’-]+)`, "gi") },
   { label: "MRN", regex: new RegExp(String.raw`\b(?:MRN|Medical Record(?: Number)?)${MD_SEP_OPTIONAL_COLON}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
   { label: "MRN", regex: /\bMRN\s*=\s*((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})/gi },
@@ -2082,7 +2082,7 @@ const CAPTURED_PATTERNS = [
   { label: "ID", regex: new RegExp(String.raw`\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Group(?: Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)${MD_SEP_OPTIONAL_COLON}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
   { label: "FACILITY", regex: new RegExp(String.raw`\b(?:Facility|Campus|Hospital|Clinic|Service location|Lab location|Ordering location)${MD_SEP}([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)`, "gi") },
   { label: "PATIENT NAME", regex: /\balso documented as\s+([^,;\n\r]{2,80})/gi },
-  { label: "PROVIDER NAME", regex: /\bseen by\s+((?:Dr|Doctor)\.?\s+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+(?:[ \t]+(?=[A-Z0-9.'-]*[A-Z])[A-Z0-9.'-]+){1,2})/gi },
+  { label: "PROVIDER NAME", regex: /\bseen by\s+((?:Dr|Doctor)\.?\s+(?=[A-Z0-9.'-\u00C0-\u00FF]*[A-Z\u00C0-\u00DE])[A-Z0-9.'-\u00C0-\u00FF]+(?:[ \t]+(?=[A-Z0-9.'-\u00C0-\u00FF]*[A-Z\u00C0-\u00DE])[A-Z0-9.'-\u00C0-\u00FF]+){1,2})/gi },
   { label: "ROOM", regex: new RegExp(String.raw`\b(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|ICU room|ED room|Location)${MD_SEP}([A-Z0-9][A-Z0-9 \t-]{0,30}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|Phone|Email|Address|Primary|Preferred)\s*[:#]|[.,;\n\r]|$)`, "gi") },
   { label: "ORGANIZATION", regex: new RegExp(String.raw`\bInsurance${MD_SEP_OPTIONAL_COLON}([^,\n\r]+?)(?=\s+(?:PPO|HMO|EPO|POS|HDHP)\b(?:\s|$)|[\n\r]|$)`, "gi") },
   { label: "ORGANIZATION", regex: new RegExp(String.raw`\bEmployer${MD_SEP_OPTIONAL_COLON}([^,\n\r]+)`, "gi") },
@@ -2215,7 +2215,7 @@ const DIRECT_PATTERNS = [
   { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Pharmacy|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g, skip: isLikelyOrganizationFalsePositive },
   { label: "FACILITY", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){1,5}[ \t]+Pavilion(?:[ \t]+[A-Z0-9-]{1,12})?\b/g, skip: isLikelyOrganizationFalsePositive },
   { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){1,5}[ \t]+Cooperative(?:[ \t]+[A-Z0-9-]{1,12})?\b/g, skip: isLikelyOrganizationFalsePositive },
-  { label: "PROVIDER NAME", regex: /\b(?:Dr|Doctor)\.?\s+[A-Z][A-Za-z.'’-]+(?:[ \t]+[A-Z][A-Za-z.'’-]+){0,2}\b(?![A-Za-z0-9.'-])/g },
+  { label: "PROVIDER NAME", regex: /\b(?:Dr|Doctor)\.?\s+[A-Z\u00C0-\u00DE][A-Za-z\u00C0-\u00FF.'’-]+(?:[ \t]+[A-Z\u00C0-\u00DE][A-Za-z\u00C0-\u00FF.'’-]+){0,2}\b(?![A-Za-z0-9.'-\u00C0-\u00FF])/g },
   { label: "NAME", regex: /\b[A-Z][a-z]{2,}[ \t]+[A-Z]\.[ \t]+[A-Z][A-Za-z'-]{5,}\b/g, skip: isLikelyNonNamePhrase },
   { label: "ID", regex: /\b(?!\d{4}-\d{2}-\d{2}T)(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)+\b/g, skip: isLikelyIdentifierFalsePositive },
   { label: "ID", regex: /\b[A-F0-9]{12,}\b/g },

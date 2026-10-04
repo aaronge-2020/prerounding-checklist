@@ -20,7 +20,7 @@ import {
   MAX_FULL_CHART_CHARS
 } from "../../local-llm/patient-context.js?v=20260929-local-llm-v12";
 import { buildRemoteChatInput } from "../../ai/remote-chat.js?v=20260929-ai-chat-v6";
-import { redactFromEntities } from "../../vault/deid.js?v=20261003-deid-100";
+import { redactFromEntities } from "../../vault/deid.js?v=20261003-deid-101";
 import { DEFAULT_SYSTEM_GUIDELINES, DEFAULT_REMOTE_SYSTEM_GUIDELINES } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import { CHARS_PER_TOKEN } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
 
