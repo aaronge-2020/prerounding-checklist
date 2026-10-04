@@ -140,7 +140,7 @@ import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/ll
 import { createDemoController } from "./demo/controller.js?v=20261001-demo-v4";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261001-demo-v4";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20261001-demo-v4";
-import { createAiChatController } from "./ai-chat/controller.js?v=20261003-ai-chat-scrollfix";
+import { createAiChatController } from "./ai-chat/controller.js?v=20261004-cite-links-v1";
 import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261001-drug-checks-v2";
 import { createDrugChecksController } from "./drug-checks/controller.js?v=20261001-drug-checks-v2";
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20260929-rag-v3";

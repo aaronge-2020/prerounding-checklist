@@ -8,6 +8,7 @@ import {
   sentinelizeSectionCitations,
   sectionCitationChipHtml
 } from "./section-citations.js?v=20260929-ai-chat-v14";
+import { withClickableCitations } from "../../ai/citation-links.js?v=20261004-cite-links-v1";
 
 export function createAiChatPresentation({ escapeHtml, icon }) {
   // Assistant reply body: reasoning goes in a collapsed dropdown (hidden by
@@ -374,10 +375,14 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
   // section renders as inert text — never clickable — so a hallucinated
   // citation can't open a fake source. The sentinel approach keeps Markdown
   // formatting intact around citations.
-  function renderCitedMarkdown(text, citations, messageIndex) {
+  function renderCitedMarkdown(text, citations, messageIndex, sources) {
     const metas = Array.isArray(citations) ? citations : [];
     const { text: sentinelized, cites } = sentinelizeSectionCitations(text);
-    let html = renderChatMarkdown(sentinelized);
+    // Guideline [bracket] citations become clickable links here, after
+    // section citations are sentinelized: sentinels carry no brackets so
+    // linkify never touches them, and a Sources section is appended.
+    const linked = withClickableCitations(sentinelized, sources);
+    let html = renderChatMarkdown(linked);
     for (let i = 0; i < cites.length; i += 1) {
       const sentinel = `\uE000SECITE${i}\uE001`;
       const chip = sectionCitationChipHtml(cites[i], metas[i] || null, escapeHtml, messageIndex);
@@ -396,7 +401,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
           ? renderToolRecords(m.toolRecords)
           : "";
         const citedBody = m.role !== "user"
-          ? renderCitedMarkdown(m.text, m.sectionCitations, index)
+          ? renderCitedMarkdown(m.text, m.sectionCitations, index, m.sources)
           : renderChatMarkdown(m.text);
         const body = m.role === "user" ? `<p>${escapeHtml(m.text)}</p>` : `<div class="aic-m-body">${citedBody}</div>${records}`;
         const revert = `<button type="button" class="aic-m-revert" data-action="ai-chat-revert-remote" data-message-index="${index}" title="Revert to here — remove this message and everything after it">${icon("undo")} revert</button>`;

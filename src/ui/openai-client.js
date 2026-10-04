@@ -86,8 +86,10 @@ export async function requestOpenAiChat({ apiKey, model, input, tools, fetchImpl
 }
 
 // Same call as requestOpenAiChat, but also returns the Responses-API usage
-// block so callers can track tokens and cost. Resolves to
-// { text, usage: { inputTokens, outputTokens, cachedInputTokens, webSearchCalls } }.
+// block so callers can track tokens and cost, plus the web-search source
+// list so citations render as clickable links. Resolves to
+// { text, usage: { inputTokens, outputTokens, cachedInputTokens, webSearchCalls },
+//   sources: [{ url, title }] }.
 // webSearchCalls counts web_search_call items in the response — each one is a
 // billable search ($0.01 per call) on top of the tokens it consumed.
 export async function requestOpenAiChatWithUsage({ apiKey, model, input, tools, fetchImpl = gatedFetch, timeoutMs = 300000 } = {}) {
@@ -123,7 +125,35 @@ export async function requestOpenAiChatWithUsage({ apiKey, model, input, tools, 
   if (!response.ok) throw new Error(apiError(response, payload));
   const output = responseText(payload).trim();
   if (!output) throw new Error("The OpenAI API returned an empty reply. Try again.");
-  return { text: output, usage: extractUsage(payload) };
+  return { text: output, usage: extractUsage(payload), sources: extractSources(payload) };
+}
+
+// Web-search provenance: url_citation annotations on the message content
+// carry the real source URLs behind a grounded reply. The reply text alone
+// has none, so without extracting these every citation would render as
+// plain text. Returns deduped [{ url, title }] in first-appearance order.
+// Pure: safe to unit-test without network.
+export function extractSources(payload) {
+  const sources = [];
+  const seen = new Set();
+  const outputs = Array.isArray(payload?.output) ? payload.output : [];
+  for (const entry of outputs) {
+    if (!entry || entry.type !== "message") continue;
+    const contents = Array.isArray(entry.content) ? entry.content : [];
+    for (const block of contents) {
+      if (!block || (block.type !== "output_text" && block.type !== "text")) continue;
+      const annotations = Array.isArray(block.annotations) ? block.annotations : [];
+      for (const annotation of annotations) {
+        if (!annotation || annotation.type !== "url_citation") continue;
+        const url = String(annotation.url || "").trim();
+        if (!/^https?:\/\//i.test(url) || seen.has(url)) continue;
+        seen.add(url);
+        const title = String(annotation.title || "").trim();
+        sources.push({ url, title: title || url });
+      }
+    }
+  }
+  return sources;
 }
 
 function extractUsage(payload) {

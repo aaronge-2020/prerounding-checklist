@@ -16,9 +16,9 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20261001-ai-chat-fix-v1";
+import { createAiChatPresentation } from "./presentation.js?v=20261004-cite-links-v1";
 import { chatPaneScrollTop } from "../view-scroll.js?v=20261003-chatpane-scroll";
-import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20260929-ai-chat-v2";
+import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20261004-cite-links-v1";
 import { gatedFetch, isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
 import {
   buildChatToolsSystemPrompt,
@@ -1827,12 +1827,18 @@ export function createAiChatController({
       } else {
         const reply = typeof result === "string" ? result : result?.text;
         const usage = result && typeof result === "object" ? result.usage || null : null;
+        // Web-search source URLs behind the reply's citations; the
+        // presentation turns every [bracket] citation into a clickable link.
+        const sources = result && typeof result === "object" && Array.isArray(result.sources)
+          ? result.sources
+          : [];
         const cost = recordRemoteUsage(usage, prefs.openAiModel);
         updateRemoteContextStats(input, prefs.openAiModel);
         state.remote.messages.push({
           role: "assistant",
           text: reply,
           webSearch: state.remote.webSearch,
+          sources,
           model: prefs.openAiModel,
           usage: usage ? { ...usage } : null,
           costUsd: cost ? cost.totalCost : null,
@@ -1959,7 +1965,8 @@ export function createAiChatController({
           model: prefs.openAiModel,
           usage: usage ? { ...usage } : null,
           costUsd: cost ? cost.totalCost : null,
-          sectionCitations: matchSectionCitations(result.text || "", pieces)
+          sectionCitations: matchSectionCitations(result.text || "", pieces),
+          sources: Array.isArray(result.sources) ? result.sources : []
         });
       }
     } catch (error) {
