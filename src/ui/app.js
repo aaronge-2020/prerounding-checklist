@@ -140,14 +140,14 @@ import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/ll
 import { createDemoController } from "./demo/controller.js?v=20261001-demo-v4";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261001-demo-v4";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20261001-demo-v4";
-import { createAiChatController } from "./ai-chat/controller.js?v=20261001-ai-chat-drawer-sync";
+import { createAiChatController } from "./ai-chat/controller.js?v=20261003-ai-chat-scrollfix";
 import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261001-drug-checks-v2";
 import { createDrugChecksController } from "./drug-checks/controller.js?v=20261001-drug-checks-v2";
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20260929-rag-v3";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
-import { createScoresController } from "./scores/controller.js?v=20260927-models-v2";
-import { createCheatSheetsController } from "./cheat-sheets/controller.js?v=20261001-cheatsheets-fix-v1";
+import { createScoresController } from "./scores/controller.js?v=20261003-scores-sections";
+import { createCheatSheetsController } from "./cheat-sheets/controller.js?v=20261003-cheatsheets-sections";
 import { createSampleNotesController } from "./sample-notes/controller.js?v=20261001-sample-notes-v2";
 import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20260928-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260928-local-llm-v10";

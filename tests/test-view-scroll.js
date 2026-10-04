@@ -155,4 +155,35 @@ assert.deepEqual(
   "whole-view rerenders preserve route scroll"
 );
 
+// chatPaneScrollTop: the messages pane follows the bottom only when the
+// reader was pinned there; a reader scrolled up keeps their position.
+const { chatPaneScrollTop } = await import("../src/ui/view-scroll.js");
+const pane = (scrollHeight, clientHeight) => ({ scrollHeight, clientHeight, scrollTop: 0 });
+// New pane (no previous): start at the bottom.
+assert.equal(chatPaneScrollTop(pane(900, 400), null), 500, "new pane starts at the bottom");
+// Reader pinned to the bottom: follow new content to the new bottom.
+assert.equal(
+  chatPaneScrollTop(pane(1200, 400), { ...pane(900, 400), scrollTop: 500 }),
+  800,
+  "pinned reader follows to the new bottom"
+);
+// Near the bottom (within tolerance): still counts as pinned.
+assert.equal(
+  chatPaneScrollTop(pane(1200, 400), { ...pane(900, 400), scrollTop: 450 }),
+  800,
+  "near-bottom reader follows to the new bottom"
+);
+// Reader scrolled up: keep their position.
+assert.equal(
+  chatPaneScrollTop(pane(1200, 400), { ...pane(900, 400), scrollTop: 200 }),
+  200,
+  "reader scrolled up keeps their position"
+);
+// Reader scrolled up past the new content end: clamp, don't jump to bottom.
+assert.equal(
+  chatPaneScrollTop(pane(500, 400), { ...pane(900, 400), scrollTop: 200 }),
+  100,
+  "position clamps to the new content height"
+);
+
 console.log("view-scroll unit tests passed");

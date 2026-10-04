@@ -28,7 +28,7 @@ export function createScoresController({
   updateActivePatient
 }) {
   const presentation = createScoresPresentation({ escapeHtml });
-  const state = { patientId: null, scoreId: null, values: {}, overridden: new Set(), savedFingerprint: null, tab: "calculator" };
+  const state = { patientId: null, scoreId: null, values: {}, overridden: new Set(), savedFingerprint: null, tab: "calculator", listScrollTop: 0, listScrollLeft: 0 };
 
   const FAVORITES_KEY = "prerounding.scoreFavorites.v1";
   // In-memory fallback for environments without localStorage (tests, SSR).
@@ -326,47 +326,170 @@ export function createScoresController({
   // Full builds happen only on navigation: entering the view, switching
   // patients, opening a calculator, or going back to the list. Editing a
   // calculator never comes through here.
-  function render() {
-    const patient = active();
+  // Master-detail uses persistent list/detail sections toggled via `hidden`.
+  // The list DOM is never destroyed on navigation, so its scroll position
+  // survives. Only the hidden detail section gets populated when opening a
+  // calculator.
+  function ensureSections(container) {
+    let list = container.querySelector("[data-scores-list]");
+    let detail = container.querySelector("[data-scores-detail]");
+    if (!list) {
+      list = document.createElement("div");
+      list.setAttribute("data-scores-list", "");
+      container.append(list);
+    }
+    if (!detail) {
+      detail = document.createElement("div");
+      detail.setAttribute("data-scores-detail", "");
+      detail.hidden = true;
+      container.append(detail);
+    }
+    return { list, detail };
+  }
+
+  function scrollOwner() {
+    const container = byId("scoresContent");
+    const view = container?.closest(".view");
+    if (view && view.scrollHeight > view.clientHeight + 4) return view;
+    if (typeof document !== "undefined") return document.scrollingElement || document.documentElement;
+    return null;
+  }
+
+  function blurFocused() {
+    const container = byId("scoresContent");
+    const active = typeof document !== "undefined" ? document.activeElement : null;
+    if (active && active !== document.body && container?.contains(active)) {
+      try {
+        active.blur();
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+
+  function openScoreDetail() {
     const container = byId("scoresContent");
     if (!container) return;
-    if (!patient) {
-      replaceViewContent(container, patientRequiredMessage());
+    const html = renderDetailHtml();
+    if (!html) {
+      state.scoreId = null;
+      render();
       return;
     }
+    const { list, detail } = ensureSections(container);
+    const owner = scrollOwner();
+    state.listScrollTop = owner ? owner.scrollTop : 0;
+    state.listScrollLeft = owner ? owner.scrollLeft : 0;
+    blurFocused();
+    const template = document.createElement("template");
+    template.innerHTML = html;
+    detail.replaceChildren(...template.content.childNodes);
+    list.hidden = true;
+    detail.hidden = false;
+    if (owner) {
+      owner.scrollTop = 0;
+      owner.scrollLeft = 0;
+    }
+  }
+
+  function closeScoreDetail() {
+    const container = byId("scoresContent");
+    if (!container) return;
+    const { list, detail } = ensureSections(container);
+    blurFocused();
+    const template = document.createElement("template");
+    template.innerHTML = renderHomeHtml();
+    list.replaceChildren(...template.content.childNodes);
+    detail.hidden = true;
+    list.hidden = false;
+    const owner = scrollOwner();
+    if (owner) {
+      owner.scrollTop = Math.min(state.listScrollTop, Math.max(0, owner.scrollHeight - owner.clientHeight));
+      owner.scrollLeft = state.listScrollLeft || 0;
+    }
+  }
+
+  function renderHomeHtml() {
+    const patient = active();
+    if (!patient) return patientRequiredMessage();
     if (state.patientId !== patient.id) resetForPatient(patient.id);
     const definitions = listAllDefinitions();
     const patientLabel = patient.displayLabel || "this patient";
-    if (!state.scoreId) {
-      replaceViewContent(container, presentation.renderScoresHome({ definitions, patientLabel }));
-      return;
-    }
+    return presentation.renderScoresHome({ definitions, patientLabel });
+  }
+
+  function renderDetailHtml() {
+    const patient = active();
+    if (!patient) return patientRequiredMessage();
+    if (state.patientId !== patient.id) resetForPatient(patient.id);
     const definition = getDefinition(state.scoreId);
-    if (!definition) {
-      state.scoreId = null;
-      replaceViewContent(container, presentation.renderScoresHome({ definitions, patientLabel }));
-      return;
-    }
+    if (!definition) return null;
     const bindings = bindingsForPatient();
     const values = effectiveValues(definition, bindings);
     const result = calculateResult(definition, values);
     const scoreBindings = bindings[definition.id] || {};
-    replaceViewContent(
-      container,
-      presentation.renderScoreDetail({
-        definition,
-        values,
-        bindings: scoreBindings,
-        overriddenKeys: state.overridden,
-        result,
-        patientLabel,
-        mode: values.mode,
-        hasBindings: Object.keys(scoreBindings).length > 0,
-        savedState: savedStateFor(definition, values, result),
-        tab: state.tab,
-        isFavorite: readFavorites().has(definition.id)
-      })
-    );
+    const patientLabel = patient.displayLabel || "this patient";
+    return presentation.renderScoreDetail({
+      definition,
+      values,
+      bindings: scoreBindings,
+      overriddenKeys: state.overridden,
+      result,
+      patientLabel,
+      mode: values.mode,
+      hasBindings: Object.keys(scoreBindings).length > 0,
+      savedState: savedStateFor(definition, values, result),
+      tab: state.tab,
+      isFavorite: readFavorites().has(definition.id)
+    });
+  }
+
+  function render() {
+    const patient = active();
+    const container = byId("scoresContent");
+    if (!container) return;
+    const { list, detail } = ensureSections(container);
+    if (!patient) {
+      const template = document.createElement("template");
+      template.innerHTML = patientRequiredMessage();
+      list.replaceChildren(...template.content.childNodes);
+      list.hidden = false;
+      detail.hidden = true;
+      list.dataset.renderedFor = "";
+      return;
+    }
+    if (state.patientId !== patient.id) resetForPatient(patient.id);
+    if (!state.scoreId) {
+      if (!list.hasChildNodes() || list.dataset.renderedFor !== patient.id) {
+        const template = document.createElement("template");
+        template.innerHTML = renderHomeHtml();
+        list.replaceChildren(...template.content.childNodes);
+        list.dataset.renderedFor = patient.id;
+      }
+      list.hidden = false;
+      detail.hidden = true;
+      return;
+    }
+    const html = renderDetailHtml();
+    if (!html) {
+      state.scoreId = null;
+      if (!list.hasChildNodes() || list.dataset.renderedFor !== patient.id) {
+        const template = document.createElement("template");
+        template.innerHTML = renderHomeHtml();
+        list.replaceChildren(...template.content.childNodes);
+        list.dataset.renderedFor = patient.id;
+      }
+      list.hidden = false;
+      detail.hidden = true;
+      return;
+    }
+    if (detail.hidden || !detail.hasChildNodes()) {
+      const template = document.createElement("template");
+      template.innerHTML = html;
+      detail.replaceChildren(...template.content.childNodes);
+    }
+    list.hidden = true;
+    detail.hidden = false;
   }
 
   function repullFromPatient() {
@@ -469,9 +592,9 @@ export function createScoresController({
       state.values = {};
       state.overridden = new Set();
       state.savedFingerprint = null;
-    state.saveFailed = false;
+      state.saveFailed = false;
       state.tab = "calculator";
-      render();
+      openScoreDetail();
       return true;
     }
     if (target.closest?.("[data-score-back]")) {
@@ -479,9 +602,9 @@ export function createScoresController({
       state.values = {};
       state.overridden = new Set();
       state.savedFingerprint = null;
-    state.saveFailed = false;
+      state.saveFailed = false;
       state.tab = "calculator";
-      render();
+      closeScoreDetail();
       return true;
     }
     const tabButton = target.closest?.("[data-score-tab]");

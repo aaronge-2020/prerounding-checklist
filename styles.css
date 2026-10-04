@@ -14026,3 +14026,38 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .sample-note-coverage-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .sample-note-tag { background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 600; }
 .sample-note-coverage-list { margin: 0; padding-left: 18px; font-size: 0.82rem; line-height: 1.5; }
+
+/* "Verify with local AI" option: a proper labeled row instead of a bare
+   browser checkbox floating on its own line. */
+.quick-deid-verify {
+  display: grid;
+  gap: 4px;
+}
+.quick-deid-verify-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  width: fit-content;
+}
+.quick-deid-verify-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex: none;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.quick-deid-verify-label input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+}
+.quick-deid-verify-label:has(input[type="checkbox"]:disabled) {
+  color: var(--muted);
+  font-weight: 400;
+  cursor: not-allowed;
+}
+.quick-deid-verify > p {
+  margin: 0;
+}

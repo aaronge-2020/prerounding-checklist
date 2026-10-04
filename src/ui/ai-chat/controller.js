@@ -17,6 +17,7 @@ import {
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
 import { createAiChatPresentation } from "./presentation.js?v=20261001-ai-chat-fix-v1";
+import { chatPaneScrollTop } from "../view-scroll.js?v=20261003-chatpane-scroll";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20260929-ai-chat-v2";
 import { gatedFetch, isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
 import {
@@ -595,6 +596,26 @@ export function createAiChatController({
         maybeWarmRagIndex();
       });
     }
+    // A full innerHTML swap resets every scroller it contains. Snapshot the
+    // route scroller and the messages pane first, then restore: the route
+    // keeps its position (button clicks must not throw the reader back to
+    // the top of the view), and the messages pane follows the bottom only
+    // when the reader was pinned there — a reader scrolled up keeps their
+    // place while toggling Context, Compress, or the chat mode.
+    const viewEl = root.closest(".view");
+    const viewTop = viewEl ? viewEl.scrollTop : 0;
+    const viewLeft = viewEl ? viewEl.scrollLeft : 0;
+    const messagesBefore = root.querySelector("[data-ai-chat-messages]");
+    // Blur focused controls before the swap: a focused element removed
+    // mid-focus can reset scroll as focus falls back to the body.
+    const active = document.activeElement;
+    if (active && active !== document.body && root.contains(active)) {
+      try {
+        active.blur();
+      } catch {
+        /* ignore */
+      }
+    }
     root.innerHTML = presentation.render({
       hardware: state.hardware,
       settings: settings(),
@@ -683,8 +704,12 @@ export function createAiChatController({
       sidebarGuidelinesText: String(settings().systemGuidelines || ""),
       sidebarGuidelinesRemoteText: String(settings().systemGuidelinesRemote || "")
     });
+    if (viewEl) {
+      viewEl.scrollTop = viewTop;
+      viewEl.scrollLeft = viewLeft;
+    }
     const messages = root.querySelector("[data-ai-chat-messages]");
-    if (messages) messages.scrollTop = messages.scrollHeight;
+    if (messages) messages.scrollTop = chatPaneScrollTop(messages, messagesBefore);
     // An aborted send's unsent draft survives in state: restore it to the
     // composer whenever that patient's composer is eligible again (after a
     // patient switch back or a vault unlock). Never touches another

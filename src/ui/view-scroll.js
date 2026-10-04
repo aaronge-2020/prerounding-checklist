@@ -59,6 +59,20 @@ export function replaceViewContent(content, markup, { text = false } = {}) {
   });
 }
 
+// Chat messages pane: where a freshly rendered pane should scroll.
+// Follows the bottom when the reader was pinned there (or the pane is new),
+// so new messages still arrive in view; otherwise keeps the reader's
+// position, clamped to the new content height. `previous` is the pre-render
+// pane element, which stays readable after the DOM swap detaches it.
+export function chatPaneScrollTop(pane, previous) {
+  const max = Math.max(0, pane.scrollHeight - pane.clientHeight);
+  if (!previous) return max;
+  const wasPinned =
+    previous.scrollHeight - previous.scrollTop - previous.clientHeight <= 64;
+  if (wasPinned) return max;
+  return Math.min(previous.scrollTop, max);
+}
+
 // Compatibility exports for code that snapshots and restores separately
 // (e.g. src/ui/daily/source-controller.js). Snapshots by SELECTOR, not
 // element reference, because the DOM is replaced between capture and restore.
