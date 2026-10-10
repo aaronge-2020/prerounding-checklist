@@ -2495,7 +2495,7 @@ export function createReviewController(deps) {
       return true;
     }
     if (action === "rank-differentials") {
-      void runDifferentialScoring(button.dataset.problemId);
+      void runDifferentialScoring(button.dataset.problemId, { manual: true });
       return true;
     }
     if (action === "ap-suggestion-reject") {
