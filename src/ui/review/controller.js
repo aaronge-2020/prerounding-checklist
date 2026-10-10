@@ -38,6 +38,7 @@ import {
   reorderPlanProblems,
   reselectObjectiveBlock,
   selectObjectiveBlock,
+  setDifferentialDecisionScores,
   setSectionVisibility,
   studentGuidance,
   updateAssessment,
@@ -47,7 +48,7 @@ import {
   updateManualObjective,
   updateNoteSection,
   updatePlanProblem
-} from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
+} from "../../note-drafts/index.js?v=20260929-draft-sections-v1&decision1=score-field-v1";
 import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20260925-plan-rows-v1";
 import {
   clearLabBaseline,
@@ -55,9 +56,14 @@ import {
 } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import {
   buildApRevisionPrompt
-} from "../../ai/ap-generator.js?v=20260929-ap-medcontext-v3";
+} from "../../ai/ap-generator.js?v=20261010-ap-modes-v1";
 import { generateProblemApRevisionsWithOpenAi } from "../openai-ap-api.js?v=20260928-ap-suggestions-v1";
-import { createDifferential } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
+import {
+  buildDifferentialScoringRequest,
+  formatProbability
+} from "../../ai/decision-scoring.js?v=20261010-decision1-v1";
+import { scoreDifferentialsWithDecision1 } from "../decision-client.js?v=20261010-decision1-v1";
+import { createDifferential } from "../../note-drafts/index.js?v=20260929-draft-sections-v1&decision1=score-field-v1";
 
 function packetKey(value) {
   return String(value || "admission");
@@ -203,6 +209,12 @@ export function createReviewController(deps) {
   // ({ [problemId]: { suggestions, references } }) awaiting approve/reject.
   // Nothing here is persisted; approved suggestions land in the draft.
   let apSuggestionsState = {};
+  // Decision-1 ranking state: which problem is being ranked, a token that
+  // invalidates a stale in-flight ranking, and the last ranked signature
+  // per problem so unchanged lists are never re-ranked.
+  let scoringDecisionProblemId = "";
+  let scoringRunToken = 0;
+  let lastScoredDifferentialSignature = {};
   // Which lab families / flagged sections are collapsed on the data sheet.
   // Local UI state only; it survives re-renders and the search-only DOM patch.
   const collapsedFamilies = new Set();
@@ -900,6 +912,20 @@ export function createReviewController(deps) {
   }
 
   function input(target) {
+    // A&P confirm modal: typing consult questions re-targets the prompt
+    // preview (blank = full completion, filled = answer the consult), unless
+    // the student hand-edited the prompt — their text then wins.
+    if (target.matches?.("[data-ap-consult-questions]")) {
+      refreshApPromptPreview();
+      return true;
+    }
+    if (target.matches?.("[data-ap-prompt-editor]")) {
+      if (apConfirmState) {
+        apConfirmState.promptEdited = true;
+        apConfirmState.promptText = String(target.value || "");
+      }
+      return true;
+    }
     if (target.matches?.("[data-smart-exam-notes]")) {
       setSmartExamNotes(target.value);
       return true;
@@ -1093,7 +1119,10 @@ export function createReviewController(deps) {
     // plus the note-level assessment and compact objective data. Other
     // problems and the rest of the draft are never sent. The student can edit
     // the full prompt in the modal before anything leaves the browser.
-    const promptText = buildApRevisionPrompt({
+    // The inputs are stashed (not just the built text) so the preview can be
+    // rebuilt live when the consult-questions field changes: blank consult
+    // means full completion, a filled consult means answer exactly that.
+    const promptInputs = {
       problem: problemName,
       keyContext,
       etiologyStatus: problem.etiologyStatus,
@@ -1114,8 +1143,14 @@ export function createReviewController(deps) {
       // list is passed; the prompt builder resolves each entry to RxNorm
       // concepts and silently drops anything unresolvable.
       medications: (current.index?.medications || []).map((m) => m?.name).filter(Boolean)
-    });
-    apConfirmState = { problemId, problemName: problemName || "(unnamed problem)", promptText };
+    };
+    apConfirmState = {
+      problemId,
+      problemName: problemName || "(unnamed problem)",
+      promptInputs,
+      promptText: buildApRevisionPrompt({ ...promptInputs, mode: "complete", consultQuestions: "" }),
+      promptEdited: false
+    };
     // Insert just the modal node — no re-render. The modal lives at the end
     // of the Plan section body.
     const panel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
@@ -1134,14 +1169,57 @@ export function createReviewController(deps) {
     return editor ? String(editor.value || "") : "";
   }
 
+  // The consult questions currently typed in the modal's consult field.
+  function currentConsultQuestions() {
+    const field = deps.byId("reviewContent")?.querySelector(".note-draft-panel [data-ap-consult-questions]");
+    return field ? String(field.value || "").trim() : "";
+  }
+
+  // Rebuild the prompt for the current consult-field content: blank consult
+  // asks for full completion of the problem's differential and plans, a
+  // filled consult asks the model to answer exactly those questions.
+  function rebuildApPromptText() {
+    const pending = apConfirmState;
+    if (!pending) return "";
+    const consultQuestions = currentConsultQuestions();
+    return buildApRevisionPrompt({
+      ...pending.promptInputs,
+      mode: consultQuestions ? "consult" : "complete",
+      consultQuestions
+    });
+  }
+
+  const AP_COMPLETE_MODE_NOTE = "Consult questions are blank, so the consultant will fully complete this problem's differential, diagnostic plan, and therapeutic plan. Each recommendation appears below the problem for you to approve or reject individually.";
+  const AP_CONSULT_MODE_NOTE = "You asked consult questions, so the consultant will answer exactly what you asked with targeted recommendations. Each recommendation appears below the problem for you to approve or reject individually.";
+
+  // Keep the modal's prompt preview (and its mode note) in sync with the
+  // consult field. Never overwrites the student's hand edits: once the
+  // prompt textarea is edited directly, its content wins and the preview
+  // stops auto-updating. The textarea always holds exactly what will be sent
+  // (hand-edited prompts keep the previous append-at-send behavior).
+  function refreshApPromptPreview() {
+    const pending = apConfirmState;
+    if (!pending || pending.promptEdited) return;
+    const promptText = rebuildApPromptText();
+    pending.promptText = promptText;
+    const panel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
+    const editor = panel?.querySelector("[data-ap-prompt-editor]");
+    if (editor) editor.value = promptText;
+    const note = panel?.querySelector("[data-ap-mode-note]");
+    if (note) note.textContent = currentConsultQuestions() ? AP_CONSULT_MODE_NOTE : AP_COMPLETE_MODE_NOTE;
+  }
+
   async function runApGeneration(problemId) {
     const pending = apConfirmState;
     if (!pending || pending.problemId !== problemId) return;
-    // Include any consult questions the user typed in the modal
-    const consultQuestions = document.querySelector("[data-ap-consult-questions]")?.value?.trim() || "";
-    let finalPrompt = readEditedApPrompt().trim() || pending.promptText;
-    if (consultQuestions) {
-      finalPrompt += `\n\nThe clinician has these specific questions about this problem — address each directly in your response, in addition to the revision suggestions above:\n${consultQuestions}`;
+    // The textarea already holds the exact prompt: it was live-synced for the
+    // current mode unless the student hand-edited it. Hand-edited prompts
+    // keep the previous behavior — consult questions typed in the modal are
+    // appended at send time so both the edits and the questions are honored.
+    const consultQuestions = currentConsultQuestions();
+    let finalPrompt = readEditedApPrompt().trim() || rebuildApPromptText();
+    if (pending.promptEdited && consultQuestions) {
+      finalPrompt += `\n\nThe clinician has these specific questions about this problem — address each directly in your response:\n${consultQuestions}`;
     }
     apConfirmState = null;
     generatingApProblemId = problemId;
@@ -1161,7 +1239,8 @@ export function createReviewController(deps) {
       generatingApProblemId = "";
       if (!result.suggestions.length) {
         refreshProblemCard(problemId);
-        deps.setStatus(`AI found no revisions worth suggesting for "${pending.problemName}" — the current plan stands.`);
+        deps.setStatus("Consult complete: the consultant found no revisions worth suggesting.");
+        maybeAutoScoreDifferentials(problemId);
         return;
       }
       apSuggestionsState = {
@@ -1201,6 +1280,9 @@ export function createReviewController(deps) {
     apSuggestionsState = suggestions.length
       ? { ...apSuggestionsState, [problemId]: { ...entry, suggestions } }
       : Object.fromEntries(Object.entries(apSuggestionsState).filter(([id]) => id !== problemId));
+    // The generate round is over once the last suggestion is resolved:
+    // rank the finalized differential automatically.
+    maybeAutoScoreDifferentials(problemId);
   }
 
   function normalizeAnchor(value) {
@@ -1321,6 +1403,122 @@ export function createReviewController(deps) {
     deps.setStatus(changed
       ? "Suggestion applied — review it in the plan above."
       : "Could not locate the text that suggestion referred to; it was dismissed.");
+  }
+
+  // Signature of a problem's current differential list (stable ids + texts).
+  // Ranking is skipped when the list hasn't changed since the last run.
+  function differentialScoreSignature(problem) {
+    return JSON.stringify((problem?.differentials || []).map((d) => [
+      String(d?.id || ""),
+      apDraftText(d?.diagnosis),
+      apDraftText(d?.cluesFor),
+      apDraftText(d?.cluesAgainst)
+    ]));
+  }
+
+  // Assemble the de-identified context Decision-1 ranks against: this
+  // problem's own fields plus the note-level assessment and compact objective
+  // data — the same scoped pieces the generate prompt uses. Never raw chart
+  // text; every field here already passed the de-identification review.
+  function buildDecisionScoringContext(problemId) {
+    const current = model();
+    const draft = current.draft;
+    const problem = (draft.problems || []).find((p) => p.id === problemId);
+    if (!problem) return null;
+    const differentials = (problem.differentials || [])
+      .map((d) => ({
+        id: String(d?.id || ""),
+        diagnosis: apDraftText(d?.diagnosis),
+        cluesFor: apDraftText(d?.cluesFor),
+        cluesAgainst: apDraftText(d?.cluesAgainst)
+      }))
+      .filter((d) => d.id && d.diagnosis);
+    const contextBits = [];
+    const keyContext = apDraftText(problem.keyContext);
+    if (keyContext) contextBits.push(`Key context: ${keyContext}`);
+    const assessment = apDraftText(draft.assessment);
+    if (assessment) contextBits.push(`Assessment synthesis: ${assessment}`);
+    const vitals = apDraftText(draft.vitalsSummary);
+    if (vitals) contextBits.push(`Vitals: ${vitals}`);
+    const labs = apDraftText(draft.keyLabsSummary);
+    if (labs) contextBits.push(`Key labs / diagnostics: ${labs}`);
+    return {
+      problem: apDraftText(problem.problem),
+      contextText: contextBits.join("\n"),
+      differentials
+    };
+  }
+
+  // Rank one problem's differential with Decision-1 and persist the
+  // probabilities on the differential entries. Advisory only: the scores
+  // render as badges beside the student's own ordering, which never moves.
+  async function runDifferentialScoring(problemId, { manual = false } = {}) {
+    if (scoringDecisionProblemId) {
+      if (manual) deps.setStatus("Decision-1 is already ranking a differential — wait for it to finish.");
+      return;
+    }
+    const preferences = deps.currentPreferences ? deps.currentPreferences() : {};
+    if (!preferences.openRouterApiKey) {
+      if (manual) deps.setStatus("Save an OpenRouter API key in Settings to rank differentials with Decision-1.");
+      return;
+    }
+    const built = buildDecisionScoringContext(problemId);
+    if (!built) return;
+    let request;
+    try {
+      request = buildDifferentialScoringRequest(built);
+    } catch {
+      // Fewer than two candidate diagnoses: nothing to rank.
+      if (manual) deps.setStatus("Add at least two differential diagnoses before ranking.");
+      return;
+    }
+    const problem = (model().draft.problems || []).find((p) => p.id === problemId);
+    const signature = differentialScoreSignature(problem);
+    if (decisionScoreSignatures[problemId] === signature) {
+      if (manual) deps.setStatus("This differential hasn't changed since it was last ranked.");
+      return;
+    }
+    scoringDecisionProblemId = problemId;
+    refreshProblemCard(problemId);
+    deps.setStatus("Decision-1 is ranking the differential…");
+    try {
+      const result = await scoreDifferentialsWithDecision1({
+        apiKey: preferences.openRouterApiKey,
+        request
+      });
+      const diagnosisByDifferentialId = new Map(built.differentials.map((d) => [d.id, d.diagnosis]));
+      const optionToDifferentialId = new Map(
+        request.optionIds.map((optionId, index) => [optionId, request.differentialIds[index]])
+      );
+      const scores = [];
+      for (const entry of result.ranked) {
+        const differentialId = optionToDifferentialId.get(entry.optionId);
+        if (differentialId) scores.push({ differentialId, probability: entry.probability });
+      }
+      const current = model();
+      setDraft(setDifferentialDecisionScores(current.draft, problemId, scores));
+      const rankedProblem = (model().draft.problems || []).find((p) => p.id === problemId);
+      decisionScoreSignatures[problemId] = differentialScoreSignature(rankedProblem);
+      const top = result.ranked[0];
+      const topDiagnosis = top ? diagnosisByDifferentialId.get(optionToDifferentialId.get(top.optionId)) : "";
+      deps.setStatus(top && topDiagnosis
+        ? `Decision-1 ranked ${result.ranked.length} diagnoses — top: ${topDiagnosis} (${formatProbability(top.probability)}). Probabilities are advisory; your ordering is unchanged.`
+        : `Decision-1 ranked ${result.ranked.length} diagnoses. Probabilities are advisory; your ordering is unchanged.`);
+    } catch (error) {
+      deps.setStatus(error instanceof Error ? error.message : "Differential ranking failed.");
+    } finally {
+      scoringDecisionProblemId = "";
+      refreshProblemCard(problemId);
+    }
+  }
+
+  // After a generate round finishes for a problem (every suggestion approved,
+  // rejected, or none proposed), automatically rank the finalized
+  // differential. Silent no-op when there's no key, fewer than two
+  // candidates, or an unchanged already-ranked list.
+  function maybeAutoScoreDifferentials(problemId) {
+    if (pendingSuggestions(problemId).length) return;
+    void runDifferentialScoring(problemId);
   }
 
   function rejectApSuggestion(problemId, suggestionId) {
@@ -2294,6 +2492,10 @@ export function createReviewController(deps) {
     }
     if (action === "ap-suggestion-approve") {
       approveApSuggestion(button.dataset.problemId, button.dataset.suggestionId);
+      return true;
+    }
+    if (action === "rank-differentials") {
+      void runDifferentialScoring(button.dataset.problemId);
       return true;
     }
     if (action === "ap-suggestion-reject") {

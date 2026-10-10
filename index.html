@@ -28,7 +28,7 @@
     <!-- mobile-redirect:end -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' blob: 'unsafe-inline' 'wasm-unsafe-eval'; script-src-attr 'none'; worker-src 'self' blob:; connect-src 'self' https://huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://raw.githubusercontent.com https://api.openai.com https://rxnav.nlm.nih.gov https://api.fda.gov; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; trusted-types prerounding-app"
+      content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' blob: 'unsafe-inline' 'wasm-unsafe-eval'; script-src-attr 'none'; worker-src 'self' blob:; connect-src 'self' https://huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://raw.githubusercontent.com https://api.openai.com https://rxnav.nlm.nih.gov https://api.fda.gov https://openrouter.ai; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; trusted-types prerounding-app"
     >
     <meta name="theme-color" content="#f7f6f2">
     <meta name="description" content="Preround is an on-device, encrypted workspace for inpatient pre-rounding: organize hospital-day updates, draft notes, and chat with an on-device AI. Patient data stays in this browser; optional OpenAI features send de-identified text to OpenAI only when you start them. Offline mode blocks all network requests.">
@@ -41,7 +41,7 @@
     <meta name="twitter:description" content="Organize hospital-day updates, browse bedside cheat sheets, and draft OpenEvidence prompts — everything encrypted in your browser.">
     <title>Preround</title>
     <link rel="icon" href="./favicon.ico">
-    <link rel="stylesheet" href="./styles.css?v=20261003-quickdeid-checkbox">
+    <link rel="stylesheet" href="./styles.css?v=20261010-decision1-badge-v1">
     <style>
     /* Scribe Pro in-app view: styles scoped under #scribeProView so they never
        leak into the app shell. Uses the app's light-theme tokens (no local
@@ -429,6 +429,6 @@
     </div>
 
     <input id="modelPackFolderInput" type="file" webkitdirectory multiple hidden>
-    <script type="module" src="./src/ui/app.js?v=20261003-deid-adaptive-100&citelinks=20261004-v1&rxnorm=v2&amp;scroll=preserve-section-scroll-v3&amp;parser=table-v7&amp;review=concise-trends-v3&amp;labs=analyte-selection-v3&local-ai=context-budget-v1&ai-chat=draft-sections-v1&amp;models=surgical-render-v1&amp;local-llm=parse-hang-v1&amp;local-ai=chat-polish-v1&amp;ap=suggestions-v1&aichat=v17&deid-chain=v1&amp;admit=clear-session-v1&amp;pull=stay-fallback-v1&amp;drugdata=mech-v2"></script>
+    <script type="module" src="./src/ui/app.js?v=20261003-deid-adaptive-100&citelinks=20261004-v1&rxnorm=v2&amp;scroll=preserve-section-scroll-v3&amp;parser=table-v7&amp;review=concise-trends-v3&amp;labs=analyte-selection-v3&local-ai=context-budget-v1&ai-chat=draft-sections-v1&amp;models=surgical-render-v1&amp;local-llm=parse-hang-v1&amp;local-ai=chat-polish-v1&amp;ap=suggestions-v1&aichat=v17&deid-chain=v1&amp;admit=clear-session-v1&amp;pull=stay-fallback-v1&amp;drugdata=mech-v2&amp;decision1=ranking-v1"></script>
   </body>
 </html>

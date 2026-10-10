@@ -36,6 +36,29 @@ assert.ok(prompt.includes("STRICT JSON"));
 
 const promptNoPlans = buildApRevisionPrompt({ problem: "Fever", keyContext: "" });
 assert.ok(promptNoPlans.includes("(none written yet)"), "empty plans render as placeholders");
+assert.ok(promptNoPlans.includes("FULL COMPLETION"), "blank consult defaults to full-completion mode");
+
+// --- Revision prompt modes: blank consult completes, filled consult answers ---
+const promptComplete = buildApRevisionPrompt({
+  problem: "Chest pain",
+  keyContext: "45M, acute onset",
+  mode: "complete",
+  consultQuestions: ""
+});
+assert.ok(promptComplete.includes("FULL COMPLETION"), "complete mode states the full-completion goal");
+assert.ok(promptComplete.includes("add-suggestion for EVERY missing piece"), "complete mode asks for every missing piece");
+assert.ok(!promptComplete.includes("ANSWER THE CONSULT"), "complete mode has no consult goal");
+
+const promptConsult = buildApRevisionPrompt({
+  problem: "Chest pain",
+  keyContext: "45M, acute onset",
+  mode: "consult",
+  consultQuestions: "Should I order a d-dimer?"
+});
+assert.ok(promptConsult.includes("ANSWER THE CONSULT"), "consult mode states the consult goal");
+assert.ok(promptConsult.includes("Should I order a d-dimer?"), "consult questions are woven into the prompt");
+assert.ok(promptConsult.includes("do not pad the plan with unrelated changes"), "consult mode stays focused");
+assert.ok(!promptConsult.includes("FULL COMPLETION"), "consult mode has no completion goal");
 
 // --- Suggestion response parsing ---
 const raw = {

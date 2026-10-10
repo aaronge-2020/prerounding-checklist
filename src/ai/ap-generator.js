@@ -334,6 +334,10 @@ export function buildMedicationContextBlock(medications = [], labelData = []) {
   return excerpts ? `${block}\n\n${excerpts}` : block;
 }
 
+// `mode` selects the goal: "complete" (consult questions blank) asks the
+// model to FULLY COMPLETE the differential, diagnostic plan, and therapeutic
+// plan via add-suggestions; "consult" asks it to answer exactly what the
+// clinician's consult questions ask, with targeted suggestions.
 export function buildApRevisionPrompt({
   problem,
   keyContext,
@@ -346,7 +350,9 @@ export function buildApRevisionPrompt({
   vitals,
   keyLabs,
   medications,
-  labelData
+  labelData,
+  mode = "complete",
+  consultQuestions = ""
 } = {}) {
   const problemName = clean(problem, 300) || "(problem not named)";
   const context = clean(keyContext, 1500);
@@ -370,9 +376,22 @@ export function buildApRevisionPrompt({
   if (clean(keyLabs, 3000)) objectiveBits.push(`Key labs / diagnostics: ${clean(keyLabs, 3000)}`);
   const medicationBlock = buildMedicationContextBlock(medications, labelData);
 
+  const goal = mode === "consult"
+    ? `GOAL — ANSWER THE CONSULT: the clinician asked the specific questions below. Propose the targeted suggestions that answer them: add, revise, or remove. Stay focused on the questions; do not pad the plan with unrelated changes. If a question is already fully addressed by the current plan, return no suggestion for it.
+
+CLINICIAN'S CONSULT QUESTIONS:
+${clean(consultQuestions, 2000) || "(none provided)"}`
+    : `GOAL — FULL COMPLETION: the student wants this problem's plan finished. Propose an add-suggestion for EVERY missing piece, so that approving all suggestions leaves a complete, note-ready plan:
+- a full ranked differential (most likely first) covering the reasonable candidates for this presentation, each with 1-2 sentences of reasoning tied to this patient's findings and a likelihood (most likely / likely / possible / less likely),
+- a complete diagnostic plan (every test needed to work this up, each with its brief indication),
+- a complete therapeutic plan (every treatment, consult, monitoring, and disposition order at order-level specificity: drug name, dose, route, frequency, duration).
+Also revise or remove anything in the current plan that is wrong, duplicative, or unsafe. If the current plan is already complete and correct, return an empty suggestions array rather than inventing changes.`;
+
   return `You are an expert clinical assistant helping a medical student refine the assessment and plan for ONE clinical problem. All patient context below is DE-IDENTIFIED. Base every suggestion on the context given; do not invent patient data.
 
-IMPORTANT — SUGGESTED EDITS, NOT A REWRITE: do NOT generate a whole new plan. The student already has a current plan below. Propose TARGETED REVISIONS to it: individual suggestions the student will approve or reject one by one. Prefer a small number of high-value suggestions over an exhaustive list. If the current plan is already solid, say so with an empty suggestions array rather than inventing changes.
+IMPORTANT — SUGGESTED EDITS, NOT A REWRITE: do NOT generate a whole new plan. The student already has a current plan below. Propose TARGETED REVISIONS to it: individual suggestions the student will approve or reject one by one.
+
+${goal}
 
 PROBLEM: ${problemName}
 KEY CONTEXT FOR THIS PROBLEM: ${context || "(none provided)"}

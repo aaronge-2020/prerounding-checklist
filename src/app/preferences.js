@@ -98,6 +98,7 @@ export const DEFAULT_OPENAI_WORKUP_MODEL = "gpt-6-luna";
 
 export const DEFAULT_USER_PREFERENCES = Object.freeze({
   openAiApiKey: "",
+  openRouterApiKey: "",
   openAiModel: DEFAULT_OPENAI_WORKUP_MODEL,
   chatService: "",
   medicalService: "",
@@ -140,6 +141,7 @@ export function normalizeUserPreferences(value = {}) {
     : "";
   return {
     openAiApiKey: trimmed(value?.openAiApiKey, 1000),
+    openRouterApiKey: trimmed(value?.openRouterApiKey, 1000),
     openAiModel: openAiWorkupModelOption(value?.openAiModel).value,
     chatService,
     medicalService,

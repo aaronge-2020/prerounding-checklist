@@ -8,6 +8,7 @@ import {
 } from "../../review-data/compact-summary.js?v=20260924-optional-sections-v1";
 import { sanitizeProblemTitle } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
 import { baselineDisplayText, baselinePriorityFor } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
+import { formatProbability } from "../../ai/decision-scoring.js?v=20261010-decision1-v1";
 import {
   EXAM_SYSTEMS,
   getExamSystem,
@@ -530,9 +531,17 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     }).join("")}</ul><p class="ed-note">These render in their own Medications section at the end of the final note.</p>`;
   }
 
+  // Decision-1 probability badge. Advisory only: the score never reorders
+  // the student's differential, and a missing score renders nothing.
+  function decision1Badge(differential) {
+    const probability = differential?.decision1?.probability;
+    if (typeof probability !== "number" || !Number.isFinite(probability)) return "";
+    return `<span class="ed-decision1" title="Decision-1 ranking (experimental): an advisory estimate from Microsoft's Decision-1 model via OpenRouter, based only on the de-identified problem context sent for ranking. Not a validated clinical probability — the differential below stays in your order.">${escapeHtml(formatProbability(probability))}</span>`;
+  }
+
   function renderDifferentialEditor(differential, index, problemId) {
     return `<div class="differential-card" data-differential-id="${escapeHtml(differential.id)}">
-      <div class="ed-diff-bar"><strong>#${index + 1}</strong><span class="ed-mini-row"><button type="button" class="ed-mini" data-action="move-differential" data-direction="-1" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}" aria-label="Move differential up">↑</button><button type="button" class="ed-mini" data-action="move-differential" data-direction="1" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}" aria-label="Move differential down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-differential" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}">Remove</button></span></div>
+      <div class="ed-diff-bar"><strong>#${index + 1}</strong>${decision1Badge(differential)}<span class="ed-mini-row"><button type="button" class="ed-mini" data-action="move-differential" data-direction="-1" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}" aria-label="Move differential up">↑</button><button type="button" class="ed-mini" data-action="move-differential" data-direction="1" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}" aria-label="Move differential down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-differential" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}">Remove</button></span></div>
       <div class="ed-sub"><span class="ed-sub-label">Diagnosis</span><div class="ed-body" contenteditable="true" data-differential-field="diagnosis" data-placeholder="Diagnosis" spellcheck="true">${editorHtml(differential.diagnosis)}</div></div>
       <div class="ed-two"><div class="ed-sub"><span class="ed-sub-label">Clues for</span><div class="ed-body" contenteditable="true" data-differential-field="cluesFor" data-placeholder="Optional" spellcheck="true">${editorHtml(differential.cluesFor)}</div></div><div class="ed-sub"><span class="ed-sub-label">Clues against</span><div class="ed-body" contenteditable="true" data-differential-field="cluesAgainst" data-placeholder="Optional" spellcheck="true">${editorHtml(differential.cluesAgainst)}</div></div></div>
     </div>`;
@@ -550,10 +559,10 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         <div class="ap-consult-questions">
           <label for="apConsultQuestions"><strong>Reason for consult</strong> <span class="muted">(optional)</span></label>
           <textarea id="apConsultQuestions" class="ap-consult-input" data-ap-consult-questions rows="3" spellcheck="true" placeholder="e.g. What is the best medication regimen for this problem? What dose should I use? Should I consult a specialist?" aria-label="Specific consult questions for the AI">${escapeHtml(apConfirm.consultQuestions || "")}</textarea>
-          <p class="muted ap-consult-hint">What do you want the consultant to address? It will answer these along with suggesting plan revisions.</p>
+          <p class="muted ap-consult-hint">Leave blank and the consultant fully completes this problem's differential, diagnostic plan, and therapeutic plan. Ask a question and it answers exactly what you asked.</p>
         </div>
         <textarea class="ap-prompt-editor" data-ap-prompt-editor rows="18" spellcheck="false" aria-label="Editable AI prompt">${escapeHtml(apConfirm.promptText)}</textarea>
-        <p class="muted ap-confirm-note">The consultant proposes targeted revisions to this problem's current plan — never a rewrite. Each recommendation appears below the problem for you to approve or reject individually.</p>
+        <p class="muted ap-confirm-note" data-ap-mode-note>Consult questions are blank, so the consultant will fully complete this problem's differential, diagnostic plan, and therapeutic plan. Each recommendation appears below the problem for you to approve or reject individually.</p>
         <div class="button-row">
           <button type="button" class="button--primary button--small" data-action="ap-confirm-generate" data-problem-id="${escapeHtml(apConfirm.problemId)}">Send consult</button>
           <button type="button" class="button--secondary button--small" data-action="ap-copy-prompt">Copy prompt</button>
@@ -778,7 +787,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       <div class="ed-etiology"><span class="ed-sub-label">Etiology</span>${helpButton(known ? "etiology_known" : "etiology_unknown", "Etiology status", guidanceFor(known ? "etiology_known" : "etiology_unknown"))}<div class="segmented-options"><label><input type="radio" name="etiology_${escapeHtml(problem.id)}" data-problem-etiology value="known" ${known ? "checked" : ""}> <span>Known</span></label><label><input type="radio" name="etiology_${escapeHtml(problem.id)}" data-problem-etiology value="unknown" ${known ? "" : "checked"}> <span>Unknown</span></label></div></div>
       ${known
         ? `<div class="ed-sub"><span class="ed-sub-label">Known etiology</span><div class="ed-body" contenteditable="true" data-problem-field="knownEtiology" data-placeholder="Documented cause or mechanism" spellcheck="true">${editorHtml(problem.knownEtiology)}</div></div>`
-        : `<div class="ed-differentials"><div class="ed-diff-head"><span class="ed-sub-label">Ranked differential</span><button type="button" class="ed-mini" data-action="add-differential" data-problem-id="${escapeHtml(problem.id)}">${icon("plus")} Add</button></div>${renderDifferentialsWithInlineSuggestions(problem, suggestionList, references)}</div>`}
+        : `<div class="ed-differentials"><div class="ed-diff-head"><span class="ed-sub-label">Ranked differential</span><button type="button" class="ed-mini" data-action="rank-differentials" data-problem-id="${escapeHtml(problem.id)}" title="Rank this differential with Decision-1 (experimental advisory scores)">Rank</button><button type="button" class="ed-mini" data-action="add-differential" data-problem-id="${escapeHtml(problem.id)}">${icon("plus")} Add</button></div>${renderDifferentialsWithInlineSuggestions(problem, suggestionList, references)}</div>`}
       <div class="ed-two"><div class="ed-sub"><span class="ed-sub-label">Diagnostic plan</span><div class="ed-body" ${hasDiagnosticSuggestions ? `contenteditable="false" data-ap-reviewing="true"` : `contenteditable="true"`} data-problem-field="diagnosticPlan" data-placeholder="Optional" spellcheck="true">${diagnosticPlanHtml}</div>${hasDiagnosticSuggestions ? `<p class="ap-review-note">Resolve the suggestions above to resume editing.</p>` : ""}</div><div class="ed-sub"><span class="ed-sub-label">Therapeutic plan</span><div class="ed-body" ${hasTherapeuticSuggestions ? `contenteditable="false" data-ap-reviewing="true"` : `contenteditable="true"`} data-problem-field="therapeuticPlan" data-placeholder="Optional" spellcheck="true">${therapeuticPlanHtml}</div>${hasTherapeuticSuggestions ? `<p class="ap-review-note">Resolve the suggestions above to resume editing.</p>` : ""}</div></div>
       ${referencesHtml}
     </article>`;

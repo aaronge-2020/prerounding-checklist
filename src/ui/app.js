@@ -102,13 +102,13 @@ import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTea
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences
-} from "../app/preferences.js?v=20260929-gpt6-models";
+} from "../app/preferences.js?v=20260929-gpt6-models&decision1=openrouter-key-v1";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1&icon=search-v1";
 import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=section-scroll-v3&parser=table-v6&local-llm-v1&clear-btn-v1";
 import { createDailySourceController } from "./daily/source-controller.js?v=20260923-plan-problems-v1&scroll=preserve-section-scroll-v3&parser=table-v7&local-llm-v3&clear-btn-v1";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
-import { createReviewPresentation } from "./review/presentation.js?v=20260928-ap-suggestions-v1&trend=concise-v3";
-import { createReviewController } from "./review/controller.js?v=20260928-ap-suggestions-v1&labs=analyte-selection-v3&rxnorm=v2&draft=sections-v1&pull=stay-fallback-v1";
+import { createReviewPresentation } from "./review/presentation.js?v=20260928-ap-suggestions-v1&trend=concise-v3&decision1=badge-v1";
+import { createReviewController } from "./review/controller.js?v=20260928-ap-suggestions-v1&labs=analyte-selection-v3&rxnorm=v2&draft=sections-v1&pull=stay-fallback-v1&decision1=ranking-v1";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-medication-card-v4";
 import {
   createPromptTaskController,
@@ -122,7 +122,7 @@ import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-adm
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-medication-card-v4";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-medication-card-v4";
 import { preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20260925-preserve-view-scroll-v2";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-medication-card-v4&local-ai=guidelines-editable-v1";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-medication-card-v4&local-ai=guidelines-editable-v1&decision1=key-section-v1";
 import { installGlobalFetchGuard, isOfflineMode, onOfflineModeChange, setOfflineMode } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
 import { createVaultPresentation, disambiguatedPatientLabels } from "./vault/presentation.js?v=20260718-vault-safety";
 import { createVaultSessionGuards } from "./vault/session-guards.js?v=20260922-vault-guards";
@@ -1461,6 +1461,7 @@ function renderSettings() {
   replaceViewContent(container, settingsPresentation.renderSettings({
     preferences,
     apiKeySaved: Boolean(preferences.openAiApiKey),
+    openRouterKeySaved: Boolean(preferences.openRouterApiKey),
     guidelineSets: app.guidelineSets,
     guidelineSearchQuery: app.guidelineSearchQuery,
     guidelinePage: app.guidelinePage,
@@ -1503,6 +1504,23 @@ async function clearOpenAiByok() {
   render();
 }
 
+async function saveOpenRouterByok() {
+  const preferences = currentPreferences();
+  const replacementKey = String(byId("openRouterApiKeyInput")?.value || "").trim();
+  const apiKey = replacementKey || preferences.openRouterApiKey;
+  if (!apiKey) throw new Error("Enter an OpenRouter API key before saving.");
+  setVaultPreferences({ ...preferences, openRouterApiKey: apiKey });
+  await persistVault("OpenRouter key saved inside the encrypted local vault.");
+  render();
+}
+
+async function clearOpenRouterByok() {
+  const preferences = currentPreferences();
+  setVaultPreferences({ ...preferences, openRouterApiKey: "" });
+  await persistVault("Saved OpenRouter key removed from the encrypted local vault.");
+  render();
+}
+
 // App-wide offline mode: one boolean in localStorage that the network gate
 // enforces on every remote request. The AI Chat controller subscribes to the
 // same event and degrades ChatGPT chat to the on-device model; here we just
@@ -1513,7 +1531,7 @@ function toggleOfflineMode() {
   renderOfflineModePill();
   renderSettings();
   setStatus(next
-    ? "Offline mode is on. OpenAI calls, ChatGPT chat, and model downloads are blocked; everything on-device keeps working."
+    ? "Offline mode is on. OpenAI calls, Decision-1 ranking, ChatGPT chat, and model downloads are blocked; everything on-device keeps working."
     : "Offline mode is off. Cloud features are available again.");
 }
 
@@ -1936,6 +1954,8 @@ async function handleClick(event) {
     if (action === "open-token-color-picker") tokenColorPicker.open(target.dataset.token, target, event);
     if (action === "save-openai-byok") await saveOpenAiByok();
     if (action === "clear-openai-byok") await clearOpenAiByok();
+    if (action === "save-openrouter-byok") await saveOpenRouterByok();
+    if (action === "clear-openrouter-byok") await clearOpenRouterByok();
     if (action === "toggle-offline-mode") toggleOfflineMode();
     if (action === "save-local-ai-guidelines") saveLocalAiGuidelines();
     if (action === "reset-local-ai-guidelines") resetLocalAiGuidelines();

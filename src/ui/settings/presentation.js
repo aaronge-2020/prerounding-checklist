@@ -4,6 +4,7 @@ export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({
     preferences,
     apiKeySaved,
+    openRouterKeySaved,
     guidelineSets,
     guidelineSearchQuery = "",
     guidelinePage = 1,
@@ -24,7 +25,7 @@ export function createSettingsPresentation({ escapeHtml }) {
           <div class="section-heading">
             <div>
               <h2>Offline mode</h2>
-              <p class="muted">Block every network request the app can make — OpenAI calls, ChatGPT chat, and model downloads. Everything on-device keeps working: the vault, calculators, de-identification, and on-device chat with an already-downloaded model.</p>
+              <p class="muted">Block every network request the app can make — OpenAI calls, Decision-1 differential ranking, ChatGPT chat, and model downloads. Everything on-device keeps working: the vault, calculators, de-identification, and on-device chat with an already-downloaded model.</p>
             </div>
           </div>
           <div class="notice settings-security-note">
@@ -49,6 +50,7 @@ export function createSettingsPresentation({ escapeHtml }) {
             <div><dt>De-identification</dt><dd>Runs on-device after a one-time model download from Hugging Face (pinned files, started only by you). Nothing is sent anywhere during redaction.</dd></div>
             <div><dt>On-device chat and note parsing</dt><dd>Run on-device after a one-time model download. Nothing leaves the browser.</dd></div>
             <div><dt>OpenAI features (formatting, per-problem plans, ChatGPT chat)</dt><dd>Sent to api.openai.com using your saved key. Text is de-identified on-device first, and ChatGPT chat shows you exactly what will be sent for your review before anything transmits. Blocked while offline mode is on.</dd></div>
+            <div><dt>Decision-1 differential ranking</dt><dd>Sent to openrouter.ai using your saved OpenRouter key. Only de-identified problem context and candidate diagnoses are sent, after your plan review; probabilities come back as advisory badges and never reorder your differential. Blocked while offline mode is on.</dd></div>
             <div><dt>OpenEvidence / Doximity buttons</dt><dd>These open those sites in a new tab (they need a connection to load). The app sends them nothing — you paste whatever you choose.</dd></div>
             <div><dt>Model downloads</dt><dd>One-time downloads from Hugging Face when you explicitly start them. Blocked while offline mode is on.</dd></div>
             <div><dt>Drug lookups</dt><dd>When you search a drug name, only the name is sent to the FDA drug database (api.fda.gov) for reference information. Never patient context. Blocked while offline mode is on.</dd></div>
@@ -80,6 +82,28 @@ export function createSettingsPresentation({ escapeHtml }) {
             <button class="button--primary" type="button" data-action="save-openai-byok">Save encrypted key</button>
             <button class="button--quiet" type="button" data-action="clear-openai-byok" ${apiKeySaved ? "" : "disabled"}>Remove saved key</button>
           </div>
+          </section>
+          <section class="panel settings-panel settings-panel--byok">
+          <div class="section-heading">
+            <div>
+              <h2>OpenRouter API key (Decision-1)</h2>
+              <p class="muted">Ranks each problem's differential diagnosis with Microsoft's Decision-1 model — a calibrated probability per candidate, shown as an advisory badge. Only de-identified problem context and candidate diagnoses are sent.</p>
+            </div>
+          </div>
+          <div class="notice settings-security-note">
+            <strong>${openRouterKeySaved ? "An API key is saved in the encrypted vault." : "No API key is saved."}</strong>
+            <span>The key is never shown again. It's encrypted at rest in this browser's vault record and only used when you rank a differential. While the vault is unlocked, the browser keeps it in memory to make that request.</span>
+          </div>
+          <div class="settings-fields">
+            <label class="settings-field-wide">OpenRouter API key
+              <input id="openRouterApiKeyInput" type="password" autocomplete="new-password" spellcheck="false" placeholder="${openRouterKeySaved ? "Saved in encrypted vault; enter a new key to replace it" : "Paste an OpenRouter key to enable differential ranking"}">
+            </label>
+          </div>
+          <div class="button-row">
+            <button class="button--primary" type="button" data-action="save-openrouter-byok">Save encrypted key</button>
+            <button class="button--quiet" type="button" data-action="clear-openrouter-byok" ${openRouterKeySaved ? "" : "disabled"}>Remove saved key</button>
+          </div>
+          <p class="muted settings-helper">Without a saved key, the Rank button explains what is missing instead of calling the API.</p>
           </section>
 
           <section class="panel settings-panel settings-panel--backup">

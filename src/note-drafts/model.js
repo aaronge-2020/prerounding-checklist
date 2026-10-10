@@ -218,7 +218,21 @@ function normalizeDifferential(differential, { timestamp, idFactory }) {
     id: text(differential?.id).trim() || idFactory("differential"),
     diagnosis: normalizeDraftText(differential?.diagnosis ?? "", { timestamp }),
     cluesFor: normalizeDraftText(differential?.cluesFor ?? "", { timestamp }),
-    cluesAgainst: normalizeDraftText(differential?.cluesAgainst ?? "", { timestamp })
+    cluesAgainst: normalizeDraftText(differential?.cluesAgainst ?? "", { timestamp }),
+    decision1: normalizeDecision1Score(differential?.decision1)
+  };
+}
+
+// Decision-1 ranking metadata: machine-generated, not student-editable text.
+// Kept as plain values so a probability is never confused with draft prose.
+// Anything that is not a finite 0–1 probability normalizes to null.
+function normalizeDecision1Score(value) {
+  if (!value || typeof value !== "object") return null;
+  const probability = Number(value.probability);
+  if (!Number.isFinite(probability) || probability < 0 || probability > 1) return null;
+  return {
+    probability,
+    scoredAt: String(value.scoredAt || "").trim().slice(0, 40) || null
   };
 }
 
@@ -493,6 +507,7 @@ export function addDifferential(draft, problemId, values = {}, options = {}) {
 
 export function updateDifferential(draft, problemId, differentialId, patch = {}, { now = timestampNow } = {}) {
   const timestamp = now();
+  const textChanged = patch.diagnosis !== undefined || patch.cluesFor !== undefined || patch.cluesAgainst !== undefined;
   const problems = (draft.problems || []).map((problem) => {
     if (problem.id !== problemId) return problem;
     return {
@@ -503,9 +518,55 @@ export function updateDifferential(draft, problemId, differentialId, patch = {},
           ...differential,
           ...(patch.diagnosis === undefined ? {} : { diagnosis: updateDraftText(differential.diagnosis, patch.diagnosis, timestamp) }),
           ...(patch.cluesFor === undefined ? {} : { cluesFor: updateDraftText(differential.cluesFor, patch.cluesFor, timestamp) }),
-          ...(patch.cluesAgainst === undefined ? {} : { cluesAgainst: updateDraftText(differential.cluesAgainst, patch.cluesAgainst, timestamp) })
+          ...(patch.cluesAgainst === undefined ? {} : { cluesAgainst: updateDraftText(differential.cluesAgainst, patch.cluesAgainst, timestamp) }),
+          // Edited text invalidates the ranking: a probability scored against
+          // the old wording must not linger beside the new one.
+          ...(textChanged ? { decision1: null } : {})
         };
       })
+    };
+  });
+  return { ...draft, problems, updatedAt: timestamp };
+}
+
+// Attach Decision-1 calibrated probabilities to a problem's differentials.
+// `scores` is [{ differentialId, probability }]; entries not listed keep
+// their current score. Differentials created by this call path always carry
+// decision1 (possibly null), so renders never read an undefined field.
+export function setDifferentialDecisionScores(draft, problemId, scores = [], { now = timestampNow } = {}) {
+  const timestamp = now();
+  const byId = new Map();
+  for (const entry of Array.isArray(scores) ? scores : []) {
+    const probability = Number(entry?.probability);
+    if (!entry?.differentialId || !Number.isFinite(probability)) continue;
+    byId.set(String(entry.differentialId), Math.min(1, Math.max(0, probability)));
+  }
+  if (!byId.size) return draft;
+  const problems = (draft.problems || []).map((problem) => {
+    if (problem.id !== problemId) return problem;
+    return {
+      ...problem,
+      differentials: (problem.differentials || []).map((differential) => {
+        if (!byId.has(String(differential.id))) return differential;
+        return {
+          ...differential,
+          decision1: { probability: byId.get(String(differential.id)), scoredAt: timestamp }
+        };
+      })
+    };
+  });
+  return { ...draft, problems, updatedAt: timestamp };
+}
+
+export function clearDifferentialDecisionScore(draft, problemId, differentialId, { now = timestampNow } = {}) {
+  const timestamp = now();
+  const problems = (draft.problems || []).map((problem) => {
+    if (problem.id !== problemId) return problem;
+    return {
+      ...problem,
+      differentials: (problem.differentials || []).map((differential) =>
+        String(differential.id) === String(differentialId) ? { ...differential, decision1: null } : differential
+      )
     };
   });
   return { ...draft, problems, updatedAt: timestamp };
