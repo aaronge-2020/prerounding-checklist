@@ -35,8 +35,8 @@ Compiled 2026-10-11 ~18:35 EDT for handoff to a stronger agent. Everything below
 - **Local LLM parser and chat** (goal_0c0508be3bb7): user_action_required.
 - Note editor flexible layout: parked, no attention needed.
 
-### A7. In flight as of 18:35 EDT
-- Push agent committing local work + docs/benchmarks/ (82MB, 4 commits ahead of origin) to prerounding-checklist. Confirm it landed.
+### A7. Completed 2026-10-11 ~18:41 EDT
+- Push completed: local work + docs/benchmarks/ merged and pushed to prerounding-checklist main as commit 68eb31503af6bfaeb66804e8cc3e2ad80fa55759 (62 files, verified on remote). docs/benchmarks/ needed no changes (already in sync).
 
 ## B. De-identification manuscript
 - Master: Google Doc 12Os83S_F7nrh-FImnrSn5MwDegwUO8SV7uvR9l5U-WQ ("Browser-Local De-identification of Clinical Text — Manuscript Draft"); markdown mirror ~/workspace/deid-manuscript/manuscript-draft.md (last regenerated Oct 9 — STALE, see B6).
@@ -60,8 +60,8 @@ The Oct 9 draft predates all of this verified work:
 - Table 4 (SOTA head-to-head) used old strict exact-span scoring; Posada rescoring still pending.
 - ~/workspace/deid-manuscript/results-table-verified.md (Oct 11) has the verified numbers to integrate.
 
-### B7. In flight as of 18:35 EDT
-- Push agent loading ~/workspace/deid-models/ (code + results, no model binaries) into aaronge-2020/deidentification-benchmark. Confirm it landed.
+### B7. Completed 2026-10-11 ~18:39 EDT
+- Push completed: ~/workspace/deid-models/ (code + results, no model binaries) pushed to aaronge-2020/deidentification-benchmark main as commit e4648723ff1e9c9d66f5f773d8b39daf6cddcbd6 (620 files, 51.4MB, verified on remote).
 
 ## Standing rules the next agent must honor
 - Never send email or any external message unless Aaron physically clicks the approval prompt. Text approval in chat is not enough.
