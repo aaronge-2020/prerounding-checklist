@@ -46,10 +46,26 @@ function normalizedEtag(value) {
   return String(value || "").replace(/^W\//i, "").replace(/^\"|\"$/g, "").trim().toLowerCase();
 }
 
-async function verifyPinnedRemoteAsset(option, asset, { signal } = {}) {
+// Gated models (e.g. Stanford's TIDE2 Sentry) download from a private Hugging
+// Face repo. The token is the signed-in user's own, entered in Settings and
+// kept encrypted in the vault; it is only ever sent as an Authorization
+// header to huggingface.co for that explicit download.
+function authHeadersFor(auth) {
+  const token = typeof auth?.hfToken === "string" ? auth.hfToken.trim() : "";
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+function requireGatedAuth(option, auth) {
+  if (option?.download?.auth !== "hf-token") return;
+  if (!authHeadersFor(auth).Authorization) {
+    throw new Error(`${option.label} is a gated model. Add your Hugging Face token in Settings first — each person needs their own token and a signed data-use agreement.`);
+  }
+}
+
+async function verifyPinnedRemoteAsset(option, asset, { signal, auth } = {}) {
   if (!asset?.etag) return;
   const url = modelDownloadUrl(option, asset);
-  const response = await gatedFetch(url, { method: "HEAD", cache: "no-store", signal });
+  const response = await gatedFetch(url, { method: "HEAD", cache: "no-store", signal, headers: authHeadersFor(auth) });
   if (!response.ok) throw new Error(`Could not verify the pinned identity for ${asset.path}.`);
   const actual = normalizedEtag(response.headers.get("etag"));
   if (!actual || actual !== normalizedEtag(asset.etag)) {
@@ -390,8 +406,9 @@ export async function importModelPack(option, entries, { onProgress } = {}) {
   }
 }
 
-async function installCacheModelPack(option, { signal, onProgress } = {}) {
+async function installCacheModelPack(option, { signal, onProgress, auth } = {}) {
   if (!canUseModelPackCache()) throw new Error("This browser cannot cache this model locally. Use Import model folder instead.");
+  requireGatedAuth(option, auth);
   const plan = modelDownloadPlan(option);
   const cache = await openModelPackCache();
   await removePackResponses(cache, option);
@@ -399,8 +416,8 @@ async function installCacheModelPack(option, { signal, onProgress } = {}) {
   let completedBytes = 0;
   try {
     for (const asset of plan) {
-      await verifyPinnedRemoteAsset(option, asset, { signal });
-      const response = await gatedFetch(modelDownloadUrl(option, asset), { cache: "no-store", signal });
+      await verifyPinnedRemoteAsset(option, asset, { signal, auth });
+      const response = await gatedFetch(modelDownloadUrl(option, asset), { cache: "no-store", signal, headers: authHeadersFor(auth) });
       if (!response.ok || !response.body) throw new Error(`Could not download ${asset.path} (${response.status || "network error"}).`);
       assertPinnedResponseAsset(asset, response);
       const contentLength = Number(response.headers.get("content-length") || 0);
@@ -478,11 +495,11 @@ async function downloadedOpfsBytes(option, plan) {
   return sizes.reduce((total, size) => total + size, 0);
 }
 
-async function streamModelAsset(option, asset, existingBytes, { signal, onProgress, completedFiles }) {
+async function streamModelAsset(option, asset, existingBytes, { signal, onProgress, completedFiles, auth }) {
   const url = modelDownloadUrl(option, asset);
   if (!url) throw new Error(`${option.label} does not have a trusted browser download source.`);
-  await verifyPinnedRemoteAsset(option, asset, { signal });
-  const headers = existingBytes > 0 ? { Range: `bytes=${existingBytes}-` } : undefined;
+  await verifyPinnedRemoteAsset(option, asset, { signal, auth });
+  const headers = { ...authHeadersFor(auth), ...(existingBytes > 0 ? { Range: `bytes=${existingBytes}-` } : {}) };
   const response = await gatedFetch(url, { cache: "no-store", headers, signal });
   if (!response.ok || !response.body) {
     throw new Error(`Could not download ${asset.path} (${response.status || "network error"}).`);
@@ -529,10 +546,11 @@ async function streamModelAsset(option, asset, existingBytes, { signal, onProgre
   return { path: asset.path, size: asset.bytes, ...(asset.etag ? { etag: asset.etag } : {}) };
 }
 
-export async function installModelPack(option, { signal, onProgress } = {}) {
+export async function installModelPack(option, { signal, onProgress, auth } = {}) {
   if (!isInstallableModel(option)) throw new Error("This model is bundled and does not need to be downloaded.");
   if (!hasAutomaticModelDownload(option)) throw new Error(`${option.label} does not have a trusted automatic download source.`);
-  if (option.download?.storage === "cache") return installCacheModelPack(option, { signal, onProgress });
+  requireGatedAuth(option, auth);
+  if (option.download?.storage === "cache") return installCacheModelPack(option, { signal, onProgress, auth });
   if (!canUseOpfs()) throw new Error("This browser cannot download a large local model automatically. Use Import model folder instead.");
 
   const plan = modelDownloadPlan(option);
@@ -552,6 +570,7 @@ export async function installModelPack(option, { signal, onProgress } = {}) {
       const file = await streamModelAsset(option, asset, existingBytes, {
         signal,
         completedFiles,
+        auth,
         onProgress: (progress) => {
           downloadedBytes = progress.completedBytes;
           onProgress?.(progress);
@@ -700,7 +719,15 @@ export async function ensureModelPackServiceWorker() {
     return { ready: false, message: "This browser does not support the local model installer." };
   }
   await navigator.serviceWorker.register(new URL("../../service-worker.js?v=20260925-sw-auth-fix", import.meta.url));
-  await navigator.serviceWorker.ready;
+  // Timeout the ready wait: a failed SW install must not hang boot forever.
+  const readyTimeout = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("Service worker ready timeout")), 10000)
+  );
+  try {
+    await Promise.race([navigator.serviceWorker.ready, readyTimeout]);
+  } catch (error) {
+    return { ready: false, message: "Service worker failed to activate: " + (error.message || "timeout") };
+  }
   if (!navigator.serviceWorker.controller) {
     await new Promise((resolve) => {
       const timeout = setTimeout(resolve, 1500);

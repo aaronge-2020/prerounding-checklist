@@ -8,7 +8,9 @@ import {
   OPENMED_SMALL_MODEL_ID,
   CLINICALE5_SMALL_MODEL_ID,
   ROBERTA_I2B2_Q8_MODEL_ID,
-  OPENAI_PRIVACY_FILTER_MODEL_ID
+  OPENAI_PRIVACY_FILTER_MODEL_ID,
+  TIDE2_MODEL_ID,
+  TIDE2_REVISION
 } from "../vault/deid/model-config.js?v=20260930-deid-trackd";
 
 export const STRUCTURED_DEID_MODE = "structured";
@@ -16,17 +18,14 @@ export const STRUCTURED_DEID_MODE = "structured";
 // offered in the clinician UI. Large WebGPU packs that repeatedly failed their
 // own self-test are deliberately not selectable; a model is useful only when
 // this app can verify a real local inference session.
-// Default selected by the 2026-09-29 de-identification benchmark
-// (obi/deid_bert_i2b2, MIT): strongest redaction-relevant recall on
-// facilities, ages, and locations — the identifiers the structured
-// layer cannot recover on its own.
-export const DEFAULT_DEID_MODEL_KEY =
-  // Track D (2026-09-30): Stanford + the full algorithmic rule stack
-  // (labeled/bracketed/tag-wrapped names, clinical ages, role-anchored
-  // provider names, labeled clinical IDs, care facilities, relatives'
-  // names) is the winning system at 0.802 exact-span F1 on the held-out
-  // benchmark split.
-  "stanford-clinical";
+// Default selected by the 2026-10-07 SHIELD benchmark: TIDE2 Sentry
+// (DeBERTa-v3-large, fp16) at 0.82 exact-span F1 on 1,381 notes — the
+// strongest clinical de-identification model available in the browser.
+// Gated repo: needs a signed DUA and the user's own Hugging Face token.
+export const DEFAULT_DEID_MODEL_KEY = "tide2-sentry";
+// When the gated default cannot be made ready (no token, not downloaded),
+// the app falls back here for the session and says so plainly.
+export const FALLBACK_DEID_MODEL_KEY = "stanford-clinical";
 
 const ALL_DEID_MODEL_OPTIONS = [
   {
@@ -447,6 +446,61 @@ const ALL_DEID_MODEL_OPTIONS = [
     disabledReason: "This PyTorch RoBERTa model is an offline validation reference, not a browser ONNX model. Run it in a separately managed local validator; it is never sent to a remote service.",
     description: "i2b2 medical-note de-identification reference model. Keep it for independent offline validation, not live browser inference.",
     candidates: []
+  },
+  {
+    key: "tide2-sentry",
+    label: "TIDE2 Sentry clinical NER",
+    shortLabel: "TIDE2 Sentry",
+    modelId: TIDE2_MODEL_ID,
+    engine: "transformers-token-classification",
+    dtype: "fp16",
+    browserRunnable: true,
+    assetMode: "installable",
+    sizeLabel: "873 MB ONNX (fp16)",
+    localOnly: true,
+    description: "Stanford TIDE2 Sentry clinical NER (DeBERTa-v3-large, 434M). 0.82 exact-span F1 on 1,381 SHIELD notes. Gated repo: a signed data-use agreement and your own Hugging Face token (Settings) are required. Personal research use is within scope per Dr. Posada.",
+    candidates: [
+      {
+        modelId: TIDE2_MODEL_ID,
+        options: {
+          dtype: "fp16",
+          device: "webgpu",
+          revision: TIDE2_REVISION,
+          local_files_only: true
+        },
+        inferenceOptions: { aggregation_strategy: "simple" }
+      },
+      {
+        modelId: TIDE2_MODEL_ID,
+        options: {
+          dtype: "fp16",
+          device: "wasm",
+          revision: TIDE2_REVISION,
+          local_files_only: true
+        },
+        inferenceOptions: { aggregation_strategy: "simple" }
+      }
+    ],
+    requiredFiles: [
+      "config.json",
+      "special_tokens_map.json",
+      "tokenizer.json",
+      "tokenizer_config.json",
+      "onnx/model_fp16.onnx"
+    ],
+    download: {
+      provider: "Hugging Face",
+      repository: "stanford-med-hdr/tide2-sentry-clinical-ner",
+      revision: TIDE2_REVISION,
+      auth: "hf-token",
+      assets: [
+        { path: "config.json", bytes: 1737 },
+        { path: "special_tokens_map.json", bytes: 286 },
+        { path: "tokenizer.json", bytes: 8656624 },
+        { path: "tokenizer_config.json", bytes: 1315 },
+        { path: "onnx/model_fp16.onnx", bytes: 873088309 }
+      ]
+    }
   }
 ];
 
@@ -457,7 +511,8 @@ export const DEID_MODEL_OPTIONS = ALL_DEID_MODEL_OPTIONS.filter((option) => [
   "roberta-i2b2-q8",
   "stanford-roberta-ensemble",
   "openmed-superclinical-small",
-  "gliner-multi-pii"
+  "gliner-multi-pii",
+  "tide2-sentry"
 ].includes(option.key));
 
 export function deidModelOptionByKey(key) {

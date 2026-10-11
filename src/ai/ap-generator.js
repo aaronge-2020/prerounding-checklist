@@ -387,6 +387,17 @@ ${clean(consultQuestions, 2000) || "(none provided)"}`
 - a complete therapeutic plan (every treatment, consult, monitoring, and disposition order at order-level specificity: drug name, dose, route, frequency, duration).
 Also revise or remove anything in the current plan that is wrong, duplicative, or unsafe. If the current plan is already complete and correct, return an empty suggestions array rather than inventing changes.`;
 
+  const goal = mode === "consult"
+    ? `GOAL — ANSWER THE CONSULT: the clinician asked the specific questions below. Propose the targeted suggestions that answer them: add, revise, or remove. Stay focused on the questions; do not pad the plan with unrelated changes. If a question is already fully addressed by the current plan, return no suggestion for it.
+
+CLINICIAN'S CONSULT QUESTIONS:
+${clean(consultQuestions, 2000) || "(none provided)"}`
+    : `GOAL — FULL COMPLETION: the student wants this problem's plan finished. Propose an add-suggestion for EVERY missing piece, so that approving all suggestions leaves a complete, note-ready plan:
+- a full ranked differential (most likely first) covering the reasonable candidates for this presentation, each with 1-2 sentences of reasoning tied to this patient's findings and a likelihood (most likely / likely / possible / less likely),
+- a complete diagnostic plan (every test needed to work this up, each with its brief indication),
+- a complete therapeutic plan (every treatment, consult, monitoring, and disposition order at order-level specificity: drug name, dose, route, frequency, duration).
+Also revise or remove anything in the current plan that is wrong, duplicative, or unsafe. If the current plan is already complete and correct, return an empty suggestions array rather than inventing changes.`;
+
   return `You are an expert clinical assistant helping a medical student refine the assessment and plan for ONE clinical problem. All patient context below is DE-IDENTIFIED. Base every suggestion on the context given; do not invent patient data.
 
 IMPORTANT — SUGGESTED EDITS, NOT A REWRITE: do NOT generate a whole new plan. The student already has a current plan below. Propose TARGETED REVISIONS to it: individual suggestions the student will approve or reject one by one.

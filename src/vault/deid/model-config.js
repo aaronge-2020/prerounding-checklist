@@ -17,6 +17,11 @@ export const ROBERTA_I2B2_Q8_MODEL_ID = "thinkingface/deid_roberta_i2b2_q";
 export const MULTILANG_PII_MODEL_ID = "onnx-community/multilang-pii-ner-ONNX";
 export const I2B2_CLINICALBERT_MODEL_ID = "onnx-community/deid_bert_i2b2-ONNX";
 export const DEFAULT_DTYPE = "q8";
+// TIDE2 Sentry clinical NER (Stanford). Gated repo; DUA required.
+// ONNX version pending upload by Stanford to the official repo per Dr. Posada (2026-10-07).
+// Per the DRUA, the model (including ONNX conversions) may ONLY be hosted on the official repo.
+export const TIDE2_MODEL_ID = "stanford-med-hdr/tide2-sentry-clinical-ner";
+export const TIDE2_REVISION = "c1110768815f975ee0dc475813c812f8506cca08";
 
 export const MODEL_PROFILES = {
   rtrigoso: {
@@ -54,6 +59,12 @@ export const MODEL_PROFILES = {
     mobileFeasible: true,
     expectedQuantizedBytes: 69638018,
     notes: "OpenMed-PII ClinicalE5 Small (33M) int8. Round-2 benchmark winner (F1 0.672 on 1,000 synthetic texts, strict exact-span): highest recall, 390 ms/doc median, 67 MB download. Default browser model since 2026-09-29."
+  },
+  tide2: {
+    id: TIDE2_MODEL_ID,
+    mobileFeasible: false,
+    expectedQuantizedBytes: 873000000,
+    notes: "TIDE2 Sentry clinical NER (Stanford, DeBERTa-v3-large 434M). Gated repo, DUA required. Scored 0.82 exact-span F1 on SHIELD (fp16 ONNX). ONNX files pending upload to official repo by Stanford per Dr. Posada 2026-10-07. Per DRUA, may ONLY be hosted on the official stanford-med-hdr repo."
   },
   multilang: {
     id: MULTILANG_PII_MODEL_ID,

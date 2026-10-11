@@ -1,14 +1,15 @@
 import {
   createDeidentifier,
-  deidentifyTextLearned
-} from "../vault/deid.js?v=20261003-deid-101";
+  deidentifyTextLearned,
+  deidentifyTextStructuredOnly
+} from "../vault/deid.js?v=20261007-tide2-gated";
 import {
   DEFAULT_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,
   deidModelCandidates,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20260930-deid-trackd";
-import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260921-medication-card-v4";
+} from "./deid-model-options.js?v=20261007-tide2-gated";
+import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20261007-tide2-gated";
 import { importedModelBaseUrl } from "./model-packs.js?v=20260921-medication-card-v4";
 
 const deidentifierPromises = new Map();
@@ -492,6 +493,7 @@ export async function deidentifyText(rawText, { mode = "advanced", allowStructur
       admissionDate: anchor,
       relativeDate: relativeDate ? new Date(relativeDate) : anchor,
       patientIdentity,
+      adaptiveStore,
       onProgress
     });
     if (!result.modelId || result.modelChunkFailures) {

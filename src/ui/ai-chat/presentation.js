@@ -3,7 +3,7 @@
 // src/ui/ai-chat/controller.js.
 
 import { splitThinking } from "../../local-llm/thinking.js?v=20260927-local-llm-v4";
-import { renderChatMarkdown } from "../../local-llm/markdown.js?v=20260929-local-llm-v3";
+import { renderChatMarkdown } from "../../local-llm/markdown.js?v=20261004-cite-links-v1";
 import {
   sentinelizeSectionCitations,
   sectionCitationChipHtml

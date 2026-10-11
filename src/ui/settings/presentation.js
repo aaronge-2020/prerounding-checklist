@@ -5,6 +5,7 @@ export function createSettingsPresentation({ escapeHtml }) {
     preferences,
     apiKeySaved,
     openRouterKeySaved,
+    hfTokenSaved,
     guidelineSets,
     guidelineSearchQuery = "",
     guidelinePage = 1,
@@ -52,7 +53,7 @@ export function createSettingsPresentation({ escapeHtml }) {
             <div><dt>OpenAI features (formatting, per-problem plans, ChatGPT chat)</dt><dd>Sent to api.openai.com using your saved key. Text is de-identified on-device first, and ChatGPT chat shows you exactly what will be sent for your review before anything transmits. Blocked while offline mode is on.</dd></div>
             <div><dt>Decision-1 differential ranking</dt><dd>Sent to openrouter.ai using your saved OpenRouter key. Only de-identified problem context and candidate diagnoses are sent, after your plan review; probabilities come back as advisory badges and never reorder your differential. Blocked while offline mode is on.</dd></div>
             <div><dt>OpenEvidence / Doximity buttons</dt><dd>These open those sites in a new tab (they need a connection to load). The app sends them nothing — you paste whatever you choose.</dd></div>
-            <div><dt>Model downloads</dt><dd>One-time downloads from Hugging Face when you explicitly start them. Blocked while offline mode is on.</dd></div>
+            <div><dt>Model downloads</dt><dd>One-time downloads from Hugging Face when you explicitly start them. Gated models additionally send your saved Hugging Face token as an Authorization header to huggingface.co. Blocked while offline mode is on.</dd></div>
             <div><dt>Drug lookups</dt><dd>When you search a drug name, only the name is sent to the FDA drug database (api.fda.gov) for reference information. Never patient context. Blocked while offline mode is on.</dd></div>
           </dl>
           <p class="muted settings-helper">No accounts, no sync, no analytics. If it is not listed above as leaving, it stays.</p>
@@ -104,6 +105,49 @@ export function createSettingsPresentation({ escapeHtml }) {
             <button class="button--quiet" type="button" data-action="clear-openrouter-byok" ${openRouterKeySaved ? "" : "disabled"}>Remove saved key</button>
           </div>
           <p class="muted settings-helper">Without a saved key, the Rank button explains what is missing instead of calling the API.</p>
+          </section>
+          <section class="panel settings-panel settings-panel--byok">
+          <div class="section-heading">
+            <div>
+              <h2>OpenRouter API key (Decision-1)</h2>
+              <p class="muted">Ranks each problem's differential diagnosis with Microsoft's Decision-1 model — a calibrated probability per candidate, shown as an advisory badge. Only de-identified problem context and candidate diagnoses are sent.</p>
+            </div>
+          </div>
+          <div class="notice settings-security-note">
+            <strong>${openRouterKeySaved ? "An API key is saved in the encrypted vault." : "No API key is saved."}</strong>
+            <span>The key is never shown again. It's encrypted at rest in this browser's vault record and only used when you rank a differential. While the vault is unlocked, the browser keeps it in memory to make that request.</span>
+          </div>
+          <div class="settings-fields">
+            <label class="settings-field-wide">OpenRouter API key
+              <input id="openRouterApiKeyInput" type="password" autocomplete="new-password" spellcheck="false" placeholder="${openRouterKeySaved ? "Saved in encrypted vault; enter a new key to replace it" : "Paste an OpenRouter key to enable differential ranking"}">
+            </label>
+          </div>
+          <div class="button-row">
+            <button class="button--primary" type="button" data-action="save-openrouter-byok">Save encrypted key</button>
+            <button class="button--quiet" type="button" data-action="clear-openrouter-byok" ${openRouterKeySaved ? "" : "disabled"}>Remove saved key</button>
+          </div>
+          <p class="muted settings-helper">Without a saved key, the Rank button explains what is missing instead of calling the API.</p>
+          </section>
+          <section class="panel settings-panel settings-panel--byok">
+          <div class="section-heading">
+            <div>
+              <h2>Hugging Face token (gated models)</h2>
+              <p class="muted">Needed to download gated models such as Stanford's TIDE2 Sentry clinical NER. Use a token from your own Hugging Face account — gated downloads only work if that account has been granted access (which requires a signed data-use agreement).</p>
+            </div>
+          </div>
+          <div class="notice settings-security-note">
+            <strong>${hfTokenSaved ? "A token is saved in the encrypted vault." : "No token is saved."}</strong>
+            <span>The token is never shown again. It is encrypted at rest in this browser's vault record and is only ever sent to huggingface.co as an Authorization header when you start a gated model download. It is never sent anywhere else, and never alongside patient data.</span>
+          </div>
+          <div class="settings-fields">
+            <label class="settings-field-wide">Hugging Face token
+              <input id="hfTokenInput" type="password" autocomplete="new-password" spellcheck="false" placeholder="${hfTokenSaved ? "Saved in encrypted vault; enter a new token to replace it" : "Paste a Hugging Face token with access to the gated model"}">
+            </label>
+          </div>
+          <div class="button-row">
+            <button class="button--primary" type="button" data-action="save-hf-token">Save encrypted token</button>
+            <button class="button--quiet" type="button" data-action="clear-hf-token" ${hfTokenSaved ? "" : "disabled"}>Remove saved token</button>
+          </div>
           </section>
 
           <section class="panel settings-panel settings-panel--backup">

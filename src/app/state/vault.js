@@ -4,7 +4,9 @@ import { CONTEXT_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRol
 import { migrateLegacyDailySections, normalizeDiagnosticResultCategory, normalizeSourceCapture, normalizeSourceKindForScope } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
 import { normalizePrimaryTeamNote } from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
 import { normalizeLabBaselines } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
+import { normalizeSavedScores } from "../../clinical-scores/saved-scores.js";
 import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
+// (deserializeAdaptiveStore import removed 2026-10-03: session-only policy.)
 
 export const VAULT_SCHEMA_VERSION = 5;
 
@@ -25,6 +27,7 @@ export function createEmptyVaultState({ now = timestampNow } = {}) {
     activePatientId: "",
     patients: [],
     preferences: normalizeUserPreferences(),
+    adaptiveDeid: null,
     updatedAt: now()
   };
 }
@@ -208,6 +211,9 @@ export function migrateVaultState(value, { now = timestampNow } = {}) {
     // Retired Workups fields (workupOverrides, selectedWorkupIds,
     // hiddenWorkupIds) are tolerated on decrypt but not carried forward.
     preferences: normalizeUserPreferences(base.preferences),
+    // Session-only policy (2026-10-03): the adaptive store is never persisted,
+    // not even in the encrypted vault. Old records are dropped on migration.
+    adaptiveDeid: null,
     updatedAt: String(base.updatedAt || now())
   };
 }

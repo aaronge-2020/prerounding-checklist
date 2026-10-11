@@ -29,7 +29,10 @@ function leakedForbidden(caseItem, redactedText) {
 }
 
 function assertCaseClean(caseItem) {
-  const result = deidentifyTextStructuredOnly(caseItem.text);
+  // Test the base engine without MedDeID tuning (the learned layer
+  // suppresses ROOM/TIME for MedDeID schema alignment, but the base
+  // product redacts them as PHI).
+  const result = deidentifyTextStructuredOnly(caseItem.text, null, { learnedMeddeid: false });
   const leaks = leakedForbidden(caseItem, result.text);
   assert.deepEqual(leaks, [], `${caseItem.id} leaked forbidden strings: ${leaks.join(", ")}`);
 
@@ -59,7 +62,7 @@ assert.ok(demoResult.text.includes("Patient Name: [PATIENT NAME]"), "demo should
 assert.ok(demoResult.text.includes("Primary endocrinologist: [PROVIDER NAME]"), "demo should keep the provider header readable");
 
 const guidedDemoResults = [...DEMO_CONTEXT_TEXTS, ...DEMO_DAILY_TEXTS]
-  .map((text) => deidentifyTextStructuredOnly(text, DEMO_ADMISSION_DATE));
+  .map((text) => deidentifyTextStructuredOnly(text, DEMO_ADMISSION_DATE, { learnedMeddeid: false }));
 const guidedDemoContext = guidedDemoResults[0].text;
 assert.match(guidedDemoContext, /Preferred Name: \[PATIENT NAME\]/, "preferred-name aliases must use the patient-name placeholder");
 assert.match(guidedDemoContext, /DOB year: 1964/, "a source containing only a birth year should preserve the year");
@@ -80,14 +83,14 @@ assert.deepEqual(
   "the shipped guided-demo notes must not emit residual warnings after structured redaction"
 );
 
-const explicitSensitiveFields = deidentifyTextStructuredOnly("Occupation: President of State University\nAdmission Time: 08:43");
+const explicitSensitiveFields = deidentifyTextStructuredOnly("Occupation: President of State University\nAdmission Time: 08:43", null, { learnedMeddeid: false });
 assert.match(explicitSensitiveFields.text, /Occupation: \[OCCUPATION\]/);
 assert.match(explicitSensitiveFields.text, /Admission Time: \[TIME\]/);
 assert.deepEqual(explicitSensitiveFields.residualWarnings, [], "redacted occupation and admission time should not leave residual warnings");
 assert.equal(modelPredictionsToEntities("Occupation: Mechanical Engineer", [{ word: "Mechanical Engineer", entity_group: "PROFESSION", score: 0.99 }])[0]?.label, "OCCUPATION");
 assert.equal(modelPredictionsToEntities("Admission Time: 08:43", [{ word: "08:43", entity_group: "TIME_OF_DAY", score: 0.99 }])[0]?.label, "TIME");
 assert.ok(scanResidualPhi("Occupation: President of State University").some((warning) => warning.type === "occupation"), "unredacted occupation should be surfaced as a residual warning");
-assert.ok(scanResidualPhi("Admission Time: 08:43").some((warning) => warning.type === "admission time"), "unredacted admission time should be surfaced as a residual warning");
+assert.ok(scanResidualPhi("Admission Time: 08:43", { learnedMeddeid: false }).some((warning) => warning.type === "admission time"), "unredacted admission time should be surfaced as a residual warning");
 
 const firstNameAliasText = `Patient: John Smith
 MRN: 1234567
@@ -96,7 +99,7 @@ Room: 412B
 S: John reports polyuria and thirst. Daughter Mary Smith at bedside.
 O: glucose 412, sodium 132.
 A/P: Type 2 diabetes with hyperglycemia.`;
-const firstNameAliasResult = deidentifyTextStructuredOnly(firstNameAliasText);
+const firstNameAliasResult = deidentifyTextStructuredOnly(firstNameAliasText, null, { learnedMeddeid: false });
 for (const leak of ["John Smith", "John reports", "Mary Smith", "1234567", "04/12/1960", "412B"]) {
   assert.ok(!firstNameAliasResult.text.includes(leak), `patient/context identifier should not leak: ${leak}`);
 }
@@ -104,7 +107,7 @@ for (const clinicalTerm of ["polyuria", "glucose 412", "Type 2 diabetes"]) {
   assert.ok(firstNameAliasResult.text.includes(clinicalTerm), `clinical term should be preserved: ${clinicalTerm}`);
 }
 
-const inlinePatientHeaderResult = deidentifyTextStructuredOnly("Patient Jane Smith MRN 123456 was seen today.");
+const inlinePatientHeaderResult = deidentifyTextStructuredOnly("Patient Jane Smith MRN 123456 was seen today.", null, { learnedMeddeid: false });
 assert.ok(!inlinePatientHeaderResult.text.includes("Jane Smith"), "inline patient header names should be redacted");
 assert.ok(!inlinePatientHeaderResult.text.includes("123456"), "inline patient header MRNs should be redacted");
 
@@ -165,7 +168,7 @@ Assessment [PATIENT NAME] has a knee sprain. I ordered an x ray.`
   }
 ];
 for (const caseItem of userReportedBatchCases) {
-  const result = deidentifyTextStructuredOnly(caseItem.text, new Date("2026-07-16T00:00:00Z"));
+  const result = deidentifyTextStructuredOnly(caseItem.text, new Date("2026-07-16T00:00:00Z"), { learnedMeddeid: false });
   assert.equal(result.text, caseItem.expected, `${caseItem.id} should redact the complete note without changing clinical prose`);
   assert.deepEqual(result.residualWarnings, [], `${caseItem.id} should not leave residual PHI warnings`);
 }
@@ -173,7 +176,7 @@ for (const caseItem of userReportedBatchCases) {
 const familyHistoryClinicalPhraseText = `Family History
 Father died from myocardial infarction at age 59.
 Mother alive with diabetes and CKD.`;
-const familyHistoryClinicalPhraseResult = deidentifyTextStructuredOnly(familyHistoryClinicalPhraseText);
+const familyHistoryClinicalPhraseResult = deidentifyTextStructuredOnly(familyHistoryClinicalPhraseText, null, { learnedMeddeid: false });
 assert.equal(
   familyHistoryClinicalPhraseResult.text,
   familyHistoryClinicalPhraseText,
@@ -194,7 +197,7 @@ const familyHistoryContactNamesText = `Family History
 Father: Robert Johnson
 Mother Susan Johnson
 Emergency contact: Laura Johnson`;
-const familyHistoryContactNamesResult = deidentifyTextStructuredOnly(familyHistoryContactNamesText);
+const familyHistoryContactNamesResult = deidentifyTextStructuredOnly(familyHistoryContactNamesText, null, { learnedMeddeid: false });
 assert.equal(
   familyHistoryContactNamesResult.text,
   `Family History
@@ -226,7 +229,7 @@ const adversarialName = `One-line summary: Ms. Sita Gerrill-Stevenson is a 57 y.
 Overall Assessment:
 Ms Merrill-Stevenson is a 57-year-old woman admitted for work-up.
 Plan: follow up with Ms. Gerrill-Stevenson after discharge. Gerrill-Stevenson will call.`;
-const adversarialResult = deidentifyTextStructuredOnly(adversarialName);
+const adversarialResult = deidentifyTextStructuredOnly(adversarialName, null, { learnedMeddeid: false });
 for (const leak of ["Sita Gerrill-Stevenson", "Ms Merrill-Stevenson", "Ms. Gerrill-Stevenson", "Gerrill-Stevenson"]) {
   assert.ok(!adversarialResult.text.includes(leak), `identity alias should be redacted: ${leak}`);
 }
@@ -248,7 +251,7 @@ Daily Labs
 Summary Situational Awareness Action
 Immature Grans (Abs): 0.01
 Nora W. Abrahimi`;
-const medicalFalsePositiveResult = deidentifyTextStructuredOnly(medicalFalsePositiveText);
+const medicalFalsePositiveResult = deidentifyTextStructuredOnly(medicalFalsePositiveText, null, { learnedMeddeid: false });
 for (const term of ["Provider Referral", "Abnormal Labs", "Atypical Chest", "Chronic Pain", "Home Escitalopram", "Heart Healthy", "Last Reading", "Hour Range", "Pulmonary Toilet", "Bowel Management", "Fall Risk", "Suicide Risk", "Elopement Risk", "Elopmement Risk", "Daily Labs", "Summary Situational", "Awareness Action", "Immature Grans"]) {
   assert.ok(medicalFalsePositiveResult.text.includes(term), `medical term should be preserved: ${term}`);
   assert.ok(!medicalFalsePositiveResult.residualWarnings.some((warning) => warning.snippet?.includes(term)), `medical term should not be a name warning: ${term}`);
@@ -274,7 +277,7 @@ Patient identity: Sivramiah Shantharam
 Provider: Qazi Khan
 Provider: Khanjan Harish Nagarsheth
 Patient previously received dialysis in India.`;
-const userReportedFalsePositiveResult = deidentifyTextStructuredOnly(userReportedFalsePositiveText);
+const userReportedFalsePositiveResult = deidentifyTextStructuredOnly(userReportedFalsePositiveText, null, { learnedMeddeid: false });
 for (const term of ["On Prednisone", "CAR Echo", "Add Nephrovite", "Elevated Lipids", "Heart Attack", "DNA Amplification", "RNA Amplification", "PLEASE HOLD ON Day", "FOR RENAL BIOPSY", "Do NOT", "OR HR", "PRN Route", "Low Blood Sugar", "Sterile Water", "India"]) {
   assert.ok(userReportedFalsePositiveResult.text.includes(term), `clinical/result phrase should be preserved: ${term}`);
   assert.ok(!userReportedFalsePositiveResult.residualWarnings.some((warning) => warning.snippet?.includes(term)), `clinical/result phrase should not be a residual warning: ${term}`);
@@ -348,7 +351,7 @@ Ideally BP should be <160 systolic
 Per Dr. Hu
 CHG Bath
 GLUCOSE BLD`;
-const chartChromeResult = deidentifyTextStructuredOnly(chartChromeFalsePositiveText);
+const chartChromeResult = deidentifyTextStructuredOnly(chartChromeFalsePositiveText, null, { learnedMeddeid: false });
 for (const term of [
   "Expand All Collapse All",
   "Primary Cardiology Service",
@@ -382,7 +385,7 @@ assert.ok(!chartChromeResult.text.includes("5/20/2026"), "exact date should not 
 assert.ok(chartChromeResult.flags.every((flag) => !flag.includes("5/20/2026")), "date detail should not display exact source date in review flags");
 
 const oneLineChartText = "One-line summary: Ms. Lita Merrill-Stevenson is a 57-year-old woman. Per Dr. Hu. Room: C3E 54-A. CHG Bath. GLUCOSE BLD.";
-const oneLineChartResult = deidentifyTextStructuredOnly(oneLineChartText);
+const oneLineChartResult = deidentifyTextStructuredOnly(oneLineChartText, null, { learnedMeddeid: false });
 assert.equal(
   oneLineChartResult.text,
   "One-line summary: [PATIENT NAME] is a 57-year-old woman. Per [PROVIDER NAME]. Room: [ROOM]. CHG Bath. GLUCOSE BLD.",
@@ -424,7 +427,7 @@ Phone: 555-123-4567
 Email: patient@example.com
 Address: 123 Main Street
 Accession Number: AB123456`;
-const realResidualPhiWarnings = scanResidualPhi(realResidualPhiText);
+const realResidualPhiWarnings = scanResidualPhi(realResidualPhiText, { learnedMeddeid: false });
 for (const snippet of ["Nora W. Abrahimi", "Ms. Lita Merrill-Stevenson", "Dr. Hu", "DOB: 5/20/2026", "MRN: 123456", "555-123-4567", "patient@example.com", "123 Main Street", "Accession Number: AB123456"]) {
   assert.ok(
     realResidualPhiWarnings.some((warning) => warning.snippet?.includes(snippet)),
@@ -450,7 +453,8 @@ const ageModelDeidentifier = createDeidentifier({
   pipelineFactory: async () => async () => [
     { entity_group: "DATE", start: ageStart, end: ageStart + "-year-old".length, score: 0.92 }
   ],
-  modelCandidates: [{ modelId: "mock-age-date-model", options: {} }]
+  modelCandidates: [{ modelId: "mock-age-date-model", options: {} }],
+  learnedMeddeid: false
 });
 const ageModelResult = await ageModelDeidentifier.deidentifyText(ageText);
 assert.ok(ageModelResult.text.includes("57-year-old woman"), "model date false positive must not corrupt ages under 90");
@@ -474,7 +478,7 @@ const susceptibilityText = [
   "  Ampicillin + Sulbactam >16/8  Resistant",
   "  Piperacillin + Tazobactam 4/4  Sensitive"
 ].join("\n");
-const susceptibilityResult = deidentifyTextStructuredOnly(susceptibilityText, new Date("2026-07-21"));
+const susceptibilityResult = deidentifyTextStructuredOnly(susceptibilityText, new Date("2026-07-21"), { learnedMeddeid: false });
 assert.equal(susceptibilityResult.text, susceptibilityText, "susceptibility assay names and dilution ratios must remain clinical text");
 
 const susceptibilityModelDeidentifier = createDeidentifier({
@@ -493,7 +497,7 @@ assert.equal(susceptibilityModelResult.text, susceptibilityText, "model organiza
 
 const alreadyRedactedTimeline = "Timeline: [Hospital Day 27] and [3 months and 17 days prior to hospital admission].";
 assert.equal(
-  deidentifyTextStructuredOnly(alreadyRedactedTimeline, new Date("2026-07-21")).text,
+  deidentifyTextStructuredOnly(alreadyRedactedTimeline, new Date("2026-07-21"), { learnedMeddeid: false }).text,
   alreadyRedactedTimeline,
   "generated timeline placeholders must be stable under repeated de-identification"
 );
@@ -527,7 +531,7 @@ Hospital Course by Date
 5/8 0454: Morning labs drawn
 DOB: 03/14/1998`;
 const admissionAnchor = new Date("2026-05-01");
-const timelineDateResult = deidentifyTextStructuredOnly(timelineDateText, admissionAnchor);
+const timelineDateResult = deidentifyTextStructuredOnly(timelineDateText, admissionAnchor, { learnedMeddeid: false });
 assert.ok(timelineDateResult.text.includes("Timeline: [Hospital Day 1]"), "admission date itself should anchor Hospital Day 1 and its field label should be renamed to Timeline");
 assert.ok(timelineDateResult.text.includes("Symptoms changed on [Hospital Day 7]"), "later same-admission date should advance the Hospital Day count");
 assert.ok(timelineDateResult.text.includes("Timeline: [Hospital Day 8]"), "Collected field label should be renamed to Timeline and dated by Hospital Day");
@@ -543,7 +547,7 @@ assert.ok(!timelineDateResult.text.includes("2026-04-"), "the real admission dat
 const extendedAdmissionDateResult = deidentifyTextStructuredOnly(
   "Follow-up labs on 9/21",
   new Date("2027-08-17")
-);
+, { learnedMeddeid: false });
 assert.equal(
   extendedAdmissionDateResult.text,
   "Follow-up labs on [Hospital Day 36]",
@@ -566,7 +570,7 @@ const admissionDateFormatText = `EGD/colo (7/9) for melena and +FOBT in ICU, rem
 const admissionDateFormatResult = deidentifyTextStructuredOnly(
   admissionDateFormatText,
   new Date("2026-07-05")
-);
+, { learnedMeddeid: false });
 assert.equal(
   admissionDateFormatResult.text,
   "EGD/colo ([Hospital Day 5]) for melena and +FOBT in ICU, remarkable for non-erosive gastritis for which she has been managed with daily PPI as well as diverticulosis in the sigmoid and descending colon without evidence of active bleeding. She was taken to the OR on [Hospital Day 11] for left femoral endarterectomy and bilateral iliac covered stent placement. She was started on Xarelto 2.5mg BID as well as DAPT on [Hospital Day 12], now held for bleeding. GI was reengaged on [Hospital Day 15] for reports of blood bowel movements by nursing team. She had multiple CTAs performed, last one [Hospital Day 19] with questionable active bleeding within the cecum just inferior to the ileocecal valve versus normal mural vasculature in this region. Repeat cscope [Hospital Day 20].",
@@ -624,7 +628,7 @@ const chartColumnText = "Recent Encounters\nMedication Sig Start Date End Date T
 const chartColumnResult = await chartColumnModelResult.deidentifyText(chartColumnText);
 assert.equal(chartColumnResult.text, chartColumnText, "chart navigation and column labels must not be redacted as names by a model");
 
-const legacyDateReview = createEphemeralRedactionReview("EKG (07/09/2026): Sinus rhythm", deidentifyTextStructuredOnly("EKG (07/09/2026): Sinus rhythm", new Date("2026-07-11T12:00:00Z")));
+const legacyDateReview = createEphemeralRedactionReview("EKG (07/09/2026): Sinus rhythm", deidentifyTextStructuredOnly("EKG (07/09/2026): Sinus rhythm", new Date("2026-07-11T12:00:00Z"), { learnedMeddeid: false }));
 legacyDateReview.redactions[0].placeholder = "[DATE]";
 synchronizeReviewPlaceholders(legacyDateReview, "EKG (2 days ago): Sinus rhythm");
 assert.equal(legacyDateReview.redactions[0].placeholder, "2 days ago", "an active review created before relative-date rendering must recover the visible replacement for inline centering");
@@ -664,7 +668,7 @@ assert.ok(!timelineDateResult.text.includes("0454"), "date-attached exact time s
 assert.ok(!timelineDateResult.text.includes("03/14/1998"), "DOB exact date should not leak");
 
 const compactDateRangeAndVisitText = "Prior admission 11/23/2024-11/27/2024: Patient was admitted for suicidal ideation and discharged with mirtazapine.\nED visit 12/3/2024: Follow-up was arranged.\nVisit ID: A12345";
-const compactDateRangeAndVisitResult = deidentifyTextStructuredOnly(compactDateRangeAndVisitText, new Date("2026-07-28T00:00:00Z"));
+const compactDateRangeAndVisitResult = deidentifyTextStructuredOnly(compactDateRangeAndVisitText, new Date("2026-07-28T00:00:00Z"), { learnedMeddeid: false });
 assert.match(compactDateRangeAndVisitResult.text, /Prior admission \[1 year, 8 months, and 5 days prior to hospital admission\]-\[1 year, 8 months, and 1 day prior to hospital admission\]/, "compact date ranges must retain and independently normalize both endpoints");
 assert.match(compactDateRangeAndVisitResult.text, /ED visit \[1 year, 7 months, and 25 days prior to hospital admission\]/, "visit prose followed by a date must remain a date, not an identifier");
 assert.match(compactDateRangeAndVisitResult.text, /Visit ID: \[ID\]/, "explicit Visit ID fields must remain protected");
@@ -675,7 +679,7 @@ const crossYearTimelineText = `Hospital Course by Date
 1/1: Creatinine improving
 Current labs 1/2 0600: Creatinine stable
 Follow-up on 1/3`;
-const crossYearTimelineResult = deidentifyTextStructuredOnly(crossYearTimelineText);
+const crossYearTimelineResult = deidentifyTextStructuredOnly(crossYearTimelineText, null, { learnedMeddeid: false });
 assert.ok(crossYearTimelineResult.text.includes("[Hospital Day 1]: Admitted overnight"), "Dec 31 should resolve relative to the inferred anchor without exposing the following December");
 assert.ok(crossYearTimelineResult.text.includes("[Hospital Day 2]: Creatinine improving"), "Jan 1 should sequence one day after the admission anchor, not collapse into it");
 assert.ok(crossYearTimelineResult.text.includes("Current labs [Hospital Day 3 at 06:00]: Creatinine stable"), "current shorthand lab date should stay sequential after admission with exact clock time");
@@ -687,7 +691,7 @@ PET stress in 12/2025
 Labs 1/2 0454: Creatinine stable
 12/31: Admitted for monitoring
 1/1: Symptoms improved`;
-const priorMonthYearAnchorResult = deidentifyTextStructuredOnly(priorMonthYearAnchorText);
+const priorMonthYearAnchorResult = deidentifyTextStructuredOnly(priorMonthYearAnchorText, null, { learnedMeddeid: false });
 assert.ok(priorMonthYearAnchorResult.text.includes("Prior transplant evaluation in [1 year and 1 month prior to hospital admission]"), "prior month/year should collapse to a relative duration before admission, never a calendar date");
 assert.ok(priorMonthYearAnchorResult.text.includes("PET stress in [1 year prior to hospital admission]"), "month/year history should collapse to a relative duration before admission");
 assert.ok(priorMonthYearAnchorResult.text.includes("Labs [Hospital Day 3 at 04:54]"), "no-year current labs should infer the year from prior explicit history and preserve exact clock time, sequenced after the admission anchor");
@@ -697,20 +701,20 @@ assert.ok(!/Hospital Day (?:36[0-9]|3[7-9]\d)/.test(priorMonthYearAnchorResult.t
 
 const sameMorningLabTimeText = `BMP Collected: 06/06/2026 06:12 Na 132, K 3.4, Cr 1.5
 BMP Collected: 06/06/2026 07:45 Na 136, K 4.2, Cr 1.2`;
-const sameMorningLabTimeResult = deidentifyTextStructuredOnly(sameMorningLabTimeText);
+const sameMorningLabTimeResult = deidentifyTextStructuredOnly(sameMorningLabTimeText, null, { learnedMeddeid: false });
 assert.ok(sameMorningLabTimeResult.text.includes("[Lab 1/2] BMP Collected: [Historical: 2026 at 06:12]"), "first same-morning BMP should be ordinal-tagged and keep its exact time with generic historical semantics");
 assert.ok(sameMorningLabTimeResult.text.includes("**[LATEST_RESULT]** [Lab 2/2] BMP Collected: [Historical: 2026 at 07:45]"), "second, later same-morning BMP should be tagged as the latest result and keep its exact time");
 assert.ok(!sameMorningLabTimeResult.text.includes("06/06/2026"), "exact lab calendar date should still be removed");
 
 const pocGlucoseTimeText = `POC Glucose 06/06/2026 04:02 160
 POC Glucose 06/06/2026 08:01 190`;
-const pocGlucoseTimeResult = deidentifyTextStructuredOnly(pocGlucoseTimeText);
+const pocGlucoseTimeResult = deidentifyTextStructuredOnly(pocGlucoseTimeText, null, { learnedMeddeid: false });
 assert.ok(pocGlucoseTimeResult.text.includes("POC Glucose [Historical: 2026 at 04:02] 160"), "POC glucose exact AM time should be preserved with generic historical semantics");
 assert.ok(pocGlucoseTimeResult.text.includes("POC Glucose [Historical: 2026 at 08:01] 190"), "second POC glucose exact AM time should be preserved with generic historical semantics");
 
 const narrativeTimeText = `Symptoms changed on 06/06/2026 06:12
 Plan updated after rounds on 06/06/2026 07:45`;
-const narrativeTimeResult = deidentifyTextStructuredOnly(narrativeTimeText);
+const narrativeTimeResult = deidentifyTextStructuredOnly(narrativeTimeText, null, { learnedMeddeid: false });
 assert.ok(narrativeTimeResult.text.includes("Symptoms changed on [Historical: 2026 at 06:12]"), "non-result narrative timestamp should preserve exact time with generic historical semantics");
 assert.ok(narrativeTimeResult.text.includes("Plan updated after rounds on [Historical: 2026 at 07:45]"), "second non-result narrative timestamp should preserve exact time");
 assert.ok(!/\b(?:morning|afternoon|evening|overnight|night)\b/.test(narrativeTimeResult.text), "narrative timestamps should use exact times, not time-of-day buckets");
@@ -756,7 +760,7 @@ POC Glucose: 111
 01/10/26 04:48
 WBC: 9.1
 Sodium: 140`;
-const epicResultsReviewResult = deidentifyTextStructuredOnly(epicResultsReviewText);
+const epicResultsReviewResult = deidentifyTextStructuredOnly(epicResultsReviewText, null, { learnedMeddeid: false });
 // Without an admission anchor the app must not invent a hospital-day
 // timeline: multi-day unanchored panels fall back to the generic historical
 // placeholder (exact clock times are still preserved).
@@ -918,7 +922,7 @@ POC Glucose: 101
 
 02/10/26 08:10
 POC Glucose: 104`;
-const epicRespImagingResult = deidentifyTextStructuredOnly(epicRespImagingResultsText);
+const epicRespImagingResult = deidentifyTextStructuredOnly(epicRespImagingResultsText, null, { learnedMeddeid: false });
 assert.ok(epicRespImagingResult.text.includes("[Lab 1/2] BG Site: A-Line [Historical: 2026 at 15:49]"), "A-line blood gas site should remain clinical text, keep exact time, and be ordinal-tagged as the first of its repeated label");
 assert.ok(epicRespImagingResult.text.includes("pH, Arterial: 7.35 [Historical: 2026 at 10:42]"), "blood gas result should preserve exact clock time");
 assert.ok(epicRespImagingResult.text.includes("Oxygen Device: Ventilator [Historical: 2026 at 09:54]"), "vent setting row should preserve exact clock time");
@@ -985,7 +989,7 @@ assert.ok(!/\b(?:19|20)\d{2}[/-]\d{1,2}[/-]\d{1,2}\b|\b\d{1,2}\/\d{1,2}\/(?:19|2
 assert.deepEqual(epicRespImagingResult.residualWarnings, [], "respiratory/imaging Results Review specimen should not create residual PHI warnings");
 
 const labCertificationText = "This test was developed and its performance characteristics determined by the Cytogenetics Laboratory, University of Example, Harbor City, MD. This laboratory is certified under the Clinical Laboratory Improvement Amendments of 1988 (CLIA) as qualified to perform high complexity clinical laboratory testing.";
-const labCertificationResult = deidentifyTextStructuredOnly(labCertificationText);
+const labCertificationResult = deidentifyTextStructuredOnly(labCertificationText, null, { learnedMeddeid: false });
 assert.ok(labCertificationResult.text.includes("determined by the [ORGANIZATION]."), "named lab institution and city/state should be redacted");
 assert.ok(labCertificationResult.text.includes("Clinical Laboratory Improvement Amendments of 1988 (CLIA)"), "generic CLIA regulatory phrase should not be redacted as a name");
 assert.ok(!labCertificationResult.text.includes("University of Example"), "named university should not remain");
@@ -1007,7 +1011,7 @@ US Guided Needle Placement: Rpt 1/10/26 12:00
 SUBJECTIVE OBJECTIVE ASSESSMENT AND PLAN
 Active Antimicrobial Orders
 Cefepime IVPB MINI-BAG Plus`;
-const medicalTermFalsePositiveResult = deidentifyTextStructuredOnly(medicalTermFalsePositiveText);
+const medicalTermFalsePositiveResult = deidentifyTextStructuredOnly(medicalTermFalsePositiveText, null, { learnedMeddeid: false });
 for (const term of [
   "Corrected Arterial",
   "Manual Diff",
@@ -1029,17 +1033,17 @@ for (const term of [
 assert.deepEqual(medicalTermFalsePositiveResult.residualWarnings, [], "listed medical terms should not create residual PHI warnings");
 
 const guardText = clinicalGuardTerms.join("\n");
-const guardResult = deidentifyTextStructuredOnly(guardText);
+const guardResult = deidentifyTextStructuredOnly(guardText, null, { learnedMeddeid: false });
 for (const term of clinicalGuardTerms) {
   assert.ok(guardResult.text.includes(term), `clinical term should be preserved: ${term}`);
 }
 
 for (const caseItem of makeAdversarialCases()) {
-  assertDeidCase(caseItem, deidentifyTextStructuredOnly(caseItem.text));
+  assertDeidCase(caseItem, deidentifyTextStructuredOnly(caseItem.text, null, { learnedMeddeid: false }));
 }
 
 const ambiguous = "Assessment: The Blue Ridge protocol was discussed as a teaching phrase.";
-const ambiguousResult = deidentifyTextStructuredOnly(ambiguous);
+const ambiguousResult = deidentifyTextStructuredOnly(ambiguous, null, { learnedMeddeid: false });
 assert.ok(ambiguousResult.text.includes("Blue Ridge"), "ambiguous capitalized phrase should not be auto-redacted without strong context");
 
 const modeled = modelPredictionsToEntities(
@@ -1075,7 +1079,7 @@ const recallCases = [
   ["imaging narrative intact", "CT Head/Brain W/O Con: No acute intracranial abnormality. Ventricles normal.", [], ["CT", "Ventricles"]]
 ];
 for (const [caseName, caseText, mustRedact, mustKeep] of recallCases) {
-  const recallResult = deidentifyTextStructuredOnly(caseText);
+  const recallResult = deidentifyTextStructuredOnly(caseText, null, { learnedMeddeid: false });
   for (const token of mustRedact) {
     assert.ok(!recallResult.text.includes(token), `name recall (${caseName}): "${token}" should be redacted`);
   }
@@ -1097,14 +1101,14 @@ assert.equal(overlapReview.redactions.length, 1, "overlapping detector spans sho
 // User-reported Quick De-ID regressions: a bare street name must be an
 // ADDRESS (never a provider/person name), and a medical abbreviation in
 // all caps ("Retic CT", "Chest CT") must not become an ADDRESS.
-const mainStreetResult = deidentifyTextStructuredOnly("Patient lives on Main St near the hospital.", null);
+const mainStreetResult = deidentifyTextStructuredOnly("Patient lives on Main St near the hospital.", null, { learnedMeddeid: false });
 assert.ok(mainStreetResult.text.includes("lives on [ADDRESS]"), "bare street name Main St should be labeled ADDRESS");
 assert.ok(!mainStreetResult.text.includes("[PROVIDER NAME]"), "Main St must not be labeled a provider name");
-const mainStreetFullResult = deidentifyTextStructuredOnly("Follow up with Dr Smith on Main Street.", null);
+const mainStreetFullResult = deidentifyTextStructuredOnly("Follow up with Dr Smith on Main Street.", null, { learnedMeddeid: false });
 assert.ok(mainStreetFullResult.text.includes("[PROVIDER NAME] on [ADDRESS]"), "Main Street should be ADDRESS while Dr Smith stays a provider name");
-const reticCtResult = deidentifyTextStructuredOnly("Retic CT %: 1.23", null);
+const reticCtResult = deidentifyTextStructuredOnly("Retic CT %: 1.23", null, { learnedMeddeid: false });
 assert.ok(!reticCtResult.text.includes("[ADDRESS]"), "Retic CT (computed tomography) must not be labeled an address");
-const chestCtResult = deidentifyTextStructuredOnly("Chest CT showed no acute findings.", null);
+const chestCtResult = deidentifyTextStructuredOnly("Chest CT showed no acute findings.", null, { learnedMeddeid: false });
 assert.equal(chestCtResult.text, "Chest CT showed no acute findings.", "Chest CT must remain untouched clinical text");
 
 // User-reported Quick De-ID regression: unanchored dates spanning multiple
@@ -1117,16 +1121,16 @@ assert.equal(chestCtResult.text, "Chest CT showed no acute findings.", "Chest CT
 const unanchoredMultiDayResult = deidentifyTextStructuredOnly("ED note: seen 09/18/2026, recheck 09/20/2026.", null);
 assert.ok(!/Hospital Day \d+/.test(unanchoredMultiDayResult.text), "unanchored multi-day dates must not fabricate Hospital Day numbers");
 assert.ok(unanchoredMultiDayResult.text.includes("[Historical: 2026]"), "unanchored multi-day dates should use the generic historical placeholder");
-const singleDayPanelResult = deidentifyTextStructuredOnly("POC Glucose 06/06/2026 04:02 160\nPOC Glucose 06/06/2026 08:01 190", null);
+const singleDayPanelResult = deidentifyTextStructuredOnly("POC Glucose 06/06/2026 04:02 160\nPOC Glucose 06/06/2026 08:01 190", null, { learnedMeddeid: false });
 assert.ok(singleDayPanelResult.text.includes("[Historical: 2026 at 04:02]"), "single-day panel without admission context must use generic historical semantics with exact clock time, never Hospital Day 1");
 assert.ok(!/Hospital Day \d+/.test(singleDayPanelResult.text), "single-day panel must not fabricate a Hospital Day number");
-const anchoredAdmissionResult = deidentifyTextStructuredOnly("Admitted on 09/18/2026. Labs drawn 09/20/2026 were normal.", null);
+const anchoredAdmissionResult = deidentifyTextStructuredOnly("Admitted on 09/18/2026. Labs drawn 09/20/2026 were normal.", null, { learnedMeddeid: false });
 assert.ok(anchoredAdmissionResult.text.includes("Admitted on [Hospital Day 1]"), "admission date should anchor Hospital Day 1");
 assert.ok(anchoredAdmissionResult.text.includes("Labs drawn [Hospital Day 3]"), "later same-admission date should advance the Hospital Day count");
 // "Previously admitted" names a prior stay, not this admission: neither it
 // nor a "current labs" reading-date cue may invent a hospital admission
 // timeline. Both dates degrade to generic historical semantics.
-const priorAdmissionResult = deidentifyTextStructuredOnly("Previously admitted on 09/18/2025. Current labs 09/20/2026 normal.", null);
+const priorAdmissionResult = deidentifyTextStructuredOnly("Previously admitted on 09/18/2025. Current labs 09/20/2026 normal.", null, { learnedMeddeid: false });
 assert.ok(priorAdmissionResult.text.includes("Previously admitted on [Historical: 2025]"), "a prior-admission date must use generic historical semantics");
 assert.ok(priorAdmissionResult.text.includes("Current labs [Historical: 2026] normal"), "a reading-date cue must not invent a hospital admission anchor");
 assert.ok(!/Hospital Day \d+|prior to hospital admission/.test(priorAdmissionResult.text), "no admission timeline may be inferred from prior-admission or reading-date cues");
@@ -1138,21 +1142,21 @@ assert.equal(normalizePhiLabel("L-PATIENT"), "PATIENT NAME", "L- prefix must nor
 assert.equal(normalizePhiLabel("U-DATE"), "DATE", "U- prefix must normalize like B-/I- (BILOU)");
 assert.equal(normalizePhiLabel("B-PHONE"), "PHONE", "B- prefix still normalizes");
 assert.equal(normalizePhiLabel("I-PHONE"), "PHONE", "I- prefix still normalizes");
-assert.ok(deidentifyTextStructuredOnly("Symptoms started at 3:45 PM.", null).text.includes("[TIME]"), "meridiem clock time must be [TIME]");
-assert.ok(deidentifyTextStructuredOnly("Vitals at 14:30 were stable.", null).text.includes("[TIME]"), "24-hour clock time must be [TIME]");
-assert.ok(deidentifyTextStructuredOnly("The alarm rang at 3 o'clock.", null).text.includes("[TIME]"), "o'clock must be [TIME]");
-assert.ok(deidentifyTextStructuredOnly("Call +44 20 7946 0018 today.", null).text.includes("[PHONE]"), "international +CC number must be [PHONE]");
-assert.ok(deidentifyTextStructuredOnly("Call 0091 44 034 6283 today.", null).text.includes("[PHONE]"), "00-prefix international number must be [PHONE]");
-assert.ok(deidentifyTextStructuredOnly("call 03-0460-0180", null).text.includes("[PHONE]"), "trunk-dialed leading-zero number must be [PHONE]");
-const trunkDateGuard = deidentifyTextStructuredOnly("admission: 01-02-2026", null).text;
+assert.ok(deidentifyTextStructuredOnly("Symptoms started at 3:45 PM.", null, { learnedMeddeid: false }).text.includes("[TIME]"), "meridiem clock time must be [TIME]");
+assert.ok(deidentifyTextStructuredOnly("Vitals at 14:30 were stable.", null, { learnedMeddeid: false }).text.includes("[TIME]"), "24-hour clock time must be [TIME]");
+assert.ok(deidentifyTextStructuredOnly("The alarm rang at 3 o'clock.", null, { learnedMeddeid: false }).text.includes("[TIME]"), "o'clock must be [TIME]");
+assert.ok(deidentifyTextStructuredOnly("Call +44 20 7946 0018 today.", null, { learnedMeddeid: false }).text.includes("[PHONE]"), "international +CC number must be [PHONE]");
+assert.ok(deidentifyTextStructuredOnly("Call 0091 44 034 6283 today.", null, { learnedMeddeid: false }).text.includes("[PHONE]"), "00-prefix international number must be [PHONE]");
+assert.ok(deidentifyTextStructuredOnly("call 03-0460-0180", null, { learnedMeddeid: false }).text.includes("[PHONE]"), "trunk-dialed leading-zero number must be [PHONE]");
+const trunkDateGuard = deidentifyTextStructuredOnly("admission: 01-02-2026", null, { learnedMeddeid: false }).text;
 assert.ok(!trunkDateGuard.includes("[PHONE]"), "MM-DD-YYYY must not be mislabeled PHONE by the trunk rule");
 assert.ok(trunkDateGuard.includes("Hospital Day") || trunkDateGuard.includes("[Historical"), "MM-DD-YYYY must stay a date");
 assert.ok(deidentifyTextStructuredOnly("DOB: June 13th, 1956", null).text.includes("[DOB]"), "written-out DOB with ordinal must be [DOB]");
-assert.ok(deidentifyTextStructuredOnly("Born 1954-07-02", null).text.includes("[Historical: 1954]"), "ISO DOB-adjacent date must redact as historical");
-assert.ok(deidentifyTextStructuredOnly("Meet at Suite 800.", null).text.includes("[ADDRESS]"), "suite number must be [ADDRESS]");
-assert.ok(deidentifyTextStructuredOnly('"Building": "174"', null).text.includes("[ADDRESS]"), "quoted building number must be [ADDRESS]");
-assert.ok(deidentifyTextStructuredOnly("Visit on 09/12/2025.", null).text.includes("[Historical: 2025]"), "explicit numeric date must redact");
-const noDoubleTime = deidentifyTextStructuredOnly("POC Glucose 06/06/2026 04:02 160", null).text;
+assert.ok(deidentifyTextStructuredOnly("Born 1954-07-02", null, { learnedMeddeid: false }).text.includes("[Historical: 1954]"), "ISO DOB-adjacent date must redact as historical");
+assert.ok(deidentifyTextStructuredOnly("Meet at Suite 800.", null, { learnedMeddeid: false }).text.includes("[ADDRESS]"), "suite number must be [ADDRESS]");
+assert.ok(deidentifyTextStructuredOnly('"Building": "174"', null, { learnedMeddeid: false }).text.includes("[ADDRESS]"), "quoted building number must be [ADDRESS]");
+assert.ok(deidentifyTextStructuredOnly("Visit on 09/12/2025.", null, { learnedMeddeid: false }).text.includes("[Historical: 2025]"), "explicit numeric date must redact");
+const noDoubleTime = deidentifyTextStructuredOnly("POC Glucose 06/06/2026 04:02 160", null, { learnedMeddeid: false }).text;
 assert.ok(noDoubleTime.includes("[Historical: 2026 at 04:02]"), "datetime placeholder must preserve the exact clock time");
 assert.ok(!noDoubleTime.includes("[TIME]"), "folded clock time must not double-redact as [TIME]");
 assert.equal((noDoubleTime.match(/04:02/g) || []).length, 1, "the clock time must appear exactly once, inside the datetime placeholder");
@@ -1208,7 +1212,7 @@ assert.ok(!age90.text.includes("92-year-old"), "B3 never leaks the exact 90+ val
 assert.ok(age90.entities.some((entity) => entity.label === "AGE"), "B3 flags the 90+ age as an AGE entity for review");
 const ageFormats = deidentifyTextStructuredOnly("95 years old; 101 y.o.; aged 93; Age: 90.", null, {});
 assert.equal((ageFormats.text.match(/\[AGE 90\+\]/g) || []).length, 4, "B3 top-codes every 90+ age format");
-const age45 = deidentifyTextStructuredOnly("45-year-old female seen.", null, {});
+const age45 = deidentifyTextStructuredOnly("45-year-old female seen.", null, { learnedMeddeid: false });
 assert.ok(age45.text.includes("45-year-old"), "B3 leaves ages under 90 in place (non-PHI)");
 assert.ok(!age45.entities.some((entity) => entity.label === "AGE"), "B3 emits no AGE entity under 90");
 assert.ok(deidentifyTextStructuredOnly("14F catheter placed.", null, {}).text.includes("14F"), "B3 ignores bare NNF (catheter size)");
@@ -1273,7 +1277,7 @@ console.log(`De-ID tests passed for ${cases.length} synthetic cases plus targete
 // labeled locations, labeled IDs). Each asserts the value is redacted
 // (positive) or preserved (negative).
 function trackCRedacted(text) {
-  return deidentifyTextStructuredOnly(text).text;
+  return deidentifyTextStructuredOnly(text, null, { learnedMeddeid: false }).text;
 }
 function assertTrackCRedacts(text, value, id) {
   const out = trackCRedacted(text);

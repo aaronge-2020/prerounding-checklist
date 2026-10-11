@@ -144,7 +144,10 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
             <h2>Quick De-ID Tool</h2>
             <p class="muted">Review stays in this tab only. Copy the de-identified result when you are done.</p>
           </div>
-          ${hasReview ? `<button class="button--quiet" type="button" data-action="start-new-quick-deid">${icon("plus")} New text</button>` : ""}
+          <div class="button-row">
+            <button class="button--quiet" type="button" data-action="start-rule-learner-demo">${icon("sparkles")} See how it learns</button>
+            ${hasReview ? `<button class="button--quiet" type="button" data-action="start-new-quick-deid">${icon("plus")} New text</button>` : ""}
+          </div>
         </div>
         <section class="quick-model-control quick-deid-admission-date" aria-label="Admission date">
           <label for="quickDeidAdmissionDateInput">Admission date</label>

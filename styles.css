@@ -8803,6 +8803,41 @@ body.vault-locked .vault-access {
   min-height: 0;
 }
 
+/* "Verify with local AI" option: a proper labeled row instead of a bare
+   browser checkbox floating on its own line. */
+.quick-deid-verify {
+  display: grid;
+  gap: 4px;
+}
+.quick-deid-verify-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  width: fit-content;
+}
+.quick-deid-verify-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex: none;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.quick-deid-verify-label input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+}
+.quick-deid-verify-label:has(input[type="checkbox"]:disabled) {
+  color: var(--muted);
+  font-weight: 400;
+  cursor: not-allowed;
+}
+.quick-deid-verify > p {
+  margin: 0;
+}
+
 .quick-deid-start textarea {
   box-sizing: border-box;
   min-height: min(54dvh, 460px);
@@ -14071,3 +14106,31 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .quick-deid-verify > p {
   margin: 0;
 }
+
+/* Suggested-rules panel (automatic rule proposer) */
+.rule-proposals-panel { margin-top: 16px; }
+.rule-list h3 { margin: 0 0 4px; font-size: 18px; }
+.rule-intro { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
+.rule-card { border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); padding: 12px 14px; margin-bottom: 10px; display: grid; gap: 8px; }
+.rule-card-desc { margin: 0; font-size: 15px; }
+.rule-card-examples { margin: 0; padding-left: 18px; font-size: 14px; color: var(--muted); display: grid; gap: 2px; }
+.rule-card-examples q { quotes: "\201C" "\201D"; }
+.rule-card-meta { margin: 0; font-size: 13px; color: var(--muted); }
+.rule-card-actions { display: flex; gap: 8px; }
+.rule-card--compact { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; }
+.rule-card--compact span { font-size: 14px; }
+.rule-empty { color: var(--muted); font-size: 14px; margin: 0; }
+
+/* Rule-learner guided demo ("See how it learns") */
+.demo-step-count { font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 8px; }
+.demo-step-body { display: grid; gap: 12px; margin: 12px 0 4px; }
+.demo-step-body p { margin: 0; font-size: 14.5px; line-height: 1.55; }
+.demo-note { background: var(--surface-2, #f8fafc); border: 1px solid var(--border, #e2e8f0); border-radius: 8px; padding: 12px 14px; font-size: 14.5px; line-height: 1.7; white-space: pre-wrap; }
+.demo-note mark { border-radius: 3px; padding: 0 2px; }
+.demo-miss { background: #fef3c7; border-bottom: 2px solid #d97706; }
+.demo-caught { background: #d1fae5; border-bottom: 2px solid #059669; }
+.demo-found { background: #e0e7ff; text-decoration: line-through; }
+.demo-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; border-radius: 4px; padding: 1px 6px; margin-left: 6px; vertical-align: middle; white-space: nowrap; }
+.demo-tag--miss { background: #fef3c7; color: #92400e; }
+.demo-tag--caught { background: #d1fae5; color: #065f46; }
+.demo-tag--found { background: #e0e7ff; color: #3730a3; }

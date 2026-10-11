@@ -25,6 +25,7 @@ export const phiLabelMap = {
   FAX_NUMBER: "PHONE",
   PRIVATE_URL: "URL",
   URL: "URL",
+  WEB: "URL",
   IP_ADDRESS: "IP",
   IPV4: "IP",
   IPV6: "IP",
@@ -226,6 +227,7 @@ export const nonNameClinicalWords = new Set([
   "sign", "signs", "situational", "sodium", "social", "spinal", "spine", "sputum", "stain", "status",
   "subcutaneous", "subjective",
   "studies", "suicide", "summary", "surgery", "surgical", "systems", "t4", "team", "temperature", "therapy",
+  "therapies", "scale", "scales", "insurance", "dear", "colleague", "colleagues",
   // ── Words found missing by 3,381-note audit ──
   "fetal", "auscultation", "asthma", "allergy", "allergies", "x-ray", "xray",
   "congestive", "exacerbation", "childhood", "institute", "association",
@@ -542,7 +544,7 @@ export const clinicalAnchorWords = new Set([
 
 export const protectedClinicalAcronyms = new Set([
   "a/p", "a1c", "aki", "bmp", "cad", "cbc", "cc", "chf", "ckd", "cmp", "copd", "dka",
-  "doe", "ed", "hpi", "icu", "pmh", "psh", "ros", "soap", "sob", "t1dm", "t2dm", "tsh"
+  "doe", "ed", "hpi", "icu", "nhs", "pmh", "psh", "ros", "soap", "sob", "t1dm", "t2dm", "tsh"
 ]);
 
 export const promptHeadingWords = new Set([

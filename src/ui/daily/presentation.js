@@ -363,8 +363,8 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     const admission = noteType === NOTE_TYPES.H_AND_P;
     const typeLabel = admission ? "Primary-team admission note" : "Prior primary-team progress note";
     const help = admission
-      ? "Paste the complete admission H&P. You’ll review what is kept before anything is saved."
-      : "Paste the complete prior primary-team note. You’ll review what is kept before anything is saved.";
+      ? "Paste the complete admission H&P. It will be de-identified automatically before saving."
+      : "Paste the complete prior primary-team note. It will be de-identified automatically before saving.";
     const saved = Boolean(note);
     const fields = primaryTeamNoteFields(noteType);
     const mode = composer.mode === "sections" || (!composer.mode && saved) ? "sections" : "paste";

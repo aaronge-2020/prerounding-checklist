@@ -132,6 +132,8 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
 
   function populateList(list) {
     const sheets = getSheets();
+    // Populate the (possibly empty) list section. The search input keeps
+    // focus because patchResults() updates only the results slot.
     const template = document.createElement("template");
     template.innerHTML = presentation.sheetListHtml({
       sheets: searchSheets(sheets, state.query),
@@ -141,8 +143,10 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     list.replaceChildren(...template.content.childNodes);
   }
 
-  // Master-detail navigation owns scroll explicitly and toggles the
-  // persistent sections directly (no wholesale innerHTML replacement).
+  // Master-detail navigation owns scroll explicitly. render()'s
+  // replaceViewContent would restore the list's position onto the detail (and
+  // vice versa on back), and its deferred restores would fight an explicit
+  // scroll — so navigation toggles the persistent sections directly.
   function openSheetDetail(sheet) {
     const el = container();
     if (!el) return;
@@ -151,6 +155,8 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     state.listScrollTop = owner ? owner.scrollTop : 0;
     state.listScrollLeft = owner ? owner.scrollLeft : 0;
     blurFocused();
+    // Populate the hidden detail section, then swap visibility. The list DOM
+    // stays intact underneath.
     const template = document.createElement("template");
     template.innerHTML = presentation.sheetDetailHtml(sheet);
     detail.replaceChildren(...template.content.childNodes);
@@ -167,6 +173,7 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     if (!el) return;
     const { list, detail } = ensureSections(el);
     blurFocused();
+    // The list DOM was never destroyed, so just reveal it. No re-render.
     detail.hidden = true;
     list.hidden = false;
     const owner = scrollOwner();
@@ -182,6 +189,7 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     const sheets = getSheets();
     const { list, detail } = ensureSections(el);
     if (!sheets.length) {
+      const { list, detail } = ensureSections(el);
       const template = document.createElement("template");
       template.innerHTML = presentation.emptyStateHtml();
       list.replaceChildren(...template.content.childNodes);
@@ -190,8 +198,15 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
       return;
     }
     const sheet = selectedSheet();
+    const { list, detail } = ensureSections(el);
+    // Populate the list section if empty (first render). Search updates go
+    // through patchResults(); navigation toggles visibility without
+    // destroying DOM.
     if (!list.hasChildNodes()) populateList(list);
     if (sheet) {
+      // Plain re-render while the detail is open (e.g. after a central
+      // render): keep the reader's position. List->detail navigation goes
+      // through openSheetDetail(), which starts the detail at the top.
       if (detail.hidden || !detail.hasChildNodes()) {
         const template = document.createElement("template");
         template.innerHTML = presentation.sheetDetailHtml(sheet);
@@ -209,9 +224,9 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     detail.hidden = true;
   }
 
-  // Surgical update for search keystrokes: only the results region is
-  // replaced, so the search input keeps focus and the phone keyboard stays
-  // open while typing.
+  // Surgical update for search keystrokes: only the results region's children
+  // are updated, so the search input keeps focus and the phone keyboard stays
+  // open while typing. The slot element itself persists.
   function patchResults() {
     const el = container();
     const slot = el && typeof el.querySelector === "function" ? el.querySelector("[data-cheat-sheets-results]") : null;
@@ -225,6 +240,8 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     template.innerHTML = presentation.sheetListResultsHtml({ sheets: results, query: state.query });
     const newSlot = template.content.firstElementChild;
     if (newSlot) {
+      // Preserve the slot element; update its content and class (ul.cs-cards
+      // vs div.cs-empty).
       slot.replaceChildren(...newSlot.childNodes);
       slot.className = newSlot.className;
     }
@@ -252,17 +269,18 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
       const id = openButton.dataset?.cheatSheetsOpen || null;
       state.sheetId = id;
       writeLastSheetId(state.sheetId);
-      const sheet = getSheetById(getSheets(), id);
-      if (sheet) {
-        openSheetDetail(sheet);
-      } else {
-        render();
-      }
+      const sheet = id ? getSheetById(getSheets(), id) : null;
+      // Explicit navigation: the detail starts at the top; the list position
+      // is remembered for the back button.
+      if (sheet) openSheetDetail(sheet);
+      else render();
       return true;
     }
     if (target.closest?.('[data-action="cheat-sheets-back"]')) {
       state.sheetId = null;
       writeLastSheetId(null);
+      // Explicit navigation back: restore the list's own position instead of
+      // inheriting wherever the reader left the detail.
       closeSheetDetail();
       return true;
     }

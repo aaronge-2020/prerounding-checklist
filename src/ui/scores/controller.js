@@ -455,11 +455,14 @@ export function createScoresController({
       list.replaceChildren(...template.content.childNodes);
       list.hidden = false;
       detail.hidden = true;
+      // Mark list as stale so it repopulates when a patient is selected.
       list.dataset.renderedFor = "";
       return;
     }
     if (state.patientId !== patient.id) resetForPatient(patient.id);
     if (!state.scoreId) {
+      // Repopulate if empty or if it was rendered for a different patient
+      // (e.g. the "no patient" message).
       if (!list.hasChildNodes() || list.dataset.renderedFor !== patient.id) {
         const template = document.createElement("template");
         template.innerHTML = renderHomeHtml();
@@ -483,6 +486,9 @@ export function createScoresController({
       detail.hidden = true;
       return;
     }
+    // Plain re-render while a calculator is open (e.g. after a central
+    // render): keep the reader's position. List->calculator navigation goes
+    // through openScoreDetail(), which starts the detail at the top.
     if (detail.hidden || !detail.hasChildNodes()) {
       const template = document.createElement("template");
       template.innerHTML = html;
@@ -492,6 +498,132 @@ export function createScoresController({
     detail.hidden = false;
   }
 
+  function renderHomeHtml() {
+    const patient = active();
+    if (!patient) return patientRequiredMessage();
+    if (state.patientId !== patient.id) resetForPatient(patient.id);
+    return presentation.renderScoresHome({
+      definitions: listAllDefinitions(),
+      patientLabel: patient.displayLabel || "this patient"
+    });
+  }
+
+  function renderDetailHtml() {
+    const patient = active();
+    if (!patient) return patientRequiredMessage();
+    if (state.patientId !== patient.id) resetForPatient(patient.id);
+    const definition = getDefinition(state.scoreId);
+    if (!definition) return null;
+    const bindings = bindingsForPatient();
+    const values = effectiveValues(definition, bindings);
+    const result = calculateResult(definition, values);
+    const scoreBindings = bindings[definition.id] || {};
+    return presentation.renderScoreDetail({
+      definition,
+      values,
+      bindings: scoreBindings,
+      overriddenKeys: state.overridden,
+      result,
+      patientLabel: patient.displayLabel || "this patient",
+      mode: values.mode,
+      hasBindings: Object.keys(scoreBindings).length > 0,
+      savedState: savedStateFor(definition, values, result),
+      tab: state.tab,
+      isFavorite: readFavorites().has(definition.id)
+    });
+  }
+
+  // Master-detail uses persistent list/detail sections toggled via `hidden`.
+  // The list DOM is never destroyed on navigation, so its scroll position
+  // survives. Only the hidden detail section gets populated when opening a
+  // calculator.
+  function ensureSections(container) {
+    let list = container.querySelector("[data-scores-list]");
+    let detail = container.querySelector("[data-scores-detail]");
+    if (!list) {
+      list = document.createElement("div");
+      list.setAttribute("data-scores-list", "");
+      container.append(list);
+    }
+    if (!detail) {
+      detail = document.createElement("div");
+      detail.setAttribute("data-scores-detail", "");
+      detail.hidden = true;
+      container.append(detail);
+    }
+    return { list, detail };
+  }
+
+  // The route's scroll owner: .view on wide screens, the document below the
+  // 1040px breakpoint (where .view is overflow:visible).
+  function scrollOwner() {
+    const container = byId("scoresContent");
+    const view = container?.closest(".view");
+    if (view && view.scrollHeight > view.clientHeight + 4) return view;
+    if (typeof document !== "undefined") return document.scrollingElement || document.documentElement;
+    return null;
+  }
+
+  function blurFocused() {
+    const container = byId("scoresContent");
+    const active = typeof document !== "undefined" ? document.activeElement : null;
+    if (active && active !== document.body && container?.contains(active)) {
+      try {
+        active.blur();
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+
+  // Master-detail navigation owns scroll explicitly. The list section stays
+  // intact (hidden) while the calculator is open; closing reveals it without
+  // a re-render.
+  function openScoreDetail() {
+    const container = byId("scoresContent");
+    if (!container) return;
+    const html = renderDetailHtml();
+    if (!html) {
+      state.scoreId = null;
+      render();
+      return;
+    }
+    const { list, detail } = ensureSections(container);
+    const owner = scrollOwner();
+    state.listScrollTop = owner ? owner.scrollTop : 0;
+    state.listScrollLeft = owner ? owner.scrollLeft : 0;
+    blurFocused();
+    // Populate the hidden detail section, then swap visibility. The list DOM
+    // stays intact underneath.
+    const template = document.createElement("template");
+    template.innerHTML = html;
+    detail.replaceChildren(...template.content.childNodes);
+    list.hidden = true;
+    detail.hidden = false;
+    if (owner) {
+      owner.scrollTop = 0;
+      owner.scrollLeft = 0;
+    }
+  }
+
+  function closeScoreDetail() {
+    const container = byId("scoresContent");
+    if (!container) return;
+    const { list, detail } = ensureSections(container);
+    blurFocused();
+    // The list DOM was never destroyed, so just reveal it. No re-render.
+    // Refresh the list content in case favorites changed while in the detail.
+    const template = document.createElement("template");
+    template.innerHTML = renderHomeHtml();
+    list.replaceChildren(...template.content.childNodes);
+    detail.hidden = true;
+    list.hidden = false;
+    const owner = scrollOwner();
+    if (owner) {
+      owner.scrollTop = Math.min(state.listScrollTop, Math.max(0, owner.scrollHeight - owner.clientHeight));
+      owner.scrollLeft = state.listScrollLeft || 0;
+    }
+  }
   function repullFromPatient() {
     state.values = {};
     state.overridden = new Set();
@@ -594,6 +726,8 @@ export function createScoresController({
       state.savedFingerprint = null;
       state.saveFailed = false;
       state.tab = "calculator";
+      // Explicit navigation: the calculator starts at the top; the list
+      // position is remembered for the back button.
       openScoreDetail();
       return true;
     }
@@ -604,6 +738,8 @@ export function createScoresController({
       state.savedFingerprint = null;
       state.saveFailed = false;
       state.tab = "calculator";
+      // Explicit navigation back: restore the list's own position instead of
+      // inheriting wherever the reader left the calculator.
       closeScoreDetail();
       return true;
     }

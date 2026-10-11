@@ -51,13 +51,14 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../patient-context/deid-client.js?v=20260929-deid-clinicale5";
+} from "../patient-context/deid-client.js?v=20261003-deid-adaptive";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
+  FALLBACK_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../patient-context/deid-model-options.js?v=20260930-deid-trackd";
+} from "../patient-context/deid-model-options.js?v=20261007-tide2-gated";
 import {
   canAutomaticallyInstallModel,
   ensureModelPackServiceWorker,
@@ -69,7 +70,7 @@ import {
   modelFilesFromInput,
   removeModelPack,
   requestPersistentModelStorage
-} from "../patient-context/model-pack-storage.js?v=20260925-sw-auth-fix";
+} from "../patient-context/model-pack-storage.js?v=20261007-tide2-gated";
 import {
   formatBytes,
   hasAutomaticModelDownload,
@@ -122,7 +123,7 @@ import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-adm
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-medication-card-v4";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-medication-card-v4";
 import { preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20260925-preserve-view-scroll-v2";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20260921-medication-card-v4&local-ai=guidelines-editable-v1&decision1=key-section-v1";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20261007-tide2-gated&local-ai=guidelines-editable-v1&decision1=key-section-v1";
 import { installGlobalFetchGuard, isOfflineMode, onOfflineModeChange, setOfflineMode } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
 import { createVaultPresentation, disambiguatedPatientLabels } from "./vault/presentation.js?v=20260718-vault-safety";
 import { createVaultSessionGuards } from "./vault/session-guards.js?v=20260922-vault-guards";
@@ -134,8 +135,9 @@ import {
   warningDescription,
   warningSnippet
 } from "./redaction/presentation.js?v=20260921-medication-card-v4";
-import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261003-meddeid-100";
-import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20260929-deid-clinicale5";
+import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261003-meddeid-badge";
+import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261009-rule-learner-v1";
+import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20261003-deid-adaptive";
 import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261001-llm-verifier-v1";
 import { createDemoController } from "./demo/controller.js?v=20261001-demo-v4";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261001-demo-v4";
@@ -152,9 +154,22 @@ import { createSampleNotesController } from "./sample-notes/controller.js?v=2026
 import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20260928-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
+import {
+  createAdaptiveStore,
+  learnFromCorrection,
+  inferManualLabel
+} from "../vault/deid/adaptive.js";
+import {
+  recordCorrection as recordProposerCorrection,
+  clearProposerSession,
+  decideRule as decideProposerRule,
+} from "../vault/deid/rule-orchestrator.js?v=20261009-rule-proposer-v1";
+import { getPendingRules } from "../vault/deid/rule-store.js?v=20261009-rule-proposer-v1";
+import { createApprovalPresentation } from "./deid/approval-presentation.js?v=20261009-rule-proposer-v1";
 const app = {
   vault: null,
   passphrase: "",
+  adaptiveStore: null,
   view: "vault",
   adaptiveStore: null,
   selectedDayId: "",
@@ -258,6 +273,8 @@ const reviewPresentation = createReviewPresentation({ escapeHtml, icon });
 const redactionPresentation = createRedactionPresentation({ escapeHtml, icon });
 const quickDeidPresentation = createQuickDeidPresentation({ escapeHtml, icon });
 const drugLookupPresentation = createDrugLookupPresentation({ escapeHtml, icon });
+const approvalPresentation = createApprovalPresentation({ escapeHtml });
+const ruleLearnerDemo = createRuleLearnerDemo({ escapeHtml, icon, approvalPresentation });
 const promptsPresentation = createPromptsPresentation({ escapeHtml });
 const settingsPresentation = createSettingsPresentation({ escapeHtml });
 const vaultPresentation = createVaultPresentation({ escapeHtml, icon });
@@ -649,6 +666,20 @@ async function ensureSelectedDeidReady() {
     }
   } catch (error) {
     caughtMessage = error instanceof Error ? error.message : "";
+    if (option?.key === "tide2-sentry") {
+      // Graceful fallback: the gated default is not usable right now (no
+      // token, not downloaded, or the ONNX is not on the repo yet). Fall
+      // back for this session and say so plainly — never claim the
+      // selected model ran after falling back.
+      const fallback = deidModelOptionByKey(FALLBACK_DEID_MODEL_KEY);
+      if (fallback && fallback.key !== option.key) {
+        app.deidMode = fallback.key;
+        const note = `TIDE2 Sentry is not ready (${caughtMessage}); using ${fallback.label} for this session.`;
+        setStatus(note);
+        render();
+        return ensureSelectedDeidReady();
+      }
+    }
   }
   const finalReadiness = selectedDeidReadiness();
   if (finalReadiness.ready) return finalReadiness;
@@ -1041,6 +1072,7 @@ function clearSensitiveSession() {
   if (app.demoSession) demoSessionController.exit({ renderAfter: false });
   app.vault = null;
   app.passphrase = "";
+  app.adaptiveStore = null;
   app.demoPreviewMode = false;
   app.vaultUnlockError = "";
   // Session-only policy: drop the in-memory adaptive correction memory.
@@ -1462,6 +1494,7 @@ function renderSettings() {
     preferences,
     apiKeySaved: Boolean(preferences.openAiApiKey),
     openRouterKeySaved: Boolean(preferences.openRouterApiKey),
+    hfTokenSaved: Boolean(preferences.hfToken),
     guidelineSets: app.guidelineSets,
     guidelineSearchQuery: app.guidelineSearchQuery,
     guidelinePage: app.guidelinePage,
@@ -1518,6 +1551,23 @@ async function clearOpenRouterByok() {
   const preferences = currentPreferences();
   setVaultPreferences({ ...preferences, openRouterApiKey: "" });
   await persistVault("Saved OpenRouter key removed from the encrypted local vault.");
+  render();
+}
+
+async function saveHfToken() {
+  const preferences = currentPreferences();
+  const replacementToken = String(byId("hfTokenInput")?.value || "").trim();
+  const hfToken = replacementToken || preferences.hfToken;
+  if (!hfToken) throw new Error("Enter a Hugging Face token before saving.");
+  setVaultPreferences({ ...preferences, hfToken });
+  await persistVault("Hugging Face token saved inside the encrypted local vault.");
+  render();
+}
+
+async function clearHfToken() {
+  const preferences = currentPreferences();
+  setVaultPreferences({ ...preferences, hfToken: "" });
+  await persistVault("Saved Hugging Face token removed from the encrypted local vault.");
   render();
 }
 
@@ -1674,6 +1724,24 @@ function renderQuickModelControl() {
   });
 }
 
+function refreshRuleProposalsPanel() {
+  try {
+    const panel = document.querySelector("[data-rule-proposals]");
+    if (panel) panel.innerHTML = renderRuleProposals();
+  } catch {
+    // Panel not mounted; proposals will render on next view render.
+  }
+}
+
+function renderRuleProposals() {
+  try {
+    const pending = getPendingRules();
+    return approvalPresentation.renderPendingRules(pending);
+  } catch {
+    return "";
+  }
+}
+
 function renderQuickDeid() {
   const hasReview = Boolean(app.quickDeid.review);
   const verifierModel = selectedLlmVerifierModel();
@@ -1688,7 +1756,7 @@ function renderQuickDeid() {
     verifierAvailable: Boolean(verifierModel),
     renderQuickModelControlHtml: renderQuickModelControl(),
     renderQuickDeidReviewHtml: hasReview ? renderQuickDeidReview() : ""
-  }));
+  }) + `<section class="panel rule-proposals-panel" data-rule-proposals aria-label="Suggested rules">${renderRuleProposals()}</section>`);
   scheduleQuickReviewFocus();
 }
 
@@ -1956,6 +2024,8 @@ async function handleClick(event) {
     if (action === "clear-openai-byok") await clearOpenAiByok();
     if (action === "save-openrouter-byok") await saveOpenRouterByok();
     if (action === "clear-openrouter-byok") await clearOpenRouterByok();
+    if (action === "save-hf-token") await saveHfToken();
+    if (action === "clear-hf-token") await clearHfToken();
     if (action === "toggle-offline-mode") toggleOfflineMode();
     if (action === "save-local-ai-guidelines") saveLocalAiGuidelines();
     if (action === "reset-local-ai-guidelines") resetLocalAiGuidelines();
@@ -1965,6 +2035,22 @@ async function handleClick(event) {
       renderQuickDeid();
     }
     if (action === "copy-quick-deid-output") await clipboard.copyText(app.quickDeid.output || byId("quickDeidOutput")?.value || "");
+    if (action === "approve-rule") {
+      const name = target.dataset.ruleName || "";
+      if (name) {
+        decideProposerRule(name, true);
+        setStatus(`Rule approved. It will now run automatically.`);
+        renderQuickDeid();
+      }
+    }
+    if (action === "reject-rule") {
+      const name = target.dataset.ruleName || "";
+      if (name) {
+        decideProposerRule(name, false);
+        setStatus(`Rule dismissed.`);
+        renderQuickDeid();
+      }
+    }
     if (action === "review-quick-warning") reviewQuickWarning(Number(target.dataset.warningIndex));
     if (action === "inspect-quick-redaction") inspectQuickRedaction(Number(target.dataset.redactionIndex));
     if (action === "confirm-quick-redaction") confirmQuickRedaction();
@@ -1974,6 +2060,17 @@ async function handleClick(event) {
     if (action === "manual-redact-quick-selection") redactSelectedQuickText();
     if (action === "redact-quick-warning") redactQuickWarning(Number(target.dataset.warningIndex));
     if (action === "dismiss-quick-warning") dismissQuickWarning(Number(target.dataset.warningIndex));
+    // Rule-learner guided demo ("See how it learns" in Quick De-ID). The demo
+    // owns its modal and session; app.js only routes the demo-scoped actions.
+    if (action === "start-rule-learner-demo") ruleLearnerDemo.start();
+    if (action === "rule-learner-demo-next") ruleLearnerDemo.next();
+    if (action === "rule-learner-demo-correct") ruleLearnerDemo.correctNote(Number(target.dataset.noteIndex || 0));
+    if (action === "rule-learner-demo-approve") ruleLearnerDemo.approveRule();
+    if (action === "rule-learner-demo-reject") ruleLearnerDemo.rejectRule();
+    if (action === "rule-learner-demo-exit") {
+      ruleLearnerDemo.exit();
+      refreshRuleProposalsPanel();
+    }
     demoController.observeAction(action);
   } catch (error) {
     setStatus(
@@ -2019,6 +2116,8 @@ async function unlockVault() {
   app.vault = vault;
   app.passphrase = passphrase;
   app.vaultUnlockError = "";
+  // Session-only policy (2026-10-03): correction memory is never loaded from
+  // the vault. (Old vault records with adaptiveDeid are ignored.)
   try {
     await refreshGuidelines();
     admissionDateAnchor.restore();
@@ -2413,10 +2512,14 @@ function inspectRedaction(scope, sectionId, redactionIndex) {
 }
 
 // --- De-identification correction log ------------------------------------
-// Every accept/reject in the redaction review is a labeled example, recorded
-// on-device (localStorage, never uploaded). This is the fuel for real-time
-// per-user adaptation: personal gazetteers, per-user thresholds, and future
-// local training.
+// Every accept/reject in the redaction review is a labeled example. Two
+// separate records are kept:
+//   1. Plaintext localStorage (prerounding.deidCorrections.v1): metadata
+//      ONLY (ts, decision, placeholder, label, source). Never span text.
+//   2. The adaptive store (memory ONLY, session-only policy 2026-10-03):
+//      full corrections including span text, which is what the real-time
+//      learning loop needs. Never persisted, not even to the encrypted
+//      vault. Cleared on vault lock.
 const DEID_CORRECTION_LOG_KEY = "prerounding.deidCorrections.v1";
 const DEID_CORRECTION_LOG_MAX = 1000;
 
@@ -2424,7 +2527,26 @@ function loadDeidCorrectionLog() {
   try {
     const raw = localStorage.getItem(DEID_CORRECTION_LOG_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed : [];
+    const entries = Array.isArray(parsed) ? parsed : [];
+    // Migration: drop any stored span text from entries written before the
+    // metadata-only rule. Returns the cleaned list.
+    let migrated = false;
+    const cleaned = entries.map((entry) => {
+      if (entry && typeof entry === "object" && "original" in entry) {
+        migrated = true;
+        const { original, ...rest } = entry;
+        return rest;
+      }
+      return entry;
+    });
+    if (migrated) {
+      try {
+        localStorage.setItem(DEID_CORRECTION_LOG_KEY, JSON.stringify(cleaned));
+      } catch {
+        // Storage unavailable; the cleaned in-memory list is still used.
+      }
+    }
+    return cleaned;
   } catch {
     return [];
   }
@@ -2433,21 +2555,26 @@ function loadDeidCorrectionLog() {
 const deidCorrectionLog = loadDeidCorrectionLog();
 
 // In-memory adaptive store (session-only policy 2026-10-03: never persisted,
-// not even to the encrypted vault; vault lock clears it).
+// not even to the encrypted vault). Dropped on vault lock so no correction
+// text lingers in memory behind the lock boundary.
 function ensureAdaptiveStore() {
   if (!app.adaptiveStore) {
+    // Session-only: never load from vault.
     app.adaptiveStore = createAdaptiveStore();
   }
   return app.adaptiveStore;
 }
 
+// (Removed 2026-10-03: session-only policy, no persistence timer needed.)
+
 function scheduleAdaptivePersist() {
   // Session-only policy (2026-10-03): correction memory holds identifiable
-  // PHI spans and is never persisted. This function is intentionally a no-op.
+  // PHI spans and is never persisted, not even to the encrypted vault.
+  // The in-memory store works for the session; vault lock clears it.
+  // This function is intentionally a no-op.
 }
 
-function logDeidCorrection({ decision, original, placeholder, label, source, textBefore, textAfter }) {
-  // Privacy: the persisted log holds metadata only, never the original span text.
+function logDeidCorrection({ decision, original, placeholder, label, source, textBefore, textAfter, noteText, spanStart, spanEnd, correctedLabel }) {
   deidCorrectionLog.push({
     ts: Date.now(),
     decision,
@@ -2462,8 +2589,8 @@ function logDeidCorrection({ decision, original, placeholder, label, source, tex
   } catch {
     // Storage full or unavailable; the in-memory log still works for the session.
   }
-  // Learn from the correction in the session-only adaptive store.
-  // The identifiable span text lives only in memory, never in storage.
+  // Real-time learning: the full correction (including span text) goes only
+  // to the adaptive store, never to plaintext storage.
   try {
     learnFromCorrection(ensureAdaptiveStore(), {
       decision,
@@ -2478,6 +2605,48 @@ function logDeidCorrection({ decision, original, placeholder, label, source, tex
   } catch {
     // Learning must never break the review flow.
   }
+  // Automatic rule proposer: structured corrections feed separate-and-conquer.
+  // PHI stays in memory only; only regex patterns (no PHI) are persisted.
+  try {
+    if (noteText && Number.isFinite(spanStart) && Number.isFinite(spanEnd)) {
+      const newlyProposed = recordProposerCorrection({
+        decision,
+        original: { start: spanStart, end: spanEnd, label, text: original },
+        corrected: correctedLabel && correctedLabel !== label
+          ? { start: spanStart, end: spanEnd, label: correctedLabel, text: original }
+          : (decision === "added" ? { start: spanStart, end: spanEnd, label, text: original } : null),
+        noteText,
+        noteId: "",
+        label,
+      });
+      // If new rules were proposed, refresh the proposals panel in place
+      // so the clinician sees them without disrupting the review flow.
+      if (newlyProposed && newlyProposed.length) refreshRuleProposalsPanel();
+    }
+  } catch {
+    // Proposer must never break the review flow.
+  }
+}
+
+// Slice ~80 chars of context before and ~40 after a redaction from the
+// review's source text, for pattern extraction. Returns empty strings when
+// the review or offsets are unavailable.
+function correctionContext(review, redaction) {
+  try {
+    const sourceText = String(review?.source || "");
+    const start = Number(redaction?.start);
+    if (!sourceText || !Number.isFinite(start) || start < 0) return { textBefore: "", textAfter: "" };
+    const end = Number.isFinite(Number(redaction?.end)) ? Number(redaction.end) : start;
+    return {
+      textBefore: sourceText.slice(Math.max(0, start - 80), start),
+      textAfter: sourceText.slice(end, end + 40),
+      noteText: sourceText,
+      spanStart: start,
+      spanEnd: end,
+    };
+  } catch {
+    return { textBefore: "", textAfter: "" };
+  }
 }
 
 function keepReviewedRedaction(scope, sectionId) {
@@ -2485,7 +2654,7 @@ function keepReviewedRedaction(scope, sectionId) {
   const reviewedIndex = inspectedRedactionIndex(review);
   if (!review || reviewedIndex < 0 || !review.redactions[reviewedIndex]) return;
   const redaction = review.redactions[reviewedIndex];
-  logDeidCorrection({ decision: "accepted", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "section-review" });
+  logDeidCorrection({ decision: "accepted", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "section-review", ...correctionContext(review, redaction) });
   review.redactions[reviewedIndex].state = "confirmed";
   const next = advanceSectionReview(scope, sectionId, reviewedIndex);
   setStatus(
@@ -2500,7 +2669,7 @@ function confirmAllSectionRedactions(scope, sectionId) {
   if (!review) return;
   const pending = review.redactions.filter((redaction) => redaction.state === "pending");
   pending.forEach((redaction) => {
-    logDeidCorrection({ decision: "accepted", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "section-review-bulk" });
+    logDeidCorrection({ decision: "accepted", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "section-review-bulk", ...correctionContext(review, redaction) });
     redaction.state = "confirmed";
   });
   review.inspectedRedactionIndex = -1;
@@ -2528,7 +2697,7 @@ function allowReviewedNonPhi(scope, sectionId, redactionIndex) {
   const nextText = `${currentText.slice(0, position)}${redaction.original}${currentText.slice(position + redaction.placeholder.length)}`;
   field.value = nextText;
   setSectionDraftText(scope, sectionId, nextText);
-  logDeidCorrection({ decision: "rejected", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "section-review" });
+  logDeidCorrection({ decision: "rejected", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "section-review", ...correctionContext(review, redaction) });
   review.approvedRedactionIndexes.add(redactionIndex);
   redaction.state = "restored";
   review.redactions.forEach((entry, index) => {
@@ -2850,6 +3019,8 @@ function insertManualRedaction(output, review, start, end, source = "manual revi
   const original = String(output || "").slice(start, end);
   if (!original) throw new Error("Highlight a remaining identifier before redacting it.");
   const placeholder = "[MANUAL REDACTION]";
+  const textBefore = String(output || "").slice(Math.max(0, start - 80), start);
+  const textAfter = String(output || "").slice(end, end + 40);
   const nextOutput = `${String(output || "").slice(0, start)}${placeholder}${String(output || "").slice(end)}`;
   const occurrence = [...nextOutput.matchAll(/\[MANUAL REDACTION\]/g)].findIndex((match) => match.index === start);
   review.redactions.push({
@@ -2862,6 +3033,18 @@ function insertManualRedaction(output, review, start, end, source = "manual revi
     state: "confirmed",
     start: -1,
     end: -1
+  });
+  // A manual redaction is a recall miss the system never proposed: the
+  // highest-value learning signal. The label is inferred from the span
+  // shape since the user did not pick one.
+  logDeidCorrection({
+    decision: "added",
+    original,
+    placeholder,
+    label: inferManualLabel(original) || "NAME",
+    source,
+    textBefore,
+    textAfter
   });
   return nextOutput;
 }
@@ -2887,7 +3070,7 @@ function confirmQuickRedaction() {
   if (reviewedIndex < 0) return;
   const redaction = review.redactions[reviewedIndex];
   if (redaction) {
-    logDeidCorrection({ decision: "accepted", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "quick-deid" });
+    logDeidCorrection({ decision: "accepted", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "quick-deid", ...correctionContext(review, redaction) });
     redaction.state = "confirmed";
   }
   review.inspectedRedactionIndex = quickRedactionIndex(review, reviewedIndex);
@@ -2904,7 +3087,7 @@ function confirmAllQuickRedactions() {
   if (!review) return;
   const confirmed = review.redactions.filter((redaction) => redaction.state === "pending");
   confirmed.forEach((redaction) => {
-    logDeidCorrection({ decision: "accepted", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "quick-deid-bulk" });
+    logDeidCorrection({ decision: "accepted", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "quick-deid-bulk", ...correctionContext(review, redaction) });
     redaction.state = "confirmed";
   });
   review.inspectedRedactionIndex = -1;
@@ -2923,7 +3106,7 @@ function restoreQuickNonPhi(redactionIndex) {
   const position = redactionPosition(app.quickDeid.output, redaction);
   if (position < 0) throw new Error("This redaction is no longer present in the current output.");
   app.quickDeid.output = `${app.quickDeid.output.slice(0, position)}${redaction.original}${app.quickDeid.output.slice(position + redaction.placeholder.length)}`;
-  logDeidCorrection({ decision: "rejected", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "quick-deid" });
+  logDeidCorrection({ decision: "rejected", original: redaction.original, placeholder: redaction.placeholder, label: redaction.label, source: "quick-deid", ...correctionContext(review, redaction) });
   redaction.state = "restored";
   review.redactions.forEach((entry, index) => {
     if (index !== redactionIndex && entry.placeholder === redaction.placeholder && entry.occurrence > redaction.occurrence)
@@ -3275,7 +3458,10 @@ async function downloadSelectedModelPack(modelKey) {
       setStatus("The browser did not grant persistent storage. The model remains local, but the browser may evict it when space is low.");
     const installed = await installModelPack(option, {
       signal: app.modelPackAbortController.signal,
-      onProgress: (progress) => updateModelPackDownloadProgress(option, progress)
+      onProgress: (progress) => updateModelPackDownloadProgress(option, progress),
+      auth: option.download?.auth === "hf-token"
+        ? { hfToken: currentPreferences().hfToken || "" }
+        : undefined
     });
     resetAdvancedDeidWorker();
     app.modelPackProgress = {

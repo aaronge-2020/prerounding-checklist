@@ -44,6 +44,7 @@ export function createDeidSessionCoordinator({
       admissionDate: effectiveAdmissionDate,
       relativeDate: effectiveReferenceDate,
       patientIdentity,
+      adaptiveStore: state.adaptiveStore || null,
       onStatus: updateDeidStatus,
       onProgress: (progress) => {
         if (progress?.message) {

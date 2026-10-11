@@ -1,7 +1,7 @@
 import {
   DEFAULT_DEID_MODEL_KEY,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20260930-deid-trackd";
+} from "./deid-model-options.js?v=20261007-tide2-gated";
 
 const statuses = new Map();
 const requests = new Map();
@@ -117,12 +117,12 @@ export function resetAdvancedDeidWorker() {
   statuses.clear();
 }
 
-export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, admissionDate = null, relativeDate = null, patientIdentity = null, onStatus, onProgress } = {}) {
+export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, admissionDate = null, relativeDate = null, patientIdentity = null, adaptiveStore = null, onStatus, onProgress } = {}) {
   const modelKey = mode === "advanced" ? DEFAULT_DEID_MODEL_KEY : mode;
   if (mode !== "structured") activeModelKey = deidModelOptionByKey(modelKey).key;
   return request(
     "deidentify",
-    { rawText: String(rawText || ""), options: { mode, allowStructuredFallback, admissionDate, relativeDate, patientIdentity } },
+    { rawText: String(rawText || ""), options: { mode, allowStructuredFallback, admissionDate, relativeDate, patientIdentity, adaptiveStore } },
     { onStatus, onProgress }
   );
 }

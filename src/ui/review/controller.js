@@ -209,12 +209,12 @@ export function createReviewController(deps) {
   // ({ [problemId]: { suggestions, references } }) awaiting approve/reject.
   // Nothing here is persisted; approved suggestions land in the draft.
   let apSuggestionsState = {};
-  // Decision-1 ranking state: which problem is being ranked, a token that
-  // invalidates a stale in-flight ranking, and the last ranked signature
-  // per problem so unchanged lists are never re-ranked.
+  // Decision-1 differential ranking. Local UI state only: which problem is
+  // being ranked right now, and the differential signature last ranked per
+  // problem (so resolving an unchanged list doesn't re-spend a call).
+  // Probabilities themselves persist on the draft's differential entries.
   let scoringDecisionProblemId = "";
-  let scoringRunToken = 0;
-  let lastScoredDifferentialSignature = {};
+  let decisionScoreSignatures = {};
   // Which lab families / flagged sections are collapsed on the data sheet.
   // Local UI state only; it survives re-renders and the search-only DOM patch.
   const collapsedFamilies = new Set();
@@ -1527,6 +1527,124 @@ export function createReviewController(deps) {
     deps.setStatus("Suggestion rejected.");
   }
 
+  // Signature of a problem's current differential list (stable ids + texts).
+  // Ranking is skipped when the list hasn't changed since the last run.
+  function differentialScoreSignature(problem) {
+    return JSON.stringify((problem?.differentials || []).map((d) => [
+      String(d?.id || ""),
+      apDraftText(d?.diagnosis),
+      apDraftText(d?.cluesFor),
+      apDraftText(d?.cluesAgainst)
+    ]));
+  }
+
+  // Assemble the de-identified context Decision-1 ranks against: this
+  // problem's own fields plus the note-level assessment and compact objective
+  // data — the same scoped pieces the generate prompt uses. Never raw chart
+  // text; every field here already passed the de-identification review.
+  function buildDecisionScoringContext(problemId) {
+    const current = model();
+    const draft = current.draft;
+    const problem = (draft.problems || []).find((p) => p.id === problemId);
+    if (!problem) return null;
+    const differentials = (problem.differentials || [])
+      .map((d) => ({
+        id: String(d?.id || ""),
+        diagnosis: apDraftText(d?.diagnosis),
+        cluesFor: apDraftText(d?.cluesFor),
+        cluesAgainst: apDraftText(d?.cluesAgainst)
+      }))
+      .filter((d) => d.id && d.diagnosis);
+    const contextBits = [];
+    const keyContext = apDraftText(problem.keyContext);
+    if (keyContext) contextBits.push(`Key context: ${keyContext}`);
+    const assessment = apDraftText(draft.assessment);
+    if (assessment) contextBits.push(`Assessment synthesis: ${assessment}`);
+    const vitals = apDraftText(draft.vitalsSummary);
+    if (vitals) contextBits.push(`Vitals: ${vitals}`);
+    const labs = apDraftText(draft.keyLabsSummary);
+    if (labs) contextBits.push(`Key labs / diagnostics: ${labs}`);
+    return {
+      problem: apDraftText(problem.problem),
+      contextText: contextBits.join("\n"),
+      differentials
+    };
+  }
+
+  // Rank one problem's differential with Decision-1 and persist the
+  // probabilities on the differential entries. Advisory only: the scores
+  // render as badges beside the student's own ordering, which never moves.
+  async function runDifferentialScoring(problemId, { manual = false } = {}) {
+    if (scoringDecisionProblemId) {
+      if (manual) deps.setStatus("Decision-1 is already ranking a differential — wait for it to finish.");
+      return;
+    }
+    const preferences = deps.currentPreferences ? deps.currentPreferences() : {};
+    if (!preferences.openRouterApiKey) {
+      if (manual) deps.setStatus("Save an OpenRouter API key in Settings to rank differentials with Decision-1.");
+      return;
+    }
+    const built = buildDecisionScoringContext(problemId);
+    if (!built) return;
+    let request;
+    try {
+      request = buildDifferentialScoringRequest(built);
+    } catch {
+      // Fewer than two candidate diagnoses: nothing to rank.
+      if (manual) deps.setStatus("Add at least two differential diagnoses before ranking.");
+      return;
+    }
+    const problem = (model().draft.problems || []).find((p) => p.id === problemId);
+    const signature = differentialScoreSignature(problem);
+    if (decisionScoreSignatures[problemId] === signature) {
+      if (manual) deps.setStatus("This differential hasn't changed since it was last ranked.");
+      return;
+    }
+    scoringDecisionProblemId = problemId;
+    refreshProblemCard(problemId);
+    deps.setStatus("Decision-1 is ranking the differential…");
+    try {
+      const result = await scoreDifferentialsWithDecision1({
+        apiKey: preferences.openRouterApiKey,
+        request
+      });
+      const diagnosisByDifferentialId = new Map(built.differentials.map((d) => [d.id, d.diagnosis]));
+      const optionToDifferentialId = new Map(
+        request.optionIds.map((optionId, index) => [optionId, request.differentialIds[index]])
+      );
+      const scores = [];
+      for (const entry of result.ranked) {
+        const differentialId = optionToDifferentialId.get(entry.optionId);
+        if (differentialId) scores.push({ differentialId, probability: entry.probability });
+      }
+      const current = model();
+      setDraft(setDifferentialDecisionScores(current.draft, problemId, scores));
+      const rankedProblem = (model().draft.problems || []).find((p) => p.id === problemId);
+      decisionScoreSignatures[problemId] = differentialScoreSignature(rankedProblem);
+      const top = result.ranked[0];
+      const topDiagnosis = top ? diagnosisByDifferentialId.get(optionToDifferentialId.get(top.optionId)) : "";
+      deps.setStatus(top && topDiagnosis
+        ? `Decision-1 ranked ${result.ranked.length} diagnoses — top: ${topDiagnosis} (${formatProbability(top.probability)}). Probabilities are advisory; your ordering is unchanged.`
+        : `Decision-1 ranked ${result.ranked.length} diagnoses. Probabilities are advisory; your ordering is unchanged.`);
+    } catch (error) {
+      deps.setStatus(error instanceof Error ? error.message : "Differential ranking failed.");
+    } finally {
+      scoringDecisionProblemId = "";
+      refreshProblemCard(problemId);
+    }
+  }
+
+  // After a generate round finishes for a problem (every suggestion approved,
+  // rejected, or none proposed), automatically rank the finalized
+  // differential. Silent no-op when there's no key, fewer than two
+  // candidates, or an unchanged already-ranked list.
+  function maybeAutoScoreDifferentials(problemId) {
+    if (pendingSuggestions(problemId).length) return;
+    void runDifferentialScoring(problemId);
+  }
+
+
+
   async function saveLabBaseline(analyte, fields, { clear = false } = {}) {    const current = model();
     if (!current.patient) return;
     deps.app.vault = updateActivePatient(deps.app.vault, (patient) => ({
@@ -2500,6 +2618,10 @@ export function createReviewController(deps) {
     }
     if (action === "ap-suggestion-reject") {
       rejectApSuggestion(button.dataset.problemId, button.dataset.suggestionId);
+      return true;
+    }
+    if (action === "rank-differentials") {
+      void runDifferentialScoring(button.dataset.problemId, { manual: true });
       return true;
     }
     if (action === "remove-plan-problem") {

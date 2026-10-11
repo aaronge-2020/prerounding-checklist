@@ -52,6 +52,10 @@ import { isActionableResidualWarning } from "../patient-context/review.js?v=2026
 import { collectDictionaryNameCandidates } from "./deid/name-recall.js";
 import { ambiguousNameTokens } from "./deid/name-dictionary.js";
 import { applyAdaptiveEntities } from "./deid/adaptive.js?v=20261003-deid-100";
+// Automatic rule proposer (separate-and-conquer): learns interpretable regex
+// rules from the clinician's own corrections. Approved rules run here in the
+// DETECT stage, after the adaptive store. Rules contain no PHI.
+import { applyApprovedRules } from "./deid/rule-orchestrator.js?v=20261009-rule-proposer-v1";
 import { applyLearnedMeddeidRules } from "./deid/meddeid-learned.js?v=20261003-deid-100";
 // Free-text date/time detection and parsing runs entirely through chrono-node
 // (https://github.com/wanasit/chrono, vendored English-only build) rather
@@ -4878,7 +4882,15 @@ export function deidentifyTextLearned(rawText, currentDate = null, options = {})
 // Apply the user's adaptive store to an entity list, ensuring placeholders.
 function withAdaptiveEntities(rawText, entities, adaptiveStore) {
   const adapted = adaptiveStore ? applyAdaptiveEntities(rawText, entities, adaptiveStore) : entities;
-  return adapted.map((entity) => (entity.placeholder ? entity : { ...entity, placeholder: placeholderForLabel(entity.label) }));
+  // Automatic rule proposer: approved regex rules from the clinician's
+  // own corrections run here. Never throws; failures return input unchanged.
+  let withRules = adapted;
+  try {
+    withRules = applyApprovedRules(rawText, adapted);
+  } catch {
+    // Rule application must never break detection.
+  }
+  return withRules.map((entity) => (entity.placeholder ? entity : { ...entity, placeholder: placeholderForLabel(entity.label) }));
 }
 
 // Track-D-free compliance path: raw model predictions through learned rules
