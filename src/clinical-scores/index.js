@@ -19,7 +19,7 @@ import { graceDefinition } from "./grace.js";
 import { wellsDvtDefinition } from "./wells-dvt.js";
 import { wellsPeDefinition } from "./wells-pe.js";
 import { percDefinition } from "./perc.js";
-import { curb65Definition } from "./curb65.js";
+import { curb65Definition } from "./curb65.js?v=20261011-manual-curb65";
 import { lightsDefinition } from "./lights.js";
 import { meldnaDefinition } from "./meldna.js";
 import { childPughDefinition } from "./child-pugh.js";

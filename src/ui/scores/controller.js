@@ -3,9 +3,9 @@
 // src/clinical-scores/ (pure); all markup in ./presentation.js (pure).
 // This module touches the DOM only through the injected byId /
 // replaceViewContent helpers, like the other feature controllers.
-import { getScoreDefinition, listScoreDefinitions } from "../../clinical-scores/index.js";
+import { getScoreDefinition, listScoreDefinitions } from "../../clinical-scores/index.js?v=20261011-manual-curb65";
 import { getAiModelDefinition, listAiModelDefinitions } from "../../ai-models/index.js";
-import { resolveScoreBindings } from "../../clinical-scores/patient-bindings.js";
+import { resolveScoreBindings } from "../../clinical-scores/patient-bindings.js?v=20261011-manual-curb65";
 import { appendSavedScore, createSavedScoreRecord } from "../../clinical-scores/saved-scores.js";
 import { createScoresPresentation } from "./presentation.js";
 

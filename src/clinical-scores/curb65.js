@@ -27,15 +27,13 @@ export const CURB65_INPUTS = [
     key: "confusion",
     label: "Confusion",
     type: "radio",
-    options: yesNo(),
-    pull: { kind: "lab", match: [/\bbun\b/i], derive: "gt19" }
+    options: yesNo()
   },
   {
     key: "bunOver19",
     label: "BUN >19 mg/dL (>7 mmol/L urea)",
     type: "radio",
-    options: yesNo(),
-    pull: { kind: "demographic", field: "ageYears", derive: "gte65" }
+    options: yesNo()
   },
   {
     key: "respiratoryRateAtLeast30",

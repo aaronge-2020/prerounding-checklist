@@ -4,9 +4,9 @@
 import {
   AP_SUGGESTION_SCHEMA,
   parseApSuggestions
-} from "../ai/ap-generator.js?v=20260929-ap-medcontext-v1";
-import { DEFAULT_OPENAI_WORKUP_MODEL, openAiWorkupModelOption } from "../app/preferences.js";
-import { requestOpenAiStructuredJson } from "./openai-client.js";
+} from "../ai/ap-generator.js?v=20261011-request-controls";
+import { DEFAULT_OPENAI_WORKUP_MODEL, openAiWorkupModelOption } from "../app/preferences.js?v=20261011-request-controls";
+import { requestOpenAiStructuredJson } from "./openai-client.js?v=20261011-request-controls";
 
 // Suggested-edits generation: the caller passes the final prompt text (the
 // student may have edited it in the confirm modal). The model returns
@@ -15,20 +15,25 @@ export async function generateProblemApRevisionsWithOpenAi({
   apiKey,
   model,
   prompt,
-  fetchImpl = fetch
+  instructions,
+  temperature,
+  webSearch = true,
+  fetchImpl
 } = {}) {
   const key = String(apiKey || "").trim();
   if (!key) throw new Error("Save an OpenAI API key in Settings before generating suggestions.");
-  const input = String(prompt || "").trim();
-  if (!input) throw new Error("The prompt is empty — write or restore the prompt before sending.");
+  const input = String(prompt || "");
+  if (!input.trim()) throw new Error("The prompt is empty — write or restore the prompt before sending.");
   const selectedModel = openAiWorkupModelOption(model || DEFAULT_OPENAI_WORKUP_MODEL).value;
   const json = await requestOpenAiStructuredJson({
     apiKey: key,
     model: selectedModel,
     input,
+    instructions,
+    temperature,
     schemaName: "problem_plan_suggestions",
     schema: AP_SUGGESTION_SCHEMA,
-    tools: [{ type: "web_search" }],
+    tools: webSearch ? [{ type: "web_search" }] : [],
     fetchImpl
   });
   return parseApSuggestions(json);

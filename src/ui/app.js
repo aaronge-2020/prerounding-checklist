@@ -55,10 +55,9 @@ import {
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
-  FALLBACK_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../patient-context/deid-model-options.js?v=20261007-tide2-gated";
+} from "../patient-context/deid-model-options.js?v=20261011-request-controls";
 import {
   canAutomaticallyInstallModel,
   ensureModelPackServiceWorker,
@@ -97,19 +96,20 @@ import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=202609
 import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260910-pre-op-prep";
 import {
   createAdaptiveStore,
-  learnFromCorrection
+  learnFromCorrection,
+  inferManualLabel
 } from "../vault/deid/adaptive.js?v=20261003-deid-100";
 import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260910-pre-op-prep";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences
-} from "../app/preferences.js?v=20260929-gpt6-models&decision1=openrouter-key-v1";
+} from "../app/preferences.js?v=20261011-request-controls";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1&icon=search-v1";
 import { createDailyPresentation } from "./daily/presentation.js?v=20260921-medication-card-v4&primary-note=section-scroll-v3&parser=table-v6&local-llm-v1&clear-btn-v1";
 import { createDailySourceController } from "./daily/source-controller.js?v=20260923-plan-problems-v1&scroll=preserve-section-scroll-v3&parser=table-v7&local-llm-v3&clear-btn-v1";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
-import { createReviewPresentation } from "./review/presentation.js?v=20260928-ap-suggestions-v1&trend=concise-v3&decision1=badge-v1";
-import { createReviewController } from "./review/controller.js?v=20260928-ap-suggestions-v1&labs=analyte-selection-v3&rxnorm=v2&draft=sections-v1&pull=stay-fallback-v1&decision1=ranking-v1";
+import { createReviewPresentation } from "./review/presentation.js?v=20261011-request-controls";
+import { createReviewController } from "./review/controller.js?v=20261011-request-controls";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-medication-card-v4";
 import {
   createPromptTaskController,
@@ -123,7 +123,7 @@ import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-adm
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-medication-card-v4";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-medication-card-v4";
 import { preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20260925-preserve-view-scroll-v2";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20261007-tide2-gated&local-ai=guidelines-editable-v1&decision1=key-section-v1";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20261011-request-controls";
 import { installGlobalFetchGuard, isOfflineMode, onOfflineModeChange, setOfflineMode } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
 import { createVaultPresentation, disambiguatedPatientLabels } from "./vault/presentation.js?v=20260718-vault-safety";
 import { createVaultSessionGuards } from "./vault/session-guards.js?v=20260922-vault-guards";
@@ -136,7 +136,7 @@ import {
   warningSnippet
 } from "./redaction/presentation.js?v=20260921-medication-card-v4";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261003-meddeid-badge";
-import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261009-rule-learner-v1";
+import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261011-request-controls";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20261003-deid-adaptive";
 import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261001-llm-verifier-v1";
 import { createDemoController } from "./demo/controller.js?v=20261001-demo-v4";
@@ -148,17 +148,13 @@ import { createDrugChecksController } from "./drug-checks/controller.js?v=202610
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20260929-rag-v3";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
-import { createScoresController } from "./scores/controller.js?v=20261003-scores-sections";
-import { createCheatSheetsController } from "./cheat-sheets/controller.js?v=20261003-cheatsheets-sections";
+import { createScoresController } from "./scores/controller.js?v=20261011-manual-curb65";
+import { createCheatSheetsController } from "./cheat-sheets/controller.js?v=20261011-request-controls";
 import { createSampleNotesController } from "./sample-notes/controller.js?v=20261001-sample-notes-v2";
 import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20260928-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
-import {
-  createAdaptiveStore,
-  learnFromCorrection,
-  inferManualLabel
-} from "../vault/deid/adaptive.js";
+
 import {
   recordCorrection as recordProposerCorrection,
   clearProposerSession,
@@ -171,7 +167,6 @@ const app = {
   passphrase: "",
   adaptiveStore: null,
   view: "vault",
-  adaptiveStore: null,
   selectedDayId: "",
   selectedStayPacketId: "admission", selectedPromptTask: "presentation_quality_editor", promptDayId: "",
   promptDayFollowsSelectedDay: true,
@@ -666,20 +661,7 @@ async function ensureSelectedDeidReady() {
     }
   } catch (error) {
     caughtMessage = error instanceof Error ? error.message : "";
-    if (option?.key === "tide2-sentry") {
-      // Graceful fallback: the gated default is not usable right now (no
-      // token, not downloaded, or the ONNX is not on the repo yet). Fall
-      // back for this session and say so plainly — never claim the
-      // selected model ran after falling back.
-      const fallback = deidModelOptionByKey(FALLBACK_DEID_MODEL_KEY);
-      if (fallback && fallback.key !== option.key) {
-        app.deidMode = fallback.key;
-        const note = `TIDE2 Sentry is not ready (${caughtMessage}); using ${fallback.label} for this session.`;
-        setStatus(note);
-        render();
-        return ensureSelectedDeidReady();
-      }
-    }
+
   }
   const finalReadiness = selectedDeidReadiness();
   if (finalReadiness.ready) return finalReadiness;
@@ -1061,6 +1043,7 @@ function clearPatientScopedSession() {
 }
 
 function clearSensitiveSession() {
+  reviewController.clearRequest();
   // Chart-grounded RAG: drop the in-memory embedding vectors and the cached
   // per-patient chart indexes BEFORE protected state is discarded.
   // Fire-and-forget — lock must not wait on it.
@@ -2020,6 +2003,12 @@ async function handleClick(event) {
       renderPrompts();
     }
     if (action === "open-token-color-picker") tokenColorPicker.open(target.dataset.token, target, event);
+    if (action === "save-ap-default" || action === "reset-ap-default") {
+      setVaultPreferences({ ...currentPreferences(), apInstructions: action === "reset-ap-default" ? null : String(byId("apDefaultInstructions")?.value ?? "") });
+      await persistVault();
+      renderSettings();
+      setStatus("A&P default instructions saved in the encrypted vault.");
+    }
     if (action === "save-openai-byok") await saveOpenAiByok();
     if (action === "clear-openai-byok") await clearOpenAiByok();
     if (action === "save-openrouter-byok") await saveOpenRouterByok();

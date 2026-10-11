@@ -1,3 +1,4 @@
+import { OPENAI_WORKUP_MODEL_OPTIONS } from "../../app/preferences.js?v=20261011-request-controls";
 import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES, objectiveEditorGroups, SECTION_VISIBILITY_KEYS } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
 import {
   abnormalTone,
@@ -555,16 +556,25 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return `<div class="ap-confirm-overlay" data-ap-confirm-overlay>
       <div class="ap-confirm-modal" role="dialog" aria-modal="true" aria-label="Review and send the AI consult">
         <h3>Consult AI &mdash; &ldquo;${escapeHtml(apConfirm.problemName)}&rdquo;</h3>
-        <p class="muted">The prompt below is exactly what will be sent to OpenAI using your saved API key. <strong>Edit anything</strong> — instructions, wording, or the patient data — before sending. Confirm it contains <strong>no protected health information</strong> (no names, dates, MRNs, locations).</p>
+        <p class="muted">Review the instructions and input before sending to OpenAI, or copy them for use elsewhere. <strong>Edit anything</strong> — instructions, wording, or the patient data — before sending. Confirm it contains <strong>no protected health information</strong> (no names, dates, MRNs, locations).</p>
         <div class="ap-consult-questions">
           <label for="apConsultQuestions"><strong>Reason for consult</strong> <span class="muted">(optional)</span></label>
           <textarea id="apConsultQuestions" class="ap-consult-input" data-ap-consult-questions rows="3" spellcheck="true" placeholder="e.g. What is the best medication regimen for this problem? What dose should I use? Should I consult a specialist?" aria-label="Specific consult questions for the AI">${escapeHtml(apConfirm.consultQuestions || "")}</textarea>
           <p class="muted ap-consult-hint">Leave blank and the consultant fully completes this problem's differential, diagnostic plan, and therapeutic plan. Ask a question and it answers exactly what you asked.</p>
         </div>
+        <label>Task instructions<textarea data-ap-request-field="instructions" rows="6" maxlength="20000">${escapeHtml(apConfirm.instructions)}</textarea></label>
+        <label>Model<select data-ap-request-field="model">${OPENAI_WORKUP_MODEL_OPTIONS.map((option) => `<option value="${escapeHtml(option.value)}" ${option.value === apConfirm.model ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}</select></label>
+        <label>Temperature (optional)<input type="number" min="0" max="2" step="0.1" data-ap-request-field="temperature" value="${escapeHtml(apConfirm.temperature)}" placeholder="Model default"></label>
+        <p class="muted">Leave temperature blank unless your selected model supports it.</p>
+        <label><input type="checkbox" data-ap-request-field="webSearch" ${apConfirm.webSearch ? "checked" : ""}>Allow web search</label>
         <textarea class="ap-prompt-editor" data-ap-prompt-editor rows="18" spellcheck="false" aria-label="Editable AI prompt">${escapeHtml(apConfirm.promptText)}</textarea>
         <p class="muted ap-confirm-note" data-ap-mode-note>Consult questions are blank, so the consultant will fully complete this problem's differential, diagnostic plan, and therapeutic plan. Each recommendation appears below the problem for you to approve or reject individually.</p>
+        <details><summary>Exact request body (read-only output schema)</summary><pre data-ap-request-preview style="white-space:pre-wrap;overflow-wrap:anywhere"></pre></details>
+        ${apConfirm.apiKeySaved ? "" : '<p class="muted">Copy works without an API key. Save a key in Settings to send.</p>'}
         <div class="button-row">
-          <button type="button" class="button--primary button--small" data-action="ap-confirm-generate" data-problem-id="${escapeHtml(apConfirm.problemId)}">Send consult</button>
+          <button type="button" class="button--secondary button--small" data-action="ap-reset-prompt">Reset input</button>
+          <button type="button" class="button--secondary button--small" data-action="ap-save-default">Save instructions as default</button>
+          <button type="button" class="button--primary button--small" ${apConfirm.apiKeySaved ? "" : "disabled"} data-action="ap-confirm-generate" data-problem-id="${escapeHtml(apConfirm.problemId)}">Send consult</button>
           <button type="button" class="button--secondary button--small" data-action="ap-copy-prompt">Copy prompt</button>
           <button type="button" class="button--secondary button--small" data-action="ap-confirm-cancel">Cancel</button>
         </div>

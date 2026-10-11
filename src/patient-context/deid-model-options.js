@@ -18,14 +18,8 @@ export const STRUCTURED_DEID_MODE = "structured";
 // offered in the clinician UI. Large WebGPU packs that repeatedly failed their
 // own self-test are deliberately not selectable; a model is useful only when
 // this app can verify a real local inference session.
-// Default selected by the 2026-10-07 SHIELD benchmark: TIDE2 Sentry
-// (DeBERTa-v3-large, fp16) at 0.82 exact-span F1 on 1,381 notes — the
-// strongest clinical de-identification model available in the browser.
-// Gated repo: needs a signed DUA and the user's own Hugging Face token.
-export const DEFAULT_DEID_MODEL_KEY = "tide2-sentry";
-// When the gated default cannot be made ready (no token, not downloaded),
-// the app falls back here for the session and says so plainly.
-export const FALLBACK_DEID_MODEL_KEY = "stanford-clinical";
+// Stanford remains the default until TIDE2 has approved, pinned hosting.
+export const DEFAULT_DEID_MODEL_KEY = "stanford-clinical";
 
 const ALL_DEID_MODEL_OPTIONS = [
   {

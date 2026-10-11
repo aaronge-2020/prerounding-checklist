@@ -1,7 +1,7 @@
 import {
   DEFAULT_DEID_MODEL_KEY,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20261007-tide2-gated";
+} from "./deid-model-options.js?v=20261011-request-controls";
 
 const statuses = new Map();
 const requests = new Map();

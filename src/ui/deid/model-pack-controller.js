@@ -17,7 +17,7 @@ import {
   DEID_MODEL_OPTIONS,
   STRUCTURED_DEID_MODE,
   deidModelOptionByKey
-} from "../../patient-context/deid-model-options.js?v=20261007-tide2-gated";
+} from "../../patient-context/deid-model-options.js?v=20261011-request-controls";
 import {
   ensureModelPackServiceWorker,
   getModelPackState,

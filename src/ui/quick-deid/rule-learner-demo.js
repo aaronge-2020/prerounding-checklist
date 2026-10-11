@@ -17,17 +17,17 @@
 // proposed rule (a regex pattern, no PHI), which is removed from the store
 // when the demo exits.
 
-import { buildCorrection } from "../vault/deid/correction-log.js";
+import { buildCorrection } from "../../vault/deid/correction-log.js";
 import {
   separateAndConquer,
   applyProposedRules,
   MIN_SUPPORT,
-} from "../vault/deid/rule-proposer.js";
+} from "../../vault/deid/rule-proposer.js";
 import {
   addProposedRules,
   deleteRule,
-} from "../vault/deid/rule-store.js?v=20261009-rule-proposer-v1";
-import { decideRule } from "../vault/deid/rule-orchestrator.js?v=20261009-rule-proposer-v1";
+} from "../../vault/deid/rule-store.js?v=20261009-rule-proposer-v1";
+import { decideRule } from "../../vault/deid/rule-orchestrator.js?v=20261009-rule-proposer-v1";
 
 // Synthetic demo notes. Names are caught by the base detector in the story;
 // the occupation after "Occupation:" is what the system misses.

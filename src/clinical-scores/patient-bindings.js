@@ -11,7 +11,7 @@
 // Every binding carries a `source` label naming where the value came from so
 // the UI can show "from patient" honestly. Anything not found stays manual.
 
-import { listScoreDefinitions } from "./index.js";
+import { listScoreDefinitions } from "./index.js?v=20261011-manual-curb65";
 import { listAiModelDefinitions } from "../ai-models/index.js";
 import { clinicalDisplayModelFromPromptText } from "../patient-context/structured-clinical-data.js";
 

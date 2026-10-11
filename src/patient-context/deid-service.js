@@ -8,7 +8,7 @@ import {
   STRUCTURED_DEID_MODE,
   deidModelCandidates,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20261007-tide2-gated";
+} from "./deid-model-options.js?v=20261011-request-controls";
 import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20261007-tide2-gated";
 import { importedModelBaseUrl } from "./model-packs.js?v=20260921-medication-card-v4";
 

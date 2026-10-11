@@ -1,3 +1,4 @@
+import { DEFAULT_AP_INSTRUCTIONS } from "../../ai/ap-generator.js?v=20261011-request-controls";
 import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260921-medication-card-v4";
 
 export function createSettingsPresentation({ escapeHtml }) {
@@ -185,6 +186,13 @@ export function createSettingsPresentation({ escapeHtml }) {
           </div>
           </section>
 
+          <section class="panel settings-panel">
+            <h2>A&amp;P generation instructions</h2>
+            <p class="muted">Starting instructions for each problem's AI consult. You can edit these again before each send. Keep patient details in the per-send input.</p>
+            <label>Default A&amp;P instructions<textarea id="apDefaultInstructions" rows="8" maxlength="20000">${escapeHtml(preferences.apInstructions ?? DEFAULT_AP_INSTRUCTIONS)}</textarea></label>
+            <div class="button-row"><button type="button" data-action="save-ap-default">Save A&amp;P default</button><button type="button" data-action="reset-ap-default">Reset A&amp;P default</button></div>
+            <p class="muted">Checklist fill and workup formatting were retired when read-only Cheat Sheets replaced those features.</p>
+          </section>
           ${renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides, searchQuery: guidelineSearchQuery, page: guidelinePage, selectedIds: guidelineSelectedIds, openId: guidelineOpenId })}
         </div>
         ${renderGuidelineEditor({ guidelineSets, escapeHtml, openId: guidelineOpenId, createDraft: guidelineCreateDraft })}

@@ -5,6 +5,26 @@
 // Privacy: the caller must supply ONLY de-identified text. This module never
 // sees raw chart data; it formats whatever context strings it is given.
 
+export const DEFAULT_AP_INSTRUCTIONS = `You are an expert clinical assistant helping a medical student refine the assessment and plan for ONE clinical problem. All patient context below is DE-IDENTIFIED. Base every suggestion on the context given; do not invent patient data.
+
+IMPORTANT — SUGGESTED EDITS, NOT A REWRITE: do NOT generate a whole new plan. The student already has a current plan below. Propose TARGETED REVISIONS to it: individual suggestions the student will approve or reject one by one.
+TASK — return suggestions as a JSON object with a "suggestions" array. Each suggestion revises ONE thing:
+
+- "target": one of "differential", "diagnostic_plan", "therapeutic_plan".
+- "action": "add" (new item), "revise" (change existing text), or "remove" (delete something wrong or duplicative).
+- "anchor": for revise/remove, the EXACT existing text being changed (copy it verbatim from the current plan above). Empty string for add.
+- "suggested": the proposed new text. For "add" to a plan, write the full line as it should appear (order-level specificity: drug name, dose, route, frequency, duration — e.g. "Furosemide 40 mg IV BID"). For "add" to the differential, the diagnosis name. Empty string for remove.
+- "rationale": 1-2 sentences tied to THIS patient's findings.
+- "likelihood": for differential add/revise — most likely / likely / possible / less likely. Empty string for plan suggestions.
+- "citationIds": ids into "references" supporting this suggestion. Empty array when none apply.
+
+4. REFERENCES: every diagnostic and therapeutic suggestion MUST cite at least one primary source. Prefer the ORIGINAL clinical trial paper that established the benefit (e.g. PARADIGM-HF for sacubitril-valsartan in HFrEF — cite the trial, not a review article). Major society guidelines (ACC/AHA, KDIGO, IDSA, ASH, etc.) are acceptable when no single trial applies. Use web search to verify each citation exists and to obtain its canonical URL (PubMed, journal page, or DOI link). NEVER invent a citation: if you cannot verify a source, either omit the suggestion or support it with a major guideline you can verify.
+
+RULES:
+- Flag assumptions explicitly (e.g. "assumes eGFR > 30; if lower, dose-reduce...").
+- Keep language concise and suitable for a clinical note.
+- Output STRICT JSON matching the required schema. No markdown fences, no prose outside the JSON.`;
+
 import { resolveMedicationConcepts } from "../patient-context/rxnorm-resolve.js?v=20260929-rxnorm-official-v3";
 import { buildLabelExcerptsBlock } from "../patient-context/dailymed.js?v=20260929-dailymed-v1";
 import { lookupInteraction } from "../patient-context/ddi-query.js?v=20260929-ddi-query-v1";
@@ -352,7 +372,8 @@ export function buildApRevisionPrompt({
   medications,
   labelData,
   mode = "complete",
-  consultQuestions = ""
+  consultQuestions = "",
+  instructions = DEFAULT_AP_INSTRUCTIONS
 } = {}) {
   const problemName = clean(problem, 300) || "(problem not named)";
   const context = clean(keyContext, 1500);
@@ -387,20 +408,7 @@ ${clean(consultQuestions, 2000) || "(none provided)"}`
 - a complete therapeutic plan (every treatment, consult, monitoring, and disposition order at order-level specificity: drug name, dose, route, frequency, duration).
 Also revise or remove anything in the current plan that is wrong, duplicative, or unsafe. If the current plan is already complete and correct, return an empty suggestions array rather than inventing changes.`;
 
-  const goal = mode === "consult"
-    ? `GOAL — ANSWER THE CONSULT: the clinician asked the specific questions below. Propose the targeted suggestions that answer them: add, revise, or remove. Stay focused on the questions; do not pad the plan with unrelated changes. If a question is already fully addressed by the current plan, return no suggestion for it.
-
-CLINICIAN'S CONSULT QUESTIONS:
-${clean(consultQuestions, 2000) || "(none provided)"}`
-    : `GOAL — FULL COMPLETION: the student wants this problem's plan finished. Propose an add-suggestion for EVERY missing piece, so that approving all suggestions leaves a complete, note-ready plan:
-- a full ranked differential (most likely first) covering the reasonable candidates for this presentation, each with 1-2 sentences of reasoning tied to this patient's findings and a likelihood (most likely / likely / possible / less likely),
-- a complete diagnostic plan (every test needed to work this up, each with its brief indication),
-- a complete therapeutic plan (every treatment, consult, monitoring, and disposition order at order-level specificity: drug name, dose, route, frequency, duration).
-Also revise or remove anything in the current plan that is wrong, duplicative, or unsafe. If the current plan is already complete and correct, return an empty suggestions array rather than inventing changes.`;
-
-  return `You are an expert clinical assistant helping a medical student refine the assessment and plan for ONE clinical problem. All patient context below is DE-IDENTIFIED. Base every suggestion on the context given; do not invent patient data.
-
-IMPORTANT — SUGGESTED EDITS, NOT A REWRITE: do NOT generate a whole new plan. The student already has a current plan below. Propose TARGETED REVISIONS to it: individual suggestions the student will approve or reject one by one.
+  return `${instructions}
 
 ${goal}
 
@@ -420,23 +428,7 @@ ${txLines.length ? txLines.map((line) => `- ${line}`).join("\n") : "(none writte
 STUDENT'S ASSESSMENT SYNTHESIS (note-level):
 ${assessmentText || "(none written yet)"}
 ${objectiveBits.length ? `\nDE-IDENTIFIED OBJECTIVE DATA:\n${objectiveBits.join("\n")}\n` : ""}
-${medicationBlock ? `\n${medicationBlock}\n` : ""}
-TASK — return suggestions as a JSON object with a "suggestions" array. Each suggestion revises ONE thing:
-
-- "target": one of "differential", "diagnostic_plan", "therapeutic_plan".
-- "action": "add" (new item), "revise" (change existing text), or "remove" (delete something wrong or duplicative).
-- "anchor": for revise/remove, the EXACT existing text being changed (copy it verbatim from the current plan above). Empty string for add.
-- "suggested": the proposed new text. For "add" to a plan, write the full line as it should appear (order-level specificity: drug name, dose, route, frequency, duration — e.g. "Furosemide 40 mg IV BID"). For "add" to the differential, the diagnosis name. Empty string for remove.
-- "rationale": 1-2 sentences tied to THIS patient's findings.
-- "likelihood": for differential add/revise — most likely / likely / possible / less likely. Empty string for plan suggestions.
-- "citationIds": ids into "references" supporting this suggestion. Empty array when none apply.
-
-4. REFERENCES: every diagnostic and therapeutic suggestion MUST cite at least one primary source. Prefer the ORIGINAL clinical trial paper that established the benefit (e.g. PARADIGM-HF for sacubitril-valsartan in HFrEF — cite the trial, not a review article). Major society guidelines (ACC/AHA, KDIGO, IDSA, ASH, etc.) are acceptable when no single trial applies. Use web search to verify each citation exists and to obtain its canonical URL (PubMed, journal page, or DOI link). NEVER invent a citation: if you cannot verify a source, either omit the suggestion or support it with a major guideline you can verify.
-
-RULES:
-- Flag assumptions explicitly (e.g. "assumes eGFR > 30; if lower, dose-reduce...").
-- Keep language concise and suitable for a clinical note.
-- Output STRICT JSON matching the required schema. No markdown fences, no prose outside the JSON.`;
+${medicationBlock ? `\n${medicationBlock}\n` : ""}`;
 }
 
 // Validate and normalize the model's suggestion reply. Throws on shape violations.
