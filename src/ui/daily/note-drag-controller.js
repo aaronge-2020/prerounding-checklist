@@ -100,11 +100,16 @@ export function createNoteDragController({ context, apply, report, doc = documen
     if (!dragging && Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) < 6) return;
     event.preventDefault();
     dragging = true;
+    pointer.lastX = event.clientX;
     pointer.lastY = event.clientY;
     if (!scrollFrame) {
       const scroll = () => {
         if (!pointer || !dragging || !current()) { scrollFrame = 0; return; }
-        const pane = selected.root.closest(".stay-content") || selected.root.closest(".view");
+        const sectionPane = selected.root.querySelector(".note-arrange-sections");
+        const sectionRect = sectionPane?.getBoundingClientRect();
+        const overSections = sectionRect && pointer.lastX >= sectionRect.left && pointer.lastX <= sectionRect.right &&
+          pointer.lastY >= sectionRect.top && pointer.lastY <= sectionRect.bottom;
+        const pane = overSections ? sectionPane : selected.root.closest(".stay-content") || selected.root.closest(".view");
         if (pane) {
           const rect = pane.getBoundingClientRect();
           const delta = pointer.lastY > rect.bottom - 60 ? 10 : pointer.lastY < rect.top + 35 ? -10 : 0;

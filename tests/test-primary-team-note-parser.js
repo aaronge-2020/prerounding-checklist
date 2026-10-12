@@ -13,6 +13,9 @@ import {
 const fixtureDirectory = path.join(path.dirname(fileURLToPath(import.meta.url)), "fixtures", "primary-team-notes");
 const fixture = (name) => fs.readFileSync(path.join(fixtureDirectory, name), "utf8");
 
+assert.equal(parsePrimaryTeamNote("ALLERGIES\nNKDA.\n\nPHYSICAL EXAM\nAlert.", "hp").sections.allergies, "NKDA.", "NKDA is an allergy value, not an empty section heading");
+assert.match(parsePrimaryTeamNote("NKDA.", "hp").sections.other, /NKDA/, "standalone allergy values must remain in the source");
+
 function assertMostlyLossless(source, parsed, label) {
   assert.ok(parsed.recognized, `${label} should recognize explicit note headings`);
   assert.ok(parsed.parsedCharacterCount / parsed.sourceCharacterCount > 0.93, `${label} should retain source content instead of summarizing it`);

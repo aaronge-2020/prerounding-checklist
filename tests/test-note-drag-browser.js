@@ -17,7 +17,20 @@ try {
   async function selectRange(locator,start,end) {
     await locator.focus();
     await locator.evaluate((el,{start,end})=>{el.setSelectionRange(start,end);el.dispatchEvent(new Event('select',{bubbles:true}));},{start,end});
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   }
+  // Long notes need edge scrolling within the section pane, not the outer page.
+  await page.locator('.note-additional-sections > summary').click();
+  await page.locator('.note-arrange-sections').evaluate(el=>{el.scrollTop=0;});
+  await selectRange(hpi,7,22);
+  const startBox=await hpi.boundingBox(), paneBox=await page.locator('.note-arrange-sections').boundingBox();
+  await page.mouse.move(startBox.x+70,startBox.y+20); await page.mouse.down();
+  await page.mouse.move(paneBox.x+80,paneBox.y+paneBox.height-12,{steps:15});
+  await page.waitForFunction(()=>document.querySelector('.note-arrange-sections').scrollTop>100);
+  await page.mouse.move(10,10); await page.mouse.up();
+  await page.keyboard.press('Escape');
+  assert.equal(await hpi.inputValue(),'Cough. Misplaced exam.');
+  await page.locator('.note-arrange-sections').evaluate(el=>{el.scrollTop=0;});
   // Real pointer gesture, not a mocked drop: preserve destination and source ranges.
   await selectRange(hpi,7,22);
   const box=await hpi.boundingBox(), target=await exam.boundingBox();

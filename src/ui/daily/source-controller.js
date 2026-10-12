@@ -1,4 +1,4 @@
-import { createNoteDragController } from "./note-drag-controller.js?v=20261011-drag-workspace-v2";
+import { createNoteDragController } from "./note-drag-controller.js?v=20261012-compact-import";
 import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261011-drag-workspace-v2";
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261011-ai-helper";
 import { captureScrollPositions, restoreScrollPositions } from "../view-scroll.js?v=20261011-epic-workflow";
@@ -27,7 +27,7 @@ import {
   primaryTeamNoteFields,
   updatePrimaryTeamNoteSection
 } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
-import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261011-epic-workflow";
+import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261012-compact-import";
 import { sharedLocalLlmClient } from "../../local-llm/client.js?v=20260928-local-llm-v1";
 import { splitNoteSectionsWithLlm } from "../../local-llm/parse.js?v=20260928-local-llm-v1";
 
@@ -293,7 +293,9 @@ export function createDailySourceController(deps) {
     const before = pane?.scrollTop;
     requestAnimationFrame(() => requestAnimationFrame(() => {
       const intro = workspace?.querySelector(".note-arrange-intro");
-      if (workspace?.isConnected && intro && pane && pane.scrollTop === before) {
+      if (workspace?.isConnected && intro && pane && pane.scrollTop === before &&
+          (intro.getBoundingClientRect().top < pane.getBoundingClientRect().top ||
+           intro.getBoundingClientRect().bottom > pane.getBoundingClientRect().bottom)) {
         pane.scrollTop += intro.getBoundingClientRect().top - pane.getBoundingClientRect().top;
       }
     }));

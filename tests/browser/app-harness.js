@@ -11,10 +11,16 @@ const mime = new Map([
   [".ico", "image/x-icon"], [".wasm", "application/wasm"]
 ]);
 
-export async function createAppServer() {
+export async function createAppServer({ unavailablePrefixes = [] } = {}) {
   const requests = [];
   const server = createServer((request, response) => {
     const url = new URL(request.url, "http://127.0.0.1");
+    // Server-side failure injection also reaches dedicated/service workers.
+    if (unavailablePrefixes.some((prefix) => url.pathname.startsWith(prefix))) {
+      response.writeHead(503, { "content-type": "text/plain" });
+      response.end("Test resource unavailable");
+      return;
+    }
     const relative = url.pathname === "/" ? "index.html" : url.pathname.slice(1);
     const file = normalize(join(root, relative));
     requests.push({ path: url.pathname, file });

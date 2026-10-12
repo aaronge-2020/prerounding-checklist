@@ -374,7 +374,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
       </section>`).join("");
     }
     return `<section class="structured-primary-note" data-structured-primary-note-scope="${escapeHtml(scope)}" aria-labelledby="${scope}StructuredNoteHeading">
-      <div class="section-heading tight structured-note-heading"><div><h3 id="${scope}StructuredNoteHeading">${typeLabel}</h3><p class="muted">${help}</p></div><span class="source-parse-local">${saved ? "Saved locally" : "Optional"}</span></div>
+      <div class="section-heading tight structured-note-heading"><div><h3 id="${scope}StructuredNoteHeading">${typeLabel}</h3><p class="muted">${help}</p></div><span class="source-parse-local">${saved ? "Saved locally" : "Not saved"}</span></div>
       <div class="structured-note-mode-toggle" role="group" aria-label="Primary-team note entry mode">
         <button type="button" data-action="select-structured-note-mode" data-note-scope="${escapeHtml(scope)}" data-note-mode="paste" aria-pressed="${String(mode === "paste")}" class="${mode === "paste" ? "selected" : ""}">Paste full note</button>
         <button type="button" data-action="select-structured-note-mode" data-note-scope="${escapeHtml(scope)}" data-note-mode="sections" aria-pressed="${String(mode === "sections")}" class="${mode === "sections" ? "selected" : ""}">Review & correct sections</button>
@@ -389,14 +389,13 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
             <div data-structured-note-detected="${escapeHtml(scope)}" role="status" aria-live="polite">${renderStructuredNoteDetected({ noteType, parseResult, scope, localAi })}</div>
           </aside>
         </div>
-        <div class="structured-note-paste-meta"><span data-structured-note-paste-count="${escapeHtml(scope)}">${pastedText.length.toLocaleString()} characters · session only</span></div>
-        <div class="structured-note-actions"><button type="button" class="button--quiet" data-action="clear-structured-note-paste" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>Clear</button><button type="button" class="button--primary" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>${parseResult.detectedSectionCount ? "Review sections" : "Review note"}</button></div>
+        <div class="structured-note-actions"><span class="structured-note-paste-meta" data-structured-note-paste-count="${escapeHtml(scope)}">${pastedText.length.toLocaleString()} characters · session only</span><button type="button" class="button--quiet" data-action="clear-structured-note-paste" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>Clear</button><button type="button" class="button--primary" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>${parseResult.detectedSectionCount ? "Review sections" : "Review note"}</button></div>
       ` : `
-        <div class="note-arrange-intro"><div><span class="note-arrange-eyebrow">EPIC IMPORT · REVIEW THE SPLIT</span><h4>Arrange your note</h4><p>Highlight a passage. Drag it to the right section, or tap the section heading.</p></div><span class="note-arrange-count">${completedCount} sections with text</span></div>
+        <div class="note-arrange-intro"><p>Highlight text, then drag it or tap a section heading to correct the split.</p><span class="note-arrange-count">${completedCount} sections with text</span></div>
         <div class="note-arrange-feedback" aria-live="polite" data-note-selection-status>Text from the original is copied. Text between sections is moved.</div>
         <div class="note-arrange-workspace ${pastedText ? "has-original" : ""}">
           ${pastedText ? `<aside class="note-source-sheet"><div class="note-sheet-heading"><strong>Original Epic note</strong><span>Read-only · session only</span></div><div id="${scope}NoteOriginal" data-note-original tabindex="0" role="region" aria-label="Original Epic note" class="note-source-text">${escapeHtml(pastedText)}</div></aside>` : ""}
-          <div class="note-arrange-sections" aria-label="Note sections">
+          <div class="note-arrange-sections" tabindex="0" role="region" aria-label="Note sections">
             <div class="note-sheet-heading"><strong>Your sections</strong><span>Review & edit in place</span></div>
             ${renderArrangeCards(fields.filter(field => ["history_of_present_illness", "interval_events", "patient_report", "physical_exam", "assessment", "plan"].includes(field.id)))}
             <details class="note-additional-sections" ${activeField && !["history_of_present_illness", "interval_events", "patient_report", "physical_exam", "assessment", "plan"].includes(activeField.id) ? "open" : ""}><summary>More sections <span>${fields.filter(field => !["history_of_present_illness", "interval_events", "patient_report", "physical_exam", "assessment", "plan"].includes(field.id) && structuredNoteValue(note, draftValues, field.id).trim()).length} with text</span></summary>
@@ -484,11 +483,11 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     const hasPrimaryNote = primaryTeamNoteHasContent(primaryTeamNote);
     const totalSourceCount = sources.length + (hasPrimaryNote ? 1 : 0);
     return `
-      ${renderDeidStrip}
       ${renderSourcePicker(sourceOptions, selectedSourceKind, scope)}
       <div data-source-kind-editor="${scope}">
         ${renderSourceKindEditor({ scope, selectedSourceKind, sourceOptions, sourceDraft, sourceParse, primaryTeamNote, structuredNoteDraft, structuredNoteComposer, noteType, resultMetadata, deidBusy, localAiParseInfo })}
       </div>
+      ${renderDeidStrip}
       <section class="saved-source-list" aria-labelledby="savedSourcesTitle">
         <div class="section-heading tight"><div><h3 id="savedSourcesTitle">${sourceTitle}</h3><p class="muted">${totalSourceCount} source${totalSourceCount === 1 ? "" : "s"} · summaries are reviewed on the separate note workspace</p></div><button class="button--primary" type="button" data-action="${generateAction}" ${totalSourceCount ? "" : "disabled"}>${generateLabel}</button></div>
         <div id="${scope === "admission" ? "contextSections" : "dailySources"}" class="source-capture-list">
@@ -610,7 +609,6 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
             admissionSelected
               ? `<section class="panel admission-packet packet-surface hospital-day-packet">
               <div class="admission-packet-body">
-                <div class="section-heading source-day-heading"><div><h2>Admission</h2><p class="muted">Paste broad chart blocks. The app preserves the source and includes every saved capture.</p></div></div>
                 ${renderSourceWorkspace({ scope: "admission", sources: admissionSections, sourceOptions: admissionSourceOptions, selectedSourceKind: admissionSourceKind, sourceDraft: admissionSourceDraft, sourceParse: admissionSourceParse, renderSourceCaptureEditor: (section) => renderSectionEditor(section, "context"), renderWarnings, packetCheck: admissionPacketCheck, deidBusy, renderDeidStrip, generateAction: "open-admission-note", generateLabel: "Draft H&P →", primaryTeamNote: patient.admissionPrimaryTeamNote, structuredNoteDraft: structuredNoteDrafts?.admission || {}, structuredNoteComposer: structuredNoteComposers?.admission || {}, noteType: NOTE_TYPES.H_AND_P, resultMetadata: admissionResultMetadata })}
               </div>
           </section>`
