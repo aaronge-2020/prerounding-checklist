@@ -463,6 +463,8 @@ export function createDailySourceController(deps) {
     if (undo) undo.disabled = true;
     const cardState = panel?.querySelector(`[data-note-drop-field="${fieldId}"] [data-note-card-state]`);
     if (cardState) cardState.textContent = "Edited";
+    const countLabel = panel?.querySelector(".note-arrange-count");
+    if (countLabel) countLabel.textContent = `${Object.values(noteMappingContext(scope)?.sections || {}).filter(text => text.trim()).length} sections with text`;
     const row = document.querySelector(`[data-action="select-structured-note-field"][data-note-scope="${scope}"][data-note-field="${fieldId}"]`);
     const cleaned = String(value || "").replace(/\s+/g, " ").trim();
     const status = row?.querySelector(".structured-note-section-status");

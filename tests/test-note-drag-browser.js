@@ -58,6 +58,7 @@ try {
   // Touch-sized layout and tap transfer (no overflow).
   await page.setViewportSize({width:390,height:844});
   await selectRange(hpi,0,6);
+  await page.evaluate(()=>document.dispatchEvent(new PointerEvent('pointercancel',{pointerType:'touch'})));
   await page.getByRole('button',{name:'Physical exam section',exact:true}).click();
   assert.equal(await exam.inputValue(),'Clinician revised exam.\n\nCough.');
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);

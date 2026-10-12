@@ -136,7 +136,11 @@ export function createNoteDragController({ context, apply, report, doc = documen
     const card = doc.elementFromPoint(event.clientX, event.clientY)?.closest("[data-note-drop-field]");
     if (card) transfer(card); else clear();
   }, true);
-  doc.addEventListener("pointercancel", clear);
+  doc.addEventListener("pointercancel", () => {
+    // Touch scrolling cancels a pointer but must keep the chosen passage so
+    // a clinician can scroll to a destination heading and tap it.
+    if (pointer || dragging) clear();
+  });
   doc.addEventListener("pointerup", captureEvent);
   doc.addEventListener("keyup", captureEvent);
   doc.addEventListener("select", captureEvent, true);
@@ -191,6 +195,7 @@ export function createNoteDragController({ context, apply, report, doc = documen
     else clear();
   });
   doc.addEventListener("dragend", clear);
+  doc.defaultView?.addEventListener("blur", clear);
   new MutationObserver(() => { if (selected && !current()) clear(); })
     .observe(doc.body, { childList: true, subtree: true });
   return { clear };
