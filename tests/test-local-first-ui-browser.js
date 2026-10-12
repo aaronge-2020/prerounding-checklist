@@ -328,12 +328,14 @@ try {
   await page.click('[data-action="select-admission-source-kind"][data-source-kind="primary_note"]');
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="admission"][data-note-mode="sections"]');
   await page.locator("#dailyContent").evaluate((content) => { content.style.minHeight = "1600px"; });
+  // Measure the application handler, not Playwright’s auto-scroll before a click.
+  // The control can sit above the artificial scroll offset used by this regression.
   const noteSectionScroll = await page.locator("#dailyView").evaluate((view) => {
     view.scrollTop = Math.min(520, view.scrollHeight - view.clientHeight);
     return view.scrollTop;
   });
   assert.equal(noteSectionScroll > 0, true, "the Hospital Stay route must be scrollable for the navigation regression test");
-  await page.locator('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="history_of_present_illness"]').click();
+  await page.locator('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="history_of_present_illness"]').evaluate((button) => button.click());
   await page.waitForSelector('[data-structured-note-scope="admission"][data-structured-note-field="history_of_present_illness"]');
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   assert.equal(
@@ -341,7 +343,7 @@ try {
     noteSectionScroll,
     "choosing an HPI section must not move the Hospital Stay scroll position"
   );
-  await page.locator('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="one_liner"]').first().click();
+  await page.locator('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="one_liner"]').first().evaluate((button) => button.click());
   await page.waitForSelector('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]');
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   assert.equal(

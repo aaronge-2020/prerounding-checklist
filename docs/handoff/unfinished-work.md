@@ -1,3 +1,7 @@
+# Release — 2026-10-11
+
+PR #9 was merged to main as `b0401b5`. All five pre-merge CI jobs passed (run `38190629035`), both Pages publishing jobs succeeded, and the live synthetic demo opened with the redesigned Epic import workflow. Manual checks and limitations are recorded in [the verification log](../qa/epic-workflow/verification.md). A subsequent test-only repair removes browser auto-scroll from the scroll-preservation assertion; follow the latest main CI for that rerun. No new model binary or benchmark-parity claim accompanies this release.
+
 # UI implementation checkpoint — Epic import workflow
 
 The ongoing redesign is documented in [the verification log](../qa/epic-workflow/verification.md). This supersedes the older lint/unit-test failure list below: all 52 non-browser test groups now pass, with targeted reruns for later edits. Full release checks and deployment status are tracked on PR #9. The release is gated on browser CI; see the verification log for manually tested behavior. The app keeps Stanford as interim default; no new evaluated model binary or TIDE2 hosting is claimed. Experimental correction rules are session-only and clear at patient/lock boundaries. The original-source review and correction controls specifically address HPI/exam/A&P mis-splitting.
