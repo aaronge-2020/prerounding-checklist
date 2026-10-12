@@ -12,11 +12,11 @@ import { splitNoteSectionsWithLlm } from "../src/local-llm/parse.js";
 import { createTextSection } from "../src/app/state/vault.js";
 import {
   listPatientContextPieces,
-  buildFullChartContextText
+  buildPatientContextFromPieces
 } from "../src/local-llm/patient-context.js";
 import {
-  splitFullChartContext,
-  verifyFullChartEquivalence
+  splitBuiltContext,
+  verifySplitEquivalence
 } from "../src/ui/ai-chat/delta-review.js";
 
 const SOURCE_NOTE = [
@@ -85,7 +85,7 @@ console.log("ingestion: honest model output verifies and feeds the full chart");
   const pieces = listPatientContextPieces(patient, {});
   assert.equal(pieces.length, 3, "three admission pieces listed in canonical order");
 
-  const fullText = buildFullChartContextText(patient, {});
+  const fullText = buildPatientContextFromPieces(patient, listPatientContextPieces(patient).map(p => p.id), {});
   for (const body of Object.values(result.sections)) {
     assert.ok(fullText.includes(body), `verified section carried verbatim: ${body.slice(0, 40)}…`);
   }
@@ -97,8 +97,8 @@ console.log("ingestion: honest model output verifies and feeds the full chart");
   );
 
   // The review split mirrors the same assembly byte-exactly.
-  const split = splitFullChartContext(patient, {});
-  assert.ok(verifyFullChartEquivalence(patient, split, {}), "split verifies against the builder");
+  const split = splitBuiltContext(patient, listPatientContextPieces(patient).map(p => p.id), {});
+  assert.ok(verifySplitEquivalence(patient, listPatientContextPieces(patient).map(p => p.id), split, {}), "split verifies against the builder");
   console.log("ok - honest parse verifies and feeds the full chart");
 }
 

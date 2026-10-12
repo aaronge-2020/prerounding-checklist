@@ -8,6 +8,7 @@ import { createReviewController } from "../src/ui/review/controller.js";
 // object onward and String(object) seeded the draft assessment with the
 // literal text "[object Object]".
 
+globalThis.document = { addEventListener() {}, removeEventListener() {} };
 function buildController(patient, packetId) {
   let capturedModel = null;
   const controller = createReviewController({
@@ -19,7 +20,7 @@ function buildController(patient, packetId) {
       reviewPage: 0
     },
     active: () => patient,
-    byId: () => ({ innerHTML: "" }),
+    byId: () => ({ innerHTML: "", addEventListener() {}, removeEventListener() {}, querySelector: () => null }),
     presentation: {
       renderReview: (data) => {
         capturedModel = data;

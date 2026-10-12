@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import { saveRules, loadRules, getApprovedRules, setRuleStatus } from '../src/vault/deid/rule-store.js?v=20261011-epic-workflow';
+import { clearProposerSession } from '../src/vault/deid/rule-orchestrator.js?v=20261011-epic-workflow';
+Object.defineProperty(globalThis,'localStorage',{configurable:true,get(){throw new Error('Rule text must never access plaintext storage');}});
+saveRules([{name:'synthetic',pattern:'Sensitive example',examples:['Synthetic source'],status:'proposed'}]);
+assert.equal(getApprovedRules().length,0);
+assert.equal(setRuleStatus('synthetic','approved'),true);
+assert.equal(getApprovedRules().length,1);
+const copy=loadRules();copy[0].pattern='changed';assert.equal(loadRules()[0].pattern,'Sensitive example');
+clearProposerSession();assert.equal(loadRules().length,0);
+delete globalThis.localStorage;
+console.log('Rules: no storage access, explicit approval, immutable reads, session clear passed.');

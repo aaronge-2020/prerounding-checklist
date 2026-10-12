@@ -7,8 +7,8 @@ import {
   DEMO_AI_CHAT_SAMPLES,
   DEMO_AI_CHAT_HANDS_ON_QUESTION,
   DEMO_AI_CHAT_HANDS_ON_ANSWER
-} from "./presentation.js?v=20261001-demo-v4";
-import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20261001-demo-v4";
+} from "./presentation.js?v=20261011-epic-workflow";
+import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20261011-epic-workflow";
 
 export const DEMO_REVIEW_ACTIONS = Object.freeze(new Set([
   "keep-reviewed-redaction",
@@ -105,7 +105,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     clearTargetDecorations();
     try { clearAiChatDemo?.(); } catch { /* ephemeral; never block exit */ }
     preparedStage = null;
-    try { document.body.classList.remove("demo-tour-active"); } catch {}
+    try { document.body.classList.remove("demo-tour-active"); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
   }
 
   function positionCallout() {
@@ -275,7 +275,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   }
 
   function render() {
-    try { console.log("[demo] render() start, stage:", getSession()?.stage); } catch {}
+    try { console.log("[demo] render() start, stage:", getSession()?.stage); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
     clearTargetDecorations();
     const session = getSession();
     // Pin the desktop icon rail expanded while the tour runs: the rail
@@ -283,7 +283,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     // down, so a highlighted sidebar target can jump away mid-approach.
     // With the rail pinned, targets stay put. Removed on exit (see
     // forceCleanup).
-    try { document.body.classList.toggle("demo-tour-active", Boolean(session)); } catch {}
+    try { document.body.classList.toggle("demo-tour-active", Boolean(session)); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
     if (!session) {
       // Every exit path funnels through here. The dim overlay, callout, and
       // highlight classes must not survive the demo, or the screen stays dark
@@ -292,7 +292,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       return;
     }
     if (!preparing && preparedStage !== session.stage) {
-      try { console.log("[demo] prepare block, stage:", session.stage); } catch {}
+      try { console.log("[demo] prepare block, stage:", session.stage); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
       preparing = true;
       prepareStage(session.stage);
       preparedStage = session.stage;
@@ -335,10 +335,11 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
             ?.querySelector("strong")
             ?.textContent?.replace(/^Next: review\s*/i, "") || ""
       });
-      try { console.log("[demo] inserting guide bar, html length:", guideHtml.length, "stage:", session.stage); } catch {}
+      try { console.log("[demo] inserting guide bar, html length:", guideHtml.length, "stage:", session.stage); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
       document.body.insertAdjacentHTML("afterbegin", guideHtml);
-      try { console.log("[demo] guide bar inserted, found:", !!document.querySelector("[data-demo-guide]")); } catch {}
+      try { console.log("[demo] guide bar inserted, found:", !!document.querySelector("[data-demo-guide]")); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
     } catch (err) {
+      console.warn("Guided demo could not render its controls.");
     }
     if (!isComplete) mountDim();
     if (stageId === "parse-note" && view === "daily") {
@@ -359,7 +360,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
           if (session && session.stage === "ai-chat-ask") {
             session.stage = "ai-chat-read";
           }
-        } catch {}
+        } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
       });
       // Pre-fill the chat composer with the suggested question (only if empty).
       const input = content.querySelector("[data-ai-chat-input]");
@@ -440,7 +441,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
             if (newTop && (newTop === t || t.contains(newTop))) break;
             ancestor = ancestor.parentElement;
           }
-        } catch {}
+        } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
       });
     }
     if (!routeMismatch) mountCallout(target, stage);
@@ -453,7 +454,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     repositionTimer = setTimeout(() => {
       repositionTimer = 0;
       if (getSession()?.stage !== stageId) return;
-      try { console.log("[demo] reposition timer fired, stage:", stageId); } catch {}
+      try { console.log("[demo] reposition timer fired, stage:", stageId); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
       // CRITICAL: Do NOT call clearTargetDecorations() here - it removes the guide bar
       // ([data-demo-guide]) but this timer never re-renders it, leaving the tour with
       // no Continue/Exit controls. Only clear the dim, callout, and spotlight;
@@ -463,7 +464,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       document.querySelectorAll("[data-demo-callout]").forEach((element) => element.remove());
       document.querySelectorAll("[data-demo-dim]").forEach((element) => element.remove());
       // Guide bar ([data-demo-guide]) is intentionally NOT removed here.
-      try { console.log("[demo] timer: guide bar preserved:", !!document.querySelector("[data-demo-guide]")); } catch {}
+      try { console.log("[demo] timer: guide bar preserved:", !!document.querySelector("[data-demo-guide]")); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
       if (getSession()?.stage !== "done") mountDim();
       const currentTargets = targetsForStage(stage, stageId, view, content);
       const currentTarget = currentTargets[0] || null;

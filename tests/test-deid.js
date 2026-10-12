@@ -1333,8 +1333,7 @@ assertTrackCRedacts('GivenName2: Ariadna', "Ariadna", "C8 GivenName2");
 
 console.log("Track C structured-pattern tests passed.");
 
-// Track D: clinical-text rule winners (measured 0.802 exact-span F1 on the
-// held-out split as Stanford + full rule stack). Same structured-only path
+// Existing structured clinical-text regression cases. Same structured-only path
 // as Track C: the D rules live in addStructuredSafeHarborEntities.
 function trackDRedacted(text) {
   return deidentifyTextStructuredOnly(text).text;
@@ -1344,10 +1343,11 @@ function assertTrackDRedacts(text, value, id) {
   assert.ok(!out.includes(value), `${id}: expected ${JSON.stringify(value)} to be redacted in ${JSON.stringify(out)}`);
 }
 
-// D1: clinical ages re-added post-filter (Safe Harbor suppresses < 90)
-assertTrackDRedacts("Patient is 43 y/o male", "43", "D1 clinical age 43 y/o");
-assertTrackDRedacts("18-year-old female presented", "18-year-old", "D1 clinical age 18-year-old");
-assertTrackDRedacts("aged 67 years", "67", "D1 clinical age aged 67");
+// Production preserves ages below 90. The experimental benchmark's
+// post-filter age masking must not override the product policy.
+for (const note of ["Patient is 43 y/o male", "18-year-old female presented", "aged 67 years"]) {
+  assert.equal(trackDRedacted(note), note);
+}
 
 // D2: role-anchored provider names (gold keeps ", MD" / ", MBBS")
 assertTrackDRedacts("Dr. Smith examined the patient", "Smith", "D2 Dr. anchor");

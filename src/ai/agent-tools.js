@@ -36,7 +36,7 @@ import {
 import {
   CLINICAL_SCORES,
   getScoreDefinition
-} from "../clinical-scores/index.js";
+} from "../clinical-scores/index.js?v=20261011-epic-workflow";
 
 export const AGENT_TOOLS_TAG = "20260929-agent-tools-v1";
 export const AGENT_MAX_STEPS = 8;

@@ -1,7 +1,7 @@
 import {
   clinicalDisplayModelFromPromptText,
   laboratoryAbnormality
-} from "../patient-context/structured-clinical-data.js?v=20260921-medication-card-v4";
+} from "../patient-context/structured-clinical-data.js?v=20261011-epic-workflow";
 import {
   needsFreeTextResultText
 } from "../patient-context/free-text-results.js";

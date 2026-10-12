@@ -8,7 +8,7 @@ import {
   extractNumberedPlanItems,
   isBareActionItem,
   stripSignoffParagraphs
-} from "./clinical-plan-parser.js?v=20260925-plan-rows-v1";
+} from "./clinical-plan-parser.js?v=20261011-epic-workflow";
 
 const H_AND_P = "hp";
 const PROGRESS = "progress";
@@ -161,14 +161,18 @@ function assessmentItemTitle(text) {
   return firstLine;
 }
 
-// True when a plan item carries its own problem title ("Diabetes mellitus
-// type 1: ..."). Used for the single-assessment case, where a colon title is
-// the reliable signal that the plan item is a problem rather than an action
-// on the assessment.
+// Preserve explicit problem hierarchy: title separators or a title line with
+// subordinate content distinguish problems from flat numbered actions.
 function planItemHasProblemTitle(itemText) {
   const text = String(itemText || "").trim();
   const colon = text.match(/^([^:]{3,60}):\s*\S/);
-  return !!(colon && !NON_PROBLEM_LABEL.test(colon[1].trim()));
+  const lines = text.split("\n").map(line => line.trim()).filter(Boolean);
+  // A titled numbered block followed by subordinate bullets is a problem
+  // hierarchy. Do not flatten all such blocks into the assessment paragraph.
+  const titledBulletBlock = lines.length > 1 && /^[-•]\s+/.test(lines[1]);
+  const separatedTitle = /^.{3,80}\s[—–]\s\S/.test(text);
+  const titledParagraph = lines.length > 1 && !/[.!?:]$/.test(lines[0]) && lines[0].length <= 80;
+  return titledBulletBlock || titledParagraph || separatedTitle || !!(colon && !NON_PROBLEM_LABEL.test(colon[1].trim()));
 }
 
 function makePairedProblem(assessmentItemText, planItemText) {
@@ -241,6 +245,7 @@ function pairAssessmentPlanProblems(assessmentText, planText, parsedProblems) {
   }
 
   if (assessmentItems.length === 0 && planItems.length === 0) {
+    if (parsedProblems.length > 1) return parsedProblems;
     return [makePairedProblem(assessment, plan)];
   }
 
@@ -501,7 +506,7 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
     // line like "#DVT prophylaxis" is stolen as a VTE-prophylaxis section
     // heading and everything after it is swallowed into the wrong field.
     const inPlanSection = activeField === "plan";
-    const rawMatch = inPlanSection && /^#/.test(line.trim()) ? null : headingMatch(line);
+    const rawMatch = inPlanSection && /^(?:#|[-•]\s)/.test(line.trim()) ? null : headingMatch(line);
     const match = rawMatch && isNoDataHeader(rawMatch) ? null : rawMatch;
     if (!match) {
       activeLines.push(line);

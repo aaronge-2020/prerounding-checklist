@@ -388,15 +388,18 @@ import { calculateAscvd } from "../src/clinical-scores/ascvd.js";
   // Latest numeric row wins; non-numeric rows are skipped.
   const labs = labPatient("Labs\nBUN: 18 mg/dL\nBUN: 24 mg/dL\nCreatinine: 1.1 mg/dL\nPotassium: pending");
   const bindings = resolveScoreBindings(labs, "");
-  assert.equal(bindings["curb65"].bunOver19.value, 1, "BUN 24 > 19 -> 1");
+  assert.equal(bindings["curb65"], undefined, "CURB65 uses manually confirmed inputs");
   assert.equal(bindings["ascvd"]?.totalCholesterol, undefined, "no cholesterol in this panel");
 
   const low = resolveScoreBindings(labPatient("Labs\nBUN: 12 mg/dL"), "");
-  assert.equal(low["curb65"].bunOver19.value, 0, "BUN 12 <= 19 -> 0");
+  assert.equal(low["curb65"], undefined, "CURB65 uses manually confirmed inputs");
 
   // Serum-only matchers skip urine contexts.
   const sodium = resolveScoreBindings(labPatient("Labs\nSodium: 138 mEq/L\nUrine sodium: 42 mEq/L"), "");
   assert.equal(sodium["anion-gap"].sodium.value, 138);
+
+  assert.equal(resolveScoreBindings(labPatient("Labs\nSodium: 138"), "")["anion-gap"], undefined, "unitless lab remains manual");
+  assert.equal(resolveScoreBindings(labPatient("Labs\nSodium: <138 mEq/L"), "")["anion-gap"], undefined, "qualified result is not an exact numeric input");
 
   // Cholesterol and HDL pull through with their saved unit.
   const lipids = resolveScoreBindings(labPatient("Labs\nTotal cholesterol: 213 mg/dL\nHDL: 50 mg/dL"), "");
@@ -410,16 +413,17 @@ import { calculateAscvd } from "../src/clinical-scores/ascvd.js";
     days: []
   };
   const demo = resolveScoreBindings(demoPatient, "");
+  assert.equal(demo["chadsvasc"].age, undefined, "sex must never populate the age category");
   assert.equal(demo["chadsvasc"].sex.value, 1, "female -> chadsvasc 1");
   assert.equal(demo["crcl"].sex.value, "female");
   assert.equal(demo["ascvd"].sex.value, "female");
   assert.equal(demo["ascvd"].ageYears.value, 67);
-  assert.equal(demo["curb65"].ageAtLeast65.value, 1, "67 >= 65 -> 1");
+  assert.equal(demo["curb65"], undefined, "CURB65 age requires manual confirmation");
   const young = resolveScoreBindings({
     contextSections: [{ sourceKind: "primary_note", label: "H&P", deidentifiedText: "Sex: Male\n50 year old man" }],
     days: []
   }, "");
-  assert.equal(young["curb65"].ageAtLeast65.value, 0, "50 < 65 -> 0");
+  assert.equal(young["curb65"], undefined, "CURB65 age requires manual confirmation");
   assert.equal(young["chadsvasc"].sex.value, 0, "male -> chadsvasc 0");
 }
 

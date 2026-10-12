@@ -1,4 +1,4 @@
-import { DEMO_CONTEXT_TEXTS } from "./session.js?v=20261001-demo-v4";
+import { DEMO_CONTEXT_TEXTS } from "./session.js?v=20261011-epic-workflow";
 
 export const DEMO_GUIDE_STAGES = Object.freeze({
   "save-context": {

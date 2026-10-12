@@ -11,7 +11,7 @@ import { apgarDefinition } from "./apgar.js";
 import { vbacFlammDefinition } from "./vbac-flamm.js";
 import { vbacMfmuDefinition } from "./vbac-mfmu.js";
 import { dueDatesDefinition } from "./due-dates.js";
-import { chadsvascDefinition } from "./chadsvasc.js";
+import { chadsvascDefinition } from "./chadsvasc.js?v=20261011-epic-workflow";
 import { hasbledDefinition } from "./hasbled.js";
 import { heartDefinition } from "./heart.js";
 import { timiDefinition } from "./timi.js";

@@ -50,7 +50,9 @@ function makeHarness({ ragStub = {}, clientStub = null, chatReply = null, naviga
   // Fake composer: lets tests prove an aborted send's draft is restored to
   // the input (and never into another patient's composer).
   const composer = { textContent: "", getAttribute: () => null, focus: () => {} };
+  globalThis.document ||= { activeElement: null };
   const root = {
+    closest: () => null, contains: () => false,
     set innerHTML(value) { html = String(value); },
     get innerHTML() { return html; },
     querySelector: (sel) => (sel === "[data-ai-chat-input]" ? composer : null),
@@ -203,11 +205,12 @@ async function sendRemoteWithApproval(harness, question) {
 }
 
 // --- API mode --------------------------------------------------------------
-console.log("api: full chart enters the review gate (no selection, no retrieval)");
+console.log("api: selected chart enters the review gate (no retrieval)");
 {
   const harness = makeHarness();
   const { ctrl, ragCalls } = harness;
   clickAction(ctrl, "ai-chat-mode", { mode: "remote" });
+  for (const id of ["day:d1:c1", "day:d1:quicknotes"]) ctrl.change({ matches: sel => sel === "[data-ai-chat-context-piece]", dataset: { aiChatContextPiece: id }, checked: true });
   submitText(ctrl, "What is the plan?");
   const review = await until(() => {
     const r = ctrl.getRemoteReview();
@@ -231,6 +234,7 @@ console.log("api: exact reviewed bytes are sent — one wrapper, de-identified, 
   const harness = makeHarness({
     chatReply: "The chart notes per [History of Present Illness]: 'chest pain radiating to the left arm'."
   });
+  for (const id of ["day:d1:c1", "day:d1:quicknotes"]) harness.ctrl.change({ matches: sel => sel === "[data-ai-chat-context-piece]", dataset: { aiChatContextPiece: id }, checked: true });
   await sendRemoteWithApproval(harness, "Summarize the HPI.");
   const { agentCalls, ragCalls } = harness;
   assert.ok(agentCalls.length > 0, "tool path invoked");
@@ -301,6 +305,7 @@ console.log("api: tool-assisted replies keep section citations and tool records"
       })
     }
   });
+  harness.ctrl.change({ matches: sel => sel === "[data-ai-chat-context-piece]", dataset: { aiChatContextPiece: "day:d1:c1" }, checked: true });
   const reply = await sendRemoteWithApproval(harness, "What is the Wells score?");
   assert.ok(reply.toolsUsed, "tool mode reply flagged");
   assert.equal(reply.toolRecords.length, 1, "tool record preserved");

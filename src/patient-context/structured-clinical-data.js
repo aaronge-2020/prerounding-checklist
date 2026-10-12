@@ -359,6 +359,7 @@ const SAVED_VITAL_NAMES = [
   "Pain",
   "Weight",
   "Source",
+  "SpO2 (%)",
   "SpO2",
   "Temp",
   "MAP",
@@ -368,6 +369,7 @@ const SAVED_VITAL_NAMES = [
 ].sort((left, right) => right.length - left.length);
 
 const SAVED_VITAL_LABELS = new Map([
+  ["SpO2 (%)", "SpO2"],
   ["BP", "Blood Pressure (cuff)"],
   ["HR", "Pulse"],
   ["RR", "Respirations"],
@@ -445,8 +447,12 @@ function savedLaboratoryModel(lines) {
 // verbatim so an explicit °F never degrades into the legacy °C assumption.
 const EXPLICIT_VITAL_UNIT_PATTERN = /(°F|°C|breaths\/min|L\/min|mmHg|bpm|kg|%)(?=\s*$)/i;
 
-function splitSavedVitalValue(text) {
+function splitSavedVitalValue(text, name) {
   const remainder = clean(text);
+  if (name === "Temperature") {
+    const explicit = remainder.match(/^([-+]?\d+(?:\.\d+)?)\s*°?([CF])$/i);
+    if (explicit) return { value: explicit[1], unit: `°${explicit[2].toUpperCase()}` };
+  }
   const match = remainder.match(EXPLICIT_VITAL_UNIT_PATTERN);
   if (!match) return { value: remainder, unit: "" };
   return { value: clean(remainder.slice(0, match.index)), unit: match[1] };
@@ -470,7 +476,7 @@ function savedVitalModel(lines) {
       const name = SAVED_VITAL_NAMES.find((candidate) => measurement === candidate || measurement.startsWith(`${candidate} `));
       if (!name) return null;
       const normalizedName = SAVED_VITAL_LABELS.get(name) || name;
-      const parsed = splitSavedVitalValue(measurement.slice(name.length));
+      const parsed = splitSavedVitalValue(measurement.slice(name.length), normalizedName);
       // Legacy saved text wrote temperatures without a unit; the old loader
       // fabricated °C. Keep that ambiguity visible instead of re-fabricating
       // it: an unmarked temperature carries no unit at all.

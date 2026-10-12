@@ -4,7 +4,7 @@ import {
   DEMO_DAILY_TEXTS,
   DEMO_DAY_ID,
   DEMO_PATIENT_ID
-} from "./session.js?v=20261001-demo-v4";
+} from "./session.js?v=20261011-epic-workflow";
 
 export function createDemoSessionController({
   app,

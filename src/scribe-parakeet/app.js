@@ -474,7 +474,7 @@ async function boot() {
   els.btnDownload.addEventListener('click', runDownload);
   els.btnRetryDownload.addEventListener('click', runDownload);
   els.btnRetryMic.addEventListener('click', () => { hide(els.bannerMic); onRecord(); });
-  els.btnRetryWorker.addEventListener('click', () => { engine = null; bootEngine().catch(() => {}); });
+  els.btnRetryWorker.addEventListener('click', () => { engine = null; bootEngine().catch(() => { console.warn("Background operation did not complete; retry the requested action."); }); });
   els.btnEnrollRec.addEventListener('click', onEnrollRecord);
   els.btnEnrollSave.addEventListener('click', onEnrollSave);
   els.btnEnrollClear.addEventListener('click', () => {
@@ -490,7 +490,7 @@ async function boot() {
   renderEnrolled();
   const { allCached } = await refreshSetup();
   updateRecordButtons();
-  if (allCached) bootEngine().catch(() => {}); // banners surface failures
+  if (allCached) bootEngine().catch(() => { console.warn("Background operation did not complete; retry the requested action."); }); // banners surface failures
 }
 
 boot();

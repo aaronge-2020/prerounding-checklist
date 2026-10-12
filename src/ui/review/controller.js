@@ -1,7 +1,7 @@
 import { buildStructuredRequest } from "../../ai/structured-request.js?v=20261011-request-controls";
 import { sortDays } from "../../daily-updates/days.js?v=20260921-medication-card-v4";
 import { updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
-import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20260924-optional-sections-v1&labs=20260925-trend-specimen-v1";
+import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20261011-epic-workflow";
 import { createLabAutocomplete } from "./lab-autocomplete.js?v=20260924-dollar-autocomplete-v1";
 import { createDrugAutocomplete } from "./drug-autocomplete.js?v=20260929-drug-autocomplete-v1";
 import {
@@ -50,7 +50,7 @@ import {
   updateNoteSection,
   updatePlanProblem
 } from "../../note-drafts/index.js?v=20260929-draft-sections-v1&decision1=score-field-v1";
-import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20260925-plan-rows-v1";
+import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20261011-epic-workflow";
 import {
   clearLabBaseline,
   setLabBaseline
@@ -223,6 +223,7 @@ export function createReviewController(deps) {
   // Whether the Clinical Data panel is collapsed (user can focus on the note).
   // Local UI state only; survives re-renders.
   let clinicalDataCollapsed = false;
+  let workspaceTab = "note";
 
   // Find the nearest ancestor (or self) that is actually scrolled —
   // the element whose scrollTop reflects the user's scroll position.
@@ -415,6 +416,8 @@ export function createReviewController(deps) {
   // the live search patch share one view-model builder.
   function reviewViewModel(current) {
     return {
+      workspaceTab,
+      previewText: renderFinalNotePlainText(current.draft),
       patientLabel: current.patient.displayLabel,
       oneLiner: current.oneLiner,
       packets: packets(current.patient),
@@ -2229,6 +2232,21 @@ export function createReviewController(deps) {
     const current = model();
     if (!current.patient) return false;
     let draft = current.draft;
+    if (action === "workspace-tab") {
+      const requested = button.dataset.workspaceTab;
+      if (!["sources", "note", "preview"].includes(requested)) return true;
+      workspaceTab = requested;
+      render();
+      deps.byId("reviewContent")?.querySelector(`[data-workspace-tab="${requested}"]`)?.focus({ preventScroll: true });
+      return true;
+    }
+    if (action === "import-for-note") {
+      deps.app.selectedStayPacketId = current.packet.id;
+      if (current.packet.id !== "admission") deps.app.selectedDayId = current.packet.id;
+      deps.app.view = "daily";
+      deps.render();
+      return true;
+    }
     if (action === "smart-exam-insert") {
       insertSmartExamSystem();
       return true;
@@ -2741,5 +2759,5 @@ export function createReviewController(deps) {
       return handled;
     };
   }
-  return Object.freeze({ clearRequest: () => { apConfirmState = null; }, change: withAutoSave(change), click: withAutoSave(click), input, keydown, open, prepare, render, saveDraft, toggle: withAutoSave(toggle), getDraftNoteText, getDraftNoteSections });
+  return Object.freeze({ clearRequest: () => { apConfirmState = null; workspaceTab = "note"; }, change: withAutoSave(change), click: withAutoSave(click), input, keydown, open, prepare, render, saveDraft, toggle: withAutoSave(toggle), getDraftNoteText, getDraftNoteSections });
 }

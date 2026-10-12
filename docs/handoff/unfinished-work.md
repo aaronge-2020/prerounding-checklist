@@ -1,3 +1,7 @@
+# UI implementation checkpoint — Epic import workflow
+
+The ongoing redesign is documented in [the verification log](../qa/epic-workflow/verification.md). This supersedes the older lint/unit-test failure list below: all 52 non-browser test groups now pass, with targeted reruns for later edits. Browser CI and production verification are still pending. The app keeps Stanford as interim default; no new evaluated model binary or TIDE2 hosting is claimed. Experimental correction rules are session-only and clear at patient/lock boundaries. The original-source review and correction controls specifically address HPI/exam/A&P mis-splitting.
+
 # Current status — 2026-10-11 implementation and browser review
 
 This section supersedes the historical handoff below. Do not ask Aaron the resolved questions again.

@@ -970,7 +970,8 @@ function setToolsToggle(h, checked) {
 function makeHarness({ patient = controllerFixturePatient(), prefs = {}, deidStub = makeDeidStub(), chatStub = makeChatStub(), agentStub = makeAgentStub(), draftText = "" } = {}) {
   const statuses = [];
   let html = "";
-  const root = {};
+  const root = { closest: () => null, contains: () => false };
+  globalThis.document ||= { activeElement: null };
   Object.defineProperty(root, "innerHTML", {
     get: () => html,
     set: (v) => { html = String(v); },

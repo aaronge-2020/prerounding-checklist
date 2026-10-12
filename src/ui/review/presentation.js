@@ -956,7 +956,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     </section>`;
   }
 
-  function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm, apSuggestions }) {
+  function renderReview({ workspaceTab = "note", previewText = "", patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm, apSuggestions }) {
     if (!draft) return patientRequiredMessage;
     const selectedIds = new Set((draft.objective?.selectedBlocks || []).map((block) => block.selectionId));
     // Banner calling out free-text results that pasted as a status only —
@@ -965,14 +965,16 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     const flaggedBanner = flaggedResults.length
       ? `<div class="review-flag-banner" role="alert"><strong>⚠️ ${flaggedResults.length} result${flaggedResults.length === 1 ? "" : "s"} need${flaggedResults.length === 1 ? "s" : ""} report text:</strong> ${flaggedResults.map((candidate) => escapeHtml(candidate.name)).join(", ")}. <span class="muted">Open each in the admissions tab and paste the full report.</span></div>`
       : "";
-    return `<div class="review-workspace">
+    return `<div class="review-workspace" data-workspace-tab="${workspaceTab}">
       <div class="patient-identity-bar" role="status" aria-label="Active patient"><span class="patient-identity-bar-label">Patient</span><strong>${escapeHtml(patientLabel)}</strong></div>
       <header class="review-hero panel">
-        <div><span class="eyebrow">${escapeHtml(patientLabel)}</span><h1 id="review-heading">Review Data / Draft Note</h1><p class="review-one-liner ${oneLiner ? "" : "is-empty"}">${escapeHtml(oneLiner || "One-liner not entered yet. You can continue and add it in the draft.")}</p></div>
+        <div><span class="eyebrow">${escapeHtml(patientLabel)}</span><h1 id="review-heading">Write note</h1><p class="review-one-liner ${oneLiner ? "" : "is-empty"}">${escapeHtml(oneLiner || "One-liner not entered yet. You can continue and add it in the draft.")}</p></div>
         <label class="review-packet-label">Note packet<select id="reviewPacketSelect">${packets.map((packet) => `<option value="${escapeHtml(packet.id)}" ${packet.id === selectedPacketId ? "selected" : ""}>${escapeHtml(packet.label)}</option>`).join("")}</select></label>
       </header>
+      <div class="writing-workflow-bar"><div role="tablist" aria-label="Writing workspace">${[["sources", "Sources"], ["note", "Write"], ["preview", "Preview & copy"]].map(([id,label]) => `<button type="button" role="tab" aria-selected="${workspaceTab === id}" data-action="workspace-tab" data-workspace-tab="${id}">${label}</button>`).join("")}</div><button type="button" data-action="import-for-note">+ Import from Epic</button></div>
       ${flaggedBanner}
-      <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions })}</div>
+      <section class="note-export-preview panel" ${workspaceTab !== "preview" ? "hidden" : ""} aria-label="Final note preview"><div class="section-heading"><div><h2>Review before copying</h2><p class="muted">This is the exact plain text that will be copied. Check source facts and remove any placeholders.</p></div><button type="button" data-action="copy-final-note" class="button--primary">Copy for Epic</button></div><pre>${escapeHtml(previewText || "No note content yet. Return to Write to begin.")}</pre><div class="button-row"><button type="button" data-action="workspace-tab" data-workspace-tab="note">Back to writing</button><button type="button" data-action="copy-rich-note">Copy rich text</button><button type="button" data-action="download-final-note">Download .txt</button></div></section>
+      <div class="review-columns" ${workspaceTab === "preview" ? "hidden" : ""}>${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions })}</div>
     </div>`;
   }
 

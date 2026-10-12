@@ -1,3 +1,4 @@
+import { createSettingsPresentation } from "../src/ui/settings/presentation.js";
 import assert from "node:assert/strict";
 import { createCheatSheetsPresentation } from "../src/ui/cheat-sheets/presentation.js";
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "../src/ui/redaction/presentation.js";
@@ -101,8 +102,8 @@ const demoView = createDemoPresentation({ escapeHtml });
 const demoPatient = createDemoPatient();
 assert.equal(demoPatient.contextSections.length, 0, "the guided demo must begin with an empty admission source list");
 assert.equal(demoPatient.days[0].sourceCaptures.length, 0, "the guided demo must add the selected-day source through the normal workflow");
-assert.equal(demoStage("write-note").title, "Review the complete case note");
-assert.match(demoView.renderGuide({ session: { stage: "write-note" }, currentView: "review" }), /parsed one-liner/i);
+assert.equal(demoStage("write-note").title, "Make the note yours");
+assert.match(demoView.renderGuide({ session: { stage: "write-note" }, currentView: "review" }), /one-liner/i);
 assert.match(demoView.renderCallout({ stage: demoStage("save-context") }), /Daniel Morgan is a synthetic 61-year-old/);
 const dailyRenderOptions = {
   patient: { contextSections: [{ id: "admission", label: "Admission context", deidentifiedText: "", residualWarnings: [], createdAt: "2026-01-01" }] },
@@ -125,7 +126,7 @@ const dailyMarkup = dailyView.renderDaily(dailyRenderOptions);
 assert.match(dailyMarkup, /data-action="select-admission"/);
 assert.match(dailyMarkup, /data-structured-note-paste/);
 assert.match(dailyMarkup, /Paste full note/);
-assert.match(dailyMarkup, /Enter by section/);
+assert.match(dailyMarkup, /Review &amp; correct sections|Review & correct sections/);
 assert.match(dailyMarkup, /Sections found/);
 assert.equal((dailyMarkup.match(/<textarea/g) || []).length, 1, "paste mode should render one full-note editor");
 assert.doesNotMatch(dailyMarkup, /data-action="add-admission-source"/, "the primary note uses its dedicated paste-first composer");
@@ -183,7 +184,7 @@ assert.match(parsedSourceMarkup, /data-source-parsed-draft/);
 assert.match(parsedSourceMarkup, /Session only/);
 assert.doesNotMatch(parsedSourceMarkup, /data-clinical-view="medications"/, "clinical summaries belong on Review Data, not Hospital Stay");
 assert.match(parsedSourceMarkup, /Acetaminophen/);
-assert.match(parsedSourceMarkup, /AI-ready text/);
+assert.match(parsedSourceMarkup, /Review parsed text/);
 const labPreviewMarkup = dailyView.renderSourceParsePreview({
   scope: "daily",
   parseResult: {
@@ -239,7 +240,7 @@ const dailyMixedMarkup = dailyView.renderDaily({
   deidBusy: false
 });
 assert.match(dailyMixedMarkup, /De-identify and add 3 sources/);
-assert.equal(dailyMixedMarkup.indexOf("De-identify and add 3 sources") < dailyMixedMarkup.indexOf("Mixed Epic export recognized as 3 sources"), true, "the save action must remain visible before the structured review");
+assert.equal(dailyMixedMarkup.indexOf("De-identify and add 3 sources") > dailyMixedMarkup.indexOf("Mixed Epic export recognized as 3 sources"), true, "reviewed content precedes the save action");
 
 const cheatSheetsView = createCheatSheetsPresentation({ escapeHtml });
 const sampleSheet = {
@@ -316,3 +317,6 @@ class FakeFile {
 }
 
 console.log("UI feature module tests passed");
+
+const settingsMarkup = createSettingsPresentation({ escapeHtml }).renderSettings({ preferences: {}, guidelineSets: [], OPENAI_WORKUP_MODEL_OPTIONS: [] });
+assert.equal((settingsMarkup.match(/id="openRouterApiKeyInput"/g) || []).length, 1, "one field owns OpenRouter key editing");

@@ -1,11 +1,12 @@
+import { moveNoteText, appendSourceSelection } from "../../patient-context/note-mapping.js?v=20261011-epic-workflow";
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-medication-card-v4";
-import { captureScrollPositions, restoreScrollPositions } from "../view-scroll.js?v=20260925-preserve-view-scroll-v2";
+import { captureScrollPositions, restoreScrollPositions } from "../view-scroll.js?v=20261011-epic-workflow";
 import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
 import {
   clinicalParseWarning,
   parseClinicalExport,
   prepareClinicalExportForSave
-} from "../../patient-context/clinical-export-parser.js?v=20260929-rxnorm-mar-v1";
+} from "../../patient-context/clinical-export-parser.js?v=20261011-epic-workflow";
 import {
   createEphemeralRedactionReview,
   reviewKey,
@@ -25,7 +26,7 @@ import {
   primaryTeamNoteFields,
   updatePrimaryTeamNoteSection
 } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
-import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20260925-one-liner-v1";
+import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261011-epic-workflow";
 import { sharedLocalLlmClient } from "../../local-llm/client.js?v=20260928-local-llm-v1";
 import { splitNoteSectionsWithLlm } from "../../local-llm/parse.js?v=20260928-local-llm-v1";
 
@@ -137,7 +138,7 @@ export function createDailySourceController(deps) {
       if (!dirty.has(field.id)) parsedDrafts[field.id] = parseResult.sections[field.id] || "";
     }
     deps.app.structuredNoteDrafts.set(key, parsedDrafts);
-    setStructuredNoteComposer(scope, { pastedText: String(value || ""), parseResult });
+    setStructuredNoteComposer(scope, { pastedText: String(value || ""), parseResult, mappingUndo: null });
     refreshStructuredNoteDetected(scope);
     document.querySelectorAll(`[data-action="review-structured-note-sections"][data-note-scope="${scope}"]`).forEach((button) => {
       button.disabled = !String(value || "").trim();
@@ -165,6 +166,7 @@ export function createDailySourceController(deps) {
   async function parseStructuredNoteWithLocalAi(scope) {
     const key = structuredNoteKey(scope);
     if (!key) return;
+    const patientId = deps.active()?.id;
     const info = deps.localAiParseInfo ? deps.localAiParseInfo(scope) : null;
     if (!info?.enabled) {
       deps.setStatus("Local AI note parsing is off. Enable it in the Local AI view.");
@@ -214,12 +216,14 @@ export function createDailySourceController(deps) {
     try {
       const client = sharedLocalLlmClient();
       const result = await splitNoteSectionsWithLlm(client, text, noteType, { onChunk, onToken });
+      if (!deps.app.vault || deps.active()?.id !== patientId || structuredNoteKey(scope) !== key || String(structuredNoteComposer(scope)?.pastedText || "").trim() !== text) return;
       const fields = primaryTeamNoteFields(noteType);
       const sections = {};
       for (const field of fields) {
         const body = String(result.sections[field.id] || "").trim();
         if (body) sections[field.id] = body;
       }
+      if (result.unparsed) sections.other = [sections.other, result.unparsed].filter(Boolean).join("\n\n");
       const detectedFieldIds = fields.filter((field) => sections[field.id]).map((field) => field.id);
       const prior = structuredNoteComposer(scope)?.parseResult || {};
       const parseResult = {
@@ -263,6 +267,7 @@ export function createDailySourceController(deps) {
   }
 
   function setStructuredNoteMode(scope, mode) {
+    if (mode === "sections") { reviewStructuredNoteSections(scope); return; }
     setStructuredNoteComposer(scope, { mode: mode === "sections" ? "sections" : "paste" });
     deps.render();
   }
@@ -359,10 +364,48 @@ export function createDailySourceController(deps) {
     deps.render();
   }
 
+  function correctNoteMapping(scope, action) {
+    const key = structuredNoteKey(scope);
+    const composer = structuredNoteComposer(scope);
+    if (!key || !composer) return;
+    const fields = primaryTeamNoteFields(structuredNoteType(scope));
+    const root = document.querySelector(`[data-structured-primary-note-scope="${scope}"]`);
+    const current = Object.fromEntries(fields.map(({ id }) => [id,
+      deps.app.structuredNoteDrafts.get(key)?.[id] ?? existingStructuredNote(scope)?.sections?.[id]?.deidentifiedText ?? ""]));
+    if (action === "undo-note-mapping") {
+      if (!composer.mappingUndo) return;
+      deps.app.structuredNoteDrafts.set(key, composer.mappingUndo.sections);
+      setStructuredNoteComposer(scope, { dirtyFieldIds: composer.mappingUndo.dirtyFieldIds, mappingUndo: null });
+    } else {
+      const fieldIds = fields.map(({ id }) => id);
+      let corrected;
+      let touched;
+      if (action === "restore-source-selection") {
+        const original = root.querySelector("[data-note-original]");
+        const to = composer.activeFieldId;
+        corrected = appendSourceSelection(current, { text: original.value, start: original.selectionStart, end: original.selectionEnd, to, fieldIds });
+        touched = [to];
+      } else {
+        const from = composer.activeFieldId;
+        const to = root.querySelector("[data-note-move-target]").value;
+        const editor = root.querySelector("[data-structured-note-field]");
+        const range = action === "move-note-selection" ? { start: editor.selectionStart, end: editor.selectionEnd } : {};
+        corrected = moveNoteText(current, { from, to, fieldIds, ...range });
+        touched = [from, to];
+      }
+      setStructuredNoteComposer(scope, { mappingUndo: { sections: current, dirtyFieldIds: composer.dirtyFieldIds || [] },
+        dirtyFieldIds: [...new Set([...(composer.dirtyFieldIds || []), ...touched])] });
+      deps.app.structuredNoteDrafts.set(key, corrected);
+    }
+    renderStructuredNoteEditor(scope);
+    deps.setStatus(action === "undo-note-mapping" ? "Section correction undone." : "Section mapping updated. Review before saving; original text is unchanged.");
+  }
+
   function handleStructuredNoteAction(target) {
     const scope = target.dataset.noteScope || "daily";
     const action = target.dataset.action;
-    if (action === "select-structured-note-mode") setStructuredNoteMode(scope, target.dataset.noteMode || "paste");
+    if (["move-note-selection", "move-note-section", "restore-source-selection", "undo-note-mapping"].includes(action)) correctNoteMapping(scope, action);
+    else if (action === "select-structured-note-mode") setStructuredNoteMode(scope, target.dataset.noteMode || "paste");
     else if (action === "review-structured-note-sections") reviewStructuredNoteSections(scope);
     else if (action === "select-structured-note-field") selectStructuredNoteField(scope, target.dataset.noteField || "");
     else if (action === "move-structured-note-field") moveStructuredNoteField(scope, Number(target.dataset.direction || 0));
@@ -389,7 +432,7 @@ export function createDailySourceController(deps) {
     const composer = structuredNoteComposer(scope);
     const dirty = new Set(composer?.dirtyFieldIds || []);
     dirty.add(fieldId);
-    setStructuredNoteComposer(scope, { activeFieldId: fieldId, dirtyFieldIds: [...dirty] });
+    setStructuredNoteComposer(scope, { activeFieldId: fieldId, dirtyFieldIds: [...dirty], mappingUndo: null });
     const row = document.querySelector(`[data-action="select-structured-note-field"][data-note-scope="${scope}"][data-note-field="${fieldId}"]`);
     const cleaned = String(value || "").replace(/\s+/g, " ").trim();
     const status = row?.querySelector(".structured-note-section-status");
@@ -409,7 +452,7 @@ export function createDailySourceController(deps) {
     const noteType = scope === "admission" ? NOTE_TYPES.H_AND_P : NOTE_TYPES.PROGRESS;
     const key = structuredNoteKey(scope);
     const existing = scope === "admission" ? patient.admissionPrimaryTeamNote : day.primaryTeamNote;
-    const draftValues = deps.app.structuredNoteDrafts.get(key) || {};
+    const draftValues = { ...deps.app.structuredNoteDrafts.get(key) };
     let note = existing || createPrimaryTeamNote(noteType, {
       patientId: patient.id,
       hospitalDayId: day?.id || ""
@@ -432,13 +475,18 @@ export function createDailySourceController(deps) {
         });
         deps.updateDeidOperation({ active: true, message: `De-identified ${index + 1} of ${fields.length} note sections locally.`, value: index + 1, total: fields.length });
       }
+      if (!deps.app.vault || deps.active()?.id !== patient.id || structuredNoteKey(scope) !== key) {
+        throw new Error("Patient or packet changed. Return to the original packet and retry saving.");
+      }
       deps.app.vault = updateActivePatient(deps.app.vault, (current) => {
         if (scope === "admission") return { ...current, admissionPrimaryTeamNote: note };
         const nextDay = { ...day, primaryTeamNote: note, updatedAt: new Date().toISOString() };
         return { ...current, days: upsertDay(current.days, nextDay) };
       });
-      deps.app.structuredNoteDrafts.delete(key);
-      deps.app.structuredNoteComposers.delete(key);
+      if (JSON.stringify(deps.app.structuredNoteDrafts.get(key) || {}) === JSON.stringify(draftValues)) {
+        deps.app.structuredNoteDrafts.delete(key);
+        deps.app.structuredNoteComposers.delete(key);
+      }
       if (!noteDraftSessionHasContent(deps.app.noteDraftSessions.get(key))) deps.app.noteDraftSessions.delete(key);
       await deps.persistVault(`${noteType === NOTE_TYPES.H_AND_P ? "H&P" : "Progress-note"} source de-identified and saved locally.`);
       deps.updateDeidOperation({ active: false, message: "Primary-team note saved in the encrypted vault." });
@@ -450,50 +498,10 @@ export function createDailySourceController(deps) {
     }
   }
 
-  // Save the primary note form values directly to the draft session WITHOUT
-  // de-identification. This lets the student transfer their work to the Draft
-  // Note tab immediately, then de-identify separately via "Save note".
-  // The draft session holds raw text (not persisted to vault); the vault only
-  // receives de-identified text via saveStructuredPrimaryNote.
-  function saveStructuredNoteToDraft(scope) {
-    const patient = deps.active();
-    if (!patient) throw new Error("Select a patient first.");
-    const key = structuredNoteKey(scope);
-    if (!key) throw new Error("Select a hospital day first.");
-    const draftValues = deps.app.structuredNoteDrafts.get(key) || {};
-    const noteType = structuredNoteType(scope);
-    const fields = primaryTeamNoteFields(noteType);
-
-    // Build a draft from the raw form values (not de-identified).
-    const sections = {};
-    for (const field of fields) {
-      const rawText = Object.hasOwn(draftValues, field.id) ? draftValues[field.id] : "";
-      if (rawText?.trim()) {
-        sections[field.id] = { deidentifiedText: rawText.trim(), notDeidentified: true };
-      }
-    }
-
-    if (Object.keys(sections).length === 0) {
-      throw new Error("No note content to save. Type or paste note text first.");
-    }
-
-    // Get or create the draft session, update with the raw sections.
-    let draft = deps.app.noteDraftSessions.get(key);
-    if (!draft) {
-      // Create a minimal draft structure; the review controller will populate the rest.
-      draft = { noteType, sections: {}, objective: { selectedBlocks: [] } };
-    }
-    draft = {
-      ...draft,
-      sections: { ...draft.sections, ...sections },
-      _hasRawText: true,
-      _rawTextWarning: "This draft contains text that has not been de-identified."
-    };
-    deps.app.noteDraftSessions.set(key, draft);
-    // Sync the Review tab's selected packet to this day so the saved draft
-    // is visible when the user navigates to Review Data / Draft Note.
-    deps.app.reviewPacketId = key;
-    deps.setStatus("Note saved to draft (not de-identified). Use 'De-identify & save' to de-identify and save to vault.");
+  async function saveStructuredNoteToDraft(scope) {
+    await saveStructuredPrimaryNote(scope);
+    deps.app.reviewPacketId = structuredNoteKey(scope);
+    deps.app.view = "review";
     deps.render();
   }
 
@@ -609,10 +617,7 @@ export function createDailySourceController(deps) {
       addButton.textContent = parsedSourceCount > 1 ? `De-identify and add ${parsedSourceCount} sources` : "De-identify and add source";
       addButton.disabled = deps.app.deidOperation.active || !deps.app[state.draftKey].trim();
     }
-    // The save-without-de-identification button never depends on the de-id
-    // model state — only on having draft text.
-    const rawButton = document.querySelector(`[data-action="${state.addAction}-raw"]`);
-    if (rawButton) rawButton.disabled = !deps.app[state.draftKey].trim();
+
   }
 
   function selectSourceKind(scope, sourceKind) {
@@ -774,24 +779,8 @@ export function createDailySourceController(deps) {
     });
   }
 
-  const DEIDENTIFICATION_SKIPPED_WARNING = {
-    severity: "review",
-    type: "Not de-identified",
-    reason: "Saved without de-identification. Review and redact manually before use."
-  };
-
-  // Wrap a raw (non-de-identified) part as a review result so the section
-  // review still opens and the skipped warning is visible. The text is
-  // stored verbatim; the capture is flagged deidentificationSkipped.
-  function rawSourceResult(part) {
-    return {
-      text: part.sourceText,
-      entities: [],
-      residualWarnings: [DEIDENTIFICATION_SKIPPED_WARNING]
-    };
-  }
-
-  async function addSource({ deidentify = true } = {}) {
+  async function addSource() {
+    const patientId = deps.active()?.id;
     const day = deps.selectedDay(deps.active());
     if (!day) throw new Error("Add a hospital day first.");
     if (deps.app.dailySourceKind === "results" && !deps.app.dailyResultMetadata.label.trim())
@@ -800,7 +789,7 @@ export function createDailySourceController(deps) {
     const parts = sourcePartsForSave(prepared, deps.app.dailySourceKind, deps.app.dailyResultMetadata);
     if (!prepared.rawText || !parts.length) throw new Error("Paste a chart source before adding it.");
     let deidentified;
-    if (deidentify) {
+    {
       deps.updateDeidOperation({
         active: true,
         message: prepared.parseResult.recognized
@@ -816,9 +805,8 @@ export function createDailySourceController(deps) {
         deps.updateDeidOperation({ active: false, message: error instanceof Error ? error.message : "De-identification did not complete." });
         throw error;
       }
-    } else {
-      deidentified = parts.map((part) => ({ part, result: rawSourceResult(part) }));
     }
+    if (!deps.app.vault || deps.active()?.id !== patientId || deps.selectedDay(deps.active())?.id !== day.id) throw new Error("Patient or packet changed. Retry saving in the original packet.");
     const captures = deidentified.map(({ part, result }) => createSourceCapture({
       sourceKind: part.sourceKind,
       label: part.label,
@@ -827,7 +815,7 @@ export function createDailySourceController(deps) {
       resultContext: part.resultContext,
       text: result.text || "",
       residualWarnings: result.residualWarnings || result.flags || [],
-      deidentificationSkipped: !deidentify
+      deidentificationSkipped: false
     }));
     captures.forEach((capture, index) => {
       const { part, result } = deidentified[index];
@@ -842,17 +830,14 @@ export function createDailySourceController(deps) {
     deps.app.dailyResultMetadata = { label: "", category: "imaging", date: "", context: "" };
     deps.beginSectionReview("daily");
     const savedNoun = `${captures.length} source${captures.length === 1 ? "" : "s"}`;
-    if (deidentify) {
+    {
       await deps.persistVault(`${savedNoun} de-identified and added to this hospital day.`);
       deps.updateDeidOperation({ active: false, message: `${savedNoun} de-identified and saved locally.` });
-    } else {
-      await deps.persistVault(`${savedNoun} saved to this hospital day without de-identification.`);
-      deps.setStatus(`${savedNoun} saved without de-identification — review and redact manually.`);
     }
     deps.render();
   }
 
-  async function addAdmissionSource({ deidentify = true } = {}) {
+  async function addAdmissionSource() {
     const patient = deps.active();
     if (deps.app.admissionSourceKind === "results" && !deps.app.admissionResultMetadata.label.trim())
       throw new Error("Enter a descriptive result label before adding this result.");
@@ -861,7 +846,7 @@ export function createDailySourceController(deps) {
     if (!patient) throw new Error("Select a patient first.");
     if (!prepared.rawText || !parts.length) throw new Error("Paste a chart source before adding it.");
     let deidentified;
-    if (deidentify) {
+    {
       deps.updateDeidOperation({
         active: true,
         message: prepared.parseResult.recognized
@@ -877,9 +862,8 @@ export function createDailySourceController(deps) {
         deps.updateDeidOperation({ active: false, message: error instanceof Error ? error.message : "De-identification did not complete." });
         throw error;
       }
-    } else {
-      deidentified = parts.map((part) => ({ part, result: rawSourceResult(part) }));
     }
+    if (!deps.app.vault || deps.active()?.id !== patient.id) throw new Error("Patient changed. Retry saving for the original patient.");
     const sections = deidentified.map(({ part, result }) => createTextSection(part.label || dailySourceKindLabel(part.sourceKind), {
       scope: "context",
       role: admissionRoleForSourceKind(part.sourceKind),
@@ -888,7 +872,7 @@ export function createDailySourceController(deps) {
       resultDate: part.resultDate,
       resultContext: part.resultContext,
       text: result.text || "",
-      deidentificationSkipped: !deidentify
+      deidentificationSkipped: false
     }));
     sections.forEach((section, index) => {
       const { part, result } = deidentified[index];
@@ -905,12 +889,9 @@ export function createDailySourceController(deps) {
     deps.admissionDateAnchor.remember();
     deps.beginSectionReview("context");
     const savedNoun = `${sections.length} admission source${sections.length === 1 ? "" : "s"}`;
-    if (deidentify) {
+    {
       await deps.persistVault(`${savedNoun} de-identified and added.`);
       deps.updateDeidOperation({ active: false, message: `${savedNoun} de-identified and saved locally.` });
-    } else {
-      await deps.persistVault(`${savedNoun} saved without de-identification.`);
-      deps.setStatus(`${savedNoun} saved without de-identification — review and redact manually.`);
     }
     deps.render();
   }

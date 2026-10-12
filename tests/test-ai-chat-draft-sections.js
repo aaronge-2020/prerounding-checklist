@@ -349,7 +349,8 @@ function makeDeidStub() {
 function makeControllerHarness({ draftSections }) {
   const patient = chartPatientFixture();
   let html = "";
-  const root = {};
+  const root = { closest: () => null, contains: () => false };
+  globalThis.document ||= { activeElement: null };
   Object.defineProperty(root, "innerHTML", {
     get: () => html,
     set: (v) => { html = String(v); },

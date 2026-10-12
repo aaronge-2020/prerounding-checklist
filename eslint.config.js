@@ -45,6 +45,9 @@ export default [
   {
     ignores: [
       "coverage/**",
+      "tests/tmp-*.mjs", // ad hoc local reproduction artifacts
+      "docs/benchmarks/**", // archived external benchmark harnesses
+      "src/vendor/**", // generated third-party bundles
       "data/clinical-guard-export.js",
       "medical-knowledge-db.js",
       "models/**",
@@ -57,7 +60,7 @@ export default [
   },
   js.configs.recommended,
   {
-    files: ["**/*.js"],
+    files: ["**/*.{js,mjs}"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",

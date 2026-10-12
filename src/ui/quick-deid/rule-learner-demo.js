@@ -22,12 +22,12 @@ import {
   separateAndConquer,
   applyProposedRules,
   MIN_SUPPORT,
-} from "../../vault/deid/rule-proposer.js";
+} from "../../vault/deid/rule-proposer.js?v=20261011-epic-workflow";
 import {
   addProposedRules,
   deleteRule,
-} from "../../vault/deid/rule-store.js?v=20261009-rule-proposer-v1";
-import { decideRule } from "../../vault/deid/rule-orchestrator.js?v=20261009-rule-proposer-v1";
+} from "../../vault/deid/rule-store.js?v=20261011-epic-workflow";
+import { decideRule } from "../../vault/deid/rule-orchestrator.js?v=20261011-epic-workflow";
 
 // Synthetic demo notes. Names are caught by the base detector in the story;
 // the occupation after "Occupation:" is what the system misses.

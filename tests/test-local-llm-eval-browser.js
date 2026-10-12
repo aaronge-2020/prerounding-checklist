@@ -20,7 +20,7 @@ const EVAL_TIMEOUT_MS = 90 * 60 * 1000;
 
 const server = await createAppServer();
 const browser = await chromium.launch({
-  executablePath: "/opt/meta-chromium/chrome",
+  ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {}),
   args: [
     "--enable-unsafe-swiftshader",
     "--use-angle=swiftshader",

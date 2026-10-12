@@ -38,7 +38,7 @@ const done = new Map();
 if (fs.existsSync(CKPT)) {
   for (const line of fs.readFileSync(CKPT, "utf8").split("\n")) {
     if (!line.trim()) continue;
-    try { const r = JSON.parse(line); done.set(r.id, true); } catch {}
+    try { const r = JSON.parse(line); done.set(r.id, true); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
   }
   console.log(`resuming: ${done.size} notes already done`);
 }
@@ -46,7 +46,7 @@ const ckpt = fs.createWriteStream(CKPT, { flags: "a" });
 
 let browser = null, page = null;
 async function launch() {
-  if (browser) { try { await browser.close(); } catch {} }
+  if (browser) { try { await browser.close(); } catch { /* Optional visual diagnostics must not interrupt the demo. */ } }
   browser = await chromium.launch({
     executablePath: "/home/hatch/.cache/ms-playwright/chromium_headless_shell-1193/chrome-linux/headless_shell",
     args: ["--no-sandbox", "--disable-dev-shm-usage"]

@@ -26,7 +26,7 @@ export const RAG_INDEX_DB_NAME = "preround-rag-index";
 export const RAG_INDEX_STORE = "chart-indexes";
 export const RAG_MODEL_KEY = DEFAULT_RAG_MODEL_KEY;
 
-const WORKER_URL = new URL("./rag-worker.js", import.meta.url);
+const WORKER_URL = new URL("./rag-worker.js?v=20261011-epic-workflow", import.meta.url);
 
 let worker = null;
 let nextCallId = 1;
@@ -45,7 +45,7 @@ let serviceQueue = Promise.resolve();
 function enqueueServiceOperation(operation) {
   const run = serviceQueue.then(operation, operation);
   // The queue itself never rejects; callers get their own promise.
-  serviceQueue = run.catch(() => {});
+  serviceQueue = run.catch(() => { console.warn("Background operation did not complete; retry the requested action."); });
   return run;
 }
 
@@ -239,6 +239,7 @@ async function _ensureChartIndex({ patientId, pieces, testRemoteHost = null, all
     ids: exported.ids,
     buffers: exported.buffers
   }).catch(() => {
+    console.warn("Local search cache write failed; using the current session index.");
     // A failed cache write must not fail the retrieval; the in-memory
     // worker index is still valid for this session.
   });

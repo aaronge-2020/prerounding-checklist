@@ -10,7 +10,7 @@ import { fileAppUrl } from "./browser/app-harness.js";
 
 const baseUrl = fileAppUrl();
 const browser = await chromium.launch({
-  executablePath: "/opt/meta-chromium/chrome",
+  ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {}),
   args: ["--allow-file-access-from-files", "--disable-features=LocalNetworkAccessChecks", "--no-proxy-server"]
 });
 // Short viewport: the AI Chat column (chatbar + messages + composer) exceeds

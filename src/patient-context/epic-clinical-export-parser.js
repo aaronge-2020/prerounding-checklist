@@ -2,7 +2,7 @@ import {
   clinicalDataModel,
   laboratoryAbnormality,
   withClinicalRepresentations
-} from "./structured-clinical-data.js?v=20260921-medication-card-v4";
+} from "./structured-clinical-data.js?v=20261011-epic-workflow";
 import {
   needsFreeTextResult,
   freeTextResultCategory

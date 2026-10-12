@@ -11,7 +11,7 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../../patient-context/deid-client.js?v=20261003-deid-adaptive";
+} from "../../patient-context/deid-client.js?v=20261011-epic-workflow";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,

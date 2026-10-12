@@ -80,13 +80,13 @@ assert.equal(Object.keys(emptyPatientVariables).some((token) => /@admission-othe
   assert.doesNotMatch(admissionSelected["@selected-day-physical-exam"], /Current lungs clear/);
 }
 
-// Legacy checklist-only records still resolve until their packet is edited.
+// Retired checklist-only records do not populate current exam findings.
 {
   const variables = buildPromptVariableMap({
     patient: patientWithDay({ answers: { gen_appearance: { selected: ["Normal"], note: "" } } }),
     selectedDayId: "day1"
   });
-  assert.match(variables["@selected-day-physical-exam"], /General appearance[\s\S]*Answer: Normal/);
+  assert.equal(variables["@selected-day-physical-exam"], "No exam findings recorded.");
 }
 
 assert.doesNotMatch(DEFAULT_PROMPT_TEMPLATES.initial_admission_rounds, /@admission-physical-exam/);

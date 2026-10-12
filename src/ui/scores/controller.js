@@ -3,9 +3,9 @@
 // src/clinical-scores/ (pure); all markup in ./presentation.js (pure).
 // This module touches the DOM only through the injected byId /
 // replaceViewContent helpers, like the other feature controllers.
-import { getScoreDefinition, listScoreDefinitions } from "../../clinical-scores/index.js?v=20261011-manual-curb65";
+import { getScoreDefinition, listScoreDefinitions } from "../../clinical-scores/index.js?v=20261011-epic-workflow";
 import { getAiModelDefinition, listAiModelDefinitions } from "../../ai-models/index.js";
-import { resolveScoreBindings } from "../../clinical-scores/patient-bindings.js?v=20261011-manual-curb65";
+import { resolveScoreBindings } from "../../clinical-scores/patient-bindings.js?v=20261011-epic-workflow";
 import { appendSavedScore, createSavedScoreRecord } from "../../clinical-scores/saved-scores.js";
 import { createScoresPresentation } from "./presentation.js";
 
@@ -330,120 +330,6 @@ export function createScoresController({
   // The list DOM is never destroyed on navigation, so its scroll position
   // survives. Only the hidden detail section gets populated when opening a
   // calculator.
-  function ensureSections(container) {
-    let list = container.querySelector("[data-scores-list]");
-    let detail = container.querySelector("[data-scores-detail]");
-    if (!list) {
-      list = document.createElement("div");
-      list.setAttribute("data-scores-list", "");
-      container.append(list);
-    }
-    if (!detail) {
-      detail = document.createElement("div");
-      detail.setAttribute("data-scores-detail", "");
-      detail.hidden = true;
-      container.append(detail);
-    }
-    return { list, detail };
-  }
-
-  function scrollOwner() {
-    const container = byId("scoresContent");
-    const view = container?.closest(".view");
-    if (view && view.scrollHeight > view.clientHeight + 4) return view;
-    if (typeof document !== "undefined") return document.scrollingElement || document.documentElement;
-    return null;
-  }
-
-  function blurFocused() {
-    const container = byId("scoresContent");
-    const active = typeof document !== "undefined" ? document.activeElement : null;
-    if (active && active !== document.body && container?.contains(active)) {
-      try {
-        active.blur();
-      } catch {
-        /* ignore */
-      }
-    }
-  }
-
-  function openScoreDetail() {
-    const container = byId("scoresContent");
-    if (!container) return;
-    const html = renderDetailHtml();
-    if (!html) {
-      state.scoreId = null;
-      render();
-      return;
-    }
-    const { list, detail } = ensureSections(container);
-    const owner = scrollOwner();
-    state.listScrollTop = owner ? owner.scrollTop : 0;
-    state.listScrollLeft = owner ? owner.scrollLeft : 0;
-    blurFocused();
-    const template = document.createElement("template");
-    template.innerHTML = html;
-    detail.replaceChildren(...template.content.childNodes);
-    list.hidden = true;
-    detail.hidden = false;
-    if (owner) {
-      owner.scrollTop = 0;
-      owner.scrollLeft = 0;
-    }
-  }
-
-  function closeScoreDetail() {
-    const container = byId("scoresContent");
-    if (!container) return;
-    const { list, detail } = ensureSections(container);
-    blurFocused();
-    const template = document.createElement("template");
-    template.innerHTML = renderHomeHtml();
-    list.replaceChildren(...template.content.childNodes);
-    detail.hidden = true;
-    list.hidden = false;
-    const owner = scrollOwner();
-    if (owner) {
-      owner.scrollTop = Math.min(state.listScrollTop, Math.max(0, owner.scrollHeight - owner.clientHeight));
-      owner.scrollLeft = state.listScrollLeft || 0;
-    }
-  }
-
-  function renderHomeHtml() {
-    const patient = active();
-    if (!patient) return patientRequiredMessage();
-    if (state.patientId !== patient.id) resetForPatient(patient.id);
-    const definitions = listAllDefinitions();
-    const patientLabel = patient.displayLabel || "this patient";
-    return presentation.renderScoresHome({ definitions, patientLabel });
-  }
-
-  function renderDetailHtml() {
-    const patient = active();
-    if (!patient) return patientRequiredMessage();
-    if (state.patientId !== patient.id) resetForPatient(patient.id);
-    const definition = getDefinition(state.scoreId);
-    if (!definition) return null;
-    const bindings = bindingsForPatient();
-    const values = effectiveValues(definition, bindings);
-    const result = calculateResult(definition, values);
-    const scoreBindings = bindings[definition.id] || {};
-    const patientLabel = patient.displayLabel || "this patient";
-    return presentation.renderScoreDetail({
-      definition,
-      values,
-      bindings: scoreBindings,
-      overriddenKeys: state.overridden,
-      result,
-      patientLabel,
-      mode: values.mode,
-      hasBindings: Object.keys(scoreBindings).length > 0,
-      savedState: savedStateFor(definition, values, result),
-      tab: state.tab,
-      isFavorite: readFavorites().has(definition.id)
-    });
-  }
-
   function render() {
     const patient = active();
     const container = byId("scoresContent");
@@ -791,7 +677,7 @@ export function createScoresController({
       if (definition) {
         const values = effectiveValues(definition, bindingsForPatient());
         const result = calculateResult(definition, values);
-        void saveResult(definition, values, result).catch(() => {});
+        void saveResult(definition, values, result).catch(() => { console.warn("Background operation did not complete; retry the requested action."); });
       }
       return true;
     }
