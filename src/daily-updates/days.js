@@ -1,4 +1,4 @@
-import { createLocalId, normalizeDay, timestampNow } from "../app/state/vault.js?v=20260921-medication-card-v4";
+import { createLocalId, normalizeDay, timestampNow } from "../app/state/vault.js?v=20261011-epic-workflow";
 import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-medication-card-v4";
 import { renderPrimaryTeamNote } from "../patient-context/primary-team-note.js?v=20260921-primary-note-source";
 

@@ -13,7 +13,7 @@ import { fileAppUrl } from "./browser/app-harness.js";
 
 async function setupPage(viewportWidth) {
   const browser = await chromium.launch({
-    executablePath: "/opt/meta-chromium/chrome",
+    ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {}),
     args: ["--allow-file-access-from-files", "--no-proxy-server"]
   });
   const page = await browser.newPage({ viewport: { width: viewportWidth, height: 800 } });

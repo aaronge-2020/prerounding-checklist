@@ -1,7 +1,7 @@
 import { evaluatePacketCompleteness, packetReviewRequirement } from "../../daily-updates/packet-completeness.js?v=20260921-medication-card-v4";
-import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20260929-rxnorm-mar-v1";
-import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20260921-medication-card-v4";
-import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
+import { parseClinicalExport } from "../../patient-context/clinical-export-parser.js?v=20261011-epic-workflow";
+import { clinicalDisplayModelFromPromptText } from "../../patient-context/structured-clinical-data.js?v=20261011-epic-workflow";
+import { NOTE_TYPES } from "../../note-drafts/index.js?v=20261011-epic-workflow";
 import { primaryTeamNoteFields, primaryTeamNoteHasContent } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
 import { DIAGNOSTIC_RESULT_CATEGORIES, sourceCapturePacketCheck } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
 import { joinValueUnit } from "../../review-data/compact-summary.js?v=20260924-optional-sections-v1";
@@ -184,9 +184,9 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     const suffix = sectionIndex === "" ? "" : sectionIndex;
     const indexAttribute = sectionIndex === "" ? "" : ` data-source-section-index="${sectionIndex}"`;
     return `
-      <details class="clinical-prompt-details">
-        <summary>AI-ready text <span>editable before de-identification</span></summary>
-        <label class="source-draft-label" for="${prefix}ParsedSourceDraft${suffix}">Text sent through local de-identification and then included in prompts
+      <details class="clinical-prompt-details" open>
+        <summary>Review parsed text <span>correct anything misplaced or missing</span></summary>
+        <label class="source-draft-label" for="${prefix}ParsedSourceDraft${suffix}">Parsed text to review before saving
           <textarea id="${prefix}ParsedSourceDraft${suffix}" rows="7" data-source-parsed-draft data-source-scope="${prefix}"${indexAttribute}>${escapeHtml(outputText)}</textarea>
         </label>
         <span class="muted" data-source-parsed-count${sectionIndex === "" ? "" : `="${sectionIndex}"`}>${outputText.length.toLocaleString()} characters after parsing</span>
@@ -268,7 +268,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
           </div>
           <span class="source-parse-local">Session only</span>
         </div>
-        <p class="source-parse-help">The compact AI-ready text below is editable and is the only parsed representation sent through local de-identification and into prompts. Clinical summaries and trends appear after saving on Review Data / Draft Note.</p>
+        <p class="source-parse-help">Compare the parsed text with your paste. Correct missing or misplaced content before saving. The saved source will be available under Write note.</p>
         ${renderPromptTextEditor({ prefix, outputText: parseResult.canonicalPromptText || parseResult.outputText })}
       </section>
     `;
@@ -378,7 +378,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
       <div class="section-heading tight structured-note-heading"><div><h3 id="${scope}StructuredNoteHeading">${typeLabel}</h3><p class="muted">${help}</p></div><span class="source-parse-local">${saved ? "Saved locally" : "Optional"}</span></div>
       <div class="structured-note-mode-toggle" role="group" aria-label="Primary-team note entry mode">
         <button type="button" data-action="select-structured-note-mode" data-note-scope="${escapeHtml(scope)}" data-note-mode="paste" aria-pressed="${String(mode === "paste")}" class="${mode === "paste" ? "selected" : ""}">Paste full note</button>
-        <button type="button" data-action="select-structured-note-mode" data-note-scope="${escapeHtml(scope)}" data-note-mode="sections" aria-pressed="${String(mode === "sections")}" class="${mode === "sections" ? "selected" : ""}">Enter by section</button>
+        <button type="button" data-action="select-structured-note-mode" data-note-scope="${escapeHtml(scope)}" data-note-mode="sections" aria-pressed="${String(mode === "sections")}" class="${mode === "sections" ? "selected" : ""}">Review & correct sections</button>
       </div>
       ${mode === "paste" ? `
         <div class="structured-note-paste-layout">
@@ -393,7 +393,9 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
         <div class="structured-note-paste-meta"><span data-structured-note-paste-count="${escapeHtml(scope)}">${pastedText.length.toLocaleString()} characters · session only</span></div>
         <div class="structured-note-actions"><button type="button" class="button--quiet" data-action="clear-structured-note-paste" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>Clear</button><button type="button" class="button--primary" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>${parseResult.detectedSectionCount ? "Review sections" : "Review note"}</button></div>
       ` : `
-        <div class="structured-note-section-layout">
+        <div class="import-review-guidance"><strong>Check the split before writing</strong><span>Compare the original with HPI, exam, and A&amp;P. Move misplaced text or restore a missing passage. Corrections stay in this tab until de-identified and saved.</span></div>
+        <div class="structured-note-section-layout ${pastedText ? "has-original" : ""}">
+          ${pastedText ? `<aside class="note-original-pane"><label for="${scope}NoteOriginal"><strong>Original Epic note</strong><span>Read-only · session only</span></label><textarea id="${scope}NoteOriginal" data-note-original readonly rows="20">${escapeHtml(pastedText)}</textarea><button type="button" data-action="restore-source-selection" data-note-scope="${scope}">Add selected source text to this section</button><small>Use for missing text. Check for duplicates before saving.</small></aside>` : ""}
           <nav class="structured-note-section-nav" aria-label="Note sections">
             <div class="structured-note-section-nav-heading"><strong>Note sections</strong><span>${completedCount} of ${fields.length} added</span></div>
             <div class="structured-note-section-list">
@@ -410,12 +412,13 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
           <div class="structured-note-section-editor">
             <div class="structured-note-section-editor-heading"><div><h4>${escapeHtml(activeField?.label || "Note section")}</h4><p class="muted">Add only what is available in the source note.</p></div><span>Optional</span></div>
             <textarea rows="15" aria-label="${escapeHtml(activeField?.label || "Note section")}" data-structured-note-field="${escapeHtml(activeField?.id || "")}" data-structured-note-scope="${escapeHtml(scope)}" placeholder="Optional">${escapeHtml(structuredNoteValue(note, draftValues, activeField?.id || ""))}</textarea>
+            <div class="note-mapping-tools"><label>Move text to<select data-note-move-target aria-label="Move text to">${fields.filter(field => field.id !== activeField?.id).map(field => `<option value="${field.id}">${escapeHtml(field.label)}</option>`).join("")}</select></label><div class="button-row"><button type="button" data-action="move-note-selection" data-note-scope="${scope}">Move selection</button><button type="button" data-action="move-note-section" data-note-scope="${scope}">Move whole section</button><button type="button" data-action="undo-note-mapping" data-note-scope="${scope}" ${composer.mappingUndo ? "" : "disabled"}>Undo move</button></div></div>
             <div class="structured-note-editor-actions"><button type="button" class="button--quiet" data-action="clear-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-note-field="${escapeHtml(activeField?.id || "")}">Clear section</button><div class="button-row"><button type="button" class="button--secondary" data-action="move-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-direction="-1" ${activeIndex === 0 ? "disabled" : ""}>Previous</button><button type="button" class="button--primary" data-action="move-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-direction="1" ${activeIndex === fields.length - 1 ? "disabled" : ""}>Next section</button></div></div>
           </div>
         </div>
-        <div class="structured-note-actions structured-note-actions--save"><span></span><div class="button-row"><button type="button" class="button--secondary" data-action="select-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-note-field="${escapeHtml(fields[0]?.id || "")}">Review sections</button><button type="button" class="button--secondary" data-action="save-structured-note-to-draft" data-note-scope="${escapeHtml(scope)}" title="Save to draft without de-identification">Save to draft</button><button type="button" class="button--primary" data-action="save-structured-primary-note" data-note-scope="${escapeHtml(scope)}" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "De-identify & save"}</button></div></div>
+        <div class="structured-note-actions structured-note-actions--save"><span></span><div class="button-row"><button type="button" class="button--secondary" data-action="select-structured-note-field" data-note-scope="${escapeHtml(scope)}" data-note-field="${escapeHtml(fields[0]?.id || "")}">Review sections</button><button type="button" class="button--secondary" data-action="save-structured-note-to-draft" data-note-scope="${escapeHtml(scope)}" title="De-identify the reviewed sections, save locally, and open the note" ${deidBusy ? "disabled" : ""}>Save & write note</button><button type="button" class="button--primary" data-action="save-structured-primary-note" data-note-scope="${escapeHtml(scope)}" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "De-identify & save"}</button></div></div>
       `}
-      <div class="structured-note-privacy"><span aria-hidden="true">${icon("shield")}</span><span>"Save to draft" transfers text to the Draft Note tab without de-identification. "De-identify & save" de-identifies and saves to the encrypted vault.</span></div>
+      <div class="structured-note-privacy"><span aria-hidden="true">${icon("shield")}</span><span>Original text and corrections stay in this tab. Both save actions de-identify the reviewed sections before storing them in the encrypted vault.</span></div>
     </section>`;
   }
 
@@ -453,14 +456,13 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
         <label class="source-draft-label" for="${draftId}">Paste the full copied block
           <textarea id="${draftId}" rows="8" placeholder="Paste the full copied text from ${escapeHtml(selectedSource.label)} here">${escapeHtml(sourceDraft)}</textarea>
         </label>
+        <div data-source-parse-preview="${prefix}">${renderSourceParsePreview({ scope, parseResult: sourceParse })}</div>
         <div class="source-draft-footer">
           <span class="muted" data-${prefix}-source-draft-count>${sourceDraft.length.toLocaleString()} characters · ${escapeHtml(selectedSource.description)}</span>
           <div class="button-row">
-            <button class="button--secondary" type="button" data-action="${addAction}-raw" ${!sourceDraft.trim() ? "disabled" : ""} title="Save this source as-is without running de-identification, so you can redact false positives manually">Save without de-identifying</button>
             <button class="button--primary" type="button" data-action="${addAction}" ${deidBusy || !sourceDraft.trim() ? "disabled" : ""}>${deidBusy ? "De-identifying…" : addLabel}</button>
           </div>
         </div>
-        <div data-source-parse-preview="${prefix}">${renderSourceParsePreview({ scope, parseResult: sourceParse })}</div>
       </section>`;
   }
 
@@ -591,7 +593,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     return `
       <div class="stay-layout source-first-stay">
         <aside class="panel stay-rail">
-          <div class="section-heading tight"><div><h2>Hospital stay</h2><p class="muted">Admission and each hospital day use one chronological workspace.</p></div></div>
+          <div class="section-heading tight"><div><h2>Import from Epic</h2><p class="muted">Choose a packet, paste a source, then review how it was parsed.</p></div></div>
           <div class="timeline-rail">
             <button type="button" class="day-row admission-day-row ${admissionSelected ? "selected" : ""}" data-action="select-admission" aria-current="${admissionSelected ? "page" : "false"}">
               <span><strong>Admission</strong><span class="muted">Initial presentation and admission sources</span></span>

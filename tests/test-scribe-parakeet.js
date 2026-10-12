@@ -26,13 +26,12 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { homedir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = process.env.SCRIBE_TEST_ROOT ||
   fileURLToPath(new URL("..", import.meta.url));
 const siblingRoot = process.env.SCRIBE_SIBLING_ROOT ||
-  join(homedir(), "workspace/scribe-parakeet-build/sp-a");
+  root;
 
 const repoFile = (p) => join(root, p);
 const read = (p) => readFileSync(repoFile(p), "utf8");
@@ -334,7 +333,7 @@ assert.ok(!mobile.includes("scribe-parakeet"), "mobile.html stays clean of scrib
 
 const uiApp = read("src/ui/app.js");
 assert.match(uiApp, /const viewIds = \[[^\]]*"scribePro"[^\]]*\]/, "viewIds includes scribePro");
-assert.ok(uiApp.includes('import("../scribe-parakeet/app.js")'), "app.js lazily loads the scribe module in-app");
+assert.match(uiApp, /import\("\.\.\/scribe-parakeet\/app\.js(?:\?v=[^"\s]+)?"\)/, "app.js lazily loads the scribe module in-app");
 assert.ok(!uiApp.includes('window.open("scribe-parakeet.html"'), "app.js never opens the detached scribe page");
 assert.ok(!uiApp.includes('"open-scribe-parakeet"'), "app.js: detached Scribe Pro action gone");
 assert.ok(!uiApp.includes('"open-scribe"'), "app.js: detached phone-scribe action gone");
@@ -388,7 +387,7 @@ assert.ok(sw.includes("prerounding-local-model-packs-v1"), "existing model-pack 
 
 assert.equal(pkg.scripts["test:scribe-parakeet"], "node tests/test-scribe-parakeet.js",
   "package.json wires the new test");
-assert.ok(pkg.scripts["test:core"].includes("npm run test:scribe-parakeet"),
+assert.ok(pkg.scripts["test:core"].includes("npm run test:unit") && pkg.scripts["test:unit"].includes("npm run test:scribe-parakeet"),
   "test:core chain still runs the scribe-parakeet contract test");
 
 // ------------------------------------------- 6. boot status & engine startup

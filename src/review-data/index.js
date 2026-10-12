@@ -1,7 +1,7 @@
 import {
   clinicalDisplayModelFromPromptText,
   laboratoryAbnormality
-} from "../patient-context/structured-clinical-data.js?v=20260921-medication-card-v4";
+} from "../patient-context/structured-clinical-data.js?v=20261011-epic-workflow";
 import {
   needsFreeTextResultText
 } from "../patient-context/free-text-results.js";
@@ -356,7 +356,8 @@ function diagnosticCandidate(source) {
     noteGroupKey: `result:${groupKey}`,
     noteGroupLabel: { imaging: "Imaging", microbiology: "Microbiology", pathology: "Pathology" }[groupKey] || "Other results",
     noteLabel: label,
-    noteDetail: needsFreeText ? "" : text.split("\n")[0].slice(0, 120),
+    // Carry the complete selected report into the note; headings alone lose findings.
+    noteDetail: needsFreeText ? "" : text,
     // Flag free-text studies (EKG, echo, CT/MRI, cultures, ...) whose pasted
     // value is just a status/placeholder — the student must paste the report.
     needsFreeText

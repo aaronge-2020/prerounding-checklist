@@ -1,4 +1,5 @@
-import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES, objectiveEditorGroups, SECTION_VISIBILITY_KEYS } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
+import { OPENAI_WORKUP_MODEL_OPTIONS } from "../../app/preferences.js?v=20261011-request-controls";
+import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES, objectiveEditorGroups, SECTION_VISIBILITY_KEYS } from "../../note-drafts/index.js?v=20261011-epic-workflow";
 import {
   abnormalTone,
   compactLabTrendLine,
@@ -6,7 +7,7 @@ import {
   displayVitalName,
   joinValueUnit
 } from "../../review-data/compact-summary.js?v=20260924-optional-sections-v1";
-import { sanitizeProblemTitle } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
+import { sanitizeProblemTitle } from "../../note-drafts/index.js?v=20261011-epic-workflow";
 import { baselineDisplayText, baselinePriorityFor } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import { formatProbability } from "../../ai/decision-scoring.js?v=20261010-decision1-v1";
 import {
@@ -477,7 +478,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
             ).filter(Boolean).join("")
           : group.blocks
           .map((block) => {
-            if (block.state === "edited" && block.editedText) {
+            if ((block.state === "edited" || block.state === "stale") && block.editedText && block.editedText !== block.generatedText) {
               // Multi-line edited text: split into per-line divs.
               return String(block.editedText).split("\n").map((line) =>
                 line.trim() ? `<div class="ed-vital-line">${editorHtml(line.trim())}</div>` : ""
@@ -514,7 +515,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         ? `<button type="button" class="ed-group-toggle" data-action="toggle-objective-group" data-group="${escapeHtml(group.key)}" title="${toggleLabel}" aria-label="${toggleLabel}" aria-expanded="${!isCollapsed}">${toggleIcon}</button><span class="ed-group-label">${escapeHtml(group.label)}:</span>`
         : "";
       const staleButton = hasStale
-        ? `<button type="button" class="ed-mini" data-action="refresh-objective-group" data-group="${escapeHtml(group.key)}" title="Source updated — refresh this line">↻</button>`
+        ? `<button type="button" class="ed-mini" data-action="refresh-objective-group" data-group="${escapeHtml(group.key)}" aria-label="Replace ${escapeHtml(group.label || "group")} with updated source" title="Replace this group’s edited text with updated source values">Source changed · refresh</button>`
         : "";
       const bodyStyle = isCollapsed ? ' style="display:none"' : "";
       return `<div class="ed-group" data-objective-group="${escapeHtml(group.key)}">${label}<div${bodyStyle}>${bodyHtml}</div><span class="ed-mini-row">${staleButton}<button type="button" class="ed-mini ed-mini--danger" data-action="remove-objective-group" data-group="${escapeHtml(group.key)}" title="Remove ${escapeHtml(group.label || "item")}" aria-label="Remove ${escapeHtml(group.label || "item")}">×</button></span></div>`;
@@ -555,16 +556,25 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return `<div class="ap-confirm-overlay" data-ap-confirm-overlay>
       <div class="ap-confirm-modal" role="dialog" aria-modal="true" aria-label="Review and send the AI consult">
         <h3>Consult AI &mdash; &ldquo;${escapeHtml(apConfirm.problemName)}&rdquo;</h3>
-        <p class="muted">The prompt below is exactly what will be sent to OpenAI using your saved API key. <strong>Edit anything</strong> — instructions, wording, or the patient data — before sending. Confirm it contains <strong>no protected health information</strong> (no names, dates, MRNs, locations).</p>
+        <p class="muted">Review the instructions and input before sending to OpenAI, or copy them for use elsewhere. <strong>Edit anything</strong> — instructions, wording, or the patient data — before sending. Confirm it contains <strong>no protected health information</strong> (no names, dates, MRNs, locations).</p>
         <div class="ap-consult-questions">
           <label for="apConsultQuestions"><strong>Reason for consult</strong> <span class="muted">(optional)</span></label>
           <textarea id="apConsultQuestions" class="ap-consult-input" data-ap-consult-questions rows="3" spellcheck="true" placeholder="e.g. What is the best medication regimen for this problem? What dose should I use? Should I consult a specialist?" aria-label="Specific consult questions for the AI">${escapeHtml(apConfirm.consultQuestions || "")}</textarea>
           <p class="muted ap-consult-hint">Leave blank and the consultant fully completes this problem's differential, diagnostic plan, and therapeutic plan. Ask a question and it answers exactly what you asked.</p>
         </div>
+        <label>Task instructions<textarea data-ap-request-field="instructions" rows="6" maxlength="20000">${escapeHtml(apConfirm.instructions)}</textarea></label>
+        <label>Model<select data-ap-request-field="model">${OPENAI_WORKUP_MODEL_OPTIONS.map((option) => `<option value="${escapeHtml(option.value)}" ${option.value === apConfirm.model ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}</select></label>
+        <label>Temperature (optional)<input type="number" min="0" max="2" step="0.1" data-ap-request-field="temperature" value="${escapeHtml(apConfirm.temperature)}" placeholder="Model default"></label>
+        <p class="muted">Leave temperature blank unless your selected model supports it.</p>
+        <label><input type="checkbox" data-ap-request-field="webSearch" ${apConfirm.webSearch ? "checked" : ""}>Allow web search</label>
         <textarea class="ap-prompt-editor" data-ap-prompt-editor rows="18" spellcheck="false" aria-label="Editable AI prompt">${escapeHtml(apConfirm.promptText)}</textarea>
         <p class="muted ap-confirm-note" data-ap-mode-note>Consult questions are blank, so the consultant will fully complete this problem's differential, diagnostic plan, and therapeutic plan. Each recommendation appears below the problem for you to approve or reject individually.</p>
+        <details><summary>Exact request body (read-only output schema)</summary><pre data-ap-request-preview style="white-space:pre-wrap;overflow-wrap:anywhere"></pre></details>
+        ${apConfirm.apiKeySaved ? "" : '<p class="muted">Copy works without an API key. Save a key in Settings to send.</p>'}
         <div class="button-row">
-          <button type="button" class="button--primary button--small" data-action="ap-confirm-generate" data-problem-id="${escapeHtml(apConfirm.problemId)}">Send consult</button>
+          <button type="button" class="button--secondary button--small" data-action="ap-reset-prompt">Reset input</button>
+          <button type="button" class="button--secondary button--small" data-action="ap-save-default">Save instructions as default</button>
+          <button type="button" class="button--primary button--small" ${apConfirm.apiKeySaved ? "" : "disabled"} data-action="ap-confirm-generate" data-problem-id="${escapeHtml(apConfirm.problemId)}">Send consult</button>
           <button type="button" class="button--secondary button--small" data-action="ap-copy-prompt">Copy prompt</button>
           <button type="button" class="button--secondary button--small" data-action="ap-confirm-cancel">Cancel</button>
         </div>
@@ -946,7 +956,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     </section>`;
   }
 
-  function renderReview({ patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm, apSuggestions }) {
+  function renderReview({ workspaceTab = "note", previewText = "", patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm, apSuggestions }) {
     if (!draft) return patientRequiredMessage;
     const selectedIds = new Set((draft.objective?.selectedBlocks || []).map((block) => block.selectionId));
     // Banner calling out free-text results that pasted as a status only —
@@ -955,14 +965,16 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     const flaggedBanner = flaggedResults.length
       ? `<div class="review-flag-banner" role="alert"><strong>⚠️ ${flaggedResults.length} result${flaggedResults.length === 1 ? "" : "s"} need${flaggedResults.length === 1 ? "s" : ""} report text:</strong> ${flaggedResults.map((candidate) => escapeHtml(candidate.name)).join(", ")}. <span class="muted">Open each in the admissions tab and paste the full report.</span></div>`
       : "";
-    return `<div class="review-workspace">
+    return `<div class="review-workspace" data-workspace-tab="${workspaceTab}">
       <div class="patient-identity-bar" role="status" aria-label="Active patient"><span class="patient-identity-bar-label">Patient</span><strong>${escapeHtml(patientLabel)}</strong></div>
       <header class="review-hero panel">
-        <div><span class="eyebrow">${escapeHtml(patientLabel)}</span><h1 id="review-heading">Review Data / Draft Note</h1><p class="review-one-liner ${oneLiner ? "" : "is-empty"}">${escapeHtml(oneLiner || "One-liner not entered yet. You can continue and add it in the draft.")}</p></div>
+        <div><span class="eyebrow">${escapeHtml(patientLabel)}</span><h1 id="review-heading">Write note</h1><p class="review-one-liner ${oneLiner ? "" : "is-empty"}">${escapeHtml(oneLiner || "One-liner not entered yet. You can continue and add it in the draft.")}</p></div>
         <label class="review-packet-label">Note packet<select id="reviewPacketSelect">${packets.map((packet) => `<option value="${escapeHtml(packet.id)}" ${packet.id === selectedPacketId ? "selected" : ""}>${escapeHtml(packet.label)}</option>`).join("")}</select></label>
       </header>
+      <div class="writing-workflow-bar"><div role="tablist" aria-label="Writing workspace">${[["sources", "Sources"], ["note", "Write"], ["preview", "Preview & copy"]].map(([id,label]) => `<button type="button" role="tab" aria-selected="${workspaceTab === id}" data-action="workspace-tab" data-workspace-tab="${id}">${label}</button>`).join("")}</div><button type="button" data-action="import-for-note">+ Import from Epic</button></div>
       ${flaggedBanner}
-      <div class="review-columns">${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions })}</div>
+      <section class="note-export-preview panel" ${workspaceTab !== "preview" ? "hidden" : ""} aria-label="Final note preview"><div class="section-heading"><div><h2>Review before copying</h2><p class="muted">This is the exact plain text that will be copied. Check source facts and remove any placeholders.</p></div><button type="button" data-action="copy-final-note" class="button--primary">Copy for Epic</button></div><pre>${escapeHtml(previewText || "No note content yet. Return to Write to begin.")}</pre><div class="button-row"><button type="button" data-action="workspace-tab" data-workspace-tab="note">Back to writing</button><button type="button" data-action="copy-rich-note">Copy rich text</button><button type="button" data-action="download-final-note">Download .txt</button></div></section>
+      <div class="review-columns" ${workspaceTab === "preview" ? "hidden" : ""}>${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions })}</div>
     </div>`;
   }
 

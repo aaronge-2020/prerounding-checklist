@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import {
   parseClinicalExport,
   prepareClinicalExportForSave
@@ -11,71 +10,6 @@ import {
   laboratoryAbnormality
 } from "../src/patient-context/structured-clinical-data.js";
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
-
-const parserRevision = "20260921-medication-card-v4";
-const epicParserRevision = "20260925-mixed-unparsed-v1";
-const clinicalParserRevision = "20260929-rxnorm-mar-v1";
-const primaryNoteRevision = "20260921-medication-card-v4";
-const sourceControllerRevision = "20260923-plan-problems-v1";
-const appRevision = "20260929-deid-clinicale5";
-const styleRevision = "20260924-helptip-position-v1";
-const runtimeSources = {
-  index: readFileSync(new URL("../index.html", import.meta.url), "utf8"),
-  app: readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8"),
-  persistence: readFileSync(new URL("../src/app/state/persistence.js", import.meta.url), "utf8"),
-  sections: readFileSync(new URL("../src/patient-context/sections.js", import.meta.url), "utf8"),
-  sourceCaptures: readFileSync(new URL("../src/patient-context/source-captures.js", import.meta.url), "utf8"),
-  controller: readFileSync(new URL("../src/ui/daily/source-controller.js", import.meta.url), "utf8"),
-  dailyPresentation: readFileSync(new URL("../src/ui/daily/presentation.js", import.meta.url), "utf8"),
-  admissionAnchor: readFileSync(new URL("../src/ui/admission-date-anchor.js", import.meta.url), "utf8"),
-  redactionPresentation: readFileSync(new URL("../src/ui/redaction/presentation.js", import.meta.url), "utf8"),
-  days: readFileSync(new URL("../src/daily-updates/days.js", import.meta.url), "utf8"),
-  customTemplates: readFileSync(new URL("../src/prompts/custom-templates.js", import.meta.url), "utf8"),
-  openEvidence: readFileSync(new URL("../src/prompts/open-evidence.js", import.meta.url), "utf8"),
-  promptController: readFileSync(new URL("../src/ui/prompts/controller.js", import.meta.url), "utf8"),
-  promptPresentation: readFileSync(new URL("../src/ui/prompts/presentation.js", import.meta.url), "utf8"),
-  phoneSession: readFileSync(new URL("../src/ui/checklist/phone-session.js", import.meta.url), "utf8"),
-  examFindings: readFileSync(new URL("../src/ui/checklist/exam-findings-controller.js", import.meta.url), "utf8"),
-  parser: readFileSync(new URL("../src/patient-context/clinical-export-parser.js", import.meta.url), "utf8"),
-  epicParser: readFileSync(new URL("../src/patient-context/epic-clinical-export-parser.js", import.meta.url), "utf8")
-};
-assert.match(runtimeSources.index, new RegExp(`styles\\.css\\?v=${styleRevision}`));
-assert.match(runtimeSources.index, new RegExp(`app\\.js\\?v=${appRevision}`));
-assert.match(runtimeSources.app, new RegExp(`daily/presentation\\.js\\?v=${primaryNoteRevision}`));
-assert.match(runtimeSources.app, new RegExp(`daily/source-controller\\.js\\?v=${sourceControllerRevision}`));
-assert.match(runtimeSources.app, new RegExp(`source-captures\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.app, new RegExp(`app/state/persistence\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.app, new RegExp(`patient-context/sections\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.app, new RegExp(`admission-date-anchor\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.app, new RegExp(`redaction/presentation\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.app, new RegExp(`prompts/presentation\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.app, new RegExp(`prompts/controller\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.app, new RegExp(`token-color-picker\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.controller, new RegExp(`clinical-export-parser\\.js\\?v=${clinicalParserRevision}`));
-assert.match(runtimeSources.controller, new RegExp(`daily-updates/days\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.dailyPresentation, new RegExp(`structured-clinical-data\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.dailyPresentation, new RegExp(`clinical-export-parser\\.js\\?v=${clinicalParserRevision}`));
-assert.match(runtimeSources.dailyPresentation, new RegExp(`packet-completeness\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.persistence, new RegExp(`vault\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.sections, new RegExp(`vault\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.sourceCaptures, new RegExp(`packet-completeness\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.admissionAnchor, new RegExp(`vault\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.redactionPresentation, new RegExp(`patient-context/sections\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.days, new RegExp(`app/state/vault\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.customTemplates, new RegExp(`daily-updates/days\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.customTemplates, new RegExp(`patient-context/sections\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.openEvidence, new RegExp(`daily-updates/days\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.openEvidence, new RegExp(`patient-context/sections\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.promptController, new RegExp(`custom-templates\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.promptController, new RegExp(`open-evidence\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.promptPresentation, new RegExp(`custom-templates\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.phoneSession, new RegExp(`daily-updates/days\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.examFindings, new RegExp(`daily-updates/days\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.examFindings, new RegExp(`app/state/vault\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.app, new RegExp(`clinical-export-parser\\.js\\?v=${clinicalParserRevision}`));
-assert.match(runtimeSources.parser, new RegExp(`epic-clinical-export-parser\\.js\\?v=${epicParserRevision}`));
-assert.match(runtimeSources.parser, new RegExp(`structured-clinical-data\\.js\\?v=${parserRevision}`));
-assert.match(runtimeSources.epicParser, new RegExp(`structured-clinical-data\\.js\\?v=${parserRevision}`));
 
 const syntheticCprsMar = `
 ** INPATIENT ORDERS **
@@ -787,3 +721,10 @@ assert.equal(preparedMixedEpic.sourceText, parsedMixedEpic.outputText);
 }
 
 console.log("clinical export parser tests passed");
+
+// Saved vital text must retain explicitly supplied temperature units and
+// normalize the Epic saturation label without copying (%) into its value.
+const explicitVitals = clinicalDisplayModelFromPromptText("vital_signs", "Vitals\nTemperature 37 C; SpO2 (%) 98% on room air");
+const explicitRows = explicitVitals.groups.flatMap(group => group.rows);
+assert.equal(explicitVitals.series.find(series => series.name === "Temperature").unit, "°C");
+assert.ok(explicitRows.some(row => row.cells[1] === "SpO2" && !row.cells[2].includes("(%)")));

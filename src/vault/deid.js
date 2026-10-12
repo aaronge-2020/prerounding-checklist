@@ -55,7 +55,7 @@ import { applyAdaptiveEntities } from "./deid/adaptive.js?v=20261003-deid-100";
 // Automatic rule proposer (separate-and-conquer): learns interpretable regex
 // rules from the clinician's own corrections. Approved rules run here in the
 // DETECT stage, after the adaptive store. Rules contain no PHI.
-import { applyApprovedRules } from "./deid/rule-orchestrator.js?v=20261009-rule-proposer-v1";
+import { applyApprovedRules } from "./deid/rule-orchestrator.js?v=20261011-epic-workflow";
 import { applyLearnedMeddeidRules } from "./deid/meddeid-learned.js?v=20261003-deid-100";
 // Free-text date/time detection and parsing runs entirely through chrono-node
 // (https://github.com/wanasit/chrono, vendored English-only build) rather
@@ -1968,22 +1968,12 @@ function trackDFilterDecision(rawText, entity) {
   const label = entity.label;
   const span = rawText.slice(entity.start, entity.end);
   const trimmed = span.replace(/\s+/g, " ").trim();
-  if (label === "CONTACT NAME") {
-    // Gold has no CONTACT NAME; relatives are NAME. Keep name-shaped spans
-    // as NAME, drop the rest. Track-D strong-anchor names (even lowercase)
-    // are trusted via their context.
-    if (/track-d relative name/i.test(entity.context || "")) return "remap:NAME";
-    if (/[A-Z]/.test(trimmed) && /^(?:[A-Z]\.\s*)?[A-Za-z][A-Za-z.'-]*(?:\s+[A-Za-z][A-Za-z.'-]*){0,2}$/.test(trimmed)) return "remap:NAME";
-    return "drop";
-  }
   // TRACK-D: systematic model FPs — phrases that are never person names.
   if (nameEntityLabels.has(label)) {
     if (/^(?:National Insurance|Dear Colleague|NHS(?:\s+Talking Therapies)?)$/i.test(trimmed)) return "drop";
     // A date-shaped span is never a NAME ("31st July 2045").
     if (/^\d{1,2}(?:st|nd|rd|th)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{2,4}$/i.test(trimmed)) return "drop";
   }
-  if (label === "TIME" && /^\d{1,2}:\d{2}(?::\d{2})?$/.test(trimmed)) return "drop"; // bare clock times are never gold
-  if (label === "ROOM") return "drop"; // facility-shaped ROOMs already remapped above; gold has no ROOM
   if (label === "FACILITY" && /^(?:GMC|NHS|SSN)$/.test(trimmed)) return "drop"; // acronym FPs
   if (label === "ORGANIZATION" && /\b(?:Report\/accession ID|NHS number|National Insurance number|Professional identifier|GMC|professional ID|SSN|number)\b\s*:?/i.test(trimmed)) {
     // ID-label spans: the wider ORGANIZATION (e.g. "number: BG549511A") may
@@ -2007,7 +1997,7 @@ function trackDFilterDecision(rawText, entity) {
     if (/^in\s+about\s+\d+\s+weeks?$/i.test(trimmed)) return "drop";
     if (/^\d+\s+minutes?\s+before$/i.test(trimmed)) return "drop";
     if (/^after\s+\d+\s+hours?$/i.test(trimmed)) return "drop";
-    if (/^(?:yesterday|today|past week|within one week)$/i.test(trimmed)) return "drop";
+
   }
   return "keep";
 }
@@ -2208,7 +2198,7 @@ const DIRECT_PATTERNS = [
   // Main St") cannot anchor a match; only the suffix is case-insensitive.
   // Bare "Dr" is excluded: without a house number it overwhelmingly means
   // a doctor title ("Provider Dr Chang"), not "Drive".
-  { label: "ADDRESS", regex: /\b[A-Z][A-Za-z0-9.'-]*(?:[ \t]+[A-Z][A-Za-z0-9.'-]+){0,2}[ \t]+(?i:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b/g, skip: isBareStreetAbbreviationFalsePositive },
+  { label: "ADDRESS", regex: /\b[A-Z][A-Za-z0-9.'-]*(?:[ \t]+[A-Z][A-Za-z0-9.'-]+){0,2}[ \t]+(?:[Ss][Tt][Rr][Ee][Ee][Tt]|[Ss][Tt]|[Aa][Vv][Ee][Nn][Uu][Ee]|[Aa][Vv][Ee]|[Rr][Oo][Aa][Dd]|[Rr][Dd]|[Bb][Oo][Uu][Ll][Ee][Vv][Aa][Rr][Dd]|[Bb][Ll][Vv][Dd]|[Dd][Rr][Ii][Vv][Ee]|[Ll][Aa][Nn][Ee]|[Ll][Nn]|[Ww][Aa][Yy]|[Cc][Oo][Uu][Rr][Tt]|[Cc][Tt]|[Pp][Ll][Aa][Cc][Ee]|[Pp][Ll]|[Cc][Ii][Rr][Cc][Ll][Ee]|[Cc][Ii][Rr]|[Tt][Ee][Rr][Rr][Aa][Cc][Ee]|[Tt][Ee][Rr]|[Pp][Aa][Rr][Kk][Ww][Aa][Yy]|[Pp][Kk][Ww][Yy])\b/g, skip: isBareStreetAbbreviationFalsePositive },
   // Secondary address units ("Suite 800", "Apartment 5", "Pod 300") -
   // labeled address components that the street-number patterns miss.
   { label: "ADDRESS", regex: /\b(?:Suite|Ste|Apt|Apartment|Unit|Floor|Fl|Lodge|Villa|Duplex|Ranch|Bungalow|Basement|Office|Chalet|Pod|PB|RV|House|Dept|Trailer|Box|Castle|Residence|Flat|Bldg|Triplex|Quadruplex|Fort)\.?\s+\d+[A-Z]?\b/g },
@@ -2266,7 +2256,7 @@ function proposeCapturedPatterns(rawText) {
 function proposeTrackDProvider(rawText) {
   const candidates = [];
   addTrackDProviderEntities(rawText, candidates);
-  return candidates;
+  return candidates.map(entity => ({ ...entity, ...constrainPatternEntitySpan(rawText, entity.label, entity.start, entity.end) })).filter(entity => entity.end > entity.start);
 }
 
 function proposeTrackDId(rawText) {
@@ -2978,7 +2968,7 @@ function dateFromParts(parts, fallbackYear = null, referenceDate = null, directi
     return candidate;
   };
 
-  if (parts.kind !== "month" && !parts.hasExplicitYear && referenceDate) {
+  if (parts.kind !== "month" && !parts.hasExplicitYear && !parts.hasResolvedYear && referenceDate) {
     const referenceYear = referenceDate.getUTCFullYear();
     const candidateYears = [...new Set([year, referenceYear - 1, referenceYear, referenceYear + 1])];
     const candidates = candidateYears.map((candidateYear) => makeDate(candidateYear)).filter(Boolean);
@@ -3031,7 +3021,7 @@ function temporalContextDirection(entity) {
 }
 
 function inferYearForMissingTemporal(temporal, temporalEntities, fallbackYear) {
-  if (!temporal || temporal.hasExplicitYear || !fallbackYear) {
+  if (!temporal || temporal.hasExplicitYear || temporal.hasResolvedYear || !fallbackYear) {
     return temporal?.year || fallbackYear;
   }
 
@@ -3265,6 +3255,7 @@ export function collectTemporalEntities(rawText, referenceDate = null) {
       return;
     }
     const temporal = chronoResultToTemporal(result);
+    if (temporal && referenceDate && isCasualChronoReference(result)) temporal.hasResolvedYear = true;
     if (!temporal) {
       return;
     }
@@ -3652,21 +3643,8 @@ function resolvedRedactionEntities(rawText, entities, currentDate = null, { incl
       if (/^in\s+about\s+\d+\s+weeks?$/i.test(trimmed)) return false;
       if (/^\d+\s+minutes?\s+before$/i.test(trimmed)) return false;
       if (/^after\s+\d+\s+hours?$/i.test(trimmed)) return false;
-      if (/^(?:yesterday|today|tonight|tomorrow|past week|within one week)$/i.test(trimmed)) return false;
+
     }
-    if (label === "CONTACT NAME") {
-      if (/track-d relative name/i.test(entity.context || "")) {
-        entity.label = "NAME";
-        entity.placeholder = placeholderForLabel("NAME");
-      } else if (/[A-Z]/.test(trimmed) && /^(?:[A-Z]\.\s*)?[A-Za-z][A-Za-z.'-]*(?:\s+[A-Za-z][A-Za-z.'-]*){0,2}$/.test(trimmed)) {
-        entity.label = "NAME";
-        entity.placeholder = placeholderForLabel("NAME");
-      } else {
-        return false;
-      }
-    }
-    if (label === "TIME" && /^\d{1,2}:\d{2}(?::\d{2})?$/.test(trimmed)) return false;
-    if (label === "ROOM") return false;
     if (label === "FACILITY" && /^(?:GMC|NHS|SSN)$/.test(trimmed)) return false;
     // TRACK-D: systematic model FPs — phrases that are never person names.
     if (/^(?:NAME|PATIENT NAME|PROVIDER NAME)$/.test(label)) {
@@ -4863,7 +4841,7 @@ export function deidentifyTextStructuredOnly(rawText, currentDate = null, option
   const bracketEntities = collectBracketedPlaceholderEntities(rawText);
   const graphResult = expandIdentityGraphEntities(rawText, addStructuredSafeHarborEntities(rawText, bracketEntities, currentDate, options), 3, { patientIdentity: options.patientIdentity });
   // TRACK-D-D1: clinical age expressions (see deidentifyWithModel).
-  const entities = addTrackDAgeEntitiesPostFilter(rawText, graphResult.entities);
+  const entities = graphResult.entities;
   return deidentifyFromEntities(rawText, entities, { modelId: null, modelStatus: "structured only" }, currentDate, options);
 }
 
@@ -5189,7 +5167,7 @@ export function createDeidentifier(options = {}) {
     const graphResult = expandIdentityGraphEntities(rawText, [...structuredEntities, ...modelEntities], 3, { patientIdentity: runOptions.patientIdentity || null });
     // TRACK-D-D1: clinical age expressions (< 90 are dropped by the Safe
     // Harbor filter above, so they are added back here with gold-shaped spans).
-    const entities = addTrackDAgeEntitiesPostFilter(rawText, graphResult.entities);
+    const entities = graphResult.entities;
     reportProgress(onProgress, { stage: "redacting", message: "Creating redacted preview...", percent: 0.92 });
     const result = deidentifyFromEntities(rawText, entities, modelResult, admissionDate, { relativeDate });
     reportProgress(onProgress, { stage: "complete", message: "De-identified preview ready.", percent: 1 });

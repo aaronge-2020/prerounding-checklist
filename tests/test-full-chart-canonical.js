@@ -11,11 +11,11 @@ import { verifySectionSplit } from "../src/local-llm/section-split.js";
 import {
   listPatientContextPieces,
   pieceText,
-  buildFullChartContextText
+  buildPatientContextFromPieces
 } from "../src/local-llm/patient-context.js";
 import {
-  splitFullChartContext,
-  verifyFullChartEquivalence
+  splitBuiltContext,
+  verifySplitEquivalence
 } from "../src/ui/ai-chat/delta-review.js";
 
 console.log("canonical: verified section-split output feeds the full chart");
@@ -76,7 +76,7 @@ console.log("canonical: verified section-split output feeds the full chart");
     "canonical admission order"
   );
 
-  const fullText = buildFullChartContextText(patient, {});
+  const fullText = buildPatientContextFromPieces(patient, listPatientContextPieces(patient).map(p => p.id), {});
   for (const body of Object.values(parsed.sections)) {
     assert.ok(fullText.includes(body), `verified section carried verbatim: ${body.slice(0, 40)}…`);
   }
@@ -89,8 +89,8 @@ console.log("canonical: verified section-split output feeds the full chart");
   );
 
   // The review split mirrors the same assembly byte-exactly.
-  const split = splitFullChartContext(patient, {});
-  assert.ok(verifyFullChartEquivalence(patient, split, {}), "split verifies against the builder");
+  const split = splitBuiltContext(patient, listPatientContextPieces(patient).map(p => p.id), {});
+  assert.ok(verifySplitEquivalence(patient, listPatientContextPieces(patient).map(p => p.id), split, {}), "split verifies against the builder");
 
   // A fabricated sentence — the exact thing verifySectionSplit forbids —
   // can never enter through the split path either.
@@ -98,7 +98,7 @@ console.log("canonical: verified section-split output feeds the full chart");
     ...split,
     pieces: split.pieces.map((p, i) => (i === 0 ? { ...p, rawText: `${p.rawText} Fabricated sentence.` } : p))
   };
-  assert.ok(!verifyFullChartEquivalence(patient, tampered, {}), "fabricated text fails the equivalence check");
+  assert.ok(!verifySplitEquivalence(patient, listPatientContextPieces(patient).map(p => p.id), tampered, {}), "fabricated text fails the equivalence check");
   console.log("ok - verified sections flow verbatim into the full chart");
 }
 

@@ -24,6 +24,10 @@ export function preserveViewScroll(content, update) {
       for (const el of scope.querySelectorAll("*")) consider(el);
     }
   }
+  // A route can retain scroll even when style APIs are unavailable (for
+  // example while detached). Preserve that known owner as well.
+  const route = content?.closest?.(".view");
+  if (route && !owners.includes(route)) owners.push(route);
   const snapshot = owners.map((owner) => ({ owner, top: owner.scrollTop, left: owner.scrollLeft }));
   // Blur focused controls inside the content before DOM replacement: a
   // focused checkbox removed mid-focus can reset scroll as focus falls back.
@@ -36,10 +40,10 @@ export function preserveViewScroll(content, update) {
   update();
   const restore = () => {
     for (const { owner, top, left } of snapshot) {
-      if (!owner.isConnected && owner !== document.scrollingElement && owner !== document.documentElement) continue;
+      if (owner.isConnected === false) continue;
       try {
-        if (owner.scrollHeight > owner.clientHeight) owner.scrollTop = top;
-        if (owner.scrollWidth > owner.clientWidth) owner.scrollLeft = left;
+        owner.scrollTop = top;
+        owner.scrollLeft = left;
       } catch { /* ignore */ }
     }
   };
@@ -77,46 +81,40 @@ export function chatPaneScrollTop(pane, previous) {
 // (e.g. src/ui/daily/source-controller.js). Snapshots by SELECTOR, not
 // element reference, because the DOM is replaced between capture and restore.
 // Holding old element references would restore to disconnected nodes.
-export function captureScrollPositions(root) {
-  const snapshot = [];
-  const seen = new Set();
-  if (typeof window === "undefined" || typeof document === "undefined" || !root) return snapshot;
-
-  const selectorFor = (el) => {
-    if (el === document.scrollingElement || el === document.documentElement) return ":root-scroller";
-    if (el.id) return `#${CSS.escape(el.id)}`;
-    // Use a path-based selector for elements without IDs.
-    const parts = [];
-    let current = el;
-    while (current && current !== document.body && current !== root.parentElement) {
-      const tag = current.tagName?.toLowerCase() || "unknown";
-      const classes = current.className && typeof current.className === "string"
-        ? current.className.trim().split(/\s+/).filter(Boolean).slice(0, 2).map(c => `.${CSS.escape(c)}`).join("")
-        : "";
-      parts.unshift(`${tag}${classes}`);
-      current = current.parentElement;
-      if (parts.length > 4) break; // Limit depth
+export function relativeSelector(root, element) {
+  if (element === root) return ":scope";
+  const parts = [];
+  for (let node = element; node && node !== root; node = node.parentElement) {
+    if (node.id) { parts.unshift(`#${CSS.escape(node.id)}`); break; }
+    const tag = node.tagName.toLowerCase();
+    const hook = ["data-note-scope", "data-structured-primary-note-scope"].find(key => node.getAttribute?.(key));
+    let part = hook ? `${tag}[${hook}="${CSS.escape(node.getAttribute(hook))}"]` : tag;
+    if (!hook && node.parentElement) {
+      const siblings = [...node.parentElement.children].filter(sibling => sibling.tagName === node.tagName);
+      if (siblings.length > 1) part += `:nth-of-type(${siblings.indexOf(node) + 1})`;
     }
-    return parts.join(" > ");
-  };
+    parts.unshift(part);
+  }
+  return parts.join(" > ");
+}
 
-  const consider = (el) => {
+export function captureScrollPositions(root) {
+  if (!root) return [];
+  const snapshot = [];
+  const doc = typeof document === "undefined" ? null : document;
+  const seen = new Set();
+  const consider = (el, selector) => {
     if (!el || seen.has(el)) return;
     seen.add(el);
-    let overflowY = "";
-    try { overflowY = window.getComputedStyle(el).overflowY; } catch { return; }
-    const isDocScroller = el === document.scrollingElement || el === document.documentElement;
-    if ((/(auto|scroll|overlay)/.test(overflowY) || isDocScroller) && el.scrollHeight > el.clientHeight + 1) {
-      snapshot.push({ selector: selectorFor(el), top: el.scrollTop, left: el.scrollLeft });
-    }
+    if (el.scrollTop || el.scrollLeft) snapshot.push({ selector, top: el.scrollTop, left: el.scrollLeft });
   };
-  for (let current = root; current; current = current.parentElement) consider(current);
-  consider(document.scrollingElement);
-  consider(document.documentElement);
-  const scope = root?.parentElement || document.body;
-  if (scope?.querySelectorAll) {
-    for (const el of scope.querySelectorAll("*")) consider(el);
+  consider(root, ":scope");
+  for (const el of root.querySelectorAll?.("*") || []) consider(el, relativeSelector(root, el));
+  for (let el = root.parentElement; el; el = el.parentElement) {
+    if (el === doc?.scrollingElement || el === doc?.documentElement) consider(el, ":root-scroller");
+    else if (el.id) consider(el, `#${CSS.escape(el.id)}`);
   }
+  consider(doc?.scrollingElement || doc?.documentElement, ":root-scroller");
   return snapshot;
 }
 
@@ -126,7 +124,9 @@ export function restoreScrollPositions(root, snapshot) {
     for (const { selector, top, left } of snapshot) {
       let el = null;
       try {
-        if (selector === ":root-scroller") {
+        if (selector === ":scope") {
+          el = root;
+        } else if (selector === ":root-scroller") {
           el = document.scrollingElement || document.documentElement;
         } else if (selector.startsWith("#")) {
           el = document.getElementById(selector.slice(1));

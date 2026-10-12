@@ -1,10 +1,10 @@
-import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20260925-mixed-unparsed-v1";
+import { decodeClinicalClipboardText, parseEpicClinicalExport } from "./epic-clinical-export-parser.js?v=20261011-epic-workflow";
 import {
   clinicalDataModel,
   clinicalDisplayModelFromPromptText,
   laboratoryAbnormality,
   withClinicalRepresentations
-} from "./structured-clinical-data.js?v=20260921-medication-card-v4";
+} from "./structured-clinical-data.js?v=20261011-epic-workflow";
 import { normalizedLaboratoryName, laboratoryPanelFamily, splitLaboratoryRowsByPanel } from "./laboratory-panels.js?v=20260925-blood-gas-v1";
 import { isNonMedicationLine, splitMedicationLine } from "./note-clinical-extractor.js?v=20260928-mar-tags-v1";
 import { resolveMedicationConcepts } from "./rxnorm-resolve.js?v=20260929-rxnorm-official-v3";

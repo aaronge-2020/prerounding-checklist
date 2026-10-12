@@ -20,7 +20,7 @@ import { z } from "../../vendor/ai-sdk/ai-sdk-bundle.mjs?v=20260929-agent-v1";
 import {
   CLINICAL_SCORES,
   getScoreDefinition
-} from "../../clinical-scores/index.js";
+} from "../../clinical-scores/index.js?v=20261011-epic-workflow";
 import {
   AI_MODELS,
   getAiModelDefinition

@@ -1,11 +1,11 @@
-import { normalizeUserPreferences } from "../preferences.js";
+import { normalizeUserPreferences } from "../preferences.js?v=20261011-request-controls";
 import { sanitizeResidualWarningMetadata } from "../../patient-context/review.js";
 import { CONTEXT_PACKET_ROLES, defaultPacketRole, normalizePacketRole, packetRoleLabel } from "../../patient-context/packet-roles.js";
 import { migrateLegacyDailySections, normalizeDiagnosticResultCategory, normalizeSourceCapture, normalizeSourceKindForScope } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
 import { normalizePrimaryTeamNote } from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
 import { normalizeLabBaselines } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import { normalizeSavedScores } from "../../clinical-scores/saved-scores.js";
-import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
+import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20261011-epic-workflow";
 // (deserializeAdaptiveStore import removed 2026-10-03: session-only policy.)
 
 export const VAULT_SCHEMA_VERSION = 5;

@@ -1,15 +1,16 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { chromium, firefox } from "playwright";
-import { fileAppUrl } from "./browser/app-harness.js";
+import { createAppServer } from "./browser/app-harness.js";
 
-const appUrl = fileAppUrl();
+const server = await createAppServer();
+const appUrl = server.baseUrl;
 // DEMO_BROWSER=firefox uses Playwright's bundled Firefox (no local-network
 // access block, reliable file:// module loads); default is system Chromium.
 const browser = process.env.DEMO_BROWSER === "firefox"
   ? await firefox.launch()
   : await chromium.launch({
-    executablePath: "/opt/meta-chromium/chrome",
+    ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {}),
     args: ["--allow-file-access-from-files", "--disable-features=LocalNetworkAccessChecks", "--no-proxy-server"]
   });
 const page = await browser.newPage({
@@ -46,7 +47,7 @@ try {
   await page.waitForFunction(() => document.querySelectorAll('.primary-nav [data-view-target]').length === 13);
   assert.deepEqual(
     await page.locator('.primary-nav [data-view-target]').evaluateAll((buttons) => buttons.map((button) => button.dataset.viewTarget)),
-    ["vault", "daily", "review", "sampleNotes", "aiChat", "prompts", "quickDeid", "scribePro", "cheatSheets", "drugLookup", "drugChecks", "scores", "settings"],
+    ["vault", "daily", "review", "aiChat", "prompts", "quickDeid", "scribePro", "sampleNotes", "cheatSheets", "drugLookup", "drugChecks", "scores", "settings"],
     "the visible nav must keep Drug Lookup and add the offline Drug checks view"
   );
   assert.deepEqual(
@@ -138,12 +139,12 @@ try {
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Write after bedside review/);
 
   await page.click('[data-view-target="review"]');
-  await page.waitForSelector('[data-action="download-final-note"]');
+  await page.waitForSelector('[data-action="download-final-note"]:visible');
   // The right side is a single editor now (no separate preview pane): verify
   // the final note through the same Download .txt action the student uses.
   const [download] = await Promise.all([
     page.waitForEvent("download"),
-    page.click('[data-action="download-final-note"]')
+    page.click('[data-action="download-final-note"]:visible')
   ]);
   const downloadedNote = await readFile(await download.path(), "utf8");
   assert.doesNotMatch(downloadedNote, /pressure or squeezing feeling/, "cheat-sheet bedside questions must not leak into the note");
@@ -180,6 +181,13 @@ try {
   // The final callout's arrow must track the Copy prompt button's center
   // after viewport clamping: horizontal arrows share the target's center Y,
   // vertical arrows share the target's center X.
+  await page.waitForFunction(() => {
+    const target = document.querySelector('[data-action="copy-prompt"]');
+    const callout = document.querySelector("[data-demo-callout]");
+    const rect = target?.getBoundingClientRect();
+    return callout?.dataset.placement && rect?.top >= 0 && rect.bottom <= innerHeight;
+  });
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   const arrowMiss = await page.evaluate(() => {
     const callout = document.querySelector("[data-demo-callout]");
     const target = document.querySelector('[data-action="copy-prompt"]');
@@ -211,6 +219,7 @@ try {
   assert.deepEqual(consoleErrors, []);
 } finally {
   await browser.close();
+  await server.close();
 }
 
 console.log("Guided demo browser regression tests passed");

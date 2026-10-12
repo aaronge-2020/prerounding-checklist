@@ -1,44 +1,11 @@
-// Rule store: persistent JSON storage for proposed and approved rules.
-//
-// Rules are regex patterns + metadata. They contain NO PHI, so they can be
-// safely persisted to localStorage (unlike corrections, which stay in memory).
-//
-// Format is inspired by chart-scrub's validated JSON rule format:
-//   {name, pattern, action, targetType, description, ...}
-// with added lifecycle states: proposed → approved|rejected.
-
-const STORAGE_KEY = "deid.proposedRules.v1";
-export const RULE_STORE_VERSION = 1;
-
-/**
- * Load rules from localStorage.
- * @returns {Array} rules
- */
-export function loadRules() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const data = JSON.parse(raw);
-    if (!Array.isArray(data.rules)) return [];
-    return data.rules.filter(r => r && r.pattern && r.name);
-  } catch {
-    return [];
-  }
-}
-
-/**
- * Save rules to localStorage.
- */
+// Session-only proposed rules. Patterns and examples may contain source text.
+// Never serialize this store to browser storage or the encrypted vault.
+let sessionRules = [];
+export const RULE_STORE_VERSION = 2;
+const clone = (rules) => JSON.parse(JSON.stringify(rules));
+export function loadRules() { return clone(sessionRules); }
 export function saveRules(rules) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      version: RULE_STORE_VERSION,
-      updatedAt: Date.now(),
-      rules: rules || [],
-    }));
-  } catch {
-    // Storage full or unavailable; rules still work for the session.
-  }
+  sessionRules = clone(Array.isArray(rules) ? rules : []);
 }
 
 /**
@@ -91,6 +58,4 @@ export function deleteRule(name) {
 /**
  * Clear all rules (for testing/reset).
  */
-export function clearRules() {
-  try { localStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
-}
+export function clearRules() { sessionRules = []; }

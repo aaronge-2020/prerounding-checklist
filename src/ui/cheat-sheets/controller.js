@@ -198,7 +198,6 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
       return;
     }
     const sheet = selectedSheet();
-    const { list, detail } = ensureSections(el);
     // Populate the list section if empty (first render). Search updates go
     // through patchResults(); navigation toggles visibility without
     // destroying DOM.

@@ -4,16 +4,16 @@
 // Flow:
 //   1. Corrections accumulate in the session-only store (via correction-log.js)
 //   2. After enough corrections, separateAndConquer proposes rules
-//   3. Proposed rules are saved to the rule store (persisted, no PHI)
+//   3. Proposed rules are saved to the rule store (session-only)
 //   4. Clinician approves/rejects via approval UI
 //   5. Approved rules run in the DETECT stage via applyProposedRules
 //
-// All PHI stays in memory. Only regex patterns (no PHI) are persisted.
+// All PHI stays in memory. Patterns and examples also stay in memory.
 
-import { separateAndConquer, applyProposedRules, MIN_SUPPORT } from "./rule-proposer.js";
+import { separateAndConquer, applyProposedRules, MIN_SUPPORT } from "./rule-proposer.js?v=20261011-epic-workflow";
 import {
-  loadRules, addProposedRules, getApprovedRules, setRuleStatus,
-} from "./rule-store.js";
+  loadRules, addProposedRules, getApprovedRules, setRuleStatus, clearRules,
+} from "./rule-store.js?v=20261011-epic-workflow";
 import {
   createCorrectionStore, addCorrection, getCorrections, buildCorrection,
 } from "./correction-log.js";
@@ -31,6 +31,7 @@ export function ensureCorrectionStore() {
 
 export function clearProposerSession() {
   correctionStore = null;
+  clearRules();
 }
 
 /**

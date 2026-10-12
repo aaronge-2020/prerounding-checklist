@@ -73,7 +73,7 @@ export function extractNumberedPlanItems(text) {
   for (const raw of String(text || "").split("\n")) {
     const line = raw.trim();
     if (!line) continue;
-    const marker = line.match(/^(\d{1,2}[.:])\s*(\S[\s\S]*)$/);
+    const marker = line.match(/^(#\d{1,2}\b[.:]?|\d{1,2}[.:])\s*(\S[\s\S]*)$/);
     if (marker) {
       current = { marker: marker[1], text: marker[2].trim() };
       items.push(current);

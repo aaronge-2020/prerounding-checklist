@@ -1,4 +1,5 @@
-import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20260921-medication-card-v4";
+import { DEFAULT_AP_INSTRUCTIONS } from "../../ai/ap-generator.js?v=20261011-request-controls";
+import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20261011-epic-workflow";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({
@@ -47,7 +48,7 @@ export function createSettingsPresentation({ escapeHtml }) {
           </div>
           <dl class="data-flow-list">
             <div><dt>Patient records, notes, and checklists</dt><dd>Never leave this browser. Stored encrypted in the vault on this device. Vault backups are files you save yourself, and they stay encrypted.</dd></div>
-            <div><dt>Calculators (Models tab)</dt><dd>Run entirely on-device. No network.</dd></div>
+            <div><dt>Calculators</dt><dd>Run entirely on-device. No network.</dd></div>
             <div><dt>De-identification</dt><dd>Runs on-device after a one-time model download from Hugging Face (pinned files, started only by you). Nothing is sent anywhere during redaction.</dd></div>
             <div><dt>On-device chat and note parsing</dt><dd>Run on-device after a one-time model download. Nothing leaves the browser.</dd></div>
             <div><dt>OpenAI features (formatting, per-problem plans, ChatGPT chat)</dt><dd>Sent to api.openai.com using your saved key. Text is de-identified on-device first, and ChatGPT chat shows you exactly what will be sent for your review before anything transmits. Blocked while offline mode is on.</dd></div>
@@ -83,28 +84,6 @@ export function createSettingsPresentation({ escapeHtml }) {
             <button class="button--primary" type="button" data-action="save-openai-byok">Save encrypted key</button>
             <button class="button--quiet" type="button" data-action="clear-openai-byok" ${apiKeySaved ? "" : "disabled"}>Remove saved key</button>
           </div>
-          </section>
-          <section class="panel settings-panel settings-panel--byok">
-          <div class="section-heading">
-            <div>
-              <h2>OpenRouter API key (Decision-1)</h2>
-              <p class="muted">Ranks each problem's differential diagnosis with Microsoft's Decision-1 model — a calibrated probability per candidate, shown as an advisory badge. Only de-identified problem context and candidate diagnoses are sent.</p>
-            </div>
-          </div>
-          <div class="notice settings-security-note">
-            <strong>${openRouterKeySaved ? "An API key is saved in the encrypted vault." : "No API key is saved."}</strong>
-            <span>The key is never shown again. It's encrypted at rest in this browser's vault record and only used when you rank a differential. While the vault is unlocked, the browser keeps it in memory to make that request.</span>
-          </div>
-          <div class="settings-fields">
-            <label class="settings-field-wide">OpenRouter API key
-              <input id="openRouterApiKeyInput" type="password" autocomplete="new-password" spellcheck="false" placeholder="${openRouterKeySaved ? "Saved in encrypted vault; enter a new key to replace it" : "Paste an OpenRouter key to enable differential ranking"}">
-            </label>
-          </div>
-          <div class="button-row">
-            <button class="button--primary" type="button" data-action="save-openrouter-byok">Save encrypted key</button>
-            <button class="button--quiet" type="button" data-action="clear-openrouter-byok" ${openRouterKeySaved ? "" : "disabled"}>Remove saved key</button>
-          </div>
-          <p class="muted settings-helper">Without a saved key, the Rank button explains what is missing instead of calling the API.</p>
           </section>
           <section class="panel settings-panel settings-panel--byok">
           <div class="section-heading">
@@ -185,6 +164,13 @@ export function createSettingsPresentation({ escapeHtml }) {
           </div>
           </section>
 
+          <section class="panel settings-panel">
+            <h2>A&amp;P generation instructions</h2>
+            <p class="muted">Starting instructions for each problem's AI consult. You can edit these again before each send. Keep patient details in the per-send input.</p>
+            <label>Default A&amp;P instructions<textarea id="apDefaultInstructions" rows="8" maxlength="20000">${escapeHtml(preferences.apInstructions ?? DEFAULT_AP_INSTRUCTIONS)}</textarea></label>
+            <div class="button-row"><button type="button" data-action="save-ap-default">Save A&amp;P default</button><button type="button" data-action="reset-ap-default">Reset A&amp;P default</button></div>
+            <p class="muted">Checklist fill and workup formatting were retired when read-only Cheat Sheets replaced those features.</p>
+          </section>
           ${renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides, searchQuery: guidelineSearchQuery, page: guidelinePage, selectedIds: guidelineSelectedIds, openId: guidelineOpenId })}
         </div>
         ${renderGuidelineEditor({ guidelineSets, escapeHtml, openId: guidelineOpenId, createDraft: guidelineCreateDraft })}

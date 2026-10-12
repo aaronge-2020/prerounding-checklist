@@ -15,11 +15,11 @@ function memoryStorage() {
 }
 
 const vault = createEmptyVaultState({ now: () => "2026-07-09T12:00:00.000Z" });
-assert.equal(vault.schemaVersion, 6);
+assert.equal(vault.schemaVersion, 5);
 assert.deepEqual(vault.patients, []);
 assert.equal(vault.preferences.medicalService, "");
 assert.equal(vault.preferences.openAiApiKey, "");
-assert.equal(vault.preferences.openAiModel, "gpt-5.6");
+assert.equal(vault.preferences.openAiModel, "gpt-6-luna");
 
 const patient = createPatientRecord("Room 12", {
   id: "patient_test",
@@ -178,7 +178,7 @@ const migratedLegacyModel = migrateVaultState({
   ...loaded,
   preferences: { ...loaded.preferences, openAiModel: "gpt-5" }
 });
-assert.equal(migratedLegacyModel.preferences.openAiModel, "gpt-5.6");
+assert.equal(migratedLegacyModel.preferences.openAiModel, "gpt-6-luna");
 
 await assert.rejects(() => loadOrCreateVault("wrong passphrase", storage), /decrypt|operation|data/i);
 

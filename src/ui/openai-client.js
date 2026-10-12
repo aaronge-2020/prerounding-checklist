@@ -1,3 +1,4 @@
+import { buildStructuredRequest } from "../ai/structured-request.js?v=20261011-request-controls";
 // Shared OpenAI Responses-API calling core. Feature-specific validation
 // messages, prompt text, and JSON schemas stay with their own callers (see
 // openai-workup-api.js and openai-checklist-api.js) - this module only knows
@@ -32,21 +33,9 @@ function apiError(response, payload) {
     : `OpenAI API request failed (${response.status}).`;
 }
 
-export async function requestOpenAiStructuredJson({ apiKey, model, input, schemaName, schema, tools, fetchImpl = gatedFetch } = {}) {
+export async function requestOpenAiStructuredJson({ apiKey, model, input, instructions, temperature, schemaName, schema, tools, fetchImpl = gatedFetch } = {}) {
   let response;
-  const body = {
-    model,
-    input,
-    text: {
-      format: {
-        type: "json_schema",
-        name: schemaName,
-        strict: true,
-        schema
-      }
-    }
-  };
-  if (Array.isArray(tools) && tools.length) body.tools = tools;
+  const body = buildStructuredRequest({ model, input, instructions, temperature, schemaName, schema, tools });
   try {
     response = await fetchImpl("https://api.openai.com/v1/responses", {
       method: "POST",

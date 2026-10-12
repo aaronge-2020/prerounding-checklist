@@ -25,7 +25,7 @@ assert.match(deidWorkerSource, /deid-service\.js\?v=/);
 
 const keys = DEID_MODEL_OPTIONS.map((option) => option.key);
 assert.deepEqual(keys.sort(), ["gliner-multi-pii", "obi-deid-bert-i2b2", "openmed-clinicale5-small", "openmed-superclinical-small", "stanford-clinical", "roberta-i2b2-q8", "stanford-roberta-ensemble", "tide2-sentry"].sort(), "the clinician picker must exclude unsupported large local packs");
-assert.equal(DEFAULT_DEID_MODEL_KEY, "tide2-sentry", "the SHIELD benchmark winner (TIDE2 Sentry, 0.82 exact-span F1) is the default");
+assert.equal(DEFAULT_DEID_MODEL_KEY, "stanford-clinical", "Stanford is the default pending approved TIDE2 hosting");
 assert.ok(keys.includes(DEFAULT_DEID_MODEL_KEY));
 assert.ok(keys.includes("stanford-clinical"));
 assert.ok(keys.includes("openmed-superclinical-small"));

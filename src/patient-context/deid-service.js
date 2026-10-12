@@ -2,13 +2,13 @@ import {
   createDeidentifier,
   deidentifyTextLearned,
   deidentifyTextStructuredOnly
-} from "../vault/deid.js?v=20261007-tide2-gated";
+} from "../vault/deid.js?v=20261011-epic-workflow";
 import {
   DEFAULT_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,
   deidModelCandidates,
   deidModelOptionByKey
-} from "./deid-model-options.js?v=20261007-tide2-gated";
+} from "./deid-model-options.js?v=20261011-request-controls";
 import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20261007-tide2-gated";
 import { importedModelBaseUrl } from "./model-packs.js?v=20260921-medication-card-v4";
 
@@ -217,7 +217,7 @@ async function loadEnsembleRuntime(components) {
         if (response && response.ok) return response;
         if (response) lastResponse = response;
       } catch (error) {
-        lastResponse = lastResponse;
+        // Try the next explicitly configured ensemble component.
       }
     }
     return lastResponse || new Response("Ensemble model file not found.", { status: 404, statusText: "Not Found" });

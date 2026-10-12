@@ -9,8 +9,8 @@ import assert from "node:assert/strict";
 import {
   buildSectionCitationIndex,
   pieceSectionTarget,
-  splitFullChartContext,
-  verifyFullChartEquivalence,
+  splitBuiltContext,
+  verifySplitEquivalence,
   buildTransmitPayload,
   locateTruncation,
   fullChartBudgetChars,
@@ -21,7 +21,7 @@ import {
   sectionCitationChipHtml,
   citedSections
 } from "../src/ui/ai-chat/section-citations.js";
-import { MAX_FULL_CHART_CHARS } from "../src/local-llm/patient-context.js";
+import { listPatientContextPieces, MAX_FULL_CHART_CHARS } from "../src/local-llm/patient-context.js";
 import { CHARS_PER_TOKEN } from "../src/local-llm/context-budget.js";
 
 const escapeHtml = (s) => String(s ?? "")
@@ -169,20 +169,21 @@ function makePatient() {
 console.log("split: full chart round-trips; tampering fails closed");
 {
   const patient = makePatient();
-  const split = splitFullChartContext(patient, {});
+  const ids = listPatientContextPieces(patient).map(p => p.id);
+  const split = splitBuiltContext(patient, ids, {});
   assert.deepEqual(
     split.pieces.map((p) => p.id),
     ["admission:s1", "admission:s2", "day:d1:c1", "day:d1:quicknotes"],
     "canonical order: admission sections, then day captures, then quick notes"
   );
-  assert.ok(verifyFullChartEquivalence(patient, split, {}), "untampered split verifies");
+  assert.ok(verifySplitEquivalence(patient, ids, split, {}), "untampered split verifies");
 
   const tampered = { ...split, pieces: split.pieces.map((p) => ({ ...p })) };
   tampered.pieces[0] = { ...tampered.pieces[0], rawText: "TAMPERED" };
-  assert.ok(!verifyFullChartEquivalence(patient, tampered, {}), "tampered piece fails verification");
+  assert.ok(!verifySplitEquivalence(patient, ids, tampered, {}), "tampered piece fails verification");
 
   const reordered = { ...split, pieces: [...split.pieces].reverse() };
-  assert.ok(!verifyFullChartEquivalence(patient, reordered, {}), "reordered pieces fail verification");
+  assert.ok(!verifySplitEquivalence(patient, ids, reordered, {}), "reordered pieces fail verification");
   console.log("ok - split/verify is byte-exact and fail-closed");
 }
 

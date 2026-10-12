@@ -17,16 +17,16 @@ import {
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
 import { createAiChatPresentation } from "./presentation.js?v=20261004-cite-links-v1";
-import { chatPaneScrollTop } from "../view-scroll.js?v=20261003-chatpane-scroll";
-import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20261004-cite-links-v1";
+import { chatPaneScrollTop } from "../view-scroll.js?v=20261011-epic-workflow";
+import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20261011-request-controls";
 import { gatedFetch, isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
 import {
   buildChatToolsSystemPrompt,
   CHAT_MAX_STEPS,
   CHAT_TOOL_NAMES,
   createChatTools
-} from "./chat-tools.js?v=20260929-chat-tools-v1";
-import { runAgent as defaultRunAgent } from "../../ai/agent-runner.js?v=20260929-agent-runner-v3";
+} from "./chat-tools.js?v=20261011-epic-workflow";
+import { runAgent as defaultRunAgent } from "../../ai/agent-runner.js?v=20261011-epic-workflow";
 import * as remoteChatV4 from "../../ai/remote-chat.js?v=20260929-ai-chat-v6";
 import {
   costForUsage,
@@ -41,9 +41,9 @@ import {
   getAdvancedDeidStatus,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "../../patient-context/deid-service.js?v=20260930-deid-refactor";
-import { DEFAULT_DEID_MODEL_KEY, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../../patient-context/deid-model-options.js?v=20260930-deid-trackd";
-import { crossOriginIsolationBlocker } from "../../patient-context/deid-client.js?v=20260929-deid-clinicale5";
+} from "../../patient-context/deid-service.js?v=20261011-epic-workflow";
+import { DEFAULT_DEID_MODEL_KEY, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../../patient-context/deid-model-options.js?v=20261011-request-controls";
+import { crossOriginIsolationBlocker } from "../../patient-context/deid-client.js?v=20261011-epic-workflow";
 import {
   buildPatientContextFromPieces,
   defaultSelectedPieceIds,
@@ -54,8 +54,8 @@ import {
 } from "../../local-llm/patient-context.js?v=20260929-local-llm-v12";
 import { CHARS_PER_TOKEN, buildChatMessages, estimateTokens } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
 import { buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
-import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
-import { medicalServiceOption, OPENAI_WORKUP_MODEL_OPTIONS } from "../../app/preferences.js?v=20260929-gpt6-models";
+import { activePatient } from "../../app/state/vault.js?v=20261011-epic-workflow";
+import { medicalServiceOption, OPENAI_WORKUP_MODEL_OPTIONS } from "../../app/preferences.js?v=20261011-request-controls";
 import {
   hashPiece,
   splitBuiltContext,
@@ -72,7 +72,7 @@ import {
   applyGuidelineDecisions,
   pieceHasNoPendingRecords,
   persistGuidelineDecisions
-} from "./delta-review.js?v=20260929-ai-chat-v16";
+} from "./delta-review.js?v=20261011-epic-workflow";
 import {
   parseSectionCitations
 } from "./section-citations.js?v=20260929-ai-chat-v14";
@@ -87,7 +87,7 @@ import {
   retrieveChartChunks,
   warmChartIndex,
   clearRagWorkerMemory
-} from "../../rag/rag-service.js?v=20260929-rag-v3";
+} from "../../rag/rag-service.js?v=20261011-epic-workflow";
 import { DEFAULT_RAG_MODEL_KEY } from "../../rag/rag-models.js?v=20260929-rag-v2";
 import { piecesWithRawText } from "../../rag/chart-chunks.js?v=20260929-rag-v3";
 
@@ -348,6 +348,7 @@ export function createAiChatController({
         render();
       })
       .catch(() => {
+        console.warn("Model cache status unavailable; retry model verification before use.");
         // Keep the registry hint; a failed probe must not blank the UI.
       });
     return state.downloadProbe;
@@ -542,7 +543,7 @@ export function createAiChatController({
         state.chat.rag.warmedFingerprint = null;
         state.chat.rag.warmFingerprint = null;
       }
-      void ragService.clearRagWorkerMemory().catch(() => {});
+      void ragService.clearRagWorkerMemory().catch(() => { console.warn("Background operation did not complete; retry the requested action."); });
     }
     state.chat.patientId = pctx.patientId;
     state.remote.patientId = pctx.patientId;

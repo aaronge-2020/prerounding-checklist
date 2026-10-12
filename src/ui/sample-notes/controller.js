@@ -15,7 +15,7 @@
 // only in memory during the import; the vault keeps de-identified text
 // plus residual-warning metadata.
 import { SAMPLE_NOTES_DATA } from "../../data/sample-notes.data.js?v=20261001-sample-notes-v2";
-import { createPatientRecord, createTextSection, upsertPatient } from "../../app/state/vault.js?v=20261001-sample-notes-v2";
+import { createPatientRecord, createTextSection, upsertPatient } from "../../app/state/vault.js?v=20261011-epic-workflow";
 import { createEphemeralRedactionReview, reviewKey } from "../../patient-context/review.js?v=20261001-sample-notes-v2";
 import {
   createSampleNotesPresentation,
@@ -31,7 +31,7 @@ export function createSampleNotesController({
   escapeHtml,
   icon,
   replaceViewContent,
-  render,
+  render: renderApp,
   setStatus,
   copyText,
   vaultIsUnlocked,
@@ -106,7 +106,7 @@ export function createSampleNotesController({
       verifyWithLlm: Boolean(app.quickDeid?.verifyWithLlm)
     };
     app.view = "quickDeid";
-    render();
+    renderApp();
     setStatus(`Loaded the full chart for "${note.title}" into Quick De-ID. Review and run de-identification when ready.`);
   }
 
@@ -135,7 +135,7 @@ export function createSampleNotesController({
     app.vault = upsertPatient(app.vault, patient, { activate: true });
     beginSectionReview("context");
     app.view = "daily";
-    render();
+    renderApp();
     setStatus(message);
   }
 
@@ -220,7 +220,7 @@ export function createSampleNotesController({
       state.importing = null;
       beginSectionReview("context");
       app.view = "daily";
-      render();
+      renderApp();
       setStatus(`"${note.title}" is now a patient in your vault with ${sections.length} de-identified admission sources. Review each source, then continue to Review Data.`);
     } catch (error) {
       state.importing = null;

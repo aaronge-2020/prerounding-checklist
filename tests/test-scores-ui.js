@@ -151,7 +151,11 @@ class FakeElement {
         ds[key.slice(5).replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = value;
       }
     }
-    return ds;
+    return new Proxy(ds, { set: (target, key, value) => {
+      target[key] = value;
+      this.attrs[`data-${String(key).replace(/[A-Z]/g, c => "-" + c.toLowerCase())}`] = String(value);
+      return true;
+    } });
   }
   get type() {
     return this.attrs.type || "";
@@ -188,6 +192,10 @@ class FakeElement {
   hasAttribute(name) {
     return name in this.attrs;
   }
+  get childNodes() { return this.children; }
+  hasChildNodes() { return this.children.length > 0; }
+  append(...nodes) { nodes.forEach(node => this.appendChild(node)); }
+  replaceChildren(...nodes) { this.children = []; this.append(...nodes); }
   appendChild(child) {
     child.parent = this;
     this.children.push(child);
@@ -434,6 +442,15 @@ const patient = {
     { sourceKind: "vital_signs", label: "Vitals", deidentifiedText: "Vitals\n@ 09/26 08:00: Weight 70 kg" }
   ],
   days: []
+};
+
+globalThis.document = {
+  activeElement: null,
+  createElement(tag) {
+    const el = new FakeElement(tag);
+    if (tag === "template") Object.defineProperty(el, "content", { get: () => el });
+    return el;
+  }
 };
 
 function makeController(currentPatient = patient, extra = {}) {

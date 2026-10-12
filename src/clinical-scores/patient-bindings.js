@@ -11,9 +11,9 @@
 // Every binding carries a `source` label naming where the value came from so
 // the UI can show "from patient" honestly. Anything not found stays manual.
 
-import { listScoreDefinitions } from "./index.js";
+import { listScoreDefinitions } from "./index.js?v=20261011-epic-workflow";
 import { listAiModelDefinitions } from "../ai-models/index.js";
-import { clinicalDisplayModelFromPromptText } from "../patient-context/structured-clinical-data.js";
+import { clinicalDisplayModelFromPromptText } from "../patient-context/structured-clinical-data.js?v=20261011-epic-workflow";
 
 function cleanText(value) {
   return String(value || "").replace(/\r/g, "");
@@ -209,7 +209,7 @@ export function parseSex(text) {
 // whichever cell carries it. Returns null for non-numeric results
 // like "pending" or "positive".
 function parseLabResultCell(resultCell, unitCell) {
-  const match = resultCell.match(/^(?:[<>]=?\s*)?([-+]?(?:\d+(?:\.\d+)?|\.\d+))(?:\s+(.+))?$/);
+  const match = resultCell.match(/^([-+]?(?:\d+(?:\.\d+)?|\.\d+))(?:\s+(.+))?$/);
   if (!match) return null;
   const value = Number(match[1]);
   if (!Number.isFinite(value)) return null;
@@ -246,8 +246,24 @@ export function latestLabValue(sources, matchers, exclude = []) {
   return candidates.at(-1) || null;
 }
 
-function resolvePull(pull, sources) {
+function resolvePull(pull, sources, input) {
   if (!pull) return null;
+  if (pull.kind === "lab") {
+    const hit = latestLabValue(sources, pull.match || [], pull.exclude || []);
+    // Numeric values only cross this boundary when their source unit matches
+    // the calculator input. Missing/different units remain manual.
+    const unit = value => String(value || "").toLowerCase().replace(/\s/g, "");
+    const expected = (input.units || [input.unit]).filter(Boolean);
+    const matchingUnit = hit && expected.find(value => unit(value) === unit(hit.unit));
+    if (!matchingUnit) return null;
+    return { ...hit, unit: matchingUnit };
+  }
+  if (pull.kind === "demographic" && pull.field === "sex") {
+    const hit = firstTextHit(sources, parseSex);
+    if (!hit) return null;
+    const value = pull.valueMap ? pull.valueMap[hit.value] : hit.value;
+    return value === undefined ? null : { value, source: hit.source };
+  }
   if (pull.kind === "demographic" && pull.field === "ageYears") {
     const hit = firstTextHit(sources, parseAgeYears);
     if (!hit) return null;
@@ -299,7 +315,7 @@ export function resolveScoreBindings(patient, selectedDayId) {
       if (!input.pull) continue;
       // Mode-gated pulls (e.g. the due-dates date field) resolve here; the
       // controller only applies them when the matching mode is active.
-      const resolved = resolvePull(input.pull, sources);
+      const resolved = resolvePull(input.pull, sources, input);
       if (resolved) scoreBindings[input.key] = resolved;
     }
     if (Object.keys(scoreBindings).length) bindings[definition.id] = scoreBindings;

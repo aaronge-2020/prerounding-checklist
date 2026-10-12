@@ -10,8 +10,8 @@
 //   3. Remove covered corrections ("conquered")
 //   4. Repeat until no pattern covers enough remaining corrections
 //
-// Privacy: rules are regex patterns (no PHI). Corrections with PHI stay
-// in the session-only adaptive store and are never persisted.
+// Privacy: patterns and examples can contain source text. Both rules and
+// corrections stay in memory for this patient session and are never persisted.
 
 import { extractFeatures } from "./feature-extract.js";
 
@@ -19,8 +19,8 @@ import { extractFeatures } from "./feature-extract.js";
 // With 2-3 corrections per note, common patterns hit this within days.
 export const MIN_SUPPORT = 3;
 
-// Candidate rules must achieve this precision on the full note set
-// before being proposed. Prevents overfitting on small samples.
+// Proposal gate on the correction sample only. This is not held-out accuracy
+// and cannot establish safety with incomplete or noisy corrections.
 export const PRECISION_GATE = 0.7;
 
 /**

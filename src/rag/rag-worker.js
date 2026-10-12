@@ -137,7 +137,7 @@ let messageChain = Promise.resolve();
 self.onmessage = (event) => {
   const { id, type, payload = {} } = event.data || {};
   if (id == null || !type) return;
-  messageChain = messageChain.then(() => handleMessage(id, type, payload)).catch(() => {});
+  messageChain = messageChain.then(() => handleMessage(id, type, payload)).catch(() => { console.warn("Background operation did not complete; retry the requested action."); });
 };
 
 async function handleMessage(id, type, payload) {

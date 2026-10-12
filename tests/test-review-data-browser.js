@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { chromium } from "playwright";
-import { fileAppUrl, openRealApp, unlockAndCreatePatient } from "./browser/app-harness.js";
+import { createAppServer, openRealApp, unlockAndCreatePatient } from "./browser/app-harness.js";
 
 const compactPrimaryNote = readFileSync(new URL("./fixtures/primary-team-notes/compact-soap-note.txt", import.meta.url), "utf8");
 const progressTeamNote = readFileSync(new URL("./fixtures/primary-team-notes/progress-team-note.txt", import.meta.url), "utf8");
@@ -20,9 +20,10 @@ Patient improving on antibiotics. Likely bacterial CAP.
 Creatinine downtrending, likely pre-renal.
 - IVF as tolerated`;
 
-const appUrl = fileAppUrl();
+const server = await createAppServer();
+const appUrl = server.baseUrl;
 const browser = await chromium.launch({
-    executablePath: "/opt/meta-chromium/chrome",
+    ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {}),
     args: ["--allow-file-access-from-files", "--disable-features=LocalNetworkAccessChecks", "--no-proxy-server"]
   });
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -44,7 +45,7 @@ async function addDailySource(kind, text, expectedCount) {
 async function downloadFinalNoteText() {
   const [download] = await Promise.all([
     page.waitForEvent("download"),
-    page.click('[data-action="download-final-note"]')
+    page.click('[data-action="download-final-note"]:visible')
   ]);
   return readFile(await download.path(), "utf8");
 }
@@ -251,10 +252,14 @@ Sodium: 138`;
   await page.waitForTimeout(2000);
 
   // Vitals and medications are in the note by default; every row is checked.
-  const vitalChecks = page.locator(".vital-chip [data-objective-selection-id]");
-  assert.ok(await vitalChecks.count() >= 5, "vital signs must render as compact chips");
-  for (const box of await vitalChecks.all()) assert.equal(await box.isChecked(), true, "vitals are included by default");
-  assert.match(await page.locator(".vital-strip").innerText(), /119\/77/, "cuff systolic/diastolic must pair into one blood pressure chip");
+  const vitalChecks = page.locator(".vital-row [data-objective-selection-id]");
+  assert.ok(await vitalChecks.count() >= 5, "vital signs must render as compact rows");
+  for (const name of ["Blood Pressure", "Heart Rate", "Respirations", "SpO2", "Temperature"]) {
+    const matching = page.locator('.vital-row input[type="checkbox"]').filter({ visible: true });
+    const labels = await matching.evaluateAll(nodes => nodes.map(n => ({ label: n.getAttribute("aria-label"), checked: n.checked })));
+    assert.ok(labels.some(item => item.label.toLowerCase().includes(name.toLowerCase()) && item.checked), `${name} is included by default`);
+  }
+  assert.match(await page.locator(".vital-rows").innerText(), /119\/77/, "cuff systolic/diastolic must pair into one blood pressure chip");
   const medicationChecks = page.locator(".compact-medications [data-objective-selection-id]");
   assert.equal(await medicationChecks.count(), 2, "every saved medication must render");
   for (const box of await medicationChecks.all()) assert.equal(await box.isChecked(), true, "medications are included by default");
@@ -282,9 +287,9 @@ Sodium: 138`;
 
   // Checking a lab row adds a source-linked Objective block with the trend.
   await page.locator('.lab-row', { hasText: "WBC" }).first().locator('[data-lab-result-selection]').check();
-  await page.waitForFunction(() => document.querySelectorAll("[data-objective-block]").length >= 1);
-  const wbcBlock = page.locator("[data-objective-block]", { hasText: "WBC" }).first();
-  assert.match(await editorText(wbcBlock.locator("[data-objective-block-text]")), /WBC: 15\.2[\s\S]*8\.8/, "the WBC objective block must carry the chronological trend");
+  await page.waitForFunction(() => document.querySelectorAll("[data-objective-group]").length >= 1);
+  const wbcBlock = page.locator("[data-objective-group]", { hasText: "WBC" }).first();
+  assert.match(await editorText(wbcBlock.locator("[data-objective-group-text]")), /WBC 8\.8/, "the WBC objective group carries the latest result; source rows retain its trend");
 
   // Every analyte gets an easy baseline entry.
   const creatinineRow = page.locator(".lab-row", { hasText: "Creatinine" }).first();
@@ -296,12 +301,12 @@ Sodium: 138`;
   assert.match(await page.locator(".lab-row", { hasText: "Creatinine" }).first().innerText(), /base 1\.0/);
 
   // Unchecking a default-on vital is durable across navigation.
-  const hrChip = page.locator(".vital-chip", { hasText: "Heart Rate" }).first();
+  const hrChip = page.locator(".vital-row", { hasText: "Heart Rate" }).first();
   await hrChip.locator('[data-objective-selection-id]').uncheck();
   await page.click('[data-view-target="daily"]');
   await page.click('[data-view-target="review"]');
   await page.waitForSelector("#reviewContent .review-workspace");
-  assert.equal(await page.locator(".vital-chip", { hasText: "Heart Rate" }).first().locator('[data-objective-selection-id]').isChecked(), false, "deselected vitals must stay out of the note");
+  assert.equal(await page.locator(".vital-row", { hasText: "Heart Rate" }).first().locator('[data-objective-selection-id]').isChecked(), false, "deselected vitals must stay out of the note");
 
   // Removing a medication through its scaffold is durable too.
   await page.locator(".scaffold-med-list li", { hasText: "acetaminophen" }).locator('[data-action="remove-objective-selection"]').click();
@@ -319,24 +324,25 @@ Sodium: 138`;
   await page.locator('[data-section-visibility="vte_prophylaxis"]').check();
 
   // Updating source data marks an edited linked block stale without overwriting it.
-  await wbcBlock.locator("[data-objective-block-text]").fill("Student wording: WBC has improved substantially.");
+  await wbcBlock.locator("[data-objective-group-text]").fill("Student wording: WBC has improved substantially.");
   await page.click('[data-view-target="daily"]');
   const currentLabSource = page.locator("#dailySources .source-capture-editor").first();
   if ((await currentLabSource.locator('[data-action="toggle-section-editor"]').getAttribute("aria-expanded")) !== "true") {
     await currentLabSource.locator('[data-action="toggle-section-editor"]').click();
   }
   const currentLabText = await currentLabSource.locator(".section-text").inputValue();
+  assert.match(currentLabText, /WBC: 8\.8/, "edit the selected latest laboratory source");
   await currentLabSource.locator(".section-text").fill(currentLabText.replace("WBC: 8.8", "WBC: 7.7"));
   await page.click('[data-action="save-day"]');
   await page.waitForFunction(() => /Source edits saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.click('[data-view-target="review"]');
   await page.fill("#reviewDataSearch", "WBC");
-  await page.waitForSelector('[data-objective-state="stale"]');
-  assert.equal((await editorText(page.locator('[data-objective-state="stale"] [data-objective-block-text]'))).trim(), "Student wording: WBC has improved substantially.");
-  await page.click('[data-action="review-objective-difference"]');
-  assert.match(await page.locator(".objective-diff").innerText(), /7\.7/);
-  await page.click('[data-action="keep-objective-selection"]');
-  assert.equal(await page.locator('[data-objective-state]', { hasText: "WBC" }).first().getAttribute("data-objective-state"), "edited");
+  await page.waitForSelector('[data-action="refresh-objective-group"]');
+  assert.equal((await editorText(wbcBlock.locator("[data-objective-group-text]"))).trim(), "Student wording: WBC has improved substantially.");
+  assert.match(await page.locator(".lab-row", { hasText: "WBC" }).first().innerText(), /7\.7/, "updated source value is available for comparison");
+  assert.ok((await downloadFinalNoteText()).includes("Student wording: WBC has improved substantially."), "keeping the edit preserves it in export");
+  await wbcBlock.locator('[data-action="refresh-objective-group"]').click();
+  assert.match(await editorText(wbcBlock.locator("[data-objective-group-text]")), /WBC 7\.7/, "explicit refresh restores the current source result");
   await page.fill("#reviewDataSearch", "");
 
   // Student-authored Objective text and diagnostic results still work.
@@ -345,23 +351,23 @@ Sodium: 138`;
   const ctRow = page.locator(".compact-row", { hasText: "CT Head" }).first();
   assert.match(await ctRow.innerText(), /No acute intracranial abnormality/);
   await ctRow.locator('[data-objective-selection-id]').check();
-  assert.match(await editorText(page.locator("[data-objective-block]").last().locator("[data-objective-block-text]")), /CT Head\/Neck Without Contrast[\s\S]*No acute intracranial abnormality/);
+  assert.match(await editorText(page.locator('[data-objective-group="result:imaging"] [data-objective-group-text]')), /CT Head\/Neck Without Contrast[\s\S]*No acute intracranial abnormality/);
   await page.fill("#reviewDataSearch", "");
 
   // Note export actions remain available.
-  assert.equal(await page.locator('[data-action="copy-final-note"]').isVisible(), true);
+  assert.equal(await page.locator('[data-action="copy-final-note"]:visible').isVisible(), true);
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-  await page.click('[data-action="copy-final-note"]');
+  await page.click('[data-action="copy-final-note"]:visible');
   const copiedNote = await page.evaluate(() => navigator.clipboard.readText());
   assert.match(copiedNote, /Lungs clear to auscultation/);
   assert.doesNotMatch(copiedNote, /\*\*/);
   const noteDownload = page.waitForEvent("download");
-  await page.click('[data-action="download-final-note"]');
+  await page.click('[data-action="download-final-note"]:visible');
   assert.match((await noteDownload).suggestedFilename(), /progress-note\.txt$/);
 
   // Saved draft survives encryption/reload; lock clears all protected content.
-  await page.click('[data-action="save-note-draft"]');
-  await page.waitForFunction(() => /Encrypted note draft saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  const savedPacketValue = await page.locator("#reviewPacketSelect").inputValue();
+  await page.waitForFunction(() => document.querySelector("[data-autosave-indicator]")?.dataset.state === "saved");
   await page.click('[data-view-target="daily"]');
   await page.click('[data-action="select-daily-source-kind"][data-source-kind="primary_note"]');
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
@@ -386,7 +392,6 @@ Sodium: 138`;
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
   assert.doesNotMatch(await page.locator('[data-structured-note-paste][data-structured-note-scope="daily"]').inputValue(), new RegExp(sessionOnlyRawToken), "locking must clear the session-only raw paste draft");
   await page.click('[data-view-target="review"]');
-  const savedPacketValue = await page.locator('#reviewPacketSelect option').filter({ hasText: "Hospital day 3" }).getAttribute("value");
   await page.selectOption("#reviewPacketSelect", savedPacketValue);
   await page.fill("#reviewDataSearch", "CT Head/Neck");
   assert.equal(await page.locator('.compact-row [data-objective-selection-id]').first().isChecked(), true);
@@ -406,4 +411,5 @@ Sodium: 138`;
 } finally {
   await context.close();
   await browser.close();
+  await server.close();
 }

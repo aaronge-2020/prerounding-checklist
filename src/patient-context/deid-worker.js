@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20261003-deid-adaptive";
+} from "./deid-service.js?v=20261011-epic-workflow";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });
