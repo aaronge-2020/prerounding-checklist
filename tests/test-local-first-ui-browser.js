@@ -327,6 +327,8 @@ try {
   await page.fill("#dailyAdmissionDateInput", "2026-07-17");
   await page.click('[data-action="select-admission-source-kind"][data-source-kind="primary_note"]');
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="admission"][data-note-mode="sections"]');
+  // Let the route transition finish before measuring a subsequent heading click.
+  await page.waitForTimeout(100);
   await page.locator("#dailyContent").evaluate((content) => { content.style.minHeight = "1600px"; });
   // Measure the application handler, not Playwright’s auto-scroll before a click.
   // The control can sit above the artificial scroll offset used by this regression.
@@ -475,6 +477,7 @@ Crossmatch: Red Blood Cells: Rpt (P)
   await page.waitForFunction(() => /Selected text marked for manual redaction/.test(document.querySelector("#statusLine")?.textContent || ""));
 
   await page.click('[data-view-target="daily"]');
+  if (!await page.locator("#newDayDate").isVisible()) await page.locator("details.new-day-control > summary").click();
   await page.fill("#newDayDate", "2026-07-09");
   await page.fill("#newDayLabel", "Hospital day 1");
   await page.click('[data-action="add-day"]');
@@ -728,6 +731,7 @@ Vitals
   assert.equal(await page.locator("#quickDeidOutput").count(), 0, "leaving Quick De-ID must clear the correction workspace, including its transient output pane");
   await page.click('[data-view-target="daily"]');
   await page.locator(".new-day-control summary").click();
+  if (!await page.locator("#newDayDate").isVisible()) await page.locator("details.new-day-control > summary").click();
   await page.fill("#newDayDate", "2026-07-10");
   await page.fill("#newDayLabel", "Hospital day 2");
   await page.click('[data-action="add-day"]');

@@ -31,6 +31,7 @@ try {
 
   // Paste the primary-team note for a hospital day and save it.
   await page.click('[data-view-target="daily"]');
+  if (!await page.locator("#newDayDate").isVisible()) await page.locator("details.new-day-control > summary").click();
   await page.fill("#newDayDate", "2026-09-20");
   await page.fill("#newDayLabel", "Hospital day 6");
   await page.click('[data-action="add-day"]');

@@ -27,7 +27,7 @@ jobs:
             command: npm run test:primary-note-pull-fallback
             browser: true
           - name: Vault and import browser
-            command: node tests/test-local-first-ui-browser.js
+            command: node tests/test-note-drag-browser.js && node tests/test-local-first-ui-browser.js
             browser: true
           - name: Note writing browser
             command: node tests/test-review-data-browser.js

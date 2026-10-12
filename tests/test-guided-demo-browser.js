@@ -166,7 +166,10 @@ try {
   await page.waitForFunction(() => /High-sensitivity troponin/i.test(document.querySelector(".review-data-list")?.textContent || ""));
   await page.selectOption("#reviewDataCategory", "other_results");
   await page.fill("#reviewDataSearch", "ECG");
-  await page.waitForFunction(() => /ECG interpretation[\s\S]*ST-segment depressions/i.test(document.querySelector(".review-data-list")?.textContent || ""));
+  await page.waitForFunction(() => /ECG interpretation[\s\S]*ST-segment depressions/i.test(document.querySelector(".review-data-list")?.textContent || "")).catch(async (error) => {
+    console.error("ECG filter result:", await page.locator(".review-data-list").innerText());
+    throw error;
+  });
   await page.fill("#reviewDataSearch", "");
   await page.selectOption("#reviewDataCategory", "all");
   // write-note is a hands-on action stage: typing in the highlighted

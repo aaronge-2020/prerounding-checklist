@@ -72,6 +72,7 @@ try {
   // Build a review draft with two problems; only the first gets generated.
   await page.click('[data-view-target="daily"]');
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="admission"][data-note-mode="sections"]');
+  await page.locator(".note-additional-sections > summary").click();
   await page.fill('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]', "Adult with acute decompensated heart failure.");
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="admission"]');
   await page.waitForFunction(() => /saved/i.test(document.querySelector("#statusLine")?.textContent || ""));

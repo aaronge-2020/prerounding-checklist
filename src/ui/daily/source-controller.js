@@ -1,4 +1,5 @@
-import { moveNoteText, appendSourceSelection } from "../../patient-context/note-mapping.js?v=20261011-epic-workflow";
+import { createNoteDragController } from "./note-drag-controller.js?v=20261011-drag-workspace-v2";
+import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261011-drag-workspace-v2";
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261011-ai-helper";
 import { captureScrollPositions, restoreScrollPositions } from "../view-scroll.js?v=20261011-epic-workflow";
 import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20261011-ai-helper";
@@ -67,7 +68,7 @@ export function createDailySourceController(deps) {
       mode: existingStructuredNote(scope) ? "sections" : "paste",
       pastedText: "",
       parseResult: parsePrimaryTeamNote("", noteType),
-      activeFieldId: primaryTeamNoteFields(noteType)[0]?.id || "",
+      activeFieldId: noteType === NOTE_TYPES.H_AND_P ? "history_of_present_illness" : "interval_events",
       dirtyFieldIds: []
     };
     deps.app.structuredNoteComposers.set(key, composer);
@@ -286,6 +287,16 @@ export function createDailySourceController(deps) {
       activeFieldId: firstDetected || firstPopulated || composer?.activeFieldId
     });
     deps.render();
+    const workspace = document.querySelector(`[data-structured-primary-note-scope="${scope}"]`);
+    const inner = workspace?.closest(".stay-content");
+    const pane = inner?.scrollHeight > inner?.clientHeight ? inner : workspace?.closest(".view");
+    const before = pane?.scrollTop;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const intro = workspace?.querySelector(".note-arrange-intro");
+      if (workspace?.isConnected && intro && pane && pane.scrollTop === before) {
+        pane.scrollTop += intro.getBoundingClientRect().top - pane.getBoundingClientRect().top;
+      }
+    }));
   }
 
   function renderStructuredNoteEditor(scope, { focusFieldId = "" } = {}) {
@@ -344,7 +355,12 @@ export function createDailySourceController(deps) {
     const fields = primaryTeamNoteFields(structuredNoteType(scope));
     if (!fields.some((field) => field.id === fieldId)) return;
     setStructuredNoteComposer(scope, { mode: "sections", activeFieldId: fieldId });
-    renderStructuredNoteEditor(scope, { focusFieldId: fieldId });
+    const field = document.querySelector(`[data-structured-note-scope="${scope}"][data-structured-note-field="${fieldId}"]`);
+    if (field) {
+      const disclosure = field.closest("details");
+      if (disclosure) disclosure.open = true;
+      field.focus({ preventScroll: true });
+    } else renderStructuredNoteEditor(scope, { focusFieldId: fieldId });
   }
 
   function moveStructuredNoteField(scope, direction) {
@@ -368,47 +384,52 @@ export function createDailySourceController(deps) {
     deps.render();
   }
 
-  function correctNoteMapping(scope, action) {
+  function noteMappingContext(scope) {
+    const patient = deps.active();
     const key = structuredNoteKey(scope);
-    const composer = structuredNoteComposer(scope);
-    if (!key || !composer) return;
+    if (!patient || !key) return null;
     const fields = primaryTeamNoteFields(structuredNoteType(scope));
-    const root = document.querySelector(`[data-structured-primary-note-scope="${scope}"]`);
-    const current = Object.fromEntries(fields.map(({ id }) => [id,
-      deps.app.structuredNoteDrafts.get(key)?.[id] ?? existingStructuredNote(scope)?.sections?.[id]?.deidentifiedText ?? ""]));
-    if (action === "undo-note-mapping") {
-      if (!composer.mappingUndo) return;
-      deps.app.structuredNoteDrafts.set(key, composer.mappingUndo.sections);
-      setStructuredNoteComposer(scope, { dirtyFieldIds: composer.mappingUndo.dirtyFieldIds, mappingUndo: null });
-    } else {
-      const fieldIds = fields.map(({ id }) => id);
-      let corrected;
-      let touched;
-      if (action === "restore-source-selection") {
-        const original = root.querySelector("[data-note-original]");
-        const to = composer.activeFieldId;
-        corrected = appendSourceSelection(current, { text: original.value, start: original.selectionStart, end: original.selectionEnd, to, fieldIds });
-        touched = [to];
-      } else {
-        const from = composer.activeFieldId;
-        const to = root.querySelector("[data-note-move-target]").value;
-        const editor = root.querySelector("[data-structured-note-field]");
-        const range = action === "move-note-selection" ? { start: editor.selectionStart, end: editor.selectionEnd } : {};
-        corrected = moveNoteText(current, { from, to, fieldIds, ...range });
-        touched = [from, to];
-      }
-      setStructuredNoteComposer(scope, { mappingUndo: { sections: current, dirtyFieldIds: composer.dirtyFieldIds || [] },
-        dirtyFieldIds: [...new Set([...(composer.dirtyFieldIds || []), ...touched])] });
-      deps.app.structuredNoteDrafts.set(key, corrected);
+    return { identity: `${patient.id}:${key}`, key, fields,
+      sections: Object.fromEntries(fields.map(({ id }) => [id,
+        deps.app.structuredNoteDrafts.get(key)?.[id] ?? existingStructuredNote(scope)?.sections?.[id]?.deidentifiedText ?? ""])) };
+  }
+
+  createNoteDragController({
+    context: noteMappingContext,
+    report: deps.setStatus,
+    apply(selection) {
+      const { scope, identity, to, from } = selection;
+      const state = noteMappingContext(scope);
+      if (!state || state.identity !== identity) return;
+      const composer = structuredNoteComposer(scope);
+      const corrected = applyNoteSelection(state.sections, { ...selection,
+        fieldIds: state.fields.map(field => field.id), original: composer.pastedText });
+      setStructuredNoteComposer(scope, { activeFieldId: to,
+        mappingUndo: { sections: state.sections, dirtyFieldIds: composer.dirtyFieldIds || [] },
+        dirtyFieldIds: [...new Set([...(composer.dirtyFieldIds || []), ...[from, to].filter(Boolean)])] });
+      deps.app.structuredNoteDrafts.set(state.key, corrected);
+      renderStructuredNoteEditor(scope);
+      const label = state.fields.find(field => field.id === to)?.label;
+      deps.setStatus(`${from ? "Moved" : "Copied"} selected text to ${label}. Undo is available.`);
+      const feedback = document.querySelector(`[data-structured-primary-note-scope="${scope}"] [data-note-selection-status]`);
+      if (feedback) feedback.textContent = `${from ? "Moved" : "Copied"} to ${label}. Undo is available below.`;
     }
+  });
+
+  function correctNoteMapping(scope) {
+    const state = noteMappingContext(scope);
+    const composer = structuredNoteComposer(scope);
+    if (!state || !composer?.mappingUndo) return;
+    deps.app.structuredNoteDrafts.set(state.key, composer.mappingUndo.sections);
+    setStructuredNoteComposer(scope, { dirtyFieldIds: composer.mappingUndo.dirtyFieldIds, mappingUndo: null });
     renderStructuredNoteEditor(scope);
-    deps.setStatus(action === "undo-note-mapping" ? "Section correction undone." : "Section mapping updated. Review before saving; original text is unchanged.");
+    deps.setStatus("Section correction undone.");
   }
 
   function handleStructuredNoteAction(target) {
     const scope = target.dataset.noteScope || "daily";
     const action = target.dataset.action;
-    if (["move-note-selection", "move-note-section", "restore-source-selection", "undo-note-mapping"].includes(action)) correctNoteMapping(scope, action);
+    if (action === "undo-note-mapping") correctNoteMapping(scope);
     else if (action === "select-structured-note-mode") setStructuredNoteMode(scope, target.dataset.noteMode || "paste");
     else if (action === "review-structured-note-sections") reviewStructuredNoteSections(scope);
     else if (action === "select-structured-note-field") selectStructuredNoteField(scope, target.dataset.noteField || "");
@@ -437,6 +458,13 @@ export function createDailySourceController(deps) {
     const dirty = new Set(composer?.dirtyFieldIds || []);
     dirty.add(fieldId);
     setStructuredNoteComposer(scope, { activeFieldId: fieldId, dirtyFieldIds: [...dirty], mappingUndo: null });
+    const panel = document.querySelector(`[data-structured-primary-note-scope="${scope}"]`);
+    const undo = panel?.querySelector('[data-action="undo-note-mapping"]');
+    if (undo) undo.disabled = true;
+    const cardState = panel?.querySelector(`[data-note-drop-field="${fieldId}"] [data-note-card-state]`);
+    if (cardState) cardState.textContent = "Edited";
+    const countLabel = panel?.querySelector(".note-arrange-count");
+    if (countLabel) countLabel.textContent = `${Object.values(noteMappingContext(scope)?.sections || {}).filter(text => text.trim()).length} sections with text`;
     const row = document.querySelector(`[data-action="select-structured-note-field"][data-note-scope="${scope}"][data-note-field="${fieldId}"]`);
     const cleaned = String(value || "").replace(/\s+/g, " ").trim();
     const status = row?.querySelector(".structured-note-section-status");

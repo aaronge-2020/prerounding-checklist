@@ -72,6 +72,7 @@ try {
   console.log("PASS: admission H&P one-liner saved");
 
   // Add a hospital day (no primary note saved for it).
+  await page.locator(".new-day-control > summary").click();
   await page.click('[data-action="add-day"]');
   await settle();
 

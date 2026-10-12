@@ -38,7 +38,6 @@ const scrollState = () => page.evaluate(() => {
   return {
     view: q("#dailyView")?.scrollTop || 0,
     stayContent: q(".stay-content")?.scrollTop || 0,
-    list: q(".structured-note-section-list")?.scrollTop || 0,
   };
 });
 
@@ -58,7 +57,7 @@ async function userClick(selector) {
 }
 
 function assertStable(before, after, label) {
-  for (const key of ["view", "stayContent", "list"]) {
+  for (const key of ["view", "stayContent"]) {
     assert.ok(
       Math.abs(after[key] - before[key]) <= 2,
       `${label}: ${key} moved on click (before=${before[key]}, after=${after[key]})`
@@ -80,30 +79,15 @@ try {
   await page.fill("#dailyAdmissionDateInput", "2026-07-17");
   await page.click('[data-action="select-admission-source-kind"][data-source-kind="primary_note"]');
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="admission"][data-note-mode="sections"]');
-  await page.waitForSelector(".structured-note-section-list");
-
-  // The section list must actually be scrollable for this test to mean anything.
-  const maxList = await page.locator(".structured-note-section-list").evaluate((el) => {
-    el.scrollTop = el.scrollHeight;
-    return el.scrollTop;
-  });
-  assert.ok(maxList > 100, `section list must be scrollable (maxScroll=${maxList})`);
-
-  // 1. Click a deep section button while the list is scrolled down.
-  let r = await userClick('[data-action="select-structured-note-field"][data-note-scope="admission"]:last-of-type');
-  assert.ok(r.before.list > 100, "list must be scrolled down before the deep-section click");
-  assertStable(r.before, r.after, "deep section-button click");
-
-  // 2. Hammer Previous/Next several times — each re-renders the editor.
-  for (let i = 0; i < 4; i++) {
-    const dir = i % 2 === 0 ? "1" : "-1";
-    r = await userClick(`[data-action="move-structured-note-field"][data-note-scope="admission"][data-direction="${dir}"]`);
-    assertStable(r.before, r.after, `move-structured-note-field (${dir}) #${i}`);
+  await page.waitForSelector(".note-arrange-workspace");
+  await page.waitForTimeout(100);
+  await page.locator(".note-additional-sections > summary").click();
+  let r = await userClick('[data-note-field="other"]');
+  assertStable(r.before, r.after, "additional section heading");
+  for (const id of ["physical_exam", "assessment", "plan", "history_of_present_illness"]) {
+    r = await userClick(`[data-note-field="${id}"]`);
+    assertStable(r.before, r.after, `${id} heading`);
   }
-
-  // 3. Clear-section button (full re-render path).
-  r = await userClick('[data-action="clear-structured-note-field"][data-note-scope="admission"]');
-  assertStable(r.before, r.after, "clear-section click");
 
   // 4. Scroll the outer view down, then click a section button: the view,
   // the stay-content, and the list must all stay put.

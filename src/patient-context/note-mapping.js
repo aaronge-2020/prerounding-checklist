@@ -1,5 +1,13 @@
 // Pure correction operations. Original chart text stays at the session edge.
 // Moving a range never reparses, summarizes, or overwrites the destination.
+export function applyNoteSelection(sections, { from, to, text, start, end, fieldIds, original }) {
+  const current = from ? String(sections[from] || "") : String(original || "");
+  if (current !== text) throw new Error("The source changed. Highlight the passage again.");
+  return from
+    ? moveNoteText(sections, { from, to, start, end, fieldIds })
+    : appendSourceSelection(sections, { text, start, end, to, fieldIds });
+}
+
 export function moveNoteText(sections, { from, to, start = 0, end, fieldIds }) {
   if (!fieldIds.includes(from) || !fieldIds.includes(to) || from === to) {
     throw new Error("Choose a different destination section.");
