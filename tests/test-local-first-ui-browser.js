@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
-import { fileAppUrl } from "./browser/app-harness.js";
+import { createAppServer } from "./browser/app-harness.js";
 
-const baseUrl = fileAppUrl();
+const server = await createAppServer();
+const baseUrl = server.baseUrl;
 const browser = await chromium.launch({
     ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {}),
     args: ["--allow-file-access-from-files", "--disable-features=LocalNetworkAccessChecks", "--no-proxy-server"]
@@ -901,6 +902,7 @@ Vitals
   );
 } finally {
   await browser.close();
+  await server.close();
 }
 
 console.log("local-first browser workflow tests passed");

@@ -25,7 +25,10 @@ Synthetic data only. Local browser: http://127.0.0.1:8873/.
 - HPI pull works. Preview and clipboard match exactly.
 - Three lab rows parsed; edited creatinine 1.1 → 1.2 mg/dL saved and displayed as 1.2.
 - Five vitals displayed; explicitly supplied 37 C becomes 37°C without a missing-unit prompt; SpO2 label is normalized.
-- Labeled CT report, date, findings, and impression appear in diagnostic results.
+- Labeled CT report, date, findings, and impression appear in diagnostic results and the copied final note. Previously saved truncated selections refresh to the full report; edited interpretations remain preserved and flagged for review.
+- Two numbered A&P problems remain separate, including a subordinate DVT-prophylaxis bullet before the second problem. Tested by actual Stanford save and writing workspace inspection.
+- A second synthetic patient starts with no prior patient sources. Lock removes the protected patient interface.
+- Settings contains one OpenRouter key input; console reports no errors during the manual flow.
 - At 390 × 844, three primary routes remain visible; Tools & settings opens, Settings is reachable, and the menu closes on navigation. Preview/copy fits the viewport.
 
 ## Automated checks

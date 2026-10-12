@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { chromium } from "playwright";
-import { fileAppUrl, openRealApp, unlockAndCreatePatient } from "./browser/app-harness.js";
+import { createAppServer, openRealApp, unlockAndCreatePatient } from "./browser/app-harness.js";
 
 const compactPrimaryNote = readFileSync(new URL("./fixtures/primary-team-notes/compact-soap-note.txt", import.meta.url), "utf8");
 const progressTeamNote = readFileSync(new URL("./fixtures/primary-team-notes/progress-team-note.txt", import.meta.url), "utf8");
@@ -20,7 +20,8 @@ Patient improving on antibiotics. Likely bacterial CAP.
 Creatinine downtrending, likely pre-renal.
 - IVF as tolerated`;
 
-const appUrl = fileAppUrl();
+const server = await createAppServer();
+const appUrl = server.baseUrl;
 const browser = await chromium.launch({
     ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {}),
     args: ["--allow-file-access-from-files", "--disable-features=LocalNetworkAccessChecks", "--no-proxy-server"]
@@ -251,10 +252,10 @@ Sodium: 138`;
   await page.waitForTimeout(2000);
 
   // Vitals and medications are in the note by default; every row is checked.
-  const vitalChecks = page.locator(".vital-chip [data-objective-selection-id]");
-  assert.ok(await vitalChecks.count() >= 5, "vital signs must render as compact chips");
+  const vitalChecks = page.locator(".vital-row [data-objective-selection-id]");
+  assert.ok(await vitalChecks.count() >= 5, "vital signs must render as compact rows");
   for (const box of await vitalChecks.all()) assert.equal(await box.isChecked(), true, "vitals are included by default");
-  assert.match(await page.locator(".vital-strip").innerText(), /119\/77/, "cuff systolic/diastolic must pair into one blood pressure chip");
+  assert.match(await page.locator(".vital-rows").innerText(), /119\/77/, "cuff systolic/diastolic must pair into one blood pressure chip");
   const medicationChecks = page.locator(".compact-medications [data-objective-selection-id]");
   assert.equal(await medicationChecks.count(), 2, "every saved medication must render");
   for (const box of await medicationChecks.all()) assert.equal(await box.isChecked(), true, "medications are included by default");
@@ -406,4 +407,5 @@ Sodium: 138`;
 } finally {
   await context.close();
   await browser.close();
+  await server.close();
 }

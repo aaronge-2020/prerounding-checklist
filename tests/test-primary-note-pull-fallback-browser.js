@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
-import { fileAppUrl, unlockAndCreatePatient } from "./browser/app-harness.js";
+import { createAppServer, unlockAndCreatePatient } from "./browser/app-harness.js";
 
 // Regression for: "the draft note wouldn't pull the one-liner from the primary
 // note." The pull button reads the SAVED primary note for the selected packet,
@@ -15,7 +15,8 @@ import { fileAppUrl, unlockAndCreatePatient } from "./browser/app-harness.js";
 // A day WITH its own saved primary note keeps strict packet scoping: its
 // sections are authoritative for that day, so a missing section there must NOT
 // fall back to admission.
-const appUrl = fileAppUrl();
+const server = await createAppServer();
+const appUrl = server.baseUrl;
 const browser = await chromium.launch({
   ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {}),
   args: ["--allow-file-access-from-files", "--disable-features=LocalNetworkAccessChecks", "--no-proxy-server"]
@@ -134,4 +135,5 @@ try {
   console.log("PASS: no page errors");
 } finally {
   await browser.close();
+  await server.close();
 }

@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { chromium, firefox } from "playwright";
-import { fileAppUrl } from "./browser/app-harness.js";
+import { createAppServer } from "./browser/app-harness.js";
 
-const appUrl = fileAppUrl();
+const server = await createAppServer();
+const appUrl = server.baseUrl;
 // DEMO_BROWSER=firefox uses Playwright's bundled Firefox (no local-network
 // access block, reliable file:// module loads); default is system Chromium.
 const browser = process.env.DEMO_BROWSER === "firefox"
@@ -211,6 +212,7 @@ try {
   assert.deepEqual(consoleErrors, []);
 } finally {
   await browser.close();
+  await server.close();
 }
 
 console.log("Guided demo browser regression tests passed");
