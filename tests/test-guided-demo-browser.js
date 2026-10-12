@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { chromium, firefox } from "playwright";
-import { createAppServer, openRealApp } from "./browser/app-harness.js";
+import { navigateToView, createAppServer, openRealApp } from "./browser/app-harness.js";
 
 const server = await createAppServer();
 const appUrl = server.baseUrl;
@@ -102,7 +102,7 @@ try {
 
   // Drug-interaction stop: the tour prefilled warfarin + fluconazole and the
   // on-device DDInter/RxNorm check must surface a Major interaction card.
-  await page.click('[data-view-target="drugChecks"]');
+  await navigateToView(page, "drugChecks");
   await page.waitForFunction(() => /Run the interaction check/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   assert.match(await page.locator("#drugChecksInput").inputValue(), /warfarin/i);
   await page.click('[data-action="drug-checks-check"]');
@@ -112,7 +112,7 @@ try {
 
   // AI Chat stops: hands-on action stages (pick a mode, send the staged
   // question), then info stages with Continue buttons.
-  await page.click('[data-view-target="aiChat"]');
+  await navigateToView(page, "aiChat");
   await page.waitForFunction(() => /On-device or ChatGPT/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   assert.equal(await page.locator('[data-action="ai-chat-mode"][data-mode="local"]').count(), 1);
   assert.equal(await page.locator('[data-action="ai-chat-mode"][data-mode="remote"]').count(), 1);
@@ -124,7 +124,7 @@ try {
   await page.click('[data-action="advance-guided-demo"]');
   // open-scribe-pro is an info stage: navigating to Scribe Pro hands off to
   // the scribe-pro-voice info stage.
-  await page.click('[data-view-target="scribePro"]');
+  await navigateToView(page, "scribePro");
   await page.waitForFunction(() => /From dictation to draft note/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   assert.match(await page.locator("[data-demo-guide]").innerText(), /From dictation to draft note/);
   // The tour must not start the engine: no model download, no microphone use.
@@ -132,13 +132,13 @@ try {
   await page.click('[data-action="advance-guided-demo"]');
   await page.waitForFunction(() => /Open the bedside cheat sheets/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Open the bedside cheat sheets/);
-  await page.click('[data-view-target="cheatSheets"]');
+  await navigateToView(page, "cheatSheets");
   await page.waitForFunction(() => /Open the ACS cheat sheet/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   await page.click('[data-cheat-sheets-open="acute-coronary-syndrome"]');
   await page.waitForFunction(() => /Write after bedside review/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Write after bedside review/);
 
-  await page.click('[data-view-target="review"]');
+  await navigateToView(page, "review");
   await page.waitForSelector('[data-action="download-final-note"]:visible');
   // The right side is a single editor now (no separate preview pane): verify
   // the final note through the same Download .txt action the student uses.
@@ -179,7 +179,7 @@ try {
   await page.waitForFunction(() => /Open the prompt builder/.test(document.querySelector("[data-demo-guide]")?.textContent || ""));
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Open the prompt builder/);
 
-  await page.click('[data-view-target="prompts"]');
+  await navigateToView(page, "prompts");
   assert.equal(await page.locator("#promptTaskSelect").inputValue(), "presentation_quality_editor");
   // The final callout's arrow must track the Copy prompt button's center
   // after viewport clamping: horizontal arrows share the target's center Y,

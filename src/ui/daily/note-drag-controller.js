@@ -1,6 +1,6 @@
-// Native selection/drag is session-only. The drag payload carries an opaque token,
-// never chart text. A detached workspace invalidates every pending selection.
-const MIME = "application/x-preround-note-selection";
+// Selection and transfer are separate gestures. Only the handle starts a drag;
+// text surfaces always remain native text-selection/editing surfaces.
+// All selected text stays in this tab and is invalidated with its workspace.
 const SOURCE = "[data-note-original], [data-structured-note-field]";
 const ROOT = "[data-structured-primary-note-scope]";
 
@@ -8,6 +8,7 @@ export function createNoteDragController({ context, apply, report, doc = documen
   let selected = null;
   let dragging = false;
   let pointer = null;
+  let canceledPointer = null;
   let ghost = null;
   let scrollFrame = 0;
   function clear() {
@@ -15,9 +16,13 @@ export function createNoteDragController({ context, apply, report, doc = documen
     scrollFrame = 0;
     ghost?.remove();
     ghost = null;
+    if (pointer) canceledPointer = pointer.id;
+    if (pointer?.handle.hasPointerCapture(pointer.id)) pointer.handle.releasePointerCapture(pointer.id);
     pointer = null;
     if (selected?.root.isConnected) {
-      selected.root.classList.remove("has-note-selection");
+      selected.root.classList.remove("has-note-selection", "is-note-dragging");
+      const handle = selected.root.querySelector("[data-note-drag-handle]");
+      if (handle) handle.disabled = true;
       const status = selected.root.querySelector("[data-note-selection-status]");
       if (status) status.textContent = "Text from the original is copied. Text between sections is moved.";
       selected.root.querySelectorAll(".is-note-drop-target").forEach(el => el.classList.remove("is-note-drop-target"));
@@ -27,27 +32,6 @@ export function createNoteDragController({ context, apply, report, doc = documen
   }
   function current() {
     return selected?.root.isConnected && context(selected.scope)?.identity === selected.identity;
-  }
-  function hitsHighlight(event) {
-    if (!selected.from) {
-      const range = doc.getSelection()?.rangeCount ? doc.getSelection().getRangeAt(0) : null;
-      return range && [...range.getClientRects()].some(rect => event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom);
-    }
-    // Measure a textarea selection with an ephemeral, noninteractive mirror.
-    // Clicking elsewhere in the field must continue to place a caret normally.
-    const source = selected.source;
-    const rect = source.getBoundingClientRect();
-    const style = getComputedStyle(source);
-    const mirror = doc.createElement("div");
-    for (const key of ["font", "letterSpacing", "lineHeight", "padding", "border", "boxSizing", "textIndent", "tabSize"]) mirror.style[key] = style[key];
-    Object.assign(mirror.style, { position: "fixed", visibility: "hidden", pointerEvents: "none", whiteSpace: "pre-wrap", overflowWrap: "break-word", width: `${rect.width}px`, left: `${rect.left - source.scrollLeft}px`, top: `${rect.top - source.scrollTop}px` });
-    const span = doc.createElement("span");
-    span.textContent = selected.text.slice(selected.start, selected.end);
-    mirror.append(doc.createTextNode(selected.text.slice(0, selected.start)), span, doc.createTextNode(selected.text.slice(selected.end)));
-    doc.body.append(mirror);
-    const hit = [...span.getClientRects()].some(box => event.clientX >= box.left && event.clientX <= box.right && event.clientY >= box.top && event.clientY <= box.bottom);
-    mirror.remove();
-    return hit;
   }
   function capture(source) {
     const root = source?.closest(ROOT);
@@ -72,10 +56,12 @@ export function createNoteDragController({ context, apply, report, doc = documen
     }
     if (end <= start || !text.slice(start, end).trim()) { clear(); return; }
     clear();
-    selected = { root, source, scope, identity: state.identity, from, text, start, end, token: crypto.randomUUID() };
+    selected = { root, source, scope, identity: state.identity, from, text, start, end };
     root.classList.add("has-note-selection");
+    const handle = root.querySelector("[data-note-drag-handle]");
+    if (handle) handle.disabled = false;
     const status = root.querySelector("[data-note-selection-status]");
-    if (status) status.textContent = `${end - start} characters selected · ${from ? "Move" : "Copy"} by dragging or tapping a section heading · Esc cancels`;
+    if (status) status.textContent = `${end - start} characters selected · ${from ? "Move" : "Copy"} using Drag selection or a section heading · Esc cancels`;
   }
   function transfer(card) {
     if (!current() || card.closest(ROOT) !== selected.root) { clear(); return; }
@@ -88,18 +74,23 @@ export function createNoteDragController({ context, apply, report, doc = documen
   const captureEvent = event => {
     if (event.key !== "Escape" && !dragging && !pointer && event.target.matches?.(SOURCE)) capture(event.target);
   };
-  // Native selection dragging differs across textarea implementations. Track a
-  // mouse/pen gesture from the existing highlight without exporting chart text.
+  // Prevent the browser's selection gesture before it starts, and capture the
+  // pointer so crossing a textarea or leaving the handle cannot lose the drag.
   doc.addEventListener("pointerdown", event => {
-    if (event.button !== 0 || event.pointerType === "touch" || !current()) return;
-    if (event.target !== selected.source || !hitsHighlight(event)) return;
-    pointer = { x: event.clientX, y: event.clientY, id: event.pointerId };
-  });
+    canceledPointer = null;
+    const handle = event.target.closest?.("[data-note-drag-handle]");
+    if (!handle || event.button !== 0 || !current() || handle.closest(ROOT) !== selected.root) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    handle.setPointerCapture(event.pointerId);
+    pointer = { x: event.clientX, y: event.clientY, id: event.pointerId, handle };
+  }, true);
   doc.addEventListener("pointermove", event => {
     if (!pointer || event.pointerId !== pointer.id || !current()) return;
     if (!dragging && Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) < 6) return;
     event.preventDefault();
     dragging = true;
+    selected.root.classList.add("is-note-dragging");
     pointer.lastX = event.clientX;
     pointer.lastY = event.clientY;
     if (!scrollFrame) {
@@ -134,7 +125,13 @@ export function createNoteDragController({ context, apply, report, doc = documen
     if (card?.closest(ROOT) === selected.root && card.dataset.noteDropField !== selected.from) card.classList.add("is-note-drop-target");
   });
   doc.addEventListener("pointerup", event => {
+    if (event.pointerId === canceledPointer) {
+      canceledPointer = null;
+      event.preventDefault(); event.stopImmediatePropagation();
+      return;
+    }
     if (!pointer || event.pointerId !== pointer.id) return;
+    if (pointer.handle.hasPointerCapture(pointer.id)) pointer.handle.releasePointerCapture(pointer.id);
     pointer = null;
     if (!dragging) return;
     event.preventDefault(); event.stopImmediatePropagation();
@@ -159,47 +156,24 @@ export function createNoteDragController({ context, apply, report, doc = documen
   doc.addEventListener("input", event => {
     if (event.target.closest?.(ROOT)) clear();
   }, true);
-  doc.addEventListener("keydown", event => { if (event.key === "Escape") clear(); });
+  doc.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
+    if (selected?.from) selected.source.setSelectionRange(selected.end, selected.end);
+    else if (selected) doc.getSelection()?.removeAllRanges();
+    clear();
+  });
   doc.addEventListener("click", event => {
     const heading = event.target.closest?.(".note-section-title");
     if (!heading || !current()) return;
     event.preventDefault(); event.stopImmediatePropagation();
     transfer(heading.closest("[data-note-drop-field]"));
   }, true);
-  doc.addEventListener("dragstart", event => {
-    if (pointer) { event.preventDefault(); return; }
-    const source = event.target.closest?.(SOURCE);
-    if (!source) return;
-    capture(source);
-    if (!current()) { event.preventDefault(); return; }
-    dragging = true;
-    event.dataTransfer.clearData();
-    event.dataTransfer.setData(MIME, selected.token);
-    event.dataTransfer.effectAllowed = selected.from ? "move" : "copy";
-  });
-  doc.addEventListener("dragover", event => {
-    const root = event.target.closest?.(ROOT);
-    if (!root) return;
-    // Block native textarea insertion, including unrelated/external drags.
-    event.preventDefault();
-    root.querySelectorAll(".is-note-drop-target").forEach(el => el.classList.remove("is-note-drop-target"));
-    const card = event.target.closest("[data-note-drop-field]");
-    const valid = current() && root === selected.root && card && card.dataset.noteDropField !== selected.from;
-    event.dataTransfer.dropEffect = valid ? (selected.from ? "move" : "copy") : "none";
-    if (valid) card.classList.add("is-note-drop-target");
-  });
-  doc.addEventListener("dragleave", event => {
-    const card = event.target.closest?.("[data-note-drop-field]");
-    if (card && !card.contains(event.relatedTarget)) card.classList.remove("is-note-drop-target");
-  });
-  doc.addEventListener("drop", event => {
-    if (!event.target.closest?.(ROOT)) return;
-    event.preventDefault();
-    const card = event.target.closest("[data-note-drop-field]");
-    if (card && current() && event.dataTransfer.getData(MIME) === selected.token) transfer(card);
-    else clear();
-  });
-  doc.addEventListener("dragend", clear);
+  // Never export a native text drag or allow a native drop to edit a field.
+  for (const type of ["dragstart", "dragover", "drop"]) {
+    doc.addEventListener(type, event => {
+      if (event.target.closest?.(ROOT)) event.preventDefault();
+    });
+  }
   doc.defaultView?.addEventListener("blur", clear);
   new MutationObserver(() => { if (selected && !current()) clear(); })
     .observe(doc.body, { childList: true, subtree: true });

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
-import { createAppServer } from "./browser/app-harness.js";
+import { navigateToView, createAppServer } from "./browser/app-harness.js";
 
 const server = await createAppServer();
 const baseUrl = server.baseUrl;
@@ -109,7 +109,7 @@ try {
   assert.equal(await page.locator('[data-action="add-admission-source"]').isEnabled(), true, "the add action must become available without a separate model-loading trip");
   await page.fill("#admissionSourceDraft", "");
 
-  await page.click('[data-view-target="settings"]');
+  await navigateToView(page, "settings");
   await page.waitForSelector("#guidelineSearchInput");
   assert.equal(await page.locator('[data-action="export-vault"]').filter({ hasText: "Export Vault Backup" }).count(), 1);
   assert.equal(await page.locator(".guideline-row").count(), 10, "Settings must show no more than ten guidelines on a page");
@@ -167,16 +167,16 @@ try {
   await preOpGuideline.locator(".guideline-row-open").click();
   await page.click(`[data-action="request-remove-guideline-set"][data-guideline-set-id="${preOpGuidelineId}"]`);
   await page.click('[data-action="confirm-remove-guideline-set"]');
-  await page.click('[data-view-target="prompts"]');
+  await navigateToView(page, "prompts");
   assert.equal(await page.locator('#promptTaskSelect option[value="pre_op_prep"]').count(), 0, "removing the Pre-Op Prep guideline must remove its prompt option");
-  await page.click('[data-view-target="settings"]');
+  await navigateToView(page, "settings");
   await page.click('[data-action="request-refresh-default-guidelines"]');
   await page.click('[data-action="confirm-refresh-default-guidelines"]');
   await page.waitForFunction(() => /Built-in prompts updated from this site/.test(document.querySelector("#statusLine")?.textContent || ""));
   assert.equal(await page.locator('.guideline-row code', { hasText: "@pre-op-prep-guidelines" }).count(), 1, "updating built-ins must restore Pre-Op Prep in Settings");
-  await page.click('[data-view-target="prompts"]');
+  await navigateToView(page, "prompts");
   assert.equal(await page.locator('#promptTaskSelect option[value="pre_op_prep"]').count(), 1, "updating built-ins must restore Pre-Op Prep in the prompt dropdown");
-  await page.click('[data-view-target="settings"]');
+  await navigateToView(page, "settings");
   await page.click('[data-action="create-guideline-set"]');
   await page.waitForSelector("#guidelineCreateLabel");
   assert.equal(await page.locator(".guideline-editor h2").innerText(), "New guideline");
@@ -243,19 +243,19 @@ try {
   await admissionRowForDropdown.locator(".guideline-row-open").click();
   await page.click(`[data-action="request-remove-guideline-set"][data-guideline-set-id="${admissionIdForDropdown}"]`);
   await page.click('[data-action="confirm-remove-guideline-set"]');
-  await page.click('[data-view-target="prompts"]');
+  await navigateToView(page, "prompts");
   assert.equal(await page.locator('#promptTaskSelect option[value="initial_admission_rounds"]').count(), 0, "deleting Admission guidelines must remove Initial admission rounds from the dropdown itself");
-  await page.click('[data-view-target="settings"]');
+  await navigateToView(page, "settings");
   await page.click('[data-action="request-refresh-default-guidelines"]');
   await page.click('[data-action="confirm-refresh-default-guidelines"]');
   await page.waitForFunction(() => /Built-in prompts updated from this site/.test(document.querySelector("#statusLine")?.textContent || ""));
-  await page.click('[data-view-target="prompts"]');
+  await navigateToView(page, "prompts");
   assert.equal(await page.locator('#promptTaskSelect option[value="initial_admission_rounds"]').count(), 1, "restoring Admission guidelines must restore exactly one Initial admission rounds dropdown option");
 
   // The formerly standalone Presentation editor now has one editable Settings
   // guideline. Its edit must resolve into the prompt, and deleting the record
   // must remove the dropdown option itself.
-  await page.click('[data-view-target="settings"]');
+  await navigateToView(page, "settings");
   await page.fill("#guidelineSearchInput", "presentation editor");
   const presentationGuideline = page.locator('.guideline-row').filter({ has: page.locator('code', { hasText: "@presentation-editor-guidelines" }) });
   assert.equal(await presentationGuideline.count(), 1, "Edit and verify presentation must have exactly one Settings guideline");
@@ -263,23 +263,23 @@ try {
   await presentationGuideline.locator(".guideline-row-open").click();
   await page.fill(`#guidelineSetText-${presentationGuidelineId}`, "PRESENTATION EDITOR SETTINGS PROOF");
   await page.click(`[data-action="save-guideline-set"][data-guideline-set-id="${presentationGuidelineId}"]`);
-  await page.click('[data-view-target="prompts"]');
+  await navigateToView(page, "prompts");
   await page.selectOption("#promptTaskSelect", "presentation_quality_editor");
   await page.waitForFunction(() => /PRESENTATION EDITOR SETTINGS PROOF/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
-  await page.click('[data-view-target="settings"]');
+  await navigateToView(page, "settings");
   const editedPresentationGuideline = page.locator('.guideline-row').filter({ has: page.locator('code', { hasText: "@presentation-editor-guidelines" }) });
   const editedPresentationGuidelineId = await editedPresentationGuideline.getAttribute("data-guideline-id");
   const editedPresentationOpenButton = editedPresentationGuideline.locator(".guideline-row-open");
   if (await editedPresentationOpenButton.getAttribute("aria-expanded") !== "true") await editedPresentationOpenButton.click();
   await page.click(`[data-action="request-remove-guideline-set"][data-guideline-set-id="${editedPresentationGuidelineId}"]`);
   await page.click('[data-action="confirm-remove-guideline-set"]');
-  await page.click('[data-view-target="prompts"]');
+  await navigateToView(page, "prompts");
   assert.equal(await page.locator('#promptTaskSelect option[value="presentation_quality_editor"]').count(), 0, "deleting Presentation editor must remove Edit and verify presentation from the dropdown");
-  await page.click('[data-view-target="settings"]');
+  await navigateToView(page, "settings");
   await page.click('[data-action="request-refresh-default-guidelines"]');
   await page.click('[data-action="confirm-refresh-default-guidelines"]');
   await page.waitForFunction(() => /Built-in prompts updated from this site/.test(document.querySelector("#statusLine")?.textContent || ""));
-  await page.click('[data-view-target="prompts"]');
+  await navigateToView(page, "prompts");
   assert.equal(await page.locator('#promptTaskSelect option[value="presentation_quality_editor"]').count(), 1, "restoring built-ins must restore exactly one Edit and verify presentation option");
 
   assert.equal(await page.locator('#promptTaskSelect option', { hasText: "Discharge summary" }).count(), 1, "a Settings guideline must create exactly one matching prompt option");
@@ -296,7 +296,7 @@ try {
   await page.click('[data-action="reset-prompt-template"]');
   await page.waitForFunction(() => /Prompt template reset/.test(document.querySelector("#statusLine")?.textContent || ""));
 
-  await page.click('[data-view-target="settings"]');
+  await navigateToView(page, "settings");
   await page.fill("#guidelineSearchInput", "Discharge summary");
   const dischargeCardAgain = page.locator(".guideline-row", { hasText: "Discharge summary" });
   const dischargeIdAgain = await dischargeCardAgain.getAttribute("data-guideline-id");
@@ -307,7 +307,7 @@ try {
   await page.waitForFunction(() => /Guideline set deleted/.test(document.querySelector("#statusLine")?.textContent || ""));
   assert.equal(await page.locator(".guideline-row", { hasText: "Discharge summary" }).count(), 0);
 
-  await page.click('[data-view-target="prompts"]');
+  await navigateToView(page, "prompts");
   await page.waitForSelector("#promptOutputHighlighted");
   assert.equal(await page.locator('#promptTaskSelect option', { hasText: "Discharge summary" }).count(), 0, "deleting a Settings guideline must remove its matching prompt option");
   await page.selectOption("#promptTaskSelect", "daily_progress_note");
@@ -323,7 +323,7 @@ try {
     assert.doesNotMatch(copied, /Write for the Primary team|Consult service|consulted rhythm question/);
   }
   await page.locator("#promptPreview").fill(progressTemplateBeforeTokenCheck);
-  await page.click('[data-view-target="daily"]');
+  await navigateToView(page, "daily");
   await page.fill("#dailyAdmissionDateInput", "2026-07-17");
   await page.click('[data-action="select-admission-source-kind"][data-source-kind="primary_note"]');
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="admission"][data-note-mode="sections"]');
@@ -476,7 +476,7 @@ Crossmatch: Red Blood Cells: Rpt (P)
   await activeContextEditor.locator('[data-action="manual-redact-selection"]').click();
   await page.waitForFunction(() => /Selected text marked for manual redaction/.test(document.querySelector("#statusLine")?.textContent || ""));
 
-  await page.click('[data-view-target="daily"]');
+  await navigateToView(page, "daily");
   if (!await page.locator("#newDayDate").isVisible()) await page.locator("details.new-day-control > summary").click();
   await page.fill("#newDayDate", "2026-07-09");
   await page.fill("#newDayLabel", "Hospital day 1");
@@ -532,7 +532,7 @@ Vitals
   assert.equal(await page.locator('[data-view-target="workups"], [data-view-target="checklist"]').count(), 0);
   assert.equal(await page.locator('[data-action="build-checklist"]').count(), 0);
 
-  await page.click('[data-view-target="prompts"]');
+  await navigateToView(page, "prompts");
   await page.waitForSelector("#promptOutputHighlighted");
   await page.selectOption("#promptTaskSelect", "initial_admission_rounds");
   {
@@ -590,7 +590,7 @@ Vitals
   await page.waitForFunction(() => /Summarize/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   assert.equal((await copiedPromptText()).match(/Act as an attending hospitalist with over 30 years of inpatient experience/g)?.length, 1, "a user-created prompt must retain the shared persona exactly once");
   await page.click('[data-action="save-prompt-template"]');
-  await page.click('[data-view-target="settings"]');
+  await navigateToView(page, "settings");
   const coveringGuideline = page.locator('.guideline-row', { hasText: "Covering clinician summary" });
   assert.equal(await coveringGuideline.count(), 1, "a prompt created in OpenEvidence must create exactly one matching Settings guideline");
   await coveringGuideline.locator(".guideline-row-open").click();
@@ -598,7 +598,7 @@ Vitals
   assert.equal(await page.locator(`#guidelineSetText-${coveringGuidelineId}`).inputValue(), "", "saving a prompt template must not overwrite its Settings guideline");
   await page.fill(`#guidelineSetText-${coveringGuidelineId}`, "Use a concise covering-clinician format.");
   await page.click(`[data-action="save-guideline-set"][data-guideline-set-id="${coveringGuidelineId}"]`);
-  await page.click('[data-view-target="prompts"]');
+  await navigateToView(page, "prompts");
   assert.equal(await page.locator("#promptPreview").inputValue(), "@covering-clinician-summary-guidelines\n\nSummarize @selected-day for the covering clinician.", "editing Settings guidelines must not rewrite the saved OpenEvidence template");
   assert.match(await page.locator("#promptOutputHighlighted").innerText(), /Use a concise covering-clinician format/);
 
@@ -639,7 +639,7 @@ Vitals
   await page.locator("#presentationToEdit").fill("One-Liner\nDe-identified presentation supplied in the editor.");
   await page.waitForFunction(() => /De-identified presentation supplied in the editor/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
 
-  await page.click('[data-view-target="quickDeid"]');
+  await navigateToView(page, "quickDeid");
   await page.waitForSelector("#quickDeidMode");
   await page.waitForSelector(".quick-model-control");
   assert.equal(await page.locator('#quickDeidMode option[value="openmed-superclinical"]').count(), 0, "unsupported large OpenMed must not remain selectable");
@@ -725,11 +725,11 @@ Vitals
     "clicking a redaction must not move the Quick De-ID panel scroll position"
   );
 
-  await page.click('[data-view-target="daily"]');
-  await page.click('[data-view-target="quickDeid"]');
+  await navigateToView(page, "daily");
+  await navigateToView(page, "quickDeid");
   assert.equal(await page.locator("#quickDeidInput").inputValue(), "");
   assert.equal(await page.locator("#quickDeidOutput").count(), 0, "leaving Quick De-ID must clear the correction workspace, including its transient output pane");
-  await page.click('[data-view-target="daily"]');
+  await navigateToView(page, "daily");
   await page.locator(".new-day-control summary").click();
   if (!await page.locator("#newDayDate").isVisible()) await page.locator("details.new-day-control > summary").click();
   await page.fill("#newDayDate", "2026-07-10");
@@ -741,19 +741,19 @@ Vitals
   await page.click('[data-action="confirm-remove-day"]');
   await page.waitForFunction(() => document.querySelectorAll(".day-row").length === 2);
 
-  await page.click('[data-view-target="vault"]');
+  await navigateToView(page, "vault");
   await page.click('[data-action="archive-patient"]');
   await page.waitForFunction(() => document.querySelector("#archiveConfirmDialog")?.open === true);
   await page.click('[data-action="confirm-archive-patient"]');
   await page.waitForFunction(() => /No patients yet|No patient added/.test(document.querySelector("#vaultContent")?.textContent || ""));
-  await page.click('[data-view-target="daily"]');
+  await navigateToView(page, "daily");
   // The roster is empty; the Daily view should show an empty state (not patient data).
   const dailyText = await page.locator("#dailyContent").innerText();
   assert.ok(/no patient|add a patient|unlock the vault/i.test(dailyText), `Hospital Stay must clear when the roster is empty, got: ${dailyText.slice(0, 100)}`);
-  await page.click('[data-view-target="review"]');
+  await navigateToView(page, "review");
   assert.match(await page.locator("#reviewContent").innerText(), /no patient|add a patient|unlock the vault|select a patient/i, "Write note must clear when the roster is empty");
 
-  await page.click('[data-view-target="vault"]');
+  await navigateToView(page, "vault");
   await page.click('[data-action="lock-vault"]');
   await page.waitForFunction(() => /Vault locked/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.waitForSelector("#vaultContent .locked-vault-shell");

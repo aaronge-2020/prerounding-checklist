@@ -11,6 +11,12 @@ const mime = new Map([
   [".ico", "image/x-icon"], [".wasm", "application/wasm"]
 ]);
 
+export async function navigateToView(page, view) {
+  const button = page.locator(`[data-view-target="${view}"]`);
+  if (!(await button.isVisible())) await page.locator("#secondaryNavigation > summary").click();
+  await button.click();
+}
+
 export async function createAppServer({ unavailablePrefixes = [] } = {}) {
   const requests = [];
   const server = createServer((request, response) => {

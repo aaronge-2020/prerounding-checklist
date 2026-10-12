@@ -14051,7 +14051,7 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
  .primary-nav button{width:100%;min-width:0;min-height:44px;white-space:normal;font-size:12px}
  .secondary-navigation > summary{text-align:center;border-top:1px solid var(--border);margin-top:4px}
  .secondary-navigation[open]{display:block}
- .secondary-navigation > .nav-group{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .secondary-navigation .nav-group{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
  .secondary-navigation .nav-group-label{grid-column:1/-1}
 }
 
@@ -14085,24 +14085,27 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .ap-request-error { flex-basis: 100%; color: var(--danger, #b42318); margin: 0; order: -3; }
 
 /* Epic arrangement workspace: original and editable destination cards. */
-.note-arrange-intro{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0}
-.note-arrange-intro p{margin:0;color:var(--muted);font-size:13px}
 .note-arrange-count{font-size:11px;white-space:nowrap;color:var(--muted)}
-.note-arrange-feedback{min-height:0;padding:6px 8px;border-radius:4px;background:var(--surface-subtle);color:var(--muted);font-size:12px}
-.has-note-selection .note-arrange-feedback{background:var(--accent-soft);color:var(--accent)}
+.note-transfer-toolbar{display:flex;align-items:center;gap:12px;min-height:36px;min-width:0}
+.note-arrange-feedback{flex:1;min-width:0;color:var(--muted);font-size:12px}
+.note-drag-handle{touch-action:none;user-select:none;cursor:grab;white-space:nowrap;padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface);font:600 12px var(--font-body,system-ui)}
+.note-drag-handle:disabled{cursor:default}
+.is-note-dragging,.is-note-dragging *{user-select:none!important;cursor:grabbing!important}
+.has-note-selection .note-arrange-feedback{color:var(--accent)}
 .note-arrange-workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-items:stretch;min-width:0}
-.note-arrange-workspace.has-original{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)}
+.note-arrange-workspace.has-original{grid-template-columns:repeat(2,minmax(0,1fr))}
 .note-source-sheet{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden}
 .note-sheet-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--border);font-size:13px}
 .note-sheet-heading span{font-size:10px;color:var(--muted)}
 .note-source-text{padding:10px;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.55 ui-monospace,Consolas,monospace;min-height:0;flex:1;overflow:auto;user-select:text;cursor:text}
 .note-source-text::selection{background:var(--accent-soft);color:var(--ink)}
-.note-arrange-sections{display:grid;grid-auto-rows:max-content;align-content:start;gap:8px;min-width:0;min-height:0;height:clamp(300px,48vh,560px);overflow:auto;scrollbar-gutter:stable;border:1px solid var(--border);border-radius:4px;padding:0 8px 8px}
+@media(min-width:851px){.note-source-sheet{height:clamp(300px,calc(100dvh - 370px),850px)}}
+.note-arrange-sections{display:grid;grid-auto-rows:max-content;align-content:start;gap:8px;min-width:0;min-height:0;height:clamp(300px,calc(100dvh - 370px),850px);overflow:auto;scrollbar-gutter:stable;border:1px solid var(--border);border-radius:4px;padding:0 8px 8px}
 .note-arrange-sections>.note-sheet-heading{position:sticky;top:0;z-index:1;padding:8px 2px;background:var(--surface)}
 .note-section-card{border:1px solid var(--border);border-radius:4px;overflow:hidden;background:var(--surface);transition:border-color .12s,box-shadow .12s}
 .note-section-title{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;background:transparent;border:0;border-radius:0;padding:6px 10px;color:var(--ink);min-height:32px}
 .note-section-title strong{font-size:14px}.note-section-title span{font-size:10px;color:var(--muted);font-weight:400}
-.note-section-card textarea{display:block;width:100%;margin:0;border:0;border-radius:0;border-top:1px solid var(--border);padding:8px 10px;resize:vertical;min-height:72px;background:transparent;font-size:13px;line-height:1.5;box-sizing:border-box}
+.note-section-card textarea{display:block;width:100%;margin:0;border:0;border-radius:0;border-top:1px solid var(--border);padding:8px 10px;resize:vertical;min-height:80px;max-height:320px;field-sizing:content;background:transparent;font:13px/1.5 ui-monospace,Consolas,monospace;box-sizing:border-box}
 .note-section-card textarea:focus{outline:2px solid var(--accent);outline-offset:-2px;box-shadow:none}
 .has-note-selection .note-section-title{background:var(--accent-soft);color:var(--accent);cursor:copy}
 .note-section-card.is-note-drop-target{border:2px dashed var(--accent);box-shadow:0 0 0 4px var(--accent-soft);background:var(--accent-soft)}
@@ -14116,8 +14119,8 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .note-drag-ghost{position:fixed;pointer-events:none;z-index:10000;padding:10px 14px;background:var(--accent);color:white;border-radius:7px;box-shadow:0 4px 16px #0002;font:600 12px system-ui}
 /* Epic import: keep source selection, text, and actions in one workspace. */
 .source-first-stay.stay-layout { grid-template-columns:minmax(0,1fr); grid-template-rows:auto minmax(0,1fr); }
-.source-first-stay.stay-layout > .stay-rail { display:grid; grid-template-columns:150px minmax(0,1fr) auto; align-items:center; gap:12px; padding:8px 12px; border-right:0; border-bottom:1px solid var(--border); overflow:visible; }
-.source-first-stay .stay-rail .section-heading { margin:0; }
+.source-first-stay.stay-layout > .stay-rail { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:12px; padding:8px 12px; border-right:0; border-bottom:1px solid var(--border); overflow:visible; }
+.source-first-stay .stay-rail .section-heading { display:none; }
 .source-first-stay .stay-rail .section-heading h2 { font-size:16px; margin:0; }
 .source-first-stay .stay-rail .section-heading p { display:none; }
 .source-first-stay .timeline-rail { display:flex; gap:8px; overflow-x:auto; align-items:stretch; }
@@ -14171,4 +14174,47 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   .source-first-stay .structured-note-actions button { min-height:44px; }
   .source-first-stay .deid-strip { flex-wrap:nowrap; }
   .source-first-stay .deid-readiness-note, .source-first-stay .deid-download-progress { flex-basis:auto; }
+}
+
+/* The Epic workspace follows the full-width reference layout. Other routes
+   retain their navigation, and the locked-vault boundary remains unchanged. */
+@media (min-width:1041px) {
+  body:not(.vault-locked):has(#dailyView.active) .app-shell { grid-template-columns:minmax(0,1fr); grid-template-rows:56px minmax(0,1fr); }
+  body:not(.vault-locked):has(#dailyView.active) .app-main { display:contents; }
+  body:not(.vault-locked):has(#dailyView.active) .side-nav { grid-area:1/1; display:flex; align-items:center; gap:16px; padding:0 20px; border:0; border-bottom:1px solid var(--border); background:var(--surface); overflow:visible; }
+  body:not(.vault-locked):has(#dailyView.active) .brand-lockup { padding:0; min-height:0; }
+  body:not(.vault-locked):has(#dailyView.active) .brand-lockup span,
+  body:not(.vault-locked):has(#dailyView.active) .brand-mark,
+  body:not(.vault-locked):has(#dailyView.active) .side-footer { display:none; }
+  body:not(.vault-locked):has(#dailyView.active) .primary-nav { display:flex; align-items:center; overflow:visible; padding:0; gap:16px; }
+  body:not(.vault-locked):has(#dailyView.active) .primary-nav > .nav-group { display:flex; gap:4px; margin:0; }
+  body:not(.vault-locked):has(#dailyView.active) .primary-nav > .nav-group > .nav-group-label { display:none; }
+  body:not(.vault-locked):has(#dailyView.active) .primary-nav > .nav-group > button { width:auto; flex:none; white-space:nowrap; min-height:56px; padding:0 12px; border:0; border-bottom:2px solid transparent; border-radius:0; background:transparent; box-shadow:none; }
+  body:not(.vault-locked):has(#dailyView.active) .primary-nav > .nav-group > button.active { border-bottom-color:var(--accent); color:var(--accent); }
+  body:not(.vault-locked):has(#dailyView.active) .secondary-navigation { position:relative; align-self:center; }
+  body:not(.vault-locked):has(#dailyView.active) .secondary-navigation > summary { display:block; padding:12px 8px; min-height:44px; }
+  body:not(.vault-locked):has(#dailyView.active) .secondary-navigation[open] > .secondary-navigation-panel { position:absolute; top:100%; left:0; width:240px; max-height:calc(100dvh - 64px); overflow:auto; z-index:20; padding:0 8px 8px; background:var(--surface); border:1px solid var(--border); border-radius:4px; box-shadow:0 2px 8px #0002; }
+  body:not(.vault-locked):has(#dailyView.active) .top-bar { grid-area:1/1; justify-self:end; align-self:center; width:auto; padding:0 20px; border:0; height:54px; min-height:0; }
+  body:not(.vault-locked):has(#dailyView.active) .patient-switcher { width:280px; }
+  body:not(.vault-locked):has(#dailyView.active) .workspace { grid-area:2/1; }
+  body:not(.vault-locked) #dailyView.active { padding:0; }
+  .source-first-stay.stay-layout { border:0; border-radius:0; }
+  .source-first-stay .hospital-day-packet { padding:10px 20px; }
+  .source-first-stay .day-row { width:auto; max-width:none; min-height:36px; }
+  .source-first-stay .day-row-meta { display:flex; align-items:center; gap:8px; }
+  .source-first-stay .day-row-review { white-space:nowrap; }
+  .source-first-stay .structured-note-heading { min-height:22px; }
+  .source-first-stay .structured-note-heading p { display:none; }
+  .source-first-stay .structured-note-mode-toggle button { border-radius:0; }
+  .source-first-stay .structured-note-privacy { font-size:11px; }
+  .source-first-stay [data-note-entry-mode="sections"] { grid-template-columns:auto minmax(0,1fr); column-gap:20px; }
+  .source-first-stay [data-note-entry-mode="sections"] > * { grid-column:1/-1; }
+  .source-first-stay [data-note-entry-mode="sections"] > .structured-note-mode-toggle { grid-column:1; grid-row:2; }
+  .source-first-stay [data-note-entry-mode="sections"] > .note-transfer-toolbar { grid-column:2; grid-row:2; border-bottom:1px solid var(--border); }
+  .source-first-stay [data-note-entry-mode="sections"] .note-arrange-feedback { font-size:11px; }
+}
+@media (max-width:850px) {
+  .note-transfer-toolbar { flex-wrap:wrap; gap:6px; }
+  .note-drag-handle { min-height:44px; }
+  .note-arrange-feedback { flex-basis:55%; }
 }

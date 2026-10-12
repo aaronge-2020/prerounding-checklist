@@ -8,7 +8,7 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
 const errors = [];
 page.on("pageerror", (error) => errors.push(error.message));
 const settle = () => page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-const note = "HISTORY OF PRESENT ILLNESS:\nCough for three days.\n\nPHYSICAL EXAM:\nLungs clear.\n\nASSESSMENT:\nCough.\n\nPLAN:\nMonitor symptoms.";
+const note = `HISTORY OF PRESENT ILLNESS:\n${"Cough for three days. Symptoms improved overnight.\n".repeat(40)}\nPHYSICAL EXAM:\nLungs clear.\n\nASSESSMENT:\nCough.\n\nPLAN:\nMonitor symptoms.`;
 async function inViewport(selector) {
   const box = await page.locator(selector).boundingBox();
   assert.ok(box && box.y >= 0 && box.y + box.height <= page.viewportSize().height, `${selector} must fit in the viewport`);
@@ -29,13 +29,20 @@ try {
   const box = await page.locator(paste).boundingBox();
   assert.ok(box.y < 380, `paste begins too low: ${box.y}`);
   await inViewport('[data-action="review-structured-note-sections"]');
+  await page.locator(".toast-dismiss").click();
+  const originalWidth = await page.locator("#dailyView").boundingBox();
+  assert.ok(originalWidth.width > 1400, "Epic workspace uses full desktop width");
+  await page.locator("#secondaryNavigation > summary").click();
+  assert.equal(await page.locator('[data-view-target="settings"]').isVisible(), true);
+  await page.locator("#secondaryNavigation > summary").click();
   await page.fill(paste, note);
   await screenshot("epic-paste");
   await page.click('[data-action="review-structured-note-sections"]');
   await settle();
   assert.equal(await page.locator('[data-structured-note-field="physical_exam"]').inputValue(), "Lungs clear.");
-  await inViewport('[data-action="save-structured-note-to-draft"]');
   await screenshot("epic-review");
+  await inViewport('[data-action="save-structured-note-to-draft"]');
+  assert.equal(await page.locator('[data-note-original]').evaluate(el => el.scrollHeight > el.clientHeight), true, "long originals scroll within their pane");
 
   // Edits survive changing entry mode and chart-source tabs.
   await page.fill('[data-structured-note-field="physical_exam"]', "Lungs clear. No wheeze.");
@@ -67,6 +74,18 @@ try {
     if (width === 1280) await inViewport('[data-action="save-structured-note-to-draft"]');
     await screenshot(`epic-review-${width}`);
   }
+  for (const width of [1041, 1100, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    assert.equal(await page.evaluate(() => {
+      const menu = document.querySelector('#secondaryNavigation > summary').getBoundingClientRect();
+      return menu.right <= document.querySelector('.top-bar').getBoundingClientRect().left;
+    }), true, `navigation and patient controls must not overlap at ${width}`);
+  }
+  await page.locator('#secondaryNavigation > summary').click();
+  await page.locator('[data-view-target="settings"]').click();
+  assert.equal(await page.locator('#settingsView.active').isVisible(), true);
+  await page.locator('[data-view-target="daily"]').click();
+  assert.equal(await page.locator('[data-structured-note-field="physical_exam"]').inputValue(), "Lungs clear. No wheeze.");
   assert.deepEqual(errors, []);
   console.log("PASS: compact Epic input, parsing, draft retention, section scrolling, desktop actions, and mobile layout");
 } finally {

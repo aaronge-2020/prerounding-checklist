@@ -1,12 +1,21 @@
 // Responsive navigation belongs to the shell, independent of patient state.
+let compactNavigation = null;
+export function syncNavigationDisclosure() {
+  const compact = window.matchMedia("(max-width: 1040px)").matches || document.getElementById("dailyView")?.classList.contains("active");
+  if (compact === compactNavigation) return;
+  compactNavigation = compact;
+  const menu = document.getElementById("secondaryNavigation");
+  if (menu) menu.open = !compact;
+}
+
 export function installNavigationDisclosure() {
   const menu = document.getElementById("secondaryNavigation");
   if (!menu) return;
   const narrow = window.matchMedia("(max-width: 1040px)");
-  const update = () => { menu.open = !narrow.matches; };
+  const update = syncNavigationDisclosure;
   update();
   narrow.addEventListener("change", update);
   menu.addEventListener("click", event => {
-    if (narrow.matches && event.target.closest("button")) menu.open = false;
+    if (compactNavigation && event.target.closest("button")) menu.open = false;
   });
 }
