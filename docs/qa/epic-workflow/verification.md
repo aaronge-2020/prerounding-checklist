@@ -36,7 +36,7 @@ Synthetic data only. Local browser: http://127.0.0.1:8873/.
 
 52 non-browser test groups passed in the release sweep; subsequent targeted checks cover later changes. Includes 40 narrative-note fixtures, 250 synthetic de-identification cases, adaptation boundaries, encrypted state, request assembly, clinical calculators, and source parsers. Lint: zero errors (existing warnings remain).
 
-GitHub browser CI and deployed-site smoke checks are pending at this checkpoint. This log is not a claim of exhaustive testing or clinical validation.
+The release checks run as independent CI jobs for unit/boundary checks, guided demo, primary-note pull, vault/import, and note writing. Current check results and deployment status are available on [PR #9](https://github.com/aaronge-2020/prerounding-checklist/pull/9). The release remains gated on these checks. This log is not a claim of exhaustive testing or clinical validation.
 
 ## Model limitations
 

@@ -14054,3 +14054,9 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
  .secondary-navigation > .nav-group{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
  .secondary-navigation .nav-group-label{grid-column:1/-1}
 }
+
+/* Keep the patient boundary within the narrower route padding on phones. */
+@media (max-width: 760px) {
+  .patient-identity-bar { margin-inline: 0; min-width: 0; }
+  .patient-identity-bar strong { min-width: 0; overflow-wrap: anywhere; }
+}
