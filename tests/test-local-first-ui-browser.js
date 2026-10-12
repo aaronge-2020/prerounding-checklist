@@ -311,6 +311,7 @@ try {
   await page.waitForSelector("#promptOutputHighlighted");
   assert.equal(await page.locator('#promptTaskSelect option', { hasText: "Discharge summary" }).count(), 0, "deleting a Settings guideline must remove its matching prompt option");
   await page.selectOption("#promptTaskSelect", "daily_progress_note");
+  const progressTemplateBeforeTokenCheck = await page.locator("#promptPreview").inputValue();
   await page.locator("#promptPreview").fill("@selected-day");
   const selectedDayPreviewToken = page.locator('#promptOutputHighlighted button.var-fill[data-token="@selected-day"]');
   assert.equal(await selectedDayPreviewToken.count(), 1, "selected-day must render as one clickable preview target");
@@ -321,6 +322,7 @@ try {
     const copied = await copiedPromptText();
     assert.doesNotMatch(copied, /Write for the Primary team|Consult service|consulted rhythm question/);
   }
+  await page.locator("#promptPreview").fill(progressTemplateBeforeTokenCheck);
   await page.click('[data-view-target="daily"]');
   await page.fill("#dailyAdmissionDateInput", "2026-07-17");
   await page.click('[data-action="select-admission-source-kind"][data-source-kind="primary_note"]');

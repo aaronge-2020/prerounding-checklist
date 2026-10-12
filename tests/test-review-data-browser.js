@@ -366,6 +366,7 @@ Sodium: 138`;
   assert.match((await noteDownload).suggestedFilename(), /progress-note\.txt$/);
 
   // Saved draft survives encryption/reload; lock clears all protected content.
+  const savedPacketValue = await page.locator("#reviewPacketSelect").inputValue();
   await page.waitForFunction(() => document.querySelector("[data-autosave-indicator]")?.dataset.state === "saved");
   await page.click('[data-view-target="daily"]');
   await page.click('[data-action="select-daily-source-kind"][data-source-kind="primary_note"]');
@@ -391,7 +392,6 @@ Sodium: 138`;
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
   assert.doesNotMatch(await page.locator('[data-structured-note-paste][data-structured-note-scope="daily"]').inputValue(), new RegExp(sessionOnlyRawToken), "locking must clear the session-only raw paste draft");
   await page.click('[data-view-target="review"]');
-  const savedPacketValue = await page.locator('#reviewPacketSelect option').filter({ hasText: "Hospital day 3" }).getAttribute("value");
   await page.selectOption("#reviewPacketSelect", savedPacketValue);
   await page.fill("#reviewDataSearch", "CT Head/Neck");
   assert.equal(await page.locator('.compact-row [data-objective-selection-id]').first().isChecked(), true);
