@@ -136,7 +136,7 @@ import {
   warningDescription,
   warningSnippet
 } from "./redaction/presentation.js?v=20261011-epic-workflow";
-import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261003-meddeid-badge";
+import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261011-epic-workflow";
 import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261011-epic-workflow";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20261003-deid-adaptive";
 import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261011-epic-workflow";

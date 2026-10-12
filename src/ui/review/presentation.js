@@ -478,7 +478,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
             ).filter(Boolean).join("")
           : group.blocks
           .map((block) => {
-            if (block.state === "edited" && block.editedText) {
+            if ((block.state === "edited" || block.state === "stale") && block.editedText && block.editedText !== block.generatedText) {
               // Multi-line edited text: split into per-line divs.
               return String(block.editedText).split("\n").map((line) =>
                 line.trim() ? `<div class="ed-vital-line">${editorHtml(line.trim())}</div>` : ""

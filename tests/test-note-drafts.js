@@ -838,3 +838,16 @@ console.log("note draft model tests passed");
   assert.equal(edited.objective.selectedBlocks[0].state, "stale");
   assert.equal(edited.objective.selectedBlocks[0].pendingNoteDetail, report);
 }
+
+// Source changes beneath an edited group need visible review, without losing prose.
+{
+ const selection = { selectionId: "lab:group", sourceFingerprint: "v1", generatedText: "WBC 8.8", noteGroupKey: "lab:CBC", noteLabel: "WBC", noteDetail: "8.8" };
+ let draft = selectObjectiveBlock(createNoteDraft(NOTE_TYPES.PROGRESS, options), selection, options);
+ draft = editObjectiveGroup(draft, "lab:CBC", "Clinician interpretation", options);
+ draft = reconcileObjectiveBlock(draft, { ...selection, sourceFingerprint: "v2", generatedText: "WBC 7.7", noteDetail: "7.7" }, options);
+ assert.equal(draft.objective.selectedBlocks[0].state, "stale");
+ assert.equal(draft.objective.groupEdits["lab:CBC"], "Clinician interpretation");
+ assert.ok(renderFinalNotePlainText(draft).includes("Clinician interpretation"));
+ draft = refreshObjectiveGroup(draft, "lab:CBC", options);
+ assert.ok(renderFinalNotePlainText(draft).includes("7.7"));
+}

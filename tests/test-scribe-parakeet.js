@@ -387,7 +387,7 @@ assert.ok(sw.includes("prerounding-local-model-packs-v1"), "existing model-pack 
 
 assert.equal(pkg.scripts["test:scribe-parakeet"], "node tests/test-scribe-parakeet.js",
   "package.json wires the new test");
-assert.ok(pkg.scripts["test:core"].includes("npm run test:scribe-parakeet"),
+assert.ok(pkg.scripts["test:core"].includes("npm run test:unit") && pkg.scripts["test:unit"].includes("npm run test:scribe-parakeet"),
   "test:core chain still runs the scribe-parakeet contract test");
 
 // ------------------------------------------- 6. boot status & engine startup

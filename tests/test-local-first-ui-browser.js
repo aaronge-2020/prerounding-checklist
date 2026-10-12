@@ -150,11 +150,11 @@ try {
   await page.fill("#guidelineSearchInput", "");
   await page.fill("#openAiApiKeyInput", "test-local-openai-key");
   assert.equal(await page.locator("#openAiModelInput").evaluate((node) => node.tagName), "SELECT");
-  assert.equal(await page.locator("#openAiModelInput option").count(), 6);
+  assert.equal(await page.locator("#openAiModelInput option").count(), 8);
   await page.selectOption("#openAiModelInput", "gpt-5.6-terra");
   await page.click('[data-action="save-openai-byok"]');
   await page.waitForFunction(() => /OpenAI key saved/.test(document.querySelector("#statusLine")?.textContent || ""));
-  assert.match(await page.locator(".settings-security-note").innerText(), /API key is saved/i);
+  assert.match(await page.locator(".settings-security-note").filter({ hasText: "API key is saved" }).innerText(), /API key is saved/i);
   assert.equal(await page.evaluate(() => Object.values(localStorage).join(" ").includes("test-local-openai-key")), false);
 
   // Documentation guidelines must be user-manageable per note type (not one

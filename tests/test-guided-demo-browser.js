@@ -181,6 +181,13 @@ try {
   // The final callout's arrow must track the Copy prompt button's center
   // after viewport clamping: horizontal arrows share the target's center Y,
   // vertical arrows share the target's center X.
+  await page.waitForFunction(() => {
+    const target = document.querySelector('[data-action="copy-prompt"]');
+    const callout = document.querySelector("[data-demo-callout]");
+    const rect = target?.getBoundingClientRect();
+    return callout?.dataset.placement && rect?.top >= 0 && rect.bottom <= innerHeight;
+  });
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   const arrowMiss = await page.evaluate(() => {
     const callout = document.querySelector("[data-demo-callout]");
     const target = document.querySelector('[data-action="copy-prompt"]');

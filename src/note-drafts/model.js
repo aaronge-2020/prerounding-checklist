@@ -658,7 +658,8 @@ export function reconcileObjectiveBlock(draft, selection, { now = timestampNow }
         if (block.selectionId !== input.selectionId) return block;
         // Presentation metadata also changes when an older saved selection is upgraded.
         if (Object.keys(input).every((key) => block[key] === input[key])) return block;
-        if (block.state === "synced" && block.editedText === block.generatedText) {
+        if (block.state === "synced" && block.editedText === block.generatedText
+          && !draft.objective?.groupEdits?.[objectiveGroupKeyFor(block)]) {
           return normalizeObjectiveBlock({ ...input, editedText: input.generatedText, state: "synced" });
         }
         return normalizeObjectiveBlock({
