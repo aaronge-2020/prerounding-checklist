@@ -1,3 +1,4 @@
+import { trustedWorkerUrl } from "../lib/trusted-resource.js?v=20261012-safety";
 /**
  * pipeline.js — main-thread pipeline for the Parakeet 0.6B on-device scribe
  * (scribe-parakeet.html).
@@ -264,7 +265,7 @@ export async function initPipeline(onProgress, opts = {}) {
   report('transfer');
   const worker = opts.workerFactory
     ? opts.workerFactory()
-    : new Worker(new URL('./parakeet-worker.js', import.meta.url));
+    : new Worker(trustedWorkerUrl(new URL('./parakeet-worker.js', import.meta.url)));
   const client = createWorkerClient(worker);
   report('sessions');
   let ready;

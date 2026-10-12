@@ -32,7 +32,7 @@ export function createSettingsPresentation({ escapeHtml }) {
           </div>
           <div class="notice settings-security-note">
             <strong>${offlineMode ? "Offline mode is on." : "Offline mode is off."}</strong>
-            <span>${offlineMode ? "No network requests will be sent. Cloud features show a clear explanation instead of failing silently." : "Cloud features (OpenAI, ChatGPT chat) are available when you start them."}</span>
+            <span>${offlineMode ? "App requests to external services are blocked. Loading this site's own files and opening external websites can still use a connection; this is not device-level network isolation." : "Cloud features (OpenAI, ChatGPT chat) are available when you start them."}</span>
           </div>
           <div class="button-row">
             <button class="button--primary" type="button" data-action="toggle-offline-mode">${offlineMode ? "Turn offline mode off" : "Turn offline mode on"}</button>

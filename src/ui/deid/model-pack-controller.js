@@ -11,7 +11,7 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../../patient-context/deid-client.js?v=20261011-epic-workflow";
+} from "../../patient-context/deid-client.js?v=20261012-safety";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
@@ -27,7 +27,7 @@ import {
   modelFilesFromDirectoryHandle,
   removeModelPack,
   requestPersistentModelStorage
-} from "../../patient-context/model-pack-storage.js?v=20261007-tide2-gated";
+} from "../../patient-context/model-pack-storage.js?v=20261012-safety";
 import {
   formatBytes,
   hasAutomaticModelDownload,

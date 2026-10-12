@@ -4,7 +4,7 @@
 
 import { splitThinking } from "../../local-llm/thinking.js?v=20260927-local-llm-v4";
 import { renderChatMarkdown } from "../../local-llm/markdown.js?v=20261004-cite-links-v1";
-import { renderNumberedCitations } from "./citation-presentation.js?v=20261012-concise-context";
+import { renderNumberedCitations } from "./citation-presentation.js?v=20261012-safety";
 
 export function createAiChatPresentation({ escapeHtml, icon }) {
   // Assistant reply body: reasoning goes in a collapsed dropdown (hidden by

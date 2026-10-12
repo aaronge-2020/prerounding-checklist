@@ -9,7 +9,7 @@ import {
   fetchLabel,
   checkPairs
 } from "./api.js?v=20260929-ddinter-v2";
-import { gatedFetch } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
+import { gatedFetch } from "../../lib/network-gate.js?v=20261012-safety";
 import { DDI_LOOKUP, DDI_DATASET_VERSION, DDI_DATASET_SOURCE } from "./interactions-data.js?v=20260929-ddinter-v2";
 
 export function createDrugLookupController({ presentation, render, setStatus, getPatientMedicationNames, getActivePatientLabel, fetchImpl }) {

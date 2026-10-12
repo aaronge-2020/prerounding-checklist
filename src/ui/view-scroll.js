@@ -1,3 +1,4 @@
+import { safeHtml } from "../lib/safe-html.js?v=20261012-safety";
 // A render transaction owns only its subtree and its surviving scroll ancestors.
 // Resolve replaced descendants by identity; never restore disconnected DOM nodes.
 // Restoration is synchronous after layout, so no queued callback can overwrite
@@ -31,7 +32,7 @@ export function replaceViewContent(content, markup, { text = false } = {}) {
   if (!content) return;
   preserveViewScroll(content, () => {
     if (text) content.textContent = markup;
-    else content.innerHTML = markup;
+    else content.innerHTML = safeHtml(markup);
   });
 }
 

@@ -23,7 +23,7 @@
 // The offline-mode guard (worker-net-guard.js) MUST stay the first import:
 // it wraps fetch/XHR before the vendored runtime evaluates, and the client
 // passes the toggle state via the "init" and "offlineMode" messages.
-import { setWorkerOfflineMode } from "./worker-net-guard.js?v=20260929-offline-mode-v1";
+import { setWorkerOfflineMode } from "./worker-net-guard.js?v=20261012-safety";
 import { CreateMLCEngine, hasModelInCache } from "../../vendor/web-llm/index.js";
 
 let engine = null;

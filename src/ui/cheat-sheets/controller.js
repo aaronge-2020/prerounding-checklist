@@ -1,3 +1,4 @@
+import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 // Controller for the Cheat Sheets pocket reference tab: a read-only,
 // patient-independent reference guide. Owns the search query and the
 // selected sheet id (the last-viewed id is persisted, guarded for
@@ -135,11 +136,11 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     // Populate the (possibly empty) list section. The search input keeps
     // focus because patchResults() updates only the results slot.
     const template = document.createElement("template");
-    template.innerHTML = presentation.sheetListHtml({
+    template.innerHTML = safeHtml(presentation.sheetListHtml({
       sheets: searchSheets(sheets, state.query),
       query: state.query,
       total: sheets.length
-    });
+    }));
     list.replaceChildren(...template.content.childNodes);
   }
 
@@ -158,7 +159,7 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     // Populate the hidden detail section, then swap visibility. The list DOM
     // stays intact underneath.
     const template = document.createElement("template");
-    template.innerHTML = presentation.sheetDetailHtml(sheet);
+    template.innerHTML = safeHtml(presentation.sheetDetailHtml(sheet));
     detail.replaceChildren(...template.content.childNodes);
     list.hidden = true;
     detail.hidden = false;
@@ -191,7 +192,7 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     if (!sheets.length) {
       const { list, detail } = ensureSections(el);
       const template = document.createElement("template");
-      template.innerHTML = presentation.emptyStateHtml();
+      template.innerHTML = safeHtml(presentation.emptyStateHtml());
       list.replaceChildren(...template.content.childNodes);
       list.hidden = false;
       detail.hidden = true;
@@ -208,7 +209,7 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
       // through openSheetDetail(), which starts the detail at the top.
       if (detail.hidden || !detail.hasChildNodes()) {
         const template = document.createElement("template");
-        template.innerHTML = presentation.sheetDetailHtml(sheet);
+        template.innerHTML = safeHtml(presentation.sheetDetailHtml(sheet));
         detail.replaceChildren(...template.content.childNodes);
       }
       list.hidden = true;
@@ -236,7 +237,7 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
       return;
     }
     const template = document.createElement("template");
-    template.innerHTML = presentation.sheetListResultsHtml({ sheets: results, query: state.query });
+    template.innerHTML = safeHtml(presentation.sheetListResultsHtml({ sheets: results, query: state.query }));
     const newSlot = template.content.firstElementChild;
     if (newSlot) {
       // Preserve the slot element; update its content and class (ul.cs-cards

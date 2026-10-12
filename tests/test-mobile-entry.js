@@ -59,11 +59,12 @@ const si = index.indexOf(startMarker);
 const ei = index.indexOf(endMarker);
 check("index carries the redirect block", si !== -1 && ei > si, true);
 
-const snippet = index.slice(index.indexOf("<script>", si) + "<script>".length, index.indexOf("</script>", si));
+const snippet = read("src/mobile-redirect.js");
+check("redirect loads externally after CSP", index.indexOf('src="./src/mobile-redirect.js') > index.indexOf('http-equiv="Content-Security-Policy"'), true);
 check("redirect snippet targets mobile.html", snippet.includes("./mobile.html"), true);
 check("redirect snippet honors the persisted choice", snippet.includes("prerounding.mobileChoice.v1"), true);
 check("redirect snippet honors ?full=1", snippet.includes("full"), true);
-check("redirect snippet never throws (guarded)", /catch\s*\(/.test(snippet), true);
+check("redirect snippet never throws (guarded)", /catch\s*(?:\(|\{)/.test(snippet), true);
 
 // ---- redirect behavior, exercised with fake browser globals ----------------
 function runRedirect({ search = "", storedChoice = null, smallScreen = false, storageThrows = false }) {

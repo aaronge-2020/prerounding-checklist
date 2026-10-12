@@ -6,7 +6,7 @@ import {
   parseApSuggestions
 } from "../ai/ap-generator.js?v=20261012-citation-preview";
 import { DEFAULT_OPENAI_WORKUP_MODEL, openAiWorkupModelOption } from "../app/preferences.js?v=20261011-request-controls";
-import { requestOpenAiStructuredJson } from "./openai-client.js?v=20261011-ai-helper";
+import { requestOpenAiStructuredJson } from "./openai-client.js?v=20261012-safety";
 
 // Suggested-edits generation: the caller passes the final prompt text (the
 // student may have edited it in the confirm modal). The model returns

@@ -5,7 +5,7 @@
 // The call goes to OpenRouter's Decisions API (Azure-hosted model) using the
 // student's own OpenRouter key from Settings — the same bring-your-own-key
 // pattern as the OpenAI generation calls. Blocked while offline mode is on.
-import { gatedFetch } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
+import { gatedFetch } from "../lib/network-gate.js?v=20261012-safety";
 import { parseDifferentialScoringResponse } from "../ai/decision-scoring.js?v=20261010-decision1-v1";
 
 async function readJson(response) {

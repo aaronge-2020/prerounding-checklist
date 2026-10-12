@@ -1,4 +1,4 @@
-import { DEMO_CONTEXT_TEXTS } from "./session.js?v=20261012-citation-preview";
+import { DEMO_CONTEXT_TEXTS } from "./session.js?v=20261012-safety";
 
 export const DEMO_GUIDE_STAGES = Object.freeze({
   "save-context": {

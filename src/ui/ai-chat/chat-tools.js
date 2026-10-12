@@ -15,8 +15,8 @@
 // system prompt built by buildChatToolsSystemPrompt() instructs the model to
 // ask the student for exactly those values and wait.
 
-import { tool } from "../../vendor/ai-sdk/ai-sdk-bundle.mjs?v=20260929-agent-v1";
-import { z } from "../../vendor/ai-sdk/ai-sdk-bundle.mjs?v=20260929-agent-v1";
+import { tool } from "../../ai/sdk.js?v=20261012-safety";
+import { z } from "../../ai/sdk.js?v=20261012-safety";
 import {
   CLINICAL_SCORES,
   getScoreDefinition

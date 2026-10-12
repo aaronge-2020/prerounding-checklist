@@ -20,6 +20,7 @@ const consoleErrors = [];
 page.on("console", (message) => {
   if (message.type() !== "error") return;
   const text = message.text();
+  if (process.env.DEBUG_BROWSER_ERRORS) console.error(text, message.location());
   // Benign: the vendored AI SDK probes `new Function("")` to detect eval
   // support; the strict CSP blocks and logs it, the SDK catches it and
   // carries on. Not a product defect.
@@ -150,7 +151,7 @@ try {
   assert.doesNotMatch(downloadedNote, /pressure or squeezing feeling/, "cheat-sheet bedside questions must not leak into the note");
   // The showcased draft must be the complete parsed case: one-liner,
   // subjective events, exam, objective labs, and the assessment.
-  assert.match(downloadedNote, /Daniel Morgan is a 61-year-old male/, "the downloaded note must carry the parsed one-liner");
+  assert.match(downloadedNote, /61-year-old man with coronary artery disease admitted for chest pain with shortness of breath/, "the downloaded note must carry the explicitly labeled one-liner");
   assert.match(downloadedNote, /troponin peaked at 364/, "the downloaded note must carry the day-one subjective update");
   assert.match(downloadedNote, /Physical Exam/, "the downloaded note must carry the parsed exam");
   assert.match(downloadedNote, /Troponin 86|High-sensitivity troponin/, "the downloaded note must carry objective labs");

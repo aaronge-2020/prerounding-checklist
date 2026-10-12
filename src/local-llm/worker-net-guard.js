@@ -10,7 +10,7 @@
 //
 // URL classification is shared with the page gate (src/lib/network-gate.js):
 // same-origin requests always pass; only cross-origin traffic is refused.
-import { OfflineBlockedError, isRemoteUrl } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
+import { OfflineBlockedError, isRemoteUrl } from "../lib/network-gate.js?v=20261012-safety";
 
 let workerOfflineMode = false;
 

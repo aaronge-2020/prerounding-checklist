@@ -28,9 +28,9 @@ export function installCitationInspector(doc = document) {
     panel.id = 'ap-source-preview';
     trigger.setAttribute('aria-describedby', panel.id);
     if (ref.kind === 'chart') {
-      text(panel, 'p', 'Quoted chart passage', 'ap-source-label');
+      text(panel, 'p', ref.verification === 'verified' ? 'Verified quotation from reviewed context' : 'Unverified quotation supplied by AI', 'ap-source-label');
       text(panel, 'blockquote', ref.excerpt || 'No passage was supplied.');
-      text(panel, 'p', ref.pieceId ? 'As cited in the reply. Compare with the chart section.' : 'No matching reviewed chart section. This citation could not be linked to a source.', 'ap-source-note');
+      text(panel, 'p', ref.verification === 'ambiguous-section' ? 'Multiple reviewed sections share this label. The source is ambiguous and this quotation is not verified.' : ref.pieceId ? (ref.verification === 'verified' ? 'Exact text found in the reviewed source at send time. This verifies the quotation, not the clinical interpretation. The current chart may have changed.' : 'Quotation not verified against the reviewed source. A matching section name does not verify this passage. Compare with the chart before using it.') : 'No matching reviewed chart section. This citation could not be linked to a source.', 'ap-source-note');
     } else if (ref.excerpt) {
       text(panel, 'p', 'Source excerpt supplied by AI', 'ap-source-label');
       text(panel, 'blockquote', ref.excerpt);

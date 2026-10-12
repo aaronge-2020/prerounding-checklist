@@ -1,0 +1,21 @@
+{
+  "baselineCommit": "b1b22c4dd41200cfab5d53b37b8f5323d3467778",
+  "node": "v24.13.0",
+  "platform": "Windows; Playwright Chromium headless",
+  "preexistingModifiedFiles": [
+    ".gitignore",
+    "models/onnx-community/deid_bert_i2b2-ONNX/onnx/model_quantized.chunks/012",
+    "vendor/web-llm/index.js"
+  ],
+  "sha256": {
+    "index.html": "c0192437059472f3d0adea8ea4945648d90cd9f86a80e9674d1cbf553472bb76",
+    "src/ui/app.js": "4ee5dac0d61309e06e1c95dc919caac7304b24d498d7a85e800311c0957bee2a",
+    "src/ui/ai-chat/controller.js": "16bf837511554f5e3ff8f697fdd34855e5e2c682be08fb279c020d8f75b66843",
+    "src/ui/ai-chat/section-citations.js": "2fb814baaab20536a826bede03b5f873c5aa31d08ce8ceba19c582bbd953d888",
+    "src/lib/network-gate.js": "2542442ce2d1378b68ed2532f272d6f6b2ddedcd3dab9891822b82361fa628e9",
+    "src/app/state/persistence.js": "334fa4bd32d96fcac75433f2d8c22e3c17f3ccf96bf869c883eb3eaf7775581b",
+    "tests/evaluate-clinical-safety-browser.js": "8dc8cf417d4812d5e5c7db9511a57747c12d53b9c08a5198dca07f60fbb36a3b",
+    "tests/test-compact-workspace-metrics.js": "cc856fa082e84733329e99fbc74baf5aa2d42f1e4088aabbede9d591ca4e5105"
+  },
+  "scope": "Local working tree, not a clean deployed-build audit. Only synthetic cases. No paid/live external AI generation."
+}

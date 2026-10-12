@@ -563,37 +563,8 @@ export function parsePrimaryTeamNote(sourceText, noteType) {
     }
   }
 
-  if (!transformedSections.one_liner) {
-    let candidateText = "";
-    if (noteType === H_AND_P) {
-      candidateText = transformedSections.history_of_present_illness || "";
-    } else {
-      const patientReport = transformedSections.patient_report || "";
-      const intervalEvents = transformedSections.interval_events || "";
-      // A leading "CC:"/"Chief Complaint:" label is not one-liner content:
-      // strip it and prefer the substantive remainder of the patient report
-      // over interval events.
-      const reportBody = patientReport.replace(CC_LABEL, "").trim();
-      if (/(?:^|\n)\s*(?:hpi|history of present illness)\s*[:—–-]/i.test(patientReport)) {
-        candidateText = patientReport;
-      } else if (reportBody) {
-        candidateText = reportBody;
-      } else if (intervalEvents) {
-        candidateText = intervalEvents;
-      } else {
-        candidateText = patientReport;
-      }
-    }
-    if (candidateText) {
-      const extracted = extractSubstantiveOneLiner(candidateText);
-      if (extracted) {
-        transformedSections.one_liner = extracted;
-        if (!detected.some((d) => d.fieldId === "one_liner")) {
-          detected.unshift({ fieldId: "one_liner", heading: "One-liner" });
-        }
-      }
-    }
-  }
+  // Only an explicitly labeled source section supplies a one-liner.
+  // Clinician synthesis belongs in the editable one-liner, not a parser guess.
   const detectedFieldIds = [...new Set(detected.map(({ fieldId }) => fieldId).filter((fieldId) => transformedSections[fieldId]))];
   const planProblems = parseClinicalPlanProblems(transformedSections.plan || "");
   const parsedProblems = pairAssessmentPlanProblems(transformedSections.assessment, transformedSections.plan, planProblems);

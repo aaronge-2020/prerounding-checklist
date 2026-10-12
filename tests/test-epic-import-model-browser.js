@@ -35,7 +35,7 @@ try {
     const saved = await page.locator("[data-structured-note-field]").evaluateAll((nodes) => nodes.map((node) => node.value).join("\n"));
     assert.doesNotMatch(saved, /Jane Smith/);
     assert.match(saved, /cough|breathing/i);
-    if (index === 0 && !saved.includes("NKDA")) console.log("MODEL QUALITY LIMITATION: Stanford redacts the isolated NKDA allergy value; this test verifies execution, not perfect model accuracy.");
+    if (index === 0) assert.ok(saved.includes("NKDA"), "labeled inference must retain the allergy finding");
     assert.equal(await page.locator("#deidModeSelect").inputValue(), "stanford-clinical");
     assert.equal(await page.evaluate(() => JSON.stringify(localStorage).includes("Jane Smith")), false);
     console.log(`PASS: Stanford de-identification and encrypted save for note ${index + 1}`);

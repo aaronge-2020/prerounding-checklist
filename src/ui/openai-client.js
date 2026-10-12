@@ -6,7 +6,7 @@ import { buildStructuredRequest } from "../ai/structured-request.js?v=20261011-r
 //
 // All requests flow through the central network gate: when offline mode is
 // on, the call fails fast with OfflineBlockedError instead of hanging.
-import { gatedFetch } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
+import { gatedFetch } from "../lib/network-gate.js?v=20261012-safety";
 function responseText(payload) {
   if (typeof payload?.output_text === "string") return payload.output_text;
   const outputs = Array.isArray(payload?.output) ? payload.output : [];

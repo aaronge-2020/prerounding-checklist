@@ -1,3 +1,4 @@
+import { trustedWorkerUrl } from "../lib/trusted-resource.js?v=20261012-safety";
 // Chart-grounded RAG service (main thread): owns the embedding worker
 // lifecycle and the per-patient IndexedDB vector cache.
 //
@@ -51,7 +52,7 @@ function enqueueServiceOperation(operation) {
 
 function getWorker() {
   if (!worker) {
-    worker = new Worker(`${WORKER_URL.href}?v=${RAG_WORKER_VERSION}`, { type: "module" });
+    worker = new Worker(trustedWorkerUrl(`${WORKER_URL.href}?v=${RAG_WORKER_VERSION}`), { type: "module" });
     worker.onmessage = (event) => {
       const { id, ok, value, error, stack } = event.data || {};
       const pending = pendingCalls.get(id);

@@ -1,13 +1,14 @@
-import { preserveViewScroll } from "../view-scroll.js?v=20261012-scroll-review";
-import { installCitationInspector } from "./citation-inspector.js?v=20261012-numbered-citations";
+import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
+import { preserveViewScroll } from "../view-scroll.js?v=20261012-safety";
+import { installCitationInspector } from "./citation-inspector.js?v=20261012-safety";
 import { rebaseApReferences } from "../../ai/ap-generator.js?v=20261012-citation-preview";
 import { buildConsultNoteContext } from "../../ai/note-context.js?v=20261012-citation-preview";
 import { buildStructuredRequest } from "../../ai/structured-request.js?v=20261011-request-controls";
 import { sortDays } from "../../daily-updates/days.js?v=20261012-citation-preview";
 import { updateActivePatient } from "../../app/state/vault.js?v=20261012-citation-preview";
 import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20261011-epic-workflow";
-import { createLabAutocomplete } from "./lab-autocomplete.js?v=20261012-scroll-review";
-import { createDrugAutocomplete } from "./drug-autocomplete.js?v=20261012-scroll-review";
+import { createLabAutocomplete } from "./lab-autocomplete.js?v=20261012-safety";
+import { createDrugAutocomplete } from "./drug-autocomplete.js?v=20261012-safety";
 import {
   compileSmartExam,
   EXAM_SYSTEMS,
@@ -62,12 +63,12 @@ import {
 import {
   buildApRevisionPrompt, DEFAULT_AP_INSTRUCTIONS, AP_SUGGESTION_SCHEMA
 } from "../../ai/ap-generator.js?v=20261012-citation-preview";
-import { generateProblemApRevisionsWithOpenAi } from "../openai-ap-api.js?v=20261012-citation-preview";
+import { generateProblemApRevisionsWithOpenAi } from "../openai-ap-api.js?v=20261012-safety";
 import {
   buildDifferentialScoringRequest,
   formatProbability
 } from "../../ai/decision-scoring.js?v=20261010-decision1-v1";
-import { scoreDifferentialsWithDecision1 } from "../decision-client.js?v=20261010-decision1-v1";
+import { scoreDifferentialsWithDecision1 } from "../decision-client.js?v=20261012-safety";
 import { createDifferential } from "../../note-drafts/index.js?v=20261012-citation-preview";
 
 function packetKey(value) {
@@ -434,7 +435,7 @@ export function createReviewController(deps) {
     if (!current.patient) return;
     const rendered = deps.presentation.renderReview(reviewViewModel(current));
     const template = document.createElement("template");
-    template.innerHTML = rendered;
+    template.innerHTML = safeHtml(rendered);
     const nextList = template.content.querySelector(".review-data-list");
     const nextSummary = template.content.querySelector(".review-filter-summary");
     const wrapper = deps.byId("reviewContent")?.querySelector(".review-data-list");
@@ -450,9 +451,9 @@ export function createReviewController(deps) {
     const canPreserveScroll = typeof window !== "undefined" && typeof document !== "undefined";
     const activeId = canPreserveScroll ? (document.activeElement?.id || null) : null;
     withPreservedViewScroll(container, () => {
-      container.innerHTML = current.patient
+      container.innerHTML = safeHtml(current.patient
         ? deps.presentation.renderReview(reviewViewModel(current))
-        : deps.patientRequiredMessage();
+        : deps.patientRequiredMessage());
     });
     const confirmDialog = container?.querySelector(".ap-confirm-modal");
     if (apConfirmState && confirmDialog && !confirmDialog.open) confirmDialog.showModal();
@@ -499,7 +500,7 @@ export function createReviewController(deps) {
       apSuggestions: vm.apSuggestions,
     });
     const template = document.createElement("template");
-    template.innerHTML = draftHtml;
+    template.innerHTML = safeHtml(draftHtml);
     return template.content.querySelector(selector);
   }
 
@@ -618,7 +619,7 @@ export function createReviewController(deps) {
       apConfirm: vm.apConfirm,
       apSuggestions: vm.apSuggestions,
     });
-    preserveViewScroll(container, () => { draftPanel.outerHTML = draftHtml; });
+    preserveViewScroll(container, () => { draftPanel.outerHTML = safeHtml(draftHtml); });
   }
 
   function prepare(selectedPacketId = "admission", { preferPopulated = true } = {}) {
@@ -1687,7 +1688,7 @@ export function createReviewController(deps) {
     const current = model();
     if (!current.patient) return null;
     const template = document.createElement("template");
-    template.innerHTML = deps.presentation.renderReview(reviewViewModel(current));
+    template.innerHTML = safeHtml(deps.presentation.renderReview(reviewViewModel(current)));
     return template.content.querySelector(selector);
   }
 
@@ -2380,7 +2381,7 @@ export function createReviewController(deps) {
       // Refresh just this section's editable region from the model.
       const region = draftPanelNode()?.querySelector('[data-draft-section="interval_events"]');
       const fresh = freshDraftNode('[data-draft-section="interval_events"]');
-      if (region && fresh) region.innerHTML = fresh.innerHTML;
+      if (region && fresh) region.innerHTML = safeHtml(fresh.innerHTML);
       return true;
     }
     if (action === "add-plan-problem") {

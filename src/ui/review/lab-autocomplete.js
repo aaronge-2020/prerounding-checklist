@@ -1,3 +1,4 @@
+import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 // Smart `$` autocomplete for the draft note editor.
 // Typing `$` followed by text in any draft note contenteditable region shows
 // a dropdown of matching labs/vitals from the clinical data index. Selecting
@@ -86,7 +87,7 @@ export function createLabAutocomplete({ getCandidates }) {
       dd.hidden = true;
       return;
     }
-    dd.innerHTML = currentSuggestions
+    dd.innerHTML = safeHtml(currentSuggestions
       .map((candidate, index) => {
         const isSelected = index === selectedIndex;
         const displayName = escapeHtml(candidate.name || "Unknown");
@@ -96,7 +97,7 @@ export function createLabAutocomplete({ getCandidates }) {
           <span class="lab-autocomplete-value">${displayValue}</span>
         </div>`;
       })
-      .join("");
+      .join(""));
     dd.hidden = false;
     positionDropdown(activeTrigger);
   }

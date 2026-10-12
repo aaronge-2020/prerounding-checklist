@@ -1,10 +1,8 @@
-// Central network gate: every remote (cross-origin) request the app makes
-// flows through here. Offline mode blocks those requests with a clear, calm
-// error instead of a hang or a silent failure.
+// Central gate for application remote requests, backed by browser API guards.
+// Offline mode rejects remote operations rather than silently sending them.
 //
-// Same-origin requests (the app's own files, bundled model chunks, cached
-// model packs) always pass: "offline" means "don't reach the network",
-// not "don't load the app".
+// Same-origin requests (the app's files and model packs) still pass and may
+// use the network. This application policy is not device-level isolation.
 //
 // The toggle is a device-level setting in localStorage (not the encrypted
 // vault) so the gate works before the vault is unlocked and reads
@@ -13,7 +11,7 @@
 const STORAGE_KEY = "prerounding.offlineMode.v1";
 
 function requestUrl(input) {
-  return typeof input === "string" ? input : input?.url;
+  return typeof input === "string" ? input : input instanceof URL ? input.href : input?.url;
 }
 
 function baseHref() {
@@ -55,7 +53,7 @@ export function isRemoteUrl(input) {
   } catch {
     return false;
   }
-  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return false;
+  if (!["http:", "https:", "ws:", "wss:"].includes(parsed.protocol)) return false;
   return parsed.origin !== pageOrigin();
 }
 
@@ -146,8 +144,52 @@ export function installGlobalFetchGuard() {
     assertRemoteAllowed(input);
     return nativeFetch(input, init);
   };
+  const restore = [];
+  const syncStorage = event => {
+    if (event.key === STORAGE_KEY) setOfflineMode(event.newValue === "1");
+  };
+  window.addEventListener?.("storage", syncStorage);
+  restore.push(() => window.removeEventListener?.("storage", syncStorage));
+  if (window.navigator?.sendBeacon) {
+    const nativeBeacon = window.navigator.sendBeacon;
+    window.navigator.sendBeacon = function (url, data) {
+      if (offline && isRemoteUrl(url)) return false;
+      return nativeBeacon.call(this, url, data);
+    };
+    restore.push(() => { window.navigator.sendBeacon = nativeBeacon; });
+  }
+  if (window.XMLHttpRequest) {
+    const prototype = window.XMLHttpRequest.prototype;
+    const open = prototype.open, send = prototype.send;
+    const destinations = new WeakMap();
+    prototype.open = function (method, url, ...args) {
+      assertRemoteAllowed(url); destinations.set(this, url);
+      return open.call(this, method, url, ...args);
+    };
+    prototype.send = function (...args) {
+      assertRemoteAllowed(destinations.get(this));
+      return send.apply(this, args);
+    };
+    restore.push(() => { prototype.open = open; prototype.send = send; });
+  }
+  for (const key of ["WebSocket", "EventSource"]) {
+    const Native = window[key];
+    if (!Native) continue;
+    const connections = new Set();
+    window[key] = new Proxy(Native, { construct(Target, args) {
+      assertRemoteAllowed(args[0]);
+      const connection = Reflect.construct(Target, args);
+      if (isRemoteUrl(args[0])) connections.add(connection);
+      return connection;
+    } });
+    const unsubscribe = onOfflineModeChange(enabled => {
+      if (enabled) { for (const connection of connections) connection.close(); connections.clear(); }
+    });
+    restore.push(() => { unsubscribe(); window[key] = Native; });
+  }
   return () => {
     window.fetch = nativeFetch;
+    for (const reset of restore) reset();
     guardInstalled = false;
   };
 }

@@ -1,3 +1,4 @@
+import { trustedWorkerUrl } from "../lib/trusted-resource.js?v=20261012-safety";
 // Main-thread client for the browser-local LLM worker (src/local-llm/worker.js).
 // Owns the model lifecycle: hardware-gated selection, visible download/load
 // progress, a mandatory self-test before the model is marked verified, and
@@ -13,7 +14,7 @@ import {
   readHardwareFacts,
   recommendLocalLlmModels
 } from "./models.js?v=20260927-local-llm-v4";
-import { isOfflineMode, onOfflineModeChange } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
+import { isOfflineMode, onOfflineModeChange } from "../lib/network-gate.js?v=20261012-safety";
 
 // Re-exported for UI modules that resolve the active model label from the
 // shared client entry point.
@@ -193,7 +194,7 @@ export function createLocalLlmClient() {
 
   function ensureWorker() {
     if (worker) return worker;
-    const w = new Worker(new URL("./worker.js?v=20260928-local-llm-v1", import.meta.url), {
+    const w = new Worker(trustedWorkerUrl(new URL("./worker.js?v=20261012-safety", import.meta.url)), {
       type: "module"
     });
     worker = w;

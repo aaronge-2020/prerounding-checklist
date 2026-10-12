@@ -9,7 +9,7 @@ import {
   localLlmModelByKey,
   readLocalLlmSettings,
   sharedLocalLlmClient
-} from "../../local-llm/client.js?v=20260928-local-llm-v1";
+} from "../../local-llm/client.js?v=20261012-safety";
 import {
   dedupeVerifierEntities,
   runLlmVerifier

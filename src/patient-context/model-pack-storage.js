@@ -1,3 +1,4 @@
+import { trustedWorkerUrl } from "../lib/trusted-resource.js?v=20261012-safety";
 import {
   LOCAL_MODEL_RUNTIME_VERSION,
   MODEL_PACK_CACHE_NAME,
@@ -13,7 +14,7 @@ import {
   modelPackVerifiedForCurrentRuntime,
   validateModelPackEntries
 } from "./model-packs.js?v=20260921-medication-card-v4";
-import { gatedFetch } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
+import { gatedFetch } from "../lib/network-gate.js?v=20261012-safety";
 
 const MODEL_PACK_DATABASE = "prerounding-local-model-pack-handles-v1";
 const MODEL_PACK_STORE = "packs";
@@ -718,7 +719,7 @@ export async function ensureModelPackServiceWorker() {
   if (typeof navigator === "undefined" || !navigator.serviceWorker) {
     return { ready: false, message: "This browser does not support the local model installer." };
   }
-  await navigator.serviceWorker.register(new URL("../../service-worker.js?v=20260925-sw-auth-fix", import.meta.url));
+  await navigator.serviceWorker.register(trustedWorkerUrl(new URL("../../service-worker.js?v=20260925-sw-auth-fix", import.meta.url)));
   // Timeout the ready wait: a failed SW install must not hang boot forever.
   const readyTimeout = new Promise((_, reject) =>
     setTimeout(() => reject(new Error("Service worker ready timeout")), 10000)

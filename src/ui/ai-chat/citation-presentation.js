@@ -19,7 +19,8 @@ export function renderNumberedCitations(text, citations, messageIndex, sources) 
     if (index !== undefined) {
       const cite = cites[Number(index)];
       const meta = citations?.[Number(index)];
-      ref = { kind: "chart", title: cite.section, excerpt: cite.quote, pieceId: meta?.pieceId || "", messageIndex };
+      const consistent = meta?.quote === cite.quote && meta?.section === cite.section;
+      ref = { kind: "chart", title: cite.section, excerpt: cite.quote, verification: consistent ? meta.verification || "unverified" : "unverified", sourceVersion: consistent ? meta.sourceVersion || "" : "", sourceRanges: consistent ? meta.sourceRanges || [] : [], pieceId: meta?.pieceId || "", messageIndex };
       key = JSON.stringify(["chart", ref.title, ref.excerpt]);
     } else {
       const source = sourceList.find(item => item.url === url);

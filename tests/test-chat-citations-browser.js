@@ -13,7 +13,7 @@ try {
     await page.locator('[data-action="ai-chat-mode"][data-mode="remote"]').click();
     await page.evaluate(() => {
       window.controller.getRemoteState().messages = [{ role: 'assistant', text: "Consider the finding per [History]: “Exact synthetic\npassage”. Compare [Example Guideline]. Again [Example Guideline]. Another finding per [Missing]: ‘Unmatched passage’. [Unlisted Reference].",
-        sectionCitations: [{ pieceId: 'context:note-0', label: 'History', target: { scope: 'admission', sectionId: 'note-0' } }, { pieceId: '' }],
+        sectionCitations: [{ pieceId: 'context:note-0', label: 'History', section: 'History', quote: 'Exact synthetic\npassage', verification: 'verified', target: { scope: 'admission', sectionId: 'note-0' } }, { pieceId: '' }],
         sources: [{ title: 'Example Guideline', url: 'https://example.org/guideline' }] }];
       window.controller.render();
     });
@@ -26,6 +26,7 @@ try {
     await markers.first().hover();
     await page.locator('[role="tooltip"]').waitFor();
     assert.equal(await page.locator('[role="tooltip"] blockquote').innerText(), 'Exact synthetic\npassage');
+    assert.match(await page.locator('[role="tooltip"]').innerText(), /Verified quotation from reviewed context/);
     if (process.env.CITATION_SCREENSHOTS && width === 1440) await page.screenshot({ path: `${process.env.CITATION_SCREENSHOTS}/numbered-citations-hover.png` });
     await markers.first().click();
     await page.locator('dialog.ap-source-dialog').waitFor();

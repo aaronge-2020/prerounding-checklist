@@ -1,0 +1,21 @@
+{
+  "baselineCommit": "b1b22c4dd41200cfab5d53b37b8f5323d3467778",
+  "validation": {
+    "test:ci": "passed",
+    "test:epic-import": "passed",
+    "test:safety": "passed as part of CI",
+    "npm audit": "0 known vulnerabilities"
+  },
+  "sha256": {
+    "index.html": "edcf344a0505abe96bf5ce2e6e3cc937253ea68b2e3ef1f822ed245518fed413",
+    "src/lib/network-gate.js": "9078e0dd778ec3bf1b494cfec1fe1f98dba8c3e6c74c07f37a3de0e2a1501abd",
+    "src/lib/safe-html.js": "ea17b1e2f2925ad8dcd7daddb9669e884a6e9a709fc814a401446457b1872149",
+    "src/lib/trusted-resource.js": "dbb3bcb7682b6e80d63515d476c5ef8e575c1918d9de3871397ac4a9c1a2d1c0",
+    "src/patient-context/labeled-deidentification.js": "07730378a06625bee189d0260d781258f33664111b218e8ff9024314b0ac01f4",
+    "src/ui/ai-chat/quotation-verification.js": "a002ec3f1c8e2eedde30b38b3b4073426dd71216b38974c1b5aaa163069d5b1b",
+    "src/ui/daily/source-controller.js": "e565fdd4a76468bbb67c4391f40aa2135a6cecd025e17cca068b493351950246",
+    "src/ui/ai-chat/controller.js": "fb3a8686c65ce4b10e7aed935868b6ade26e3b4cd459d944bd1670d7dc377d4f",
+    "vendor/dompurify/purify.es.mjs": "60c5d5ccbb466de3de3ba863461a92bf134f8c156cef7992da43e0f659bc5cbd",
+    "tests/evaluate-clinical-safety-browser.js": "8c22de2971659354e00c880b9e17e716b42f03322831f1fbb1beb0b66f7c65d4"
+  }
+}

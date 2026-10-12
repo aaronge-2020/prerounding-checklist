@@ -1,3 +1,4 @@
+import { safeHtml } from "../lib/safe-html.js?v=20261012-safety";
 import { installNavigationDisclosure, syncNavigationDisclosure } from "./navigation.js?v=20261012-writer-controls";
 import {
   createDailyRecord,
@@ -52,7 +53,7 @@ import {
   preloadAdvancedDeidModel,
   resetAdvancedDeidWorker,
   verifyAdvancedDeidModel
-} from "../patient-context/deid-client.js?v=20261011-epic-workflow";
+} from "../patient-context/deid-client.js?v=20261012-safety";
 import {
   DEFAULT_DEID_MODEL_KEY,
   DEID_MODEL_OPTIONS,
@@ -70,7 +71,7 @@ import {
   modelFilesFromInput,
   removeModelPack,
   requestPersistentModelStorage
-} from "../patient-context/model-pack-storage.js?v=20261007-tide2-gated";
+} from "../patient-context/model-pack-storage.js?v=20261012-safety";
 import {
   formatBytes,
   hasAutomaticModelDownload,
@@ -107,10 +108,10 @@ import {
 } from "../app/preferences.js?v=20261011-request-controls";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1&icon=search-v1";
 import { createDailyPresentation } from "./daily/presentation.js?v=20261012-writer-controls";
-import { createDailySourceController } from "./daily/source-controller.js?v=20261012-highlight-drag";
+import { createDailySourceController } from "./daily/source-controller.js?v=20261012-safety";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20261012-writer-controls";
-import { createReviewController } from "./review/controller.js?v=20261012-numbered-citations";
+import { createReviewController } from "./review/controller.js?v=20261012-safety";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20261012-citation-preview";
 import {
   createPromptTaskController,
@@ -123,9 +124,9 @@ import { createGuidelineSetsController } from "./settings/guidelines-controller.
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20261012-citation-preview";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20261012-citation-preview";
-import { captureScrollPositions, restoreScrollPositions, preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20261012-scroll-review";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20261012-citation-preview";
-import { installGlobalFetchGuard, isOfflineMode, onOfflineModeChange, setOfflineMode } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
+import { captureScrollPositions, restoreScrollPositions, preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20261012-safety";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20261012-safety";
+import { installGlobalFetchGuard, isOfflineMode, onOfflineModeChange, setOfflineMode } from "../lib/network-gate.js?v=20261012-safety";
 import { createVaultPresentation, disambiguatedPatientLabels } from "./vault/presentation.js?v=20260718-vault-safety";
 import { createVaultSessionGuards } from "./vault/session-guards.js?v=20260922-vault-guards";
 import { createClipboard } from "./clipboard.js?v=20260922-clipboard";
@@ -137,22 +138,22 @@ import {
   warningSnippet
 } from "./redaction/presentation.js?v=20261012-citation-preview";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261011-epic-workflow";
-import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261012-scroll-review";
+import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261012-safety";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20261003-deid-adaptive";
-import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261011-epic-workflow";
-import { createDemoController } from "./demo/controller.js?v=20261012-writer-controls";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261012-citation-preview";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20261012-citation-preview";
-import { createAiChatController } from "./ai-chat/controller.js?v=20261012-concise-context";
+import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261012-safety";
+import { createDemoController } from "./demo/controller.js?v=20261012-safety";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261012-safety";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20261012-safety";
+import { createAiChatController } from "./ai-chat/controller.js?v=20261012-safety";
 import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261001-drug-checks-v2";
 import { createDrugChecksController } from "./drug-checks/controller.js?v=20261012-citation-preview";
-import { clearAllRagIndexes } from "../rag/rag-service.js?v=20261011-epic-workflow";
-import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
+import { clearAllRagIndexes } from "../rag/rag-service.js?v=20261012-safety";
+import { createDrugLookupController } from "./drug-lookup/controller.js?v=20261012-safety";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
-import { createScoresController } from "./scores/controller.js?v=20261011-epic-workflow";
-import { createCheatSheetsController } from "./cheat-sheets/controller.js?v=20261011-request-controls";
+import { createScoresController } from "./scores/controller.js?v=20261012-safety";
+import { createCheatSheetsController } from "./cheat-sheets/controller.js?v=20261012-safety";
 import { createSampleNotesController } from "./sample-notes/controller.js?v=20261012-citation-preview";
-import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20260928-local-llm-v1";
+import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20261012-safety";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 
@@ -891,7 +892,7 @@ function setStatus(message, { icon: iconName } = {}) {
   app.status = message;
   const status = byId("statusLine");
   if (!status) return;
-  if (iconName) status.innerHTML = `${icon(iconName)}${escapeHtml(message)}`;
+  if (iconName) status.innerHTML = safeHtml(`${icon(iconName)}${escapeHtml(message)}`);
   else status.textContent = message;
   // Every action outcome also gets an auto-dismissing toast so feedback is
   // impossible to miss. Skip in-progress ("...") messages, the idle default,
@@ -921,7 +922,7 @@ function showToast(message, { type = "warning", durationMs = 3500 } = {}) {
     container.setAttribute("aria-live", "polite");
     document.body.appendChild(container);
   }
-  container.innerHTML = "";
+  container.innerHTML = safeHtml("");
   const toast = document.createElement("div");
   toast.className = `toast toast--${type}`;
   toast.textContent = message;
@@ -930,7 +931,7 @@ function showToast(message, { type = "warning", durationMs = 3500 } = {}) {
   dismiss.className = "toast-dismiss";
   dismiss.setAttribute("aria-label", "Dismiss");
   dismiss.textContent = "✕";
-  dismiss.addEventListener("click", () => container.innerHTML = "");
+  dismiss.addEventListener("click", () => container.innerHTML = safeHtml(""));
   toast.appendChild(dismiss);
   container.appendChild(toast);
   // Trigger the entrance animation on the next frame.
@@ -938,7 +939,7 @@ function showToast(message, { type = "warning", durationMs = 3500 } = {}) {
   if (toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     toast.classList.remove("toast--visible");
-    setTimeout(() => { if (toast.parentNode === container) container.innerHTML = ""; }, 300);
+    setTimeout(() => { if (toast.parentNode === container) container.innerHTML = safeHtml(""); }, 300);
   }, durationMs);
 }
 
@@ -978,7 +979,7 @@ function decorateNavigation() {
     const label = button.textContent.trim();
     const note = (button.dataset.note || "").trim();
     const noteHtml = note ? `<small class="nav-note">${escapeHtml(note)}</small>` : "";
-    button.innerHTML = `${icon(button.dataset.icon)}<span>${escapeHtml(label)}${noteHtml}</span>`;
+    button.innerHTML = safeHtml(`${icon(button.dataset.icon)}<span>${escapeHtml(label)}${noteHtml}</span>`);
     const accessible = note ? `${label} — ${note}` : label;
     button.setAttribute("aria-label", accessible);
     button.title = accessible;
@@ -1135,14 +1136,14 @@ function renderStatusBar() {
   const patients = visiblePatients(app.vault);
   switcher.disabled = !app.vault || !patients.length;
   const switcherLabels = disambiguatedPatientLabels(patients);
-  switcher.innerHTML = patients.length
+  switcher.innerHTML = safeHtml(patients.length
     ? patients
         .map(
           (entry) =>
             `<option value="${escapeHtml(entry.id)}" ${entry.id === patient?.id ? "selected" : ""}>${escapeHtml(switcherLabels.get(entry.id) || entry.displayLabel)}</option>`
         )
         .join("")
-    : `<option>No patient selected</option>`;
+    : `<option>No patient selected</option>`);
 }
 
 function renderVault() {
@@ -1545,17 +1546,17 @@ function refreshPromptPreview() {
       presentationToEdit: app.presentationToEdit,
       presentationSpecialty: app.presentationSpecialty
     });
-    highlighted.innerHTML = renderHighlightedSegments(
+    highlighted.innerHTML = safeHtml(renderHighlightedSegments(
       buildPromptPreviewSegments(template, variableMap, { ensurePersona: true, taskId: app.selectedPromptTask }),
       escapeHtml,
       app.tokenColorOverrides
-    );
+    ));
     const templateBackdrop = byId("promptTemplateHighlight");
     if (templateBackdrop) {
       const variables = promptVariablesForPatient(patient, { selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets });
       const identityMap = Object.fromEntries(variables.map((entry) => [entry.token, entry.token]));
       const templateSegments = buildPromptPreviewSegments(template, identityMap);
-      templateBackdrop.innerHTML = renderHighlightedSegments(templateSegments, escapeHtml, app.tokenColorOverrides, { interactive: false });
+      templateBackdrop.innerHTML = safeHtml(renderHighlightedSegments(templateSegments, escapeHtml, app.tokenColorOverrides, { interactive: false }));
     }
   } catch (error) {
     highlighted.textContent = error instanceof Error ? error.message : "Unable to build prompt.";
@@ -1651,7 +1652,7 @@ function renderQuickModelControl() {
 function refreshRuleProposalsPanel() {
   try {
     const panel = document.querySelector("[data-rule-proposals]");
-    if (panel) panel.innerHTML = renderRuleProposals();
+    if (panel) panel.innerHTML = safeHtml(renderRuleProposals());
   } catch {
     // Panel not mounted; proposals will render on next view render.
   }
@@ -1707,7 +1708,7 @@ function renderAiChat() {
 let scribeProBoot = null;
 function ensureScribePro() {
   if (!scribeProBoot) {
-    scribeProBoot = import("../scribe-parakeet/app.js?v=20261011-ai-helper").catch((error) => {
+    scribeProBoot = import("../scribe-parakeet/app.js?v=20261012-safety").catch((error) => {
       scribeProBoot = null;
       throw error;
     });
@@ -1756,7 +1757,7 @@ function updateDeidStatus(status) {
 function refreshDeidControlsInActiveView() {
   if (app.view === "daily") {
     const strip = document.querySelector("#dailyContent .deid-strip");
-    if (strip) strip.outerHTML = renderDeidStrip();
+    if (strip) strip.outerHTML = safeHtml(renderDeidStrip());
     const busy = app.deidOperation.active;
     const saveContextButton = document.querySelector('[data-action="save-context"]');
     if (saveContextButton) {
@@ -2239,8 +2240,8 @@ function refreshSectionReviewInEditor(editor, scope, sectionId, { text: replacem
   const label = editor.querySelector(".section-label")?.value || "Section";
   const surface = editor.querySelector("[data-section-review-surface]");
   const replacement = renderSectionSurface({ id: sectionId, label, deidentifiedText: text }, scope);
-  if (surface) surface.outerHTML = replacement;
-  else editor.insertAdjacentHTML("beforeend", replacement);
+  if (surface) surface.outerHTML = safeHtml(replacement);
+  else editor.insertAdjacentHTML("beforeend", safeHtml(replacement));
 }
 
 function refreshSectionReviewAtCurrentPosition(editor, scope, sectionId, focusRedactionIndex = -1, replacementText) {
@@ -2666,7 +2667,7 @@ function rejectAllSectionRedactions(scope, sectionId) {
 function refreshResidualWarningSummary(scope) {
   const current = byId(`residualWarnings-${scope}`);
   if (!current) return;
-  current.outerHTML = renderWarnings(reviewSectionsForScope(scope), scope);
+  current.outerHTML = safeHtml(renderWarnings(reviewSectionsForScope(scope), scope));
 }
 
 async function dismissSectionWarning(scope, sectionId, warningIndex) {

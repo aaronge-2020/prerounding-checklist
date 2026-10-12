@@ -1,3 +1,4 @@
+import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 // Smart `@` autocomplete for drug lookup in the draft note editor.
 // Typing `@` followed by text in any draft note contenteditable region shows
 // a dropdown of matching drugs from OpenFDA. Selecting one opens a detail
@@ -7,7 +8,7 @@
 // This module attaches once to the review content container via event
 // delegation, so it survives the controller's full re-renders.
 
-import { gatedFetch } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
+import { gatedFetch } from "../../lib/network-gate.js?v=20261012-safety";
 
 const TRIGGER_PATTERN = /@([A-Za-z0-9_.\-]*)$/;
 const MAX_SUGGESTIONS = 8;
@@ -40,14 +41,14 @@ export function createDrugAutocomplete() {
     detailModal = document.createElement("div");
     detailModal.className = "drug-detail-modal-backdrop";
     detailModal.hidden = true;
-    detailModal.innerHTML = `
+    detailModal.innerHTML = safeHtml(`
       <div class="drug-detail-modal" role="dialog" aria-modal="true" aria-label="Drug details">
         <div class="drug-detail-header">
           <h3 class="drug-detail-title"></h3>
           <button type="button" class="drug-detail-close" aria-label="Close">×</button>
         </div>
         <div class="drug-detail-body"></div>
-      </div>`;
+      </div>`);
     document.body.appendChild(detailModal);
     detailModal.querySelector(".drug-detail-close").addEventListener("click", hideModal);
     detailModal.addEventListener("click", (e) => {
@@ -138,7 +139,7 @@ export function createDrugAutocomplete() {
       dd.hidden = true;
       return;
     }
-    dd.innerHTML = currentSuggestions
+    dd.innerHTML = safeHtml(currentSuggestions
       .map((item, index) => {
         const isSelected = index === selectedIndex;
         const generic = escapeHtml(item.generic);
@@ -150,7 +151,7 @@ export function createDrugAutocomplete() {
           ${brand ? `<span class="drug-autocomplete-brand">${brand}</span>` : ""}
         </div>`;
       })
-      .join("");
+      .join(""));
     dd.hidden = false;
     positionDropdown(activeTrigger);
   }
@@ -185,7 +186,7 @@ export function createDrugAutocomplete() {
       
       // Show loading state
       const dd = ensureDropdown();
-      dd.innerHTML = `<div class="drug-autocomplete-loading">Searching drugs…</div>`;
+      dd.innerHTML = safeHtml(`<div class="drug-autocomplete-loading">Searching drugs…</div>`);
       dd.hidden = false;
       if (activeTrigger) positionDropdown(activeTrigger);
       
@@ -236,10 +237,10 @@ export function createDrugAutocomplete() {
     const dosages = parseDosages(label);
     
     const titleEl = modal.querySelector(".drug-detail-title");
-    titleEl.innerHTML = `${escapeHtml(generic)}${brandNames.length > 0 ? ` <span class="drug-detail-brand">(${escapeHtml(brandNames.slice(0, 3).join(", "))})</span>` : ""}`;
+    titleEl.innerHTML = safeHtml(`${escapeHtml(generic)}${brandNames.length > 0 ? ` <span class="drug-detail-brand">(${escapeHtml(brandNames.slice(0, 3).join(", "))})</span>` : ""}`);
     
     const bodyEl = modal.querySelector(".drug-detail-body");
-    bodyEl.innerHTML = `
+    bodyEl.innerHTML = safeHtml(`
       ${indications.length > 0 ? `
         <div class="drug-detail-section">
           <h4>Indications</h4>
@@ -267,7 +268,7 @@ export function createDrugAutocomplete() {
       <div class="drug-detail-footer">
         <p class="drug-detail-source">Source: FDA-approved labeling via OpenFDA</p>
         <button type="button" class="drug-insert-btn drug-insert-name" data-insert-type="name" data-text="${escapeHtml(generic)}">Insert name only</button>
-      </div>`;
+      </div>`);
     
     // Wire up insert buttons
     bodyEl.querySelectorAll(".drug-insert-btn").forEach(btn => {

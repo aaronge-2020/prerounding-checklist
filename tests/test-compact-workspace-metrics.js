@@ -88,8 +88,10 @@ async function measure(name, fn, resetScroll = true) {
   else await page.mouse.move(0, 0);
   moves = clicks = wheels = wheelDelta = travel = 0;
   last = { x: 0, y: 0 };
+  const started = performance.now();
   await fn();
   results.push({
+    automatedElapsedMs: Math.round(performance.now() - started),
     task: name,
     clicks,
     pointerMoves: moves,

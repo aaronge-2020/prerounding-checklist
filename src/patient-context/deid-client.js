@@ -1,3 +1,4 @@
+import { trustedWorkerUrl } from "../lib/trusted-resource.js?v=20261012-safety";
 import {
   DEFAULT_DEID_MODEL_KEY,
   deidModelOptionByKey
@@ -39,7 +40,7 @@ function rejectAll(error) {
 
 function getWorker() {
   if (worker) return worker;
-  worker = new Worker(new URL("./deid-worker.js?v=20261011-epic-workflow", import.meta.url), { type: "module" });
+  worker = new Worker(trustedWorkerUrl(new URL("./deid-worker.js?v=20261012-safety", import.meta.url)), { type: "module" });
   worker.addEventListener("message", (event) => {
     const { type, id, value } = event.data || {};
     const request = requests.get(id);

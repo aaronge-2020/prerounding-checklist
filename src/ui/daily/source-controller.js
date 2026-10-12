@@ -1,7 +1,9 @@
+import { deidentifyLabeledField } from "../../patient-context/labeled-deidentification.js?v=20261012-safety";
+import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 import { createNoteDragController } from "./note-drag-controller.js?v=20261012-highlight-drag";
 import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261011-drag-workspace-v2";
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261012-citation-preview";
-import { captureScrollPositions, restoreScrollPositions, replaceViewContent } from "../view-scroll.js?v=20261012-scroll-review";
+import { captureScrollPositions, restoreScrollPositions, replaceViewContent } from "../view-scroll.js?v=20261012-safety";
 import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20261012-citation-preview";
 import {
   clinicalParseWarning,
@@ -27,8 +29,8 @@ import {
   primaryTeamNoteFields,
   updatePrimaryTeamNoteSection
 } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
-import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261012-all-sections";
-import { sharedLocalLlmClient } from "../../local-llm/client.js?v=20260928-local-llm-v1";
+import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261012-safety";
+import { sharedLocalLlmClient } from "../../local-llm/client.js?v=20261012-safety";
 import { splitNoteSectionsWithLlm } from "../../local-llm/parse.js?v=20260928-local-llm-v1";
 
 export function createDailySourceController(deps) {
@@ -89,12 +91,12 @@ export function createDailySourceController(deps) {
     const composer = structuredNoteComposer(scope, { create: false }) || {};
     const panel = document.querySelector(`[data-structured-note-detected="${scope}"]`);
     if (panel) {
-      panel.innerHTML = deps.dailyPresentation.renderStructuredNoteDetected({
+      panel.innerHTML = safeHtml(deps.dailyPresentation.renderStructuredNoteDetected({
         noteType,
         parseResult: composer.parseResult,
         scope,
         localAi: deps.localAiParseInfo ? deps.localAiParseInfo(scope) : null
-      });
+      }));
     }
   }
 
@@ -322,14 +324,14 @@ export function createDailySourceController(deps) {
     const effectiveComposer = focusFieldId
       ? { ...composer, mode: "sections", activeFieldId: focusFieldId }
       : composer;
-    current.outerHTML = deps.dailyPresentation.renderStructuredPrimaryNote({
+    current.outerHTML = safeHtml(deps.dailyPresentation.renderStructuredPrimaryNote({
       noteType: structuredNoteType(scope),
       note: existingStructuredNote(scope),
       draftValues: deps.app.structuredNoteDrafts.get(structuredNoteKey(scope)) || {},
       composer: effectiveComposer,
       scope,
       deidBusy: deps.app.deidOperation.active
-    });
+    }));
     const next = document.querySelector(`[data-structured-primary-note-scope="${scope}"]`);
     const field = focusFieldId
       ? next?.querySelector(`[data-structured-note-scope="${scope}"][data-structured-note-field="${focusFieldId}"]`)
@@ -501,9 +503,7 @@ export function createDailySourceController(deps) {
         const rawText = Object.hasOwn(draftValues, field.id)
           ? draftValues[field.id]
           : existing?.sections?.[field.id]?.deidentifiedText || "";
-        const result = rawText.trim()
-          ? await deps.deidentify(rawText, { referenceDate: day?.date || deps.app.admissionDate })
-          : { text: "", residualWarnings: [] };
+        const result = await deidentifyLabeledField(rawText, field.label, deps.deidentify, { referenceDate: day?.date || deps.app.admissionDate });
         note = updatePrimaryTeamNoteSection(note, field.id, {
           deidentifiedText: result.text || "",
           residualWarnings: result.residualWarnings || result.flags || []
@@ -780,7 +780,7 @@ export function createDailySourceController(deps) {
           ? deps.app.selectedStayPacketId
           : selected?.id || "admission";
     deps.app.selectedStayPacketId = selectedPacketId;
-    deps.byId("dailyContent").innerHTML = deps.dailyPresentation.renderDaily({
+    deps.byId("dailyContent").innerHTML = safeHtml(deps.dailyPresentation.renderDaily({
       patient,
       days,
       selectedDayId: deps.app.selectedDayId,
@@ -811,7 +811,7 @@ export function createDailySourceController(deps) {
         { structuredNote: patient?.admissionPrimaryTeamNote, scope: "admission" }
       ),
       deidBusy: deps.app.deidOperation.active
-    });
+    }));
   }
 
   async function addSource() {

@@ -1,3 +1,4 @@
+import { safeHtml } from "../lib/safe-html.js?v=20261012-safety";
 /**
  * app.js — DOM wiring for scribe-parakeet.html. Wiring only: all capture,
  * inference, chunking, and enrollment logic lives in pipeline.js; the model
@@ -18,7 +19,7 @@ import {
   checkBrowserSupport,
   formatTimestamp,
   ENROLL_SECONDS,
-} from './pipeline.js';
+} from './pipeline.js?v=20261012-safety';
 import { MODEL_MANIFEST, TOTAL_BYTES } from './model-manager.js';
 
 const $ = (id) => document.getElementById(id);
@@ -82,14 +83,14 @@ function fmtClock(ms) {
 // ---------------------------------------------------------------- setup ---
 
 function renderFileRows(status) {
-  els.fileList.innerHTML = '';
+  els.fileList.innerHTML = safeHtml('');
   for (const entry of MODEL_MANIFEST) {
     const st = status.find((s) => s.name === entry.name);
     const row = document.createElement('div');
     row.className = 'file' + (st?.cached ? ' done' : '');
     row.id = `file-${entry.name}`;
     row.innerHTML =
-      `<span class="name"></span><span class="meta"></span><span class="bar" aria-hidden="true"><i></i></span>`;
+      safeHtml(`<span class="name"></span><span class="meta"></span><span class="bar" aria-hidden="true"><i></i></span>`);
     row.querySelector('.name').textContent = entry.label;
     row.querySelector('.meta').textContent =
       `${fmtBytes(entry.bytes)} · ${st?.cached ? 'cached ✓' : 'not downloaded'}`;
@@ -386,10 +387,10 @@ async function onStop() {
 const WHO_LABEL = { you: 'You', patient: 'Patient', speaker: 'Speaker' };
 
 function renderTranscript(segments, audioSec) {
-  els.transcriptList.innerHTML = '';
+  els.transcriptList.innerHTML = safeHtml('');
   if (!segments.length) {
     els.transcriptList.innerHTML =
-      `<p class="empty">No speech detected in ${audioSec.toFixed(0)}s of audio.</p>`;
+      safeHtml(`<p class="empty">No speech detected in ${audioSec.toFixed(0)}s of audio.</p>`);
   }
   for (const s of segments) {
     const div = document.createElement('div');

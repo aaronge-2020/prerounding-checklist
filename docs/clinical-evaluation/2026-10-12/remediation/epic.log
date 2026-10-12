@@ -1,0 +1,19 @@
+
+> prerounding-checklist@1.0.0 test:epic-import
+> node tests/test-epic-import-layout-browser.js && node tests/test-note-drag-browser.js && node tests/test-structured-note-scroll-browser.js && node tests/test-epic-import-corpus-browser.js && node tests/test-epic-import-model-browser.js
+
+PASS: compact Epic input, parsing, draft retention, section scrolling, desktop actions, and mobile layout
+Note arrangement: direct drag, copy, tap/keyboard, Undo, edits, cancel, external drop, replacement, mobile passed.
+PASS: enter-by-section scroll regression
+Corpus: 10/60 notes checked
+Corpus: 20/60 notes checked
+Corpus: 30/60 notes checked
+Corpus: 40/60 notes checked
+Corpus: 50/60 notes checked
+Corpus: 60/60 notes checked
+PASS: 60 varied notes parsed, reviewed and edited; 7 explicit Structured-mode saves; reload, encryption and lock verified
+PASS: bundled Stanford worker loaded and passed its readiness self-test
+PASS: Stanford de-identification and encrypted save for note 1
+PASS: Stanford de-identification and encrypted save for note 2
+PASS: Stanford de-identification and encrypted save for note 3
+PASS: model failure keeps the draft, does not save, and does not navigate to Write note

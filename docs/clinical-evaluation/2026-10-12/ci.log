@@ -1,0 +1,788 @@
+
+> prerounding-checklist@1.0.0 test:ci
+> npm run lint && npm run test:core && npm run test:local-ui
+
+
+> prerounding-checklist@1.0.0 lint
+> eslint .
+
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\ai\agent-tools.js
+  34:3  warning  'getSetIdForRxcui' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\app\state\vault.js
+  7:10  warning  'normalizeSavedScores' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\drug-data\rxnorm-resolve.js
+  116:10  warning  'removeSpan' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\note-drafts\layout.js
+  90:9  warning  'customIds' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\note-drafts\model.js
+  3:10  warning  'getLayout' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\patient-context\deid-service.js
+    4:3   warning  'deidentifyTextStructuredOnly' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  219:16  warning  'error' is defined but never used                                                               no-unused-vars
+  239:49  warning  'task' is defined but never used. Allowed unused args must match /^_/u                          no-unused-vars
+  239:55  warning  'modelId' is defined but never used. Allowed unused args must match /^_/u                       no-unused-vars
+  239:64  warning  'options' is defined but never used. Allowed unused args must match /^_/u                       no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\patient-context\note-clinical-extractor.js
+  588:9  warning  'objectiveText' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\patient-context\rxnorm-resolve.js
+  116:10  warning  'removeSpan' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\review-data\compact-summary.js
+  199:10  warning  'findPressureIndex' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\scribe-parakeet\app.js
+  12:3  warning  'cancelRecording' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\ui\ai-chat\controller.js
+   27:3  warning  'CHAT_TOOL_NAMES' is defined but never used. Allowed unused vars must match /^_/u               no-unused-vars
+   52:3  warning  'pieceText' is defined but never used. Allowed unused vars must match /^_/u                     no-unused-vars
+   54:3  warning  'MAX_SELECTED_PIECES_CHARS' is defined but never used. Allowed unused vars must match /^_/u     no-unused-vars
+  120:3  warning  'onChatServiceChange' is assigned a value but never used. Allowed unused args must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\ui\ai-chat\presentation.js
+  392:30  warning  'settings' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  691:14  warning  'e' is defined but never used                                                        no-unused-vars
+  701:14  warning  'e' is defined but never used                                                        no-unused-vars
+  711:14  warning  'e' is defined but never used                                                        no-unused-vars
+  715:14  warning  'e' is defined but never used                                                        no-unused-vars
+  719:14  warning  'e' is defined but never used                                                        no-unused-vars
+  723:14  warning  'e' is defined but never used                                                        no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\ui\app.js
+    91:10  warning  'defaultPacketRole' is defined but never used. Allowed unused vars must match /^_/u                  no-unused-vars
+   157:8   warning  'Fuse' is defined but never used. Allowed unused vars must match /^_/u                               no-unused-vars
+   601:10  warning  'selectedDeidReadinessAsPanelProps' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  2465:17  warning  'original' is assigned a value but never used. Allowed unused vars must match /^_/u                  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\ui\cheat-sheets\controller.js
+  23:70  warning  'replaceViewContent' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\ui\daily\presentation.js
+  473:11  warning  'selectedSource' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  475:11  warning  'addAction' is assigned a value but never used. Allowed unused vars must match /^_/u       no-unused-vars
+  477:11  warning  'addLabel' is assigned a value but never used. Allowed unused vars must match /^_/u        no-unused-vars
+  478:11  warning  'draftId' is assigned a value but never used. Allowed unused vars must match /^_/u         no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\ui\demo\controller.js
+   24:121  warning  'getCheatSheetOpenId' is defined but never used. Allowed unused args must match /^_/u   no-unused-vars
+   24:195  warning  'clearAiChatDemoReply' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+  344:14   warning  'err' is defined but never used                                                         no-unused-vars
+  572:26   warning  'target' is defined but never used. Allowed unused args must match /^_/u                no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\ui\drug-checks\controller.js
+  18:3  warning  'byId' is assigned a value but never used. Allowed unused args must match /^_/u        no-unused-vars
+  19:3  warning  'escapeHtml' is assigned a value but never used. Allowed unused args must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\ui\review\controller.js
+    13:3   warning  'EXAM_SYSTEMS' is defined but never used. Allowed unused vars must match /^_/u        no-unused-vars
+    71:10  warning  'createDifferential' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+   976:18  warning  'error' is defined but never used                                                     no-unused-vars
+   981:14  warning  'error' is defined but never used                                                     no-unused-vars
+  2252:18  warning  'error' is defined but never used                                                     no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\ui\review\presentation.js
+    3:34  warning  'fieldsForNoteType' is defined but never used. Allowed unused vars must match /^_/u                     no-unused-vars
+   19:3   warning  'SMART_EXAM_EMPTY' is defined but never used. Allowed unused vars must match /^_/u                      no-unused-vars
+  156:62  warning  'query' is defined but never used. Allowed unused args must match /^_/u                                 no-unused-vars
+  574:9   warning  'AP_SUGGESTION_TARGET_LABELS' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  579:9   warning  'AP_SUGGESTION_ACTION_LABELS' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  800:46  warning  'differenceSelectionId' is defined but never used. Allowed unused args must match /^_/u                 no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\ui\sample-notes\controller.js
+  295:18  warning  'error' is defined but never used  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\ui\scores\controller.js
+  24:3  warning  'replaceViewContent' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\ui\scores\presentation.js
+  214:80  warning  'result' is defined but never used. Allowed unused args must match /^_/u      no-unused-vars
+  329:35  warning  'definition' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\vault\deid.js
+    46:3   warning  'doseUnitPattern' is defined but never used. Allowed unused vars must match /^_/u        no-unused-vars
+    47:3   warning  'doseFormPattern' is defined but never used. Allowed unused vars must match /^_/u        no-unused-vars
+   338:59  warning  'end' is defined but never used. Allowed unused args must match /^_/u                    no-unused-vars
+   545:55  warning  'end' is defined but never used. Allowed unused args must match /^_/u                    no-unused-vars
+  2407:27  warning  'proposer' is defined but never used. Allowed unused args must match /^_/u               no-unused-vars
+  2407:37  warning  'evidence' is defined but never used. Allowed unused args must match /^_/u               no-unused-vars
+  2407:47  warning  'proposalIndex' is defined but never used. Allowed unused args must match /^_/u          no-unused-vars
+  2738:10  warning  'monthDiff' is defined but never used. Allowed unused vars must match /^_/u              no-unused-vars
+  2914:35  warning  'context' is assigned a value but never used. Allowed unused args must match /^_/u       no-unused-vars
+  2993:10  warning  'dateKeyFromDate' is defined but never used. Allowed unused vars must match /^_/u        no-unused-vars
+  3996:10  warning  'isPlausibleNameText' is defined but never used. Allowed unused vars must match /^_/u    no-unused-vars
+  4000:10  warning  'aliasVariantsFromSpan' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  4122:10  warning  'inferNameAliases' is defined but never used. Allowed unused vars must match /^_/u       no-unused-vars
+  4468:26  warning  'key' is defined but never used. Allowed unused args must match /^_/u                    no-unused-vars
+  4529:10  warning  'overlapsAny' is defined but never used. Allowed unused vars must match /^_/u            no-unused-vars
+  4992:12  warning  '_' is defined but never used                                                            no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\vault\deid\adaptive.js
+  137:9  warning  Unused eslint-disable directive (no problems were reported from 'no-new')
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\src\vault\deid\rule-proposer.js
+  16:10  warning  'extractFeatures' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\tests\benchmark-adaptive-meddeid.mjs
+  222:21  warning  'a' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+  222:24  warning  'b' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\tests\test-ai-chat.js
+  42:41  warning  'MAX_SELECTED_PIECES_CHARS' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\tests\test-ap-consult-autosave.js
+  18:7  warning  'presentation' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\tests\test-chart-grounded.js
+  201:11  warning  'input' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\tests\test-clinical-scores.js
+  15:3  warning  'latestLabValue' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\tests\test-full-chart-canonical.js
+  13:3  warning  'pieceText' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\tests\test-local-first-ui-browser.js
+  45:9  warning  'navigation' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\tests\test-note-drafts.js
+  42:3  warning  'SECTION_VISIBILITY_KEYS' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\tests\test-rag-lifecycle.js
+  142:26  warning  'args' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\tests\test-scribe-prototype.js
+  11:36  warning  'readdirSync' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\tests\test-temperature-unit-browser.js
+  54:9  warning  'vitalsBefore' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\tests\test-u1-u17-module-verify.js
+  17:7  warning  'escapeHtml' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\tests\test-ui-feature-modules.js
+  314:7  warning  'FakeFile' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\tests\test-view-scroll.js
+    6:3  warning  'preserveViewScroll' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  132:7  warning  'scoped' is assigned a value but never used. Allowed unused vars must match /^_/u     no-unused-vars
+
+✖ 89 problems (0 errors, 89 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+
+
+> prerounding-checklist@1.0.0 test:core
+> npm run test:unit && npm run test:guided-demo-browser && npm run test:primary-note-pull-fallback
+
+
+> prerounding-checklist@1.0.0 test:unit
+> npm run test:syntax && npm run test:ui-boundaries && npm run test:state && npm run test:deid && npm run test:clinical-guard-vocabulary && npm run test:section-redaction-incremental && npm run test:clinical-export-parser && npm run test:rxnorm-mar && npm run test:primary-note-parser && npm run test:note-mapping && npm run test:review-data && npm run test:review-section-text-boundary && npm run test:review-patient-switch && npm run test:review-interactions && npm run test:lab-baselines && npm run test:note-extractor && npm run test:narrative-fixtures && npm run test:note-drafts && npm run test:prompts && npm run test:progress-note-packet && npm run test:ui-features && npm run test:guided-demo && npm run test:cheat-sheets && npm run test:cheat-sheets-data && npm run test:sample-notes-data && npm run test:sample-notes-boundary && npm run test:openai-ap && npm run test:request-inspector && npm run test:decision-scoring && npm run test:openevidence-exam-note && npm run test:exam-findings-token && npm run test:custom-prompt-tasks && npm run test:guideline-sets && npm run test:prompt-preview-segments && npm run test:deid-model-options && npm run test:model-packs && npm run test:local-llm && npm run test:ai-chat && npm run test:ai-chat-deid-auto && npm run test:ai-chat-draft-sections && npm run test:markdown-links && npm run test:citation-links && npm run test:clinical-scores && npm run test:ai-models && npm run test:score-guides && npm run test:scores-ui && npm run test:drug-lookup && npm run test:network-gate && npm run test:mobile-entry && npm run test:scribe-parakeet && npm run test:rag && npm run test:ddi-mechanisms
+
+
+> prerounding-checklist@1.0.0 test:syntax
+> node scripts/check-syntax.js
+
+Syntax checks passed.
+
+> prerounding-checklist@1.0.0 test:ui-boundaries
+> node scripts/check-ui-module-boundaries.js
+
+UI module boundary checks passed
+Patient-boundary session-clear checks passed
+
+> prerounding-checklist@1.0.0 test:state
+> node tests/test-local-first-state.js
+
+local-first state tests passed
+
+> prerounding-checklist@1.0.0 test:deid
+> node tests/test-deid.js && node tests/test-quick-deid-anchor-isolation.js && node tests/test-deid-adaptive.js
+
+De-ID tests passed for 250 synthetic cases plus targeted guards.
+Track C structured-pattern tests passed.
+Track D clinical-rule tests passed.
+quick de-id anchor isolation: OK
+test-deid-adaptive: all assertions passed
+
+> prerounding-checklist@1.0.0 test:clinical-guard-vocabulary
+> node tests/test-clinical-guard-vocabulary.js
+
+Clinical guard vocabulary verified: MeSH 2026, 94,146 words, 221,740 phrases.
+
+> prerounding-checklist@1.0.0 test:section-redaction-incremental
+> node tests/test-section-redaction-incremental.js
+
+Incremental section-redaction tests passed
+
+> prerounding-checklist@1.0.0 test:clinical-export-parser
+> node tests/test-clinical-export-parser.js
+
+clinical export parser tests passed
+
+> prerounding-checklist@1.0.0 test:rxnorm-mar
+> node tests/test-rxnorm-mar.js
+
+test-rxnorm-mar passed (27725 bare-name entries)
+test-rxnorm-mar MAR regression cases passed
+
+> prerounding-checklist@1.0.0 test:primary-note-parser
+> node tests/test-primary-team-note-parser.js
+
+primary-team note parser tests passed
+primary-team note parser A/P pairing regression tests passed
+
+> prerounding-checklist@1.0.0 test:note-mapping
+> node tests/test-note-mapping.js && node tests/test-rule-session-boundary.js
+
+Note mapping: exact ranges, destination preservation, invalid ranges and source restoration passed.
+Rules: no storage access, explicit approval, immutable reads, session clear passed.
+
+> prerounding-checklist@1.0.0 test:review-data
+> node tests/test-review-data.js
+
+review data index tests passed
+
+> prerounding-checklist@1.0.0 test:review-section-text-boundary
+> node tests/test-review-section-text-boundary.js
+
+review section text boundary tests passed
+
+> prerounding-checklist@1.0.0 test:review-patient-switch
+> node tests/test-review-patient-switch.js
+
+Part 1 passed: all patient-change paths clear patient-scoped session state
+Part 2 passed: stale session leaks the old draft; the session clear resolves it
+Part 3 passed: mid-debounce patient switch redirects the autosave to the original patient
+All review patient-switch checks passed
+
+> prerounding-checklist@1.0.0 test:review-interactions
+> node tests/test-review-interactions.js
+
+review interaction tests passed
+
+> prerounding-checklist@1.0.0 test:lab-baselines
+> node tests/test-lab-baselines.js
+
+lab baseline tests passed
+
+> prerounding-checklist@1.0.0 test:note-extractor
+> node tests/test-note-clinical-extractor.js && node tests/test-mar-medication-parsing.js
+
+note-clinical-extractor tests passed
+note-clinical-extractor regression tests passed
+MAR medication parsing regression tests passed
+
+> prerounding-checklist@1.0.0 test:narrative-fixtures
+> node tests/test-narrative-fixtures.js
+
+Testing H&P fixtures...
+Testing progress note fixtures...
+All 40 narrative fixture tests passed!
+
+> prerounding-checklist@1.0.0 test:note-drafts
+> node tests/test-note-drafts.js
+
+note draft model tests passed
+
+> prerounding-checklist@1.0.0 test:prompts
+> node tests/test-local-first-prompts.js
+
+local-first prompt tests passed
+
+> prerounding-checklist@1.0.0 test:progress-note-packet
+> node tests/test-progress-note-packet.js
+
+progress note packet tests passed
+
+> prerounding-checklist@1.0.0 test:ui-features
+> node tests/test-ui-feature-modules.js && node tests/test-view-scroll.js && node tests/test-duplicate-labels-source-badge.js
+
+UI feature module tests passed
+view-scroll unit tests passed
+duplicate labels + required-source badge: OK
+
+> prerounding-checklist@1.0.0 test:guided-demo
+> node tests/test-guided-demo.js
+
+Guided demo session tests passed
+Guided demo cheat-sheet gate tests passed
+[demo] render() start, stage: undefined
+Guided demo exit-cleanup regression tests passed
+[demo] render() start, stage: browse-cheat-sheet
+[demo] prepare block, stage: browse-cheat-sheet
+[demo] inserting guide bar, html length: 1353 stage: browse-cheat-sheet
+[demo] render() start, stage: browse-cheat-sheet
+Guided demo could not render its controls.
+[demo] inserting guide bar, html length: 1353 stage: browse-cheat-sheet
+Guided demo could not render its controls.
+[demo] render() start, stage: browse-cheat-sheet
+[demo] prepare block, stage: browse-cheat-sheet
+[demo] inserting guide bar, html length: 1353 stage: browse-cheat-sheet
+Guided demo could not render its controls.
+[demo] render() start, stage: browse-cheat-sheet
+[demo] inserting guide bar, html length: 1353 stage: browse-cheat-sheet
+Guided demo could not render its controls.
+[demo] render() start, stage: browse-cheat-sheet
+[demo] prepare block, stage: browse-cheat-sheet
+[demo] inserting guide bar, html length: 1353 stage: browse-cheat-sheet
+Guided demo could not render its controls.
+[demo] render() start, stage: browse-cheat-sheet
+[demo] inserting guide bar, html length: 1353 stage: browse-cheat-sheet
+Guided demo could not render its controls.
+Guided demo already-open sheet regression tests passed
+
+> prerounding-checklist@1.0.0 test:cheat-sheets
+> node tests/test-cheat-sheets.js
+
+ok empty query returns all
+ok blank query returns all
+ok null query returns all
+ok case-insensitive title match
+ok prefix match on title
+ok substring match on title
+ok alias match
+ok alias substring match
+ok id match
+ok system match
+ok system prefix match
+ok title hit outranks alias hit
+ok scoreSheet ranks title prefix above alias prefix
+ok no match returns empty
+ok getSheetById found
+ok getSheetById missing
+ok getSheetById null id
+ok getSheetById non-array
+ok null sheets
+ok sheets with holes
+
+All cheat-sheet search tests passed.
+
+> prerounding-checklist@1.0.0 test:cheat-sheets-data
+> node tests/test-cheat-sheets-data.js
+
+OK: 69 sheets, 898 history + 639 exam items verified verbatim (why filled 0, how filled 50, meaning ai-draft 1537)
+
+> prerounding-checklist@1.0.0 test:sample-notes-data
+> node tests/test-sample-notes-data.js
+
+sample-notes-data: 9 charts, all fixture checks passed
+
+> prerounding-checklist@1.0.0 test:sample-notes-boundary
+> node tests/test-sample-notes-patient-boundary.js
+
+test-sample-notes-patient-boundary: all assertions passed
+
+> prerounding-checklist@1.0.0 test:openai-ap
+> node tests/test-openai-ap-format.js && node tests/test-consult-citations.js
+
+test-openai-ap-format: all assertions passed
+test-openai-ap-format: strict-mode schema compliance passed
+PASS: citation excerpts, persisted source locations, legacy references and cross-consult identity
+
+> prerounding-checklist@1.0.0 test:request-inspector
+> node tests/test-request-inspector.js
+
+Request inspector: exact transport, secret exclusion, temperature validation, defaults and offline gate passed.
+AI resilience: cancellation, incomplete/refused replies, body deadline, storage controls, and selected-note context passed.
+
+> prerounding-checklist@1.0.0 test:decision-scoring
+> node tests/test-decision-scoring.js
+
+✓ request builder shapes a valid Decisions-API choice question
+✓ request builder rejects under-populated differentials
+✓ response parser returns the ranked distribution
+✓ response parser rejects malformed replies
+✓ probability formatting
+
+All decision-scoring assertions passed.
+
+> prerounding-checklist@1.0.0 test:openevidence-exam-note
+> node tests/test-openevidence-exam-note.js
+
+OpenEvidence exam note schema tests passed
+
+> prerounding-checklist@1.0.0 test:exam-findings-token
+> node tests/test-exam-findings-token.js
+
+Exam-findings prompt token tests passed
+
+> prerounding-checklist@1.0.0 test:custom-prompt-tasks
+> node tests/test-custom-prompt-tasks.js
+
+Custom prompt task tests passed
+
+> prerounding-checklist@1.0.0 test:guideline-sets
+> node tests/test-guideline-sets.js
+
+Guideline set tests passed
+
+> prerounding-checklist@1.0.0 test:prompt-preview-segments
+> node tests/test-prompt-preview-segments.js
+
+Prompt preview segment/color tests passed
+
+> prerounding-checklist@1.0.0 test:deid-model-options
+> node tests/test-deid-model-options.js
+
+de-id model option tests passed
+
+> prerounding-checklist@1.0.0 test:model-packs
+> node tests/test-model-packs.js
+
+model-pack registry tests passed
+
+> prerounding-checklist@1.0.0 test:local-llm
+> node tests/test-local-llm.js
+
+local LLM tests passed
+patient context tests passed
+local AI presentation tests passed
+system prompt tests passed
+settings guidelines tests passed
+markdown tests passed
+markdown continuous-numbering tests passed
+context budget tests passed
+primary team note tests passed
+context meter tests passed
+context pieces tests passed
+draft note piece tests passed
+local-llm import alignment tests passed
+local-llm parse liveness tests passed
+local-llm verifier tests passed
+
+> prerounding-checklist@1.0.0 test:ai-chat
+> node tests/test-ai-chat.js
+
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+ai-chat tests passed
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+
+> prerounding-checklist@1.0.0 test:ai-chat-deid-auto
+> node tests/test-ai-chat-deid-auto.js
+
+Part 1 passed: AI Chat auto-loads the best de-identification system (source guards)
+Part 2 passed: ensureDeidReady verifies the best system automatically and fails closed
+Part 3 passed: the budget meter and selection controls are honest in ChatGPT mode
+
+> prerounding-checklist@1.0.0 test:ai-chat-draft-sections
+> node tests/test-ai-chat-draft-sections.js
+
+Part 1 passed: renderNoteSectionEntries is granular and pipeline-identical
+Part 2 passed: patient-context pieces are per-section with a legacy fallback
+Part 3 passed: split/verify are fail-closed over selection subsets
+Part 4 passed: every piece is selectable in ChatGPT mode
+Model cache status unavailable; retry model verification before use.
+Model cache status unavailable; retry model verification before use.
+Part 5 passed: ChatGPT review follows the shared selection and the meter tracks it
+All draft-section granularity tests passed
+
+> prerounding-checklist@1.0.0 test:markdown-links
+> node tests/test-markdown-links.js
+
+markdown link tests passed
+
+> prerounding-checklist@1.0.0 test:citation-links
+> node tests/test-citation-links.js
+
+citation link tests passed
+
+> prerounding-checklist@1.0.0 test:clinical-scores
+> node tests/test-curb65-manual-bindings.js && node tests/test-clinical-scores.js
+
+CURB65: no unrelated demographic or lab autofill.
+clinical score parity tests passed
+
+> prerounding-checklist@1.0.0 test:ai-models
+> node tests/test-ai-models.js
+
+All AI model tests passed.
+
+> prerounding-checklist@1.0.0 test:score-guides
+> node tests/test-score-guides.js
+
+ok - every calculator has a guide entry
+ok - every guide has all required fields with real content
+ok - nextSteps keys resolve against real interpret bands
+ok - evidence entries carry real https URLs
+ok - guide text is plain prose (no markup artifacts)
+score guide contract tests passed
+
+> prerounding-checklist@1.0.0 test:scores-ui
+> node tests/test-scores-ui.js
+
+ok - home renders one card per calculator
+ok - home explains patient-sourced inputs
+ok - detail shows incomplete panel with missing labels when inputs are empty
+ok - detail shows result headline when complete
+ok - detail renders all four panes with only the active one visible
+ok - binding badge states: from patient, edited, none
+ok - re-pull button only appears when bindings exist
+ok - due-dates mode gating hides irrelevant fields in place
+ok - detail provenance states verified one-to-one parity
+ok - granular renderers are exported for surgical updates
+ok - controller navigates home -> detail -> home
+ok - change() updates the model without rebuilding the form
+ok - typing updates the result bar live without touching the input
+ok - radio change moves the selected option in place
+ok - completing the form updates the result bar in place
+ok - tab switches toggle panes in place and refresh next-steps
+ok - favorite toggle patches the star in place
+ok - accordions toggle in place
+ok - manual edit marks binding overridden; re-pull restores it in place
+ok - mode switch toggles field visibility in place
+ok - save patches only the result bar in place
+ok - save failure surfaces retry state without rebuilding
+ok - switching patients resets calculator state
+ok - no patient shows the patient-required message
+ok - handlers ignore events when the scores view is not active
+ok - every registered calculator declares a verification date or explicit pending state
+ok - provenance wording matches verification state
+ok - detail renders all four MDCalc tabs with Calculator active
+ok - detail renders accordions and description from the guide
+ok - next-steps tab resolves band-specific guidance
+ok - mdc-opt is positioned: absolute radio input stays inside the label
+score UI contract tests passed
+
+> prerounding-checklist@1.0.0 test:drug-lookup
+> node tests/test-drug-lookup.js
+
+  dataset: 112021 pairs (25109 major, 86912 moderate)
+test-drug-lookup: all assertions passed
+
+> prerounding-checklist@1.0.0 test:network-gate
+> node tests/test-network-gate.js
+
+url classification tests passed
+toggle persistence tests passed
+gatedFetch tests passed
+subscription tests passed
+global fetch guard tests passed
+openai client tests passed
+local-llm offline pre-check tests passed
+worker net guard tests passed
+worker/client wiring tests passed
+cache-buster alignment tests passed
+remote call-site tests passed
+drug lookup tests passed
+settings presentation tests passed
+ai-chat presentation tests passed
+all offline-mode tests passed
+
+> prerounding-checklist@1.0.0 test:mobile-entry
+> node tests/test-mobile-entry.js
+
+ok mobile links the scribe prototype (does not embed it)
+ok mobile auto-forwards to the phone scribe
+ok mobile bedside escape opts out of the forward
+ok scribe prototype links back to bedside cheat sheets
+ok mobile loads the bundled cheat-sheet data
+ok mobile has a search field
+ok mobile has no vault passphrase gate
+ok mobile imports no app modules
+ok mobile mirrors the search tiers
+ok mobile escapes sheet content
+ok mobile offers a full-site escape
+ok mobile persists the full-site choice
+ok mobile search input avoids iOS focus zoom
+ok mobile respects the iPhone safe area
+ok detail shows no answer-choice chips by default
+ok questions render as dense expandable rows
+ok tap-to-expand uses aria-expanded
+ok expand region shows clinical reasoning (meaning), not answer choices
+ok AI-drafted meanings carry a review note
+ok fast sheet switcher strip exists
+ok History/Exam quick-jump exists
+ok no checkbox or check-off UI
+ok index carries the redirect block
+ok redirect snippet targets mobile.html
+ok redirect snippet honors the persisted choice
+ok redirect snippet honors ?full=1
+ok redirect snippet never throws (guarded)
+ok small screen, no choice -> goes to mobile.html
+ok ?full=1 persists the full choice
+ok ?full=1 cleans the URL
+ok ?full=1 does not redirect
+ok persisted full choice is honored on small screens
+ok large screen, no choice -> stays on full app
+ok persisted mobile choice is honored on large screens
+ok redirect still works when storage is denied
+
+All mobile entry tests passed.
+
+> prerounding-checklist@1.0.0 test:scribe-parakeet
+> node tests/test-scribe-parakeet.js
+
+scribe-parakeet contract tests passed
+
+> prerounding-checklist@1.0.0 test:rag
+> node tests/test-rag-chunks.js && node tests/test-rag-similarity.js && node tests/test-chart-grounded.js && node tests/test-full-chart-canonical.js && node tests/test-section-split-ingestion.js && node tests/test-rag-lifecycle.js
+
+test-rag-chunks: all assertions passed
+test-rag-similarity: all assertions passed
+budget: derived from the model's real context window
+ok - budget is model-grounded with a safe fallback
+citations: parse per [Section]: 'quote'
+ok - parser handles quotes, multiples, apostrophes, and non-matches
+citations: index matches reviewed pieces by label or title
+ok - index resolves titles, labels, and skips location-less pieces
+citations: piece ids map to chart locations
+ok - targets cover admission, day captures, and day-level pieces
+citations: chips keep the quote; unmatched labels are inert
+ok - chips preserve quotes and never render unmatched labels clickable
+split: full chart round-trips; tampering fails closed
+ok - split/verify is byte-exact and fail-closed
+transmit: exact reviewed bytes under one wrapper
+ok - transmit is exact and truncation is located
+budget boundary: de-identification length changes near the limit
+ok - de-id length changes truncate honestly against approved bytes
+transmit: modal-visible bytes equal transmitted bytes
+ok - modal-visible bytes equal transmitted bytes
+truncation: named by cut piece, never described as full
+ok - truncation is named by cut piece
+
+All chart-grounded unit tests passed.
+canonical: verified section-split output feeds the full chart
+ok - verified sections flow verbatim into the full chart
+
+All full-chart canonical tests passed.
+ingestion: honest model output verifies and feeds the full chart
+ok - honest parse verifies and feeds the full chart
+ingestion: fabricated model output fails closed — nothing is saved
+ok - fabrication fails closed
+ingestion: low-coverage model output fails closed
+ok - low coverage fails closed
+
+All section-split ingestion tests passed.
+api: selected chart enters the review gate (no retrieval)
+ok - full chart reviewed, no embedding model touched
+api: exact reviewed bytes are sent — one wrapper, de-identified, no raw PHI
+ok - exact reviewed bytes on the wire
+api: section citations keep the quote and resolve to the chart source
+ok - citations preserve quotes and navigate
+api: unmatched citations offer inspection without chart navigation
+ok - unmatched citations cannot navigate
+api: tool-assisted replies keep section citations and tool records
+ok - tool replies keep citations and tool records
+local: chat without the model ready falls back — never downloads
+ok - fallback without download
+local: the download affordance is the only route to ensureChartIndex
+ok - explicit tap is the only download route
+local: ready retrieval supplies section-labelled top-k context
+ok - section-labelled retrieval context
+local: patient change during retrieval hard-aborts and preserves the message as a restorable draft
+ok - hard abort preserves a restorable draft
+local: vault lock during retrieval preserves the draft across the lock
+ok - draft survives vault lock
+local: debounced warm rebuilds when the chart changes (fingerprint)
+ok - fingerprint debounces edits, rebuilds on change, cancels on switch
+service: explicit-download-only flags are enforced at the boundary
+ok - download gate at the service boundary
+service: every index/query/clear operation is serialized through one queue
+ok - all service operations serialized
+service: vault lock starts full RAG cleanup before the vault is removed
+ok - lock cleanup ordered before vault removal
+local: retrieval failure racing a patient switch never falls through to generation
+ok - retrieval-error race aborts before generation
+remote: patient switch during the ChatGPT network await discards the late reply (single-shot)
+ok - single-shot late reply discarded
+remote: patient switch during the tool-loop await discards the late reply
+ok - tool-loop late reply discarded
+remote: vault lock during the ChatGPT network await discards the late reply
+ok - vault-lock late reply discarded
+
+All chart-grounded lifecycle tests passed.
+
+> prerounding-checklist@1.0.0 test:ddi-mechanisms
+> node tests/test-ddi-mechanisms.js
+
+test-ddi-mechanisms: all assertions passed
+
+> prerounding-checklist@1.0.0 test:guided-demo-browser
+> node tests/test-guided-demo-browser.js
+
+Guided demo browser regression tests passed
+
+> prerounding-checklist@1.0.0 test:primary-note-pull-fallback
+> node tests/test-primary-note-pull-fallback-browser.js
+
+PASS: admission H&P one-liner saved
+PASS: day packet falls back to admission H&P
+PASS: day with its own note keeps strict packet scoping
+PASS: unsaved input gets an actionable message
+PASS: no page errors
+
+> prerounding-checklist@1.0.0 test:local-ui
+> node tests/test-local-first-ui-browser.js && node tests/test-review-data-browser.js && node tests/test-citation-inspector-browser.js && node tests/test-ap-generation-browser.js && node tests/test-compact-writer-browser.js && node tests/test-smart-exam-browser.js && npm run test:scroll-ui
+
+local-first browser workflow tests passed
+review data browser journeys passed
+PASS: hover, keyboard, narrow viewport, details, missing evidence, escaping, edit isolation and removed-source cleanup
+PASS: two problems with existing plan content
+PASS: Generate opens an editable prompt modal scoped to the single problem
+PASS: the student's prompt edits are sent verbatim to the API
+PASS: suggestions render inline in the plan, track-changes style
+PASS: suggestions survive a full draft-panel re-render
+PASS: approving the add suggestion appends to the diagnostic plan
+PASS: approving the revise suggestion replaces the anchored text
+PASS: rejecting the remove suggestion keeps the differential
+PASS: cancel dismisses the modal without calling the API
+PASS: a prominent loading indicator shows while generating
+PASS: approved suggestions include hyperlinked citations in the plan
+PASS: approved citation passages survive encrypted save and reload
+PASS: no JS errors
+
+=== AP SUGGESTIONS E2E PASSED ===
+PASS: compact writer outline, all destinations, live names/order/removal, differential editing/reordering/deletion, etiology, tabs, preview/download, responsive editing
+PASS: smart physical-exam inline workflow
+
+> prerounding-checklist@1.0.0 test:scroll-ui
+> node tests/test-view-scroll-browser.js && node tests/test-ai-chat-scroll-browser.js && node tests/test-chat-citations-browser.js && node tests/test-structured-note-scroll-browser.js
+
+Shared scroll: real settings/prompt buttons, nested panes, focus, selection, details and subsequent scroll passed at desktop/mobile sizes.
+Testing review at 1440px
+Review ready
+Testing review at 390px
+Review ready
+AI-chat review: 20 measured pointer actions passed across desktop/mobile; send gating and payload checked.
+Numbered chat citations: numbering, quotes, hover, keyboard, details, chart navigation, unmatched sources and mobile passed.
+PASS: enter-by-section scroll regression

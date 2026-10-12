@@ -1,0 +1,60 @@
+{
+  "phase": "../clinical-evaluation/2026-10-12/ux",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "fixture": {
+    "problems": 6,
+    "differentialsPerProblem": 4
+  },
+  "differentialHeightPx": 58,
+  "editorScrollHeightPx": 4554,
+  "results": [
+    {
+      "automatedElapsedMs": 43,
+      "task": "Edit fourth differential in sixth problem",
+      "clicks": 2,
+      "pointerMoves": 2,
+      "pointerTravelPx": 1480,
+      "wheelGestures": 0,
+      "wheelDeltaPx": 0
+    },
+    {
+      "automatedElapsedMs": 36,
+      "task": "Edit disposition at end of note",
+      "clicks": 2,
+      "pointerMoves": 2,
+      "pointerTravelPx": 1009,
+      "wheelGestures": 0,
+      "wheelDeltaPx": 0
+    },
+    {
+      "automatedElapsedMs": 46,
+      "task": "Return to one-liner and edit",
+      "clicks": 2,
+      "pointerMoves": 2,
+      "pointerTravelPx": 472,
+      "wheelGestures": 0,
+      "wheelDeltaPx": 0
+    },
+    {
+      "automatedElapsedMs": 38,
+      "task": "Open final preview",
+      "clicks": 1,
+      "pointerMoves": 1,
+      "pointerTravelPx": 439,
+      "wheelGestures": 0,
+      "wheelDeltaPx": 0
+    },
+    {
+      "automatedElapsedMs": 149,
+      "task": "Reach and edit Other note content in Epic import",
+      "clicks": 2,
+      "pointerMoves": 3,
+      "pointerTravelPx": 1229,
+      "wheelGestures": 1,
+      "wheelDeltaPx": 364
+    }
+  ]
+}

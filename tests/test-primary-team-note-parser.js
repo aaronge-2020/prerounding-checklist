@@ -24,7 +24,7 @@ function assertMostlyLossless(source, parsed, label) {
 const progressTeamNote = fixture("progress-team-note.txt");
 const progressParsed = parsePrimaryTeamNote(progressTeamNote, "progress");
 assertMostlyLossless(progressTeamNote, progressParsed, "progress-team note");
-assert.match(progressParsed.sections.one_liner, /40 y\/o F with prior stroke and L sided deficits who presented with completed R MCA\/ACA stroke with malignant edema s\/p DHC/);
+assert.equal(progressParsed.sections.one_liner, "", "unlabeled source text must not become a synthesized one-liner");
 assert.match(progressParsed.sections.interval_events, /No acute overnight events/);
 assert.match(progressParsed.sections.medications, /NUTRITION Tube Feeding/);
 assert.match(progressParsed.sections.physical_exam, /Sedated, not following commands/);
@@ -41,7 +41,7 @@ assert.match(progressParsed.sections.code_status, /CPR, Full Code/);
 const criticalCareNote = fixture("critical-care-note.txt");
 const criticalCareParsed = parsePrimaryTeamNote(criticalCareNote, "progress");
 assertMostlyLossless(criticalCareNote, criticalCareParsed, "critical-care note");
-assert.match(criticalCareParsed.sections.one_liner, /40 year old woman with prior stroke presented with completed RMCA\/ACA stroke with malignant edema s\/p DHC\./);
+assert.equal(criticalCareParsed.sections.one_liner, "", "unlabeled source text must not become a synthesized one-liner");
 assert.match(criticalCareParsed.sections.patient_report, /Acute ischemic stroke and Cerebral edema/);
 assert.match(criticalCareParsed.sections.patient_report, /Chief Complaint:/);
 assert.match(criticalCareParsed.sections.patient_report, /HPI:/);
@@ -56,7 +56,7 @@ assert.match(criticalCareParsed.sections.disposition, /EDUCATION\/COUNSELING/);
 const compactNote = fixture("compact-soap-note.txt");
 const compactParsed = parsePrimaryTeamNote(compactNote, "progress");
 assertMostlyLossless(compactNote, compactParsed, "compact SOAP note");
-assert.match(compactParsed.sections.one_liner, /40 y\.o\. female history of previous CVA, ulcerative colitis who presents with as a stroke\./);
+assert.equal(compactParsed.sections.one_liner, "", "unlabeled source text must not become a synthesized one-liner");
 assert.match(compactParsed.sections.patient_report, /complete occlusion of the right M1 MCA/);
 assert.match(compactParsed.sections.objective, /Intake\/Output Summary/);
 assert.match(compactParsed.sections.objective, /150\\\*\s+121\\\*\s+14\s+94/);
@@ -65,7 +65,7 @@ assert.match(compactParsed.sections.medications, /levETIRAcetam/);
 assert.match(compactParsed.sections.plan, /SBP<160/);
 
 const hAndP = parsePrimaryTeamNote(`## Chief Complaint\r\nDyspnea\r\n\r\n**HPI:** Progressive symptoms.\r\nPMH — Asthma\r\nROS:\r\nNo fever.`, "hp");
-assert.equal(hAndP.sections.one_liner, "Progressive symptoms.");
+assert.equal(hAndP.sections.one_liner, "");
 assert.equal(hAndP.sections.chief_complaint, "Dyspnea");
 assert.equal(hAndP.sections.history_of_present_illness, "Progressive symptoms.");
 assert.equal(hAndP.sections.past_medical_history, "Asthma");
@@ -923,7 +923,8 @@ PLAN:
   );
   assert.equal(headerNote.sections.other, "", "header metadata must not leak into other");
   assert.doesNotMatch(headerNote.sections.one_liner || "", /J\. Smith|Pager|09\/20\/2026/, "header metadata must not leak into the one-liner");
-  assert.match(headerNote.sections.one_liner || "", /Patient feels better/);
+  assert.equal(headerNote.sections.one_liner, "");
+  assert.match(headerNote.sections.patient_report, /Patient feels better/);
 }
 
 console.log("primary-team note parser A/P pairing regression tests passed");

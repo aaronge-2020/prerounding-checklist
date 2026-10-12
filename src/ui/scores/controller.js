@@ -1,3 +1,4 @@
+import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 // Controller for the MD Calc tab: owns calculator selection, input values,
 // patient bindings and rendering. All scoring math lives in
 // src/clinical-scores/ (pure); all markup in ./presentation.js (pure).
@@ -210,11 +211,11 @@ export function createScoresController({
     const slot = container?.querySelector?.("[data-mdc-resultbar-slot]");
     const ctx = detailModel();
     if (!slot || !ctx) return;
-    slot.innerHTML = presentation.renderResultBar({
+    slot.innerHTML = safeHtml(presentation.renderResultBar({
       result: ctx.result,
       definition: ctx.definition,
       savedState: savedStateFor(ctx.definition, ctx.values, ctx.result)
-    });
+    }));
   }
 
   function patchRadioSelection(container, key) {
@@ -238,7 +239,7 @@ export function createScoresController({
     const field = container.querySelector(`[data-score-field="${escAttr(key)}"]`);
     const slot = field?.querySelector?.("[data-score-badge]");
     if (!slot) return;
-    slot.innerHTML = presentation.renderBindingBadge(scoreBindings[key] || null, state.overridden.has(key));
+    slot.innerHTML = safeHtml(presentation.renderBindingBadge(scoreBindings[key] || null, state.overridden.has(key)));
   }
 
   // Push one field's DOM controls to the data-model values (re-pull path).
@@ -268,10 +269,10 @@ export function createScoresController({
     const slot = container?.querySelector?.("[data-score-fav-slot]");
     const ctx = detailModel();
     if (!slot || !ctx) return;
-    slot.innerHTML = presentation.renderFavoriteButton({
+    slot.innerHTML = safeHtml(presentation.renderFavoriteButton({
       definition: ctx.definition,
       isFavorite: readFavorites().has(ctx.definition.id)
-    });
+    }));
   }
 
   function refreshNextStepsPane() {
@@ -279,7 +280,7 @@ export function createScoresController({
     const pane = container?.querySelector?.('[data-mdc-pane="next-steps"]');
     const ctx = detailModel();
     if (!pane || !ctx) return;
-    pane.innerHTML = presentation.renderNextStepsPane({ definition: ctx.definition, result: ctx.result });
+    pane.innerHTML = safeHtml(presentation.renderNextStepsPane({ definition: ctx.definition, result: ctx.result }));
   }
 
   function switchTab(nextTab) {
@@ -337,7 +338,7 @@ export function createScoresController({
     const { list, detail } = ensureSections(container);
     if (!patient) {
       const template = document.createElement("template");
-      template.innerHTML = patientRequiredMessage();
+      template.innerHTML = safeHtml(patientRequiredMessage());
       list.replaceChildren(...template.content.childNodes);
       list.hidden = false;
       detail.hidden = true;
@@ -351,7 +352,7 @@ export function createScoresController({
       // (e.g. the "no patient" message).
       if (!list.hasChildNodes() || list.dataset.renderedFor !== patient.id) {
         const template = document.createElement("template");
-        template.innerHTML = renderHomeHtml();
+        template.innerHTML = safeHtml(renderHomeHtml());
         list.replaceChildren(...template.content.childNodes);
         list.dataset.renderedFor = patient.id;
       }
@@ -364,7 +365,7 @@ export function createScoresController({
       state.scoreId = null;
       if (!list.hasChildNodes() || list.dataset.renderedFor !== patient.id) {
         const template = document.createElement("template");
-        template.innerHTML = renderHomeHtml();
+        template.innerHTML = safeHtml(renderHomeHtml());
         list.replaceChildren(...template.content.childNodes);
         list.dataset.renderedFor = patient.id;
       }
@@ -377,7 +378,7 @@ export function createScoresController({
     // through openScoreDetail(), which starts the detail at the top.
     if (detail.hidden || !detail.hasChildNodes()) {
       const template = document.createElement("template");
-      template.innerHTML = html;
+      template.innerHTML = safeHtml(html);
       detail.replaceChildren(...template.content.childNodes);
     }
     list.hidden = true;
@@ -482,7 +483,7 @@ export function createScoresController({
     // Populate the hidden detail section, then swap visibility. The list DOM
     // stays intact underneath.
     const template = document.createElement("template");
-    template.innerHTML = html;
+    template.innerHTML = safeHtml(html);
     detail.replaceChildren(...template.content.childNodes);
     list.hidden = true;
     detail.hidden = false;
@@ -500,7 +501,7 @@ export function createScoresController({
     // The list DOM was never destroyed, so just reveal it. No re-render.
     // Refresh the list content in case favorites changed while in the detail.
     const template = document.createElement("template");
-    template.innerHTML = renderHomeHtml();
+    template.innerHTML = safeHtml(renderHomeHtml());
     list.replaceChildren(...template.content.childNodes);
     detail.hidden = true;
     list.hidden = false;

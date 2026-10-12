@@ -33,13 +33,13 @@ import {
   isRemoteUrl,
   onOfflineModeChange,
   setOfflineMode
-} from "../src/lib/network-gate.js?v=20260929-offline-mode-v1";
+} from "../src/lib/network-gate.js?v=20261012-safety";
 import { requestOpenAiChat, requestOpenAiStructuredJson } from "../src/ui/openai-client.js";
 import { createLocalLlmClient } from "../src/local-llm/client.js";
 import { createSettingsPresentation } from "../src/ui/settings/presentation.js";
 import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js";
 
-const NETWORK_GATE_TAG = "20260929-offline-mode-v1";
+const NETWORK_GATE_TAG = "20261012-safety";
 
 // ---------------------------------------------------------------------------
 // URL classification

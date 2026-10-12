@@ -1,4 +1,5 @@
-import { captureScrollPositions, restoreScrollPositions } from "../view-scroll.js?v=20261012-scroll-review";
+import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
+import { captureScrollPositions, restoreScrollPositions } from "../view-scroll.js?v=20261012-safety";
 // Guided demo: "See how it learns" for the automatic rule proposer.
 //
 // A scripted, step-by-step walkthrough of the full learning loop inside the
@@ -259,7 +260,7 @@ export function createRuleLearnerDemo({ escapeHtml, icon, approvalPresentation }
   function mount() {
     unmount();
     const wrapper = document.createElement("div");
-    wrapper.innerHTML = renderModal();
+    wrapper.innerHTML = safeHtml(renderModal());
     const backdrop = wrapper.firstElementChild;
     document.body.appendChild(backdrop);
     const dialog = backdrop.querySelector('[role="dialog"]');
@@ -274,7 +275,7 @@ export function createRuleLearnerDemo({ escapeHtml, icon, approvalPresentation }
     const host = document.querySelector("[data-rule-learner-demo]");
     if (!host || !session) return;
     const wrapper = document.createElement("div");
-    wrapper.innerHTML = renderModal();
+    wrapper.innerHTML = safeHtml(renderModal());
     const snapshot = captureScrollPositions(host);
     const next = wrapper.firstElementChild;
     host.replaceWith(next);

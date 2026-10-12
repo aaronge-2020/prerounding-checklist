@@ -1,3 +1,4 @@
+import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 import {
   createDemoPresentation,
   DEMO_STAGE_NEXT,
@@ -7,8 +8,8 @@ import {
   DEMO_AI_CHAT_SAMPLES,
   DEMO_AI_CHAT_HANDS_ON_QUESTION,
   DEMO_AI_CHAT_HANDS_ON_ANSWER
-} from "./presentation.js?v=20261012-citation-preview";
-import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20261012-citation-preview";
+} from "./presentation.js?v=20261012-safety";
+import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20261012-safety";
 
 export const DEMO_REVIEW_ACTIONS = Object.freeze(new Set([
   "keep-reviewed-redaction",
@@ -152,7 +153,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
 
   function mountCallout(target, stage) {
     if (!target || !stage.callout) return;
-    document.body.insertAdjacentHTML("beforeend", presentation.renderCallout({ stage }));
+    document.body.insertAdjacentHTML("beforeend", safeHtml(presentation.renderCallout({ stage })));
     activeCalloutTarget = target;
     calloutFrame = requestAnimationFrame(positionCallout);
   }
@@ -339,7 +340,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
             ?.textContent?.replace(/^Next: review\s*/i, "") || ""
       });
       try { console.log("[demo] inserting guide bar, html length:", guideHtml.length, "stage:", session.stage); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
-      document.body.insertAdjacentHTML("afterbegin", guideHtml);
+      document.body.insertAdjacentHTML("afterbegin", safeHtml(guideHtml));
       try { console.log("[demo] guide bar inserted, found:", !!document.querySelector("[data-demo-guide]")); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
     } catch (err) {
       console.warn("Guided demo could not render its controls.");

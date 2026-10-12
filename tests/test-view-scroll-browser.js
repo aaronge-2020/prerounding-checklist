@@ -57,7 +57,7 @@ try {
       host.style.cssText = "position:fixed;inset:20px;background:white;z-index:9999;overflow:auto";
       document.body.append(host);
       const markup = `<section id="firstPane"><details open><summary>Exact content</summary><div data-scroll-key="text" style="height:100px;overflow:auto"><div style="height:900px">Synthetic text</div></div></details></section><section id="secondPane"><div data-scroll-key="text" style="height:100px;overflow:auto"><div style="height:900px">Other text</div></div></section><input id="cursorTest" value="abcdef">`;
-      host.innerHTML = markup;
+      replaceViewContent(host, markup);
       host.querySelector("#firstPane [data-scroll-key]").scrollTop = 350;
       host.querySelector("#secondPane [data-scroll-key]").scrollTop = 170;
       const input = host.querySelector("input");
