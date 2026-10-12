@@ -935,8 +935,7 @@ export function createReviewController(deps) {
       return true;
     }
     if (target.matches?.("[data-ap-request-key]")) {
-      const send = deps.byId("reviewContent")?.querySelector('[data-action="ap-confirm-generate"]');
-      if (send) send.disabled = !String(target.value || "").trim();
+      refreshApRequestPreview();
       return true;
     }
     if (target.matches?.("[data-ap-request-field]")) {
@@ -1267,8 +1266,17 @@ export function createReviewController(deps) {
   function refreshApRequestPreview() {
     const preview = deps.byId("reviewContent")?.querySelector("[data-ap-request-preview]");
     if (!preview || !apConfirmState) return;
-    try { preview.textContent = JSON.stringify(apRequestBody(), null, 2); }
-    catch (error) { preview.textContent = error.message; }
+    let message = "";
+    try {
+      preview.textContent = JSON.stringify(apRequestBody(), null, 2);
+      if (!apConfirmState.promptText.trim()) message = "Add patient context or reset the input before sending.";
+    } catch (error) { message = error.message; preview.textContent = message; }
+    const panel = deps.byId("reviewContent");
+    const error = panel?.querySelector("[data-ap-request-error]");
+    if (error) { error.textContent = message; error.hidden = !message; }
+    const send = panel?.querySelector('[data-action="ap-confirm-generate"]');
+    const hasKey = apConfirmState.apiKeySaved || Boolean(panel?.querySelector("[data-ap-request-key]")?.value?.trim());
+    if (send) send.disabled = Boolean(message) || !hasKey;
   }
 
   async function runApGeneration(problemId) {

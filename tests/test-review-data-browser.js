@@ -423,6 +423,12 @@ Sodium: 138`;
   });
   async function sendSyntheticConsult() {
     await page.locator(`[data-problem-id="${aiId}"] [data-action="generate-ap"]`).click();
+    if (!aiRequests) {
+      await page.locator('[data-ap-prompt-editor]').fill('');
+      assert.match(await page.locator('[data-ap-request-error]').innerText(), /Add patient context/);
+      assert.equal(await page.locator('[data-action="ap-confirm-generate"]').isEnabled(),false);
+      await page.locator('[data-action="ap-reset-prompt"]').click();
+    }
     await page.locator('[data-ap-request-key]').fill('synthetic-ci-key');
     await page.locator('[data-action="ap-confirm-generate"]').click();
     await page.locator('[data-ap-loading]').waitFor();

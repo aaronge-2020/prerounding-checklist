@@ -572,6 +572,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         <details><summary>Exact request body (read-only output schema)</summary><pre data-ap-request-preview style="white-space:pre-wrap;overflow-wrap:anywhere"></pre></details>
         ${apConfirm.apiKeySaved ? '<p class="muted">Using your encrypted saved key.</p>' : '<label>API key for this request<input type="password" data-ap-request-key autocomplete="off" spellcheck="false" placeholder="Not saved"></label><p class="muted">Used only for this request. Closing this dialog clears it. You can also save an encrypted key in Settings.</p>'}
         <div class="button-row ap-confirm-actions">
+          <p class="ap-request-error" data-ap-request-error role="alert" hidden></p>
           <button type="button" class="button--secondary button--small" data-action="ap-reset-prompt">Reset input</button>
           <button type="button" class="button--secondary button--small" data-action="ap-save-default">Save instructions as default</button>
           <button type="button" class="button--primary button--small" ${apConfirm.apiKeySaved ? "" : "disabled"} data-action="ap-confirm-generate" data-problem-id="${escapeHtml(apConfirm.problemId)}">Send consult</button>

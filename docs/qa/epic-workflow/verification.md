@@ -53,3 +53,5 @@ Stanford is the interim default. Browser execution does not establish hash/parit
 - A live request was stopped from the mobile UI; the existing note and approved suggestion remained unchanged. Fixed doubled export bullets discovered during the live approval test.
 - Targeted tests cover timeout through response-body reading, cancellation, refusal, incomplete/malformed replies, exact requests, selected-note context, edited summaries, exclusion of other problems, and export bullets. CI browser fixtures additionally cover approval/rejection, edits during a request, stop, and packet switching. Fixtures use a fake key; no paid calls or real credentials run in CI.
 - Screenshots: `ai-consult-desktop.jpg`, `ai-consult-mobile.jpg`. Neither contains credentials.
+
+- Final modal checks: an empty prompt and temperature 3 display actionable inline errors inside the dialog, disable Send, and recover after Reset input or clearing temperature.
