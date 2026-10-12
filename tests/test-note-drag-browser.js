@@ -75,6 +75,7 @@ try {
   await page.locator('.new-day-control > summary').click();
   await page.getByLabel('Label',{exact:true}).fill('Synthetic drag day');
   await page.getByRole('button',{name:'Add day',exact:true}).click();
+  await page.getByRole('button',{name:/Synthetic drag day/}).waitFor({state:'visible'});
   assert.equal(await page.getByRole('button',{name:/Synthetic drag day/}).isVisible(),true);
   assert.equal(await page.locator('[data-note-original]').count(),0);
   assert.equal(await page.locator('.has-note-selection').count(),0);
