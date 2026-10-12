@@ -357,8 +357,6 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       + (showLabs ? (index.labs || []).filter((candidate) => candidate.kind === "narrative" && matchesQuery(candidate.searchText, q)).length : 0)
       + (showMeds ? (index.medications || []).filter((candidate) => matchesQuery(candidate.searchText, q)).length : 0)
       + (showDiagnostics ? (index.diagnosticResults || []).filter((candidate) => (!category || category === "all" || candidate.group === category) && matchesQuery(candidate.searchText, q)).length : 0);
-    const toggleLabel = clinicalDataCollapsed ? "Show clinical data" : "Hide clinical data";
-    const toggleIcon = clinicalDataCollapsed ? "▶" : "◀";
     // U4: when pasted text produced zero structured rows, say exactly what the
     // parser accepts so the student can re-paste in a supported format —
     // never claim parsing succeeded.
@@ -388,22 +386,11 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       <p class="review-filter-summary" aria-live="polite">${matchCount} matching item${matchCount === 1 ? "" : "s"}</p>
       ${zeroYieldHint}
       <div class="review-data-list">${sections.length ? sections.join("") : `<div class="empty-state">No saved clinical data match this search.</div>`}</div>`;
-    // Both the collapsed rail and the full content are always rendered;
-    // the controller toggles `hidden` between them. Collapsing never
-    // re-renders, so scroll position and focus survive the toggle.
-    // (bodyHtml is built unconditionally above for this reason.)
-    const railHtml = `
-      <div class="clinical-data-rail" data-clinical-data-rail${clinicalDataCollapsed ? "" : " hidden"}>
-        <button type="button" class="clinical-data-rail-toggle" data-action="toggle-clinical-data" title="Show clinical data" aria-label="Show clinical data" aria-expanded="false">▶</button>
-        <span class="clinical-data-rail-label" aria-hidden="true">Clinical data</span>
-      </div>`;
-    const fullHtml = `
-      <div class="clinical-data-full" data-clinical-data-full${clinicalDataCollapsed ? " hidden" : ""}>
-      <div class="section-heading"><div><h2 id="reviewDataHeading">Clinical data</h2><p class="muted">Vitals and medications are in the note automatically — uncheck to remove. Check labs or results to add them.</p></div><button type="button" class="ed-mini" data-action="toggle-clinical-data" title="${toggleLabel}" aria-label="${toggleLabel}" aria-expanded="${!clinicalDataCollapsed}">${toggleIcon}</button></div>
-      ${bodyHtml}
-      </div>`;
-    return `<section class="review-data-panel panel${clinicalDataCollapsed ? " is-collapsed" : ""}" aria-labelledby="reviewDataHeading" data-clinical-data-collapsed="${clinicalDataCollapsed ? "true" : "false"}">
-      ${railHtml}${fullHtml}
+    return `<section id="reviewClinicalData" class="review-data-panel panel" aria-labelledby="reviewDataHeading" ${clinicalDataCollapsed ? "hidden" : ""}>
+      <div class="clinical-data-full" data-clinical-data-full>
+        <div class="section-heading"><div><h2 id="reviewDataHeading">Clinical data</h2><p class="muted">Vitals and medications are in the note automatically — uncheck to remove. Check labs or results to add them.</p></div></div>
+        ${bodyHtml}
+      </div>
     </section>`;
   }
 
@@ -972,13 +959,13 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     const flaggedBanner = flaggedResults.length
       ? `<div class="review-flag-banner" role="alert"><strong>⚠️ ${flaggedResults.length} result${flaggedResults.length === 1 ? "" : "s"} need${flaggedResults.length === 1 ? "s" : ""} report text:</strong> ${flaggedResults.map((candidate) => escapeHtml(candidate.name)).join(", ")}. <span class="muted">Open each in the admissions tab and paste the full report.</span></div>`
       : "";
-    return `<div class="review-workspace" data-workspace-tab="${workspaceTab}">
+    return `<div class="review-workspace" data-workspace-tab="${workspaceTab}" data-clinical-data-visible="${!clinicalDataCollapsed}">
       <div class="patient-identity-bar" role="status" aria-label="Active patient"><span class="patient-identity-bar-label">Patient</span><strong>${escapeHtml(patientLabel)}</strong></div>
       <header class="review-hero panel">
         <div><span class="eyebrow">${escapeHtml(patientLabel)}</span><h1 id="review-heading">Write note</h1><p class="review-one-liner ${oneLiner ? "" : "is-empty"}">${escapeHtml(oneLiner || "One-liner not entered yet. You can continue and add it in the draft.")}</p></div>
         <label class="review-packet-label">Note packet<select id="reviewPacketSelect">${packets.map((packet) => `<option value="${escapeHtml(packet.id)}" ${packet.id === selectedPacketId ? "selected" : ""}>${escapeHtml(packet.label)}</option>`).join("")}</select></label>
       </header>
-      <div class="writing-workflow-bar"><div role="tablist" aria-label="Writing workspace">${[["note", "Write"], ["sources", "Clinical data"], ["preview", "Preview & copy"]].map(([id,label]) => `<button type="button" role="tab" aria-selected="${workspaceTab === id}" data-action="workspace-tab" data-workspace-tab="${id}">${label}</button>`).join("")}</div><button type="button" data-action="import-for-note">+ Import from Epic</button></div>
+      <div class="writing-workflow-bar"><div role="tablist" aria-label="Writing workspace">${[["note", "Write"], ["preview", "Preview & copy"]].map(([id,label]) => `<button type="button" role="tab" aria-selected="${workspaceTab === id}" data-action="workspace-tab" data-workspace-tab="${id}">${label}</button>`).join("")}</div><button type="button" data-action="toggle-clinical-data" aria-controls="reviewClinicalData" aria-expanded="${!clinicalDataCollapsed}" ${workspaceTab === "preview" ? "hidden" : ""}>${clinicalDataCollapsed ? "Show clinical data" : "Hide clinical data"}</button><button type="button" data-action="import-for-note">+ Import from Epic</button></div>
       ${flaggedBanner}
       <section class="note-export-preview panel" ${workspaceTab !== "preview" ? "hidden" : ""} aria-label="Final note preview"><div class="section-heading"><div><h2>Review before copying</h2><p class="muted">This is the exact plain text that will be copied. Check source facts and remove any placeholders.</p></div><button type="button" data-action="copy-final-note" class="button--primary">Copy for Epic</button></div><pre>${escapeHtml(previewText || "No note content yet. Return to Write to begin.")}</pre><div class="button-row"><button type="button" data-action="workspace-tab" data-workspace-tab="note">Back to writing</button><button type="button" data-action="copy-rich-note">Copy rich text</button><button type="button" data-action="download-final-note">Download .txt</button></div></section>
       <div class="review-columns" ${workspaceTab === "preview" ? "hidden" : ""}>${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions })}</div>

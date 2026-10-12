@@ -158,7 +158,7 @@ try {
   assert.match(await page.locator("[data-draft-assessment]").innerText(), /high-risk NSTEMI/i);
   assert.equal(await page.locator(".plan-problem-card").count(), 3);
   assert.match(await page.locator('.plan-problem-card').first().locator('[data-problem-field="diagnosticPlan"]').innerText(), /Coronary angiography is planned today/i);
-  await page.getByRole("tab", { name: "Clinical data", exact: true }).click();
+  if (await page.getByRole("button", { name: "Show clinical data", exact: true }).count()) await page.getByRole("button", { name: "Show clinical data", exact: true }).click();
   await page.locator("#reviewDataSearch").click();
   await page.waitForTimeout(350); // cross the tour's delayed spotlight reposition
   assert.equal(await page.evaluate(() => document.activeElement?.id), "reviewDataSearch", "the writing tour must not steal focus from clinical-data search");

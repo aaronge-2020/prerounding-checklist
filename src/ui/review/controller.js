@@ -228,7 +228,7 @@ export function createReviewController(deps) {
 
   // Whether the Clinical Data panel is collapsed (user can focus on the note).
   // Local UI state only; survives re-renders.
-  let clinicalDataCollapsed = false;
+  let clinicalDataCollapsed = true;
   let workspaceTab = "note";
 
   // Find the nearest ancestor (or self) that is actually scrolled —
@@ -2323,7 +2323,7 @@ export function createReviewController(deps) {
     }
     if (action === "workspace-tab") {
       const requested = button.dataset.workspaceTab;
-      if (!["sources", "note", "preview"].includes(requested)) return true;
+      if (!["note", "preview"].includes(requested)) return true;
       workspaceTab = requested;
       render();
       deps.byId("reviewContent")?.querySelector(`[data-workspace-tab="${requested}"]`)?.focus({ preventScroll: true });
@@ -2431,91 +2431,16 @@ export function createReviewController(deps) {
       return true;
     }
     if (action === "toggle-clinical-data") {
-      // True surgical toggle: both the rail and the full content are
-      // always in the DOM (see renderDataExplorer). Flipping `hidden`
-      // never destroys the search input, the data list, or their state.
-      // Scroll preservation: the panel (or document, when the sticky panel
-      // itself doesn't scroll) keeps its scrollTop; save it on hide and
-      // restore it on show after layout settles.
-      const panel = target.closest(".review-data-panel");
-      const rail = panel?.querySelector("[data-clinical-data-rail]");
-      const full = panel?.querySelector("[data-clinical-data-full]");
-      const wasCollapsed = panel?.dataset.clinicalDataCollapsed === "true";
-      if (!wasCollapsed && panel && full && typeof document !== "undefined") {
-        const scroller = findScroller(full);
-        panel.dataset.savedScrollTop = String(scroller.scrollTop);
-        panel.dataset.scrollerIsDocument = String(
-          scroller === document.documentElement || scroller === document.body
-        );
-        // DEBUG v21: full ancestor scroll chain.
-        const chain = [];
-        let node = full;
-        while (node && node !== document.body && chain.length < 12) {
-          if (node instanceof HTMLElement) {
-            const r = node.getBoundingClientRect();
-            chain.push(`${node.tagName}.${(node.className || "").toString().split(" ")[0]}:st=${node.scrollTop},sh=${node.scrollHeight},ch=${node.clientHeight},top=${Math.round(r.top)}`);
-          }
-          node = node.parentElement;
-        }
-        panel.dataset.dbgChainHide = chain.join(" | ");
-      }
-      const nowCollapsed = !wasCollapsed;
-      // Keep the module variable in sync for the view model (initial render).
-      clinicalDataCollapsed = nowCollapsed;
-      // Blur the clicked toggle button: when its container hides, the
-      // browser may scroll the panel to keep the focused (now hidden)
-      // button in view, clobbering our restore.
-      if (typeof document !== "undefined" && document.activeElement instanceof HTMLElement) {
-        document.activeElement.blur();
-      }
-      if (rail) rail.hidden = !nowCollapsed;
-      if (full) full.hidden = nowCollapsed;
-      panel?.classList.toggle("is-collapsed", nowCollapsed);
-      if (panel) panel.dataset.clinicalDataCollapsed = String(nowCollapsed);
-      panel?.querySelectorAll('[data-action="toggle-clinical-data"]').forEach((btn) => {
-        btn.setAttribute("aria-expanded", String(!nowCollapsed));
-      });
-      if (panel && !nowCollapsed) {
-        const restoreTo = Number(panel.dataset.savedScrollTop || 0);
-        const scrollerIsDocument = panel.dataset.scrollerIsDocument === "true";
-        const ident = (el) => el ? `${el.tagName}.${(el.className || "").toString().split(" ")[0]}` : "(null)";
-        const doRestore = () => {
-          let target = findScroller(full || panel);
-          if (scrollerIsDocument && typeof document !== "undefined") {
-            target = document.documentElement;
-            document.body.scrollTop = restoreTo;
-          }
-          void target.scrollHeight; // force layout before setting scroll
-          target.scrollTop = restoreTo;
-          // DEBUG v20: record what restore did.
-          panel.dataset.dbgRestoreTarget = ident(target);
-          panel.dataset.dbgRestoreSet = `${restoreTo}->${target.scrollTop}`;
-        };
-        // Restore repeatedly: rAF for layout, then timeouts to beat any
-        // late browser scroll adjustments from the grid/display change.
-        if (typeof requestAnimationFrame !== "undefined") {
-          requestAnimationFrame(() => requestAnimationFrame(doRestore));
-        }
-        if (typeof setTimeout !== "undefined") {
-          setTimeout(doRestore, 50);
-          setTimeout(doRestore, 150);
-          // DEBUG v21: late chain — which box actually shows the content?
-          setTimeout(() => {
-            const chain = [];
-            let node = full;
-            while (node && node !== document.body && chain.length < 12) {
-              if (node instanceof HTMLElement) {
-                const r = node.getBoundingClientRect();
-                chain.push(`${node.tagName}.${(node.className || "").toString().split(" ")[0]}:st=${node.scrollTop},sh=${node.scrollHeight},ch=${node.clientHeight},top=${Math.round(r.top)}`);
-              }
-              node = node.parentElement;
-            }
-            panel.dataset.dbgChainLate = chain.join(" | ");
-          }, 600);
-        } else {
-          doRestore();
-        }
-      }
+      const workspace = deps.byId("reviewContent")?.querySelector(".review-workspace");
+      const panel = workspace?.querySelector("#reviewClinicalData");
+      if (!workspace || !panel) return true;
+      // One visibility state; keep the editor and source controls mounted so
+      // typing, selection, filters and their own scroll positions survive.
+      clinicalDataCollapsed = !clinicalDataCollapsed;
+      panel.hidden = clinicalDataCollapsed;
+      workspace.dataset.clinicalDataVisible = String(!clinicalDataCollapsed);
+      button.setAttribute("aria-expanded", String(!clinicalDataCollapsed));
+      button.textContent = clinicalDataCollapsed ? "Show clinical data" : "Hide clinical data";
       return true;
     }
     if (action === "toggle-objective-group") {
@@ -2863,5 +2788,5 @@ export function createReviewController(deps) {
       return handled;
     };
   }
-  return Object.freeze({ clearRequest: () => { clearApSession(); workspaceTab = "note"; }, change: withAutoSave(change), click: withAutoSave(click), input, keydown, open, prepare, render, saveDraft, toggle: withAutoSave(toggle), getDraftNoteText, getDraftNoteSections });
+  return Object.freeze({ clearRequest: () => { clearApSession(); workspaceTab = "note"; clinicalDataCollapsed = true; }, change: withAutoSave(change), click: withAutoSave(click), input, keydown, open, prepare, render, saveDraft, toggle: withAutoSave(toggle), getDraftNoteText, getDraftNoteSections });
 }

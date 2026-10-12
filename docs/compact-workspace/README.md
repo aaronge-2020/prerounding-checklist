@@ -1,5 +1,7 @@
 # Compact workspaces: design and measured verification
 
+Follow-up: the overlapping Clinical data / Write modes have been replaced by one writer with an explicit Show/Hide clinical data button. Preview remains separate. The measurements and desktop screenshots below document the original compact-layout release `58819eaf`; the phone screenshot reflects the follow-up controls. Browser regressions verify that toggling the reference panel retains edits and filters.
+
 Date: 2026-10-12. Baseline: `e842e65e1b65817ccb9fe9b824176b756bad674f`.
 
 The ImageGen reference is [design-reference.png](design-reference.png). The implementation follows its horizontal navigation, fixed source pane, persistent section index, full-width writer, note outline, and compact differential rows. The real app retains its existing actions, data model and privacy language; illustrative controls or clinical claims invented by the image were not added.

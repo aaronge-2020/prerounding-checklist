@@ -48,8 +48,15 @@ try {
     await link.click();
     assert.equal(await page.locator(`[data-draft-section-id="${id}"]`).getAttribute("open"), "");
   }
-  await page.getByRole("tab", { name: "Clinical data", exact: true }).click();
+  assert.equal(await page.getByRole("tab", { name: /Source|Clinical data/ }).count(), 0);
+  await page.getByRole("button", { name: "Show clinical data", exact: true }).click();
   assert.equal(await page.locator(".review-data-panel").isVisible(), true);
+  await page.locator("#reviewDataSearch").fill("retained filter");
+  await page.getByRole("button", { name: "Hide clinical data", exact: true }).click();
+  assert.equal(await page.locator(".review-data-panel").isVisible(), false);
+  await page.getByRole("button", { name: "Show clinical data", exact: true }).click();
+  assert.equal(await page.locator("#reviewDataSearch").inputValue(), "retained filter");
+  await page.getByRole("button", { name: "Hide clinical data", exact: true }).click();
   await page.getByRole("tab", { name: "Write", exact: true }).click();
   assert.equal(await page.locator(".writer-outline").isVisible(), true);
   await page.getByRole("tab", { name: "Preview & copy", exact: true }).click();
@@ -75,6 +82,12 @@ try {
     await last.locator('[data-differential-field="cluesFor"]').fill("Retained fact");
     await last.locator('[data-differential-field="cluesAgainst"]').fill("Retained exception");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+    await page.getByRole("button", { name: "Show clinical data", exact: true }).click();
+    assert.equal(await page.locator(".review-data-panel").isVisible(), true);
+    if (width === 390) assert.equal(await page.locator(".note-draft-panel").isVisible(), false);
+    await page.getByRole("button", { name: "Hide clinical data", exact: true }).click();
+    assert.equal(await page.locator(".note-draft-panel").isVisible(), true);
+    assert.equal(await last.locator('[data-differential-field="cluesAgainst"]').innerText(), "Retained exception");
     if (width === 390 && !process.env.COMPACT_APP_URL) await page.screenshot({ path: "docs/compact-workspace/after-390-writer.png" });
   }
   assert.deepEqual(errors, []);
