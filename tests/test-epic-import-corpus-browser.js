@@ -44,6 +44,7 @@ try {
     await page.click('[data-action="review-structured-note-sections"]');
     assert.equal(await page.locator("[data-note-original]").textContent(), entry.text.replace(/\r\n/g, "\n"), `${entry.name}: original retained`);
     const parsed = await fields();
+    assert.equal(Object.keys(parsed).length, entry.scope === "admission" ? 21 : 16, "every section exists, including empty destinations");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${entry.name}: no page overflow`);
     const populated = Object.entries(parsed).filter(([, text]) => text.trim());
     assert.ok(populated.length, `${entry.name}: parsed or retained as other content`);
@@ -55,7 +56,6 @@ try {
     assert.ok(coverage > 0.9, `${entry.name}: source-word retention ${coverage}`);
     const [fieldId, value] = populated.find(([id]) => ["physical_exam", "assessment", "history_of_present_illness", "interval_events"].includes(id)) || populated[0];
     const field = page.locator(`[data-structured-note-field="${fieldId}"]`);
-    if (await field.evaluate((node) => Boolean(node.closest("details") && !node.closest("details").open))) await page.locator(".note-additional-sections > summary").click();
     const revised = `${value}\nClinician reviewed this section.`;
     await field.fill(revised);
     await page.click('[data-note-mode="paste"]');
@@ -63,11 +63,14 @@ try {
     assert.equal(await field.inputValue(), revised, `${entry.name}: manual edit retained`);
     for (const [id, text] of Object.entries(parsed)) if (id !== fieldId) assert.equal((await fields())[id], text, `${entry.name}: unaffected ${id}`);
     if (index % 10 === 0 || index === cases.length - 1) {
+      await page.getByLabel("Go to section", { exact: true }).selectOption("one_liner");
+      await page.getByRole("textbox", { name: "One-liner", exact: true }).fill("Adult admitted for evaluation.");
       await page.selectOption("#deidModeSelect", "structured");
       await page.click('[data-action="save-structured-primary-note"]');
       await page.waitForFunction(() => /Primary-team note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
       assert.equal(await page.locator("[data-note-original]").count(), 0, "raw original cleared after saving");
       assert.ok(Object.values(await fields()).some((text) => text.includes("Clinician reviewed this section.")));
+      assert.equal((await fields()).one_liner, "Adult admitted for evaluation.");
       saved += 1;
     }
     if ((index + 1) % 10 === 0) console.log(`Corpus: ${index + 1}/${cases.length} notes checked`);
@@ -81,6 +84,7 @@ try {
   await page.click('[data-view-target="daily"]');
   await page.getByRole("button", { name: /Corpus day/ }).click();
   assert.ok(Object.values(await fields()).some((text) => text.includes("Clinician reviewed this section.")), "saved correction restored after reload");
+  assert.equal((await fields()).one_liner, "Adult admitted for evaluation.", "manually entered one-liner persists across reload");
   assert.equal(await page.locator("[data-note-original]").count(), 0);
   assert.equal(await page.evaluate(() => JSON.stringify(localStorage).includes("Clinician reviewed this section.")), false, "saved note is encrypted at rest");
   await page.click('[data-action="save-structured-note-to-draft"]');

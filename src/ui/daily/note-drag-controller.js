@@ -120,8 +120,6 @@ export function createNoteDragController({ context, apply, report, doc = documen
     ghost.style.top = `${event.clientY + 12}px`;
     selected.root.querySelectorAll(".is-note-drop-target").forEach(el => el.classList.remove("is-note-drop-target"));
     const card = doc.elementFromPoint(event.clientX, event.clientY)?.closest("[data-note-drop-field]");
-    const more = doc.elementFromPoint(event.clientX, event.clientY)?.closest(".note-additional-sections");
-    if (more?.closest(ROOT) === selected.root) more.open = true;
     if (card?.closest(ROOT) === selected.root && card.dataset.noteDropField !== selected.from) card.classList.add("is-note-drop-target");
   });
   doc.addEventListener("pointerup", event => {
@@ -154,7 +152,7 @@ export function createNoteDragController({ context, apply, report, doc = documen
     if (source) capture(source);
   });
   doc.addEventListener("input", event => {
-    if (event.target.closest?.(ROOT)) clear();
+    if (event.target.matches?.("textarea") && event.target.closest(ROOT)) clear();
   }, true);
   doc.addEventListener("keydown", event => {
     if (event.key !== "Escape") return;

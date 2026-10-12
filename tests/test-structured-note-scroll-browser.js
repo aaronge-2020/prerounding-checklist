@@ -83,7 +83,6 @@ try {
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="admission"][data-note-mode="sections"]');
   await page.waitForSelector(".note-arrange-workspace");
   await page.waitForTimeout(100);
-  await page.locator(".note-additional-sections > summary").click();
   let r = await userClick('[data-note-field="other"]');
   assertStable(r.before, r.after, "additional section heading");
   for (const id of ["physical_exam", "assessment", "plan", "history_of_present_illness"]) {

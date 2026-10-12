@@ -57,7 +57,6 @@ try {
   assert.equal(await hpi.inputValue(), 'Cough. ');
   await undo.click();
   // Long notes need edge scrolling within the section pane, not the outer page.
-  await page.locator('.note-additional-sections > summary').click();
   await page.locator('.note-arrange-sections').evaluate(el=>{el.scrollTop=0;});
   await selectRange(hpi,7,22);
   const startBox=await page.locator('[data-note-drag-handle]').boundingBox(), paneBox=await page.locator('.note-arrange-sections').boundingBox();
@@ -108,6 +107,17 @@ try {
   assert.equal(await exam.inputValue(), 'Alert.\n\nHISTORY');
   assert.equal(await page.locator('[data-note-original]').textContent(), raw);
   await undo.click();
+  // Selecting a destination from the picker must retain the chosen source range.
+  const oneLiner = page.getByRole('textbox', {name:'One-liner', exact:true});
+  await oneLiner.fill('');
+  await selectRange(hpi, 7, 22);
+  await page.getByLabel('Go to section', {exact:true}).selectOption('one_liner');
+  assert.equal(await handle.isEnabled(), true);
+  await page.getByRole('button', {name:'One-liner section', exact:true}).click();
+  assert.equal(await oneLiner.inputValue(), 'Misplaced exam.');
+  assert.equal(await hpi.inputValue(), 'Cough. ');
+  await undo.click();
+  assert.equal(await oneLiner.inputValue(), '');
   // Editing after a correction retires Undo so it cannot erase a newer edit.
   await selectRange(hpi,7,22);
   await page.getByRole('button',{name:'Physical exam section',exact:true}).click();

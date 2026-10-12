@@ -362,14 +362,13 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     const saved = Boolean(note);
     const fields = primaryTeamNoteFields(noteType);
     const mode = composer.mode === "sections" || (!composer.mode && saved) ? "sections" : "paste";
-    const activeField = fields.find((field) => field.id === (composer.activeFieldId || (admission ? "history_of_present_illness" : "interval_events"))) || fields[0];
     const completedCount = fields.filter((field) => structuredNoteValue(note, draftValues, field.id).trim()).length;
     const parseResult = composer.parseResult || { detectedFieldIds: [] };
     const manuallyEditedFields = new Set(composer.dirtyFieldIds || []);
     const pastedText = String(composer.pastedText || "");
     function renderArrangeCards(items) {
       return items.map(field => `<section class="note-section-card" data-note-drop-field="${field.id}">
-        <button type="button" class="note-section-title" data-action="select-structured-note-field" data-note-scope="${scope}" data-note-field="${field.id}" aria-label="${escapeHtml(field.label)} section"><strong>${field.id === "history_of_present_illness" ? "HPI" : escapeHtml(field.label)}</strong><span data-note-card-state>${manuallyEditedFields.has(field.id) ? "Edited" : structuredNoteValue(note, draftValues, field.id).trim() ? "From note" : "Optional"}</span></button>
+        <button type="button" class="note-section-title" data-action="select-structured-note-field" data-note-scope="${scope}" data-note-field="${field.id}" aria-label="${escapeHtml(field.label)} section"><strong>${field.id === "history_of_present_illness" ? "HPI" : escapeHtml(field.label)}</strong><span data-note-card-state>${manuallyEditedFields.has(field.id) ? "Edited" : structuredNoteValue(note, draftValues, field.id).trim() ? "From note" : "Empty · type or drop text"}</span></button>
         <textarea rows="${field.id === "plan" ? 5 : 3}" aria-label="${escapeHtml(field.label)}" data-structured-note-field="${field.id}" data-structured-note-scope="${scope}" placeholder="Drop text here or type…">${escapeHtml(structuredNoteValue(note, draftValues, field.id))}</textarea>
       </section>`).join("");
     }
@@ -395,11 +394,9 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
         <div class="note-arrange-workspace ${pastedText ? "has-original" : ""}">
           ${pastedText ? `<aside class="note-source-sheet"><div class="note-sheet-heading"><strong>Original Epic note</strong><span>Read-only · session only</span></div><div id="${scope}NoteOriginal" data-note-original tabindex="0" role="region" aria-label="Original Epic note" class="note-source-text">${escapeHtml(pastedText)}</div></aside>` : ""}
           <div class="note-arrange-sections" tabindex="0" role="region" aria-label="Note sections">
-            <div class="note-sheet-heading"><strong>Parsed sections</strong><span>Review & edit in place</span></div>
-            ${renderArrangeCards(fields.filter(field => ["history_of_present_illness", "interval_events", "patient_report", "physical_exam", "assessment", "plan"].includes(field.id)))}
-            <details class="note-additional-sections" ${activeField && !["history_of_present_illness", "interval_events", "patient_report", "physical_exam", "assessment", "plan"].includes(activeField.id) ? "open" : ""}><summary>More sections <span>${fields.filter(field => !["history_of_present_illness", "interval_events", "patient_report", "physical_exam", "assessment", "plan"].includes(field.id) && structuredNoteValue(note, draftValues, field.id).trim()).length} with text</span></summary>
-            ${renderArrangeCards(fields.filter(field => !["history_of_present_illness", "interval_events", "patient_report", "physical_exam", "assessment", "plan"].includes(field.id)))}
-            </details>
+            <div class="note-sheet-heading"><strong>Note sections</strong><label class="note-section-jump">Go to section<select aria-label="Go to section" data-note-section-jump data-structured-note-scope="${scope}"><option value="">Choose section…</option>${fields.map(field => `<option value="${field.id}">${escapeHtml(field.label)}</option>`).join("")}</select></label></div>
+            ${renderArrangeCards(fields.filter(field => ["one_liner", "history_of_present_illness", "interval_events", "patient_report", "physical_exam", "assessment", "plan"].includes(field.id)))}
+            ${renderArrangeCards(fields.filter(field => !["one_liner", "history_of_present_illness", "interval_events", "patient_report", "physical_exam", "assessment", "plan"].includes(field.id)))}
           </div>
         </div>
         <div class="note-arrange-footer"><button type="button" class="button--quiet" data-action="undo-note-mapping" data-note-scope="${scope}" ${composer.mappingUndo ? "" : "disabled"}>Undo</button><span>De-identified before saving</span><button type="button" class="button--quiet" data-action="save-structured-primary-note" data-note-scope="${scope}" ${deidBusy ? "disabled" : ""}>Save only</button><button type="button" class="button--primary" data-action="save-structured-note-to-draft" data-note-scope="${scope}" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save & write note →"}</button></div>

@@ -43,6 +43,23 @@ try {
   await screenshot("epic-review");
   await inViewport('[data-action="save-structured-note-to-draft"]');
   assert.equal(await page.locator('[data-note-original]').evaluate(el => el.scrollHeight > el.clientHeight), true, "long originals scroll within their pane");
+  assert.ok((await page.locator('.note-source-sheet').boundingBox()).height <= 442, "original pane has a compact fixed height");
+  await page.locator('[data-note-original]').hover();
+  await page.mouse.wheel(0, 350);
+  await page.waitForFunction(() => document.querySelector('[data-note-original]').scrollTop > 0);
+  const ids = await page.locator('[data-structured-note-field]').evaluateAll(nodes => nodes.map(node => node.dataset.structuredNoteField));
+  assert.equal(ids[0], 'one_liner', 'one-liner is the first visible destination');
+  assert.equal(ids.length, 21);
+  assert.equal(await page.locator('.note-additional-sections').count(), 0);
+  for (const id of ids) {
+    await page.getByLabel('Go to section', {exact:true}).selectOption(id);
+    assert.equal(await page.locator(`[data-note-drop-field="${id}"]`).evaluate(el => {
+      const card = el.getBoundingClientRect(), pane = el.parentElement.getBoundingClientRect();
+      return card.top >= pane.top && card.top < pane.bottom;
+    }), true, `${id} is reachable without expanding hidden sections`);
+  }
+  await page.getByLabel('Go to section', {exact:true}).selectOption('one_liner');
+  await page.getByRole('textbox', {name:'One-liner', exact:true}).fill('Adult admitted with cough.');
 
   // Edits survive changing entry mode and chart-source tabs.
   await page.fill('[data-structured-note-field="physical_exam"]', "Lungs clear. No wheeze.");
@@ -52,7 +69,7 @@ try {
   await page.click('[data-action="select-admission-source-kind"][data-source-kind="primary_note"]');
   await page.click('[data-action="review-structured-note-sections"]');
   assert.equal(await page.locator('[data-structured-note-field="physical_exam"]').inputValue(), "Lungs clear. No wheeze.");
-  await page.locator(".note-additional-sections > summary").click();
+  assert.equal(await page.getByRole('textbox', {name:'One-liner', exact:true}).inputValue(), 'Adult admitted with cough.');
   await page.locator('[data-note-field="other"]').click();
   const scroll = await page.locator(".note-arrange-sections").evaluate((el) => el.scrollTop);
   assert.ok(scroll > 0, "additional sections should be reachable inside the review pane");
