@@ -1,4 +1,4 @@
-import { setTokenColorOverride, tokenAccentHex } from "../prompts/custom-templates.js?v=20261011-epic-workflow";
+import { setTokenColorOverride, tokenAccentHex } from "../prompts/custom-templates.js?v=20261011-ai-helper";
 
 export function tokenColorSwatchButton(token, colorOverrides, escapeHtml) {
   const color = tokenAccentHex(token, colorOverrides);

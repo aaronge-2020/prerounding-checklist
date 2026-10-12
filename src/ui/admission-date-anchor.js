@@ -1,4 +1,4 @@
-import { updateActivePatient } from "../app/state/vault.js?v=20261011-epic-workflow";
+import { updateActivePatient } from "../app/state/vault.js?v=20261011-ai-helper";
 
 export function createAdmissionDateAnchor({ state, active, sortDays }) {
   function restore() {

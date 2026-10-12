@@ -6,7 +6,7 @@ import {
   removeDay,
   sortDays,
   upsertDay
-} from "../daily-updates/days.js?v=20261011-epic-workflow";
+} from "../daily-updates/days.js?v=20261011-ai-helper";
 import {
   activePatient,
   archivePatient,
@@ -14,7 +14,7 @@ import {
   createPatientRecord,
   setActivePatient,
   updateActivePatient
-} from "../app/state/vault.js?v=20261011-epic-workflow";
+} from "../app/state/vault.js?v=20261011-ai-helper";
 import {
   deleteEncryptedVaultRecord,
   downloadJson, downloadText,
@@ -22,13 +22,13 @@ import {
   readEncryptedVaultRecord,
   saveEncryptedVault,
   writeEncryptedVaultRecord
-} from "../app/state/persistence.js?v=20261011-epic-workflow";
+} from "../app/state/persistence.js?v=20261011-ai-helper";
 import {
   removeSection,
   reorderSections,
   reorderSectionsById,
   replaceSectionsFromFormAsync
-} from "../patient-context/sections.js?v=20261011-epic-workflow";
+} from "../patient-context/sections.js?v=20261011-ai-helper";
 import { clinicalParseWarning, parseClinicalExport } from "../patient-context/clinical-export-parser.js?v=20261011-epic-workflow";
 import {
   createEphemeralRedactionReview,
@@ -87,44 +87,44 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides, studentNoteForPrompt
-} from "../prompts/custom-templates.js?v=20261011-epic-workflow";
+} from "../prompts/custom-templates.js?v=20261011-ai-helper";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import {
   DEFAULT_DAILY_SOURCE_KIND,
   admissionSourceKindOptions
 } from "../patient-context/source-captures.js?v=20260921-medication-card-v4";
-import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20261011-epic-workflow";
-import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20261011-epic-workflow";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20261011-ai-helper";
+import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20261011-ai-helper";
 import {
   createAdaptiveStore,
   learnFromCorrection,
   inferManualLabel
 } from "../vault/deid/adaptive.js?v=20261003-deid-100";
-import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20261011-epic-workflow";
+import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20261011-ai-helper";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences
 } from "../app/preferences.js?v=20261011-request-controls";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1&icon=search-v1";
-import { createDailyPresentation } from "./daily/presentation.js?v=20261011-epic-workflow";
-import { createDailySourceController } from "./daily/source-controller.js?v=20261011-epic-workflow";
+import { createDailyPresentation } from "./daily/presentation.js?v=20261011-ai-helper";
+import { createDailySourceController } from "./daily/source-controller.js?v=20261011-ai-helper";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
-import { createReviewPresentation } from "./review/presentation.js?v=20261011-epic-workflow";
-import { createReviewController } from "./review/controller.js?v=20261011-epic-workflow";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20261011-epic-workflow";
+import { createReviewPresentation } from "./review/presentation.js?v=20261011-ai-helper";
+import { createReviewController } from "./review/controller.js?v=20261011-ai-helper";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20261011-ai-helper";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20261011-epic-workflow";
-import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20261011-epic-workflow";
+} from "./prompts/controller.js?v=20261011-ai-helper";
+import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20261011-ai-helper";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
-import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20261011-epic-workflow";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20261011-epic-workflow";
+import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20261011-ai-helper";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20261011-ai-helper";
 import { preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20261011-epic-workflow";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20261011-epic-workflow";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20261011-ai-helper";
 import { installGlobalFetchGuard, isOfflineMode, onOfflineModeChange, setOfflineMode } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
 import { createVaultPresentation, disambiguatedPatientLabels } from "./vault/presentation.js?v=20260718-vault-safety";
 import { createVaultSessionGuards } from "./vault/session-guards.js?v=20260922-vault-guards";
@@ -135,23 +135,23 @@ import {
   redactionPosition,
   warningDescription,
   warningSnippet
-} from "./redaction/presentation.js?v=20261011-epic-workflow";
+} from "./redaction/presentation.js?v=20261011-ai-helper";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261011-epic-workflow";
 import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261011-epic-workflow";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20261003-deid-adaptive";
 import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261011-epic-workflow";
-import { createDemoController } from "./demo/controller.js?v=20261011-epic-workflow";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261011-epic-workflow";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20261011-epic-workflow";
-import { createAiChatController } from "./ai-chat/controller.js?v=20261011-epic-workflow";
+import { createDemoController } from "./demo/controller.js?v=20261011-ai-helper";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261011-ai-helper";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20261011-ai-helper";
+import { createAiChatController } from "./ai-chat/controller.js?v=20261011-ai-helper";
 import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261001-drug-checks-v2";
-import { createDrugChecksController } from "./drug-checks/controller.js?v=20261011-epic-workflow";
+import { createDrugChecksController } from "./drug-checks/controller.js?v=20261011-ai-helper";
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20261011-epic-workflow";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
 import { createScoresController } from "./scores/controller.js?v=20261011-epic-workflow";
 import { createCheatSheetsController } from "./cheat-sheets/controller.js?v=20261011-request-controls";
-import { createSampleNotesController } from "./sample-notes/controller.js?v=20261011-epic-workflow";
+import { createSampleNotesController } from "./sample-notes/controller.js?v=20261011-ai-helper";
 import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20260928-local-llm-v1";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
@@ -1149,6 +1149,7 @@ function render() {
   const unlocked = vaultIsUnlocked();
   document.body.classList.toggle("vault-locked", !unlocked);
   if (!unlocked) {
+    demoController.forceCleanup();
     app.view = "vault";
     clearPhiReviews();
     clearQuickDeidSession();
@@ -1772,7 +1773,7 @@ function renderAiChat() {
 let scribeProBoot = null;
 function ensureScribePro() {
   if (!scribeProBoot) {
-    scribeProBoot = import("../scribe-parakeet/app.js?v=20261011-epic-workflow").catch((error) => {
+    scribeProBoot = import("../scribe-parakeet/app.js?v=20261011-ai-helper").catch((error) => {
       scribeProBoot = null;
       throw error;
     });

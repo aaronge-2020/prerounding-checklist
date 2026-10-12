@@ -4,9 +4,9 @@
 import {
   AP_SUGGESTION_SCHEMA,
   parseApSuggestions
-} from "../ai/ap-generator.js?v=20261011-request-controls";
+} from "../ai/ap-generator.js?v=20261011-ai-helper";
 import { DEFAULT_OPENAI_WORKUP_MODEL, openAiWorkupModelOption } from "../app/preferences.js?v=20261011-request-controls";
-import { requestOpenAiStructuredJson } from "./openai-client.js?v=20261011-request-controls";
+import { requestOpenAiStructuredJson } from "./openai-client.js?v=20261011-ai-helper";
 
 // Suggested-edits generation: the caller passes the final prompt text (the
 // student may have edited it in the confirm modal). The model returns
@@ -18,7 +18,9 @@ export async function generateProblemApRevisionsWithOpenAi({
   instructions,
   temperature,
   webSearch = true,
-  fetchImpl
+  fetchImpl,
+  signal,
+  timeoutMs
 } = {}) {
   const key = String(apiKey || "").trim();
   if (!key) throw new Error("Save an OpenAI API key in Settings before generating suggestions.");
@@ -34,7 +36,9 @@ export async function generateProblemApRevisionsWithOpenAi({
     schemaName: "problem_plan_suggestions",
     schema: AP_SUGGESTION_SCHEMA,
     tools: webSearch ? [{ type: "web_search" }] : [],
-    fetchImpl
+    fetchImpl,
+    signal,
+    timeoutMs
   });
   return parseApSuggestions(json);
 }

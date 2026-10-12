@@ -7,8 +7,8 @@ import {
   DEMO_AI_CHAT_SAMPLES,
   DEMO_AI_CHAT_HANDS_ON_QUESTION,
   DEMO_AI_CHAT_HANDS_ON_ANSWER
-} from "./presentation.js?v=20261011-epic-workflow";
-import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20261011-epic-workflow";
+} from "./presentation.js?v=20261011-ai-helper";
+import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20261011-ai-helper";
 
 export const DEMO_REVIEW_ACTIONS = Object.freeze(new Set([
   "keep-reviewed-redaction",

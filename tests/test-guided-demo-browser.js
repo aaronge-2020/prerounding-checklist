@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { chromium, firefox } from "playwright";
-import { createAppServer } from "./browser/app-harness.js";
+import { createAppServer, openRealApp } from "./browser/app-harness.js";
 
 const server = await createAppServer();
 const appUrl = server.baseUrl;
@@ -217,6 +217,17 @@ try {
   assert.equal(await page.locator("#vaultView").getAttribute("class"), "view active");
   assert.doesNotMatch(await page.locator("body").innerText(), /Demo patient · Synthetic NSTEMI case/);
   assert.deepEqual(consoleErrors, []);
+  // The no-vault preview exits through the locked render boundary, too.
+  const preview = await browser.newPage();
+  preview.on('pageerror', error => { console.error('Preview startup:', error.message); });
+  await openRealApp(preview, appUrl);
+  await preview.getByRole('button',{name:'Try the demo — no setup needed',exact:true}).click();
+  await preview.locator('[data-demo-guide]').waitFor();
+  await preview.locator('[data-action="exit-guided-demo"]').click();
+  await preview.locator('[data-demo-guide]').waitFor({state:'detached'});
+  assert.equal(await preview.locator('[data-demo-callout], [data-demo-dim]').count(),0);
+  assert.equal(await preview.locator('#vaultView').getAttribute('class'),'view active');
+  await preview.close();
 } finally {
   await browser.close();
   await server.close();

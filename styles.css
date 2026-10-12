@@ -14060,3 +14060,26 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   .patient-identity-bar { margin-inline: 0; min-width: 0; }
   .patient-identity-bar strong { min-width: 0; overflow-wrap: anywhere; }
 }
+
+/* Keep consult actions reachable while reviewing a long context on phones. */
+.ap-confirm-modal { max-width: 760px; }
+.ap-confirm-modal label { display: block; margin-block: .6rem; }
+.ap-confirm-modal textarea, .ap-confirm-modal input:not([type="checkbox"]), .ap-confirm-modal select { width: 100%; }
+.ap-advanced { padding: .75rem; border: 1px solid var(--border); border-radius: 8px; margin-block: .75rem; }
+.ap-confirm-actions { position: sticky; bottom: -1.25rem; background: var(--panel, #fff); border-top: 1px solid var(--border); padding-block: .75rem; margin-top: 1rem; z-index: 1; }
+.ap-confirm-actions [data-action="ap-confirm-generate"] { order: -2; }
+.ap-confirm-actions [data-action="ap-confirm-cancel"] { order: -1; }
+@media (max-width: 640px) {
+  .ap-confirm-overlay { padding: .5rem; }
+  .ap-confirm-modal { max-height: 95dvh; padding: 1rem; }
+  .ap-confirm-actions { bottom: -1rem; gap: .4rem; }
+  .ap-confirm-actions button { min-height: 44px; }
+  .ap-loading-banner { flex-wrap: wrap; }
+}
+
+/* Native top-layer dialog keeps sticky patient/navigation bars behind review. */
+.ap-confirm-modal { border: 0; color: var(--text); margin: auto; }
+.ap-confirm-modal::backdrop { background: rgba(15,23,42,.55); }
+.ap-confirm-overlay { background: transparent; }
+
+.ap-request-error { flex-basis: 100%; color: var(--danger, #b42318); margin: 0; order: -3; }

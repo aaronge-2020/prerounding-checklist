@@ -1,6 +1,7 @@
+import { buildConsultNoteContext } from "../../ai/note-context.js?v=20261011-ai-helper";
 import { buildStructuredRequest } from "../../ai/structured-request.js?v=20261011-request-controls";
-import { sortDays } from "../../daily-updates/days.js?v=20261011-epic-workflow";
-import { updateActivePatient } from "../../app/state/vault.js?v=20261011-epic-workflow";
+import { sortDays } from "../../daily-updates/days.js?v=20261011-ai-helper";
+import { updateActivePatient } from "../../app/state/vault.js?v=20261011-ai-helper";
 import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20261011-epic-workflow";
 import { createLabAutocomplete } from "./lab-autocomplete.js?v=20260924-dollar-autocomplete-v1";
 import { createDrugAutocomplete } from "./drug-autocomplete.js?v=20260929-drug-autocomplete-v1";
@@ -49,7 +50,7 @@ import {
   updateManualObjective,
   updateNoteSection,
   updatePlanProblem
-} from "../../note-drafts/index.js?v=20261011-epic-workflow";
+} from "../../note-drafts/index.js?v=20261011-ai-helper";
 import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20261011-epic-workflow";
 import {
   clearLabBaseline,
@@ -57,14 +58,14 @@ import {
 } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import {
   buildApRevisionPrompt, DEFAULT_AP_INSTRUCTIONS, AP_SUGGESTION_SCHEMA
-} from "../../ai/ap-generator.js?v=20261011-request-controls";
-import { generateProblemApRevisionsWithOpenAi } from "../openai-ap-api.js?v=20261011-request-controls";
+} from "../../ai/ap-generator.js?v=20261011-ai-helper";
+import { generateProblemApRevisionsWithOpenAi } from "../openai-ap-api.js?v=20261011-ai-helper";
 import {
   buildDifferentialScoringRequest,
   formatProbability
 } from "../../ai/decision-scoring.js?v=20261010-decision1-v1";
 import { scoreDifferentialsWithDecision1 } from "../decision-client.js?v=20261010-decision1-v1";
-import { createDifferential } from "../../note-drafts/index.js?v=20261011-epic-workflow";
+import { createDifferential } from "../../note-drafts/index.js?v=20261011-ai-helper";
 
 function packetKey(value) {
   return String(value || "admission");
@@ -206,6 +207,8 @@ export function createReviewController(deps) {
   // Nothing here is persisted; generated content lands in the draft on success.
   let generatingApProblemId = "";
   let apConfirmState = null;
+  let apActiveRequest = null;
+  let apScopeKey = "";
   // Pending per-problem revision suggestions
   // ({ [problemId]: { suggestions, references } }) awaiting approve/reject.
   // Nothing here is persisted; approved suggestions land in the draft.
@@ -396,6 +399,11 @@ export function createReviewController(deps) {
   function model() {
     const patient = deps.active();
     if (apConfirmState && (apConfirmState.patientId !== patient?.id || apConfirmState.packetId !== deps.app.reviewPacketId)) apConfirmState = null;
+    const scopeKey = patient ? `${patient.id}:${deps.app.reviewPacketId}` : "";
+    if (apScopeKey !== scopeKey) {
+      clearApSession();
+      apScopeKey = scopeKey;
+    }
     if (!patient) return { patient: null };
     const packet = selectedPacket(patient);
     // Explicit student confirmations for unmarked temperature units live on
@@ -543,6 +551,8 @@ export function createReviewController(deps) {
         ? deps.presentation.renderReview(reviewViewModel(current))
         : deps.patientRequiredMessage();
     });
+    const confirmDialog = container?.querySelector(".ap-confirm-modal");
+    if (apConfirmState && confirmDialog && !confirmDialog.open) confirmDialog.showModal();
     if (canPreserveScroll && activeId) {
       const restored = document.getElementById(activeId);
       if (restored) restored.focus({ preventScroll: true });
@@ -924,6 +934,10 @@ export function createReviewController(deps) {
       refreshApPromptPreview();
       return true;
     }
+    if (target.matches?.("[data-ap-request-key]")) {
+      refreshApRequestPreview();
+      return true;
+    }
     if (target.matches?.("[data-ap-request-field]")) {
       if (apConfirmState) {
         apConfirmState[target.dataset.apRequestField] = target.type === "checkbox" ? target.checked : target.value;
@@ -1111,7 +1125,16 @@ export function createReviewController(deps) {
     return apDraftText(problem[field]);
   }
 
+  function clearApSession() {
+    apActiveRequest?.controller.abort();
+    apActiveRequest = null;
+    generatingApProblemId = "";
+    apConfirmState = null;
+    apSuggestionsState = {};
+  }
+
   function openApConfirm(problemId) {
+    if (apActiveRequest) { deps.setStatus("Stop the current AI request before starting another."); return; }
     const current = model();
     const draft = current.draft;
     const problem = (draft.problems || []).find((p) => p.id === problemId);
@@ -1145,8 +1168,7 @@ export function createReviewController(deps) {
       diagnosticPlan: apPlanFieldText(problem, "diagnosticPlan"),
       therapeuticPlan: apPlanFieldText(problem, "therapeuticPlan"),
       assessment: apDraftText(draft.assessment),
-      vitals: apDraftText(draft.vitalsSummary),
-      keyLabs: apDraftText(draft.keyLabsSummary),
+      noteContext: buildConsultNoteContext(draft),
       // Active medication list (MAR + home meds, coalesced by the review
       // index). No problem→medication association exists, so the whole active
       // list is passed; the prompt builder resolves each entry to RxNorm
@@ -1175,8 +1197,8 @@ export function createReviewController(deps) {
     if (planBody && freshModal && !panel.querySelector("[data-ap-confirm-overlay]")) {
       planBody.appendChild(freshModal);
       refreshApRequestPreview();
-      freshModal.querySelector(".ap-confirm-modal")?.setAttribute("tabindex", "-1");
-      freshModal.querySelector('[data-action="ap-confirm-cancel"]')?.focus({ preventScroll: true });
+      freshModal.querySelector(".ap-confirm-modal")?.showModal();
+      freshModal.querySelector('[data-ap-consult-questions]')?.focus({ preventScroll: true });
     }
   }
 
@@ -1244,19 +1266,34 @@ export function createReviewController(deps) {
   function refreshApRequestPreview() {
     const preview = deps.byId("reviewContent")?.querySelector("[data-ap-request-preview]");
     if (!preview || !apConfirmState) return;
-    try { preview.textContent = JSON.stringify(apRequestBody(), null, 2); }
-    catch (error) { preview.textContent = error.message; }
+    let message = "";
+    try {
+      preview.textContent = JSON.stringify(apRequestBody(), null, 2);
+      if (!apConfirmState.promptText.trim()) message = "Add patient context or reset the input before sending.";
+    } catch (error) { message = error.message; preview.textContent = message; }
+    const panel = deps.byId("reviewContent");
+    const error = panel?.querySelector("[data-ap-request-error]");
+    if (error) { error.textContent = message; error.hidden = !message; }
+    const send = panel?.querySelector('[data-action="ap-confirm-generate"]');
+    const hasKey = apConfirmState.apiKeySaved || Boolean(panel?.querySelector("[data-ap-request-key]")?.value?.trim());
+    if (send) send.disabled = Boolean(message) || !hasKey;
   }
 
   async function runApGeneration(problemId) {
     const pending = apConfirmState;
-    if (!pending || pending.problemId !== problemId) return;
+    if (!pending || pending.problemId !== problemId || apActiveRequest) return;
     // The textarea already holds the exact prompt: it was live-synced for the
     // current mode unless the student hand-edited it. Hand-edited prompts
     // stay authoritative; Reset input explicitly incorporates changed questions.
     const finalPrompt = readEditedApPrompt();
     if (!finalPrompt.trim()) { deps.setStatus("The prompt is empty — write or reset it before sending."); return; }
     try { apRequestBody(); } catch (error) { deps.setStatus(error.message); return; }
+    const preferences = deps.currentPreferences ? deps.currentPreferences() : {};
+    const requestKey = preferences.openAiApiKey || deps.byId("reviewContent")?.querySelector("[data-ap-request-key]")?.value?.trim();
+    if (!requestKey) { deps.setStatus("Enter an API key for this request, or save one in Settings."); return; }
+    const request = { controller: new AbortController(), patientId: pending.patientId, packetId: pending.packetId };
+    apActiveRequest = request;
+    const stillCurrent = () => apActiveRequest === request && deps.active()?.id === request.patientId && deps.app.reviewPacketId === request.packetId;
     apConfirmState = null;
     generatingApProblemId = problemId;
     // Remove the modal node and re-render the card to show the prominent
@@ -1266,15 +1303,17 @@ export function createReviewController(deps) {
     refreshProblemCard(problemId);
     deps.setStatus(`Consulting AI on "${pending.problemName}"…`);
     try {
-      const preferences = deps.currentPreferences ? deps.currentPreferences() : {};
       const result = await generateProblemApRevisionsWithOpenAi({
-        apiKey: preferences.openAiApiKey,
+        apiKey: requestKey,
+        signal: request.controller.signal,
         model: pending.model,
         instructions: pending.instructions,
         temperature: pending.temperature,
         webSearch: pending.webSearch,
         prompt: finalPrompt
       });
+      if (!stillCurrent()) return;
+      apActiveRequest = null;
       generatingApProblemId = "";
       if (!result.suggestions.length) {
         refreshProblemCard(problemId);
@@ -1292,6 +1331,8 @@ export function createReviewController(deps) {
       refreshProblemCard(problemId);
       deps.setStatus(`${result.suggestions.length} suggestion${result.suggestions.length === 1 ? "" : "s"} for "${pending.problemName}" — approve or reject each one.`);
     } catch (error) {
+      if (!stillCurrent()) return;
+      apActiveRequest = null;
       generatingApProblemId = "";
       // Restore the Consult button from a fresh render of just the card.
       refreshProblemCard(problemId);
@@ -2154,6 +2195,26 @@ export function createReviewController(deps) {
   // Keyboard: Enter commits a smart-variable custom entry; Escape closes
   // the open inline dropdown.
   function keydown(event) {
+    const modal = deps.byId("reviewContent")?.querySelector("[data-ap-confirm-overlay]");
+    if (modal && apConfirmState) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        const problemId = apConfirmState.problemId;
+        apConfirmState = null;
+        modal.remove();
+        deps.byId("reviewContent")?.querySelector(`[data-action="generate-ap"][data-problem-id="${CSS.escape(problemId)}"]`)?.focus();
+        return true;
+      }
+      if (event.key === "Tab") {
+        const fields = [...modal.querySelectorAll('button:not([disabled]), input, textarea, select, summary')].filter((node) => node.getClientRects().length);
+        const first = fields[0], last = fields[fields.length - 1];
+        if ((event.shiftKey && event.target === first) || (!event.shiftKey && event.target === last)) {
+          event.preventDefault();
+          (event.shiftKey ? last : first)?.focus();
+          return true;
+        }
+      }
+    }
     // Pills are focusable spans inside the free-text editor: Enter/Space
     // opens the dropdown, matching button behavior.
     const pill = event.target?.closest?.('[data-action="smart-var-open"]');
@@ -2520,6 +2581,15 @@ export function createReviewController(deps) {
       openApConfirm(button.dataset.problemId);
       return true;
     }
+    if (action === "ap-stop") {
+      const stoppedProblem = generatingApProblemId;
+      apActiveRequest?.controller.abort();
+      apActiveRequest = null;
+      generatingApProblemId = "";
+      refreshProblemCard(stoppedProblem);
+      deps.setStatus("AI request stopped. Your note is unchanged.");
+      return true;
+    }
     if (action === "ap-confirm-cancel") {
       apConfirmState = null;
       // Remove just the modal node — no re-render.
@@ -2759,5 +2829,5 @@ export function createReviewController(deps) {
       return handled;
     };
   }
-  return Object.freeze({ clearRequest: () => { apConfirmState = null; workspaceTab = "note"; }, change: withAutoSave(change), click: withAutoSave(click), input, keydown, open, prepare, render, saveDraft, toggle: withAutoSave(toggle), getDraftNoteText, getDraftNoteSections });
+  return Object.freeze({ clearRequest: () => { clearApSession(); workspaceTab = "note"; }, change: withAutoSave(change), click: withAutoSave(click), input, keydown, open, prepare, render, saveDraft, toggle: withAutoSave(toggle), getDraftNoteText, getDraftNoteSections });
 }

@@ -1,7 +1,7 @@
 import { moveNoteText, appendSourceSelection } from "../../patient-context/note-mapping.js?v=20261011-epic-workflow";
-import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261011-epic-workflow";
+import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261011-ai-helper";
 import { captureScrollPositions, restoreScrollPositions } from "../view-scroll.js?v=20261011-epic-workflow";
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20261011-epic-workflow";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20261011-ai-helper";
 import {
   clinicalParseWarning,
   parseClinicalExport,
@@ -20,7 +20,7 @@ import {
   replaceSourceCapturesFromFormAsync,
   sourceCapturePacketCheck
 } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
-import { NOTE_TYPES } from "../../note-drafts/index.js?v=20261011-epic-workflow";
+import { NOTE_TYPES } from "../../note-drafts/index.js?v=20261011-ai-helper";
 import {
   createPrimaryTeamNote,
   primaryTeamNoteFields,
@@ -319,6 +319,9 @@ export function createDailySourceController(deps) {
     });
     const next = document.querySelector(`[data-structured-primary-note-scope="${scope}"]`);
     const restore = () => {
+      // A newer field render owns scrolling now. Never let an old animation
+      // callback restore an obsolete offset onto the replacement editor.
+      if (!next?.isConnected) return;
       if (view) {
         view.scrollTop = viewTop;
         view.scrollLeft = viewLeft;
@@ -327,6 +330,7 @@ export function createDailySourceController(deps) {
     };
     restore();
     requestAnimationFrame(() => {
+      if (!next?.isConnected) return;
       const field = focusFieldId
         ? document.querySelector(`[data-structured-note-scope="${scope}"][data-structured-note-field="${focusFieldId}"]`)
         : null;

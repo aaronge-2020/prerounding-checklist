@@ -41,3 +41,21 @@ The release checks run as independent CI jobs for unit/boundary checks, guided d
 ## Model limitations
 
 Stanford is the interim default. Browser execution does not establish hash/parity equivalence to the evaluated Stanford artifact. No new model binaries were added. TIDE2 remains blocked on the permitted gated Stanford hosting. No unpublished benchmark scores should be attributed to this build. Rule adaptation needs noisy/incomplete reviewer testing and validation on Stanford/TIDE2 before quality claims.
+
+## AI helper refinement — October 11 evening
+
+- Real `gpt-6-luna` structured request succeeded from the app in the browser using only the synthetic cough fixture. Its documentation suggestion was approved and appeared in Preview & copy while the existing HPI, physical exam, laboratory values, and complete CT report remained intact.
+- The first browser request encountered a connection failure; the note remained unchanged and retry succeeded. A separate direct API call using the same production request wrapper also returned a valid structured suggestion. No clinical efficacy claim is made from these smoke tests.
+- The supplied key was used through a new one-request password field. It was not saved in the vault, source files, or screenshots. Escape/cancel removes the input, reopening it shows blank, and Send is disabled until a key is supplied.
+- Fixed missing AI context: consults now use the reviewed HPI/exam and selected objective data from the same note renderer as Preview & copy, respecting edited lab summaries and excluding other plan problems/raw chart sources.
+- Added request cancellation, a five-minute response deadline, refusal/incomplete-response errors, and patient/packet/session scoping that discards late results. Chat requests now explicitly set `store: false` as structured requests already did.
+- Changed Consult to AI suggestions, collapsed advanced prompt settings, kept send/cancel actions visible, and moved review into a native modal layer. Manual desktop and 390×844 phone checks confirmed the sticky patient bar no longer overlays the dialog, keyboard focus stays in it, Escape closes it, and the document has no horizontal overflow.
+- A live request was stopped from the mobile UI; the existing note and approved suggestion remained unchanged. Fixed doubled export bullets discovered during the live approval test.
+- Targeted tests cover timeout through response-body reading, cancellation, refusal, incomplete/malformed replies, exact requests, selected-note context, edited summaries, exclusion of other problems, and export bullets. CI browser fixtures additionally cover approval/rejection, edits during a request, stop, and packet switching. Fixtures use a fake key; no paid calls or real credentials run in CI.
+- Screenshots: `ai-consult-desktop.jpg`, `ai-consult-mobile.jpg`. Neither contains credentials.
+
+- Final modal checks: an empty prompt and temperature 3 display actionable inline errors inside the dialog, disable Send, and recover after Reset input or clearing temperature.
+
+- Live-site cleanup found a no-vault demo exit leaving its guide banner above the welcome screen. The locked render boundary now tears down all demo overlays; CI covers the no-setup exit separately.
+
+- CI exposed a rapid section-navigation scroll race: an animation callback from a replaced editor could restore its old scroll offset onto the new editor. Scroll/focus restoration now belongs only to the still-connected editor instance.
