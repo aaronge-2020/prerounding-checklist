@@ -1,5 +1,5 @@
-import { createNoteDragController } from "./note-drag-controller.js?v=20261011-drag-workspace";
-import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261011-drag-workspace";
+import { createNoteDragController } from "./note-drag-controller.js?v=20261011-drag-workspace-v2";
+import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261011-drag-workspace-v2";
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261011-ai-helper";
 import { captureScrollPositions, restoreScrollPositions } from "../view-scroll.js?v=20261011-epic-workflow";
 import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20261011-ai-helper";
