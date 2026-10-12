@@ -367,14 +367,20 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     const parseResult = composer.parseResult || { detectedFieldIds: [] };
     const manuallyEditedFields = new Set(composer.dirtyFieldIds || []);
     const pastedText = String(composer.pastedText || "");
+    const primaryIds = new Set(["history_of_present_illness", "interval_events", "patient_report", "physical_exam", "assessment", "plan"]);
+    const visibleFields = fields.filter(field => primaryIds.has(field.id) || structuredNoteValue(note, draftValues, field.id).trim());
+    const emptyFields = fields.filter(field => !visibleFields.includes(field));
+    function renderSectionLinks(items) {
+      return items.map(field => `<button type="button" class="note-section-link" data-note-drop-field="${field.id}" data-action="select-structured-note-field" data-note-scope="${scope}" data-note-field="${field.id}" aria-label="Go to ${escapeHtml(field.label)}"><span>${field.id === "history_of_present_illness" ? "HPI" : escapeHtml(field.label)}</span><span class="note-index-marker" aria-label="${structuredNoteValue(note, draftValues, field.id).trim() ? "Has text" : "Empty"}">${structuredNoteValue(note, draftValues, field.id).trim() ? "•" : "+"}</span></button>`).join("");
+    }
     function renderArrangeCards(items) {
       return items.map(field => `<section class="note-section-card" data-note-drop-field="${field.id}">
         <button type="button" class="note-section-title" data-action="select-structured-note-field" data-note-scope="${scope}" data-note-field="${field.id}" aria-label="${escapeHtml(field.label)} section"><strong>${field.id === "history_of_present_illness" ? "HPI" : escapeHtml(field.label)}</strong><span data-note-card-state>${manuallyEditedFields.has(field.id) ? "Edited" : structuredNoteValue(note, draftValues, field.id).trim() ? "From note" : "Optional"}</span></button>
-        <textarea rows="${field.id === "plan" ? 5 : 3}" aria-label="${escapeHtml(field.label)}" data-structured-note-field="${field.id}" data-structured-note-scope="${scope}" placeholder="Drop text here or type…">${escapeHtml(structuredNoteValue(note, draftValues, field.id))}</textarea>
+        <textarea rows="1" aria-label="${escapeHtml(field.label)}" data-structured-note-field="${field.id}" data-structured-note-scope="${scope}" placeholder="Drop text here or type…">${escapeHtml(structuredNoteValue(note, draftValues, field.id))}</textarea>
       </section>`).join("");
     }
     return `<section class="structured-primary-note" data-structured-primary-note-scope="${escapeHtml(scope)}" aria-labelledby="${scope}StructuredNoteHeading">
-      <div class="section-heading tight structured-note-heading"><div><h3 id="${scope}StructuredNoteHeading">${typeLabel}</h3><p class="muted">${help}</p></div><span class="source-parse-local">${saved ? "Saved locally" : "Optional"}</span></div>
+      <div class="section-heading tight structured-note-heading"><div><h3 id="${scope}StructuredNoteHeading">${mode === "sections" ? (admission ? "Review admission note" : "Review progress note") : typeLabel}</h3>${mode === "paste" ? `<p class="muted">${help}</p>` : ""}</div><span class="source-parse-local">${saved ? "Saved locally" : "Optional"}</span></div>
       <div class="structured-note-mode-toggle" role="group" aria-label="Primary-team note entry mode">
         <button type="button" data-action="select-structured-note-mode" data-note-scope="${escapeHtml(scope)}" data-note-mode="paste" aria-pressed="${String(mode === "paste")}" class="${mode === "paste" ? "selected" : ""}">Paste full note</button>
         <button type="button" data-action="select-structured-note-mode" data-note-scope="${escapeHtml(scope)}" data-note-mode="sections" aria-pressed="${String(mode === "sections")}" class="${mode === "sections" ? "selected" : ""}">Review & correct sections</button>
@@ -392,15 +398,19 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
         <div class="structured-note-paste-meta"><span data-structured-note-paste-count="${escapeHtml(scope)}">${pastedText.length.toLocaleString()} characters · session only</span></div>
         <div class="structured-note-actions"><button type="button" class="button--quiet" data-action="clear-structured-note-paste" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>Clear</button><button type="button" class="button--primary" data-action="review-structured-note-sections" data-note-scope="${escapeHtml(scope)}" ${pastedText.trim() ? "" : "disabled"}>${parseResult.detectedSectionCount ? "Review sections" : "Review note"}</button></div>
       ` : `
-        <div class="note-arrange-intro"><div><span class="note-arrange-eyebrow">EPIC IMPORT · REVIEW THE SPLIT</span><h4>Arrange your note</h4><p>Highlight a passage. Drag it to the right section, or tap the section heading.</p></div><span class="note-arrange-count">${completedCount} sections with text</span></div>
-        <div class="note-arrange-feedback" aria-live="polite" data-note-selection-status>Text from the original is copied. Text between sections is moved.</div>
-        <div class="note-arrange-workspace ${pastedText ? "has-original" : ""}">
-          ${pastedText ? `<aside class="note-source-sheet"><div class="note-sheet-heading"><strong>Original Epic note</strong><span>Read-only · session only</span></div><div id="${scope}NoteOriginal" data-note-original tabindex="0" role="region" aria-label="Original Epic note" class="note-source-text">${escapeHtml(pastedText)}</div></aside>` : ""}
+        <div class="note-arrange-intro"><div><p>Edit in place. To move text, highlight it and drag or tap a section in the list.</p></div><span class="note-arrange-count">${completedCount} sections with text</span></div>
+        <div class="note-arrange-workspace">
+          <nav class="note-section-index" aria-label="Jump or move text to a section">
+            <strong>Sections</strong>
+            <div class="note-arrange-feedback" aria-live="polite" data-note-selection-status>Select text to move it.</div>
+            ${renderSectionLinks(visibleFields)}
+            <details class="note-index-more"><summary>Other sections</summary>${renderSectionLinks(emptyFields)}</details>
+          </nav>
           <div class="note-arrange-sections" aria-label="Note sections">
-            <div class="note-sheet-heading"><strong>Your sections</strong><span>Review & edit in place</span></div>
-            ${renderArrangeCards(fields.filter(field => ["history_of_present_illness", "interval_events", "patient_report", "physical_exam", "assessment", "plan"].includes(field.id)))}
-            <details class="note-additional-sections" ${activeField && !["history_of_present_illness", "interval_events", "patient_report", "physical_exam", "assessment", "plan"].includes(activeField.id) ? "open" : ""}><summary>More sections <span>${fields.filter(field => !["history_of_present_illness", "interval_events", "patient_report", "physical_exam", "assessment", "plan"].includes(field.id) && structuredNoteValue(note, draftValues, field.id).trim()).length} with text</span></summary>
-            ${renderArrangeCards(fields.filter(field => !["history_of_present_illness", "interval_events", "patient_report", "physical_exam", "assessment", "plan"].includes(field.id)))}
+            ${pastedText ? `<details class="note-source-sheet"><summary>View original Epic note <span>Read-only · session only</span></summary><div id="${scope}NoteOriginal" data-note-original tabindex="0" role="region" aria-label="Original Epic note" class="note-source-text">${escapeHtml(pastedText)}</div></details>` : ""}
+            ${renderArrangeCards(visibleFields)}
+            <details class="note-additional-sections" ${activeField && emptyFields.includes(activeField) ? "open" : ""}><summary>Add another section <span>${emptyFields.length} empty</span></summary>
+            ${renderArrangeCards(emptyFields)}
             </details>
           </div>
         </div>

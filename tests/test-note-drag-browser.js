@@ -31,10 +31,11 @@ try {
   assert.equal(await exam.inputValue(),'Alert.');
   // Keyboard/tap alternative uses the same exact-range transaction.
   await selectRange(hpi,7,22);
-  await page.getByRole('button',{name:'Physical exam section',exact:true}).press('Enter');
+  await page.getByRole('button',{name:'Go to Physical exam',exact:true}).press('Enter');
   assert.equal(await exam.inputValue(),'Alert.\n\nMisplaced exam.');
   await undo.click();
   // Read-only original is copied, not removed.
+  await page.locator('.note-source-sheet > summary').click();
   await page.locator('[data-note-original]').evaluate(el=>{
     const range=document.createRange();range.setStart(el.firstChild,0);range.setEnd(el.firstChild,7);
     const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);
@@ -62,6 +63,18 @@ try {
   await page.getByRole('button',{name:'Physical exam section',exact:true}).click();
   assert.equal(await exam.inputValue(),'Clinician revised exam.\n\nCough.');
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+  // No nested textarea scrolling, including long notes and narrow viewports.
+  await hpi.fill(Array.from({length:40},(_,i)=>`Synthetic history line ${i}.`).join('\n'));
+  await page.waitForFunction(() => {
+    const field=document.querySelector('[data-structured-note-field="history_of_present_illness"]');
+    return field.clientHeight >= field.scrollHeight;
+  });
+  const tall=await hpi.evaluate(el=>el.clientHeight);
+  assert.ok(tall>600);
+  await hpi.fill('Short synthetic history.');
+  assert.ok(await hpi.evaluate(el=>el.clientHeight)<100);
+  await page.getByRole('button',{name:'Go to Physical exam',exact:true}).click();
+  assert.equal(await exam.evaluate(el=>document.activeElement===el),true);
   // Source replacement invalidates the pending selection.
   await selectRange(exam,0,9);
   await page.getByRole('button',{name:'Paste full note',exact:true}).click();

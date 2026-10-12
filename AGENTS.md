@@ -34,6 +34,7 @@ Purpose: a compact, current map for future work on this local-first app.
   - `src/ui/cheat-sheets/` is the read-only bedside reference: `search.js` (ranked local search), `presentation.js` (history/exam cards), `controller.js` (view wiring).
   - `src/ui/redaction/presentation.js` is pure annotated-review and residual-warning markup. Active-tab review state remains in `src/patient-context/review.js`.
   - `src/ui/daily/presentation.js` renders the hospital-day trajectory and progress note sections.
+  - `src/ui/daily/note-layout-controller.js` sizes section textareas to their full content after edits, disclosure changes, and width changes; the note uses one document scroll.
   - `src/ui/daily/note-drag-controller.js` owns session-only highlight, drag, and tap transfers in Epic import. Source snapshots, patient/packet identity, and connected workspace must match before applying an exact-range correction. `src/patient-context/note-mapping.js` holds the pure move/copy operations.
   - `src/ui/deid/presentation.js` renders model status, active download progress, and de-identification controls.
   - `src/ui/deid/model-pack-controller.js` owns the model-pack lifecycle (load/download/import/verify/remove, ensure-selected-ready gate, download progress text).

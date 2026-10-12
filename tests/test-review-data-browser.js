@@ -61,7 +61,7 @@ try {
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="admission"][data-note-mode="sections"]');
   assert.equal(await page.locator('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]').count(), 1);
   assert.equal(await page.locator('[data-structured-note-scope="admission"][data-structured-note-field]').count(), 21);
-  assert.equal(await page.locator('[data-action="select-structured-note-field"][data-note-field="past_medical_history"]').count(), 1);
+  assert.equal(await page.locator('.note-section-title[data-action="select-structured-note-field"][data-note-field="past_medical_history"]').count(), 1);
   await page.locator(".note-additional-sections > summary").click();
   const oneLiner = "Adult with community-acquired pneumonia improving on room air.";
   await page.fill('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]', oneLiner);
@@ -145,13 +145,13 @@ try {
   assert.match(await page.locator('[data-structured-note-detected="daily"]').innerText(), /Physical exam/);
   await page.click('[data-action="review-structured-note-sections"][data-note-scope="daily"]');
   await page.locator(".note-additional-sections > summary").click();
-  await page.click('[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="objective"]');
+  await page.click('.note-section-title[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="objective"]');
   assert.match(await page.locator('[data-structured-note-field="objective"]').inputValue(), /PH ART/);
   assert.match(await page.locator('[data-structured-note-field="objective"]').inputValue(), /SBP goal <160/);
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
   await page.fill('[data-structured-note-paste][data-structured-note-scope="daily"]', compactPrimaryNote);
   await page.click('[data-action="review-structured-note-sections"][data-note-scope="daily"]');
-  await page.click('[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="plan"]');
+  await page.click('.note-section-title[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="plan"]');
   assert.match(await page.locator('[data-structured-note-field="plan"]').inputValue(), /SBP<160/);
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
   await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));

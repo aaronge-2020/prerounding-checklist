@@ -1,5 +1,6 @@
-import { createNoteDragController } from "./note-drag-controller.js?v=20261011-drag-workspace-v2";
-import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261011-drag-workspace-v2";
+import { createNoteLayoutController } from "./note-layout-controller.js?v=20261012-note-document-v1";
+import { createNoteDragController } from "./note-drag-controller.js?v=20261012-note-document-v1";
+import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261012-note-document-v1";
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261011-ai-helper";
 import { captureScrollPositions, restoreScrollPositions } from "../view-scroll.js?v=20261011-epic-workflow";
 import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20261011-ai-helper";
@@ -351,7 +352,7 @@ export function createDailySourceController(deps) {
     });
   }
 
-  function selectStructuredNoteField(scope, fieldId) {
+  function selectStructuredNoteField(scope, fieldId, reveal = false) {
     const fields = primaryTeamNoteFields(structuredNoteType(scope));
     if (!fields.some((field) => field.id === fieldId)) return;
     setStructuredNoteComposer(scope, { mode: "sections", activeFieldId: fieldId });
@@ -360,6 +361,7 @@ export function createDailySourceController(deps) {
       const disclosure = field.closest("details");
       if (disclosure) disclosure.open = true;
       field.focus({ preventScroll: true });
+      if (reveal) field.closest(".note-section-card")?.scrollIntoView({ block: "center", behavior: "instant" });
     } else renderStructuredNoteEditor(scope, { focusFieldId: fieldId });
   }
 
@@ -394,6 +396,7 @@ export function createDailySourceController(deps) {
         deps.app.structuredNoteDrafts.get(key)?.[id] ?? existingStructuredNote(scope)?.sections?.[id]?.deidentifiedText ?? ""])) };
   }
 
+  createNoteLayoutController();
   createNoteDragController({
     context: noteMappingContext,
     report: deps.setStatus,
@@ -432,7 +435,7 @@ export function createDailySourceController(deps) {
     if (action === "undo-note-mapping") correctNoteMapping(scope);
     else if (action === "select-structured-note-mode") setStructuredNoteMode(scope, target.dataset.noteMode || "paste");
     else if (action === "review-structured-note-sections") reviewStructuredNoteSections(scope);
-    else if (action === "select-structured-note-field") selectStructuredNoteField(scope, target.dataset.noteField || "");
+    else if (action === "select-structured-note-field") selectStructuredNoteField(scope, target.dataset.noteField || "", target.matches(".note-section-link"));
     else if (action === "move-structured-note-field") moveStructuredNoteField(scope, Number(target.dataset.direction || 0));
     else if (action === "clear-structured-note-field") clearStructuredNoteField(scope, target.dataset.noteField || "");
     else if (action === "clear-structured-note-paste") clearStructuredNotePaste(scope);
@@ -461,7 +464,9 @@ export function createDailySourceController(deps) {
     const panel = document.querySelector(`[data-structured-primary-note-scope="${scope}"]`);
     const undo = panel?.querySelector('[data-action="undo-note-mapping"]');
     if (undo) undo.disabled = true;
-    const cardState = panel?.querySelector(`[data-note-drop-field="${fieldId}"] [data-note-card-state]`);
+    const cardState = panel?.querySelector(`.note-section-card[data-note-drop-field="${fieldId}"] [data-note-card-state]`);
+    const marker = panel?.querySelector(`.note-section-link[data-note-field="${fieldId}"] .note-index-marker`);
+    if (marker) { marker.textContent = value.trim() ? "•" : "+"; marker.setAttribute("aria-label", value.trim() ? "Has text" : "Empty"); }
     if (cardState) cardState.textContent = "Edited";
     const countLabel = panel?.querySelector(".note-arrange-count");
     if (countLabel) countLabel.textContent = `${Object.values(noteMappingContext(scope)?.sections || {}).filter(text => text.trim()).length} sections with text`;

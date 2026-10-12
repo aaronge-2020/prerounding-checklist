@@ -106,8 +106,8 @@ import {
   normalizeUserPreferences
 } from "../app/preferences.js?v=20261011-request-controls";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1&icon=search-v1";
-import { createDailyPresentation } from "./daily/presentation.js?v=20261011-drag-workspace-v2";
-import { createDailySourceController } from "./daily/source-controller.js?v=20261011-drag-workspace-v2";
+import { createDailyPresentation } from "./daily/presentation.js?v=20261012-note-document-v1";
+import { createDailySourceController } from "./daily/source-controller.js?v=20261012-note-document-v1";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20261011-ai-helper";
 import { createReviewController } from "./review/controller.js?v=20261011-ai-helper";
