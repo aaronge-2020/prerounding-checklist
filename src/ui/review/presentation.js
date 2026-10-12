@@ -542,8 +542,8 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   }
 
   function renderDifferentialEditor(differential, index, problemId, references = []) {
-    return `<div class="differential-card" data-differential-id="${escapeHtml(differential.id)}">
-      <div class="ed-diff-bar"><strong>#${index + 1}</strong>${decision1Badge(differential)}<span class="ed-mini-row"><button type="button" class="ed-mini" data-action="move-differential" data-direction="-1" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}" aria-label="Move differential up">↑</button><button type="button" class="ed-mini" data-action="move-differential" data-direction="1" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}" aria-label="Move differential down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-differential" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}">Remove</button></span></div>
+    return `<div class="differential-card differential-row" data-differential-id="${escapeHtml(differential.id)}">
+      <div class="ed-diff-bar"><strong>#${index + 1}</strong>${decision1Badge(differential)}<span class="ed-mini-row differential-row-actions"><button type="button" class="ed-mini" data-action="move-differential" data-direction="-1" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}" aria-label="Move differential up">↑</button><button type="button" class="ed-mini" data-action="move-differential" data-direction="1" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}" aria-label="Move differential down">↓</button><button type="button" class="ed-mini ed-mini--danger" aria-label="Remove differential" data-action="remove-differential" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}">×</button></span></div>
       <div class="ed-sub"><span class="ed-sub-label">Diagnosis</span><div class="ed-body" contenteditable="true" data-differential-field="diagnosis" data-placeholder="Diagnosis" spellcheck="true">${renderTextWithCitationLinks(differential.diagnosis, references)}</div></div>
       <div class="ed-two"><div class="ed-sub"><span class="ed-sub-label">Clues for</span><div class="ed-body" contenteditable="true" data-differential-field="cluesFor" data-placeholder="Optional" spellcheck="true">${renderTextWithCitationLinks(differential.cluesFor, references)}</div></div><div class="ed-sub"><span class="ed-sub-label">Clues against</span><div class="ed-body" contenteditable="true" data-differential-field="cluesAgainst" data-placeholder="Optional" spellcheck="true">${renderTextWithCitationLinks(differential.cluesAgainst, references)}</div></div></div>
     </div>`;
@@ -935,13 +935,23 @@ export function createReviewPresentation({ escapeHtml, icon }) {
 
     const planBody = `<p class="ed-hint">Order problems by decisional importance. Add only reasoning and actions you support.</p><div class="plan-problem-list" data-plan-problem-list>${draft.problems.map((problem, index) => renderProblemEditor(problem, index, guidanceFor, { generatingApProblemId, apSuggestions: (apSuggestions || {})[problem.id], apReferences: draft.apReferences })).join("") || `<p class="ed-empty">No problems added yet.</p><p class="ed-hint">If you pulled from the primary note and expected problems here, the Assessment &amp; Plan may not have parsed — use the ⤓ pull button on the Plan section header or add a problem manually.</p>`}</div>${apConfirm ? renderApConfirmModal(apConfirm) : ""}`;
 
+    const outlineLabels = [
+      ...(isHP ? ["One-Liner", "Chief Complaint", "History of Present Illness", "Relevant History", "Diet and Exercise"] : ["One-Liner", "Subjective"]),
+      "Physical Exam", "Objective", "Assessment", "Plan", ...CLOSING_SECTION_FIELDS.map(field => field.label), "Medications"
+    ];
+    const outline = `<nav class="writer-outline" aria-label="Note outline"><strong>Note outline</strong>${outlineLabels.map(label => {
+      const id = label.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      const problems = id === "plan" ? draft.problems.map((problem, i) => `<button type="button" class="writer-problem-link" data-action="writer-jump" data-writer-problem="${escapeHtml(problem.id)}">${i + 1}. <span>${escapeHtml(valueText(problem.problem) || "Untitled problem")}</span></button>`).join("") : "";
+      return `<button type="button" data-action="writer-jump" data-writer-section="${id}">${escapeHtml(label)}</button>${problems}`;
+    }).join("")}</nav>`;
+
     return `<section class="note-draft-panel panel" aria-labelledby="draftNoteHeading">
       <div class="note-editor-toolbar">
         <div class="note-editor-title"><h2 id="draftNoteHeading">Draft note</h2><label class="note-type-control"><span>Format</span><select id="reviewNoteType"><option value="${NOTE_TYPES.PROGRESS}" ${draft.noteType === NOTE_TYPES.PROGRESS ? "selected" : ""}>Progress note</option><option value="${NOTE_TYPES.H_AND_P}" ${draft.noteType === NOTE_TYPES.H_AND_P ? "selected" : ""}>H&amp;P</option></select></label></div>
         <div class="note-editor-actions"><span class="autosave-indicator" data-autosave-indicator data-state="idle" title="Your note saves automatically to the encrypted vault as you type">Auto-save on</span><button type="button" class="button--secondary button--small" data-action="copy-final-note">Copy for Epic</button><button type="button" class="button--secondary button--small" data-action="copy-rich-note">Copy rich text</button><button type="button" class="button--secondary button--small" data-action="download-final-note">${icon("download")} Download .txt</button></div>
       </div>
       <p class="ed-toolbar-note">One editor for the whole note — section labels included. Type <kbd>$</kbd> to pull a lab or vital into the note. Saving encrypts the draft without running de-identification.</p>
-      <div class="note-editor" id="noteEditor" role="group" aria-label="Note editor">
+      <div class="writer-layout">${outline}<div class="note-editor" id="noteEditor" role="group" aria-label="Note editor">
         ${frontSections.join("")}
         ${editorSection("Physical Exam", smartExamBlock(draft, smartExamUi), { labelExtra: helpFor("physical_exam", "Physical Exam") })}
         ${editorSection("Objective", objectiveBody, { labelExtra: helpFor("objective", "Objective") })}
@@ -949,7 +959,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         ${editorSection("Plan", planBody, { labelExtra: `${helpFor("plan", "Plan")}<button type="button" class="ed-mini" data-action="add-plan-problem">${icon("plus")} Add problem</button>` })}
         ${CLOSING_SECTION_FIELDS.map((field) => editorSection(field.label, editorRegion(`data-draft-closing="${field.id}"`, draft.closing?.[field.id]), { labelExtra: `${helpFor(field.id, field.label)}${optionalSectionToggle(field.id, visibility)}` })).join("")}
         ${editorSection("Medications", renderMedicationsEditor(draft), { labelExtra: helpOnly("medications", "Medications") })}
-      </div>
+      </div></div>
     </section>`;
   }
 
@@ -968,7 +978,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         <div><span class="eyebrow">${escapeHtml(patientLabel)}</span><h1 id="review-heading">Write note</h1><p class="review-one-liner ${oneLiner ? "" : "is-empty"}">${escapeHtml(oneLiner || "One-liner not entered yet. You can continue and add it in the draft.")}</p></div>
         <label class="review-packet-label">Note packet<select id="reviewPacketSelect">${packets.map((packet) => `<option value="${escapeHtml(packet.id)}" ${packet.id === selectedPacketId ? "selected" : ""}>${escapeHtml(packet.label)}</option>`).join("")}</select></label>
       </header>
-      <div class="writing-workflow-bar"><div role="tablist" aria-label="Writing workspace">${[["sources", "Sources"], ["note", "Write"], ["preview", "Preview & copy"]].map(([id,label]) => `<button type="button" role="tab" aria-selected="${workspaceTab === id}" data-action="workspace-tab" data-workspace-tab="${id}">${label}</button>`).join("")}</div><button type="button" data-action="import-for-note">+ Import from Epic</button></div>
+      <div class="writing-workflow-bar"><div role="tablist" aria-label="Writing workspace">${[["note", "Write"], ["sources", "Clinical data"], ["preview", "Preview & copy"]].map(([id,label]) => `<button type="button" role="tab" aria-selected="${workspaceTab === id}" data-action="workspace-tab" data-workspace-tab="${id}">${label}</button>`).join("")}</div><button type="button" data-action="import-for-note">+ Import from Epic</button></div>
       ${flaggedBanner}
       <section class="note-export-preview panel" ${workspaceTab !== "preview" ? "hidden" : ""} aria-label="Final note preview"><div class="section-heading"><div><h2>Review before copying</h2><p class="muted">This is the exact plain text that will be copied. Check source facts and remove any placeholders.</p></div><button type="button" data-action="copy-final-note" class="button--primary">Copy for Epic</button></div><pre>${escapeHtml(previewText || "No note content yet. Return to Write to begin.")}</pre><div class="button-row"><button type="button" data-action="workspace-tab" data-workspace-tab="note">Back to writing</button><button type="button" data-action="copy-rich-note">Copy rich text</button><button type="button" data-action="download-final-note">Download .txt</button></div></section>
       <div class="review-columns" ${workspaceTab === "preview" ? "hidden" : ""}>${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions })}</div>

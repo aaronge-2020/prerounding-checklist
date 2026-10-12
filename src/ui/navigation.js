@@ -1,7 +1,7 @@
 // Responsive navigation belongs to the shell, independent of patient state.
 let compactNavigation = null;
 export function syncNavigationDisclosure() {
-  const compact = window.matchMedia("(max-width: 1040px)").matches || document.getElementById("dailyView")?.classList.contains("active");
+  const compact = window.matchMedia("(max-width: 1040px)").matches || ["dailyView", "reviewView"].some(id => document.getElementById(id)?.classList.contains("active"));
   if (compact === compactNavigation) return;
   compactNavigation = compact;
   const menu = document.getElementById("secondaryNavigation");

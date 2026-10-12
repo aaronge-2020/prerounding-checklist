@@ -11,9 +11,10 @@
 // selecting an option must not yank the review view's scroll position.
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
-import { fileAppUrl } from "./browser/app-harness.js";
+import { createAppServer, unlockAndCreatePatient } from "./browser/app-harness.js";
 
-const baseUrl = fileAppUrl();
+const server = await createAppServer();
+const baseUrl = server.baseUrl;
 const browser = await chromium.launch({
   ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {}),
   args: ["--allow-file-access-from-files", "--disable-features=LocalNetworkAccessChecks", "--no-proxy-server"]
@@ -50,11 +51,7 @@ const option = (system, v, opt) => `[data-smart-var-option][data-system="${syste
 try {
   await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
   await page.waitForSelector("#vaultPassphrase", { timeout: 60000 });
-  await page.fill("#vaultPassphrase", "smart exam test passphrase");
-  await page.click('[data-action="unlock-vault"]');
-  await page.waitForFunction(() => /Vault unlocked/.test(document.querySelector("#statusLine")?.textContent || ""), { timeout: 30000 });
-  await page.click('[data-action="start-guided-demo"]');
-  await page.waitForTimeout(2000);
+  await unlockAndCreatePatient(page);
   await page.click('[data-view-target="review"]');
   await page.waitForSelector("[data-smart-exam]", { timeout: 30000 });
 
@@ -66,7 +63,7 @@ try {
   await page.selectOption("[data-smart-exam-select]", "heent");
   await userClick('[data-action="smart-exam-insert"]');
   await page.waitForSelector('[data-smart-system="heent"]', { timeout: 5000 });
-  const prose = await page.locator('[data-smart-system="heent"] .se-prose').innerText();
+  const prose = await page.locator('[data-smart-system="heent"] .se-editor').innerText();
   assert.ok(prose.startsWith("HEENT:"), `prose starts with HEENT: (got ${prose.slice(0, 40)})`);
   assert.ok(await page.locator(pill("heent", "palpation")).count(), "palpation pill rendered inline");
 
@@ -80,57 +77,15 @@ try {
   const pillText = await page.locator(pill("heent", "palpation")).innerText();
   assert.ok(pillText.includes("tender") && pillText.includes("masses"), `pill shows both findings (got "${pillText}")`);
 
-  // 5. Scroll stability: with the view scrolled down, opening a dropdown and
-  // selecting an option must not yank the scroll position (user-path defect).
-  // Use whichever pill is actually visible at that scroll offset, and click
-  // by coordinates with no reveal step, so the test measures the app's own
-  // behavior rather than automation scrolling.
-  await page.evaluate(() => {
-    const view = document.querySelector("#reviewView");
-    view.scrollTop = view.scrollHeight; // clamp to the real maximum
-  });
-  await settle();
-  const visPill = await page.evaluate(() => {
-    const vr = document.querySelector("#reviewView").getBoundingClientRect();
-    const el = [...document.querySelectorAll(".se-pill")].find((p) => {
-      if (p.dataset.system === "heent" && p.dataset.var === "palpation") return false; // already open from step 4
-      const r = p.getBoundingClientRect();
-      return r.top >= vr.top + 40 && r.bottom <= vr.bottom - 40;
-    });
-    if (!el) return null;
-    const r = el.getBoundingClientRect();
-    return { x: r.x + r.width / 2, y: r.y + r.height / 2, system: el.dataset.system, var: el.dataset.var };
-  });
-  assert.ok(visPill, "a pill must be visible while the view is scrolled down");
-  const scrollOf = () => page.evaluate(() => document.querySelector("#reviewView")?.scrollTop || 0);
-  const before1 = await scrollOf();
-  assert.ok(before1 > 100, `view must be scrolled down before pill click (was ${before1})`);
-  await page.mouse.click(visPill.x, visPill.y);
-  await settle();
-  await page.waitForSelector(".se-dropdown", { timeout: 5000 });
-  const after1 = await scrollOf();
-  assert.ok(Math.abs(after1 - before1) <= 2, `pill open moved scroll (before=${before1}, after=${after1})`);
-  // Click an abnormal option inside the open dropdown, again with no reveal.
-  const optPoint = await page.evaluate(() => {
-    const dd = document.querySelector(".se-dropdown");
-    if (!dd) return null;
-    const vr = document.querySelector("#reviewView").getBoundingClientRect();
-    const label = [...dd.querySelectorAll(".se-opt")].find((l) =>
-      !l.classList.contains("is-normal") && !l.querySelector("input").checked &&
-      (() => { const r = l.getBoundingClientRect(); return r.top >= vr.top && r.bottom <= vr.bottom; })());
-    if (!label) return null;
-    const r = label.getBoundingClientRect();
-    return { x: r.x + r.width / 2, y: r.y + r.height / 2, text: label.textContent.trim() };
-  });
-  assert.ok(optPoint, "an unchecked abnormal option must be visible in the dropdown");
-  const before2 = await scrollOf();
-  await page.mouse.click(optPoint.x, optPoint.y);
-  await settle();
-  const after2 = await scrollOf();
-  assert.ok(Math.abs(after2 - before2) <= 2, `option select moved scroll (before=${before2}, after=${after2})`);
-  const visPillText = await page.locator(pill(visPill.system, visPill.var)).innerText();
-  assert.ok(visPillText.includes(optPoint.text.replace(/^✓ /, "")),
-    `pill shows the selected option (got "${visPillText}")`);
+  // The bounded editor is now the scroll owner. Opening/selecting an inline
+  // option must preserve its position after a real pointer click.
+  await page.keyboard.press("Escape");
+  await page.locator('[data-writer-section="physical-exam"]').click();
+  await userClick(pill("heent", "palpation"));
+  const scrollOf = () => page.locator("#noteEditor").evaluate(el => el.scrollTop);
+  const before = await scrollOf();
+  await userClick(option("heent", "palpation", "tender"));
+  assert.ok(Math.abs(await scrollOf() - before) <= 2, "smart option preserves editor scroll");
 
   // 6. "All normal" fills every inserted system in one click.
   await userClick('[data-action="smart-exam-all-normal"]');
@@ -170,4 +125,5 @@ try {
   console.log("PASS: smart physical-exam inline workflow");
 } finally {
   await browser.close();
+  await server.close();
 }

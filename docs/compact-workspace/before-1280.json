@@ -1,0 +1,55 @@
+{
+  "phase": "before",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "fixture": {
+    "problems": 6,
+    "differentialsPerProblem": 4
+  },
+  "differentialHeightPx": 162,
+  "editorScrollHeightPx": 7533,
+  "results": [
+    {
+      "task": "Edit fourth differential in sixth problem",
+      "clicks": 1,
+      "pointerMoves": 2,
+      "pointerTravelPx": 1679,
+      "wheelGestures": 12,
+      "wheelDeltaPx": 6901
+    },
+    {
+      "task": "Edit disposition at end of note",
+      "clicks": 1,
+      "pointerMoves": 2,
+      "pointerTravelPx": 2006,
+      "wheelGestures": 13,
+      "wheelDeltaPx": 7379
+    },
+    {
+      "task": "Return to one-liner and edit",
+      "clicks": 1,
+      "pointerMoves": 2,
+      "pointerTravelPx": 1949,
+      "wheelGestures": 12,
+      "wheelDeltaPx": 7200
+    },
+    {
+      "task": "Open final preview",
+      "clicks": 1,
+      "pointerMoves": 1,
+      "pointerTravelPx": 490,
+      "wheelGestures": 0,
+      "wheelDeltaPx": 0
+    },
+    {
+      "task": "Reach and edit Other note content in Epic import",
+      "clicks": 2,
+      "pointerMoves": 2,
+      "pointerTravelPx": 1702,
+      "wheelGestures": 0,
+      "wheelDeltaPx": 0
+    }
+  ]
+}

@@ -431,7 +431,11 @@ export function createDailySourceController(deps) {
   function handleStructuredNoteAction(target) {
     const scope = target.dataset.noteScope || "daily";
     const action = target.dataset.action;
-    if (action === "undo-note-mapping") correctNoteMapping(scope);
+    if (action === "jump-note-section") {
+      const pane = target.closest(".note-arrange-workspace")?.querySelector(".note-arrange-sections");
+      jumpToNoteSection(pane, target.dataset.noteIndexField);
+    }
+    else if (action === "undo-note-mapping") correctNoteMapping(scope);
     else if (action === "select-structured-note-mode") setStructuredNoteMode(scope, target.dataset.noteMode || "paste");
     else if (action === "review-structured-note-sections") reviewStructuredNoteSections(scope);
     else if (action === "select-structured-note-field") selectStructuredNoteField(scope, target.dataset.noteField || "");
@@ -446,8 +450,7 @@ export function createDailySourceController(deps) {
   function handleInput(target) {
     if (target.matches("[data-note-section-jump]")) {
       const pane = target.closest(".note-arrange-sections");
-      const card = [...pane.querySelectorAll("[data-note-drop-field]")].find(el => el.dataset.noteDropField === target.value);
-      if (card) pane.scrollTop += card.getBoundingClientRect().top - pane.getBoundingClientRect().top - pane.querySelector(".note-sheet-heading").offsetHeight - 8;
+      jumpToNoteSection(pane, target.value);
       target.value = "";
     }
     else if (target.matches("[data-result-metadata]")) updateResultMetadata(target.dataset.resultScope || "daily", target.dataset.resultMetadata, target.value);
@@ -455,6 +458,11 @@ export function createDailySourceController(deps) {
     else if (target.matches("[data-structured-note-field]")) updateStructuredNoteDraft(target.dataset.structuredNoteScope || "daily", target.dataset.structuredNoteField, target.value);
     else return false;
     return true;
+  }
+
+  function jumpToNoteSection(pane, fieldId) {
+    const card = [...(pane?.querySelectorAll("[data-note-drop-field]") || [])].find(el => el.dataset.noteDropField === fieldId);
+    if (card) pane.scrollTop += card.getBoundingClientRect().top - pane.getBoundingClientRect().top - pane.querySelector(".note-sheet-heading").offsetHeight - 8;
   }
 
   function updateStructuredNoteDraft(scope, fieldId, value) {

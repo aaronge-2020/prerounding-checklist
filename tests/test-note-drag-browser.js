@@ -78,6 +78,13 @@ try {
   await undo.click();
   assert.equal(await hpi.inputValue(),'Cough. Misplaced exam.');
   assert.equal(await exam.inputValue(),'Alert.');
+  await selectRange(hpi,7,22);
+  // Navigating the compact section index keeps the selected range available.
+  await page.locator('[data-note-index-field="physical_exam"]').click();
+  assert.equal(await page.locator('[data-note-drag-handle]').isEnabled(), true);
+  await page.getByRole('button',{name:'Physical exam section',exact:true}).click();
+  assert.equal(await exam.inputValue(), 'Alert.\n\nMisplaced exam.');
+  await undo.click();
   // Keyboard/tap alternative uses the same exact-range transaction.
   await selectRange(hpi,7,22);
   await page.getByRole('button',{name:'Physical exam section',exact:true}).press('Enter');

@@ -67,6 +67,9 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       : view === stage.view
         ? visibleTarget(content, stage.targetSelector)
         : document.querySelector(`button[data-view-target="${CSS.escape(stage.view)}"]`);
+    // Reveal a destination inside the compact Tools menu before spotlighting it.
+    const navigationMenu = single?.closest("details.secondary-navigation");
+    if (navigationMenu) navigationMenu.open = true;
     return single ? [single] : [];
   }
 
@@ -341,7 +344,8 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     } catch (err) {
       console.warn("Guided demo could not render its controls.");
     }
-    if (!isComplete) mountDim();
+    // Writing is a free-edit stage: the outline, exports and data tabs remain usable.
+    if (!isComplete && stageId !== "write-note") mountDim();
     if (stageId === "parse-note" && view === "daily") {
       // Fill the admission paste textarea after render so the deterministic
       // parser sections the synthetic note. Only fills once.
@@ -446,8 +450,8 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     }
     if (!routeMismatch) mountCallout(target, stage);
     requestAnimationFrame(() => {
-      if (!isInfo) target.focus({ preventScroll: true });
-      if (!stage.navTarget && view === stage.view) scrollTargetIntoView(target);
+      if (!isInfo && stageId !== "write-note") target.focus({ preventScroll: true });
+      if (!stage.navTarget && view === stage.view && stageId !== "write-note") scrollTargetIntoView(target);
       scheduleCalloutPosition();
     });
     if (repositionTimer) clearTimeout(repositionTimer);
@@ -465,7 +469,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       document.querySelectorAll("[data-demo-dim]").forEach((element) => element.remove());
       // Guide bar ([data-demo-guide]) is intentionally NOT removed here.
       try { console.log("[demo] timer: guide bar preserved:", !!document.querySelector("[data-demo-guide]")); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
-      if (getSession()?.stage !== "done") mountDim();
+      if (!["done", "write-note"].includes(getSession()?.stage)) mountDim();
       const currentTargets = targetsForStage(stage, stageId, view, content);
       const currentTarget = currentTargets[0] || null;
       if (!currentTarget) return;
@@ -480,7 +484,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       if (!routeMismatch) mountCallout(currentTarget, stage);
       // Re-scroll the target into view after re-mounting, in case the
       // dim/callout DOM changes disrupted the scroll position.
-      if (!stage.navTarget && view === stage.view) scrollTargetIntoView(currentTarget);
+      if (!stage.navTarget && view === stage.view && stageId !== "write-note") scrollTargetIntoView(currentTarget);
     }, 250);
   }
 

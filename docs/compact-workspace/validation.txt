@@ -1,0 +1,7 @@
+Validation completed before publication, 2026-10-12:
+PASS npm.cmd run test:ci (exit 0; includes new compact writer and smart-exam browser journeys)
+PASS npm.cmd run test:epic-import (exit 0; 60 varied notes and real Stanford execution/failure checks)
+PASS node tests/test-note-drag-browser.js (additional section-index selection/transfer regression)
+PASS npm.cmd run test:compact-metrics at 1440x900 and 1280x800 (results in JSON files)
+PASS git diff --cached --check
+AI provider/browser integration calls were mocked. Model quality limits and measurement method are described in README.md.

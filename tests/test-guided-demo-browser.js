@@ -158,6 +158,10 @@ try {
   assert.match(await page.locator("[data-draft-assessment]").innerText(), /high-risk NSTEMI/i);
   assert.equal(await page.locator(".plan-problem-card").count(), 3);
   assert.match(await page.locator('.plan-problem-card').first().locator('[data-problem-field="diagnosticPlan"]').innerText(), /Coronary angiography is planned today/i);
+  await page.getByRole("tab", { name: "Clinical data", exact: true }).click();
+  await page.locator("#reviewDataSearch").click();
+  await page.waitForTimeout(350); // cross the tour's delayed spotlight reposition
+  assert.equal(await page.evaluate(() => document.activeElement?.id), "reviewDataSearch", "the writing tour must not steal focus from clinical-data search");
   await page.selectOption("#reviewDataCategory", "vitals");
   // Vitals render as compact chips in the redesigned review UI.
   await page.waitForFunction(() => /Vital signs[\s\S]*saved/.test(document.querySelector(".review-data-list")?.textContent || ""));
@@ -168,6 +172,7 @@ try {
   await page.fill("#reviewDataSearch", "ECG");
   await page.waitForFunction(() => /ECG interpretation[\s\S]*ST-segment depressions/i.test(document.querySelector(".review-data-list")?.textContent || "")).catch(async (error) => {
     console.error("ECG filter result:", await page.locator(".review-data-list").innerText());
+    console.error("Filter controls:", await page.locator("#reviewDataSearch").inputValue(), await page.locator("#reviewDataCategory").inputValue(), await page.locator("#reviewPacketSelect").inputValue());
     throw error;
   });
   await page.fill("#reviewDataSearch", "");

@@ -235,8 +235,9 @@ Sodium: 138`;
   // The interactive Workups/Checklist flow is gone: no new checklist findings
   // can be built, and the note must not gain checklist-derived content.
 
-  // The compact sheet shows every matching row on one page: no pagination.
+  // Clinical data is one tab from the full-width writer; it has no pagination.
   await page.click('[data-view-target="review"]');
+  await page.getByRole("tab", { name: "Clinical data", exact: true }).click();
   await page.waitForSelector("#reviewContent .review-workspace");
   assert.equal(await page.locator("#reviewDataCategory").inputValue(), "all", "opening Patient Data Review must reveal labs, vitals, medications, and results");
   assert.equal(await page.locator(".review-data-pagination").count(), 0, "the compact sheet must not paginate");
@@ -307,6 +308,7 @@ Sodium: 138`;
   await hrChip.locator('[data-objective-selection-id]').uncheck();
   await page.click('[data-view-target="daily"]');
   await page.click('[data-view-target="review"]');
+  await page.getByRole("tab", { name: "Clinical data", exact: true }).click();
   await page.waitForSelector("#reviewContent .review-workspace");
   assert.equal(await page.locator(".vital-row", { hasText: "Heart Rate" }).first().locator('[data-objective-selection-id]').isChecked(), false, "deselected vitals must stay out of the note");
 
@@ -315,6 +317,7 @@ Sodium: 138`;
   await page.waitForFunction(() => [...document.querySelectorAll('.compact-medications [data-objective-selection-id]')].filter((box) => box.checked).length === 1);
   await page.click('[data-view-target="daily"]');
   await page.click('[data-view-target="review"]');
+  await page.getByRole("tab", { name: "Clinical data", exact: true }).click();
   await page.waitForSelector("#reviewContent .review-workspace");
   assert.equal(await page.locator(".scaffold-med-list li").count(), 1, "removed medications must stay removed");
 
@@ -338,6 +341,7 @@ Sodium: 138`;
   await page.click('[data-action="save-day"]');
   await page.waitForFunction(() => /Source edits saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.click('[data-view-target="review"]');
+  await page.getByRole("tab", { name: "Clinical data", exact: true }).click();
   await page.fill("#reviewDataSearch", "WBC");
   await page.waitForSelector('[data-action="refresh-objective-group"]');
   assert.equal((await editorText(wbcBlock.locator("[data-objective-group-text]"))).trim(), "Student wording: WBC has improved substantially.");
@@ -394,6 +398,7 @@ Sodium: 138`;
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
   assert.doesNotMatch(await page.locator('[data-structured-note-paste][data-structured-note-scope="daily"]').inputValue(), new RegExp(sessionOnlyRawToken), "locking must clear the session-only raw paste draft");
   await page.click('[data-view-target="review"]');
+  await page.getByRole("tab", { name: "Clinical data", exact: true }).click();
   await page.selectOption("#reviewPacketSelect", savedPacketValue);
   await page.fill("#reviewDataSearch", "CT Head/Neck");
   assert.equal(await page.locator('.compact-row [data-objective-selection-id]').first().isChecked(), true);

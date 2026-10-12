@@ -721,11 +721,15 @@ export function createReviewController(deps) {
     // Preserve the draft panel's own scroll position across the update.
     const scrollTop = draftPanel.scrollTop;
     const scrollLeft = draftPanel.scrollLeft;
+    const editorScroll = draftPanel.querySelector("#noteEditor")?.scrollTop || 0;
+    const outlineScroll = draftPanel.querySelector(".writer-outline")?.scrollTop || 0;
     draftPanel.outerHTML = draftHtml;
     const newPanel = container.querySelector(".note-draft-panel");
     if (newPanel) {
       newPanel.scrollTop = scrollTop;
       newPanel.scrollLeft = scrollLeft;
+      newPanel.querySelector("#noteEditor").scrollTop = editorScroll;
+      newPanel.querySelector(".writer-outline").scrollTop = outlineScroll;
     }
   }
 
@@ -770,6 +774,10 @@ export function createReviewController(deps) {
         draft = updateDifferential(draft, problemCard.dataset.problemId, differentialCard.dataset.differentialId, { [target.dataset.differentialField]: editableText(target) });
       } else if (target.matches("[data-problem-field]") && problemCard) {
         draft = updatePlanProblem(draft, problemCard.dataset.problemId, { [target.dataset.problemField]: editableText(target) });
+        if (target.dataset.problemField === "problem") {
+          const link = [...(deps.byId("reviewContent")?.querySelectorAll("[data-writer-problem]") || [])].find(node => node.dataset.writerProblem === problemCard.dataset.problemId);
+          if (link) link.querySelector("span").textContent = editableText(target) || "Untitled problem";
+        }
       } else return false;
     }
     setDraft(draft);
@@ -2298,6 +2306,21 @@ export function createReviewController(deps) {
     const current = model();
     if (!current.patient) return false;
     let draft = current.draft;
+    if (action === "writer-jump") {
+      const panel = button.closest(".note-draft-panel");
+      const editor = panel?.querySelector("#noteEditor");
+      const targetNode = button.dataset.writerProblem
+        ? [...(editor?.querySelectorAll(".plan-problem-card") || [])].find(card => card.dataset.problemId === button.dataset.writerProblem)
+        : [...(editor?.querySelectorAll("[data-draft-section-id]") || [])].find(section => section.dataset.draftSectionId === button.dataset.writerSection);
+      if (targetNode && editor) {
+        const section = targetNode.closest("details.ed-section");
+        if (section) { section.open = true; collapsedDraftSections.delete(section.dataset.draftSectionId); }
+        editor.scrollTop += targetNode.getBoundingClientRect().top - editor.getBoundingClientRect().top - 8;
+        panel.querySelectorAll("[data-action='writer-jump']").forEach(link => link.removeAttribute("aria-current"));
+        button.setAttribute("aria-current", "location");
+      }
+      return true;
+    }
     if (action === "workspace-tab") {
       const requested = button.dataset.workspaceTab;
       if (!["sources", "note", "preview"].includes(requested)) return true;
@@ -2556,6 +2579,13 @@ export function createReviewController(deps) {
         const strong = card.querySelector(".ed-problem-bar > strong");
         if (strong) strong.textContent = `Problem ${i + 1}`;
       });
+      const outline = panel?.querySelector(".writer-outline");
+      const freshOutline = outline && freshDraftNode(".writer-outline");
+      if (freshOutline) {
+        const scroll = outline.scrollTop;
+        outline.replaceWith(freshOutline);
+        freshOutline.scrollTop = scroll;
+      }
     };
 
     if (action === "insert-no-acute-events") {
@@ -2661,9 +2691,8 @@ export function createReviewController(deps) {
         // Last problem removed: restore the empty state from a fresh render.
         const freshList = freshDraftNode(".plan-problem-list");
         if (freshList) list.replaceWith(freshList);
-      } else if (panel) {
-        renumberProblemCards(panel);
       }
+      renumberProblemCards(panel);
       return true;
     }
     if (action === "move-plan-problem") {

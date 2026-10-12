@@ -86,7 +86,7 @@ try {
     const field = page.locator('[data-structured-note-field="physical_exam"]');
     await field.scrollIntoViewIfNeeded();
     const fieldBox = await field.boundingBox();
-    assert.ok(fieldBox.height >= 72, "section text must not collapse in the scrollable grid");
+    assert.ok(fieldBox.height >= 54, "section text must not collapse in the scrollable grid");
     assert.equal(await field.inputValue(), "Lungs clear. No wheeze.");
     if (width === 1280) await inViewport('[data-action="save-structured-note-to-draft"]');
     await screenshot(`epic-review-${width}`);

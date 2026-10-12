@@ -14175,24 +14175,24 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 /* The Epic workspace follows the full-width reference layout. Other routes
    retain their navigation, and the locked-vault boundary remains unchanged. */
 @media (min-width:1041px) {
-  body:not(.vault-locked):has(#dailyView.active) .app-shell { grid-template-columns:minmax(0,1fr); grid-template-rows:56px minmax(0,1fr); }
-  body:not(.vault-locked):has(#dailyView.active) .app-main { display:contents; }
-  body:not(.vault-locked):has(#dailyView.active) .side-nav { grid-area:1/1; display:flex; align-items:center; gap:16px; padding:0 20px; border:0; border-bottom:1px solid var(--border); background:var(--surface); overflow:visible; }
-  body:not(.vault-locked):has(#dailyView.active) .brand-lockup { padding:0; min-height:0; }
-  body:not(.vault-locked):has(#dailyView.active) .brand-lockup span,
-  body:not(.vault-locked):has(#dailyView.active) .brand-mark,
-  body:not(.vault-locked):has(#dailyView.active) .side-footer { display:none; }
-  body:not(.vault-locked):has(#dailyView.active) .primary-nav { display:flex; align-items:center; overflow:visible; padding:0; gap:16px; }
-  body:not(.vault-locked):has(#dailyView.active) .primary-nav > .nav-group { display:flex; gap:4px; margin:0; }
-  body:not(.vault-locked):has(#dailyView.active) .primary-nav > .nav-group > .nav-group-label { display:none; }
-  body:not(.vault-locked):has(#dailyView.active) .primary-nav > .nav-group > button { width:auto; flex:none; white-space:nowrap; min-height:56px; padding:0 12px; border:0; border-bottom:2px solid transparent; border-radius:0; background:transparent; box-shadow:none; }
-  body:not(.vault-locked):has(#dailyView.active) .primary-nav > .nav-group > button.active { border-bottom-color:var(--accent); color:var(--accent); }
-  body:not(.vault-locked):has(#dailyView.active) .secondary-navigation { position:relative; align-self:center; }
-  body:not(.vault-locked):has(#dailyView.active) .secondary-navigation > summary { display:block; padding:12px 8px; min-height:44px; }
-  body:not(.vault-locked):has(#dailyView.active) .secondary-navigation[open] > .secondary-navigation-panel { position:absolute; top:100%; left:0; width:240px; max-height:calc(100dvh - 64px); overflow:auto; z-index:20; padding:0 8px 8px; background:var(--surface); border:1px solid var(--border); border-radius:4px; box-shadow:0 2px 8px #0002; }
-  body:not(.vault-locked):has(#dailyView.active) .top-bar { grid-area:1/1; justify-self:end; align-self:center; width:auto; padding:0 20px; border:0; height:54px; min-height:0; }
-  body:not(.vault-locked):has(#dailyView.active) .patient-switcher { width:280px; }
-  body:not(.vault-locked):has(#dailyView.active) .workspace { grid-area:2/1; }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell { grid-template-columns:minmax(0,1fr); grid-template-rows:56px minmax(0,1fr); }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-main { display:contents; }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .side-nav { grid-area:1/1; display:flex; align-items:center; gap:16px; padding:0 20px; border:0; border-bottom:1px solid var(--border); background:var(--surface); overflow:visible; }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .brand-lockup { padding:0; min-height:0; }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .brand-lockup span,
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .brand-mark,
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .side-footer { display:none; }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .primary-nav { display:flex; align-items:center; overflow:visible; padding:0; gap:16px; }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .primary-nav > .nav-group { display:flex; gap:4px; margin:0; }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .primary-nav > .nav-group > .nav-group-label { display:none; }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .primary-nav > .nav-group > button { width:auto; flex:none; white-space:nowrap; min-height:56px; padding:0 12px; border:0; border-bottom:2px solid transparent; border-radius:0; background:transparent; box-shadow:none; }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .primary-nav > .nav-group > button.active { border-bottom-color:var(--accent); color:var(--accent); }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .secondary-navigation { position:relative; align-self:center; }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .secondary-navigation > summary { display:block; padding:12px 8px; min-height:44px; }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .secondary-navigation[open] > .secondary-navigation-panel { position:absolute; top:100%; left:0; width:240px; max-height:calc(100dvh - 64px); overflow:auto; z-index:20; padding:0 8px 8px; background:var(--surface); border:1px solid var(--border); border-radius:4px; box-shadow:0 2px 8px #0002; }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .top-bar { grid-area:1/1; justify-self:end; align-self:center; width:auto; padding:0 20px; border:0; height:54px; min-height:0; }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .patient-switcher { width:280px; }
+  body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .workspace { grid-area:2/1; }
   body:not(.vault-locked) #dailyView.active { padding:0; }
   .source-first-stay.stay-layout { border:0; border-radius:0; }
   .source-first-stay .hospital-day-packet { padding:10px 20px; }
@@ -14228,3 +14228,102 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .ap-source-preview blockquote,.ap-source-dialog blockquote{margin:10px 0;padding:8px 12px;border-left:3px solid var(--border);white-space:pre-wrap}
 .ap-source-label{font-weight:600}.ap-source-note,.ap-source-url{font-size:12px;color:var(--muted)}
 .ap-source-dialog>button{display:block;margin:16px 0 0 auto}
+/* Compact clinical workspaces: stable navigation, bounded document scroll. */
+#reviewView { padding:10px 16px; }
+.review-workspace { display:grid; grid-template-columns:auto minmax(0,1fr); gap:8px 16px; }
+.review-workspace > * { grid-column:1/-1; }
+.review-workspace > .patient-identity-bar { display:none; }
+.review-workspace > .review-hero { grid-column:1; display:flex; padding:0; margin:0; border:0; background:transparent; box-shadow:none; }
+.review-hero > div { display:none; }
+.review-packet-label { display:flex; align-items:center; gap:8px; font-size:12px; }
+.review-packet-label select { width:200px; min-height:32px; padding:4px 8px; }
+.review-workspace > .writing-workflow-bar { grid-column:2; margin:0; padding:0; min-height:34px; }
+.writing-workflow-bar button { min-height:32px; padding:5px 10px; }
+.review-workspace[data-workspace-tab="note"] .review-data-panel { display:none; }
+.review-workspace[data-workspace-tab="note"] .review-columns { display:block; }
+.review-workspace .review-columns .note-draft-panel { position:static; max-height:none; border:1px solid var(--border); border-radius:4px; padding:0; display:block; }
+.note-draft-panel .note-editor-toolbar { padding:8px 12px; gap:8px; min-height:44px; }
+.note-editor-title h2 { font-size:15px; }
+.note-editor-actions { gap:6px; }
+.note-editor-actions button { min-height:30px; padding:4px 8px; }
+.note-draft-panel .ed-toolbar-note { display:none; }
+.writer-layout { display:grid; grid-template-columns:170px minmax(0,1fr); height:clamp(360px,calc(100dvh - 170px),900px); min-height:0; }
+.writer-outline { overflow:auto; min-height:0; padding:8px; border-right:1px solid var(--border); background:var(--surface); }
+.writer-outline > strong { display:block; font-size:12px; padding:4px 6px 8px; }
+.writer-outline button { display:block; width:100%; min-height:27px; border:0; border-radius:3px; padding:4px 6px; text-align:left; background:transparent; font-size:12px; line-height:1.35; overflow-wrap:anywhere; }
+.writer-outline button:hover,.writer-outline button[aria-current] { background:var(--accent-soft); color:var(--accent); }
+.writer-outline .writer-problem-link { padding-left:18px; font-size:11px; }
+.note-draft-panel .note-editor { min-height:0; max-height:none; height:100%; overflow:auto; padding:8px 12px; border:0; border-radius:0; font-size:13px; line-height:1.45; }
+.note-editor details.ed-section { padding:6px 0; margin:0; }
+.note-editor details.ed-section > .ed-section-body { padding-top:4px; }
+.note-editor .ed-body { min-height:26px; padding:3px 5px; margin:0; }
+.note-editor .ed-label { font-size:12px; text-transform:none; letter-spacing:0; }
+.note-editor .ed-sub { margin:2px 0; min-width:0; }
+.note-editor .ed-mini { min-height:26px; padding:3px 6px; border-radius:3px; }
+.note-editor .plan-problem-card { border:1px solid var(--border); border-radius:4px; padding:8px; margin:4px 0 10px; }
+.plan-problem-card > .ed-sub { display:grid; grid-template-columns:110px minmax(0,1fr); gap:8px; align-items:baseline; }
+.plan-problem-card .ed-problem-bar { margin:0 0 4px; }
+.plan-problem-card .ed-etiology { margin:4px 0; gap:6px; }
+.note-editor .differential-row { display:grid; grid-template-columns:30px minmax(110px,1fr) minmax(120px,1fr) minmax(120px,1fr) 88px; align-items:start; gap:6px; border:0; border-bottom:1px solid var(--border); border-radius:0; margin:0; padding:5px 0; background:transparent; }
+.differential-row > .ed-diff-bar,.differential-row > .ed-two { display:contents; }
+.differential-row .ed-diff-bar > strong { grid-column:1; grid-row:1; padding-top:20px; font-size:11px; }
+.differential-row > .ed-sub { grid-column:2; grid-row:1; }
+.differential-row > .ed-two > .ed-sub:first-child { grid-column:3; grid-row:1; }
+.differential-row > .ed-two > .ed-sub:last-child { grid-column:4; grid-row:1; }
+.differential-row .differential-row-actions { grid-column:5; grid-row:1; padding-top:16px; display:flex; gap:2px; }
+.differential-row .ed-decision1 { grid-column:1; font-size:10px; padding:1px; border-radius:2px; }
+.differential-row .ed-sub-label { font-size:10px; margin:0; }
+.differential-row .ed-body { font-size:13px; min-height:28px; line-height:1.35; }
+.review-workspace[data-workspace-tab="sources"] .writer-layout { grid-template-columns:minmax(0,1fr); }
+.review-workspace[data-workspace-tab="sources"] .writer-outline { display:none; }
+.review-workspace[data-workspace-tab="sources"] .differential-row { grid-template-columns:24px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 80px; }
+@media(max-width:1040px) {
+ .writer-layout { height:clamp(350px,calc(100dvh - 290px),700px); }
+ .review-workspace { grid-template-columns:minmax(0,1fr); }
+ .review-workspace > .review-hero,.review-workspace > .writing-workflow-bar { grid-column:1; }
+}
+@media(max-width:760px) {
+ #reviewView { padding:6px; }
+ .note-editor-toolbar,.note-editor-title,.note-editor-actions { flex-wrap:wrap; }
+ .writer-layout { grid-template-columns:minmax(0,1fr); grid-template-rows:auto minmax(0,1fr); height:600px; max-height:calc(100dvh - 240px); min-height:350px; }
+ .writer-outline { display:flex; overflow-x:auto; align-items:center; gap:4px; padding:4px; border-right:0; border-bottom:1px solid var(--border); }
+ .writer-outline > strong { display:none; }
+ .writer-outline button,.writer-outline .writer-problem-link { flex-shrink:0; width:auto; white-space:nowrap; min-height:44px; padding:6px 10px; }
+ .note-editor .differential-row { grid-template-columns:22px minmax(0,1fr) minmax(0,1fr); gap:4px; padding:6px 0; }
+ .differential-row > .ed-sub { grid-column:2/4; }
+ .differential-row > .ed-two > .ed-sub:first-child { grid-column:2; grid-row:2; }
+ .differential-row > .ed-two > .ed-sub:last-child { grid-column:3; grid-row:2; }
+ .differential-row .differential-row-actions { grid-column:2/4; grid-row:3; padding:0; justify-content:flex-end; }
+ .note-editor .ed-mini { min-height:36px; }
+ .plan-problem-card > .ed-sub { grid-template-columns:1fr; gap:2px; }
+ .review-workspace[data-workspace-tab="sources"] .writer-layout { display:none; }
+}
+/* Epic import keeps the source, section index and corrections in one fixed workspace. */
+.note-arrange-workspace { grid-template-columns:160px minmax(0,1fr); }
+.note-arrange-workspace.has-original { grid-template-columns:minmax(0,1fr) 160px minmax(0,1.15fr); }
+.note-section-index { height:clamp(300px,calc(100dvh - 370px),440px); overflow:auto; border:1px solid var(--border); border-radius:4px; padding:6px; }
+.note-section-index > strong { display:block; font-size:12px; padding:4px 6px; }
+.note-section-index button { display:block; width:100%; min-height:26px; padding:4px 6px; font-size:12px; line-height:1.25; text-align:left; border:0; border-radius:3px; background:transparent; }
+.note-section-index button:hover { background:var(--accent-soft); }
+.note-arrange-sections .note-section-card { padding:6px 8px; margin:0; border:0; border-bottom:1px solid var(--border); border-radius:0; }
+.note-section-card .note-section-title { min-height:28px; padding:3px 0; }
+.note-section-card textarea { min-height:54px; height:64px; padding:6px 8px; font-size:13px; line-height:1.4; resize:vertical; }
+.structured-note-heading { margin-bottom:6px; }
+.structured-note-heading h3 { font-size:15px; }
+.structured-note-heading p { font-size:12px; margin:3px 0; }
+.structured-note-mode-toggle { margin:6px 0; }
+.structured-note-mode-toggle button { min-height:32px; padding:5px 10px; }
+.source-first-stay .structured-note-paste-label textarea { height:clamp(220px,calc(100dvh - 440px),360px); min-height:180px; }
+@media(max-width:900px) {
+ .note-arrange-workspace.has-original { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+ .note-section-index { display:none; }
+ .note-arrange-workspace:not(.has-original) { grid-template-columns:minmax(0,1fr); }
+}
+@media(max-width:600px) {
+ .note-arrange-workspace.has-original { grid-template-columns:minmax(0,1fr); }
+ .note-section-card textarea { font-size:16px; }
+}
+.note-editor .plan-problem-card { gap:4px; }
+.note-editor .differential-builder { gap:4px; }
+.note-draft-panel .ed-toolbar-note { display:block; padding:3px 12px; margin:0; font-size:11px; border-bottom:1px solid var(--border); }
+@media(min-width:1041px) { .writer-layout { height:clamp(360px,calc(100dvh - 210px),900px); } }
