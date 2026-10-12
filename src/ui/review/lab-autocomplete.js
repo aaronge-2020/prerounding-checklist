@@ -172,7 +172,7 @@ export function createLabAutocomplete({ getCandidates }) {
     element.dispatchEvent(new InputEvent("input", { bubbles: true }));
 
     hideDropdown();
-    element.focus();
+    element.focus({ preventScroll: true });
   }
 
   function handleInput(event) {

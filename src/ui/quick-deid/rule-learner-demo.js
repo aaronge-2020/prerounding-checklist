@@ -1,3 +1,4 @@
+import { captureScrollPositions, restoreScrollPositions } from "../view-scroll.js?v=20261012-scroll-review";
 // Guided demo: "See how it learns" for the automatic rule proposer.
 //
 // A scripted, step-by-step walkthrough of the full learning loop inside the
@@ -274,7 +275,10 @@ export function createRuleLearnerDemo({ escapeHtml, icon, approvalPresentation }
     if (!host || !session) return;
     const wrapper = document.createElement("div");
     wrapper.innerHTML = renderModal();
-    host.replaceWith(wrapper.firstElementChild);
+    const snapshot = captureScrollPositions(host);
+    const next = wrapper.firstElementChild;
+    host.replaceWith(next);
+    restoreScrollPositions(next, snapshot);
   }
 
   function runProposer() {

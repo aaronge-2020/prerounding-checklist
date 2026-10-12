@@ -13074,10 +13074,7 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   justify-content: center;
   padding: 12px;
 }
-/* Compact review modal: wider than tall content needs, tight vertical
-   rhythm, ONE scrollbar (the body). Head/stats/actionbar/foot are
-   flex:none siblings that stay pinned; per-piece nested scrollers are
-   gone so nothing hides inside nested viewports. */
+/* Review controls stay pinned; the body and bounded document panes scroll independently. */
 .aic-hipaa-modal {
   background: var(--surface, #fff);
   color: var(--ink, #0f172a);
@@ -14327,3 +14324,43 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .note-editor .differential-builder { gap:4px; }
 .note-draft-panel .ed-toolbar-note { display:block; padding:3px 12px; margin:0; font-size:11px; border-bottom:1px solid var(--border); }
 @media(min-width:1041px) { .writer-layout { height:clamp(360px,calc(100dvh - 210px),900px); } }
+
+/* Pre-send review: bounded reading panes and controls that stay in reach. */
+.aic-hipaa-modal { border-radius: 8px; height: min(820px, 94dvh); box-shadow: 0 2px 8px #0003; }
+.aic-hipaa-body { overscroll-behavior: contain; overflow-anchor: none; }
+.aic-hipaa-body > * { flex-shrink: 0; }
+.aic-hipaa-preview, .aic-hipaa-msg { max-height: 220px; overflow: auto; overscroll-behavior: contain; }
+.aic-hipaa-preview { border-style: solid; border-radius: 6px; margin: 8px 0; }
+.aic-hipaa-sug { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 4px 12px; border-radius: 6px; }
+.aic-hipaa-sug-text { flex: 1 1 240px; }
+.aic-hipaa-sug-meta { margin-left: auto; }
+.aic-hipaa-stats { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.aic-hipaa-stat { border: 0; padding: 0; background: none; }
+.aic-hipaa-stat-ic { display: none; }
+.aic-hipaa-stat-tx { flex-direction: row; gap: 6px; align-items: baseline; }
+.aic-hipaa-stat-tx strong { font-size: 13px; }
+.aic-hipaa-jump { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.aic-hipaa-jump select { width: 220px; max-width: 55vw; min-height: 32px; font: inherit; }
+.aic-hipaa-sec-title { text-transform: none; letter-spacing: normal; font-size: 13px; }
+.aic-hipaa-details { margin-top: 0; }
+@media (max-width: 600px) {
+  .aic-hipaa-backdrop { padding: 4px; }
+  .aic-hipaa-modal { height: 98dvh; max-height: 98dvh; }
+  .aic-hipaa-head, .aic-hipaa-body { padding: 8px 10px; }
+  .aic-hipaa-stats { padding: 0 10px; }
+  .aic-hipaa-shield { display: none; }
+  .aic-hipaa-head h2 { font-size: 15px; }
+  .aic-hipaa-jump { margin-left: 0; }
+  .aic-hipaa-foot { padding: 8px 10px; gap: 6px; }
+}
+
+.aic-hipaa-piece-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.aic-hipaa-decisions { max-height: 286px; overflow: auto; overscroll-behavior: contain; overflow-anchor: none; }
+.aic-hipaa-reading { min-width: 0; }
+.aic-hipaa-preview-label { font-size: 13px; }
+.aic-hipaa-piece-body > .aic-hipaa-note { grid-column: 1 / -1; }
+@media (max-width: 700px) {
+  .aic-hipaa-piece-body { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .aic-hipaa-decisions { max-height: 180px; }
+  .aic-hipaa-preview { max-height: 180px; }
+}

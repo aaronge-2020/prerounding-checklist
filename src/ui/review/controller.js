@@ -1,3 +1,4 @@
+import { preserveViewScroll } from "../view-scroll.js?v=20261012-scroll-review";
 import { installCitationInspector } from "./citation-inspector.js?v=20261012-citation-preview";
 import { rebaseApReferences } from "../../ai/ap-generator.js?v=20261012-citation-preview";
 import { buildConsultNoteContext } from "../../ai/note-context.js?v=20261012-citation-preview";
@@ -5,8 +6,8 @@ import { buildStructuredRequest } from "../../ai/structured-request.js?v=2026101
 import { sortDays } from "../../daily-updates/days.js?v=20261012-citation-preview";
 import { updateActivePatient } from "../../app/state/vault.js?v=20261012-citation-preview";
 import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20261011-epic-workflow";
-import { createLabAutocomplete } from "./lab-autocomplete.js?v=20260924-dollar-autocomplete-v1";
-import { createDrugAutocomplete } from "./drug-autocomplete.js?v=20260929-drug-autocomplete-v1";
+import { createLabAutocomplete } from "./lab-autocomplete.js?v=20261012-scroll-review";
+import { createDrugAutocomplete } from "./drug-autocomplete.js?v=20261012-scroll-review";
 import {
   compileSmartExam,
   EXAM_SYSTEMS,
@@ -231,39 +232,6 @@ export function createReviewController(deps) {
   let clinicalDataCollapsed = true;
   let workspaceTab = "note";
 
-  // Find the nearest ancestor (or self) that is actually scrolled —
-  // the element whose scrollTop reflects the user's scroll position.
-  // Checks the element, its ancestors, and the document.
-  // Falls back to the given element.
-  function findScroller(startEl) {
-    // Check the element and its ancestors first.
-    let el = startEl;
-    while (el && typeof document !== "undefined" && el !== document.documentElement) {
-      if (el.scrollTop > 0) {
-        return el;
-      }
-      el = el.parentElement;
-    }
-    // Check document scrolling (for sticky panels, the page may scroll).
-    if (typeof document !== "undefined") {
-      if (document.documentElement.scrollTop > 0) return document.documentElement;
-      if (document.body.scrollTop > 0) return document.body;
-    }
-    // Fall back to the element with the largest scrollHeight overflow.
-    el = startEl;
-    let best = startEl;
-    let bestOverflow = 0;
-    while (el && typeof document !== "undefined" && el !== document.documentElement) {
-      const overflow = el.scrollHeight - el.clientHeight;
-      if (overflow > bestOverflow) {
-        bestOverflow = overflow;
-        best = el;
-      }
-      el = el.parentElement;
-    }
-    return best;
-  }
-
   // Which Objective editor groups are collapsed (vitals, lab families, etc.).
   // Local UI state only; survives re-renders.
   const collapsedObjectiveGroups = new Set();
@@ -458,75 +426,7 @@ export function createReviewController(deps) {
   // replacing innerHTML briefly empties the scrollable area, which clamps the
   // view's scrollTop to zero — so capture the real scroll owner, not window.
   // Guard for non-browser environments (tests).
-  function withPreservedViewScroll(container, update) {
-    const canPreserve = typeof window !== "undefined" && typeof document !== "undefined";
-    if (!canPreserve) { update(); return; }
-    // Snapshot scroll positions by SELECTOR, not element reference: update()
-    // does container.innerHTML = ..., which destroys all inner elements.
-    // Holding old element references would restore to disconnected nodes.
-    const snapshot = [];
-    const seen = new Set();
-    const selectorFor = (el) => {
-      if (el === document.scrollingElement || el === document.documentElement) return ":root-scroller";
-      if (el.id) return "#" + el.id;
-      // Use class-based selector; prefer the most specific stable class
-      const cls = (el.className?.baseVal ?? el.className ?? "").toString().trim().split(/\s+/).filter(Boolean);
-      if (cls.length) return el.tagName.toLowerCase() + "." + cls.slice(0, 3).join(".");
-      return null;
-    };
-    const consider = (el) => {
-      if (!el || seen.has(el)) return;
-      seen.add(el);
-      let overflowY = "";
-      try { overflowY = window.getComputedStyle(el).overflowY; } catch { return; }
-      const isDocScroller = el === document.scrollingElement || el === document.documentElement;
-      const isScrollable = /(auto|scroll|overlay)/.test(overflowY) || isDocScroller;
-      if (isScrollable && el.scrollHeight > el.clientHeight + 1) {
-        const sel = selectorFor(el);
-        if (sel) snapshot.push({ sel, top: el.scrollTop, left: el.scrollLeft });
-      }
-    };
-    // Ancestors of the container (including container itself).
-    for (let current = container; current; current = current.parentElement) consider(current);
-    // Document scroller (covers the narrow-viewport case).
-    consider(document.scrollingElement);
-    consider(document.documentElement);
-    // Scrollable descendants within the container subtree — catches nested
-    // scrollers like the clinical-data list.
-    if (container?.querySelectorAll) {
-      for (const el of container.querySelectorAll("*")) consider(el);
-    }
-    // Blur the focused control before replacing DOM: when a checkbox is
-    // removed mid-focus the browser can reset scroll as focus falls back.
-    const active = document.activeElement;
-    if (active && active !== document.body && container?.contains(active)) {
-      try { active.blur(); } catch { /* ignore */ }
-    }
-    update();
-    const restore = () => {
-      for (const { sel, top, left } of snapshot) {
-        try {
-          let target = null;
-          if (sel === ":root-scroller") {
-            target = document.scrollingElement || document.documentElement;
-          } else if (sel.startsWith("#")) {
-            target = document.getElementById(sel.slice(1));
-          } else {
-            target = document.querySelector(sel);
-          }
-          if (!target) continue;
-          if (target.scrollHeight > target.clientHeight) target.scrollTop = top;
-          if (target.scrollWidth > target.clientWidth) target.scrollLeft = left;
-        } catch { /* ignore */ }
-      }
-    };
-    restore();
-    // Layout can settle after paint; restore on the next frame and again
-    // after a tick to beat late browser scroll adjustments.
-    window.requestAnimationFrame(restore);
-    setTimeout(restore, 0);
-    setTimeout(restore, 60);
-  }
+  const withPreservedViewScroll = preserveViewScroll;
   // Patch only the clinical-data sheet (list + match summary) so typing in
   // the search field or toggling a lab-family collapse does not lose focus.
   function patchDataList() {
@@ -718,19 +618,7 @@ export function createReviewController(deps) {
       apConfirm: vm.apConfirm,
       apSuggestions: vm.apSuggestions,
     });
-    // Preserve the draft panel's own scroll position across the update.
-    const scrollTop = draftPanel.scrollTop;
-    const scrollLeft = draftPanel.scrollLeft;
-    const editorScroll = draftPanel.querySelector("#noteEditor")?.scrollTop || 0;
-    const outlineScroll = draftPanel.querySelector(".writer-outline")?.scrollTop || 0;
-    draftPanel.outerHTML = draftHtml;
-    const newPanel = container.querySelector(".note-draft-panel");
-    if (newPanel) {
-      newPanel.scrollTop = scrollTop;
-      newPanel.scrollLeft = scrollLeft;
-      newPanel.querySelector("#noteEditor").scrollTop = editorScroll;
-      newPanel.querySelector(".writer-outline").scrollTop = outlineScroll;
-    }
+    preserveViewScroll(container, () => { draftPanel.outerHTML = draftHtml; });
   }
 
   function prepare(selectedPacketId = "admission", { preferPopulated = true } = {}) {
@@ -895,34 +783,7 @@ export function createReviewController(deps) {
             if (box && box !== target) box.checked = false;
           }
         }
-        // Preserve the clinical-data panel scroll across the draft DOM
-        // patch — layout changes can make the browser reset it.
-        const dataPanel = typeof document !== "undefined"
-          ? target.closest?.(".review-data-panel") : null;
-        const dataScroller = dataPanel ? findScroller(dataPanel) : null;
-        const savedDataScroll = dataScroller ? dataScroller.scrollTop : 0;
-        syncObjectiveDom(draft, addedIds, removedIds);
-        // Restore unconditionally: the browser can reset scrollTop
-        // asynchronously after layout, so a synchronous check races it.
-        if (dataScroller && dataPanel) {
-          // DEBUG v20.
-          dataPanel.dataset.dbgCbSaved = String(savedDataScroll);
-          const restoreDataScroll = () => {
-            void dataScroller.scrollHeight;
-            dataScroller.scrollTop = savedDataScroll;
-            dataPanel.dataset.dbgCbRestored = `${savedDataScroll}->${dataScroller.scrollTop}`;
-          };
-          if (typeof requestAnimationFrame !== "undefined") {
-            requestAnimationFrame(() => requestAnimationFrame(restoreDataScroll));
-          } else {
-            restoreDataScroll();
-          }
-          if (typeof setTimeout !== "undefined") {
-            setTimeout(() => {
-              dataPanel.dataset.dbgCbLate = `panel:${dataPanel.scrollTop}`;
-            }, 600);
-          }
-        }
+        preserveViewScroll(container, () => syncObjectiveDom(draft, addedIds, removedIds));
       }
       return true;
     }
@@ -2215,7 +2076,7 @@ export function createReviewController(deps) {
         const problemId = apConfirmState.problemId;
         apConfirmState = null;
         modal.remove();
-        deps.byId("reviewContent")?.querySelector(`[data-action="generate-ap"][data-problem-id="${CSS.escape(problemId)}"]`)?.focus();
+        deps.byId("reviewContent")?.querySelector(`[data-action="generate-ap"][data-problem-id="${CSS.escape(problemId)}"]`)?.focus({ preventScroll: true });
         return true;
       }
       if (event.key === "Tab") {
@@ -2223,7 +2084,7 @@ export function createReviewController(deps) {
         const first = fields[0], last = fields[fields.length - 1];
         if ((event.shiftKey && event.target === first) || (!event.shiftKey && event.target === last)) {
           event.preventDefault();
-          (event.shiftKey ? last : first)?.focus();
+          (event.shiftKey ? last : first)?.focus({ preventScroll: true });
           return true;
         }
       }

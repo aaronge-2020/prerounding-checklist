@@ -280,14 +280,14 @@ export function createDrugAutocomplete() {
     
     modal.hidden = false;
     // Focus the close button for accessibility
-    modal.querySelector(".drug-detail-close").focus();
+    modal.querySelector(".drug-detail-close").focus({ preventScroll: true });
   }
 
   function hideModal() {
     if (detailModal) detailModal.hidden = true;
     // Return focus to the editor
     if (activeTrigger && activeTrigger.element) {
-      activeTrigger.element.focus();
+      activeTrigger.element.focus({ preventScroll: true });
     }
   }
 
@@ -332,7 +332,7 @@ export function createDrugAutocomplete() {
 
     element.dispatchEvent(new InputEvent("input", { bubbles: true }));
     hideDropdown();
-    element.focus();
+    element.focus({ preventScroll: true });
   }
 
   function selectSuggestion(index) {

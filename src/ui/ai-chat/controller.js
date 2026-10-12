@@ -16,8 +16,8 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20261004-cite-links-v1";
-import { chatPaneScrollTop } from "../view-scroll.js?v=20261011-epic-workflow";
+import { createAiChatPresentation } from "./presentation.js?v=20261012-scroll-review";
+import { chatPaneScrollTop, preserveViewScroll } from "../view-scroll.js?v=20261012-scroll-review";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20261011-ai-helper";
 import { gatedFetch, isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
 import {
@@ -383,7 +383,7 @@ export function createAiChatController({
 
   function focusComposer() {
     const input = viewRoot()?.querySelector("[data-ai-chat-input]");
-    if (input && input.getAttribute("contenteditable") === "true") input.focus();
+    if (input && input.getAttribute("contenteditable") === "true") input.focus({ preventScroll: true });
   }
 
   // --- Chart-grounded RAG helpers (Phase 2) -------------------------------
@@ -510,6 +510,10 @@ export function createAiChatController({
     const draft = currentDraftNoteText();
     const draftSections = currentDraftNoteSections();
     const pctx = patientContextInfo(draft, draftSections);
+    const priorInput = app.vault && state.chat.patientId === pctx.patientId
+      ? root?.querySelector("[data-ai-chat-input]") : null;
+    const composerDraft = composerText(priorInput);
+    const composerNodes = priorInput?.childNodes ? [...priorInput.childNodes].map(node => node.cloneNode(true)) : null;
     if (state.chat.patientId && pctx.patientId !== state.chat.patientId) {
       // Invalidate any in-flight local send: its generation token dies here
       // so a late retrieval callback can't continue into the new patient.
@@ -597,118 +601,109 @@ export function createAiChatController({
         maybeWarmRagIndex();
       });
     }
-    // A full innerHTML swap resets every scroller it contains. Snapshot the
-    // route scroller and the messages pane first, then restore: the route
-    // keeps its position (button clicks must not throw the reader back to
-    // the top of the view), and the messages pane follows the bottom only
-    // when the reader was pinned there — a reader scrolled up keeps their
-    // place while toggling Context, Compress, or the chat mode.
-    const viewEl = root.closest(".view");
-    const viewTop = viewEl ? viewEl.scrollTop : 0;
-    const viewLeft = viewEl ? viewEl.scrollLeft : 0;
-    const messagesBefore = root.querySelector("[data-ai-chat-messages]");
-    // Blur focused controls before the swap: a focused element removed
-    // mid-focus can reset scroll as focus falls back to the body.
-    const active = document.activeElement;
-    if (active && active !== document.body && root.contains(active)) {
-      try {
-        active.blur();
-      } catch {
-        /* ignore */
+    const hadReviewDialog = !!root.querySelector(".aic-hipaa-modal");
+    const previousPane = root.querySelector("[data-ai-chat-messages]");
+    const messagesBefore = previousPane ? {
+      scrollTop: previousPane.scrollTop,
+      scrollHeight: previousPane.scrollHeight,
+      clientHeight: previousPane.clientHeight
+    } : null;
+    preserveViewScroll(root, () => {
+      root.innerHTML = presentation.render({
+        hardware: state.hardware,
+        settings: settings(),
+        llmStatus: client.getStatus(),
+        chat: state.chat,
+        downloaded: state.downloaded,
+        mode: state.mode,
+        offlineMode: isOfflineMode(),
+        demoArmed: isDemoReplyArmed(),
+        remote: {
+          messages: state.remote.messages,
+          sending: state.remote.sending,
+          webSearch: state.remote.webSearch,
+          toolsEnabled: state.remote.toolsEnabled,
+          patientId: state.remote.patientId,
+          review: reviewViewModel(state.remote.review),
+          deid: remoteDeidInfo(),
+          usage: state.remote.usage,
+          contextStats: state.remote.contextStats,
+          compressArmed: state.remote.compressArmed,
+          compressing: !!state.remote.compressing,
+          model: prefs.openAiModel,
+          modelLabel: (pricingForModel(prefs.openAiModel) || {}).label || String(prefs.openAiModel || ""),
+          modelOptions: remoteModelPickerItems(),
+          pricingAsOf: PRICING_AS_OF,
+          cost: remoteCostViewModel(),
+          // Chart-grounded RAG status for the inline notice / download affordance.
+          rag: state.chat.rag ? {
+            status: state.chat.rag.status,
+            active: state.chat.rag.active,
+            retrievalError: state.chat.rag.retrievalError,
+            preparing: state.chat.rag.preparing
+          } : null
+        },
+        hasApiKey: String(prefs.openAiApiKey || "").trim().length > 0,
+        patientContext: {
+          enabled: pctx.enabled,
+          available: pctx.available,
+          label: pctx.label,
+          hasPatient: !!pctx.patient,
+          selectedCount: selectedIds.length,
+          pieceCount: pieces.length
+        },
+        contextInspector: {
+          open: state.chat.inspectorOpen,
+          enabled: pctx.enabled,
+          // Both modes send exactly the inspector-selected pieces; ChatGPT
+          // mode additionally runs them through the de-identification review
+          // gate before anything is sent.
+          isRemote: state.mode === "remote",
+          hasPatient: !!pctx.patient,
+          patientLabel: pctx.label,
+          pieces: pieces.map((piece) => ({
+            id: piece.id,
+            group: piece.group,
+            label: piece.label,
+            kind: piece.kind,
+            primary: piece.primary,
+            tokens: Math.ceil(piece.chars / CHARS_PER_TOKEN),
+            selected: selectedSet.has(piece.id)
+          })),
+          // Ordered group names, matching the piece order above — drives the
+          // per-group Select all / Deselect all controls.
+          groups: (() => {
+            const names = [];
+            for (const piece of pieces) {
+              const name = piece.group || "Other";
+              if (!names.includes(name)) names.push(name);
+            }
+            return names;
+          })(),
+          guidelinesTokens,
+          historyTokens,
+          historyCount: budgetMessages.length,
+          selectedTokens: pieceTokens,
+          contextWindow,
+          windowLabel: budgetWindowLabel
+        },
+        sidebarOpen: state.sidebarOpen,
+        // Desktop collapse flag for the sidebar column. sidebarToggleOn
+        // drives the topbar Context button's pressed state: the drawer state
+        // on narrow viewports, the column state on desktop.
+        sidebarCollapsed: state.sidebarCollapsed,
+        sidebarToggleOn: isNarrowViewport() ? state.sidebarOpen : !state.sidebarCollapsed,
+        clinicalService: clinicalServiceInfo(),
+        sidebarGuidelinesText: String(settings().systemGuidelines || ""),
+        sidebarGuidelinesRemoteText: String(settings().systemGuidelinesRemote || "")
+      });
+      const nextInput = root.querySelector("[data-ai-chat-input]");
+      if (nextInput && composerDraft) {
+        if (typeof nextInput.value === "string") nextInput.value = composerDraft;
+        else if (composerNodes && nextInput.replaceChildren) nextInput.replaceChildren(...composerNodes);
+        else nextInput.textContent = composerDraft;
       }
-    }
-    root.innerHTML = presentation.render({
-      hardware: state.hardware,
-      settings: settings(),
-      llmStatus: client.getStatus(),
-      chat: state.chat,
-      downloaded: state.downloaded,
-      mode: state.mode,
-      offlineMode: isOfflineMode(),
-      demoArmed: isDemoReplyArmed(),
-      remote: {
-        messages: state.remote.messages,
-        sending: state.remote.sending,
-        webSearch: state.remote.webSearch,
-        toolsEnabled: state.remote.toolsEnabled,
-        patientId: state.remote.patientId,
-        review: reviewViewModel(state.remote.review),
-        deid: remoteDeidInfo(),
-        usage: state.remote.usage,
-        contextStats: state.remote.contextStats,
-        compressArmed: state.remote.compressArmed,
-        compressing: !!state.remote.compressing,
-        model: prefs.openAiModel,
-        modelLabel: (pricingForModel(prefs.openAiModel) || {}).label || String(prefs.openAiModel || ""),
-        modelOptions: remoteModelPickerItems(),
-        pricingAsOf: PRICING_AS_OF,
-        cost: remoteCostViewModel(),
-        // Chart-grounded RAG status for the inline notice / download affordance.
-        rag: state.chat.rag ? {
-          status: state.chat.rag.status,
-          active: state.chat.rag.active,
-          retrievalError: state.chat.rag.retrievalError,
-          preparing: state.chat.rag.preparing
-        } : null
-      },
-      hasApiKey: String(prefs.openAiApiKey || "").trim().length > 0,
-      patientContext: {
-        enabled: pctx.enabled,
-        available: pctx.available,
-        label: pctx.label,
-        hasPatient: !!pctx.patient,
-        selectedCount: selectedIds.length,
-        pieceCount: pieces.length
-      },
-      contextInspector: {
-        open: state.chat.inspectorOpen,
-        enabled: pctx.enabled,
-        // Both modes send exactly the inspector-selected pieces; ChatGPT
-        // mode additionally runs them through the de-identification review
-        // gate before anything is sent.
-        isRemote: state.mode === "remote",
-        hasPatient: !!pctx.patient,
-        patientLabel: pctx.label,
-        pieces: pieces.map((piece) => ({
-          id: piece.id,
-          group: piece.group,
-          label: piece.label,
-          kind: piece.kind,
-          primary: piece.primary,
-          tokens: Math.ceil(piece.chars / CHARS_PER_TOKEN),
-          selected: selectedSet.has(piece.id)
-        })),
-        // Ordered group names, matching the piece order above — drives the
-        // per-group Select all / Deselect all controls.
-        groups: (() => {
-          const names = [];
-          for (const piece of pieces) {
-            const name = piece.group || "Other";
-            if (!names.includes(name)) names.push(name);
-          }
-          return names;
-        })(),
-        guidelinesTokens,
-        historyTokens,
-        historyCount: budgetMessages.length,
-        selectedTokens: pieceTokens,
-        contextWindow,
-        windowLabel: budgetWindowLabel
-      },
-      sidebarOpen: state.sidebarOpen,
-      // Desktop collapse flag for the sidebar column. sidebarToggleOn
-      // drives the topbar Context button's pressed state: the drawer state
-      // on narrow viewports, the column state on desktop.
-      sidebarCollapsed: state.sidebarCollapsed,
-      sidebarToggleOn: isNarrowViewport() ? state.sidebarOpen : !state.sidebarCollapsed,
-      clinicalService: clinicalServiceInfo(),
-      sidebarGuidelinesText: String(settings().systemGuidelines || ""),
-      sidebarGuidelinesRemoteText: String(settings().systemGuidelinesRemote || "")
     });
-    if (viewEl) {
-      viewEl.scrollTop = viewTop;
-      viewEl.scrollLeft = viewLeft;
-    }
     const messages = root.querySelector("[data-ai-chat-messages]");
     if (messages) messages.scrollTop = chatPaneScrollTop(messages, messagesBefore);
     // An aborted send's unsent draft survives in state: restore it to the
@@ -716,6 +711,7 @@ export function createAiChatController({
     // patient switch back or a vault unlock). Never touches another
     // patient's composer and never clobbers typed text.
     restorePendingSendToComposer();
+    if (!hadReviewDialog) root.querySelector('.aic-hipaa-foot [data-action="ai-chat-hipaa-cancel"]')?.focus?.({ preventScroll: true });
   }
 
   // Keep the view live while models download or chat streams.
@@ -974,6 +970,8 @@ export function createAiChatController({
             // Stream without a full re-render: repaint the in-progress
             // bubble, splitting <think> reasoning into the collapsed
             // dropdown as it arrives.
+            const box = viewRoot()?.querySelector("[data-ai-chat-messages]");
+            const pinned = box && box.scrollHeight - box.scrollTop - box.clientHeight <= 64;
             const thinkOpen = bubble.querySelector("details.aic-think")?.open === true;
             bubble.innerHTML =
               `<span class="aic-m-label">${escapeHtml(state.chat.modelLabel)}</span>` +
@@ -982,8 +980,7 @@ export function createAiChatController({
               const details = bubble.querySelector("details.aic-think");
               if (details) details.open = true;
             }
-            const box = viewRoot()?.querySelector("[data-ai-chat-messages]");
-            if (box) box.scrollTop = box.scrollHeight;
+            if (pinned) box.scrollTop = box.scrollHeight;
           }
         }
       });
@@ -1649,11 +1646,11 @@ export function createAiChatController({
       review.phase = "ready";
       for (const piece of [review.guidelines, ...review.pieces]) writePieceToStore(piece);
       const candidates = [review.guidelines, ...review.pieces];
-      // Auto-expand every piece that needs eyes on it (redactions, warnings,
-      // or flags), plus the first piece so the body never opens empty.
-      review.expanded = candidates
-        .filter((piece, index) => index === 0 || piece.redactionTotal > 0 || piece.warnings.length > 0 || piece.flags.length > 0)
-        .map((piece) => piece.id);
+      // Start at the first document needing a decision. Other documents stay
+      // one click away in the index instead of expanding an entire chart.
+      const initialPiece = candidates.find(piece => piece.modelRecords.some(record => record.status === "pending") || piece.warnings.length)
+        || candidates[0];
+      review.expanded = initialPiece ? [initialPiece.id] : [];
       rebuildTransmit(review);
       // Reviewed, unchanged context + a clean message: skip the modal and
       // send the exact payload the earlier review approved. Every send
@@ -2737,6 +2734,26 @@ export function createAiChatController({
       writeLocalLlmSettings({ systemGuidelinesRemote: String(target.value ?? "") });
       return true;
     }
+    if (target.matches?.("[data-ai-chat-review-jump]")) {
+      const review = state.remote.review;
+      const id = target.value;
+      if (!review || review.phase !== "ready" || !id) return true;
+      const piece = findReviewPiece(review, id);
+      if (piece) {
+        review.expanded = [...new Set([...(review.expanded || []), id])];
+        render();
+      }
+      const root = viewRoot();
+      const destination = piece
+        ? [...root.querySelectorAll("[data-hipaa-piece-id]")].find(el => el.dataset.hipaaPieceId === id)
+        : root.querySelector(id === "message" ? "[data-hipaa-message]" : '[data-scroll-key="outgoing-payload"]');
+      if (destination?.tagName === "DETAILS") destination.open = true;
+      const body = root.querySelector(".aic-hipaa-body");
+      if (body && destination) body.scrollTop += destination.getBoundingClientRect().top - body.getBoundingClientRect().top - 8;
+      const picker = root.querySelector("[data-ai-chat-review-jump]");
+      if (picker) picker.value = "";
+      return true;
+    }
     if (target.matches?.("[data-ai-chat-hipaa-ack]")) {
       if (state.remote.review) {
         state.remote.review.ack = !!target.checked;
@@ -2779,6 +2796,28 @@ export function createAiChatController({
   // Enter sends, Shift+Enter adds a newline (chat composer convention).
   // isComposing guard: don't send while an IME is composing text.
   function keydown(event) {
+    const modal = viewRoot()?.querySelector(".aic-hipaa-modal");
+    if (modal) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        const cancel = modal.querySelector('[data-action="ai-chat-hipaa-cancel"]');
+        if (cancel) click(cancel);
+        focusComposer();
+        return true;
+      }
+      if (event.key === "Tab") {
+        const controls = [...modal.querySelectorAll('button:not(:disabled), input, select, summary, [tabindex="0"]')]
+          .filter(el => !el.hidden && el.getClientRects().length);
+        const first = controls[0], last = controls.at(-1);
+        if (!modal.contains(document.activeElement) || (event.shiftKey ? document.activeElement === first : document.activeElement === last)) {
+          event.preventDefault();
+          (event.shiftKey ? last : first)?.focus({ preventScroll: true });
+        }
+        return true;
+      }
+      // Never submit the obscured composer while a review is open.
+      if (!modal.contains(event.target)) return true;
+    }
     if (event.key !== "Enter" || event.shiftKey || event.isComposing) return false;
     const input = event.target.closest?.("[data-ai-chat-input]");
     if (!input) return false;

@@ -755,6 +755,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       : `<span class="aic-muted">No content in this document.</span>`;
     const body = isOpen ? `
       <div class="aic-hipaa-piece-body">
+        <div class="aic-hipaa-decisions" data-scroll-key="review-decisions">
         ${pending.length ? `
           <div class="aic-hipaa-sughead">
             <strong>New suggestions</strong>
@@ -773,10 +774,14 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
             <span class="aic-muted">${reviewed.length}</span>
           </button>
           ${reviewedOpen ? `<div class="aic-hipaa-reviewed">${reviewedRows}</div>` : ""}` : ""}
-        <div class="aic-hipaa-preview" data-hipaa-piece-preview data-piece="${escapeHtml(pieceId)}">${previewHtml}</div>
+        </div>
+        <div class="aic-hipaa-reading">
+        <strong class="aic-hipaa-preview-label">Reviewed text</strong>
+        <div class="aic-hipaa-preview" data-scroll-key="approved-text" tabindex="0" aria-label="Reviewed document text" data-hipaa-piece-preview data-piece="${escapeHtml(pieceId)}">${previewHtml}</div>
         <div class="aic-hipaa-preview-act">
           <button type="button" class="aic-btn aic-btn--sm" data-action="ai-chat-hipaa-redact-selection" data-piece="${escapeHtml(pieceId)}">${icon("wand")} Redact selection</button>
           <span class="aic-muted">Select text in the preview, then redact it.</span>
+        </div>
         </div>
         ${safePiece.truncated ? `<p class="aic-hipaa-note">${icon("alert")} This piece was truncated to fit the size budget — what you see above is the complete text that will be sent.</p>` : ""}
       </div>` : "";
@@ -811,7 +816,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       <div class="aic-hipaa-backdrop" data-action="ai-chat-hipaa-cancel">
         <div class="aic-hipaa-modal" role="dialog" aria-modal="true" aria-labelledby="aicHipaaTitle">
           ${renderHipaaHead(review.deidModelLabel)}
-          <div class="aic-hipaa-body">
+          <div class="aic-hipaa-body" data-scroll-key="chat-review-body">
             <div class="aic-hipaa-progress">
               <strong>Preparing your review…</strong>
               <p class="aic-muted">${escapeHtml(progress.label || "Running de-identification…")}</p>
@@ -831,7 +836,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       <div class="aic-hipaa-backdrop" data-action="ai-chat-hipaa-cancel">
         <div class="aic-hipaa-modal" role="dialog" aria-modal="true" aria-labelledby="aicHipaaTitle">
           ${renderHipaaHead(review.deidModelLabel)}
-          <div class="aic-hipaa-body">
+          <div class="aic-hipaa-body" data-scroll-key="chat-review-body">
             <div class="aic-hipaa-flags">
               <strong>${icon("alert")} De-identification failed — sending is blocked</strong>
               <ul><li>${escapeHtml(review.failedDetail || "The de-identification pass failed.")}</li>
@@ -846,12 +851,6 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     // Ready: the full delta-review modal.
     const pieces = Array.isArray(review.pieces) ? review.pieces : [];
     const expandedIds = Array.isArray(review.expanded) ? review.expanded : [];
-    // Safety: if nothing is expanded, expand the first piece so the user
-    // always sees content immediately (never an empty-looking modal).
-    if (expandedIds.length === 0 && pieces.length > 0) {
-      const firstId = pieces[0] && pieces[0].id ? String(pieces[0].id) : "";
-      if (firstId) expandedIds.push(firstId);
-    }
     const ctx = {
       expanded: new Set(expandedIds),
       reviewedOpen: new Set(review.reviewedOpen || [])
@@ -894,7 +893,14 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
             <button type="button" class="aic-btn aic-btn--sm" data-action="ai-chat-hipaa-reject-all-pending">Reject all</button>
           </span>` : `
           <span class="aic-hipaa-actionbar-tx">${icon("check")} All suggestions reviewed</span>`}
-        <span class="aic-hipaa-actionbar-hint">Highlight any text to redact it instantly.</span>
+        <label class="aic-hipaa-jump">Go to
+          <select id="aiChatReviewJump" data-ai-chat-review-jump>
+            <option value="">Choose a document</option>
+            <option value="message">Your message</option>
+            ${[guidelines, ...pieces].filter(Boolean).map(piece => `<option value="${escapeHtml(piece.id)}">${escapeHtml(piece.title || piece.label || "Document")}${piece.pending?.length ? ` (${piece.pending.length} pending)` : ""}</option>`).join("")}
+            <option value="outgoing-payload">Exact outgoing content</option>
+          </select>
+        </label>
       </div>`;
     return `
       <div class="aic-hipaa-backdrop" data-action="ai-chat-hipaa-cancel">
@@ -907,9 +913,9 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
             ${hipaaStat("alert", "Warnings", warningCount ? `${warningCount} to check` : "none", warningCount ? "warn" : "ok")}
           </div>
           ${actionBar}
-          <div class="aic-hipaa-body">
+          <div class="aic-hipaa-body" data-scroll-key="chat-review-body">
             <h3 class="aic-hipaa-sec-title">Your message — de-identified before sending</h3>
-            <div class="aic-hipaa-msg" data-hipaa-message="1">
+            <div class="aic-hipaa-msg" data-scroll-key="review-message" tabindex="0" data-hipaa-message="1">
               ${highlightHipaaRedactions(escapeHtml(messageText), Object.keys(messageCounts))}
               ${messageChips ? `<div class="aic-hipaa-chips">${messageChips}</div>` : ""}
               ${messageFlags.length ? `<ul class="aic-hipaa-msgflags">${messageFlags.map((f) => `<li>${escapeHtml(f)}</li>`).join("")}</ul>` : ""}
@@ -919,8 +925,10 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
               ${renderReviewPiece(guidelines, ctx, { title: guidelines.title || "Custom instructions" })}` : ""}
             <h3 class="aic-hipaa-sec-title">De-identified context</h3>
             ${pieces.map((piece) => renderReviewPiece(piece, ctx)).join("") || `<p class="aic-muted">No context pieces.</p>`}
-            <h3 class="aic-hipaa-sec-title">What will be sent</h3>
-            <pre class="aic-hipaa-transmit">${escapeHtml(review.transmitText || "")}</pre>
+            <details class="aic-hipaa-details" data-scroll-key="outgoing-payload">
+              <summary>What will be sent — exact message and context</summary>
+              <pre class="aic-hipaa-transmit" data-scroll-key="outgoing-text" tabindex="0">${escapeHtml(review.transmitText || "")}</pre>
+            </details>
             ${review.toolsEnabled ? `<p class="aic-hipaa-note">${icon("wand")} <strong>Clinical tools on</strong> — ChatGPT may run the 25 local calculators and 7 on-device AI models while composing this reply. Every calculation runs in this browser; only the de-identified text above is sent.</p>` : ""}
             ${review.truncationNote ? `<p class="aic-hipaa-note">${icon("alert")} ${escapeHtml(review.truncationNote)}</p>` : ""}
             <div class="aic-hipaa-flags${flagItems.length ? "" : " aic-hipaa-flags--ok"}">
@@ -928,14 +936,14 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
               ${
                 flagItems.length
                   ? `<ul>${flagItems.map((f) => `<li${f.kind ? ` class="is-${f.kind}"` : ""}>${escapeHtml(f.text)}</li>`).join("")}</ul>`
-                  : `<p>No PHI spans detected. Review still required — confirm the content above is safe to send.</p>`
+                  : `<p>No additional review flags. Review still required — confirm the content above is safe to send.</p>`
               }
             </div>
-            <details class="aic-hipaa-details">
+            <details class="aic-hipaa-details" data-scroll-key="system-prompt">
               <summary>Full system prompt</summary>
               <pre class="aic-hipaa-transmit">${escapeHtml(review.systemPromptText || "")}</pre>
             </details>
-            <details class="aic-hipaa-details">
+            <details class="aic-hipaa-details" data-scroll-key="review-history">
               <summary>Earlier messages (already reviewed)</summary>
               <div class="aic-hipaa-history">
                 ${history.length
@@ -947,7 +955,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
           <div class="aic-hipaa-foot">
             <button type="button" class="aic-btn" data-action="ai-chat-hipaa-cancel">Cancel — don't send</button>
             <label class="aic-hipaa-ack">
-              <input type="checkbox" data-ai-chat-hipaa-ack${review.ack ? " checked" : ""}>
+              <input id="aiChatReviewAck" type="checkbox" data-ai-chat-hipaa-ack${review.ack ? " checked" : ""}>
               <span>I have reviewed the content above</span>
             </label>
             <button type="button" class="aic-btn aic-btn--primary" data-action="ai-chat-hipaa-confirm"${canSend ? "" : " disabled"}>${icon("send")} Send to ChatGPT</button>

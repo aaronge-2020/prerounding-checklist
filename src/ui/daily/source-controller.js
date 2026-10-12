@@ -1,7 +1,7 @@
 import { createNoteDragController } from "./note-drag-controller.js?v=20261012-all-sections";
 import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261011-drag-workspace-v2";
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261012-citation-preview";
-import { captureScrollPositions, restoreScrollPositions } from "../view-scroll.js?v=20261011-epic-workflow";
+import { captureScrollPositions, restoreScrollPositions, replaceViewContent } from "../view-scroll.js?v=20261012-scroll-review";
 import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20261012-citation-preview";
 import {
   clinicalParseWarning,
@@ -331,26 +331,13 @@ export function createDailySourceController(deps) {
       deidBusy: deps.app.deidOperation.active
     });
     const next = document.querySelector(`[data-structured-primary-note-scope="${scope}"]`);
-    const restore = () => {
-      // A newer field render owns scrolling now. Never let an old animation
-      // callback restore an obsolete offset onto the replacement editor.
-      if (!next?.isConnected) return;
-      if (view) {
-        view.scrollTop = viewTop;
-        view.scrollLeft = viewLeft;
-      }
-      if (next) restoreScrollPositions(next, innerScroll);
-    };
-    restore();
-    requestAnimationFrame(() => {
-      if (!next?.isConnected) return;
-      const field = focusFieldId
-        ? document.querySelector(`[data-structured-note-scope="${scope}"][data-structured-note-field="${focusFieldId}"]`)
-        : null;
-      field?.focus({ preventScroll: true });
-      restore();
-      requestAnimationFrame(restore);
-    });
+    const field = focusFieldId
+      ? next?.querySelector(`[data-structured-note-scope="${scope}"][data-structured-note-field="${focusFieldId}"]`)
+      : null;
+    field?.focus({ preventScroll: true });
+    if (view) { view.scrollTop = viewTop; view.scrollLeft = viewLeft; }
+    if (next) restoreScrollPositions(next, innerScroll);
+
   }
 
   function selectStructuredNoteField(scope, fieldId) {
@@ -653,7 +640,7 @@ export function createDailySourceController(deps) {
     if (count)
       count.textContent = `${deps.app[state.draftKey].length.toLocaleString()} characters · ${source?.description || "Chart source."}`;
     const preview = document.querySelector(`[data-source-parse-preview="${scope}"]`);
-    if (preview) preview.innerHTML = deps.dailyPresentation.renderSourceParsePreview({ scope, parseResult: parsed });
+    if (preview) replaceViewContent(preview, deps.dailyPresentation.renderSourceParsePreview({ scope, parseResult: parsed }));
     document.querySelectorAll(`[data-action="select-${scope}-source-kind"]`).forEach((button) => {
       const selected = button.dataset.sourceKind === deps.app[state.kindKey];
       button.classList.toggle("selected", selected);
@@ -681,7 +668,7 @@ export function createDailySourceController(deps) {
       const patient = deps.active();
       const day = scope === "admission" ? null : deps.selectedDay(patient);
       const dayId = scope === "admission" ? "admission" : day?.id;
-      editor.innerHTML = deps.dailyPresentation.renderSourceKindEditor({
+      replaceViewContent(editor, deps.dailyPresentation.renderSourceKindEditor({
         scope,
         selectedSourceKind: deps.app[state.kindKey],
         sourceOptions: state.options,
@@ -694,7 +681,7 @@ export function createDailySourceController(deps) {
         resultMetadata: scope === "admission" ? deps.app.admissionResultMetadata : deps.app.dailyResultMetadata,
         deidBusy: deps.app.deidOperation?.active,
         localAiParseInfo: deps.localAiParseInfo
-      });
+      }));
     }
     updateDraft(scope, deps.app[state.draftKey]);
   }

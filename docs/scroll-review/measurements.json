@@ -1,0 +1,182 @@
+[
+  {
+    "width": 1440,
+    "action": "accept suggestion",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 788,
+    "after": 788
+  },
+  {
+    "width": 1440,
+    "action": "reject suggestion",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 788,
+    "after": 788
+  },
+  {
+    "width": 1440,
+    "action": "show reviewed",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 788,
+    "after": 788
+  },
+  {
+    "width": 1440,
+    "action": "undo acceptance",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 788,
+    "after": 788
+  },
+  {
+    "width": 1440,
+    "action": "restore rejected redaction",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 788,
+    "after": 788
+  },
+  {
+    "width": 1440,
+    "action": "accept document",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 788,
+    "after": 788
+  },
+  {
+    "width": 1440,
+    "action": "collapse document",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 788,
+    "after": 599
+  },
+  {
+    "width": 1440,
+    "action": "expand document",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 599,
+    "after": 599
+  },
+  {
+    "width": 1440,
+    "action": "acknowledge with pending suggestions",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 1167,
+    "after": 1167
+  },
+  {
+    "width": 1440,
+    "action": "accept remaining suggestions",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 1167,
+    "after": 1166
+  },
+  {
+    "width": 390,
+    "action": "accept suggestion",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 963,
+    "after": 963
+  },
+  {
+    "width": 390,
+    "action": "reject suggestion",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 963,
+    "after": 963
+  },
+  {
+    "width": 390,
+    "action": "show reviewed",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 963,
+    "after": 963
+  },
+  {
+    "width": 390,
+    "action": "undo acceptance",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 963,
+    "after": 963
+  },
+  {
+    "width": 390,
+    "action": "restore rejected redaction",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 963,
+    "after": 963
+  },
+  {
+    "width": 390,
+    "action": "accept document",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 963,
+    "after": 963
+  },
+  {
+    "width": 390,
+    "action": "collapse document",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 963,
+    "after": 892
+  },
+  {
+    "width": 390,
+    "action": "expand document",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 892,
+    "after": 892
+  },
+  {
+    "width": 390,
+    "action": "acknowledge with pending suggestions",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 1636,
+    "after": 1636
+  },
+  {
+    "width": 390,
+    "action": "accept remaining suggestions",
+    "pointerTargets": 1,
+    "clicks": 1,
+    "recoveryScrolls": 0,
+    "before": 1636,
+    "after": 1478
+  }
+]
