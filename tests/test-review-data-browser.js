@@ -416,7 +416,10 @@ Sodium: 138`;
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({status:'completed',output_text:JSON.stringify({suggestions:[
       {id:1,target:'diagnostic_plan',action:'add',anchor:'',suggested:'Synthetic approved item.',rationale:'Test',likelihood:'',citationIds:[]},
       {id:2,target:'diagnostic_plan',action:'add',anchor:'',suggested:'Synthetic rejected item.',rationale:'Test',likelihood:'',citationIds:[]}
-    ],references:[]})}) }).catch(() => {});
+    ],references:[]})}) }).catch((error) => {
+      // A stopped request may close its route before the late fixture replies.
+      if (!/closed|abort|handled/i.test(error.message)) throw error;
+    });
   });
   async function sendSyntheticConsult() {
     await page.locator(`[data-problem-id="${aiId}"] [data-action="generate-ap"]`).click();
