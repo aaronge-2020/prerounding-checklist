@@ -1,4 +1,4 @@
-import { guidelineSetMatchesQuery } from "../../prompts/guideline-sets.js?v=20260910-guideline-pagination";
+import { guidelineSetMatchesQuery } from "../../prompts/guideline-sets.js?v=20261011-epic-workflow";
 
 export const GUIDELINE_PAGE_SIZE = 10;
 

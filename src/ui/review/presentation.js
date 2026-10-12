@@ -1,5 +1,5 @@
 import { OPENAI_WORKUP_MODEL_OPTIONS } from "../../app/preferences.js?v=20261011-request-controls";
-import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES, objectiveEditorGroups, SECTION_VISIBILITY_KEYS } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
+import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES, objectiveEditorGroups, SECTION_VISIBILITY_KEYS } from "../../note-drafts/index.js?v=20261011-epic-workflow";
 import {
   abnormalTone,
   compactLabTrendLine,
@@ -7,7 +7,7 @@ import {
   displayVitalName,
   joinValueUnit
 } from "../../review-data/compact-summary.js?v=20260924-optional-sections-v1";
-import { sanitizeProblemTitle } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
+import { sanitizeProblemTitle } from "../../note-drafts/index.js?v=20261011-epic-workflow";
 import { baselineDisplayText, baselinePriorityFor } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import { formatProbability } from "../../ai/decision-scoring.js?v=20261010-decision1-v1";
 import {

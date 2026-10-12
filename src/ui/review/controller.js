@@ -1,6 +1,6 @@
 import { buildStructuredRequest } from "../../ai/structured-request.js?v=20261011-request-controls";
-import { sortDays } from "../../daily-updates/days.js?v=20260921-medication-card-v4";
-import { updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
+import { sortDays } from "../../daily-updates/days.js?v=20261011-epic-workflow";
+import { updateActivePatient } from "../../app/state/vault.js?v=20261011-epic-workflow";
 import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20261011-epic-workflow";
 import { createLabAutocomplete } from "./lab-autocomplete.js?v=20260924-dollar-autocomplete-v1";
 import { createDrugAutocomplete } from "./drug-autocomplete.js?v=20260929-drug-autocomplete-v1";
@@ -49,7 +49,7 @@ import {
   updateManualObjective,
   updateNoteSection,
   updatePlanProblem
-} from "../../note-drafts/index.js?v=20260929-draft-sections-v1&decision1=score-field-v1";
+} from "../../note-drafts/index.js?v=20261011-epic-workflow";
 import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20261011-epic-workflow";
 import {
   clearLabBaseline,
@@ -64,7 +64,7 @@ import {
   formatProbability
 } from "../../ai/decision-scoring.js?v=20261010-decision1-v1";
 import { scoreDifferentialsWithDecision1 } from "../decision-client.js?v=20261010-decision1-v1";
-import { createDifferential } from "../../note-drafts/index.js?v=20260929-draft-sections-v1&decision1=score-field-v1";
+import { createDifferential } from "../../note-drafts/index.js?v=20261011-epic-workflow";
 
 function packetKey(value) {
   return String(value || "admission");

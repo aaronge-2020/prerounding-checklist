@@ -1,4 +1,4 @@
-import { setTokenColorOverride, tokenAccentHex } from "../prompts/custom-templates.js?v=20260921-medication-card-v4";
+import { setTokenColorOverride, tokenAccentHex } from "../prompts/custom-templates.js?v=20261011-epic-workflow";
 
 export function tokenColorSwatchButton(token, colorOverrides, escapeHtml) {
   const color = tokenAccentHex(token, colorOverrides);

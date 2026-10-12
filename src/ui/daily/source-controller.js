@@ -1,7 +1,7 @@
 import { moveNoteText, appendSourceSelection } from "../../patient-context/note-mapping.js?v=20261011-epic-workflow";
-import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20260921-medication-card-v4";
+import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261011-epic-workflow";
 import { captureScrollPositions, restoreScrollPositions } from "../view-scroll.js?v=20261011-epic-workflow";
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20261011-epic-workflow";
 import {
   clinicalParseWarning,
   parseClinicalExport,
@@ -20,7 +20,7 @@ import {
   replaceSourceCapturesFromFormAsync,
   sourceCapturePacketCheck
 } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
-import { NOTE_TYPES } from "../../note-drafts/index.js?v=20260929-draft-sections-v1";
+import { NOTE_TYPES } from "../../note-drafts/index.js?v=20261011-epic-workflow";
 import {
   createPrimaryTeamNote,
   primaryTeamNoteFields,

@@ -6,7 +6,7 @@ import {
   removeDay,
   sortDays,
   upsertDay
-} from "../daily-updates/days.js?v=20260921-medication-card-v4";
+} from "../daily-updates/days.js?v=20261011-epic-workflow";
 import {
   activePatient,
   archivePatient,
@@ -14,7 +14,7 @@ import {
   createPatientRecord,
   setActivePatient,
   updateActivePatient
-} from "../app/state/vault.js?v=20260921-medication-card-v4";
+} from "../app/state/vault.js?v=20261011-epic-workflow";
 import {
   deleteEncryptedVaultRecord,
   downloadJson, downloadText,
@@ -22,13 +22,13 @@ import {
   readEncryptedVaultRecord,
   saveEncryptedVault,
   writeEncryptedVaultRecord
-} from "../app/state/persistence.js?v=20260921-medication-card-v4";
+} from "../app/state/persistence.js?v=20261011-epic-workflow";
 import {
   removeSection,
   reorderSections,
   reorderSectionsById,
   replaceSectionsFromFormAsync
-} from "../patient-context/sections.js?v=20260921-medication-card-v4";
+} from "../patient-context/sections.js?v=20261011-epic-workflow";
 import { clinicalParseWarning, parseClinicalExport } from "../patient-context/clinical-export-parser.js?v=20261011-epic-workflow";
 import {
   createEphemeralRedactionReview,
@@ -87,20 +87,20 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides, studentNoteForPrompt
-} from "../prompts/custom-templates.js?v=20260921-medication-card-v4";
+} from "../prompts/custom-templates.js?v=20261011-epic-workflow";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import {
   DEFAULT_DAILY_SOURCE_KIND,
   admissionSourceKindOptions
 } from "../patient-context/source-captures.js?v=20260921-medication-card-v4";
-import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20260921-medication-card-v4";
-import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260910-pre-op-prep";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20261011-epic-workflow";
+import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20261011-epic-workflow";
 import {
   createAdaptiveStore,
   learnFromCorrection,
   inferManualLabel
 } from "../vault/deid/adaptive.js?v=20261003-deid-100";
-import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260910-pre-op-prep";
+import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20261011-epic-workflow";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences
@@ -111,18 +111,18 @@ import { createDailySourceController } from "./daily/source-controller.js?v=2026
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20261011-epic-workflow";
 import { createReviewController } from "./review/controller.js?v=20261011-epic-workflow";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260921-medication-card-v4";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20261011-epic-workflow";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20260921-medication-card-v4";
-import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260910-guideline-pagination&focus=prevent-scroll-v2";
+} from "./prompts/controller.js?v=20261011-epic-workflow";
+import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20261011-epic-workflow";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
-import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20260921-medication-card-v4";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20260921-medication-card-v4";
+import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20261011-epic-workflow";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20261011-epic-workflow";
 import { preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20261011-epic-workflow";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20261011-epic-workflow";
 import { installGlobalFetchGuard, isOfflineMode, onOfflineModeChange, setOfflineMode } from "../lib/network-gate.js?v=20260929-offline-mode-v1";
@@ -135,7 +135,7 @@ import {
   redactionPosition,
   warningDescription,
   warningSnippet
-} from "./redaction/presentation.js?v=20260921-medication-card-v4";
+} from "./redaction/presentation.js?v=20261011-epic-workflow";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261003-meddeid-badge";
 import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261011-epic-workflow";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20261003-deid-adaptive";
@@ -145,7 +145,7 @@ import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=2026101
 import { createDemoSessionController } from "./demo/session-controller.js?v=20261011-epic-workflow";
 import { createAiChatController } from "./ai-chat/controller.js?v=20261011-epic-workflow";
 import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261001-drug-checks-v2";
-import { createDrugChecksController } from "./drug-checks/controller.js?v=20261001-drug-checks-v2";
+import { createDrugChecksController } from "./drug-checks/controller.js?v=20261011-epic-workflow";
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20261011-epic-workflow";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20260929-ddinter-v2";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";

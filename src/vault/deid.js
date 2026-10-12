@@ -2198,7 +2198,7 @@ const DIRECT_PATTERNS = [
   // Main St") cannot anchor a match; only the suffix is case-insensitive.
   // Bare "Dr" is excluded: without a house number it overwhelmingly means
   // a doctor title ("Provider Dr Chang"), not "Drive".
-  { label: "ADDRESS", regex: /\b[A-Z][A-Za-z0-9.'-]*(?:[ \t]+[A-Z][A-Za-z0-9.'-]+){0,2}[ \t]+(?i:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b/g, skip: isBareStreetAbbreviationFalsePositive },
+  { label: "ADDRESS", regex: /\b[A-Z][A-Za-z0-9.'-]*(?:[ \t]+[A-Z][A-Za-z0-9.'-]+){0,2}[ \t]+(?:[Ss][Tt][Rr][Ee][Ee][Tt]|[Ss][Tt]|[Aa][Vv][Ee][Nn][Uu][Ee]|[Aa][Vv][Ee]|[Rr][Oo][Aa][Dd]|[Rr][Dd]|[Bb][Oo][Uu][Ll][Ee][Vv][Aa][Rr][Dd]|[Bb][Ll][Vv][Dd]|[Dd][Rr][Ii][Vv][Ee]|[Ll][Aa][Nn][Ee]|[Ll][Nn]|[Ww][Aa][Yy]|[Cc][Oo][Uu][Rr][Tt]|[Cc][Tt]|[Pp][Ll][Aa][Cc][Ee]|[Pp][Ll]|[Cc][Ii][Rr][Cc][Ll][Ee]|[Cc][Ii][Rr]|[Tt][Ee][Rr][Rr][Aa][Cc][Ee]|[Tt][Ee][Rr]|[Pp][Aa][Rr][Kk][Ww][Aa][Yy]|[Pp][Kk][Ww][Yy])\b/g, skip: isBareStreetAbbreviationFalsePositive },
   // Secondary address units ("Suite 800", "Apartment 5", "Pod 300") -
   // labeled address components that the street-number patterns miss.
   { label: "ADDRESS", regex: /\b(?:Suite|Ste|Apt|Apartment|Unit|Floor|Fl|Lodge|Villa|Duplex|Ranch|Bungalow|Basement|Office|Chalet|Pod|PB|RV|House|Dept|Trailer|Box|Castle|Residence|Flat|Bldg|Triplex|Quadruplex|Fort)\.?\s+\d+[A-Z]?\b/g },

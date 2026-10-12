@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { buildClinicalReviewIndex } from "../src/review-data/index.js";
 import {
   compileSmartExam,
   getExamSystem,
@@ -812,3 +813,28 @@ const options = { now: fixedNow, idFactory: fixedId };
 }
 
 console.log("note draft model tests passed");
+
+// A selected diagnostic report must survive compact note rendering in full,
+// including saved selections created before full-report rendering was fixed.
+{
+  const report = "CT CHEST\nFINDINGS: Mild bibasilar atelectasis. No pleural effusion.\nIMPRESSION: No acute pulmonary abnormality.";
+  const candidate = buildClinicalReviewIndex({ id: "report-patient", contextSections: [{
+    id: "ct", sourceKind: "results", label: "CT chest", resultCategory: "imaging",
+    resultDate: "2026-10-11", deidentifiedText: report
+  }], days: [] }).diagnosticResults[0];
+  assert.equal(candidate.noteDetail, report);
+  const selection = { ...candidate, selectionId: candidate.id, sourceFingerprint: candidate.fingerprint, generatedText: candidate.insertionText };
+  let draft = selectObjectiveBlock(createNoteDraft(NOTE_TYPES.PROGRESS, options), selection, options);
+  for (const line of report.split("\n")) assert.ok(renderFinalNotePlainText(draft).includes(line));
+  const oldSelection = { ...selection, noteDetail: "CT CHEST" };
+  draft = selectObjectiveBlock(createNoteDraft(NOTE_TYPES.PROGRESS, options), oldSelection, options);
+  draft = reconcileObjectiveBlock(draft, selection, options);
+  assert.equal(draft.objective.selectedBlocks[0].noteDetail, report);
+  assert.ok(renderFinalNotePlainText(draft).includes("IMPRESSION: No acute pulmonary abnormality."));
+  let edited = selectObjectiveBlock(createNoteDraft(NOTE_TYPES.PROGRESS, options), oldSelection, options);
+  edited = editObjectiveBlock(edited, candidate.id, "Clinician-authored interpretation", options);
+  edited = reconcileObjectiveBlock(edited, selection, options);
+  assert.equal(edited.objective.selectedBlocks[0].editedText, "Clinician-authored interpretation");
+  assert.equal(edited.objective.selectedBlocks[0].state, "stale");
+  assert.equal(edited.objective.selectedBlocks[0].pendingNoteDetail, report);
+}

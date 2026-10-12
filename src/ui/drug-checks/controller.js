@@ -12,7 +12,7 @@
 // pays their parse cost until this view is actually used. Import failures
 // fail closed with state.dataState === "error" — this controller never
 // throws.
-import { activePatient } from "../../app/state/vault.js?v=20260921-medication-card-v4";
+import { activePatient } from "../../app/state/vault.js?v=20261011-epic-workflow";
 export function createDrugChecksController({
   app,
   byId,
