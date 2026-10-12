@@ -209,14 +209,20 @@ try {
   await page.click('#refreshDefaultGuidelinesConfirmDialog button[value="cancel"]');
   await page.waitForFunction(() => document.querySelector("#refreshDefaultGuidelinesConfirmDialog")?.open === false);
   assert.equal(await page.locator(`#guidelineSetText-${admissionGuidelineId}`).inputValue(), "LOCAL ADMISSION EDIT TO REPLACE", "cancel must preserve the local built-in edit");
+  // Hold the request until the loading-state assertion has run. A fixed
+  // 150ms delay can finish before Playwright observes the disabled button
+  // on a busy hosted runner, even when the application behaves correctly.
+  let releaseGuidelineRefresh;
+  const guidelineRefreshGate = new Promise(resolve => { releaseGuidelineRefresh = resolve; });
   await page.route("**/prompts/Guidelines-admission.md?**", async (route) => {
-    await new Promise((resolve) => setTimeout(resolve, 150));
+    await guidelineRefreshGate;
     await route.continue();
   });
   await page.click('[data-action="request-refresh-default-guidelines"]');
   await page.waitForFunction(() => document.querySelector("#refreshDefaultGuidelinesConfirmDialog")?.open === true);
   await page.click('[data-action="confirm-refresh-default-guidelines"]');
   await page.waitForFunction(() => document.querySelector("#confirmRefreshDefaultGuidelinesButton")?.disabled === true);
+  releaseGuidelineRefresh();
   await page.waitForFunction(() => /Built-in prompts updated from this site/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.unroute("**/prompts/Guidelines-admission.md?**");
   await page.fill("#guidelineSearchInput", "Discharge summary");
