@@ -1,5 +1,5 @@
 import { preserveViewScroll } from "../view-scroll.js?v=20261012-scroll-review";
-import { installCitationInspector } from "./citation-inspector.js?v=20261012-citation-preview";
+import { installCitationInspector } from "./citation-inspector.js?v=20261012-numbered-citations";
 import { rebaseApReferences } from "../../ai/ap-generator.js?v=20261012-citation-preview";
 import { buildConsultNoteContext } from "../../ai/note-context.js?v=20261012-citation-preview";
 import { buildStructuredRequest } from "../../ai/structured-request.js?v=20261011-request-controls";

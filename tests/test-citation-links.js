@@ -1,3 +1,4 @@
+import { renderNumberedCitations } from "../src/ui/ai-chat/citation-presentation.js";
 // Tests for clickable AI Chat citations (fixtures are synthetic, PHI-free):
 //   src/ui/openai-client.js  -> extractSources (url_citation annotations)
 //   src/ai/citation-links.js  -> matchCitationToSource, linkifyCitations,
@@ -152,3 +153,17 @@ const SOURCES = [
 }
 
 console.log("citation link tests passed");
+
+// Compact chat presentation retains placeholders/code and safely stores metadata.
+{
+  const html = renderNumberedCitations("On [Hospital Day 3], [NAME] improved per [History]: 'Exact words'. [Example Guideline] [Example Guideline]", [{ pieceId: "context:hpi" }], 0, [{ title: "Example Guideline", url: "https://example.org" }]);
+  assert.deepEqual([...html.matchAll(/class="aic-citation-number"[^>]*>(\d+)<\/button>/g)].map(m => m[1]), ["1", "2", "2"]);
+  assert.ok(html.includes("[Hospital Day 3]") && html.includes("[NAME]"));
+  assert.ok(!html.includes("<q"));
+  const code = renderNumberedCitations("`per [History]: 'literal'` and `[Example](https://example.org)`", [], 0, []);
+  assert.ok(!code.includes("aic-citation-number"));
+  assert.ok(code.includes("per [History]"));
+  const unsafe = renderNumberedCitations(`per [<img src=x onerror=alert(1)>]: '" onclick="alert(1)'`, [], 0, []);
+  assert.ok(!unsafe.includes("<img"));
+  assert.ok(!unsafe.includes(' onclick="'));
+}

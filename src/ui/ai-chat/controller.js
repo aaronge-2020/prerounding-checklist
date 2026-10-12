@@ -1,3 +1,4 @@
+import { installCitationInspector } from "../review/citation-inspector.js?v=20261012-numbered-citations";
 // Controller for the AI Chat view: two chat modes behind one streamlined
 // interface. "On-device" is the existing local-LLM chat (model
 // download/select lifecycle, note parsing) — nothing leaves the browser.
@@ -16,7 +17,7 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20261012-scroll-review";
+import { createAiChatPresentation } from "./presentation.js?v=20261012-numbered-citations";
 import { chatPaneScrollTop, preserveViewScroll } from "../view-scroll.js?v=20261012-scroll-review";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20261011-ai-helper";
 import { gatedFetch, isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
@@ -132,6 +133,7 @@ export function createAiChatController({
   // real singleton is used otherwise).
   clientDeps
 } = {}) {
+  if (typeof document !== "undefined" && document.body?.addEventListener) installCitationInspector();
   const presentation = createAiChatPresentation({ escapeHtml, icon });
   const deid = {
     deidentifyText,

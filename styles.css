@@ -14364,3 +14364,14 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   .aic-hipaa-decisions { max-height: 180px; }
   .aic-hipaa-preview { max-height: 180px; }
 }
+
+/* Citation markers leave the sentence readable; details appear on demand. */
+.aic-citation-number {
+  display: inline; vertical-align: super; padding: 0 3px; margin: 0 1px;
+  min-width: 0; min-height: 0; border: 0; border-radius: 2px;
+  background: transparent; color: var(--accent, #245e91);
+  font-family: inherit; font-size: 11px; font-weight: 600; line-height: 1; cursor: pointer;
+}
+.aic-citation-number:hover, .aic-citation-number:focus-visible {
+  background: var(--surface-2, #eef2f5); text-decoration: underline;
+}

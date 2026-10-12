@@ -110,7 +110,7 @@ import { createDailyPresentation } from "./daily/presentation.js?v=20261012-writ
 import { createDailySourceController } from "./daily/source-controller.js?v=20261012-scroll-review";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20261012-writer-controls";
-import { createReviewController } from "./review/controller.js?v=20261012-scroll-review";
+import { createReviewController } from "./review/controller.js?v=20261012-numbered-citations";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20261012-citation-preview";
 import {
   createPromptTaskController,
@@ -143,7 +143,7 @@ import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/ll
 import { createDemoController } from "./demo/controller.js?v=20261012-writer-controls";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261012-citation-preview";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20261012-citation-preview";
-import { createAiChatController } from "./ai-chat/controller.js?v=20261012-scroll-review";
+import { createAiChatController } from "./ai-chat/controller.js?v=20261012-numbered-citations";
 import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261001-drug-checks-v2";
 import { createDrugChecksController } from "./drug-checks/controller.js?v=20261012-citation-preview";
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20261011-epic-workflow";

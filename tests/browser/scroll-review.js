@@ -31,6 +31,7 @@ const controller = createAiChatController({
   app: window.fixtureApp, byId: id => document.getElementById(id),
   escapeHtml: value => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"),
   icon: () => "", setStatus: text => { window.fixtureStatus = text; },
+  onNavigateToChartSection: target => { window.navigated = target; },
   render: () => controller.render(), getDraftNoteText: () => "",
   currentPreferences: () => ({ openAiApiKey: "synthetic-key", openAiModel: "gpt-5.4-mini", medicalService: "medicine" }),
   deidDeps, chatDeps: { requestOpenAiChat: async args => { window.sent.push(args); return "Synthetic reply"; } }

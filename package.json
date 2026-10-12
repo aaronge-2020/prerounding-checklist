@@ -51,7 +51,7 @@
     "test:review-interactions": "node tests/test-review-interactions.js",
     "test:review-section-text-boundary": "node tests/test-review-section-text-boundary.js",
     "test:review-patient-switch": "node tests/test-review-patient-switch.js",
-    "test:scroll-ui": "node tests/test-view-scroll-browser.js && node tests/test-ai-chat-scroll-browser.js && node tests/test-structured-note-scroll-browser.js",
+    "test:scroll-ui": "node tests/test-view-scroll-browser.js && node tests/test-ai-chat-scroll-browser.js && node tests/test-chat-citations-browser.js && node tests/test-structured-note-scroll-browser.js",
     "test:view-scroll": "node tests/test-view-scroll.js",
     "test:structured-note-scroll": "node tests/test-structured-note-scroll-browser.js",
     "test:compact-metrics": "node tests/test-compact-workspace-metrics.js",

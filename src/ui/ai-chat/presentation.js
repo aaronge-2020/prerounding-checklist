@@ -4,11 +4,7 @@
 
 import { splitThinking } from "../../local-llm/thinking.js?v=20260927-local-llm-v4";
 import { renderChatMarkdown } from "../../local-llm/markdown.js?v=20261004-cite-links-v1";
-import {
-  sentinelizeSectionCitations,
-  sectionCitationChipHtml
-} from "./section-citations.js?v=20260929-ai-chat-v14";
-import { withClickableCitations } from "../../ai/citation-links.js?v=20261004-cite-links-v1";
+import { renderNumberedCitations } from "./citation-presentation.js?v=20261012-numbered-citations";
 
 export function createAiChatPresentation({ escapeHtml, icon }) {
   // Assistant reply body: reasoning goes in a collapsed dropdown (hidden by
@@ -366,31 +362,6 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     return `${messages}${streaming}${empty}`;
   }
 
-  // Render assistant text with section-grounded citations. The model cites
-  // patient facts as per [Section Label]: 'short quote'. Each becomes a
-  // clickable chip PLUS the verbatim quote (a <q> element) — the quote is
-  // never dropped. `citations` is the message's sectionCitations metadata
-  // (matched at send time against the reviewed chart pieces), zipped with
-  // the parse by match order. A citation whose label matched no reviewed
-  // section renders as inert text — never clickable — so a hallucinated
-  // citation can't open a fake source. The sentinel approach keeps Markdown
-  // formatting intact around citations.
-  function renderCitedMarkdown(text, citations, messageIndex, sources) {
-    const metas = Array.isArray(citations) ? citations : [];
-    const { text: sentinelized, cites } = sentinelizeSectionCitations(text);
-    // Guideline [bracket] citations become clickable links here, after
-    // section citations are sentinelized: sentinels carry no brackets so
-    // linkify never touches them, and a Sources section is appended.
-    const linked = withClickableCitations(sentinelized, sources);
-    let html = renderChatMarkdown(linked);
-    for (let i = 0; i < cites.length; i += 1) {
-      const sentinel = `\uE000SECITE${i}\uE001`;
-      const chip = sectionCitationChipHtml(cites[i], metas[i] || null, escapeHtml, messageIndex);
-      html = html.split(sentinel).join(chip);
-    }
-    return html;
-  }
-
   function renderRemoteMessages(remote) {
     const messages = (remote.messages || [])
       .map((m, index) => {
@@ -401,7 +372,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
           ? renderToolRecords(m.toolRecords)
           : "";
         const citedBody = m.role !== "user"
-          ? renderCitedMarkdown(m.text, m.sectionCitations, index, m.sources)
+          ? renderNumberedCitations(m.text, m.sectionCitations, index, m.sources)
           : renderChatMarkdown(m.text);
         const body = m.role === "user" ? `<p>${escapeHtml(m.text)}</p>` : `<div class="aic-m-body">${citedBody}</div>${records}`;
         const revert = `<button type="button" class="aic-m-revert" data-action="ai-chat-revert-remote" data-message-index="${index}" title="Revert to here — remove this message and everything after it">${icon("undo")} revert</button>`;

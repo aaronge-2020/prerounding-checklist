@@ -268,16 +268,18 @@ console.log("api: section citations keep the quote and resolve to the chart sour
   assert.equal(reply.sectionCitations[0].pieceId, "admission:s1");
   assert.deepEqual(reply.sectionCitations[0].target, { scope: "context", dayId: null, sectionId: "s1" });
   const rendered = root();
-  assert.ok(rendered.includes('data-section-cite="admission:s1"'), "chip carries the piece id");
-  assert.ok(rendered.includes('<q class="aic-cite-quote">chest pain radiating to the left arm</q>'),
-    "verbatim quote rendered beside the chip");
+  const reference = JSON.parse(rendered.match(/data-ap-reference="([^"]+)"/)[1].replace(/&quot;/g, '"').replace(/&amp;/g, '&'));
+  assert.equal(reference.pieceId, "admission:s1", "numbered citation retains its chart target");
+  assert.equal(reference.excerpt, "chest pain radiating to the left arm", "verbatim passage is available on hover");
+  assert.ok(rendered.includes('class="aic-citation-number"'), "compact number replaces the label chip");
+  assert.ok(!rendered.includes('<q class="aic-cite-quote">'), "quote no longer interrupts prose");
   clickSectionChip(harness.ctrl, "admission:s1", assistantIndex(harness.ctrl, reply));
   assert.equal(navigations.length, 1, "navigation fired");
   assert.deepEqual(navigations[0], { scope: "context", dayId: null, sectionId: "s1" });
   console.log("ok - citations preserve quotes and navigate");
 }
 
-console.log("api: hallucinated citation labels render as inert text, never clickable");
+console.log("api: unmatched citations offer inspection without chart navigation");
 {
   const harness = makeHarness({
     chatReply: "Also per [Nonexistent Section]: 'made up quote'."
@@ -290,7 +292,7 @@ console.log("api: hallucinated citation labels render as inert text, never click
   assert.ok(rendered.includes("made up quote"), "quote text still readable");
   clickSectionChip(harness.ctrl, "", 0);
   assert.equal(navigations.length, 0, "no navigation for unmatched citations");
-  console.log("ok - unmatched citations are inert");
+  console.log("ok - unmatched citations cannot navigate");
 }
 
 console.log("api: tool-assisted replies keep section citations and tool records");
