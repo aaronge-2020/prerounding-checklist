@@ -22,8 +22,8 @@ Synthetic data only. Local browser: http://127.0.0.1:8873/.
 - HPI sentence moved to exam; destination content retained; Undo restores both; whole-section move and Undo pass.
 - Original-source selection appended to Other note content; unchanged original remains visible.
 - Save & write opens writing workspace after model verification and encrypted save.
-- HPI pull works. Preview and clipboard match exactly.
-- Three lab rows parsed; edited creatinine 1.1 → 1.2 mg/dL saved and displayed as 1.2.
+- HPI and physical-exam pulls work. Preview and clipboard match exactly.
+- Three lab rows parsed; edited creatinine 1.1 → 1.2 mg/dL saved and displayed as 1.2. Later changing the source to 1.3 preserved a clinician-authored summary, flagged the changed source, and applied 1.3 only on explicit refresh.
 - Five vitals displayed; explicitly supplied 37 C becomes 37°C without a missing-unit prompt; SpO2 label is normalized.
 - Labeled CT report, date, findings, and impression appear in diagnostic results and the copied final note. Previously saved truncated selections refresh to the full report; edited interpretations remain preserved and flagged for review.
 - Two numbered A&P problems remain separate, including a subordinate DVT-prophylaxis bullet before the second problem. Tested by actual Stanford save and writing workspace inspection.

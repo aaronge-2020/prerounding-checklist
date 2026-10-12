@@ -326,11 +326,12 @@ Sodium: 138`;
   // Updating source data marks an edited linked block stale without overwriting it.
   await wbcBlock.locator("[data-objective-group-text]").fill("Student wording: WBC has improved substantially.");
   await page.click('[data-view-target="daily"]');
-  const currentLabSource = page.locator("#dailySources .source-capture-editor").first();
+  const currentLabSource = page.locator("#dailySources .source-capture-editor").filter({ hasText: "CBC" }).first();
   if ((await currentLabSource.locator('[data-action="toggle-section-editor"]').getAttribute("aria-expanded")) !== "true") {
     await currentLabSource.locator('[data-action="toggle-section-editor"]').click();
   }
   const currentLabText = await currentLabSource.locator(".section-text").inputValue();
+  assert.match(currentLabText, /15\.2/, "edit the actual earlier CBC source");
   await currentLabSource.locator(".section-text").fill(currentLabText.replace("15.2", "14.0"));
   await page.click('[data-action="save-day"]');
   await page.waitForFunction(() => /Source edits saved/.test(document.querySelector("#statusLine")?.textContent || ""));

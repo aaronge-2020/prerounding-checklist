@@ -310,7 +310,7 @@ try {
   await page.click('[data-view-target="prompts"]');
   await page.waitForSelector("#promptOutputHighlighted");
   assert.equal(await page.locator('#promptTaskSelect option', { hasText: "Discharge summary" }).count(), 0, "deleting a Settings guideline must remove its matching prompt option");
-  await page.selectOption("#promptTaskSelect", "preround_bedside_exam");
+  await page.selectOption("#promptTaskSelect", "daily_progress_note");
   const selectedDayPreviewToken = page.locator('#promptOutputHighlighted button.var-fill[data-token="@selected-day"]');
   assert.equal(await selectedDayPreviewToken.count(), 1, "selected-day must render as one clickable preview target");
   await page.evaluate(() => { document.querySelector("#promptOutputHighlighted").scrollTop = 0; });
@@ -520,138 +520,10 @@ Vitals
   assert.deepEqual(await page.locator("#dailySources .source-capture-editor .source-kind").evaluateAll((nodes) => nodes.slice(-3).map((node) => node.value)), ["other_chart_text", "medication_activity", "vital_signs"], "only standard-format Epic sections should receive structured source types after saving");
   assert.match(await page.locator("#statusLine").innerText(), /3 sources de-identified and added to this hospital day/);
 
-  await page.click('[data-view-target="workups"]');
-  await page.selectOption("#workupEditorSelect", { label: "Acute kidney injury" });
-  assert.equal(await page.locator('[data-workup-kind] .workup-item-scroll').count(), 2);
-  assert.equal(await page.locator('[data-workup-kind="history"] .workup-system-group').count() > 1, true);
-  assert.equal(await page.locator('[data-workup-kind="history"] .workup-item-scroll').evaluate((node) => node.scrollHeight > node.clientHeight), true, "history questions must have their own scroll surface");
-  assert.equal(await page.locator('[data-action="build-checklist"]').first().isVisible(), true, "Build checklist must remain visible while editing a workup");
-  assert.equal(await page.locator('[data-field="item-system"]').first().evaluate((node) => node.tagName), "SELECT");
-  await page.fill("#workupCatalogSearch", "acute kidney");
-  assert.equal(await page.locator('.workup-catalog-row:visible').count(), 1, "catalog search should narrow the displayed rail without rebuilding the editor");
-  assert.match(await page.locator('.workup-catalog-row:visible').first().innerText(), /Acute kidney injury/i);
-  assert.equal(await page.locator('.workup-catalog-row').filter({ hasText: "Abdominal pain" }).evaluate((node) => getComputedStyle(node).display), "none", "non-matching catalog rows must be removed from layout");
-  assert.match(await page.locator('[data-workup-catalog-count]').innerText(), /1 of/);
-  assert.equal(await page.locator("#workupCatalogSearch").evaluate((node) => document.activeElement === node), true, "catalog search should retain focus while filtering");
-  await page.fill("#workupCatalogSearch", "zzzz-not-a-workup");
-  assert.equal(await page.locator('[data-workup-catalog-empty]').isVisible(), true, "catalog search should explain when no workup matches");
-  await page.click('[data-action="clear-workup-search"]');
-  assert.equal(await page.locator("#workupCatalogSearch").inputValue(), "");
-  assert.equal(await page.locator('.workup-catalog-row:visible').count() >= 52, true, "clearing the catalog search should restore the full list");
-  const historyRows = page.locator('[data-workup-kind="history"] [data-workup-item-row]');
-  const thirdHistoryText = await historyRows.nth(2).locator('[data-field="item-text"]').inputValue();
-  await historyRows.nth(2).locator(".workup-drag-handle").dragTo(historyRows.nth(0).locator(".workup-drag-handle"));
-  await page.waitForFunction(() => /Workup item order saved/.test(document.querySelector("#statusLine")?.textContent || ""));
-  assert.equal(await page.locator('[data-workup-kind="history"] [data-workup-item-row]').first().locator('[data-field="item-text"]').inputValue(), thirdHistoryText);
-  const secondHistoryText = await historyRows.nth(1).locator('[data-field="item-text"]').inputValue();
-  await historyRows.nth(1).locator('[data-action="move-workup-item"][data-direction="up"]').click();
-  await page.waitForFunction(() => /Workup item order saved/.test(document.querySelector("#statusLine")?.textContent || ""));
-  assert.equal(await page.locator('[data-workup-kind="history"] [data-workup-item-row]').first().locator('[data-field="item-text"]').inputValue(), secondHistoryText);
-  const workupOptionCount = await page.locator("#workupEditorSelect option").count();
-  assert.equal(workupOptionCount >= 52, true, "the static Core 50 catalog and distinct foundation workups should be available without a separate import");
-  assert.equal(await page.locator('#workupEditorSelect option[value="dyspnea"]').count(), 1);
-  const currentWorkupId = await page.locator("#workupIdInput").inputValue();
-  await page.locator(".workup-import summary").click();
-  await page.fill("#workupJsonImport", JSON.stringify({
-    schema: "prerounding_workup_v1",
-    id: "scalp-infection",
-    title: "Imported revision",
-    aliases: ["replacement test"],
-    items: [
-      { id: "revision_history", kind: "history", system: "general", text: "Revision history", choices: ["No", "Yes"], select: "one" },
-      { id: "revision_history_two", kind: "history", system: "general", text: "Revision history follow-up", choices: ["No", "Yes"], select: "one" },
-      { id: "revision_exam", kind: "exam", system: "general", text: "Revision exam", choices: ["Normal", "Abnormal"], select: "one" },
-      { id: "revision_exam_two", kind: "exam", system: "general", text: "Revision exam follow-up", choices: ["Normal", "Abnormal"], select: "one" }
-    ]
-  }));
-  await page.click('[data-action="parse-workup-json"]');
-  await page.waitForFunction(() => /Imported JSON replaced/.test(document.querySelector("#statusLine")?.textContent || ""));
-  assert.equal(await page.locator("#workupIdInput").inputValue(), currentWorkupId);
-  assert.equal(await page.locator("#workupEditorSelect option").count(), workupOptionCount);
-  await page.selectOption("#workupThoroughness", "focused");
-  await page.click('[data-action="copy-open-evidence-workup-prompt"]');
-  const copiedWorkupPrompt = await page.evaluate(() => navigator.clipboard.readText());
-  assert.match(copiedWorkupPrompt, /selected fast rounds scope/i);
-  assert.match(copiedWorkupPrompt, /Prior primary-team progress note(?: source)?\.?[\s\S]*Overnight oxygen requirement improved/);
-  assert.match(copiedWorkupPrompt, /Vital signs\. Pulse 76; respirations 16; blood pressure 118\/64/);
-  assert.match(copiedWorkupPrompt, /Laboratory results\. Labs[\s\S]*WBC: 4\.2; flag L/);
-  // A successful "Parse & save" auto-collapses the import panel (its job is
-  // done) - reopen it to paste a fresh draft for the OpenAI-formatting flow
-  // below, same as a real user would.
-  await page.locator(".workup-import summary").click();
-  let openAiFormatRequestCount = 0;
-  await context.route("**/v1/responses", async (route) => {
-    openAiFormatRequestCount += 1;
-    await route.fulfill({
-      contentType: "application/json",
-      body: JSON.stringify({
-        output_text: JSON.stringify({
-          schema: "prerounding_workup_v1",
-          id: "api-workup",
-          title: "API revision",
-          aliases: ["automated"],
-          items: [
-            { id: "api_history", kind: "history", system: "general", text: "API history question", choices: ["No", "Yes"], select: "one" },
-            { id: "api_history_two", kind: "history", system: "general", text: "API history follow-up", choices: ["No", "Yes"], select: "one" },
-            { id: "api_history_three", kind: "history", system: "cardiovascular", text: "API cardiovascular history", choices: ["No", "Yes"], select: "one" },
-            { id: "api_history_four", kind: "history", system: "respiratory", text: "API respiratory history", choices: ["No", "Yes"], select: "one" },
-            { id: "api_exam", kind: "exam", system: "general", text: "API exam item", choices: ["Normal", "Abnormal"], select: "one" },
-            { id: "api_exam_two", kind: "exam", system: "cardiovascular", text: "API cardiovascular exam", choices: ["Normal", "Abnormal"], select: "one" },
-            { id: "api_exam_three", kind: "exam", system: "respiratory", text: "API respiratory exam", choices: ["Normal", "Abnormal"], select: "one" },
-            { id: "api_exam_four", kind: "exam", system: "general", text: "API general exam follow-up", choices: ["Normal", "Abnormal"], select: "one" }
-          ]
-        })
-      })
-    });
-  });
-  await page.fill("#workupJsonImport", "History questions and physical exam items from a de-identified draft.");
-  await page.check("#workupApiDeidConfirmed");
-  assert.equal(await page.locator('[data-action="format-workup-json-api"]').isEnabled(), true);
-  await page.click('[data-action="format-workup-json-api"]');
-  await page.waitForTimeout(1_000);
-  assert.equal(openAiFormatRequestCount, 1, await page.locator("#statusLine").innerText());
-  await page.waitForFunction(() => /OpenAI formatted and loaded|OpenAI request failed|Unable|invalid/i.test(document.querySelector("#statusLine")?.textContent || ""));
-  assert.match(await page.locator("#statusLine").innerText(), /OpenAI formatted and loaded/);
-  assert.equal(await page.locator('[data-workup-kind="history"] [data-field="item-text"]').first().inputValue(), "API history question");
-  await page.locator(".workup-catalog-menu summary").click();
-  await page.locator(".workup-checkbox").first().check();
-  await page.locator(".workup-checkbox").nth(1).check();
-  await page.locator(".workup-checkbox").nth(2).check();
-  await page.click('[data-action="build-checklist"]');
-  await page.waitForSelector("#checklistSections .checklist-item");
-  assert.equal(await page.locator("#checklistSections .checklist-item").count() >= 10, true);
-  assert.equal(await page.locator("#checklistSections .checklist-system").count() > 0, true);
-  const checklistScrollTop = await page.locator("#checklistSections").evaluate((node) => {
-    node.scrollTop = node.scrollHeight;
-    return node.scrollTop;
-  });
-  assert.equal(checklistScrollTop > 0, true, "the checklist must be long enough to exercise its scroll owner");
-  await page.locator("#checklistSections .checklist-answer-select").last().selectOption({ index: 1 });
-  await page.waitForFunction(() => /Checklist answer saved/.test(document.querySelector("#statusLine")?.textContent || ""));
-  assert.equal(
-    await page.locator("#checklistSections").evaluate((node) => node.scrollTop),
-    checklistScrollTop,
-    "answering a history or exam item must not reset the checklist scroll position"
-  );
-  await page.click('[data-action="fill-section-negatives"][data-kind="exam"]');
-  await page.waitForFunction(() => [...document.querySelectorAll("#checklistSections .checklist-answer-select")].some((select) => select.value) || document.querySelectorAll("#checklistSections .checklist-answer:checked").length > 0);
-  assert.equal(await page.locator('[data-action="share-phone-bundle"]').count(), 1, "desktop should offer native link sharing");
-  assert.equal(await page.locator('[data-action="download-phone-bundle"]').count(), 1, "desktop should offer a file fallback");
-  const checklistDownloadPromise = page.waitForEvent("download");
-  await page.click('[data-action="download-phone-bundle"]');
-  assert.equal((await checklistDownloadPromise).suggestedFilename(), "prerounding-checklist.bundle.json");
+  // Retired interactive workups/checklists must not return as patient-data routes.
+  assert.equal(await page.locator('[data-view-target="workups"], [data-view-target="checklist"]').count(), 0);
+  assert.equal(await page.locator('[data-action="build-checklist"]').count(), 0);
 
-  await page.setViewportSize({ width: 390, height: 720 });
-  const scrollWorked = await page.evaluate(() => {
-    const node = document.querySelector("#checklistSections");
-    node.scrollTop = node.scrollHeight;
-    return node.scrollTop > 0 && node.scrollHeight > node.clientHeight;
-  });
-  assert.equal(scrollWorked, true);
-
-  // The phone bundle round-trip (mobile entry, answering, return import)
-  // lives in test-transfer-refresh-browser.js as its own journey.
-  await page.setViewportSize({ width: 1280, height: 820 });
   await page.click('[data-view-target="prompts"]');
   await page.waitForSelector("#promptOutputHighlighted");
   await page.selectOption("#promptTaskSelect", "initial_admission_rounds");
@@ -869,10 +741,8 @@ Vitals
   // The roster is empty; the Daily view should show an empty state (not patient data).
   const dailyText = await page.locator("#dailyContent").innerText();
   assert.ok(/no patient|add a patient|unlock the vault/i.test(dailyText), `Hospital Stay must clear when the roster is empty, got: ${dailyText.slice(0, 100)}`);
-  await page.click('[data-view-target="workups"]');
-  assert.match(await page.locator("#workupsContent").innerText(), /no patient|add a patient|unlock the vault/i, "Workups must clear when the roster is empty");
-  await page.click('[data-view-target="checklist"]');
-  assert.match(await page.locator("#checklistContent").innerText(), /no patient|add a patient|unlock the vault/i, "Checklist must clear when the roster is empty");
+  await page.click('[data-view-target="review"]');
+  assert.match(await page.locator("#reviewContent").innerText(), /no patient|add a patient|unlock the vault|select a patient/i, "Write note must clear when the roster is empty");
 
   await page.click('[data-view-target="vault"]');
   await page.click('[data-action="lock-vault"]');
