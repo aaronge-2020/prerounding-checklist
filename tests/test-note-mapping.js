@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { moveNoteText, appendSourceSelection } from '../src/patient-context/note-mapping.js';
+import { moveNoteText, appendSourceSelection, applyNoteSelection } from '../src/patient-context/note-mapping.js';
 const fieldIds = ['hpi','exam','plan','other'];
 const original = { hpi:'Cough.\nLungs clear.\n', exam:'Alert.', plan:'Review results.' };
 const start=original.hpi.indexOf('Lungs');
@@ -17,3 +17,14 @@ const restore=appendSourceSelection(original,{text:'Missed passage',start:0,end:
 assert.equal(restore.plan,'Review results.\n\nMissed');
 assert.throws(()=>appendSourceSelection(original,{text:'abc',start:0,end:4,to:'plan',fieldIds}));
 console.log('Note mapping: exact ranges, destination preservation, invalid ranges and source restoration passed.');
+
+// A selection is tied to the entire source snapshot, not just a matching phrase.
+const selection = {from:'hpi', to:'exam', text:original.hpi, start, end:start+12, fieldIds};
+assert.deepEqual(applyNoteSelection(original,selection),moved);
+assert.throws(()=>applyNoteSelection({...original,hpi:'New source. '+original.hpi},selection),/source changed/);
+assert.throws(()=>applyNoteSelection(original,{...selection,from:'',original:'Replaced original'}),/source changed/);
+const repeated={hpi:'Same. Same.',exam:''};
+assert.deepEqual(applyNoteSelection(repeated,{from:'hpi',to:'exam',text:repeated.hpi,start:6,end:11,fieldIds}),{hpi:'Same. ',exam:'Same.'});
+const unchanged=JSON.stringify(original);
+assert.equal(applyNoteSelection(original,{from:'',to:'plan',text:'Missing exam',original:'Missing exam',start:0,end:12,fieldIds}).plan,'Review results.\n\nMissing exam');
+assert.equal(JSON.stringify(original),unchanged);

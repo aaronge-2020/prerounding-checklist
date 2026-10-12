@@ -14083,3 +14083,57 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .ap-confirm-overlay { background: transparent; }
 
 .ap-request-error { flex-basis: 100%; color: var(--danger, #b42318); margin: 0; order: -3; }
+
+/* Epic arrangement workspace: original and editable destination cards. */
+.note-arrange-intro{display:flex;justify-content:space-between;align-items:start;gap:16px;padding:8px 0}
+.note-arrange-eyebrow{font-size:10px;letter-spacing:.1em;font-weight:700;color:var(--accent)}
+.note-arrange-intro h4{font-size:26px;letter-spacing:-.04em;margin:7px 0;color:var(--ink)}
+.note-arrange-intro p{margin:0;color:var(--muted);font-size:13px}
+.note-arrange-count{font-size:11px;white-space:nowrap;color:var(--muted);padding-top:12px}
+.note-arrange-feedback{min-height:38px;padding:10px 12px;border-radius:7px;background:var(--surface-subtle);color:var(--muted);font-size:12px}
+.has-note-selection .note-arrange-feedback{background:var(--accent-soft);color:var(--accent)}
+.note-arrange-workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;align-items:start}
+.note-arrange-workspace.has-original{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)}
+.note-source-sheet{position:sticky;top:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.note-sheet-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:15px 16px;border-bottom:1px solid var(--border);font-size:13px}
+.note-sheet-heading span{font-size:10px;color:var(--muted)}
+.note-source-text{padding:20px;white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.85 var(--font-body,system-ui);max-height:65vh;min-height:300px;overflow:auto;user-select:text;cursor:text}
+.note-source-text::selection{background:var(--accent-soft);color:var(--ink)}
+.note-arrange-sections{display:grid;gap:12px;min-width:0}
+.note-arrange-sections>.note-sheet-heading{padding:0 0 10px}
+.note-section-card{border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--surface);transition:border-color .12s,box-shadow .12s}
+.note-section-title{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;background:transparent;border:0;border-radius:0;padding:12px 14px;color:var(--ink);min-height:44px}
+.note-section-title strong{font-size:14px}.note-section-title span{font-size:10px;color:var(--muted);font-weight:400}
+.note-section-card textarea{display:block;width:100%;margin:0;border:0;border-radius:0;border-top:1px solid var(--border);padding:12px 14px;resize:vertical;min-height:88px;background:transparent;font-size:13px;line-height:1.65;box-sizing:border-box}
+.note-section-card textarea:focus{outline:2px solid var(--accent);outline-offset:-2px;box-shadow:none}
+.has-note-selection .note-section-title{background:var(--accent-soft);color:var(--accent);cursor:copy}
+.note-section-card.is-note-drop-target{border:2px dashed var(--accent);box-shadow:0 0 0 4px var(--accent-soft);background:var(--accent-soft)}
+.note-additional-sections{border-top:1px solid var(--border);padding-top:4px}
+.note-additional-sections summary{padding:14px 0;cursor:pointer;font-size:13px;font-weight:600}
+.note-additional-sections summary span{font-size:11px;color:var(--muted);font-weight:400;margin-left:8px}
+.note-additional-sections .note-section-card{margin-bottom:12px}
+.note-arrange-footer{display:flex;align-items:center;gap:12px;position:sticky;bottom:0;z-index:3;background:var(--surface);border-top:1px solid var(--border);padding:14px 0 8px}
+.note-arrange-footer>span{flex:1;font-size:11px;color:var(--muted)}
+@media(max-width:850px){.note-arrange-workspace.has-original{grid-template-columns:1fr}.note-source-sheet{position:static}.note-source-text{max-height:280px;min-height:150px}.note-arrange-count{display:none}.note-arrange-intro h4{font-size:23px}.note-arrange-footer{gap:6px;flex-wrap:wrap}.note-arrange-footer>span{display:none}.note-arrange-footer .button--primary{flex:1}.note-arrange-footer button{min-height:44px}.note-arrange-workspace{gap:18px}}
+.note-drag-ghost{position:fixed;pointer-events:none;z-index:10000;padding:10px 14px;background:var(--accent);color:white;border-radius:7px;box-shadow:0 4px 16px #0002;font:600 12px system-ui}
+/* A compact packet bar gives the note itself the full workspace width. */
+.source-first-stay.stay-layout{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+.source-first-stay.stay-layout>.stay-rail{display:grid;grid-template-columns:160px minmax(0,1fr) auto;align-items:start;gap:16px;padding:14px 20px;border-right:0;border-bottom:1px solid var(--border);overflow:visible}
+.source-first-stay .stay-rail .section-heading{margin:0;align-self:center}
+.source-first-stay .stay-rail .section-heading h2{font-size:17px;margin:0}
+.source-first-stay .stay-rail .section-heading p{display:none}
+.source-first-stay .timeline-rail{display:flex;gap:8px;overflow-x:auto;align-items:stretch}
+.source-first-stay .timeline-rail .empty-state{display:none}
+.source-first-stay .day-row{min-width:135px;max-width:240px;min-height:46px;border:1px solid var(--border);border-radius:7px;flex-shrink:0;gap:12px}
+.source-first-stay .day-row>span:first-child>.muted{display:none}
+.source-first-stay .day-row.selected{border-color:var(--accent);background:var(--accent-soft)}
+.source-first-stay .new-day-control{margin:0;min-width:150px;max-width:280px}
+.source-first-stay .new-day-control[open]{grid-column:1/-1;max-width:none}
+.source-first-stay .new-day-control .form-grid{grid-template-columns:1fr 1fr auto;align-items:end;max-width:650px}
+.source-first-stay .source-kind-picker{display:flex;flex-wrap:wrap;gap:6px;border:0;background:transparent}
+.source-first-stay .source-kind-button{display:flex;gap:6px;align-items:center;border:1px solid var(--border);border-radius:6px;min-height:36px;font-weight:500;padding:7px 10px}
+.source-first-stay .source-kind-button.selected{border-color:var(--accent);box-shadow:none;font-weight:650}
+.source-first-stay .source-kind-requirement{font-size:9px}
+.source-first-stay .structured-primary-note{background:var(--surface);border:0;border-radius:0;padding:12px 0;gap:16px}
+.source-first-stay .note-arrange-footer .button--primary{background:var(--accent);border-color:var(--accent);color:white}
+@media(max-width:850px){.source-first-stay.stay-layout>.stay-rail{grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:12px}.source-first-stay .stay-rail>.section-heading{grid-column:1/-1}.source-first-stay .new-day-control{min-width:0}.source-first-stay .new-day-control .form-grid{grid-template-columns:1fr}.source-first-stay .source-kind-button{min-height:44px}.source-first-stay .hospital-day-packet{padding:12px}.source-first-stay .admission-packet-body{padding:0}.source-first-stay .note-sheet-heading{padding:12px}.source-first-stay .source-kind-requirement{display:none}}

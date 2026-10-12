@@ -126,6 +126,7 @@ try {
 
   // A pasted prior progress note is parsed through the same visible workflow used by the app.
   await page.click('[data-view-target="daily"]');
+  if (!await page.locator("#newDayDate").isVisible()) await page.locator("details.new-day-control > summary").click();
   await page.fill("#newDayDate", "2026-09-19");
   await page.fill("#newDayLabel", "Hospital day 2");
   await page.click('[data-action="add-day"]');
@@ -221,6 +222,7 @@ Use for fever or pain.
 
   // A second day creates a chronological lab trend and a pending result.
   await page.locator("details.new-day-control summary").click();
+  if (!await page.locator("#newDayDate").isVisible()) await page.locator("details.new-day-control > summary").click();
   await page.fill("#newDayDate", "2026-09-20");
   await page.fill("#newDayLabel", "Hospital day 3");
   await page.click('[data-action="add-day"]');

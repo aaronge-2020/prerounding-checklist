@@ -67,6 +67,7 @@ async function addDay(date, label) {
     await page.locator("details.new-day-control summary").click();
     dayControlExpanded = true;
   }
+  if (!await page.locator("#newDayDate").isVisible()) await page.locator("details.new-day-control > summary").click();
   await page.fill("#newDayDate", date);
   await page.fill("#newDayLabel", label);
   await page.click('[data-action="add-day"]');
