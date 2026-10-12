@@ -14125,7 +14125,7 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .source-first-stay .timeline-rail{display:flex;gap:8px;overflow-x:auto;align-items:stretch}
 .source-first-stay .timeline-rail .empty-state{display:none}
 .source-first-stay .day-row{min-width:135px;max-width:240px;min-height:46px;border:1px solid var(--border);border-radius:7px;flex-shrink:0;gap:12px}
-.source-first-stay .day-row>span:first-child>.muted{display:none}
+.source-first-stay .admission-day-row>span:first-child>.muted{display:none}
 .source-first-stay .day-row.selected{border-color:var(--accent);background:var(--accent-soft)}
 .source-first-stay .new-day-control{margin:0;min-width:150px;max-width:280px}
 .source-first-stay .new-day-control[open]{grid-column:1/-1;max-width:none}

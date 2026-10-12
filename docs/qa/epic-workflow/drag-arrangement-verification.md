@@ -11,6 +11,7 @@ Tested with synthetic notes using the actual browser UI on localhost, including 
 - Selected a field passage and activated another section heading with Enter. Verified the same move and Undo.
 - At 390 px width, selected exam text and tapped the HPI heading; verified transfer and Undo. Document width stayed 390 px with no horizontal overflow.
 - Saved corrected sections through “Save & write note.” Bundled Stanford loaded and reached ready state; saving completed and opened the writing workspace. Returning to import showed the corrected exam. Existing clinician draft content, vitals, selected lab, and full CT result remained available.
+- Opened the compact add-day control and created a synthetic hospital-day packet. Verified that the new packet opened without admission original text.
 - Switched patients: original text and pending selection disappeared. Locked the vault: protected import and note content were removed from the DOM.
 
 Screenshots: `drag-arrange-desktop.jpg`, `drag-arrange-mobile.jpg`. Desktop shows the implemented workflow after a correction; these are browser captures, not generated mockups.

@@ -71,6 +71,13 @@ try {
   await page.getByRole('button',{name:'History of present illness section',exact:true}).click();
   assert.equal(await hpi.inputValue(),before);
   assert.equal(await page.locator('.has-note-selection').count(),0);
+  await selectRange(hpi,0,Math.min(3,before.length));
+  await page.locator('.new-day-control > summary').click();
+  await page.getByLabel('Label',{exact:true}).fill('Synthetic drag day');
+  await page.getByRole('button',{name:'Add day',exact:true}).click();
+  assert.equal(await page.getByRole('button',{name:/Synthetic drag day/}).isVisible(),true);
+  assert.equal(await page.locator('[data-note-original]').count(),0);
+  assert.equal(await page.locator('.has-note-selection').count(),0);
   assert.deepEqual(errors,[]);
   console.log('Note arrangement: direct drag, copy, tap/keyboard, Undo, edits, cancel, external drop, replacement, mobile passed.');
 } finally { await browser.close(); await server.close(); }
