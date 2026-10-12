@@ -1,8 +1,40 @@
-// Selection and transfer are separate gestures. Only the handle starts a drag;
-// text surfaces always remain native text-selection/editing surfaces.
+// A drag starts on an existing highlight or its handle. Gestures outside the
+// highlight remain native text selection.
 // All selected text stays in this tab and is invalidated with its workspace.
 const SOURCE = "[data-note-original], [data-structured-note-field]";
 const ROOT = "[data-structured-primary-note-scope]";
+
+function insideSelection(selection, x, y, doc) {
+  const { source, from, text, start, end } = selection;
+  let range, mirror;
+  if (from) {
+    if (source.value !== text || source.selectionStart !== start || source.selectionEnd !== end) return false;
+    // Textareas do not expose selection rectangles. Mirror their text layout,
+    // including wrapping and scroll offsets, for this pointer hit test only.
+    const style = doc.defaultView.getComputedStyle(source);
+    const box = source.getBoundingClientRect();
+    if (x < box.left + source.clientLeft || x >= box.left + source.clientLeft + source.clientWidth ||
+        y < box.top + source.clientTop || y >= box.top + source.clientTop + source.clientHeight) return false;
+    mirror = doc.createElement("div");
+    for (const property of ["fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "wordSpacing", "textIndent", "textTransform", "textAlign", "direction", "tabSize", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft"]) mirror.style[property] = style[property];
+    Object.assign(mirror.style, { position: "fixed", visibility: "hidden", pointerEvents: "none", boxSizing: "border-box",
+      left: `${box.left + source.clientLeft - source.scrollLeft}px`, top: `${box.top + source.clientTop - source.scrollTop}px`,
+      width: `${source.clientWidth}px`, whiteSpace: source.wrap === "off" ? "pre" : "pre-wrap", overflowWrap: "break-word" });
+    mirror.textContent = text;
+    doc.body.append(mirror);
+    range = doc.createRange();
+    range.setStart(mirror.firstChild, start);
+    range.setEnd(mirror.firstChild, end);
+  } else {
+    const native = doc.getSelection();
+    if (!native?.rangeCount || native.isCollapsed) return false;
+    range = native.getRangeAt(0);
+    if (!source.contains(range.startContainer) || !source.contains(range.endContainer)) return false;
+  }
+  const hit = Array.from(range.getClientRects()).some(rect => x >= rect.left && x < rect.right && y >= rect.top && y < rect.bottom);
+  mirror?.remove();
+  return hit;
+}
 
 export function createNoteDragController({ context, apply, report, doc = document }) {
   let selected = null;
@@ -61,7 +93,7 @@ export function createNoteDragController({ context, apply, report, doc = documen
     const handle = root.querySelector("[data-note-drag-handle]");
     if (handle) handle.disabled = false;
     const status = root.querySelector("[data-note-selection-status]");
-    if (status) status.textContent = `${end - start} characters selected · ${from ? "Move" : "Copy"} using Drag selection or a section heading · Esc cancels`;
+    if (status) status.textContent = `${end - start} characters selected · Drag highlighted text or use Drag selection / a section heading · Esc cancels`;
   }
   function transfer(card) {
     if (!current() || card.closest(ROOT) !== selected.root) { clear(); return; }
@@ -78,8 +110,11 @@ export function createNoteDragController({ context, apply, report, doc = documen
   // pointer so crossing a textarea or leaving the handle cannot lose the drag.
   doc.addEventListener("pointerdown", event => {
     canceledPointer = null;
-    const handle = event.target.closest?.("[data-note-drag-handle]");
-    if (!handle || event.button !== 0 || !current() || handle.closest(ROOT) !== selected.root) return;
+    if (event.button !== 0 || event.shiftKey || !current()) return;
+    const handle = event.target.closest?.("[data-note-drag-handle]") ||
+      (event.pointerType !== "touch" && event.target.closest?.(SOURCE) === selected.source &&
+       insideSelection(selected, event.clientX, event.clientY, doc) ? selected.source : null);
+    if (!handle || handle.closest(ROOT) !== selected.root) return;
     event.preventDefault();
     event.stopImmediatePropagation();
     handle.setPointerCapture(event.pointerId);

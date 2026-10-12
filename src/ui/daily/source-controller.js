@@ -1,4 +1,4 @@
-import { createNoteDragController } from "./note-drag-controller.js?v=20261012-all-sections";
+import { createNoteDragController } from "./note-drag-controller.js?v=20261012-highlight-drag";
 import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261011-drag-workspace-v2";
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261012-citation-preview";
 import { captureScrollPositions, restoreScrollPositions, replaceViewContent } from "../view-scroll.js?v=20261012-scroll-review";

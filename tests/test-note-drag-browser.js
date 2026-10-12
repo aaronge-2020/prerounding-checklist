@@ -44,6 +44,24 @@ try {
   assert.equal(await handle.isEnabled(), true);
   await handle.click();
   assert.deepEqual(await hpi.evaluate(el => [el.selectionStart, el.selectionEnd]), [7, 22]);
+  // Start on the actual highlight, not the toolbar handle.
+  const highlightedPoint = await hpi.evaluate(el => {
+    const rect = el.getBoundingClientRect(), style = getComputedStyle(el);
+    const ctx = document.createElement('canvas').getContext('2d');
+    ctx.font = `${style.fontSize} ${style.fontFamily}`;
+    return {x: rect.x + parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft) + ctx.measureText(el.value.slice(0, 10)).width,
+      y: rect.y + parseFloat(style.borderTopWidth) + parseFloat(style.paddingTop) + parseFloat(style.lineHeight) / 2};
+  });
+  const directTarget = await exam.boundingBox();
+  await page.mouse.move(highlightedPoint.x, highlightedPoint.y); await page.mouse.down();
+  assert.deepEqual(await hpi.evaluate(el => [el.selectionStart, el.selectionEnd]), [7, 22]);
+  await page.mouse.move(directTarget.x + 30, directTarget.y + 20, {steps: 12});
+  assert.equal(await page.locator('.note-drag-ghost').count(), 1);
+  await page.mouse.up();
+  assert.equal(await exam.inputValue(), 'Alert.\n\nMisplaced exam.');
+  assert.equal(await hpi.inputValue(), 'Cough. ');
+  await undo.click();
+  await mouseSelect(7, 22);
   const dragBox = await handle.boundingBox(), examBox = await exam.boundingBox();
   await page.mouse.move(dragBox.x + 30, dragBox.y + 15); await page.mouse.down();
   await page.mouse.move(examBox.x + 30, examBox.y + 20, {steps: 12});
@@ -56,6 +74,27 @@ try {
   assert.equal(await exam.inputValue(), 'Alert.\n\nMisplaced exam.');
   assert.equal(await hpi.inputValue(), 'Cough. ');
   await undo.click();
+  // Wrapped and internally scrolled textarea highlights use their visible geometry.
+  for (const scrolled of [false, true]) {
+    const passage = 'Repeated words for wrapped selection. '.repeat(35);
+    await hpi.fill(passage);
+    await selectRange(hpi, 0, passage.length);
+    const point = await hpi.evaluate((el, scrolled) => {
+      const style = getComputedStyle(el), line = parseFloat(style.lineHeight);
+      el.scrollTop = scrolled ? line * 3 : 0;
+      const rect = el.getBoundingClientRect();
+      return {x: rect.x + parseFloat(style.paddingLeft) + 25,
+        y: rect.y + parseFloat(style.borderTopWidth) + parseFloat(style.paddingTop) + line * 1.5};
+    }, scrolled);
+    const destination = await exam.boundingBox();
+    await page.mouse.move(point.x, point.y); await page.mouse.down();
+    await page.mouse.move(destination.x + 30, destination.y + 20, {steps: 12}); await page.mouse.up();
+    assert.equal(await hpi.inputValue(), '');
+    assert.equal((await exam.inputValue()).trim(), ('Alert.\n\n' + passage).trim());
+    await undo.click();
+    assert.equal(await hpi.inputValue(), passage);
+    await hpi.fill('Cough. Misplaced exam.');
+  }
   // Long notes need edge scrolling within the section pane, not the outer page.
   await page.locator('.note-arrange-sections').evaluate(el=>{el.scrollTop=0;});
   await selectRange(hpi,7,22);
@@ -100,7 +139,7 @@ try {
   assert.equal(await page.getByRole('textbox',{name:'Assessment',exact:true}).inputValue(),'Cough.\n\nHISTORY');
   assert.equal(await page.locator('[data-note-original]').textContent(),raw);
   await undo.click();
-  // A real mouse highlight in the original survives grabbing the copy handle.
+  // A real mouse highlight in the original can be dragged directly.
   const originalPoints = await page.locator('[data-note-original]').evaluate(el => {
     const range = document.createRange(); range.setStart(el.firstChild, 0); range.setEnd(el.firstChild, 7);
     const rect = range.getBoundingClientRect(); return {x: rect.x, end: rect.right, y: rect.y + rect.height / 2};
@@ -108,8 +147,9 @@ try {
   await page.mouse.move(originalPoints.x, originalPoints.y); await page.mouse.down();
   await page.mouse.move(originalPoints.end, originalPoints.y, {steps: 12}); await page.mouse.up();
   assert.equal(await page.evaluate(() => window.getSelection().toString()), 'HISTORY');
-  const copyHandle = await handle.boundingBox(), copyTarget = await exam.boundingBox();
-  await page.mouse.move(copyHandle.x + 30, copyHandle.y + 15); await page.mouse.down();
+  const copyTarget = await exam.boundingBox();
+  await page.mouse.move((originalPoints.x + originalPoints.end) / 2, originalPoints.y); await page.mouse.down();
+  assert.equal(await page.evaluate(() => window.getSelection().toString()), 'HISTORY');
   await page.mouse.move(copyTarget.x + 30, copyTarget.y + 20, {steps: 12}); await page.mouse.up();
   assert.equal(await exam.inputValue(), 'Alert.\n\nHISTORY');
   assert.equal(await page.locator('[data-note-original]').textContent(), raw);
