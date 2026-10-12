@@ -143,7 +143,7 @@ import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/ll
 import { createDemoController } from "./demo/controller.js?v=20261012-writer-controls";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261012-citation-preview";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20261012-citation-preview";
-import { createAiChatController } from "./ai-chat/controller.js?v=20261012-numbered-citations";
+import { createAiChatController } from "./ai-chat/controller.js?v=20261012-concise-context";
 import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261001-drug-checks-v2";
 import { createDrugChecksController } from "./drug-checks/controller.js?v=20261012-citation-preview";
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20261011-epic-workflow";

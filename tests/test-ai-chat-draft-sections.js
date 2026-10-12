@@ -467,6 +467,7 @@ function patientLine(html) {
   assert.ok(reviewedText.includes("chest pain"), "the selected chart piece still grounds the send");
   assert.ok(!reviewedText.includes("CanaryName"), "no raw canary anywhere in the reviewed text");
   assert.ok(review.systemPromptText.includes("CITATION RULES"), "citation rules present when context is attached");
+  assert.ok(review.systemPromptText.includes("Put source excerpts ONLY inside that citation syntax"), "source quotes belong in citation metadata, not repeated prose");
 
   // Chart documents are deselectable too: uncheck the HPI and it leaves
   // the review while the still-selected one-liner stays.

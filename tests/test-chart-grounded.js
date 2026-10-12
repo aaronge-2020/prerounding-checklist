@@ -72,6 +72,10 @@ console.log("citations: parse per [Section]: 'quote'");
   const mixed = parseSectionCitations('per [Plan]: "it\'s stable" ok.');
   assert.equal(mixed.length, 1);
   assert.equal(mixed[0].quote, "it's stable");
+  const formatted = parseSectionCitations("Finding per [HPI]: “patient’s symptoms\ncontinued overnight”. Also per [Plan]: ‘repeat labs’. Then per [Exam]: 'alert'.");
+  assert.deepEqual(formatted.map(({section, quote}) => [section, quote]), [
+    ['HPI', 'patient’s symptoms\ncontinued overnight'], ['Plan', 'repeat labs'], ['Exam', 'alert']
+  ]);
   console.log("ok - parser handles quotes, multiples, apostrophes, and non-matches");
 }
 

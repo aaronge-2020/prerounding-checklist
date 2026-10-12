@@ -17,7 +17,7 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
-import { createAiChatPresentation } from "./presentation.js?v=20261012-numbered-citations";
+import { createAiChatPresentation } from "./presentation.js?v=20261012-concise-context";
 import { chatPaneScrollTop, preserveViewScroll } from "../view-scroll.js?v=20261012-scroll-review";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20261011-ai-helper";
 import { gatedFetch, isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
@@ -76,7 +76,7 @@ import {
 } from "./delta-review.js?v=20261011-epic-workflow";
 import {
   parseSectionCitations
-} from "./section-citations.js?v=20260929-ai-chat-v14";
+} from "./section-citations.js?v=20261012-concise-context";
 
 // Chart-grounded retrieval (local path only): the on-device model's 4K
 // window cannot hold the full chart, so top-k embedding retrieval selects
@@ -1439,6 +1439,7 @@ export function createAiChatController({
     const citationRules = hasContext
       ? `CITATION RULES:
 - For every claim about this patient, cite the context section and a short verbatim quote: per [Section Label]: 'exact words from the context'.
+- Keep the answer concise. The citation syntax is metadata that the app displays as a small number, with the exact quotation available on hover and source details on click. Put source excerpts ONLY inside that citation syntax; do not repeat them in the prose, blockquotes, parenthetical quotations, or a separate source list. Paraphrase the relevant finding in your answer unless the user explicitly requests a quotation.
 - Use the section labels as they appear in the context (e.g. per [Hospital Stay]: '...', per [Labs]: '...').
 - If the context does not contain the answer, say so explicitly — do not answer from general knowledge as if it were patient fact.`
       : `CONTEXT RULES:

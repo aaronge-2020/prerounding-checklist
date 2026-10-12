@@ -1,23 +1,13 @@
 // Section-grounded citations: the model cites patient facts as
 // per [Section Label]: 'short verbatim quote'.
 //
-// Pure module: no DOM, no network, no storage. It parses the citations,
-// and renders them as clickable chips that KEEP the quote visible. The
-// controller wires chip clicks to navigate to the matching chart section
-// (never a vector chunk).
-//
-// Contract with the prompt (see buildRemoteSystemPromptText in
-// controller.js): the model cites ONLY as per [Section Label]: 'quote'
-// with the section labels as they appear in the context. A citation whose
-// label matches no reviewed chart section renders as inert text — never
-// as a clickable chip — so a hallucinated citation can't open a fake
-// source.
-
-// Match: per [Section Label]: 'quote' or per [Section Label]: "quote".
-// The closing quote is the same character that opened it, followed by a
-// boundary (whitespace, punctuation, end) — so an apostrophe inside a
-// single-quoted quote ("patient's pain") doesn't end the match early.
-export const SECTION_CITATION_PATTERN = /per \[([^\]]+)\]:\s*(["'])(.*?)\2(?=[\s.,;:!?]|$)/gi;
+// Pure parsing shared by metadata matching and the numbered-citation renderer.
+// The legacy chip helper below is retained for its existing callers; AI Chat
+// uses citation-presentation.js to hide quotations behind numbered markers.
+// Accept straight or paired typographic quotation marks and multiline excerpts.
+// A closing quote must be followed by a boundary so internal apostrophes
+// ("patient's pain") do not end the citation early.
+export const SECTION_CITATION_PATTERN = /per \[([^\]]+)\]:\s*(?:(["'])([\s\S]*?)\2|“([\s\S]*?)”|‘([\s\S]*?)’)(?=[\s.,;:!?]|$)/gi;
 
 // Find every section citation: [{ section, quote, start, end }].
 export function parseSectionCitations(text) {
@@ -28,7 +18,7 @@ export function parseSectionCitations(text) {
   while ((match = SECTION_CITATION_PATTERN.exec(input)) !== null) {
     out.push({
       section: match[1].trim(),
-      quote: match[3].trim(),
+      quote: (match[3] ?? match[4] ?? match[5]).trim(),
       start: match.index,
       end: match.index + match[0].length
     });
@@ -44,7 +34,8 @@ export function sentinelizeSectionCitations(text) {
   const cites = [];
   const out = String(text || "").replace(
     SECTION_CITATION_PATTERN,
-    (match, section, _quoteChar, quote, offset) => {
+    (match, section, _quoteChar, straightQuote, doubleQuote, singleQuote, offset) => {
+      const quote = straightQuote ?? doubleQuote ?? singleQuote;
       const sentinel = `\uE000SECITE${cites.length}\uE001`;
       cites.push({
         section: String(section || "").trim(),

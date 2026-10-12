@@ -12,19 +12,20 @@ try {
     await page.goto(`${server.baseUrl}tests/browser/scroll-review.html`);
     await page.locator('[data-action="ai-chat-mode"][data-mode="remote"]').click();
     await page.evaluate(() => {
-      window.controller.getRemoteState().messages = [{ role: 'assistant', text: "Consider the finding per [History]: 'Exact synthetic passage'. Compare [Example Guideline]. Again [Example Guideline]. Another finding per [Missing]: 'Unmatched passage'. [Unlisted Reference].",
+      window.controller.getRemoteState().messages = [{ role: 'assistant', text: "Consider the finding per [History]: “Exact synthetic\npassage”. Compare [Example Guideline]. Again [Example Guideline]. Another finding per [Missing]: ‘Unmatched passage’. [Unlisted Reference].",
         sectionCitations: [{ pieceId: 'context:note-0', label: 'History', target: { scope: 'admission', sectionId: 'note-0' } }, { pieceId: '' }],
         sources: [{ title: 'Example Guideline', url: 'https://example.org/guideline' }] }];
       window.controller.render();
     });
     const markers = page.locator('.aic-citation-number');
     assert.deepEqual(await markers.allTextContents(), ['1','2','2','3','4']);
-    assert.ok(!(await page.locator('.aic-m-body').innerText()).includes('Exact synthetic passage'));
+    assert.ok(!(await page.locator('.aic-m-body').innerText()).includes('Exact synthetic\npassage'));
     assert.equal(await page.locator('.aic-cite-quote').count(), 0);
+    assert.ok(!(await page.locator('.aic-m-body').innerText()).includes('Unmatched passage'));
     if (process.env.CITATION_SCREENSHOTS && width === 1440) await page.screenshot({ path: `${process.env.CITATION_SCREENSHOTS}/numbered-citations.png` });
     await markers.first().hover();
     await page.locator('[role="tooltip"]').waitFor();
-    assert.equal(await page.locator('[role="tooltip"] blockquote').innerText(), 'Exact synthetic passage');
+    assert.equal(await page.locator('[role="tooltip"] blockquote').innerText(), 'Exact synthetic\npassage');
     if (process.env.CITATION_SCREENSHOTS && width === 1440) await page.screenshot({ path: `${process.env.CITATION_SCREENSHOTS}/numbered-citations-hover.png` });
     await markers.first().click();
     await page.locator('dialog.ap-source-dialog').waitFor();

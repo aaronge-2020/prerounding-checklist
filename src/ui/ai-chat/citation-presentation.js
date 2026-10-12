@@ -1,4 +1,4 @@
-import { sentinelizeSectionCitations } from "./section-citations.js?v=20260929-ai-chat-v14";
+import { sentinelizeSectionCitations } from "./section-citations.js?v=20261012-concise-context";
 import { linkifyCitations } from "../../ai/citation-links.js?v=20261004-cite-links-v1";
 import { renderChatMarkdown } from "../../local-llm/markdown.js?v=20261004-cite-links-v1";
 
