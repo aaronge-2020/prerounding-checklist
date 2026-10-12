@@ -29,6 +29,7 @@ Synthetic data only. Local browser: http://127.0.0.1:8873/.
 - Two numbered A&P problems remain separate, including a subordinate DVT-prophylaxis bullet before the second problem. Tested by actual Stanford save and writing workspace inspection.
 - A second synthetic patient starts with no prior patient sources. Lock removes the protected patient interface.
 - Settings contains one OpenRouter key input; console reports no errors during the manual flow.
+- Completed the eight-step synthetic rule tutorial: three labeled corrections → proposed rule → explicit session approval → new matching example. This verifies controls and rule application, not clinical effectiveness.
 - At 390 × 844, three primary routes remain visible; Tools & settings opens, Settings is reachable, and the menu closes on navigation. Preview/copy fits the viewport.
 
 ## Automated checks

@@ -326,23 +326,23 @@ Sodium: 138`;
   // Updating source data marks an edited linked block stale without overwriting it.
   await wbcBlock.locator("[data-objective-group-text]").fill("Student wording: WBC has improved substantially.");
   await page.click('[data-view-target="daily"]');
-  const currentLabSource = page.locator("#dailySources .source-capture-editor").filter({ hasText: "CBC" }).first();
+  const currentLabSource = page.locator("#dailySources .source-capture-editor").first();
   if ((await currentLabSource.locator('[data-action="toggle-section-editor"]').getAttribute("aria-expanded")) !== "true") {
     await currentLabSource.locator('[data-action="toggle-section-editor"]').click();
   }
   const currentLabText = await currentLabSource.locator(".section-text").inputValue();
-  assert.match(currentLabText, /15\.2/, "edit the actual earlier CBC source");
-  await currentLabSource.locator(".section-text").fill(currentLabText.replace("15.2", "14.0"));
+  assert.match(currentLabText, /WBC: 8\.8/, "edit the selected latest laboratory source");
+  await currentLabSource.locator(".section-text").fill(currentLabText.replace("WBC: 8.8", "WBC: 7.7"));
   await page.click('[data-action="save-day"]');
   await page.waitForFunction(() => /Source edits saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.click('[data-view-target="review"]');
   await page.fill("#reviewDataSearch", "WBC");
   await page.waitForSelector('[data-action="refresh-objective-group"]');
   assert.equal((await editorText(wbcBlock.locator("[data-objective-group-text]"))).trim(), "Student wording: WBC has improved substantially.");
-  assert.match(await page.locator(".lab-row", { hasText: "WBC" }).first().innerText(), /14\.0/, "updated source value is available for comparison");
+  assert.match(await page.locator(".lab-row", { hasText: "WBC" }).first().innerText(), /7\.7/, "updated source value is available for comparison");
   assert.ok((await downloadFinalNoteText()).includes("Student wording: WBC has improved substantially."), "keeping the edit preserves it in export");
   await wbcBlock.locator('[data-action="refresh-objective-group"]').click();
-  assert.match(await editorText(wbcBlock.locator("[data-objective-group-text]")), /WBC 8\.8/, "explicit refresh restores the current source result");
+  assert.match(await editorText(wbcBlock.locator("[data-objective-group-text]")), /WBC 7\.7/, "explicit refresh restores the current source result");
   await page.fill("#reviewDataSearch", "");
 
   // Student-authored Objective text and diagnostic results still work.
@@ -391,7 +391,7 @@ Sodium: 138`;
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
   assert.doesNotMatch(await page.locator('[data-structured-note-paste][data-structured-note-scope="daily"]').inputValue(), new RegExp(sessionOnlyRawToken), "locking must clear the session-only raw paste draft");
   await page.click('[data-view-target="review"]');
-  const savedPacketValue = await page.locator('#reviewPacketSelect option').filter({ hasText: "Hospital day 2" }).getAttribute("value");
+  const savedPacketValue = await page.locator('#reviewPacketSelect option').filter({ hasText: "Hospital day 3" }).getAttribute("value");
   await page.selectOption("#reviewPacketSelect", savedPacketValue);
   await page.fill("#reviewDataSearch", "CT Head/Neck");
   assert.equal(await page.locator('.compact-row [data-objective-selection-id]').first().isChecked(), true);

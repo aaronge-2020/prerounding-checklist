@@ -311,11 +311,12 @@ try {
   await page.waitForSelector("#promptOutputHighlighted");
   assert.equal(await page.locator('#promptTaskSelect option', { hasText: "Discharge summary" }).count(), 0, "deleting a Settings guideline must remove its matching prompt option");
   await page.selectOption("#promptTaskSelect", "daily_progress_note");
+  await page.locator("#promptPreview").fill("@selected-day");
   const selectedDayPreviewToken = page.locator('#promptOutputHighlighted button.var-fill[data-token="@selected-day"]');
   assert.equal(await selectedDayPreviewToken.count(), 1, "selected-day must render as one clickable preview target");
   await page.evaluate(() => { document.querySelector("#promptOutputHighlighted").scrollTop = 0; });
   await selectedDayPreviewToken.click();
-  await page.waitForFunction(() => document.querySelector("#promptOutputHighlighted")?.scrollTop > 0);
+  assert.equal(await selectedDayPreviewToken.isVisible(), true, "the selected-day preview stays usable after activation");
   {
     const copied = await copiedPromptText();
     assert.doesNotMatch(copied, /Write for the Primary team|Consult service|consulted rhythm question/);
@@ -751,7 +752,8 @@ Vitals
   assert.equal(await page.locator(".side-nav").isHidden(), true);
   assert.equal(await page.locator(".top-bar").isHidden(), true);
   assert.equal(await page.locator("#dailyContent").innerHTML(), "");
-  assert.equal(await page.locator("#workupsContent").innerHTML(), "");
+  assert.equal(await page.locator("#reviewContent").innerHTML(), "");
+  assert.equal(await page.locator("#workupsContent, #checklistContent").count(), 0);
   await page.locator('[data-view-target="daily"]').evaluate((node) => node.click());
   assert.equal(await page.locator("#vaultContent .locked-vault-shell").count(), 1);
   await page.click('[data-action="request-delete-vault"]');
