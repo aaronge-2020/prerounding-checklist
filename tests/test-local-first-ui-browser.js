@@ -327,6 +327,8 @@ try {
   await page.fill("#dailyAdmissionDateInput", "2026-07-17");
   await page.click('[data-action="select-admission-source-kind"][data-source-kind="primary_note"]');
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="admission"][data-note-mode="sections"]');
+  // Let the route transition finish before measuring a subsequent heading click.
+  await page.waitForTimeout(100);
   await page.locator("#dailyContent").evaluate((content) => { content.style.minHeight = "1600px"; });
   // Measure the application handler, not Playwright’s auto-scroll before a click.
   // The control can sit above the artificial scroll offset used by this regression.

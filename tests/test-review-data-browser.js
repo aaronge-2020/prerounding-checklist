@@ -144,6 +144,7 @@ try {
   assert.match(await page.locator('[data-structured-note-detected="daily"]').innerText(), /Patient report/);
   assert.match(await page.locator('[data-structured-note-detected="daily"]').innerText(), /Physical exam/);
   await page.click('[data-action="review-structured-note-sections"][data-note-scope="daily"]');
+  await page.locator(".note-additional-sections > summary").click();
   await page.click('[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="objective"]');
   assert.match(await page.locator('[data-structured-note-field="objective"]').inputValue(), /PH ART/);
   assert.match(await page.locator('[data-structured-note-field="objective"]').inputValue(), /SBP goal <160/);
