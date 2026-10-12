@@ -515,7 +515,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         ? `<button type="button" class="ed-group-toggle" data-action="toggle-objective-group" data-group="${escapeHtml(group.key)}" title="${toggleLabel}" aria-label="${toggleLabel}" aria-expanded="${!isCollapsed}">${toggleIcon}</button><span class="ed-group-label">${escapeHtml(group.label)}:</span>`
         : "";
       const staleButton = hasStale
-        ? `<button type="button" class="ed-mini" data-action="refresh-objective-group" data-group="${escapeHtml(group.key)}" title="Source updated — refresh this line">↻</button>`
+        ? `<button type="button" class="ed-mini" data-action="refresh-objective-group" data-group="${escapeHtml(group.key)}" aria-label="Replace ${escapeHtml(group.label || "group")} with updated source" title="Replace this group’s edited text with updated source values">Source changed · refresh</button>`
         : "";
       const bodyStyle = isCollapsed ? ' style="display:none"' : "";
       return `<div class="ed-group" data-objective-group="${escapeHtml(group.key)}">${label}<div${bodyStyle}>${bodyHtml}</div><span class="ed-mini-row">${staleButton}<button type="button" class="ed-mini ed-mini--danger" data-action="remove-objective-group" data-group="${escapeHtml(group.key)}" title="Remove ${escapeHtml(group.label || "item")}" aria-label="Remove ${escapeHtml(group.label || "item")}">×</button></span></div>`;

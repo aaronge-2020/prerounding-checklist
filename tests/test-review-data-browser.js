@@ -254,7 +254,7 @@ Sodium: 138`;
   // Vitals and medications are in the note by default; every row is checked.
   const vitalChecks = page.locator(".vital-row [data-objective-selection-id]");
   assert.ok(await vitalChecks.count() >= 5, "vital signs must render as compact rows");
-  for (const name of ["Blood Pressure", "Heart Rate", "Respiratory Rate", "SpO2", "Temperature"]) {
+  for (const name of ["Blood Pressure", "Heart Rate", "Respirations", "SpO2", "Temperature"]) {
     const matching = page.locator('.vital-row input[type="checkbox"]').filter({ visible: true });
     const labels = await matching.evaluateAll(nodes => nodes.map(n => ({ label: n.getAttribute("aria-label"), checked: n.checked })));
     assert.ok(labels.some(item => item.label.toLowerCase().includes(name.toLowerCase()) && item.checked), `${name} is included by default`);
@@ -365,8 +365,7 @@ Sodium: 138`;
   assert.match((await noteDownload).suggestedFilename(), /progress-note\.txt$/);
 
   // Saved draft survives encryption/reload; lock clears all protected content.
-  await page.click('[data-action="save-note-draft"]');
-  await page.waitForFunction(() => /Encrypted note draft saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.waitForFunction(() => document.querySelector("[data-autosave-indicator]")?.dataset.state === "saved");
   await page.click('[data-view-target="daily"]');
   await page.click('[data-action="select-daily-source-kind"][data-source-kind="primary_note"]');
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
@@ -391,7 +390,7 @@ Sodium: 138`;
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
   assert.doesNotMatch(await page.locator('[data-structured-note-paste][data-structured-note-scope="daily"]').inputValue(), new RegExp(sessionOnlyRawToken), "locking must clear the session-only raw paste draft");
   await page.click('[data-view-target="review"]');
-  const savedPacketValue = await page.locator('#reviewPacketSelect option').filter({ hasText: "Hospital day 3" }).getAttribute("value");
+  const savedPacketValue = await page.locator('#reviewPacketSelect option').filter({ hasText: "Hospital day 2" }).getAttribute("value");
   await page.selectOption("#reviewPacketSelect", savedPacketValue);
   await page.fill("#reviewDataSearch", "CT Head/Neck");
   assert.equal(await page.locator('.compact-row [data-objective-selection-id]').first().isChecked(), true);
