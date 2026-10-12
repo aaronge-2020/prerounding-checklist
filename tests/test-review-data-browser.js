@@ -57,11 +57,12 @@ try {
   await openRealApp(page, appUrl);
   await unlockAndCreatePatient(page);
 
-  // Section entry uses one reusable editor; every other field remains optional.
+  // Section entry exposes primary cards, with optional fields in one disclosure.
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="admission"][data-note-mode="sections"]');
   assert.equal(await page.locator('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]').count(), 1);
-  assert.equal(await page.locator('[data-structured-note-scope="admission"][data-structured-note-field]').count(), 1);
+  assert.equal(await page.locator('[data-structured-note-scope="admission"][data-structured-note-field]').count(), 21);
   assert.equal(await page.locator('[data-action="select-structured-note-field"][data-note-field="past_medical_history"]').count(), 1);
+  await page.locator(".note-additional-sections > summary").click();
   const oneLiner = "Adult with community-acquired pneumonia improving on room air.";
   await page.fill('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]', oneLiner);
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="admission"]');

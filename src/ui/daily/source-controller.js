@@ -288,8 +288,14 @@ export function createDailySourceController(deps) {
     });
     deps.render();
     const workspace = document.querySelector(`[data-structured-primary-note-scope="${scope}"]`);
+    const inner = workspace?.closest(".stay-content");
+    const pane = inner?.scrollHeight > inner?.clientHeight ? inner : workspace?.closest(".view");
+    const before = pane?.scrollTop;
     requestAnimationFrame(() => requestAnimationFrame(() => {
-      if (workspace?.isConnected) workspace.querySelector(".note-arrange-intro")?.scrollIntoView({ block: "start" });
+      const intro = workspace?.querySelector(".note-arrange-intro");
+      if (workspace?.isConnected && intro && pane && pane.scrollTop === before) {
+        pane.scrollTop += intro.getBoundingClientRect().top - pane.getBoundingClientRect().top;
+      }
     }));
   }
 
