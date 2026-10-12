@@ -28,7 +28,7 @@ import {
   primaryTeamNoteFields,
   updatePrimaryTeamNoteSection
 } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
-import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261011-epic-workflow";
+import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261012-compact-import";
 import { sharedLocalLlmClient } from "../../local-llm/client.js?v=20260928-local-llm-v1";
 import { splitNoteSectionsWithLlm } from "../../local-llm/parse.js?v=20260928-local-llm-v1";
 
@@ -294,7 +294,9 @@ export function createDailySourceController(deps) {
     const before = pane?.scrollTop;
     requestAnimationFrame(() => requestAnimationFrame(() => {
       const intro = workspace?.querySelector(".note-arrange-intro");
-      if (workspace?.isConnected && intro && pane && pane.scrollTop === before) {
+      if (workspace?.isConnected && intro && pane && pane.scrollTop === before &&
+          (intro.getBoundingClientRect().top < pane.getBoundingClientRect().top ||
+           intro.getBoundingClientRect().bottom > pane.getBoundingClientRect().bottom)) {
         pane.scrollTop += intro.getBoundingClientRect().top - pane.getBoundingClientRect().top;
       }
     }));

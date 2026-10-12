@@ -30,7 +30,7 @@ const HEADING_DEFINITIONS = Object.freeze([
   heading(["pertinent symptoms"], { [H_AND_P]: "history_of_present_illness", [PROGRESS]: "pertinent_symptoms" }),
   heading(["review of systems", "ros", "systems review"], { [H_AND_P]: "review_of_systems", [PROGRESS]: "pertinent_symptoms" }),
   heading(["medications", "meds", "medication list", "current medications", "current meds", "current rx", "home medications", "home meds", "med list", "prescriptions", "medication changes", "discharge medications", "discharge meds", "current facility-administered medications"], "medications"),
-  heading(["allergies", "allergy", "nkda"], { [H_AND_P]: "allergies", [PROGRESS]: "other" }),
+  heading(["allergies", "allergy"], { [H_AND_P]: "allergies", [PROGRESS]: "other" }),
   heading(["past medical history", "medical history", "pmh", "pmhx", "past history"], { [H_AND_P]: "past_medical_history", [PROGRESS]: "other" }),
   heading(["past surgical history", "surgical history", "psh", "pshx"], { [H_AND_P]: "past_surgical_history", [PROGRESS]: "other" }),
   heading(["family history", "family hx", "fhx", "fh"], { [H_AND_P]: "family_history", [PROGRESS]: "other" }),

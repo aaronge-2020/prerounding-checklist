@@ -29,6 +29,9 @@ jobs:
           - name: Vault and import browser
             command: node tests/test-note-drag-browser.js && node tests/test-local-first-ui-browser.js
             browser: true
+          - name: Epic import layout and corpus
+            command: node tests/test-epic-import-layout-browser.js && node tests/test-structured-note-scroll-browser.js && node tests/test-epic-import-corpus-browser.js
+            browser: true
           - name: Note writing browser
             command: node tests/test-review-data-browser.js
             browser: true

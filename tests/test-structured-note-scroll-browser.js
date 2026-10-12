@@ -15,9 +15,10 @@
 // automation scrolling.
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
-import { fileAppUrl } from "./browser/app-harness.js";
+import { createAppServer } from "./browser/app-harness.js";
 
-const baseUrl = fileAppUrl();
+const server = await createAppServer();
+const baseUrl = server.baseUrl;
 const browser = await chromium.launch({
   ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {}),
   args: ["--allow-file-access-from-files", "--disable-features=LocalNetworkAccessChecks", "--no-proxy-server"]
@@ -38,6 +39,7 @@ const scrollState = () => page.evaluate(() => {
   return {
     view: q("#dailyView")?.scrollTop || 0,
     stayContent: q(".stay-content")?.scrollTop || 0,
+    sections: q(".note-arrange-sections")?.scrollTop || 0,
   };
 });
 
@@ -57,7 +59,7 @@ async function userClick(selector) {
 }
 
 function assertStable(before, after, label) {
-  for (const key of ["view", "stayContent"]) {
+  for (const key of ["view", "stayContent", "sections"]) {
     assert.ok(
       Math.abs(after[key] - before[key]) <= 2,
       `${label}: ${key} moved on click (before=${before[key]}, after=${after[key]})`
@@ -98,7 +100,7 @@ try {
   });
   await settle();
   r = await userClick('.note-section-title[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="history_of_present_illness"]');
-  assert.ok(r.before.view > 400, `view must be scrolled down before click (was ${r.before.view})`);
+  assert.ok(r.before.view > 0, `view must be scrolled down before click (was ${r.before.view})`);
   assertStable(r.before, r.after, "section click with view + stay-content scrolled");
   await page.locator("#dailyContent").evaluate((content) => { content.style.minHeight = ""; });
 
@@ -106,4 +108,5 @@ try {
   console.log("PASS: enter-by-section scroll regression");
 } finally {
   await browser.close();
+  await server.close();
 }

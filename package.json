@@ -53,6 +53,7 @@
     "test:review-patient-switch": "node tests/test-review-patient-switch.js",
     "test:view-scroll": "node tests/test-view-scroll.js",
     "test:structured-note-scroll": "node tests/test-structured-note-scroll-browser.js",
+    "test:epic-import": "node tests/test-epic-import-layout-browser.js && node tests/test-note-drag-browser.js && node tests/test-structured-note-scroll-browser.js && node tests/test-epic-import-corpus-browser.js && node tests/test-epic-import-model-browser.js",
     "test:local-llm": "node tests/test-local-llm.js",
     "test:ai-chat": "node tests/test-ai-chat.js",
     "test:ai-chat-deid-auto": "node tests/test-ai-chat-deid-auto.js",

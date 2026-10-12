@@ -18,7 +18,7 @@
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const scratch = join(root, "tests", ".tmp-sample-notes-boundary");
@@ -84,7 +84,7 @@ const rewritten = source
 assert.ok(!rewritten.includes("?v=") && !/\.js\?/.test(rewritten), "all cache-busted imports rewritten");
 writeFileSync(join(scratch, "controller.js"), rewritten);
 
-const { createSampleNotesController } = await import(scratch + "/controller.js");
+const { createSampleNotesController } = await import(pathToFileURL(join(scratch, "controller.js")).href);
 
 // --- Harness -------------------------------------------------------------
 function makeHarness() {
