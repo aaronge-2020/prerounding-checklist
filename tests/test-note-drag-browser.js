@@ -19,18 +19,19 @@ try {
     await locator.evaluate((el,{start,end})=>{el.setSelectionRange(start,end);el.dispatchEvent(new Event('select',{bubbles:true}));},{start,end});
     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   }
-  // Long notes need edge scrolling within the section pane, not the outer page.
+  // Long notes use edge scrolling in the document scroll owner.
   await page.locator('.note-additional-sections > summary').click();
-  await page.locator('.note-arrange-sections').evaluate(el=>{el.scrollTop=0;});
+  await page.getByRole('button',{name:'Go to History of present illness',exact:true}).click();
   await selectRange(hpi,7,22);
-  const startBox=await hpi.boundingBox(), paneBox=await page.locator('.note-arrange-sections').boundingBox();
+  const startBox=await hpi.boundingBox(), paneBox=await page.locator('.stay-content').boundingBox();
+  const beforeScroll=await page.locator('.stay-content').evaluate(el=>el.scrollTop);
   await page.mouse.move(startBox.x+70,startBox.y+20); await page.mouse.down();
   await page.mouse.move(paneBox.x+80,paneBox.y+paneBox.height-12,{steps:15});
-  await page.waitForFunction(()=>document.querySelector('.note-arrange-sections').scrollTop>100);
+  await page.waitForFunction(before=>document.querySelector('.stay-content').scrollTop>before+80,beforeScroll);
   await page.mouse.move(10,10); await page.mouse.up();
   await page.keyboard.press('Escape');
   assert.equal(await hpi.inputValue(),'Cough. Misplaced exam.');
-  await page.locator('.note-arrange-sections').evaluate(el=>{el.scrollTop=0;});
+  await page.getByRole('button',{name:'Go to History of present illness',exact:true}).click();
   // Real pointer gesture, not a mocked drop: preserve destination and source ranges.
   await selectRange(hpi,7,22);
   const box=await hpi.boundingBox(), target=await exam.boundingBox();
@@ -44,10 +45,11 @@ try {
   assert.equal(await exam.inputValue(),'Alert.');
   // Keyboard/tap alternative uses the same exact-range transaction.
   await selectRange(hpi,7,22);
-  await page.getByRole('button',{name:'Physical exam section',exact:true}).press('Enter');
+  await page.getByRole('button',{name:'Go to Physical exam',exact:true}).press('Enter');
   assert.equal(await exam.inputValue(),'Alert.\n\nMisplaced exam.');
   await undo.click();
   // Read-only original is copied, not removed.
+  await page.locator('.note-source-sheet > summary').click();
   await page.locator('[data-note-original]').evaluate(el=>{
     const range=document.createRange();range.setStart(el.firstChild,0);range.setEnd(el.firstChild,7);
     const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);
@@ -75,6 +77,18 @@ try {
   await page.getByRole('button',{name:'Physical exam section',exact:true}).click();
   assert.equal(await exam.inputValue(),'Clinician revised exam.\n\nCough.');
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+  // No nested textarea scrolling, including long notes and narrow viewports.
+  await hpi.fill(Array.from({length:40},(_,i)=>`Synthetic history line ${i}.`).join('\n'));
+  await page.waitForFunction(() => {
+    const field=document.querySelector('[data-structured-note-field="history_of_present_illness"]');
+    return field.clientHeight >= field.scrollHeight;
+  });
+  const tall=await hpi.evaluate(el=>el.clientHeight);
+  assert.ok(tall>600);
+  await hpi.fill('Short synthetic history.');
+  assert.ok(await hpi.evaluate(el=>el.clientHeight)<100);
+  await page.getByRole('button',{name:'Go to Physical exam',exact:true}).click();
+  assert.equal(await exam.evaluate(el=>document.activeElement===el),true);
   // Source replacement invalidates the pending selection.
   await selectRange(exam,0,9);
   await page.getByRole('button',{name:'Paste full note',exact:true}).click();

@@ -19,7 +19,7 @@ export function createNoteDragController({ context, apply, report, doc = documen
     if (selected?.root.isConnected) {
       selected.root.classList.remove("has-note-selection");
       const status = selected.root.querySelector("[data-note-selection-status]");
-      if (status) status.textContent = "Text from the original is copied. Text between sections is moved.";
+      if (status) status.textContent = "Select text to move it.";
       selected.root.querySelectorAll(".is-note-drop-target").forEach(el => el.classList.remove("is-note-drop-target"));
     }
     selected = null;
@@ -75,7 +75,7 @@ export function createNoteDragController({ context, apply, report, doc = documen
     selected = { root, source, scope, identity: state.identity, from, text, start, end, token: crypto.randomUUID() };
     root.classList.add("has-note-selection");
     const status = root.querySelector("[data-note-selection-status]");
-    if (status) status.textContent = `${end - start} characters selected · ${from ? "Move" : "Copy"} by dragging or tapping a section heading · Esc cancels`;
+    if (status) status.textContent = `${end - start} characters selected · ${from ? "Move" : "Copy"} · Choose a section · Esc cancels`;
   }
   function transfer(card) {
     if (!current() || card.closest(ROOT) !== selected.root) { clear(); return; }
@@ -109,7 +109,7 @@ export function createNoteDragController({ context, apply, report, doc = documen
         const sectionRect = sectionPane?.getBoundingClientRect();
         const overSections = sectionRect && pointer.lastX >= sectionRect.left && pointer.lastX <= sectionRect.right &&
           pointer.lastY >= sectionRect.top && pointer.lastY <= sectionRect.bottom;
-        const pane = overSections ? sectionPane : selected.root.closest(".stay-content") || selected.root.closest(".view");
+        const pane = overSections && sectionPane.scrollHeight > sectionPane.clientHeight ? sectionPane : selected.root.closest(".stay-content") || selected.root.closest(".view");
         if (pane) {
           const rect = pane.getBoundingClientRect();
           const delta = pointer.lastY > rect.bottom - 60 ? 10 : pointer.lastY < rect.top + 35 ? -10 : 0;
@@ -129,7 +129,7 @@ export function createNoteDragController({ context, apply, report, doc = documen
     ghost.style.top = `${event.clientY + 12}px`;
     selected.root.querySelectorAll(".is-note-drop-target").forEach(el => el.classList.remove("is-note-drop-target"));
     const card = doc.elementFromPoint(event.clientX, event.clientY)?.closest("[data-note-drop-field]");
-    const more = doc.elementFromPoint(event.clientX, event.clientY)?.closest(".note-additional-sections");
+    const more = doc.elementFromPoint(event.clientX, event.clientY)?.closest(".note-additional-sections, .note-index-more");
     if (more?.closest(ROOT) === selected.root) more.open = true;
     if (card?.closest(ROOT) === selected.root && card.dataset.noteDropField !== selected.from) card.classList.add("is-note-drop-target");
   });
@@ -161,7 +161,7 @@ export function createNoteDragController({ context, apply, report, doc = documen
   }, true);
   doc.addEventListener("keydown", event => { if (event.key === "Escape") clear(); });
   doc.addEventListener("click", event => {
-    const heading = event.target.closest?.(".note-section-title");
+    const heading = event.target.closest?.(".note-section-title, .note-section-link");
     if (!heading || !current()) return;
     event.preventDefault(); event.stopImmediatePropagation();
     transfer(heading.closest("[data-note-drop-field]"));

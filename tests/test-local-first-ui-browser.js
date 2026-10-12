@@ -337,7 +337,7 @@ try {
     return view.scrollTop;
   });
   assert.equal(noteSectionScroll > 0, true, "the Hospital Stay route must be scrollable for the navigation regression test");
-  await page.locator('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="history_of_present_illness"]').evaluate((button) => button.click());
+  await page.locator('.note-section-title[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="history_of_present_illness"]').evaluate((button) => button.click());
   await page.waitForSelector('[data-structured-note-scope="admission"][data-structured-note-field="history_of_present_illness"]');
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   assert.equal(
@@ -345,7 +345,7 @@ try {
     noteSectionScroll,
     "choosing an HPI section must not move the Hospital Stay scroll position"
   );
-  await page.locator('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="one_liner"]').first().evaluate((button) => button.click());
+  await page.locator('.note-section-title[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="one_liner"]').first().evaluate((button) => button.click());
   await page.waitForSelector('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]');
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   assert.equal(
@@ -484,7 +484,7 @@ Crossmatch: Red Blood Cells: Rpt (P)
   await page.waitForSelector('[data-action="select-daily-source-kind"]');
   assert.equal(await page.locator('[data-action="select-daily-source-kind"]').count(), 9, "Hospital Stay should expose distinct required vital-sign and laboratory source choices");
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="sections"]');
-  await page.click('[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="interval_events"]');
+  await page.click('.note-section-title[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="interval_events"]');
   await page.fill('[data-structured-note-scope="daily"][data-structured-note-field="interval_events"]', "Overnight oxygen requirement improved.");
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
   await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));

@@ -46,12 +46,12 @@ try {
   await page.click('[data-action="review-structured-note-sections"]');
   assert.equal(await page.locator('[data-structured-note-field="physical_exam"]').inputValue(), "Lungs clear. No wheeze.");
   await page.locator(".note-additional-sections > summary").click();
-  await page.locator('[data-note-field="other"]').click();
-  const scroll = await page.locator(".note-arrange-sections").evaluate((el) => el.scrollTop);
-  assert.ok(scroll > 0, "additional sections should be reachable inside the review pane");
-  await page.locator('[data-note-field="other"]').click();
+  await page.locator('.note-section-title[data-note-field="other"]').click();
+  const scroll = await page.locator(".stay-content").evaluate((el) => el.scrollTop);
+  assert.ok(scroll > 0, "additional sections should be reachable within the document");
+  await page.locator('.note-section-title[data-note-field="other"]').click();
   await settle();
-  assert.equal(await page.locator(".note-arrange-sections").evaluate((el) => el.scrollTop), scroll);
+  assert.equal(await page.locator(".stay-content").evaluate((el) => el.scrollTop), scroll);
 
   for (const width of [1280, 390]) {
     await page.setViewportSize({ width, height: 844 });
@@ -62,7 +62,8 @@ try {
     const field = page.locator('[data-structured-note-field="physical_exam"]');
     await field.scrollIntoViewIfNeeded();
     const fieldBox = await field.boundingBox();
-    assert.ok(fieldBox.height >= 72, "section text must not collapse in the scrollable grid");
+    assert.ok(fieldBox.height >= 38, "section text must retain a readable minimum height");
+    assert.equal(await field.evaluate(el=>el.clientHeight>=el.scrollHeight),true,"full text should be visible");
     assert.equal(await field.inputValue(), "Lungs clear. No wheeze.");
     if (width === 1280) await inViewport('[data-action="save-structured-note-to-draft"]');
     await screenshot(`epic-review-${width}`);

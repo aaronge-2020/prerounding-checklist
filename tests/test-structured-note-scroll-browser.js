@@ -84,10 +84,10 @@ try {
   await page.waitForSelector(".note-arrange-workspace");
   await page.waitForTimeout(100);
   await page.locator(".note-additional-sections > summary").click();
-  let r = await userClick('[data-note-field="other"]');
+  let r = await userClick('.note-section-title[data-note-field="other"]');
   assertStable(r.before, r.after, "additional section heading");
   for (const id of ["physical_exam", "assessment", "plan", "history_of_present_illness"]) {
-    r = await userClick(`[data-note-field="${id}"]`);
+    r = await userClick(`.note-section-title[data-note-field="${id}"]`);
     assertStable(r.before, r.after, `${id} heading`);
   }
 
@@ -99,7 +99,7 @@ try {
     document.querySelector(".stay-content").scrollTop = 120;
   });
   await settle();
-  r = await userClick('[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="history_of_present_illness"]');
+  r = await userClick('.note-section-title[data-action="select-structured-note-field"][data-note-scope="admission"][data-note-field="history_of_present_illness"]');
   assert.ok(r.before.view > 0, `view must be scrolled down before click (was ${r.before.view})`);
   assertStable(r.before, r.after, "section click with view + stay-content scrolled");
   await page.locator("#dailyContent").evaluate((content) => { content.style.minHeight = ""; });
