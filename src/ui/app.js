@@ -1149,6 +1149,7 @@ function render() {
   const unlocked = vaultIsUnlocked();
   document.body.classList.toggle("vault-locked", !unlocked);
   if (!unlocked) {
+    demoController.forceCleanup();
     app.view = "vault";
     clearPhiReviews();
     clearQuickDeidSession();

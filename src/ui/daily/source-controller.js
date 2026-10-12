@@ -319,6 +319,9 @@ export function createDailySourceController(deps) {
     });
     const next = document.querySelector(`[data-structured-primary-note-scope="${scope}"]`);
     const restore = () => {
+      // A newer field render owns scrolling now. Never let an old animation
+      // callback restore an obsolete offset onto the replacement editor.
+      if (!next?.isConnected) return;
       if (view) {
         view.scrollTop = viewTop;
         view.scrollLeft = viewLeft;
@@ -327,6 +330,7 @@ export function createDailySourceController(deps) {
     };
     restore();
     requestAnimationFrame(() => {
+      if (!next?.isConnected) return;
       const field = focusFieldId
         ? document.querySelector(`[data-structured-note-scope="${scope}"][data-structured-note-field="${focusFieldId}"]`)
         : null;

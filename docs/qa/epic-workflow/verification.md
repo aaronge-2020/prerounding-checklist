@@ -55,3 +55,7 @@ Stanford is the interim default. Browser execution does not establish hash/parit
 - Screenshots: `ai-consult-desktop.jpg`, `ai-consult-mobile.jpg`. Neither contains credentials.
 
 - Final modal checks: an empty prompt and temperature 3 display actionable inline errors inside the dialog, disable Send, and recover after Reset input or clearing temperature.
+
+- Live-site cleanup found a no-vault demo exit leaving its guide banner above the welcome screen. The locked render boundary now tears down all demo overlays; CI covers the no-setup exit separately.
+
+- CI exposed a rapid section-navigation scroll race: an animation callback from a replaced editor could restore its old scroll offset onto the new editor. Scroll/focus restoration now belongs only to the still-connected editor instance.
