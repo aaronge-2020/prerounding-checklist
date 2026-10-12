@@ -1,5 +1,5 @@
-import { tokenColorSwatchButton } from "../token-color-picker.js?v=20261011-ai-helper";
-import { guidelinePageModel } from "./guideline-pagination.js?v=20261011-ai-helper";
+import { tokenColorSwatchButton } from "../token-color-picker.js?v=20261012-citation-preview";
+import { guidelinePageModel } from "./guideline-pagination.js?v=20261012-citation-preview";
 
 // Pure presentation module. The library stays compact by keeping editing in a
 // single side panel instead of expanding every guideline into a giant card.

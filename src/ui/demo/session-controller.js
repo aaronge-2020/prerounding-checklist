@@ -4,7 +4,7 @@ import {
   DEMO_DAILY_TEXTS,
   DEMO_DAY_ID,
   DEMO_PATIENT_ID
-} from "./session.js?v=20261011-ai-helper";
+} from "./session.js?v=20261012-citation-preview";
 
 export function createDemoSessionController({
   app,

@@ -1,5 +1,5 @@
-import { createLocalId, timestampNow } from "../app/state/vault.js?v=20261011-ai-helper";
-import { createGuidelineSet, isCustomGuidelineSet } from "./guideline-sets.js?v=20261011-ai-helper";
+import { createLocalId, timestampNow } from "../app/state/vault.js?v=20261012-citation-preview";
+import { createGuidelineSet, isCustomGuidelineSet } from "./guideline-sets.js?v=20261012-citation-preview";
 
 // Legacy prompt-only records. New user-created prompts live directly in the
 // guideline-set store so Settings and the OpenEvidence dropdown cannot drift.

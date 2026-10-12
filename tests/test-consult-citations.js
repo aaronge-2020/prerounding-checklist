@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import { parseApSuggestions, rebaseApReferences } from '../src/ai/ap-generator.js';
+import { normalizeNoteDraft, mergeApReferences, NOTE_TYPES } from '../src/note-drafts/index.js';
+const result = parseApSuggestions({suggestions:[{id:1,target:'diagnostic_plan',action:'add',suggested:'Test recommendation',rationale:'Test rationale',citationIds:[1]}],references:[{id:1,title:'Source <test>',url:'https://example.org/paper',excerpt:'Exact source passage.',sourceLocation:'Table 2'}]});
+assert.equal(result.references[0].excerpt,'Exact source passage.');
+const rebased = rebaseApReferences(result,[{id:'1',title:'Different older source'},{id:4}]);
+assert.equal(rebased.references[0].id,5);
+assert.deepEqual(rebased.suggestions[0].citationIds,[5]);
+const refs=mergeApReferences([{id:1,title:'Different older source'}],rebased.references);
+const draft=normalizeNoteDraft({noteType:NOTE_TYPES.H_AND_P,apReferences:refs});
+assert.equal(draft.apReferences[0].title,'Different older source');
+assert.equal(draft.apReferences[1].excerpt,'Exact source passage.');
+assert.equal(draft.apReferences[1].sourceLocation,'Table 2');
+const legacy=parseApSuggestions({suggestions:[],references:[{id:1,title:'Legacy',url:'javascript:alert(1)'}]});
+assert.equal(legacy.references[0].url,'');
+assert.equal(legacy.references[0].excerpt,'');
+console.log('PASS: citation excerpts, persisted source locations, legacy references and cross-consult identity');

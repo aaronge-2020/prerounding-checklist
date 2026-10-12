@@ -18,7 +18,7 @@ TASK — return suggestions as a JSON object with a "suggestions" array. Each su
 - "likelihood": for differential add/revise — most likely / likely / possible / less likely. Empty string for plan suggestions.
 - "citationIds": ids into "references" supporting this suggestion. Empty array when none apply.
 
-4. REFERENCES: every diagnostic and therapeutic suggestion MUST cite at least one primary source. Prefer the ORIGINAL clinical trial paper that established the benefit (e.g. PARADIGM-HF for sacubitril-valsartan in HFrEF — cite the trial, not a review article). Major society guidelines (ACC/AHA, KDIGO, IDSA, ASH, etc.) are acceptable when no single trial applies. Use web search to verify each citation exists and to obtain its canonical URL (PubMed, journal page, or DOI link). NEVER invent a citation: if you cannot verify a source, either omit the suggestion or support it with a major guideline you can verify.
+4. REFERENCES: every diagnostic and therapeutic suggestion MUST cite at least one primary source. Prefer the ORIGINAL clinical trial paper that established the benefit (e.g. PARADIGM-HF for sacubitril-valsartan in HFrEF — cite the trial, not a review article). Major society guidelines (ACC/AHA, KDIGO, IDSA, ASH, etc.) are acceptable when no single trial applies. Use web search to verify each citation exists and to obtain its canonical URL (PubMed, journal page, or DOI link). For each reference include "excerpt": the exact supporting passage copied from the source you accessed, and "sourceLocation": its section, page, table, or paragraph. Never substitute your rationale for a source quotation. Use empty strings when the passage or location was not accessible. NEVER invent a citation: if you cannot verify a source, either omit the suggestion or support it with a major guideline you can verify.
 
 RULES:
 - Flag assumptions explicitly (e.g. "assumes eGFR > 30; if lower, dose-reduce...").
@@ -79,14 +79,16 @@ export const AP_RESPONSE_SCHEMA = {
       items: {
         type: "object",
         additionalProperties: false,
-        required: ["id", "title", "authors", "journal", "year", "url"],
+        required: ["id", "title", "authors", "journal", "year", "url", "excerpt", "sourceLocation"],
         properties: {
           id: { type: "integer" },
           title: { type: "string" },
           authors: { type: "string" },
           journal: { type: "string" },
           year: { type: "string" },
-          url: { type: "string" }
+          url: { type: "string" },
+          excerpt: { type: "string", description: "Exact supporting passage copied from the source actually accessed. Empty if inaccessible; never invent a quote or substitute a rationale." },
+          sourceLocation: { type: "string", description: "Section, page, table, or paragraph containing the quoted passage. Empty if unavailable." }
         }
       }
     }
@@ -94,6 +96,20 @@ export const AP_RESPONSE_SCHEMA = {
 };
 
 const LIKELIHOOD_ORDER = { "most likely": 0, likely: 1, possible: 2, "less likely": 3 };
+
+// Model numbering restarts for each consult. Reserve draft-wide IDs before
+// showing suggestions so approving another problem cannot retarget old [n]s.
+export function rebaseApReferences(result, existing = []) {
+  let next = Math.max(0, ...existing.map(ref => Number(ref.id)).filter(Number.isSafeInteger));
+  const ids = new Map();
+  const references = result.references.map(ref => {
+    ids.set(String(ref.id), ++next);
+    return { ...ref, id: next };
+  });
+  return { ...result, references, suggestions: result.suggestions.map(suggestion => ({
+    ...suggestion, citationIds: (suggestion.citationIds || []).map(id => ids.get(String(id))).filter(id => id !== undefined)
+  })) };
+}
 
 function clean(value, limit = 2000) {
   return String(value || "").trim().slice(0, limit);
@@ -148,7 +164,7 @@ TASK — produce four sections:
 
 3. THERAPEUTIC PLAN: ORDER-LEVEL SPECIFICITY. For EVERY medication give drug name, dose, route (PO / IV / IM / SC), frequency, and duration or course — exactly as it would be entered in Epic. Examples of the required granularity: "Apixaban 5 mg PO BID", "Norepinephrine infusion starting at 5 mcg/min IV, titrate to MAP > 65 mmHg", "Vancomycin per pharmacy dosing protocol (goal trough 15-20)". For non-medication orders (consults, diet, activity, monitoring, procedures) state exactly what to order. Where dosing depends on data not provided (renal function, weight, allergy), say so explicitly in the details.
 
-4. REFERENCES: EVERY diagnostic and therapeutic recommendation MUST cite at least one primary source. Prefer the ORIGINAL clinical trial paper that established the benefit (e.g. PARADIGM-HF for sacubitril-valsartan in HFrEF — cite the trial, not a review article). Major society guidelines (ACC/AHA, KDIGO, IDSA, ASH, etc.) are acceptable when no single trial applies. Use web search to verify each citation exists and to obtain its canonical URL (PubMed, journal page, or DOI link). NEVER invent a citation: if you cannot verify a source, either omit the recommendation or support it with a major guideline you can verify.
+4. REFERENCES: EVERY diagnostic and therapeutic recommendation MUST cite at least one primary source. Prefer the ORIGINAL clinical trial paper that established the benefit (e.g. PARADIGM-HF for sacubitril-valsartan in HFrEF — cite the trial, not a review article). Major society guidelines (ACC/AHA, KDIGO, IDSA, ASH, etc.) are acceptable when no single trial applies. Use web search to verify each citation exists and to obtain its canonical URL (PubMed, journal page, or DOI link). For each reference include "excerpt": the exact supporting passage copied from the source you accessed, and "sourceLocation": its section, page, table, or paragraph. Never substitute your rationale for a source quotation. Use empty strings when the passage or location was not accessible. NEVER invent a citation: if you cannot verify a source, either omit the recommendation or support it with a major guideline you can verify.
 
 RULES:
 - Flag assumptions explicitly (e.g. "assumes eGFR > 30; if lower, dose-reduce...").
@@ -170,7 +186,9 @@ export function parseApResult(json) {
       authors: clean(ref.authors, 300),
       journal: clean(ref.journal, 200),
       year: clean(ref.year, 20),
-      url: cleanUrl(ref.url)
+      url: cleanUrl(ref.url),
+      excerpt: clean(ref.excerpt, 4000),
+      sourceLocation: clean(ref.sourceLocation, 500)
     });
   }
   const cite = (ids) => (Array.isArray(ids) ? ids : [])
@@ -447,7 +465,9 @@ export function parseApSuggestions(json) {
       authors: clean(ref.authors, 300),
       journal: clean(ref.journal, 200),
       year: clean(ref.year, 20),
-      url: cleanUrl(ref.url)
+      url: cleanUrl(ref.url),
+      excerpt: clean(ref.excerpt, 4000),
+      sourceLocation: clean(ref.sourceLocation, 500)
     });
   }
   const cite = (ids) => (Array.isArray(ids) ? ids : [])

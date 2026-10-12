@@ -1,5 +1,6 @@
+import { citationButton } from "./citation-presentation.js?v=20261012-citation-preview";
 import { OPENAI_WORKUP_MODEL_OPTIONS } from "../../app/preferences.js?v=20261011-request-controls";
-import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES, objectiveEditorGroups, SECTION_VISIBILITY_KEYS } from "../../note-drafts/index.js?v=20261011-ai-helper";
+import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES, objectiveEditorGroups, SECTION_VISIBILITY_KEYS } from "../../note-drafts/index.js?v=20261012-citation-preview";
 import {
   abnormalTone,
   compactLabTrendLine,
@@ -7,7 +8,7 @@ import {
   displayVitalName,
   joinValueUnit
 } from "../../review-data/compact-summary.js?v=20260924-optional-sections-v1";
-import { sanitizeProblemTitle } from "../../note-drafts/index.js?v=20261011-ai-helper";
+import { sanitizeProblemTitle } from "../../note-drafts/index.js?v=20261012-citation-preview";
 import { baselineDisplayText, baselinePriorityFor } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import { formatProbability } from "../../ai/decision-scoring.js?v=20261010-decision1-v1";
 import {
@@ -540,11 +541,11 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return `<span class="ed-decision1" title="Decision-1 ranking (experimental): an advisory estimate from Microsoft's Decision-1 model via OpenRouter, based only on the de-identified problem context sent for ranking. Not a validated clinical probability — the differential below stays in your order.">${escapeHtml(formatProbability(probability))}</span>`;
   }
 
-  function renderDifferentialEditor(differential, index, problemId) {
+  function renderDifferentialEditor(differential, index, problemId, references = []) {
     return `<div class="differential-card" data-differential-id="${escapeHtml(differential.id)}">
       <div class="ed-diff-bar"><strong>#${index + 1}</strong>${decision1Badge(differential)}<span class="ed-mini-row"><button type="button" class="ed-mini" data-action="move-differential" data-direction="-1" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}" aria-label="Move differential up">↑</button><button type="button" class="ed-mini" data-action="move-differential" data-direction="1" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}" aria-label="Move differential down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-differential" data-problem-id="${escapeHtml(problemId)}" data-differential-id="${escapeHtml(differential.id)}">Remove</button></span></div>
-      <div class="ed-sub"><span class="ed-sub-label">Diagnosis</span><div class="ed-body" contenteditable="true" data-differential-field="diagnosis" data-placeholder="Diagnosis" spellcheck="true">${editorHtml(differential.diagnosis)}</div></div>
-      <div class="ed-two"><div class="ed-sub"><span class="ed-sub-label">Clues for</span><div class="ed-body" contenteditable="true" data-differential-field="cluesFor" data-placeholder="Optional" spellcheck="true">${editorHtml(differential.cluesFor)}</div></div><div class="ed-sub"><span class="ed-sub-label">Clues against</span><div class="ed-body" contenteditable="true" data-differential-field="cluesAgainst" data-placeholder="Optional" spellcheck="true">${editorHtml(differential.cluesAgainst)}</div></div></div>
+      <div class="ed-sub"><span class="ed-sub-label">Diagnosis</span><div class="ed-body" contenteditable="true" data-differential-field="diagnosis" data-placeholder="Diagnosis" spellcheck="true">${renderTextWithCitationLinks(differential.diagnosis, references)}</div></div>
+      <div class="ed-two"><div class="ed-sub"><span class="ed-sub-label">Clues for</span><div class="ed-body" contenteditable="true" data-differential-field="cluesFor" data-placeholder="Optional" spellcheck="true">${renderTextWithCitationLinks(differential.cluesFor, references)}</div></div><div class="ed-sub"><span class="ed-sub-label">Clues against</span><div class="ed-body" contenteditable="true" data-differential-field="cluesAgainst" data-placeholder="Optional" spellcheck="true">${renderTextWithCitationLinks(differential.cluesAgainst, references)}</div></div></div>
     </div>`;
   }
 
@@ -596,9 +597,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return `<sup class="ap-cite">${ids.map((id) => {
       const ref = references.find((r) => r.id === id);
       const label = `[${id}]`;
-      return ref?.url
-        ? `<a href="${escapeHtml(ref.url)}" target="_blank" rel="noopener noreferrer">${label}</a>`
-        : label;
+      return citationButton(ref, escapeHtml, label);
     }).join("")}</sup>`;
   }
 
@@ -628,8 +627,8 @@ export function createReviewPresentation({ escapeHtml, icon }) {
 
   // Rationale shown below an inline change, with citation links.
   function renderInlineSuggestionRationale(suggestion, references) {
-    if (!suggestion.rationale) return "";
-    return `<div class="ap-inline-rationale" contenteditable="false">${escapeHtml(suggestion.rationale)}${apSuggestionCitations(suggestion, references)}</div>`;
+    if (!suggestion.rationale && !suggestion.citationIds?.length) return "";
+    return `<div class="ap-inline-rationale" contenteditable="false">${escapeHtml(suggestion.rationale || "")}${apSuggestionCitations(suggestion, references)}</div>`;
   }
 
   // Render plan text with AI suggestions applied inline, track-changes style.
@@ -691,11 +690,11 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   // Render the differential list with AI suggestions inline, track-changes style.
   // - add: new entry shown highlighted with approve/reject
   // - revise/remove: matching entry shown with struck-through diagnosis
-  function renderDifferentialsWithInlineSuggestions(problem, suggestionList, references) {
+  function renderDifferentialsWithInlineSuggestions(problem, suggestionList, references, savedReferences = []) {
     const differentials = problem.differentials || [];
     const diffSuggestions = suggestionList.filter((s) => s.target === "differential");
     if (!diffSuggestions.length) {
-      return differentials.map((entry, i) => renderDifferentialEditor(entry, i, problem.id)).join("")
+      return differentials.map((entry, i) => renderDifferentialEditor(entry, i, problem.id, savedReferences)).join("")
         || `<p class="ed-empty">No differential diagnoses added.</p>`;
     }
     const normalize = (v) => String(v || "").toLowerCase().replace(/\s+/g, " ").trim();
@@ -707,7 +706,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         const anchor = normalize(s.anchor);
         return anchor && diagText && (diagText.includes(anchor) || anchor.includes(diagText));
       });
-      if (!match) return renderDifferentialEditor(entry, i, problem.id);
+      if (!match) return renderDifferentialEditor(entry, i, problem.id, savedReferences);
       matchedIds.add(match.id);
       const actions = renderInlineSuggestionActions(match, problem.id);
       const rationale = renderInlineSuggestionRationale(match, references);
@@ -748,25 +747,21 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     const refItems = (references || []).filter((r) => r.title || r.url);
     if (!refItems.length) return "";
     return `<div class="ap-suggestion-refs"><p class="ap-refs-head">References</p><ol class="ap-refs">${refItems.map((r) => {
-      const parts = [r.authors, r.title ? `<em>${escapeHtml(r.title)}</em>` : "", r.journal, r.year].filter(Boolean).join(". ");
-      const body = r.url ? `<a href="${escapeHtml(r.url)}" target="_blank" rel="noopener noreferrer">${parts || escapeHtml(r.url)}</a>` : parts;
-      return `<li value="${r.id}">${body}</li>`;
+      const label = [r.authors, r.title, r.journal, r.year].filter(Boolean).join(". ") || r.url;
+      return `<li value="${escapeHtml(String(r.id))}">${citationButton(r, escapeHtml, label)}</li>`;
     }).join("")}</ol></div>`;
   }
 
-  // Render plain text with [n] citation markers converted to hyperlinks.
-  // Used for plan fields so approved AI suggestions show clickable citations.
+  // Render plain text with [n] markers that open source previews and details.
+  // Used for plan fields and differential reasoning after approval.
   // References come from draft.apReferences (persisted when suggestions are
-  // approved). Markers without a matching reference render as plain text.
+  // approved). Unmatched markers explicitly report missing source details.
   function renderTextWithCitationLinks(value, references) {
     const escaped = escapeHtml(valueText(value));
-    if (!references?.length) return escaped.replace(/\r?\n/g, "<br>");
-    const byId = new Map(references.map((r) => [String(r.id), r]));
+    const byId = new Map((references || []).map((r) => [String(r.id), r]));
     const linked = escaped.replace(/\[(\d+)\]/g, (match, id) => {
       const ref = byId.get(id);
-      if (!ref?.url) return match;
-      const title = [ref.authors, ref.title, ref.journal, ref.year].filter(Boolean).join(". ");
-      return `<a href="${escapeHtml(ref.url)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(title)}">[${escapeHtml(id)}]</a>`;
+      return citationButton(ref || { id, title: "Citation details unavailable" }, escapeHtml);
     });
     return linked.replace(/\r?\n/g, "<br>");
   }
@@ -799,7 +794,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       <div class="ed-etiology"><span class="ed-sub-label">Etiology</span>${helpButton(known ? "etiology_known" : "etiology_unknown", "Etiology status", guidanceFor(known ? "etiology_known" : "etiology_unknown"))}<div class="segmented-options"><label><input type="radio" name="etiology_${escapeHtml(problem.id)}" data-problem-etiology value="known" ${known ? "checked" : ""}> <span>Known</span></label><label><input type="radio" name="etiology_${escapeHtml(problem.id)}" data-problem-etiology value="unknown" ${known ? "" : "checked"}> <span>Unknown</span></label></div></div>
       ${known
         ? `<div class="ed-sub"><span class="ed-sub-label">Known etiology</span><div class="ed-body" contenteditable="true" data-problem-field="knownEtiology" data-placeholder="Documented cause or mechanism" spellcheck="true">${editorHtml(problem.knownEtiology)}</div></div>`
-        : `<div class="ed-differentials"><div class="ed-diff-head"><span class="ed-sub-label">Ranked differential</span><button type="button" class="ed-mini" data-action="rank-differentials" data-problem-id="${escapeHtml(problem.id)}" title="Rank this differential with Decision-1 (experimental advisory scores)">Rank</button><button type="button" class="ed-mini" data-action="add-differential" data-problem-id="${escapeHtml(problem.id)}">${icon("plus")} Add</button></div>${renderDifferentialsWithInlineSuggestions(problem, suggestionList, references)}</div>`}
+        : `<div class="ed-differentials"><div class="ed-diff-head"><span class="ed-sub-label">Ranked differential</span><button type="button" class="ed-mini" data-action="rank-differentials" data-problem-id="${escapeHtml(problem.id)}" title="Rank this differential with Decision-1 (experimental advisory scores)">Rank</button><button type="button" class="ed-mini" data-action="add-differential" data-problem-id="${escapeHtml(problem.id)}">${icon("plus")} Add</button></div>${renderDifferentialsWithInlineSuggestions(problem, suggestionList, references, apReferences)}</div>`}
       <div class="ed-two"><div class="ed-sub"><span class="ed-sub-label">Diagnostic plan</span><div class="ed-body" ${hasDiagnosticSuggestions ? `contenteditable="false" data-ap-reviewing="true"` : `contenteditable="true"`} data-problem-field="diagnosticPlan" data-placeholder="Optional" spellcheck="true">${diagnosticPlanHtml}</div>${hasDiagnosticSuggestions ? `<p class="ap-review-note">Resolve the suggestions above to resume editing.</p>` : ""}</div><div class="ed-sub"><span class="ed-sub-label">Therapeutic plan</span><div class="ed-body" ${hasTherapeuticSuggestions ? `contenteditable="false" data-ap-reviewing="true"` : `contenteditable="true"`} data-problem-field="therapeuticPlan" data-placeholder="Optional" spellcheck="true">${therapeuticPlanHtml}</div>${hasTherapeuticSuggestions ? `<p class="ap-review-note">Resolve the suggestions above to resume editing.</p>` : ""}</div></div>
       ${referencesHtml}
     </article>`;

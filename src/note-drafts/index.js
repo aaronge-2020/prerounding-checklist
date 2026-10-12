@@ -1,3 +1,3 @@
-export * from "./model.js?v=20261011-epic-workflow";
+export * from "./model.js?v=20261012-citation-preview";
 export * from "./guidance.js";
-export * from "./render.js?v=20261011-ai-helper";
+export * from "./render.js?v=20261012-citation-preview";

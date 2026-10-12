@@ -6,7 +6,7 @@
 // approved suggestions.
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
-import { fileAppUrl, openRealApp, unlockAndCreatePatient } from "./browser/app-harness.js";
+import { createAppServer, navigateToView, openRealApp, unlockAndCreatePatient } from "./browser/app-harness.js";
 
 const mockSuggestions = {
   suggestions: [
@@ -15,11 +15,12 @@ const mockSuggestions = {
     { id: 3, target: "differential", action: "remove", anchor: "Old diagnosis", suggested: "", rationale: "Ruled out by the new data" }
   ],
   references: [
-    { id: 1, title: "Acute Decompensated Heart Failure guideline", authors: "ACC/AHA", journal: "Circulation", year: "2022", url: "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001063" }
+    { id: 1, title: "Acute Decompensated Heart Failure guideline", authors: "ACC/AHA", journal: "Circulation", year: "2022", url: "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001063", excerpt: "Synthetic test excerpt: measure BNP to support evaluation.", sourceLocation: "Synthetic section 4" }
   ]
 };
 
-const appUrl = fileAppUrl();
+const server = await createAppServer();
+const appUrl = server.baseUrl;
 const browser = await chromium.launch({
   ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {}),
   args: ["--allow-file-access-from-files", "--disable-features=LocalNetworkAccessChecks", "--no-proxy-server"]
@@ -63,7 +64,7 @@ try {
   });
 
   // Save a (fake) API key through the real Settings UI.
-  await page.click('[data-view-target="settings"]');
+  await navigateToView(page, "settings");
   await page.waitForSelector("#openAiApiKeyInput");
   await page.fill("#openAiApiKeyInput", "not-a-real-key");
   await page.click('[data-action="save-openai-byok"]');
@@ -101,7 +102,7 @@ try {
     const promptText = await editor.inputValue();
     assert.match(promptText, /Heart failure/, "prompt carries the problem");
     assert.match(promptText, /Old med 10 mg PO daily/, "prompt carries this problem's current plan");
-    assert.match(promptText, /SUGGESTED EDITS/, "prompt instructs revision-style output");
+    assert.match(promptText, /FULL COMPLETION/, "prompt instructs revision-style output");
     assert.ok(!promptText.includes("Pneumonia"), "other problems are NOT passed in");
   });
 
@@ -129,7 +130,7 @@ try {
     assert.equal(await page.locator('[data-action="ap-suggestion-reject"]').count(), 3);
     // Plan fields are read-only while reviewing
     assert.equal(await page.locator('[data-problem-field="diagnosticPlan"][data-ap-reviewing="true"]').count(), 1);
-    assert.ok((await page.locator('.ap-suggestion-refs a[href*="ahajournals.org"]').count()) >= 1, "citation link is present");
+    assert.ok((await page.locator('.ap-suggestion-refs [data-ap-reference]').count()) >= 1, "citation link is present");
   });
 
   await check("suggestions survive a full draft-panel re-render", async () => {
@@ -193,12 +194,12 @@ try {
     // Loading banner appears with spinner and status text
     await page.waitForSelector(".ap-loading-banner", { timeout: 5000 });
     const bannerText = await page.locator(".ap-loading-banner").innerText();
-    assert.match(bannerText, /AI is reviewing your plan/);
+    assert.match(bannerText, /Consult in progress/);
     assert.match(bannerText, /1–2 minutes/);
     assert.equal(await page.locator(".ap-spinner").count(), 1, "spinner is visible");
     // Generate button shows Generating state
     const btnText = await page.locator(".plan-problem-card").nth(1).locator('[data-action="generate-ap"]').innerText();
-    assert.match(btnText, /Generating/);
+    assert.match(btnText, /Consulting/);
     // Banner disappears when suggestions arrive
     await page.waitForSelector(".ap-inline-change", { timeout: 15000 });
     assert.equal(await page.locator(".ap-loading-banner").count(), 0, "loading banner is removed after generation");
@@ -212,11 +213,35 @@ try {
     const dxField = page.locator(".plan-problem-card").nth(1).locator('[data-problem-field="diagnosticPlan"]');
     const dxText = await dxField.innerText();
     assert.match(dxText, /BNP/, "approved text is in the plan");
-    assert.match(dxText, /\[1\]/, "citation marker is part of the plan text");
+    assert.match(dxText, /\[2\]/, "citation marker is part of the plan text");
     // The marker is rendered as a hyperlink to the source
-    const citeLink = dxField.locator('a[href*="ahajournals.org"]');
+    const citeLink = dxField.locator('[data-ap-reference]');
     assert.equal(await citeLink.count(), 1, "citation is a hyperlink");
-    assert.equal(await citeLink.innerText(), "[1]");
+    assert.equal(await citeLink.innerText(), "[2]");
+    await citeLink.hover();
+    assert.match(await page.locator(".ap-source-preview").innerText(), /Synthetic test excerpt/);
+    if (process.env.CITATION_SCREENSHOT_DIR) await page.screenshot({path: `${process.env.CITATION_SCREENSHOT_DIR}/citation-hover.png`});
+    await citeLink.click();
+    assert.equal(await page.locator(".ap-source-dialog[open]").count(), 1);
+    assert.match(await page.locator(".ap-source-dialog").innerText(), /Synthetic section 4/);
+    assert.match(await page.locator(".ap-source-dialog a").getAttribute("href"), /ahajournals/);
+    if (process.env.CITATION_SCREENSHOT_DIR) await page.screenshot({path: `${process.env.CITATION_SCREENSHOT_DIR}/citation-details.png`});
+    await page.keyboard.press("Escape");
+  });
+
+  await check("approved citation passages survive encrypted save and reload", async () => {
+    await page.waitForFunction(() => ["saved", "idle"].includes(document.querySelector("[data-autosave-indicator]")?.dataset.state));
+    await page.reload();
+    await page.fill("#vaultPassphrase", "clinical review test passphrase");
+    await page.click('[data-action="unlock-vault"]');
+    await page.waitForFunction(() => /Vault unlocked/.test(document.querySelector("#statusLine")?.textContent || ""));
+    await navigateToView(page, "review");
+    const marker = page.locator('.plan-problem-card').nth(1).locator('[data-problem-field="diagnosticPlan"] [data-ap-reference]');
+    await marker.click();
+    assert.match(await page.locator('.ap-source-dialog').innerText(), /Synthetic test excerpt/);
+    await page.keyboard.press("Escape");
+    await page.locator('.ap-source-dialog').waitFor({state:'detached'});
+    assert.equal(await page.evaluate(() => JSON.stringify(localStorage).includes('Synthetic test excerpt')), false);
   });
 
   await check("no JS errors", async () => {
@@ -225,6 +250,7 @@ try {
   });
 } finally {
   await browser.close();
+  await server.close();
 }
 
 if (failures) {

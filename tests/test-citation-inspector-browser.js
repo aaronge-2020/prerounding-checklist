@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import {chromium} from 'playwright';
+import {createAppServer} from './browser/app-harness.js';
+import {citationButton} from '../src/ui/review/citation-presentation.js';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const refs=[{id:1,title:'Source <img src=x onerror=alert(1)>',excerpt:'A literal <script> passage. '.repeat(60),sourceLocation:'Table 2',url:'https://example.org/source'}, {id:2,title:'Older reference',url:'javascript:alert(1)'}];
+const server=await createAppServer(),browser=await chromium.launch();
+try{
+ const page=await browser.newPage({viewport:{width:390,height:844},hasTouch:true}); const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.route(server.baseUrl+'fixture',route=>route.fulfill({contentType:'text/html',body:`<link rel="stylesheet" href="/styles.css"><main class="view active" style="padding:20px"><div contenteditable="true" id="plan">Claim ${refs.map(r=>citationButton(r,esc)).join(' ')}</div></main><script type="module">import {installCitationInspector} from '/src/ui/review/citation-inspector.js';installCitationInspector();</script>`}));
+ await page.goto(server.baseUrl+'fixture');
+ const cite=page.locator('[data-ap-reference]').first();
+ await cite.hover();await page.locator('.ap-source-preview').waitFor();
+ assert.match(await page.locator('.ap-source-preview').innerText(),/literal <script> passage/);
+ assert.equal(await page.locator('.ap-source-preview img,.ap-source-preview script').count(),0);
+ await page.locator('.ap-source-preview').hover();await page.waitForTimeout(250);
+ assert.equal(await page.locator('.ap-source-preview').count(),1,'preview remains while hovered');
+ const bounds=await page.locator('.ap-source-preview').boundingBox();assert.ok(bounds.x>=0&&bounds.x+bounds.width<=390&&bounds.y+bounds.height<=844);
+ await page.keyboard.press('Escape');assert.equal(await page.locator('.ap-source-preview').count(),0);
+ await cite.focus();await cite.press('Enter');await page.locator('.ap-source-dialog[open]').waitFor();
+ assert.equal(await page.locator('.ap-source-dialog a').getAttribute('href'),'https://example.org/source');
+ await page.context().route('https://example.org/**', route=>route.fulfill({contentType:'text/html',body:'Source detail test'}));
+ const popupPromise=page.waitForEvent('popup');await page.locator('.ap-source-dialog a').click();
+ const popup=await popupPromise;await popup.waitForLoadState();assert.equal(popup.url(),'https://example.org/source');await popup.close();
+ assert.equal(await page.locator('#plan').innerText(),'Claim [1] [2]','inspector text must never enter the editable note');
+ await page.keyboard.press('Escape');await page.locator('.ap-source-dialog').waitFor({state:'detached'});
+ await page.locator('[data-ap-reference]').nth(1).tap();
+ assert.match(await page.locator('.ap-source-dialog').innerText(),/No source passage was captured/);
+ assert.equal(await page.locator('.ap-source-dialog a').count(),0,'unsafe URLs never become links');
+ await page.locator('main').evaluate(el=>el.remove());
+ await page.waitForFunction(()=>!document.querySelector('.ap-source-dialog'));
+ assert.deepEqual(errors,[]);
+ console.log('PASS: hover, keyboard, narrow viewport, details, missing evidence, escaping, edit isolation and removed-source cleanup');
+}finally{await browser.close();await server.close();}

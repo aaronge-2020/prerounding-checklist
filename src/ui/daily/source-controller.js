@@ -1,8 +1,8 @@
 import { createNoteDragController } from "./note-drag-controller.js?v=20261012-all-sections";
 import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261011-drag-workspace-v2";
-import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261011-ai-helper";
+import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261012-citation-preview";
 import { captureScrollPositions, restoreScrollPositions } from "../view-scroll.js?v=20261011-epic-workflow";
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20261011-ai-helper";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20261012-citation-preview";
 import {
   clinicalParseWarning,
   parseClinicalExport,
@@ -21,7 +21,7 @@ import {
   replaceSourceCapturesFromFormAsync,
   sourceCapturePacketCheck
 } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
-import { NOTE_TYPES } from "../../note-drafts/index.js?v=20261011-ai-helper";
+import { NOTE_TYPES } from "../../note-drafts/index.js?v=20261012-citation-preview";
 import {
   createPrimaryTeamNote,
   primaryTeamNoteFields,

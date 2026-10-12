@@ -1,5 +1,5 @@
-import { DEFAULT_AP_INSTRUCTIONS } from "../../ai/ap-generator.js?v=20261011-ai-helper";
-import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20261011-ai-helper";
+import { DEFAULT_AP_INSTRUCTIONS } from "../../ai/ap-generator.js?v=20261012-citation-preview";
+import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20261012-citation-preview";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({

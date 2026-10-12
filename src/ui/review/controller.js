@@ -1,7 +1,9 @@
-import { buildConsultNoteContext } from "../../ai/note-context.js?v=20261011-ai-helper";
+import { installCitationInspector } from "./citation-inspector.js?v=20261012-citation-preview";
+import { rebaseApReferences } from "../../ai/ap-generator.js?v=20261012-citation-preview";
+import { buildConsultNoteContext } from "../../ai/note-context.js?v=20261012-citation-preview";
 import { buildStructuredRequest } from "../../ai/structured-request.js?v=20261011-request-controls";
-import { sortDays } from "../../daily-updates/days.js?v=20261011-ai-helper";
-import { updateActivePatient } from "../../app/state/vault.js?v=20261011-ai-helper";
+import { sortDays } from "../../daily-updates/days.js?v=20261012-citation-preview";
+import { updateActivePatient } from "../../app/state/vault.js?v=20261012-citation-preview";
 import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20261011-epic-workflow";
 import { createLabAutocomplete } from "./lab-autocomplete.js?v=20260924-dollar-autocomplete-v1";
 import { createDrugAutocomplete } from "./drug-autocomplete.js?v=20260929-drug-autocomplete-v1";
@@ -50,7 +52,7 @@ import {
   updateManualObjective,
   updateNoteSection,
   updatePlanProblem
-} from "../../note-drafts/index.js?v=20261011-ai-helper";
+} from "../../note-drafts/index.js?v=20261012-citation-preview";
 import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20261011-epic-workflow";
 import {
   clearLabBaseline,
@@ -58,14 +60,14 @@ import {
 } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import {
   buildApRevisionPrompt, DEFAULT_AP_INSTRUCTIONS, AP_SUGGESTION_SCHEMA
-} from "../../ai/ap-generator.js?v=20261011-ai-helper";
-import { generateProblemApRevisionsWithOpenAi } from "../openai-ap-api.js?v=20261011-ai-helper";
+} from "../../ai/ap-generator.js?v=20261012-citation-preview";
+import { generateProblemApRevisionsWithOpenAi } from "../openai-ap-api.js?v=20261012-citation-preview";
 import {
   buildDifferentialScoringRequest,
   formatProbability
 } from "../../ai/decision-scoring.js?v=20261010-decision1-v1";
 import { scoreDifferentialsWithDecision1 } from "../decision-client.js?v=20261010-decision1-v1";
-import { createDifferential } from "../../note-drafts/index.js?v=20261011-ai-helper";
+import { createDifferential } from "../../note-drafts/index.js?v=20261012-citation-preview";
 
 function packetKey(value) {
   return String(value || "admission");
@@ -198,6 +200,7 @@ function draftFromSource(patient, selectedPacketId) {
 }
 
 export function createReviewController(deps) {
+  const citationInspector = typeof document !== "undefined" && document.body?.addEventListener ? installCitationInspector() : null;
   // Which lab row currently has its baseline editor open. Local UI state:
   // the saved baselines themselves live on the patient record in the vault.
   let baselineEditorId = "";
@@ -1126,6 +1129,7 @@ export function createReviewController(deps) {
   }
 
   function clearApSession() {
+    citationInspector?.clear();
     apActiveRequest?.controller.abort();
     apActiveRequest = null;
     generatingApProblemId = "";
@@ -1303,7 +1307,7 @@ export function createReviewController(deps) {
     refreshProblemCard(problemId);
     deps.setStatus(`Consulting AI on "${pending.problemName}"…`);
     try {
-      const result = await generateProblemApRevisionsWithOpenAi({
+      let result = await generateProblemApRevisionsWithOpenAi({
         apiKey: requestKey,
         signal: request.controller.signal,
         model: pending.model,
@@ -1321,6 +1325,7 @@ export function createReviewController(deps) {
         maybeAutoScoreDifferentials(problemId);
         return;
       }
+      result = rebaseApReferences(result, [...(model().draft.apReferences || []), ...Object.values(apSuggestionsState).flatMap(entry => entry.references || [])]);
       apSuggestionsState = {
         ...apSuggestionsState,
         [problemId]: { suggestions: result.suggestions, references: result.references }

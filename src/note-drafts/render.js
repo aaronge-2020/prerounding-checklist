@@ -1,4 +1,4 @@
-import { NOTE_TYPES, normalizeSectionVisibility, objectiveGroupKeyFor } from "./model.js?v=20261011-epic-workflow";
+import { NOTE_TYPES, normalizeSectionVisibility, objectiveGroupKeyFor } from "./model.js?v=20261012-citation-preview";
 import { getLayout } from "./layout.js";
 import {
   NOTE_LAB_FAMILY_LABELS,

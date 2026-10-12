@@ -1,4 +1,4 @@
-import { renderNoteSectionEntries } from "../note-drafts/render.js?v=20261011-ai-helper";
+import { renderNoteSectionEntries } from "../note-drafts/render.js?v=20261012-citation-preview";
 
 // Use the same reviewed content as Preview & copy, including clinician edits
 // and selected objective results. Never include other problems or raw sources.

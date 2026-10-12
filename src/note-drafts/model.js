@@ -382,7 +382,9 @@ function normalizeApReferences(value) {
       authors: text(ref.authors).trim(),
       journal: text(ref.journal).trim(),
       year: text(ref.year).trim(),
-      url: text(ref.url).trim()
+      url: text(ref.url).trim(),
+      excerpt: text(ref.excerpt).trim().slice(0, 4000),
+      sourceLocation: text(ref.sourceLocation).trim().slice(0, 500)
     });
   }
   return out;

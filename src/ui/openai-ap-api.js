@@ -4,7 +4,7 @@
 import {
   AP_SUGGESTION_SCHEMA,
   parseApSuggestions
-} from "../ai/ap-generator.js?v=20261011-ai-helper";
+} from "../ai/ap-generator.js?v=20261012-citation-preview";
 import { DEFAULT_OPENAI_WORKUP_MODEL, openAiWorkupModelOption } from "../app/preferences.js?v=20261011-request-controls";
 import { requestOpenAiStructuredJson } from "./openai-client.js?v=20261011-ai-helper";
 

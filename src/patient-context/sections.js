@@ -1,4 +1,4 @@
-import { createTextSection, normalizeSection } from "../app/state/vault.js?v=20261011-ai-helper";
+import { createTextSection, normalizeSection } from "../app/state/vault.js?v=20261012-citation-preview";
 import { isActionableResidualWarning, sanitizeResidualWarningMetadata } from "./review.js";
 import { naturalLanguagePrompt } from "../prompts/natural-language.js";
 
