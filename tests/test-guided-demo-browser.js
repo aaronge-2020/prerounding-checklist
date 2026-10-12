@@ -46,7 +46,7 @@ try {
   await page.waitForFunction(() => document.querySelectorAll('.primary-nav [data-view-target]').length === 13);
   assert.deepEqual(
     await page.locator('.primary-nav [data-view-target]').evaluateAll((buttons) => buttons.map((button) => button.dataset.viewTarget)),
-    ["vault", "daily", "review", "sampleNotes", "aiChat", "prompts", "quickDeid", "scribePro", "cheatSheets", "drugLookup", "drugChecks", "scores", "settings"],
+    ["vault", "daily", "review", "aiChat", "prompts", "quickDeid", "scribePro", "sampleNotes", "cheatSheets", "drugLookup", "drugChecks", "scores", "settings"],
     "the visible nav must keep Drug Lookup and add the offline Drug checks view"
   );
   assert.deepEqual(
@@ -138,12 +138,12 @@ try {
   assert.match(await page.locator("[data-demo-guide]").innerText(), /Write after bedside review/);
 
   await page.click('[data-view-target="review"]');
-  await page.waitForSelector('[data-action="download-final-note"]');
+  await page.waitForSelector('[data-action="download-final-note"]:visible');
   // The right side is a single editor now (no separate preview pane): verify
   // the final note through the same Download .txt action the student uses.
   const [download] = await Promise.all([
     page.waitForEvent("download"),
-    page.click('[data-action="download-final-note"]')
+    page.click('[data-action="download-final-note"]:visible')
   ]);
   const downloadedNote = await readFile(await download.path(), "utf8");
   assert.doesNotMatch(downloadedNote, /pressure or squeezing feeling/, "cheat-sheet bedside questions must not leak into the note");

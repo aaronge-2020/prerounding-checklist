@@ -44,7 +44,7 @@ async function addDailySource(kind, text, expectedCount) {
 async function downloadFinalNoteText() {
   const [download] = await Promise.all([
     page.waitForEvent("download"),
-    page.click('[data-action="download-final-note"]')
+    page.click('[data-action="download-final-note"]:visible')
   ]);
   return readFile(await download.path(), "utf8");
 }
@@ -349,14 +349,14 @@ Sodium: 138`;
   await page.fill("#reviewDataSearch", "");
 
   // Note export actions remain available.
-  assert.equal(await page.locator('[data-action="copy-final-note"]').isVisible(), true);
+  assert.equal(await page.locator('[data-action="copy-final-note"]:visible').isVisible(), true);
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-  await page.click('[data-action="copy-final-note"]');
+  await page.click('[data-action="copy-final-note"]:visible');
   const copiedNote = await page.evaluate(() => navigator.clipboard.readText());
   assert.match(copiedNote, /Lungs clear to auscultation/);
   assert.doesNotMatch(copiedNote, /\*\*/);
   const noteDownload = page.waitForEvent("download");
-  await page.click('[data-action="download-final-note"]');
+  await page.click('[data-action="download-final-note"]:visible');
   assert.match((await noteDownload).suggestedFilename(), /progress-note\.txt$/);
 
   // Saved draft survives encryption/reload; lock clears all protected content.

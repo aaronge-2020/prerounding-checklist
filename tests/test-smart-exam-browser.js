@@ -158,7 +158,7 @@ try {
   await page.keyboard.press("Escape"); // close the open dropdown, as a user would
   await settle();
   assert.equal(await page.locator(".se-dropdown").count(), 0, "dropdown closed");
-  await page.click('[data-action="copy-final-note"]');
+  await page.click('[data-action="copy-final-note"]:visible');
   await page.waitForFunction(() => /Plain-text note copied/.test(document.querySelector("#statusLine")?.textContent || ""), { timeout: 10000 });
   const clipboard = await page.evaluate(() => navigator.clipboard.readText());
   assert.ok(clipboard.includes("Physical Exam"), "copied note has Physical Exam section");

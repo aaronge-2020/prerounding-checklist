@@ -9,8 +9,7 @@ import { fileAppUrl, unlockAndCreatePatient } from "./browser/app-harness.js";
 // 1. The H&P is saved on admission but Review is on a hospital-day packet with
 //    no saved primary note of its own -> the pull now falls back to the
 //    admission H&P (the stay's canonical primary note) and says so.
-// 2. The student typed the note but never de-identified & saved it ("Save to
-//    draft" or nothing) -> the pull now names the unsaved state and the exact
+// 2. The student typed the note but never de-identified & saved it (without saving) -> the pull now names the unsaved state and the exact
 //    button to press, instead of claiming no note was pasted.
 //
 // A day WITH its own saved primary note keeps strict packet scoping: its
@@ -42,7 +41,7 @@ async function typeSectionAndSave({ scope, fieldId, text, saveAction }) {
   );
   await page.waitForSelector(`[data-structured-note-scope="${scope}"][data-structured-note-field="${fieldId}"]`);
   await page.fill(`[data-structured-note-scope="${scope}"][data-structured-note-field="${fieldId}"]`, text);
-  await page.click(`[data-action="${saveAction}"][data-note-scope="${scope}"]`);
+  if (saveAction) await page.click(`[data-action="${saveAction}"][data-note-scope="${scope}"]`);
 }
 
 async function selectDayPacket() {
@@ -121,9 +120,8 @@ try {
     scope: "admission",
     fieldId: "one_liner",
     text: "Second patient one liner typed but not saved.",
-    saveAction: "save-structured-note-to-draft"
+    saveAction: null
   });
-  await page.waitForFunction(() => /saved to draft/i.test(document.querySelector("#statusLine")?.textContent || ""), null, { timeout: 30000 });
   await page.click('[data-view-target="review"]');
   await page.waitForSelector(".note-draft-panel", { timeout: 30000 });
   await page.click('[data-pull-section="one_liner"]');
