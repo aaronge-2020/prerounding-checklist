@@ -397,6 +397,61 @@ Sodium: 138`;
   assert.equal(await page.locator('.compact-row [data-objective-selection-id]').first().isChecked(), true);
   assert.equal((await editorText(page.locator('[data-draft-objective-manual]'))).trim(), "Lungs clear to auscultation.");
 
+  // AI helper uses synthetic transport fixtures here; manual live GPT-6 Luna
+  // evidence is recorded separately. Never put a real credential in CI.
+  await page.click('[data-action="add-plan-problem"]');
+  const aiCard = page.locator('.plan-problem-list > [data-problem-id]').last();
+  const aiId = await aiCard.getAttribute('data-problem-id');
+  await aiCard.locator('[data-problem-field="problem"]').fill('Synthetic AI resilience');
+  await aiCard.locator('[data-problem-field="diagnosticPlan"]').fill('Keep clinician wording.');
+  let releaseAiResponse;
+  let aiRequests = 0;
+  await page.route('https://api.openai.com/v1/responses', async (route) => {
+    aiRequests += 1;
+    const body = route.request().postDataJSON();
+    assert.equal(body.model, 'gpt-6-luna');
+    assert.equal(body.store, false);
+    assert.match(body.input, /SELECTED NOTE CONTEXT/);
+    await new Promise(resolve => { releaseAiResponse = resolve; });
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({status:'completed',output_text:JSON.stringify({suggestions:[
+      {id:1,target:'diagnostic_plan',action:'add',anchor:'',suggested:'Synthetic approved item.',rationale:'Test',likelihood:'',citationIds:[]},
+      {id:2,target:'diagnostic_plan',action:'add',anchor:'',suggested:'Synthetic rejected item.',rationale:'Test',likelihood:'',citationIds:[]}
+    ],references:[]})}) }).catch(() => {});
+  });
+  async function sendSyntheticConsult() {
+    await page.locator(`[data-problem-id="${aiId}"] [data-action="generate-ap"]`).click();
+    await page.locator('[data-ap-request-key]').fill('synthetic-ci-key');
+    await page.locator('[data-action="ap-confirm-generate"]').click();
+    await page.locator('[data-ap-loading]').waitFor();
+    for (let n=0; n<50 && !releaseAiResponse; n++) await new Promise(resolve=>setTimeout(resolve,20));
+    assert.ok(releaseAiResponse, 'request reached synthetic transport');
+  }
+  await sendSyntheticConsult();
+  await page.locator(`[data-problem-id="${aiId}"] [data-problem-field="diagnosticPlan"]`).fill('Clinician edit during request.');
+  releaseAiResponse(); releaseAiResponse = null;
+  await page.locator(`[data-problem-id="${aiId}"] [data-action="ap-suggestion-approve"]`).first().waitFor();
+  await page.locator(`[data-problem-id="${aiId}"] [data-suggestion-id="1"][data-action="ap-suggestion-approve"]`).click();
+  await page.locator(`[data-problem-id="${aiId}"] [data-suggestion-id="2"][data-action="ap-suggestion-reject"]`).click();
+  const approvedExport = await downloadFinalNoteText();
+  assert.match(approvedExport,/Clinician edit during request/);
+  assert.match(approvedExport,/- Synthetic approved item/);
+  assert.doesNotMatch(approvedExport,/Synthetic rejected item|- •/);
+  await sendSyntheticConsult();
+  await page.locator('[data-action="ap-stop"]').click();
+  releaseAiResponse(); releaseAiResponse = null;
+  assert.equal(await page.locator('[data-ap-loading]').count(),0);
+  assert.equal(await page.locator('[data-action="ap-suggestion-approve"]').count(),0);
+  assert.equal(await page.locator(`[data-problem-id="${aiId}"] [data-action="generate-ap"]`).isEnabled(),true);
+  assert.equal(aiRequests,2);
+  await sendSyntheticConsult();
+  // Selecting a different packet aborts and discards the in-flight result.
+  await page.selectOption('#reviewPacketSelect','admission');
+  releaseAiResponse(); releaseAiResponse = null;
+  assert.equal(await page.locator('[data-ap-loading]').count(),0);
+  assert.equal(await page.locator('[data-action="ap-suggestion-approve"]').count(),0);
+  await page.selectOption('#reviewPacketSelect',savedPacketValue);
+  await page.unroute('https://api.openai.com/v1/responses');
+
   // Narrow layout remains usable by keyboard without horizontal document overflow.
   await page.setViewportSize({ width: 390, height: 844 });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1), true);

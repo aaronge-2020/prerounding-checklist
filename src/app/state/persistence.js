@@ -1,4 +1,4 @@
-import { createEmptyVaultState, migrateVaultState } from "./vault.js?v=20261011-epic-workflow";
+import { createEmptyVaultState, migrateVaultState } from "./vault.js?v=20261011-ai-helper";
 
 export const VAULT_DATA_KEY = "prerounding.local.encryptedVault.v1";
 const KDF_ITERATIONS = 210000;

@@ -27,33 +27,54 @@ async function readJson(response) {
 }
 
 function apiError(response, payload) {
-  const message = String(payload?.error?.message || "").trim();
+  const message = String(payload?.error?.message || "").replace(/sk-[\w*-]+/g, "[key redacted]").trim();
   return message
     ? `OpenAI API request failed (${response.status}): ${message}`
     : `OpenAI API request failed (${response.status}).`;
 }
 
-export async function requestOpenAiStructuredJson({ apiKey, model, input, instructions, temperature, schemaName, schema, tools, fetchImpl = gatedFetch } = {}) {
-  let response;
-  const body = buildStructuredRequest({ model, input, instructions, temperature, schemaName, schema, tools });
+// Keep the deadline active until the response body is read. A cancelled or
+// partial response must never become a usable clinical suggestion.
+async function postResponse({ apiKey, body, fetchImpl, signal, timeoutMs = 300000 }) {
+  const controller = new AbortController();
+  let timedOut = false;
+  const abort = () => controller.abort();
+  if (signal?.aborted) abort();
+  else signal?.addEventListener("abort", abort, { once: true });
+  const deadline = setTimeout(() => { timedOut = true; abort(); }, timeoutMs);
   try {
-    response = await fetchImpl("https://api.openai.com/v1/responses", {
+    const response = await fetchImpl("https://api.openai.com/v1/responses", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body)
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: controller.signal
     });
-  } catch (err) {
-    // The network gate's refusal is already a clear, calm explanation —
-    // pass it through untouched.
-    if (err && err.name === "OfflineBlockedError") throw err;
+    const payload = await readJson(response);
+    if (controller.signal.aborted) throw new DOMException("Aborted", "AbortError");
+    if (!response.ok) throw new Error(apiError(response, payload));
+    if (payload.status && payload.status !== "completed") {
+      throw new Error("The OpenAI response was incomplete. Nothing was applied. Try again with a shorter request.");
+    }
+    if ((payload.output || []).some((item) => (item.content || []).some((block) => block.type === "refusal"))) {
+      throw new Error("OpenAI declined this request. Nothing was applied. Revise the request and try again.");
+    }
+    return payload;
+  } catch (error) {
+    if (controller.signal.aborted || error?.name === "AbortError") {
+      if (timedOut) throw new Error("The OpenAI request timed out after 5 minutes. Try again, or turn off web search for a faster reply.");
+      throw new DOMException("Request stopped. Nothing was applied.", "AbortError");
+    }
+    if (error?.name === "OfflineBlockedError" || /^OpenAI|^The OpenAI/.test(error?.message || "")) throw error;
     throw new Error("Unable to reach the OpenAI API from this browser. Check the network connection and try again.");
+  } finally {
+    clearTimeout(deadline);
+    signal?.removeEventListener("abort", abort);
   }
+}
 
-  const payload = await readJson(response);
-  if (!response.ok) throw new Error(apiError(response, payload));
+export async function requestOpenAiStructuredJson({ apiKey, model, input, instructions, temperature, schemaName, schema, tools, fetchImpl = gatedFetch, signal, timeoutMs } = {}) {
+  const body = buildStructuredRequest({ model, input, instructions, temperature, schemaName, schema, tools });
+  const payload = await postResponse({ apiKey, body, fetchImpl, signal, timeoutMs });
   const output = responseText(payload).trim();
   if (!output) throw new Error("The OpenAI API did not return a JSON object.");
   try {
@@ -84,34 +105,9 @@ export async function requestOpenAiChat({ apiKey, model, input, tools, fetchImpl
 export async function requestOpenAiChatWithUsage({ apiKey, model, input, tools, fetchImpl = gatedFetch, timeoutMs = 300000 } = {}) {
   const key = String(apiKey || "").trim();
   if (!key) throw new Error("Save an OpenAI API key in Settings before using ChatGPT chat.");
-  const body = { model, input };
+  const body = { model, input, store: false };
   if (Array.isArray(tools) && tools.length) body.tools = tools;
-  const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-  const timeoutId = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
-  let response;
-  try {
-    response = await fetchImpl("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${key}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body),
-      ...(controller ? { signal: controller.signal } : {})
-    });
-  } catch (err) {
-    if (err && err.name === "AbortError") {
-      throw new Error("The ChatGPT request timed out after 5 minutes. Try again, or turn off web search for a faster reply.");
-    }
-    // The network gate's refusal is already a clear, calm explanation —
-    // pass it through untouched.
-    if (err && err.name === "OfflineBlockedError") throw err;
-    throw new Error("Unable to reach the OpenAI API from this browser. Check the network connection and try again.");
-  } finally {
-    if (timeoutId) clearTimeout(timeoutId);
-  }
-  const payload = await readJson(response);
-  if (!response.ok) throw new Error(apiError(response, payload));
+  const payload = await postResponse({ apiKey: key, body, fetchImpl, timeoutMs });
   const output = responseText(payload).trim();
   if (!output) throw new Error("The OpenAI API returned an empty reply. Try again.");
   return { text: output, usage: extractUsage(payload), sources: extractSources(payload) };

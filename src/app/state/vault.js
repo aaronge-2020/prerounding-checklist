@@ -5,7 +5,7 @@ import { migrateLegacyDailySections, normalizeDiagnosticResultCategory, normaliz
 import { normalizePrimaryTeamNote } from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
 import { normalizeLabBaselines } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import { normalizeSavedScores } from "../../clinical-scores/saved-scores.js";
-import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20261011-epic-workflow";
+import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20261011-ai-helper";
 // (deserializeAdaptiveStore import removed 2026-10-03: session-only policy.)
 
 export const VAULT_SCHEMA_VERSION = 5;

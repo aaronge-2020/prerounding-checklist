@@ -158,7 +158,7 @@ RULES:
 
 // Validate and normalize the model's JSON reply. Throws on shape violations.
 export function parseApResult(json) {
-  if (!json || typeof json !== "object") throw new Error("The AI reply was empty or malformed.");
+  if (!json || typeof json !== "object" || !Array.isArray(json.suggestions) || !Array.isArray(json.references)) throw new Error("The AI reply was empty or malformed.");
   const refById = new Map();
   const references = Array.isArray(json.references) ? json.references : [];
   for (const ref of references) {
@@ -371,6 +371,7 @@ export function buildApRevisionPrompt({
   keyLabs,
   medications,
   labelData,
+  noteContext,
   mode = "complete",
   consultQuestions = "",
   instructions = DEFAULT_AP_INSTRUCTIONS
@@ -428,12 +429,13 @@ ${txLines.length ? txLines.map((line) => `- ${line}`).join("\n") : "(none writte
 STUDENT'S ASSESSMENT SYNTHESIS (note-level):
 ${assessmentText || "(none written yet)"}
 ${objectiveBits.length ? `\nDE-IDENTIFIED OBJECTIVE DATA:\n${objectiveBits.join("\n")}\n` : ""}
-${medicationBlock ? `\n${medicationBlock}\n` : ""}`;
+${medicationBlock ? `\n${medicationBlock}\n` : ""}
+${noteContext ? `\nSELECTED NOTE CONTEXT (review before sending):\n${String(noteContext)}\n` : ""}`;
 }
 
 // Validate and normalize the model's suggestion reply. Throws on shape violations.
 export function parseApSuggestions(json) {
-  if (!json || typeof json !== "object") throw new Error("The AI reply was empty or malformed.");
+  if (!json || typeof json !== "object" || !Array.isArray(json.suggestions) || !Array.isArray(json.references)) throw new Error("The AI reply was empty or malformed.");
   const refById = new Map();
   const references = Array.isArray(json.references) ? json.references : [];
   for (const ref of references) {

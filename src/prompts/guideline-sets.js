@@ -1,4 +1,4 @@
-import { createLocalId } from "../app/state/vault.js?v=20261011-epic-workflow";
+import { createLocalId } from "../app/state/vault.js?v=20261011-ai-helper";
 
 export const GUIDELINE_SET_STORAGE_KEY = "prerounding_guideline_sets_v1";
 export const GUIDELINE_SET_CANONICAL_DEFAULTS_KEY = "prerounding_guideline_sets_canonical_defaults_v2";

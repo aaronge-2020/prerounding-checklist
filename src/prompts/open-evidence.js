@@ -1,9 +1,9 @@
-import { buildTrajectoryBlock } from "../daily-updates/days.js?v=20261011-epic-workflow";
-import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20261011-epic-workflow";
+import { buildTrajectoryBlock } from "../daily-updates/days.js?v=20261011-ai-helper";
+import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20261011-ai-helper";
 import { attendingHospitalistPrompt } from "./natural-language.js?v=20260815-standalone-ap";
 import { buildProgressNotePacket } from "./progress-note-packet.js?v=20260921-medication-card-v4";
 import { sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-medication-card-v4";
-import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20261011-epic-workflow";
+import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20261011-ai-helper";
 
 // Built-in dropdown entries are derived from the same records Settings uses.
 // A task cannot exist here without one exact editable guideline identity.

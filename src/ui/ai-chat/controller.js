@@ -18,7 +18,7 @@ import {
 } from "../../local-llm/client.js?v=20260928-local-llm-v1";
 import { createAiChatPresentation } from "./presentation.js?v=20261004-cite-links-v1";
 import { chatPaneScrollTop } from "../view-scroll.js?v=20261011-epic-workflow";
-import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20261011-request-controls";
+import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20261011-ai-helper";
 import { gatedFetch, isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20260929-offline-mode-v1";
 import {
   buildChatToolsSystemPrompt,
@@ -54,7 +54,7 @@ import {
 } from "../../local-llm/patient-context.js?v=20260929-local-llm-v12";
 import { CHARS_PER_TOKEN, buildChatMessages, estimateTokens } from "../../local-llm/context-budget.js?v=20260927-local-llm-v1";
 import { buildSystemPrompt } from "../../local-llm/system-prompt.js?v=20260928-local-llm-v10";
-import { activePatient } from "../../app/state/vault.js?v=20261011-epic-workflow";
+import { activePatient } from "../../app/state/vault.js?v=20261011-ai-helper";
 import { medicalServiceOption, OPENAI_WORKUP_MODEL_OPTIONS } from "../../app/preferences.js?v=20261011-request-controls";
 import {
   hashPiece,

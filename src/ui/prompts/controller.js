@@ -1,8 +1,8 @@
-import { addGuidelineSet, removeGuidelineSet, saveGuidelineSets } from "../../prompts/guideline-sets.js?v=20261011-epic-workflow";
-import { migrateCustomPromptTasksToGuidelineSets, saveCustomPromptTasks } from "../../prompts/custom-tasks.js?v=20261011-epic-workflow";
-import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20261011-epic-workflow";
-import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js?v=20261011-epic-workflow";
-import { guidelinePageModel } from "../settings/guideline-pagination.js?v=20261011-epic-workflow";
+import { addGuidelineSet, removeGuidelineSet, saveGuidelineSets } from "../../prompts/guideline-sets.js?v=20261011-ai-helper";
+import { migrateCustomPromptTasksToGuidelineSets, saveCustomPromptTasks } from "../../prompts/custom-tasks.js?v=20261011-ai-helper";
+import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20261011-ai-helper";
+import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js?v=20261011-ai-helper";
+import { guidelinePageModel } from "../settings/guideline-pagination.js?v=20261011-ai-helper";
 
 // Create/delete custom prompt tasks - kept out of app.js to respect the
 // coordinator-file size boundary (scripts/check-ui-module-boundaries.js).

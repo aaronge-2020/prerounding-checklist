@@ -1,5 +1,5 @@
-import { DEFAULT_AP_INSTRUCTIONS } from "../../ai/ap-generator.js?v=20261011-request-controls";
-import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20261011-epic-workflow";
+import { DEFAULT_AP_INSTRUCTIONS } from "../../ai/ap-generator.js?v=20261011-ai-helper";
+import { renderGuidelineEditor, renderGuidelineSets } from "./guidelines-presentation.js?v=20261011-ai-helper";
 
 export function createSettingsPresentation({ escapeHtml }) {
   function renderSettings({

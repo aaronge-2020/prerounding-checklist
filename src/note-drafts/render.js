@@ -28,7 +28,7 @@ function markdownTableCell(value) {
 function bulletLines(value) {
   const content = valueText(value);
   if (!content) return [];
-  return content.split(/\r?\n/).map((line) => line.trim().replace(/^[-*]\s+/, "")).filter(Boolean);
+  return content.split(/\r?\n/).map((line) => line.trim().replace(/^[-*•]\s+/, "")).filter(Boolean);
 }
 
 // U3: plan bullets render WITHOUT the verbose per-bullet "Diagnostic plan —"
@@ -584,7 +584,7 @@ function markdownBodyToHtml(body) {
     const lines = block.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
     if (lines.length && lines.every((line) => line.startsWith("|"))) return { list: false, html: markdownTableToHtml(lines) };
     if (lines.length && lines.every((line) => /^[-*]\s+/.test(line))) {
-      return { list: true, items: lines.map((line) => `<li>${inlineMarkdown(escapeHtml(line.replace(/^[-*]\s+/, "")))}</li>`) };
+      return { list: true, items: lines.map((line) => `<li>${inlineMarkdown(escapeHtml(line.replace(/^[-*•]\s+/, "")))}</li>`) };
     }
     if (/^\*[^*]+\*$/.test(block)) return { list: false, html: `<p><em>${escapeHtml(block.slice(1, -1))}</em></p>` };
     return { list: false, html: `<p>${inlineMarkdown(escapeHtml(block)).replace(/\r?\n/g, "<br>")}</p>` };

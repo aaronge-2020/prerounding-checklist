@@ -1,5 +1,5 @@
 import { OPENAI_WORKUP_MODEL_OPTIONS } from "../../app/preferences.js?v=20261011-request-controls";
-import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES, objectiveEditorGroups, SECTION_VISIBILITY_KEYS } from "../../note-drafts/index.js?v=20261011-epic-workflow";
+import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES, objectiveEditorGroups, SECTION_VISIBILITY_KEYS } from "../../note-drafts/index.js?v=20261011-ai-helper";
 import {
   abnormalTone,
   compactLabTrendLine,
@@ -7,7 +7,7 @@ import {
   displayVitalName,
   joinValueUnit
 } from "../../review-data/compact-summary.js?v=20260924-optional-sections-v1";
-import { sanitizeProblemTitle } from "../../note-drafts/index.js?v=20261011-epic-workflow";
+import { sanitizeProblemTitle } from "../../note-drafts/index.js?v=20261011-ai-helper";
 import { baselineDisplayText, baselinePriorityFor } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import { formatProbability } from "../../ai/decision-scoring.js?v=20261010-decision1-v1";
 import {
@@ -554,7 +554,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   // (instructions, context, scope) before confirming.
   function renderApConfirmModal(apConfirm) {
     return `<div class="ap-confirm-overlay" data-ap-confirm-overlay>
-      <div class="ap-confirm-modal" role="dialog" aria-modal="true" aria-label="Review and send the AI consult">
+      <dialog class="ap-confirm-modal" role="dialog" aria-modal="true" aria-label="Review and send the AI consult">
         <h3>Consult AI &mdash; &ldquo;${escapeHtml(apConfirm.problemName)}&rdquo;</h3>
         <p class="muted">Review the instructions and input before sending to OpenAI, or copy them for use elsewhere. <strong>Edit anything</strong> — instructions, wording, or the patient data — before sending. Confirm it contains <strong>no protected health information</strong> (no names, dates, MRNs, locations).</p>
         <div class="ap-consult-questions">
@@ -562,23 +562,23 @@ export function createReviewPresentation({ escapeHtml, icon }) {
           <textarea id="apConsultQuestions" class="ap-consult-input" data-ap-consult-questions rows="3" spellcheck="true" placeholder="e.g. What is the best medication regimen for this problem? What dose should I use? Should I consult a specialist?" aria-label="Specific consult questions for the AI">${escapeHtml(apConfirm.consultQuestions || "")}</textarea>
           <p class="muted ap-consult-hint">Leave blank and the consultant fully completes this problem's differential, diagnostic plan, and therapeutic plan. Ask a question and it answers exactly what you asked.</p>
         </div>
-        <label>Task instructions<textarea data-ap-request-field="instructions" rows="6" maxlength="20000">${escapeHtml(apConfirm.instructions)}</textarea></label>
+        <details class="ap-advanced"><summary>Edit instructions and model settings</summary><label>Task instructions<textarea data-ap-request-field="instructions" rows="6" maxlength="20000">${escapeHtml(apConfirm.instructions)}</textarea></label>
         <label>Model<select data-ap-request-field="model">${OPENAI_WORKUP_MODEL_OPTIONS.map((option) => `<option value="${escapeHtml(option.value)}" ${option.value === apConfirm.model ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}</select></label>
         <label>Temperature (optional)<input type="number" min="0" max="2" step="0.1" data-ap-request-field="temperature" value="${escapeHtml(apConfirm.temperature)}" placeholder="Model default"></label>
         <p class="muted">Leave temperature blank unless your selected model supports it.</p>
-        <label><input type="checkbox" data-ap-request-field="webSearch" ${apConfirm.webSearch ? "checked" : ""}>Allow web search</label>
-        <textarea class="ap-prompt-editor" data-ap-prompt-editor rows="18" spellcheck="false" aria-label="Editable AI prompt">${escapeHtml(apConfirm.promptText)}</textarea>
+        <label><input type="checkbox" data-ap-request-field="webSearch" ${apConfirm.webSearch ? "checked" : ""}>Allow web search</label></details>
+        <label><strong>Patient context and request</strong><textarea class="ap-prompt-editor" data-ap-prompt-editor rows="8" spellcheck="false" aria-label="Editable AI prompt">${escapeHtml(apConfirm.promptText)}</textarea></label>
         <p class="muted ap-confirm-note" data-ap-mode-note>Consult questions are blank, so the consultant will fully complete this problem's differential, diagnostic plan, and therapeutic plan. Each recommendation appears below the problem for you to approve or reject individually.</p>
         <details><summary>Exact request body (read-only output schema)</summary><pre data-ap-request-preview style="white-space:pre-wrap;overflow-wrap:anywhere"></pre></details>
-        ${apConfirm.apiKeySaved ? "" : '<p class="muted">Copy works without an API key. Save a key in Settings to send.</p>'}
-        <div class="button-row">
+        ${apConfirm.apiKeySaved ? '<p class="muted">Using your encrypted saved key.</p>' : '<label>API key for this request<input type="password" data-ap-request-key autocomplete="off" spellcheck="false" placeholder="Not saved"></label><p class="muted">Used only for this request. Closing this dialog clears it. You can also save an encrypted key in Settings.</p>'}
+        <div class="button-row ap-confirm-actions">
           <button type="button" class="button--secondary button--small" data-action="ap-reset-prompt">Reset input</button>
           <button type="button" class="button--secondary button--small" data-action="ap-save-default">Save instructions as default</button>
           <button type="button" class="button--primary button--small" ${apConfirm.apiKeySaved ? "" : "disabled"} data-action="ap-confirm-generate" data-problem-id="${escapeHtml(apConfirm.problemId)}">Send consult</button>
           <button type="button" class="button--secondary button--small" data-action="ap-copy-prompt">Copy prompt</button>
           <button type="button" class="button--secondary button--small" data-action="ap-confirm-cancel">Cancel</button>
         </div>
-      </div>
+      </dialog>
     </div>`;
   }
 
@@ -609,8 +609,9 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       <div class="ap-spinner" aria-hidden="true"></div>
       <div class="ap-loading-text">
         <p><strong>Consult in progress…</strong></p>
-        <p class="muted">The consultant is searching references and drafting recommendations. This can take 1–2 minutes with web search.</p>
+        <p class="muted">Your note stays unchanged until you approve suggestions. Web search can take 1–2 minutes.</p>
       </div>
+      <button type="button" class="button--secondary button--small" data-action="ap-stop">Stop request</button>
     </div>`;
   }
 
@@ -619,8 +620,8 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   // handlers work unchanged.
   function renderInlineSuggestionActions(suggestion, problemId) {
     return `<span class="ap-inline-actions" contenteditable="false">`
-      + `<button type="button" class="ap-inline-btn ap-inline-approve" data-action="ap-suggestion-approve" data-problem-id="${escapeHtml(problemId)}" data-suggestion-id="${escapeHtml(String(suggestion.id))}" title="Approve this change">✓</button>`
-      + `<button type="button" class="ap-inline-btn ap-inline-reject" data-action="ap-suggestion-reject" data-problem-id="${escapeHtml(problemId)}" data-suggestion-id="${escapeHtml(String(suggestion.id))}" title="Reject this change">✕</button>`
+      + `<button type="button" class="ap-inline-btn ap-inline-approve" data-action="ap-suggestion-approve" data-problem-id="${escapeHtml(problemId)}" data-suggestion-id="${escapeHtml(String(suggestion.id))}" title="Approve this change" aria-label="Approve this change">✓</button>`
+      + `<button type="button" class="ap-inline-btn ap-inline-reject" data-action="ap-suggestion-reject" data-problem-id="${escapeHtml(problemId)}" data-suggestion-id="${escapeHtml(String(suggestion.id))}" title="Reject this change" aria-label="Reject this change">✕</button>`
       + `</span>`;
   }
 
@@ -790,7 +791,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       : renderTextWithCitationLinks(problem.therapeuticPlan, apReferences);
     const referencesHtml = references.length ? renderApReferences(references) : "";
     return `<article class="plan-problem-card" data-problem-id="${escapeHtml(problem.id)}">
-      <div class="ed-problem-bar"><strong>Problem ${index + 1}</strong><span class="ed-mini-row"><button type="button" class="ed-mini" data-action="generate-ap" data-problem-id="${escapeHtml(problem.id)}" ${generating ? "disabled" : ""} title="${escapeHtml(generating ? "Consulting AI on this problem…" : "Consult AI on this problem's plan (uses your saved OpenAI key; only de-identified context is sent; you review the consult request first)")}">${icon("phone")} ${generating ? "Consulting…" : "Consult"}</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="-1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem up">↑</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-plan-problem" data-problem-id="${escapeHtml(problem.id)}">Remove</button></span></div>
+      <div class="ed-problem-bar"><strong>Problem ${index + 1}</strong><span class="ed-mini-row"><button type="button" class="ed-mini" data-action="generate-ap" data-problem-id="${escapeHtml(problem.id)}" ${generating ? "disabled" : ""} title="${escapeHtml(generating ? "Consulting AI on this problem…" : "Consult AI on this problem's plan (uses your OpenAI key; only de-identified context is sent; you review the consult request first)")}">${icon("phone")} ${generating ? "Consulting…" : "AI suggestions"}</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="-1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem up">↑</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-plan-problem" data-problem-id="${escapeHtml(problem.id)}">Remove</button></span></div>
       ${generating ? renderApLoadingBanner() : ""}
       <div class="ed-sub"><span class="ed-sub-label">Clinical problem</span><div class="ed-body ed-body--strong" contenteditable="true" data-problem-field="problem" data-placeholder="Name the clinical problem, not a test or treatment" spellcheck="true">${editorHtml(sanitizeProblemTitle(valueText(problem.problem)))}</div></div>
       <div class="ed-sub"><span class="ed-sub-label">Key context</span><div class="ed-body" contenteditable="true" data-problem-field="keyContext" data-placeholder="Optional concise context" spellcheck="true">${editorHtml(problem.keyContext)}</div></div>

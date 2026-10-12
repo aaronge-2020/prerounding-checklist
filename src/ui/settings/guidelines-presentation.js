@@ -1,5 +1,5 @@
-import { tokenColorSwatchButton } from "../token-color-picker.js?v=20261011-epic-workflow";
-import { guidelinePageModel } from "./guideline-pagination.js?v=20261011-epic-workflow";
+import { tokenColorSwatchButton } from "../token-color-picker.js?v=20261011-ai-helper";
+import { guidelinePageModel } from "./guideline-pagination.js?v=20261011-ai-helper";
 
 // Pure presentation module. The library stays compact by keeping editing in a
 // single side panel instead of expanding every guideline into a giant card.
