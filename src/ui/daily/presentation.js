@@ -32,6 +32,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
           <span class="muted">${sourceCount} source${sourceCount === 1 ? "" : "s"}</span>
           ${renderRowReviewStatus(sourceCapturePacketCheck(day.sourceCaptures, { structuredNote: day.primaryTeamNote, scope: "daily" }).completeness)}
         </span>
+        <span class="day-row-compact" aria-hidden="true">HD${index + 1}</span>
       </button>
     `;
   }
@@ -539,6 +540,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     days,
     selectedDayId,
     selectedPacketId,
+    stayRailExpanded = false,
     localCalendarDate,
     patientRequiredMessage,
     renderDeidStrip,
@@ -575,8 +577,9 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     const admissionCompleteness = sourceCapturePacketCheck(admissionSections, { structuredNote: patient.admissionPrimaryTeamNote, scope: "admission" }).completeness;
 
     return `
-      <div class="stay-layout source-first-stay">
+      <div class="stay-layout source-first-stay ${stayRailExpanded ? "stay-rail-expanded" : ""}">
         <aside class="panel stay-rail">
+          <button type="button" class="stay-rail-toggle" data-action="toggle-stay-rail" aria-expanded="${stayRailExpanded ? "true" : "false"}" aria-label="${stayRailExpanded ? "Collapse hospital day panel" : "Expand hospital day panel"}" title="${stayRailExpanded ? "Collapse day panel" : "Expand day panel"}">${icon("chevron")}</button>
           <div class="section-heading tight"><div><h2>Import from Epic</h2><p class="muted">Choose a packet, paste a source, then review how it was parsed.</p></div></div>
           <div class="timeline-rail">
             <button type="button" class="day-row admission-day-row ${admissionSelected ? "selected" : ""}" data-action="select-admission" aria-current="${admissionSelected ? "page" : "false"}">
@@ -585,6 +588,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
                 <span class="muted">${admissionSourceCount} source${admissionSourceCount === 1 ? "" : "s"}</span>
                 ${renderRowReviewStatus(admissionCompleteness)}
               </span>
+              <span class="day-row-compact" aria-hidden="true">Adm</span>
             </button>
             ${days.length ? days.map((day, index) => renderDayRow(day, admissionSelected ? "" : selectedPacketId, index)).join("") : `<div class="empty-state compact">No later hospital days saved.</div>`}
           </div>

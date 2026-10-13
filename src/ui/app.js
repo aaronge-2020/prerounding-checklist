@@ -107,8 +107,8 @@ import {
   normalizeUserPreferences
 } from "../app/preferences.js?v=20261011-request-controls";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1&icon=search-v1";
-import { createDailyPresentation } from "./daily/presentation.js?v=20261012-writer-controls";
-import { createDailySourceController } from "./daily/source-controller.js?v=20261013-aloop-round3-final";
+import { createDailyPresentation } from "./daily/presentation.js?v=20261013-slim-stay-rail";
+import { createDailySourceController } from "./daily/source-controller.js?v=20261013-slim-stay-rail";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20261012-writer-controls";
 import { createReviewController } from "./review/controller.js?v=20261013-aloop-round3-final";
@@ -171,7 +171,7 @@ const app = {
   adaptiveStore: null,
   view: "vault",
   selectedDayId: "",
-  selectedStayPacketId: "admission", selectedPromptTask: "presentation_quality_editor", promptDayId: "",
+  selectedStayPacketId: "admission", stayRailExpanded: false, selectedPromptTask: "presentation_quality_editor", promptDayId: "",
   promptDayFollowsSelectedDay: true,
   customPromptTasks: loadCustomPromptTasks(),
   pendingRemovePromptTaskId: "",
@@ -1831,6 +1831,16 @@ async function handleClick(event) {
     return;
   }
   if (app.view === "sampleNotes" && sampleNotesController.click(event.target)) return;
+  // The Add-day summary stays visible in the slim day rail. Opening it
+  // expands the rail in place (no re-render, so the details still opens);
+  // the state flag makes the next render keep the expanded panel.
+  const newDaySummary = event.target.closest?.("details.new-day-control > summary");
+  if (newDaySummary && !app.stayRailExpanded) {
+    app.stayRailExpanded = true;
+    const rail = newDaySummary.closest(".stay-rail");
+    rail?.closest(".stay-layout")?.classList.add("stay-rail-expanded");
+    rail?.querySelector(".stay-rail-toggle")?.setAttribute("aria-expanded", "true");
+  }
   const target = event.target.closest("[data-action]");
   if (!target) return;
   const action = target.dataset.action;
@@ -1933,8 +1943,23 @@ async function handleClick(event) {
     if (action === "add-day") await addDay();
     if (action === "add-daily-source") await dailySourceController.addSource();
     if (action === "add-admission-source") await dailySourceController.addAdmissionSource();
-    if (action === "select-day" || action === "select-admission")
+    if (action === "toggle-stay-rail") {
+      app.stayRailExpanded = !app.stayRailExpanded;
+      if (!app.stayRailExpanded) {
+        // The slim strip cannot show the Add-day form. Close it before the
+        // render: render scroll preservation would otherwise restore it
+        // open inside the strip.
+        const control = target.closest(".stay-rail")?.querySelector("details.new-day-control");
+        if (control) control.open = false;
+      }
+      render();
+    }
+    if (action === "select-day" || action === "select-admission") {
+      // Choosing a packet from the slim rail opens the full day panel, so
+      // the packet details and Add-day form are one click away.
+      app.stayRailExpanded = true;
       dailySourceController.selectPacket(action === "select-admission" ? "admission" : target.dataset.dayId);
+    }
     if (action === "save-day") await dailySourceController.saveSources();
     if (action === "open-progress-note") reviewController.open(app.selectedDayId);
     if (action === "open-admission-note") reviewController.open("admission");
