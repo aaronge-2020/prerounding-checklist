@@ -29,9 +29,18 @@ try {
   }
   async function dragFromHandleTo(locator) {
     const from = await handle.boundingBox(), to = await locator.boundingBox();
+    const targetX = to.x + to.width / 2, targetY = to.y + to.height / 2;
     await page.mouse.move(from.x + 30, from.y + 15); await page.mouse.down();
-    await page.mouse.move(to.x + to.width / 2, to.y + to.height / 2, { steps: 15 });
-    await page.waitForTimeout(200);
+    await page.mouse.move(targetX, targetY, { steps: 15 });
+    // The controller positions the drag ghost at pointer + 12px inside the
+    // same pointermove handling that updates the drop-target highlight, so
+    // the ghost reaching the final point proves that move has been handled.
+    // A fixed sleep cannot prove that on a loaded machine: the input queue
+    // may not have flushed yet, and a one-shot class read then races it.
+    await page.waitForFunction(({ x, y }) => {
+      const ghost = document.querySelector('.note-drag-ghost');
+      return !!ghost && Math.abs(parseFloat(ghost.style.left) - (x + 12)) < 1 && Math.abs(parseFloat(ghost.style.top) - (y + 12)) < 1;
+    }, { x: targetX, y: targetY });
   }
   // The Plan card starts far below the fold of the sections pane.
   assert.equal(await pane.evaluate(el => el.scrollTop), 0);
@@ -40,6 +49,7 @@ try {
   // A: drop on the Plan index item moves the text without any scrolling.
   await selectRange(hpi, 7, 22);
   await dragFromHandleTo(indexItem('plan'));
+  await page.waitForFunction(() => document.querySelector('[data-note-index-field="plan"]')?.classList.contains('is-note-drop-target'));
   assert.ok(await indexItem('plan').evaluate(el => el.classList.contains('is-note-drop-target')), 'hovered index item is the drop target');
   assert.ok(await indexItem('physical_exam').evaluate(el => el.classList.contains('is-note-drop-available')), 'other index items are marked available');
   assert.ok(!await indexItem('history_of_present_illness').evaluate(el => el.classList.contains('is-note-drop-available')), 'source index item is not marked available');
@@ -62,6 +72,7 @@ try {
   // C: Escape while hovering the index cancels cleanly.
   await selectRange(hpi, 7, 22);
   await dragFromHandleTo(indexItem('assessment'));
+  await page.waitForFunction(() => document.querySelector('[data-note-index-field="assessment"]')?.classList.contains('is-note-drop-target'));
   assert.ok(await indexItem('assessment').evaluate(el => el.classList.contains('is-note-drop-target')));
   await page.keyboard.press('Escape'); await page.mouse.up();
   assert.equal(await hpi.inputValue(), 'Cough. Misplaced exam.');
@@ -89,7 +100,7 @@ try {
   const examIndexBox = await indexItem('physical_exam').boundingBox();
   await page.mouse.move(originPoint.x, originPoint.y); await page.mouse.down();
   await page.mouse.move(examIndexBox.x + examIndexBox.width / 2, examIndexBox.y + examIndexBox.height / 2, { steps: 15 });
-  await page.waitForTimeout(200);
+  await page.waitForFunction(() => document.querySelector('[data-note-index-field="physical_exam"]')?.classList.contains('is-note-drop-target'));
   assert.ok(await indexItem('physical_exam').evaluate(el => el.classList.contains('is-note-drop-target')));
   await page.mouse.up();
   assert.equal(await exam.inputValue(), 'Alert.\n\nHISTORY');
@@ -119,7 +130,7 @@ try {
   const dailyFrom = await dailyHandle.boundingBox(), dailyTo = await dailyPlanIndex.boundingBox();
   await page.mouse.move(dailyFrom.x + 30, dailyFrom.y + 15); await page.mouse.down();
   await page.mouse.move(dailyTo.x + dailyTo.width / 2, dailyTo.y + dailyTo.height / 2, { steps: 15 });
-  await page.waitForTimeout(200);
+  await page.waitForFunction(() => document.querySelector('[data-structured-primary-note-scope="daily"] [data-note-index-field="plan"]')?.classList.contains('is-note-drop-target'));
   assert.ok(await dailyPlanIndex.evaluate(el => el.classList.contains('is-note-drop-target')), 'daily index item is a drop target');
   await page.mouse.up();
   assert.equal(await dailyPlan.inputValue(), 'Review results.\n\nMisplaced exam.');
