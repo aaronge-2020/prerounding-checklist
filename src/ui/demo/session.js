@@ -1,4 +1,4 @@
-import { createPatientRecord, normalizeDay } from "../../app/state/vault.js?v=20261012-citation-preview";
+import { createPatientRecord, normalizeDay } from "../../app/state/vault.js?v=20261013-durable-rules";
 import { normalizeSourceCapture } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
 import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261013-aloop-round3-final";
 

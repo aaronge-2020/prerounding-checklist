@@ -12,7 +12,7 @@
 // pays their parse cost until this view is actually used. Import failures
 // fail closed with state.dataState === "error" — this controller never
 // throws.
-import { activePatient } from "../../app/state/vault.js?v=20261012-citation-preview";
+import { activePatient } from "../../app/state/vault.js?v=20261013-durable-rules";
 export function createDrugChecksController({
   app,
   byId,

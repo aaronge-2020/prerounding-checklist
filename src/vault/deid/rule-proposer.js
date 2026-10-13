@@ -10,8 +10,10 @@
 //   3. Remove covered corrections ("conquered")
 //   4. Repeat until no pattern covers enough remaining corrections
 //
-// Privacy: patterns and examples can contain source text. Both rules and
-// corrections stay in memory for this patient session and are never persisted.
+// Privacy: corrections never persist. A proposed rule's examples are
+// source span text and never persist either; only the rule's pattern-only
+// projection (rule-store.js sanitizeRulesForPersistence) is written, by
+// the app edge, into the encrypted vault.
 
 import { extractFeatures } from "./feature-extract.js";
 

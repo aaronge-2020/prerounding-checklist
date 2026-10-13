@@ -15,7 +15,7 @@ import {
   createPatientRecord,
   setActivePatient,
   updateActivePatient
-} from "../app/state/vault.js?v=20261012-citation-preview";
+} from "../app/state/vault.js?v=20261013-durable-rules";
 import {
   deleteEncryptedVaultRecord,
   downloadJson, downloadText,
@@ -160,10 +160,11 @@ import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-
 import {
   recordCorrection as recordProposerCorrection,
   clearProposerSession,
+  clearLearnedRules,
   decideRule as decideProposerRule,
-} from "../vault/deid/rule-orchestrator.js?v=20261011-epic-workflow";
-import { getPendingRules } from "../vault/deid/rule-store.js?v=20261011-epic-workflow";
-import { createApprovalPresentation } from "./deid/approval-presentation.js?v=20261011-epic-workflow";
+} from "../vault/deid/rule-orchestrator.js?v=20261013-durable-rules";
+import { getPendingRules, loadRules, saveRules, sanitizeRulesForPersistence } from "../vault/deid/rule-store.js?v=20261013-durable-rules";
+import { createApprovalPresentation } from "./deid/approval-presentation.js?v=20261013-durable-rules";
 const app = {
   vault: null,
   passphrase: "",
@@ -963,6 +964,20 @@ async function persistVault(message = "Saved.") {
   setStatus(message);
 }
 
+// Learned de-id rules live at vault level, not in a patient's session.
+// Only their pattern-only projection is written (the sanitizer drops
+// examples and every other piece of source text); raw corrections and
+// their spans are never persisted anywhere.
+function persistLearnedRules() {
+  if (!app.vault || app.demoSession) return;
+  app.vault = { ...app.vault, learnedDeidRules: sanitizeRulesForPersistence(loadRules()) };
+  void persistVault("Learned rules saved to your encrypted vault.");
+}
+
+function hydrateLearnedRules() {
+  saveRules(sanitizeRulesForPersistence(app.vault?.learnedDeidRules || []));
+}
+
 function patientRequiredMessage() {
   const heading = vaultIsUnlocked() ? "Next step: add a patient." : "Next step: unlock the vault and add a patient.";
   return `
@@ -1007,7 +1022,7 @@ function recordVaultActivity() {
 }
 
 function clearProtectedViewContent() {
-  ["dailyContent", "reviewContent", "promptsContent", "quickDeidContent", "settingsContent"].forEach((id) => {
+  ["dailyContent", "dailyRuleProposals", "reviewContent", "promptsContent", "quickDeidContent", "settingsContent"].forEach((id) => {
     const container = byId(id);
     if (container) container.replaceChildren();
   });
@@ -1068,6 +1083,9 @@ function clearSensitiveSession() {
   // Session-only policy: drop the in-memory adaptive correction memory.
   app.adaptiveStore = null;
   clearPatientScopedSession();
+  // Vault lock also drops in-memory learned rules (fail closed). The rules
+  // persist in the encrypted vault and are rehydrated on unlock.
+  clearLearnedRules();
   clearQuickDeidSession();
 }
 
@@ -1324,6 +1342,8 @@ function renderWarnings(sections, scope) {
 function renderDaily() {
   preserveViewScroll(byId("dailyContent"), () => dailySourceController.renderDaily());
   bindSectionReordering();
+  const proposalsHost = byId("dailyRuleProposals");
+  if (proposalsHost) proposalsHost.innerHTML = safeHtml(`<section class="panel rule-proposals-panel" data-rule-proposals aria-label="Suggested rules">${renderRuleProposals()}</section>`);
 }
 
 function renderReview() { preserveViewScroll(byId("reviewContent"), () => reviewController.render()); }
@@ -1651,8 +1671,11 @@ function renderQuickModelControl() {
 
 function refreshRuleProposalsPanel() {
   try {
-    const panel = document.querySelector("[data-rule-proposals]");
-    if (panel) panel.innerHTML = safeHtml(renderRuleProposals());
+    // Panels mount in both the Hospital Stay view and Quick De-ID; update
+    // every mounted one so a mid-review proposal appears where the
+    // clinician is actually working.
+    const html = safeHtml(renderRuleProposals());
+    document.querySelectorAll("[data-rule-proposals]").forEach((panel) => { panel.innerHTML = html; });
   } catch {
     // Panel not mounted; proposals will render on next view render.
   }
@@ -1968,16 +1991,18 @@ async function handleClick(event) {
       const name = target.dataset.ruleName || "";
       if (name) {
         decideProposerRule(name, true);
-        setStatus(`Rule enabled for this patient session. Locking or switching patients clears it.`);
-        renderQuickDeid();
+        persistLearnedRules();
+        setStatus(`Rule enabled. It stays active across patients in this vault.`);
+        refreshRuleProposalsPanel();
       }
     }
     if (action === "reject-rule") {
       const name = target.dataset.ruleName || "";
       if (name) {
         decideProposerRule(name, false);
+        persistLearnedRules();
         setStatus(`Rule dismissed.`);
-        renderQuickDeid();
+        refreshRuleProposalsPanel();
       }
     }
     if (action === "review-quick-warning") reviewQuickWarning(Number(target.dataset.warningIndex));
@@ -2046,7 +2071,9 @@ async function unlockVault() {
   app.passphrase = passphrase;
   app.vaultUnlockError = "";
   // Session-only policy (2026-10-03): correction memory is never loaded from
-  // the vault. (Old vault records with adaptiveDeid are ignored.)
+  // the vault. (Old vault records with adaptiveDeid are ignored.) Learned
+  // rules are different: they are pattern-only, so they rehydrate here.
+  hydrateLearnedRules();
   try {
     await refreshGuidelines();
     admissionDateAnchor.restore();
@@ -2548,9 +2575,13 @@ function logDeidCorrection({ decision, original, placeholder, label, source, tex
         noteId: "",
         label,
       });
-      // If new rules were proposed, refresh the proposals panel in place
-      // so the clinician sees them without disrupting the review flow.
-      if (newlyProposed && newlyProposed.length) refreshRuleProposalsPanel();
+      // If new rules were proposed, persist their pattern-only projection
+      // and refresh the proposals panels in place so the clinician sees
+      // them without disrupting the review flow.
+      if (newlyProposed && newlyProposed.length) {
+        persistLearnedRules();
+        refreshRuleProposalsPanel();
+      }
     }
   } catch {
     // Proposer must never break the review flow.

@@ -45,7 +45,7 @@ export function createApprovalPresentation({ escapeHtml }) {
           <p class="rule-card-meta">Covers ${rule.coverage || 0} of your corrections</p>
         </div>
         <div class="rule-card-actions">
-          <button type="button" data-action="approve-rule" data-rule-name="${escapeHtml(rule.name)}">Enable for this session</button>
+          <button type="button" data-action="approve-rule" data-rule-name="${escapeHtml(rule.name)}">Enable rule</button>
           <button type="button" data-action="reject-rule" data-rule-name="${escapeHtml(rule.name)}">Reject</button>
         </div>
       </div>`;
@@ -59,7 +59,7 @@ export function createApprovalPresentation({ escapeHtml }) {
     return `
       <div class="rule-list" data-rule-list>
         <h3>Suggested rules (${pending.length})</h3>
-        <p class="rule-intro">Experimental suggestions from this patient session. Inspect each pattern before enabling it. Rules are cleared when you switch patients or lock the vault; correction coverage is not a validated accuracy score.</p>
+        <p class="rule-intro">Experimental suggestions learned from your corrections. Inspect each pattern before enabling it. Rules are saved in your encrypted vault (pattern only, never your notes' text) and stay active across patients; locking the vault hides them until you unlock. Correction coverage is not a validated accuracy score.</p>
         ${pending.map(renderRuleCard).join("")}
       </div>`;
   }

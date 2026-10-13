@@ -4,7 +4,7 @@ import { createNoteDragController } from "./note-drag-controller.js?v=20261012-h
 import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261011-drag-workspace-v2";
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261012-citation-preview";
 import { captureScrollPositions, restoreScrollPositions, replaceViewContent } from "../view-scroll.js?v=20261012-safety";
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20261012-citation-preview";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20261013-durable-rules";
 import {
   clinicalParseWarning,
   parseClinicalExport,

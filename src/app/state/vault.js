@@ -6,6 +6,7 @@ import { normalizePrimaryTeamNote } from "../../patient-context/primary-team-not
 import { normalizeLabBaselines } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import { normalizeSavedScores } from "../../clinical-scores/saved-scores.js";
 import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20261012-citation-preview";
+import { sanitizeRulesForPersistence } from "../../vault/deid/rule-store.js?v=20261013-durable-rules";
 // (deserializeAdaptiveStore import removed 2026-10-03: session-only policy.)
 
 export const VAULT_SCHEMA_VERSION = 5;
@@ -28,6 +29,7 @@ export function createEmptyVaultState({ now = timestampNow } = {}) {
     patients: [],
     preferences: normalizeUserPreferences(),
     adaptiveDeid: null,
+    learnedDeidRules: [],
     updatedAt: now()
   };
 }
@@ -214,6 +216,11 @@ export function migrateVaultState(value, { now = timestampNow } = {}) {
     // Session-only policy (2026-10-03): the adaptive store is never persisted,
     // not even in the encrypted vault. Old records are dropped on migration.
     adaptiveDeid: null,
+    // Learned de-id rules persist at vault level (not per patient), but
+    // only as a pattern-only projection: the sanitizer drops examples and
+    // any other source-derived text, and drops malformed rules outright,
+    // on every load and every save path that routes through here.
+    learnedDeidRules: sanitizeRulesForPersistence(base.learnedDeidRules),
     updatedAt: String(base.updatedAt || now())
   };
 }

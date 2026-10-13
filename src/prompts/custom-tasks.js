@@ -1,4 +1,4 @@
-import { createLocalId, timestampNow } from "../app/state/vault.js?v=20261012-citation-preview";
+import { createLocalId, timestampNow } from "../app/state/vault.js?v=20261013-durable-rules";
 import { createGuidelineSet, isCustomGuidelineSet } from "./guideline-sets.js?v=20261012-citation-preview";
 
 // Legacy prompt-only records. New user-created prompts live directly in the

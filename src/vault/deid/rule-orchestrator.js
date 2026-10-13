@@ -3,23 +3,25 @@
 //
 // Flow:
 //   1. Corrections accumulate in the session-only store (via correction-log.js)
-//   2. After enough corrections, separateAndConquer proposes rules
-//   3. Proposed rules are saved to the rule store (session-only)
+//   2. Every correction re-runs separateAndConquer once enough corrections
+//      exist for a pattern (MIN_SUPPORT); dedupe keeps this idempotent
+//   3. Proposed rules are saved to the rule store
 //   4. Clinician approves/rejects via approval UI
 //   5. Approved rules run in the DETECT stage via applyProposedRules
 //
-// All PHI stays in memory. Patterns and examples also stay in memory.
+// Raw corrections (PHI spans) stay in memory only and are cleared on
+// patient switch and vault lock. Rules are vault-level: they survive
+// patient switches, and the app edge persists their pattern-only
+// projection (see rule-store.js) into the encrypted vault. In-memory
+// rules are cleared on vault lock and rehydrated on unlock.
 
-import { separateAndConquer, applyProposedRules, MIN_SUPPORT } from "./rule-proposer.js?v=20261011-epic-workflow";
+import { separateAndConquer, applyProposedRules, MIN_SUPPORT } from "./rule-proposer.js?v=20261013-durable-rules";
 import {
   loadRules, addProposedRules, getApprovedRules, setRuleStatus, clearRules,
-} from "./rule-store.js?v=20261011-epic-workflow";
+} from "./rule-store.js?v=20261013-durable-rules";
 import {
   createCorrectionStore, addCorrection, getCorrections, buildCorrection,
 } from "./correction-log.js";
-
-// Corrections needed before the proposer runs.
-const PROPOSE_THRESHOLD = 5;
 
 // Session-only correction store (PHI never persisted).
 let correctionStore = null;
@@ -29,18 +31,34 @@ export function ensureCorrectionStore() {
   return correctionStore;
 }
 
+/**
+ * Clear the session-only correction store (raw PHI spans). Called on
+ * patient switch and on vault lock. Learned rules are NOT cleared here:
+ * they belong to the vault, not to one patient's session.
+ */
 export function clearProposerSession() {
   correctionStore = null;
+}
+
+/**
+ * Clear in-memory learned rules. Called on vault lock only; the rules
+ * themselves persist in the encrypted vault and are rehydrated on
+ * unlock. Patient switches must not call this.
+ */
+export function clearLearnedRules() {
   clearRules();
 }
 
 /**
- * Record a clinician correction and maybe trigger rule proposing.
+ * Record a clinician correction and trigger rule proposing.
  *
- * Called from the review flow after logDeidCorrection.
+ * Called from the review flow after logDeidCorrection. The proposer runs
+ * on every correction once MIN_SUPPORT corrections exist, so a pattern
+ * surfaces as soon as its third matching correction lands instead of
+ * waiting for an arbitrary batch boundary.
  *
  * @param {Object} opts - {decision, original, corrected, noteText, noteId}
- * @returns {Array} newly proposed rules (empty if threshold not met)
+ * @returns {Array} newly proposed rules (empty if none)
  */
 export function recordCorrection(opts) {
   const store = ensureCorrectionStore();
@@ -48,9 +66,7 @@ export function recordCorrection(opts) {
   if (!correction) return [];
   addCorrection(store, correction);
 
-  // Propose when enough corrections have accumulated
-  const all = getCorrections(store);
-  if (all.length >= PROPOSE_THRESHOLD && all.length % PROPOSE_THRESHOLD === 0) {
+  if (getCorrections(store).length >= MIN_SUPPORT) {
     return proposeRules();
   }
   return [];

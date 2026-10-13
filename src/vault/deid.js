@@ -55,7 +55,7 @@ import { applyAdaptiveEntities } from "./deid/adaptive.js?v=20261003-deid-100";
 // Automatic rule proposer (separate-and-conquer): learns interpretable regex
 // rules from the clinician's own corrections. Approved rules run here in the
 // DETECT stage, after the adaptive store. Rules contain no PHI.
-import { applyApprovedRules } from "./deid/rule-orchestrator.js?v=20261011-epic-workflow";
+import { applyApprovedRules } from "./deid/rule-orchestrator.js?v=20261013-durable-rules";
 import { applyLearnedMeddeidRules } from "./deid/meddeid-learned.js?v=20261003-deid-100";
 // Free-text date/time detection and parsing runs entirely through chrono-node
 // (https://github.com/wanasit/chrono, vendored English-only build) rather
