@@ -1,6 +1,6 @@
 import { deidentifyLabeledField } from "../../patient-context/labeled-deidentification.js?v=20261012-safety";
 import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
-import { createNoteDragController } from "./note-drag-controller.js?v=20261012-highlight-drag";
+import { createNoteDragController } from "./note-drag-controller.js?v=20261013-index-drop";
 import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261011-drag-workspace-v2";
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261012-citation-preview";
 import { captureScrollPositions, restoreScrollPositions, replaceViewContent } from "../view-scroll.js?v=20261012-safety";

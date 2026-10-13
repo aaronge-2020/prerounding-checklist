@@ -3,6 +3,7 @@
 // All selected text stays in this tab and is invalidated with its workspace.
 const SOURCE = "[data-note-original], [data-structured-note-field]";
 const ROOT = "[data-structured-primary-note-scope]";
+const INDEX = "[data-note-index-field]";
 
 function insideSelection(selection, x, y, doc) {
   const { source, from, text, start, end } = selection;
@@ -57,7 +58,7 @@ export function createNoteDragController({ context, apply, report, doc = documen
       if (handle) handle.disabled = true;
       const status = selected.root.querySelector("[data-note-selection-status]");
       if (status) status.textContent = "Text from the original is copied. Text between sections is moved.";
-      selected.root.querySelectorAll(".is-note-drop-target").forEach(el => el.classList.remove("is-note-drop-target"));
+      selected.root.querySelectorAll(".is-note-drop-target, .is-note-drop-available").forEach(el => el.classList.remove("is-note-drop-target", "is-note-drop-available"));
     }
     selected = null;
     dragging = false;
@@ -93,11 +94,29 @@ export function createNoteDragController({ context, apply, report, doc = documen
     const handle = root.querySelector("[data-note-drag-handle]");
     if (handle) handle.disabled = false;
     const status = root.querySelector("[data-note-selection-status]");
-    if (status) status.textContent = `${end - start} characters selected · Drag highlighted text or use Drag selection / a section heading · Esc cancels`;
+    if (status) status.textContent = `${end - start} characters selected · Drag highlighted text or use Drag selection / a section heading or the Sections list · Esc cancels`;
   }
-  function transfer(card) {
-    if (!current() || card.closest(ROOT) !== selected.root) { clear(); return; }
-    const to = card.dataset.noteDropField;
+  // A drop may land on a section card or on that section's entry in the
+  // Sections index; both resolve to the same field and share transfer().
+  function targetField(el) {
+    return el?.dataset.noteDropField ?? el?.dataset.noteIndexField ?? "";
+  }
+  function dropTargetAt(x, y) {
+    const el = doc.elementFromPoint(x, y);
+    const card = el?.closest("[data-note-drop-field]");
+    if (card?.closest(ROOT) === selected.root) return card;
+    const item = el?.closest(INDEX);
+    if (item?.closest(ROOT) === selected.root) return item;
+    return null;
+  }
+  function markIndexTargets() {
+    selected.root.querySelectorAll(INDEX).forEach(item => {
+      if (item.dataset.noteIndexField !== selected.from) item.classList.add("is-note-drop-available");
+    });
+  }
+  function transfer(target) {
+    if (!current() || target.closest(ROOT) !== selected.root) { clear(); return; }
+    const to = targetField(target);
     const selection = selected;
     clear();
     try { apply({ ...selection, to }); }
@@ -124,8 +143,11 @@ export function createNoteDragController({ context, apply, report, doc = documen
     if (!pointer || event.pointerId !== pointer.id || !current()) return;
     if (!dragging && Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) < 6) return;
     event.preventDefault();
-    dragging = true;
-    selected.root.classList.add("is-note-dragging");
+    if (!dragging) {
+      dragging = true;
+      selected.root.classList.add("is-note-dragging");
+      markIndexTargets();
+    }
     pointer.lastX = event.clientX;
     pointer.lastY = event.clientY;
     if (!scrollFrame) {
@@ -135,6 +157,9 @@ export function createNoteDragController({ context, apply, report, doc = documen
         const sectionRect = sectionPane?.getBoundingClientRect();
         const overSections = sectionRect && pointer.lastX >= sectionRect.left && pointer.lastX <= sectionRect.right &&
           pointer.lastY >= sectionRect.top && pointer.lastY <= sectionRect.bottom;
+        // The Sections index deliberately does not edge-scroll: its items are
+        // short, so sliding them under a stationary pointer would move the
+        // highlighted item away and drop onto a different section.
         const pane = overSections ? sectionPane : selected.root.closest(".stay-content") || selected.root.closest(".view");
         if (pane) {
           const rect = pane.getBoundingClientRect();
@@ -154,8 +179,8 @@ export function createNoteDragController({ context, apply, report, doc = documen
     ghost.style.left = `${event.clientX + 12}px`;
     ghost.style.top = `${event.clientY + 12}px`;
     selected.root.querySelectorAll(".is-note-drop-target").forEach(el => el.classList.remove("is-note-drop-target"));
-    const card = doc.elementFromPoint(event.clientX, event.clientY)?.closest("[data-note-drop-field]");
-    if (card?.closest(ROOT) === selected.root && card.dataset.noteDropField !== selected.from) card.classList.add("is-note-drop-target");
+    const target = dropTargetAt(event.clientX, event.clientY);
+    if (target && targetField(target) !== selected.from) target.classList.add("is-note-drop-target");
   });
   doc.addEventListener("pointerup", event => {
     if (event.pointerId === canceledPointer) {
@@ -168,8 +193,8 @@ export function createNoteDragController({ context, apply, report, doc = documen
     pointer = null;
     if (!dragging) return;
     event.preventDefault(); event.stopImmediatePropagation();
-    const card = doc.elementFromPoint(event.clientX, event.clientY)?.closest("[data-note-drop-field]");
-    if (card) transfer(card); else clear();
+    const target = dropTargetAt(event.clientX, event.clientY);
+    if (target) transfer(target); else clear();
   }, true);
   doc.addEventListener("pointercancel", () => {
     // Touch scrolling cancels a pointer but must keep the chosen passage so
