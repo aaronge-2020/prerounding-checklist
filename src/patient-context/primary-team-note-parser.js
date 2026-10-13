@@ -56,7 +56,7 @@ const HEADING_DEFINITIONS = Object.freeze([
     "objective diagnostic studies", "objective / diagnostic studies", "results", "data", "radiology"
   ], "objective", true),
   heading(["assessment", "assessments", "impression", "clinical impression", "a", "final diagnosis", "final diagnoses", "admitting diagnosis", "admitting diagnoses", "preoperative diagnosis", "preoperative diagnoses"], "assessment"),
-  heading(["assessment and plan", "assessment / plan", "assessment plan", "a and p", "a p", "ap", "impression and plan", "impression plan", "assessment and recommendations", "impression and recommendations", "plan", "p", "plans", "plan by system", "systems plan", "recommendations", "recs", "plan and recommendations", "discussion and plan", "treatment", "treatments", "next steps"], "plan"),
+  heading(["assessment and plan", "assessment / plan", "assessment plan", "a and p", "a p", "ap", "impression and plan", "impression plan", "assessment and recommendations", "impression and recommendations", "initial hospital plan", "plan", "p", "plans", "plan by system", "systems plan", "recommendations", "recs", "plan and recommendations", "discussion and plan", "treatment", "treatments", "next steps"], "plan"),
   heading(["discharge instructions", "discharge instruction"], "plan"),
   heading(["discharge diagnosis", "discharge diagnoses", "additional discharge diagnoses", "discharge dx"], "assessment", true, true),
   // A standalone "Diagnoses" section is an assessment section (the plural
@@ -398,7 +398,7 @@ function partitionDiffStatement(s) {
 
 function partitionIsMarker(segments, i) {
   const s = segments[i];
-  if (/^\d{1,2}[.)]\s/.test(s)) return true;
+  if (/^(?:\d{1,2}[.)]|#\d{1,2}[.:)])\s/.test(s)) return true;
   if (/^[-•*]\s?/.test(s)) return true;
   if (PARTITION_LABELED_PLAN.test(s)) return true;
   if (PARTITION_PROBLEM_LIST_HEADS.has(s.toLowerCase().replace(/[:\s]+$/, ""))) return true;
@@ -413,7 +413,7 @@ function partitionIsMarker(segments, i) {
   if (i + 2 < segments.length && partitionDiffStatement(segments[i + 1]) && /^[-•*]/.test(segments[i + 2])) return true;
   return i + 2 < segments.length
     && (!/[.!?]$/.test(segments[i + 1]) || partitionPeriodTitle(segments[i + 1])) && segments[i + 1].length <= 100
-    && !/^[-•*]/.test(segments[i + 1]) && !/^\d{1,2}[.)]\s/.test(segments[i + 1])
+    && !/^[-•*]/.test(segments[i + 1]) && !/^(?:\d{1,2}[.)]|#\d{1,2}[.:)])\s/.test(segments[i + 1])
     && /^[-•*]/.test(segments[i + 2]);
 }
 
@@ -498,7 +498,7 @@ function partitionCombinedPlanText(text) {
 // of a titled problem). Mirrors the title-start rule in gold's splitter.
 function partitionIsTitleStart(segments, i) {
   const s = segments[i];
-  if (/^\d{1,2}[.)]\s/.test(s) || /^[-•*]\s?/.test(s) || PARTITION_LABELED_PLAN.test(s)) return false;
+  if (/^(?:\d{1,2}[.)]|#\d{1,2}[.:)])\s/.test(s) || /^[-•*]\s?/.test(s) || PARTITION_LABELED_PLAN.test(s)) return false;
   if (PARTITION_PROBLEM_LIST_HEADS.has(s.toLowerCase().replace(/[:\s]+$/, ""))) return false;
   if (s.length > 100) return false;
   if (/[.!?]$/.test(s) && !partitionPeriodTitle(s)) return false;
@@ -506,7 +506,7 @@ function partitionIsTitleStart(segments, i) {
   if (i + 2 < segments.length && partitionDiffStatement(segments[i + 1]) && /^[-•*]/.test(segments[i + 2])) return true;
   return i + 2 < segments.length
     && (!/[.!?]$/.test(segments[i + 1]) || partitionPeriodTitle(segments[i + 1])) && segments[i + 1].length <= 100
-    && !/^[-•*]/.test(segments[i + 1]) && !/^\d{1,2}[.)]\s/.test(segments[i + 1])
+    && !/^[-•*]/.test(segments[i + 1]) && !/^(?:\d{1,2}[.)]|#\d{1,2}[.:)])\s/.test(segments[i + 1])
     && /^[-•*]/.test(segments[i + 2]);
 }
 
@@ -537,7 +537,7 @@ function partitionBlocksAllDirectives(segments) {
   const allBullets = body.every(isBullet);
   const starts = (i) => {
     const s = body[i];
-    return /^\d{1,2}[.)]\s/.test(s) || partitionIsTitleStart(body, i) || PARTITION_LABELED_PLAN.test(s)
+    return /^(?:\d{1,2}[.)]|#\d{1,2}[.:)])\s/.test(s) || partitionIsTitleStart(body, i) || PARTITION_LABELED_PLAN.test(s)
       || (dashList && isBullet(s) && partitionDashItemStart(s))
       || (allBullets && !dashList && isBullet(s));
   };

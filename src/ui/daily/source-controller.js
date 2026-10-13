@@ -29,7 +29,7 @@ import {
   primaryTeamNoteFields,
   updatePrimaryTeamNoteSection
 } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
-import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261013-aloop-round3-final";
+import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261013-initial-plan-heading";
 import { sharedLocalLlmClient } from "../../local-llm/client.js?v=20261012-safety";
 import { splitNoteSectionsWithLlm } from "../../local-llm/parse.js?v=20260928-local-llm-v1";
 

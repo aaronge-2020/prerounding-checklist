@@ -1,6 +1,6 @@
 import { createPatientRecord, normalizeDay } from "../../app/state/vault.js?v=20261013-durable-rules";
 import { normalizeSourceCapture } from "../../patient-context/source-captures.js?v=20260921-medication-card-v4";
-import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261013-aloop-round3-final";
+import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261013-initial-plan-heading";
 
 export const DEMO_PATIENT_ID = "demo_patient_guided_case";
 export const DEMO_DAY_ID = "demo_day_guided_case";

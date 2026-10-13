@@ -9,7 +9,9 @@ const progressTeamNote = readFileSync(new URL("./fixtures/primary-team-notes/pro
 const criticalCareNote = readFileSync(new URL("./fixtures/primary-team-notes/critical-care-note.txt", import.meta.url), "utf8");
 
 // A pasted note whose assessment and plan share one heading: the parser must
-// split reasoning into Assessment and problems/actions into the Plan builder.
+// split it into problems (each carrying its own reasoning as context) and
+// plan actions. With no opening summary paragraph, the Assessment editor
+// stays blank; reasoning is never copied into it.
 const combinedAssessmentPlanNote = `Interval events: No acute overnight events.
 Assessment and Plan
 #1. Sepsis secondary to pneumonia
@@ -154,7 +156,8 @@ try {
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
   await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
 
-  // A combined "Assessment and Plan" heading splits into Assessment prose and plan problems.
+  // A combined "Assessment and Plan" heading splits into plan problems; with no
+  // opening summary paragraph, the Assessment editor stays blank (settlement C4).
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
   await page.fill('[data-structured-note-paste][data-structured-note-scope="daily"]', combinedAssessmentPlanNote);
   await page.click('[data-action="review-structured-note-sections"][data-note-scope="daily"]');
@@ -162,8 +165,10 @@ try {
   await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   await page.click('[data-action="open-progress-note"]');
   await page.waitForSelector("#reviewContent .review-workspace");
-  assert.match(await editorText(page.locator('[data-draft-assessment]')), /Sepsis secondary to pneumonia/, "combined heading must seed the Assessment editor");
-  assert.match(await editorText(page.locator('[data-draft-assessment]')), /likely pre-renal/i, "reasoning prose belongs in Assessment, not the plan");
+  const combinedAssessmentText = await editorText(page.locator('[data-draft-assessment]'));
+  assert.doesNotMatch(combinedAssessmentText, /Sepsis secondary to pneumonia/, "combined heading must not copy problem titles into the Assessment editor");
+  assert.doesNotMatch(combinedAssessmentText, /likely pre-renal/i, "reasoning prose stays in the problem cards, not the Assessment editor");
+  assert.equal(combinedAssessmentText.trim(), "", "Assessment editor stays blank when a combined note has no opening summary");
   assert.equal((await editorText(page.locator('[data-draft-section="interval_events"]'))).trim(), "No acute overnight events.");
   const planProblems = await page.locator(".plan-problem-card").allInnerTexts();
   assert.ok(planProblems.some((text) => /Sepsis secondary to pneumonia/.test(text)), "combined heading must populate plan problems");
