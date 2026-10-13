@@ -217,9 +217,11 @@ const PN_EXPECTATIONS = {
     vitals: ["126/78"],
     labs: ["WBC", "CRP"],
     studies: ["CXR"],
-    // Combined "Assessment and Plan" heading: reasoning must land in
-    // sections.assessment, actions must stay in sections.plan.
-    assessment: ["Community-acquired pneumonia", "improving"],
+    // Combined "Assessment and Plan" heading with no stated synthesis
+    // (settlement C4): the assessment stays empty; problem titles and
+    // actions live only in sections.plan. The earlier expectation (titles
+    // copied into the assessment) is superseded by C4.
+    assessmentEmpty: true,
     assessmentAbsent: ["Continue antibiotics", "Continue steroids"],
   },
   "pn-08.md": {
@@ -228,6 +230,8 @@ const PN_EXPECTATIONS = {
     vitals: [],
     labs: ["Hemoglobin", "Sodium", "Creatinine"],
     studies: [],
+    // "A/P:" combined heading, hash problems, no stated synthesis (C4).
+    assessmentEmpty: true,
   },
   "pn-09.md": {
     problems: ["pancreatitis", "Cholelithiasis"],
@@ -342,12 +346,21 @@ function testFixture(dir, file, expectations, noteType) {
     checkContains(file, "studies", [studies], expectations.studies);
   }
 
-  // Every fixture's note has an assessment (or a combined Assessment/Plan
-  // heading): the parser must never leave sections.assessment empty while
-  // sections.plan holds the content.
+  // Assessment/plan split (settlement C4, round 2): a combined heading's
+  // text is partitioned, never copied. The assessment holds only stated
+  // synthesis sentences; a combined note that opens directly with problem
+  // blocks states no synthesis, so its assessment is empty and the fixture
+  // says so with assessmentEmpty. The older invariant (assessment must
+  // never be empty while plan holds content) encoded the superseded
+  // copy-titles-into-assessment behavior.
   const assessmentText = String(parsed.sections.assessment || "");
   const planText = String(parsed.sections.plan || "");
-  if (planText.trim() && !assessmentText.trim()) {
+  if (expectations.assessmentEmpty === true) {
+    if (assessmentText.trim()) {
+      console.error(`FAIL ${file} assessment/plan split: assessment must be empty under the C4 partition (no synthesis stated)`);
+      failures++;
+    }
+  } else if (planText.trim() && !assessmentText.trim()) {
     console.error(`FAIL ${file} assessment/plan split: plan is non-empty but assessment is empty`);
     failures++;
   }

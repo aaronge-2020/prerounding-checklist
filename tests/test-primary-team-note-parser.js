@@ -776,10 +776,12 @@ assert.deepEqual(
 );
 const strokeProblem = strokeParsed.parsedProblems[0];
 assert.match(strokeProblem.therapeuticPlan || strokeParsed.sections.plan, /telemetry|stroke protocol/i, "bullets merge into the numbered problem's plan");
-// Combined "Assessment and Plan" heading: reasoning splits into assessment,
-// actions stay in plan.
-assert.match(strokeParsed.sections.assessment, /Acute left hemispheric stroke/, "combined A/P: problem title lands in assessment");
-assert.match(strokeParsed.sections.assessment, /History of pulmonary embolism \/ chronic anticoagulation/, "combined A/P: second problem lands in assessment");
+// Combined "Assessment and Plan" heading (settlement C4, round 2): the
+// combined text is partitioned between assessment and plan, never copied
+// into both. This note states no synthesis sentences (it opens directly
+// with numbered problems), so the assessment stays empty; the earlier
+// behavior of copying problem titles into the assessment is superseded.
+assert.equal(strokeParsed.sections.assessment, "", "combined A/P with no synthesis: assessment stays empty (C4 partition)");
 assert.doesNotMatch(strokeParsed.sections.assessment, /activate stroke protocol|hold apixaban/i, "combined A/P: actions stay out of assessment");
 assert.match(strokeParsed.sections.plan, /activate stroke protocol/i, "combined A/P: actions stay in plan");
 

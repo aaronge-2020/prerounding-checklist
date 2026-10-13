@@ -28,7 +28,25 @@ const NEGATED_PROBLEM_TITLE = /^(?:nai|na|n[/]a|none|no active (?:issues?|proble
 const LAB_OR_LDA_ROW = /^\s*\t\s*(?:\[(?:Lab|LATEST|Hospital\s+Day|\d+\s+days?\s+prior)|Component\t|\d{1,2}\/\d{1,2}\/\d{2,4}|Peripheral IV|Urinary Catheter|Non-Surgical Airway|Arterial Line|CVC|PICC|Chest Tube|JP|Jackson|Drain|Airway|Endotracheal|HGBA1C)/i;
 const NOT_PLAN_TEXT = /^(?:none|no data recorded|no active orders?|\[lab\s*\d+\/\d+\]|component\b|\d{1,2}\/\d{1,2}\/\d{2,4}|[a-z0-9_,\s]+\t+(?:--|\d|\+|-|negative|positive|clear|trace|normal))/i;
 
-const SPECIALTY_PLAN_HEADER = /^[A-Za-z\s/]+plan\s*:?$/i;
+const SYSTEM_SLASH_KEYS = new Set([...KNOWN_SYSTEMS].map((s) => s.replace(/\s*\/\s*/g, "/")));
+
+/**
+ * A specialty/team plan header names the team: "<team> plan", "<team> team
+ * plan", or a known system phrase ("Heme/Onc plan"). A longer phrase that
+ * merely ends in "plan" ("Comments for Coping Strategies Plan:", "Your
+ * Personal Wellness Plan:") is a form label or content, never a team
+ * header: treating it as one fabricates a problem out of the words before
+ * the colon (round 2 fix, verdict Rule 4).
+ */
+export function isSpecialtyPlanHeader(text) {
+  const clean = String(text || "").trim().replace(/:\s*$/, "");
+  const match = clean.match(/^([A-Za-z][A-Za-z\s/]*?)\s+plan$/i);
+  if (!match) return false;
+  const prefix = match[1].trim().toLowerCase();
+  if (/^[a-z]+$/.test(prefix)) return true;
+  if (/^[a-z]+ team$/.test(prefix)) return true;
+  return SYSTEM_SLASH_KEYS.has(prefix.replace(/\s+/g, "/"));
+}
 const LDA_START_REGEX = /^(?:patient\s+)?lines[\s/]+drains[\s/]+airways|active\s+(?:active\s+)?ldas/i;
 
 // Verbs (and verb-led phrases) that open an action/recommendation sentence
@@ -36,7 +54,7 @@ const LDA_START_REGEX = /^(?:patient\s+)?lines[\s/]+drains[\s/]+airways|active\s
 // "The patient needs...". Used to tell a bare numbered recommendation list
 // ("1. Continue with vancomycin...") apart from a problem list whose items
 // carry their own titles ("1. Diabetes mellitus type 1: We will...").
-const ACTION_LEAD = /^(?:continue|resume|re-?start|begin|stop|hold|withhold|discontinue|d\/c|wean|titrate|increase|decrease|adjust|monitor|watch|check|obtain|get|order|send|repeat|recheck|follow|reassess|re-?evaluate|evaluate|assess|consult|refer|recommend|advise|counsel|educate|encourage|discuss|review|ensure|provide|give|administer|prescribe|add|change|switch|maintain|avoid|consider|plan|schedule|arrange|admit|discharge|transfer|agree|we\s+will|i\s+will|the\s+patient\s+(?:needs|requires|should|will))\b/i;
+export const ACTION_LEAD = /^(?:continue|resume|re-?start|begin|stop|hold|withhold|discontinue|d\/c|wean|titrate|increase|decrease|adjust|monitor|watch|check|obtain|get|order|send|repeat|recheck|follow|reassess|re-?evaluate|evaluate|assess|consult|refer|recommend|advise|counsel|educate|encourage|discuss|review|ensure|provide|give|administer|prescribe|add|change|switch|maintain|avoid|consider|plan|schedule|arrange|admit|discharge|transfer|agree|we\s+will|i\s+will|the\s+patient\s+(?:needs|requires|should|will))\b/i;
 
 // Labels that look like "Title: ..." but are not problems ("Differential:
 // ...", "Assessment: ...").
@@ -46,9 +64,32 @@ export const NON_PROBLEM_LABEL = /^(?:differential|differentials|ddx|assessment|
 // that close consult notes. They are courtesy text, never problems or plans.
 const SIGNOFF_LEAD = /^(?:as\s+always[\s,]|we\s+(?:greatly\s+)?appreciate|thank\s+you\s+for|please\s+(?:do\s+not\s+hesitate|feel\s+free|contact)|sincerely|respectfully)[\s,]/i;
 
-function firstSentence(text) {
-  const match = String(text || "").match(/^[^.!?]+[.!?]/);
-  return (match ? match[0] : String(text || "")).trim();
+const SENTENCE_ABBREVIATIONS = new Set([
+  "dr", "mr", "mrs", "ms", "st", "vs", "approx", "dept", "no", "jr", "sr"
+]);
+
+/**
+ * First sentence of a text, abbreviation-aware: a period after a single
+ * letter ("E. coli", "p.r.n.") or a known abbreviation ("Ms.", "Dr.") does
+ * not end the sentence, and neither does a period followed by a lowercase
+ * letter. Without this, a title that starts "Ms. ABC is..." collapses to
+ * the title "Ms.".
+ */
+export function firstSentence(text) {
+  const t = String(text || "");
+  for (const match of t.matchAll(/[.!?]+/g)) {
+    const end = match.index + match[0].length;
+    const before = t.slice(0, match.index).trimEnd();
+    const lastWord = (before.split(/\s+/).pop() || "").replace(/^[([{"']+/, "").replace(/[)\]}"']+$/, "");
+    if (lastWord.length === 1 || SENTENCE_ABBREVIATIONS.has(lastWord.toLowerCase())) continue;
+    // Line-break flattening leaves a stray comma at sentence breaks
+    // ("...stenosis.,I agree..."), so a capital after an optional comma
+    // still ends the sentence.
+    const rest = t.slice(end).replace(/^[,\s]+/, "");
+    if (rest && !/^[A-Z0-9"'(]/.test(rest)) continue;
+    return t.slice(0, end).trim();
+  }
+  return t.trim();
 }
 
 /** Drops professional sign-off paragraphs from plan/consult text. */
@@ -63,6 +104,51 @@ export function stripSignoffParagraphs(text) {
 }
 
 /**
+ * Splits a line at inline numbered-item boundaries (redesign, 2026-10-13):
+ * flattened note copies write a numbered list on one line
+ * ("1. End-stage renal disease.,2. Hypertension.,3. Gout."), so item
+ * boundaries also occur mid-line after a period or comma. A boundary is
+ * trusted only when the line already opens with a numbered item or the
+ * boundaries form a run of two or more sequential numbers, which keeps
+ * prose like "repeat in 2. 5 hours" in one piece.
+ */
+export function splitInlineNumberedItems(line) {
+  const text = String(line || "");
+  // A section label can share the line with item 1 ("DISCHARGE DIAGNOSES:
+  // 1. Bilateral otitis media.,2. Fever."): the label is the section
+  // heading, not part of the item, and it hides the item's number from
+  // line-start extraction. Drop the label and re-read the line.
+  const labelItem = text.match(/^\s*((?:discharge\s+)?diagnoses?|assessment|impression|problems?|problem\s+list|active\s+problems|principal\s+problem)\s*:\s*(\d{1,2}[.)]\s+[\s\S]*)$/i);
+  if (labelItem) return splitInlineNumberedItems(labelItem[2]);
+  const matches = [...text.matchAll(/[.;,]\s*(\d{1,2})[.)]\s+/g)];
+  if (!matches.length) return [text];
+  let best = [];
+  let cur = [];
+  for (const m of matches) {
+    const n = parseInt(m[1], 10);
+    const entry = { n, index: m.index, end: m.index + m[0].length };
+    if (cur.length && n === cur[cur.length - 1].n + 1) cur.push(entry);
+    else {
+      if (cur.length > best.length) best = cur;
+      cur = [entry];
+    }
+  }
+  if (cur.length > best.length) best = cur;
+  if (!best.length) return [text];
+  const head = text.slice(0, best[0].index).replace(/[.;,\s]+$/, "");
+  const headOpensNumbered = /(?:^|[.;:,]\s*)\d{1,2}[.)]\s+/.test(head);
+  if (!headOpensNumbered && best.length < 2) return [text];
+  const segments = [];
+  if (head.trim()) segments.push(head);
+  best.forEach((b, i) => {
+    const segEnd = i + 1 < best.length ? best[i + 1].index : text.length;
+    const body = text.slice(b.end, segEnd).replace(/[.;,\s]+$/, "").trim();
+    segments.push(`${b.n}. ${body}`.trim());
+  });
+  return segments.filter((s) => s.trim());
+}
+
+/**
  * Splits plan/assessment text into top-level numbered items
  * ("1. ...", "2. ..."). Non-numbered lines attach to the current item;
  * text before the first number is ignored.
@@ -70,10 +156,10 @@ export function stripSignoffParagraphs(text) {
 export function extractNumberedPlanItems(text) {
   const items = [];
   let current = null;
-  for (const raw of String(text || "").split("\n")) {
+  for (const raw of String(text || "").split("\n").flatMap(splitInlineNumberedItems)) {
     const line = raw.trim();
     if (!line) continue;
-    const marker = line.match(/^(#\d{1,2}\b[.:]?|\d{1,2}[.:])\s*(\S[\s\S]*)$/);
+    const marker = line.match(/^(#\d{1,2}\b[.:)]?|\d{1,2}[.:)])\s*(\S[\s\S]*)$/);
     if (marker) {
       current = { marker: marker[1], text: marker[2].trim() };
       items.push(current);
@@ -97,6 +183,25 @@ export function isBareActionItem(itemText) {
   if (colon && !NON_PROBLEM_LABEL.test(colon[1].trim())) return false;
   const first = firstSentence(text);
   const rest = text.slice(first.length).trim();
+  // A pronoun-led first sentence ("I did call and talk with...", "We will
+  // see her back...") is narrative plan text, never a problem title: problem
+  // titles are noun phrases. Without this, a numbered plan of narrative
+  // recommendations looks problem-titled and refuses to pair with the
+  // numbered assessment it belongs to.
+  if (/^(?:i|we|he|she|they|it)\s+\w+/i.test(first)) return true;
+  // A conditional first sentence ("If rebleeds, recommend IR consult...")
+  // is a directive with a condition attached, never a problem title:
+  // titles are noun phrases, not clauses.
+  if (/^if\b/i.test(first)) return true;
+  // A first sentence built on an auxiliary verb ("Nerve conduction and
+  // EMG will be performed today.") is a narrative plan statement, not a
+  // problem title: titles are noun phrases without a finite verb.
+  if (/\b(?:will|would|shall|should|can|could|may|might)\s+(?:be\s+)?\w+/i.test(first)
+    || /\b(?:is|are|was|were)\s+\w+ed\b/i.test(first)) return true;
+  // A first sentence that is itself a dosed medication order or another
+  // therapeutic action ("Lamisil 250 mg #30 one p.o. daily...") is a plan
+  // action for a problem, not a problem title.
+  if (THERAPEUTIC_ACTION.test(first)) return true;
   if (rest && first.length <= 60 && !ACTION_LEAD.test(first)) return false;
   return true;
 }
@@ -113,7 +218,7 @@ function blockOpensProblem(firstLine) {
   const clean = line.replace(/^#+\s*/, "").replace(/^(?:problem\s*\d+[:.]|\d{1,2}[.:])\s*/i, "").trim();
   const cleanNoColon = clean.replace(/[:\s]+$/, "");
   if (KNOWN_SYSTEMS.has(cleanNoColon.replace(/\s+plan$/i, "").toLowerCase())) return true;
-  if (SPECIALTY_PLAN_HEADER.test(clean)) return true;
+  if (isSpecialtyPlanHeader(clean)) return true;
   if (PROBLEM_LIST_HEADERS.has(cleanNoColon.toLowerCase())) return true;
   const colon = clean.match(/^([^:]{3,60}):\s*\S/);
   if (colon && !NON_PROBLEM_LABEL.test(colon[1].trim())) return true;
@@ -121,6 +226,57 @@ function blockOpensProblem(firstLine) {
   const rest = clean.slice(first.length).trim();
   if (rest && first.length <= 60 && !ACTION_LEAD.test(first)) return true;
   return false;
+}
+
+const BULLET_LINE = /^(?:[-•*>—–]|>>)/;
+
+/**
+ * The shape of a bare problem title line: short, unbulleted, unnumbered, not
+ * a label (no trailing colon), not a sentence (no terminal punctuation),
+ * and not an action or sign-off lead. Problem segmentation (redesign,
+ * 2026-10-13) treats such a line as a new problem boundary when it follows
+ * plan content and is itself followed by plan lines, so problem splitting
+ * no longer depends on blank lines between problems.
+ */
+function bareTitleShape(line) {
+  const trimmed = String(line || "").trim();
+  if (!trimmed || trimmed.length > 110) return false;
+  // Problem titles are capitalized phrases (or bracketed labels like
+  // "[NAME] carrier"); a lowercase fragment ("lactate 4.0") is a
+  // continuation of the previous problem's content, never a new title.
+  if (!/^[A-Z\[]/.test(trimmed)) return false;
+  if (BULLET_LINE.test(trimmed) || /^#/.test(trimmed)) return false;
+  if (/^\d{1,2}[.)]\s/.test(trimmed)) return false;
+  if (/[:;]$/.test(trimmed) || /[.!?]$/.test(trimmed)) return false;
+  if (ACTION_LEAD.test(trimmed) || SIGNOFF_LEAD.test(trimmed)) return false;
+  return true;
+}
+
+// Finite verbs mark a sentence, not a title: "The patient is improving."
+// has them, "Diabetes mellitus type 2." does not.
+const TITLE_FINITE_VERB = /\b(?:is|are|was|were|has|have|had|will|would|shall|should|can|could|may|might|be|been|being|presents?|presented|reports?|reported|denies|denied|complains?|shows?|showed|remains?|remained|continues?|continued|requires?|required|needs?|needed|appears?|appeared|seems?|feels?|felt|states?|stated|notes?|noted|includes?|including|develops?|developed)\b/i;
+
+/**
+ * A title line that ends in a period (settlement round 2, D1(a)): Epic
+ * pastes set problem titles as short noun phrases closed by a period
+ * ("Diabetes mellitus type 2."). The period is sentence punctuation, not
+ * part of the title, and it must not demote the line to prose: without
+ * this shape, the titles fell into context and the first plan bullet was
+ * promoted to a problem title. A line qualifies only when the text before
+ * the period is a bare title shape with no finite verb, so real sentences
+ * never qualify.
+ */
+function periodTitleShape(line) {
+  const trimmed = String(line || "").trim();
+  if (!/\.$/.test(trimmed) || /\.\.$/.test(trimmed)) return false;
+  const bare = trimmed.slice(0, -1).trim();
+  if (bare.length > 80) return false;
+  if (!bareTitleShape(bare)) return false;
+  return !TITLE_FINITE_VERB.test(bare);
+}
+
+function titleLineShape(line) {
+  return bareTitleShape(line) || periodTitleShape(line);
 }
 
 /**
@@ -185,7 +341,7 @@ export function normalizeTwoColumnEhrText(fullText) {
 
     // Inside 2-column mode:
     // Check if line exits 2-column mode (e.g. specialty team plan like Neurosurgery plan:)
-    if (SPECIALTY_PLAN_HEADER.test(trimmed)) {
+    if (isSpecialtyPlanHeader(trimmed)) {
       flushTwoColumn();
       resultLines.push(rawLine);
       continue;
@@ -438,6 +594,120 @@ export function normalizeMarkdownAssessmentPlanTable(fullText) {
   return output.join("\n");
 }
 
+const EYE_SIDE_TOKEN = /(?:^|\s)(OU|OS|OD)(?:\s|$)/;
+
+function dashItemHead(line) {
+  const clean = String(line || "").trim().replace(/^[-•]\s?/, "");
+  return (clean.split(/\s{2,}/)[0] || "").trim();
+}
+
+/**
+ * A dash segment starts a new problem item when its head phrase (the text
+ * before the first wide-space run) names an eye diagnosis (carries OU/OS/OD)
+ * and does not start with "s/p": the item form the flattened eye notes state
+ * ("-Refractive Error OU   Rx specs; ..."). Other dash segments (sub-bullets
+ * like "-s/p CXL OS", datum lines like "- Last DFE") are plan content of the
+ * item above them. Mirrors the gold convention in build_gold.py.
+ */
+function isDashItemStart(line) {
+  if (!/^[-•]\s?/.test(String(line || "").trim())) return false;
+  const head = dashItemHead(line);
+  if (/^s\/p\b/i.test(head)) return false;
+  return EYE_SIDE_TOKEN.test(head);
+}
+
+function splitInlineDashItems(line) {
+  return String(line || "").split(/\s{2,}(?=-)/);
+}
+
+/**
+ * When a plan text is a dash-item list (two or more eye-diagnosis items),
+ * rewrite each item's first line as a "#Title" marker line plus its plan
+ * text, so the block segmenter treats items as problems. Other lines pass
+ * through unchanged.
+ */
+function rewriteDashItemLines(lines) {
+  if (lines.filter((line) => isDashItemStart(line)).length < 2) return lines;
+  const out = [];
+  for (const line of lines) {
+    if (!isDashItemStart(line)) {
+      out.push(line);
+      continue;
+    }
+    const clean = line.trim().replace(/^[-•]\s?/, "");
+    const splitAt = clean.search(/\s{2,}/);
+    if (splitAt < 0) {
+      out.push(`#${clean.trim()}`);
+    } else {
+      out.push(`#${clean.slice(0, splitAt).trim()}`);
+      const rest = clean.slice(splitAt).trim();
+      if (rest) out.push(rest);
+    }
+  }
+  return out;
+}
+
+const DX_LIST_SPLIT = /\s*(?:,|;|\band\b|\bor\b|\bvs\.?\b)\s*/;
+
+/**
+ * Differentials the source states, in the forms settlement C5 names: an
+ * enumerated "(a) X, (b) Y" list, a "The differential includes ..." sentence,
+ * a labeled "Differential:"/"DDx:" list, and the MDM prose forms
+ * ("possibility of X", "rule out X", "X cannot be excluded"). Returns the
+ * parser's differential objects. Mirrors the gold extraction in
+ * build_gold.py; nothing is inferred beyond those stated forms.
+ */
+export function extractStatedDifferentials(text) {
+  const found = [];
+  const push = (value, maxLen = 60) => {
+    const diagnosis = String(value || "").trim().replace(/^[.,\s]+|[.,\s]+$/g, "");
+    // Two characters is the floor: "MI" is a stated differential in the
+    // verifier's S2 synthetic and must survive extraction (D1(a)).
+    if (diagnosis.length < 2 || diagnosis.length > maxLen) return;
+    // "rule out any pathology" names no diagnosis; a value starting with
+    // "any " is a generic phrase, not a stated differential.
+    if (/^any\s/i.test(diagnosis)) return;
+    if (found.some((f) => f.diagnosis.toLowerCase() === diagnosis.toLowerCase())) return;
+    found.push({ id: `diff_${Math.random().toString(36).slice(2, 9)}`, diagnosis, cluesFor: "", cluesAgainst: "" });
+  };
+  const flat = String(text || "").replace(/\s+/g, " ").trim();
+  const enumerated = flat.match(/\(a\)\s*(.+?)\s*\(b\)\s*(.+?)(?:\s*\(c\)\s*(.+?))?(?:\s*\(d\)\s*(.+?))?(?:\s*\(e\)\s*(.+?))?(?:\.|$)/);
+  if (enumerated) {
+    for (const group of enumerated.slice(1)) if (group) push(group.replace(/,\s*$/, ""), 200);
+  }
+  if (!found.length) {
+    const includes = flat.match(/(?:^|\s)(?:[Tt]he\s+)?[Dd]ifferential(?: diagnoses)? (?:includes?|included|consists of)\s+([^.]+)\./);
+    if (includes) for (const part of includes[1].split(DX_LIST_SPLIT)) push(part, 200);
+  }
+  if (!found.length) {
+    const labeled = String(text || "").match(/(?:Differential(?: diagnosis)?|DDx|DDX)\s*:\s*([^\n]+)/);
+    if (labeled) {
+      const segment = labeled[1].split(/[.!?]\s/)[0];
+      for (const part of segment.split(DX_LIST_SPLIT)) push(part, 200);
+    }
+  }
+  if (!found.length) {
+    for (const m of flat.matchAll(/possibility of ([^.,;]+?)(?:\s+(?:is|was|are|were|remains?)\b|[.,;]|$)/g)) push(m[1]);
+    for (const m of flat.matchAll(/(?:difficult to |hard to |to )?rule out ([^.,;]+)/gi)) push(m[1]);
+    for (const m of flat.matchAll(/([A-Z][A-Za-z /-]{2,40}?) cannot be excluded/g)) push(m[1]);
+  }
+  return found;
+}
+
+/**
+ * Settlement round 2, D1(b): differential extraction is local. A problem
+ * the source numbers or lists as "Rule out X" states X as its own title,
+ * not as a differential: not for itself and not for any other problem.
+ * Drops any extracted differential that is exactly that rule-out phrase.
+ */
+export function dropRuleOutSelfDifferential(title, differentials) {
+  const match = String(title || "").trim().match(/^rule out\s+(.+)$/i);
+  if (!match) return differentials;
+  const phrase = match[1].split(/[.,;]/)[0].trim().toLowerCase();
+  if (!phrase) return differentials;
+  return (differentials || []).filter((d) => String(d.diagnosis || "").trim().toLowerCase() !== phrase);
+}
+
 /**
  * Parses clinical plan text into structured problems with:
  * - Problem name / title
@@ -450,7 +720,9 @@ export function parseClinicalPlanProblems(planText) {
 
   // Markdown assessment/plan tables normalize into "#Problem" blocks first;
   // otherwise the header row becomes a bogus problem title.
-  const rawLines = normalizeMarkdownAssessmentPlanTable(planText).split(/\r?\n/);
+  const rawLines = rewriteDashItemLines(
+    normalizeMarkdownAssessmentPlanTable(planText).split(/\r?\n/).flatMap(splitInlineNumberedItems).flatMap(splitInlineDashItems)
+  );
   const blocks = [];
   let currentBlock = [];
 
@@ -462,7 +734,7 @@ export function parseClinicalPlanProblems(planText) {
         const nonBlank = currentBlock.map((l) => l.trim()).filter(Boolean);
         const first = nonBlank[0] || "";
         const isHeaderOnly = nonBlank.length === 1 && (
-          SPECIALTY_PLAN_HEADER.test(first) ||
+          isSpecialtyPlanHeader(first) ||
           KNOWN_SYSTEMS.has(first.replace(/[:\s]+$/, "").toLowerCase()) ||
           /^(?:plan|recommendations|assessment and plan)\s*:?$/i.test(first)
         );
@@ -476,7 +748,7 @@ export function parseClinicalPlanProblems(planText) {
 
     const isHashProblem = /^#\s*[a-zA-Z0-9]/.test(trimmed);
     const isNumberedProblem = /^(?:problem\s*\d+[:.]|\d{1,2}[.:])\s*[a-zA-Z]/i.test(trimmed);
-    const isTeamPlan = SPECIALTY_PLAN_HEADER.test(trimmed);
+    const isTeamPlan = isSpecialtyPlanHeader(trimmed);
     // System header: "Neurologic:" or "Neurologic: details" (inline details).
     const systemHeaderMatch = trimmed.match(/^([a-zA-Z\/\s]+?):\s*(.+)?$/);
     const isSystemHeader = KNOWN_SYSTEMS.has(trimmed.replace(/[:\s]+$/, "").toLowerCase()) ||
@@ -491,6 +763,35 @@ export function parseClinicalPlanProblems(planText) {
         isSystemHeader &&
         /^([a-zA-Z\/\s]+?):\s*.+$/s.test(nonBlank[0]);
       if (nonBlank.length > 1 || (!isTeamPlan && !isSystemHeader) || hasInlineSystemDetails) {
+        blocks.push(currentBlock);
+        currentBlock = [];
+      }
+    }
+
+    // Bare title boundary: a title-shaped line that follows plan bullets
+    // and is itself followed by a plan line opens a new problem block even
+    // when no blank line separates the problems (the pregnancy-plan bug:
+    // without this, a plan pasted without blank lines is one block and so
+    // one problem). A period-terminated title line counts too (D1(a)).
+    if (!isHashProblem && !isNumberedProblem && !isTeamPlan && !isSystemHeader && currentBlock.length > 0 && titleLineShape(trimmed)) {
+      const blockNonBlank = currentBlock.map((l) => l.trim()).filter(Boolean);
+      let nextNonBlank = "";
+      for (let j = i + 1; j < rawLines.length; j++) {
+        if (rawLines[j].trim()) { nextNonBlank = rawLines[j].trim(); break; }
+      }
+      // The block above may be a single title-only problem ("Varicella
+      // non-immune" with no plan lines of its own): it still closes here,
+      // or it swallows the titled problem that follows it (verdict Rule 2,
+      // fix (a)). A lone line carrying a digit ("Post-op day 2") is a
+      // status line, not a title-only problem, and never closes a block.
+      // Neither does a header line (a problem-list header, a system name, a
+      // team plan header): its content follows it in the same block.
+      const loneLine = (blockNonBlank[0] || "").replace(/[:\s]+$/, "");
+      const loneTitleBlock = blockNonBlank.length === 1 && titleLineShape(blockNonBlank[0]) && !/\d/.test(blockNonBlank[0])
+        && !PROBLEM_LIST_HEADERS.has(loneLine.toLowerCase())
+        && !KNOWN_SYSTEMS.has(loneLine.toLowerCase())
+        && !isSpecialtyPlanHeader(blockNonBlank[0]);
+      if (((blockNonBlank.length >= 2 && blockNonBlank.some((l) => BULLET_LINE.test(l))) || loneTitleBlock) && BULLET_LINE.test(nextNonBlank)) {
         blocks.push(currentBlock);
         currentBlock = [];
       }
@@ -517,7 +818,11 @@ export function parseClinicalPlanProblems(planText) {
     const previousLines = previous ? previous.map((line) => line.trim()).filter(Boolean) : [];
     const previousOpensProblem = previousLines.length > 0 && blockOpensProblem(previousLines[0]);
     const bulletOnly = lines.length > 0 && lines.every((line) => /^(?:[-•*>—–]|>>)/.test(line));
-    if (previous && previousOpensProblem && (bulletOnly || !blockOpensProblem(lines[0] || ""))) {
+    // A block that starts with a bare problem title followed by plan lines
+    // is a problem boundary the segmenter found without a blank line; the
+    // merge stage must not fold it back into the previous problem.
+    const bareTitleStart = lines.length >= 2 && titleLineShape(lines[0]) && BULLET_LINE.test(lines[1]);
+    if (previous && previousOpensProblem && !bareTitleStart && (bulletOnly || !blockOpensProblem(lines[0] || ""))) {
       previous.push(...block);
     } else {
       mergedBlocks.push([...block]);
@@ -571,6 +876,21 @@ export function parseClinicalPlanProblems(planText) {
     const isSingleBlock = mergedBlocks.length === 1;
     if (isFirstBlock && firstLine.length > 200 && !hasProblemMarker && !isSingleBlock) continue;
 
+    // A one-sentence patient introduction in front of a numbered problem
+    // list ("This is a 45-year-old woman with history as noted above.",
+    // then "1. ...", "2. ...", ...) is the combined Assessment/Plan
+    // preamble, not a problem entry. The numbered items are the problems.
+    // The sentence stays in the plan section text; it only stops being a
+    // problem of its own.
+    if (isFirstBlock && !hasProblemMarker && !isSingleBlock) {
+      const blockText = nonBlank.join(" ");
+      const laterNumberedBlocks = mergedBlocks.slice(blockIndex)
+        .filter((later) => later.some((line) => /^\d+[.)]/.test(line.trim()))).length;
+      if (laterNumberedBlocks >= 2
+        && /^(?:this is|the patient is)\b/i.test(firstLine)
+        && firstSentence(blockText) === blockText) continue;
+    }
+
     const cleanSystemCandidate = strippedFirst.replace(/\s+plan$/i, "").toLowerCase();
     if (KNOWN_SYSTEMS.has(cleanSystemCandidate)) {
       currentSystemContext = strippedFirst.replace(/plan$/i, "").trim();
@@ -593,7 +913,7 @@ export function parseClinicalPlanProblems(planText) {
     let problemTitle = "";
     let startIndex = 0;
 
-    if (SPECIALTY_PLAN_HEADER.test(firstLine)) {
+    if (isSpecialtyPlanHeader(firstLine)) {
       problemTitle = cleanFirst;
       startIndex = 1;
     } else if (KNOWN_SYSTEMS.has(strippedFirst.toLowerCase()) && nonBlank.length > 1) {
@@ -656,8 +976,18 @@ export function parseClinicalPlanProblems(planText) {
         // generous limit: its first sentence is the best available title.
         const first = firstSentence(problemTitle);
         const rest = problemTitle.slice(first.length).trim();
-        const titleLimit = isSingleBlock && !hasProblemMarker ? 200 : 60;
-        if (rest && first.length <= titleLimit && !ACTION_LEAD.test(first)) {
+        // A numbered item is explicitly a problem entry, so its first
+        // sentence may run longer than the 60-character short-title cap
+        // ("Small bowel obstruction/paralytic ileus, rule out obstipation."
+        // is 61) and still be the title, with the rest as its plan.
+        const titleLimit = isSingleBlock && !hasProblemMarker ? 400 : (/^\d{1,2}[.:]/.test(firstLine) ? 160 : 60);
+        // The action-lead veto ("Continue X." is a plan, not a title) guards
+        // unnumbered prose. A numbered item is explicitly an entry, and in a
+        // combined Assessment/Plan list the entry itself may be a directive
+        // ("5. Plan today is to repeat her thyroid function studies. This
+        // case was discussed..."): its first sentence is the entry's title
+        // and the rest is its plan.
+        if (rest && first.length <= titleLimit && (/^\d{1,2}[.:]/.test(firstLine) || !ACTION_LEAD.test(first))) {
           problemTitle = first;
           colonRest = rest;
         }
@@ -794,11 +1124,21 @@ export function parseClinicalPlanProblems(planText) {
       }
     }
 
+    // Differentials stated in the block's own text in any C5 form (an
+    // enumerated list, a "The differential includes..." sentence, MDM prose)
+    // belong to this problem, alongside any labeled "Differential:" lines
+    // collected above.
+    for (const stated of extractStatedDifferentials(nonBlank.join("\n"))) {
+      if (!differentials.some((d) => d.diagnosis.toLowerCase() === stated.diagnosis.toLowerCase())) {
+        differentials.push(stated);
+      }
+    }
+
     pushProblem({
       title: problemTitle,
       system: currentSystemContext,
       keyContext: contextLines.join("\n"),
-      differentials,
+      differentials: dropRuleOutSelfDifferential(problemTitle, differentials),
       diagnosticPlan: diagLines.join("\n"),
       therapeuticPlan: theraLines.join("\n")
     });

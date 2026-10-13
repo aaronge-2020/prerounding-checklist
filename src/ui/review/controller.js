@@ -55,7 +55,7 @@ import {
   updateNoteSection,
   updatePlanProblem
 } from "../../note-drafts/index.js?v=20261012-citation-preview";
-import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20261011-epic-workflow";
+import { parseClinicalPlanProblems } from "../../patient-context/clinical-plan-parser.js?v=20261013-aloop-round3-final";
 import {
   clearLabBaseline,
   setLabBaseline
