@@ -28,6 +28,12 @@ try {
     await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   }
   async function dragFromHandleTo(locator) {
+    // CI runners load fonts later than local machines; a font swap between
+    // reading the target's box and moving the pointer shifts the index list
+    // and the drop lands between items. Wait for fonts and make sure the
+    // target is genuinely visible before trusting its coordinates.
+    await page.evaluate(() => document.fonts.ready);
+    await locator.scrollIntoViewIfNeeded();
     const from = await handle.boundingBox(), to = await locator.boundingBox();
     const targetX = to.x + to.width / 2, targetY = to.y + to.height / 2;
     await page.mouse.move(from.x + 30, from.y + 15); await page.mouse.down();
