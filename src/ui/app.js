@@ -141,9 +141,9 @@ import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=2026
 import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261012-safety";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20261003-deid-adaptive";
 import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261012-safety";
-import { createDemoController } from "./demo/controller.js?v=20261013-batch-a2";
+import { createDemoController } from "./demo/controller.js?v=20261013-batch-a3";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261013-aloop-round3-final";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20261012-safety";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20261013-batch-a3";
 import { createAiChatController } from "./ai-chat/controller.js?v=20261012-safety";
 import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261013-batch-a";
 import { createDrugChecksController } from "./drug-checks/controller.js?v=20261012-citation-preview";
@@ -171,7 +171,7 @@ const app = {
   adaptiveStore: null,
   view: "vault",
   selectedDayId: "",
-  selectedStayPacketId: "admission", stayRailExpanded: false, appNavRailExpanded: false, selectedPromptTask: "presentation_quality_editor", promptDayId: "",
+  selectedStayPacketId: "admission", stayRailExpanded: false, selectedPromptTask: "presentation_quality_editor", promptDayId: "",
   promptDayFollowsSelectedDay: true,
   customPromptTasks: loadCustomPromptTasks(),
   pendingRemovePromptTaskId: "",
@@ -1150,17 +1150,6 @@ function render() {
   // A toast belongs to the view that produced it: it expires as soon as
   // the rendered view differs from that view (audit F10).
   if (activeToastText && app.view !== toastView) dismissToast();
-  // The app navigation rail keeps its expanded state across renders; the
-  // class only takes effect where the rail layout applies (work views at
-  // desktop width, every view at narrow widths).
-  document.querySelector(".app-shell")?.classList.toggle("app-nav-expanded", Boolean(app.appNavRailExpanded));
-  const navToggle = document.querySelector(".app-nav-toggle");
-  if (navToggle) {
-    navToggle.setAttribute("aria-expanded", String(Boolean(app.appNavRailExpanded)));
-    navToggle.setAttribute("aria-label", app.appNavRailExpanded ? "Collapse navigation" : "Expand navigation");
-    navToggle.setAttribute("title", app.appNavRailExpanded ? "Collapse navigation" : "Expand navigation");
-  }
-
   const unlocked = vaultIsUnlocked();
   // The hover-expanded rail (Batch A2) is a transient pointer state: it
   // must not survive into a guided tour (its targets would move under
@@ -1912,19 +1901,6 @@ async function handleClick(event) {
     const rail = newDaySummary.closest(".stay-rail");
     rail?.closest(".stay-layout")?.classList.add("stay-rail-expanded");
     rail?.querySelector(".stay-rail-toggle")?.setAttribute("aria-expanded", "true");
-  }
-  // The app-nav rail toggle expands/collapses the slim rail in place (no
-  // re-render, so scroll and focus stay put); render() replays the state.
-  const appNavToggle = event.target.closest?.('[data-action="toggle-app-nav"]');
-  if (appNavToggle) {
-    app.appNavRailExpanded = !app.appNavRailExpanded;
-    document.querySelector(".app-shell")?.classList.toggle("app-nav-expanded", app.appNavRailExpanded);
-    // Pinning the rail open supersedes the hover overlay.
-    if (app.appNavRailExpanded) document.querySelector(".app-shell")?.classList.remove("app-nav-hover");
-    appNavToggle.setAttribute("aria-expanded", String(app.appNavRailExpanded));
-    appNavToggle.setAttribute("aria-label", app.appNavRailExpanded ? "Collapse navigation" : "Expand navigation");
-    appNavToggle.setAttribute("title", app.appNavRailExpanded ? "Collapse navigation" : "Expand navigation");
-    return;
   }
   const target = event.target.closest("[data-action]");
   if (!target) return;
@@ -4081,12 +4057,14 @@ function bindEvents() {
     // Local AI chat composer: Enter sends, Shift+Enter adds a newline.
     if (app.view === "aiChat" && aiChatController.keydown(event)) return;
   });
-  // Batch A2: hovering the slim app-nav rail floats it open over the
-  // workspace (the .app-nav-hover presentation in styles.css). Mouse and
-  // pen hover only: a touch tap on a destination must never trigger it.
-  // The class is dropped when the pointer leaves the rail, when a
-  // destination is chosen (the click handlers below), and on renders
-  // that start a tour or lock the vault (render()).
+  // Batch A2/A3: hovering the slim app-nav rail floats it open over the
+  // workspace (the .app-nav-hover presentation in styles.css, animated
+  // there). Hover is the only expansion route: the chevron pin was
+  // removed in Batch A3. Mouse and pen hover only: a touch tap on a
+  // destination must never trigger it. The class is dropped when the
+  // pointer leaves the rail, when a destination is chosen (the click
+  // handlers below), and on renders that start a tour or lock the
+  // vault (render()).
   const sideNavElement = document.querySelector(".side-nav");
   const appShellElement = document.querySelector(".app-shell");
   if (sideNavElement && appShellElement) {

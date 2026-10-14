@@ -37,7 +37,9 @@ export function createDemoSessionController({
       restoreDailySourceDraft: app.dailySourceDraft,
       restoreDailySourceKind: app.dailySourceKind,
       restoreNoteDraftSessions: new Map(app.noteDraftSessions),
-      restoreReviewPacketId: app.reviewPacketId
+      restoreReviewPacketId: app.reviewPacketId,
+      restoreStructuredNoteComposers: new Map(app.structuredNoteComposers),
+      restoreStructuredNoteDrafts: new Map(app.structuredNoteDrafts)
     };
     const sourcePatient = createDemoPatient();
     const patient = {
@@ -64,6 +66,16 @@ export function createDemoSessionController({
     app.presentationToEditPacketId = "";
     app.presentationToEditEdited = false;
     app.noteDraftSessions = new Map();
+    // The structured-note composer is keyed by scope alone (the
+    // admission key is the constant "admission"), so it is shared across
+    // patients and survives into the demo: a "Review sections" click
+    // from earlier work, or from a previous demo run, leaves it in
+    // sections mode, where the paste textarea and the Review sections
+    // button the parse-note stage points at are never rendered and the
+    // tour strands. The demo always starts from a clean composer and
+    // set of section drafts; exit() restores the user's own.
+    app.structuredNoteComposers = new Map();
+    app.structuredNoteDrafts = new Map();
     app.reviewPacketId = DEMO_DAY_ID;
     app.admissionSourceKind = "other_chart_text";
     app.admissionSourceDraft = DEMO_CONTEXT_TEXTS.join("\n\n");
@@ -97,6 +109,8 @@ export function createDemoSessionController({
     app.dailySourceKind = session.restoreDailySourceKind;
     app.noteDraftSessions = new Map(session.restoreNoteDraftSessions);
     app.reviewPacketId = session.restoreReviewPacketId;
+    app.structuredNoteComposers = new Map(session.restoreStructuredNoteComposers || []);
+    app.structuredNoteDrafts = new Map(session.restoreStructuredNoteDrafts || []);
     app.demoSession = null;
     clearPhiReviews();
     clearQuickDeidSession();

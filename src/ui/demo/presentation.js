@@ -139,7 +139,7 @@ export const DEMO_GUIDE_STAGES = Object.freeze({
     view: "review",
     navTarget: "review",
     title: "Write after bedside review",
-    instruction: "Click Review Data / Draft Note in the sidebar.",
+    instruction: "Click Write note in the sidebar.",
     calloutTitle: "Next: write the note",
     callout: "Bedside preparation comes first. The cheat sheet showed you what to ask and examine; the sample objective data is now attached to the hospital day, and your synthetic assessment and plan are pre-filled for review."
   },
@@ -193,6 +193,17 @@ export const DEMO_STAGE_NEXT = Object.freeze({
   "scribe-pro-voice": "open-cheat-sheets",
   "browse-cheat-sheet": "open-review"
 });
+
+// Advancement for the guide bar's Continue button. Info stages carry an
+// explicit next stage above; every other stage falls back to the next
+// stage in guide order, so a Continue offered because a stage's target
+// control is missing (Batch A3) always has somewhere to go.
+export function demoNextStage(stageId) {
+  if (DEMO_STAGE_NEXT[stageId]) return DEMO_STAGE_NEXT[stageId];
+  const stageIds = Object.keys(DEMO_GUIDE_STAGES);
+  const index = stageIds.indexOf(stageId);
+  return index >= 0 && index < stageIds.length - 1 ? stageIds[index + 1] : null;
+}
 
 // The parse-note stop pastes the same complete admission note the tour's
 // first steps de-identify, so the parser showcase runs on the full synthetic
@@ -358,19 +369,27 @@ export function createDemoPresentation({ escapeHtml }) {
     `;
   }
 
-  function renderGuide({ session, currentView, reviewAction = "", nextSectionLabel = "" }) {
+  function renderGuide({ session, currentView, reviewAction = "", nextSectionLabel = "", targetMissing = false, noteSectionsOpen = false }) {
     const stage = demoStage(session.stage);
     const stageIds = Object.keys(DEMO_GUIDE_STAGES);
     const step = Math.max(1, stageIds.indexOf(session.stage) + 1);
     const isComplete = session.stage === "done";
     const isInfo = DEMO_INFO_STAGES.has(session.stage);
+    // A stage whose highlighted control cannot be found, or whose
+    // destination is already on screen, still gets a working way
+    // forward (Batch A3): the tour degrades to a readable step with a
+    // Continue button instead of stranding under the dim overlay.
+    const showContinue = !isComplete && (isInfo || targetMissing || noteSectionsOpen);
     const routeMismatch = !isComplete && currentView !== stage.view;
     const reviewHandoff = reviewAction === "continue-section-review"
       ? `The previous field is complete. Click Continue to next field to review ${nextSectionLabel || "the next field"}. You check the app's suggestions before moving on.`
       : "";
+    const sectionsOpenInstruction = noteSectionsOpen
+      ? "The sample admission note is already sorted into the sections below; that is the workspace the Review sections button opens. Look it over, then press Continue."
+      : "";
     const nextInstruction = routeMismatch
       ? `Open ${stage.view === "cheatSheets" ? "Cheat Sheets" : stage.view === "prompts" ? "Prompts" : stage.view === "drugChecks" ? "Drug checks" : stage.view === "aiChat" ? "AI Chat" : stage.view} with the highlighted sidebar control to continue.`
-      : reviewHandoff || stage.instruction;
+      : sectionsOpenInstruction || reviewHandoff || stage.instruction;
     return `
       <section class="guided-demo-bar" data-demo-guide role="status" aria-live="polite">
         <div class="guided-demo-heading">
@@ -388,7 +407,7 @@ export function createDemoPresentation({ escapeHtml }) {
         </div>
         <div class="guided-demo-actions">
           <span class="guided-demo-badge">Synthetic sample</span>
-          ${!isComplete && isInfo ? `<button class="button--primary guided-demo-continue" type="button" data-action="advance-guided-demo">Continue</button>` : ""}
+          ${showContinue ? `<button class="button--primary guided-demo-continue" type="button" data-action="advance-guided-demo">Continue</button>` : ""}
           <button class="button--quiet guided-demo-exit" type="button" data-action="exit-guided-demo">Exit demo</button>
         </div>
       </section>

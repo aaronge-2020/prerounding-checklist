@@ -2,14 +2,14 @@ import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 import {
   createDemoPresentation,
   DEMO_GUIDE_STAGES,
-  DEMO_STAGE_NEXT,
+  demoNextStage,
   DEMO_INFO_STAGES,
   DEMO_PARSE_NOTE_TEXT,
   DEMO_DRUG_CHECK_MEDS,
   DEMO_AI_CHAT_SAMPLES,
   DEMO_AI_CHAT_HANDS_ON_QUESTION,
   DEMO_AI_CHAT_HANDS_ON_ANSWER
-} from "./presentation.js?v=20261012-safety";
+} from "./presentation.js?v=20261013-batch-a3";
 import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20261012-safety";
 
 export const DEMO_REVIEW_ACTIONS = Object.freeze(new Set([
@@ -63,6 +63,18 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
         .filter((el) => el.getClientRects().length > 0);
       const last = all.length ? all[all.length - 1] : null;
       return last ? [last] : [];
+    }
+    // parse-note points at the Review sections button, which exists only
+    // in the note composer's paste mode. When the sections workspace is
+    // already open (the composer sits in sections mode), that button is
+    // never rendered: highlight the workspace itself instead, since the
+    // state the stage teaches is already on screen, and let render()
+    // offer Continue in the guide bar.
+    if (stageId === "parse-note" && view === stage.view) {
+      const button = visibleTarget(content, stage.targetSelector);
+      if (button) return [button];
+      const workspace = visibleTarget(content, '[data-structured-primary-note-scope="admission"][data-note-entry-mode="sections"]');
+      return workspace ? [workspace] : [];
     }
     const single = stage.navTarget
       ? document.querySelector(`button[data-view-target="${CSS.escape(stage.navTarget)}"]`)
@@ -192,11 +204,11 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     }
     const hint = document.querySelector("[data-demo-hint]");
     if (hint) {
-      // Info stages advance via Continue, not by clicking the highlight.
-      const session = getSession?.();
-      const stageId = session?.stage;
-      const isInfo = stageId && DEMO_INFO_STAGES.has(stageId);
-      hint.textContent = isInfo
+      // Any stage whose guide bar carries a Continue button (info
+      // stages, and Batch A3's missing-target / already-satisfied
+      // stages) advances via Continue, not by clicking the highlight.
+      const hasContinue = Boolean(document.querySelector('[data-demo-guide] [data-action="advance-guided-demo"]'));
+      hint.textContent = hasContinue
         ? "Press Continue to move on."
         : "Click the highlighted control to continue the tour.";
       hint.hidden = false;
@@ -291,11 +303,10 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     const tourActive = Boolean(session)
       && typeof session.stage === "string"
       && Object.hasOwn(DEMO_GUIDE_STAGES, session.stage);
-    // Pin the desktop icon rail expanded while the tour runs: the rail
-    // expands on hover and the appearing group labels push the nav buttons
-    // down, so a highlighted sidebar target can jump away mid-approach.
-    // With the rail pinned, targets stay put. Removed on exit (see
-    // forceCleanup).
+    // Mark the tour state on the body while it runs. The rail is not
+    // pinned open: app.js suppresses the hover expansion while a
+    // session exists, so the rail stays at 56px and highlighted
+    // sidebar targets stay put. Removed on exit (see forceCleanup).
     try { document.body.classList.toggle("demo-tour-active", tourActive); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
     if (!tourActive) {
       // Every exit path funnels through here. The dim overlay, callout, and
@@ -326,6 +337,12 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     const isComplete = stageId === "done";
     const targets = targetsForStage(stage, stageId, view, content);
     const target = targets[0] || null;
+    // Batch A3: a stage whose target control cannot be found must never
+    // strand the tour under the dim; renderGuide turns targetMissing
+    // (and noteSectionsOpen, the parse-note fallback above) into a
+    // Continue button in the guide bar.
+    const noteSectionsOpen = stageId === "parse-note" && Boolean(target?.matches?.('[data-note-entry-mode="sections"]'));
+    const targetMissing = !isComplete && !target;
     // Note: browse-cheat-sheet is now an info stage (Issue 3 fix), so we do
     // NOT auto-advance here. The user presses Continue to advance, ensuring
     // the banner is always displayed.
@@ -341,6 +358,8 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       const guideHtml = presentation.renderGuide({
         session,
         currentView: view,
+        targetMissing,
+        noteSectionsOpen,
         reviewAction: target?.dataset.action || "",
         nextSectionLabel:
           target
@@ -510,7 +529,7 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       return;
     }
     if (action === "advance-guided-demo") {
-      const next = DEMO_STAGE_NEXT[session.stage];
+      const next = demoNextStage(session.stage);
       if (next) {
         session.stage = next;
         renderApp();

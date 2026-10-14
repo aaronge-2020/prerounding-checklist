@@ -3,7 +3,7 @@ import { createDemoPatient, DEMO_ASSESSMENT, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXT
 import { parsePrimaryTeamNote } from "../src/patient-context/primary-team-note-parser.js";
 import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 import { DEMO_REVIEW_ACTIONS, demoReviewTransition, createDemoController } from "../src/ui/demo/controller.js";
-import { DEMO_GUIDE_STAGES, DEMO_INFO_STAGES, DEMO_STAGE_NEXT, DEMO_PARSE_NOTE_TEXT, DEMO_DRUG_CHECK_MEDS, DEMO_AI_CHAT_QUESTION, DEMO_AI_CHAT_ANSWER, DEMO_SCRIBE_TRANSCRIPT, DEMO_SCRIBE_NOTE, createDemoPresentation, demoStage } from "../src/ui/demo/presentation.js";
+import { DEMO_GUIDE_STAGES, DEMO_INFO_STAGES, DEMO_STAGE_NEXT, demoNextStage, DEMO_PARSE_NOTE_TEXT, DEMO_DRUG_CHECK_MEDS, DEMO_AI_CHAT_QUESTION, DEMO_AI_CHAT_ANSWER, DEMO_SCRIBE_TRANSCRIPT, DEMO_SCRIBE_NOTE, createDemoPresentation, demoStage } from "../src/ui/demo/presentation.js";
 
 const escapeHtml = (value = "") => String(value)
   .replace(/&/g, "&amp;")
@@ -125,6 +125,27 @@ assert.match(infoGuide, /data-demo-hint/);
 const actionGuide = presentation.renderGuide({ session: { stage: "check-interactions" }, currentView: "drugChecks" });
 assert.doesNotMatch(actionGuide, /data-action="advance-guided-demo"/);
 assert.match(actionGuide, /data-demo-hint/);
+// Batch A3: an action stage whose target control cannot be found must
+// still offer a way forward, and Continue must always have a next
+// stage: the explicit map wins, guide order is the fallback.
+const missingTargetGuide = presentation.renderGuide({ session: { stage: "check-interactions" }, currentView: "drugChecks", targetMissing: true });
+assert.match(missingTargetGuide, /data-action="advance-guided-demo"/, "a missing target must offer Continue instead of stranding the tour");
+assert.equal(demoNextStage("parse-note"), "open-drug-checks");
+assert.equal(demoNextStage("ai-chat-read"), "open-scribe-pro", "the explicit next map wins over guide order");
+assert.equal(demoNextStage("check-interactions"), "open-ai-chat", "action stages fall back to the next stage in guide order");
+assert.equal(demoNextStage("copy-prompt"), "done");
+assert.equal(demoNextStage("done"), null);
+// Batch A3: when the sections workspace is already open, the parse-note
+// stage explains that state and offers Continue (its Review sections
+// button does not exist in sections mode).
+const sectionsOpenGuide = presentation.renderGuide({ session: { stage: "parse-note" }, currentView: "daily", noteSectionsOpen: true });
+assert.match(sectionsOpenGuide, /data-action="advance-guided-demo"/);
+assert.match(sectionsOpenGuide, /already sorted into the sections below/);
+const parseGuide = presentation.renderGuide({ session: { stage: "parse-note" }, currentView: "daily" });
+assert.doesNotMatch(parseGuide, /data-action="advance-guided-demo"/, "the normal parse-note stage still advances via its highlighted button");
+// Step 16 names the control it highlights: the sidebar button reads
+// "Write note", not the retired "Review Data / Draft Note" label.
+assert.match(demoStage("open-review").instruction, /Click Write note in the sidebar/);
 Object.values(DEMO_GUIDE_STAGES).forEach((stage) => {
   assert.ok(stage.instruction, `${stage.title} should tell the user what to do`);
 });
