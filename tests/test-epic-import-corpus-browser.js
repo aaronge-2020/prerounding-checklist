@@ -63,7 +63,11 @@ try {
     assert.equal(await field.inputValue(), revised, `${entry.name}: manual edit retained`);
     for (const [id, text] of Object.entries(parsed)) if (id !== fieldId) assert.equal((await fields())[id], text, `${entry.name}: unaffected ${id}`);
     if (index % 10 === 0 || index === cases.length - 1) {
-      await page.getByLabel("Go to section", { exact: true }).selectOption("one_liner");
+      // The Sections list is hidden at widths up to 900px by design; where
+      // it is shown it is the navigation route, otherwise the fill below
+      // scrolls the card into view inside the pane.
+      const oneLinerIndex = page.locator('[data-note-index-field="one_liner"]');
+      if (await oneLinerIndex.isVisible()) await oneLinerIndex.click();
       await page.getByRole("textbox", { name: "One-liner", exact: true }).fill("Adult admitted for evaluation.");
       await page.selectOption("#deidModeSelect", "structured");
       await page.evaluate(() => document.querySelector("#toastContainer")?.replaceChildren());

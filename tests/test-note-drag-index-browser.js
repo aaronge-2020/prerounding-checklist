@@ -4,7 +4,9 @@ import { createAppServer, openRealApp, unlockAndCreatePatient } from './browser/
 // Dropping a drag on the Sections index must behave exactly like dropping it
 // on that section's card: field-to-field drags move the exact range (source
 // loses it, destination gains it appended after a blank line), original-to-
-// field drags copy it, and no scrolling or jumping is involved.
+// field drags copy it, and no scrolling or jumping is involved. Clicking an
+// index item while a selection is live files the selection the same way
+// (F2); clicking with no selection still jumps.
 const server = await createAppServer();
 const browser = await chromium.launch({ headless: true });
 try {
@@ -60,6 +62,7 @@ try {
   assert.ok(await indexItem('physical_exam').evaluate(el => el.classList.contains('is-note-drop-available')), 'other index items are marked available');
   assert.ok(!await indexItem('history_of_present_illness').evaluate(el => el.classList.contains('is-note-drop-available')), 'source index item is not marked available');
   assert.equal(await pane.evaluate(el => el.scrollTop), 0, 'dragging to the index does not scroll the sections pane');
+  assert.equal(await page.locator('.note-drag-ghost').textContent(), 'Move "Misplaced exam."', 'chip shows the dragged words, not a character count');
   await page.mouse.up();
   assert.equal(await hpi.inputValue(), 'Cough. ');
   assert.equal(await plan.inputValue(), 'Review results.\n\nMisplaced exam.');
@@ -108,11 +111,36 @@ try {
   await page.mouse.move(examIndexBox.x + examIndexBox.width / 2, examIndexBox.y + examIndexBox.height / 2, { steps: 15 });
   await page.waitForFunction(() => document.querySelector('[data-note-index-field="physical_exam"]')?.classList.contains('is-note-drop-target'));
   assert.ok(await indexItem('physical_exam').evaluate(el => el.classList.contains('is-note-drop-target')));
+  assert.equal(await page.locator('.note-drag-ghost').textContent(), 'Copy "HISTORY"', 'chip shows the copied words from the original');
   await page.mouse.up();
   assert.equal(await exam.inputValue(), 'Alert.\n\nHISTORY');
   assert.equal(await page.locator('[data-note-original]').textContent(), raw);
   await undo.click();
   assert.equal(await exam.inputValue(), 'Alert.');
+  // G: clicking an index item with a live selection files the text (F2):
+  // a move for section text, with no scrolling of the sections pane.
+  await pane.evaluate(el => { el.scrollTop = 0; });
+  await selectRange(hpi, 7, 22);
+  await indexItem('plan').click();
+  assert.equal(await hpi.inputValue(), 'Cough. ');
+  assert.equal(await plan.inputValue(), 'Review results.\n\nMisplaced exam.');
+  assert.equal(await pane.evaluate(el => el.scrollTop), 0, 'click-to-file does not scroll the sections pane');
+  assert.equal(await handle.isDisabled(), true, 'filing consumes the selection');
+  await undo.click();
+  assert.equal(await hpi.inputValue(), 'Cough. Misplaced exam.');
+  assert.equal(await plan.inputValue(), 'Review results.');
+  // H: clicking an index item with a highlight in the read-only original
+  // copies the text into that section; the original keeps its text.
+  await page.locator('[data-note-original]').evaluate(el => {
+    const range = document.createRange(); range.setStart(el.firstChild, 0); range.setEnd(el.firstChild, 7);
+    const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range);
+    document.dispatchEvent(new Event('selectionchange'));
+  });
+  await indexItem('assessment').click();
+  assert.equal(await page.getByRole('textbox', { name: 'Assessment', exact: true }).inputValue(), 'Cough.\n\nHISTORY');
+  assert.equal(await page.locator('[data-note-original]').textContent(), raw);
+  await undo.click();
+  assert.equal(await page.getByRole('textbox', { name: 'Assessment', exact: true }).inputValue(), 'Cough.');
   // F: the daily scope renders the same index and honors index drops too.
   await page.locator('.new-day-control > summary').click();
   await page.getByLabel('Label', { exact: true }).fill('Synthetic index day');
@@ -142,5 +170,5 @@ try {
   assert.equal(await dailyPlan.inputValue(), 'Review results.\n\nMisplaced exam.');
   assert.ok(!(await dailySource.inputValue()).includes('Misplaced exam.'));
   assert.deepEqual(errors, []);
-  console.log('Note arrangement index drops: move without scrolling, source no-op, Escape cancel, click jump, original copy, daily scope passed.');
+  console.log('Note arrangement index drops: move without scrolling, source no-op, Escape cancel, click jump, original copy, click-to-file move and copy, daily scope passed.');
 } finally { await browser.close(); await server.close(); }

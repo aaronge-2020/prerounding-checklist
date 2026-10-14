@@ -1,6 +1,6 @@
 import { deidentifyLabeledField } from "../../patient-context/labeled-deidentification.js?v=20261012-safety";
 import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
-import { createNoteDragController } from "./note-drag-controller.js?v=20261013-index-drop";
+import { createNoteDragController } from "./note-drag-controller.js?v=20261013-batch-b";
 import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261011-drag-workspace-v2";
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261012-citation-preview";
 import { captureScrollPositions, restoreScrollPositions, replaceViewContent } from "../view-scroll.js?v=20261012-safety";
@@ -437,12 +437,7 @@ export function createDailySourceController(deps) {
   }
 
   function handleInput(target) {
-    if (target.matches("[data-note-section-jump]")) {
-      const pane = target.closest(".note-arrange-sections");
-      jumpToNoteSection(pane, target.value);
-      target.value = "";
-    }
-    else if (target.matches("[data-result-metadata]")) updateResultMetadata(target.dataset.resultScope || "daily", target.dataset.resultMetadata, target.value);
+    if (target.matches("[data-result-metadata]")) updateResultMetadata(target.dataset.resultScope || "daily", target.dataset.resultMetadata, target.value);
     else if (target.matches("[data-structured-note-paste]")) updateStructuredNotePaste(target.dataset.structuredNoteScope || "daily", target.value);
     else if (target.matches("[data-structured-note-field]")) updateStructuredNoteDraft(target.dataset.structuredNoteScope || "daily", target.dataset.structuredNoteField, target.value);
     else return false;

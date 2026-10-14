@@ -56,13 +56,13 @@ try {
   assert.equal(ids.length, 21);
   assert.equal(await page.locator('.note-additional-sections').count(), 0);
   for (const id of ids) {
-    await page.getByLabel('Go to section', {exact:true}).selectOption(id);
+    await page.locator(`[data-note-index-field="${id}"]`).click();
     assert.equal(await page.locator(`[data-note-drop-field="${id}"]`).evaluate(el => {
       const card = el.getBoundingClientRect(), pane = el.parentElement.getBoundingClientRect();
       return card.top >= pane.top && card.top < pane.bottom;
     }), true, `${id} is reachable without expanding hidden sections`);
   }
-  await page.getByLabel('Go to section', {exact:true}).selectOption('one_liner');
+  await page.locator('[data-note-index-field="one_liner"]').click();
   await page.getByRole('textbox', {name:'One-liner', exact:true}).fill('Adult admitted with cough.');
 
   // Edits survive changing entry mode and chart-source tabs.

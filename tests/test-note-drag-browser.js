@@ -74,6 +74,31 @@ try {
   assert.equal(await exam.inputValue(), 'Alert.\n\nMisplaced exam.');
   assert.equal(await hpi.inputValue(), 'Cough. ');
   await undo.click();
+  // F3: a grip floats next to the selection itself, and a drag can start
+  // from it; the chip names the dragged words rather than counting characters.
+  await mouseSelect(7, 22);
+  const grip = page.locator('[data-note-drag-grip]');
+  assert.equal(await grip.count(), 1, 'one grip appears for the live selection');
+  assert.equal(await grip.isVisible(), true);
+  const gripBox = await grip.boundingBox();
+  const gripAnchor = await hpi.evaluate(el => {
+    const rect = el.getBoundingClientRect(), style = getComputedStyle(el);
+    const ctx = document.createElement('canvas').getContext('2d');
+    ctx.font = `${style.fontSize} ${style.fontFamily}`;
+    return { endX: rect.x + parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft) + ctx.measureText(el.value.slice(0, 22)).width,
+      lineTop: rect.y + parseFloat(style.borderTopWidth) + parseFloat(style.paddingTop) };
+  });
+  assert.ok(Math.abs(gripBox.x + gripBox.width / 2 - gripAnchor.endX) <= 16, 'grip is centered on the end of the selection');
+  assert.ok(gripBox.y + gripBox.height <= gripAnchor.lineTop + 2 && gripBox.y > gripAnchor.lineTop - 40, 'grip floats just above the selected line, not over the text');
+  const gripTarget = await exam.boundingBox();
+  await page.mouse.move(gripBox.x + gripBox.width / 2, gripBox.y + gripBox.height / 2); await page.mouse.down();
+  await page.mouse.move(gripTarget.x + 30, gripTarget.y + 20, {steps: 12});
+  assert.equal(await page.locator('.note-drag-ghost').textContent(), 'Move "Misplaced exam."', 'chip shows the dragged words');
+  await page.mouse.up();
+  assert.equal(await exam.inputValue(), 'Alert.\n\nMisplaced exam.');
+  assert.equal(await hpi.inputValue(), 'Cough. ');
+  assert.equal(await grip.count(), 0, 'the grip leaves with the selection');
+  await undo.click();
   // Wrapped and internally scrolled textarea highlights use their visible geometry.
   for (const scrolled of [false, true]) {
     const passage = 'Repeated words for wrapped selection. '.repeat(35);
@@ -118,12 +143,15 @@ try {
   assert.equal(await hpi.inputValue(),'Cough. Misplaced exam.');
   assert.equal(await exam.inputValue(),'Alert.');
   await selectRange(hpi,7,22);
-  // Navigating the compact section index keeps the selected range available.
+  // F2: clicking a Sections list item while a selection is live files the
+  // selected text into that section (a move), it does not merely jump.
   await page.locator('[data-note-index-field="physical_exam"]').click();
-  assert.equal(await page.locator('[data-note-drag-handle]').isEnabled(), true);
-  await page.getByRole('button',{name:'Physical exam section',exact:true}).click();
   assert.equal(await exam.inputValue(), 'Alert.\n\nMisplaced exam.');
+  assert.equal(await hpi.inputValue(), 'Cough. ');
+  assert.equal(await page.locator('[data-note-drag-handle]').isEnabled(), false, 'filing consumes the selection');
   await undo.click();
+  assert.equal(await hpi.inputValue(), 'Cough. Misplaced exam.');
+  assert.equal(await exam.inputValue(), 'Alert.');
   // Keyboard/tap alternative uses the same exact-range transaction.
   await selectRange(hpi,7,22);
   await page.getByRole('button',{name:'Physical exam section',exact:true}).press('Enter');
@@ -154,11 +182,13 @@ try {
   assert.equal(await exam.inputValue(), 'Alert.\n\nHISTORY');
   assert.equal(await page.locator('[data-note-original]').textContent(), raw);
   await undo.click();
-  // Selecting a destination from the picker must retain the chosen source range.
+  // Scrolling the section pane to a far destination must retain the chosen
+  // source range. (The "Go to section" dropdown is gone, F7.)
   const oneLiner = page.getByRole('textbox', {name:'One-liner', exact:true});
   await oneLiner.fill('');
   await selectRange(hpi, 7, 22);
-  await page.getByLabel('Go to section', {exact:true}).selectOption('one_liner');
+  assert.equal(await page.locator('[data-note-section-jump]').count(), 0, 'the Go to section dropdown is removed');
+  await page.locator('[data-note-drop-field="one_liner"]').scrollIntoViewIfNeeded();
   assert.equal(await handle.isEnabled(), true);
   await page.getByRole('button', {name:'One-liner section', exact:true}).click();
   assert.equal(await oneLiner.inputValue(), 'Misplaced exam.');
@@ -201,5 +231,5 @@ try {
   assert.equal(await page.locator('[data-note-original]').count(),0);
   assert.equal(await page.locator('.has-note-selection').count(),0);
   assert.deepEqual(errors,[]);
-  console.log('Note arrangement: direct drag, copy, tap/keyboard, Undo, edits, cancel, external drop, replacement, mobile passed.');
+  console.log('Note arrangement: direct drag, grip drag, click-to-file, copy, tap/keyboard, Undo, edits, cancel, external drop, replacement, mobile passed.');
 } finally { await browser.close(); await server.close(); }

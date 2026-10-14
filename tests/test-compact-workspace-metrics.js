@@ -157,12 +157,8 @@ try {
   await page.locator('[data-action="review-structured-note-sections"]').click();
   await measure("Reach and edit Other note content in Epic import", async () => {
     const nav = page.locator('[data-note-index-field="other"]');
-    if (await nav.count()) await click(nav);
-    else {
-      await click(page.getByLabel("Go to section", { exact: true }));
-      await page.keyboard.press("End");
-      await page.keyboard.press("Enter");
-    }
+    if (await nav.isVisible()) await click(nav);
+    else await page.locator('[data-note-drop-field="other"]').scrollIntoViewIfNeeded();
     await edit(page.locator('[data-structured-note-field="other"]'), "Additional copied source context.");
   });
   await page.screenshot({ path: `docs/compact-workspace/${phase}-${width}-import.png` });

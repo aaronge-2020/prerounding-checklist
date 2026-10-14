@@ -156,7 +156,7 @@ assert.match(sectionMarkup, /data-note-field="plan"/);
 assert.match(sectionMarkup, /data-note-field="lda"/);
 assert.match(sectionMarkup, /data-structured-note-field="physical_exam"/);
 assert.equal((sectionMarkup.match(/<textarea/g) || []).length, 21, "all sections stay editable in visible cards");
-assert.match(sectionMarkup, /data-note-section-jump/);
+assert.doesNotMatch(sectionMarkup, /data-note-section-jump|Go to section/, 'the Go to section dropdown is removed (F7); the Sections list and card headings remain');
 assert.doesNotMatch(sectionMarkup, /note-additional-sections/);
 assert.doesNotMatch(sectionMarkup, /data-note-move-target|Move selection|Next section/);
 assert.match(sectionMarkup, /2 sections with text/);
