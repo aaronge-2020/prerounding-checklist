@@ -7537,6 +7537,28 @@ button.var-fill:focus-visible {
   white-space: nowrap;
 }
 
+/* Batch E (F16): the bar's instruction text must always wrap and the
+   bar must always grow to fit it. Flex items default to min-width:
+   auto, which can hold the copy on one clipped line instead of
+   wrapping; pin every text-bearing flex item in the bar to
+   min-width: 0 so wrapping is structural, not incidental. */
+.guided-demo-copy > strong,
+.guided-demo-instructions,
+.guided-demo-action,
+.guided-demo-note,
+.guided-demo-sample {
+  min-width: 0;
+}
+
+.guided-demo-action,
+.guided-demo-note {
+  overflow-wrap: break-word;
+}
+
+.guided-demo-sample {
+  max-width: 100%;
+}
+
 .guided-demo-exit {
   border-color: var(--border);
   color: var(--ink);
@@ -12518,6 +12540,17 @@ details.ed-section .ed-section-summary .ed-label { display: inline-flex; }
 .scores-page-heading {
   margin-bottom: 16px;
 }
+/* Calculators search — same treatment as the Cheat Sheets search bar:
+   sticky at the top of the view, and typing filters the list live. */
+.scores-searchbar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 12px; padding: 0 12px; margin: 8px 0; }
+.scores-searchbar:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.scores-search-icon { color: var(--muted); flex: none; display: inline-flex; width: 18px; height: 18px; }
+.scores-search-icon svg { width: 100%; height: 100%; display: block; }
+.scores-search { flex: 1; min-width: 0; min-height: 44px; border: 0; background: transparent; font-size: 1rem; color: var(--text); }
+.scores-search:focus { outline: none; }
+.scores-search-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.scores-count { color: var(--muted); font-size: 0.85rem; margin: 0 2px; }
+.scores-empty { color: var(--muted); margin: 16px 2px; }
 .scores-page-heading h2 {
   margin: 0 0 4px;
 }

@@ -37,7 +37,7 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
           ${action}
         </div>
         <p class="muted">${escapeHtml(option?.description || "Uses structured local rules to redact identifiers without a downloaded model.")}</p>
-        <p class="muted">Correction-based rule suggestions are experimental and require approval. They last only for this patient session.</p>
+        <p class="muted">Correction-based rule suggestions are experimental and require approval. Approved rules are saved in your encrypted vault and stay active across sessions and patients.</p>
         ${quickDeidStatus ? `<span class="model-selection-message" aria-live="polite">${escapeHtml(quickDeidStatus)}</span>` : ""}
         ${progress ? `<div class="model-selection-progress" aria-live="polite"><progress data-active-model-progress value="${Math.max(0, progress.completedBytes)}" max="${Math.max(1, progress.totalBytes)}"></progress><span data-active-model-progress-text>${escapeHtml(modelPackProgressText)}</span></div>` : ""}
         ${error ? `<div class="model-selection-message model-selection-message--error" role="alert">${escapeHtml(error)}</div>${renderOpenMedSmallFallback({ option })}` : ""}
@@ -74,7 +74,7 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
             <span class="muted">${pendingRedactions.length} unconfirmed redaction${pendingRedactions.length === 1 ? "" : "s"}, ${activeWarnings.length} remaining flag${activeWarnings.length === 1 ? "" : "s"}. Originals disappear when you close this tab or leave this tool.</span>
           </div>
           <div class="button-row">
-            ${pendingRedactions.length ? `<button class="button--quiet" type="button" data-action="confirm-all-quick-redactions">Confirm all (${pendingRedactions.length})</button><button class="button--quiet" type="button" data-action="reject-all-quick-redactions">Reject all (${pendingRedactions.length})</button>` : ""}
+            ${pendingRedactions.length ? `<button class="button--secondary" type="button" data-action="confirm-all-quick-redactions">Confirm all (${pendingRedactions.length})</button><button class="button--secondary" type="button" data-action="reject-all-quick-redactions">Reject all (${pendingRedactions.length})</button>` : ""}
             <button class="button--quiet" type="button" data-action="manual-redact-quick-selection">${icon("wand")} Redact highlighted text</button>
           </div>
         </div>

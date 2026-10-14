@@ -5,6 +5,8 @@
 // app's theme (teal accent, navy primary, Aptos/system font).
 // No DOM access, no state - the scores controller owns state and passes
 // everything in.
+import { LOCAL_LLM_CARDS } from "./search.js?v=20261014-batch-e";
+
 export function createScoresPresentation({ escapeHtml }) {
   const TABS = [
     { id: "calculator", label: "Calculator" },
@@ -19,7 +21,8 @@ export function createScoresPresentation({ escapeHtml }) {
     starFilled: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.7-4.2 3.9 1.1 5.6-5.1-2.8-5.1 2.8 1.1-5.6-4.2-3.9 5.7-.7z"/></svg>',
     share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4"/><path d="M8 8l4-4 4 4"/><path d="M5 12v8h14v-8"/></svg>',
     book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5"/><path d="M20 18H6.5A2.5 2.5 0 0 0 4 20.5"/><path d="M9 8h7M9 11.5h5"/></svg>',
-    chev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg>'
+    chev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg>',
+    search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg>'
   };
 
   function inputId(scoreId, key) {
@@ -372,9 +375,55 @@ export function createScoresPresentation({ escapeHtml }) {
       </button>`;
   }
 
-  function renderScoresHome({ definitions, patientLabel }) {
+  function renderLocalLlmCard(card) {
+    return `
+          <article class="score-card" data-score-open="${escapeHtml(card.id)}" tabindex="0" role="button" aria-label="${escapeHtml(card.ariaLabel)}">
+            <h3>${escapeHtml(card.heading)}</h3>
+            <p>${escapeHtml(card.text)}</p>
+          </article>`;
+  }
+
+  // Results region only — the controller patches just this node on each
+  // search keystroke so the search input keeps focus while typing, the
+  // same treatment Cheat Sheets uses for its list.
+  function renderScoresResults({ definitions, llmCards, query }) {
     const calculators = (definitions || []).filter((definition) => definition.kind !== "ai-model");
     const aiModels = (definitions || []).filter((definition) => definition.kind === "ai-model");
+    const cards = llmCards || LOCAL_LLM_CARDS;
+    if (!calculators.length && !aiModels.length && !cards.length) {
+      return `
+      <div class="scores-results" data-scores-results>
+        <p class="scores-empty">No calculators match \u201c${escapeHtml(String(query ?? ""))}\u201d. Try a shorter word.</p>
+      </div>`;
+    }
+    return `
+      <div class="scores-results" data-scores-results>
+        ${calculators.length ? `
+        <h2 class="scores-section-heading">Clinical calculators</h2>
+        <div class="scores-grid">
+          ${calculators.map(renderScoreCard).join("")}
+        </div>` : ""}
+        ${aiModels.length ? `
+        <h2 class="scores-section-heading">AI models</h2>
+        <div class="scores-grid">
+          ${aiModels.map(renderScoreCard).join("")}
+        </div>` : ""}
+        ${cards.length ? `
+        <h2 class="scores-section-heading">Local LLM</h2>
+        <div class="scores-grid">
+          ${cards.map(renderLocalLlmCard).join("")}
+        </div>` : ""}
+      </div>`;
+  }
+
+  function scoresCountText(shown, total) {
+    return shown === total ? `${total} tool${total === 1 ? "" : "s"}` : `${shown} of ${total} tools`;
+  }
+
+  function renderScoresHome({ definitions, patientLabel, query = "", llmCards, totalCount }) {
+    const cards = llmCards || LOCAL_LLM_CARDS;
+    const shown = (definitions || []).length + cards.length;
+    const total = typeof totalCount === "number" ? totalCount : shown;
     return `
       <div class="scores-page">
         <div class="scores-page-heading">
@@ -382,29 +431,18 @@ export function createScoresPresentation({ escapeHtml }) {
           <p class="muted">Native clinical calculators that mirror MDCalc one-to-one, plus peer-reviewed AI models. They run entirely on this device \u2014 no network, no other tab. Verification status is shown on each model.</p>
           ${patientLabel ? `<p class="muted">Inputs marked <span class="score-binding-badge">from patient</span> are pulled from ${escapeHtml(patientLabel)}\u2019s saved data. Always verify before using them.</p>` : ""}
         </div>
-        <h2 class="scores-section-heading">Clinical calculators</h2>
-        <div class="scores-grid">
-          ${calculators.map(renderScoreCard).join("")}
+        <div class="scores-searchbar">
+          <span class="scores-search-icon" aria-hidden="true">${ICONS.search}</span>
+          <label class="scores-search-label" for="scores-search">Search calculators</label>
+          <input id="scores-search" class="scores-search" type="search" autocomplete="off"
+            data-scores-search placeholder="Search by name or use\u2026"
+            value="${escapeHtml(String(query ?? ""))}" aria-label="Search calculators">
         </div>
-        ${aiModels.length ? `
-        <h2 class="scores-section-heading">AI models</h2>
-        <div class="scores-grid">
-          ${aiModels.map(renderScoreCard).join("")}
-        </div>` : ""}
-        <h2 class="scores-section-heading">Local LLM</h2>
-        <div class="scores-grid">
-          <article class="score-card" data-score-open="__local_llm__" tabindex="0" role="button" aria-label="Open local LLM chat">
-            <h3>Qwen chat (browser-local)</h3>
-            <p>Chat directly with a Qwen model running in this browser via WebLLM. Download a model, then test its capabilities \u2014 no data leaves the device.</p>
-          </article>
-          <article class="score-card" data-score-open="__local_llm_parser__" tabindex="0" role="button" aria-label="Open local LLM note parser">
-            <h3>Note parser (local LLM)</h3>
-            <p>Parse pasted primary-team notes with the local model instead of the deterministic parser. Enable it from the Local AI tab.</p>
-          </article>
-        </div>
+        <p class="scores-count" aria-live="polite">${scoresCountText(shown, total)}</p>
+        ${renderScoresResults({ definitions, llmCards: cards, query })}
         <p class="score-footnote">Decision support only \u2014 verify against the primary reference before acting on any result.</p>
       </div>`;
   }
 
-  return { renderScoresHome, renderScoreDetail, renderResultBar, renderNextStepsPane, renderFavoriteButton, renderBindingBadge };
+  return { renderScoresHome, renderScoresResults, scoresCountText, renderScoreDetail, renderResultBar, renderNextStepsPane, renderFavoriteButton, renderBindingBadge };
 }

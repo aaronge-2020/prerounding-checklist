@@ -54,7 +54,11 @@ export function createApprovalPresentation({ escapeHtml }) {
   function renderPendingRules(rules) {
     const pending = (rules || []).filter(r => r.status === "proposed");
     if (!pending.length) {
-      return `<p class="rule-empty">No new rule suggestions. Keep reviewing — suggestions appear after you've made a few corrections with a shared pattern.</p>`;
+      return `
+      <div class="rule-list" data-rule-list>
+        <h3>Suggested rules</h3>
+        <p class="rule-empty">No new rule suggestions. Keep reviewing — suggestions appear after you've made a few corrections with a shared pattern.</p>
+      </div>`;
     }
     return `
       <div class="rule-list" data-rule-list>

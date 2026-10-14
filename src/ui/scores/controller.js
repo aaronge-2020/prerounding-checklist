@@ -8,7 +8,8 @@ import { getScoreDefinition, listScoreDefinitions } from "../../clinical-scores/
 import { getAiModelDefinition, listAiModelDefinitions } from "../../ai-models/index.js";
 import { resolveScoreBindings } from "../../clinical-scores/patient-bindings.js?v=20261011-epic-workflow";
 import { appendSavedScore, createSavedScoreRecord } from "../../clinical-scores/saved-scores.js";
-import { createScoresPresentation } from "./presentation.js";
+import { createScoresPresentation } from "./presentation.js?v=20261014-batch-e";
+import { filterScoreDefinitions, filterLocalLlmCards, LOCAL_LLM_CARDS } from "./search.js?v=20261014-batch-e";
 
 function localTodayISO() {
   const now = new Date();
@@ -29,7 +30,7 @@ export function createScoresController({
   updateActivePatient
 }) {
   const presentation = createScoresPresentation({ escapeHtml });
-  const state = { patientId: null, scoreId: null, values: {}, overridden: new Set(), savedFingerprint: null, tab: "calculator", listScrollTop: 0, listScrollLeft: 0 };
+  const state = { patientId: null, scoreId: null, values: {}, overridden: new Set(), savedFingerprint: null, tab: "calculator", listScrollTop: 0, listScrollLeft: 0, query: "" };
 
   const FAVORITES_KEY = "prerounding.scoreFavorites.v1";
   // In-memory fallback for environments without localStorage (tests, SSR).
@@ -103,6 +104,7 @@ export function createScoresController({
     state.savedFingerprint = null;
     state.saveFailed = false;
     state.tab = "calculator";
+    state.query = "";
   }
 
   function bindingsForPatient() {
@@ -385,14 +387,51 @@ export function createScoresController({
     detail.hidden = false;
   }
 
+  function homeModel() {
+    const all = listAllDefinitions();
+    const definitions = filterScoreDefinitions(all, state.query);
+    const llmCards = filterLocalLlmCards(state.query);
+    return { definitions, llmCards, totalCount: all.length + LOCAL_LLM_CARDS.length };
+  }
+
   function renderHomeHtml() {
     const patient = active();
     if (!patient) return patientRequiredMessage();
     if (state.patientId !== patient.id) resetForPatient(patient.id);
+    const { definitions, llmCards, totalCount } = homeModel();
     return presentation.renderScoresHome({
-      definitions: listAllDefinitions(),
+      definitions,
+      llmCards,
+      query: state.query,
+      totalCount,
       patientLabel: patient.displayLabel || "this patient"
     });
+  }
+
+  // Surgical update for search keystrokes: only the results region's
+  // children are updated, so the search input keeps focus while typing —
+  // the same treatment the Cheat Sheets list uses.
+  function patchScoresResults() {
+    const container = byId("scoresContent");
+    const slot = container && typeof container.querySelector === "function"
+      ? container.querySelector("[data-scores-results]")
+      : null;
+    if (!container || !slot) {
+      render();
+      return;
+    }
+    const { definitions, llmCards, totalCount } = homeModel();
+    const template = document.createElement("template");
+    template.innerHTML = safeHtml(presentation.renderScoresResults({ definitions, llmCards, query: state.query }));
+    const newSlot = template.content.firstElementChild;
+    if (newSlot) {
+      slot.replaceChildren(...newSlot.childNodes);
+      slot.className = newSlot.className;
+    }
+    const count = container.querySelector(".scores-count");
+    if (count) {
+      count.textContent = presentation.scoresCountText(definitions.length + llmCards.length, totalCount);
+    }
   }
 
   function renderDetailHtml() {
@@ -577,6 +616,11 @@ export function createScoresController({
 
   function input(target) {
     if (!target || app.view !== "scores") return false;
+    if (target.matches?.("[data-scores-search]")) {
+      state.query = target.value ?? "";
+      patchScoresResults();
+      return true;
+    }
     const scoreId = target.dataset?.scoreId;
     if (!scoreId || scoreId !== state.scoreId) return false;
     if (!target.matches?.("[data-score-input]")) return false;

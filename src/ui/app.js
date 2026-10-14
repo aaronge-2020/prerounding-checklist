@@ -136,8 +136,8 @@ import {
   redactionPosition,
   warningDescription,
   warningSnippet
-} from "./redaction/presentation.js?v=20261012-citation-preview";
-import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261013-batch-a";
+} from "./redaction/presentation.js?v=20261014-batch-e";
+import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261014-batch-e";
 import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261012-safety";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20261003-deid-adaptive";
 import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261012-safety";
@@ -150,7 +150,7 @@ import { createDrugChecksController } from "./drug-checks/controller.js?v=202610
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20261012-safety";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20261012-safety";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
-import { createScoresController } from "./scores/controller.js?v=20261012-safety";
+import { createScoresController } from "./scores/controller.js?v=20261014-batch-e";
 import { createCheatSheetsController } from "./cheat-sheets/controller.js?v=20261012-safety";
 import { createSampleNotesController } from "./sample-notes/controller.js?v=20261012-citation-preview";
 import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20261012-safety";
@@ -164,7 +164,7 @@ import {
   decideRule as decideProposerRule,
 } from "../vault/deid/rule-orchestrator.js?v=20261013-durable-rules";
 import { getPendingRules, loadRules, saveRules, sanitizeRulesForPersistence } from "../vault/deid/rule-store.js?v=20261013-durable-rules";
-import { createApprovalPresentation } from "./deid/approval-presentation.js?v=20261013-durable-rules";
+import { createApprovalPresentation } from "./deid/approval-presentation.js?v=20261014-batch-e";
 const app = {
   vault: null,
   passphrase: "",
@@ -3807,7 +3807,14 @@ async function runQuickDeid() {
       verifyWithLlm: app.quickDeid.verifyWithLlm,
       output: result.text || "",
       warnings: result.residualWarnings || result.flags || [],
-      status: result.modelId ? `Model used: ${result.modelId}` : result.modelStatus || "Structured redaction complete.",
+      // Internal structured-pipeline status tokens ("learned meddeid",
+      // "structured only") are not user-facing text; show the plain
+      // completion sentence instead of leaking the token onto the page.
+      status: result.modelId
+        ? `Model used: ${result.modelId}`
+        : (result.modelStatus === "learned meddeid" || result.modelStatus === "structured only")
+          ? "Structured redaction complete."
+          : result.modelStatus || "Structured redaction complete.",
       review: createEphemeralRedactionReview(app.quickDeid.input, result)
     };
     setStatus(verifierStatus || "Quick de-identification complete.");
