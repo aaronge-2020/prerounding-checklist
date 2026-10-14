@@ -35,18 +35,59 @@ async function waitForGuide(pattern, timeout = 30000) {
     { timeout }
   );
 }
+// Wait for a review stage to settle: either the guide has advanced to
+// the target stage, or an advance action is visible in the expanded
+// editor. The review surface mounts asynchronously: after "Add the
+// day-one update" swaps in the daily source, the app de-identifies and
+// renders for a few hundred milliseconds with no editor on screen at
+// all (measured gap: ~360-440ms locally, longer on a loaded runner).
+// A one-shot visibility check inside that gap sees no action and
+// would throw even though the stage is about to offer one, so the
+// stage only counts as offering nothing once this bounded wait
+// expires with neither condition met.
+async function waitForReviewAdvance(nextPattern, timeout = 15000) {
+  const handle = await page.waitForFunction(
+    ({ source, actions }) => {
+      const guide = document.querySelector("[data-demo-guide]")?.textContent || "";
+      if (new RegExp(source).test(guide)) return "guide";
+      const visible = (el) => {
+        if (!el) return false;
+        const rect = el.getBoundingClientRect();
+        const style = getComputedStyle(el);
+        return rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+      };
+      const offered = actions.some((action) =>
+        visible(document.querySelector(`.section-editor.is-expanded [data-action="${action}"]`)));
+      return offered ? "action" : false;
+    },
+    {
+      source: nextPattern.source,
+      actions: ["confirm-all-section-redactions", "continue-section-review", "keep-reviewed-redaction"]
+    },
+    { timeout, polling: 100 }
+  );
+  return handle.jsonValue();
+}
 // Drive a redaction review stage to completion: Confirm all when it is
 // offered, otherwise Continue to the next field, otherwise Accept one.
 async function finishReviewStage(nextPattern) {
   for (let step = 0; step < 60; step += 1) {
     if (nextPattern.test(await guideText())) return;
+    let settled;
+    try {
+      settled = await waitForReviewAdvance(nextPattern);
+    } catch {
+      throw new Error("The guided review offered no visible action to advance with.");
+    }
+    if (settled === "guide") return;
     const confirmAll = page.locator('.section-editor.is-expanded [data-action="confirm-all-section-redactions"]:visible').first();
     const continueReview = page.locator('.section-editor.is-expanded [data-action="continue-section-review"]:visible').first();
     const keep = page.locator('.section-editor.is-expanded [data-action="keep-reviewed-redaction"]:visible').first();
     if (await confirmAll.count()) await confirmAll.click();
     else if (await continueReview.count()) await continueReview.click();
     else if (await keep.count()) await keep.click();
-    else throw new Error("The guided review offered no visible action to advance with.");
+    // No click landed (the editor re-rendered between the settle wait
+    // and the locator checks); loop and settle again rather than throw.
     await page.waitForTimeout(80);
   }
   throw new Error(`The guided review never reached ${nextPattern}.`);
