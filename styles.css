@@ -10980,6 +10980,47 @@ body.vault-locked .vault-access {
   padding-top: 16px;
 }
 
+/* Batch C (audit F11): the completeness panel is a collapsed disclosure.
+   Its summary keeps the heading and the at-a-glance count banner visible;
+   the full checklist sits in the body, hidden until expanded. */
+.packet-check > summary.packet-check-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.packet-check > summary.packet-check-summary::-webkit-details-marker { display: none; }
+
+.packet-check > summary.packet-check-summary::after {
+  content: "▾";
+  color: var(--muted);
+  font-size: 12px;
+  transition: transform 120ms ease;
+}
+
+.packet-check[open] > summary.packet-check-summary::after { transform: rotate(180deg); }
+
+.packet-check-summary__heading {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.packet-check-summary .packet-review-summary {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* The display rule is scoped to [open]: an author display value on a direct
+   child of a closed <details> overrides the user-agent rule that hides it. */
+.packet-check[open] > .packet-check-body {
+  display: grid;
+  gap: 10px;
+}
+
 .packet-review-summary {
   display: grid;
   grid-template-columns: 24px minmax(0, 1fr);
@@ -14153,10 +14194,20 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .source-first-stay .admission-packet-body { padding:0; gap:12px; min-width:0; }
 .source-first-stay .source-day-heading { padding-bottom:8px; align-items:center; }
 .source-first-stay .source-day-heading h2 { font-size:16px; }
-.source-first-stay .source-kind-picker { display:flex; flex-wrap:nowrap; overflow-x:auto; gap:0; border:0; border-bottom:1px solid var(--border); background:transparent; padding:0; }
-.source-first-stay .source-kind-button { display:flex; flex-shrink:0; gap:6px; align-items:center; border:0; border-bottom:2px solid transparent; border-radius:0; min-height:38px; font-weight:500; padding:8px 10px; background:transparent; }
+/* Batch C (audit F4): the tab row wraps instead of scrolling sideways, so
+   every source tab is fully visible at any width; nothing is silently
+   clipped at the right edge. */
+.source-first-stay .source-kind-picker { display:flex; flex-wrap:wrap; overflow-x:visible; gap:0; border:0; border-bottom:1px solid var(--border); background:transparent; padding:0; }
+.source-first-stay .source-kind-button { display:flex; flex-shrink:0; flex-wrap:wrap; gap:2px 6px; align-items:center; border:0; border-bottom:2px solid transparent; border-radius:0; min-height:38px; font-weight:500; padding:8px 10px; background:transparent; }
 .source-first-stay .source-kind-button.selected { border-bottom-color:var(--accent); background:var(--accent-soft); box-shadow:none; font-weight:650; }
 .source-first-stay .source-kind-requirement { font-size:10px; }
+/* Batch C (audit F11): each tracked tab also shows its packet-completeness
+   state; the state stays visible at narrow widths where the requirement
+   badge is hidden. */
+.source-first-stay .source-kind-state { font-size:10px; color:var(--muted); }
+.source-first-stay .source-kind-state--reviewed { color:var(--accent); }
+.source-first-stay .source-kind-state--needs_review { color:#865516; font-weight:700; }
+.source-first-stay .source-kind-button[data-review-requirement="required"] .source-kind-state--not_saved { color:#865516; font-weight:700; }
 .source-first-stay .structured-primary-note { background:var(--surface); border:0; border-radius:0; padding:0; gap:8px; }
 .source-first-stay .structured-note-heading h3 { font-size:15px; }
 .source-first-stay .structured-note-mode-toggle { display:flex; width:100%; border:0; border-bottom:1px solid var(--border); border-radius:0; }
@@ -14175,7 +14226,19 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .source-first-stay .note-arrange-footer .button--primary { background:var(--accent); border-color:var(--accent); color:white; }
 .source-first-stay .source-capture-composer { padding:0; border:0; border-radius:0; background:var(--surface); gap:8px; }
 .source-first-stay .deid-strip { margin:0; }
+/* Batch C (audit F11): the de-ID settings bar is one compact line. The
+   resting strip holds only the mode select, its load control, the
+   selected-state text, and the admission date; the operation progress,
+   download progress, and readiness note take their own line only while
+   they are actually present. */
+.source-first-stay .deid-strip { flex-direction:row; flex-wrap:wrap; align-items:center; gap:6px 10px; padding:5px 8px; }
 .source-first-stay .deid-strip > * { min-width:0; max-width:100%; overflow-wrap:anywhere; }
+.source-first-stay .deid-strip-compact select { flex:0 1 300px; min-width:180px; }
+.source-first-stay .deid-admission-date-inline { display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
+.source-first-stay .deid-strip .deid-operation:not(.is-active) { display:none; }
+.source-first-stay .deid-strip .deid-operation,
+.source-first-stay .deid-strip .deid-download-progress,
+.source-first-stay .deid-strip .deid-readiness-note { flex:1 1 100%; }
 @media(max-width:850px) {
   .source-first-stay .new-day-control { min-width:0; }
   .source-first-stay .new-day-control .form-grid { grid-template-columns:1fr; }
@@ -14188,7 +14251,7 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   .note-arrange-sections { height:360px; }
   .source-first-stay .structured-note-actions { flex-wrap:wrap; }
   .source-first-stay .structured-note-actions button { min-height:44px; }
-  .source-first-stay .deid-strip { flex-wrap:nowrap; }
+  .source-first-stay .deid-strip { flex-wrap:wrap; }
   .source-first-stay .deid-readiness-note, .source-first-stay .deid-download-progress { flex-basis:auto; }
 }
 

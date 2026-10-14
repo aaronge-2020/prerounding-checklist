@@ -786,6 +786,7 @@ export function createDailySourceController(deps) {
       selectedPacketId,
       stayRailExpanded: Boolean(deps.app.stayRailExpanded),
       localCalendarDate: deps.localCalendarDate(),
+      admissionDate: deps.app.admissionDate || "",
       patientRequiredMessage: deps.patientRequiredMessage(),
       renderDeidStrip: deps.renderDeidStrip(),
       renderSectionEditor: deps.renderSectionEditor,

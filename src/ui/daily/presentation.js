@@ -7,6 +7,19 @@ import { DIAGNOSTIC_RESULT_CATEGORIES, sourceCapturePacketCheck } from "../../pa
 import { joinValueUnit } from "../../review-data/compact-summary.js?v=20260924-optional-sections-v1";
 
 export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) {
+  // Local-calendar "+1 day" for a YYYY-MM-DD value, formatted the same way
+  // as localCalendarDate in src/daily-updates/days.js. Returns "" for an
+  // unparseable value so callers can fall back.
+  function calendarDateAfter(value) {
+    const parsed = new Date(`${value}T00:00:00`);
+    if (Number.isNaN(parsed.getTime())) return "";
+    parsed.setDate(parsed.getDate() + 1);
+    const year = parsed.getFullYear();
+    const month = String(parsed.getMonth() + 1).padStart(2, "0");
+    const day = String(parsed.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
   function renderRowReviewStatus(completeness) {
     const missingCount = completeness.missingRequired.length;
     if (missingCount) {
@@ -37,7 +50,24 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     `;
   }
 
-  function renderSourcePicker(sourceOptions, selectedSourceKind, scope = "daily") {
+  // Batch C (audit F11): packet completeness is readable from the source
+  // tabs themselves. The completeness items are keyed by source kind, so a
+  // tracked kind's tab also carries its saved state next to the existing
+  // Required/Optional badge; untracked kinds keep the requirement badge
+  // only. The full checklist stays reachable in the collapsed Review
+  // completeness disclosure below the workspace.
+  function sourceKindStateBadge(item) {
+    if (!item) return "";
+    const stateText = item.status === "reviewed"
+      ? "Saved · reviewed"
+      : item.status === "needs_review"
+        ? "Saved · needs PHI confirmation"
+        : "Not saved";
+    return `<span class="source-kind-state source-kind-state--${escapeHtml(item.status)}" data-source-kind-state="${escapeHtml(item.status)}">${stateText}</span>`;
+  }
+
+  function renderSourcePicker(sourceOptions, selectedSourceKind, scope = "daily", completenessItems = []) {
+    const itemByKind = new Map((completenessItems || []).map((item) => [item.id, item]));
     return `
       <div class="source-kind-picker" role="group" aria-label="Chart source for the next paste">
         ${sourceOptions
@@ -46,6 +76,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
           <button type="button" class="source-kind-button ${option.id === selectedSourceKind ? "selected" : ""}" data-action="select-${escapeHtml(scope)}-source-kind" data-source-kind="${escapeHtml(option.id)}" data-review-requirement="${packetReviewRequirement(option.id)}" aria-pressed="${String(option.id === selectedSourceKind)}">
             <span class="source-kind-label">${escapeHtml(option.label)}</span>
             <span class="source-kind-requirement">${packetReviewRequirement(option.id) === "required" ? "Required" : "Optional"}</span>
+            ${sourceKindStateBadge(itemByKind.get(option.id))}
           </button>
         `
           )
@@ -480,8 +511,9 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     const sourceTitle = scope === "admission" ? "Admission sources" : "Saved sources";
     const hasPrimaryNote = primaryTeamNoteHasContent(primaryTeamNote);
     const totalSourceCount = sources.length + (hasPrimaryNote ? 1 : 0);
+    const completenessItems = packetCheck?.completeness?.items || evaluatePacketCompleteness(sources, { scope }).items;
     return `
-      ${renderSourcePicker(sourceOptions, selectedSourceKind, scope)}
+      ${renderSourcePicker(sourceOptions, selectedSourceKind, scope, completenessItems)}
       <div data-source-kind-editor="${scope}">
         ${renderSourceKindEditor({ scope, selectedSourceKind, sourceOptions, sourceDraft, sourceParse, primaryTeamNote, structuredNoteDraft, structuredNoteComposer, noteType, resultMetadata, deidBusy, localAiParseInfo })}
       </div>
@@ -505,33 +537,40 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
       ? packetCheck.needsConfirmation.join(", ")
       : "No residual de-identification warnings.";
     const missingCount = completeness.missingRequired.length;
+    // Batch C (audit F11): the checklist no longer repeats as a full panel
+    // under every source tab. The summary banner becomes the header of a
+    // collapsed disclosure, so the at-a-glance count stays visible (and the
+    // same state is on the source tabs themselves), while the full item
+    // list and the Included / Needs confirmation rows stay one click away
+    // with their markup unchanged. Render scroll preservation keeps the
+    // disclosure open across re-renders once the clinician expands it.
     return `
-      <section class="packet-check" aria-labelledby="packetCheckTitle">
-        <div class="section-heading tight">
-          <div>
-            <h3 id="packetCheckTitle">Review completeness</h3>
-            <p class="muted">Required items are visible reminders, not blockers. You can continue with missing sources; the app will not infer their contents from another source.</p>
-          </div>
+      <details class="packet-check">
+        <summary class="packet-check-summary">
+          <span class="packet-check-summary__heading" id="packetCheckTitle">Review completeness</span>
+          <span class="packet-review-summary" data-packet-review-state="${missingCount ? "attention" : "complete"}">
+            <span class="packet-review-summary__indicator" aria-hidden="true">${missingCount ? "!" : "✓"}</span>
+            <span class="packet-review-summary__copy">${missingCount ? `${missingCount} required item${missingCount === 1 ? " is" : "s are"} not yet saved` : "All required items are saved"}</span>
+          </span>
+        </summary>
+        <div class="packet-check-body">
+          <p class="muted">Required items are visible reminders, not blockers. You can continue with missing sources; the app will not infer their contents from another source.</p>
+          <ul class="packet-review-list" aria-label="Required and optional packet items">
+            ${completeness.items.map((item) => `
+              <li class="packet-review-item packet-review-item--${item.saved ? "saved" : "missing"}" data-review-item="${escapeHtml(item.id)}" data-review-requirement="${item.requirement}" data-review-status="${item.status}">
+                <span class="packet-review-item__indicator" aria-hidden="true">${item.saved ? (item.reviewed ? "✓" : "•") : item.requirement === "required" ? "!" : "—"}</span>
+                <strong class="packet-review-item__label">${escapeHtml(item.label)}</strong>
+                <span class="packet-review-item__requirement">${item.requirement === "required" ? "Required" : "Optional"}</span>
+                <span class="packet-review-item__status">${item.saved ? (item.reviewed ? "Saved · reviewed" : "Saved · needs PHI confirmation") : "Not saved"}</span>
+              </li>
+            `).join("")}
+          </ul>
+          <dl class="packet-check-list">
+            <div><dt>Included</dt><dd>${escapeHtml(included)}</dd></div>
+            <div class="packet-check-review"><dt>Needs confirmation</dt><dd>${escapeHtml(needsConfirmation)}</dd></div>
+          </dl>
         </div>
-        <div class="packet-review-summary" data-packet-review-state="${missingCount ? "attention" : "complete"}">
-          <span class="packet-review-summary__indicator" aria-hidden="true">${missingCount ? "!" : "✓"}</span>
-          <span class="packet-review-summary__copy">${missingCount ? `${missingCount} required item${missingCount === 1 ? " is" : "s are"} not yet saved` : "All required items are saved"}</span>
-        </div>
-        <ul class="packet-review-list" aria-label="Required and optional packet items">
-          ${completeness.items.map((item) => `
-            <li class="packet-review-item packet-review-item--${item.saved ? "saved" : "missing"}" data-review-item="${escapeHtml(item.id)}" data-review-requirement="${item.requirement}" data-review-status="${item.status}">
-              <span class="packet-review-item__indicator" aria-hidden="true">${item.saved ? (item.reviewed ? "✓" : "•") : item.requirement === "required" ? "!" : "—"}</span>
-              <strong class="packet-review-item__label">${escapeHtml(item.label)}</strong>
-              <span class="packet-review-item__requirement">${item.requirement === "required" ? "Required" : "Optional"}</span>
-              <span class="packet-review-item__status">${item.saved ? (item.reviewed ? "Saved · reviewed" : "Saved · needs PHI confirmation") : "Not saved"}</span>
-            </li>
-          `).join("")}
-        </ul>
-        <dl class="packet-check-list">
-          <div><dt>Included</dt><dd>${escapeHtml(included)}</dd></div>
-          <div class="packet-check-review"><dt>Needs confirmation</dt><dd>${escapeHtml(needsConfirmation)}</dd></div>
-        </dl>
-      </section>
+      </details>
     `;
   }
 
@@ -542,6 +581,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     selectedPacketId,
     stayRailExpanded = false,
     localCalendarDate,
+    admissionDate = "",
     patientRequiredMessage,
     renderDeidStrip,
     renderSectionEditor,
@@ -575,6 +615,11 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     const admissionHasPrimaryNote = primaryTeamNoteHasContent(patient.admissionPrimaryTeamNote);
     const admissionSourceCount = visibleContextSections.length + (admissionHasPrimaryNote ? 1 : 0);
     const admissionCompleteness = sourceCapturePacketCheck(admissionSections, { structuredNote: patient.admissionPrimaryTeamNote, scope: "admission" }).completeness;
+    // Batch C (audit F12): the Add-day form pre-fills the day after the
+    // latest existing day (the admission date when no later day exists
+    // yet), not today.
+    const latestExistingDate = days.reduce((latest, day) => (day.date && day.date > latest ? day.date : latest), admissionDate || "");
+    const newDayDefaultDate = (latestExistingDate && calendarDateAfter(latestExistingDate)) || localCalendarDate;
 
     return `
       <div class="stay-layout source-first-stay ${stayRailExpanded ? "stay-rail-expanded" : ""}">
@@ -596,7 +641,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
             <summary>${icon("plus")} Add hospital day</summary>
             <div class="form-grid compact">
               <label>Hospital day date
-                <input id="newDayDate" type="date" value="${escapeHtml(localCalendarDate)}">
+                <input id="newDayDate" type="date" value="${escapeHtml(newDayDefaultDate)}">
               </label>
               <label>Label
                 <input id="newDayLabel" placeholder="HD2 - Today">

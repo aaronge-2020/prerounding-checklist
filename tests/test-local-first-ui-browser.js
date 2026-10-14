@@ -514,6 +514,9 @@ Crossmatch: Red Blood Cells: Rpt (P)
   await page.waitForFunction(() => document.querySelectorAll("#dailySources .source-capture-editor").length === 2);
   assert.match(await page.locator("#dailySources .source-capture-editor").nth(1).innerText(), /Laboratory results/);
   assert.equal(await page.locator('#dailySources .source-capture-editor [data-clinical-view]').count(), 0, "saved daily summaries should appear only on Review Data");
+  // Batch C (audit F11): the completeness checklist now lives in a collapsed
+  // disclosure; expand it before reading the Included list.
+  if (!await page.locator("details.packet-check").evaluate((el) => el.open)) await page.locator("details.packet-check > summary").click();
   assert.match(await page.locator(".packet-check").innerText(), /Included[\s\S]*Primary team note, Vital signs, Laboratory results/);
   assert.match(await page.locator(".packet-review-summary").innerText(), /All required items are saved/);
   assert.equal(await page.locator('[data-action="open-progress-note"]').isEnabled(), true);

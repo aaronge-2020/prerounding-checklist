@@ -107,8 +107,8 @@ import {
   normalizeUserPreferences
 } from "../app/preferences.js?v=20261011-request-controls";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1&icon=search-v1";
-import { createDailyPresentation } from "./daily/presentation.js?v=20261013-batch-b";
-import { createDailySourceController } from "./daily/source-controller.js?v=20261013-batch-b";
+import { createDailyPresentation } from "./daily/presentation.js?v=20261013-batch-c";
+import { createDailySourceController } from "./daily/source-controller.js?v=20261013-batch-c";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20261012-writer-controls";
 import { createReviewController } from "./review/controller.js?v=20261013-aloop-round3-final";
@@ -583,13 +583,35 @@ function selectDeidModel(modelKey) {
   if (app.view === "daily") refreshDeidControlsInActiveView();
 }
 
+// Batch C (audit F19): the strip's status line states the selected mode
+// once. The state segment therefore never restates the mode name: the
+// structured fallback's "selected" message is fully covered by the
+// "Selected:" prefix, and a loading state does not repeat the label the
+// prefix already shows.
 function selectedDeidStateText() {
   if (app.loadingDeidModelKey === app.deidMode) {
-    return `Loading ${deidModelLabel(app.deidMode)}...`;
+    return "Loading…";
   }
   const status = selectedDeidStatus();
-  if (app.deidMode === STRUCTURED_DEID_MODE) return status.message;
-  return status.ready ? `Ready: ${status.modelId || status.label || deidModelLabel(app.deidMode)}` : status.message;
+  if (app.deidMode === STRUCTURED_DEID_MODE) return "";
+  if (!status.ready) {
+    // Model status messages lead with the mode name ("Stanford clinical not
+    // loaded."); the composed line already names the selection, so drop the
+    // restated prefix (Batch C / F19).
+    const message = String(status.message || "");
+    const label = deidModelLabel(app.deidMode);
+    const trimmed = label && message.startsWith(`${label} `) ? message.slice(label.length).trim() : message;
+    return trimmed ? trimmed.charAt(0).toUpperCase() + trimmed.slice(1) : "";
+  }
+  const readyName = status.modelId || status.label || deidModelLabel(app.deidMode);
+  return readyName === deidModelLabel(app.deidMode) ? "Ready" : `Ready: ${readyName}`;
+}
+
+function deidSelectedStateLine() {
+  const stateText = selectedDeidStateText();
+  return stateText
+    ? `Selected: ${deidModelLabel(app.deidMode)} | ${stateText}`
+    : `Selected: ${deidModelLabel(app.deidMode)}`;
 }
 
 function selectedDeidReadiness() {
@@ -1237,7 +1259,7 @@ function renderDeidStrip() {
         </select>
         ${renderDeidLoadButton()}
       </div>
-      <span class="muted deid-inline-status" data-deid-selected-state>Selected: ${escapeHtml(deidModelLabel(app.deidMode))} | ${escapeHtml(selectedDeidStateText())}</span>
+      <span class="muted deid-inline-status" data-deid-selected-state>${escapeHtml(deidSelectedStateLine())}</span>
       <label class="deid-admission-date-inline">Admission date
         <input type="date" id="dailyAdmissionDateInput" value="${escapeHtml(app.admissionDate || "")}">
       </label>
@@ -1824,7 +1846,7 @@ function updateDeidStatus(status) {
   app.deidStatus = { ...getSelectedDeidModelStatus(status?.modelKey || app.deidMode), ...status };
   renderStatusBar();
   const statusLine = document.querySelector("[data-deid-selected-state]");
-  if (statusLine) statusLine.textContent = `Selected: ${deidModelLabel(app.deidMode)} | ${selectedDeidStateText()}`;
+  if (statusLine) statusLine.textContent = deidSelectedStateLine();
 }
 
 function refreshDeidControlsInActiveView() {
@@ -3361,6 +3383,11 @@ async function addDay() {
   app.selectedStayPacketId = day.id;
   app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, day) }));
   await persistVault("Hospital day added.");
+  // Batch C (audit F12): adding a day closes the Add-day form. Close it
+  // before the render for the same reason as the stay-rail toggle above:
+  // render scroll preservation would otherwise restore the form open.
+  const newDayControl = document.querySelector("details.new-day-control");
+  if (newDayControl) newDayControl.open = false;
   render();
 }
 
