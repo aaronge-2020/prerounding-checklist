@@ -30,7 +30,7 @@ jobs:
             command: node tests/test-note-drag-browser.js && node tests/test-note-drag-index-browser.js && node tests/test-local-first-ui-browser.js
             browser: true
           - name: Note writing browser
-            command: node tests/test-review-data-browser.js
+            command: node tests/test-review-data-browser.js && node tests/test-batch-d-writer-browser.js
             browser: true
           - name: Clinical safety browser
             command: npm run test:safety

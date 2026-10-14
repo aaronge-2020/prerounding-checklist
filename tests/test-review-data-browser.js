@@ -92,6 +92,9 @@ try {
   // Diet and exercise is the one H&P field that is not core: not every note
   // covers it, so it gets the same optional toggle (progress notes never show it).
   assert.equal(await page.locator('[data-section-visibility="diet_and_exercise"]').count(), 1, "H&P diet and exercise must have a visibility toggle");
+  // F13: an empty optional section starts as a compact row; expand it first.
+  const expandDiet = page.locator('[data-action="expand-empty-section"][data-empty-section="diet-and-exercise"]');
+  if (await expandDiet.count()) await expandDiet.click();
   await page.fill('[data-draft-section="diet_and_exercise"]', "Balanced diet, walks daily.");
   assert.match(await downloadFinalNoteText(), /Balanced diet, walks daily/);
   await page.locator('[data-section-visibility="diet_and_exercise"]').uncheck();
@@ -333,6 +336,9 @@ Sodium: 138`;
   assert.equal(await page.locator(".scaffold-med-list li").count(), 1, "removed medications must stay removed");
 
   // Optional closing sections toggle individually; the downloaded note follows.
+  // F13: an empty optional section starts as a compact row; expand it first.
+  const expandVte = page.locator('[data-action="expand-empty-section"][data-empty-section="vte-prophylaxis"]');
+  if (await expandVte.count()) await expandVte.click();
   await page.fill('[data-draft-closing="vte_prophylaxis"]', "Sequential compression devices.");
   assert.match(await downloadFinalNoteText(), /Sequential compression devices/);
   await page.locator('[data-section-visibility="vte_prophylaxis"]').uncheck();

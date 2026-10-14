@@ -29,6 +29,9 @@ export function createReviewPresentation({ escapeHtml, icon }) {
   // Collapse state for draft sections, set by renderDraft before rendering.
   // editorSection reads it so every call site gets collapsibility for free.
   let activeCollapsedSections = null;
+  // F13: section ids of empty optional sections the user expanded in place;
+  // those render in full form even while still empty. Set by renderDraft.
+  let activeExpandedEmptySections = new Set();
   const helpButton = (key, label, guidance) => `<button type="button" class="note-help-button" data-help-key="${escapeHtml(key)}" data-tooltip="${escapeHtml(guidance || "No additional guidance.")}" aria-label="Help for ${escapeHtml(label)}">?</button>`;
   // Pull button: copies the corresponding section text from the primary team
   // note (for the current hospital day) into this draft section as a starting point.
@@ -416,7 +419,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return `<div class="ed-label"><span class="ed-label-text">${escapeHtml(labelText)}</span>${extra}</div>`;
   }
 
-  function editorSection(labelText, bodyHtml, { labelExtra = "", sectionAttr = "", sectionId = "" } = {}) {
+  function editorSection(labelText, bodyHtml, { labelExtra = "", sectionAttr = "", sectionId = "", emptyOptional = false } = {}) {
     // Every draft section is collapsible (I1): keeps the note scannable on
     // rounds. Collapse state is tracked by the controller so re-renders
     // preserve which sections the student opened/closed.
@@ -428,6 +431,14 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     // of <details> (sibling of <summary>), laid out in the header row via CSS
     // grid. <summary> stays a direct child so native disclosure toggle works.
     const actions = labelExtra ? `<div class="ed-section-actions">${labelExtra}</div>` : "";
+    if (emptyOptional) {
+      // F13: an empty optional section renders as one compact row instead of
+      // the full section chrome plus a placeholder body. The header actions
+      // (help, pull, and the labeled include toggle) are the same markup the
+      // expanded section carries, so the toggle reads the same way in both
+      // forms (F14). The Add button expands the section in place.
+      return `<div class="ed-section ed-section-empty-add"${sectionAttr} data-draft-section-id="${escapeHtml(id)}"><span class="ed-section-chevron" aria-hidden="true">▸</span>${editorLabel(labelText)}<button type="button" class="ed-empty-add" data-action="expand-empty-section" data-empty-section="${escapeHtml(id)}">+ Add</button>${actions}</div>`;
+    }
     return `<details class="ed-section"${isCollapsed ? "" : " open"}${sectionAttr} data-draft-section-id="${escapeHtml(id)}"><summary class="ed-section-summary">${editorLabel(labelText)}</summary>${actions}<div class="ed-section-body">${bodyHtml}</div></details>`;
   }
 
@@ -774,7 +785,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       : renderTextWithCitationLinks(problem.therapeuticPlan, apReferences);
     const referencesHtml = references.length ? renderApReferences(references) : "";
     return `<article class="plan-problem-card" data-problem-id="${escapeHtml(problem.id)}">
-      <div class="ed-problem-bar"><strong>Problem ${index + 1}</strong><span class="ed-mini-row"><button type="button" class="ed-mini" data-action="generate-ap" data-problem-id="${escapeHtml(problem.id)}" ${generating ? "disabled" : ""} title="${escapeHtml(generating ? "Consulting AI on this problem…" : "Consult AI on this problem's plan (uses your OpenAI key; only de-identified context is sent; you review the consult request first)")}">${icon("phone")} ${generating ? "Consulting…" : "AI suggestions"}</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="-1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem up">↑</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-plan-problem" data-problem-id="${escapeHtml(problem.id)}">Remove</button></span></div>
+      <div class="ed-problem-bar"><button type="button" class="ed-problem-drag" data-problem-drag="${escapeHtml(problem.id)}" aria-label="Drag to reorder problem" title="Drag to reorder">${icon("grip")}</button><strong>Problem ${index + 1}</strong><span class="ed-mini-row"><button type="button" class="ed-mini" data-action="generate-ap" data-problem-id="${escapeHtml(problem.id)}" ${generating ? "disabled" : ""} title="${escapeHtml(generating ? "Consulting AI on this problem…" : "Consult AI on this problem's plan (uses your OpenAI key; only de-identified context is sent; you review the consult request first)")}">${icon("phone")} ${generating ? "Consulting…" : "AI suggestions"}</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="-1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem up">↑</button><button type="button" class="ed-mini" data-action="move-plan-problem" data-direction="1" data-problem-id="${escapeHtml(problem.id)}" aria-label="Move problem down">↓</button><button type="button" class="ed-mini ed-mini--danger" data-action="remove-plan-problem" data-problem-id="${escapeHtml(problem.id)}">Remove</button></span></div>
       ${generating ? renderApLoadingBanner() : ""}
       <div class="ed-sub"><span class="ed-sub-label">Clinical problem</span><div class="ed-body ed-body--strong" contenteditable="true" data-problem-field="problem" data-placeholder="Name the clinical problem, not a test or treatment" spellcheck="true">${editorHtml(sanitizeProblemTitle(valueText(problem.problem)))}</div></div>
       <div class="ed-sub"><span class="ed-sub-label">Key context</span><div class="ed-body" contenteditable="true" data-problem-field="keyContext" data-placeholder="Optional concise context" spellcheck="true">${editorHtml(problem.keyContext)}</div></div>
@@ -797,9 +808,10 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     ["other", "Other relevant history"]
   ]);
 
-  function renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions }) {
+  function renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions, expandedEmptySections }) {
     // Make the collapse set visible to editorSection for this render.
     activeCollapsedSections = collapsedDraftSections instanceof Set ? collapsedDraftSections : new Set();
+    activeExpandedEmptySections = expandedEmptySections instanceof Set ? expandedEmptySections : new Set();
     const visibility = draft.sectionVisibility || {};
     const isHP = draft.noteType === NOTE_TYPES.H_AND_P;
     const fields = draft.sections || {};
@@ -903,7 +915,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       editorSection("Chief Complaint", editorRegion(`data-draft-section="chief_complaint"`, fields.chief_complaint), { labelExtra: helpFor("chief_complaint", "Chief Complaint") }),
       editorSection("History of Present Illness", editorRegion(`data-draft-section="history_of_present_illness"`, fields.history_of_present_illness), { labelExtra: helpFor("history_of_present_illness", "HPI") }),
       editorSection("Relevant History", RELEVANT_HISTORY_SUBFIELDS.map(([fieldId, subLabel]) => editorSubRegion(`data-draft-section="${fieldId}"`, subLabel, fields[fieldId])).join(""), { labelExtra: helpFor("past_medical_history", "Relevant History") }),
-      editorSection("Diet and Exercise", editorRegion(`data-draft-section="diet_and_exercise"`, fields.diet_and_exercise), { labelExtra: `${helpFor("diet_and_exercise", "Diet and Exercise")}${optionalSectionToggle("diet_and_exercise", visibility)}` })
+      editorSection("Diet and Exercise", editorRegion(`data-draft-section="diet_and_exercise"`, fields.diet_and_exercise), { labelExtra: `${helpFor("diet_and_exercise", "Diet and Exercise")}${optionalSectionToggle("diet_and_exercise", visibility)}`, emptyOptional: !valueText(fields.diet_and_exercise).trim() && !activeExpandedEmptySections.has("diet-and-exercise") })
     ] : [
       editorSection("One-Liner", editorRegion(`data-draft-section="one_liner"`, fields.one_liner, "One-sentence summary"), { labelExtra: helpFor("one_liner", "One-Liner") }),
       editorSection("Subjective", [
@@ -944,13 +956,13 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         ${editorSection("Objective", objectiveBody, { labelExtra: helpFor("objective", "Objective") })}
         ${editorSection("Assessment", editorRegion("data-draft-assessment", draft.assessment, "Your concise synthesis"), { labelExtra: helpFor("assessment", "Assessment") })}
         ${editorSection("Plan", planBody, { labelExtra: `${helpFor("plan", "Plan")}<button type="button" class="ed-mini" data-action="add-plan-problem">${icon("plus")} Add problem</button>` })}
-        ${CLOSING_SECTION_FIELDS.map((field) => editorSection(field.label, editorRegion(`data-draft-closing="${field.id}"`, draft.closing?.[field.id]), { labelExtra: `${helpFor(field.id, field.label)}${optionalSectionToggle(field.id, visibility)}` })).join("")}
+        ${CLOSING_SECTION_FIELDS.map((field) => editorSection(field.label, editorRegion(`data-draft-closing="${field.id}"`, draft.closing?.[field.id]), { labelExtra: `${helpFor(field.id, field.label)}${optionalSectionToggle(field.id, visibility)}`, emptyOptional: !valueText(draft.closing?.[field.id]).trim() && !activeExpandedEmptySections.has(field.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")) })).join("")}
         ${editorSection("Medications", renderMedicationsEditor(draft), { labelExtra: helpOnly("medications", "Medications") })}
       </div></div>
     </section>`;
   }
 
-  function renderReview({ workspaceTab = "note", previewText = "", patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm, apSuggestions }) {
+  function renderReview({ workspaceTab = "note", previewText = "", patientLabel, oneLiner, packets, selectedPacketId, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm, apSuggestions, expandedEmptySections }) {
     if (!draft) return patientRequiredMessage;
     const selectedIds = new Set((draft.objective?.selectedBlocks || []).map((block) => block.selectionId));
     // Banner calling out free-text results that pasted as a status only —
@@ -968,7 +980,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       <div class="writing-workflow-bar"><div role="tablist" aria-label="Writing workspace">${[["note", "Write"], ["preview", "Preview & copy"]].map(([id,label]) => `<button type="button" role="tab" aria-selected="${workspaceTab === id}" data-action="workspace-tab" data-workspace-tab="${id}">${label}</button>`).join("")}</div><button type="button" data-action="toggle-clinical-data" aria-controls="reviewClinicalData" aria-expanded="${!clinicalDataCollapsed}" ${workspaceTab === "preview" ? "hidden" : ""}>${clinicalDataCollapsed ? "Show clinical data" : "Hide clinical data"}</button><button type="button" data-action="import-for-note">+ Import from Epic</button></div>
       ${flaggedBanner}
       <section class="note-export-preview panel" ${workspaceTab !== "preview" ? "hidden" : ""} aria-label="Final note preview"><div class="section-heading"><div><h2>Review before copying</h2><p class="muted">This is the exact plain text that will be copied. Check source facts and remove any placeholders.</p></div><button type="button" data-action="copy-final-note" class="button--primary">Copy for Epic</button></div><pre>${escapeHtml(previewText || "No note content yet. Return to Write to begin.")}</pre><div class="button-row"><button type="button" data-action="workspace-tab" data-workspace-tab="note">Back to writing</button><button type="button" data-action="copy-rich-note">Copy rich text</button><button type="button" data-action="download-final-note">Download .txt</button></div></section>
-      <div class="review-columns" ${workspaceTab === "preview" ? "hidden" : ""}>${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions })}</div>
+      <div class="review-columns" ${workspaceTab === "preview" ? "hidden" : ""}>${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions, expandedEmptySections })}</div>
     </div>`;
   }
 

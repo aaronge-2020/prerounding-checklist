@@ -242,6 +242,13 @@ export function createReviewController(deps) {
   // state only; survives re-renders.
   const collapsedDraftSections = new Set();
 
+  // F13: empty optional sections render as one compact row. This set holds
+  // the section ids the user expanded in place (via the row's Add button or
+  // an outline jump); those render in full form even while still empty.
+  // Scoped to one patient + packet; model() clears it on scope change.
+  const expandedEmptySections = new Set();
+  let expandedEmptyScopeKey = "";
+
   // Smart-exam UI state. Transient only (not persisted): which inline
   // variable's dropdown is open. The selections themselves live on
   // draft.smartExam and are saved.
@@ -376,6 +383,10 @@ export function createReviewController(deps) {
       clearApSession();
       apScopeKey = scopeKey;
     }
+    if (expandedEmptyScopeKey !== scopeKey) {
+      expandedEmptySections.clear();
+      expandedEmptyScopeKey = scopeKey;
+    }
     if (!patient) return { patient: null };
     const packet = selectedPacket(patient);
     // Explicit student confirmations for unmarked temperature units live on
@@ -418,6 +429,7 @@ export function createReviewController(deps) {
       generatingApProblemId,
       apConfirm: apConfirmState,
       apSuggestions: apSuggestionsState,
+      expandedEmptySections,
     };
   }
 
@@ -466,7 +478,132 @@ export function createReviewController(deps) {
     if (container) {
       labAutocomplete.attach(container);
       drugAutocomplete.attach(container);
+      bindScrollSpy();
+      bindProblemDrag(container);
     }
+  }
+
+  const draftPanelNode = () => deps.byId("reviewContent")?.querySelector(".note-draft-panel");
+  const escId = (id) => CSS.escape(String(id ?? ""));
+  const problemCardEl = (panel, id) => panel?.querySelector(`[data-problem-id="${escId(id)}"]`);
+  // Renumber "Problem N" headings after add/remove/move.
+  const renumberProblemCards = (panel) => {
+    panel?.querySelectorAll(".plan-problem-list > [data-problem-id]").forEach((card, i) => {
+      const strong = card.querySelector(".ed-problem-bar > strong");
+      if (strong) strong.textContent = `Problem ${i + 1}`;
+    });
+    const outline = panel?.querySelector(".writer-outline");
+    const freshOutline = outline && freshDraftNode(".writer-outline");
+    if (freshOutline) {
+      const scroll = outline.scrollTop;
+      outline.replaceWith(freshOutline);
+      freshOutline.scrollTop = scroll;
+    }
+    updateScrollSpy();
+  };
+
+  // F5: scrollspy for the writer outline. The outline button for the section
+  // at the top of the editor carries aria-current="location" (the same
+  // marking writer-jump sets on click); it moves as the editor scrolls.
+  let scrollSpyFrame = 0;
+  function updateScrollSpy() {
+    const panel = draftPanelNode();
+    const editor = panel?.querySelector("#noteEditor");
+    if (!panel || !editor) return;
+    const sections = [...editor.querySelectorAll(":scope > [data-draft-section-id]")];
+    if (!sections.length) return;
+    const editorTop = editor.getBoundingClientRect().top;
+    let currentId = sections[0].dataset.draftSectionId;
+    for (const section of sections) {
+      // writer-jump parks a section 8px below the editor top; scrollTop is
+      // an integer, so the parked offset lands a fraction past 8. A 9px
+      // threshold absorbs that without marking a section that is visibly
+      // below the fold line.
+      if (section.getBoundingClientRect().top - editorTop < 9) currentId = section.dataset.draftSectionId;
+      else break;
+    }
+    panel.querySelectorAll("[data-action='writer-jump']").forEach((link) => {
+      if (link.dataset.writerSection && link.dataset.writerSection === currentId) link.setAttribute("aria-current", "location");
+      else link.removeAttribute("aria-current");
+    });
+  }
+
+  function bindScrollSpy() {
+    const editor = draftPanelNode()?.querySelector("#noteEditor");
+    if (!editor || !editor.dataset) return;
+    if (!editor.dataset.scrollspyBound) {
+      editor.dataset.scrollspyBound = "1";
+      editor.addEventListener("scroll", () => {
+        if (scrollSpyFrame) return;
+        scrollSpyFrame = requestAnimationFrame(() => { scrollSpyFrame = 0; updateScrollSpy(); });
+      }, { passive: true });
+    }
+    updateScrollSpy();
+  }
+
+  // F8: drag a problem card by its grip to reorder it. Mirrors the pointer
+  // pattern of the Hospital Stay section reorder in app.js: pointerdown on
+  // the handle, window pointermove/pointerup, live reinsertion by midpoint.
+  // The drop commits through reorderPlanProblems + setDraft, the same state
+  // path as the Move up/down buttons, so dirty marking, autosave and undo
+  // behavior stay identical; renumberProblemCards then syncs headings and
+  // the outline.
+  function bindProblemDrag(container) {
+    if (!container || !container.dataset || container.dataset.problemDragBound) return;
+    container.dataset.problemDragBound = "1";
+    container.addEventListener("pointerdown", (event) => {
+      const grip = event.target?.closest?.("[data-problem-drag]");
+      if (!grip || !container.contains(grip)) return;
+      startProblemDrag(event, grip);
+    });
+  }
+
+  function startProblemDrag(event, grip) {
+    if (event.button !== undefined && event.button !== 0) return;
+    const card = grip.closest("[data-problem-id]");
+    const list = card?.closest("[data-plan-problem-list]");
+    if (!card || !list) return;
+    event.preventDefault();
+    const startY = event.clientY;
+    let dragging = false;
+    const siblingCards = () => [...list.querySelectorAll(":scope > [data-problem-id]")];
+    const onMove = (moveEvent) => {
+      if (!dragging) {
+        if (Math.abs(moveEvent.clientY - startY) < 4) return;
+        dragging = true;
+        card.classList.add("is-dragging");
+      }
+      let before = null;
+      for (const sibling of siblingCards()) {
+        if (sibling === card) continue;
+        const rect = sibling.getBoundingClientRect();
+        if (moveEvent.clientY < rect.top + rect.height / 2) { before = sibling; break; }
+      }
+      if (before) list.insertBefore(card, before);
+      else {
+        const hint = list.querySelector(":scope > .ed-hint");
+        if (hint) list.insertBefore(card, hint);
+        else list.appendChild(card);
+      }
+    };
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      card.classList.remove("is-dragging");
+      if (!dragging) return;
+      const order = siblingCards().map((el) => el.dataset.problemId);
+      const current = model();
+      if (!current.patient || !current.draft) return;
+      const currentOrder = (current.draft.problems || []).map((problem) => problem.id);
+      if (order.join("|") === currentOrder.join("|")) return;
+      setDraft(reorderPlanProblems(current.draft, order));
+      renumberProblemCards(draftPanelNode());
+      scheduleAutoSave();
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
   }
 
   // Surgical update: refresh ONLY the draft note panel (right column),
@@ -498,6 +635,7 @@ export function createReviewController(deps) {
       generatingApProblemId: vm.generatingApProblemId,
       apConfirm: vm.apConfirm,
       apSuggestions: vm.apSuggestions,
+      expandedEmptySections: vm.expandedEmptySections,
     });
     const template = document.createElement("template");
     template.innerHTML = safeHtml(draftHtml);
@@ -618,8 +756,10 @@ export function createReviewController(deps) {
       generatingApProblemId: vm.generatingApProblemId,
       apConfirm: vm.apConfirm,
       apSuggestions: vm.apSuggestions,
+      expandedEmptySections: vm.expandedEmptySections,
     });
     preserveViewScroll(container, () => { draftPanel.outerHTML = safeHtml(draftHtml); });
+    bindScrollSpy();
   }
 
   function prepare(selectedPacketId = "admission", { preferPopulated = true } = {}) {
@@ -850,7 +990,20 @@ export function createReviewController(deps) {
   // Auto-save: every keystroke syncs to the in-memory model; this debounced
   // persister writes it to the encrypted vault. No save button needed.
   let autoSaveTimer = null;
-  let autoSaveIndicatorTimer = null;
+  // F15: once a save lands, the indicator settles on a saved state with a
+  // check and the time, and stays there until the next edit. It no longer
+  // reverts to "Auto-save on" after a few seconds, which read as if the
+  // save had never settled.
+  function settledSaveText() {
+    const time = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    return `\u2713 Saved \u00B7 ${time}`;
+  }
+  function settleAutosaveIndicator(ephemeralDemo) {
+    const indicator = document.querySelector("[data-autosave-indicator]");
+    if (!indicator) return;
+    indicator.textContent = ephemeralDemo ? "Demo \u2014 not saved" : settledSaveText();
+    indicator.dataset.state = "saved";
+  }
   function scheduleAutoSave() {
     if (autoSaveTimer) clearTimeout(autoSaveTimer);
     // Capture the patient/packet/draft now. If the student switches patients
@@ -889,11 +1042,7 @@ export function createReviewController(deps) {
       const ephemeralDemo = deps.isEphemeralDemo?.();
       if (!ephemeralDemo) await deps.persistVault();
       deps.onDraftSaved?.();
-      const indicator = document.querySelector("[data-autosave-indicator]");
-      if (indicator) {
-        indicator.textContent = ephemeralDemo ? "Demo \u2014 not saved" : "Saved";
-        indicator.dataset.state = "saved";
-      }
+      settleAutosaveIndicator(ephemeralDemo);
       return;
     }
     const savedDraft = normalizeNoteDraft(current.draft);
@@ -905,19 +1054,7 @@ export function createReviewController(deps) {
     const ephemeralDemo = deps.isEphemeralDemo?.();
     if (!ephemeralDemo) await deps.persistVault();
     deps.onDraftSaved?.();
-    const indicator = document.querySelector("[data-autosave-indicator]");
-    if (indicator) {
-      indicator.textContent = ephemeralDemo ? "Demo \u2014 not saved" : "Saved";
-      indicator.dataset.state = "saved";
-      if (autoSaveIndicatorTimer) clearTimeout(autoSaveIndicatorTimer);
-      autoSaveIndicatorTimer = setTimeout(() => {
-        const el = document.querySelector("[data-autosave-indicator]");
-        if (el && el.dataset.state === "saved") {
-          el.textContent = "Auto-save on";
-          el.dataset.state = "idle";
-        }
-      }, 3000);
-    }
+    settleAutosaveIndicator(ephemeralDemo);
   }
 
   async function saveDraft() {
@@ -2171,15 +2308,43 @@ export function createReviewController(deps) {
     if (action === "writer-jump") {
       const panel = button.closest(".note-draft-panel");
       const editor = panel?.querySelector("#noteEditor");
-      const targetNode = button.dataset.writerProblem
+      let targetNode = button.dataset.writerProblem
         ? [...(editor?.querySelectorAll(".plan-problem-card") || [])].find(card => card.dataset.problemId === button.dataset.writerProblem)
         : [...(editor?.querySelectorAll("[data-draft-section-id]") || [])].find(section => section.dataset.draftSectionId === button.dataset.writerSection);
+      // F13: jumping to a compact empty section expands it in place first,
+      // so the jump lands on the full editor, open and ready to type in.
+      if (targetNode?.classList.contains("ed-section-empty-add") && editor) {
+        const sectionId = targetNode.dataset.draftSectionId;
+        expandedEmptySections.add(sectionId);
+        const fresh = freshDraftNode(`[data-draft-section-id="${CSS.escape(sectionId)}"]`);
+        if (fresh) {
+          targetNode.replaceWith(fresh);
+          targetNode = fresh;
+        }
+      }
       if (targetNode && editor) {
         const section = targetNode.closest("details.ed-section");
         if (section) { section.open = true; collapsedDraftSections.delete(section.dataset.draftSectionId); }
         editor.scrollTop += targetNode.getBoundingClientRect().top - editor.getBoundingClientRect().top - 8;
         panel.querySelectorAll("[data-action='writer-jump']").forEach(link => link.removeAttribute("aria-current"));
         button.setAttribute("aria-current", "location");
+      }
+      return true;
+    }
+    if (action === "expand-empty-section") {
+      // F13: swap the compact row for the full section editor and put the
+      // caret in it. The section is recorded as expanded so re-renders keep
+      // the full form while it is still empty.
+      const sectionId = button.dataset.emptySection || "";
+      const panel = deps.byId("reviewContent")?.querySelector(".note-draft-panel");
+      const compact = sectionId ? panel?.querySelector(`[data-draft-section-id="${CSS.escape(sectionId)}"]`) : null;
+      if (compact) {
+        expandedEmptySections.add(sectionId);
+        const fresh = freshDraftNode(`[data-draft-section-id="${CSS.escape(sectionId)}"]`);
+        if (fresh) {
+          compact.replaceWith(fresh);
+          fresh.querySelector(".ed-body")?.focus({ preventScroll: true });
+        }
       }
       return true;
     }
@@ -2356,24 +2521,9 @@ export function createReviewController(deps) {
     // removed, or inserted. Other cards' contenteditable regions are never
     // touched, so unsaved edits elsewhere in the note survive every action.
     // Nothing here re-renders any panel — scroll position is preserved by
-    // construction because scroll owners are never destroyed.
-    const draftPanelNode = () => deps.byId("reviewContent")?.querySelector(".note-draft-panel");
-    const escId = (id) => CSS.escape(String(id ?? ""));
-    const problemCardEl = (panel, id) => panel?.querySelector(`[data-problem-id="${escId(id)}"]`);
-    // Renumber "Problem N" headings after add/remove/move.
-    const renumberProblemCards = (panel) => {
-      panel?.querySelectorAll(".plan-problem-list > [data-problem-id]").forEach((card, i) => {
-        const strong = card.querySelector(".ed-problem-bar > strong");
-        if (strong) strong.textContent = `Problem ${i + 1}`;
-      });
-      const outline = panel?.querySelector(".writer-outline");
-      const freshOutline = outline && freshDraftNode(".writer-outline");
-      if (freshOutline) {
-        const scroll = outline.scrollTop;
-        outline.replaceWith(freshOutline);
-        freshOutline.scrollTop = scroll;
-      }
-    };
+    // construction because scroll owners are never destroyed. The shared
+    // helpers (draftPanelNode, escId, problemCardEl, renumberProblemCards)
+    // live at factory scope next to render().
 
     if (action === "insert-no-acute-events") {
       draft = updateNoteSection(draft, "interval_events", "No acute events overnight.");

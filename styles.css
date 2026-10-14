@@ -12076,6 +12076,72 @@ details.ed-section .ed-section-summary::before {
 details.ed-section:not([open]) .ed-section-summary::before { content: "▸"; }
 details.ed-section .ed-section-summary .ed-label { display: inline-flex; }
 
+/* ─── Batch D: compact empty sections, problem drag grip ─── */
+/* F13: an empty optional section is one compact row (chevron, label, Add
+   button, header actions) instead of the full section chrome plus an empty
+   placeholder body. */
+.ed-section-empty-add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ed-section-empty-add .ed-label { display: inline-flex; margin-bottom: 0; }
+.ed-section-empty-add .ed-section-chevron {
+  width: 14px;
+  color: var(--muted);
+  font-size: 10px;
+  text-align: center;
+  flex: none;
+}
+.ed-section-empty-add .ed-section-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ed-section-empty-add .ed-toggle { margin-left: 0; }
+.ed-empty-add {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  min-height: 26px;
+  padding: 2px 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ed-empty-add:hover { text-decoration: underline; }
+
+/* F8: drag grip on each problem card. The bar keeps its title left and its
+   action row right; the dragged card is visibly marked while it moves. */
+.plan-problem-card .ed-problem-bar { justify-content: flex-start; }
+.plan-problem-card .ed-problem-bar .ed-mini-row { margin-left: auto; }
+.ed-problem-drag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  min-height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  cursor: grab;
+  touch-action: none;
+  flex: none;
+}
+.ed-problem-drag:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); }
+.ed-problem-drag:active { cursor: grabbing; }
+.ed-problem-drag .icon { width: 14px; height: 14px; }
+.plan-problem-card.is-dragging {
+  opacity: 0.55;
+  outline: 2px dashed var(--accent);
+  outline-offset: -2px;
+}
+
 /* ─── Persistent patient identity bar (NIST S1) ────────────────────── */
 /* Patient identifiers in a reserved area at the top, persisting regardless
    of scrolling or navigation — the passive wrong-patient safeguard. */
