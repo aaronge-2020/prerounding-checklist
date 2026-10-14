@@ -99,8 +99,12 @@ try {
   assert.equal(await page.locator('[data-structured-note-scope="admission"][data-structured-note-field="other"]').inputValue(), "Unlabeled primary-team narrative that still belongs in the admission packet.");
   await page.fill("#dailyAdmissionDateInput", "2026-07-01");
   await page.selectOption("#deidModeSelect", "structured");
+  // Batch A (audit F10): the save confirmation is delivered by toast only,
+  // never duplicated in the status line, so save sync waits on the toast.
+  // Any earlier toast is cleared first so it cannot satisfy the wait.
+  await page.evaluate(() => document.querySelector("#toastContainer")?.replaceChildren());
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="admission"]');
-  await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.waitForFunction(() => /Primary-team note saved/.test(document.querySelector(".toast")?.textContent || ""), null, { timeout: 30000 });
   assert.equal(await page.locator('[data-review-item="primary_note"][data-review-status="reviewed"]').count(), 1, "an unlabeled primary note must save into the admission packet after de-identification");
   await page.click('[data-action="select-admission-source-kind"][data-source-kind="other_chart_text"]');
   assert.equal(await page.locator('[data-action="add-admission-source"]').isDisabled(), true, "adding an admission source requires a pasted chart block");
@@ -361,8 +365,9 @@ try {
   );
   await page.locator("#dailyContent").evaluate((content) => { content.style.minHeight = ""; });
   await page.fill('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]', "Adult admitted with dyspnea for evaluation.");
+  await page.evaluate(() => document.querySelector("#toastContainer")?.replaceChildren());
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="admission"]');
-  await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.waitForFunction(() => /Primary-team note saved/.test(document.querySelector(".toast")?.textContent || ""), null, { timeout: 30000 });
   await page.click('[data-action="select-admission-source-kind"][data-source-kind="other_chart_text"]');
   const primaryNoteWithQuotedResults = `Primary team assessment and plan.
 Results from EPIC:
@@ -492,8 +497,9 @@ Crossmatch: Red Blood Cells: Rpt (P)
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="sections"]');
   await page.click('[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="interval_events"]');
   await page.fill('[data-structured-note-scope="daily"][data-structured-note-field="interval_events"]', "Overnight oxygen requirement improved.");
+  await page.evaluate(() => document.querySelector("#toastContainer")?.replaceChildren());
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
-  await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.waitForFunction(() => /Primary-team note saved/.test(document.querySelector(".toast")?.textContent || ""), null, { timeout: 30000 });
   assert.match(await page.locator(".packet-review-summary").innerText(), /2 required items are not yet saved/);
   assert.equal(await page.locator('[data-action="open-progress-note"]').isEnabled(), true, "missing review reminders must not block note generation");
   await page.click('[data-action="select-daily-source-kind"][data-source-kind="vital_signs"]');

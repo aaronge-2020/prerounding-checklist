@@ -39,8 +39,11 @@ try {
   await page.fill('[data-structured-note-paste][data-structured-note-scope="daily"]', progressTeamNote);
   await page.click('[data-action="review-structured-note-sections"][data-note-scope="daily"]');
   await page.waitForTimeout(800);
+  await page.evaluate(() => document.querySelector("#toastContainer")?.replaceChildren());
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
-  await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  // Batch A (audit F10): the save confirmation arrives by toast only, not
+  // the status line, so the save sync watches the toast text.
+  await page.waitForFunction(() => /Primary-team note saved/.test(document.querySelector(".toast")?.textContent || ""), null, { timeout: 30000 });
   console.log("PASS: primary note saved");
 
   // Open the review / draft progress note for the day.
@@ -76,7 +79,9 @@ try {
   await page.waitForTimeout(800);
   const problemCount2 = await page.locator(".plan-problem-card").count();
   assert.equal(problemCount2, problemCount, `double pull must not duplicate problems (${problemCount} -> ${problemCount2})`);
-  const statusText = await page.locator("#statusLine").innerText();
+  // Batch A (audit F10): pull outcomes are delivered by toast only, so the
+  // no-new-problems report is read from the toast, not the status line.
+  const statusText = await page.locator(".toast").innerText();
   assert.match(statusText, /already pulled|no new problems/i, "second pull should report no new problems");
   console.log("PASS: plan double-pull dedup (B1)");
 

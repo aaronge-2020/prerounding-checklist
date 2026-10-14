@@ -21,7 +21,7 @@
     <meta name="twitter:description" content="Organize hospital-day updates, browse bedside cheat sheets, and draft OpenEvidence prompts — everything encrypted in your browser.">
     <title>Preround</title>
     <link rel="icon" href="./favicon.ico">
-    <link rel="stylesheet" href="./styles.css?v=20261013-index-drop">
+    <link rel="stylesheet" href="./styles.css?v=20261013-batch-a">
     <style>
     /* Scribe Pro in-app view: styles scoped under #scribeProView so they never
        leak into the app shell. Uses the app's light-theme tokens (no local
@@ -112,10 +112,11 @@
       <aside class="side-nav">
         <div class="brand-lockup">
           <div class="brand-mark" aria-hidden="true">P</div>
-          <div>
+          <div class="brand-copy">
             <strong>Preround</strong>
             <span>Local workspace</span>
           </div>
+          <button type="button" class="app-nav-toggle" data-action="toggle-app-nav" aria-expanded="false" aria-label="Expand navigation" title="Expand navigation"><span aria-hidden="true">›</span></button>
         </div>
 
         <nav class="primary-nav" aria-label="Workspace sections">
@@ -163,7 +164,7 @@
         <header class="top-bar">
           <div class="workspace-heading">
             <h1>Preround</h1>
-            <div id="currentPageTitle" class="page-context">Vault / Roster</div>
+            <div id="currentPageTitle" class="page-context">Patients</div>
             <div id="statusLine" class="subtle">On-device first. Cloud features are clearly marked.</div>
           </div>
           <div class="top-controls">
@@ -221,7 +222,8 @@
             <div id="scribeProContent">
 <div class="wrap">
   <header class="top">
-    <h1 id="scribe-pro-heading">Scribe Pro — Parakeet</h1>
+    <h1 id="scribe-pro-heading">Scribe Pro</h1>
+    <span class="badge">Parakeet</span>
     <span class="badge">Laptop only</span>
   </header>
   <p class="sub">On-device clinical scribe: NVIDIA Parakeet TDT 0.6B runs fully in this browser. No audio or transcript ever leaves the device.</p>
@@ -415,6 +417,6 @@
     </div>
 
     <input id="modelPackFolderInput" type="file" webkitdirectory multiple hidden>
-    <script type="module" src="./src/ui/app.js?v=20261013-index-drop"></script>
+    <script type="module" src="./src/ui/app.js?v=20261013-batch-a"></script>
   </body>
 </html>

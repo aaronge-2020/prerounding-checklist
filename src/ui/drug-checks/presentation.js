@@ -148,7 +148,7 @@ export function createDrugChecksPresentation({ escapeHtml }) {
     return `
       <div class="dc-wrap">
         <header class="dc-head">
-          <h2>Drug interaction checker</h2>
+          <h2>Drug checks</h2>
           <p class="dc-privacy">Runs fully on-device. Medication names never leave your browser.</p>
         </header>
         <label class="dc-label" for="drugChecksInput">Medications to check</label>

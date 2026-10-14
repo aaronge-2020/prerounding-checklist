@@ -66,8 +66,12 @@ try {
   assert.equal(await page.locator('[data-action="select-structured-note-field"][data-note-field="past_medical_history"]').count(), 1);
   const oneLiner = "Adult with community-acquired pneumonia improving on room air.";
   await page.fill('[data-structured-note-scope="admission"][data-structured-note-field="one_liner"]', oneLiner);
+  // Batch A (audit F10): the save confirmation is delivered by toast only,
+  // never duplicated in the status line, so save sync waits on the toast.
+  // Any earlier toast is cleared first so it cannot satisfy the wait.
+  await page.evaluate(() => document.querySelector("#toastContainer")?.replaceChildren());
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="admission"]');
-  await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.waitForFunction(() => /Primary-team note saved/.test(document.querySelector(".toast")?.textContent || ""), null, { timeout: 30000 });
   assert.equal(await page.locator('[data-action="open-admission-note"]').isEnabled(), true);
 
   // The compact review sheet: data on the left, note editor on the right.
@@ -153,16 +157,18 @@ try {
   await page.click('[data-action="review-structured-note-sections"][data-note-scope="daily"]');
   await page.click('[data-action="select-structured-note-field"][data-note-scope="daily"][data-note-field="plan"]');
   assert.match(await page.locator('[data-structured-note-field="plan"]').inputValue(), /SBP<160/);
+  await page.evaluate(() => document.querySelector("#toastContainer")?.replaceChildren());
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
-  await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.waitForFunction(() => /Primary-team note saved/.test(document.querySelector(".toast")?.textContent || ""), null, { timeout: 30000 });
 
   // A combined "Assessment and Plan" heading splits into plan problems; with no
   // opening summary paragraph, the Assessment editor stays blank (settlement C4).
   await page.click('[data-action="select-structured-note-mode"][data-note-scope="daily"][data-note-mode="paste"]');
   await page.fill('[data-structured-note-paste][data-structured-note-scope="daily"]', combinedAssessmentPlanNote);
   await page.click('[data-action="review-structured-note-sections"][data-note-scope="daily"]');
+  await page.evaluate(() => document.querySelector("#toastContainer")?.replaceChildren());
   await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
-  await page.waitForFunction(() => /Primary-team note saved|Structured note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+  await page.waitForFunction(() => /Primary-team note saved/.test(document.querySelector(".toast")?.textContent || ""), null, { timeout: 30000 });
   await page.click('[data-action="open-progress-note"]');
   await page.waitForSelector("#reviewContent .review-workspace");
   const combinedAssessmentText = await editorText(page.locator('[data-draft-assessment]'));

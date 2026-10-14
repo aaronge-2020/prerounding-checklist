@@ -524,8 +524,12 @@ export function createDailySourceController(deps) {
       }
       if (!noteDraftSessionHasContent(deps.app.noteDraftSessions.get(key))) deps.app.noteDraftSessions.delete(key);
       await deps.persistVault(`${noteType === NOTE_TYPES.H_AND_P ? "H&P" : "Progress-note"} source de-identified and saved locally.`);
-      deps.updateDeidOperation({ active: false, message: "Primary-team note saved in the encrypted vault." });
-      deps.setStatus("Primary-team note saved in the encrypted vault.");
+      deps.updateDeidOperation({ active: false, message: "Primary-team note sections de-identified locally." });
+      // The save confirmation is a transient notice, so it uses the toast
+      // channel only (audit F10: one channel per message). The persist
+      // message above is a different text and stays on the status line.
+      if (deps.notify) deps.notify("Primary-team note saved in the encrypted vault.", { type: "success" });
+      else deps.setStatus("Primary-team note saved in the encrypted vault.");
       deps.render();
     } catch (error) {
       deps.updateDeidOperation({ active: false, message: error instanceof Error ? error.message : "The structured note was not saved." });

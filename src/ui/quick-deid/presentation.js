@@ -141,7 +141,7 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
       <section class="panel quick-deid-panel">
         <div class="section-heading quick-deid-heading">
           <div>
-            <h2>Quick De-ID Tool</h2>
+            <h2>Quick De-ID</h2>
             <p class="muted">Review stays in this tab only. Copy the de-identified result when you are done.</p>
           </div>
           <div class="button-row">

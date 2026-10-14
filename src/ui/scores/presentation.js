@@ -378,7 +378,7 @@ export function createScoresPresentation({ escapeHtml }) {
     return `
       <div class="scores-page">
         <div class="scores-page-heading">
-          <h1>Models</h1>
+          <h1>Calculators</h1>
           <p class="muted">Native clinical calculators that mirror MDCalc one-to-one, plus peer-reviewed AI models. They run entirely on this device \u2014 no network, no other tab. Verification status is shown on each model.</p>
           ${patientLabel ? `<p class="muted">Inputs marked <span class="score-binding-badge">from patient</span> are pulled from ${escapeHtml(patientLabel)}\u2019s saved data. Always verify before using them.</p>` : ""}
         </div>

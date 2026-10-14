@@ -29,12 +29,16 @@ try {
   const box = await page.locator(paste).boundingBox();
   assert.ok(box.y < 380, `paste begins too low: ${box.y}`);
   await inViewport('[data-action="review-structured-note-sections"]');
-  await page.locator(".toast-dismiss").click();
+  // Batch A (audit F10): status messages no longer auto-toast, so there is
+  // no toast to dismiss over the workspace after admitting a patient.
+  assert.equal(await page.locator(".toast").count(), 0, "no toast covers the Epic workspace after admit");
   const originalWidth = await page.locator("#dailyView").boundingBox();
-  assert.ok(originalWidth.width > 1400, "Epic workspace uses full desktop width");
-  await page.locator("#secondaryNavigation > summary").click();
+  // Batch A (audit F1): the Epic workspace sits beside the slim left nav
+  // rail (56px), not under a top strip, so it is 1384px of the 1440px.
+  assert.ok(originalWidth.width > 1300, "Epic workspace uses the desktop width beside the slim nav rail");
+  // Batch A (audit F1): in the work views the Tools group stays open in
+  // the left rail, so Settings is visible with no summary to open.
   assert.equal(await page.locator('[data-view-target="settings"]').isVisible(), true);
-  await page.locator("#secondaryNavigation > summary").click();
   await page.fill(paste, note);
   await screenshot("epic-paste");
   await page.click('[data-action="review-structured-note-sections"]');
@@ -93,12 +97,14 @@ try {
   }
   for (const width of [1041, 1100, 1280]) {
     await page.setViewportSize({ width, height: 900 });
+    // Batch A (audit F1): the old check compared the Tools summary against
+    // the top bar inside the retired top strip. The frame contract now is
+    // a slim left rail (56px) that ends where the top bar begins.
     assert.equal(await page.evaluate(() => {
-      const menu = document.querySelector('#secondaryNavigation > summary').getBoundingClientRect();
-      return menu.right <= document.querySelector('.top-bar').getBoundingClientRect().left;
-    }), true, `navigation and patient controls must not overlap at ${width}`);
+      const nav = document.querySelector('.side-nav').getBoundingClientRect();
+      return nav.width === 56 && nav.right <= document.querySelector('.top-bar').getBoundingClientRect().left;
+    }), true, `slim left nav rail must not overlap patient controls at ${width}`);
   }
-  await page.locator('#secondaryNavigation > summary').click();
   await page.locator('[data-view-target="settings"]').click();
   assert.equal(await page.locator('#settingsView.active').isVisible(), true);
   await page.locator('[data-view-target="daily"]').click();

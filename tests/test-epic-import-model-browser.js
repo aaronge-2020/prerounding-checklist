@@ -30,8 +30,11 @@ try {
     await page.locator("[data-structured-note-paste]").fill(note);
     await page.click('[data-action="review-structured-note-sections"]');
     if (index === 0) assert.equal(await page.locator('[data-structured-note-field="allergies"]').inputValue(), "NKDA.", "parser preserves allergy content before model redaction");
+    await page.evaluate(() => document.querySelector("#toastContainer")?.replaceChildren());
     await page.click('[data-action="save-structured-primary-note"]');
-    await page.waitForFunction(() => !document.querySelector("[data-note-original]") && /Primary-team note saved/.test(document.querySelector("#statusLine")?.textContent || ""), {}, { timeout: 120000 });
+    // Batch A (audit F10): the save confirmation arrives by toast only, not
+    // the status line, so the save sync watches the toast text.
+    await page.waitForFunction(() => !document.querySelector("[data-note-original]") && /Primary-team note saved/.test(document.querySelector(".toast")?.textContent || ""), {}, { timeout: 120000 });
     const saved = await page.locator("[data-structured-note-field]").evaluateAll((nodes) => nodes.map((node) => node.value).join("\n"));
     assert.doesNotMatch(saved, /Jane Smith/);
     assert.match(saved, /cough|breathing/i);

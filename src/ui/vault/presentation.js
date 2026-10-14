@@ -65,7 +65,9 @@ export function createVaultPresentation({ escapeHtml, icon }) {
         <span class="roster-status ${archived ? "is-archived" : ""}">${archived ? `Archived ${escapeHtml(patient.archivedAt.slice(0, 10))}` : "Active stay"}</span>
         <span class="muted roster-day-count">HD${Math.max(dayCount, 1)}</span>
         <div class="button-row roster-actions">
-          <button class="button--secondary" type="button" data-action="select-patient" data-patient-id="${escapeHtml(patient.id)}">Select</button>
+          ${selected
+            ? `<span class="roster-current" aria-label="Current patient">${icon("check")} Current</span>`
+            : `<button class="button--secondary" type="button" data-action="select-patient" data-patient-id="${escapeHtml(patient.id)}">Select</button>`}
           <button class="button--quiet" type="button" data-action="archive-patient" data-patient-id="${escapeHtml(patient.id)}" ${archived ? "disabled" : ""}>${icon("archive")} Archive</button>
         </div>
       </div>
@@ -169,7 +171,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
           <div class="section-heading roster-heading">
             <div>
               ${needsFirstPatient ? '<div class="vault-onboarding-kicker">Next step <span>·</span> Step 2 of 2</div>' : ""}
-              <h2>${needsFirstPatient ? "Start the guided demo" : "Roster"}</h2>
+              <h2>${needsFirstPatient ? "Start the guided demo" : "Patients"}</h2>
               <p class="muted">${needsFirstPatient ? "Click Guided demo in the left sidebar to launch the synthetic walkthrough. No patient or chart text is required." : "Use de-identified room labels only."}</p>
             </div>
             ${needsFirstPatient ? `<button class="button--primary vault-primary-action" type="button" data-action="start-guided-demo">${icon("play")} Start guided demo</button>` : ""}

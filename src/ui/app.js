@@ -1,5 +1,5 @@
 import { safeHtml } from "../lib/safe-html.js?v=20261012-safety";
-import { installNavigationDisclosure, syncNavigationDisclosure } from "./navigation.js?v=20261012-writer-controls";
+import { installNavigationDisclosure, syncNavigationDisclosure } from "./navigation.js?v=20261013-batch-a";
 import {
   createDailyRecord,
   latestDay,
@@ -108,7 +108,7 @@ import {
 } from "../app/preferences.js?v=20261011-request-controls";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1&icon=search-v1";
 import { createDailyPresentation } from "./daily/presentation.js?v=20261013-slim-stay-rail";
-import { createDailySourceController } from "./daily/source-controller.js?v=20261013-index-drop";
+import { createDailySourceController } from "./daily/source-controller.js?v=20261013-batch-a";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20261012-writer-controls";
 import { createReviewController } from "./review/controller.js?v=20261013-aloop-round3-final";
@@ -127,7 +127,7 @@ import { createTokenColorPickerController } from "./token-color-picker.js?v=2026
 import { captureScrollPositions, restoreScrollPositions, preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20261012-safety";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20261012-safety";
 import { installGlobalFetchGuard, isOfflineMode, onOfflineModeChange, setOfflineMode } from "../lib/network-gate.js?v=20261012-safety";
-import { createVaultPresentation, disambiguatedPatientLabels } from "./vault/presentation.js?v=20260718-vault-safety";
+import { createVaultPresentation, disambiguatedPatientLabels } from "./vault/presentation.js?v=20261013-batch-a";
 import { createVaultSessionGuards } from "./vault/session-guards.js?v=20260922-vault-guards";
 import { createClipboard } from "./clipboard.js?v=20260922-clipboard";
 import { createVaultPassphraseController } from "./vault/passphrase-controller.js?v=20260921-landing-onboarding";
@@ -137,7 +137,7 @@ import {
   warningDescription,
   warningSnippet
 } from "./redaction/presentation.js?v=20261012-citation-preview";
-import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261011-epic-workflow";
+import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261013-batch-a";
 import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261012-safety";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20261003-deid-adaptive";
 import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261012-safety";
@@ -145,7 +145,7 @@ import { createDemoController } from "./demo/controller.js?v=20261012-safety";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261013-aloop-round3-final";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20261012-safety";
 import { createAiChatController } from "./ai-chat/controller.js?v=20261012-safety";
-import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261001-drug-checks-v2";
+import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261013-batch-a";
 import { createDrugChecksController } from "./drug-checks/controller.js?v=20261012-citation-preview";
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20261012-safety";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20261012-safety";
@@ -171,7 +171,7 @@ const app = {
   adaptiveStore: null,
   view: "vault",
   selectedDayId: "",
-  selectedStayPacketId: "admission", stayRailExpanded: false, selectedPromptTask: "presentation_quality_editor", promptDayId: "",
+  selectedStayPacketId: "admission", stayRailExpanded: false, appNavRailExpanded: false, selectedPromptTask: "presentation_quality_editor", promptDayId: "",
   promptDayFollowsSelectedDay: true,
   customPromptTasks: loadCustomPromptTasks(),
   pendingRemovePromptTaskId: "",
@@ -228,10 +228,12 @@ const app = {
   admissionDate: "" // in-memory copy of the encrypted patient's admission-date anchor
 };
 const viewIds = ["vault", "daily", "cheatSheets", "review", "sampleNotes", "prompts", "quickDeid", "aiChat", "drugLookup", "drugChecks", "scores", "scribePro", "settings"];
+// Page titles match the navigation labels exactly (audit F9): the name a
+// view opens under is the name on the button that opens it.
 const viewTitles = {
-  vault: "Vault / Roster", daily: "Hospital Stay", review: "Review Data / Draft Note",
+  vault: "Patients", daily: "Import from Epic", review: "Write note",
   cheatSheets: "Cheat Sheets", prompts: "Prompts",
-  quickDeid: "Quick De-ID Tool", sampleNotes: "Sample Notes", aiChat: "AI Chat", drugLookup: "Drug Lookup", drugChecks: "Drug checks", scores: "Models", settings: "Settings"
+  quickDeid: "Quick De-ID", sampleNotes: "Sample Notes", aiChat: "AI Chat", drugLookup: "Drug Lookup", drugChecks: "Drug checks", scores: "Calculators", scribePro: "Scribe Pro", settings: "Settings"
 };
 let draggedSectionRow = null;
 let sectionDragSaved = false;
@@ -490,6 +492,7 @@ const dailySourceController = createDailySourceController({
   deidentify: deidSession.deidentify,
   updateDeidOperation,
   setStatus,
+  notify: showToast,
   localAiParseInfo,
   setLocalAiParseBusy,
   setSectionDraftText,
@@ -888,33 +891,55 @@ function visiblePatients(vault) {
   return (vault?.patients || []).filter((patient) => !patient.archivedAt);
 }
 
-let lastToastedStatus = "";
+const IDLE_STATUS = "All data is encrypted and stays on this device. Nothing leaves without your explicit action.";
+
+// One channel per message (audit F10): setStatus writes the persistent
+// status line only, and showToast shows a transient toast only. A message
+// is never delivered through both at once.
 function setStatus(message, { icon: iconName } = {}) {
-  app.status = message;
+  const text = String(message || "");
+  // While a toast is showing this exact message, the toast owns it; a
+  // later save step repeating the same text must not also park it in the
+  // status line.
+  if (activeToastText && text.trim() === activeToastText) {
+    app.status = IDLE_STATUS;
+    const status = byId("statusLine");
+    if (status) status.textContent = IDLE_STATUS;
+    return;
+  }
+  app.status = text;
   const status = byId("statusLine");
   if (!status) return;
-  if (iconName) status.innerHTML = safeHtml(`${icon(iconName)}${escapeHtml(message)}`);
-  else status.textContent = message;
-  // Every action outcome also gets an auto-dismissing toast so feedback is
-  // impossible to miss. Skip in-progress ("...") messages, the idle default,
-  // and repeats caused by re-renders restoring the same status.
-  const text = String(message || "").trim();
-  const idleDefault = "All data is encrypted and stays on this device. Nothing leaves without your explicit action.";
-  if (text && !text.endsWith("...") && text !== idleDefault && text !== lastToastedStatus) {
-    lastToastedStatus = text;
-    const lower = text.toLowerCase();
-    let type = "success";
-    if (/fail|error|could not|unable|invalid|not saved|not found/.test(lower)) type = "error";
-    else if (/select|choose|please|required|first|confirm|warning|missing|no .* found/.test(lower)) type = "warning";
-    showToast(text, { type });
-  }
+  if (iconName) status.innerHTML = safeHtml(`${icon(iconName)}${escapeHtml(text)}`);
+  else status.textContent = text;
 }
 
-// Brief auto-dismissing toast warning/success. Used for pull-from-primary
-// feedback and other transient notices the student must not miss — the
-// status line is persistent but easy to overlook.
+// Brief auto-dismissing toast warning/success, anchored to the bottom
+// corner so it never covers the navigation. A toast expires when the
+// view changes (see render()) and claims its message from the status
+// line, so the message appears exactly once.
 let toastTimer = null;
+let activeToastText = "";
+let toastView = "";
+function dismissToast() {
+  if (toastTimer) {
+    clearTimeout(toastTimer);
+    toastTimer = null;
+  }
+  activeToastText = "";
+  toastView = "";
+  const container = byId("toastContainer");
+  if (container) container.innerHTML = safeHtml("");
+}
 function showToast(message, { type = "warning", durationMs = 3500 } = {}) {
+  const text = String(message || "");
+  // Claim the message: if the status line currently holds the same text,
+  // the toast replaces that copy instead of duplicating it.
+  if (text && app.status === text) {
+    app.status = IDLE_STATUS;
+    const status = byId("statusLine");
+    if (status) status.textContent = IDLE_STATUS;
+  }
   let container = byId("toastContainer");
   if (!container) {
     container = document.createElement("div");
@@ -924,15 +949,17 @@ function showToast(message, { type = "warning", durationMs = 3500 } = {}) {
     document.body.appendChild(container);
   }
   container.innerHTML = safeHtml("");
+  activeToastText = text.trim();
+  toastView = app.view;
   const toast = document.createElement("div");
   toast.className = `toast toast--${type}`;
-  toast.textContent = message;
+  toast.textContent = text;
   const dismiss = document.createElement("button");
   dismiss.type = "button";
   dismiss.className = "toast-dismiss";
   dismiss.setAttribute("aria-label", "Dismiss");
   dismiss.textContent = "✕";
-  dismiss.addEventListener("click", () => container.innerHTML = safeHtml(""));
+  dismiss.addEventListener("click", dismissToast);
   toast.appendChild(dismiss);
   container.appendChild(toast);
   // Trigger the entrance animation on the next frame.
@@ -940,7 +967,7 @@ function showToast(message, { type = "warning", durationMs = 3500 } = {}) {
   if (toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     toast.classList.remove("toast--visible");
-    setTimeout(() => { if (toast.parentNode === container) container.innerHTML = safeHtml(""); }, 300);
+    setTimeout(() => { if (toast.parentNode === container) dismissToast(); }, 300);
   }, durationMs);
 }
 
@@ -1098,10 +1125,25 @@ function render() {
     if (activeView?.classList.contains("active")) restoreScrollPositions(activeView, scrollers);
   };
 
+  // A toast belongs to the view that produced it: it expires as soon as
+  // the rendered view differs from that view (audit F10).
+  if (activeToastText && app.view !== toastView) dismissToast();
+  // The app navigation rail keeps its expanded state across renders; the
+  // class only takes effect where the rail layout applies (work views at
+  // desktop width, every view at narrow widths).
+  document.querySelector(".app-shell")?.classList.toggle("app-nav-expanded", Boolean(app.appNavRailExpanded));
+  const navToggle = document.querySelector(".app-nav-toggle");
+  if (navToggle) {
+    navToggle.setAttribute("aria-expanded", String(Boolean(app.appNavRailExpanded)));
+    navToggle.setAttribute("aria-label", app.appNavRailExpanded ? "Collapse navigation" : "Expand navigation");
+    navToggle.setAttribute("title", app.appNavRailExpanded ? "Collapse navigation" : "Expand navigation");
+  }
+
   const unlocked = vaultIsUnlocked();
   document.body.classList.toggle("vault-locked", !unlocked);
   if (!unlocked) {
     demoController.forceCleanup();
+    dismissToast();
     app.view = "vault";
     clearPhiReviews();
     clearQuickDeidSession();
@@ -1145,8 +1187,12 @@ function renderStatusBar() {
   const record = readEncryptedVaultRecord();
   byId("currentPageTitle").textContent = viewTitles[app.view] || "Preround";
   byId("vaultStateLabel").textContent = vaultIsUnlocked() ? "Vault unlocked" : record ? "Vault locked" : "No vault on this device";
+  // The slim icon rail hides the footer text; the full state stays
+  // reachable there as a tooltip and in full when the rail is expanded.
+  byId("vaultStateLabel").title = byId("vaultStateLabel").textContent;
   const deidStatus = selectedDeidStatus();
   byId("deidStateLabel").textContent = `Redaction model: ${deidModelLabel(app.deidMode)} — ${deidStatus.ready ? "ready" : "not loaded"}`;
+  byId("deidStateLabel").title = byId("deidStateLabel").textContent;
   byId("statusLine").textContent =
     app.status || "All data is encrypted and stays on this device. Nothing leaves without your explicit action.";
   const switcher = byId("patientSwitcher");
@@ -1840,6 +1886,17 @@ async function handleClick(event) {
     const rail = newDaySummary.closest(".stay-rail");
     rail?.closest(".stay-layout")?.classList.add("stay-rail-expanded");
     rail?.querySelector(".stay-rail-toggle")?.setAttribute("aria-expanded", "true");
+  }
+  // The app-nav rail toggle expands/collapses the slim rail in place (no
+  // re-render, so scroll and focus stay put); render() replays the state.
+  const appNavToggle = event.target.closest?.('[data-action="toggle-app-nav"]');
+  if (appNavToggle) {
+    app.appNavRailExpanded = !app.appNavRailExpanded;
+    document.querySelector(".app-shell")?.classList.toggle("app-nav-expanded", app.appNavRailExpanded);
+    appNavToggle.setAttribute("aria-expanded", String(app.appNavRailExpanded));
+    appNavToggle.setAttribute("aria-label", app.appNavRailExpanded ? "Collapse navigation" : "Expand navigation");
+    appNavToggle.setAttribute("title", app.appNavRailExpanded ? "Collapse navigation" : "Expand navigation");
+    return;
   }
   const target = event.target.closest("[data-action]");
   if (!target) return;

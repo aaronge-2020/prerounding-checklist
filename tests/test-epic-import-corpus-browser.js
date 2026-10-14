@@ -66,8 +66,11 @@ try {
       await page.getByLabel("Go to section", { exact: true }).selectOption("one_liner");
       await page.getByRole("textbox", { name: "One-liner", exact: true }).fill("Adult admitted for evaluation.");
       await page.selectOption("#deidModeSelect", "structured");
+      await page.evaluate(() => document.querySelector("#toastContainer")?.replaceChildren());
       await page.click('[data-action="save-structured-primary-note"]');
-      await page.waitForFunction(() => /Primary-team note saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+      // Batch A (audit F10): the save confirmation arrives by toast only,
+      // not the status line, so the save sync watches the toast text.
+      await page.waitForFunction(() => /Primary-team note saved/.test(document.querySelector(".toast")?.textContent || ""), null, { timeout: 30000 });
       assert.equal(await page.locator("[data-note-original]").count(), 0, "raw original cleared after saving");
       assert.ok(Object.values(await fields()).some((text) => text.includes("Clinician reviewed this section.")));
       assert.equal((await fields()).one_liner, "Adult admitted for evaluation.");

@@ -103,8 +103,11 @@ try {
     await page.click('[data-action="review-structured-note-sections"]');
     const parsed = await page.locator('[data-structured-note-field]').evaluateAll(nodes => nodes.map(n => n.value).join('\n'));
     const started = Date.now();
+    await page.evaluate(() => document.querySelector("#toastContainer")?.replaceChildren());
     await page.click('[data-action="save-structured-primary-note"]');
-    await page.waitForFunction(() => !document.querySelector('[data-note-original]') && /Primary-team note saved/.test(document.querySelector('#statusLine')?.textContent || ''), {}, { timeout: 120000 });
+    // Batch A (audit F10): the save confirmation arrives by toast only, not
+    // the status line, so the save sync watches the toast text.
+    await page.waitForFunction(() => !document.querySelector('[data-note-original]') && /Primary-team note saved/.test(document.querySelector('.toast')?.textContent || ''), {}, { timeout: 120000 });
     const saved = await page.locator('[data-structured-note-field]').evaluateAll(nodes => nodes.map(n => n.value).join('\n'));
     const rawStorage = await page.evaluate(() => JSON.stringify(localStorage));
     results.modelCases.push({ ...item, note, parsed, saved, elapsedMs: Date.now() - started,
