@@ -14455,13 +14455,13 @@ body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-nav-togg
 body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-nav-toggle > span {
   display: inline-block; transition: transform 0.15s ease;
 }
-body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .app-nav-toggle > span {
+body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .app-nav-toggle > span, body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-hover .app-nav-toggle > span {
   transform: rotate(180deg);
 }
-body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .brand-lockup {
+body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .brand-lockup, body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-hover .brand-lockup {
   gap: 10px; padding: 14px 14px 12px;
 }
-body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .brand-copy { display: block; }
+body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .brand-copy, body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-hover .brand-copy { display: block; }
 body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .primary-nav {
   display: grid; align-content: start; align-items: stretch; gap: 4px; padding: 8px 6px;
   overflow-y: auto; overflow-x: hidden;
@@ -14472,10 +14472,10 @@ body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .primary-nav 
 body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .nav-group-label {
   position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
 }
-body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .nav-group-label {
+body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .nav-group-label, body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-hover .nav-group-label {
   display: block; position: static; width: auto; height: auto; margin: 10px 8px 2px; overflow: visible; clip: auto; white-space: normal;
 }
-body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .nav-group:first-child .nav-group-label {
+body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .nav-group:first-child .nav-group-label, body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-hover .nav-group:first-child .nav-group-label {
   margin-top: 2px;
 }
 body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .secondary-navigation { display: block; position: static; align-self: stretch; }
@@ -14493,17 +14493,17 @@ body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .primary-nav 
   border-left: 0; padding-left: 0;
 }
 body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .primary-nav .nav-group > button > span { display: none; }
-body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .primary-nav { padding: 10px 8px; }
-body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .primary-nav .nav-group > button {
+body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .primary-nav, body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-hover .primary-nav { padding: 10px 8px; }
+body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .primary-nav .nav-group > button, body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-hover .primary-nav .nav-group > button {
   grid-template-columns: 16px minmax(0, 1fr); place-items: stretch; align-items: center;
   width: 100%; min-height: 40px; padding: 7px 8px; text-align: left;
 }
-body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .primary-nav .nav-group > button.active {
+body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .primary-nav .nav-group > button.active, body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-hover .primary-nav .nav-group > button.active {
   border-left: 3px solid var(--accent); padding-left: 5px;
 }
-body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .primary-nav .nav-group > button > span { display: block; }
+body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .primary-nav .nav-group > button > span, body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-hover .primary-nav .nav-group > button > span { display: block; }
 body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .side-footer { display: none; }
-body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .side-footer { display: grid; }
+body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-expanded .side-footer, body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-hover .side-footer { display: grid; }
 
 /* Slim rail at narrow widths (every view): the shell stays a fixed
    two-column frame and each view scrolls inside its own pane, exactly
@@ -14546,9 +14546,9 @@ body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.ap
     color: var(--muted); font-size: 15px; cursor: pointer;
   }
   body:not(.vault-locked) .app-nav-toggle > span { display: inline-block; transition: transform 0.15s ease; }
-  body:not(.vault-locked) .app-shell.app-nav-expanded .app-nav-toggle > span { transform: rotate(180deg); }
-  body:not(.vault-locked) .app-shell.app-nav-expanded .brand-lockup { gap: 10px; padding: 14px 14px 12px; }
-  body:not(.vault-locked) .app-shell.app-nav-expanded .brand-copy { display: block; }
+  body:not(.vault-locked) .app-shell.app-nav-expanded .app-nav-toggle > span,   body:not(.vault-locked) .app-shell.app-nav-hover .app-nav-toggle > span { transform: rotate(180deg); }
+  body:not(.vault-locked) .app-shell.app-nav-expanded .brand-lockup,   body:not(.vault-locked) .app-shell.app-nav-hover .brand-lockup { gap: 10px; padding: 14px 14px 12px; }
+  body:not(.vault-locked) .app-shell.app-nav-expanded .brand-copy,   body:not(.vault-locked) .app-shell.app-nav-hover .brand-copy { display: block; }
   body:not(.vault-locked) .primary-nav {
     display: grid; align-content: start; align-items: stretch; gap: 4px; padding: 8px 6px;
     overflow-y: auto; overflow-x: hidden;
@@ -14566,10 +14566,10 @@ body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.ap
   body:not(.vault-locked) .nav-group-label {
     position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
   }
-  body:not(.vault-locked) .app-shell.app-nav-expanded .nav-group-label {
+  body:not(.vault-locked) .app-shell.app-nav-expanded .nav-group-label,   body:not(.vault-locked) .app-shell.app-nav-hover .nav-group-label {
     display: block; position: static; width: auto; height: auto; margin: 10px 8px 2px; overflow: visible; clip: auto; white-space: normal;
   }
-  body:not(.vault-locked) .app-shell.app-nav-expanded .nav-group:first-child .nav-group-label { margin-top: 2px; }
+  body:not(.vault-locked) .app-shell.app-nav-expanded .nav-group:first-child .nav-group-label,   body:not(.vault-locked) .app-shell.app-nav-hover .nav-group:first-child .nav-group-label { margin-top: 2px; }
   body:not(.vault-locked) .secondary-navigation { display: block; position: static; align-self: stretch; }
   body:not(.vault-locked) .secondary-navigation > summary { display: none; }
   body:not(.vault-locked) .secondary-navigation[open] > .secondary-navigation-panel {
@@ -14583,17 +14583,17 @@ body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.ap
   }
   body:not(.vault-locked) .primary-nav .nav-group > button.active { border-left: 0; padding-left: 0; }
   body:not(.vault-locked) .primary-nav .nav-group > button > span { display: none; }
-  body:not(.vault-locked) .app-shell.app-nav-expanded .primary-nav { padding: 10px 8px; }
-  body:not(.vault-locked) .app-shell.app-nav-expanded .primary-nav .nav-group > button {
+  body:not(.vault-locked) .app-shell.app-nav-expanded .primary-nav,   body:not(.vault-locked) .app-shell.app-nav-hover .primary-nav { padding: 10px 8px; }
+  body:not(.vault-locked) .app-shell.app-nav-expanded .primary-nav .nav-group > button,   body:not(.vault-locked) .app-shell.app-nav-hover .primary-nav .nav-group > button {
     grid-template-columns: 16px minmax(0, 1fr); place-items: stretch; align-items: center;
     width: 100%; min-height: 40px; padding: 7px 8px; text-align: left;
   }
-  body:not(.vault-locked) .app-shell.app-nav-expanded .primary-nav .nav-group > button.active {
+  body:not(.vault-locked) .app-shell.app-nav-expanded .primary-nav .nav-group > button.active,   body:not(.vault-locked) .app-shell.app-nav-hover .primary-nav .nav-group > button.active {
     border-left: 3px solid var(--accent); padding-left: 5px;
   }
-  body:not(.vault-locked) .app-shell.app-nav-expanded .primary-nav .nav-group > button > span { display: block; }
+  body:not(.vault-locked) .app-shell.app-nav-expanded .primary-nav .nav-group > button > span,   body:not(.vault-locked) .app-shell.app-nav-hover .primary-nav .nav-group > button > span { display: block; }
   body:not(.vault-locked) .side-footer { display: none; }
-  body:not(.vault-locked) .app-shell.app-nav-expanded .side-footer { display: grid; }
+  body:not(.vault-locked) .app-shell.app-nav-expanded .side-footer,   body:not(.vault-locked) .app-shell.app-nav-hover .side-footer { display: grid; }
 }
 
 /* At phone widths the top bar keeps its single 56px row: the patient
@@ -14604,4 +14604,37 @@ body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.ap
   body:not(.vault-locked) .top-controls { display: flex; width: 100%; }
   body:not(.vault-locked) .patient-switcher { display: block; width: 100%; font-size: 0; }
   body:not(.vault-locked) .patient-switcher select { width: 100%; font-size: 12px; }
+}
+
+/* ── Batch A2: the slim rail expands on hover, floating over the page ──
+   Aaron's addendum to F1: the rail must not sit static. While the
+   pointer hovers the rail, app.js adds .app-nav-hover and the rail
+   takes the full labeled presentation (the Batch A expanded rules
+   above carry .app-nav-hover twins) as an overlay: the side nav is
+   lifted out of the grid at 178px with a shadow, the grid column
+   stays 56px, and the workspace box does not move, resize, or
+   reflow. The chevron pin (.app-nav-expanded) is unchanged: pinned
+   stays in the grid at 178px. z-index 60 keeps the floating rail
+   above workspace content but below the AI Chat drawer (70) and the
+   guided-demo layers (90+). Pointer-only: app.js ignores touch
+   pointerenter, so a tap on a destination never triggers it. */
+body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell,
+body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-hover {
+  position: relative;
+}
+body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-hover:not(.app-nav-expanded) .side-nav {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 178px; z-index: 60;
+  box-shadow: 12px 0 32px #0003;
+}
+body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.app-nav-hover:not(.app-nav-expanded) .app-main {
+  grid-column: 2;
+}
+@media (max-width: 1040px) {
+  body:not(.vault-locked) .app-shell,
+  body:not(.vault-locked) .app-shell.app-nav-hover { position: relative; }
+  body:not(.vault-locked) .app-shell.app-nav-hover:not(.app-nav-expanded) .side-nav {
+    position: absolute; top: 0; bottom: 0; left: 0; width: 178px; z-index: 60;
+    box-shadow: 12px 0 32px #0003;
+  }
+  body:not(.vault-locked) .app-shell.app-nav-hover:not(.app-nav-expanded) .app-main { grid-column: 2; }
 }

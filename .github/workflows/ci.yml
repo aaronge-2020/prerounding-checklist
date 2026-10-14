@@ -21,7 +21,7 @@ jobs:
             command: npm run lint && npm run test:unit
             browser: false
           - name: Guided demo browser
-            command: npm run test:guided-demo-browser
+            command: npm run test:guided-demo-browser && node tests/test-demo-stageless-browser.js
             browser: true
           - name: Primary note pull browser
             command: npm run test:primary-note-pull-fallback

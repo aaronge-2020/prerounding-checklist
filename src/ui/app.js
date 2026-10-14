@@ -141,7 +141,7 @@ import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=2026
 import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261012-safety";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20261003-deid-adaptive";
 import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261012-safety";
-import { createDemoController } from "./demo/controller.js?v=20261012-safety";
+import { createDemoController } from "./demo/controller.js?v=20261013-batch-a2";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261013-aloop-round3-final";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20261012-safety";
 import { createAiChatController } from "./ai-chat/controller.js?v=20261012-safety";
@@ -1140,6 +1140,10 @@ function render() {
   }
 
   const unlocked = vaultIsUnlocked();
+  // The hover-expanded rail (Batch A2) is a transient pointer state: it
+  // must not survive into a guided tour (its targets would move under
+  // the pointer) or a locked vault.
+  if (app.demoSession || !unlocked) document.querySelector(".app-shell")?.classList.remove("app-nav-hover");
   document.body.classList.toggle("vault-locked", !unlocked);
   if (!unlocked) {
     demoController.forceCleanup();
@@ -1893,6 +1897,8 @@ async function handleClick(event) {
   if (appNavToggle) {
     app.appNavRailExpanded = !app.appNavRailExpanded;
     document.querySelector(".app-shell")?.classList.toggle("app-nav-expanded", app.appNavRailExpanded);
+    // Pinning the rail open supersedes the hover overlay.
+    if (app.appNavRailExpanded) document.querySelector(".app-shell")?.classList.remove("app-nav-hover");
     appNavToggle.setAttribute("aria-expanded", String(app.appNavRailExpanded));
     appNavToggle.setAttribute("aria-label", app.appNavRailExpanded ? "Collapse navigation" : "Expand navigation");
     appNavToggle.setAttribute("title", app.appNavRailExpanded ? "Collapse navigation" : "Expand navigation");
@@ -4048,8 +4054,26 @@ function bindEvents() {
     // Local AI chat composer: Enter sends, Shift+Enter adds a newline.
     if (app.view === "aiChat" && aiChatController.keydown(event)) return;
   });
+  // Batch A2: hovering the slim app-nav rail floats it open over the
+  // workspace (the .app-nav-hover presentation in styles.css). Mouse and
+  // pen hover only: a touch tap on a destination must never trigger it.
+  // The class is dropped when the pointer leaves the rail, when a
+  // destination is chosen (the click handlers below), and on renders
+  // that start a tour or lock the vault (render()).
+  const sideNavElement = document.querySelector(".side-nav");
+  const appShellElement = document.querySelector(".app-shell");
+  if (sideNavElement && appShellElement) {
+    sideNavElement.addEventListener("pointerenter", (event) => {
+      if (event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+      if (app.demoSession) return;
+      appShellElement.classList.add("app-nav-hover");
+    });
+    sideNavElement.addEventListener("pointerleave", () => appShellElement.classList.remove("app-nav-hover"));
+    sideNavElement.addEventListener("pointercancel", () => appShellElement.classList.remove("app-nav-hover"));
+  }
   document.querySelectorAll("[data-view-target]").forEach((button) => {
     button.addEventListener("click", () => {
+      appShellElement?.classList.remove("app-nav-hover");
       if (!vaultIsUnlocked() && button.dataset.viewTarget !== "vault") {
         app.view = "vault";
         setStatus("Unlock the local vault before opening workspace tools.");

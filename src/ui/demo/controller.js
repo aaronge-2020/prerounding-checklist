@@ -1,6 +1,7 @@
 import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 import {
   createDemoPresentation,
+  DEMO_GUIDE_STAGES,
   DEMO_STAGE_NEXT,
   DEMO_INFO_STAGES,
   DEMO_PARSE_NOTE_TEXT,
@@ -282,13 +283,21 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     try { console.log("[demo] render() start, stage:", getSession()?.stage); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
     clearTargetDecorations();
     const session = getSession();
+    // A session object whose stage is missing or not a known stage is
+    // leftover state, not a tour: stageFor() would silently substitute
+    // the opening stage and mount its dim, guide bar, and highlight over
+    // the app on every render, leaving the screen dark and clicks dead.
+    // Treat it exactly as no session and take the cleanup path below.
+    const tourActive = Boolean(session)
+      && typeof session.stage === "string"
+      && Object.hasOwn(DEMO_GUIDE_STAGES, session.stage);
     // Pin the desktop icon rail expanded while the tour runs: the rail
     // expands on hover and the appearing group labels push the nav buttons
     // down, so a highlighted sidebar target can jump away mid-approach.
     // With the rail pinned, targets stay put. Removed on exit (see
     // forceCleanup).
-    try { document.body.classList.toggle("demo-tour-active", Boolean(session)); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
-    if (!session) {
+    try { document.body.classList.toggle("demo-tour-active", tourActive); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
+    if (!tourActive) {
       // Every exit path funnels through here. The dim overlay, callout, and
       // highlight classes must not survive the demo, or the screen stays dark
       // and unclickable. Demo-seeded chat messages are ephemeral too.
