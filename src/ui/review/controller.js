@@ -1633,6 +1633,14 @@ export function createReviewController(deps) {
     // Refresh just the data list (children replacement preserves the
     // list's own scrollTop). The saved baseline now shows on the row.
     patchDataList();
+    // The note must show it too (the status below promises both): the
+    // fresh render reconciles the Objective section's selected blocks
+    // against the new baseline — untouched groups adopt the new value,
+    // a group the student edited keeps its text and gains the
+    // "Source changed · refresh" offer. Patching only the Objective
+    // section leaves the rest of the editor (and any caret in it)
+    // undisturbed; focus during a baseline save is in the data list.
+    patchDraftRegion('[data-draft-section-id="objective"]');
     const ephemeralDemo = deps.isEphemeralDemo?.();
     if (!ephemeralDemo) await deps.persistVault(clear ? "Baseline cleared." : "Baseline saved.");
     deps.setStatus(ephemeralDemo
@@ -1807,14 +1815,26 @@ export function createReviewController(deps) {
       } else if (fieldId === "physical_exam") {
         patchDraftRegion("[data-smart-exam]");
       } else {
-        const sectionSelector = fieldId === "objective"
-          ? "[data-draft-objective-manual]"
-          : fieldId === "assessment"
-            ? "[data-draft-assessment]"
-            : CLOSING_SECTION_FIELDS.some((entry) => entry.id === fieldId)
-              ? `[data-draft-closing="${CSS.escape(fieldId)}"]`
+        const closingField = CLOSING_SECTION_FIELDS.find((entry) => entry.id === fieldId);
+        if (closingField) {
+          // An empty closing section renders as a compact "+ Add" row
+          // with no editor region inside it, so a region patch finds no
+          // live node and the pulled text stays invisible until some
+          // later full render. Patch the whole section shell instead:
+          // the compact row and the full section share the same
+          // data-draft-section-id (the label slug the presentation
+          // derives), and the fresh render carries the pulled text in
+          // the full form.
+          const sectionSlug = closingField.label.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+          patchDraftRegion(`[data-draft-section-id="${sectionSlug}"]`);
+        } else {
+          const sectionSelector = fieldId === "objective"
+            ? "[data-draft-objective-manual]"
+            : fieldId === "assessment"
+              ? "[data-draft-assessment]"
               : `[data-draft-section="${CSS.escape(fieldId)}"]`;
-        patchDraftRegion(sectionSelector);
+          patchDraftRegion(sectionSelector);
+        }
       }
     }
   }

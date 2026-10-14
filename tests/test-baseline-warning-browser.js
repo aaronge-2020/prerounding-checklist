@@ -51,6 +51,13 @@ try {
 
   await page.click('[data-view-target="review"]');
   await page.waitForSelector("#reviewContent .review-workspace");
+  // The Clinical data panel starts collapsed ("Show clinical data").
+  // The row reads below work either way (they read the DOM directly),
+  // but the baseline editor interaction in step 2 needs the panel
+  // visible, so expand it now.
+  if ((await page.locator('[data-action="toggle-clinical-data"]').textContent()).includes("Show")) {
+    await page.click('[data-action="toggle-clinical-data"]');
+  }
   await page.waitForFunction(() => document.querySelectorAll(".lab-row").length >= 1, null, { timeout: 15000 });
   console.log("PASS: review opened with lab rows");
 

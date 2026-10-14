@@ -13,7 +13,13 @@ async function reset() {
   await page.evaluate(() => {
     for (const el of document.querySelectorAll("*")) if (el.scrollTop) el.scrollTop = 0;
   });
-  await page.mouse.move(0, 0);
+  // Park the pointer over the middle of the top bar, not at (0, 0):
+  // (0, 0) sits on the app rail, and since the rail expands on hover
+  // into a floating overlay, a parked pointer leaves it expanded over
+  // the workspace's left edge, where it swallows the next measure's
+  // first click (the writer outline jump landed on the nav and
+  // navigated away). The top bar's middle has no hover behavior.
+  await page.mouse.move(Math.round(width / 2), 10);
   await page.waitForTimeout(80);
 }
 let moves = 0,
@@ -85,7 +91,9 @@ async function edit(locator, text) {
 }
 async function measure(name, fn, resetScroll = true) {
   if (resetScroll) await reset();
-  else await page.mouse.move(0, 0);
+  // Same parking rule as reset(): never (0, 0), which leaves the
+  // hover-expanded app rail covering the workspace's left edge.
+  else await page.mouse.move(Math.round(width / 2), 10);
   moves = clicks = wheels = wheelDelta = travel = 0;
   last = { x: 0, y: 0 };
   const started = performance.now();

@@ -111,7 +111,7 @@ import { createDailyPresentation } from "./daily/presentation.js?v=20261013-batc
 import { createDailySourceController } from "./daily/source-controller.js?v=20261013-batch-c";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20261013-batch-d";
-import { createReviewController } from "./review/controller.js?v=20261013-batch-d";
+import { createReviewController } from "./review/controller.js?v=20261014-baseline-note-sync";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20261012-citation-preview";
 import {
   createPromptTaskController,

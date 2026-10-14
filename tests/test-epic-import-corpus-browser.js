@@ -94,6 +94,13 @@ try {
   assert.equal((await fields()).one_liner, "Adult admitted for evaluation.", "manually entered one-liner persists across reload");
   assert.equal(await page.locator("[data-note-original]").count(), 0);
   assert.equal(await page.evaluate(() => JSON.stringify(localStorage).includes("Clinician reviewed this section.")), false, "saved note is encrypted at rest");
+  // The reload reset the de-ID mode picker to the model default. This
+  // suite's saves are Structured-mode by design (the model files are
+  // Git LFS pointers in a plain checkout and cannot load), so select
+  // Structured again before the final save, like every checkpoint
+  // save above does. Without this the save waits on the model, the
+  // app refuses to de-identify, and the writer never opens.
+  await page.selectOption("#deidModeSelect", "structured");
   await page.click('[data-action="save-structured-note-to-draft"]');
   await page.locator("#reviewView").waitFor({ state: "visible" });
   assert.ok(await page.locator("#reviewContent").textContent(), "Save & write note opens the note workspace");

@@ -75,6 +75,33 @@ async function addDay(date, label) {
   dayControlExpanded = false; // adding a day collapses the control
 }
 
+// A day's primary note no longer goes through the plain source draft:
+// selecting the Primary note tab opens the structured-note workspace,
+// and the day holds ONE primary note whose sections each save replaces.
+// This helper runs that workspace flow (paste, review sections, Save
+// only) and waits for the saved confirmation on the status line.
+async function addPrimaryNote(text) {
+  await page.click('[data-action="select-daily-source-kind"][data-source-kind="primary_note"]');
+  const pasteMode = page.locator('[data-note-mode="paste"][data-note-scope="daily"]');
+  if (await pasteMode.count()) await pasteMode.click();
+  await page.fill("[data-structured-note-paste]", text);
+  await page.click('[data-action="review-structured-note-sections"][data-note-scope="daily"]');
+  await page.waitForSelector('[data-note-entry-mode="sections"]', { timeout: 15000 });
+  await page.click('[data-action="save-structured-primary-note"][data-note-scope="daily"]');
+  await page.waitForFunction(
+    () => /Progress-note source de-identified and saved locally/.test(document.querySelector("#statusLine")?.textContent || ""),
+    null,
+    { timeout: 30000 }
+  );
+}
+
+async function openReviewForDay(label) {
+  await page.getByRole("button", { name: new RegExp(label) }).click();
+  await page.click('[data-action="open-progress-note"]');
+  await page.waitForSelector("#reviewContent .review-workspace", { timeout: 30000 });
+  await page.waitForTimeout(1500);
+}
+
 try {
   await openRealApp(page, appUrl);
   await unlockAndCreatePatient(page, { label: "Parser Fixes Case" });
@@ -84,20 +111,39 @@ try {
   // P6: plain-line labs paste.
   await addDailySource("laboratory_results", plainLineLabs, 1);
   // P1: two-column A&P primary note.
-  await addDailySource("primary_note", twoColumnNote, 2);
-  // P2/P3: markdown A&P table primary note.
-  await addDailySource("primary_note", markdownTableNote, 3);
-
+  await addPrimaryNote(twoColumnNote);
   // Pending shadowing: day 2 actuals...
-  await addDailySource("laboratory_results", dayTwoLabs, 4);
+  await addDailySource("laboratory_results", dayTwoLabs, 2);
+
+  // The day holds one primary note, so the two-column note's problems
+  // are pulled and checked BEFORE the markdown note replaces its
+  // sections below. The review opens per selected day, so day 2 is
+  // selected first.
+  await openReviewForDay("Hospital day 2");
+
+  // P1: pull the two-column A&P note's problems into the Plan builder.
+  const planPull = page.locator('[data-pull-section="plan"]').first();
+  await planPull.click();
+  await page.waitForFunction(() => document.querySelectorAll(".plan-problem-card").length >= 3, null, { timeout: 15000 });
+  const problemTitles = await page.locator(".plan-problem-card").allInnerTexts();
+  const problemText = problemTitles.join("\n");
+  for (const title of ["Acute decompensated HFrEF", "Hyperkalemia", "AKI"]) {
+    assert.ok(problemText.includes(title), `P1: pulled problem must include "${title}"`);
+  }
+  console.log("PASS P1: two-column rows pulled as three problems");
+
+  // Back to Hospital Stay for the second primary note and day 3.
+  await page.click('[data-view-target="daily"]');
+  await page.getByRole("button", { name: /Hospital day 2/ }).click();
+  // P2/P3: markdown A&P table primary note (replaces day 2's note).
+  await addPrimaryNote(markdownTableNote);
   // ...day 3 newer collection.
   await addDay("2026-09-20", "Hospital day 3");
   await addDailySource("laboratory_results", dayThreeLabs, 1);
 
-  // Open review.
-  await page.click('[data-action="open-progress-note"]');
-  await page.waitForSelector("#reviewContent .review-workspace", { timeout: 30000 });
-  await page.waitForTimeout(1500);
+  // Reopen day 2's review; the problems pulled above persist in its
+  // draft, and the sheet aggregates labs across the stay.
+  await openReviewForDay("Hospital day 2");
 
   // P6: plain-line labs became rows on the sheet.
   const sheetText = await page.locator(".review-data-panel").innerText();
@@ -121,20 +167,11 @@ try {
   assert.match(await crRow.innerText(), /1\.4/, "prior creatinine 1.4 must remain visible in trend history");
   console.log("PASS pending shadowing: prior creatinine 1.4 not erased");
 
-  // P1: pull the two-column A&P note's problems into the Plan builder.
-  const planPull = page.locator('[data-pull-section="plan"]').first();
-  await planPull.click();
-  await page.waitForFunction(() => document.querySelectorAll(".plan-problem-card").length >= 3, null, { timeout: 15000 });
-  const problemTitles = await page.locator(".plan-problem-card").allInnerTexts();
-  const problemText = problemTitles.join("\n");
-  for (const title of ["Acute decompensated HFrEF", "Hyperkalemia", "AKI"]) {
-    assert.ok(problemText.includes(title), `P1: pulled problem must include "${title}"`);
-  }
-  console.log("PASS P1: two-column rows pulled as three problems");
-
-  // P2/P3: pull the markdown table note too (adds two more problems).
+  // P2/P3: pull the day's (now markdown) primary note too; the same
+  // single Plan pull button now reads the replaced note and adds its
+  // two problems to the three already in the draft.
   const pulls = page.locator('[data-pull-section="plan"]');
-  await pulls.nth(1).click();
+  await pulls.first().click();
   await page.waitForFunction(() => document.querySelectorAll(".plan-problem-card").length >= 5, null, { timeout: 15000 });
   const allProblems = (await page.locator(".plan-problem-card").allInnerTexts()).join("\n");
   for (const title of ["Upper GI bleed", "Hemorrhagic shock"]) {

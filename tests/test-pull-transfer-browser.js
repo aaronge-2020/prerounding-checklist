@@ -52,17 +52,22 @@ try {
   console.log("PASS: review opened");
 
   // Pull each section and verify the draft receives the primary-note text.
+  // Physical Exam is the exception: the smart-exam editor owns that
+  // section, and pulled exam text lands in its free-text notes field
+  // ([data-smart-exam-notes]), whose content is the textarea's value
+  // rather than rendered text, so it is read with inputValue().
   const pullChecks = [
     { field: "interval_events", draft: '[data-draft-section="interval_events"]', expect: /No acute overnight events/ },
-    { field: "physical_exam", draft: '[data-draft-section="physical_exam"]', expect: /craniectomy flap/ },
+    { field: "physical_exam", draft: '[data-smart-exam-notes]', viaValue: true, expect: /craniectomy flap/ },
     { field: "objective", draft: '[data-draft-objective-manual]', expect: /Hemoglobin|6\.5/ },
     { field: "assessment", draft: '[data-draft-assessment]', expect: /ischemic.*stroke|MCA/i },
     { field: "code_status", draft: '[data-draft-closing="code_status"]', expect: /Full Code/ },
   ];
-  for (const { field, draft, expect } of pullChecks) {
+  for (const { field, draft, viaValue, expect } of pullChecks) {
     await page.click(`[data-pull-section="${field}"]`);
     await page.waitForTimeout(600);
-    const text = await editorText(page.locator(draft).first());
+    const target = page.locator(draft).first();
+    const text = viaValue ? await target.inputValue() : await editorText(target);
     assert.match(text, expect, `pull ${field} should populate draft (got: ${text.slice(0, 120)})`);
     console.log(`PASS: pull ${field}`);
   }
@@ -85,10 +90,12 @@ try {
   assert.match(statusText, /already pulled|no new problems/i, "second pull should report no new problems");
   console.log("PASS: plan double-pull dedup (B1)");
 
-  // Save the draft, then reload and verify everything persisted (B2).
-  await page.click('[data-action="save-note-draft"]');
-  await page.waitForFunction(() => /draft saved/i.test(document.querySelector("#statusLine")?.textContent || ""), { timeout: 15000 });
-  console.log("PASS: draft saved");
+  // The draft autosaves (the editor has no Save button anymore): let
+  // the 1.5s autosave debounce fire, then wait for the indicator to
+  // settle on its saved state before reloading (B2).
+  await page.waitForTimeout(2000);
+  await page.waitForFunction(() => document.querySelector("[data-autosave-indicator]")?.dataset.state === "saved", null, { timeout: 15000 });
+  console.log("PASS: draft autosaved");
 
   await page.reload();
   await page.waitForSelector("#vaultPassphrase", { timeout: 60000 });
@@ -108,7 +115,7 @@ try {
 
   const assessmentText = await editorText(page.locator('[data-draft-assessment]').first());
   assert.match(assessmentText, /ischemic.*stroke|MCA/i, "assessment should survive reload");
-  const peText = await editorText(page.locator('[data-draft-section="physical_exam"]').first());
+  const peText = await page.locator('[data-smart-exam-notes]').first().inputValue();
   assert.match(peText, /craniectomy flap/, "physical exam should survive reload");
   const problemCount3 = await page.locator(".plan-problem-card").count();
   assert.equal(problemCount3, problemCount, `plan problems should survive reload (${problemCount} -> ${problemCount3})`);
