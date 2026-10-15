@@ -1,10 +1,11 @@
 import { deidentifyLabeledField } from "../../patient-context/labeled-deidentification.js?v=20261012-safety";
 import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
+import { createEncounterReviewController } from "../encounter-review/controller.js?v=20261015-encounter-review";
 import { createNoteDragController } from "./note-drag-controller.js?v=20261013-batch-b";
 import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261011-drag-workspace-v2";
-import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261012-citation-preview";
+import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261015-encounter-review";
 import { captureScrollPositions, restoreScrollPositions, replaceViewContent } from "../view-scroll.js?v=20261012-safety";
-import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20261013-durable-rules";
+import { createTextSection, updateActivePatient } from "../../app/state/vault.js?v=20261015-encounter-review";
 import {
   clinicalParseWarning,
   parseClinicalExport,
@@ -34,6 +35,7 @@ import { sharedLocalLlmClient } from "../../local-llm/client.js?v=20261015-stabl
 import { splitNoteSectionsWithLlm } from "../../local-llm/parse.js?v=20260928-local-llm-v1";
 
 export function createDailySourceController(deps) {
+  const encounterReview = createEncounterReviewController(deps);
   function noteDraftSessionHasContent(draft) {
     const textValues = [
       ...Object.values(draft?.sections || {}),
@@ -784,6 +786,7 @@ export function createDailySourceController(deps) {
       days,
       selectedDayId: deps.app.selectedDayId,
       selectedPacketId,
+      encounterReviewMarkup: encounterReview.markup(),
       stayRailExpanded: Boolean(deps.app.stayRailExpanded),
       localCalendarDate: deps.localCalendarDate(),
       admissionDate: deps.app.admissionDate || "",
@@ -1009,6 +1012,10 @@ export function createDailySourceController(deps) {
   }
 
   return Object.freeze({
+    handleEncounterClick: encounterReview.click,
+    handleEncounterChange: encounterReview.change,
+    resetEncounterReview: encounterReview.reset,
+    openEncounterReview: encounterReview.open,
     addAdmissionSource,
     addSource,
     clearStructuredNoteField,

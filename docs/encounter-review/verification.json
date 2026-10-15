@@ -1,0 +1,67 @@
+{
+  "generatedAt": "2026-10-15T22:07:00.400Z",
+  "checks": {
+    "fullCI": "passed",
+    "epicImport": "passed",
+    "finalFocusedEncounterRegression": "passed",
+    "newModuleLint": "passed",
+    "diffWhitespace": "passed"
+  },
+  "browser": {
+    "engine": "Playwright Chromium",
+    "viewports": [
+      {
+        "width": 1280,
+        "height": 900
+      },
+      {
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "syntheticSourceCharacters": 102252,
+    "sourceLengthAssertion": "greater than 50000 characters",
+    "externalRequests": 0
+  },
+  "limitations": [
+    "Synthetic engineering regression, not clinical efficacy or competitor superiority validation.",
+    "No clinician adoption or usability study conducted."
+  ],
+  "sha256": {
+    "index.html": "f322b15278350f71c8f5f14a299a04b81b5a08677b1b68891a1ca2675c4f51a3",
+    "src/app/state/persistence.js": "768b72f89390f95553d762582caafece26b18e5eda18500af19ac5a9e55df5af",
+    "src/app/state/vault.js": "633f074c72c9daede8690e3f5d990179ae7a8a4df6ad19d827d53153fc2eb8e8",
+    "src/daily-updates/days.js": "3e396d3f651078540c5a65ec89ebb65caee9eed4d67e9c78e9b8c8da1f8556d9",
+    "src/patient-context/sections.js": "570ce1183c91bc63afaebd6d6897ceaa57dc3f1d8e27bacc79303a30e6452a37",
+    "src/prompts/custom-tasks.js": "a3d5efd9aed57ad6bba8c189f2b4e73fcc809bbc1f10dd71508d3cf2e511886a",
+    "src/prompts/custom-templates.js": "3df7e4728f5e6d10b0f5bb2925a1dc806f5fcb147ea34afe1864ea0cbf4572f8",
+    "src/prompts/guideline-sets.js": "6c360db7eca3dcf84e376fc30e060c82bab05049b20527ac074efc8256de5a60",
+    "src/prompts/open-evidence.js": "4f9a0a16e563fa9e900e8bf41675533700a3c1a592f4d1695b32a87e19eccc6e",
+    "src/ui/admission-date-anchor.js": "20ededbebcd9fb1bd9205036b4235dd29c61c801938ad98749328b31e6a1d579",
+    "src/ui/ai-chat/controller.js": "0a70dfef9c7abb5f4c35662ccc17a555b1ab7e9b7b8ca5a78c9ebe670bf65cc9",
+    "src/ui/app.js": "3e5ed6f8b5fa29daaeed70c426f47238be75a44375e935c3053859490ca54aad",
+    "src/ui/daily/presentation.js": "c3f42e1cbb78f207eec43f7fb661ee81e37c80d9b3de13a7c37810842afd113f",
+    "src/ui/daily/source-controller.js": "b0238385cf23dadae35be8fe709bd5b7ecb9d73e4f18905178c6106c8103cec4",
+    "src/ui/demo/controller.js": "a1478eda33bc4cc256b7cda558be10cc69af241590c9640ff0c6098a2bb6bb84",
+    "src/ui/demo/presentation.js": "ba440cfa2406e9ce022bcc33da6cb5db4fd921c5b2cf19879c3b9558442ef931",
+    "src/ui/demo/session-controller.js": "1af6840db20bc5c59ef7bb2642583c11b8fbc0a96924920209e2e17ad5e3d754",
+    "src/ui/demo/session.js": "7fc5411ad6e6496d7120e4048ef99b37964066371441e5632115523dacaa0edd",
+    "src/ui/drug-checks/controller.js": "4139f8b406e5a291ce93f17fb2f43eb36633749edac7b058e5291dd626ac5ad0",
+    "src/ui/prompts/controller.js": "ab795d88b041d65a8691c01303ac3695cd26e83130eb58efbef563fac9d0343e",
+    "src/ui/prompts/presentation.js": "ffcced3afd98fd15346590c0783e2e5d5e4b82c005f8004b2bff1d6017e6db00",
+    "src/ui/redaction/presentation.js": "d7acb3e42cd986b067efdf1d6a20f402ec49e732df98fea4fda97b946870035d",
+    "src/ui/review/controller.js": "cd1f481b58f771655a4ed0719552dd207dd390667a3b7f0b9163059e2430247d",
+    "src/ui/review/presentation.js": "0c17a65d44af1f7471e62bf14062b13cb9406c00f5f48b29758b15897c14c07b",
+    "src/ui/sample-notes/controller.js": "ba39290972629963e4275be0df7933af742ca007afae8b80fd9a807c20ed85fe",
+    "src/ui/settings/guideline-pagination.js": "d07a968035f2024159b71be35ba6539c88b9d08ce6b3b99ff3af65da0fd7c25c",
+    "src/ui/settings/guidelines-controller.js": "3c457050b88b5eeb6f839ecebbc8106bea04d913f9178f4be50377b6ff1a25ca",
+    "src/ui/settings/guidelines-presentation.js": "5fa890ed602ce50228b688658d040f7244fcb03abe3486f8a0b0bac4861be2a5",
+    "src/ui/settings/presentation.js": "6c0b50c33010122f85ff83fc4918853a1161d41a42092650d5957bd58f80400e",
+    "src/ui/token-color-picker.js": "0f2eef212c911818b7a552608c195fff403944c7a8b3f0e17898dabfda4d0a55",
+    "src/ui/vault/presentation.js": "c65f9c14da31b8d6ae46208df492b4d50777b2154afdb61672574cd0ecc03a61",
+    "styles.css": "02328773f63a354174e3ad80b531221047b036e68e76f9e41c22ae0c5aa40b86",
+    "src/encounter-review/index.js": "6cdebd967ef50f82566e9dd45b3e5c05f5bad4eb10a13ae53dfcdb1aee5059f6",
+    "src/ui/encounter-review/controller.js": "b16718ab7f7b28355c60ad5b06e71b204a9d3b1bcd7ac98b983ab6dbe321b4dd",
+    "src/ui/encounter-review/presentation.js": "fa8f79163c0d63a62cc7793e80d49d2119654c57db49a6401ffa6fe087724e19"
+  }
+}

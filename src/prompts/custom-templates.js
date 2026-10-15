@@ -1,12 +1,13 @@
-import { buildTrajectoryBlock } from "../daily-updates/days.js?v=20261012-citation-preview";
-import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20261012-citation-preview";
+import { buildTrajectoryBlock } from "../daily-updates/days.js?v=20261015-encounter-review";
+import { sectionsToPromptBlock } from "../patient-context/sections.js?v=20261015-encounter-review";
 import { dailySourceKindLabel, sourceCapturesToPromptBlock } from "../patient-context/source-captures.js?v=20260921-medication-card-v4";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js?v=20261011-request-controls";
 import { attendingPromptForTask, includesRequiredAttendingPersona, promptPersonaForTask, stripConflictingAttendingPersonas } from "./natural-language.js?v=20260910-pre-op-prep";
 import { buildProgressNotePacket } from "./progress-note-packet.js?v=20260921-medication-card-v4";
-import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20261012-citation-preview";
+import { DEFAULT_GUIDELINE_SET_SOURCES } from "./guideline-sets.js?v=20261015-encounter-review";
 import { renderFinalNote } from "../note-drafts/index.js?v=20261012-citation-preview";
 import { renderPrimaryTeamNote } from "../patient-context/primary-team-note.js?v=20260921-primary-note-source";
+import { buildEncounterReviewBrief } from "../encounter-review/index.js?v=20261015-encounter-review";
 
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";
 export const TEAM_PREFERENCES_PROMPT_TOKEN = "@team-preferences";
@@ -38,6 +39,7 @@ export const SMART_PROMPT_VARIABLES = [
   { token: TEAM_PREFERENCES_PROMPT_TOKEN, label: "Team preferences", description: "The exact text in your Team preferences guideline, if any." },
   { token: "@admission-packet", label: "All admission fields", description: "Every saved field in the Admission packet." },
   { token: "@selected-day", label: "All selected-day fields", description: "Every saved field for the selected hospital day; defaults to the latest day." },
+  { token: "@encounter-review", label: "Reviewed follow-up and questions", description: "Source-linked review items and clinician-recorded statuses for the selected packet; historical quotations remain labeled." },
   { token: "@progress-note-packet", label: "Curated progress-note context", description: "Carry-forward admission context plus the selected hospital day, in clinical order." },
   { token: "@presentation-to-edit", label: "Presentation draft", description: "The de-identified presentation pasted into the editor; held only in this tab." },
   { token: "@specialty-team", label: "Specialty team", description: "The specialty or clinical team for an attending-level presentation critique; held only in this tab." },
@@ -295,6 +297,7 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
       ? promptBlockWithStructuredNote(sectionsToPromptBlock(admissionSectionsWithoutTodayExam(patient), "Admission"), patient?.admissionPrimaryTeamNote, "Primary-team admission note source")
       : (selectedDay ? promptBlockWithStructuredNote(sourceCapturesToPromptBlock(selectedDayCapturesWithoutExam(selectedDay), "Selected hospital-day source record"), selectedDay.primaryTeamNote, "Prior primary-team progress note source") : "No saved hospital day."),
     "@progress-note-packet": buildProgressNotePacket({ patient, selectedDay }),
+    "@encounter-review": buildEncounterReviewBrief(patient, usingAdmission ? "admission" : selectedDay?.id || "admission"),
     // A presentation can be supplied directly in the destination chat. Keep
     // this optional token empty rather than inserting an instruction that
     // would make a copied editor prompt unusable in that workflow.

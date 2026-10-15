@@ -9,8 +9,8 @@ import {
   DEMO_AI_CHAT_SAMPLES,
   DEMO_AI_CHAT_HANDS_ON_QUESTION,
   DEMO_AI_CHAT_HANDS_ON_ANSWER
-} from "./presentation.js?v=20261013-batch-a3";
-import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20261012-safety";
+} from "./presentation.js?v=20261015-encounter-review";
+import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20261015-encounter-review";
 
 export const DEMO_REVIEW_ACTIONS = Object.freeze(new Set([
   "keep-reviewed-redaction",

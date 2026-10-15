@@ -1,4 +1,4 @@
-import { setTokenColorOverride, tokenAccentHex } from "../prompts/custom-templates.js?v=20261012-citation-preview";
+import { setTokenColorOverride, tokenAccentHex } from "../prompts/custom-templates.js?v=20261015-encounter-review";
 
 export function tokenColorSwatchButton(token, colorOverrides, escapeHtml) {
   const color = tokenAccentHex(token, colorOverrides);

@@ -1,4 +1,4 @@
-import { guidelineSetMatchesQuery } from "../../prompts/guideline-sets.js?v=20261012-citation-preview";
+import { guidelineSetMatchesQuery } from "../../prompts/guideline-sets.js?v=20261015-encounter-review";
 
 export const GUIDELINE_PAGE_SIZE = 10;
 

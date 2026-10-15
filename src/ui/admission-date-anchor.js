@@ -1,4 +1,4 @@
-import { updateActivePatient } from "../app/state/vault.js?v=20261013-durable-rules";
+import { updateActivePatient } from "../app/state/vault.js?v=20261015-encounter-review";
 
 export function createAdmissionDateAnchor({ state, active, sortDays }) {
   function restore() {

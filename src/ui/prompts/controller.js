@@ -1,8 +1,8 @@
-import { addGuidelineSet, removeGuidelineSet, saveGuidelineSets } from "../../prompts/guideline-sets.js?v=20261012-citation-preview";
-import { migrateCustomPromptTasksToGuidelineSets, saveCustomPromptTasks } from "../../prompts/custom-tasks.js?v=20261012-citation-preview";
-import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20261012-citation-preview";
-import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js?v=20261012-citation-preview";
-import { guidelinePageModel } from "../settings/guideline-pagination.js?v=20261012-citation-preview";
+import { addGuidelineSet, removeGuidelineSet, saveGuidelineSets } from "../../prompts/guideline-sets.js?v=20261015-encounter-review";
+import { migrateCustomPromptTasksToGuidelineSets, saveCustomPromptTasks } from "../../prompts/custom-tasks.js?v=20261015-encounter-review";
+import { savePromptTemplateOverrides } from "../../prompts/custom-templates.js?v=20261015-encounter-review";
+import { OPEN_EVIDENCE_TASKS } from "../../prompts/open-evidence.js?v=20261015-encounter-review";
+import { guidelinePageModel } from "../settings/guideline-pagination.js?v=20261015-encounter-review";
 
 // Create/delete custom prompt tasks - kept out of app.js to respect the
 // coordinator-file size boundary (scripts/check-ui-module-boundaries.js).

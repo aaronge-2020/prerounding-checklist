@@ -1,4 +1,4 @@
-import { createEmptyVaultState, migrateVaultState } from "./vault.js?v=20261012-citation-preview";
+import { createEmptyVaultState, migrateVaultState } from "./vault.js?v=20261015-encounter-review";
 
 export const VAULT_DATA_KEY = "prerounding.local.encryptedVault.v1";
 const KDF_ITERATIONS = 210000;

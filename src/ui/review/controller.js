@@ -7,8 +7,8 @@ import { installCitationInspector } from "./citation-inspector.js?v=20261012-saf
 import { rebaseApReferences } from "../../ai/ap-generator.js?v=20261012-citation-preview";
 import { buildConsultNoteContext } from "../../ai/note-context.js?v=20261012-citation-preview";
 import { buildStructuredRequest } from "../../ai/structured-request.js?v=20261011-request-controls";
-import { sortDays } from "../../daily-updates/days.js?v=20261012-citation-preview";
-import { updateActivePatient } from "../../app/state/vault.js?v=20261013-durable-rules";
+import { sortDays } from "../../daily-updates/days.js?v=20261015-encounter-review";
+import { updateActivePatient } from "../../app/state/vault.js?v=20261015-encounter-review";
 import { buildClinicalReviewIndex } from "../../review-data/index.js?v=20261011-epic-workflow";
 import { createLabAutocomplete } from "./lab-autocomplete.js?v=20261012-safety";
 import { createDrugAutocomplete } from "./drug-autocomplete.js?v=20261012-safety";
@@ -418,6 +418,7 @@ export function createReviewController(deps) {
       oneLiner: current.oneLiner,
       packets: packets(current.patient),
       selectedPacketId: current.packet.id,
+      encounterReviewCount: current.patient.encounterReview?.items?.length || 0,
       index: current.index,
       query: deps.app.reviewSearchQuery,
       category: deps.app.reviewCategory,

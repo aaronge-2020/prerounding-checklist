@@ -1,3 +1,5 @@
+import { normalizeEncounterReview } from "../../encounter-review/index.js?v=20261015-encounter-review";
+
 /**
  * Builds a disambiguated display name per patient id. Patients with a unique
  * display label keep it untouched; when two or more patients share the same
@@ -56,10 +58,12 @@ export function createVaultPresentation({ escapeHtml, icon }) {
     const archived = Boolean(patient.archivedAt);
     const dayCount = patient.days?.length || 0;
     const displayName = labelMap?.get(patient.id) || patient.displayLabel;
+    const trackedCount = normalizeEncounterReview(patient.encounterReview).items.length;
     return `
       <div class="list-row roster-row ${selected ? "selected" : ""}">
         <div class="roster-patient-name">
           <strong>${escapeHtml(displayName)}</strong>
+          ${trackedCount ? `<span class="muted">${trackedCount} source-linked review item${trackedCount === 1 ? "" : "s"}</span>` : ""}
           <span class="muted">${archived ? `Archived ${escapeHtml(patient.archivedAt.slice(0, 10))}` : "Active"} · HD${Math.max(dayCount, 1)}</span>
         </div>
         <span class="roster-status ${archived ? "is-archived" : ""}">${archived ? `Archived ${escapeHtml(patient.archivedAt.slice(0, 10))}` : "Active stay"}</span>

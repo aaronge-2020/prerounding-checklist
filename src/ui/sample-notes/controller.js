@@ -15,7 +15,7 @@
 // only in memory during the import; the vault keeps de-identified text
 // plus residual-warning metadata.
 import { SAMPLE_NOTES_DATA } from "../../data/sample-notes.data.js?v=20261001-sample-notes-v2";
-import { createPatientRecord, createTextSection, upsertPatient } from "../../app/state/vault.js?v=20261013-durable-rules";
+import { createPatientRecord, createTextSection, upsertPatient } from "../../app/state/vault.js?v=20261015-encounter-review";
 import { createEphemeralRedactionReview, reviewKey } from "../../patient-context/review.js?v=20261001-sample-notes-v2";
 import {
   createSampleNotesPresentation,

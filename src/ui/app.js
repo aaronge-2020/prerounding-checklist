@@ -7,7 +7,7 @@ import {
   removeDay,
   sortDays,
   upsertDay
-} from "../daily-updates/days.js?v=20261012-citation-preview";
+} from "../daily-updates/days.js?v=20261015-encounter-review";
 import {
   activePatient,
   archivePatient,
@@ -15,7 +15,7 @@ import {
   createPatientRecord,
   setActivePatient,
   updateActivePatient
-} from "../app/state/vault.js?v=20261013-durable-rules";
+} from "../app/state/vault.js?v=20261015-encounter-review";
 import {
   deleteEncryptedVaultRecord,
   downloadJson, downloadText,
@@ -23,13 +23,13 @@ import {
   readEncryptedVaultRecord,
   saveEncryptedVault,
   writeEncryptedVaultRecord
-} from "../app/state/persistence.js?v=20261012-citation-preview";
+} from "../app/state/persistence.js?v=20261015-encounter-review";
 import {
   removeSection,
   reorderSections,
   reorderSectionsById,
   replaceSectionsFromFormAsync
-} from "../patient-context/sections.js?v=20261012-citation-preview";
+} from "../patient-context/sections.js?v=20261015-encounter-review";
 import { clinicalParseWarning, parseClinicalExport } from "../patient-context/clinical-export-parser.js?v=20261011-epic-workflow";
 import {
   createEphemeralRedactionReview,
@@ -88,47 +88,47 @@ import {
   promptVariablesForPatient,
   savePromptTemplateOverrides,
   saveTokenColorOverrides, studentNoteForPrompt
-} from "../prompts/custom-templates.js?v=20261012-citation-preview";
+} from "../prompts/custom-templates.js?v=20261015-encounter-review";
 import { defaultPacketRole, packetRoleOptions } from "../patient-context/packet-roles.js";
 import {
   DEFAULT_DAILY_SOURCE_KIND,
   admissionSourceKindOptions
 } from "../patient-context/source-captures.js?v=20260921-medication-card-v4";
-import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20261012-citation-preview";
-import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20261012-citation-preview";
+import { availableOpenEvidenceTasks } from "../prompts/open-evidence.js?v=20261015-encounter-review";
+import { guidelinePromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20261015-encounter-review";
 import {
   createAdaptiveStore,
   learnFromCorrection,
   inferManualLabel
 } from "../vault/deid/adaptive.js?v=20261003-deid-100";
-import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20261012-citation-preview";
+import { ensureCanonicalDefaultGuidelineSets, ensureTaskGuidelineSets, ensureTeachingGuidelineSet, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20261015-encounter-review";
 import {
   OPENAI_WORKUP_MODEL_OPTIONS,
   normalizeUserPreferences
 } from "../app/preferences.js?v=20261011-request-controls";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1&icon=search-v1";
-import { createDailyPresentation } from "./daily/presentation.js?v=20261013-batch-c";
-import { createDailySourceController } from "./daily/source-controller.js?v=20261015-stable-draft-runtime";
+import { createDailyPresentation } from "./daily/presentation.js?v=20261015-encounter-review";
+import { createDailySourceController } from "./daily/source-controller.js?v=20261015-encounter-review";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
-import { createReviewPresentation } from "./review/presentation.js?v=20261015-simple-review";
-import { createReviewController } from "./review/controller.js?v=20261015-clinical-drafts";
+import { createReviewPresentation } from "./review/presentation.js?v=20261015-encounter-review";
+import { createReviewController } from "./review/controller.js?v=20261015-encounter-review";
 import { cancelExternalAiReviews } from "./external-ai-review.js?v=20261015-simple-review";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20261012-citation-preview";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20261015-encounter-review";
 import {
   createPromptTaskController,
   filterSmartVariableMenu,
   positionSmartVariableMenu,
   promptVariableTokenAtCaret,
   scrollPromptOutputToVariable
-} from "./prompts/controller.js?v=20261012-citation-preview";
-import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20261012-citation-preview";
+} from "./prompts/controller.js?v=20261015-encounter-review";
+import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20261015-encounter-review";
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
-import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20261012-citation-preview";
-import { createTokenColorPickerController } from "./token-color-picker.js?v=20261012-citation-preview";
+import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20261015-encounter-review";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20261015-encounter-review";
 import { captureScrollPositions, restoreScrollPositions, preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20261012-safety";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20261015-simple-review";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20261015-encounter-review";
 import { installGlobalFetchGuard, isOfflineMode, onOfflineModeChange, setOfflineMode } from "../lib/network-gate.js?v=20261012-safety";
-import { createVaultPresentation, disambiguatedPatientLabels } from "./vault/presentation.js?v=20261013-batch-a";
+import { createVaultPresentation, disambiguatedPatientLabels } from "./vault/presentation.js?v=20261015-encounter-review";
 import { createVaultSessionGuards } from "./vault/session-guards.js?v=20260922-vault-guards";
 import { createClipboard } from "./clipboard.js?v=20260922-clipboard";
 import { createVaultPassphraseController } from "./vault/passphrase-controller.js?v=20260921-landing-onboarding";
@@ -137,23 +137,23 @@ import {
   redactionPosition,
   warningDescription,
   warningSnippet
-} from "./redaction/presentation.js?v=20261014-batch-e";
+} from "./redaction/presentation.js?v=20261015-encounter-review";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261014-batch-e";
 import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261012-safety";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20261003-deid-adaptive";
 import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261015-stable-draft-runtime";
-import { createDemoController } from "./demo/controller.js?v=20261013-batch-a3";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261013-aloop-round3-final";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20261013-batch-a3";
-import { createAiChatController } from "./ai-chat/controller.js?v=20261015-stable-draft-runtime";
+import { createDemoController } from "./demo/controller.js?v=20261015-encounter-review";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261015-encounter-review";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20261015-encounter-review";
+import { createAiChatController } from "./ai-chat/controller.js?v=20261015-encounter-review";
 import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261013-batch-a";
-import { createDrugChecksController } from "./drug-checks/controller.js?v=20261012-citation-preview";
+import { createDrugChecksController } from "./drug-checks/controller.js?v=20261015-encounter-review";
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20261012-safety";
 import { createDrugLookupController } from "./drug-lookup/controller.js?v=20261012-safety";
 import { createDrugLookupPresentation } from "./drug-lookup/presentation.js?v=20260929-ddinter-v2";
 import { createScoresController } from "./scores/controller.js?v=20261014-batch-e";
 import { createCheatSheetsController } from "./cheat-sheets/controller.js?v=20261012-safety";
-import { createSampleNotesController } from "./sample-notes/controller.js?v=20261012-citation-preview";
+import { createSampleNotesController } from "./sample-notes/controller.js?v=20261015-encounter-review";
 import { localLlmModelByKey, readLocalLlmSettings, writeLocalLlmSettings } from "../local-llm/client.js?v=20261015-stable-draft-runtime";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../local-llm/system-prompt.js?v=20260928-local-llm-v10";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
@@ -475,6 +475,8 @@ const sampleNotesController = createSampleNotesController({
 });
 const dailySourceController = createDailySourceController({
   app,
+  escapeHtml,
+  copyText: clipboard.copyText,
   active,
   selectedDay,
   byId,
@@ -1081,6 +1083,7 @@ function clearProtectedViewContent() {
 }
 
 function clearPatientScopedSession() {
+  dailySourceController.resetEncounterReview();
   cancelExternalAiReviews();
   clearProposerSession();
   // Older builds incorrectly persisted source-derived patterns in plaintext.
@@ -1916,6 +1919,13 @@ async function handleClick(event) {
       throw new Error("Unlock the local vault before using workspace tools.");
     }
     if (action === "unlock-vault") await unlockVault();
+    if (action.startsWith("encounter-") && await dailySourceController.handleEncounterClick(target)) return;
+    if (action === "open-encounter-review") {
+      app.view = "daily";
+      dailySourceController.selectPacket(target.dataset.packetId);
+      dailySourceController.openEncounterReview();
+      return;
+    }
     if (action === "start-guided-demo" || action === "restart-guided-demo") {
       if (!vaultIsUnlocked() && !app.demoSession) {
         app.demoPreviewMode = true;
@@ -2018,9 +2028,9 @@ async function handleClick(event) {
       render();
     }
     if (action === "select-day" || action === "select-admission") {
-      // Choosing a packet from the slim rail opens the full day panel, so
-      // the packet details and Add-day form are one click away.
-      app.stayRailExpanded = true;
+      // Desktop selections expose packet details. On phones, keep the slim
+      // rail so the selected patient workspace remains inside the viewport.
+      app.stayRailExpanded = !window.matchMedia("(max-width: 680px)").matches;
       dailySourceController.selectPacket(action === "select-admission" ? "admission" : target.dataset.dayId);
     }
     if (action === "save-day") await dailySourceController.saveSources();
@@ -3857,6 +3867,7 @@ function handleSubmit(event) {
 }
 
 function handleChange(event) {
+  if (dailySourceController.handleEncounterChange(event.target)) return;
   if (event.target.id === "vaultPassphrase") {
     clearVaultUnlockError();
     updateVaultPassphraseStrength(event.target.value);

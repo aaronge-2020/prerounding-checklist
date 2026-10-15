@@ -579,6 +579,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
     days,
     selectedDayId,
     selectedPacketId,
+    encounterReviewMarkup = "",
     stayRailExpanded = false,
     localCalendarDate,
     admissionDate = "",
@@ -651,6 +652,7 @@ export function createDailyPresentation({ escapeHtml, icon, localAiParseInfo }) 
           </details>
         </aside>
         <div class="stay-content">
+          ${encounterReviewMarkup}
           ${
             admissionSelected
               ? `<section class="panel admission-packet packet-surface hospital-day-packet">

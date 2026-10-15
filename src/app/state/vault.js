@@ -5,6 +5,7 @@ import { migrateLegacyDailySections, normalizeDiagnosticResultCategory, normaliz
 import { normalizePrimaryTeamNote } from "../../patient-context/primary-team-note.js?v=20260921-primary-note-source";
 import { normalizeLabBaselines } from "../../patient-context/lab-baselines.js?v=20260925-lab-baselines-v2";
 import { normalizeSavedScores } from "../../clinical-scores/saved-scores.js";
+import { normalizeEncounterReview } from "../../encounter-review/index.js?v=20261015-encounter-review";
 import { NOTE_TYPES, normalizeNoteDraft } from "../../note-drafts/index.js?v=20261012-citation-preview";
 import { sanitizeRulesForPersistence } from "../../vault/deid/rule-store.js?v=20261013-durable-rules";
 // (deserializeAdaptiveStore import removed 2026-10-03: session-only policy.)
@@ -181,6 +182,7 @@ export function normalizePatient(patient, index = 0, { now = timestampNow } = {}
     noteDrafts: normalizeSavedNoteDrafts(patient?.noteDrafts, { ...patient, id }, { now }),
     labBaselines: normalizeLabBaselines(patient?.labBaselines),
     temperatureUnits: normalizeTemperatureUnits(patient?.temperatureUnits),
+    encounterReview: normalizeEncounterReview(patient?.encounterReview),
     days: Array.isArray(patient?.days)
       ? patient.days.map((day, dayIndex) => {
           const normalized = normalizeDay(day, dayIndex, { now });

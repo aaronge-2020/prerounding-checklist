@@ -34,6 +34,7 @@ Purpose: a compact, current map for future work on this local-first app.
   - `src/ui/cheat-sheets/` is the read-only bedside reference: `search.js` (ranked local search), `presentation.js` (history/exam cards), `controller.js` (view wiring).
   - `src/ui/redaction/presentation.js` is pure annotated-review and residual-warning markup. Active-tab review state remains in `src/patient-context/review.js`.
   - `src/ui/daily/presentation.js` renders the hospital-day trajectory and progress note sections.
+  - `src/ui/encounter-review/` embeds Prepare & follow-up in the existing packet workspace. `src/encounter-review/index.js` owns exact source references, deduplicated retained de-identified source snapshots, explicit per-packet decision history, lossless text comparisons, and the optional `@encounter-review` brief. Never promote a previous packet's confirmation to a current finding, infer completion from a result, or copy stale/privacy-pending quotations into a brief. Full source text and interpretation metadata must match; timestamp-only saves do not invalidate a reference. Keep `resetEncounterReview()` in the patient-session clear boundary. No free-text task input bypasses de-identification.
   - `src/ui/daily/note-drag-controller.js` owns session-only highlight, drag, and tap transfers in Epic import. Source snapshots, patient/packet identity, and connected workspace must match before applying an exact-range correction. `src/patient-context/note-mapping.js` holds the pure move/copy operations.
   - `src/ui/deid/presentation.js` renders model status, active download progress, and de-identification controls.
   - `src/ui/deid/model-pack-controller.js` owns the model-pack lifecycle (load/download/import/verify/remove, ensure-selected-ready gate, download progress text).
@@ -108,6 +109,7 @@ npm.cmd run test:ci
 ```
 
 - `test:state`: encrypted vault state and migrations.
+- `test:encounter-review`: source/evidence validity, snapshot retention, explicit encounter decisions, comparisons, encrypted persistence, and real browser preparation workflows.
 - `test:deid`: structured de-identification and review-dedup regression coverage.
 - `test:prompts`: task-specific standards, dynamic fields, selected-day prompt scope, and task registry.
 - `test:cheat-sheets`: cheat-sheet search ranking and read-only view-model contracts.
