@@ -35,9 +35,9 @@ import {
   setOfflineMode
 } from "../src/lib/network-gate.js?v=20261012-safety";
 import { requestOpenAiChat, requestOpenAiStructuredJson } from "../src/ui/openai-client.js";
-import { createLocalLlmClient } from "../src/local-llm/client.js?v=20261015-tokenized-drafts";
+import { createLocalLlmClient } from "../src/local-llm/client.js?v=20261015-stable-draft-runtime";
 import { createSettingsPresentation } from "../src/ui/settings/presentation.js";
-import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js?v=20261015-tokenized-drafts";
+import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js?v=20261015-stable-draft-runtime";
 
 const NETWORK_GATE_TAG = "20261012-safety";
 
@@ -48,7 +48,7 @@ const NETWORK_GATE_TAG = "20261012-safety";
 assert.equal(isRemoteUrl("https://api.openai.com/v1/responses"), true, "OpenAI API is remote");
 assert.equal(isRemoteUrl("https://huggingface.co/obi/deid_bert_i2b2/resolve/main/config.json"), true, "Hugging Face is remote");
 assert.equal(isRemoteUrl("https://cdn.jsdelivr.net/npm/@mlc-ai/web-runtime"), true, "CDN is remote");
-assert.equal(isRemoteUrl("/src/ui/app.js"), false, "relative app asset is local");
+assert.equal(isRemoteUrl("/src/ui/app.js?v=20261015-clinical-drafts"), false, "relative app asset is local");
 assert.equal(isRemoteUrl("models/obi/config.json"), false, "relative model asset is local");
 assert.equal(isRemoteUrl("data:text/plain,hello"), false, "data: URLs are local");
 assert.equal(isRemoteUrl("blob:https://example.com/123"), false, "blob: URLs are local");
@@ -89,7 +89,7 @@ assert.throws(
   (err) => err instanceof OfflineBlockedError && err.name === "OfflineBlockedError",
   "remote request throws OfflineBlockedError while offline"
 );
-assert.doesNotThrow(() => assertRemoteAllowed("/src/ui/app.js"), "same-origin request is never gated");
+assert.doesNotThrow(() => assertRemoteAllowed("/src/ui/app.js?v=20261015-clinical-drafts"), "same-origin request is never gated");
 
 resetFetchCalls();
 await assert.rejects(
@@ -99,7 +99,7 @@ await assert.rejects(
 );
 assert.equal(fetchCalls.length, 0, "blocked request never reaches the underlying fetch");
 
-await gatedFetch("/src/ui/app.js");
+await gatedFetch("/src/ui/app.js?v=20261015-clinical-drafts");
 assert.equal(fetchCalls.length, 1, "same-origin request flows while offline");
 
 setOfflineMode(false);
@@ -149,7 +149,7 @@ console.log("subscription tests passed");
       "window.fetch refuses remote requests while offline"
     );
     assert.equal(windowCalls.length, 0, "blocked window.fetch never reaches native fetch");
-    await globalThis.window.fetch("/src/ui/app.js");
+    await globalThis.window.fetch("/src/ui/app.js?v=20261015-clinical-drafts");
     assert.equal(windowCalls.length, 1, "same-origin window.fetch flows while offline");
     setOfflineMode(false);
     await globalThis.window.fetch("https://api.openai.com/v1/responses");
@@ -323,14 +323,14 @@ console.log("worker net guard tests passed");
 // ---------------------------------------------------------------------------
 
 {
-  const workerSrc = readFileSync(new URL("../src/local-llm/worker.js?v=20261015-tokenized-drafts", import.meta.url), "utf8");
+  const workerSrc = readFileSync(new URL("../src/local-llm/worker.js?v=20261015-stable-draft-runtime", import.meta.url), "utf8");
   const guardImport = workerSrc.indexOf("worker-net-guard.js");
   const runtimeImport = workerSrc.indexOf("vendor/web-llm");
   assert.ok(guardImport !== -1 && guardImport < runtimeImport, "worker installs the net guard before the vendored runtime evaluates");
   assert.ok(workerSrc.includes('type === "offlineMode"'), "worker applies mid-session offlineMode messages");
   assert.ok(workerSrc.includes("setWorkerOfflineMode(message.offlineMode === true)"), "worker takes the toggle state from the init message");
 
-  const clientSrc = readFileSync(new URL("../src/local-llm/client.js?v=20261015-tokenized-drafts", import.meta.url), "utf8");
+  const clientSrc = readFileSync(new URL("../src/local-llm/client.js?v=20261015-stable-draft-runtime", import.meta.url), "utf8");
   assert.ok(clientSrc.includes('offlineMode: isOfflineMode()'), "client passes the toggle state with the worker init message");
   assert.ok(clientSrc.includes('type: "offlineMode"'), "client notifies a live worker when the toggle changes");
 }
@@ -343,7 +343,7 @@ console.log("worker/client wiring tests passed");
 
 {
   const importers = [
-    "../src/ui/app.js",
+    "../src/ui/app.js?v=20261015-clinical-drafts",
     "../src/ui/openai-client.js",
     "../src/patient-context/model-pack-storage.js",
     "../src/local-llm/client.js",
@@ -364,7 +364,7 @@ console.log("worker/client wiring tests passed");
 
   // worker-net-guard.js is imported only by worker.js: same one-tag rule.
   {
-    const workerSource = readFileSync(new URL("../src/local-llm/worker.js?v=20261015-tokenized-drafts", import.meta.url), "utf8");
+    const workerSource = readFileSync(new URL("../src/local-llm/worker.js?v=20261015-stable-draft-runtime", import.meta.url), "utf8");
     const match = workerSource.match(/worker-net-guard\.js\?v=([^"'\s]+)/);
     assert.ok(match, "worker.js imports worker-net-guard.js with a ?v= tag");
     assert.equal(match[1], NETWORK_GATE_TAG, "worker guard shares the offline-mode tag");

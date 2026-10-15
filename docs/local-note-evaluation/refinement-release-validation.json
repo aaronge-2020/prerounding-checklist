@@ -1,0 +1,36 @@
+{
+  "validatedAtUtc": "2026-10-15T16:03:03.713187+00:00",
+  "syntheticOnly": true,
+  "ci": {
+    "command": "npm.cmd run test:ci",
+    "exitCode": 0,
+    "logSha256": "050a29d0658e189a6a983f51f33f0e22d7e10149703ea5dabb20ad9c66aa660a"
+  },
+  "releaseNative": "refinement-release-guards-4b.json",
+  "clinicalRegression": "refinement-final-dense-4b.json",
+  "shortRegression": "refinement-final-short-4b.json",
+  "withheldModelEvidence": "refinement-failed-focused-9b.json",
+  "releaseSourceHashes": {
+    "src/local-llm/note-synthesis.js": "baba5528eaf63f2a1e64906ae45f6e4994765f50e9ad47e4696c9ddfcb85847e",
+    "src/local-llm/models.js": "d159be2a3587d080b6c5a785af51ead595088c424b2fd0b2c4281a6c064aa83a",
+    "src/local-llm/client.js": "c68b4a81d3ec09ebb14553f3a2f737ce07e4eb56598a11a56c2b2a0957f839f6",
+    "src/local-llm/worker.js": "ecce85e6c2bc4d21c626e47371a87723d25bc9d888fb12343f4daca8cccf3bb7",
+    "src/local-llm/tokenizer.js": "bfbff2eeee54feed5c272d252409a7b31990cbb339456f51e87475cbe612ea69",
+    "src/local-llm/operation-queue.js": "adefaf7f314cd7d265ec4e735ef16ffe0585754102bb8bb99eb2ef37a76c0a3c",
+    "vendor/web-llm/index.js": "85c438012fd890070d2b6e7c7e9d32bb658df9b29388ded6f38fb88abecc6640",
+    "src/local-llm/note-source.js": "45664ee0fcac78d167f8a5431eb0b3df9a3fd36b397bba727fc2c27bc42f6e00",
+    "src/local-llm/draft-privacy-review.js": "e05a74602dac104cb42986dbe95d82cfae6f8e3f519e4a1ce9290fee3331af72",
+    "src/ui/local-draft-privacy-review.js": "f37b9b70781746a83365b6f9a2aacf27a92a3576b2295802eed517552a898eac",
+    "src/ui/local-note-synthesis.js": "3f42c2a32bc0ab342676e3c3fce87a87d1edc1427784a9b66e87cda72f2dd154",
+    "src/ui/local-model-controls.js": "73bfcc301e2e2478b8d4f42a7e7628c4c7d5885aa844b450ec1ca79c9afa2021",
+    "tests/fixtures/local-note-eval.js": "23e7e028899bc3eebde14f6b0b138440b73d346cbb990f4c422eb6b596843b17",
+    "tests/fixtures/local-note-dense-eval.js": "d8deb4626af55e87367d805643675edae947943ade10d0d0ef0ea5c92ea3264f",
+    "tests/fixtures/local-note-eval-score.js": "c80386101b998371f8f31dd8cfa2696cb15ef5db1b21aaa41422de2f364da90f"
+  },
+  "limitations": [
+    "Engineering regression checks, not clinical validation.",
+    "M2 Mac and unflagged browsers not measured.",
+    "Long-source cases were development-informed except the final fresh table-only target.",
+    "Final baseline/model guards were retested separately; HPI/full-note generation was unchanged."
+  ]
+}

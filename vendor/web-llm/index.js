@@ -7872,13 +7872,23 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 		         */
 		        makeShapeTuple(shape) {
 		            const key = CacheState.computeShapeKey(shape);
-		            return this.cacheState.shapeCache.get(key, () => {
+		            const cachedTuple = this.cacheState.shapeCache.get(key, () => {
 		                const shapeArray = shape.map((value) => new Scalar(value, "int"));
 		                const tuple = this.ctx.makeShapeTuple(...shapeArray);
 		                // Detach from scope so the cached object survives across scopes.
 		                this.detachFromCurrentScope(tuple);
 		                return tuple;
 		            });
+		            // Backport apache/tvm#20501: the cache and caller own separate references.
+		            const handle = cachedTuple.getHandle();
+		            this.lib.checkCall(this.lib.exports.TVMFFIObjectIncRef(handle));
+		            const callerTuple = new TVMObject(handle, this.lib, this.ctx);
+		            try {
+		                return this.attachToCurrentScope(callerTuple);
+		            } catch (err) {
+		                callerTuple.dispose();
+		                throw err;
+		            }
 		        }
 		        /**
 		         * Get type index from type key.
@@ -13105,7 +13115,7 @@ class MLCEngine {
             gpuDetectOutput.device.lost.then((info) => {
                 if (this.deviceLostIsError) {
                     log.error(`Device was lost. This can happen due to insufficient memory or other GPU constraints. ` +
-                        `Detailed error: ${info}. Please try to reload WebLLM with a less resource-intensive model.`);
+                        `Detailed error: ${info.reason}: ${info.message}. Please try to reload WebLLM with a less resource-intensive model.`);
                     this.unload();
                     deviceLostInReload = true;
                 }

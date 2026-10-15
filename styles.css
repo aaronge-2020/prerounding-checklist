@@ -14809,3 +14809,6 @@ body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.ap
 .local-model-controls p { margin: 8px 0; font-size: 0.9rem; line-height: 1.5; overflow-wrap: anywhere; }
 .local-model-controls progress { width: 100%; }
 .local-model-controls input[type="number"] { width: 100%; box-sizing: border-box; }
+
+/* Modal layout rules must respect intentional presentation visibility. */
+.external-ai-review [hidden] { display: none !important; }

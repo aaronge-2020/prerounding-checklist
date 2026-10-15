@@ -25,7 +25,7 @@ import { readFile } from "node:fs/promises";
 // Part 1: source guards
 // ---------------------------------------------------------------------------
 
-const controllerSource = await readFile(new URL("../src/ui/ai-chat/controller.js?v=20261015-tokenized-drafts", import.meta.url), "utf8");
+const controllerSource = await readFile(new URL("../src/ui/ai-chat/controller.js?v=20261015-stable-draft-runtime", import.meta.url), "utf8");
 
 assert.ok(
   !controllerSource.includes("Download a de-identification model to enable sending."),
@@ -54,7 +54,7 @@ assert.ok(
   );
 }
 
-const appSource = await readFile(new URL("../src/ui/app.js?v=20261015-tokenized-drafts", import.meta.url), "utf8");
+const appSource = await readFile(new URL("../src/ui/app.js?v=20261015-clinical-drafts", import.meta.url), "utf8");
 assert.ok(
   appSource.includes("aiChatController.ensureDeidReady()"),
   "opening the AI Chat view must warm the best de-identification model in the background"
@@ -95,7 +95,7 @@ globalThis.Worker = class {
   addEventListener() {}
 };
 
-const { createAiChatController } = await import("../src/ui/ai-chat/controller.js?v=20261015-tokenized-drafts");
+const { createAiChatController } = await import("../src/ui/ai-chat/controller.js?v=20261015-stable-draft-runtime");
 const { DEFAULT_DEID_MODEL_KEY } = await import("../src/patient-context/deid-model-options.js");
 
 function makeController({ ready = false, blocker = "", verifyImpl } = {}) {
@@ -203,7 +203,7 @@ console.log("Part 2 passed: ensureDeidReady verifies the best system automatical
 // de-identification review gate first. The meter counts the selection in
 // both modes, and every control is live in both modes.
 
-const { createAiChatPresentation } = await import("../src/ui/ai-chat/presentation.js?v=20261015-tokenized-drafts");
+const { createAiChatPresentation } = await import("../src/ui/ai-chat/presentation.js?v=20261015-stable-draft-runtime");
 const presentation = createAiChatPresentation({
   escapeHtml: (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"),
   icon: () => "",

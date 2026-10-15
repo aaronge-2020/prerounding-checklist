@@ -1,0 +1,752 @@
+{
+  "modelKey": "qwen3.5-4b",
+  "phase": "dense-fixed",
+  "syntheticOnly": true,
+  "startedAt": "2026-10-15T13:15:42.032Z",
+  "stages": [
+    "real browser model loaded and instruction self-test passed"
+  ],
+  "cases": [
+    {
+      "id": "dense-prenatal-one-liner",
+      "elapsedMs": 85933.85500000417,
+      "modelOutputs": [
+        {
+          "stage": "selecting",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"baseline_ids\": [ \"P5\", \"P6\" ],\n  \"history_ids\": [ \"P2\", \"P3\", \"P4\" ],\n  \"uncertainty_ids\": [ \"P8\" ]\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\n  \"baseline_ids\": [\n    \"P84\",\n    \"P85\"\n  ],\n  \"history_ids\": [\n    \"P79\",\n    \"P80\",\n    \"P81\"\n  ],\n  \"uncertainty_ids\": [\n    \"P86\"\n  ]\n}"
+        },
+        {
+          "stage": "reducing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"baseline_ids\": [ \"P5\", \"P6\" ],\n  \"history_ids\": [ \"P2\", \"P3\", \"P4\" ],\n  \"uncertainty_ids\": [ \"P8\" ]\n}"
+        },
+        {
+          "stage": "composing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"baseline_ids\": [\"P5\", \"P6\"], \"history_ids\": [\"P2\", \"P3\", \"P4\"], \"uncertainty_ids\": [\"P6\"]}"
+        }
+      ],
+      "text": "Prior documented baseline: A historical obstetric entry records G7P3033. A separate older obstetric comment records G6P3033; discrepancy is unresolved. Prior history: cervical dysplasia treated with two LEEP procedures. Prior history: treated latent syphilis. Prior history: hypothyroidism.",
+      "evidence": [
+        {
+          "id": "P2",
+          "kind": "prior",
+          "text": "Prior history: cervical dysplasia treated with two LEEP procedures.",
+          "offset": 100,
+          "section": "past_medical_history",
+          "selectionRole": "history_ids"
+        },
+        {
+          "id": "P3",
+          "kind": "prior",
+          "text": "Prior history: treated latent syphilis.",
+          "offset": 168,
+          "section": "past_medical_history",
+          "selectionRole": "history_ids"
+        },
+        {
+          "id": "P4",
+          "kind": "prior",
+          "text": "Prior history: hypothyroidism.",
+          "offset": 208,
+          "section": "past_medical_history",
+          "selectionRole": "history_ids"
+        },
+        {
+          "id": "P5",
+          "kind": "prior",
+          "text": "A historical obstetric entry records G7P3033.",
+          "offset": 239,
+          "section": "past_medical_history",
+          "selectionRole": "baseline_ids"
+        },
+        {
+          "id": "P6",
+          "kind": "prior",
+          "text": "A separate older obstetric comment records G6P3033; discrepancy is unresolved.",
+          "offset": 285,
+          "section": "past_medical_history",
+          "selectionRole": "baseline_ids"
+        }
+      ],
+      "questions": [],
+      "modelKey": "qwen3.5-4b",
+      "chunks": 2,
+      "selectionRounds": 2,
+      "questionPasses": 0,
+      "sourceSentenceCount": 91,
+      "budget": {
+        "contextWindow": 16384,
+        "tokenizerMeasured": true,
+        "sourceTokens": 14008,
+        "sourcePasses": 2,
+        "maxPassTokens": 16248
+      },
+      "score": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "id": "dense-renal-current-updates",
+      "elapsedMs": 87483.26000000536,
+      "modelOutputs": [
+        {
+          "stage": "selecting",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\n    \"P1\",\n    \"P2\",\n    \"P3\",\n    \"P4\",\n    \"P5\",\n    \"P6\",\n    \"P7\",\n    \"P8\",\n    \"P9\",\n    \"P10\",\n    \"P11\",\n    \"P12\"\n  ]\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\n    \"P75\",\n    \"P76\",\n    \"P77\",\n    \"P78\",\n    \"P79\",\n    \"P80\",\n    \"P81\",\n    \"T82\",\n    \"T83\"\n  ]\n}"
+        },
+        {
+          "stage": "reducing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P1\", \"P2\", \"P3\", \"P4\", \"P5\", \"P81\", \"T82\", \"T83\"]}"
+        },
+        {
+          "stage": "questions",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"questions\": [\n    {\n      \"question_id\": \"current_regimen\",\n      \"source_ids\": [\n        \"P3\",\n        \"T82\"\n      ]\n    },\n    {\n      \"question_id\": \"history_changes\",\n      \"source_ids\": [\n        \"P3\",\n        \"P81\"\n      ]\n    },\n    {\n      \"question_id\": \"interval_tests\",\n      \"source_ids\": [\n        \"P81\",\n        \"T83\"\n      ]\n    }\n  ]\n}"
+        }
+      ],
+      "text": "Prior course\nMedical history (historical / confirm)\nPrior history: type 2 diabetes, hypertension and chronic kidney disease.\n\nMedication list (historical / confirm)\nPrior medication list records enalapril 20 mg daily.\nA separate nephrology list records enalapril 10 mg daily; actual dose is unconfirmed.\nPrior metformin dose: 500 mg twice daily.\n\nAllergies (historical / confirm)\nSulfonamide antibiotics: rash in the prior chart.\n\nUpdates today\nPatient reports a pillbox but does not know the enalapril dose.\nNo repeat chemistry result is available today.\n\nQuestions for this visit\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: Any new diagnoses, hospital visits, procedures, allergies or medication changes since the prior note?]\n[Ask: Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?]\n\nPrior follow-up to reconcile\nPrior plan: repeat chemistry and reconcile the medication bottles; completion and repeat results are not documented.\n[Completion / result / current relevance: ____]",
+      "evidence": [
+        {
+          "id": "P1",
+          "kind": "prior",
+          "text": "Prior history: type 2 diabetes, hypertension and chronic kidney disease.",
+          "offset": 24,
+          "section": "past_medical_history"
+        },
+        {
+          "id": "P2",
+          "kind": "prior",
+          "text": "Prior medication list records enalapril 20 mg daily.",
+          "offset": 113,
+          "section": "medications"
+        },
+        {
+          "id": "P3",
+          "kind": "prior",
+          "text": "A separate nephrology list records enalapril 10 mg daily; actual dose is unconfirmed.",
+          "offset": 166,
+          "section": "medications"
+        },
+        {
+          "id": "P4",
+          "kind": "prior",
+          "text": "Prior metformin dose: 500 mg twice daily.",
+          "offset": 252,
+          "section": "medications"
+        },
+        {
+          "id": "P5",
+          "kind": "prior",
+          "text": "Sulfonamide antibiotics: rash in the prior chart.",
+          "offset": 308,
+          "section": "allergies"
+        },
+        {
+          "id": "P81",
+          "kind": "prior",
+          "text": "Prior plan: repeat chemistry and reconcile the medication bottles; completion and repeat results are not documented.",
+          "offset": 28769,
+          "section": "plan"
+        },
+        {
+          "id": "T82",
+          "kind": "today",
+          "text": "Patient reports a pillbox but does not know the enalapril dose.",
+          "offset": 0
+        },
+        {
+          "id": "T83",
+          "kind": "today",
+          "text": "No repeat chemistry result is available today.",
+          "offset": 64
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "current_regimen",
+          "question": "Which medicines, doses and schedules are you actually using now?",
+          "sourceIds": [
+            "P3",
+            "T82"
+          ]
+        },
+        {
+          "questionId": "history_changes",
+          "question": "Any new diagnoses, hospital visits, procedures, allergies or medication changes since the prior note?",
+          "sourceIds": [
+            "P3",
+            "P81"
+          ]
+        },
+        {
+          "questionId": "interval_tests",
+          "question": "Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?",
+          "sourceIds": [
+            "P81",
+            "T83"
+          ]
+        }
+      ],
+      "modelKey": "qwen3.5-4b",
+      "chunks": 2,
+      "selectionRounds": 1,
+      "questionPasses": 1,
+      "sourceSentenceCount": 83,
+      "budget": {
+        "contextWindow": 16384,
+        "tokenizerMeasured": true,
+        "sourceTokens": 13896,
+        "sourcePasses": 2,
+        "maxPassTokens": 16280
+      },
+      "score": {
+        "passed": false,
+        "failures": [
+          "Missing required prior evidence: 5.6 mmol/L",
+          "Missing required prior evidence: 1.9 mg/dL"
+        ]
+      }
+    },
+    {
+      "id": "dense-full-note-meds-allergy-plan",
+      "elapsedMs": 149833.81000000238,
+      "modelOutputs": [
+        {
+          "stage": "selecting",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\n    \"P1\",\n    \"P2\",\n    \"P3\",\n    \"P4\",\n    \"P5\",\n    \"P6\",\n    \"P7\",\n    \"P8\",\n    \"P9\",\n    \"P10\",\n    \"P11\",\n    \"P12\",\n    \"P13\",\n    \"P14\",\n    \"P15\",\n    \"P16\",\n    \"P17\",\n    \"P18\",\n    \"P19\",\n    \"P20\",\n    \"P21\",\n    \"P22\",\n    \"P23\",\n    \"P24\",\n    \"P25\",\n    \"P26\",\n    \"P27\",\n    \"P28\"\n  ]\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\n    \"P80\",\n    \"P81\",\n    \"P82\",\n    \"P83\",\n    \"P84\",\n    \"P85\",\n    \"P86\",\n    \"P87\",\n    \"P88\",\n    \"P89\",\n    \"P90\",\n    \"P91\"\n  ]\n}"
+        },
+        {
+          "stage": "reducing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\n    \"P2\",\n    \"P3\",\n    \"P4\",\n    \"P5\",\n    \"P6\",\n    \"P7\",\n    \"P8\",\n    \"P9\",\n    \"P12\",\n    \"P13\",\n    \"P14\",\n    \"P15\",\n    \"P16\",\n    \"P17\",\n    \"P18\",\n    \"P19\",\n    \"P20\",\n    \"P21\",\n    \"P22\",\n    \"P23\",\n    \"P24\",\n    \"P25\",\n    \"P26\",\n    \"P27\",\n    \"P28\",\n    \"P80\",\n    \"P81\",\n    \"P82\"\n  ]\n}"
+        },
+        {
+          "stage": "questions",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"questions\": [\n    {\n      \"question_id\": \"interval_symptoms\",\n      \"source_ids\": [\n        \"P12\",\n        \"P13\",\n        \"P14\",\n        \"P15\",\n        \"P16\",\n        \"P17\",\n        \"P18\",\n        \"P19\",\n        \"P20\",\n        \"P21\",\n        \"P22\",\n        \"P23\",\n        \"P24\",\n        \"P25\",\n        \"P26\",\n        \"P27\",\n        \"P28\",\n        \"P80\",\n        \"P81\",\n        \"P82\"\n      ]\n    },\n    {\n      \"question_id\": \"current_regimen\",\n      \"source_ids\": [\n        \"P7\"\n      ]\n    },\n    {\n      \"question_id\": \"visit_goals\",\n      \"source_ids\": [\n        \"P12\",\n        \"P13\",\n        \"P14\",\n        \"P15\",\n        \"P16\",\n        \"P17\",\n        \"P18\",\n        \"P19\",\n        \"P20\",\n        \"P21\",\n        \"P22\",\n        \"P23\",\n        \"P24\",\n        \"P25\",\n        \"P26\",\n        \"P27\",\n        \"P28\",\n        \"P80\",\n        \"P81\",\n        \"P82\"\n      ]\n    }\n  ]\n}"
+        }
+      ],
+      "text": "Visit focus\nPrepare prenatal follow-up\n\nPrior documented history and course\nMedical history (historical / confirm)\nPrior history: cervical dysplasia treated with two LEEP procedures.\nPrior history: treated latent syphilis.\nPrior history: hypothyroidism.\nA historical obstetric entry records G6P2032.\nA separate older obstetric comment records G5P2032; discrepancy is unresolved.\n\nMedication list (historical / confirm)\nMedication\tDose\tRecorded instructions\nLevothyroxine\t75 mcg\tonce daily before breakfast\nPrenatal vitamin\t1 tablet\tonce daily\n\nAllergies (historical / confirm)\nPenicillin: prior urticaria; reaction details require confirmation.\n\nSocial history (historical / confirm)\nPrior chart: former tobacco use.\n\nChart results (historical / confirm)\nChart panel visit-1 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11\tg/dL\t11.5–15.5\nPlatelets\t230\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t3.8\tmmol/L\t3.5–5.1\nCreatinine\t0.7\tmg/dL\t0.5–1.1\nGlucose\t88\tmg/dL\t70–99\nTSH\t1.1\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-2 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.1\tg/dL\t11.5–15.5\nPlatelets\t231\t10^3/uL\t150–400\nSodium\t139\tmmol/L\t135–145\nPotassium\t3.9\tmmol/L\t3.5–5.1\nCreatinine\t0.7999999999999999\tmg/dL\t0.5–1.1\nGlucose\t89\tmg/dL\t70–99\nTSH\t1.2000000000000002\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-3 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.2\tg/dL\t11.5–15.5\nPlatelets\t232\t10^3/uL\t150–400\nSodium\t140\tmmol/L\t135–145\nPotassium\t4\tmmol/L\t3.5–5.1\nCreatinine\t0.8999999999999999\tmg/dL\t0.5–1.1\nGlucose\t90\tmg/dL\t70–99\nTSH\t1.3\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-4 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.3\tg/dL\t11.5–15.5\nPlatelets\t233\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t4.1\tmmol/L\t3.5–5.1\nCreatinine\t1\tmg/dL\t0.5–1.1\nGlucose\t91\tmg/dL\t70–99\nTSH\t1.4000000000000001\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-5 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.4\tg/dL\t11.5–15.5\nPlatelets\t234\t10^3/uL\t150–400\nSodium\t139\tmmol/L\t135–145\nPotassium\t4.2\tmmol/L\t3.5–5.1\nCreatinine\t0.7\tmg/dL\t0.5–1.1\nGlucose\t92\tmg/dL\t70–99\nTSH\t1.5\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-6 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.5\tg/dL\t11.5–15.5\nPlatelets\t235\t10^3/uL\t150–400\nSodium\t140\tmmol/L\t135–145\nPotassium\t3.8\tmmol/L\t3.5–5.1\nCreatinine\t0.7999999999999999\tmg/dL\t0.5–1.1\nGlucose\t93\tmg/dL\t70–99\nTSH\t1.6\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-7 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.6\tg/dL\t11.5–15.5\nPlatelets\t236\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t3.9\tmmol/L\t3.5–5.1\nCreatinine\t0.8999999999999999\tmg/dL\t0.5–1.1\nGlucose\t94\tmg/dL\t70–99\nTSH\t1.7000000000000002\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-8 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.7\tg/dL\t11.5–15.5\nPlatelets\t237\t10^3/uL\t150–400\nSodium\t139\tmmol/L\t135–145\nPotassium\t4\tmmol/L\t3.5–5.1\nCreatinine\t1\tmg/dL\t0.5–1.1\nGlucose\t95\tmg/dL\t70–99\nTSH\t1.8\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-9 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.8\tg/dL\t11.5–15.5\nPlatelets\t238\t10^3/uL\t150–400\nSodium\t140\tmmol/L\t135–145\nPotassium\t4.1\tmmol/L\t3.5–5.1\nCreatinine\t0.7\tmg/dL\t0.5–1.1\nGlucose\t96\tmg/dL\t70–99\nTSH\t1.9000000000000001\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-10 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.9\tg/dL\t11.5–15.5\nPlatelets\t239\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t4.2\tmmol/L\t3.5–5.1\nCreatinine\t0.7999999999999999\tmg/dL\t0.5–1.1\nGlucose\t97\tmg/dL\t70–99\nTSH\t2\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-11 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t12\tg/dL\t11.5–15.5\nPlatelets\t240\t10^3/uL\t150–400\nSodium\t139\tmmol/L\t135–145\nPotassium\t3.8\tmmol/L\t3.5–5.1\nCreatinine\t0.8999999999999999\tmg/dL\t0.5–1.1\nGlucose\t98\tmg/dL\t70–99\nTSH\t2.1\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-12 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t12.1\tg/dL\t11.5–15.5\nPlatelets\t241\t10^3/uL\t150–400\nSodium\t140\tmmol/L\t135–145\nPotassium\t3.9\tmmol/L\t3.5–5.1\nCreatinine\t1\tmg/dL\t0.5–1.1\nGlucose\t99\tmg/dL\t70–99\nTSH\t2.2\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-13 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11\tg/dL\t11.5–15.5\nPlatelets\t230\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t3.8\tmmol/L\t3.5–5.1\nCreatinine\t0.7\tmg/dL\t0.5–1.1\nGlucose\t88\tmg/dL\t70–99\nTSH\t1.1\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-14 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.1\tg/dL\t11.5–15.5\nPlatelets\t231\t10^3/uL\t150–400\nSodium\t139\tmmol/L\t135–145\nPotassium\t3.9\tmmol/L\t3.5–5.1\nCreatinine\t0.7999999999999999\tmg/dL\t0.5–1.1\nGlucose\t89\tmg/dL\t70–99\nTSH\t1.2000000000000002\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-15 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.2\tg/dL\t11.5–15.5\nPlatelets\t232\t10^3/uL\t150–400\nSodium\t140\tmmol/L\t135–145\nPotassium\t4\tmmol/L\t3.5–5.1\nCreatinine\t0.8999999999999999\tmg/dL\t0.5–1.1\nGlucose\t90\tmg/dL\t70–99\nTSH\t1.3\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-16 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.3\tg/dL\t11.5–15.5\nPlatelets\t233\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t4.1\tmmol/L\t3.5–5.1\nCreatinine\t1\tmg/dL\t0.5–1.1\nGlucose\t91\tmg/dL\t70–99\nTSH\t1.4000000000000001\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-17 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.4\tg/dL\t11.5–15.5\nPlatelets\t234\t10^3/uL\t150–400\nSodium\t139\tmmol/L\t135–145\nPotassium\t4.2\tmmol/L\t3.5–5.1\nCreatinine\t0.7\tmg/dL\t0.5–1.1\nGlucose\t92\tmg/dL\t70–99\nTSH\t1.5\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel additional-record-21 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t12.1\tg/dL\t11.5–15.5\nPlatelets\t241\t10^3/uL\t150–400\nSodium\t140\tmmol/L\t135–145\nPotassium\t3.9\tmmol/L\t3.5–5.1\nCreatinine\t1\tmg/dL\t0.5–1.1\nGlucose\t99\tmg/dL\t70–99\nTSH\t2.2\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel additional-record-22 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11\tg/dL\t11.5–15.5\nPlatelets\t230\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t3.8\tmmol/L\t3.5–5.1\nCreatinine\t0.7\tmg/dL\t0.5–1.1\nGlucose\t88\tmg/dL\t70–99\nTSH\t1.1\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel additional-record-23 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.1\tg/dL\t11.5–15.5\nPlatelets\t231\t10^3/uL\t150–400\nSodium\t139\tmmol/L\t135–145\nPotassium\t3.9\tmmol/L\t3.5–5.1\nCreatinine\t0.7999999999999999\tmg/dL\t0.5–1.1\nGlucose\t89\tmg/dL\t70–99\nTSH\t1.2000000000000002\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\n\nHPI / updates today\n[Ask: Current symptoms, interval changes, medications and concerns today?]\n\nExamination today\n[Complete from today's examination; prior findings are not current findings.]\n\nAssessment and plan today\n[Complete after reviewing today's history, examination and results.]\n\nQuestions for this visit\n[Ask: What symptoms are new, improved or worse since the previous visit?]\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: What concern or goal is most important to address today?]",
+      "evidence": [
+        {
+          "id": "P2",
+          "kind": "prior",
+          "text": "Prior history: cervical dysplasia treated with two LEEP procedures.",
+          "offset": 100,
+          "section": "past_medical_history"
+        },
+        {
+          "id": "P3",
+          "kind": "prior",
+          "text": "Prior history: treated latent syphilis.",
+          "offset": 168,
+          "section": "past_medical_history"
+        },
+        {
+          "id": "P4",
+          "kind": "prior",
+          "text": "Prior history: hypothyroidism.",
+          "offset": 208,
+          "section": "past_medical_history"
+        },
+        {
+          "id": "P5",
+          "kind": "prior",
+          "text": "A historical obstetric entry records G6P2032.",
+          "offset": 239,
+          "section": "past_medical_history"
+        },
+        {
+          "id": "P6",
+          "kind": "prior",
+          "text": "A separate older obstetric comment records G5P2032; discrepancy is unresolved.",
+          "offset": 285,
+          "section": "past_medical_history"
+        },
+        {
+          "id": "P7",
+          "kind": "prior",
+          "text": "Medication\tDose\tRecorded instructions\nLevothyroxine\t75 mcg\tonce daily before breakfast\nPrenatal vitamin\t1 tablet\tonce daily",
+          "offset": 380,
+          "section": "medications"
+        },
+        {
+          "id": "P8",
+          "kind": "prior",
+          "text": "Penicillin: prior urticaria; reaction details require confirmation.",
+          "offset": 518,
+          "section": "allergies"
+        },
+        {
+          "id": "P9",
+          "kind": "prior",
+          "text": "Prior chart: former tobacco use.",
+          "offset": 605,
+          "section": "social_history"
+        },
+        {
+          "id": "P12",
+          "kind": "prior",
+          "text": "Chart panel visit-1 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11\tg/dL\t11.5–15.5\nPlatelets\t230\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t3.8\tmmol/L\t3.5–5.1\nCreatinine\t0.7\tmg/dL\t0.5–1.1\nGlucose\t88\tmg/dL\t70–99\nTSH\t1.1\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 778,
+          "section": "results"
+        },
+        {
+          "id": "P13",
+          "kind": "prior",
+          "text": "Chart panel visit-2 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.1\tg/dL\t11.5–15.5\nPlatelets\t231\t10^3/uL\t150–400\nSodium\t139\tmmol/L\t135–145\nPotassium\t3.9\tmmol/L\t3.5–5.1\nCreatinine\t0.7999999999999999\tmg/dL\t0.5–1.1\nGlucose\t89\tmg/dL\t70–99\nTSH\t1.2000000000000002\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 1151,
+          "section": "results"
+        },
+        {
+          "id": "P14",
+          "kind": "prior",
+          "text": "Chart panel visit-3 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.2\tg/dL\t11.5–15.5\nPlatelets\t232\t10^3/uL\t150–400\nSodium\t140\tmmol/L\t135–145\nPotassium\t4\tmmol/L\t3.5–5.1\nCreatinine\t0.8999999999999999\tmg/dL\t0.5–1.1\nGlucose\t90\tmg/dL\t70–99\nTSH\t1.3\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 1556,
+          "section": "results"
+        },
+        {
+          "id": "P15",
+          "kind": "prior",
+          "text": "Chart panel visit-4 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.3\tg/dL\t11.5–15.5\nPlatelets\t233\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t4.1\tmmol/L\t3.5–5.1\nCreatinine\t1\tmg/dL\t0.5–1.1\nGlucose\t91\tmg/dL\t70–99\nTSH\t1.4000000000000001\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 1944,
+          "section": "results"
+        },
+        {
+          "id": "P16",
+          "kind": "prior",
+          "text": "Chart panel visit-5 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.4\tg/dL\t11.5–15.5\nPlatelets\t234\t10^3/uL\t150–400\nSodium\t139\tmmol/L\t135–145\nPotassium\t4.2\tmmol/L\t3.5–5.1\nCreatinine\t0.7\tmg/dL\t0.5–1.1\nGlucose\t92\tmg/dL\t70–99\nTSH\t1.5\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 2332,
+          "section": "results"
+        },
+        {
+          "id": "P17",
+          "kind": "prior",
+          "text": "Chart panel visit-6 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.5\tg/dL\t11.5–15.5\nPlatelets\t235\t10^3/uL\t150–400\nSodium\t140\tmmol/L\t135–145\nPotassium\t3.8\tmmol/L\t3.5–5.1\nCreatinine\t0.7999999999999999\tmg/dL\t0.5–1.1\nGlucose\t93\tmg/dL\t70–99\nTSH\t1.6\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 2707,
+          "section": "results"
+        },
+        {
+          "id": "P18",
+          "kind": "prior",
+          "text": "Chart panel visit-7 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.6\tg/dL\t11.5–15.5\nPlatelets\t236\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t3.9\tmmol/L\t3.5–5.1\nCreatinine\t0.8999999999999999\tmg/dL\t0.5–1.1\nGlucose\t94\tmg/dL\t70–99\nTSH\t1.7000000000000002\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 3097,
+          "section": "results"
+        },
+        {
+          "id": "P19",
+          "kind": "prior",
+          "text": "Chart panel visit-8 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.7\tg/dL\t11.5–15.5\nPlatelets\t237\t10^3/uL\t150–400\nSodium\t139\tmmol/L\t135–145\nPotassium\t4\tmmol/L\t3.5–5.1\nCreatinine\t1\tmg/dL\t0.5–1.1\nGlucose\t95\tmg/dL\t70–99\nTSH\t1.8\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 3502,
+          "section": "results"
+        },
+        {
+          "id": "P20",
+          "kind": "prior",
+          "text": "Chart panel visit-9 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.8\tg/dL\t11.5–15.5\nPlatelets\t238\t10^3/uL\t150–400\nSodium\t140\tmmol/L\t135–145\nPotassium\t4.1\tmmol/L\t3.5–5.1\nCreatinine\t0.7\tmg/dL\t0.5–1.1\nGlucose\t96\tmg/dL\t70–99\nTSH\t1.9000000000000001\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 3873,
+          "section": "results"
+        },
+        {
+          "id": "P21",
+          "kind": "prior",
+          "text": "Chart panel visit-10 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.9\tg/dL\t11.5–15.5\nPlatelets\t239\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t4.2\tmmol/L\t3.5–5.1\nCreatinine\t0.7999999999999999\tmg/dL\t0.5–1.1\nGlucose\t97\tmg/dL\t70–99\nTSH\t2\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 4263,
+          "section": "results"
+        },
+        {
+          "id": "P22",
+          "kind": "prior",
+          "text": "Chart panel visit-11 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t12\tg/dL\t11.5–15.5\nPlatelets\t240\t10^3/uL\t150–400\nSodium\t139\tmmol/L\t135–145\nPotassium\t3.8\tmmol/L\t3.5–5.1\nCreatinine\t0.8999999999999999\tmg/dL\t0.5–1.1\nGlucose\t98\tmg/dL\t70–99\nTSH\t2.1\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 4652,
+          "section": "results"
+        },
+        {
+          "id": "P23",
+          "kind": "prior",
+          "text": "Chart panel visit-12 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t12.1\tg/dL\t11.5–15.5\nPlatelets\t241\t10^3/uL\t150–400\nSodium\t140\tmmol/L\t135–145\nPotassium\t3.9\tmmol/L\t3.5–5.1\nCreatinine\t1\tmg/dL\t0.5–1.1\nGlucose\t99\tmg/dL\t70–99\nTSH\t2.2\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 5041,
+          "section": "results"
+        },
+        {
+          "id": "P24",
+          "kind": "prior",
+          "text": "Chart panel visit-13 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11\tg/dL\t11.5–15.5\nPlatelets\t230\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t3.8\tmmol/L\t3.5–5.1\nCreatinine\t0.7\tmg/dL\t0.5–1.1\nGlucose\t88\tmg/dL\t70–99\nTSH\t1.1\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 5415,
+          "section": "results"
+        },
+        {
+          "id": "P25",
+          "kind": "prior",
+          "text": "Chart panel visit-14 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.1\tg/dL\t11.5–15.5\nPlatelets\t231\t10^3/uL\t150–400\nSodium\t139\tmmol/L\t135–145\nPotassium\t3.9\tmmol/L\t3.5–5.1\nCreatinine\t0.7999999999999999\tmg/dL\t0.5–1.1\nGlucose\t89\tmg/dL\t70–99\nTSH\t1.2000000000000002\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 5789,
+          "section": "results"
+        },
+        {
+          "id": "P26",
+          "kind": "prior",
+          "text": "Chart panel visit-15 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.2\tg/dL\t11.5–15.5\nPlatelets\t232\t10^3/uL\t150–400\nSodium\t140\tmmol/L\t135–145\nPotassium\t4\tmmol/L\t3.5–5.1\nCreatinine\t0.8999999999999999\tmg/dL\t0.5–1.1\nGlucose\t90\tmg/dL\t70–99\nTSH\t1.3\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 6195,
+          "section": "results"
+        },
+        {
+          "id": "P27",
+          "kind": "prior",
+          "text": "Chart panel visit-16 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.3\tg/dL\t11.5–15.5\nPlatelets\t233\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t4.1\tmmol/L\t3.5–5.1\nCreatinine\t1\tmg/dL\t0.5–1.1\nGlucose\t91\tmg/dL\t70–99\nTSH\t1.4000000000000001\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 6584,
+          "section": "results"
+        },
+        {
+          "id": "P28",
+          "kind": "prior",
+          "text": "Chart panel visit-17 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.4\tg/dL\t11.5–15.5\nPlatelets\t234\t10^3/uL\t150–400\nSodium\t139\tmmol/L\t135–145\nPotassium\t4.2\tmmol/L\t3.5–5.1\nCreatinine\t0.7\tmg/dL\t0.5–1.1\nGlucose\t92\tmg/dL\t70–99\nTSH\t1.5\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 6973,
+          "section": "results"
+        },
+        {
+          "id": "P80",
+          "kind": "prior",
+          "text": "Chart panel additional-record-21 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t12.1\tg/dL\t11.5–15.5\nPlatelets\t241\t10^3/uL\t150–400\nSodium\t140\tmmol/L\t135–145\nPotassium\t3.9\tmmol/L\t3.5–5.1\nCreatinine\t1\tmg/dL\t0.5–1.1\nGlucose\t99\tmg/dL\t70–99\nTSH\t2.2\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 27333,
+          "section": "results"
+        },
+        {
+          "id": "P81",
+          "kind": "prior",
+          "text": "Chart panel additional-record-22 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11\tg/dL\t11.5–15.5\nPlatelets\t230\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t3.8\tmmol/L\t3.5–5.1\nCreatinine\t0.7\tmg/dL\t0.5–1.1\nGlucose\t88\tmg/dL\t70–99\nTSH\t1.1\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 27719,
+          "section": "results"
+        },
+        {
+          "id": "P82",
+          "kind": "prior",
+          "text": "Chart panel additional-record-23 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.1\tg/dL\t11.5–15.5\nPlatelets\t231\t10^3/uL\t150–400\nSodium\t139\tmmol/L\t135–145\nPotassium\t3.9\tmmol/L\t3.5–5.1\nCreatinine\t0.7999999999999999\tmg/dL\t0.5–1.1\nGlucose\t89\tmg/dL\t70–99\nTSH\t1.2000000000000002\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative",
+          "offset": 28105,
+          "section": "results"
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "interval_symptoms",
+          "question": "What symptoms are new, improved or worse since the previous visit?",
+          "sourceIds": [
+            "P12",
+            "P13",
+            "P14",
+            "P15",
+            "P16",
+            "P17",
+            "P18",
+            "P19",
+            "P20",
+            "P21",
+            "P22",
+            "P23",
+            "P24",
+            "P25",
+            "P26",
+            "P27",
+            "P28",
+            "P80",
+            "P81",
+            "P82"
+          ]
+        },
+        {
+          "questionId": "current_regimen",
+          "question": "Which medicines, doses and schedules are you actually using now?",
+          "sourceIds": [
+            "P7"
+          ]
+        },
+        {
+          "questionId": "visit_goals",
+          "question": "What concern or goal is most important to address today?",
+          "sourceIds": [
+            "P12",
+            "P13",
+            "P14",
+            "P15",
+            "P16",
+            "P17",
+            "P18",
+            "P19",
+            "P20",
+            "P21",
+            "P22",
+            "P23",
+            "P24",
+            "P25",
+            "P26",
+            "P27",
+            "P28",
+            "P80",
+            "P81",
+            "P82"
+          ]
+        }
+      ],
+      "modelKey": "qwen3.5-4b",
+      "chunks": 2,
+      "selectionRounds": 1,
+      "questionPasses": 1,
+      "sourceSentenceCount": 91,
+      "budget": {
+        "contextWindow": 16384,
+        "tokenizerMeasured": true,
+        "sourceTokens": 14008,
+        "sourcePasses": 2,
+        "maxPassTokens": 16275
+      },
+      "score": {
+        "passed": false,
+        "failures": [
+          "Missing required prior evidence: verify repeat syphilis"
+        ]
+      }
+    }
+  ],
+  "hashes": {
+    "src/local-llm/note-synthesis.js": "f8459ff0e70263be2aa818b3dc04c4fb66330a07156a8c81a0033b1d679eb1da",
+    "src/local-llm/models.js": "8c2496016e15b881dc981dac44c58a4c116b8abefc376f947aa2ae95bc93eb4c",
+    "src/local-llm/client.js": "db4887f4d7b2108f90d8d6196f5f74e583425030837ffd68da1ff5dc6258eab9",
+    "src/local-llm/worker.js": "efbbaaa439eac1322250a35c8ed727221788680b01a4711ae509bcf8dc4c670a",
+    "src/local-llm/tokenizer.js": "bfbff2eeee54feed5c272d252409a7b31990cbb339456f51e87475cbe612ea69",
+    "src/local-llm/note-source.js": "94806cbbaf0ad74eb1eea4d76e2e87cd10671ca858df2b66b96e9784b73e6819",
+    "src/ui/local-note-synthesis.js": "98df06bc7dce9a9e7886194cb3160144bcbbe8b929e520b664aa6f2e216986f4",
+    "src/ui/local-model-controls.js": "7ce02a193b8c21cf726156e696e7536058e71d0622671f233e9dba6af4619a21",
+    "tests/fixtures/local-note-eval.js": "23e7e028899bc3eebde14f6b0b138440b73d346cbb990f4c422eb6b596843b17"
+  },
+  "browser": "155.0.4283.45",
+  "hardware": {
+    "facts": {
+      "deviceMemoryGB": 32,
+      "hardwareConcurrency": 32,
+      "platform": "Win32",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0"
+    },
+    "gpu": {
+      "available": true,
+      "shaderF16": true,
+      "maxBufferSize": 2147483648,
+      "maxStorageBufferBindingSize": 2147483644,
+      "adapterDescription": "nvidia blackwell"
+    },
+    "storageAvailableMB": 10240,
+    "recommendation": {
+      "webgpuAvailable": true,
+      "gpu": {
+        "available": true,
+        "shaderF16": true,
+        "maxBufferSize": 2147483648,
+        "maxStorageBufferBindingSize": 2147483644,
+        "adapterDescription": "nvidia blackwell"
+      },
+      "deviceMemoryGB": 32,
+      "hardwareConcurrency": 32,
+      "models": [
+        {
+          "model": {
+            "key": "qwen3.5-0.8b",
+            "webllmId": "Qwen3.5-0.8B-q4f16_1-MLC",
+            "label": "Qwen3.5 0.8B",
+            "params": "0.8B parameters",
+            "vramMB": 1757.49,
+            "approxDownloadMB": 426,
+            "contextWindow": 8192,
+            "minDeviceMemoryGB": 2,
+            "rank": 20,
+            "blurb": "Smallest download; suitable for short draft experiments.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-0.8B-q4f16_1-MLC/resolve/0ec138972555613c1d7812a821778ad0398c8790/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-0.8B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 8192,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3-1.7b",
+            "webllmId": "Qwen3-1.7B-q4f16_1-MLC",
+            "label": "Qwen3 1.7B",
+            "params": "1.7B parameters",
+            "vramMB": 2036.66,
+            "approxDownloadMB": 939,
+            "contextWindow": 4096,
+            "minDeviceMemoryGB": 2,
+            "rank": 10,
+            "blurb": "Previous-generation lightweight option.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3-1.7B-q4f16_1-MLC/resolve/80b3abcec6c3b3f5355dc0cc99cc4fb578f192bc/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-1.7B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 4096
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-2b",
+            "webllmId": "Qwen3.5-2B-q4f16_1-MLC",
+            "label": "Qwen3.5 2B",
+            "params": "2B parameters",
+            "vramMB": 2501.44,
+            "approxDownloadMB": 1032,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 2,
+            "rank": 40,
+            "blurb": "Balanced starting point when GPU memory is unknown.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-2B-q4f16_1-MLC/resolve/dd74e9c8a20c4546df85c844103bff87b6dcacad/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-2B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3-4b",
+            "webllmId": "Qwen3-4B-q4f16_1-MLC",
+            "label": "Qwen3 4B",
+            "params": "4B parameters",
+            "vramMB": 3431.59,
+            "approxDownloadMB": 2174,
+            "contextWindow": 4096,
+            "minDeviceMemoryGB": 8,
+            "rank": 30,
+            "blurb": "Previous-generation larger option.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3-4B-q4f16_1-MLC/resolve/a5c9fab855e3ccbdfed2e7e69683d75f30332161/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-4B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 4096
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-4b",
+            "webllmId": "Qwen3.5-4B-q4f16_1-MLC",
+            "label": "Qwen3.5 4B",
+            "params": "4B parameters",
+            "vramMB": 4379.82,
+            "approxDownloadMB": 2280,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 8,
+            "rank": 50,
+            "blurb": "Larger draft model for devices with more memory.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-4B-q4f16_1-MLC/resolve/44b42469f9e192814bfd90440e3b377d89ba7a13/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-4B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-9b",
+            "webllmId": "Qwen3.5-9B-q4f16_1-MLC",
+            "label": "Qwen3.5 9B",
+            "params": "9B parameters",
+            "vramMB": 7201.01,
+            "approxDownloadMB": 4827,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 8,
+            "rank": 60,
+            "blurb": "Largest option; confirm available GPU or unified memory first.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-9B-q4f16_1-MLC/resolve/c7c5d3f5a81e37b8facbb72970940a1b131314a8/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-9B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        }
+      ],
+      "availableKeys": [
+        "qwen3.5-0.8b",
+        "qwen3-1.7b",
+        "qwen3.5-2b",
+        "qwen3-4b",
+        "qwen3.5-4b",
+        "qwen3.5-9b"
+      ],
+      "recommendedKey": "qwen3.5-4b",
+      "capacity": null
+    }
+  },
+  "lastProgress": {
+    "phase": "questions",
+    "index": 1,
+    "total": 1,
+    "message": "Preparing interview questions from selected facts and today's updates…",
+    "at": "2026-10-15T13:20:33.310Z"
+  },
+  "loadMs": 5390,
+  "summary": {
+    "passed": 1,
+    "total": 3
+  },
+  "uiContextMeter": "54 source tokens (model tokenizer) · 16,384 context · 1 source pass. Largest planned pass: 1,987 tokens including output and headroom. No silent truncation.",
+  "uiStatus": "Reviewed 1 source pass; selected 4 excerpts. Source facts remain historical unless entered today. Review relevance and completeness before applying.",
+  "uiFinalContextMeter": "54 source tokens (model tokenizer) · 16,384 context · 1 source pass. Largest planned pass: 1,987 tokens including output and headroom. No silent truncation.",
+  "uiDraft": "Prior course\nPrior note: hypertension treated with amlodipine 5 mg daily.\nPrior clinic blood pressure: 118/72 mmHg.\n\nUpdates today\nBlood pressure measured today: 164/96 mmHg.\nCurrent medication adherence has not been assessed.\n\nQuestions for this visit\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?]\n[Ask: How are symptoms affecting sleep, activities and daily function?]",
+  "uiApplied": {
+    "section": "history_of_present_illness",
+    "text": "Prior course\nPrior note: hypertension treated with amlodipine 5 mg daily.\nPrior clinic blood pressure: 118/72 mmHg.\n\nUpdates today\nBlood pressure measured today: 164/96 mmHg.\nCurrent medication adherence has not been assessed.\n\nQuestions for this visit\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?]\n[Ask: How are symptoms affecting sleep, activities and daily function?]"
+  },
+  "uiOneLiner": "Prior documented baseline: A historical obstetric entry records [ID]. A separate older obstetric comment records [ID]; discrepancy is unresolved. Prior history: cervical dysplasia treated with two LEEP procedures. Prior history: treated latent syphilis. Prior history: hypothyroidism.",
+  "error": "The real de-identified one-liner missed its baseline/history check.",
+  "finishedAt": "2026-10-15T13:22:13.764Z"
+}

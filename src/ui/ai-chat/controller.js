@@ -18,8 +18,8 @@ import {
   readLocalLlmSettings,
   sharedLocalLlmClient,
   writeLocalLlmSettings
-} from "../../local-llm/client.js?v=20261015-tokenized-drafts";
-import { createAiChatPresentation } from "./presentation.js?v=20261015-tokenized-drafts";
+} from "../../local-llm/client.js?v=20261015-stable-draft-runtime";
+import { createAiChatPresentation } from "./presentation.js?v=20261015-stable-draft-runtime";
 import { chatPaneScrollTop, preserveViewScroll } from "../view-scroll.js?v=20261012-safety";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20261015-simple-review";
 import { isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20261012-safety";

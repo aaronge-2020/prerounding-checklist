@@ -1,0 +1,394 @@
+{
+  "modelKey": "qwen3.5-9b",
+  "phase": "dense-fixed",
+  "label": "clinical-leases-v15",
+  "syntheticOnly": true,
+  "workerLifetime": "verified fresh worker per case; refreshed after at most eight inference calls; UI close releases worker",
+  "startedAt": "2026-10-15T15:48:30.068Z",
+  "stages": [
+    "real browser model loaded and instruction self-test passed"
+  ],
+  "cases": [
+    {
+      "id": "dense-prenatal-one-liner",
+      "elapsedMs": 26282.265000000596,
+      "modelOutputs": [
+        {
+          "stage": "selecting",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": []\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\"P2\", \"P3\", \"P4\", \"P5\", \"P6\"]\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 3,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": []\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 4,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\"P8\"]\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 5,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": []\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 6,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": []\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 7,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": []\n}"
+        },
+        {
+          "stage": "composing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"baseline_ids\": [],\n  \"history_ids\": [\"P2\", \"P3\", \"P4\"],\n  \"uncertainty_ids\": [\"P6\"]\n}"
+        }
+      ],
+      "text": "Prior documented baseline: Prior history: cervical dysplasia treated with two LEEP procedures. Prior history: treated latent syphilis. Prior history: hypothyroidism. A separate older obstetric comment records G6P3033; discrepancy is unresolved.",
+      "evidence": [
+        {
+          "id": "P2",
+          "kind": "prior",
+          "text": "Prior history: cervical dysplasia treated with two LEEP procedures.",
+          "offset": 100,
+          "section": "past_medical_history",
+          "selectionRole": "history_ids"
+        },
+        {
+          "id": "P3",
+          "kind": "prior",
+          "text": "Prior history: treated latent syphilis.",
+          "offset": 168,
+          "section": "past_medical_history",
+          "selectionRole": "history_ids"
+        },
+        {
+          "id": "P4",
+          "kind": "prior",
+          "text": "Prior history: hypothyroidism.",
+          "offset": 208,
+          "section": "past_medical_history",
+          "selectionRole": "history_ids"
+        },
+        {
+          "id": "P6",
+          "kind": "prior",
+          "text": "A separate older obstetric comment records G6P3033; discrepancy is unresolved.",
+          "offset": 285,
+          "section": "past_medical_history",
+          "selectionRole": "uncertainty_ids"
+        }
+      ],
+      "questions": [],
+      "modelKey": "qwen3.5-9b",
+      "chunks": 7,
+      "selectionRounds": 1,
+      "questionPasses": 0,
+      "sourceSentenceCount": 15,
+      "budget": {
+        "contextWindow": 16384,
+        "excludedSourceUnits": 652,
+        "tokenizerMeasured": true,
+        "sourceTokens": 14008,
+        "sourcePasses": 7,
+        "maxPassTokens": 2173
+      },
+      "score": {
+        "passed": false,
+        "failures": [
+          "Missing required prior evidence: G7P3033",
+          "Missing patient description in baseline role: G7P3033"
+        ]
+      }
+    },
+    {
+      "id": "dense-table-only-result-fresh",
+      "elapsedMs": 92955.25500000082,
+      "modelOutputs": [
+        {
+          "stage": "selecting",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\"P1\"]\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\"P2\", \"P3\", \"P4\", \"P5\", \"P6\", \"P7\"]\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 3,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\"P41\", \"P42\", \"P50\", \"P51\", \"P59\", \"P60\"]\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 4,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\"P66\", \"P67\", \"P68\", \"P69\", \"P70\", \"P71\"]\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 5,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\"P104\", \"P105\"]\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 6,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\n    \"P130\",\n    \"P131\",\n    \"P132\",\n    \"P139\",\n    \"P140\",\n    \"P141\"\n  ]\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 7,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\n    \"P162\",\n    \"P163\",\n    \"P164\",\n    \"P165\",\n    \"P166\",\n    \"P167\"\n  ]\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 8,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\"P194\", \"P195\", \"P200\", \"P204\", \"P209\", \"P218\"]\n}"
+        }
+      ],
+      "error": "Cannot pass deleted object as a pointer of type GrammarMatcher",
+      "score": {
+        "passed": false,
+        "failures": [
+          "Cannot pass deleted object as a pointer of type GrammarMatcher"
+        ]
+      }
+    }
+  ],
+  "hashes": {
+    "src/local-llm/note-synthesis.js": "9a8db0930e55f746a58a08bc92e0e92c9c415f0371552fb0c1190cbaf1ea2ac1",
+    "src/local-llm/models.js": "ee06d02498a2aeb47561fc00666728582a981dfb5fc53531bab524cae8e66b1b",
+    "src/local-llm/client.js": "c68b4a81d3ec09ebb14553f3a2f737ce07e4eb56598a11a56c2b2a0957f839f6",
+    "src/local-llm/worker.js": "ecce85e6c2bc4d21c626e47371a87723d25bc9d888fb12343f4daca8cccf3bb7",
+    "src/local-llm/tokenizer.js": "bfbff2eeee54feed5c272d252409a7b31990cbb339456f51e87475cbe612ea69",
+    "src/local-llm/operation-queue.js": "adefaf7f314cd7d265ec4e735ef16ffe0585754102bb8bb99eb2ef37a76c0a3c",
+    "vendor/web-llm/index.js": "85c438012fd890070d2b6e7c7e9d32bb658df9b29388ded6f38fb88abecc6640",
+    "src/local-llm/note-source.js": "45664ee0fcac78d167f8a5431eb0b3df9a3fd36b397bba727fc2c27bc42f6e00",
+    "src/local-llm/draft-privacy-review.js": "e05a74602dac104cb42986dbe95d82cfae6f8e3f519e4a1ce9290fee3331af72",
+    "src/ui/local-draft-privacy-review.js": "f37b9b70781746a83365b6f9a2aacf27a92a3576b2295802eed517552a898eac",
+    "src/ui/local-note-synthesis.js": "3f42c2a32bc0ab342676e3c3fce87a87d1edc1427784a9b66e87cda72f2dd154",
+    "src/ui/local-model-controls.js": "cb526461bd0e32ea41d24c08c7e02c73f5382e9bdb37b4015bb21ed988735b28",
+    "tests/fixtures/local-note-eval.js": "23e7e028899bc3eebde14f6b0b138440b73d346cbb990f4c422eb6b596843b17",
+    "tests/fixtures/local-note-dense-eval.js": "d8deb4626af55e87367d805643675edae947943ade10d0d0ef0ea5c92ea3264f",
+    "tests/fixtures/local-note-eval-score.js": "c80386101b998371f8f31dd8cfa2696cb15ef5db1b21aaa41422de2f364da90f"
+  },
+  "browser": "155.0.4283.45",
+  "hardware": {
+    "facts": {
+      "deviceMemoryGB": 32,
+      "hardwareConcurrency": 32,
+      "platform": "Win32",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0"
+    },
+    "gpu": {
+      "available": true,
+      "shaderF16": true,
+      "maxBufferSize": 2147483648,
+      "maxStorageBufferBindingSize": 2147483644,
+      "adapterDescription": "nvidia blackwell"
+    },
+    "storageAvailableMB": 10240,
+    "recommendation": {
+      "webgpuAvailable": true,
+      "gpu": {
+        "available": true,
+        "shaderF16": true,
+        "maxBufferSize": 2147483648,
+        "maxStorageBufferBindingSize": 2147483644,
+        "adapterDescription": "nvidia blackwell"
+      },
+      "deviceMemoryGB": 32,
+      "hardwareConcurrency": 32,
+      "models": [
+        {
+          "model": {
+            "key": "qwen3.5-0.8b",
+            "webllmId": "Qwen3.5-0.8B-q4f16_1-MLC",
+            "label": "Qwen3.5 0.8B",
+            "params": "0.8B parameters",
+            "vramMB": 1757.49,
+            "approxDownloadMB": 426,
+            "contextWindow": 8192,
+            "minDeviceMemoryGB": 2,
+            "rank": 20,
+            "blurb": "Smallest download; suitable for short draft experiments.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-0.8B-q4f16_1-MLC/resolve/0ec138972555613c1d7812a821778ad0398c8790/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-0.8B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 8192,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3-1.7b",
+            "webllmId": "Qwen3-1.7B-q4f16_1-MLC",
+            "label": "Qwen3 1.7B",
+            "params": "1.7B parameters",
+            "vramMB": 2036.66,
+            "approxDownloadMB": 939,
+            "contextWindow": 4096,
+            "minDeviceMemoryGB": 2,
+            "rank": 10,
+            "blurb": "Previous-generation lightweight option.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3-1.7B-q4f16_1-MLC/resolve/80b3abcec6c3b3f5355dc0cc99cc4fb578f192bc/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-1.7B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 4096
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-2b",
+            "webllmId": "Qwen3.5-2B-q4f16_1-MLC",
+            "label": "Qwen3.5 2B",
+            "params": "2B parameters",
+            "vramMB": 2501.44,
+            "approxDownloadMB": 1032,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 2,
+            "rank": 40,
+            "blurb": "Balanced starting point when GPU memory is unknown.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-2B-q4f16_1-MLC/resolve/dd74e9c8a20c4546df85c844103bff87b6dcacad/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-2B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3-4b",
+            "webllmId": "Qwen3-4B-q4f16_1-MLC",
+            "label": "Qwen3 4B",
+            "params": "4B parameters",
+            "vramMB": 3431.59,
+            "approxDownloadMB": 2174,
+            "contextWindow": 4096,
+            "minDeviceMemoryGB": 8,
+            "rank": 30,
+            "blurb": "Previous-generation larger option.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3-4B-q4f16_1-MLC/resolve/a5c9fab855e3ccbdfed2e7e69683d75f30332161/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-4B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 4096
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-4b",
+            "webllmId": "Qwen3.5-4B-q4f16_1-MLC",
+            "label": "Qwen3.5 4B",
+            "params": "4B parameters",
+            "vramMB": 4379.82,
+            "approxDownloadMB": 2280,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 8,
+            "rank": 50,
+            "blurb": "Larger draft model for devices with more memory.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-4B-q4f16_1-MLC/resolve/44b42469f9e192814bfd90440e3b377d89ba7a13/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-4B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-9b",
+            "webllmId": "Qwen3.5-9B-q4f16_1-MLC",
+            "label": "Qwen3.5 9B",
+            "params": "9B parameters",
+            "vramMB": 7201.01,
+            "approxDownloadMB": 4827,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 8,
+            "rank": 60,
+            "blurb": "Largest option; confirm available GPU or unified memory first.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-9B-q4f16_1-MLC/resolve/c7c5d3f5a81e37b8facbb72970940a1b131314a8/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-9B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        }
+      ],
+      "availableKeys": [
+        "qwen3.5-0.8b",
+        "qwen3-1.7b",
+        "qwen3.5-2b",
+        "qwen3-4b",
+        "qwen3.5-4b",
+        "qwen3.5-9b"
+      ],
+      "recommendedKey": "qwen3.5-4b",
+      "capacity": null
+    }
+  },
+  "lastProgress": {
+    "phase": "refreshing",
+    "message": "Releasing GPU state and verifying the same cached model for the next batch…",
+    "at": "2026-10-15T15:50:23.507Z"
+  },
+  "loadMs": 8578,
+  "requestedCaseIds": [
+    "dense-prenatal-one-liner",
+    "dense-table-only-result-fresh"
+  ],
+  "runtimeErrors": [
+    "Device was lost. This can happen due to insufficient memory or other GPU constraints. Detailed error: unknown: ID3D12Device::GetDeviceRemovedReason failed with DXGI_ERROR_DEVICE_HUNG (0x887A0006)\n - While handling unexpected error type Internal when allowed errors are Validation.\n    at CheckHRESULTImpl (..\\..\\third_party\\dawn\\src\\dawn\\native\\d3d\\D3DError.cpp:121)\n\nBackend messages:\n * Device removed reason: DXGI_ERROR_DEVICE_HUNG (0x887A0006)\n. Please try to reload WebLLM with a less resource-intensive model."
+  ],
+  "summary": {
+    "passed": 0,
+    "total": 2
+  },
+  "uiScope": "short HPI plus baseline-focused one-liner when dense",
+  "error": "page.evaluate: Error: This model requires feature This model requires WebGPU extension shader-f16, which is not enabled in this browser. You can try to launch Chrome Canary in command line with flag \"--enable-dawn-features=allow_unsafe_apis\"., which is not yet supported by this browser.\n    at w.onmessage (http://127.0.0.1:41789/src/local-llm/client.js?v=20261015-stable-draft-runtime:230:50)",
+  "finishedAt": "2026-10-15T15:50:43.347Z"
+}

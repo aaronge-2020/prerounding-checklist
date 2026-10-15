@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { createExternalRequestReview, validateExternalRequest, externalReviewGroups, AI_ENDPOINTS } from "../src/ai/external-request-review.js";
-import { buildLocalSynthesisMessages } from "../src/local-llm/note-synthesis.js?v=20261015-tokenized-drafts";
+import { buildLocalSynthesisMessages } from "../src/local-llm/note-synthesis.js?v=20261015-clinical-drafts";
 import { buildDifferentialScoringRequest } from "../src/ai/decision-scoring.js";
 const endpoint = AI_ENDPOINTS[0];
 const consent = { reviewedContent: true, permittedProvider: true };

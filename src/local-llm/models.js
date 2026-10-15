@@ -2,6 +2,7 @@
 // Sources and evaluation gates: docs/local-model-review.md. Estimates are not
 // measured fit or clinical validation; every load requires a local self-test.
 export const WEBLLM_VERSION = "0.2.85";
+export const LOCAL_LLM_RUNTIME_PATCH = "tvm-shape-ownership-20261015";
 export const LOCAL_MODEL_CATALOG_REVISION = "20261015-hardware-models";
 export const LOCAL_LLM_MODELS = Object.freeze([
   {
@@ -111,13 +112,14 @@ export const LOCAL_LLM_MODELS = Object.freeze([
     "key": "qwen3.5-9b",
     "webllmId": "Qwen3.5-9B-q4f16_1-MLC",
     "label": "Qwen3.5 9B",
+    "draftingExcludedReason": "Failed the dense patient-baseline check and triggered a GPU driver hang in the 12GB laptop evaluation.",
     "params": "9B parameters",
     "vramMB": 7201.01,
     "approxDownloadMB": 4827,
     "contextWindow": 16384,
     "minDeviceMemoryGB": 8,
     "rank": 60,
-    "blurb": "Largest option; confirm available GPU or unified memory first.",
+    "blurb": "Experimental chat option. A 12GB Windows laptop run triggered a GPU driver hang; excluded from note drafting.",
     "requiredFeatures": [
       "shader-f16"
     ],

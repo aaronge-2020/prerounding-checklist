@@ -15,8 +15,8 @@ try {
   await openRealApp(page, server.baseUrl);
   await unlockAndCreatePatient(page);
   await page.evaluate(async () => {
-    const { openLocalNoteSynthesis } = await import("/src/ui/local-note-synthesis.js?v=20261015-tokenized-drafts");
-    const { writeLocalLlmSettings } = await import("/src/local-llm/client.js?v=20261015-tokenized-drafts");
+    const { openLocalNoteSynthesis } = await import("/src/ui/local-note-synthesis.js?v=20261015-clinical-drafts");
+    const { writeLocalLlmSettings } = await import("/src/local-llm/client.js?v=20261015-stable-draft-runtime");
     writeLocalLlmSettings({ selectedModelKey: "" });
     const listeners = new Set();
     let state = { status: "idle", verified: false, activeModelKey: "" };
@@ -41,26 +41,27 @@ try {
         rejectLoad?.(new DOMException("Cancelled", "AbortError")); rejectLoad = null;
       },
       resetChat: async () => {},
-      countTokens: async texts => texts.map(text => Math.ceil(text.length / 2)), chat: async messages => JSON.stringify(messages[0].content.startsWith("Select up to three") ? { questions: [] } : { selected_ids: [...messages[1].content.matchAll(/\[(P\d+|T\d+)\]/g)].map(match => match[1]).slice(0, messages[1].content.includes("Select at most 2 IDs") ? 2 : 3) })
+      countTokens: async texts => texts.map(text => Math.ceil(text.length / 2)), chat: async messages => JSON.stringify(messages[0].content.includes("ONE-LINER CONTRACT") ? { baseline_ids: [...messages[1].content.matchAll(/\[(P\d+|T\d+)\]/g)].map(match => match[1]).slice(0, 1), history_ids: [], uncertainty_ids: [] } : messages[0].content.startsWith("Select up to three") ? { questions: [] } : { selected_ids: [...messages[1].content.matchAll(/\[(P\d+|T\d+)\]/g)].map(match => match[1]).slice(0, messages[1].content.includes("Select at most 2 IDs") ? 2 : 3) })
     };
-    openLocalNoteSynthesis({ source: "Historical source: prior symptom. Current status not documented.", client,
+    openLocalNoteSynthesis({ source: "Historical source: prior symptom. Current status not documented.", sources: [{ id: "imported", label: "Imported note + selected results", text: "Historical source: prior symptom. Current status not documented." }, { id: "working", label: "Current working draft (includes edits)", text: "Explicit clinician edit in working draft." }], client,
       hardwareReport: async () => ({ facts: {}, gpu: { available: true, shaderF16: true, adapterDescription: "Synthetic adapter" }, storageAvailableMB: 20000 }),
       stillCurrent: () => true, apply: (section, text) => { globalThis.__draftApplied = { section, text }; }, copy: async () => {}
     });
   });
   const picker = page.locator("[data-local-model-select]");
   await picker.locator("option").first().waitFor({ state: "attached" });
-  assert.equal(await picker.locator("option").count(), 6);
+  assert.equal(await picker.locator("option").count(), 5);
   assert.equal(await picker.inputValue(), "qwen3.5-2b");
   assert.equal(await page.locator("[data-local-generate]").isDisabled(), true);
   assert.deepEqual(await page.evaluate(() => globalThis.__modelLoadCalls), [], "opening the dialog never downloads a model");
   await page.getByText("Known GPU or unified memory (optional)", { exact: true }).click();
   await page.locator("[data-local-memory-gb]").fill("12");
-  assert.equal(await picker.inputValue(), "qwen3.5-9b", "known 12GB dedicated GPU updates suggestion");
+  assert.equal(await picker.inputValue(), "qwen3.5-4b", "known 12GB dedicated GPU suggests the dense-evaluated drafting model");
+  assert.equal(await picker.locator('[value="qwen3.5-9b"]').count(), 0, "failed drafting model is excluded instead of offered as runnable");
   await page.locator("[data-local-memory-kind]").selectOption("unified");
   await page.locator("[data-local-memory-gb]").fill("8");
   assert.equal(await picker.inputValue(), "qwen3.5-4b", "unified memory reserves more headroom");
-  assert.equal(await picker.locator('[value="qwen3.5-9b"]').evaluate(node => node.disabled), true);
+  assert.equal(await picker.locator('[value="qwen3.5-9b"]').count(), 0);
   await page.locator("[data-local-memory-kind]").selectOption("dedicated");
   await page.locator("[data-local-memory-gb]").fill("12");
   await page.getByText("Known GPU or unified memory (optional)", { exact: true }).click();
@@ -79,7 +80,10 @@ try {
   await sourceEditor.fill(Array.from({ length: 600 }, (_, index) => `Archived sentence ${index}: source context from a previous visit, with no new clinical updates.`).join("\n"));
   assert.match(await page.locator("[data-local-context-budget]").textContent(), /[2-9] source passes/, "long input gets a visible multi-pass plan rather than a whole-note context rejection");
   assert.ok(await page.locator("[data-local-context-bar]").evaluate(node => node.value <= 1));
-  await sourceEditor.fill(originalSource);
+  await page.getByRole("combobox", { name: "Chart representation", exact: true }).selectOption("working");
+  assert.equal(await sourceEditor.inputValue(), "Explicit clinician edit in working draft.");
+  await page.getByRole("combobox", { name: "Chart representation", exact: true }).selectOption("imported");
+  assert.equal(await sourceEditor.inputValue(), originalSource);
   await page.getByText("Information obtained today (optional)", { exact: true }).click();
   await page.getByRole("textbox", { name: "Updates obtained today", exact: true }).fill("Home blood pressure reported today: 146/88 mmHg.");
   await page.setViewportSize({ width: 390, height: 844 });
@@ -101,7 +105,7 @@ try {
   await page.locator("[data-local-generate]").click();
   await page.locator("[data-local-apply]:enabled").waitFor();
   await page.locator("[data-local-apply]").click();
-  assert.match((await page.evaluate(() => globalThis.__draftApplied)).text, /not documented/);
+  assert.match((await page.evaluate(() => globalThis.__draftApplied)).text, /Historical source: prior symptom/);
   assert.equal(await page.locator("[data-local-note-synthesis]").count(), 0);
   assert.deepEqual(externalRequests, [], "deterministic UI transport test makes no provider/model download requests");
   console.log("Draft model controls: picker, hardware suggestions, explicit load, progress, self-test gating, retry, cancellation, mobile and draft invalidation passed.");

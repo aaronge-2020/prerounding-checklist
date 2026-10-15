@@ -1,13 +1,14 @@
-import { sharedLocalLlmClient, localLlmModelByKey } from "../local-llm/client.js?v=20261015-tokenized-drafts";
-import { synthesizeLocalNote, planLocalNoteSynthesis, measureLocalNoteSource, SYNTHESIS_SECTIONS } from "../local-llm/note-synthesis.js?v=20261015-tokenized-drafts";
+import { createLocalDraftPrivacyReview } from "./local-draft-privacy-review.js?v=20261015-clinical-drafts";
+import { sharedLocalLlmClient, localLlmModelByKey } from "../local-llm/client.js?v=20261015-stable-draft-runtime";
+import { synthesizeLocalNote, planLocalNoteSynthesis, measureLocalNoteSource, SYNTHESIS_SECTIONS } from "../local-llm/note-synthesis.js?v=20261015-clinical-drafts";
 import { deidentifyText, getSelectedDeidModelStatus, verifyAdvancedDeidModel } from "../patient-context/deid-client.js?v=20261012-safety";
 import { DEFAULT_DEID_MODEL_KEY } from "../patient-context/deid-model-options.js?v=20261011-request-controls";
 import { aiReviewElement as element, onAiSessionClear } from "./external-ai-review.js?v=20261015-simple-review";
 
-import { createLocalModelControls } from "./local-model-controls.js?v=20261015-tokenized-drafts";
+import { createLocalModelControls } from "./local-model-controls.js?v=20261015-clinical-drafts";
 
-export function openLocalNoteSynthesis({ source, apply, copy, stillCurrent, client = sharedLocalLlmClient(), hardwareReport }) {
-  const dialog = element("dialog", "", { class: "external-ai-review", "aria-label": "Draft on device", "data-local-note-synthesis": "" });
+export function openLocalNoteSynthesis({ source, sources = [], apply, copy, stillCurrent, client = sharedLocalLlmClient(), hardwareReport }) {
+  const dialog = element("dialog", "", { class: "external-ai-review", "aria-label": "Draft on device", "data-local-note-synthesis": "", "data-local-draft-state": "editing" });
   dialog.append(element("h3", "Draft on device"), element("p", "Choose and load a model here, then draft locally. Downloads retrieve model files; chart text stays on this device. Review the source and draft before applying."));
   const section = element("select", "", { "aria-label": "Section to draft" });
   for (const [value, title] of Object.entries(SYNTHESIS_SECTIONS)) section.append(element("option", title, { value }));
@@ -15,9 +16,14 @@ export function openLocalNoteSynthesis({ source, apply, copy, stillCurrent, clie
   const today = element("textarea", "", { rows: "3", "aria-label": "Updates obtained today", placeholder: "Only information explicitly obtained today. Leave blank when precharting.", spellcheck: "false" });
   const input = element("textarea", "", { rows: "8", "aria-label": "Reviewed source material", spellcheck: "false" });
   input.value = source;
+  const sourcePicker = element("select", "", { "aria-label": "Chart representation", "data-local-source-picker": "" });
+  for (const choice of sources) sourcePicker.append(element("option", choice.label, { value: choice.id }));
+  const sourceChoice = element("label", "Chart representation"); sourceChoice.append(sourcePicker); sourceChoice.hidden = sources.length < 2;
   const status = element("p", "", { role: "status", "data-local-draft-status": "" });
   const context = element("p", "", { "data-local-context-budget": "", role: "status", title: "Source tokens use the loaded model tokenizer when available; otherwise an explicit estimate. Per-pass budget includes instructions, source labels, output reserve and headroom." });
   const contextBar = element("progress", "", { max: "1", "aria-label": "Estimated context use per pass", "data-local-context-bar": "" });
+  const privacySlot = element("div", "", { "data-local-privacy-slot": "" });
+  let privacy = null;
   const questions = element("div", "", { "data-local-interview-questions": "" });
   const evidence = element("details", "", { "data-local-draft-evidence": "" });
   const todaySection = element("details"); todaySection.append(element("summary", "Information obtained today (optional)"), today);
@@ -39,7 +45,7 @@ export function openLocalNoteSynthesis({ source, apply, copy, stillCurrent, clie
   let result = "";
   const request = () => ({ source: input.value, todayUpdates: today.value, section: section.value, visitReason: reason.value });
   const renderBudget = budget => {
-    context.textContent = `${budget.tokenizerMeasured ? "" : "≈"}${budget.sourceTokens.toLocaleString()} source tokens (${budget.tokenizerMeasured ? "model tokenizer" : "estimate until model loads"}) · ${budget.contextWindow.toLocaleString()} context · ${budget.sourcePasses} source pass${budget.sourcePasses === 1 ? "" : "es"}. Largest planned pass: ${budget.maxPassTokens.toLocaleString()} tokens including output and headroom. No silent truncation.`;
+    context.textContent = `${budget.tokenizerMeasured ? "" : "≈"}${budget.sourceTokens.toLocaleString()} source tokens (${budget.tokenizerMeasured ? "model tokenizer" : "estimate until model loads"}) · ${budget.contextWindow.toLocaleString()} context · ${budget.sourcePasses} source pass${budget.sourcePasses === 1 ? "" : "es"}. Largest planned pass: ${budget.maxPassTokens.toLocaleString()} tokens including output and headroom. No silent truncation.${budget.excludedSourceUnits ? " Baseline scope excludes result tables, prior exams and plans; use HPI/full draft for those details." : ""}${budget.sourcePasses > 1 && budget.contextWindow <= 4096 ? " Choose a Qwen3.5 16K model for fewer passes." : ""}`;
     contextBar.value = Math.min(1, budget.maxPassTokens / budget.contextWindow);
   };
   const updateBudget = () => {
@@ -58,10 +64,11 @@ export function openLocalNoteSynthesis({ source, apply, copy, stillCurrent, clie
       } catch (error) { if (!closed && revision === measurementRevision) context.textContent = `Local token count unavailable: ${error.message}`; }
     }, 250);
   };
-  const invalidate = (retainMeasurement = false) => { version++; if (!retainMeasurement) tokenization = null; result = ""; output.value = ""; output.hidden = true; outputLabel.hidden = true; evidence.hidden = true; evidence.replaceChildren(); questions.replaceChildren(); accept.disabled = true; copyButton.disabled = true; updateBudget(); scheduleMeasurement(); };
+  const invalidate = (retainMeasurement = false) => { version++; dialog.dataset.localDraftState = "editing"; privacy?.clear(); privacy = null; privacySlot.replaceChildren(); if (!retainMeasurement) tokenization = null; result = ""; output.value = ""; output.hidden = true; outputLabel.hidden = true; evidence.hidden = true; evidence.replaceChildren(); questions.replaceChildren(); accept.disabled = true; copyButton.disabled = true; updateBudget(); scheduleMeasurement(); };
   for (const node of [section, reason, today, input]) node.addEventListener("input", () => invalidate());
-  const clear = () => { closed = true; clearTimeout(measureTimer); measurementRevision++; invalidate(); modelControls.dispose(); if (busy) void client.unload().catch(() => console.warn("Unable to stop local generation.")); stop(); dialog.close(); dialog.replaceChildren(); dialog.remove(); };
-  modelControls = createLocalModelControls({ client, hardwareReport, onChange: () => { invalidate(); generate.disabled = busy || !modelControls?.isReady(); } });
+  sourcePicker.addEventListener("change", () => { input.value = sources.find(choice => choice.id === sourcePicker.value)?.text || ""; invalidate(); });
+  const clear = () => { closed = true; clearTimeout(measureTimer); measurementRevision++; invalidate(); modelControls.dispose(); void client.unload?.().catch(() => console.warn("Unable to stop local generation.")); stop(); dialog.close(); dialog.replaceChildren(); dialog.remove(); };
+  modelControls = createLocalModelControls({ client, hardwareReport, onChange: () => { if (!busy) invalidate(); generate.disabled = busy || !modelControls?.isReady(); } });
   generate.disabled = !modelControls.isReady();
   updateBudget(); scheduleMeasurement();
   const stop = onAiSessionClear(clear);
@@ -72,6 +79,7 @@ export function openLocalNoteSynthesis({ source, apply, copy, stillCurrent, clie
     invalidate(true);
     const started = version;
     busy = true;
+    dialog.dataset.localDraftState = "generating";
     generate.disabled = true;
     try {
       const loaded = client.getStatus();
@@ -83,6 +91,8 @@ export function openLocalNoteSynthesis({ source, apply, copy, stillCurrent, clie
         isCurrent: () => !closed && version === started && stillCurrent(),
         onProgress: progress => { if (!closed) status.textContent = progress.message; }
       });
+      // Clear chart-bearing model history while retaining loaded weights.
+      await client.resetChat();
       const text = draft.text;
       renderBudget(draft.budget);
       if (closed || version !== started || !stillCurrent()) return;
@@ -94,22 +104,28 @@ export function openLocalNoteSynthesis({ source, apply, copy, stillCurrent, clie
       result = safe.text;
       approvedTarget = section.value;
       output.value = result; output.rows = approvedTarget === "one_liner" ? 4 : 12; output.hidden = false; outputLabel.hidden = false; evidence.hidden = false;
-      accept.disabled = approvedTarget === "full_note";
-      copyButton.disabled = false;
-      if (approvedTarget === "one_liner" && draft.questions.length) { questions.append(element("h4", "Questions for today")); for (const item of draft.questions) questions.append(element("p", `[Ask: ${item.question}]`)); }
+      const updatePrivacy = () => {
+        if (closed || !privacy) return;
+        result = privacy.text(); output.value = result;
+        accept.disabled = approvedTarget === "full_note" || privacy.pending();
+        copyButton.disabled = privacy.pending();
+      };
+      privacy = createLocalDraftPrivacyReview(text, safe, updatePrivacy);
+      privacySlot.append(privacy.element); updatePrivacy();
       evidence.append(element("summary", `Sources used: ${draft.evidence.length} exact excerpts`));
       for (const item of draft.evidence) evidence.append(element("p", `${item.id} · ${item.kind === "today" ? "Entered today" : "Prior / unconfirmed"}: ${item.text}`));
-      status.textContent = `Reviewed ${draft.chunks} source pass${draft.chunks === 1 ? "" : "es"}; selected ${draft.evidence.length} excerpts. Facts are quoted from the source; questions remain unanswered. Review relevance and completeness before applying.`;
-    } catch (error) { if (!closed) status.textContent = error?.message || "Local generation failed. Nothing was applied."; }
+      dialog.dataset.localDraftState = "review";
+      status.textContent = `Reviewed ${draft.chunks} source pass${draft.chunks === 1 ? "" : "es"}${draft.budget.excludedSourceUnits ? " within baseline/history scope" : ""}; selected ${draft.evidence.length} excerpts. Source facts remain historical unless entered today. Review relevance and completeness before applying.`;
+    } catch (error) { if (!closed) { await client.unload?.(); dialog.dataset.localDraftState = "error"; status.textContent = error?.message || "Local generation failed. Nothing was applied."; } }
     finally { busy = false; modelControls.setBusy(false); generate.disabled = !modelControls.isReady(); scheduleMeasurement(); }
   });
-  accept.addEventListener("click", () => { if (result && stillCurrent()) { apply(approvedTarget, result); clear(); } });
-  copyButton.addEventListener("click", () => { if (result && stillCurrent()) void copy(result); });
+  accept.addEventListener("click", () => { if (result && !privacy?.pending() && stillCurrent()) { apply(approvedTarget, result); clear(); } });
+  copyButton.addEventListener("click", () => { if (result && !privacy?.pending() && stillCurrent()) void copy(result); });
   accept.disabled = true;
   copyButton.disabled = true;
   const controls = element("div", "", { class: "button-row" });
   controls.append(generate, accept, copyButton, close);
-  dialog.append(modelControls.element, element("label", "Section to draft"), section, element("label", "Visit focus (optional)"), reason, element("label", "Prior notes and copied chart context — not current findings"), input, todaySection, context, contextBar, status, outputLabel, output, questions, evidence, controls);
+  dialog.append(modelControls.element, element("label", "Section to draft"), section, element("label", "Visit focus (optional)"), reason, sourceChoice, element("label", "Prior notes and copied chart context — not current findings"), input, todaySection, context, contextBar, status, outputLabel, output, privacySlot, questions, evidence, controls);
   document.body.append(dialog);
   dialog.showModal();
 }

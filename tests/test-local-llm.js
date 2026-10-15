@@ -16,7 +16,7 @@ import {
   recommendLocalLlmModels,
   inspectWebGpu,
   detectWebGpu
-} from "../src/local-llm/models.js?v=20261015-tokenized-drafts";
+} from "../src/local-llm/models.js?v=20261015-stable-draft-runtime";
 import {
   buildSectionSplitPrompt,
   chunkNoteForSplit,
@@ -49,7 +49,7 @@ import {
   listPatientContextPieces
 } from "../src/local-llm/patient-context.js";
 import { CHARS_PER_TOKEN, TOKEN_SAFETY_MARGIN, buildChatMessages, estimateTokens } from "../src/local-llm/context-budget.js";
-import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js?v=20261015-tokenized-drafts";
+import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js?v=20261015-stable-draft-runtime";
 import { buildSystemPrompt } from "../src/local-llm/system-prompt.js";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../src/local-llm/system-prompt.js";
 import { renderChatMarkdown } from "../src/local-llm/markdown.js";

@@ -1,0 +1,44 @@
+[
+  {
+    "modelKey": "qwen3.5-0.8b",
+    "url": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-0.8B-q4f16_1_cs1k-webgpu.wasm",
+    "sha256": "3dd8cff049bf4599bfbb505880aea11ba95f85f3924b7e171f967d1f1348ae29",
+    "bytes": 6197129,
+    "callerReferenceSupported": true
+  },
+  {
+    "modelKey": "qwen3-1.7b",
+    "url": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-1.7B-q4f16_1_cs1k-webgpu.wasm",
+    "sha256": "8161aaa4b40bccf19fcedb2f2e8c221eb9efb72d2198681f1958c9c1e05a682f",
+    "bytes": 5566554,
+    "callerReferenceSupported": true
+  },
+  {
+    "modelKey": "qwen3.5-2b",
+    "url": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-2B-q4f16_1_cs1k-webgpu.wasm",
+    "sha256": "b0f951d411e4fd59fe2af76be9328905ae30549e570a192a841c958b293ecd53",
+    "bytes": 6217509,
+    "callerReferenceSupported": true
+  },
+  {
+    "modelKey": "qwen3-4b",
+    "url": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-4B-q4f16_1_cs1k-webgpu.wasm",
+    "sha256": "a986a53c92579714eb7ec36856004f5fb75272c9f69091f14eb6b2086eea4440",
+    "bytes": 5847049,
+    "callerReferenceSupported": true
+  },
+  {
+    "modelKey": "qwen3.5-4b",
+    "url": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-4B-q4f16_1_cs1k-webgpu.wasm",
+    "sha256": "7e8f9895daa710a83952efac4d5c6f36e9f89dc684b25022746d881bdc904712",
+    "bytes": 6502002,
+    "callerReferenceSupported": true
+  },
+  {
+    "modelKey": "qwen3.5-9b",
+    "url": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-9B-q4f16_1_cs1k-webgpu.wasm",
+    "sha256": "3014c1d8958083edf621145596a6d7a832178aef2aefe48a0dbde16d38f7c857",
+    "bytes": 6528086,
+    "callerReferenceSupported": true
+  }
+]

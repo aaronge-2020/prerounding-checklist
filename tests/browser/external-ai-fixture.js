@@ -11,6 +11,7 @@ export async function installSyntheticDeid(page) {
       export async function deidentifyText(text, options = {}) {
         if (options.mode === "structured") return real.deidentifyText(text, options);
         if (globalThis.__privacyScanFails) throw new Error("Synthetic scan failure");
+        if (typeof globalThis.__privacyScanResult === "function") return globalThis.__privacyScanResult(String(text));
         return {text: String(text).replaceAll("Synthetic Person", "[NAME]"), modelId:"synthetic-model", entities:[], counts:{}, residualWarnings:[]};
       }
     ` });

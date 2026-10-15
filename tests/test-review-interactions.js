@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createReviewPresentation } from "../src/ui/review/presentation.js";
-import { createReviewController } from "../src/ui/review/controller.js?v=20261015-tokenized-drafts";
+import { createReviewController } from "../src/ui/review/controller.js?v=20261015-clinical-drafts";
 import { parsePrimaryTeamNote } from "../src/patient-context/primary-team-note-parser.js";
 import { renderFinalNotePlainText } from "../src/note-drafts/render.js";
 

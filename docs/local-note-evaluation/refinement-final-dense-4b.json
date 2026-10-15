@@ -1,0 +1,1636 @@
+{
+  "modelKey": "qwen3.5-4b",
+  "phase": "dense-fixed",
+  "label": "clinical-leases-v15",
+  "syntheticOnly": true,
+  "workerLifetime": "verified fresh worker per case; refreshed after at most eight inference calls; UI close releases worker",
+  "startedAt": "2026-10-15T15:31:59.311Z",
+  "stages": [
+    "real browser model loaded and instruction self-test passed"
+  ],
+  "cases": [
+    {
+      "id": "dense-prenatal-one-liner",
+      "elapsedMs": 17575.429999999702,
+      "modelOutputs": [
+        {
+          "stage": "selecting",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P1\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P2\", \"P3\", \"P4\", \"P5\", \"P6\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 3,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P7\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 4,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P8\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 5,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P9\", \"P10\", \"P11\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 6,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P660\", \"P661\", \"P662\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 7,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": []}"
+        },
+        {
+          "stage": "composing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"baseline_ids\":[\"P1\",\"P660\"],\"history_ids\":[\"P2\",\"P3\",\"P4\"],\"uncertainty_ids\":[\"P6\"]}"
+        }
+      ],
+      "text": "Prior documented baseline: Prenatal follow-up; current interview not yet obtained. The previous prenatal narrative records a desired spontaneous pregnancy, G7P3033 at 13w2d by dating ultrasound. Prior history: cervical dysplasia treated with two LEEP procedures. Prior history: treated latent syphilis. Prior history: hypothyroidism. A separate older obstetric comment records G6P3033; discrepancy is unresolved.",
+      "evidence": [
+        {
+          "id": "P1",
+          "kind": "prior",
+          "text": "Prenatal follow-up; current interview not yet obtained.",
+          "offset": 19,
+          "section": "chief_complaint",
+          "selectionRole": "baseline_ids"
+        },
+        {
+          "id": "P2",
+          "kind": "prior",
+          "text": "Prior history: cervical dysplasia treated with two LEEP procedures.",
+          "offset": 100,
+          "section": "past_medical_history",
+          "selectionRole": "history_ids"
+        },
+        {
+          "id": "P3",
+          "kind": "prior",
+          "text": "Prior history: treated latent syphilis.",
+          "offset": 168,
+          "section": "past_medical_history",
+          "selectionRole": "history_ids"
+        },
+        {
+          "id": "P4",
+          "kind": "prior",
+          "text": "Prior history: hypothyroidism.",
+          "offset": 208,
+          "section": "past_medical_history",
+          "selectionRole": "history_ids"
+        },
+        {
+          "id": "P6",
+          "kind": "prior",
+          "text": "A separate older obstetric comment records G6P3033; discrepancy is unresolved.",
+          "offset": 285,
+          "section": "past_medical_history",
+          "selectionRole": "uncertainty_ids"
+        },
+        {
+          "id": "P660",
+          "kind": "prior",
+          "text": "The previous prenatal narrative records a desired spontaneous pregnancy, G7P3033 at 13w2d by dating ultrasound.",
+          "offset": 28933,
+          "section": "other",
+          "selectionRole": "baseline_ids"
+        }
+      ],
+      "questions": [],
+      "modelKey": "qwen3.5-4b",
+      "chunks": 7,
+      "selectionRounds": 1,
+      "questionPasses": 0,
+      "sourceSentenceCount": 15,
+      "budget": {
+        "contextWindow": 16384,
+        "excludedSourceUnits": 652,
+        "tokenizerMeasured": true,
+        "sourceTokens": 14008,
+        "sourcePasses": 7,
+        "maxPassTokens": 2173
+      },
+      "score": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "id": "dense-renal-current-updates",
+      "elapsedMs": 201632.77499999944,
+      "modelOutputs": [
+        {
+          "stage": "selecting",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P1\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P2\", \"P3\", \"P4\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 3,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P5\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 4,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P6\", \"P7\", \"P8\", \"P9\", \"P10\", \"P11\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 5,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P38\", \"P39\", \"P40\", \"P41\", \"P42\", \"P43\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 6,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P70\", \"P71\", \"P72\", \"P73\", \"P74\", \"P75\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 7,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P102\", \"P105\", \"P110\", \"P114\", \"P118\", \"P127\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 8,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P134\", \"P135\", \"P136\", \"P137\", \"P138\", \"P139\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 9,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P166\", \"P167\", \"P168\", \"P169\", \"P170\", \"P171\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 10,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P198\", \"P199\", \"P200\", \"P201\", \"P202\", \"P203\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 11,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P230\", \"P231\", \"P232\", \"P233\", \"P234\", \"P235\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 12,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P262\", \"P263\", \"P264\", \"P265\", \"P266\", \"P267\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 13,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P294\", \"P295\", \"P296\", \"P297\", \"P298\", \"P299\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 14,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P326\", \"P327\", \"P330\", \"P331\", \"P332\", \"P333\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 15,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P358\", \"P359\", \"P360\", \"P361\", \"P362\", \"P363\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 16,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P390\", \"P393\", \"P395\", \"P396\", \"P397\", \"P398\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 17,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P422\", \"P423\", \"P424\", \"P425\", \"P426\", \"P427\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 18,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P454\", \"P455\", \"P456\", \"P457\", \"P458\", \"P459\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 19,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P486\", \"P487\", \"P488\", \"P489\", \"P490\", \"P491\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 20,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P519\", \"P520\", \"P521\", \"P522\", \"P523\", \"P524\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 21,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P550\", \"P551\", \"P552\", \"P553\", \"P554\", \"P555\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 22,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P582\", \"P583\", \"P584\", \"P585\", \"P586\", \"P587\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 23,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P614\", \"P615\", \"P616\", \"P617\", \"P618\", \"P619\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 24,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P646\", \"P647\", \"P648\", \"P649\", \"P650\", \"P651\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 25,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P654\", \"P655\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 26,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P657\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 27,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"T658\", \"T659\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P6\", \"P7\", \"P8\", \"P9\", \"P10\", \"P11\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P168\", \"P169\", \"P170\", \"P171\", \"P198\", \"P199\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 3,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P332\", \"P333\", \"P361\", \"P363\", \"P426\", \"P487\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 4,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P519\", \"P520\", \"P521\", \"P522\", \"P523\", \"P524\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P6\", \"P168\", \"P198\", \"P361\", \"P426\", \"P519\"]}"
+        },
+        {
+          "stage": "questions",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"questions\": [\n    {\n      \"question_id\": \"current_regimen\",\n      \"source_ids\": [\n        \"T658\"\n      ]\n    },\n    {\n      \"question_id\": \"interval_tests\",\n      \"source_ids\": [\n        \"T659\"\n      ]\n    },\n    {\n      \"question_id\": \"adherence_barriers\",\n      \"source_ids\": [\n        \"P3\"\n      ]\n    }\n  ]\n}"
+        }
+      ],
+      "text": "Prior course\nMedical history (historical / confirm)\nPrior history: type 2 diabetes, hypertension and chronic kidney disease.\n\nMedication list (historical / confirm)\nPrior medication list records enalapril 20 mg daily.\nA separate nephrology list records enalapril 10 mg daily; actual dose is unconfirmed.\nPrior metformin dose: 500 mg twice daily.\n\nAllergies (historical / confirm)\nSulfonamide antibiotics: rash in the prior chart.\n\nChart results (historical / confirm)\nChart panel visit-1 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11\tg/dL\t11.5–15.5\nChart panel visit-19 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.6\tg/dL\t11.5–15.5\nChart panel visit-22 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nPotassium\t4.2\tmmol/L\t3.5–5.1\nChart panel visit-40 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nCreatinine\t1\tmg/dL\t0.5–1.1\nChart panel visit-47 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nTSH\t2.1\tmIU/L\t0.4–4.0\nChart panel additional-record-10 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11\tg/dL\t11.5–15.5\nMost recently supplied laboratory report (collection time not supplied): potassium 5.6 mmol/L (H); creatinine 1.9 mg/dL.\nAn earlier supplied panel lists creatinine 1.2 mg/dL.\n\nUpdates today\nPatient reports a pillbox but does not know the enalapril dose.\nNo repeat chemistry result is available today.\n\nQuestions for this visit\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?]\n[Ask: What makes the treatment plan difficult to follow, and what support would help?]\n\nPrior follow-up to reconcile\nPrior plan: repeat chemistry and reconcile the medication bottles; completion and repeat results are not documented.\n[Completion / result / current relevance: ____]",
+      "evidence": [
+        {
+          "id": "P1",
+          "kind": "prior",
+          "text": "Prior history: type 2 diabetes, hypertension and chronic kidney disease.",
+          "offset": 24,
+          "section": "past_medical_history"
+        },
+        {
+          "id": "P2",
+          "kind": "prior",
+          "text": "Prior medication list records enalapril 20 mg daily.",
+          "offset": 113,
+          "section": "medications"
+        },
+        {
+          "id": "P3",
+          "kind": "prior",
+          "text": "A separate nephrology list records enalapril 10 mg daily; actual dose is unconfirmed.",
+          "offset": 166,
+          "section": "medications"
+        },
+        {
+          "id": "P4",
+          "kind": "prior",
+          "text": "Prior metformin dose: 500 mg twice daily.",
+          "offset": 252,
+          "section": "medications"
+        },
+        {
+          "id": "P5",
+          "kind": "prior",
+          "text": "Sulfonamide antibiotics: rash in the prior chart.",
+          "offset": 308,
+          "section": "allergies"
+        },
+        {
+          "id": "P6",
+          "kind": "prior",
+          "text": "Hemoglobin\t11\tg/dL\t11.5–15.5",
+          "offset": 466,
+          "section": "results",
+          "tableContext": "Chart panel visit-1 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P168",
+          "kind": "prior",
+          "text": "Hemoglobin\t11.6\tg/dL\t11.5–15.5",
+          "offset": 7429,
+          "section": "results",
+          "tableContext": "Chart panel visit-19 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P198",
+          "kind": "prior",
+          "text": "Potassium\t4.2\tmmol/L\t3.5–5.1",
+          "offset": 8685,
+          "section": "results",
+          "tableContext": "Chart panel visit-22 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P361",
+          "kind": "prior",
+          "text": "Creatinine\t1\tmg/dL\t0.5–1.1",
+          "offset": 15681,
+          "section": "results",
+          "tableContext": "Chart panel visit-40 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P426",
+          "kind": "prior",
+          "text": "TSH\t2.1\tmIU/L\t0.4–4.0",
+          "offset": 18460,
+          "section": "results",
+          "tableContext": "Chart panel visit-47 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P519",
+          "kind": "prior",
+          "text": "Hemoglobin\t11\tg/dL\t11.5–15.5",
+          "offset": 22630,
+          "section": "results",
+          "tableContext": "Chart panel additional-record-10 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P654",
+          "kind": "prior",
+          "text": "Most recently supplied laboratory report (collection time not supplied): potassium 5.6 mmol/L (H); creatinine 1.9 mg/dL.",
+          "offset": 28516,
+          "section": "results"
+        },
+        {
+          "id": "P655",
+          "kind": "prior",
+          "text": "An earlier supplied panel lists creatinine 1.2 mg/dL.",
+          "offset": 28637,
+          "section": "results"
+        },
+        {
+          "id": "P657",
+          "kind": "prior",
+          "text": "Prior plan: repeat chemistry and reconcile the medication bottles; completion and repeat results are not documented.",
+          "offset": 28769,
+          "section": "plan"
+        },
+        {
+          "id": "T658",
+          "kind": "today",
+          "text": "Patient reports a pillbox but does not know the enalapril dose.",
+          "offset": 0
+        },
+        {
+          "id": "T659",
+          "kind": "today",
+          "text": "No repeat chemistry result is available today.",
+          "offset": 64
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "current_regimen",
+          "question": "Which medicines, doses and schedules are you actually using now?",
+          "sourceIds": [
+            "T658"
+          ]
+        },
+        {
+          "questionId": "interval_tests",
+          "question": "Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?",
+          "sourceIds": [
+            "T659"
+          ]
+        },
+        {
+          "questionId": "adherence_barriers",
+          "question": "What makes the treatment plan difficult to follow, and what support would help?",
+          "sourceIds": [
+            "P3"
+          ]
+        }
+      ],
+      "modelKey": "qwen3.5-4b",
+      "chunks": 27,
+      "selectionRounds": 2,
+      "questionPasses": 1,
+      "sourceSentenceCount": 659,
+      "budget": {
+        "contextWindow": 16384,
+        "excludedSourceUnits": 0,
+        "tokenizerMeasured": true,
+        "sourceTokens": 13896,
+        "sourcePasses": 27,
+        "maxPassTokens": 4029
+      },
+      "score": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "id": "dense-full-note-meds-allergy-plan",
+      "elapsedMs": 197762.65499999933,
+      "modelOutputs": [
+        {
+          "stage": "selecting",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P1\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P2\", \"P3\", \"P4\", \"P5\", \"P6\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 3,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P7\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 4,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P8\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 5,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P9\", \"P10\", \"P11\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 6,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P12\", \"P13\", \"P14\", \"P15\", \"P16\", \"P17\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 7,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P44\", \"P45\", \"P46\", \"P47\", \"P48\", \"P49\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 8,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P76\", \"P77\", \"P78\", \"P79\", \"P80\", \"P81\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 9,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P108\", \"P111\", \"P117\", \"P120\", \"P126\", \"P135\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 10,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P140\", \"P141\", \"P142\", \"P143\", \"P144\", \"P145\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 11,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P172\", \"P173\", \"P174\", \"P175\", \"P176\", \"P177\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 12,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P204\", \"P205\", \"P206\", \"P207\", \"P208\", \"P209\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 13,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P236\", \"P237\", \"P238\", \"P239\", \"P240\", \"P241\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 14,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P268\", \"P269\", \"P270\", \"P271\", \"P272\", \"P273\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 15,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P300\", \"P301\", \"P302\", \"P303\", \"P304\", \"P305\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 16,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P332\", \"P333\", \"P334\", \"P335\", \"P336\", \"P337\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 17,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P364\", \"P365\", \"P366\", \"P367\", \"P368\", \"P369\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 18,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P396\", \"P397\", \"P398\", \"P399\", \"P400\", \"P401\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 19,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P428\", \"P429\", \"P430\", \"P431\", \"P432\", \"P433\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 20,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P460\", \"P461\", \"P462\", \"P463\", \"P464\", \"P465\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 21,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P492\", \"P493\", \"P494\", \"P495\", \"P496\", \"P497\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 22,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P524\", \"P525\", \"P526\", \"P527\", \"P528\", \"P529\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 23,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P556\", \"P557\", \"P558\", \"P561\", \"P565\", \"P566\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 24,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P588\", \"P589\", \"P590\", \"P591\", \"P592\", \"P593\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 25,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P620\", \"P621\", \"P622\", \"P623\", \"P624\", \"P625\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 26,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P652\", \"P653\", \"P654\", \"P655\", \"P656\", \"P657\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 27,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P660\", \"P661\", \"P662\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 28,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P663\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 29,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P664\", \"P665\", \"P666\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P12\", \"P44\", \"P45\", \"P46\", \"P47\", \"P48\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P174\", \"P175\", \"P176\", \"P177\", \"P205\", \"P207\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 3,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P336\", \"P337\", \"P364\", \"P365\", \"P366\", \"P367\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 4,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P524\", \"P525\", \"P526\", \"P527\", \"P528\", \"P529\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P12\", \"P44\", \"P45\", \"P46\", \"P47\", \"P48\"]}"
+        },
+        {
+          "stage": "questions",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"questions\": [\n    {\n      \"question_id\": \"interval_symptoms\",\n      \"source_ids\": [\n        \"P662\"\n      ]\n    },\n    {\n      \"question_id\": \"current_regimen\",\n      \"source_ids\": [\n        \"P7\"\n      ]\n    },\n    {\n      \"question_id\": \"adherence_barriers\",\n      \"source_ids\": [\n        \"P7\"\n      ]\n    }\n  ]\n}"
+        }
+      ],
+      "text": "Visit focus\nPrepare prenatal follow-up\n\nPrior documented history and course\nReason for prior visit (historical / confirm)\nPrenatal follow-up; current interview not yet obtained.\n\nMedical history (historical / confirm)\nPrior history: cervical dysplasia treated with two LEEP procedures.\nPrior history: treated latent syphilis.\nPrior history: hypothyroidism.\nA historical obstetric entry records G6P2032.\nA separate older obstetric comment records G5P2032; discrepancy is unresolved.\n\nMedication list (historical / confirm)\nMedication\tDose\tRecorded instructions\nLevothyroxine\t75 mcg\tonce daily before breakfast\nPrenatal vitamin\t1 tablet\tonce daily\n\nAllergies (historical / confirm)\nPenicillin: prior urticaria; reaction details require confirmation.\n\nSocial history (historical / confirm)\nPrior chart: former tobacco use.\nAlcohol use during this pregnancy has not been documented.\nPrevious food security screen reported no difficulty obtaining food.\n\nChart results (historical / confirm)\nChart panel visit-1 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11\tg/dL\t11.5–15.5\nChart panel visit-4 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nGlucose\t91\tmg/dL\t70–99\nTSH\t1.4000000000000001\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nChart panel visit-5 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11.4\tg/dL\t11.5–15.5\n\nOther documented history (historical / confirm)\nThe previous prenatal narrative records a desired spontaneous pregnancy, G6P2032 at 12w1d by dating ultrasound.\nThat gestational age is historical; no current dating was supplied.\nAt the previous visit there was no bleeding or fluid leakage; these symptoms have not been reassessed.\n\nPrior assessment (historical / confirm)\nPrior assessment: [ID] @ [ID], doing well.\n\nHPI / updates today\n[Ask: Current symptoms, interval changes, medications and concerns today?]\n\nExamination today\n[Complete from today's examination; prior findings are not current findings.]\n\nAssessment and plan today\n[Complete after reviewing today's history, examination and results.]\n\nQuestions for this visit\n[Ask: What symptoms are new, improved or worse since the previous visit?]\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: What makes the treatment plan difficult to follow, and what support would help?]\n\nPrior follow-up to reconcile\nPrior plan: verify repeat syphilis screening result.\n[Completion / result / current relevance: ____]\n\nPrior plan: review thyroid testing and current levothyroxine use.\n[Completion / result / current relevance: ____]\n\nPrior plan: confirm cervical surveillance arrangements after prior LEEP procedures.\n[Completion / result / current relevance: ____]",
+      "evidence": [
+        {
+          "id": "P1",
+          "kind": "prior",
+          "text": "Prenatal follow-up; current interview not yet obtained.",
+          "offset": 19,
+          "section": "chief_complaint"
+        },
+        {
+          "id": "P2",
+          "kind": "prior",
+          "text": "Prior history: cervical dysplasia treated with two LEEP procedures.",
+          "offset": 100,
+          "section": "past_medical_history"
+        },
+        {
+          "id": "P3",
+          "kind": "prior",
+          "text": "Prior history: treated latent syphilis.",
+          "offset": 168,
+          "section": "past_medical_history"
+        },
+        {
+          "id": "P4",
+          "kind": "prior",
+          "text": "Prior history: hypothyroidism.",
+          "offset": 208,
+          "section": "past_medical_history"
+        },
+        {
+          "id": "P5",
+          "kind": "prior",
+          "text": "A historical obstetric entry records G6P2032.",
+          "offset": 239,
+          "section": "past_medical_history"
+        },
+        {
+          "id": "P6",
+          "kind": "prior",
+          "text": "A separate older obstetric comment records G5P2032; discrepancy is unresolved.",
+          "offset": 285,
+          "section": "past_medical_history"
+        },
+        {
+          "id": "P7",
+          "kind": "prior",
+          "text": "Medication\tDose\tRecorded instructions\nLevothyroxine\t75 mcg\tonce daily before breakfast\nPrenatal vitamin\t1 tablet\tonce daily",
+          "offset": 380,
+          "section": "medications"
+        },
+        {
+          "id": "P8",
+          "kind": "prior",
+          "text": "Penicillin: prior urticaria; reaction details require confirmation.",
+          "offset": 518,
+          "section": "allergies"
+        },
+        {
+          "id": "P9",
+          "kind": "prior",
+          "text": "Prior chart: former tobacco use.",
+          "offset": 605,
+          "section": "social_history"
+        },
+        {
+          "id": "P10",
+          "kind": "prior",
+          "text": "Alcohol use during this pregnancy has not been documented.",
+          "offset": 638,
+          "section": "social_history"
+        },
+        {
+          "id": "P11",
+          "kind": "prior",
+          "text": "Previous food security screen reported no difficulty obtaining food.",
+          "offset": 697,
+          "section": "social_history"
+        },
+        {
+          "id": "P12",
+          "kind": "prior",
+          "text": "Hemoglobin\t11\tg/dL\t11.5–15.5",
+          "offset": 874,
+          "section": "results",
+          "tableContext": "Chart panel visit-1 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P44",
+          "kind": "prior",
+          "text": "Glucose\t91\tmg/dL\t70–99",
+          "offset": 2183,
+          "section": "results",
+          "tableContext": "Chart panel visit-4 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P45",
+          "kind": "prior",
+          "text": "TSH\t1.4000000000000001\tmIU/L\t0.4–4.0",
+          "offset": 2206,
+          "section": "results",
+          "tableContext": "Chart panel visit-4 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P46",
+          "kind": "prior",
+          "text": "Urine protein\tnegative\tqualitative\tnegative",
+          "offset": 2243,
+          "section": "results",
+          "tableContext": "Chart panel visit-4 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P47",
+          "kind": "prior",
+          "text": "Urine glucose\tnegative\tqualitative\tnegative",
+          "offset": 2287,
+          "section": "results",
+          "tableContext": "Chart panel visit-4 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P48",
+          "kind": "prior",
+          "text": "Hemoglobin\t11.4\tg/dL\t11.5–15.5",
+          "offset": 2428,
+          "section": "results",
+          "tableContext": "Chart panel visit-5 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P660",
+          "kind": "prior",
+          "text": "The previous prenatal narrative records a desired spontaneous pregnancy, G6P2032 at 12w1d by dating ultrasound.",
+          "offset": 28933,
+          "section": "other"
+        },
+        {
+          "id": "P661",
+          "kind": "prior",
+          "text": "That gestational age is historical; no current dating was supplied.",
+          "offset": 29045,
+          "section": "other"
+        },
+        {
+          "id": "P662",
+          "kind": "prior",
+          "text": "At the previous visit there was no bleeding or fluid leakage; these symptoms have not been reassessed.",
+          "offset": 29113,
+          "section": "other"
+        },
+        {
+          "id": "P663",
+          "kind": "prior",
+          "text": "Prior assessment: [ID] @ [ID], doing well.",
+          "offset": 29231,
+          "section": "assessment"
+        },
+        {
+          "id": "P664",
+          "kind": "prior",
+          "text": "Prior plan: verify repeat syphilis screening result.",
+          "offset": 29283,
+          "section": "plan"
+        },
+        {
+          "id": "P665",
+          "kind": "prior",
+          "text": "Prior plan: review thyroid testing and current levothyroxine use.",
+          "offset": 29336,
+          "section": "plan"
+        },
+        {
+          "id": "P666",
+          "kind": "prior",
+          "text": "Prior plan: confirm cervical surveillance arrangements after prior LEEP procedures.",
+          "offset": 29402,
+          "section": "plan"
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "interval_symptoms",
+          "question": "What symptoms are new, improved or worse since the previous visit?",
+          "sourceIds": [
+            "P662"
+          ]
+        },
+        {
+          "questionId": "current_regimen",
+          "question": "Which medicines, doses and schedules are you actually using now?",
+          "sourceIds": [
+            "P7"
+          ]
+        },
+        {
+          "questionId": "adherence_barriers",
+          "question": "What makes the treatment plan difficult to follow, and what support would help?",
+          "sourceIds": [
+            "P7"
+          ]
+        }
+      ],
+      "modelKey": "qwen3.5-4b",
+      "chunks": 29,
+      "selectionRounds": 2,
+      "questionPasses": 1,
+      "sourceSentenceCount": 667,
+      "budget": {
+        "contextWindow": 16384,
+        "excludedSourceUnits": 0,
+        "tokenizerMeasured": true,
+        "sourceTokens": 14008,
+        "sourcePasses": 29,
+        "maxPassTokens": 4025
+      },
+      "score": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "id": "dense-anticoagulation-fresh",
+      "elapsedMs": 185848.08499999996,
+      "modelOutputs": [
+        {
+          "stage": "selecting",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P1\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P2\", \"P3\", \"P4\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 3,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P5\", \"P6\", \"P7\", \"P8\", \"P9\", \"P10\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 4,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P37\", \"P41\", \"P46\", \"P50\", \"P55\", \"P64\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 5,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P69\", \"P77\", \"P87\", \"P96\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 6,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P101\", \"P104\", \"P105\", \"P106\", \"P107\", \"P108\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 7,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P133\", \"P134\", \"P135\", \"P136\", \"P137\", \"P138\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 8,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P165\", \"P166\", \"P167\", \"P168\", \"P169\", \"P170\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 9,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P197\", \"P198\", \"P199\", \"P200\", \"P201\", \"P202\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 10,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P229\", \"P230\", \"P231\", \"P232\", \"P233\", \"P234\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 11,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P261\", \"P266\", \"P267\", \"P268\", \"P269\", \"P270\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 12,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P293\", \"P294\", \"P295\", \"P296\", \"P297\", \"P298\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 13,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P325\", \"P326\", \"P329\", \"P330\", \"P331\", \"P332\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 14,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P357\", \"P365\", \"P374\", \"P383\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 15,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P389\", \"P392\", \"P397\", \"P401\", \"P410\", \"P419\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 16,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P421\", \"P422\", \"P423\", \"P424\", \"P425\", \"P426\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 17,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P453\", \"P454\", \"P455\", \"P456\", \"P457\", \"P458\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 18,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P485\", \"P486\", \"P487\", \"P488\", \"P489\", \"P490\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 19,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P518\", \"P519\", \"P520\", \"P521\", \"P522\", \"P523\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 20,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P549\", \"P554\", \"P558\", \"P563\", \"P572\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 21,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P581\", \"P582\", \"P583\", \"P584\", \"P585\", \"P586\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 22,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P613\", \"P614\", \"P615\", \"P616\", \"P617\", \"P618\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 23,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P645\", \"P646\", \"P647\", \"P648\", \"P649\", \"P650\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 24,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P653\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 25,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P655\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 26,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"T656\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P5\", \"P6\", \"P7\", \"P8\", \"P9\", \"P10\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P169\", \"P170\", \"P197\", \"P198\", \"P199\", \"P200\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 3,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P357\", \"P365\", \"P374\", \"P383\", \"P389\", \"P392\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 4,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P522\", \"P523\", \"P549\", \"P554\", \"P558\", \"P563\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P5\", \"P6\", \"P7\", \"P8\", \"P9\", \"P10\"]}"
+        },
+        {
+          "stage": "questions",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"questions\": [\n    {\n      \"question_id\": \"current_regimen\",\n      \"source_ids\": [\n        \"P3\",\n        \"P4\"\n      ]\n    },\n    {\n      \"question_id\": \"interval_tests\",\n      \"source_ids\": [\n        \"P653\",\n        \"T656\"\n      ]\n    },\n    {\n      \"question_id\": \"visit_goals\",\n      \"source_ids\": [\n        \"P655\"\n      ]\n    }\n  ]\n}"
+        }
+      ],
+      "text": "Prior course\nMedical history (historical / confirm)\nDocumented history: atrial fibrillation treated with warfarin.\n\nMedication list (historical / confirm)\nThe primary care list records warfarin 2 mg nightly.\nA separate anticoagulation record lists warfarin 3 mg nightly.\nThe actual regimen has not been confirmed.\n\nChart results (historical / confirm)\nChart panel visit-1 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference\nHemoglobin\t11\tg/dL\t11.5–15.5\nPlatelets\t230\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\nPotassium\t3.8\tmmol/L\t3.5–5.1\nCreatinine\t0.7\tmg/dL\t0.5–1.1\nGlucose\t88\tmg/dL\t70–99\nSupplied laboratory report: INR 4.8 (H), hemoglobin 8.2 g/dL (L).\n\nUpdates today\nNo bleeding history or examination has been obtained today.\n\nQuestions for this visit\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?]\n[Ask: What concern or goal is most important to address today?]\n\nPrior follow-up to reconcile\nPrior plan: reconcile the anticoagulation record and obtain repeat INR; completion and results are not documented.\n[Completion / result / current relevance: ____]",
+      "evidence": [
+        {
+          "id": "P1",
+          "kind": "prior",
+          "text": "Documented history: atrial fibrillation treated with warfarin.",
+          "offset": 24,
+          "section": "past_medical_history"
+        },
+        {
+          "id": "P2",
+          "kind": "prior",
+          "text": "The primary care list records warfarin 2 mg nightly.",
+          "offset": 103,
+          "section": "medications"
+        },
+        {
+          "id": "P3",
+          "kind": "prior",
+          "text": "A separate anticoagulation record lists warfarin 3 mg nightly.",
+          "offset": 156,
+          "section": "medications"
+        },
+        {
+          "id": "P4",
+          "kind": "prior",
+          "text": "The actual regimen has not been confirmed.",
+          "offset": 219,
+          "section": "medications"
+        },
+        {
+          "id": "P5",
+          "kind": "prior",
+          "text": "Hemoglobin\t11\tg/dL\t11.5–15.5",
+          "offset": 370,
+          "section": "results",
+          "tableContext": "Chart panel visit-1 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P6",
+          "kind": "prior",
+          "text": "Platelets\t230\t10^3/uL\t150–400",
+          "offset": 399,
+          "section": "results",
+          "tableContext": "Chart panel visit-1 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P7",
+          "kind": "prior",
+          "text": "Sodium\t138\tmmol/L\t135–145",
+          "offset": 429,
+          "section": "results",
+          "tableContext": "Chart panel visit-1 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P8",
+          "kind": "prior",
+          "text": "Potassium\t3.8\tmmol/L\t3.5–5.1",
+          "offset": 455,
+          "section": "results",
+          "tableContext": "Chart panel visit-1 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P9",
+          "kind": "prior",
+          "text": "Creatinine\t0.7\tmg/dL\t0.5–1.1",
+          "offset": 484,
+          "section": "results",
+          "tableContext": "Chart panel visit-1 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P10",
+          "kind": "prior",
+          "text": "Glucose\t88\tmg/dL\t70–99",
+          "offset": 513,
+          "section": "results",
+          "tableContext": "Chart panel visit-1 (prior recorded encounter; not today's results)\nTest\tResult\tUnits\tReference"
+        },
+        {
+          "id": "P653",
+          "kind": "prior",
+          "text": "Supplied laboratory report: INR 4.8 (H), hemoglobin 8.2 g/dL (L).",
+          "offset": 28420,
+          "section": "results"
+        },
+        {
+          "id": "P655",
+          "kind": "prior",
+          "text": "Prior plan: reconcile the anticoagulation record and obtain repeat INR; completion and results are not documented.",
+          "offset": 28567,
+          "section": "plan"
+        },
+        {
+          "id": "T656",
+          "kind": "today",
+          "text": "No bleeding history or examination has been obtained today.",
+          "offset": 0
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "current_regimen",
+          "question": "Which medicines, doses and schedules are you actually using now?",
+          "sourceIds": [
+            "P3",
+            "P4"
+          ]
+        },
+        {
+          "questionId": "interval_tests",
+          "question": "Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?",
+          "sourceIds": [
+            "P653",
+            "T656"
+          ]
+        },
+        {
+          "questionId": "visit_goals",
+          "question": "What concern or goal is most important to address today?",
+          "sourceIds": [
+            "P655"
+          ]
+        }
+      ],
+      "modelKey": "qwen3.5-4b",
+      "chunks": 26,
+      "selectionRounds": 2,
+      "questionPasses": 1,
+      "sourceSentenceCount": 656,
+      "budget": {
+        "contextWindow": 16384,
+        "excludedSourceUnits": 0,
+        "tokenizerMeasured": true,
+        "sourceTokens": 13837,
+        "sourcePasses": 26,
+        "maxPassTokens": 4032
+      },
+      "score": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "id": "dense-table-only-result-fresh",
+      "elapsedMs": 177641.46499999985,
+      "modelOutputs": [
+        {
+          "stage": "selecting",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P1\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P2\", \"P3\", \"P4\", \"P5\", \"P6\", \"P7\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 3,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P34\", \"P35\", \"P36\", \"P37\", \"P38\", \"P39\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 4,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P66\", \"P67\", \"P68\", \"P69\", \"P70\", \"P71\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 5,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P104\", \"P105\", \"P106\", \"P107\", \"P114\", \"P123\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 6,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P130\", \"P131\", \"P132\", \"P139\", \"P140\", \"P141\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 7,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P162\", \"P163\", \"P164\", \"P165\", \"P166\", \"P167\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 8,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P194\", \"P195\", \"P196\", \"P197\", \"P198\", \"P199\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 9,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P226\", \"P227\", \"P228\", \"P229\", \"P230\", \"P231\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 10,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P267\", \"P268\", \"P269\", \"P276\", \"P277\", \"P285\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 11,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P290\", \"P291\", \"P292\", \"P293\", \"P294\", \"P295\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 12,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P322\", \"P323\", \"P324\", \"P325\", \"P326\", \"P327\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 13,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P354\", \"P355\", \"P356\", \"P357\", \"P358\", \"P359\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 14,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P386\", \"P387\", \"P388\", \"P389\", \"P390\", \"P391\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 15,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P418\", \"P419\", \"P420\", \"P421\", \"P422\", \"P423\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 16,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P456\", \"P457\", \"P458\", \"P459\", \"P460\", \"P461\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 17,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P482\", \"P483\", \"P484\", \"P485\", \"P486\", \"P487\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 18,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P514\", \"P515\", \"P516\", \"P517\", \"P518\", \"P519\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 19,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P546\", \"P547\", \"P548\", \"P549\", \"P550\", \"P551\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 20,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P578\", \"P579\", \"P580\", \"P581\", \"P582\", \"P583\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 21,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P610\", \"P611\", \"P612\", \"P613\", \"P614\", \"P615\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 22,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P644\", \"P645\", \"P651\", \"P652\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 23,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P653\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 24,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"T654\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P2\", \"P3\", \"P4\", \"P5\", \"P6\", \"P7\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P164\", \"P165\", \"P166\", \"P167\", \"P195\", \"P196\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 3,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P356\", \"P357\", \"P419\", \"P420\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 4,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P651\", \"P652\"]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P651\", \"P652\"]}"
+        },
+        {
+          "stage": "questions",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"questions\": [{\"question_id\": \"interval_tests\", \"source_ids\": [\"T654\"]}, {\"question_id\": \"history_changes\", \"source_ids\": [\"P651\", \"P652\"]}, {\"question_id\": \"visit_goals\", \"source_ids\": [\"P653\"]}]}"
+        }
+      ],
+      "text": "Prior course\nMedical history (historical / confirm)\nDocumented history: hypertension and chronic kidney disease.\n\nChart results (historical / confirm)\nSupplied chemistry panel (collection time unavailable)\nTest\tResult\tUnits\tFlag\nPotassium\t6.1\tmmol/L\tH\nCreatinine\t2.3\tmg/dL\tH\n\nUpdates today\nA repeat chemistry result has not been supplied today.\n\nQuestions for this visit\n[Ask: Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?]\n[Ask: Any new diagnoses, hospital visits, procedures, allergies or medication changes since the prior note?]\n[Ask: What concern or goal is most important to address today?]\n\nPrior follow-up to reconcile\nPrior plan: verify the chemistry collection time and repeat result; completion is not documented.\n[Completion / result / current relevance: ____]",
+      "evidence": [
+        {
+          "id": "P1",
+          "kind": "prior",
+          "text": "Documented history: hypertension and chronic kidney disease.",
+          "offset": 24,
+          "section": "past_medical_history"
+        },
+        {
+          "id": "P651",
+          "kind": "prior",
+          "text": "Potassium\t6.1\tmmol/L\tH",
+          "offset": 28340,
+          "section": "results",
+          "tableContext": "Supplied chemistry panel (collection time unavailable)\nTest\tResult\tUnits\tFlag"
+        },
+        {
+          "id": "P652",
+          "kind": "prior",
+          "text": "Creatinine\t2.3\tmg/dL\tH",
+          "offset": 28363,
+          "section": "results",
+          "tableContext": "Supplied chemistry panel (collection time unavailable)\nTest\tResult\tUnits\tFlag"
+        },
+        {
+          "id": "P653",
+          "kind": "prior",
+          "text": "Prior plan: verify the chemistry collection time and repeat result; completion is not documented.",
+          "offset": 28395,
+          "section": "plan"
+        },
+        {
+          "id": "T654",
+          "kind": "today",
+          "text": "A repeat chemistry result has not been supplied today.",
+          "offset": 0
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "interval_tests",
+          "question": "Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?",
+          "sourceIds": [
+            "T654"
+          ]
+        },
+        {
+          "questionId": "history_changes",
+          "question": "Any new diagnoses, hospital visits, procedures, allergies or medication changes since the prior note?",
+          "sourceIds": [
+            "P651",
+            "P652"
+          ]
+        },
+        {
+          "questionId": "visit_goals",
+          "question": "What concern or goal is most important to address today?",
+          "sourceIds": [
+            "P653"
+          ]
+        }
+      ],
+      "modelKey": "qwen3.5-4b",
+      "chunks": 24,
+      "selectionRounds": 2,
+      "questionPasses": 1,
+      "sourceSentenceCount": 654,
+      "budget": {
+        "contextWindow": 16384,
+        "excludedSourceUnits": 0,
+        "tokenizerMeasured": true,
+        "sourceTokens": 13798,
+        "sourcePasses": 24,
+        "maxPassTokens": 4030
+      },
+      "score": {
+        "passed": true,
+        "failures": []
+      }
+    }
+  ],
+  "hashes": {
+    "src/local-llm/note-synthesis.js": "9a8db0930e55f746a58a08bc92e0e92c9c415f0371552fb0c1190cbaf1ea2ac1",
+    "src/local-llm/models.js": "ee06d02498a2aeb47561fc00666728582a981dfb5fc53531bab524cae8e66b1b",
+    "src/local-llm/client.js": "c68b4a81d3ec09ebb14553f3a2f737ce07e4eb56598a11a56c2b2a0957f839f6",
+    "src/local-llm/worker.js": "ecce85e6c2bc4d21c626e47371a87723d25bc9d888fb12343f4daca8cccf3bb7",
+    "src/local-llm/tokenizer.js": "bfbff2eeee54feed5c272d252409a7b31990cbb339456f51e87475cbe612ea69",
+    "src/local-llm/operation-queue.js": "adefaf7f314cd7d265ec4e735ef16ffe0585754102bb8bb99eb2ef37a76c0a3c",
+    "vendor/web-llm/index.js": "85c438012fd890070d2b6e7c7e9d32bb658df9b29388ded6f38fb88abecc6640",
+    "src/local-llm/note-source.js": "45664ee0fcac78d167f8a5431eb0b3df9a3fd36b397bba727fc2c27bc42f6e00",
+    "src/local-llm/draft-privacy-review.js": "e05a74602dac104cb42986dbe95d82cfae6f8e3f519e4a1ce9290fee3331af72",
+    "src/ui/local-draft-privacy-review.js": "f37b9b70781746a83365b6f9a2aacf27a92a3576b2295802eed517552a898eac",
+    "src/ui/local-note-synthesis.js": "3f42c2a32bc0ab342676e3c3fce87a87d1edc1427784a9b66e87cda72f2dd154",
+    "src/ui/local-model-controls.js": "cb526461bd0e32ea41d24c08c7e02c73f5382e9bdb37b4015bb21ed988735b28",
+    "tests/fixtures/local-note-eval.js": "23e7e028899bc3eebde14f6b0b138440b73d346cbb990f4c422eb6b596843b17",
+    "tests/fixtures/local-note-dense-eval.js": "d8deb4626af55e87367d805643675edae947943ade10d0d0ef0ea5c92ea3264f",
+    "tests/fixtures/local-note-eval-score.js": "c80386101b998371f8f31dd8cfa2696cb15ef5db1b21aaa41422de2f364da90f"
+  },
+  "browser": "155.0.4283.45",
+  "hardware": {
+    "facts": {
+      "deviceMemoryGB": 32,
+      "hardwareConcurrency": 32,
+      "platform": "Win32",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0"
+    },
+    "gpu": {
+      "available": true,
+      "shaderF16": true,
+      "maxBufferSize": 2147483648,
+      "maxStorageBufferBindingSize": 2147483644,
+      "adapterDescription": "nvidia blackwell"
+    },
+    "storageAvailableMB": 10240,
+    "recommendation": {
+      "webgpuAvailable": true,
+      "gpu": {
+        "available": true,
+        "shaderF16": true,
+        "maxBufferSize": 2147483648,
+        "maxStorageBufferBindingSize": 2147483644,
+        "adapterDescription": "nvidia blackwell"
+      },
+      "deviceMemoryGB": 32,
+      "hardwareConcurrency": 32,
+      "models": [
+        {
+          "model": {
+            "key": "qwen3.5-0.8b",
+            "webllmId": "Qwen3.5-0.8B-q4f16_1-MLC",
+            "label": "Qwen3.5 0.8B",
+            "params": "0.8B parameters",
+            "vramMB": 1757.49,
+            "approxDownloadMB": 426,
+            "contextWindow": 8192,
+            "minDeviceMemoryGB": 2,
+            "rank": 20,
+            "blurb": "Smallest download; suitable for short draft experiments.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-0.8B-q4f16_1-MLC/resolve/0ec138972555613c1d7812a821778ad0398c8790/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-0.8B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 8192,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3-1.7b",
+            "webllmId": "Qwen3-1.7B-q4f16_1-MLC",
+            "label": "Qwen3 1.7B",
+            "params": "1.7B parameters",
+            "vramMB": 2036.66,
+            "approxDownloadMB": 939,
+            "contextWindow": 4096,
+            "minDeviceMemoryGB": 2,
+            "rank": 10,
+            "blurb": "Previous-generation lightweight option.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3-1.7B-q4f16_1-MLC/resolve/80b3abcec6c3b3f5355dc0cc99cc4fb578f192bc/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-1.7B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 4096
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-2b",
+            "webllmId": "Qwen3.5-2B-q4f16_1-MLC",
+            "label": "Qwen3.5 2B",
+            "params": "2B parameters",
+            "vramMB": 2501.44,
+            "approxDownloadMB": 1032,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 2,
+            "rank": 40,
+            "blurb": "Balanced starting point when GPU memory is unknown.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-2B-q4f16_1-MLC/resolve/dd74e9c8a20c4546df85c844103bff87b6dcacad/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-2B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3-4b",
+            "webllmId": "Qwen3-4B-q4f16_1-MLC",
+            "label": "Qwen3 4B",
+            "params": "4B parameters",
+            "vramMB": 3431.59,
+            "approxDownloadMB": 2174,
+            "contextWindow": 4096,
+            "minDeviceMemoryGB": 8,
+            "rank": 30,
+            "blurb": "Previous-generation larger option.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3-4B-q4f16_1-MLC/resolve/a5c9fab855e3ccbdfed2e7e69683d75f30332161/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-4B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 4096
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-4b",
+            "webllmId": "Qwen3.5-4B-q4f16_1-MLC",
+            "label": "Qwen3.5 4B",
+            "params": "4B parameters",
+            "vramMB": 4379.82,
+            "approxDownloadMB": 2280,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 8,
+            "rank": 50,
+            "blurb": "Larger draft model for devices with more memory.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-4B-q4f16_1-MLC/resolve/44b42469f9e192814bfd90440e3b377d89ba7a13/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-4B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-9b",
+            "webllmId": "Qwen3.5-9B-q4f16_1-MLC",
+            "label": "Qwen3.5 9B",
+            "params": "9B parameters",
+            "vramMB": 7201.01,
+            "approxDownloadMB": 4827,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 8,
+            "rank": 60,
+            "blurb": "Largest option; confirm available GPU or unified memory first.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-9B-q4f16_1-MLC/resolve/c7c5d3f5a81e37b8facbb72970940a1b131314a8/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-9B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        }
+      ],
+      "availableKeys": [
+        "qwen3.5-0.8b",
+        "qwen3-1.7b",
+        "qwen3.5-2b",
+        "qwen3-4b",
+        "qwen3.5-4b",
+        "qwen3.5-9b"
+      ],
+      "recommendedKey": "qwen3.5-4b",
+      "capacity": null
+    }
+  },
+  "lastProgress": {
+    "phase": "questions",
+    "index": 1,
+    "total": 1,
+    "message": "Preparing interview questions from selected facts and today's updates…",
+    "at": "2026-10-15T15:45:03.522Z"
+  },
+  "loadMs": 5242,
+  "requestedCaseIds": [],
+  "summary": {
+    "passed": 5,
+    "total": 5
+  },
+  "uiScope": "dense table-only HPI plus baseline-focused one-liner",
+  "uiContextMeter": "13,798 source tokens (model tokenizer) · 16,384 context · 24 source passes. Largest planned pass: 4,030 tokens including output and headroom. No silent truncation.",
+  "uiPrivacyDecisions": [],
+  "uiStatus": "Reviewed 24 source passes; selected 5 excerpts. Source facts remain historical unless entered today. Review relevance and completeness before applying.",
+  "uiFinalContextMeter": "13,798 source tokens (model tokenizer) · 16,384 context · 24 source passes. Largest planned pass: 4,030 tokens including output and headroom. No silent truncation.",
+  "uiDraft": "Prior course\nMedical history (historical / confirm)\nDocumented history: hypertension and chronic kidney disease.\n\nChart results (historical / confirm)\nSupplied chemistry panel (collection time unavailable)\nTest\tResult\tUnits\tFlag\nPotassium\t6.1\tmmol/L\tH\nCreatinine\t2.3\tmg/dL\tH\n\nUpdates today\nA repeat chemistry result has not been supplied today.\n\nQuestions for this visit\n[Ask: Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?]\n[Ask: Any new diagnoses, hospital visits, procedures, allergies or medication changes since the prior note?]\n[Ask: What concern or goal is most important to address today?]\n\nPrior follow-up to reconcile\nPrior plan: verify the chemistry collection time and repeat result; completion is not documented.\n[Completion / result / current relevance: ____]",
+  "uiApplied": {
+    "section": "history_of_present_illness",
+    "text": "Prior course\nMedical history (historical / confirm)\nDocumented history: hypertension and chronic kidney disease.\n\nChart results (historical / confirm)\nSupplied chemistry panel (collection time unavailable)\nTest\tResult\tUnits\tFlag\nPotassium\t6.1\tmmol/L\tH\nCreatinine\t2.3\tmg/dL\tH\n\nUpdates today\nA repeat chemistry result has not been supplied today.\n\nQuestions for this visit\n[Ask: Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?]\n[Ask: Any new diagnoses, hospital visits, procedures, allergies or medication changes since the prior note?]\n[Ask: What concern or goal is most important to address today?]\n\nPrior follow-up to reconcile\nPrior plan: verify the chemistry collection time and repeat result; completion is not documented.\n[Completion / result / current relevance: ____]"
+  },
+  "uiOneLinerPrivacyDecisions": [],
+  "uiOneLiner": "Prior documented baseline: Prenatal follow-up; current interview not yet obtained. The previous prenatal narrative records a desired spontaneous pregnancy, G6P2032 at 12w1d by dating ultrasound. Prior history: cervical dysplasia treated with two LEEP procedures. Prior history: treated latent syphilis. Prior history: hypothyroidism. A separate older obstetric comment records G5P2032; discrepancy is unresolved.",
+  "uiOneLinerApplied": {
+    "section": "one_liner",
+    "text": "Prior documented baseline: Prenatal follow-up; current interview not yet obtained. The previous prenatal narrative records a desired spontaneous pregnancy, G6P2032 at 12w1d by dating ultrasound. Prior history: cervical dysplasia treated with two LEEP procedures. Prior history: treated latent syphilis. Prior history: hypothyroidism. A separate older obstetric comment records G5P2032; discrepancy is unresolved."
+  },
+  "externalWrites": [],
+  "finishedAt": "2026-10-15T15:48:28.824Z"
+}

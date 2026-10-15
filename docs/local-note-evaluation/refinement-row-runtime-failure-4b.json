@@ -1,0 +1,278 @@
+{
+  "modelKey": "qwen3.5-4b",
+  "phase": "dense-fixed",
+  "label": "row-selection-v3",
+  "syntheticOnly": true,
+  "startedAt": "2026-10-15T14:17:11.197Z",
+  "stages": [
+    "real browser model loaded and instruction self-test passed"
+  ],
+  "cases": [
+    {
+      "id": "dense-prenatal-one-liner",
+      "elapsedMs": 3018.320000000298,
+      "modelOutputs": [],
+      "error": "Cannot pass deleted object as a pointer of type GrammarMatcher",
+      "score": {
+        "passed": false,
+        "failures": [
+          "Cannot pass deleted object as a pointer of type GrammarMatcher"
+        ]
+      }
+    },
+    {
+      "id": "dense-renal-current-updates",
+      "elapsedMs": 0.3849999997764826,
+      "modelOutputs": [],
+      "error": "Load and self-test a local model before drafting.",
+      "score": {
+        "passed": false,
+        "failures": [
+          "Load and self-test a local model before drafting."
+        ]
+      }
+    },
+    {
+      "id": "dense-full-note-meds-allergy-plan",
+      "elapsedMs": 0.024999999906867743,
+      "modelOutputs": [],
+      "error": "Load and self-test a local model before drafting.",
+      "score": {
+        "passed": false,
+        "failures": [
+          "Load and self-test a local model before drafting."
+        ]
+      }
+    },
+    {
+      "id": "dense-anticoagulation-fresh",
+      "elapsedMs": 0.029999999795109034,
+      "modelOutputs": [],
+      "error": "Load and self-test a local model before drafting.",
+      "score": {
+        "passed": false,
+        "failures": [
+          "Load and self-test a local model before drafting."
+        ]
+      }
+    }
+  ],
+  "hashes": {
+    "src/local-llm/note-synthesis.js": "508c1e18754f9b03812eb75694d69f4a7249cc8304089eecc2bdc10434e4a15f",
+    "src/local-llm/models.js": "8c2496016e15b881dc981dac44c58a4c116b8abefc376f947aa2ae95bc93eb4c",
+    "src/local-llm/client.js": "db4887f4d7b2108f90d8d6196f5f74e583425030837ffd68da1ff5dc6258eab9",
+    "src/local-llm/worker.js": "efbbaaa439eac1322250a35c8ed727221788680b01a4711ae509bcf8dc4c670a",
+    "src/local-llm/tokenizer.js": "bfbff2eeee54feed5c272d252409a7b31990cbb339456f51e87475cbe612ea69",
+    "src/local-llm/note-source.js": "9fbf033fe869a92278ae599a17b6825306998b00cf717af2f1b4bb6c0aefac0d",
+    "src/local-llm/draft-privacy-review.js": "e05a74602dac104cb42986dbe95d82cfae6f8e3f519e4a1ce9290fee3331af72",
+    "src/ui/local-draft-privacy-review.js": "f37b9b70781746a83365b6f9a2aacf27a92a3576b2295802eed517552a898eac",
+    "src/ui/local-note-synthesis.js": "83531bfd8f201906e0022ec86d4bf0d0cc9ebda9c32e03386a7f949461527043",
+    "src/ui/local-model-controls.js": "7c3ee2d467e1a8c9f4b3fce241553afc36e6d0b09d44ac905fcc7c4c37c78297",
+    "tests/fixtures/local-note-eval.js": "23e7e028899bc3eebde14f6b0b138440b73d346cbb990f4c422eb6b596843b17",
+    "tests/fixtures/local-note-dense-eval.js": "80e20b3f83d08562b75abbdd8953e9f21641eb02ea05d775a7c8d11ce825c279",
+    "tests/fixtures/local-note-eval-score.js": "a648a77645ef353603c192a473a4cda8fbd5c28d0f03f620b58f6d26d4864cd4"
+  },
+  "browser": "155.0.4283.45",
+  "hardware": {
+    "facts": {
+      "deviceMemoryGB": 32,
+      "hardwareConcurrency": 32,
+      "platform": "Win32",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0"
+    },
+    "gpu": {
+      "available": true,
+      "shaderF16": true,
+      "maxBufferSize": 2147483648,
+      "maxStorageBufferBindingSize": 2147483644,
+      "adapterDescription": "nvidia blackwell"
+    },
+    "storageAvailableMB": 10240,
+    "recommendation": {
+      "webgpuAvailable": true,
+      "gpu": {
+        "available": true,
+        "shaderF16": true,
+        "maxBufferSize": 2147483648,
+        "maxStorageBufferBindingSize": 2147483644,
+        "adapterDescription": "nvidia blackwell"
+      },
+      "deviceMemoryGB": 32,
+      "hardwareConcurrency": 32,
+      "models": [
+        {
+          "model": {
+            "key": "qwen3.5-0.8b",
+            "webllmId": "Qwen3.5-0.8B-q4f16_1-MLC",
+            "label": "Qwen3.5 0.8B",
+            "params": "0.8B parameters",
+            "vramMB": 1757.49,
+            "approxDownloadMB": 426,
+            "contextWindow": 8192,
+            "minDeviceMemoryGB": 2,
+            "rank": 20,
+            "blurb": "Smallest download; suitable for short draft experiments.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-0.8B-q4f16_1-MLC/resolve/0ec138972555613c1d7812a821778ad0398c8790/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-0.8B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 8192,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3-1.7b",
+            "webllmId": "Qwen3-1.7B-q4f16_1-MLC",
+            "label": "Qwen3 1.7B",
+            "params": "1.7B parameters",
+            "vramMB": 2036.66,
+            "approxDownloadMB": 939,
+            "contextWindow": 4096,
+            "minDeviceMemoryGB": 2,
+            "rank": 10,
+            "blurb": "Previous-generation lightweight option.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3-1.7B-q4f16_1-MLC/resolve/80b3abcec6c3b3f5355dc0cc99cc4fb578f192bc/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-1.7B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 4096
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-2b",
+            "webllmId": "Qwen3.5-2B-q4f16_1-MLC",
+            "label": "Qwen3.5 2B",
+            "params": "2B parameters",
+            "vramMB": 2501.44,
+            "approxDownloadMB": 1032,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 2,
+            "rank": 40,
+            "blurb": "Balanced starting point when GPU memory is unknown.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-2B-q4f16_1-MLC/resolve/dd74e9c8a20c4546df85c844103bff87b6dcacad/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-2B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3-4b",
+            "webllmId": "Qwen3-4B-q4f16_1-MLC",
+            "label": "Qwen3 4B",
+            "params": "4B parameters",
+            "vramMB": 3431.59,
+            "approxDownloadMB": 2174,
+            "contextWindow": 4096,
+            "minDeviceMemoryGB": 8,
+            "rank": 30,
+            "blurb": "Previous-generation larger option.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3-4B-q4f16_1-MLC/resolve/a5c9fab855e3ccbdfed2e7e69683d75f30332161/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-4B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 4096
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-4b",
+            "webllmId": "Qwen3.5-4B-q4f16_1-MLC",
+            "label": "Qwen3.5 4B",
+            "params": "4B parameters",
+            "vramMB": 4379.82,
+            "approxDownloadMB": 2280,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 8,
+            "rank": 50,
+            "blurb": "Larger draft model for devices with more memory.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-4B-q4f16_1-MLC/resolve/44b42469f9e192814bfd90440e3b377d89ba7a13/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-4B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-9b",
+            "webllmId": "Qwen3.5-9B-q4f16_1-MLC",
+            "label": "Qwen3.5 9B",
+            "params": "9B parameters",
+            "vramMB": 7201.01,
+            "approxDownloadMB": 4827,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 8,
+            "rank": 60,
+            "blurb": "Largest option; confirm available GPU or unified memory first.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-9B-q4f16_1-MLC/resolve/c7c5d3f5a81e37b8facbb72970940a1b131314a8/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-9B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        }
+      ],
+      "availableKeys": [
+        "qwen3.5-0.8b",
+        "qwen3-1.7b",
+        "qwen3.5-2b",
+        "qwen3-4b",
+        "qwen3.5-4b",
+        "qwen3.5-9b"
+      ],
+      "recommendedKey": "qwen3.5-4b",
+      "capacity": null
+    }
+  },
+  "lastProgress": {
+    "phase": "selecting",
+    "index": 1,
+    "total": 3,
+    "message": "Reviewing source 1/3 on device…",
+    "at": "2026-10-15T14:17:20.161Z"
+  },
+  "loadMs": 6176,
+  "summary": {
+    "passed": 0,
+    "total": 4
+  },
+  "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-local-generate]:enabled') to be visible\u001b[22m\n",
+  "finishedAt": "2026-10-15T14:17:56.853Z"
+}

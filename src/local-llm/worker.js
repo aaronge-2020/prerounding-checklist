@@ -24,10 +24,11 @@
 // it wraps fetch/XHR before the vendored runtime evaluates, and the client
 // passes the toggle state via the "init" and "offlineMode" messages.
 import { setWorkerOfflineMode } from "./worker-net-guard.js?v=20261012-safety";
-import { CreateMLCEngine, hasModelInCache, prebuiltAppConfig } from "../../vendor/web-llm/index.js";
+import { createLocalOperationQueue } from "./operation-queue.js?v=20261015-stable-draft-runtime";
+import { CreateMLCEngine, hasModelInCache, prebuiltAppConfig } from "../../vendor/web-llm/index.js?v=20261015-shape-ownership";
 
-import { LOCAL_LLM_MODELS } from "./models.js?v=20261015-tokenized-drafts";
-import { countLoadedModelTokens } from "./tokenizer.js?v=20261015-tokenized-drafts";
+import { LOCAL_LLM_MODELS } from "./models.js?v=20261015-stable-draft-runtime";
+import { countLoadedModelTokens } from "./tokenizer.js?v=20261015-stable-draft-runtime";
 const appConfig = { ...prebuiltAppConfig, model_list: LOCAL_LLM_MODELS.map(model => ({
   model_id: model.webllmId, model: model.modelUrl, model_lib: model.modelLibUrl,
   overrides: model.overrides, vram_required_MB: model.vramMB,
@@ -66,7 +67,7 @@ async function handleInit(id, modelId) {
         });
       },
       appConfig,
-      logLevel: "SILENT"
+      logLevel: "ERROR"
     });
     engineModelId = modelId;
     post({ id, type: "ready", modelId });
@@ -110,20 +111,14 @@ async function handleChat(id, { messages, maxTokens, temperature, chatOpts }) {
   }
 }
 
-self.onmessage = async (event) => {
-  const message = event.data || {};
+async function handleMessage(message) {
   const { id, type } = message;
   try {
     if (type === "init") {
-      // The worker cannot read the toggle itself; the client passes it.
-      setWorkerOfflineMode(message.offlineMode === true);
       await handleInit(id, message.modelId);
     } else if (type === "tokenize") {
       if (!engine) throw new Error("Load a model before tokenizing source text.");
       post({ id, type: "done", counts: countLoadedModelTokens(engine, engineModelId, message.texts) });
-    } else if (type === "offlineMode") {
-      // Mid-session toggle: in-flight requests finish, new ones are refused.
-      setWorkerOfflineMode(message.offline === true);
     } else if (type === "chat") await handleChat(id, message);
     else if (type === "reset") {
       if (engine) await engine.resetChat();
@@ -151,4 +146,14 @@ self.onmessage = async (event) => {
   } catch (error) {
     post({ id, type: "error", message: error?.message || "Worker error." });
   }
+}
+
+const enqueue = createLocalOperationQueue();
+self.onmessage = event => {
+  const message = event.data || {};
+  // Network restrictions take effect immediately, even during a long command.
+  // A queued init must not later overwrite a newer offline toggle.
+  if (message.type === "offlineMode") { setWorkerOfflineMode(message.offline === true); return; }
+  if (message.type === "init") setWorkerOfflineMode(message.offlineMode === true);
+  void enqueue(() => handleMessage(message));
 };

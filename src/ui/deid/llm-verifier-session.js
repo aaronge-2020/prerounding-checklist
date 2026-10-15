@@ -9,7 +9,7 @@ import {
   localLlmModelByKey,
   readLocalLlmSettings,
   sharedLocalLlmClient
-} from "../../local-llm/client.js?v=20261015-tokenized-drafts";
+} from "../../local-llm/client.js?v=20261015-stable-draft-runtime";
 import {
   dedupeVerifierEntities,
   runLlmVerifier

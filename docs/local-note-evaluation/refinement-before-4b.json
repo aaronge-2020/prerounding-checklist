@@ -1,0 +1,596 @@
+{
+  "modelKey": "qwen3.5-4b",
+  "phase": "dense-development",
+  "syntheticOnly": true,
+  "startedAt": "2026-10-15T13:02:19.564Z",
+  "stages": [
+    "real browser model loaded and instruction self-test passed"
+  ],
+  "cases": [
+    {
+      "id": "dev-dense-prenatal-baseline",
+      "elapsedMs": 75187.25,
+      "modelOutputs": [
+        {
+          "stage": "selecting",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\n     \"P2\",\n    \"P4\"\n  ]\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [ \"P549\", \"P555\" ]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [ \"P4\", \"P555\" ]}"
+        },
+        {
+          "stage": "questions",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"questions\": [\n    {\n      \"question_id\": \"history_changes\",\n      \"source_ids\": [\n        \"P4\",\n        \"P555\"\n      ]\n    },\n    {\n      \"question_id\": \"visit_goals\",\n      \"source_ids\": [\n        \"P555\"\n      ]\n    },\n    {\n      \"question_id\": \"interval_tests\",\n      \"source_ids\": [\n        \"P555\"\n      ]\n    }\n  ]\n}"
+        }
+      ],
+      "text": "Prior documented baseline: Prior history: cervical dysplasia treated with two LEEP procedures. Prior plan: verify repeat syphilis screening result.\nToday: [Ask: Reason for today's visit and interval changes?]",
+      "evidence": [
+        {
+          "id": "P4",
+          "kind": "prior",
+          "text": "Prior history: cervical dysplasia treated with two LEEP procedures.",
+          "offset": 100
+        },
+        {
+          "id": "P555",
+          "kind": "prior",
+          "text": "Prior plan: verify repeat syphilis screening result.",
+          "offset": 19712
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "history_changes",
+          "question": "Any new diagnoses, hospital visits, procedures, allergies or medication changes since the prior note?",
+          "sourceIds": [
+            "P4",
+            "P555"
+          ]
+        },
+        {
+          "questionId": "visit_goals",
+          "question": "What concern or goal is most important to address today?",
+          "sourceIds": [
+            "P555"
+          ]
+        },
+        {
+          "questionId": "interval_tests",
+          "question": "Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?",
+          "sourceIds": [
+            "P555"
+          ]
+        }
+      ],
+      "modelKey": "qwen3.5-4b",
+      "chunks": 2,
+      "selectionRounds": 1,
+      "questionPasses": 1,
+      "sourceSentenceCount": 558,
+      "budget": {
+        "contextWindow": 16384,
+        "tokenizerMeasured": true,
+        "sourceTokens": 9429,
+        "sourcePasses": 2,
+        "maxPassTokens": 16374
+      }
+    },
+    {
+      "id": "dev-dense-prenatal-prechart",
+      "elapsedMs": 97951.43000000715,
+      "modelOutputs": [
+        {
+          "stage": "selecting",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"selected_ids\": [\n    \"P2\",\n    \"P4\",\n    \"P5\",\n    \"P6\",\n    \"P7\",\n    \"P8\",\n    \"P11\",\n    \"P12\",\n    \"P14\",\n    \"P16\",\n    \"P17\",\n    \"P18\",\n    \"P22\",\n    \"P28\",\n    \"P29\",\n    \"P30\",\n    \"P33\",\n    \"P39\"\n  ]\n}"
+        },
+        {
+          "stage": "selecting",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [ \"P476\", \"P477\", \"P478\", \"P479\", \"P484\", \"P486\", \"P487\", \"P488\", \"P489\", \"P490\", \"P495\", \"P496\", \"P497\", \"P498\", \"P499\", \"P500\", \"P501\", \"P506\"] }"
+        },
+        {
+          "stage": "reducing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [ \"P2\", \"P4\", \"P5\", \"P6\", \"P7\", \"P8\", \"P11\", \"P12\", \"P14\", \"P16\", \"P17\", \"P18\", \"P22\", \"P28\", \"P29\", \"P30\", \"P33\", \"P39\"] }"
+        },
+        {
+          "stage": "questions",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"questions\": [\n    {\n      \"question_id\": \"interval_symptoms\",\n      \"source_ids\": [\n        \"P2\"\n      ]\n    },\n    {\n      \"question_id\": \"current_regimen\",\n      \"source_ids\": [\n        \"P11\",\n        \"P12\"\n      ]\n    },\n    {\n      \"question_id\": \"adherence_barriers\",\n      \"source_ids\": [\n        \"P11\",\n        \"P12\"\n      ]\n    }\n  ]\n}"
+        }
+      ],
+      "text": "Visit focus\nPrenatal follow-up\n\nPrior documented history and course\nPrenatal follow-up; current interview not yet obtained.\nPrior history: cervical dysplasia treated with two LEEP procedures.\nPrior history: treated latent syphilis.\nPrior history: hypothyroidism.\nA historical obstetric entry records G6P2032.\nA separate older obstetric comment records G5P2032; discrepancy is unresolved.\nLevothyroxine\t75 mcg\tonce daily before breakfast\nPrenatal vitamin\t1 tablet\tonce daily\nPenicillin: prior urticaria; reaction details require confirmation.\nPrior chart: former tobacco use.\nAlcohol use during this pregnancy has not been documented.\nPrevious food security screen reported no difficulty obtaining food.\nHemoglobin\t11\tg/dL\t11.5–15.5\nTSH\t1.1\tmIU/L\t0.4–4.0\nUrine protein\tnegative\tqualitative\tnegative\nUrine glucose\tnegative\tqualitative\tnegative\nHemoglobin\t11.1\tg/dL\t11.5–15.5\nTSH\t1.2000000000000002\tmIU/L\t0.4–4.0\n\nHPI / updates today\n[Ask: Current symptoms, interval changes, medications and concerns today?]\n\nExamination today\n[Complete from today's examination; prior findings are not current findings.]\n\nAssessment and plan today\n[Complete after reviewing today's history, examination and results.]\n\nQuestions for this visit\n[Ask: What symptoms are new, improved or worse since the previous visit?]\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: What makes the treatment plan difficult to follow, and what support would help?]",
+      "evidence": [
+        {
+          "id": "P2",
+          "kind": "prior",
+          "text": "Prenatal follow-up; current interview not yet obtained.",
+          "offset": 19
+        },
+        {
+          "id": "P4",
+          "kind": "prior",
+          "text": "Prior history: cervical dysplasia treated with two LEEP procedures.",
+          "offset": 100
+        },
+        {
+          "id": "P5",
+          "kind": "prior",
+          "text": "Prior history: treated latent syphilis.",
+          "offset": 168
+        },
+        {
+          "id": "P6",
+          "kind": "prior",
+          "text": "Prior history: hypothyroidism.",
+          "offset": 208
+        },
+        {
+          "id": "P7",
+          "kind": "prior",
+          "text": "A historical obstetric entry records G6P2032.",
+          "offset": 239
+        },
+        {
+          "id": "P8",
+          "kind": "prior",
+          "text": "A separate older obstetric comment records G5P2032; discrepancy is unresolved.",
+          "offset": 285
+        },
+        {
+          "id": "P11",
+          "kind": "prior",
+          "text": "Levothyroxine\t75 mcg\tonce daily before breakfast",
+          "offset": 418
+        },
+        {
+          "id": "P12",
+          "kind": "prior",
+          "text": "Prenatal vitamin\t1 tablet\tonce daily",
+          "offset": 467
+        },
+        {
+          "id": "P14",
+          "kind": "prior",
+          "text": "Penicillin: prior urticaria; reaction details require confirmation.",
+          "offset": 518
+        },
+        {
+          "id": "P16",
+          "kind": "prior",
+          "text": "Prior chart: former tobacco use.",
+          "offset": 605
+        },
+        {
+          "id": "P17",
+          "kind": "prior",
+          "text": "Alcohol use during this pregnancy has not been documented.",
+          "offset": 638
+        },
+        {
+          "id": "P18",
+          "kind": "prior",
+          "text": "Previous food security screen reported no difficulty obtaining food.",
+          "offset": 697
+        },
+        {
+          "id": "P22",
+          "kind": "prior",
+          "text": "Hemoglobin\t11\tg/dL\t11.5–15.5",
+          "offset": 874
+        },
+        {
+          "id": "P28",
+          "kind": "prior",
+          "text": "TSH\t1.1\tmIU/L\t0.4–4.0",
+          "offset": 1040
+        },
+        {
+          "id": "P29",
+          "kind": "prior",
+          "text": "Urine protein\tnegative\tqualitative\tnegative",
+          "offset": 1062
+        },
+        {
+          "id": "P30",
+          "kind": "prior",
+          "text": "Urine glucose\tnegative\tqualitative\tnegative",
+          "offset": 1106
+        },
+        {
+          "id": "P33",
+          "kind": "prior",
+          "text": "Hemoglobin\t11.1\tg/dL\t11.5–15.5",
+          "offset": 1247
+        },
+        {
+          "id": "P39",
+          "kind": "prior",
+          "text": "TSH\t1.2000000000000002\tmIU/L\t0.4–4.0",
+          "offset": 1430
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "interval_symptoms",
+          "question": "What symptoms are new, improved or worse since the previous visit?",
+          "sourceIds": [
+            "P2"
+          ]
+        },
+        {
+          "questionId": "current_regimen",
+          "question": "Which medicines, doses and schedules are you actually using now?",
+          "sourceIds": [
+            "P11",
+            "P12"
+          ]
+        },
+        {
+          "questionId": "adherence_barriers",
+          "question": "What makes the treatment plan difficult to follow, and what support would help?",
+          "sourceIds": [
+            "P11",
+            "P12"
+          ]
+        }
+      ],
+      "modelKey": "qwen3.5-4b",
+      "chunks": 2,
+      "selectionRounds": 1,
+      "questionPasses": 1,
+      "sourceSentenceCount": 558,
+      "budget": {
+        "contextWindow": 16384,
+        "tokenizerMeasured": true,
+        "sourceTokens": 9429,
+        "sourcePasses": 2,
+        "maxPassTokens": 16356
+      }
+    },
+    {
+      "id": "dev-dense-renal-hpi",
+      "elapsedMs": 79628.84000000358,
+      "modelOutputs": [
+        {
+          "stage": "selecting",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P2\", \"P4\", \"P5\", \"P6\", \"P8\"]}"
+        },
+        {
+          "stage": "selecting",
+          "index": 2,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [ \"P474\", \"P475\", \"P476\", \"P477\", \"P478\", \"P479\", \"P480\", \"P481\" ]}"
+        },
+        {
+          "stage": "reducing",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [ \"P2\", \"P4\", \"P5\", \"P6\", \"P8\", \"P474\", \"P475\", \"P476\"]}"
+        },
+        {
+          "stage": "questions",
+          "index": 1,
+          "raw": "<think>\n\n</think>\n\n{\n  \"questions\": [\n    {\n      \"question_id\": \"current_regimen\",\n      \"source_ids\": [\n        \"T543\",\n        \"P4\",\n        \"P5\"\n      ]\n    },\n    {\n      \"question_id\": \"adherence_barriers\",\n      \"source_ids\": [\n        \"P4\",\n        \"P5\"\n      ]\n    },\n    {\n      \"question_id\": \"side_effects\",\n      \"source_ids\": [\n        \"P8\"\n      ]\n    }\n  ]\n}"
+        }
+      ],
+      "text": "Prior course\nPrior history: type 2 diabetes, hypertension and chronic kidney disease.\nPrior medication list records lisinopril 20 mg daily.\nA separate nephrology list records lisinopril 10 mg daily; actual dose is unconfirmed.\nPrior metformin dose: 500 mg twice daily.\nSulfonamide antibiotics: rash in the prior chart.\nHemoglobin\t11.6\tg/dL\t11.5–15.5\nPlatelets\t236\t10^3/uL\t150–400\nSodium\t138\tmmol/L\t135–145\n\nUpdates today\nPatient reports taking one lisinopril tablet daily but cannot confirm its strength.\nNo examination has been entered.\n\nQuestions for this visit\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: What makes the treatment plan difficult to follow, and what support would help?]\n[Ask: Have you noticed possible medication side effects or intolerance?]",
+      "evidence": [
+        {
+          "id": "P2",
+          "kind": "prior",
+          "text": "Prior history: type 2 diabetes, hypertension and chronic kidney disease.",
+          "offset": 24
+        },
+        {
+          "id": "P4",
+          "kind": "prior",
+          "text": "Prior medication list records lisinopril 20 mg daily.",
+          "offset": 113
+        },
+        {
+          "id": "P5",
+          "kind": "prior",
+          "text": "A separate nephrology list records lisinopril 10 mg daily; actual dose is unconfirmed.",
+          "offset": 167
+        },
+        {
+          "id": "P6",
+          "kind": "prior",
+          "text": "Prior metformin dose: 500 mg twice daily.",
+          "offset": 254
+        },
+        {
+          "id": "P8",
+          "kind": "prior",
+          "text": "Sulfonamide antibiotics: rash in the prior chart.",
+          "offset": 310
+        },
+        {
+          "id": "P474",
+          "kind": "prior",
+          "text": "Hemoglobin\t11.6\tg/dL\t11.5–15.5",
+          "offset": 16723
+        },
+        {
+          "id": "P475",
+          "kind": "prior",
+          "text": "Platelets\t236\t10^3/uL\t150–400",
+          "offset": 16754
+        },
+        {
+          "id": "P476",
+          "kind": "prior",
+          "text": "Sodium\t138\tmmol/L\t135–145",
+          "offset": 16784
+        },
+        {
+          "id": "T543",
+          "kind": "today",
+          "text": "Patient reports taking one lisinopril tablet daily but cannot confirm its strength.",
+          "offset": 0
+        },
+        {
+          "id": "T544",
+          "kind": "today",
+          "text": "No examination has been entered.",
+          "offset": 84
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "current_regimen",
+          "question": "Which medicines, doses and schedules are you actually using now?",
+          "sourceIds": [
+            "T543",
+            "P4",
+            "P5"
+          ]
+        },
+        {
+          "questionId": "adherence_barriers",
+          "question": "What makes the treatment plan difficult to follow, and what support would help?",
+          "sourceIds": [
+            "P4",
+            "P5"
+          ]
+        },
+        {
+          "questionId": "side_effects",
+          "question": "Have you noticed possible medication side effects or intolerance?",
+          "sourceIds": [
+            "P8"
+          ]
+        }
+      ],
+      "modelKey": "qwen3.5-4b",
+      "chunks": 2,
+      "selectionRounds": 1,
+      "questionPasses": 1,
+      "sourceSentenceCount": 544,
+      "budget": {
+        "contextWindow": 16384,
+        "tokenizerMeasured": true,
+        "sourceTokens": 9318,
+        "sourcePasses": 2,
+        "maxPassTokens": 16372
+      }
+    }
+  ],
+  "hashes": {
+    "src/local-llm/note-synthesis.js": "1a196fc72ccde3cf2109686a7f2a5b7a3b2ddad0ac732168f23a12bcad84cc49",
+    "src/local-llm/models.js": "8c2496016e15b881dc981dac44c58a4c116b8abefc376f947aa2ae95bc93eb4c",
+    "src/local-llm/client.js": "db4887f4d7b2108f90d8d6196f5f74e583425030837ffd68da1ff5dc6258eab9",
+    "src/local-llm/worker.js": "efbbaaa439eac1322250a35c8ed727221788680b01a4711ae509bcf8dc4c670a",
+    "src/local-llm/tokenizer.js": "bfbff2eeee54feed5c272d252409a7b31990cbb339456f51e87475cbe612ea69",
+    "src/ui/local-note-synthesis.js": "a76d3bcad07cf73c8090109681388c489f6063730a49f6551ade443c4700789e",
+    "tests/fixtures/local-note-eval.js": "23e7e028899bc3eebde14f6b0b138440b73d346cbb990f4c422eb6b596843b17"
+  },
+  "browser": "155.0.4283.45",
+  "hardware": {
+    "facts": {
+      "deviceMemoryGB": 32,
+      "hardwareConcurrency": 32,
+      "platform": "Win32",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0"
+    },
+    "gpu": {
+      "available": true,
+      "shaderF16": true,
+      "maxBufferSize": 2147483648,
+      "maxStorageBufferBindingSize": 2147483644,
+      "adapterDescription": "nvidia blackwell"
+    },
+    "storageAvailableMB": 10240,
+    "recommendation": {
+      "webgpuAvailable": true,
+      "gpu": {
+        "available": true,
+        "shaderF16": true,
+        "maxBufferSize": 2147483648,
+        "maxStorageBufferBindingSize": 2147483644,
+        "adapterDescription": "nvidia blackwell"
+      },
+      "deviceMemoryGB": 32,
+      "hardwareConcurrency": 32,
+      "models": [
+        {
+          "model": {
+            "key": "qwen3.5-0.8b",
+            "webllmId": "Qwen3.5-0.8B-q4f16_1-MLC",
+            "label": "Qwen3.5 0.8B",
+            "params": "0.8B parameters",
+            "vramMB": 1757.49,
+            "approxDownloadMB": 426,
+            "contextWindow": 8192,
+            "minDeviceMemoryGB": 2,
+            "rank": 20,
+            "blurb": "Smallest download; suitable for short draft experiments.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-0.8B-q4f16_1-MLC/resolve/0ec138972555613c1d7812a821778ad0398c8790/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-0.8B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 8192,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3-1.7b",
+            "webllmId": "Qwen3-1.7B-q4f16_1-MLC",
+            "label": "Qwen3 1.7B",
+            "params": "1.7B parameters",
+            "vramMB": 2036.66,
+            "approxDownloadMB": 939,
+            "contextWindow": 4096,
+            "minDeviceMemoryGB": 2,
+            "rank": 10,
+            "blurb": "Previous-generation lightweight option.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3-1.7B-q4f16_1-MLC/resolve/80b3abcec6c3b3f5355dc0cc99cc4fb578f192bc/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-1.7B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 4096
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-2b",
+            "webllmId": "Qwen3.5-2B-q4f16_1-MLC",
+            "label": "Qwen3.5 2B",
+            "params": "2B parameters",
+            "vramMB": 2501.44,
+            "approxDownloadMB": 1032,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 2,
+            "rank": 40,
+            "blurb": "Balanced starting point when GPU memory is unknown.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-2B-q4f16_1-MLC/resolve/dd74e9c8a20c4546df85c844103bff87b6dcacad/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-2B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3-4b",
+            "webllmId": "Qwen3-4B-q4f16_1-MLC",
+            "label": "Qwen3 4B",
+            "params": "4B parameters",
+            "vramMB": 3431.59,
+            "approxDownloadMB": 2174,
+            "contextWindow": 4096,
+            "minDeviceMemoryGB": 8,
+            "rank": 30,
+            "blurb": "Previous-generation larger option.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3-4B-q4f16_1-MLC/resolve/a5c9fab855e3ccbdfed2e7e69683d75f30332161/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-4B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 4096
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-4b",
+            "webllmId": "Qwen3.5-4B-q4f16_1-MLC",
+            "label": "Qwen3.5 4B",
+            "params": "4B parameters",
+            "vramMB": 4379.82,
+            "approxDownloadMB": 2280,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 8,
+            "rank": 50,
+            "blurb": "Larger draft model for devices with more memory.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-4B-q4f16_1-MLC/resolve/44b42469f9e192814bfd90440e3b377d89ba7a13/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-4B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        },
+        {
+          "model": {
+            "key": "qwen3.5-9b",
+            "webllmId": "Qwen3.5-9B-q4f16_1-MLC",
+            "label": "Qwen3.5 9B",
+            "params": "9B parameters",
+            "vramMB": 7201.01,
+            "approxDownloadMB": 4827,
+            "contextWindow": 16384,
+            "minDeviceMemoryGB": 8,
+            "rank": 60,
+            "blurb": "Largest option; confirm available GPU or unified memory first.",
+            "requiredFeatures": [
+              "shader-f16"
+            ],
+            "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-9B-q4f16_1-MLC/resolve/c7c5d3f5a81e37b8facbb72970940a1b131314a8/",
+            "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-9B-q4f16_1_cs1k-webgpu.wasm",
+            "overrides": {
+              "context_window_size": 16384,
+              "max_history_size": 1
+            }
+          },
+          "available": true,
+          "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+        }
+      ],
+      "availableKeys": [
+        "qwen3.5-0.8b",
+        "qwen3-1.7b",
+        "qwen3.5-2b",
+        "qwen3-4b",
+        "qwen3.5-4b",
+        "qwen3.5-9b"
+      ],
+      "recommendedKey": "qwen3.5-4b",
+      "capacity": null
+    }
+  },
+  "lastProgress": {
+    "phase": "questions",
+    "index": 1,
+    "total": 1,
+    "message": "Preparing interview questions from selected facts and today's updates…",
+    "at": "2026-10-15T13:06:32.214Z"
+  },
+  "loadMs": 4660,
+  "finishedAt": "2026-10-15T13:06:38.636Z"
+}

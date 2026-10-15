@@ -28,7 +28,7 @@ assert.match(presentationSrc, /Specific consult questions/, "modal must label th
 console.log("✓ A&P modal includes consult questions textbox");
 
 // --- 2. Citations render as links ---
-const controllerSrc = readFileSync(new URL("../src/ui/review/controller.js?v=20261015-tokenized-drafts", import.meta.url), "utf8");
+const controllerSrc = readFileSync(new URL("../src/ui/review/controller.js?v=20261015-clinical-drafts", import.meta.url), "utf8");
 assert.match(controllerSrc, /citationLink/, "click handler must intercept citation link clicks");
 assert.match(controllerSrc, /window\.open\(url, '_blank'/, "citation links must open in new tab");
 assert.match(presentationSrc, /renderTextWithCitationLinks/, "plan fields must render citation links");

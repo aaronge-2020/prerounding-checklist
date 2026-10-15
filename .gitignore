@@ -20,6 +20,7 @@ qa-screenshots/
 reports/*.json
 reports/*.md
 reports/draft-qwen*.png
+reports/*gpu.csv
 coverage/
 .nyc_output/
 dist/

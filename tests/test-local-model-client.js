@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { createLocalLlmClient } from "../src/local-llm/client.js?v=20261015-tokenized-drafts";
+import { createLocalLlmClient } from "../src/local-llm/client.js?v=20261015-stable-draft-runtime";
 
 // Exercise the actual client lifecycle, with only GPU/worker transport faked.
 Object.defineProperty(globalThis, "navigator", { configurable: true, value: {

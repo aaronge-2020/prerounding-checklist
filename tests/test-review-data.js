@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { buildClinicalReviewIndex, filterClinicalReviewCandidates } from "../src/review-data/index.js";
 import { labFamilySections, extractPendingItems } from "../src/review-data/compact-summary.js";
-import { createReviewController } from "../src/ui/review/controller.js?v=20261015-tokenized-drafts";
+import { createReviewController } from "../src/ui/review/controller.js?v=20261015-clinical-drafts";
 
 // Node has no DOM; the controller's lab-autocomplete touches document only at
 // render time. A minimal stub keeps this suite runnable outside the browser.

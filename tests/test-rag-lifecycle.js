@@ -14,7 +14,7 @@
 // network.
 import assert from "node:assert/strict";
 
-import { createAiChatController } from "../src/ui/ai-chat/controller.js?v=20261015-tokenized-drafts";
+import { createAiChatController } from "../src/ui/ai-chat/controller.js?v=20261015-stable-draft-runtime";
 
 // --- Synthetic chart -------------------------------------------------------
 function makePatient() {
@@ -575,7 +575,7 @@ console.log("service: vault lock starts full RAG cleanup before the vault is rem
   // app.vault is discarded — never after. The cleanup is fire-and-forget
   // so lock never waits on it, but it is initiated first.
   const { readFileSync } = await import("node:fs");
-  const appSrc = readFileSync(new URL("../src/ui/app.js?v=20261015-tokenized-drafts", import.meta.url), "utf8");
+  const appSrc = readFileSync(new URL("../src/ui/app.js?v=20261015-clinical-drafts", import.meta.url), "utf8");
   const fnStart = appSrc.indexOf("function clearSensitiveSession()");
   assert.ok(fnStart >= 0, "clearSensitiveSession exists");
   const fnBody = appSrc.slice(fnStart, appSrc.indexOf("\n}\n", fnStart));

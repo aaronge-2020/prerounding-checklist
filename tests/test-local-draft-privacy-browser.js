@@ -1,0 +1,60 @@
+import assert from "node:assert/strict";
+import { chromium } from "playwright";
+import { createAppServer, openRealApp, unlockAndCreatePatient } from "./browser/app-harness.js";
+import { installSyntheticDeid } from "./browser/external-ai-fixture.js";
+const server = await createAppServer();
+const browser = await chromium.launch();
+try {
+  const page = await browser.newPage({ serviceWorkers: "block" });
+  await installSyntheticDeid(page); await openRealApp(page, server.baseUrl); await unlockAndCreatePatient(page);
+  // Real source-controller -> saved source -> review-controller -> dialog.
+  await page.locator('[data-note-mode="sections"]').click();
+  await page.locator('[data-structured-note-field="one_liner"]').fill("Canonical baseline: asthma.");
+  await page.locator('[data-action="save-structured-note-to-draft"]').click();
+  await page.locator("#reviewView.active").waitFor();
+  await page.locator('[data-action="draft-on-device"]').click();
+  const canonical = await page.getByRole("textbox", { name: "Reviewed source material", exact: true }).inputValue();
+  assert.equal(canonical.match(/Canonical baseline: asthma/g)?.length, 1, "the imported note is not repeated as a derived draft");
+  assert.ok(!canonical.includes("CURRENT WORKING DRAFT"));
+  assert.equal(await page.getByRole("combobox", { name: "Chart representation", exact: true }).locator("option").count(), 2);
+  await page.getByRole("combobox", { name: "Chart representation", exact: true }).selectOption("working");
+  assert.match(await page.getByRole("textbox", { name: "Reviewed source material", exact: true }).inputValue(), /Canonical baseline: asthma/);
+  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.evaluate(async () => {
+    globalThis.__privacyScanResult = text => {
+      const entities = ["G4P2012", "Synthetic Person"].map(value => ({ start: text.indexOf(value), end: text.indexOf(value) + value.length, label: value === "G4P2012" ? "ID" : "NAME", replacement: value === "G4P2012" ? "[ID]" : "[NAME]" }));
+      return { text: text.replace("G4P2012", "[ID]").replace("Synthetic Person", "[NAME]"), entities, modelId: "synthetic-model", residualWarnings: [] };
+    };
+    const { openLocalNoteSynthesis } = await import("/src/ui/local-note-synthesis.js?v=20261015-clinical-drafts");
+    globalThis.__privacyResetCount = 0;
+    const client = { getStatus: () => ({ status: "ready", verified: true, activeModelKey: "qwen3.5-4b" }), countTokens: async texts => texts.map(text => Math.ceil(text.length / 2)), resetChat: async () => { globalThis.__privacyResetCount++; }, chat: async messages => (globalThis.__privacyLastChatResetCount = globalThis.__privacyResetCount, JSON.stringify(messages[0].content.includes("ONE-LINER CONTRACT") ? { baseline_ids: [...messages[1].content.matchAll(/\[(P\d+)\]/g)].map(match => match[1]).slice(0, 2), history_ids: [], uncertainty_ids: [] } : { selected_ids: [...messages[1].content.matchAll(/\[(P\d+)\]/g)].map(match => match[1]).slice(0, 2) })) };
+    globalThis.__openPrivacyDraft = () => openLocalNoteSynthesis({ source: "G4P2012. Synthetic Person.", client, hardwareReport: async () => ({ facts: { deviceMemoryGB: 32 }, gpu: { available: true, shaderF16: true } }), stillCurrent: () => true, apply: (section, text) => { globalThis.__privacyApplied = text; }, copy: async () => {} });
+    globalThis.__openPrivacyDraft();
+  });
+  assert.equal(await page.getByRole("textbox", { name: "Proposed note text", exact: true, includeHidden: true }).isVisible(), false, "empty preview is hidden before generation");
+  const generate = async () => { await page.locator("[data-local-generate]:enabled").click(); await page.locator("[data-local-draft-privacy]").waitFor(); };
+  await generate();
+  assert.ok(await page.evaluate(() => globalThis.__privacyResetCount > globalThis.__privacyLastChatResetCount), "chart-bearing model history cleared before preview");
+  assert.equal(await page.locator("[data-local-apply]").isDisabled(), true);
+  await page.getByRole("button", { name: "Not PHI — restore: G4P2012", exact: true }).click();
+  assert.equal(await page.locator("[data-local-apply]").isDisabled(), true, "remaining real identifier still requires a decision");
+  await page.getByRole("button", { name: "Keep redaction: Synthetic Person", exact: true }).click();
+  assert.equal(await page.locator("[data-local-apply]").isEnabled(), true);
+  assert.ok(!(await page.locator("[data-local-draft-privacy]").innerText()).includes("Synthetic Person"), "accepted redaction hides the original identifier");
+  const output = page.getByRole("textbox", { name: "Proposed note text", exact: true });
+  assert.match(await output.inputValue(), /G4P2012/); assert.ok(!(await output.inputValue()).includes("Synthetic Person"));
+  await page.getByRole("button", { name: "Undo decision: G4P2012", exact: true }).click();
+  assert.equal(await page.locator("[data-local-apply]").isDisabled(), true); assert.ok(!(await output.inputValue()).includes("G4P2012"));
+  await page.getByRole("button", { name: "Not PHI — restore: G4P2012", exact: true }).click();
+  await page.locator("[data-local-apply]").click();
+  assert.match(await page.evaluate(() => globalThis.__privacyApplied), /G4P2012/);
+  await page.evaluate(() => globalThis.__openPrivacyDraft()); await generate();
+  await page.getByRole("textbox", { name: "Reviewed source material", exact: true }).fill("Changed source.");
+  assert.equal(await page.locator("[data-local-draft-privacy]").count(), 0); assert.equal(await page.locator("[data-local-apply]").isDisabled(), true);
+  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.evaluate(() => globalThis.__openPrivacyDraft()); await generate();
+  await page.evaluate(async () => (await import("/src/ui/external-ai-review.js?v=20261015-simple-review")).cancelExternalAiReviews());
+  assert.equal(await page.locator("[data-local-note-synthesis]").count(), 0);
+  assert.ok(!(await page.locator("body").innerText()).includes("Synthetic Person"));
+  console.log("Draft privacy review: exact clinical restoration, identifiers kept redacted, pending/undo gates, source invalidation and session cleanup passed.");
+} finally { await browser.close(); await server.close(); }

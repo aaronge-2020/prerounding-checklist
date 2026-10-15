@@ -12,17 +12,18 @@ import {
   LOCAL_MODEL_CATALOG_REVISION,
   inspectWebGpu,
   LOCAL_LLM_MODELS,
+  LOCAL_LLM_RUNTIME_PATCH,
   localLlmModelByKey,
   readHardwareFacts,
   recommendLocalLlmModels
-} from "./models.js?v=20261015-tokenized-drafts";
+} from "./models.js?v=20261015-stable-draft-runtime";
 import { isOfflineMode, onOfflineModeChange } from "../lib/network-gate.js?v=20261012-safety";
 
 // Re-exported for UI modules that resolve the active model label from the
 // shared client entry point.
 export { localLlmModelByKey };
 
-export const LOCAL_LLM_RUNTIME_VERSION = `webllm@${WEBLLM_VERSION}/${LOCAL_MODEL_CATALOG_REVISION}`;
+export const LOCAL_LLM_RUNTIME_VERSION = `webllm@${WEBLLM_VERSION}+${LOCAL_LLM_RUNTIME_PATCH}/${LOCAL_MODEL_CATALOG_REVISION}`;
 
 // A worker round-trip that never answers must fail closed instead of hanging
 // the UI forever. Generation of a long chunk on weak hardware can take
@@ -206,7 +207,7 @@ export function createLocalLlmClient() {
 
   function ensureWorker() {
     if (worker) return worker;
-    const w = new Worker(trustedWorkerUrl(new URL("./worker.js?v=20261015-tokenized-drafts", import.meta.url)), {
+    const w = new Worker(trustedWorkerUrl(new URL("./worker.js?v=20261015-stable-draft-runtime", import.meta.url)), {
       type: "module"
     });
     worker = w;

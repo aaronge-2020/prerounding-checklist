@@ -1,5 +1,6 @@
+import { buildLocalNoteSources } from "../../local-llm/note-source.js?v=20261015-clinical-drafts";
 import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
-import { openLocalNoteSynthesis } from "../local-note-synthesis.js?v=20261015-tokenized-drafts";
+import { openLocalNoteSynthesis } from "../local-note-synthesis.js?v=20261015-clinical-drafts";
 import { cancelExternalAiReviews } from "../external-ai-review.js?v=20261015-simple-review";
 import { preserveViewScroll } from "../view-scroll.js?v=20261012-safety";
 import { installCitationInspector } from "./citation-inspector.js?v=20261012-safety";
@@ -2330,9 +2331,10 @@ export function createReviewController(deps) {
       const patientId = current.patient.id;
       const packetId = current.packet.id;
       const source = sourceNoteForPacket(current.patient, packetId);
-      const priorText = Object.entries(source?.sections || {}).map(([key, value]) => `${key}: ${sourceSectionText(value)}`).join("\n\n");
+      const sources = buildLocalNoteSources({ importedSections: source?.sections, draftEntries: renderNoteSectionEntries(current.draft) });
       openLocalNoteSynthesis({
-        source: `IMPORTED SOURCE (historical unless explicitly updated)\n${priorText}\n\nCURRENT WORKING DRAFT (may include carried-forward content)\n${renderFinalNotePlainText(current.draft)}`,
+        source: sources[0]?.text || "",
+        sources,
         stillCurrent: () => {
           const fresh = model();
           return fresh.patient?.id === patientId && fresh.packet.id === packetId && JSON.stringify(fresh.draft) === snapshot;
