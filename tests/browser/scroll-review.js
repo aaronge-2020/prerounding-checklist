@@ -1,6 +1,6 @@
 // Actual controller, renderer and styles. Only inference and the remote request
 // use deterministic substitutes; synthetic fixture text never leaves.
-import { createAiChatController } from "../../src/ui/ai-chat/controller.js";
+import { createAiChatController } from "../../src/ui/ai-chat/controller.js?v=20261015-tokenized-drafts";
 const patient = {
   id: "scroll-patient", displayLabel: "Synthetic room", metadata: {}, days: [],
   contextSections: Array.from({ length: 8 }, (_, i) => ({

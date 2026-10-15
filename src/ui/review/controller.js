@@ -1,5 +1,5 @@
 import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
-import { openLocalNoteSynthesis } from "../local-note-synthesis.js?v=20261015-simple-review";
+import { openLocalNoteSynthesis } from "../local-note-synthesis.js?v=20261015-tokenized-drafts";
 import { cancelExternalAiReviews } from "../external-ai-review.js?v=20261015-simple-review";
 import { preserveViewScroll } from "../view-scroll.js?v=20261012-safety";
 import { installCitationInspector } from "./citation-inspector.js?v=20261012-safety";

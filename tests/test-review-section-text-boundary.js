@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { createReviewController } from "../src/ui/review/controller.js";
+import { createReviewController } from "../src/ui/review/controller.js?v=20261015-tokenized-drafts";
 
 // Regression test: saved primary-team-note sections cross a state boundary.
 // A fresh parse stores plain strings; the vault stores { deidentifiedText }

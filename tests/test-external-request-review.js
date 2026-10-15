@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { createExternalRequestReview, validateExternalRequest, externalReviewGroups, AI_ENDPOINTS } from "../src/ai/external-request-review.js";
-import { buildLocalSynthesisMessages } from "../src/local-llm/note-synthesis.js";
+import { buildLocalSynthesisMessages } from "../src/local-llm/note-synthesis.js?v=20261015-tokenized-drafts";
 import { buildDifferentialScoringRequest } from "../src/ai/decision-scoring.js";
 const endpoint = AI_ENDPOINTS[0];
 const consent = { reviewedContent: true, permittedProvider: true };
@@ -55,7 +55,7 @@ await scoring.scan(deidentify);
 assert.ok(!scoring.approve(consent).includes("SYNTHETIC-IDENTIFIER"));
 const messages = buildLocalSynthesisMessages({ source: "Prior note: historical symptom. Lab: 5 mmol/L", section: "history_of_present_illness" });
 assert.match(messages[0].content, /historical/);
-assert.match(messages[0].content, /\[Ask:/);
+assert.match(messages[0].content, /selected_ids/);
 assert.match(messages[0].content, /untrusted data/);
 assert.match(messages[1].content, /5 mmol\/L/);
 assert.throws(() => buildLocalSynthesisMessages({ source: "", section: "one_liner" }), /source material/);

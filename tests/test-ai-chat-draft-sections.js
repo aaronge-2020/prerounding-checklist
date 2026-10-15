@@ -38,8 +38,8 @@ import {
   splitBuiltContext,
   verifySplitEquivalence
 } from "../src/ui/ai-chat/delta-review.js";
-import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js";
-import { createAiChatController } from "../src/ui/ai-chat/controller.js";
+import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js?v=20261015-tokenized-drafts";
+import { createAiChatController } from "../src/ui/ai-chat/controller.js?v=20261015-tokenized-drafts";
 
 const FIXED_TIME = 1759094400000;
 const fixedNow = () => FIXED_TIME;

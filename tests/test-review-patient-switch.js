@@ -19,7 +19,7 @@ import { readFile } from "node:fs/promises";
 // Part 1: every patient-change path clears patient-scoped session state
 // ---------------------------------------------------------------------------
 
-const appSource = await readFile(new URL("../src/ui/app.js", import.meta.url), "utf8");
+const appSource = await readFile(new URL("../src/ui/app.js?v=20261015-tokenized-drafts", import.meta.url), "utf8");
 
 function topLevelFunctionBody(source, name) {
   const start = source.indexOf(`function ${name}(`);
@@ -55,7 +55,7 @@ globalThis.document = {
   querySelector: () => null,
 };
 
-const { createReviewController } = await import("../src/ui/review/controller.js");
+const { createReviewController } = await import("../src/ui/review/controller.js?v=20261015-tokenized-drafts");
 const { createReviewPresentation } = await import("../src/ui/review/presentation.js");
 const { activePatient } = await import("../src/app/state/vault.js");
 const { createNoteDraft, updateNoteSection, NOTE_TYPES } = await import("../src/note-drafts/index.js");

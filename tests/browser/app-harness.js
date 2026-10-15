@@ -17,9 +17,10 @@ export async function navigateToView(page, view) {
   await button.click();
 }
 
-export async function createAppServer({ unavailablePrefixes = [] } = {}) {
+export async function createAppServer({ unavailablePrefixes = [], crossOriginIsolated = false, port = 0 } = {}) {
   const requests = [];
   const server = createServer((request, response) => {
+    if (crossOriginIsolated) { response.setHeader("Cross-Origin-Opener-Policy", "same-origin"); response.setHeader("Cross-Origin-Embedder-Policy", "require-corp"); }
     const url = new URL(request.url, "http://127.0.0.1");
     // Server-side failure injection also reaches dedicated/service workers.
     if (unavailablePrefixes.some((prefix) => url.pathname.startsWith(prefix))) {
@@ -40,7 +41,7 @@ export async function createAppServer({ unavailablePrefixes = [] } = {}) {
   });
   await new Promise((resolve, reject) => {
     server.once("error", reject);
-    server.listen(0, "127.0.0.1", () => {
+    server.listen(port, "127.0.0.1", () => {
       server.removeListener("error", reject);
       resolve();
     });
@@ -75,7 +76,7 @@ export async function unlockAndCreatePatient(page, { passphrase = "clinical revi
   await page.fill("#vaultPassphrase", passphrase);
   await page.click('[data-action="unlock-vault"]');
   await page.waitForFunction(() => /Vault unlocked/.test(document.querySelector("#statusLine")?.textContent || ""));
-  if (await page.locator("#newPatientLabel").count()) {
+  if (await page.locator("#newPatientLabel").isVisible()) {
     await page.fill("#newPatientLabel", label);
     await page.click('[data-action="admit-patient"]');
   }

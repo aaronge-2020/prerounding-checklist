@@ -150,7 +150,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     const webgpu = hardware?.recommendation?.webgpuAvailable;
     const specs = [
       webgpu ? "WebGPU ✓" : "No WebGPU",
-      typeof facts.deviceMemoryGB === "number" ? `${facts.deviceMemoryGB}GB` : null,
+      typeof facts.deviceMemoryGB === "number" ? `${facts.deviceMemoryGB}GB RAM hint` : null,
       typeof facts.hardwareConcurrency === "number" ? `${facts.hardwareConcurrency} cores` : null
     ].filter(Boolean).join(" · ");
 

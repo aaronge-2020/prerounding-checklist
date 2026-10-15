@@ -340,7 +340,7 @@ console.log("truncation: named by cut piece, never described as full");
   // The offset points inside the cut piece, past the bytes already used.
   assert.ok(loc.cutOffsetInPiece > 0 && loc.cutOffsetInPiece < approvedById["admission:s2"].length, "offset lands inside the cut piece");
   // The user-facing truncation note names the cut piece by its title.
-  const controllerSrc = await import("node:fs").then((fs) => fs.readFileSync(new URL("../src/ui/ai-chat/controller.js", import.meta.url), "utf8"));
+  const controllerSrc = await import("node:fs").then((fs) => fs.readFileSync(new URL("../src/ui/ai-chat/controller.js?v=20261015-tokenized-drafts", import.meta.url), "utf8"));
   const noteLine = controllerSrc.split("\n").find((line) => line.includes("tail was cut inside"));
   assert.ok(noteLine, "truncation note template exists");
   assert.ok(noteLine.includes("cutPiece?.title"), "note names the cut piece by title");

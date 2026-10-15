@@ -30,7 +30,7 @@ import {
   updatePrimaryTeamNoteSection
 } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
 import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261013-initial-plan-heading";
-import { sharedLocalLlmClient } from "../../local-llm/client.js?v=20261012-safety";
+import { sharedLocalLlmClient } from "../../local-llm/client.js?v=20261015-tokenized-drafts";
 import { splitNoteSectionsWithLlm } from "../../local-llm/parse.js?v=20260928-local-llm-v1";
 
 export function createDailySourceController(deps) {

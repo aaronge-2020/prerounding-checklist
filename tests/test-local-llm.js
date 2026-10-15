@@ -14,8 +14,9 @@ import {
   LOCAL_LLM_MODELS,
   readHardwareFacts,
   recommendLocalLlmModels,
+  inspectWebGpu,
   detectWebGpu
-} from "../src/local-llm/models.js";
+} from "../src/local-llm/models.js?v=20261015-tokenized-drafts";
 import {
   buildSectionSplitPrompt,
   chunkNoteForSplit,
@@ -48,7 +49,7 @@ import {
   listPatientContextPieces
 } from "../src/local-llm/patient-context.js";
 import { CHARS_PER_TOKEN, TOKEN_SAFETY_MARGIN, buildChatMessages, estimateTokens } from "../src/local-llm/context-budget.js";
-import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js";
+import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js?v=20261015-tokenized-drafts";
 import { buildSystemPrompt } from "../src/local-llm/system-prompt.js";
 import { DEFAULT_SYSTEM_GUIDELINES } from "../src/local-llm/system-prompt.js";
 import { renderChatMarkdown } from "../src/local-llm/markdown.js";
@@ -59,8 +60,12 @@ import { createSettingsPresentation } from "../src/ui/settings/presentation.js";
 // ---------------------------------------------------------------------------
 
 assert.equal(WEBLLM_VERSION, "0.2.85", "webllm runtime version is pinned");
-assert.equal(LOCAL_LLM_MODELS.length, 2, "two models registered");
-assert.deepEqual(LOCAL_LLM_MODELS.map((m) => m.key), ["qwen3-1.7b", "qwen3-4b"]);
+assert.equal(LOCAL_LLM_MODELS.length, 6, "six curated browser-compatible models");
+assert.ok(localLlmModelByKey("qwen3.5-9b"));
+for (const model of LOCAL_LLM_MODELS) {
+  assert.match(model.modelUrl, /\/resolve\/[a-f0-9]{40}\/$/, "weights pinned to a commit");
+  assert.match(model.modelLibUrl, /\/[a-f0-9]{40}\/web-llm-models\//, "compiled library pinned to a commit");
+}
 
 const small = localLlmModelByKey("qwen3-1.7b");
 assert.equal(small.webllmId, "Qwen3-1.7B-q4f16_1-MLC");
@@ -91,18 +96,31 @@ assert.equal(noGpu.recommendedKey, null);
 assert.ok(noGpu.models.every((m) => !m.available && /WebGPU/.test(m.note)));
 
 const m2 = recommendLocalLlmModels(readHardwareFacts({ deviceMemory: 16, hardwareConcurrency: 8 }), true);
-assert.deepEqual(m2.availableKeys, ["qwen3-1.7b", "qwen3-4b"], "16GB device can run both");
-assert.equal(m2.recommendedKey, "qwen3-4b", "16GB device is recommended the 4B model");
+assert.equal(m2.availableKeys.length, 6, "system RAM hint alone does not establish GPU memory fit");
+assert.equal(m2.recommendedKey, "qwen3.5-4b", "conservative choice without exact VRAM");
 
 const smallDevice = recommendLocalLlmModels(readHardwareFacts({ deviceMemory: 4 }), true);
-assert.deepEqual(smallDevice.availableKeys, ["qwen3-1.7b"], "4GB device only gets the 1.7B model");
-assert.equal(smallDevice.recommendedKey, "qwen3-1.7b");
-assert.match(smallDevice.models[1].note, /8GB/, "4B card explains the memory requirement");
+assert.deepEqual(smallDevice.availableKeys, ["qwen3.5-0.8b", "qwen3-1.7b", "qwen3.5-2b"], "small system excludes larger models");
+assert.equal(smallDevice.recommendedKey, "qwen3.5-2b");
+assert.match(smallDevice.models.find(entry => entry.model.key === "qwen3.5-4b").note, /8GB/, "4B card explains the memory requirement");
 
 const unknownMem = recommendLocalLlmModels(readHardwareFacts({}), true);
-assert.deepEqual(unknownMem.availableKeys, ["qwen3-1.7b", "qwen3-4b"], "unknown memory does not hide models");
-assert.equal(unknownMem.recommendedKey, "qwen3-1.7b", "unknown memory conservatively recommends 1.7B");
+assert.equal(unknownMem.availableKeys.length, 6, "unknown memory does not pretend to prove incompatibility");
+assert.equal(unknownMem.recommendedKey, "qwen3.5-2b", "unknown memory uses a conservative starting point");
 assert.ok(unknownMem.models.every((m) => /does not report device memory/.test(m.note)), "honest about missing data");
+
+const gpu = { available: true, shaderF16: true };
+const laptop12 = recommendLocalLlmModels(readHardwareFacts({ deviceMemory: 8 }), gpu, { memoryGB: 12, memoryKind: "dedicated" });
+assert.equal(laptop12.recommendedKey, "qwen3.5-9b", "12GB dedicated GPU has headroom for the 9B estimate");
+const mac8 = recommendLocalLlmModels(readHardwareFacts({}), gpu, { memoryGB: 8, memoryKind: "unified" });
+assert.equal(mac8.recommendedKey, "qwen3.5-4b");
+assert.ok(!mac8.availableKeys.includes("qwen3.5-9b"), "unified capacity reserves memory for the OS/browser");
+assert.deepEqual(recommendLocalLlmModels({}, { available: true, shaderF16: false }).availableKeys, []);
+assert.equal(recommendLocalLlmModels({}, gpu, { memoryGB: -12, memoryKind: "dedicated" }).capacity, null);
+const inspected = await inspectWebGpu({ gpu: { requestAdapter: async () => ({ features: new Set(["shader-f16"]), limits: { maxBufferSize: 123 }, info: { vendor: "test", description: "adapter" } }) } });
+assert.equal(inspected.shaderF16, true);
+assert.equal(inspected.maxBufferSize, 123);
+assert.equal(inspected.adapterDescription, "test adapter");
 
 assert.doesNotThrow(() => recommendLocalLlmModels(null, true), "null facts degrade gracefully");
 assert.doesNotThrow(() => recommendLocalLlmModels(undefined, false));

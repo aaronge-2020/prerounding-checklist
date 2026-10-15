@@ -24,7 +24,15 @@
 // it wraps fetch/XHR before the vendored runtime evaluates, and the client
 // passes the toggle state via the "init" and "offlineMode" messages.
 import { setWorkerOfflineMode } from "./worker-net-guard.js?v=20261012-safety";
-import { CreateMLCEngine, hasModelInCache } from "../../vendor/web-llm/index.js";
+import { CreateMLCEngine, hasModelInCache, prebuiltAppConfig } from "../../vendor/web-llm/index.js";
+
+import { LOCAL_LLM_MODELS } from "./models.js?v=20261015-tokenized-drafts";
+import { countLoadedModelTokens } from "./tokenizer.js?v=20261015-tokenized-drafts";
+const appConfig = { ...prebuiltAppConfig, model_list: LOCAL_LLM_MODELS.map(model => ({
+  model_id: model.webllmId, model: model.modelUrl, model_lib: model.modelLibUrl,
+  overrides: model.overrides, vram_required_MB: model.vramMB,
+  required_features: model.requiredFeatures
+})) };
 
 let engine = null;
 let engineModelId = "";
@@ -57,6 +65,7 @@ async function handleInit(id, modelId) {
           text: String(report.text || "")
         });
       },
+      appConfig,
       logLevel: "SILENT"
     });
     engineModelId = modelId;
@@ -81,16 +90,20 @@ async function handleChat(id, { messages, maxTokens, temperature, chatOpts }) {
       temperature,
       // Pass-through for engine request extras (e.g. extra_body to disable
       // chain-of-thought for deterministic extraction tasks).
-      ...(chatOpts && chatOpts.extraBody ? { extra_body: chatOpts.extraBody } : {})
+      ...(chatOpts && chatOpts.extraBody ? { extra_body: chatOpts.extraBody } : {}),
+      ...(chatOpts?.responseFormat ? { response_format: chatOpts.responseFormat } : {})
     });
     let text = "";
+    let finishReason = "";
     for await (const chunk of chunks) {
+      if (chunk?.choices?.[0]?.finish_reason) finishReason = chunk.choices[0].finish_reason;
       const token = chunk?.choices?.[0]?.delta?.content || "";
       if (token) {
         text += token;
         post({ id, type: "token", token });
       }
     }
+    if (finishReason === "length" && chatOpts?.requireComplete) throw new Error("The local model reached its output limit. No incomplete draft was accepted.");
     post({ id, type: "done", text });
   } catch (error) {
     post({ id, type: "error", message: error?.message || "Generation failed." });
@@ -105,6 +118,9 @@ self.onmessage = async (event) => {
       // The worker cannot read the toggle itself; the client passes it.
       setWorkerOfflineMode(message.offlineMode === true);
       await handleInit(id, message.modelId);
+    } else if (type === "tokenize") {
+      if (!engine) throw new Error("Load a model before tokenizing source text.");
+      post({ id, type: "done", counts: countLoadedModelTokens(engine, engineModelId, message.texts) });
     } else if (type === "offlineMode") {
       // Mid-session toggle: in-flight requests finish, new ones are refused.
       setWorkerOfflineMode(message.offline === true);
@@ -123,7 +139,7 @@ self.onmessage = async (event) => {
       const results = {};
       for (const modelId of message.modelIds || []) {
         try {
-          results[modelId] = await hasModelInCache(modelId);
+          results[modelId] = await hasModelInCache(modelId, appConfig);
         } catch {
           results[modelId] = false;
         }

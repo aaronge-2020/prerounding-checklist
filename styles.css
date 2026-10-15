@@ -14803,3 +14803,9 @@ body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.ap
 .external-ai-review section textarea { min-height: 144px; }
 .external-ai-review .button-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .aic-hipaa-summary { margin: 0; padding: 10px 20px; border-bottom: 1px solid var(--border); font-size: 14px; }
+
+.local-model-controls { padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.local-model-controls select { width: 100%; min-width: 0; }
+.local-model-controls p { margin: 8px 0; font-size: 0.9rem; line-height: 1.5; overflow-wrap: anywhere; }
+.local-model-controls progress { width: 100%; }
+.local-model-controls input[type="number"] { width: 100%; box-sizing: border-box; }

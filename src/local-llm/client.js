@@ -1,3 +1,4 @@
+import { stripThinking } from "./thinking.js?v=20260927-local-llm-v4";
 import { trustedWorkerUrl } from "../lib/trusted-resource.js?v=20261012-safety";
 // Main-thread client for the browser-local LLM worker (src/local-llm/worker.js).
 // Owns the model lifecycle: hardware-gated selection, visible download/load
@@ -8,19 +9,20 @@ import { trustedWorkerUrl } from "../lib/trusted-resource.js?v=20261012-safety";
 
 import {
   WEBLLM_VERSION,
-  detectWebGpu,
+  LOCAL_MODEL_CATALOG_REVISION,
+  inspectWebGpu,
   LOCAL_LLM_MODELS,
   localLlmModelByKey,
   readHardwareFacts,
   recommendLocalLlmModels
-} from "./models.js?v=20260927-local-llm-v4";
+} from "./models.js?v=20261015-tokenized-drafts";
 import { isOfflineMode, onOfflineModeChange } from "../lib/network-gate.js?v=20261012-safety";
 
 // Re-exported for UI modules that resolve the active model label from the
 // shared client entry point.
 export { localLlmModelByKey };
 
-export const LOCAL_LLM_RUNTIME_VERSION = `webllm@${WEBLLM_VERSION}`;
+export const LOCAL_LLM_RUNTIME_VERSION = `webllm@${WEBLLM_VERSION}/${LOCAL_MODEL_CATALOG_REVISION}`;
 
 // A worker round-trip that never answers must fail closed instead of hanging
 // the UI forever. Generation of a long chunk on weak hardware can take
@@ -95,7 +97,7 @@ export function readLocalLlmDownloaded() {
   const stored = readJson(DOWNLOADED_KEY) || {};
   const out = {};
   for (const model of LOCAL_LLM_MODELS) {
-    out[model.key] = !!(stored && stored[model.key]);
+    out[model.key] = stored?.[model.key]?.webllmId === model.webllmId && stored?.[model.key]?.modelUrl === model.modelUrl;
   }
   return out;
 }
@@ -104,6 +106,7 @@ function markModelDownloaded(modelKey, model) {
   const stored = readJson(DOWNLOADED_KEY) || {};
   stored[modelKey] = {
     webllmId: model.webllmId,
+    modelUrl: model.modelUrl,
     downloadedAt: new Date().toISOString()
   };
   writeJson(DOWNLOADED_KEY, stored);
@@ -123,14 +126,23 @@ function pruneDownloadedRegistry(keepKeys) {
 
 export async function getLocalLlmHardwareReport(nav) {
   const facts = readHardwareFacts(nav);
-  const webgpu = await detectWebGpu(nav);
-  return { facts, recommendation: recommendLocalLlmModels(facts, webgpu) };
+  const gpu = await inspectWebGpu(nav);
+  let storageAvailableMB = null;
+  try {
+    const storage = nav?.storage || (typeof navigator !== "undefined" ? navigator.storage : null);
+    const estimate = await storage?.estimate?.();
+    if (Number.isFinite(estimate?.quota) && Number.isFinite(estimate?.usage)) storageAvailableMB = Math.max(0, estimate.quota - estimate.usage) / 1024 ** 2;
+  } catch { /* Storage estimates are optional, never evidence of GPU capacity. */ }
+  return { facts, gpu, storageAvailableMB, recommendation: recommendLocalLlmModels(facts, gpu) };
 }
 
 export function createLocalLlmClient() {
   let worker = null;
   let nextId = 1;
   const pending = new Map();
+  let lifecycle = 0;
+  let loadingTask = null;
+  let loadingKey = "";
   // Keep a live worker's offline flag in sync when the toggle changes
   // mid-session. No worker is spawned just for this: if none exists, the
   // next init carries the current state.
@@ -194,11 +206,12 @@ export function createLocalLlmClient() {
 
   function ensureWorker() {
     if (worker) return worker;
-    const w = new Worker(trustedWorkerUrl(new URL("./worker.js?v=20261012-safety", import.meta.url)), {
+    const w = new Worker(trustedWorkerUrl(new URL("./worker.js?v=20261015-tokenized-drafts", import.meta.url)), {
       type: "module"
     });
     worker = w;
     w.onmessage = (event) => {
+      if (worker !== w) return;
       const message = event.data || {};
       const entry = pending.get(message.id);
       if (message.type === "progress") {
@@ -217,6 +230,7 @@ export function createLocalLlmClient() {
       else entry.resolve(message);
     };
     w.onerror = (event) => {
+      if (worker !== w) return;
       const message = event?.message || "Local model worker failed to start.";
       for (const entry of pending.values()) entry.reject(new Error(message));
       pending.clear();
@@ -276,10 +290,11 @@ export function createLocalLlmClient() {
     const reply = await send({
       type: "chat",
       messages: [{ role: "user", content: `Reply with exactly this and nothing else: ${SELFTEST_MARKER}` }],
-      maxTokens: 32,
-      temperature: 0
+      maxTokens: 128,
+      temperature: 0,
+      chatOpts: { extraBody: { enable_thinking: false }, requireComplete: true }
     });
-    if (!String(reply.text || "").includes(SELFTEST_MARKER)) {
+    if (stripThinking(reply.text) !== SELFTEST_MARKER) {
       throw new Error("Self-test failed: the model did not echo the expected marker.");
     }
   }
@@ -287,7 +302,20 @@ export function createLocalLlmClient() {
   // Load (downloading weights on first use) and verify the selected model.
   // Progress is reported through onProgress({ progress, text }); the promise
   // resolves only after the self-test passes.
-  async function ensureReady(modelKey, { onProgress } = {}) {
+  function ensureReady(modelKey, options = {}) {
+    if (loadingTask) {
+      if (loadingKey === modelKey) return loadingTask;
+      return Promise.reject(new Error("Finish or cancel the current model load before selecting another model."));
+    }
+    const started = ++lifecycle;
+    loadingKey = modelKey;
+    loadingTask = loadAndVerify(modelKey, options, started).finally(() => {
+      if (lifecycle === started) { loadingTask = null; loadingKey = ""; }
+    });
+    return loadingTask;
+  }
+
+  async function loadAndVerify(modelKey, { onProgress } = {}, started) {
     const model = localLlmModelByKey(modelKey);
     if (!model) throw new Error(`Unknown local model: ${modelKey}`);
     // Offline mode must not trigger a multi-hundred-megabyte download the
@@ -315,6 +343,7 @@ export function createLocalLlmClient() {
       return getStatus();
     }
     const report = await getLocalLlmHardwareReport();
+    if (started !== lifecycle) throw new DOMException("Model loading cancelled.", "AbortError");
     const allowed = report.recommendation.availableKeys.includes(modelKey);
     if (!allowed) {
       throw new Error(
@@ -338,6 +367,8 @@ export function createLocalLlmClient() {
       emit();
       await send({ type: "reset" });
       await runSelfTest();
+      const tokenizerTest = await send({ type: "tokenize", texts: [SELFTEST_MARKER] });
+      if (!Number.isInteger(tokenizerTest.counts?.[0]) || tokenizerTest.counts[0] < 1) throw new Error("The local tokenizer self-test failed.");
       await send({ type: "reset" });
       verifiedModelKey = modelKey;
       writeJson(VERIFIED_KEY, {
@@ -355,6 +386,7 @@ export function createLocalLlmClient() {
       emit();
       return getStatus();
     } catch (error) {
+      if (started !== lifecycle) throw error;
       status = "error";
       statusDetail = error?.message || "Model failed to load.";
       verifiedModelKey = "";
@@ -373,11 +405,24 @@ export function createLocalLlmClient() {
     const timeoutMessage =
       `Local AI generation timed out after ${Math.max(1, Math.round(timeoutMs / 60000))} minute(s) ` +
       `waiting for the on-device model. It may be stalled or very slow on this hardware.`;
-    const reply = await send(
-      { type: "chat", messages, maxTokens, temperature, chatOpts },
-      { onToken, timeoutMs, timeoutMessage }
-    );
-    return reply.text;
+    const started = lifecycle;
+    try {
+      const reply = await send(
+        { type: "chat", messages, maxTokens, temperature, chatOpts },
+        { onToken, timeoutMs, timeoutMessage }
+      );
+      return reply.text;
+    } catch (error) {
+      if (started === lifecycle) { status = "error"; verifiedModelKey = ""; statusDetail = error?.message || "Local inference failed. Reload and self-test the model."; emit(); }
+      throw error;
+    }
+  }
+
+  async function countTokens(texts) {
+    if (status !== "ready" || !getStatus().verified) throw new Error("Load and self-test a local model before measuring tokens.");
+    const reply = await send({ type: "tokenize", texts }, { timeoutMs: 30000, timeoutMessage: "Local tokenizer did not respond." });
+    if (!Array.isArray(reply.counts) || reply.counts.length !== texts.length || reply.counts.some(count => !Number.isInteger(count) || count < 0)) throw new Error("The local tokenizer returned invalid counts.");
+    return reply.counts;
   }
 
   async function resetChat() {
@@ -385,25 +430,22 @@ export function createLocalLlmClient() {
   }
 
   async function unload() {
-    if (worker) {
-      try {
-        await send({ type: "unload" });
-      } catch {
-        // Unload is best-effort.
-      }
-      worker.terminate();
-      worker = null;
-    }
+    // Terminating the worker immediately stops a download/generation and releases
+    // patient context. Reject pending callers instead of leaving promises hung.
+    lifecycle++;
+    if (worker) worker.terminate();
+    worker = null;
+    for (const entry of [...pending.values()]) entry.reject(new DOMException("Local model operation cancelled.", "AbortError"));
     pending.clear();
+    loadingTask = null;
+    loadingKey = "";
     status = "idle";
     statusDetail = "";
     progress = 0;
     progressText = "";
     activeModelKey = "";
     verifiedModelKey = "";
-    // Downloads stay cached by the browser: the downloaded registry is
-    // deliberately NOT cleared here, so other models keep their
-    // "Downloaded" status when one model is unloaded or switched.
+    // Downloaded files remain cached for explicit reload and self-test.
     emit();
   }
 
@@ -434,6 +476,7 @@ export function createLocalLlmClient() {
     cachedModels,
     chat,
     resetChat,
+    countTokens,
     unload,
     getLocalLlmHardwareReport
   };

@@ -128,7 +128,7 @@ const { createDrugLookupPresentation } = await import("../src/ui/drug-lookup/pre
 // ---------------------------------------------------------------------------
 // 4. AI Chat per-group Select all / Deselect all
 // ---------------------------------------------------------------------------
-const { createAiChatPresentation } = await import("../src/ui/ai-chat/presentation.js");
+const { createAiChatPresentation } = await import("../src/ui/ai-chat/presentation.js?v=20261015-tokenized-drafts");
 {
   const presentation = createAiChatPresentation({
     escapeHtml: (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"),

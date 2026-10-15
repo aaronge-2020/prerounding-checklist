@@ -35,9 +35,9 @@ import {
   setOfflineMode
 } from "../src/lib/network-gate.js?v=20261012-safety";
 import { requestOpenAiChat, requestOpenAiStructuredJson } from "../src/ui/openai-client.js";
-import { createLocalLlmClient } from "../src/local-llm/client.js";
+import { createLocalLlmClient } from "../src/local-llm/client.js?v=20261015-tokenized-drafts";
 import { createSettingsPresentation } from "../src/ui/settings/presentation.js";
-import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js";
+import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js?v=20261015-tokenized-drafts";
 
 const NETWORK_GATE_TAG = "20261012-safety";
 
@@ -323,14 +323,14 @@ console.log("worker net guard tests passed");
 // ---------------------------------------------------------------------------
 
 {
-  const workerSrc = readFileSync(new URL("../src/local-llm/worker.js", import.meta.url), "utf8");
+  const workerSrc = readFileSync(new URL("../src/local-llm/worker.js?v=20261015-tokenized-drafts", import.meta.url), "utf8");
   const guardImport = workerSrc.indexOf("worker-net-guard.js");
   const runtimeImport = workerSrc.indexOf("vendor/web-llm");
   assert.ok(guardImport !== -1 && guardImport < runtimeImport, "worker installs the net guard before the vendored runtime evaluates");
   assert.ok(workerSrc.includes('type === "offlineMode"'), "worker applies mid-session offlineMode messages");
   assert.ok(workerSrc.includes("setWorkerOfflineMode(message.offlineMode === true)"), "worker takes the toggle state from the init message");
 
-  const clientSrc = readFileSync(new URL("../src/local-llm/client.js", import.meta.url), "utf8");
+  const clientSrc = readFileSync(new URL("../src/local-llm/client.js?v=20261015-tokenized-drafts", import.meta.url), "utf8");
   assert.ok(clientSrc.includes('offlineMode: isOfflineMode()'), "client passes the toggle state with the worker init message");
   assert.ok(clientSrc.includes('type: "offlineMode"'), "client notifies a live worker when the toggle changes");
 }
@@ -364,7 +364,7 @@ console.log("worker/client wiring tests passed");
 
   // worker-net-guard.js is imported only by worker.js: same one-tag rule.
   {
-    const workerSource = readFileSync(new URL("../src/local-llm/worker.js", import.meta.url), "utf8");
+    const workerSource = readFileSync(new URL("../src/local-llm/worker.js?v=20261015-tokenized-drafts", import.meta.url), "utf8");
     const match = workerSource.match(/worker-net-guard\.js\?v=([^"'\s]+)/);
     assert.ok(match, "worker.js imports worker-net-guard.js with a ?v= tag");
     assert.equal(match[1], NETWORK_GATE_TAG, "worker guard shares the offline-mode tag");

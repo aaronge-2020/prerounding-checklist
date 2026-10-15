@@ -138,7 +138,7 @@ assert.ok(
 
 // --- Panel contract: Hospital Stay view hosts the panel too --------------------
 const indexHtml = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-const appSource = await readFile(new URL('../src/ui/app.js', import.meta.url), 'utf8');
+const appSource = await readFile(new URL('../src/ui/app.js?v=20261015-tokenized-drafts', import.meta.url), 'utf8');
 assert.ok(indexHtml.includes('id="dailyRuleProposals"'),
   'index.html must host a Suggested rules panel container inside the Hospital Stay (daily) view');
 const renderDailyBody = appSource.slice(appSource.indexOf('function renderDaily()'), appSource.indexOf('function renderDaily()') + 600);

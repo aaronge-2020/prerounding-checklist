@@ -25,7 +25,7 @@ import {
 } from "../src/ai/remote-chat.js";
 import { requestOpenAiChat } from "../src/ui/openai-client.js";
 import { DEFAULT_USER_PREFERENCES, chatServiceOption as prefChatServiceOption, normalizeUserPreferences } from "../src/app/preferences.js";
-import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js";
+import { createAiChatPresentation } from "../src/ui/ai-chat/presentation.js?v=20261015-tokenized-drafts";
 import {
   hashPiece,
   buildContextHeaderText,
@@ -40,7 +40,7 @@ import {
   effectiveGuidelinesText
 } from "../src/ui/ai-chat/delta-review.js";
 import { buildPatientContextFromPieces, MAX_SELECTED_PIECES_CHARS } from "../src/local-llm/patient-context.js";
-import { createAiChatController } from "../src/ui/ai-chat/controller.js";
+import { createAiChatController } from "../src/ui/ai-chat/controller.js?v=20261015-tokenized-drafts";
 import {
   LONG_CONTEXT_THRESHOLD,
   WEB_SEARCH_COST_PER_CALL,
@@ -1361,7 +1361,7 @@ async function confirmSend(h) {
 }
 
 {
-  const appSource = readFileSync(new URL("../src/ui/app.js", import.meta.url), "utf8");
+  const appSource = readFileSync(new URL("../src/ui/app.js?v=20261015-tokenized-drafts", import.meta.url), "utf8");
   assert.ok(appSource.includes('addEventListener("submit", handleSubmit)'), "app.js registers a delegated submit listener");
   assert.ok(appSource.includes("function handleSubmit(event)"), "app.js defines handleSubmit");
   for (const path of ["../src/ui/ai-chat/presentation.js", "../src/ui/scores/presentation.js"]) {

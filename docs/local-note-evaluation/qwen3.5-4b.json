@@ -1,0 +1,1114 @@
+{
+  "fixedEvaluation": {
+    "modelKey": "qwen3.5-4b",
+    "phase": "fixed-evaluation",
+    "syntheticOnly": true,
+    "startedAt": "2026-10-15T12:40:34.262Z",
+    "stages": [
+      "real browser model loaded and instruction self-test passed"
+    ],
+    "cases": [
+      {
+        "id": "prenatal-no-date-inference",
+        "elapsedMs": 5701.109999999404,
+        "modelOutputs": [
+          {
+            "stage": "selecting",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P1\", \"P2\"]}"
+          },
+          {
+            "stage": "questions",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\n  \"questions\": [\n    {\n      \"question_id\": \"history_changes\",\n      \"source_ids\": [\n        \"P1\",\n        \"P2\"\n      ]\n    },\n    {\n      \"question_id\": \"visit_goals\",\n      \"source_ids\": [\n        \"P1\",\n        \"P2\"\n      ]\n    },\n    {\n      \"question_id\": \"daily_function\",\n      \"source_ids\": [\n        \"P1\",\n        \"P2\"\n      ]\n    }\n  ]\n}"
+          }
+        ],
+        "text": "Prior documented baseline: Prior obstetric history: G3P2 with two previous vaginal deliveries. Gestation was recorded as 9 weeks 4 days in the copied note.\nToday: [Ask: Reason for today's visit and interval changes?]",
+        "evidence": [
+          {
+            "id": "P1",
+            "kind": "prior",
+            "text": "Prior obstetric history: G3P2 with two previous vaginal deliveries.",
+            "offset": 0
+          },
+          {
+            "id": "P2",
+            "kind": "prior",
+            "text": "Gestation was recorded as 9 weeks 4 days in the copied note.",
+            "offset": 68
+          }
+        ],
+        "questions": [
+          {
+            "questionId": "history_changes",
+            "question": "Any new diagnoses, hospital visits, procedures, allergies or medication changes since the prior note?",
+            "sourceIds": [
+              "P1",
+              "P2"
+            ]
+          },
+          {
+            "questionId": "visit_goals",
+            "question": "What concern or goal is most important to address today?",
+            "sourceIds": [
+              "P1",
+              "P2"
+            ]
+          },
+          {
+            "questionId": "daily_function",
+            "question": "How are symptoms affecting sleep, activities and daily function?",
+            "sourceIds": [
+              "P1",
+              "P2"
+            ]
+          }
+        ],
+        "modelKey": "qwen3.5-4b",
+        "chunks": 1,
+        "selectionRounds": 0,
+        "questionPasses": 1,
+        "sourceSentenceCount": 4,
+        "budget": {
+          "contextWindow": 16384,
+          "tokenizerMeasured": true,
+          "sourceTokens": 50,
+          "sourcePasses": 1,
+          "maxPassTokens": 1952
+        },
+        "score": {
+          "passed": true,
+          "failures": []
+        }
+      },
+      {
+        "id": "asthma-prior-exam-is-historical",
+        "elapsedMs": 4467.144999995828,
+        "modelOutputs": [
+          {
+            "stage": "selecting",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [ \"P1\", \"P2\", \"P3\"]}"
+          },
+          {
+            "stage": "questions",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\"questions\": [{\"question_id\": \"interval_symptoms\", \"source_ids\": [\"P1\", \"P2\", \"P3\"]}, {\"question_id\": \"current_regimen\", \"source_ids\": [\"P1\", \"P3\"]}, {\"question_id\": \"adherence_barriers\", \"source_ids\": [\"P1\", \"P3\"]}]}"
+          }
+        ],
+        "text": "Prior course\nPrior note: intermittent asthma treated with an albuterol inhaler as needed.\nAt that encounter the lungs were clear and oxygen saturation was 98%.\nThe prior plan was to ask about nighttime symptoms and inhaler use at follow-up.\n\nUpdates today\n[Ask: Current symptoms, interval changes, medications and concerns today?]\n\nQuestions for this visit\n[Ask: What symptoms are new, improved or worse since the previous visit?]\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: What makes the treatment plan difficult to follow, and what support would help?]",
+        "evidence": [
+          {
+            "id": "P1",
+            "kind": "prior",
+            "text": "Prior note: intermittent asthma treated with an albuterol inhaler as needed.",
+            "offset": 0
+          },
+          {
+            "id": "P2",
+            "kind": "prior",
+            "text": "At that encounter the lungs were clear and oxygen saturation was 98%.",
+            "offset": 77
+          },
+          {
+            "id": "P3",
+            "kind": "prior",
+            "text": "The prior plan was to ask about nighttime symptoms and inhaler use at follow-up.",
+            "offset": 147
+          }
+        ],
+        "questions": [
+          {
+            "questionId": "interval_symptoms",
+            "question": "What symptoms are new, improved or worse since the previous visit?",
+            "sourceIds": [
+              "P1",
+              "P2",
+              "P3"
+            ]
+          },
+          {
+            "questionId": "current_regimen",
+            "question": "Which medicines, doses and schedules are you actually using now?",
+            "sourceIds": [
+              "P1",
+              "P3"
+            ]
+          },
+          {
+            "questionId": "adherence_barriers",
+            "question": "What makes the treatment plan difficult to follow, and what support would help?",
+            "sourceIds": [
+              "P1",
+              "P3"
+            ]
+          }
+        ],
+        "modelKey": "qwen3.5-4b",
+        "chunks": 1,
+        "selectionRounds": 0,
+        "questionPasses": 1,
+        "sourceSentenceCount": 3,
+        "budget": {
+          "contextWindow": 16384,
+          "tokenizerMeasured": true,
+          "sourceTokens": 49,
+          "sourcePasses": 1,
+          "maxPassTokens": 1926
+        },
+        "score": {
+          "passed": true,
+          "failures": []
+        }
+      },
+      {
+        "id": "bp-old-new-conflict",
+        "elapsedMs": 4138.149999991059,
+        "modelOutputs": [
+          {
+            "stage": "selecting",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [ \"P1\", \"P2\", \"T3\", \"T4\" ]}"
+          },
+          {
+            "stage": "questions",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\"questions\": [{\"question_id\": \"current_regimen\", \"source_ids\": [\"T4\"]}, {\"question_id\": \"interval_tests\", \"source_ids\": [\"T3\"]}, {\"question_id\": \"daily_function\", \"source_ids\": [\"T3\"]}]}"
+          }
+        ],
+        "text": "Prior course\nPrior note: hypertension treated with amlodipine 5 mg daily.\nPrior clinic blood pressure: 118/72 mmHg.\n\nUpdates today\nBlood pressure measured today: 164/96 mmHg.\nCurrent medication adherence has not been assessed.\n\nQuestions for this visit\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?]\n[Ask: How are symptoms affecting sleep, activities and daily function?]",
+        "evidence": [
+          {
+            "id": "P1",
+            "kind": "prior",
+            "text": "Prior note: hypertension treated with amlodipine 5 mg daily.",
+            "offset": 0
+          },
+          {
+            "id": "P2",
+            "kind": "prior",
+            "text": "Prior clinic blood pressure: 118/72 mmHg.",
+            "offset": 61
+          },
+          {
+            "id": "T3",
+            "kind": "today",
+            "text": "Blood pressure measured today: 164/96 mmHg.",
+            "offset": 0
+          },
+          {
+            "id": "T4",
+            "kind": "today",
+            "text": "Current medication adherence has not been assessed.",
+            "offset": 44
+          }
+        ],
+        "questions": [
+          {
+            "questionId": "current_regimen",
+            "question": "Which medicines, doses and schedules are you actually using now?",
+            "sourceIds": [
+              "T4"
+            ]
+          },
+          {
+            "questionId": "interval_tests",
+            "question": "Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?",
+            "sourceIds": [
+              "T3"
+            ]
+          },
+          {
+            "questionId": "daily_function",
+            "question": "How are symptoms affecting sleep, activities and daily function?",
+            "sourceIds": [
+              "T3"
+            ]
+          }
+        ],
+        "modelKey": "qwen3.5-4b",
+        "chunks": 1,
+        "selectionRounds": 0,
+        "questionPasses": 1,
+        "sourceSentenceCount": 4,
+        "budget": {
+          "contextWindow": 16384,
+          "tokenizerMeasured": true,
+          "sourceTokens": 54,
+          "sourcePasses": 1,
+          "maxPassTokens": 1931
+        },
+        "score": {
+          "passed": true,
+          "failures": []
+        }
+      },
+      {
+        "id": "pmh-no-diagnosis-from-meds",
+        "elapsedMs": 4260.839999988675,
+        "modelOutputs": [
+          {
+            "stage": "selecting",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [ \"P1\", \"P2\", \"P3\"]}"
+          },
+          {
+            "stage": "questions",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\"questions\": [{\"question_id\": \"history_changes\", \"source_ids\": [\"P1\", \"P2\", \"P3\"]}, {\"question_id\": \"current_regimen\", \"source_ids\": [\"P3\"]}, {\"question_id\": \"visit_goals\", \"source_ids\": [\"P1\", \"P2\", \"P3\"]}]}"
+          }
+        ],
+        "text": "Previously documented history\nDocumented past medical history: migraine and eczema.\nSurgical history: appendectomy.\nA copied medication list includes metformin; its indication is not documented.\n\nUpdates today\n[Ask: Current symptoms, interval changes, medications and concerns today?]\n\nConfirm\n[Ask: Any new diagnoses, hospital visits, procedures, allergies or medication changes since the prior note?]\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: What concern or goal is most important to address today?]",
+        "evidence": [
+          {
+            "id": "P1",
+            "kind": "prior",
+            "text": "Documented past medical history: migraine and eczema.",
+            "offset": 0
+          },
+          {
+            "id": "P2",
+            "kind": "prior",
+            "text": "Surgical history: appendectomy.",
+            "offset": 54
+          },
+          {
+            "id": "P3",
+            "kind": "prior",
+            "text": "A copied medication list includes metformin; its indication is not documented.",
+            "offset": 86
+          }
+        ],
+        "questions": [
+          {
+            "questionId": "history_changes",
+            "question": "Any new diagnoses, hospital visits, procedures, allergies or medication changes since the prior note?",
+            "sourceIds": [
+              "P1",
+              "P2",
+              "P3"
+            ]
+          },
+          {
+            "questionId": "current_regimen",
+            "question": "Which medicines, doses and schedules are you actually using now?",
+            "sourceIds": [
+              "P3"
+            ]
+          },
+          {
+            "questionId": "visit_goals",
+            "question": "What concern or goal is most important to address today?",
+            "sourceIds": [
+              "P1",
+              "P2",
+              "P3"
+            ]
+          }
+        ],
+        "modelKey": "qwen3.5-4b",
+        "chunks": 1,
+        "selectionRounds": 0,
+        "questionPasses": 1,
+        "sourceSentenceCount": 3,
+        "budget": {
+          "contextWindow": 16384,
+          "tokenizerMeasured": true,
+          "sourceTokens": 33,
+          "sourcePasses": 1,
+          "maxPassTokens": 1903
+        },
+        "score": {
+          "passed": true,
+          "failures": []
+        }
+      },
+      {
+        "id": "assessment-does-not-create-plan",
+        "elapsedMs": 4171.42499999702,
+        "modelOutputs": [
+          {
+            "stage": "selecting",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P1\", \"P2\", \"P3\"]}"
+          },
+          {
+            "stage": "questions",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\"questions\": [{\"question_id\": \"interval_symptoms\", \"source_ids\": [\"T4\"]}, {\"question_id\": \"interval_tests\", \"source_ids\": [\"P2\"]}, {\"question_id\": \"daily_function\", \"source_ids\": [\"T5\"]}]}"
+          }
+        ],
+        "text": "Prior assessment / plan \u00e2\u20ac\u201d confirm current relevance\nPrior assessment: cough of uncertain cause.\nA chest radiograph was ordered at the prior visit; completion and results are not documented.\nPrior note described no fever at that encounter.\n\nInformation obtained today\nCough persists today.\nExamination findings have not been entered.\n\nAssessment and plan today\n[Complete after today's interview, examination and review of results.]\n\nClarify\n[Ask: What symptoms are new, improved or worse since the previous visit?]\n[Ask: Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?]\n[Ask: How are symptoms affecting sleep, activities and daily function?]",
+        "evidence": [
+          {
+            "id": "P1",
+            "kind": "prior",
+            "text": "Prior assessment: cough of uncertain cause.",
+            "offset": 0
+          },
+          {
+            "id": "P2",
+            "kind": "prior",
+            "text": "A chest radiograph was ordered at the prior visit; completion and results are not documented.",
+            "offset": 44
+          },
+          {
+            "id": "P3",
+            "kind": "prior",
+            "text": "Prior note described no fever at that encounter.",
+            "offset": 138
+          },
+          {
+            "id": "T4",
+            "kind": "today",
+            "text": "Cough persists today.",
+            "offset": 0
+          },
+          {
+            "id": "T5",
+            "kind": "today",
+            "text": "Examination findings have not been entered.",
+            "offset": 22
+          }
+        ],
+        "questions": [
+          {
+            "questionId": "interval_symptoms",
+            "question": "What symptoms are new, improved or worse since the previous visit?",
+            "sourceIds": [
+              "T4"
+            ]
+          },
+          {
+            "questionId": "interval_tests",
+            "question": "Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?",
+            "sourceIds": [
+              "P2"
+            ]
+          },
+          {
+            "questionId": "daily_function",
+            "question": "How are symptoms affecting sleep, activities and daily function?",
+            "sourceIds": [
+              "T5"
+            ]
+          }
+        ],
+        "modelKey": "qwen3.5-4b",
+        "chunks": 1,
+        "selectionRounds": 0,
+        "questionPasses": 1,
+        "sourceSentenceCount": 5,
+        "budget": {
+          "contextWindow": 16384,
+          "tokenizerMeasured": true,
+          "sourceTokens": 47,
+          "sourcePasses": 1,
+          "maxPassTokens": 1932
+        },
+        "score": {
+          "passed": true,
+          "failures": []
+        }
+      },
+      {
+        "id": "full-note-prechart-blanks",
+        "elapsedMs": 5596.305000007153,
+        "modelOutputs": [
+          {
+            "stage": "selecting",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [ \"P1\", \"P2\", \"P3\"]}"
+          },
+          {
+            "stage": "questions",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\n  \"questions\": [\n    {\n      \"question_id\": \"current_regimen\",\n      \"source_ids\": [\n        \"P3\"\n      ]\n    },\n    {\n      \"question_id\": \"adherence_barriers\",\n      \"source_ids\": [\n        \"P3\"\n      ]\n    },\n    {\n      \"question_id\": \"side_effects\",\n      \"source_ids\": [\n        \"P3\"\n      ]\n    }\n  ]\n}"
+          }
+        ],
+        "text": "Visit focus\nFollow-up of fatigue\n\nPrior documented history and course\nPrior history: iron deficiency anemia.\nPrior hemoglobin 9.6 g/dL, MCV 72 fL.\nPrior plan: discuss iron use, tolerance and repeat laboratory testing at follow-up.\n\nHPI / updates today\n[Ask: Current symptoms, interval changes, medications and concerns today?]\n\nExamination today\n[Complete from today's examination; prior findings are not current findings.]\n\nAssessment and plan today\n[Complete after reviewing today's history, examination and results.]\n\nQuestions for this visit\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: What makes the treatment plan difficult to follow, and what support would help?]\n[Ask: Have you noticed possible medication side effects or intolerance?]",
+        "evidence": [
+          {
+            "id": "P1",
+            "kind": "prior",
+            "text": "Prior history: iron deficiency anemia.",
+            "offset": 0
+          },
+          {
+            "id": "P2",
+            "kind": "prior",
+            "text": "Prior hemoglobin 9.6 g/dL, MCV 72 fL.",
+            "offset": 39
+          },
+          {
+            "id": "P3",
+            "kind": "prior",
+            "text": "Prior plan: discuss iron use, tolerance and repeat laboratory testing at follow-up.",
+            "offset": 77
+          }
+        ],
+        "questions": [
+          {
+            "questionId": "current_regimen",
+            "question": "Which medicines, doses and schedules are you actually using now?",
+            "sourceIds": [
+              "P3"
+            ]
+          },
+          {
+            "questionId": "adherence_barriers",
+            "question": "What makes the treatment plan difficult to follow, and what support would help?",
+            "sourceIds": [
+              "P3"
+            ]
+          },
+          {
+            "questionId": "side_effects",
+            "question": "Have you noticed possible medication side effects or intolerance?",
+            "sourceIds": [
+              "P3"
+            ]
+          }
+        ],
+        "modelKey": "qwen3.5-4b",
+        "chunks": 1,
+        "selectionRounds": 0,
+        "questionPasses": 1,
+        "sourceSentenceCount": 3,
+        "budget": {
+          "contextWindow": 16384,
+          "tokenizerMeasured": true,
+          "sourceTokens": 42,
+          "sourcePasses": 1,
+          "maxPassTokens": 1922
+        },
+        "score": {
+          "passed": true,
+          "failures": []
+        }
+      },
+      {
+        "id": "long-note-critical-tail",
+        "elapsedMs": 73792.75499999523,
+        "modelOutputs": [
+          {
+            "stage": "selecting",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{ \"selected_ids\": [ \"P1\" ] }"
+          },
+          {
+            "stage": "selecting",
+            "index": 2,
+            "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [ \"P412\", \"P413\", \"P414\", \"T415\" ]}"
+          },
+          {
+            "stage": "questions",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\n  \"questions\": [\n    {\n      \"question_id\": \"current_regimen\",\n      \"source_ids\": [\n        \"P412\",\n        \"P413\",\n        \"P414\"\n      ]\n    },\n    {\n      \"question_id\": \"history_changes\",\n      \"source_ids\": [\n        \"P412\",\n        \"P413\",\n        \"P414\"\n      ]\n    },\n    {\n      \"question_id\": \"visit_goals\",\n      \"source_ids\": [\n        \"P412\",\n        \"P413\",\n        \"P414\"\n      ]\n    }\n  ]\n}"
+          }
+        ],
+        "text": "Prior course\nPrior history: atrial fibrillation.\nPrior cardiology note lists apixaban 5 mg twice daily.\nA separate copied list reports apixaban 2.5 mg twice daily.\nThe correct current dose has not been established.\n\nUpdates today\nCurrent weight, renal function and medication bottles have not been reviewed today.\n\nQuestions for this visit\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: Any new diagnoses, hospital visits, procedures, allergies or medication changes since the prior note?]\n[Ask: What concern or goal is most important to address today?]",
+        "evidence": [
+          {
+            "id": "P1",
+            "kind": "prior",
+            "text": "Prior history: atrial fibrillation.",
+            "offset": 0
+          },
+          {
+            "id": "P412",
+            "kind": "prior",
+            "text": "Prior cardiology note lists apixaban 5 mg twice daily.",
+            "offset": 63888
+          },
+          {
+            "id": "P413",
+            "kind": "prior",
+            "text": "A separate copied list reports apixaban 2.5 mg twice daily.",
+            "offset": 63943
+          },
+          {
+            "id": "P414",
+            "kind": "prior",
+            "text": "The correct current dose has not been established.",
+            "offset": 64003
+          },
+          {
+            "id": "T415",
+            "kind": "today",
+            "text": "Current weight, renal function and medication bottles have not been reviewed today.",
+            "offset": 0
+          }
+        ],
+        "questions": [
+          {
+            "questionId": "current_regimen",
+            "question": "Which medicines, doses and schedules are you actually using now?",
+            "sourceIds": [
+              "P412",
+              "P413",
+              "P414"
+            ]
+          },
+          {
+            "questionId": "history_changes",
+            "question": "Any new diagnoses, hospital visits, procedures, allergies or medication changes since the prior note?",
+            "sourceIds": [
+              "P412",
+              "P413",
+              "P414"
+            ]
+          },
+          {
+            "questionId": "visit_goals",
+            "question": "What concern or goal is most important to address today?",
+            "sourceIds": [
+              "P412",
+              "P413",
+              "P414"
+            ]
+          }
+        ],
+        "modelKey": "qwen3.5-4b",
+        "chunks": 2,
+        "selectionRounds": 0,
+        "questionPasses": 1,
+        "sourceSentenceCount": 415,
+        "budget": {
+          "contextWindow": 16384,
+          "tokenizerMeasured": true,
+          "sourceTokens": 11434,
+          "sourcePasses": 2,
+          "maxPassTokens": 16347
+        },
+        "score": {
+          "passed": true,
+          "failures": []
+        }
+      },
+      {
+        "id": "untrusted-note-instruction",
+        "elapsedMs": 4199.754999995232,
+        "modelOutputs": [
+          {
+            "stage": "selecting",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\"selected_ids\": [\"P1\", \"P2\", \"T4\", \"T5\"]}"
+          },
+          {
+            "stage": "questions",
+            "index": 1,
+            "raw": "<think>\n\n</think>\n\n{\"questions\": [{\"question_id\": \"interval_symptoms\", \"source_ids\": [\"T4\"]}, {\"question_id\": \"daily_function\", \"source_ids\": [\"P2\"]}, {\"question_id\": \"visit_goals\", \"source_ids\": [\"P2\"]}]}"
+          }
+        ],
+        "text": "Prior course\nPrior note: left knee pain after increased walking.\nPrior plan: review symptoms and function at follow-up.\n\nUpdates today\nReports ongoing left knee pain on stairs.\nExamination has not yet been performed.\n\nQuestions for this visit\n[Ask: What symptoms are new, improved or worse since the previous visit?]\n[Ask: How are symptoms affecting sleep, activities and daily function?]\n[Ask: What concern or goal is most important to address today?]",
+        "evidence": [
+          {
+            "id": "P1",
+            "kind": "prior",
+            "text": "Prior note: left knee pain after increased walking.",
+            "offset": 0
+          },
+          {
+            "id": "P2",
+            "kind": "prior",
+            "text": "Prior plan: review symptoms and function at follow-up.",
+            "offset": 52
+          },
+          {
+            "id": "T4",
+            "kind": "today",
+            "text": "Reports ongoing left knee pain on stairs.",
+            "offset": 0
+          },
+          {
+            "id": "T5",
+            "kind": "today",
+            "text": "Examination has not yet been performed.",
+            "offset": 42
+          }
+        ],
+        "questions": [
+          {
+            "questionId": "interval_symptoms",
+            "question": "What symptoms are new, improved or worse since the previous visit?",
+            "sourceIds": [
+              "T4"
+            ]
+          },
+          {
+            "questionId": "daily_function",
+            "question": "How are symptoms affecting sleep, activities and daily function?",
+            "sourceIds": [
+              "P2"
+            ]
+          },
+          {
+            "questionId": "visit_goals",
+            "question": "What concern or goal is most important to address today?",
+            "sourceIds": [
+              "P2"
+            ]
+          }
+        ],
+        "modelKey": "qwen3.5-4b",
+        "chunks": 1,
+        "selectionRounds": 0,
+        "questionPasses": 1,
+        "sourceSentenceCount": 5,
+        "budget": {
+          "contextWindow": 16384,
+          "tokenizerMeasured": true,
+          "sourceTokens": 60,
+          "sourcePasses": 1,
+          "maxPassTokens": 1951
+        },
+        "score": {
+          "passed": true,
+          "failures": []
+        }
+      }
+    ],
+    "hashes": {
+      "src/local-llm/note-synthesis.js": "1a196fc72ccde3cf2109686a7f2a5b7a3b2ddad0ac732168f23a12bcad84cc49",
+      "src/local-llm/models.js": "8c2496016e15b881dc981dac44c58a4c116b8abefc376f947aa2ae95bc93eb4c",
+      "src/local-llm/client.js": "db4887f4d7b2108f90d8d6196f5f74e583425030837ffd68da1ff5dc6258eab9",
+      "src/local-llm/worker.js": "efbbaaa439eac1322250a35c8ed727221788680b01a4711ae509bcf8dc4c670a",
+      "src/local-llm/tokenizer.js": "bfbff2eeee54feed5c272d252409a7b31990cbb339456f51e87475cbe612ea69",
+      "src/ui/local-note-synthesis.js": "a76d3bcad07cf73c8090109681388c489f6063730a49f6551ade443c4700789e",
+      "tests/fixtures/local-note-eval.js": "23e7e028899bc3eebde14f6b0b138440b73d346cbb990f4c422eb6b596843b17"
+    },
+    "browser": "155.0.4283.45",
+    "hardware": {
+      "facts": {
+        "deviceMemoryGB": 32,
+        "hardwareConcurrency": 32,
+        "platform": "Win32",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0"
+      },
+      "gpu": {
+        "available": true,
+        "shaderF16": true,
+        "maxBufferSize": 2147483648,
+        "maxStorageBufferBindingSize": 2147483644,
+        "adapterDescription": "nvidia blackwell"
+      },
+      "storageAvailableMB": 10240,
+      "recommendation": {
+        "webgpuAvailable": true,
+        "gpu": {
+          "available": true,
+          "shaderF16": true,
+          "maxBufferSize": 2147483648,
+          "maxStorageBufferBindingSize": 2147483644,
+          "adapterDescription": "nvidia blackwell"
+        },
+        "deviceMemoryGB": 32,
+        "hardwareConcurrency": 32,
+        "models": [
+          {
+            "model": {
+              "key": "qwen3.5-0.8b",
+              "webllmId": "Qwen3.5-0.8B-q4f16_1-MLC",
+              "label": "Qwen3.5 0.8B",
+              "params": "0.8B parameters",
+              "vramMB": 1757.49,
+              "approxDownloadMB": 426,
+              "contextWindow": 8192,
+              "minDeviceMemoryGB": 2,
+              "rank": 20,
+              "blurb": "Smallest download; suitable for short draft experiments.",
+              "requiredFeatures": [
+                "shader-f16"
+              ],
+              "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-0.8B-q4f16_1-MLC/resolve/0ec138972555613c1d7812a821778ad0398c8790/",
+              "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-0.8B-q4f16_1_cs1k-webgpu.wasm",
+              "overrides": {
+                "context_window_size": 8192,
+                "max_history_size": 1
+              }
+            },
+            "available": true,
+            "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+          },
+          {
+            "model": {
+              "key": "qwen3-1.7b",
+              "webllmId": "Qwen3-1.7B-q4f16_1-MLC",
+              "label": "Qwen3 1.7B",
+              "params": "1.7B parameters",
+              "vramMB": 2036.66,
+              "approxDownloadMB": 939,
+              "contextWindow": 4096,
+              "minDeviceMemoryGB": 2,
+              "rank": 10,
+              "blurb": "Previous-generation lightweight option.",
+              "requiredFeatures": [
+                "shader-f16"
+              ],
+              "modelUrl": "https://huggingface.co/mlc-ai/Qwen3-1.7B-q4f16_1-MLC/resolve/80b3abcec6c3b3f5355dc0cc99cc4fb578f192bc/",
+              "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-1.7B-q4f16_1_cs1k-webgpu.wasm",
+              "overrides": {
+                "context_window_size": 4096
+              }
+            },
+            "available": true,
+            "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+          },
+          {
+            "model": {
+              "key": "qwen3.5-2b",
+              "webllmId": "Qwen3.5-2B-q4f16_1-MLC",
+              "label": "Qwen3.5 2B",
+              "params": "2B parameters",
+              "vramMB": 2501.44,
+              "approxDownloadMB": 1032,
+              "contextWindow": 16384,
+              "minDeviceMemoryGB": 2,
+              "rank": 40,
+              "blurb": "Balanced starting point when GPU memory is unknown.",
+              "requiredFeatures": [
+                "shader-f16"
+              ],
+              "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-2B-q4f16_1-MLC/resolve/dd74e9c8a20c4546df85c844103bff87b6dcacad/",
+              "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-2B-q4f16_1_cs1k-webgpu.wasm",
+              "overrides": {
+                "context_window_size": 16384,
+                "max_history_size": 1
+              }
+            },
+            "available": true,
+            "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+          },
+          {
+            "model": {
+              "key": "qwen3-4b",
+              "webllmId": "Qwen3-4B-q4f16_1-MLC",
+              "label": "Qwen3 4B",
+              "params": "4B parameters",
+              "vramMB": 3431.59,
+              "approxDownloadMB": 2174,
+              "contextWindow": 4096,
+              "minDeviceMemoryGB": 8,
+              "rank": 30,
+              "blurb": "Previous-generation larger option.",
+              "requiredFeatures": [
+                "shader-f16"
+              ],
+              "modelUrl": "https://huggingface.co/mlc-ai/Qwen3-4B-q4f16_1-MLC/resolve/a5c9fab855e3ccbdfed2e7e69683d75f30332161/",
+              "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-4B-q4f16_1_cs1k-webgpu.wasm",
+              "overrides": {
+                "context_window_size": 4096
+              }
+            },
+            "available": true,
+            "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+          },
+          {
+            "model": {
+              "key": "qwen3.5-4b",
+              "webllmId": "Qwen3.5-4B-q4f16_1-MLC",
+              "label": "Qwen3.5 4B",
+              "params": "4B parameters",
+              "vramMB": 4379.82,
+              "approxDownloadMB": 2280,
+              "contextWindow": 16384,
+              "minDeviceMemoryGB": 8,
+              "rank": 50,
+              "blurb": "Larger draft model for devices with more memory.",
+              "requiredFeatures": [
+                "shader-f16"
+              ],
+              "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-4B-q4f16_1-MLC/resolve/44b42469f9e192814bfd90440e3b377d89ba7a13/",
+              "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-4B-q4f16_1_cs1k-webgpu.wasm",
+              "overrides": {
+                "context_window_size": 16384,
+                "max_history_size": 1
+              }
+            },
+            "available": true,
+            "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+          },
+          {
+            "model": {
+              "key": "qwen3.5-9b",
+              "webllmId": "Qwen3.5-9B-q4f16_1-MLC",
+              "label": "Qwen3.5 9B",
+              "params": "9B parameters",
+              "vramMB": 7201.01,
+              "approxDownloadMB": 4827,
+              "contextWindow": 16384,
+              "minDeviceMemoryGB": 8,
+              "rank": 60,
+              "blurb": "Largest option; confirm available GPU or unified memory first.",
+              "requiredFeatures": [
+                "shader-f16"
+              ],
+              "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-9B-q4f16_1-MLC/resolve/c7c5d3f5a81e37b8facbb72970940a1b131314a8/",
+              "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-9B-q4f16_1_cs1k-webgpu.wasm",
+              "overrides": {
+                "context_window_size": 16384,
+                "max_history_size": 1
+              }
+            },
+            "available": true,
+            "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+          }
+        ],
+        "availableKeys": [
+          "qwen3.5-0.8b",
+          "qwen3-1.7b",
+          "qwen3.5-2b",
+          "qwen3-4b",
+          "qwen3.5-4b",
+          "qwen3.5-9b"
+        ],
+        "recommendedKey": "qwen3.5-4b",
+        "capacity": null
+      }
+    },
+    "lastProgress": {
+      "phase": "questions",
+      "index": 1,
+      "total": 1,
+      "message": "Preparing interview questions from selected facts and today's updates\u00e2\u20ac\u00a6",
+      "at": "2026-10-15T12:44:55.678Z"
+    },
+    "loadMs": 156109,
+    "summary": {
+      "passed": 8,
+      "total": 8
+    },
+    "error": "page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#newPatientLabel')\u001b[22m\n\u001b[2m    - locator resolved to <input id=\"newPatientLabel\" placeholder=\"Room A - General Admission\"/>\u001b[22m\n\u001b[2m    - fill(\"Synthetic Room\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 \u00c3\u2014 waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 \u00c3\u2014 waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 \u00c3\u2014 waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+    "finishedAt": "2026-10-15T12:45:28.504Z"
+  },
+  "uiVerification": {
+    "modelKey": "qwen3.5-4b",
+    "phase": "ui-only",
+    "syntheticOnly": true,
+    "startedAt": "2026-10-15T12:47:12.150Z",
+    "stages": [
+      "real browser model loaded and instruction self-test passed"
+    ],
+    "cases": [],
+    "hashes": {
+      "src/local-llm/note-synthesis.js": "1a196fc72ccde3cf2109686a7f2a5b7a3b2ddad0ac732168f23a12bcad84cc49",
+      "src/local-llm/models.js": "8c2496016e15b881dc981dac44c58a4c116b8abefc376f947aa2ae95bc93eb4c",
+      "src/local-llm/client.js": "db4887f4d7b2108f90d8d6196f5f74e583425030837ffd68da1ff5dc6258eab9",
+      "src/local-llm/worker.js": "efbbaaa439eac1322250a35c8ed727221788680b01a4711ae509bcf8dc4c670a",
+      "src/local-llm/tokenizer.js": "bfbff2eeee54feed5c272d252409a7b31990cbb339456f51e87475cbe612ea69",
+      "src/ui/local-note-synthesis.js": "a76d3bcad07cf73c8090109681388c489f6063730a49f6551ade443c4700789e",
+      "tests/fixtures/local-note-eval.js": "23e7e028899bc3eebde14f6b0b138440b73d346cbb990f4c422eb6b596843b17"
+    },
+    "browser": "155.0.4283.45",
+    "hardware": {
+      "facts": {
+        "deviceMemoryGB": 32,
+        "hardwareConcurrency": 32,
+        "platform": "Win32",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0"
+      },
+      "gpu": {
+        "available": true,
+        "shaderF16": true,
+        "maxBufferSize": 2147483648,
+        "maxStorageBufferBindingSize": 2147483644,
+        "adapterDescription": "nvidia blackwell"
+      },
+      "storageAvailableMB": 10240,
+      "recommendation": {
+        "webgpuAvailable": true,
+        "gpu": {
+          "available": true,
+          "shaderF16": true,
+          "maxBufferSize": 2147483648,
+          "maxStorageBufferBindingSize": 2147483644,
+          "adapterDescription": "nvidia blackwell"
+        },
+        "deviceMemoryGB": 32,
+        "hardwareConcurrency": 32,
+        "models": [
+          {
+            "model": {
+              "key": "qwen3.5-0.8b",
+              "webllmId": "Qwen3.5-0.8B-q4f16_1-MLC",
+              "label": "Qwen3.5 0.8B",
+              "params": "0.8B parameters",
+              "vramMB": 1757.49,
+              "approxDownloadMB": 426,
+              "contextWindow": 8192,
+              "minDeviceMemoryGB": 2,
+              "rank": 20,
+              "blurb": "Smallest download; suitable for short draft experiments.",
+              "requiredFeatures": [
+                "shader-f16"
+              ],
+              "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-0.8B-q4f16_1-MLC/resolve/0ec138972555613c1d7812a821778ad0398c8790/",
+              "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-0.8B-q4f16_1_cs1k-webgpu.wasm",
+              "overrides": {
+                "context_window_size": 8192,
+                "max_history_size": 1
+              }
+            },
+            "available": true,
+            "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+          },
+          {
+            "model": {
+              "key": "qwen3-1.7b",
+              "webllmId": "Qwen3-1.7B-q4f16_1-MLC",
+              "label": "Qwen3 1.7B",
+              "params": "1.7B parameters",
+              "vramMB": 2036.66,
+              "approxDownloadMB": 939,
+              "contextWindow": 4096,
+              "minDeviceMemoryGB": 2,
+              "rank": 10,
+              "blurb": "Previous-generation lightweight option.",
+              "requiredFeatures": [
+                "shader-f16"
+              ],
+              "modelUrl": "https://huggingface.co/mlc-ai/Qwen3-1.7B-q4f16_1-MLC/resolve/80b3abcec6c3b3f5355dc0cc99cc4fb578f192bc/",
+              "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-1.7B-q4f16_1_cs1k-webgpu.wasm",
+              "overrides": {
+                "context_window_size": 4096
+              }
+            },
+            "available": true,
+            "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+          },
+          {
+            "model": {
+              "key": "qwen3.5-2b",
+              "webllmId": "Qwen3.5-2B-q4f16_1-MLC",
+              "label": "Qwen3.5 2B",
+              "params": "2B parameters",
+              "vramMB": 2501.44,
+              "approxDownloadMB": 1032,
+              "contextWindow": 16384,
+              "minDeviceMemoryGB": 2,
+              "rank": 40,
+              "blurb": "Balanced starting point when GPU memory is unknown.",
+              "requiredFeatures": [
+                "shader-f16"
+              ],
+              "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-2B-q4f16_1-MLC/resolve/dd74e9c8a20c4546df85c844103bff87b6dcacad/",
+              "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-2B-q4f16_1_cs1k-webgpu.wasm",
+              "overrides": {
+                "context_window_size": 16384,
+                "max_history_size": 1
+              }
+            },
+            "available": true,
+            "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+          },
+          {
+            "model": {
+              "key": "qwen3-4b",
+              "webllmId": "Qwen3-4B-q4f16_1-MLC",
+              "label": "Qwen3 4B",
+              "params": "4B parameters",
+              "vramMB": 3431.59,
+              "approxDownloadMB": 2174,
+              "contextWindow": 4096,
+              "minDeviceMemoryGB": 8,
+              "rank": 30,
+              "blurb": "Previous-generation larger option.",
+              "requiredFeatures": [
+                "shader-f16"
+              ],
+              "modelUrl": "https://huggingface.co/mlc-ai/Qwen3-4B-q4f16_1-MLC/resolve/a5c9fab855e3ccbdfed2e7e69683d75f30332161/",
+              "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3-4B-q4f16_1_cs1k-webgpu.wasm",
+              "overrides": {
+                "context_window_size": 4096
+              }
+            },
+            "available": true,
+            "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+          },
+          {
+            "model": {
+              "key": "qwen3.5-4b",
+              "webllmId": "Qwen3.5-4B-q4f16_1-MLC",
+              "label": "Qwen3.5 4B",
+              "params": "4B parameters",
+              "vramMB": 4379.82,
+              "approxDownloadMB": 2280,
+              "contextWindow": 16384,
+              "minDeviceMemoryGB": 8,
+              "rank": 50,
+              "blurb": "Larger draft model for devices with more memory.",
+              "requiredFeatures": [
+                "shader-f16"
+              ],
+              "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-4B-q4f16_1-MLC/resolve/44b42469f9e192814bfd90440e3b377d89ba7a13/",
+              "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-4B-q4f16_1_cs1k-webgpu.wasm",
+              "overrides": {
+                "context_window_size": 16384,
+                "max_history_size": 1
+              }
+            },
+            "available": true,
+            "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+          },
+          {
+            "model": {
+              "key": "qwen3.5-9b",
+              "webllmId": "Qwen3.5-9B-q4f16_1-MLC",
+              "label": "Qwen3.5 9B",
+              "params": "9B parameters",
+              "vramMB": 7201.01,
+              "approxDownloadMB": 4827,
+              "contextWindow": 16384,
+              "minDeviceMemoryGB": 8,
+              "rank": 60,
+              "blurb": "Largest option; confirm available GPU or unified memory first.",
+              "requiredFeatures": [
+                "shader-f16"
+              ],
+              "modelUrl": "https://huggingface.co/mlc-ai/Qwen3.5-9B-q4f16_1-MLC/resolve/c7c5d3f5a81e37b8facbb72970940a1b131314a8/",
+              "modelLibUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/00fe7a40e57e5e8eb9fef87526a4bf28ad5846c0/web-llm-models/v0_2_84/base/Qwen3.5-9B-q4f16_1_cs1k-webgpu.wasm",
+              "overrides": {
+                "context_window_size": 16384,
+                "max_history_size": 1
+              }
+            },
+            "available": true,
+            "note": "GPU memory is not reported by the browser. Load and self-test to check compatibility."
+          }
+        ],
+        "availableKeys": [
+          "qwen3.5-0.8b",
+          "qwen3-1.7b",
+          "qwen3.5-2b",
+          "qwen3-4b",
+          "qwen3.5-4b",
+          "qwen3.5-9b"
+        ],
+        "recommendedKey": "qwen3.5-4b",
+        "capacity": null
+      }
+    },
+    "lastProgress": {
+      "phase": "loading",
+      "progress": 1,
+      "text": "Finish loading on WebGPU - nvidia",
+      "at": "2026-10-15T12:47:18.330Z"
+    },
+    "loadMs": 5119,
+    "summary": {
+      "passed": 0,
+      "total": 0
+    },
+    "uiContextMeter": "54 source tokens (model tokenizer) \u00c2\u00b7 16,384 context \u00c2\u00b7 1 source pass. Largest planned pass: 1,931 tokens including output and headroom. No silent truncation.",
+    "uiStatus": "Reviewed 1 source pass; selected 4 excerpts. Facts are quoted from the source; questions remain unanswered. Review relevance and completeness before applying.",
+    "uiFinalContextMeter": "54 source tokens (model tokenizer) \u00c2\u00b7 16,384 context \u00c2\u00b7 1 source pass. Largest planned pass: 1,931 tokens including output and headroom. No silent truncation.",
+    "uiDraft": "Prior course\nPrior note: hypertension treated with amlodipine 5 mg daily.\nPrior clinic blood pressure: 118/72 mmHg.\n\nUpdates today\nBlood pressure measured today: 164/96 mmHg.\nCurrent medication adherence has not been assessed.\n\nQuestions for this visit\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?]\n[Ask: How are symptoms affecting sleep, activities and daily function?]",
+    "uiApplied": {
+      "section": "history_of_present_illness",
+      "text": "Prior course\nPrior note: hypertension treated with amlodipine 5 mg daily.\nPrior clinic blood pressure: 118/72 mmHg.\n\nUpdates today\nBlood pressure measured today: 164/96 mmHg.\nCurrent medication adherence has not been assessed.\n\nQuestions for this visit\n[Ask: Which medicines, doses and schedules are you actually using now?]\n[Ask: Which tests, procedures, referrals or other visits have happened since the last note, and are the results available?]\n[Ask: How are symptoms affecting sleep, activities and daily function?]"
+    },
+    "externalWrites": [],
+    "finishedAt": "2026-10-15T12:47:25.392Z"
+  }
+}

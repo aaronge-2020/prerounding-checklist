@@ -101,13 +101,14 @@ try {
   assert.ok(!JSON.stringify(calls[3]).includes("Synthetic Person"));
   assert.equal(calls[3].store, false);
   await page.evaluate(async () => {
-    const { openLocalNoteSynthesis } = await import("/src/ui/local-note-synthesis.js?v=20261015-simple-review");
+    const { openLocalNoteSynthesis } = await import("/src/ui/local-note-synthesis.js?v=20261015-tokenized-drafts");
     globalThis.__localApplied = null;
     openLocalNoteSynthesis({
+      hardwareReport: async () => ({ facts: {}, gpu: { available: true, shaderF16: true } }),
       source: "Historical source: Synthetic Person had a symptom. Current updates: not documented.",
       stillCurrent: () => true,
       apply: (section, text) => { globalThis.__localApplied = { section, text }; }, copy: async () => {},
-      client: { getStatus: () => ({ status: "ready", verified: true, activeModelKey: "qwen3-4b" }), resetChat: async () => {}, chat: async () => "Historical symptom in Synthetic Person; current status not documented." }
+      client: { getStatus: () => ({ status: "ready", verified: true, activeModelKey: "qwen3-4b" }), resetChat: async () => {}, countTokens: async texts => texts.map(text => Math.ceil(text.length / 2)), chat: async messages => JSON.stringify(messages[0].content.startsWith("Select up to three") ? { questions: [] } : { selected_ids: [...messages[1].content.matchAll(/\[(P\d+|T\d+)\]/g)].map(match => match[1]).slice(0, messages[1].content.includes("Select at most 2 IDs") ? 2 : 3) }) }
     });
   });
   await page.locator("[data-local-generate]").click();
