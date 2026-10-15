@@ -14780,3 +14780,26 @@ body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.ap
   body:not(.vault-locked) .nav-group-label,
   body:not(.vault-locked) .primary-nav .nav-group > button > span { transition: none; }
 }
+/* Session-only AI review uses the same ordinary dialog and form controls. */
+.external-ai-review { width: min(760px, calc(100vw - 32px)); max-height: 85vh; overflow: auto; padding: 20px; color: var(--ink); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
+.external-ai-review > label, .external-ai-review label { display: block; margin: 12px 0; }
+.external-ai-review textarea { display: block; width: 100%; margin-top: 6px; resize: vertical; }
+.external-ai-review pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 40vh; overflow: auto; }
+.external-ai-review::backdrop { background: rgb(0 0 0 / 35%); }
+.external-ai-review .external-ai-ack { display: flex; align-items: flex-start; gap: 8px; }
+.external-ai-review input[type="checkbox"] { flex: 0 0 16px; width: 16px; height: 16px; min-height: 16px; margin: 2px 0 0; }
+.ap-confirm-modal label:has(> input[type="checkbox"]) { display: flex; align-items: flex-start; gap: 8px; }
+.ap-confirm-modal input[type="checkbox"] { flex: 0 0 16px; width: 16px; height: 16px; min-height: 16px; margin: 2px 0 0; }
+
+/* Outgoing privacy review: readable question first; supporting text by disclosure. */
+.external-ai-review { box-sizing: border-box; }
+.external-ai-review h3 { margin: 0 0 8px; }
+.external-ai-review h4 { margin: 16px 0 8px; font-size: 1rem; }
+.external-ai-review .external-ai-destination { margin: 0 0 12px; color: var(--muted); overflow-wrap: anywhere; }
+.external-ai-review [data-external-review-status] { padding: 8px 0; border-block: 1px solid var(--border); }
+.external-ai-review details { padding: 10px 0; border-bottom: 1px solid var(--border); }
+.external-ai-review summary { cursor: pointer; overflow-wrap: anywhere; }
+.external-ai-review textarea { min-height: 96px; max-height: 35vh; font: inherit; line-height: 1.5; box-sizing: border-box; }
+.external-ai-review section textarea { min-height: 144px; }
+.external-ai-review .button-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.aic-hipaa-summary { margin: 0; padding: 10px 20px; border-bottom: 1px solid var(--border); font-size: 14px; }

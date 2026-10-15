@@ -565,16 +565,23 @@ export function createReviewPresentation({ escapeHtml, icon }) {
         <label>Model<select data-ap-request-field="model">${OPENAI_WORKUP_MODEL_OPTIONS.map((option) => `<option value="${escapeHtml(option.value)}" ${option.value === apConfirm.model ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}</select></label>
         <label>Temperature (optional)<input type="number" min="0" max="2" step="0.1" data-ap-request-field="temperature" value="${escapeHtml(apConfirm.temperature)}" placeholder="Model default"></label>
         <p class="muted">Leave temperature blank unless your selected model supports it.</p>
-        <label><input type="checkbox" data-ap-request-field="webSearch" ${apConfirm.webSearch ? "checked" : ""}>Allow web search</label></details>
+        </details>
+        <label><input type="checkbox" data-ap-request-field="evidenceBased" ${apConfirm.evidenceBased !== false ? "checked" : ""}>Find literature and apply it to this patient</label>
+        <p class="muted">Consult proposes a focused evidence question from the selected context. You can edit, scan, and approve that question before search. Only that question goes to the web-enabled request; the patient-specific answer is assembled afterward with search disabled. Each external step requires approval.</p>
+        <fieldset><legend>Additional context (optional)</legend>
+          <label><input type="checkbox" data-ap-context="assessment" ${apConfirm.contextOptions?.assessment ? "checked" : ""}>Overall assessment</label>
+          <label><input type="checkbox" data-ap-context="noteContext" ${apConfirm.contextOptions?.noteContext ? "checked" : ""}>Note context, including selected labs, vitals, and results</label>
+          <label><input type="checkbox" data-ap-context="medications" ${apConfirm.contextOptions?.medications ? "checked" : ""}>Medication list</label>
+        </fieldset>
         <label><strong>Patient context and request</strong><textarea class="ap-prompt-editor" data-ap-prompt-editor rows="8" spellcheck="false" aria-label="Editable AI prompt">${escapeHtml(apConfirm.promptText)}</textarea></label>
         <p class="muted ap-confirm-note" data-ap-mode-note>Consult questions are blank, so the consultant will fully complete this problem's differential, diagnostic plan, and therapeutic plan. Each recommendation appears below the problem for you to approve or reject individually.</p>
-        <details><summary>Exact request body (read-only output schema)</summary><pre data-ap-request-preview style="white-space:pre-wrap;overflow-wrap:anywhere"></pre></details>
+        <details><summary>Next request body (read-only output schema)</summary><pre data-ap-request-preview style="white-space:pre-wrap;overflow-wrap:anywhere"></pre></details>
         ${apConfirm.apiKeySaved ? '<p class="muted">Using your encrypted saved key.</p>' : '<label>API key for this request<input type="password" data-ap-request-key autocomplete="off" spellcheck="false" placeholder="Not saved"></label><p class="muted">Used only for this request. Closing this dialog clears it. You can also save an encrypted key in Settings.</p>'}
         <div class="button-row ap-confirm-actions">
           <p class="ap-request-error" data-ap-request-error role="alert" hidden></p>
           <button type="button" class="button--secondary button--small" data-action="ap-reset-prompt">Reset input</button>
           <button type="button" class="button--secondary button--small" data-action="ap-save-default">Save instructions as default</button>
-          <button type="button" class="button--primary button--small" ${apConfirm.apiKeySaved ? "" : "disabled"} data-action="ap-confirm-generate" data-problem-id="${escapeHtml(apConfirm.problemId)}">Send consult</button>
+          <button type="button" class="button--primary button--small" ${apConfirm.apiKeySaved ? "" : "disabled"} data-action="ap-confirm-generate" data-problem-id="${escapeHtml(apConfirm.problemId)}">Review privacy before sending</button>
           <button type="button" class="button--secondary button--small" data-action="ap-copy-prompt">Copy prompt</button>
           <button type="button" class="button--secondary button--small" data-action="ap-confirm-cancel">Cancel</button>
         </div>
@@ -947,7 +954,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return `<section class="note-draft-panel panel" aria-labelledby="draftNoteHeading">
       <div class="note-editor-toolbar">
         <div class="note-editor-title"><h2 id="draftNoteHeading">Draft note</h2><label class="note-type-control"><span>Format</span><select id="reviewNoteType"><option value="${NOTE_TYPES.PROGRESS}" ${draft.noteType === NOTE_TYPES.PROGRESS ? "selected" : ""}>Progress note</option><option value="${NOTE_TYPES.H_AND_P}" ${draft.noteType === NOTE_TYPES.H_AND_P ? "selected" : ""}>H&amp;P</option></select></label></div>
-        <div class="note-editor-actions"><span class="autosave-indicator" data-autosave-indicator data-state="idle" title="Your note saves automatically to the encrypted vault as you type">Auto-save on</span><button type="button" class="button--secondary button--small" data-action="copy-final-note">Copy for Epic</button><button type="button" class="button--secondary button--small" data-action="copy-rich-note">Copy rich text</button><button type="button" class="button--secondary button--small" data-action="download-final-note">${icon("download")} Download .txt</button></div>
+        <div class="note-editor-actions"><button type="button" class="button--secondary button--small" data-action="draft-on-device">Draft on device</button><span class="autosave-indicator" data-autosave-indicator data-state="idle" title="Your note saves automatically to the encrypted vault as you type">Auto-save on</span><button type="button" class="button--secondary button--small" data-action="copy-final-note">Copy for Epic</button><button type="button" class="button--secondary button--small" data-action="copy-rich-note">Copy rich text</button><button type="button" class="button--secondary button--small" data-action="download-final-note">${icon("download")} Download .txt</button></div>
       </div>
       <p class="ed-toolbar-note">One editor for the whole note — section labels included. Type <kbd>$</kbd> to pull a lab or vital into the note. Saving encrypts the draft without running de-identification.</p>
       <div class="writer-layout">${outline}<div class="note-editor" id="noteEditor" role="group" aria-label="Note editor">

@@ -19,10 +19,12 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20261012-safety";
-import { createAiChatPresentation } from "./presentation.js?v=20261012-safety";
+import { createAiChatPresentation } from "./presentation.js?v=20261015-simple-review";
 import { chatPaneScrollTop, preserveViewScroll } from "../view-scroll.js?v=20261012-safety";
-import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20261012-safety";
-import { gatedFetch, isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20261012-safety";
+import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20261015-simple-review";
+import { isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20261012-safety";
+import { reviewedAiFetch } from "../external-ai-review.js?v=20261015-simple-review";
+import { openLiteratureSearch } from "../literature-search.js?v=20261015-simple-review";
 import {
   buildChatToolsSystemPrompt,
   CHAT_MAX_STEPS,
@@ -44,7 +46,7 @@ import {
   getAdvancedDeidStatus,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "../../patient-context/deid-service.js?v=20261012-safety";
+} from "../../patient-context/deid-client.js?v=20261012-safety";
 import { DEFAULT_DEID_MODEL_KEY, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../../patient-context/deid-model-options.js?v=20261011-request-controls";
 import { crossOriginIsolationBlocker } from "../../patient-context/deid-client.js?v=20261012-safety";
 import {
@@ -213,7 +215,7 @@ export function createAiChatController({
       // Which send token owns the `sending` flag: only that send's finally
       // may clear it, so a stale send can't unblock a newer one mid-flight.
       sendingToken: 0,
-      webSearch: true,
+      webSearch: false,
       // Clinical tools: when on, ChatGPT-mode sends run through the Vercel
       // AI SDK tool loop, letting the model call the 25 local calculators
       // and 7 on-device AI models. All computation stays in this browser;
@@ -1855,7 +1857,7 @@ export function createAiChatController({
       if (!remoteSendStillCurrent(sendToken, sendPatientId)) {
         delivered = false;
       } else {
-        state.remote.messages.push({ role: "assistant", text: `Error: ${error?.message || "the ChatGPT request failed"}` });
+        state.remote.messages.push({ role: "assistant", text: error?.name === "AbortError" ? "Error: external AI request cancelled." : "Error: external AI request failed. Check the model and provider configuration, then retry." });
       }
     } finally {
       // Only the send that owns the flag clears it: a stale send finishing
@@ -1929,7 +1931,7 @@ export function createAiChatController({
         model: prefs.openAiModel,
         messages,
         tools: createChatTools(),
-        fetchImpl: gatedFetch,
+        fetchImpl: reviewedAiFetch,
         systemPrompt: buildChatToolsSystemPrompt(systemEntry ? systemEntry.content : ""),
         webSearch: state.remote.webSearch,
         onStep: ({ stepNumber, toolCalls }) => {
@@ -1979,7 +1981,7 @@ export function createAiChatController({
       if (!remoteSendStillCurrent(sendToken, sendPatientId)) {
         delivered = false;
       } else {
-        state.remote.messages.push({ role: "assistant", text: `Error: ${error?.message || "the ChatGPT request failed"}` });
+        state.remote.messages.push({ role: "assistant", text: error?.name === "AbortError" ? "Error: external AI request cancelled." : "Error: external AI request failed. Check the model and provider configuration, then retry." });
       }
     } finally {
       // Only the send that owns the flag clears it: a stale send finishing
@@ -2130,6 +2132,8 @@ export function createAiChatController({
   }
 
   async function compressRemoteChat() {
+    const patientId = app.vault ? activePatient(app.vault)?.id ?? null : null;
+    const originalHistory = JSON.stringify(state.remote.messages);
     try {
       const prefs = remotePrefs();
       const apiKey = String(prefs.openAiApiKey || "").trim();
@@ -2144,9 +2148,8 @@ export function createAiChatController({
         setStatus("Not enough conversation to compress yet — keep chatting first.");
         return;
       }
-      // The stored history holds only the already de-identified text — raw
-      // PHI never persists past the review gate — so summarizing it with one
-      // API call introduces no new disclosure.
+      // Compression is another external disclosure: the transport scans and
+      // requires approval of this complete request, including history.
       const { input, compressibleCount, keptTail } = remoteChatV4.buildCompressionInput({ history: entries, keepTail: 2 });
       if (compressibleCount < 3) {
         setStatus("Not enough conversation to compress yet — keep chatting first.");
@@ -2156,6 +2159,7 @@ export function createAiChatController({
         ? chat.requestOpenAiChatWithUsage
         : chat.requestOpenAiChat;
       const result = await sendFn({ apiKey, model: prefs.openAiModel, input, tools: [] });
+      if ((app.vault ? activePatient(app.vault)?.id ?? null : null) !== patientId || JSON.stringify(state.remote.messages) !== originalHistory) return;
       const summaryText = typeof result === "string" ? result : result?.text;
       const usage = result && typeof result === "object" ? result.usage || null : null;
       const cost = recordRemoteUsage(usage, prefs.openAiModel);
@@ -2330,6 +2334,11 @@ export function createAiChatController({
   // ── event wiring ───────────────────────────────────────────────────
 
   function click(target) {
+    if (target.closest?.('[data-action="ai-chat-literature-search"]')) {
+      const prefs = remotePrefs();
+      void openLiteratureSearch({ apiKey: prefs.openAiApiKey, model: prefs.openAiModel }).catch(() => setStatus("Literature search cancelled or unavailable. No result was added to the patient chat."));
+      return true;
+    }
     // Section citations: clicking a "per [Section]" chip navigates to the
     // matching saved chart source. The chip carries the piece id; the
     // message's sectionCitations (matched at send time against the reviewed
@@ -2715,8 +2724,8 @@ export function createAiChatController({
 
   function change(target) {
     if (target.matches?.("[data-ai-chat-websearch-toggle]")) {
-      state.remote.webSearch = target.checked;
-      setStatus(target.checked ? "Web search on — ChatGPT will ground citations in real sources." : "Web search off — faster replies, citations from model knowledge.");
+      state.remote.webSearch = false;
+      setStatus("Patient-context chat cannot enable web search. Use a separate literature question.");
       render();
       return true;
     }

@@ -217,13 +217,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
               ? renderModelMenuList(models, llmStatus, settings.selectedModelKey, recommendedKey, hardware, downloaded)
               : renderRemoteModelMenuList(remote.modelOptions)}
             <p class="aic-menu-title">Advanced</p>
-            <label class="aic-parse-row">
-              <span class="aic-parse-txt"><strong>Web search</strong><span class="aic-muted">Ground ChatGPT citations in real sources.</span></span>
-              <span class="aic-sw">
-                <input type="checkbox" data-ai-chat-websearch-toggle ${remote.webSearch ? "checked" : ""}>
-                <span class="aic-sw-t" aria-hidden="true"></span>
-              </span>
-            </label>
+            ${local ? "" : `<p class="aic-muted">Patient-context chat has web search disabled.</p><button type="button" class="aic-btn" data-action="ai-chat-literature-search">Focused evidence question</button>`}
             <label class="aic-parse-row">
               <span class="aic-parse-txt"><strong>Clinical tools</strong><span class="aic-muted">Let ChatGPT run the 25 calculators and 7 AI models locally, in-chat.</span></span>
               <span class="aic-sw">
@@ -602,21 +596,13 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
     return html;
   }
 
-  function hipaaStat(iconName, label, value, tone) {
-    return `
-      <div class="aic-hipaa-stat${tone ? ` aic-hipaa-stat--${tone}` : ""}">
-        <span class="aic-hipaa-stat-ic">${icon(iconName)}</span>
-        <span class="aic-hipaa-stat-tx"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></span>
-      </div>`;
-  }
-
   function renderHipaaHead(deidModelLabel) {
     return `
       <div class="aic-hipaa-head">
         <span class="aic-hipaa-shield">${icon("shield")}</span>
         <div>
-          <h2 id="aicHipaaTitle">Review before sending to ChatGPT</h2>
-          <p>Nothing has been sent yet — confirm exactly what will leave this browser.${deidModelLabel ? ` <span class="aic-muted">De-identified with ${escapeHtml(deidModelLabel)}.</span>` : ""}</p>
+          <h2 id="aicHipaaTitle">Review privacy changes</h2>
+          <p>Nothing has been sent yet. Review redactions here, then approve the final question.${deidModelLabel ? ` <span class="aic-muted">De-identified with ${escapeHtml(deidModelLabel)}.</span>` : ""}</p>
         </div>
       </div>`;
   }
@@ -877,15 +863,10 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
       <div class="aic-hipaa-backdrop" data-action="ai-chat-hipaa-cancel">
         <div class="aic-hipaa-modal" role="dialog" aria-modal="true" aria-labelledby="aicHipaaTitle">
           ${renderHipaaHead(review.deidModelLabel)}
-          <div class="aic-hipaa-stats">
-            ${hipaaStat("prompt", "Your message", "1 message", "")}
-            ${hipaaStat("workup", "Context", `${pieces.length} document${pieces.length === 1 ? "" : "s"}`, "")}
-            ${hipaaStat("wand", "Redactions", `${totalRedactions} applied`, totalRedactions ? "" : "ok")}
-            ${hipaaStat("alert", "Warnings", warningCount ? `${warningCount} to check` : "none", warningCount ? "warn" : "ok")}
-          </div>
+          <p class="aic-hipaa-summary">${pieces.length} included document${pieces.length === 1 ? "" : "s"} · ${totalRedactions} redaction${totalRedactions === 1 ? "" : "s"}${warningCount ? ` · ${warningCount} warning${warningCount === 1 ? "" : "s"} to check` : ""}</p>
           ${actionBar}
           <div class="aic-hipaa-body" data-scroll-key="chat-review-body">
-            <h3 class="aic-hipaa-sec-title">Your message — de-identified before sending</h3>
+            <h3 class="aic-hipaa-sec-title">Your question</h3>
             <div class="aic-hipaa-msg" data-scroll-key="review-message" tabindex="0" data-hipaa-message="1">
               ${highlightHipaaRedactions(escapeHtml(messageText), Object.keys(messageCounts))}
               ${messageChips ? `<div class="aic-hipaa-chips">${messageChips}</div>` : ""}
@@ -902,14 +883,10 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
             </details>
             ${review.toolsEnabled ? `<p class="aic-hipaa-note">${icon("wand")} <strong>Clinical tools on</strong> — ChatGPT may run the 25 local calculators and 7 on-device AI models while composing this reply. Every calculation runs in this browser; only the de-identified text above is sent.</p>` : ""}
             ${review.truncationNote ? `<p class="aic-hipaa-note">${icon("alert")} ${escapeHtml(review.truncationNote)}</p>` : ""}
-            <div class="aic-hipaa-flags${flagItems.length ? "" : " aic-hipaa-flags--ok"}">
+            ${flagItems.length ? `<div class="aic-hipaa-flags">
               <strong>${icon("alert")} Review flags</strong>
-              ${
-                flagItems.length
-                  ? `<ul>${flagItems.map((f) => `<li${f.kind ? ` class="is-${f.kind}"` : ""}>${escapeHtml(f.text)}</li>`).join("")}</ul>`
-                  : `<p>No additional review flags. Review still required — confirm the content above is safe to send.</p>`
-              }
-            </div>
+              <ul>${flagItems.map((f) => `<li${f.kind ? ` class="is-${f.kind}"` : ""}>${escapeHtml(f.text)}</li>`).join("")}</ul>
+            </div>` : ""}
             <details class="aic-hipaa-details" data-scroll-key="system-prompt">
               <summary>Full system prompt</summary>
               <pre class="aic-hipaa-transmit">${escapeHtml(review.systemPromptText || "")}</pre>
@@ -929,7 +906,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
               <input id="aiChatReviewAck" type="checkbox" data-ai-chat-hipaa-ack${review.ack ? " checked" : ""}>
               <span>I have reviewed the content above</span>
             </label>
-            <button type="button" class="aic-btn aic-btn--primary" data-action="ai-chat-hipaa-confirm"${canSend ? "" : " disabled"}>${icon("send")} Send to ChatGPT</button>
+            <button type="button" class="aic-btn aic-btn--primary" data-action="ai-chat-hipaa-confirm"${canSend ? "" : " disabled"}>${icon("send")} Continue to final review</button>
           </div>
           <button type="button" class="aic-hipaa-redact-float" data-hipaa-redact-float data-action="ai-chat-hipaa-redact-float" data-target="" hidden>${icon("wand")} Redact</button>
         </div>

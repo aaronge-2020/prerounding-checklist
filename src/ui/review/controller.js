@@ -1,4 +1,6 @@
 import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
+import { openLocalNoteSynthesis } from "../local-note-synthesis.js?v=20261015-simple-review";
+import { cancelExternalAiReviews } from "../external-ai-review.js?v=20261015-simple-review";
 import { preserveViewScroll } from "../view-scroll.js?v=20261012-safety";
 import { installCitationInspector } from "./citation-inspector.js?v=20261012-safety";
 import { rebaseApReferences } from "../../ai/ap-generator.js?v=20261012-citation-preview";
@@ -63,12 +65,14 @@ import {
 import {
   buildApRevisionPrompt, DEFAULT_AP_INSTRUCTIONS, AP_SUGGESTION_SCHEMA
 } from "../../ai/ap-generator.js?v=20261012-citation-preview";
-import { generateProblemApRevisionsWithOpenAi } from "../openai-ap-api.js?v=20261012-safety";
+import { generateProblemApRevisionsWithOpenAi } from "../openai-ap-api.js?v=20261015-simple-review";
+import { generateEvidenceBasedProblemRevisions } from "../consult-evidence-api.js?v=20261015-simple-review";
+import { buildEvidenceQuestionRequest } from "../../ai/consult-evidence.js?v=20261015-simple-review";
 import {
   buildDifferentialScoringRequest,
   formatProbability
 } from "../../ai/decision-scoring.js?v=20261010-decision1-v1";
-import { scoreDifferentialsWithDecision1 } from "../decision-client.js?v=20261012-safety";
+import { scoreDifferentialsWithDecision1 } from "../decision-client.js?v=20261015-simple-review";
 import { createDifferential } from "../../note-drafts/index.js?v=20261012-citation-preview";
 
 function packetKey(value) {
@@ -940,6 +944,16 @@ export function createReviewController(deps) {
   }
 
   function input(target) {
+    if (target.matches?.("[data-ap-context]")) {
+      if (apConfirmState) {
+        const key = target.dataset.apContext;
+        if (!Object.hasOwn(apConfirmState.contextOptions, key)) return true;
+        apConfirmState.contextOptions[key] = target.checked;
+        apConfirmState.promptInputs[key] = target.checked ? apConfirmState.availableContext[key] : key === "medications" ? [] : "";
+        refreshApPromptPreview();
+      }
+      return true;
+    }
     // A&P confirm modal: typing consult questions re-targets the prompt
     // preview (blank = full completion, filled = answer the consult), unless
     // the student hand-edited the prompt — their text then wins.
@@ -953,6 +967,7 @@ export function createReviewController(deps) {
     }
     if (target.matches?.("[data-ap-request-field]")) {
       if (apConfirmState) {
+        if (target.dataset.apRequestField === "webSearch") return true;
         apConfirmState[target.dataset.apRequestField] = target.type === "checkbox" ? target.checked : target.value;
         refreshApRequestPreview();
       }
@@ -1136,6 +1151,7 @@ export function createReviewController(deps) {
   }
 
   function clearApSession() {
+    cancelExternalAiReviews();
     citationInspector?.clear();
     apActiveRequest?.controller.abort();
     apActiveRequest = null;
@@ -1178,13 +1194,13 @@ export function createReviewController(deps) {
       })),
       diagnosticPlan: apPlanFieldText(problem, "diagnosticPlan"),
       therapeuticPlan: apPlanFieldText(problem, "therapeuticPlan"),
-      assessment: apDraftText(draft.assessment),
-      noteContext: buildConsultNoteContext(draft),
+      assessment: "",
+      noteContext: "",
       // Active medication list (MAR + home meds, coalesced by the review
       // index). No problem→medication association exists, so the whole active
       // list is passed; the prompt builder resolves each entry to RxNorm
       // concepts and silently drops anything unresolvable.
-      medications: (current.index?.medications || []).map((m) => m?.name).filter(Boolean)
+      medications: []
     };
     apConfirmState = {
       patientId: current.patient.id,
@@ -1195,7 +1211,13 @@ export function createReviewController(deps) {
       instructions: preferences.apInstructions ?? DEFAULT_AP_INSTRUCTIONS,
       model: preferences.openAiModel,
       temperature: "",
-      webSearch: true,
+      evidenceBased: true,
+      contextOptions: { assessment: false, noteContext: false, medications: false },
+      availableContext: {
+        assessment: apDraftText(draft.assessment),
+        noteContext: buildConsultNoteContext(draft),
+        medications: (current.index?.medications || []).map(m => m?.name).filter(Boolean)
+      },
       apiKeySaved: Boolean(preferences.openAiApiKey),
       promptText: buildApRevisionPrompt({ ...promptInputs, instructions: "", mode: "complete", consultQuestions: "" }),
       promptEdited: false
@@ -1253,7 +1275,7 @@ export function createReviewController(deps) {
     if (!pending) return;
     if (pending.promptEdited) {
       const note = deps.byId("reviewContent")?.querySelector("[data-ap-mode-note]");
-      if (note) note.textContent = "Your edited input is preserved. Use Reset input to include changed consult questions.";
+      if (note) note.textContent = "Your edited input is preserved. Use Reset input to apply changed questions or context selections.";
       return;
     }
     const promptText = rebuildApPromptText();
@@ -1268,9 +1290,10 @@ export function createReviewController(deps) {
 
   function apRequestBody() {
     const pending = apConfirmState;
+    if (pending.evidenceBased) return buildStructuredRequest(buildEvidenceQuestionRequest({ model: pending.model, prompt: pending.promptText, temperature: pending.temperature }));
     return buildStructuredRequest({ model: pending.model, input: pending.promptText,
       instructions: pending.instructions, temperature: pending.temperature,
-      tools: pending.webSearch ? [{ type: "web_search" }] : [],
+      tools: [],
       schemaName: "problem_plan_suggestions", schema: AP_SUGGESTION_SCHEMA });
   }
 
@@ -1314,14 +1337,16 @@ export function createReviewController(deps) {
     refreshProblemCard(problemId);
     deps.setStatus(`Consulting AI on "${pending.problemName}"…`);
     try {
-      let result = await generateProblemApRevisionsWithOpenAi({
+      const generate = pending.evidenceBased ? generateEvidenceBasedProblemRevisions : generateProblemApRevisionsWithOpenAi;
+      let result = await generate({
         apiKey: requestKey,
         signal: request.controller.signal,
         model: pending.model,
         instructions: pending.instructions,
         temperature: pending.temperature,
-        webSearch: pending.webSearch,
-        prompt: finalPrompt
+        webSearch: false,
+        prompt: finalPrompt,
+        onStage: message => { if (stillCurrent()) deps.setStatus(message); }
       });
       if (!stillCurrent()) return;
       apActiveRequest = null;
@@ -1545,6 +1570,7 @@ export function createReviewController(deps) {
   // probabilities on the differential entries. Advisory only: the scores
   // render as badges beside the student's own ordering, which never moves.
   async function runDifferentialScoring(problemId, { manual = false } = {}) {
+    if (!manual) return; // External processing always starts with a deliberate action.
     if (scoringDecisionProblemId) {
       if (manual) deps.setStatus("Decision-1 is already ranking a differential — wait for it to finish.");
       return;
@@ -1565,6 +1591,7 @@ export function createReviewController(deps) {
       return;
     }
     const problem = (model().draft.problems || []).find((p) => p.id === problemId);
+    const scope = model();
     const signature = differentialScoreSignature(problem);
     if (decisionScoreSignatures[problemId] === signature) {
       if (manual) deps.setStatus("This differential hasn't changed since it was last ranked.");
@@ -1578,6 +1605,8 @@ export function createReviewController(deps) {
         apiKey: preferences.openRouterApiKey,
         request
       });
+      const latest = model();
+      if (latest.patient?.id !== scope.patient?.id || latest.packet.id !== scope.packet.id || differentialScoreSignature((latest.draft.problems || []).find(p => p.id === problemId)) !== signature) return;
       const diagnosisByDifferentialId = new Map(built.differentials.map((d) => [d.id, d.diagnosis]));
       const optionToDifferentialId = new Map(
         request.optionIds.map((optionId, index) => [optionId, request.differentialIds[index]])
@@ -2294,6 +2323,31 @@ export function createReviewController(deps) {
   }
 
   function click(target) {
+    if (target.closest?.('[data-action="draft-on-device"]')) {
+      const current = model();
+      if (!current.patient) return true;
+      const snapshot = JSON.stringify(current.draft);
+      const patientId = current.patient.id;
+      const packetId = current.packet.id;
+      const source = sourceNoteForPacket(current.patient, packetId);
+      const priorText = Object.entries(source?.sections || {}).map(([key, value]) => `${key}: ${sourceSectionText(value)}`).join("\n\n");
+      openLocalNoteSynthesis({
+        source: `IMPORTED SOURCE (historical unless explicitly updated)\n${priorText}\n\nCURRENT WORKING DRAFT (may include carried-forward content)\n${renderFinalNotePlainText(current.draft)}`,
+        stillCurrent: () => {
+          const fresh = model();
+          return fresh.patient?.id === patientId && fresh.packet.id === packetId && JSON.stringify(fresh.draft) === snapshot;
+        },
+        copy: deps.copyText,
+        apply: (section, text) => {
+          const fresh = model();
+          setDraft(section === "assessment" ? updateAssessment(fresh.draft, text) : updateNoteSection(fresh.draft, section, text));
+          render();
+          scheduleAutoSave();
+          deps.setStatus("On-device draft applied. Review it before copying the note.");
+        }
+      });
+      return true;
+    }
     // Citation links: let [n] references open in a new tab even inside
     // contenteditable plan fields (where a plain click would just move the caret).
     const citationLink = target.closest?.('a[href]');

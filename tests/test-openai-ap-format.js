@@ -117,7 +117,7 @@ apiKey: ["fake", "key"].join("-"),
 assert.equal(result.suggestions.length, 1);
 assert.equal(result.suggestions[0].suggested, "BNP");
 assert.equal(capturedBody.input, editedPrompt, "the student's edited prompt is sent verbatim");
-assert.deepEqual(capturedBody.tools, [{ type: "web_search" }], "web_search tool is requested for citation grounding");
+assert.equal(capturedBody.tools, undefined, "patient consultations do not enable web search");
 assert.equal(capturedBody.text.format.name, "problem_plan_suggestions");
 
 // --- Guards ---

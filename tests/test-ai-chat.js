@@ -188,8 +188,8 @@ await assert.rejects(
   const { fetchImpl } = mockFetch({ error: { message: "bad key" } }, { status: 401 });
   await assert.rejects(
     () => requestOpenAiChat({ apiKey: "sk-bad", model: "gpt-5", input: "Hi", fetchImpl }),
-    /bad key/,
-    "API error surfaces the provider message"
+    /OpenAI API request failed \(401\)/,
+    "API errors omit provider text that may echo identifiers"
   );
 }
 
@@ -282,7 +282,8 @@ const base = {
     hasApiKey: true
   });
   assert.ok(remote.includes('aria-selected="true"'), "ChatGPT tab selected in remote mode");
-  assert.ok(remote.includes("data-ai-chat-websearch-toggle"), "web search toggle present");
+  assert.ok(remote.includes("ai-chat-literature-search"), "separate literature search present");
+  assert.ok(!remote.includes("data-ai-chat-websearch-toggle"), "patient-context web search cannot be enabled");
   assert.ok(remote.includes("What is HELLP?"), "remote messages rendered");
   assert.ok(remote.includes("HELLP is…"), "remote replies rendered");
   assert.ok(remote.includes("data-action=\"ai-chat-revert-remote\""), "remote revert control present");
@@ -354,12 +355,12 @@ const base = {
     hasApiKey: true
   });
   assert.ok(html.includes("aic-hipaa-backdrop"), "HIPAA review modal rendered");
-  assert.ok(html.includes("Review before sending to ChatGPT"), "modal title");
+  assert.ok(html.includes("Review privacy changes"), "modal title");
   assert.ok(html.includes("Nothing has been sent yet"), "explicit no-send-yet statement");
-  assert.ok(html.includes("1 message"), "message stat card");
-  assert.ok(html.includes("3 documents"), "context stat card counts pieces");
-  assert.ok(html.includes("3 applied"), "redaction stat card");
-  assert.ok(html.includes("1 to check"), "warning stat card");
+  assert.ok(!html.includes("aic-hipaa-stats"), "compact review avoids redundant stat cards");
+  assert.ok(html.includes("3 included documents"), "summary counts included pieces");
+  assert.ok(html.includes("3 redactions"), "summary counts redactions");
+  assert.ok(html.includes("1 warning to check"), "summary keeps warnings visible");
   assert.ok(html.includes("Summarize this patient&#x27;s course.") || html.includes("Summarize this patient"), "message shown");
   assert.ok(html.includes("Patient header"), "header piece title shown");
   assert.ok(html.includes("Vitals flowsheet — Hospital Day 7"), "expanded piece title shown");
@@ -2124,6 +2125,6 @@ function fakeKeyEvent({ key = "Enter", shiftKey = false, isComposing = false, in
   assert.equal(sent, true, "confirm resolves even when the loop throws");
   assert.equal(agentStub.calls.length, 1, "loop was attempted");
   const htmlAfter = h.html();
-  assert.ok(htmlAfter.includes("Error: network down"), "loop failure surfaces as an assistant error message");
+  assert.ok(htmlAfter.includes("Error: external AI request failed"), "loop failure surfaces a generic error without echoing provider text");
   assert.ok(!htmlAfter.includes("CanaryName"), "raw canary not in rendered history");
 }

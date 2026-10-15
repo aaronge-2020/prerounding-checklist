@@ -5,7 +5,7 @@
 // The call goes to OpenRouter's Decisions API (Azure-hosted model) using the
 // student's own OpenRouter key from Settings — the same bring-your-own-key
 // pattern as the OpenAI generation calls. Blocked while offline mode is on.
-import { gatedFetch } from "../lib/network-gate.js?v=20261012-safety";
+import { reviewedAiFetch } from "./external-ai-review.js?v=20261015-simple-review";
 import { parseDifferentialScoringResponse } from "../ai/decision-scoring.js?v=20261010-decision1-v1";
 
 async function readJson(response) {
@@ -16,8 +16,7 @@ async function readJson(response) {
   }
 }
 
-function decisionApiError(response, payload) {
-  const message = String(payload?.error?.message || "").trim();
+function decisionApiError(response) {
   if (response.status === 401) {
     return "The OpenRouter API key was rejected. Check the key in Settings and try again.";
   }
@@ -27,15 +26,13 @@ function decisionApiError(response, payload) {
   if (response.status === 429) {
     return "OpenRouter rate-limited the request. Wait a moment and try again.";
   }
-  return message
-    ? `Differential ranking failed (${response.status}): ${message}`
-    : `Differential ranking failed (${response.status}).`;
+  return `Differential ranking failed (${response.status}).`;
 }
 
 // Score one problem's differential. `request` is the object returned by
 // buildDifferentialScoringRequest. Resolves to
 // { choice, confidence, ranked: [{ optionId, probability }] }.
-export async function scoreDifferentialsWithDecision1({ apiKey, request, fetchImpl = gatedFetch } = {}) {
+export async function scoreDifferentialsWithDecision1({ apiKey, request, fetchImpl = reviewedAiFetch } = {}) {
   const key = String(apiKey || "").trim();
   if (!key) throw new Error("Save an OpenRouter API key in Settings before ranking differentials.");
   if (!request || !request.endpoint || !request.body) {

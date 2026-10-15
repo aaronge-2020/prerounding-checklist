@@ -37,3 +37,4 @@ yarn-error.log*
 Thumbs.db
 .vscode/
 .idea/
+vendor/web-llm/index.js

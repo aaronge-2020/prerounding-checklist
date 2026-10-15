@@ -6,7 +6,9 @@ import { buildStructuredRequest } from "../ai/structured-request.js?v=20261011-r
 //
 // All requests flow through the central network gate: when offline mode is
 // on, the call fails fast with OfflineBlockedError instead of hanging.
-import { gatedFetch } from "../lib/network-gate.js?v=20261012-safety";
+import { reviewedAiFetch } from "./external-ai-review.js?v=20261015-simple-review";
+import { assertRemoteAllowed } from "../lib/network-gate.js?v=20261012-safety";
+import { buildEvidenceSearchRequest } from "../ai/consult-evidence.js?v=20261015-simple-review";
 function responseText(payload) {
   if (typeof payload?.output_text === "string") return payload.output_text;
   const outputs = Array.isArray(payload?.output) ? payload.output : [];
@@ -26,27 +28,32 @@ async function readJson(response) {
   }
 }
 
-function apiError(response, payload) {
-  const message = String(payload?.error?.message || "").replace(/sk-[\w*-]+/g, "[key redacted]").trim();
-  return message
-    ? `OpenAI API request failed (${response.status}): ${message}`
-    : `OpenAI API request failed (${response.status}).`;
+function apiError(response) {
+  // Provider errors may echo submitted text. Never render or log them.
+  return `OpenAI API request failed (${response.status}). Review your API configuration and retry.`;
 }
 
 // Keep the deadline active until the response body is read. A cancelled or
 // partial response must never become a usable clinical suggestion.
-async function postResponse({ apiKey, body, fetchImpl, signal, timeoutMs = 300000 }) {
+async function postResponse({ apiKey, body, fetchImpl, signal, timeoutMs = 300000, literatureOnly = false, onRequestApproved }) {
+  assertRemoteAllowed("https://api.openai.com/v1/responses");
   const controller = new AbortController();
   let timedOut = false;
   const abort = () => controller.abort();
   if (signal?.aborted) abort();
   else signal?.addEventListener("abort", abort, { once: true });
-  const deadline = setTimeout(() => { timedOut = true; abort(); }, timeoutMs);
+  let deadline;
+  const startDeadline = () => { clearTimeout(deadline); deadline = setTimeout(() => { timedOut = true; abort(); }, timeoutMs); };
+  // Human review has no network deadline. Start the API timer only when
+  // the approved snapshot is ready to leave the browser.
+  if (fetchImpl !== reviewedAiFetch) startDeadline();
   try {
     const response = await fetchImpl("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify(body),
+      literatureOnly,
+      onRequestReady: snapshot => { startDeadline(); onRequestApproved?.(JSON.parse(snapshot)); },
       signal: controller.signal
     });
     const payload = await readJson(response);
@@ -72,9 +79,9 @@ async function postResponse({ apiKey, body, fetchImpl, signal, timeoutMs = 30000
   }
 }
 
-export async function requestOpenAiStructuredJson({ apiKey, model, input, instructions, temperature, schemaName, schema, tools, fetchImpl = gatedFetch, signal, timeoutMs } = {}) {
+export async function requestOpenAiStructuredJson({ apiKey, model, input, instructions, temperature, schemaName, schema, tools, fetchImpl = reviewedAiFetch, signal, timeoutMs, onRequestApproved } = {}) {
   const body = buildStructuredRequest({ model, input, instructions, temperature, schemaName, schema, tools });
-  const payload = await postResponse({ apiKey, body, fetchImpl, signal, timeoutMs });
+  const payload = await postResponse({ apiKey, body, fetchImpl, signal, timeoutMs, onRequestApproved });
   const output = responseText(payload).trim();
   if (!output) throw new Error("The OpenAI API did not return a JSON object.");
   try {
@@ -90,8 +97,8 @@ export async function requestOpenAiStructuredJson({ apiKey, model, input, instru
 // ([{ role: "system"|"user"|"assistant", content }]) or a plain string.
 // `tools` optionally enables web search ([{ type: "web_search" }]) so the
 // model's citations can be grounded in real sources.
-export async function requestOpenAiChat({ apiKey, model, input, tools, fetchImpl = gatedFetch, timeoutMs = 300000 } = {}) {
-  const { text } = await requestOpenAiChatWithUsage({ apiKey, model, input, tools, fetchImpl, timeoutMs });
+export async function requestOpenAiChat({ apiKey, model, input, tools, fetchImpl = reviewedAiFetch, timeoutMs = 300000, signal, literatureOnly = false } = {}) {
+  const { text } = await requestOpenAiChatWithUsage({ apiKey, model, input, tools, fetchImpl, timeoutMs, signal, literatureOnly });
   return text;
 }
 
@@ -102,15 +109,34 @@ export async function requestOpenAiChat({ apiKey, model, input, tools, fetchImpl
 //   sources: [{ url, title }] }.
 // webSearchCalls counts web_search_call items in the response — each one is a
 // billable search ($0.01 per call) on top of the tokens it consumed.
-export async function requestOpenAiChatWithUsage({ apiKey, model, input, tools, fetchImpl = gatedFetch, timeoutMs = 300000 } = {}) {
+export async function requestOpenAiChatWithUsage({ apiKey, model, input, tools, fetchImpl = reviewedAiFetch, timeoutMs = 300000, literatureOnly = false, signal } = {}) {
   const key = String(apiKey || "").trim();
   if (!key) throw new Error("Save an OpenAI API key in Settings before using ChatGPT chat.");
   const body = { model, input, store: false };
   if (Array.isArray(tools) && tools.length) body.tools = tools;
-  const payload = await postResponse({ apiKey: key, body, fetchImpl, timeoutMs });
+  const payload = await postResponse({ apiKey: key, body, fetchImpl, timeoutMs, literatureOnly, signal });
   const output = responseText(payload).trim();
   if (!output) throw new Error("The OpenAI API returned an empty reply. Try again.");
   return { text: output, usage: extractUsage(payload), sources: extractSources(payload) };
+}
+
+export async function requestOpenAiEvidence({ apiKey, model, question, signal, fetchImpl = reviewedAiFetch } = {}) {
+  if (!String(apiKey || "").trim()) throw new Error("Save an OpenAI API key before retrieving evidence.");
+  let reviewedQuestion = question;
+  const payload = await postResponse({ apiKey, body: buildEvidenceSearchRequest({ model, question }), signal, fetchImpl,
+    literatureOnly: true, onRequestApproved: body => { reviewedQuestion = body.input; } });
+  const calls = (payload.output || []).filter(item => item.type === "web_search_call" && (!item.status || item.status === "completed"));
+  const sources = extractSources(payload);
+  const seen = new Set(sources.map(source => source.url));
+  for (const call of calls) for (const source of call.action?.sources || []) {
+    const url = String(source.url || "").trim();
+    if (!/^https?:\/\//i.test(url) || seen.has(url)) continue;
+    sources.push({ url, title: String(source.title || url) });
+    seen.add(url);
+  }
+  const text = responseText(payload).trim();
+  if (!calls.length || !sources.length || !text) throw new Error("No cited web evidence was retrieved. The evidence-based consult was stopped.");
+  return { question: reviewedQuestion, text, sources, searchCalls: calls.length };
 }
 
 // Web-search provenance: url_citation annotations on the message content

@@ -5,6 +5,7 @@
 // rejected individually (Google-Docs style) with the plan updating only for
 // approved suggestions.
 import assert from "node:assert/strict";
+import { installSyntheticDeid, approveFinalRequest } from "./browser/external-ai-fixture.js";
 import { chromium } from "playwright";
 import { createAppServer, navigateToView, openRealApp, unlockAndCreatePatient } from "./browser/app-harness.js";
 
@@ -25,7 +26,7 @@ const browser = await chromium.launch({
   ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {}),
   args: ["--allow-file-access-from-files", "--disable-features=LocalNetworkAccessChecks", "--no-proxy-server"]
 });
-const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+const context = await browser.newContext({ serviceWorkers: "block", viewport: { width: 1440, height: 900 } });
 const page = await context.newPage();
 const consoleErrors = [];
 const pageErrors = [];
@@ -44,6 +45,7 @@ const check = async (name, fn) => {
 };
 
 try {
+  await installSyntheticDeid(page);
   await openRealApp(page, appUrl);
   await unlockAndCreatePatient(page);
 
@@ -55,7 +57,7 @@ try {
     const body = JSON.parse(route.request().postData() || "{}");
     lastInput = String(body.input || "");
     assert.equal(body.text.format.name, "problem_plan_suggestions", "suggestion schema must be requested");
-    assert.ok(Array.isArray(body.tools), "web_search tool must be requested");
+    assert.equal(body.tools, undefined, "patient consults do not enable web search");
     await route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -97,6 +99,7 @@ try {
   await check("Generate opens an editable prompt modal scoped to the single problem", async () => {
     await page.locator(".plan-problem-card").first().locator('[data-action="generate-ap"]').click();
     await page.waitForSelector(".ap-confirm-modal");
+    await page.locator('[data-ap-request-field="evidenceBased"]').uncheck();
     const editor = page.locator("[data-ap-prompt-editor]");
     assert.equal(await editor.count(), 1, "prompt must be an editable textarea");
     const promptText = await editor.inputValue();
@@ -112,6 +115,7 @@ try {
     await page.keyboard.press("End");
     await page.keyboard.type(" EDITMARKER-987");
     await page.click('[data-action="ap-confirm-generate"]');
+    await approveFinalRequest(page);
     await page.waitForSelector(".ap-inline-change", { timeout: 15000 });
     assert.equal(apiCalls, 1);
     assert.ok(lastInput.includes("EDITMARKER-987"), "edited prompt text is what gets sent");
@@ -171,6 +175,7 @@ try {
     const callsBefore = apiCalls;
     await page.locator(".plan-problem-card").nth(1).locator('[data-action="generate-ap"]').click();
     await page.waitForSelector(".ap-confirm-modal");
+    await page.locator('[data-ap-request-field="evidenceBased"]').uncheck();
     await page.click('[data-action="ap-confirm-cancel"]');
     assert.equal(await page.locator(".ap-confirm-modal").count(), 0);
     assert.equal(apiCalls, callsBefore, "no API call on cancel");
@@ -190,7 +195,9 @@ try {
     });
     await page.locator(".plan-problem-card").nth(1).locator('[data-action="generate-ap"]').click();
     await page.waitForSelector(".ap-confirm-modal");
+    await page.locator('[data-ap-request-field="evidenceBased"]').uncheck();
     await page.click('[data-action="ap-confirm-generate"]');
+    await approveFinalRequest(page);
     // Loading banner appears with spinner and status text
     await page.waitForSelector(".ap-loading-banner", { timeout: 5000 });
     const bannerText = await page.locator(".ap-loading-banner").innerText();

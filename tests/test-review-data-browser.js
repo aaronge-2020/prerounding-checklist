@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { installSyntheticDeid, approveFinalRequest } from "./browser/external-ai-fixture.js";
 import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { chromium } from "playwright";
@@ -28,7 +29,7 @@ const browser = await chromium.launch({
     ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {}),
     args: ["--allow-file-access-from-files", "--disable-features=LocalNetworkAccessChecks", "--no-proxy-server"]
   });
-const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+const context = await browser.newContext({ serviceWorkers: "block", viewport: { width: 1440, height: 900 } });
 const page = await context.newPage();
 const consoleErrors = [];
 const pageErrors = [];
@@ -56,6 +57,7 @@ async function downloadFinalNoteText() {
 const editorText = (locator) => locator.innerText();
 
 try {
+  await installSyntheticDeid(page);
   await openRealApp(page, appUrl);
   await unlockAndCreatePatient(page);
 
@@ -447,14 +449,17 @@ Sodium: 138`;
   });
   async function sendSyntheticConsult() {
     await page.locator(`[data-problem-id="${aiId}"] [data-action="generate-ap"]`).click();
+    await page.locator('[data-ap-request-field="evidenceBased"]').uncheck();
     if (!aiRequests) {
       await page.locator('[data-ap-prompt-editor]').fill('');
       assert.match(await page.locator('[data-ap-request-error]').innerText(), /Add patient context/);
       assert.equal(await page.locator('[data-action="ap-confirm-generate"]').isEnabled(),false);
       await page.locator('[data-action="ap-reset-prompt"]').click();
     }
+    await page.locator('[data-ap-context="noteContext"]').check();
     await page.locator('[data-ap-request-key]').fill('synthetic-ci-key');
     await page.locator('[data-action="ap-confirm-generate"]').click();
+    await approveFinalRequest(page);
     await page.locator('[data-ap-loading]').waitFor();
     for (let n=0; n<50 && !releaseAiResponse; n++) await new Promise(resolve=>setTimeout(resolve,20));
     assert.ok(releaseAiResponse, 'request reached synthetic transport');

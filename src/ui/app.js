@@ -110,8 +110,9 @@ import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-
 import { createDailyPresentation } from "./daily/presentation.js?v=20261013-batch-c";
 import { createDailySourceController } from "./daily/source-controller.js?v=20261013-batch-c";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
-import { createReviewPresentation } from "./review/presentation.js?v=20261013-batch-d";
-import { createReviewController } from "./review/controller.js?v=20261014-baseline-note-sync";
+import { createReviewPresentation } from "./review/presentation.js?v=20261015-simple-review";
+import { createReviewController } from "./review/controller.js?v=20261015-simple-review";
+import { cancelExternalAiReviews } from "./external-ai-review.js?v=20261015-simple-review";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20261012-citation-preview";
 import {
   createPromptTaskController,
@@ -125,7 +126,7 @@ import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-adm
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20261012-citation-preview";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20261012-citation-preview";
 import { captureScrollPositions, restoreScrollPositions, preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20261012-safety";
-import { createSettingsPresentation } from "./settings/presentation.js?v=20261012-safety";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20261015-simple-review";
 import { installGlobalFetchGuard, isOfflineMode, onOfflineModeChange, setOfflineMode } from "../lib/network-gate.js?v=20261012-safety";
 import { createVaultPresentation, disambiguatedPatientLabels } from "./vault/presentation.js?v=20261013-batch-a";
 import { createVaultSessionGuards } from "./vault/session-guards.js?v=20260922-vault-guards";
@@ -144,7 +145,7 @@ import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/ll
 import { createDemoController } from "./demo/controller.js?v=20261013-batch-a3";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261013-aloop-round3-final";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20261013-batch-a3";
-import { createAiChatController } from "./ai-chat/controller.js?v=20261012-safety";
+import { createAiChatController } from "./ai-chat/controller.js?v=20261015-simple-review";
 import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261013-batch-a";
 import { createDrugChecksController } from "./drug-checks/controller.js?v=20261012-citation-preview";
 import { clearAllRagIndexes } from "../rag/rag-service.js?v=20261012-safety";
@@ -1080,6 +1081,7 @@ function clearProtectedViewContent() {
 }
 
 function clearPatientScopedSession() {
+  cancelExternalAiReviews();
   clearProposerSession();
   // Older builds incorrectly persisted source-derived patterns in plaintext.
   // Discard that cache without reading its contents into this session.
