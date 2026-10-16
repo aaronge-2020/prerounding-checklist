@@ -1,6 +1,6 @@
 import { deidentifyLabeledField } from "../../patient-context/labeled-deidentification.js?v=20261012-safety";
 import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
-import { createEncounterReviewController } from "../encounter-review/controller.js?v=20261015-encounter-review";
+import { createEncounterReviewController } from "../encounter-review/controller.js?v=20261015-sample-note-sections";
 import { createNoteDragController } from "./note-drag-controller.js?v=20261013-batch-b";
 import { applyNoteSelection } from "../../patient-context/note-mapping.js?v=20261011-drag-workspace-v2";
 import { sortDays, upsertDay } from "../../daily-updates/days.js?v=20261015-encounter-review";
@@ -30,7 +30,7 @@ import {
   primaryTeamNoteFields,
   updatePrimaryTeamNoteSection
 } from "../../patient-context/primary-team-note.js?v=20260921-medication-card-v4";
-import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261013-initial-plan-heading";
+import { parsePrimaryTeamNote } from "../../patient-context/primary-team-note-parser.js?v=20261015-sample-note-sections";
 import { sharedLocalLlmClient } from "../../local-llm/client.js?v=20261015-stable-draft-runtime";
 import { splitNoteSectionsWithLlm } from "../../local-llm/parse.js?v=20260928-local-llm-v1";
 

@@ -13,7 +13,7 @@ import {
   reviewItemState,
   buildEncounterReviewBrief
 } from "../../encounter-review/index.js?v=20261015-encounter-review";
-import { renderEncounterReview } from "./presentation.js?v=20261015-encounter-review";
+import { renderEncounterReview } from "./presentation.js?v=20261015-sample-note-sections";
 
 export function createEncounterReviewController(deps) {
   // Only UI choices are retained here. Patient text remains in the vault's
@@ -138,7 +138,7 @@ export function createEncounterReviewController(deps) {
             kind: action === "encounter-track-line" ? "follow_up" : target.dataset.kind,
             source
           }),
-        "Passage tracked. No current findings were inferred."
+        "Reminder added. Check it during the encounter, then choose your answer."
       );
       ui.tab = "items";
       refresh();
@@ -221,7 +221,7 @@ export function createEncounterReviewController(deps) {
       const evidence = state?.evidence?.valid ? state.current.evidence : null;
       void save(
         (patient) => recordItemReview(patient, { itemId, packetId: currentPacket, status, evidence, recordedAt: new Date().toISOString() }),
-        "Decision recorded for this packet only."
+        "Answer saved for the selected encounter."
       ).catch((error) => deps.setStatus(error.message));
       return true;
     }

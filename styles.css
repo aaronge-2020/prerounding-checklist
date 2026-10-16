@@ -14851,3 +14851,6 @@ body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.ap
   .encounter-source-controls, .encounter-compare-columns { grid-template-columns:minmax(0,1fr); }
   .encounter-review-body { padding:0 12px 12px; }
 }
+
+.encounter-item-details { margin-top: 8px; }
+.encounter-item-details > summary { cursor: pointer; color: var(--muted); }

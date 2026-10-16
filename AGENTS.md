@@ -53,6 +53,7 @@ Purpose: a compact, current map for future work on this local-first app.
   - `persistence.js` implements encrypt/decrypt actions for local storage keys.
   - `vault.js` exposes core vault crud operations (e.g. patients, admission, daily packets).
 - `src/patient-context/`: section handling, worker/client/service model integration, model packs, and active-tab redaction reviews.
+  - `primary-note-source.js` is the draft writer's read boundary for sectioned notes and a single explicitly typed, retained de-identified `primary_note` capture. Existing structured edits take precedence. Derive captured-note sections without persisting a second copy; ambiguous or unprocessed captures block pulling.
   - `deid-client.js` is the worker wrapper for model execution.
   - `deid-model-options.js` defines the registry of supported models (e.g. GLiNER, Stanford, OpenMed).
   - `deid-service.js` registers worker lifecycle, CSP-compliant metadata fetching, and inference self-test verification.

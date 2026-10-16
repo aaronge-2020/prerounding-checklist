@@ -1,4 +1,5 @@
 import { buildLocalNoteSources } from "../../local-llm/note-source.js?v=20261015-clinical-drafts";
+import { packetPrimaryNoteSource } from "../../patient-context/primary-note-source.js?v=20261015-sample-note-sections";
 import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 import { openLocalNoteSynthesis } from "../local-note-synthesis.js?v=20261015-clinical-drafts";
 import { cancelExternalAiReviews } from "../external-ai-review.js?v=20261015-simple-review";
@@ -128,8 +129,7 @@ function moveId(ids, id, direction) {
 }
 
 function sourceNoteForPacket(patient, selectedPacketId) {
-  if (selectedPacketId === "admission") return patient?.admissionPrimaryTeamNote || null;
-  return patient?.days?.find((day) => day.id === selectedPacketId)?.primaryTeamNote || null;
+  return packetPrimaryNoteSource(patient, selectedPacketId).note;
 }
 
 // Resolve which saved primary note a pull reads. The admission H&P is the
@@ -139,11 +139,15 @@ function sourceNoteForPacket(patient, selectedPacketId) {
 // and the H&P is the only one that exists. A day WITH a saved note keeps
 // strict packet scoping: its sections are authoritative for that day.
 function primaryNoteSourceForPull(patient, packet) {
-  const own = sourceNoteForPacket(patient, packet.id);
+  const ownResolution = packetPrimaryNoteSource(patient, packet.id);
+  const own = ownResolution.note;
   if (own) return { source: own, sourcePacketId: packet.id, sourceLabel: packet.label };
+  if (ownResolution.reason) return { source: null, sourcePacketId: packet.id, sourceLabel: packet.label, reason: ownResolution.reason };
   if (packet.id !== "admission") {
-    const admissionNote = patient?.admissionPrimaryTeamNote || null;
+    const admissionResolution = packetPrimaryNoteSource(patient, "admission");
+    const admissionNote = admissionResolution.note;
     if (admissionNote) return { source: admissionNote, sourcePacketId: "admission", sourceLabel: "Admission H&P" };
+    if (admissionResolution.reason) return { source: null, sourcePacketId: "admission", sourceLabel: "Admission H&P", reason: admissionResolution.reason };
   }
   return { source: null, sourcePacketId: packet.id, sourceLabel: packet.label };
 }
@@ -1704,9 +1708,9 @@ export function createReviewController(deps) {
     if (!current.patient) return;
     const packet = current.packet;
     const fieldLabel = fieldId.replace(/_/g, " ");
-    const { source, sourcePacketId, sourceLabel } = primaryNoteSourceForPull(current.patient, packet);
+    const { source, sourcePacketId, sourceLabel, reason } = primaryNoteSourceForPull(current.patient, packet);
     if (!source) {
-      const message = unsavedPrimaryNoteMessage(packet)
+      const message = reason || unsavedPrimaryNoteMessage(packet)
         || `No primary team note for ${packet.label} — paste one under Hospital Stay first, then pull.`;
       deps.setStatus(message);
       deps.showToast?.(message, { type: "warning" });

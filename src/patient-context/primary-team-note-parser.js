@@ -21,7 +21,7 @@ const HEADING_DEFINITIONS = Object.freeze([
   heading(["one liner", "one-liner", "source summary", "brief summary"], "one_liner"),
   heading(["chief complaint", "cc", "reason for admission", "reason for consultation", "reason for the consult", "reason for consult", "reason for neurological consultation", "reason for the consultation", "history and reason for consultation", "reason for referral", "reason for return visit", "indication", "indications", "chief concern", "presenting complaint", "reason for visit", "reason for encounter"], { [H_AND_P]: "chief_complaint", [PROGRESS]: "patient_report" }),
   heading(["history of present illness", "hpi", "history", "presenting history", "present illness", "history and physical", "abnormal pap history", "pelvic pain history"], { [H_AND_P]: "history_of_present_illness", [PROGRESS]: "patient_report" }),
-  heading(["stay summary", "hospital course", "brief hospital course", "hospital course per problem list", "hospital course by problem"], {
+  heading(["stay summary", "hospital course", "brief hospital course", "hospital course per problem list", "hospital course by problem", "ed course", "emergency department course"], {
     [H_AND_P]: "history_of_present_illness",
     [PROGRESS]: "interval_events"
   }, true),
@@ -55,7 +55,7 @@ const HEADING_DEFINITIONS = Object.freeze([
     "diagnostic studies / review management", "diagnostic and objective findings",
     "objective diagnostic studies", "objective / diagnostic studies", "results", "data", "radiology"
   ], "objective", true),
-  heading(["assessment", "assessments", "impression", "clinical impression", "a", "final diagnosis", "final diagnoses", "admitting diagnosis", "admitting diagnoses", "preoperative diagnosis", "preoperative diagnoses"], "assessment"),
+  heading(["assessment", "assessments", "impression", "clinical impression", "a", "final diagnosis", "final diagnoses", "admitting diagnosis", "admitting diagnoses", "preoperative diagnosis", "preoperative diagnoses", "medical decision making", "mdm"], "assessment"),
   heading(["assessment and plan", "assessment / plan", "assessment plan", "a and p", "a p", "ap", "impression and plan", "impression plan", "assessment and recommendations", "impression and recommendations", "initial hospital plan", "plan", "p", "plans", "plan by system", "systems plan", "recommendations", "recs", "plan and recommendations", "discussion and plan", "treatment", "treatments", "next steps"], "plan"),
   heading(["discharge instructions", "discharge instruction"], "plan"),
   heading(["discharge diagnosis", "discharge diagnoses", "additional discharge diagnoses", "discharge dx"], "assessment", true, true),

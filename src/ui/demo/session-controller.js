@@ -4,7 +4,7 @@ import {
   DEMO_DAILY_TEXTS,
   DEMO_DAY_ID,
   DEMO_PATIENT_ID
-} from "./session.js?v=20261015-encounter-review";
+} from "./session.js?v=20261015-sample-note-sections";
 
 export function createDemoSessionController({
   app,

@@ -108,10 +108,10 @@ import {
 } from "../app/preferences.js?v=20261011-request-controls";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-v1&icon=search-v1";
 import { createDailyPresentation } from "./daily/presentation.js?v=20261015-encounter-review";
-import { createDailySourceController } from "./daily/source-controller.js?v=20261015-encounter-review";
+import { createDailySourceController } from "./daily/source-controller.js?v=20261015-sample-note-sections";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
-import { createReviewPresentation } from "./review/presentation.js?v=20261015-encounter-review";
-import { createReviewController } from "./review/controller.js?v=20261015-encounter-review";
+import { createReviewPresentation } from "./review/presentation.js?v=20261015-sample-note-sections";
+import { createReviewController } from "./review/controller.js?v=20261015-sample-note-sections";
 import { cancelExternalAiReviews } from "./external-ai-review.js?v=20261015-simple-review";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20261015-encounter-review";
 import {
@@ -142,9 +142,9 @@ import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=2026
 import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261012-safety";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20261003-deid-adaptive";
 import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261015-stable-draft-runtime";
-import { createDemoController } from "./demo/controller.js?v=20261015-encounter-review";
-import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261015-encounter-review";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20261015-encounter-review";
+import { createDemoController } from "./demo/controller.js?v=20261015-sample-note-sections";
+import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261015-sample-note-sections";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20261015-sample-note-sections";
 import { createAiChatController } from "./ai-chat/controller.js?v=20261015-encounter-review";
 import { createDrugChecksPresentation } from "./drug-checks/presentation.js?v=20261013-batch-a";
 import { createDrugChecksController } from "./drug-checks/controller.js?v=20261015-encounter-review";

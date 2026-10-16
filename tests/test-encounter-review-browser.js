@@ -65,6 +65,8 @@ try {
   await page.click('[data-action="select-admission"]');
   const panel = page.locator("[data-encounter-review]");
   if (!(await panel.evaluate((node) => node.open))) await panel.locator(":scope > summary").click();
+  assert.match(await panel.locator(":scope > summary").innerText(), /Visit checklist/);
+  assert.match(await panel.innerText(), /does not insert text into your draft/);
   await page.click('[data-action="encounter-tab"][data-tab="sources"]');
   await page.selectOption("[data-encounter-source-id]", "capture:baseline");
   const text = page.locator("[data-encounter-source-text]");
@@ -73,6 +75,7 @@ try {
     node.focus();
     node.setSelectionRange(0, 25);
   });
+  assert.equal(await page.locator('[data-action="encounter-add"][data-kind="follow_up"]').innerText(), "Check a prior plan");
   await page.click('[data-action="encounter-add"][data-kind="follow_up"]');
   await panel
     .locator(".encounter-item")
@@ -85,11 +88,12 @@ try {
   assert.match(await panel.innerText(), /Repeat pulmonary testing/);
   assert.equal(await panel.locator("[data-encounter-status]").inputValue(), "unknown");
   await panel.locator("[data-encounter-status]").selectOption("pending");
-  await page.waitForFunction(() => /Decision recorded/.test(document.querySelector(".encounter-feedback")?.textContent || ""));
+  await page.waitForFunction(() => /Answer saved/.test(document.querySelector(".encounter-feedback")?.textContent || ""));
   await page.click('[data-action="select-day"][data-day-id="visit"]');
   if (!(await panel.evaluate((node) => node.open))) await panel.locator(":scope > summary").click();
   assert.equal(await panel.locator("[data-encounter-status]").inputValue(), "unknown");
-  assert.match(await panel.innerText(), /Pending; not carried forward/);
+  assert.match(await panel.innerText(), /Previously pending/);
+  await panel.locator(".encounter-item-details > summary").click();
   await page.click('[data-action="encounter-choose-evidence"]');
   await text.evaluate((node) => {
     node.focus();
@@ -98,8 +102,8 @@ try {
   await page.click('[data-action="encounter-attach"]');
   await page.locator("[data-encounter-status]").waitFor();
   await page.locator("[data-encounter-status]").selectOption("completed");
-  await page.waitForFunction(() => /Decision recorded/.test(document.querySelector(".encounter-feedback")?.textContent || ""));
-  assert.match(await panel.innerText(), /Supporting passage attached/);
+  await page.waitForFunction(() => /Answer saved/.test(document.querySelector(".encounter-feedback")?.textContent || ""));
+  assert.equal(await panel.locator('[data-action="encounter-choose-evidence"]').textContent(), "Replace linked result or note");
   await page.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: server.baseUrl });
   await page.click('[data-action="encounter-copy"]');
   const brief = await page.evaluate(() => navigator.clipboard.readText());

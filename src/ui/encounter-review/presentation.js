@@ -11,6 +11,12 @@ import {
 } from "../../encounter-review/index.js?v=20261015-encounter-review";
 
 export function renderEncounterReview(patient, packetId, ui, escapeHtml) {
+  const itemQuestions = {
+    follow_up: "Was this prior plan completed?",
+    clarify: "What needs clarification?",
+    verify: "Is this history still accurate?"
+  };
+  const addLabels = { follow_up: "Check a prior plan", clarify: "Clarify with patient", verify: "Confirm history" };
   const e = escapeHtml,
     packets = encounterPackets(patient),
     items = normalizeEncounterReview(patient.encounterReview).items;
@@ -44,53 +50,55 @@ export function renderEncounterReview(patient, packetId, ui, escapeHtml) {
     return `<details class="encounter-compare-row"><summary>${e(row.label)} <span class="muted">${compareLabel[row.state]}</span></summary><div class="encounter-compare-columns">${columns}</div></details>`;
   };
   return `<details class="encounter-review" data-encounter-review ${ui.open ? "open" : ""}>
-    <summary>Prepare &amp; follow-up <span class="muted">${items.length ? `${openCount} need attention · ${items.length} tracked` : "Review sources and track what needs checking"}</span></summary>
+    <summary>Visit checklist <span class="muted">${items.length ? `${openCount} to check · ${items.length} saved` : "Reminders to check during this encounter"}</span></summary>
     <div class="encounter-review-body">
-      <p class="muted">Reviewing <strong>${e(packetName(packetId))}</strong>. Decisions apply to this packet only. Prior chart statements remain historical.</p>
+      <p>Keep chart reminders here, such as “Was the repeat test done?” or “Is the patient still taking this medication?”</p>
+      <p class="muted">Record answers for <strong>${e(packetName(packetId))}</strong>. This checklist does not insert text into your draft; use the draft’s Pull buttons to copy note sections.</p>
       <div class="button-row encounter-review-tabs" role="group" aria-label="Encounter review tools">
         ${[
-          ["items", "Follow-up"],
-          ["sources", "Find a source"],
-          ["compare", "Compare packets"]
+          ["items", "Checklist"],
+          ["sources", "Add from chart"],
+          ["compare", "Compare saved notes"]
         ]
           .map(
             ([id, label]) =>
               `<button type="button" class="button--quiet" data-action="encounter-tab" data-tab="${id}" aria-pressed="${ui.tab === id}">${label}</button>`
           )
           .join("")}
-        <button type="button" class="button--secondary" data-action="encounter-copy" ${!items.length ? "disabled" : ""}>Copy review brief</button>
+        <button type="button" class="button--secondary" data-action="encounter-copy" ${!items.length ? "disabled" : ""}>Copy checklist</button>
       </div>
       <p class="encounter-feedback" role="status">${e(ui.message || "")}</p>
       ${
         ui.tab === "items"
           ? `<div class="encounter-items">
-        ${items.length ? `<label class="encounter-filter">Show items<select data-encounter-filter><option value="all" ${ui.filter !== "attention" ? "selected" : ""}>All tracked items</option><option value="attention" ${ui.filter === "attention" ? "selected" : ""}>Needs attention in this packet</option></select></label>` : ""}
+        ${items.length ? `<label class="encounter-filter">Show<select data-encounter-filter><option value="all" ${ui.filter !== "attention" ? "selected" : ""}>All reminders</option><option value="attention" ${ui.filter === "attention" ? "selected" : ""}>Still to check</option></select></label>` : ""}
         ${
           !items.length
-            ? `<p>No items tracked. Open <strong>Find a source</strong>, select a passage from a saved note or result, then track a follow-up, clarification, or fact to verify.</p>`
+            ? `<p>Start with <strong>Add from chart</strong>. Highlight one action or fact you want to check, then choose Check a prior plan, Clarify with patient, or Confirm history.</p>`
             : !visibleItems.length
-              ? "<p>No items need attention in this packet. Choose All tracked items to inspect recorded decisions.</p>"
+              ? "<p>Nothing left to check here. Choose All reminders to see recorded answers.</p>"
               : visibleItems
                   .map((item) => {
                     const state = reviewItemState(patient, item, packetId);
                     const valid = state.valid;
                     return `<article class="encounter-item" data-review-item="${e(item.id)}">
-            <div class="encounter-item-heading"><strong>${REVIEW_KINDS[item.kind]}</strong><button class="button--quiet" type="button" data-action="encounter-remove" data-item-id="${e(item.id)}">Remove</button></div>
-            <blockquote>${e(item.source.quote)}</blockquote>
+            <div class="encounter-item-heading"><strong>${itemQuestions[item.kind]}</strong><button class="button--quiet" type="button" data-action="encounter-remove" data-item-id="${e(item.id)}">Remove</button></div>
+            <blockquote aria-label="Selected chart reminder">${e(item.source.quote)}</blockquote>
             <button type="button" class="button--quiet encounter-source-link" data-action="encounter-source" data-item-id="${e(item.id)}">${e(packetName(item.source.packetId))} · ${e(state.source.source?.label || "Source unavailable")} · View source</button>
             ${!valid ? `<p class="encounter-warning">${e(!state.source.valid ? state.source.reason : state.evidence?.reason)}. This item is excluded from the copied brief until reviewed. Remove and reselect a changed source.</p>` : ""}
-            <label>Status in ${e(packetName(packetId))}<select data-encounter-status="${e(item.id)}" ${!state.source.valid || ui.saving ? "disabled" : ""}>
+            <label>Your answer for ${e(packetName(packetId))}<select data-encounter-status="${e(item.id)}" ${!state.source.valid || ui.saving ? "disabled" : ""}>
               ${Object.entries(REVIEW_STATUSES[item.kind])
                 .map(([id, label]) => `<option value="${id}" ${id === state.status ? "selected" : ""}>${label}</option>`)
                 .join("")}
             </select></label>
-            ${state.current ? `<p class="muted">Clinician-recorded in this packet.${state.current.evidence ? " Supporting passage attached." : " No supporting passage attached."}</p>` : `<p class="muted">No decision recorded for this packet.${state.prior ? ` Last recorded in ${e(packetName(state.prior.packetId))}: ${e(REVIEW_STATUSES[item.kind][state.prior.status])}; not carried forward.` : ""}</p>`}
+            ${state.current ? `<p class="muted">Saved for ${e(packetName(packetId))}.</p>` : `<p class="muted">Choose an answer after checking.${state.prior ? ` Previously ${e(REVIEW_STATUSES[item.kind][state.prior.status]).toLowerCase()} in ${e(packetName(state.prior.packetId))}; check again for this encounter.` : ""}</p>`}
+            <details class="encounter-item-details"><summary>Evidence &amp; history (optional)</summary>
             ${state.current?.evidence ? `<details><summary>Supporting passage</summary><blockquote>${e(state.current.evidence.quote)}</blockquote><button type="button" class="button--quiet" data-action="encounter-evidence-source" data-item-id="${e(item.id)}">${e(packetName(state.current.evidence.packetId))} · View source</button></details>` : ""}
-            ${state.previouslyClosed ? `<p class="muted">Previously closed follow-up; excluded from Needs attention. Record Pending to reopen it. No current finding is implied.</p>` : ""}
-            <button type="button" class="button--quiet" data-action="encounter-choose-evidence" data-item-id="${e(item.id)}" ${!state.source.valid ? "disabled" : ""}>${state.current?.evidence ? "Replace supporting passage" : "Attach supporting passage"}</button>
+            ${state.previouslyClosed ? `<p class="muted">Previously closed; hidden from Still to check. Choose Pending to reopen this reminder.</p>` : ""}
+            <button type="button" class="button--quiet" data-action="encounter-choose-evidence" data-item-id="${e(item.id)}" ${!state.source.valid ? "disabled" : ""}>${state.current?.evidence ? "Replace linked result or note" : "Link a chart result or note"}</button>
             ${
               item.reviews.length
-                ? `<details class="encounter-history"><summary>Decision history (${item.reviews.length})</summary><ol>${[...item.reviews]
+                ? `<details class="encounter-history"><summary>Previous answers (${item.reviews.length})</summary><ol>${[...item.reviews]
                     .reverse()
                     .map(
                       (review) =>
@@ -99,6 +107,7 @@ export function renderEncounterReview(patient, packetId, ui, escapeHtml) {
                     .join("")}</ol></details>`
                 : ""
             }
+            </details>
           </article>`;
                   })
                   .join("")
@@ -109,27 +118,27 @@ export function renderEncounterReview(patient, packetId, ui, escapeHtml) {
       ${
         ui.tab === "sources"
           ? `<div class="encounter-source-browser">
-        <div class="encounter-source-controls"><label>Source packet<select data-encounter-source-packet>${optionList(ui.sourcePacketId)}</select></label>
-          <label>Saved source<select data-encounter-source-id>${sources.length ? sources.map((entry) => `<option value="${e(entry.id)}" ${entry.id === ui.sourceId ? "selected" : ""}>${e(entry.label)}</option>`).join("") : '<option value="">No saved sources</option>'}</select></label></div>
+        <div class="encounter-source-controls"><label>Chart from<select data-encounter-source-packet>${optionList(ui.sourcePacketId)}</select></label>
+          <label>Note or result<select data-encounter-source-id>${sources.length ? sources.map((entry) => `<option value="${e(entry.id)}" ${entry.id === ui.sourceId ? "selected" : ""}>${e(entry.label)}</option>`).join("") : '<option value="">No saved sources</option>'}</select></label></div>
         ${
           source
-            ? `<label>${e(source.label)} — select an exact passage<textarea data-encounter-source-text readonly rows="9" spellcheck="false">${e(source.text)}</textarea></label>
+            ? `<label>Highlight one action or fact in ${e(source.label)}<textarea data-encounter-source-text readonly rows="9" spellcheck="false">${e(source.text)}</textarea></label>
           ${source.warnings.length || source.skipped ? '<p class="encounter-warning">Finish privacy review in the source workspace before tracking this source.</p>' : ""}
-          <p class="muted">Select the relevant words or lines. The full source remains available; the selected passage is quoted exactly.</p>
+          <p class="muted">Select only the reminder you want to check, rather than a whole plan. Your selection is saved with a link back to these exact words.</p>
           ${
             planPassages(source).length && !source.warnings.length
-              ? `<details class="encounter-plan-passages"><summary>Track a prior plan passage</summary>${planPassages(source)
+              ? `<details class="encounter-plan-passages"><summary>Or choose a line from the plan</summary>${planPassages(source)
                   .map(
                     (passage) =>
-                      `<div><span>${e(passage.text)}</span><button type="button" class="button--quiet" data-action="encounter-track-line" data-start="${passage.start}" data-end="${passage.end}" ${ui.saving ? "disabled" : ""}>Track follow-up</button></div>`
+                      `<div><span>${e(passage.text)}</span><button type="button" class="button--quiet" data-action="encounter-track-line" data-start="${passage.start}" data-end="${passage.end}" ${ui.saving ? "disabled" : ""}>Check this plan</button></div>`
                   )
                   .join("")}</details>`
               : ""
           }
           <div class="button-row">${Object.entries(REVIEW_KINDS)
             .map(
-              ([kind, label]) =>
-                `<button type="button" class="button--secondary" data-action="encounter-add" data-kind="${kind}" ${ui.saving || source.warnings.length || source.skipped ? "disabled" : ""}>${label}</button>`
+              ([kind]) =>
+                `<button type="button" class="button--secondary" data-action="encounter-add" data-kind="${kind}" ${ui.saving || source.warnings.length || source.skipped ? "disabled" : ""}>${addLabels[kind]}</button>`
             )
             .join("")}
           ${ui.evidenceItemId ? `<button type="button" data-action="encounter-attach" data-item-id="${e(ui.evidenceItemId)}" ${ui.saving || source.warnings.length || source.skipped ? "disabled" : ""}>Attach selected passage</button><button type="button" class="button--quiet" data-action="encounter-cancel-evidence">Cancel attachment</button>` : ""}</div>`
