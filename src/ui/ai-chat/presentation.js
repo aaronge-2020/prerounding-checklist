@@ -404,6 +404,7 @@ export function createAiChatPresentation({ escapeHtml, icon }) {
           <div class="aic-input" contenteditable="${ready && !chat.streaming ? "true" : "false"}" data-ai-chat-input role="textbox" aria-multiline="true" aria-label="Chat message" data-placeholder="${ready ? "Message local AI…" : "Get a model from the Model menu first"}"></div>
           <button type="button" data-action="ai-chat-send" class="aic-send" ${ready && !chat.streaming ? "" : "disabled"} aria-label="Send">${icon("send")}</button>
         </form>
+        ${ready ? "" : `<div class="aic-get-model"><span class="aic-muted">No on-device model is ready yet.</span><button type="button" class="aic-btn" data-action="ai-chat-open-model-menu">${icon("download")} Get a model</button></div>`}
         ${renderDisclaimer(activeLabel)}
       </div>`;
   }

@@ -87,7 +87,8 @@
     "test:safety": "node tests/test-safety-boundaries.js && node tests/evaluate-clinical-safety-browser.js --verify",
     "evaluate:local-notes": "node scripts/evaluate-local-note-models.mjs",
     "test:encounter-review": "node tests/test-encounter-review.js && node tests/test-encounter-review-browser.js",
-    "test:primary-note-source": "node tests/test-primary-note-source.js && node tests/test-sample-note-pulls-browser.js"
+    "test:primary-note-source": "node tests/test-primary-note-source.js && node tests/test-sample-note-pulls-browser.js",
+    "test:aloop-stuck-fixes": "node tests/test-aloop-stuck-fixes.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",

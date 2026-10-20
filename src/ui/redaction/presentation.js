@@ -77,6 +77,35 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
     return `<div${id ? ` id="${escapeHtml(id)}"` : ""} class="redaction-document" data-redaction-document role="textbox" aria-readonly="true" aria-multiline="true" tabindex="0" aria-label="${escapeHtml(label)}">${markup}</div>`;
   }
 
+  // A scannable list of every change in this review, so a user facing 30
+  // suggestions can see all of them at once and decide per item here instead
+  // of stepping through the document one change at a time. Accept and
+  // Reject reuse the same actions as the inline inspector; in the Quick
+  // tool (no scope/section) Accept uses the quick accept action.
+  function renderRedactionSummary(review, { scope = "", sectionId = "" } = {}) {
+    const redactions = review?.redactions || [];
+    if (!redactions.length) return "";
+    const quick = !(scope && sectionId);
+    const rows = redactions.map((redaction, index) => {
+      const stateLabel = redaction.state === "confirmed" ? "Accepted" : redaction.state === "restored" ? "Restored" : "Pending";
+      const acceptAction = quick ? "accept-quick-redaction" : "accept-section-redaction";
+      const rejectAction = quick ? "restore-quick-non-phi" : "allow-reviewed-non-phi";
+      const scopeAttrs = quick ? "" : ` data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(sectionId)}"`;
+      return `
+        <li class="redaction-summary-row" data-redaction-summary-row>
+          <span class="redaction-summary-change"><del>${escapeHtml(redaction.original)}</del><span class="redaction-change-arrow" aria-hidden="true">→</span><ins>${escapeHtml(redaction.placeholder)}</ins></span>
+          <span class="redaction-summary-state">${stateLabel}</span>
+          ${redaction.state === "pending" ? `<span class="redaction-summary-actions"><button class="button--quiet" type="button" data-action="${acceptAction}"${scopeAttrs} data-redaction-index="${index}">Accept</button><button class="button--quiet" type="button" data-action="${rejectAction}"${scopeAttrs} data-redaction-index="${index}">Reject</button></span>` : ""}
+          ${redaction.state === "confirmed" ? `<span class="redaction-summary-actions"><button class="button--quiet" type="button" data-action="${rejectAction}"${scopeAttrs} data-redaction-index="${index}">Undo</button></span>` : ""}
+        </li>`;
+    }).join("");
+    return `
+      <details class="redaction-summary" data-redaction-summary>
+        <summary>All changes in this field (${redactions.length})</summary>
+        <ul class="redaction-summary-list">${rows}</ul>
+      </details>`;
+  }
+
   function renderSectionReview({ section, scope, review, nextSectionLabel = "" }) {
     if (!review) return "";
     const inspected = review.redactions[review.inspectedRedactionIndex] || null;
@@ -92,6 +121,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
           </div>
           ${pending ? `<button class="button--secondary" type="button" data-action="confirm-all-section-redactions" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Confirm all (${pending})</button><button class="button--secondary" type="button" data-action="reject-all-section-redactions" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Reject all (${pending})</button>` : ""}
         </div>
+        ${renderRedactionSummary(review, { scope, sectionId: section.id })}
         ${inspected ? `
           <div class="redaction-inspector redaction-inline-actions">
             <div>
@@ -296,5 +326,5 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  return Object.freeze({ renderAdmissionSourceEditor, renderRedactionDocument, renderSectionEditor, renderSourceCaptureEditor, renderSectionSurface, renderWarnings });
+  return Object.freeze({ renderAdmissionSourceEditor, renderRedactionDocument, renderRedactionSummary, renderSectionEditor, renderSourceCaptureEditor, renderSectionSurface, renderWarnings });
 }

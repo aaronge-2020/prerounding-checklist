@@ -15,7 +15,8 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
     modelPackBusyKey,
     deidModelSelectOptionsHtml,
     quickDeidStatus,
-    modelPackProgressText
+    modelPackProgressText,
+    verifiedReady = false
   }) {
     let action = "";
     if (option?.requiresWebGpu && !webGpuAvailable) {
@@ -24,8 +25,13 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
       const actionName = state?.state === "installed" ? "verify-model-pack" : "download-model-pack";
       const label = state?.state === "installed" ? "Verify model" : "Download and verify";
       action = `<div class="button-row"><button type="button" data-action="${actionName}" data-model-key="${escapeHtml(option.key)}" ${modelPackBusyKey ? "disabled" : ""}>${icon(state?.state === "installed" ? "shield" : "download")} ${label}</button><button class="button--transfer" type="button" data-action="import-model-pack" data-model-key="${escapeHtml(option.key)}" ${modelPackBusyKey ? "disabled" : ""}>${icon("upload")} Import folder</button>${busy ? `<button class="button--quiet" type="button" data-action="cancel-model-download" data-model-key="${escapeHtml(option.key)}">Cancel</button>` : ""}</div>`;
-    } else if (option) {
+    } else if (option && verifiedReady) {
       action = `<span class="model-selection-message model-selection-message--ready">${icon("shield")} Verified and ready locally.</span>`;
+    } else if (option) {
+      // Same wording Hospital Stay uses for the same model at the same
+      // moment (the shared worker status): not loaded until it verifies in
+      // this session, instead of a conflicting ready claim here.
+      action = `<span class="model-selection-message">Not loaded yet. It loads and verifies automatically the first time you use it.</span>`;
     } else {
       action = `<span class="model-selection-message">Ready — no download needed.</span>`;
     }
@@ -56,6 +62,7 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
     activeWarning,
     queueStatus,
     renderRedactionDocumentHtml,
+    renderRedactionSummaryHtml = "",
     warningDescriptionText
   }) {
     if (!review) {
@@ -79,6 +86,7 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
           </div>
         </div>
         ${renderRedactionDocumentHtml}
+        ${renderRedactionSummaryHtml}
         <p class="muted quick-review-instruction">The crossed-out text is the original — kept only in memory, never saved. Its replacement is safe to copy. To catch anything the model missed, highlight it here, then choose Redact highlighted text.</p>
         ${activeRedaction ? `
           <div class="redaction-inspector quick-review-current redaction-inline-actions">
@@ -172,6 +180,7 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
             ${renderQuickDeidVerify({ verifyWithLlm, verifierModelLabel, verifierAvailable })}
             <div class="quick-deid-start-footer">
               <span class="muted">The selected model runs locally. Your text isn't saved by this tool.</span>
+              ${quickDeidInput.trim() ? "" : `<span class="quick-deid-empty-hint" role="note">Paste text first.</span>`}
               <button class="button--primary" type="button" data-action="run-quick-deid" ${disabled ? "disabled" : ""}>${busy ? '<span class="spinner" aria-hidden="true"></span> De-identifying...' : `${icon("shield")} Run de-identification`}</button>
             </div>
           </section>

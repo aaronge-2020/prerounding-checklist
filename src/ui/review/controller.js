@@ -1025,6 +1025,16 @@ export function createReviewController(deps) {
     indicator.textContent = ephemeralDemo ? "Demo \u2014 not saved" : settledSaveText();
     indicator.dataset.state = "saved";
   }
+  // D2: a persist that turns out to be a no-op (no patient, or a
+  // patient-switch save with nothing to write) still has to settle the
+  // indicator. It returns to the idle state, the same text and state the
+  // header shows before any edit, instead of staying on "Saving...".
+  function settleAutosaveNoop() {
+    const indicator = document.querySelector("[data-autosave-indicator]");
+    if (!indicator) return;
+    indicator.textContent = "Auto-save on";
+    indicator.dataset.state = "idle";
+  }
   function scheduleAutoSave() {
     if (autoSaveTimer) clearTimeout(autoSaveTimer);
     // Capture the patient/packet/draft now. If the student switches patients
@@ -1043,15 +1053,33 @@ export function createReviewController(deps) {
       indicator.dataset.state = "saving";
     }
   }
+  function settleAutosaveFailure() {
+    const indicator = document.querySelector("[data-autosave-indicator]");
+    if (!indicator) return;
+    indicator.textContent = "Save did not finish. Your text is still in this tab; keep typing to try again.";
+    indicator.dataset.state = "error";
+  }
+
   async function persistDraftToVault(scheduled) {
     autoSaveTimer = null;
+    try {
+      await persistDraftToVaultInner(scheduled);
+    } catch {
+      // R6: a failed encrypted write must not leave the header on
+      // "Saving..." forever. The draft model still holds the text in this
+      // tab, and the next edit schedules another save.
+      settleAutosaveFailure();
+    }
+  }
+
+  async function persistDraftToVaultInner(scheduled) {
     const current = model();
-    if (!current.patient) return;
+    if (!current.patient) { settleAutosaveNoop(); return; }
     // Patient switched mid-debounce: the in-flight edits belong to the
     // scheduled patient. Redirect the save there instead of writing the
     // new patient's (empty) draft or dropping the edits.
     if (scheduled && scheduled.patientId && current.patient.id !== scheduled.patientId) {
-      if (!scheduled.packetId) return;
+      if (!scheduled.packetId) { settleAutosaveNoop(); return; }
       const savedDraft = normalizeNoteDraft(scheduled.draft);
       const vault = deps.app.vault || {};
       const patients = (vault.patients || []).map((entry) => (

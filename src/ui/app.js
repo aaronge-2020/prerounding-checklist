@@ -111,7 +111,7 @@ import { createDailyPresentation } from "./daily/presentation.js?v=20261015-enco
 import { createDailySourceController } from "./daily/source-controller.js?v=20261015-sample-note-sections";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
 import { createReviewPresentation } from "./review/presentation.js?v=20261015-sample-note-sections";
-import { createReviewController } from "./review/controller.js?v=20261015-sample-note-sections";
+import { createReviewController } from "./review/controller.js?v=20261020-aloop-fixes-r2";
 import { cancelExternalAiReviews } from "./external-ai-review.js?v=20261015-simple-review";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20261015-encounter-review";
 import {
@@ -122,7 +122,10 @@ import {
   scrollPromptOutputToVariable
 } from "./prompts/controller.js?v=20261015-encounter-review";
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20261015-encounter-review";
-import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
+import { createAdmissionDateGate } from "./admission-date-gate.js?v=20261020-aloop-fixes";
+import { loadPersistedDeidMode, persistDeidMode } from "../app/deid-mode-preference.js?v=20261020-aloop-fixes";
+import { deidOperationProgress, renderDeidOperationMarkup } from "./deid/operation-progress.js?v=20261020-aloop-fixes";
+import { parseViewHash, viewHash } from "./view-history.js?v=20261020-aloop-fixes";
 import { createAdmissionDateAnchor } from "./admission-date-anchor.js?v=20261015-encounter-review";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20261015-encounter-review";
 import { captureScrollPositions, restoreScrollPositions, preserveViewScroll, replaceViewContent } from "./view-scroll.js?v=20261012-safety";
@@ -137,12 +140,12 @@ import {
   redactionPosition,
   warningDescription,
   warningSnippet
-} from "./redaction/presentation.js?v=20261015-encounter-review";
-import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261014-batch-e";
+} from "./redaction/presentation.js?v=20261020-aloop-fixes";
+import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20261020-aloop-fixes";
 import { createRuleLearnerDemo } from "./quick-deid/rule-learner-demo.js?v=20261012-safety";
 import { createDeidSessionCoordinator } from "./deid/session-coordinator.js?v=20261003-deid-adaptive";
 import { runQuickDeidLlmVerification, selectedLlmVerifierModel } from "./deid/llm-verifier-session.js?v=20261015-stable-draft-runtime";
-import { createDemoController } from "./demo/controller.js?v=20261015-sample-note-sections";
+import { createDemoController } from "./demo/controller.js?v=20261020-aloop-fixes-r2";
 import { createDemoPatient, DEMO_DAILY_TEXTS } from "./demo/session.js?v=20261015-sample-note-sections";
 import { createDemoSessionController } from "./demo/session-controller.js?v=20261015-sample-note-sections";
 import { createAiChatController } from "./ai-chat/controller.js?v=20261015-encounter-review";
@@ -185,7 +188,7 @@ const app = {
   pendingRemoveGuidelineSetIds: [],
   status: "",
   vaultUnlockError: "",
-  deidMode: DEFAULT_DEID_MODEL_KEY,
+  deidMode: loadPersistedDeidMode(localStorage, [STRUCTURED_DEID_MODE, ...DEID_MODEL_OPTIONS.map((option) => option.key)], DEFAULT_DEID_MODEL_KEY),
   deidStatus: getAdvancedDeidStatus(),
   loadingDeidModelKey: "",
   deidOperation: { active: false, message: "Choose a verified local model before saving raw text." },
@@ -580,6 +583,7 @@ function selectDeidModel(modelKey) {
   const option = deidModelOptionByKey(modelKey);
   if (!option.browserRunnable) throw new Error(option.disabledReason || `${option.label} is not available in this browser.`);
   app.deidMode = option.key;
+  persistDeidMode(localStorage, app.deidMode);
   app.quickDeid.status = `${option.label} selected. Download and verify it locally before use.`;
   renderStatusBar();
   if (app.view === "quickDeid") renderQuickDeid();
@@ -634,16 +638,14 @@ function selectedDeidReadinessAsPanelProps() {
 }
 
 function renderDeidOperation() {
-  const operation = app.deidOperation || {};
-  return `
-    <div class="deid-operation ${operation.active ? "is-active" : ""}" data-deid-operation aria-live="polite">
-      <progress data-deid-operation-progress ${Number.isFinite(operation.value) ? `value="${Math.max(0, operation.value)}" max="${Math.max(1, operation.total || 1)}"` : ""}></progress>
-      <span data-deid-operation-message>${escapeHtml(operation.message || "")}</span>
-    </div>`;
+  return renderDeidOperationMarkup(app.deidOperation || {}, escapeHtml);
 }
 
+let deidElapsedTimer = 0;
 function updateDeidOperation({ active = false, message = "", value, total } = {}) {
-  app.deidOperation = { active, message, value, total };
+  const startedAt = active ? (app.deidOperation?.active && app.deidOperation.startedAt ? app.deidOperation.startedAt : Date.now()) : undefined;
+  app.deidOperation = { active, message, value, total, startedAt };
+  clearInterval(deidElapsedTimer); deidElapsedTimer = 0;
   const operation = document.querySelector("[data-deid-operation]");
   if (!operation) return;
   operation.classList.toggle("is-active", active);
@@ -653,6 +655,9 @@ function updateDeidOperation({ active = false, message = "", value, total } = {}
     progress.value = Math.max(0, value);
     progress.max = Math.max(1, total || 1);
   }
+  const detailFor = () => { const p = deidOperationProgress(app.deidOperation); return [p.stepText, p.elapsedText ? `${p.elapsedText} elapsed` : ""].filter(Boolean).join(" · "); };
+  operation.querySelector("[data-deid-operation-elapsed]")?.replaceChildren(document.createTextNode(detailFor()));
+  if (active) deidElapsedTimer = setInterval(() => { const el = document.querySelector("[data-deid-operation-elapsed]"); if (el) el.textContent = detailFor(); }, 1000);
   if (app.view === "daily") {
     document.querySelectorAll('[data-action="save-context"], [data-action="save-day"]').forEach((button) => {
       button.disabled = active;
@@ -1173,6 +1178,7 @@ function render() {
       document.querySelector(`[data-view-target="${id}"]`)?.classList.toggle("active", id === "vault");
     }
     renderVault();
+    syncViewHash();
     renderStatusBar();
     restoreScroll();
     return;
@@ -1183,6 +1189,7 @@ function render() {
     byId(`${id}View`)?.classList.toggle("active", app.view === id);
     document.querySelector(`[data-view-target="${id}"]`)?.classList.toggle("active", app.view === id);
   }
+  syncViewHash();
   syncNavigationDisclosure();
   // Each view-renderer runs independently: one throwing (e.g. on bad locally
   // cached data) must never prevent renderStatusBar() below from running -
@@ -1239,6 +1246,15 @@ function renderVault() {
     patients: visiblePatients(app.vault),
     vaultUnlockError: app.vaultUnlockError
   }));
+  // R13: a browser-restored passphrase fires no input event; sync Unlock from the field's value.
+  const passphraseInput = byId("vaultPassphrase");
+  if (passphraseInput?.value) updateVaultPrimaryActionEnabled(passphraseInput.value);
+}
+
+function syncViewHash(push = false) {
+  const next = viewHash(app.view);
+  if (window.location.hash === next) return;
+  if (push) window.history.pushState(null, "", next); else window.history.replaceState(null, "", next);
 }
 
 function renderDeidStrip() {
@@ -1710,6 +1726,7 @@ function renderQuickDeidReview() {
       action: "inspect-quick-redaction",
       label: "Annotated de-identified text"
     }),
+    renderRedactionSummaryHtml: redactionPresentation.renderRedactionSummary(review, {}),
     warningDescriptionText: activeWarning ? warningDescription(activeWarning) : ""
   });
 }
@@ -1731,7 +1748,8 @@ function renderQuickModelControl() {
     modelPackBusyKey: app.modelPackBusyKey,
     deidModelSelectOptionsHtml: deidModelSelectOptions(),
     quickDeidStatus: app.quickDeid.status,
-    modelPackProgressText: option ? modelPackProgressText(option) : ""
+    modelPackProgressText: option ? modelPackProgressText(option) : "",
+    verifiedReady: selectedDeidStatus().ready
   });
 }
 
@@ -1761,7 +1779,7 @@ function renderQuickDeid() {
   const verifierModel = selectedLlmVerifierModel();
   replaceViewContent(byId("quickDeidContent"), quickDeidPresentation.renderQuickDeid({
     hasReview,
-    disabled: Boolean(app.modelPackBusyKey || app.quickDeidBusy),
+    disabled: Boolean(app.modelPackBusyKey || app.quickDeidBusy) || !app.quickDeid.input.trim(),
     busy: app.quickDeidBusy,
     admissionDate: app.quickDeid.admissionDate,
     quickDeidInput: app.quickDeid.input,
@@ -2005,6 +2023,7 @@ async function handleClick(event) {
     if (action === "inspect-redaction")
       inspectRedaction(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex));
     if (action === "keep-reviewed-redaction") keepReviewedRedaction(target.dataset.scope, target.dataset.sectionId);
+    if (action === "accept-section-redaction") { inspectRedaction(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex)); keepReviewedRedaction(target.dataset.scope, target.dataset.sectionId); }
     if (action === "confirm-all-section-redactions") confirmAllSectionRedactions(target.dataset.scope, target.dataset.sectionId);
     if (action === "continue-section-review") advanceSectionReview(target.dataset.scope, target.dataset.sectionId, -1);
     if (action === "reject-all-section-redactions") rejectAllSectionRedactions(target.dataset.scope, target.dataset.sectionId);
@@ -2106,6 +2125,7 @@ async function handleClick(event) {
     if (action === "review-quick-warning") reviewQuickWarning(Number(target.dataset.warningIndex));
     if (action === "inspect-quick-redaction") inspectQuickRedaction(Number(target.dataset.redactionIndex));
     if (action === "confirm-quick-redaction") confirmQuickRedaction();
+    if (action === "accept-quick-redaction") { inspectQuickRedaction(Number(target.dataset.redactionIndex)); confirmQuickRedaction(); }
     if (action === "confirm-all-quick-redactions") confirmAllQuickRedactions();
     if (action === "reject-all-quick-redactions") rejectAllQuickRedactions();
     if (action === "restore-quick-non-phi") restoreQuickNonPhi(Number(target.dataset.redactionIndex));
@@ -3452,6 +3472,7 @@ async function importSelectedModelPack(modelKey, entries) {
     });
     await markModelPackVerified(option);
     app.deidMode = option.key;
+    persistDeidMode(localStorage, app.deidMode);
     app.quickDeid.status = `${option.label} installed and verified locally.`;
     await refreshModelPackStates({ renderAfter: false });
     setStatus(`${option.label} is ready for local de-identification.`);
@@ -3540,6 +3561,7 @@ async function downloadSelectedModelPack(modelKey) {
     });
     await markModelPackVerified(option);
     app.deidMode = option.key;
+    persistDeidMode(localStorage, app.deidMode);
     app.quickDeid.status = `${option.label} downloaded and verified locally.`;
     app.modelPackErrors = { ...app.modelPackErrors, [option.key]: "" };
     setStatus(`${option.label} is ready for local de-identification.`);
@@ -3609,6 +3631,7 @@ async function verifyInstalledModelPack(modelKey) {
     });
     await markModelPackVerified(option);
     app.deidMode = option.key;
+    persistDeidMode(localStorage, app.deidMode);
     app.quickDeid.status = `${option.label} verified locally.`;
     app.modelPackErrors = { ...app.modelPackErrors, [option.key]: "" };
     await refreshModelPackStates({ renderAfter: false });
@@ -3632,7 +3655,7 @@ async function removeSelectedModelPack(modelKey) {
   try {
     await removeModelPack(option);
     resetAdvancedDeidWorker();
-    if (app.deidMode === option.key) app.deidMode = DEFAULT_DEID_MODEL_KEY;
+    if (app.deidMode === option.key) { app.deidMode = DEFAULT_DEID_MODEL_KEY; persistDeidMode(localStorage, app.deidMode); }
     app.quickDeid.status = `${option.label} removed from this browser.`;
     await refreshModelPackStates({ renderAfter: false });
     setStatus(`${option.label} local files removed.`);
@@ -3799,6 +3822,7 @@ async function runQuickDeid() {
   const quickAdmissionDate = String(app.quickDeid.admissionDate || byId("quickDeidAdmissionDateInput")?.value || "").trim();
   app.quickDeid.admissionDate = quickAdmissionDate;
   app.deidMode = byId("quickDeidMode")?.value || app.deidMode;
+  persistDeidMode(localStorage, app.deidMode);
   app.quickDeid.status = "Running de-identification...";
   app.quickDeidBusy = true;
   renderQuickDeid();
@@ -3903,6 +3927,7 @@ function handleChange(event) {
   }
   if (event.target.id === "deidModeSelect" || event.target.id === "quickDeidMode") {
     app.deidMode = event.target.value;
+    persistDeidMode(localStorage, app.deidMode);
     app.quickDeid.status = "";
     renderStatusBar();
     if (app.view === "daily") refreshDeidControlsInActiveView();
@@ -4005,6 +4030,11 @@ function handleInput(event) {
   }
   if (event.target.id === "quickDeidInput") {
     app.quickDeid.input = event.target.value;
+    // No re-render while typing (it would lose the caret): sync Run + hint directly (R12).
+    const runBtn = document.querySelector('[data-action="run-quick-deid"]');
+    if (runBtn) runBtn.disabled = Boolean(app.modelPackBusyKey || app.quickDeidBusy) || !event.target.value.trim();
+    const hint = document.querySelector(".quick-deid-empty-hint");
+    if (hint) hint.hidden = Boolean(event.target.value.trim());
     return;
   }
   if (event.target.id === "quickDeidOutput") {
@@ -4049,6 +4079,7 @@ function bindEvents() {
   decorateNavigation();
   tokenColorPicker.init();
   document.addEventListener("click", handleClick);
+  window.addEventListener("hashchange", () => { const view = parseViewHash(window.location.hash, viewIds); if (view && view !== app.view && vaultIsUnlocked()) { app.view = view; render(); } });
   document.addEventListener("change", handleChange);
   document.addEventListener("input", handleInput);
   document.addEventListener("submit", handleSubmit);
@@ -4109,6 +4140,7 @@ function bindEvents() {
         demoSessionController.exit({ renderAfter: false });
       if (button.dataset.viewTarget === "review") reviewController.prepare(app.selectedStayPacketId || app.selectedDayId || "admission");
       app.view = button.dataset.viewTarget;
+      syncViewHash(true);
       app.smartMenuOpen = false; render();
       demoController.observeNavigation(app.view);
       if (button.dataset.viewTarget === "aiChat" && !isOfflineMode() && aiChatController.isRemoteMode?.()) {
@@ -4162,6 +4194,7 @@ async function init() {
   bindEvents();
   installNavigationDisclosure();
   render();
+  window.__preroundingBooted = true;
   void refreshWebGpuAvailability();
   void refreshGuidelines().catch((error) => setStatus(error instanceof Error ? error.message : "Built-in prompts are unavailable. Reload to retry."));
   void ensureModelPackServiceWorker()

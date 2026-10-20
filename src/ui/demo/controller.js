@@ -9,7 +9,7 @@ import {
   DEMO_AI_CHAT_SAMPLES,
   DEMO_AI_CHAT_HANDS_ON_QUESTION,
   DEMO_AI_CHAT_HANDS_ON_ANSWER
-} from "./presentation.js?v=20261015-sample-note-sections";
+} from "./presentation.js?v=20261020-aloop-fixes";
 import { DEMO_DAY_ID, attachDemoObjectiveData } from "./session.js?v=20261015-sample-note-sections";
 
 export const DEMO_REVIEW_ACTIONS = Object.freeze(new Set([
@@ -23,14 +23,28 @@ export function demoReviewTransition(action, hasRemainingReview) {
   return hasRemainingReview ? "preserve-review" : "complete-review";
 }
 
+// R5 advance rule for the write-note stage, kept pure so it can be tested
+// without a browser: the tour may advance only while the stage is still
+// write-note, a baseline text was captured, and the current text is
+// non-empty and differs from that baseline. An edit that never landed, an
+// emptied field, or a retype of the baseline never advances the tour.
+export function writeNoteEditAdvances({ stage, text, baseline } = {}) {
+  if (stage !== "write-note" || baseline === null || baseline === undefined) return false;
+  const current = String(text || "");
+  return Boolean(current.trim()) && current !== String(baseline);
+}
+
 export function createDemoController({ app, byId, escapeHtml, getSession, getView, render: renderApp, selectDemoPacket, getCheatSheetOpenId, seedAiChatDemo, clearAiChatDemo, setAiChatDemoReply, clearAiChatDemoReply }) {
   const presentation = createDemoPresentation({ escapeHtml });
   let activeCalloutTarget = null;
   let calloutFrame = 0;
+  let calloutDismissedStage = null;
   let preparedStage = null;
   let preparing = false;
   let repositionTimer = 0;
   let sendButtonObserver = null;
+  let writeNoteBaseline = null;
+  let writeNoteAdvanceTimer = 0;
 
   function visibleTarget(container, selector) {
     return [...(container?.querySelectorAll(selector) || [])].find((element) => element.getClientRects().length > 0) || null;
@@ -121,6 +135,9 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   function forceCleanup() {
     clearTargetDecorations();
     try { clearAiChatDemo?.(); } catch { /* ephemeral; never block exit */ }
+    calloutDismissedStage = null;
+    writeNoteBaseline = null;
+    clearTimeout(writeNoteAdvanceTimer);
     preparedStage = null;
     try { document.body.classList.remove("demo-tour-active"); } catch { /* Optional visual diagnostics must not interrupt the demo. */ }
   }
@@ -166,6 +183,9 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
 
   function mountCallout(target, stage) {
     if (!target || !stage.callout) return;
+    // R4: a callout the user hid stays hidden for the rest of that stage,
+    // even though renders re-mount it.
+    if (calloutDismissedStage && calloutDismissedStage === getSession?.()?.stage) return;
     document.body.insertAdjacentHTML("beforeend", safeHtml(presentation.renderCallout({ stage })));
     activeCalloutTarget = target;
     calloutFrame = requestAnimationFrame(positionCallout);
@@ -184,6 +204,12 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
   // any draft section, advance to the prompts step. Draft regions use several
   // attribute names (data-draft-section, data-draft-assessment,
   // data-draft-closing, data-draft-objective), so match them all.
+  // R5: the tour advances only on a real, settled edit. The old handler
+  // advanced on the first input event, and the re-render that followed could
+  // discard the typing in progress, so the tour moved on while the edit
+  // never landed. Now the text must differ from the writeNoteBaseline
+  // captured when the stage was shown, and typing must pause first, which
+  // also gives the app's own input handler time to save the text.
   document.addEventListener("input", (event) => {
     const session = getSession?.();
     if (!session || session.stage !== "write-note") return;
@@ -191,8 +217,16 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       "[data-draft-section], [data-draft-assessment], [data-draft-closing], [data-draft-objective]"
     );
     if (!target) return;
-    session.stage = "open-prompts";
-    renderApp();
+    clearTimeout(writeNoteAdvanceTimer);
+    writeNoteAdvanceTimer = setTimeout(() => {
+      const current = getSession?.();
+      if (!current || current.stage !== "write-note") return;
+      const text = String(target.textContent || target.value || "");
+      if (writeNoteEditAdvances({ stage: current.stage, text, baseline: writeNoteBaseline })) {
+        current.stage = "open-prompts";
+        renderApp();
+      }
+    }, 1200);
   });
 
   function flashDemoHint() {
@@ -478,6 +512,19 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
       });
     }
     if (!routeMismatch) mountCallout(target, stage);
+    if (stageId === "write-note" && target) {
+      // R5: open the one-liner section and put the cursor in its text before
+      // the user clicks, so the first click lands in the editor instead of
+      // toggling the section closed. Capture the untouched text as the
+      // baseline the settled-edit check compares against.
+      if (writeNoteBaseline === null) writeNoteBaseline = String(target.textContent || "");
+      const section = target.closest("details.ed-section");
+      if (section && !section.open) section.open = true;
+      requestAnimationFrame(() => {
+        if (getSession()?.stage === "write-note") target.focus({ preventScroll: true });
+      });
+    }
+    if (stageId !== "write-note") writeNoteBaseline = null;
     requestAnimationFrame(() => {
       if (!isInfo && stageId !== "write-note") target.focus({ preventScroll: true });
       if (!stage.navTarget && view === stage.view && stageId !== "write-note") scrollTargetIntoView(target);
@@ -526,6 +573,12 @@ export function createDemoController({ app, byId, escapeHtml, getSession, getVie
     if (action === "exit-guided-demo") {
       forceCleanup();
       renderApp();
+      return;
+    }
+    if (action === "dismiss-demo-callout") {
+      calloutDismissedStage = session.stage;
+      activeCalloutTarget = null;
+      document.querySelectorAll("[data-demo-callout]").forEach((element) => element.remove());
       return;
     }
     if (action === "advance-guided-demo") {

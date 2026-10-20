@@ -19,7 +19,7 @@ import {
   sharedLocalLlmClient,
   writeLocalLlmSettings
 } from "../../local-llm/client.js?v=20261015-stable-draft-runtime";
-import { createAiChatPresentation } from "./presentation.js?v=20261015-stable-draft-runtime";
+import { createAiChatPresentation } from "./presentation.js?v=20261020-aloop-fixes";
 import { chatPaneScrollTop, preserveViewScroll } from "../view-scroll.js?v=20261012-safety";
 import { requestOpenAiChat, requestOpenAiChatWithUsage } from "../openai-client.js?v=20261015-simple-review";
 import { isOfflineMode, onOfflineModeChange } from "../../lib/network-gate.js?v=20261012-safety";
@@ -2371,6 +2371,17 @@ export function createAiChatController({
     // ordinary chat) never touches ensure-model on a cold worker.
     if (action === "ai-chat-download-rag-model") {
       void downloadRagModel();
+      return true;
+    }
+    if (action === "ai-chat-open-model-menu") {
+      // The composer gate sends the user straight to the Model menu in this
+      // same view, instead of naming a menu they have to hunt for.
+      const menu = document.querySelector("details.aic-modelwrap");
+      if (menu) {
+        menu.open = true;
+        menu.querySelector("summary")?.focus({ preventScroll: true });
+        menu.scrollIntoView({ block: "nearest" });
+      }
       return true;
     }
     if (action === "ai-chat-mode") {      setMode(actionTarget.dataset.mode);

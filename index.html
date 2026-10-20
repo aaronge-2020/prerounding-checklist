@@ -178,8 +178,8 @@
           <section id="vaultView" class="view active" aria-labelledby="vault-heading">
             <div id="vaultContent">
               <section class="locked-vault-shell surface-panel" aria-live="polite">
-                <h2 id="vault-heading">Preparing secure vault</h2>
-                <p class="muted">Unlock the local vault to load patient data.</p>
+                <h2 id="vault-heading"><span class="spinner" aria-hidden="true"></span> Preparing secure vault</h2>
+                <p class="muted">Unlock the local vault to load patient data. Loading runs on this device and can take a moment on a first visit. If this message does not change, reload the page.</p>
               </section>
             </div>
           </section>
@@ -232,6 +232,7 @@
   <section class="card" id="setupCard" aria-labelledby="setupH">
     <h2 id="setupH">1 · Model setup</h2>
     <div id="setupDetails">
+      <p class="scribe-download-total"><strong>Total download: about 689 MB.</strong> The speech encoder is about 652 MB of that total. Download once on Wi-Fi, then Scribe Pro works offline.</p>
       <p class="muted">One download, then it works offline. The models come from Hugging Face (~690 MB), are stored in this browser's IndexedDB, and run fully on this device afterwards. Best done on Wi-Fi — you only do this once.</p>
       <div id="fileList"></div>
       <div class="overall">
@@ -330,8 +331,13 @@
         <label>Admission date
           <input type="date" id="admissionDateInput" required>
         </label>
+        <label>Or type the date (mm/dd/yyyy)
+          <input type="text" id="admissionDateTextInput" inputmode="numeric" placeholder="10/20/2026" autocomplete="off">
+        </label>
+        <p id="admissionDateError" class="vault-unlock-error" role="alert" hidden></p>
         <div class="button-row">
           <button value="cancel">Cancel</button>
+          <button type="button" id="admissionDateToday">Use today</button>
           <button type="submit" value="confirm">Continue</button>
         </div>
       </form>
@@ -416,6 +422,7 @@
     </div>
 
     <input id="modelPackFolderInput" type="file" webkitdirectory multiple hidden>
+    <script src="./src/ui/startup-watchdog.js?v=20261020-aloop-fixes"></script>
     <script type="module" src="./src/ui/app.js?v=20261015-sample-note-sections"></script>
   </body>
 </html>

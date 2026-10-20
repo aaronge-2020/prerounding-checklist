@@ -1,10 +1,8 @@
+import { renderDeidOperationMarkup } from "./operation-progress.js?v=20261020-aloop-fixes";
+
 export function createDeidPresentation({ escapeHtml, icon }) {
   function renderDeidOperation(operation = {}) {
-    return `
-      <div class="deid-operation ${operation.active ? "is-active" : ""}" data-deid-operation aria-live="polite">
-        <progress data-deid-operation-progress ${Number.isFinite(operation.value) ? `value="${Math.max(0, operation.value)}" max="${Math.max(1, operation.total || 1)}"` : ""}></progress>
-        <span data-deid-operation-message>${escapeHtml(operation.message || "")}</span>
-      </div>`;
+    return renderDeidOperationMarkup(operation, escapeHtml);
   }
 
   function renderDeidLoadButton({ option, state, canInstall, isDownloading, fallbackLabel, fallbackDisabled }) {

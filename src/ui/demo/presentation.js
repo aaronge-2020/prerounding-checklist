@@ -420,6 +420,7 @@ export function createDemoPresentation({ escapeHtml }) {
       <aside class="guided-demo-callout" data-demo-callout role="note">
         <strong>${escapeHtml(stage.calloutTitle || "About this step")}</strong>
         <p>${escapeHtml(stage.callout)}</p>
+        <button class="button--quiet guided-demo-callout-dismiss" type="button" data-action="dismiss-demo-callout">Hide this note</button>
       </aside>
     `;
   }

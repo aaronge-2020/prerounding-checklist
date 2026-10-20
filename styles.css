@@ -14854,3 +14854,20 @@ body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.ap
 
 .encounter-item-details { margin-top: 8px; }
 .encounter-item-details > summary { cursor: pointer; color: var(--muted); }
+
+/* .aloop stuck fixes (2026-10-20) */
+.deid-operation-detail { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.redaction-summary { margin: 10px 0; border: 1px solid var(--border, #d8dee9); border-radius: 8px; padding: 8px 10px; }
+.redaction-summary > summary { cursor: pointer; font-weight: 600; }
+.redaction-summary-list { list-style: none; margin: 8px 0 0; padding: 0; max-height: 260px; overflow: auto; display: grid; gap: 6px; }
+.redaction-summary-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-top: 1px solid var(--border, #d8dee9); padding-top: 6px; }
+.redaction-summary-change { overflow-wrap: anywhere; min-width: 0; }
+.redaction-summary-change del { opacity: 0.75; }
+.redaction-summary-change ins { text-decoration: none; font-weight: 600; }
+.redaction-summary-state { color: var(--muted); font-size: 12px; }
+.redaction-summary-actions { margin-left: auto; display: inline-flex; gap: 4px; }
+.guided-demo-callout-dismiss { margin-top: 8px; }
+.aic-get-model { display: flex; align-items: center; gap: 10px; padding: 6px 2px 2px; flex-wrap: wrap; }
+.quick-deid-empty-hint { color: var(--muted); font-weight: 600; }
+.scribe-download-total { font-size: 15px; }
+#admissionDateDialog label { display: grid; gap: 4px; margin-top: 10px; }
