@@ -2,6 +2,7 @@ import { buildLocalNoteSources } from "../../local-llm/note-source.js?v=20261015
 import { packetPrimaryNoteSource } from "../../patient-context/primary-note-source.js?v=20261015-sample-note-sections";
 import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 import { openLocalNoteSynthesis } from "../local-note-synthesis.js?v=20261015-clinical-drafts";
+import { createWriterFeedbackController } from "../writer-feedback/controller.js?v=20261021-writer-feedback";
 import { cancelExternalAiReviews } from "../external-ai-review.js?v=20261015-simple-review";
 import { preserveViewScroll } from "../view-scroll.js?v=20261012-safety";
 import { installCitationInspector } from "./citation-inspector.js?v=20261012-safety";
@@ -227,6 +228,66 @@ export function createReviewController(deps) {
   // ({ [problemId]: { suggestions, references } }) awaiting approve/reject.
   // Nothing here is persisted; approved suggestions land in the draft.
   let apSuggestionsState = {};
+  // Writer AI feedback: the section the student last typed in (drives the
+  // panel's "This section" scope), plus the feedback controller itself.
+  // Feedback items are session-only and live inside the controller; the
+  // controller clears them on session clear, and model() clears them when
+  // the patient/packet scope changes, the same pattern as the AP session.
+  let lastEditedSectionId = "";
+  const writerFeedback = createWriterFeedbackController({
+    getContext: () => {
+      const current = model();
+      return current.patient ? { patientId: current.patient.id, packetId: current.packet.id, noteType: current.draft.noteType, draft: current.draft } : null;
+    },
+    getLastSectionId: () => lastEditedSectionId,
+    applyRewrite: (sectionId, text) => applyFeedbackRewrite(sectionId, text),
+    rerender: () => render(),
+    setStatus: deps.setStatus,
+    preferences: () => (deps.currentPreferences ? deps.currentPreferences() : {}),
+    openModelMenu: () => {
+      deps.app.view = "aiChat";
+      deps.render();
+      requestAnimationFrame(() => {
+        const menu = document.querySelector("details.aic-modelwrap");
+        if (menu) {
+          menu.open = true;
+          menu.querySelector("summary")?.focus({ preventScroll: true });
+          menu.scrollIntoView({ block: "nearest" });
+        }
+      });
+    },
+    openSettings: () => {
+      deps.app.view = "settings";
+      deps.render();
+    }
+  });
+
+  function trackEditedSection(target) {
+    if (target?.matches?.("[data-draft-section]")) lastEditedSectionId = target.dataset.draftSection || lastEditedSectionId;
+    else if (target?.matches?.("[data-draft-assessment]")) lastEditedSectionId = "assessment";
+    else if (target?.matches?.("[data-draft-closing]")) lastEditedSectionId = target.dataset.draftClosing || lastEditedSectionId;
+  }
+
+  // Apply one feedback rewrite through the normal editor save path: update
+  // the draft model, re-render, and let the autosave persister write it to
+  // the encrypted vault. Only text sections land here; Plan items carry no
+  // Apply button because the plan is structured problems.
+  function applyFeedbackRewrite(sectionId, text) {
+    const current = model();
+    if (!current.patient) return false;
+    try {
+      let draft = current.draft;
+      if (sectionId === "assessment") draft = updateAssessment(draft, text);
+      else if (CLOSING_SECTION_FIELDS.some((field) => field.id === sectionId)) draft = updateClosingSection(draft, sectionId, text);
+      else draft = updateNoteSection(draft, sectionId, text);
+      setDraft(draft);
+    } catch {
+      return false;
+    }
+    render();
+    scheduleAutoSave();
+    return true;
+  }
   // Decision-1 differential ranking. Local UI state only: which problem is
   // being ranked right now, and the differential signature last ranked per
   // problem (so resolving an unchanged list doesn't re-spend a call).
@@ -390,6 +451,8 @@ export function createReviewController(deps) {
     const scopeKey = patient ? `${patient.id}:${deps.app.reviewPacketId}` : "";
     if (apScopeKey !== scopeKey) {
       clearApSession();
+      writerFeedback.clear();
+      lastEditedSectionId = "";
       apScopeKey = scopeKey;
     }
     if (expandedEmptyScopeKey !== scopeKey) {
@@ -440,6 +503,10 @@ export function createReviewController(deps) {
       apConfirm: apConfirmState,
       apSuggestions: apSuggestionsState,
       expandedEmptySections,
+      writerFeedback: writerFeedback.viewModel({
+        lastSectionLabel: [...fieldsForNoteType(current.draft.noteType), { id: "assessment", label: "Assessment" }, { id: "plan", label: "Plan" }, ...CLOSING_SECTION_FIELDS]
+          .find((field) => field.id === lastEditedSectionId)?.label || ""
+      }),
     };
   }
 
@@ -950,6 +1017,7 @@ export function createReviewController(deps) {
   }
 
   function input(target) {
+    trackEditedSection(target);
     if (target.matches?.("[data-ap-context]")) {
       if (apConfirmState) {
         const key = target.dataset.apContext;
@@ -2357,6 +2425,12 @@ export function createReviewController(deps) {
   }
 
   function click(target) {
+    trackEditedSection(target);
+    const wfTarget = target.closest?.("[data-wf-action]");
+    if (wfTarget) {
+      writerFeedback.handleAction(wfTarget.dataset.wfAction, wfTarget.dataset);
+      return true;
+    }
     if (target.closest?.('[data-action="draft-on-device"]')) {
       const current = model();
       if (!current.patient) return true;
@@ -2909,5 +2983,5 @@ export function createReviewController(deps) {
       return handled;
     };
   }
-  return Object.freeze({ clearRequest: () => { clearApSession(); workspaceTab = "note"; clinicalDataCollapsed = true; }, change: withAutoSave(change), click: withAutoSave(click), input, keydown, open, prepare, render, saveDraft, toggle: withAutoSave(toggle), getDraftNoteText, getDraftNoteSections });
+  return Object.freeze({ clearRequest: () => { clearApSession(); writerFeedback.clear(); lastEditedSectionId = ""; workspaceTab = "note"; clinicalDataCollapsed = true; }, change: withAutoSave(change), click: withAutoSave(click), input, keydown, open, prepare, render, saveDraft, toggle: withAutoSave(toggle), getDraftNoteText, getDraftNoteSections });
 }

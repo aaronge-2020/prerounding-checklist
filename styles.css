@@ -14871,3 +14871,28 @@ body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.ap
 .quick-deid-empty-hint { color: var(--muted); font-weight: 600; }
 .scribe-download-total { font-size: 15px; }
 #admissionDateDialog label { display: grid; gap: 4px; margin-top: 10px; }
+
+/* Writer AI feedback panel (2026-10-21) */
+.wf-panel { border: 1px solid var(--border, #d8dee9); border-radius: 8px; padding: 10px 12px; margin: 10px 0; display: grid; gap: 10px; }
+.wf-panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.wf-panel-head h3 { margin: 0; }
+.wf-panel-head p { margin: 4px 0 0; }
+.wf-controls { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.wf-control-group { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.wf-control-label { font-weight: 600; font-size: 13px; }
+.wf-send-note { margin: 0; }
+.wf-status { margin: 0; font-weight: 600; }
+.wf-error { margin: 0; color: #b91c1c; font-weight: 600; }
+.wf-notice { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border: 1px solid var(--border, #d8dee9); border-radius: 8px; padding: 8px 10px; }
+.wf-notice p { margin: 0; }
+.wf-items { display: grid; gap: 8px; }
+.wf-item { border-top: 1px solid var(--border, #d8dee9); padding-top: 8px; }
+.wf-item-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.wf-kind { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 8px; background: #e2e8f0; color: #1e293b; }
+.wf-kind--works { background: #dcfce7; color: #166534; }
+.wf-kind--unclear { background: #fef3c7; color: #92400e; }
+.wf-kind--missing { background: #fee2e2; color: #991b1b; }
+.wf-comment { margin: 6px 0 0; }
+.wf-rewrite { margin-top: 8px; display: grid; gap: 6px; }
+.wf-rewrite-label { font-weight: 600; font-size: 13px; }
+.wf-rewrite pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; border: 1px solid var(--border, #d8dee9); border-radius: 8px; padding: 8px 10px; }

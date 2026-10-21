@@ -110,8 +110,8 @@ import { icon } from "./icons.js?v=20260711-functional-remediation-15&icon=book-
 import { createDailyPresentation } from "./daily/presentation.js?v=20261015-encounter-review";
 import { createDailySourceController } from "./daily/source-controller.js?v=20261015-sample-note-sections";
 import { navigateClinicalLabCollections, updateClinicalMedicationPage } from "./daily/clinical-display-controller.js?v=20260921-medication-card-v4";
-import { createReviewPresentation } from "./review/presentation.js?v=20261015-sample-note-sections";
-import { createReviewController } from "./review/controller.js?v=20261020-aloop-fixes-r2";
+import { createReviewPresentation } from "./review/presentation.js?v=20261021-writer-feedback";
+import { createReviewController } from "./review/controller.js?v=20261021-writer-feedback";
 import { cancelExternalAiReviews } from "./external-ai-review.js?v=20261015-simple-review";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20261015-encounter-review";
 import {

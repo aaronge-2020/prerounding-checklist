@@ -1,4 +1,5 @@
 import { citationButton } from "./citation-presentation.js?v=20261012-citation-preview";
+import { renderWriterFeedbackPanel } from "../writer-feedback/presentation.js?v=20261021-writer-feedback";
 import { OPENAI_WORKUP_MODEL_OPTIONS } from "../../app/preferences.js?v=20261011-request-controls";
 import { CLOSING_SECTION_FIELDS, fieldsForNoteType, NOTE_TYPES, objectiveEditorGroups, SECTION_VISIBILITY_KEYS } from "../../note-drafts/index.js?v=20261012-citation-preview";
 import {
@@ -815,7 +816,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     ["other", "Other relevant history"]
   ]);
 
-  function renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions, expandedEmptySections }) {
+  function renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions, expandedEmptySections, writerFeedback }) {
     // Make the collapse set visible to editorSection for this render.
     activeCollapsedSections = collapsedDraftSections instanceof Set ? collapsedDraftSections : new Set();
     activeExpandedEmptySections = expandedEmptySections instanceof Set ? expandedEmptySections : new Set();
@@ -954,8 +955,9 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     return `<section class="note-draft-panel panel" aria-labelledby="draftNoteHeading">
       <div class="note-editor-toolbar">
         <div class="note-editor-title"><h2 id="draftNoteHeading">Draft note</h2><label class="note-type-control"><span>Format</span><select id="reviewNoteType"><option value="${NOTE_TYPES.PROGRESS}" ${draft.noteType === NOTE_TYPES.PROGRESS ? "selected" : ""}>Progress note</option><option value="${NOTE_TYPES.H_AND_P}" ${draft.noteType === NOTE_TYPES.H_AND_P ? "selected" : ""}>H&amp;P</option></select></label></div>
-        <div class="note-editor-actions"><button type="button" class="button--secondary button--small" data-action="draft-on-device">Draft on device</button><span class="autosave-indicator" data-autosave-indicator data-state="idle" title="Your note saves automatically to the encrypted vault as you type">Auto-save on</span><button type="button" class="button--secondary button--small" data-action="copy-final-note">Copy for Epic</button><button type="button" class="button--secondary button--small" data-action="copy-rich-note">Copy rich text</button><button type="button" class="button--secondary button--small" data-action="download-final-note">${icon("download")} Download .txt</button></div>
+        <div class="note-editor-actions"><button type="button" class="button--secondary button--small" data-wf-action="wf-toggle" aria-expanded="${writerFeedback?.open ? "true" : "false"}">Get AI feedback</button><button type="button" class="button--secondary button--small" data-action="draft-on-device">Draft on device</button><span class="autosave-indicator" data-autosave-indicator data-state="idle" title="Your note saves automatically to the encrypted vault as you type">Auto-save on</span><button type="button" class="button--secondary button--small" data-action="copy-final-note">Copy for Epic</button><button type="button" class="button--secondary button--small" data-action="copy-rich-note">Copy rich text</button><button type="button" class="button--secondary button--small" data-action="download-final-note">${icon("download")} Download .txt</button></div>
       </div>
+      ${writerFeedback ? renderWriterFeedbackPanel(writerFeedback, escapeHtml) : ""}
       <p class="ed-toolbar-note">One editor for the whole note — section labels included. Type <kbd>$</kbd> to pull a lab or vital into the note. Saving encrypts the draft without running de-identification.</p>
       <div class="writer-layout">${outline}<div class="note-editor" id="noteEditor" role="group" aria-label="Note editor">
         ${frontSections.join("")}
@@ -969,7 +971,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
     </section>`;
   }
 
-  function renderReview({ workspaceTab = "note", previewText = "", patientLabel, oneLiner, packets, selectedPacketId, encounterReviewCount = 0, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm, apSuggestions, expandedEmptySections }) {
+  function renderReview({ workspaceTab = "note", previewText = "", patientLabel, oneLiner, packets, selectedPacketId, encounterReviewCount = 0, index, query, category, draft, guidanceFor, differenceSelectionId, baselineEditorId, collapsedFamilies, clinicalDataCollapsed, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, patientRequiredMessage, generatingApProblemId, apConfirm, apSuggestions, expandedEmptySections, writerFeedback }) {
     if (!draft) return patientRequiredMessage;
     const selectedIds = new Set((draft.objective?.selectedBlocks || []).map((block) => block.selectionId));
     // Banner calling out free-text results that pasted as a status only —
@@ -987,7 +989,7 @@ export function createReviewPresentation({ escapeHtml, icon }) {
       <div class="writing-workflow-bar"><button type="button" data-action="open-encounter-review" data-packet-id="${escapeHtml(selectedPacketId)}">Visit checklist${encounterReviewCount ? ` (${encounterReviewCount})` : ""}</button><div role="tablist" aria-label="Writing workspace">${[["note", "Write"], ["preview", "Preview & copy"]].map(([id,label]) => `<button type="button" role="tab" aria-selected="${workspaceTab === id}" data-action="workspace-tab" data-workspace-tab="${id}">${label}</button>`).join("")}</div><button type="button" data-action="toggle-clinical-data" aria-controls="reviewClinicalData" aria-expanded="${!clinicalDataCollapsed}" ${workspaceTab === "preview" ? "hidden" : ""}>${clinicalDataCollapsed ? "Show clinical data" : "Hide clinical data"}</button><button type="button" data-action="import-for-note">+ Import from Epic</button></div>
       ${flaggedBanner}
       <section class="note-export-preview panel" ${workspaceTab !== "preview" ? "hidden" : ""} aria-label="Final note preview"><div class="section-heading"><div><h2>Review before copying</h2><p class="muted">This is the exact plain text that will be copied. Check source facts and remove any placeholders.</p></div><button type="button" data-action="copy-final-note" class="button--primary">Copy for Epic</button></div><pre>${escapeHtml(previewText || "No note content yet. Return to Write to begin.")}</pre><div class="button-row"><button type="button" data-action="workspace-tab" data-workspace-tab="note">Back to writing</button><button type="button" data-action="copy-rich-note">Copy rich text</button><button type="button" data-action="download-final-note">Download .txt</button></div></section>
-      <div class="review-columns" ${workspaceTab === "preview" ? "hidden" : ""}>${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions, expandedEmptySections })}</div>
+      <div class="review-columns" ${workspaceTab === "preview" ? "hidden" : ""}>${renderDataExplorer({ index, selectedIds, query, category, baselineEditorId, collapsedFamilies, clinicalDataCollapsed })}${renderDraft({ draft, guidanceFor, differenceSelectionId, collapsedObjectiveGroups, smartExamUi, collapsedDraftSections, generatingApProblemId, apConfirm, apSuggestions, expandedEmptySections, writerFeedback })}</div>
     </div>`;
   }
 
