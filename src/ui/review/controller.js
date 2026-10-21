@@ -2,7 +2,7 @@ import { buildLocalNoteSources } from "../../local-llm/note-source.js?v=20261015
 import { packetPrimaryNoteSource } from "../../patient-context/primary-note-source.js?v=20261015-sample-note-sections";
 import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 import { openLocalNoteSynthesis } from "../local-note-synthesis.js?v=20261015-clinical-drafts";
-import { createWriterFeedbackController } from "../writer-feedback/controller.js?v=20261021-writer-feedback";
+import { createWriterFeedbackController } from "../writer-feedback/controller.js?v=20261021-writer-feedback-fixes";
 import { cancelExternalAiReviews } from "../external-ai-review.js?v=20261015-simple-review";
 import { preserveViewScroll } from "../view-scroll.js?v=20261012-safety";
 import { installCitationInspector } from "./citation-inspector.js?v=20261012-safety";
@@ -259,6 +259,16 @@ export function createReviewController(deps) {
     openSettings: () => {
       deps.app.view = "settings";
       deps.render();
+      // Land on the OpenAI key field itself, not the top of Settings: the
+      // student was sent here to add a key, so scroll it into view and
+      // focus it (the same after-render pattern openModelMenu uses).
+      requestAnimationFrame(() => {
+        const input = document.getElementById("openAiApiKeyInput");
+        if (input) {
+          input.scrollIntoView({ block: "center" });
+          input.focus({ preventScroll: true });
+        }
+      });
     }
   });
 

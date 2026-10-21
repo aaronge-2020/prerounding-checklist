@@ -12,16 +12,17 @@ import {
   buildFeedbackSections,
   buildWriterFeedbackPrompt,
   parseWriterFeedback,
+  resolveScopedSection,
   sectionsInScope
-} from "../../note-drafts/feedback.js?v=20261021-writer-feedback";
+} from "../../note-drafts/feedback.js?v=20261021-writer-feedback-fixes";
 import {
   FEEDBACK_ENGINES,
   loadPersistedFeedbackEngine,
   persistFeedbackEngine
-} from "../../app/feedback-preference.js?v=20261021-writer-feedback";
+} from "../../app/feedback-preference.js?v=20261021-writer-feedback-fixes";
 import { sharedLocalLlmClient } from "../../local-llm/client.js?v=20261015-stable-draft-runtime";
 import { onAiSessionClear } from "../external-ai-review.js?v=20261015-simple-review";
-import { generateWriterFeedbackWithOpenAi } from "./openai-feedback.js?v=20261021-writer-feedback";
+import { generateWriterFeedbackWithOpenAi } from "./openai-feedback.js?v=20261021-writer-feedback-fixes";
 
 export function createWriterFeedbackController(deps = {}) {
   const storage = deps.storage ?? (typeof localStorage !== "undefined" ? localStorage : null);
@@ -41,14 +42,38 @@ export function createWriterFeedbackController(deps = {}) {
   const rerender = () => deps.rerender?.();
   const localClient = () => deps.localClient || sharedLocalLlmClient();
 
+  // The label names the section a This-section run will grade, resolved the
+  // same way the run resolves it (resolveScopedSection). It is never blank
+  // while a draft is open: after a patient switch or on an empty note it
+  // names the fallback section the run grades, not the old patient's section.
   function lastSectionLabel() {
     try {
       const ctx = deps.getContext?.();
       if (!ctx?.draft) return "";
-      const sections = buildFeedbackSections(ctx.draft);
-      return sections.find((section) => section.id === deps.getLastSectionId?.())?.label || "";
+      return resolveScopedSection(buildFeedbackSections(ctx.draft), deps.getLastSectionId?.() || "")?.label || "";
     } catch {
       return "";
+    }
+  }
+
+  // The sections a Whole-note run will grade, from the same sectionsInScope
+  // call run() makes, so the list the panel shows cannot drift from the run.
+  function wholeSectionLabels() {
+    try {
+      const ctx = deps.getContext?.();
+      if (!ctx?.draft) return [];
+      return sectionsInScope(buildFeedbackSections(ctx.draft), "whole", "").map((section) => section.label);
+    } catch {
+      return [];
+    }
+  }
+
+  function localModelReady() {
+    try {
+      const status = localClient().getStatus();
+      return !!(status && status.status === "ready" && status.verified);
+    } catch {
+      return false;
     }
   }
 
@@ -62,7 +87,9 @@ export function createWriterFeedbackController(deps = {}) {
       error: state.error,
       notice: state.notice,
       items: state.items,
-      lastSectionLabel: extra.lastSectionLabel ?? lastSectionLabel()
+      lastSectionLabel: lastSectionLabel() || extra.lastSectionLabel || "",
+      wholeSectionLabels: wholeSectionLabels(),
+      localModelReady: localModelReady()
     };
   }
 

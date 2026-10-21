@@ -56,7 +56,9 @@ export function renderWriterFeedbackPanel(vm, escapeHtml) {
         ? `<button type="button" class="button--secondary button--small" data-wf-action="wf-stop">Stop</button>`
         : `<button type="button" class="button--primary button--small" data-wf-action="wf-run">Run feedback</button>`}
     </div>
-    ${vm.engine === "openai" && !vm.running ? `<p class="muted wf-send-note">OpenAI feedback sends the de-identified text in scope. You review the exact text before it sends.</p>` : ""}
+    ${vm.scope === "whole" && (vm.wholeSectionLabels || []).length ? `<p class="muted wf-scope-note">Whole note grades: ${vm.wholeSectionLabels.map((label) => escapeHtml(label)).join(", ")}.</p>` : ""}
+    ${vm.engine === "local" && !vm.running ? `<p class="muted wf-send-note">On device feedback runs on this device. It needs a downloaded model.${vm.localModelReady ? "" : " No model is ready yet."}</p>` : ""}
+    ${vm.engine === "openai" && !vm.running ? `<p class="muted wf-send-note">OpenAI feedback sends the de-identified text in scope. You review the exact text before it sends. It uses your saved key, and OpenAI charges for use.</p>` : ""}
     ${vm.statusText ? `<p class="wf-status" role="status">${escapeHtml(vm.statusText)}</p>` : ""}
     ${vm.error ? `<p class="wf-error" role="alert">${escapeHtml(vm.error)}</p>` : ""}
     ${notice}

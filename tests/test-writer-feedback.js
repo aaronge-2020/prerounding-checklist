@@ -2,12 +2,14 @@
 // selection, engine preference, panel rendering, and controller behavior
 // with fake engines. No network, no real model, no DOM rendering of the app.
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import {
   FEEDBACK_KINDS,
   WRITER_FEEDBACK_SCHEMA,
   buildFeedbackSections,
   buildWriterFeedbackPrompt,
   parseWriterFeedback,
+  resolveScopedSection,
   sectionsInScope
 } from "../src/note-drafts/feedback.js";
 import {
@@ -262,6 +264,103 @@ function fakeDeps(overrides = {}) {
   await controller.run();
   assert.match(controller.viewModel().error, /could not be read as feedback/);
   assert.deepEqual(controller.viewModel().items, []);
+}
+
+// ------------------------------------------------- usability fixes U1-U5
+// U1: the This-section label must always name the section a run will grade,
+// including after a patient switch and on a new empty note. One resolver in
+// the pure module decides the section for both the run and the label.
+assert.equal(typeof resolveScopedSection, "function", "U1: the pure module exports the scope resolver");
+assert.equal(resolveScopedSection(sections, "history_of_present_illness").id, "history_of_present_illness");
+assert.deepEqual(resolveScopedSection(sections, ""), sectionsInScope(sections, "section", "")[0], "U1: the resolver matches the run when nothing was edited");
+assert.deepEqual(resolveScopedSection(sections, "objective"), sectionsInScope(sections, "section", "objective")[0], "U1: a tracked section outside the graded list resolves to the same fallback the run grades");
+assert.deepEqual(resolveScopedSection(emptyDraftSections, ""), sectionsInScope(emptyDraftSections, "section", "")[0], "U1: an empty note resolves to the first section the run will grade");
+assert.equal(resolveScopedSection([], ""), null, "U1: no sections resolves to nothing");
+
+{ // Patient switch: the review controller calls clear() and resets the
+  // tracked section; the scope stays on This section. The label must name
+  // the new patient's graded section, never blank, never the old patient's.
+  let ctx = { patientId: "p1", packetId: "admission", noteType: NOTE_TYPES.H_AND_P, draft };
+  let lastId = "history_of_present_illness";
+  const { deps } = fakeDeps({ getContext: () => ctx, getLastSectionId: () => lastId });
+  const controller = createWriterFeedbackController(deps);
+  controller.handleAction("wf-scope", { wfScope: "section" });
+  assert.equal(controller.viewModel().lastSectionLabel, "History of present illness");
+  controller.clear();
+  const newDraft = createNoteDraft(NOTE_TYPES.PROGRESS, { patientId: "p9" });
+  ctx = { patientId: "p9", packetId: "admission", noteType: NOTE_TYPES.PROGRESS, draft: newDraft };
+  lastId = "";
+  controller.handleAction("wf-open", {});
+  const vm = controller.viewModel();
+  const graded = sectionsInScope(buildFeedbackSections(newDraft), "section", "")[0];
+  assert.ok(graded, "U1: an empty note still has a section the run will grade");
+  assert.equal(vm.scope, "section", "U1: the scope choice itself survives the switch");
+  assert.equal(vm.lastSectionLabel, graded.label, "U1: after a patient switch the label names the section the run will grade");
+  const html = renderWriterFeedbackPanel(vm, escapeHtml);
+  assert.ok(html.includes(`This section: ${graded.label}`), "U1: the scope button names the graded section after a switch");
+}
+
+// U4: in Whole note scope the panel names the sections a run will grade,
+// derived from the same sectionsInScope call the run makes.
+{
+  const { deps } = fakeDeps();
+  const controller = createWriterFeedbackController(deps);
+  const vm = controller.viewModel();
+  const expectedLabels = sectionsInScope(sections, "whole", "").map((section) => section.label);
+  assert.deepEqual(vm.wholeSectionLabels, expectedLabels, "U4: the view model carries the whole-note section labels from sectionsInScope");
+  const html = renderWriterFeedbackPanel({ ...vm, open: true }, escapeHtml);
+  const line = html.match(/Whole note grades:[^<]*/)?.[0] || "";
+  assert.ok(line, "U4: whole-note scope shows a line naming the graded sections");
+  for (const label of expectedLabels) assert.ok(line.includes(label), `U4: the whole-note line names ${label}`);
+  const sectionHtml = renderWriterFeedbackPanel({ ...vm, open: true, scope: "section" }, escapeHtml);
+  assert.doesNotMatch(sectionHtml, /Whole note grades:/, "U4: the whole-note list shows only in whole-note scope");
+}
+
+// U3: each engine states its cost and needs before Run is pressed.
+{
+  const localHtml = renderWriterFeedbackPanel({ ...baseVm, engine: "local", localModelReady: false }, escapeHtml);
+  assert.match(localHtml, /runs on this device/i, "U3: the on-device line says the run stays on this device");
+  assert.match(localHtml, /downloaded model/i, "U3: the on-device line says a downloaded model is needed");
+  assert.match(localHtml, /No model is ready yet/i, "U3: the on-device line reflects readiness when no model is ready");
+  const localReadyHtml = renderWriterFeedbackPanel({ ...baseVm, engine: "local", localModelReady: true }, escapeHtml);
+  assert.match(localReadyHtml, /downloaded model/i, "U3: the on-device line still names the downloaded model when one is ready");
+  assert.doesNotMatch(localReadyHtml, /No model is ready yet/i, "U3: a ready model is not described as missing");
+  const openAiHtml = renderWriterFeedbackPanel({ ...baseVm, engine: "openai" }, escapeHtml);
+  assert.match(openAiHtml, /review the exact text before it sends/i, "U3: the OpenAI privacy line stays");
+  assert.match(openAiHtml, /your saved key/i, "U3: the OpenAI line says the user's saved key is used");
+  assert.match(openAiHtml, /OpenAI charges/i, "U3: the OpenAI line says OpenAI charges for use");
+}
+
+// U2: Open Settings must land on the OpenAI key field. The navigation is a
+// review-controller wiring concern, so this is a source contract in the
+// style of the repo's other wiring checks; the browser check verifies the
+// landing itself.
+{
+  const reviewControllerSource = await readFile(new URL("../src/ui/review/controller.js", import.meta.url), "utf8");
+  const start = reviewControllerSource.indexOf("openSettings: () =>");
+  assert.ok(start >= 0, "U2: the review controller wires Open Settings");
+  const body = reviewControllerSource.slice(start, start + 700);
+  assert.match(body, /openAiApiKeyInput/, "U2: Open Settings targets the OpenAI key field by its id");
+  assert.match(body, /scrollIntoView/, "U2: Open Settings scrolls the key field into view");
+  const settingsSource = await readFile(new URL("../src/ui/settings/presentation.js", import.meta.url), "utf8");
+  assert.match(settingsSource, /id="openAiApiKeyInput"/, "U2: the key field keeps the stable id Open Settings targets");
+}
+
+// U5: the feedback button is set apart from the export cluster. Placement
+// and styling live in the review presentation and styles.css, so these are
+// source contracts; the browser check verifies the rendered toolbar.
+{
+  const reviewPresentationSource = await readFile(new URL("../src/ui/review/presentation.js", import.meta.url), "utf8");
+  const toggleAt = reviewPresentationSource.indexOf('data-wf-action="wf-toggle"');
+  assert.ok(toggleAt >= 0, "U5: the toolbar still carries the feedback toggle");
+  const toggleTag = reviewPresentationSource.slice(reviewPresentationSource.lastIndexOf("<button", toggleAt), toggleAt);
+  assert.match(toggleTag, /wf-open-btn/, "U5: the feedback button carries its own styling class");
+  const exportsAt = reviewPresentationSource.indexOf("note-editor-exports");
+  assert.ok(exportsAt >= 0, "U5: the export buttons sit in their own named group");
+  assert.ok(exportsAt < reviewPresentationSource.indexOf("copy-final-note"), "U5: the exports group wraps the Copy actions");
+  const stylesSource = await readFile(new URL("../styles.css", import.meta.url), "utf8");
+  assert.match(stylesSource, /\.wf-open-btn/, "U5: styles.css styles the feedback button apart");
+  assert.match(stylesSource, /\.note-editor-exports/, "U5: styles.css styles the exports group apart");
 }
 
 console.log("test-writer-feedback: all assertions passed");

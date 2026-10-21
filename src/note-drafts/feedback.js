@@ -94,12 +94,23 @@ export function buildFeedbackSections(draft) {
   return sections;
 }
 
+// The one section a "This section" run grades: the tracked section when it is
+// in the graded list, otherwise the first written section, otherwise the
+// first section. The panel label and the run both resolve through this
+// function, so the label always names the section the run will grade, even
+// after a patient switch or on a new empty note.
+export function resolveScopedSection(sections, lastSectionId) {
+  const list = Array.isArray(sections) ? sections : [];
+  return list.find((section) => section.id === lastSectionId)
+    || list.find((section) => section.text.trim())
+    || list[0]
+    || null;
+}
+
 export function sectionsInScope(sections, scope, lastSectionId) {
   const list = Array.isArray(sections) ? sections : [];
   if (scope === "section") {
-    const chosen = list.find((section) => section.id === lastSectionId)
-      || list.find((section) => section.text.trim())
-      || list[0];
+    const chosen = resolveScopedSection(list, lastSectionId);
     return chosen ? [chosen] : [];
   }
   return list.filter((section) => section.text.trim() || CORE_SECTION_IDS.has(section.id));

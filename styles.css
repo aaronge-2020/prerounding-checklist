@@ -2725,6 +2725,24 @@ button.var-fill:focus-visible {
   border-radius: 8px;
 }
 
+/* Get AI feedback acts on the writing, so it carries the row's only primary
+   styling and sits outside the exports group. */
+.note-editor-actions .wf-open-btn {
+  font-weight: 700;
+}
+
+/* Copy and download are outputs, grouped apart from the writing actions
+   behind a divider. */
+.note-editor-exports {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  border-left: 1px solid var(--border, #d8dee9);
+  padding-left: 8px;
+  margin-left: 2px;
+}
+
 .ed-toolbar-note {
   margin: 0;
   padding: 6px 14px;
@@ -14881,6 +14899,7 @@ body:not(.vault-locked):has(#dailyView.active, #reviewView.active) .app-shell.ap
 .wf-control-group { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .wf-control-label { font-weight: 600; font-size: 13px; }
 .wf-send-note { margin: 0; }
+.wf-scope-note { margin: 0; }
 .wf-status { margin: 0; font-weight: 600; }
 .wf-error { margin: 0; color: #b91c1c; font-weight: 600; }
 .wf-notice { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border: 1px solid var(--border, #d8dee9); border-radius: 8px; padding: 8px 10px; }

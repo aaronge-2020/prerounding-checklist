@@ -3,7 +3,7 @@
 // in src/note-drafts/feedback.js, and the request goes through
 // requestOpenAiStructuredJson, whose default transport is the reviewed-send
 // gate in src/ui/external-ai-review.js. No direct fetch here.
-import { WRITER_FEEDBACK_SCHEMA, parseWriterFeedback } from "../../note-drafts/feedback.js?v=20261021-writer-feedback";
+import { WRITER_FEEDBACK_SCHEMA, parseWriterFeedback } from "../../note-drafts/feedback.js?v=20261021-writer-feedback-fixes";
 import { DEFAULT_OPENAI_WORKUP_MODEL, openAiWorkupModelOption } from "../../app/preferences.js?v=20261011-request-controls";
 import { requestOpenAiStructuredJson } from "../openai-client.js?v=20261015-simple-review";
 
