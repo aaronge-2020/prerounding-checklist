@@ -30,7 +30,10 @@ const bundle = JSON.parse(readFileSync(join(root, "src", "data", "cheat-sheets.j
 // Frozen 2026-09-29 from workups/admission/*.workup.json (prerounding_workup_v1),
 // 50 sheets / 673 history + 514 exam items, plus 6 OB/GYN sheets authored the
 // same day from Aaron's OB/GYN History Interview Prompt Sheet
-// (56 sheets / 725 history + 514 exam items). itemsHash = sha256 over each
+// (56 sheets / 725 history + 514 exam items). A 70th sheet, the Mental Status
+// Examination checklist, was appended 2026-10-26, transcribed from the
+// Mental Status Examination Worksheet (reviewed 4/21/2026) Aaron photographed
+// at PSYH 530 orientation. itemsHash = sha256 over each
 // source item's kind|id|system|text|choices joined by \x00.
 const FROZEN = [
     {
@@ -858,6 +861,19 @@ const FROZEN = [
       "history": 12,
       "exam": 4,
       "itemsHash": "1861b56e6f249bb4b0f59a786833d82ead00b619ab787338f51e0924ed025085"
+    },
+    {
+      "id": "mental-status-examination",
+      "title": "Mental Status Examination (MSE)",
+      "aliases": [
+        "mental status exam",
+        "MSE",
+        "psychiatric exam",
+        "mental status examination worksheet"
+      ],
+      "history": 0,
+      "exam": 11,
+      "itemsHash": "9ff25a023d157345b9f1dd85eebcbfdc1d81ee4f9840f695d8ad53899adc02c1"
     },
   ];
 

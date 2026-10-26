@@ -22786,6 +22786,207 @@
         "whyMissing": 16,
         "howMissing": 4
       }
+    },
+    {
+      "id": "mental-status-examination",
+      "title": "Mental Status Examination (MSE)",
+      "aliases": [
+        "mental status exam",
+        "MSE",
+        "psychiatric exam",
+        "mental status examination worksheet"
+      ],
+      "history": [],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "Appearance",
+          "maneuver": "Appearance: grooming and hygiene; clothing (type, appropriateness); jewelry and makeup; scars, piercings, tattoos; dentition; assistive devices; other: diaphoresis, lacrimation, flushing.",
+          "findings": [
+            "Grooming and hygiene",
+            "Clothing (type, appropriateness)",
+            "Jewelry and makeup",
+            "Scars, piercings, tattoos",
+            "Dentition",
+            "Assistive devices",
+            "Other: diaphoresis, lacrimation, flushing"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "What you can see before the patient says a word: how they are groomed and dressed, and visible signs such as scars, tattoos, assistive devices, sweating, tearing, or flushing.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "Behavior",
+          "maneuver": "Behavior: posture; eye contact; gait; activity level: psychomotor slowing or agitation; abnormal movements, such as tremors, tics, or dystonias.",
+          "findings": [
+            "Posture",
+            "Eye contact",
+            "Gait",
+            "Activity level: psychomotor slowing or agitation",
+            "Abnormal movements, such as tremors, tics, or dystonias"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "How the patient carries and moves their body during the encounter: posture, eye contact, gait, overall activity level, and any abnormal movements.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "Cooperation and attitude",
+          "maneuver": "Cooperation and attitude: how the patient relates to the examiner: cooperative, uncooperative, hostile, guarded, suspicious, or eager to please.",
+          "findings": [
+            "Cooperative",
+            "Uncooperative",
+            "Hostile",
+            "Guarded",
+            "Suspicious",
+            "Eager to please"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "How the patient relates to you as the examiner sets the frame for everything else in the interview, so name it plainly rather than leaving it implied.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "Speech",
+          "maneuver": "Speech: rate: pressured, rapid, regular, slow; volume; articulation: dysarthria or stuttering; latency (pauses before speaking); quantity: mutism, paucity; prosody: intonation, rhythm.",
+          "findings": [
+            "Rate: pressured, rapid, regular, or slow",
+            "Volume",
+            "Articulation: dysarthria or stuttering",
+            "Latency (pauses before speaking)",
+            "Quantity: mutism, paucity",
+            "Prosody: intonation, rhythm"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "How the patient talks, separate from what they say: rate, volume, articulation, the pauses before they speak, how much they say, and the intonation and rhythm of their voice.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "Mood and affect",
+          "maneuver": "Mood and affect: mood is the patient's description of their feelings, in their own words; affect is the physical expression of the immediate feeling state.",
+          "findings": [
+            "Mood, in the patient's own words",
+            "Affect, the observed physical expression of the immediate feeling state"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Mood is what the patient tells you they feel, in their own words. Affect is the feeling state you can see on them right now. Record both; they do not always match.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "Mood and affect",
+          "maneuver": "Qualities of affect: type: euthymic, elevated/euphoric, dysphoric, irritable, anxious, indifferent; range: intense/expansive > full > constricted > blunted > flat; lability: rapidity of affect change; appropriateness to content.",
+          "findings": [
+            "Type: euthymic, elevated/euphoric, dysphoric, irritable, anxious, indifferent",
+            "Range: intense/expansive > full > constricted > blunted > flat",
+            "Lability: rapidity of affect change",
+            "Appropriateness to content"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Describe affect on four points: its type, its range from intense or expansive down to flat, how rapidly it changes, and whether it fits what the patient is talking about.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "Thought process",
+          "maneuver": "Thought process: spectrum: goal-directed → circumstantial → tangential → loosening of associations → flight of ideas; thought blocking: abrupt cessation of one's train of thought.",
+          "findings": [
+            "Goal-directed",
+            "Circumstantial",
+            "Tangential",
+            "Loosening of associations",
+            "Flight of ideas",
+            "Thought blocking: abrupt cessation of one's train of thought"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "How the patient's thoughts connect as they speak, placed on the spectrum from goal-directed to flight of ideas. Note thought blocking when the train of thought stops abruptly.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-08",
+          "system": "Thought content",
+          "maneuver": "Thought content: suicidal or self-harm ideation; homicidal or violent ideation; delusions: fixed, false beliefs that are outside of cultural or societal norms; obsessions.",
+          "findings": [
+            "Suicidal or self-harm ideation",
+            "Homicidal or violent ideation",
+            "Delusions: fixed, false beliefs that are outside of cultural or societal norms",
+            "Obsessions"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "What the patient is thinking about, asked about directly: thoughts of harming themselves or others, delusions, and obsessions. These do not surface on their own; you have to ask.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-09",
+          "system": "Perception",
+          "maneuver": "Perception: illusions: misinterpretation of sensory stimulus; hallucinations: visual, auditory, tactile, olfactory, gustatory; dissociative symptoms: depersonalization (feeling detached from one's own body) or derealization (feeling detached from one's surroundings).",
+          "findings": [
+            "Illusions: misinterpretation of sensory stimulus",
+            "Hallucinations: visual, auditory, tactile, olfactory, gustatory",
+            "Depersonalization (feeling detached from one's own body)",
+            "Derealization (feeling detached from one's surroundings)"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Whether the patient misreads a real stimulus (an illusion), perceives something that is not there (a hallucination, in any sense), or feels detached from their own body or from their surroundings.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-10",
+          "system": "Cognition",
+          "maneuver": "Cognition: general consciousness; orientation; attention (serial 7s, days of week or months of year forwards and backwards); memory; visuospatial ability: clock drawing, transparent cube; abstraction: similarity between objects, proverb understanding.",
+          "findings": [
+            "General consciousness",
+            "Orientation",
+            "Attention (serial 7s, days of week or months of year forwards and backwards)",
+            "Memory",
+            "Visuospatial ability: clock drawing, transparent cube",
+            "Abstraction: similarity between objects, proverb understanding"
+          ],
+          "how": "Can use standardized tools like the MMSE or MoCA.",
+          "why": null,
+          "whySource": null,
+          "meaning": "The thinking domains to test one by one: consciousness, orientation, attention, memory, visuospatial ability, and abstraction.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-11",
+          "system": "Insight and judgment",
+          "maneuver": "Insight and judgment: insight is the patient's understanding of illness, treatment, or behavior; judgment is the patient's decision-making ability, the actions the individual will take based on insight.",
+          "findings": [
+            "Insight: understanding of illness, treatment, or behavior",
+            "Judgment: decision-making ability, and the actions taken based on insight"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Insight is whether the patient understands their illness, treatment, or behavior. Judgment is what they will do with that understanding: their decision-making ability in action.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 11,
+        "howMissing": 10
+      }
     }
   ]
 }
