@@ -111,8 +111,10 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
   // worksheet's own categories (single-select on scales, multi-select for
   // independent picks) plus an optional free-text detail per field.
   // State shape: keyed by item id, then field index ->
-  // { selected: Set<string>, text: string, detail: string } (the state may
-  // be a Map or a plain object at either level). This module stays pure:
+  // { selected: Set<string>, text: string, detail: string,
+  //   showDetail: boolean } (the state may be a Map or a plain object at
+  // either level). showDetail only controls whether the field's detail
+  // input is revealed; it never reaches the note. This module stays pure:
   // it only reads that state and returns markup or note text.
 
   function readWorksheetFieldEntry(state, itemId, fieldIndex) {
@@ -122,7 +124,12 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
     const entry = typeof perItem.get === "function" ? perItem.get(fieldIndex) : perItem[fieldIndex];
     if (!entry) return null;
     const selected = entry.selected instanceof Set ? entry.selected : new Set(entry.selected || []);
-    return { selected, text: String(entry.text ?? ""), detail: String(entry.detail ?? "") };
+    return {
+      selected,
+      text: String(entry.text ?? ""),
+      detail: String(entry.detail ?? ""),
+      showDetail: entry.showDetail === true
+    };
   }
 
   function lowerFirst(value) {
@@ -130,57 +137,115 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
     return text ? text.charAt(0).toLowerCase() + text.slice(1) : text;
   }
 
-  // One filled field's note segment, or null when the field is untouched.
-  // Values keep data order and lose only their first letter's case; the
+  function upperFirst(value) {
+    const text = String(value ?? "");
+    return text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+  }
+
+  function oxfordJoin(texts) {
+    if (!texts.length) return "";
+    if (texts.length === 1) return texts[0];
+    if (texts.length === 2) return `${texts[0]} and ${texts[1]}`;
+    return `${texts.slice(0, -1).join(", ")}, and ${texts[texts.length - 1]}`;
+  }
+
+  // Worksheet sections group CONSECUTIVE exam items that share a system:
+  // the MSE's two "Mood and affect" items (exam-05, exam-06) become one
+  // card and one note line, with all of their fields kept in item order.
+  function worksheetGroups(sheet) {
+    const groups = [];
+    for (const item of (sheet && sheet.exam) || []) {
+      if (!item) continue;
+      const system = String(item.system ?? "").trim() || "General";
+      const last = groups[groups.length - 1];
+      if (last && last.system === system) last.items.push(item);
+      else groups.push({ system, items: [item] });
+    }
+    return groups;
+  }
+
+  // One filled field's prose segment, or null when the field is untouched.
+  // Selected options render through the field's `phrases` map when it has
+  // one for that option, else the option text itself; every value loses
+  // only its first letter's case (the line builder restores the first
+  // segment's capital). `render: "label"` fields keep a short label
+  // prefix; "oriented" and "hallucinations" have their own shapes. The
   // detail is reproduced exactly as typed, in parentheses (double-quoted
-  // inside the parentheses for quoteDetail fields such as Mood).
-  function worksheetFieldSegment(item, field, entry, omitLabel) {
+  // inside the parentheses for quoteDetail fields such as Mood); a
+  // quoteDetail field with a detail but no selection IS the quote.
+  function worksheetFieldSegment(field, entry) {
     if (!entry) return null;
     const selected = (field.options || []).filter((option) => entry.selected.has(option));
     const detail = String(entry.detail ?? "").trim();
     if (!selected.length && !detail) return null;
-    let core = selected.map(lowerFirst).join(", ");
+    if (field.quoteDetail && !selected.length) return `"${detail}"`;
+    let core = "";
+    if (selected.length) {
+      if (field.render === "oriented") {
+        core = `Oriented to ${oxfordJoin(selected.map(lowerFirst))}`;
+      } else if (field.render === "hallucinations") {
+        core = `${oxfordJoin(selected.map(lowerFirst))} hallucinations`;
+      } else {
+        const phrases = field.phrases || {};
+        const texts = selected.map((option) =>
+          lowerFirst(Object.prototype.hasOwnProperty.call(phrases, option) ? phrases[option] : option)
+        );
+        const phrasesApplied = selected.some((option) =>
+          Object.prototype.hasOwnProperty.call(phrases, option)
+        );
+        core =
+          !phrasesApplied && field.render === "label"
+            ? `${String(field.label ?? "").toLowerCase()} ${texts.join(", ")}`
+            : texts.join(", ");
+      }
+    } else if (field.render === "label") {
+      core = String(field.label ?? "").toLowerCase();
+    }
     if (detail) {
       const wrapped = field.quoteDetail ? `("${detail}")` : `(${detail})`;
       core = core ? `${core} ${wrapped}` : wrapped;
     }
-    if (omitLabel) return core;
-    return `${String(field.label ?? "").toLowerCase()}: ${core}`;
+    return core;
   }
 
-  function worksheetItemLine(sheet, state, item) {
-    const fields = item.fields || [];
-    // A domain with exactly one field names the field by the domain alone.
-    const omitLabel = fields.length === 1;
-    const segments = fields
-      .map((field, index) => worksheetFieldSegment(item, field, readWorksheetFieldEntry(state, item.id, index), omitLabel))
-      .filter(Boolean);
+  // One note line per filled group: "System: Segment; Segment." The first
+  // segment keeps a capital first letter; later segments are lowercased,
+  // except segments that open with a quote.
+  function worksheetGroupLine(group, state) {
+    const segments = [];
+    for (const item of group.items) {
+      (item.fields || []).forEach((field, index) => {
+        const segment = worksheetFieldSegment(field, readWorksheetFieldEntry(state, item.id, index));
+        if (segment) segments.push(segment);
+      });
+    }
     if (!segments.length) return null;
-    const domain = String(item.system ?? "").trim() || "General";
-    return `${domain}: ${segments.join("; ")}`;
+    const styled = segments.map((segment, index) => {
+      if (segment.startsWith('"')) return segment;
+      return index === 0 ? upperFirst(segment) : lowerFirst(segment);
+    });
+    return `${group.system}: ${styled.join("; ")}.`;
+  }
+
+  function worksheetGroupFilled(sheet, state) {
+    return worksheetGroups(sheet).map((group) => worksheetGroupLine(group, state) !== null);
   }
 
   function worksheetFilledCount(sheet, state) {
-    let filled = 0;
-    for (const item of (sheet && sheet.exam) || []) {
-      if (worksheetItemLine(sheet, state, item)) filled += 1;
-    }
-    return filled;
+    return worksheetGroupFilled(sheet, state).filter(Boolean).length;
   }
 
   function worksheetProgressText(sheet, state) {
-    const total = ((sheet && sheet.exam) || []).length;
+    const total = worksheetGroups(sheet).length;
     return `${worksheetFilledCount(sheet, state)} of ${total} sections filled`;
   }
 
   // The exact text the clinician pastes into their note: a header line,
-  // then one line per filled domain, in sheet order.
+  // then one line per filled group, in sheet order.
   function worksheetNoteText(sheet, state) {
-    const lines = [];
-    for (const item of (sheet && sheet.exam) || []) {
-      const line = worksheetItemLine(sheet, state, item);
-      if (line) lines.push(line);
-    }
+    const lines = worksheetGroups(sheet)
+      .map((group) => worksheetGroupLine(group, state))
+      .filter(Boolean);
     return lines.length ? `Mental Status Examination\n${lines.join("\n")}` : "";
   }
 
@@ -195,8 +260,24 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
     return current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
   }
 
+  // The "Mark normal" plan: one entry per field (all groups, or one group
+  // by index) carrying the field's `normal` preset. Applying it replaces
+  // selections only; detail texts are left untouched.
+  function worksheetNormalPlan(sheet, groupIndex) {
+    const plan = [];
+    worksheetGroups(sheet).forEach((group, index) => {
+      if (groupIndex !== null && groupIndex !== undefined && index !== Number(groupIndex)) return;
+      for (const item of group.items) {
+        (item.fields || []).forEach((field, fieldIndex) => {
+          plan.push({ itemId: item.id, fieldIndex, selected: [...(field.normal || [])] });
+        });
+      }
+    });
+    return plan;
+  }
+
   function renderWorksheetField(state, item, field, fieldIndex) {
-    const entry = readWorksheetFieldEntry(state, item.id, fieldIndex) || { selected: new Set(), text: "", detail: "" };
+    const entry = readWorksheetFieldEntry(state, item.id, fieldIndex) || { selected: new Set(), text: "", detail: "", showDetail: false };
     const itemId = escapeHtml(String(item.id));
     const chips = (field.options || []).map((option) => {
       const value = String(option);
@@ -205,23 +286,33 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
         <button type="button" class="cs-worksheet-chip" data-worksheet-chip="${itemId}" data-worksheet-field="${fieldIndex}" data-value="${escapeHtml(value)}" aria-pressed="${selected ? "true" : "false"}">${selected ? "\u2713 " : ""}${escapeHtml(value)}</button>`;
     }).join("");
     const detailId = `cs-worksheet-detail-${itemId}-${fieldIndex}`;
+    // Progressive disclosure: the detail input exists only once the field
+    // is in use (a selection, typed detail, or an explicit Add detail tap).
+    const showDetail = entry.selected.size > 0 || String(entry.detail ?? "").trim() !== "" || entry.showDetail;
+    const detailBlock = showDetail
+      ? `<input type="text" class="cs-worksheet-detail" id="${detailId}" data-worksheet-detail="${itemId}" data-worksheet-field="${fieldIndex}" placeholder="${escapeHtml(String(field.detailHint || "Add detail (optional)"))}" aria-label="Detail for ${escapeHtml(String(field.label ?? ""))}" value="${escapeHtml(entry.detail)}">`
+      : `<button type="button" class="cs-worksheet-add-detail" data-worksheet-add-detail="${itemId}" data-worksheet-field="${fieldIndex}">Add detail</button>`;
     return `
       <div class="cs-worksheet-field">
         <p class="cs-worksheet-field-label">${escapeHtml(String(field.label ?? ""))}</p>
         ${chips ? `<div class="cs-worksheet-chips" role="group" aria-label="${escapeHtml(String(field.label ?? ""))}">${chips}
         </div>` : ""}
-        <input type="text" class="cs-worksheet-detail" id="${detailId}" data-worksheet-detail="${itemId}" data-worksheet-field="${fieldIndex}" placeholder="${escapeHtml(String(field.detailHint || "Add detail (optional)"))}" aria-label="Detail for ${escapeHtml(String(field.label ?? ""))}" value="${escapeHtml(entry.detail)}">
+        ${detailBlock}
       </div>`;
   }
 
-  function renderWorksheetSection(sheet, state, item) {
-    const fields = (item.fields || []).map((field, index) => renderWorksheetField(state, item, field, index)).join("");
-    return `
-      <section class="cs-worksheet-card" data-worksheet-section="${escapeHtml(String(item.id))}">
-        <h2 class="cs-worksheet-domain">${escapeHtml(String(item.system ?? "").trim() || "General")}</h2>
+  function renderWorksheetCard(sheet, state, group, groupIndex) {
+    const filled = worksheetGroupLine(group, state) !== null;
+    const itemsHtml = group.items.map((item) => `
         ${item.maneuver ? `<p class="cs-worksheet-maneuver">${escapeHtml(String(item.maneuver))}</p>` : ""}
         ${item.how ? `<p class="cs-worksheet-maneuver">${escapeHtml(String(item.how))}</p>` : ""}
-        ${fields}
+        ${(item.fields || []).map((field, index) => renderWorksheetField(state, item, field, index)).join("")}`).join("");
+    return `
+      <section class="cs-worksheet-card" data-worksheet-group="${groupIndex}" data-worksheet-system="${escapeHtml(group.system)}">
+        <div class="cs-worksheet-card-head">
+          <h2 class="cs-worksheet-domain"><span data-worksheet-group-check="${groupIndex}">${filled ? "\u2713 " : ""}</span>${escapeHtml(group.system)}</h2>
+          <button type="button" class="cs-worksheet-normal" data-action="cheat-sheets-worksheet-normal" data-worksheet-group="${groupIndex}">Mark normal</button>
+        </div>${itemsHtml}
       </section>`;
   }
 
@@ -239,12 +330,13 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
           <p class="cs-worksheet-progress" data-worksheet-progress aria-live="polite">${escapeHtml(worksheetProgressText(sheet, state))}</p>
         </header>
         <p class="cs-worksheet-privacy">Answers stay on this page and are not saved. Copy your note text before you close the page.</p>
-        ${((sheet.exam) || []).map((item) => renderWorksheetSection(sheet, state, item)).join("")}
+        ${worksheetGroups(sheet).map((group, index) => renderWorksheetCard(sheet, state, group, index)).join("")}
         <section class="cs-worksheet-card cs-worksheet-output-card">
           <label class="cs-worksheet-domain" for="cheat-sheets-worksheet-output">Note text</label>
           <textarea class="cs-worksheet-output" id="cheat-sheets-worksheet-output" readonly rows="${rows}" placeholder="Your note text builds here as you tap answers.">${escapeHtml(noteText)}</textarea>
           <div class="cs-worksheet-actions">
             <button type="button" class="cs-worksheet-copy" data-action="cheat-sheets-worksheet-copy"${noteText ? "" : " disabled"}>Copy note text</button>
+            <button type="button" class="cs-worksheet-normal-all" data-action="cheat-sheets-worksheet-normal-all">Mark all normal</button>
             <button type="button" class="cs-worksheet-clear" data-action="cheat-sheets-worksheet-clear">Clear</button>
           </div>
           <p class="cs-worksheet-copy-hint" data-worksheet-copy-hint hidden></p>
@@ -354,5 +446,5 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
       </div>`;
   }
 
-  return { sheetListHtml, sheetListResultsHtml, sheetDetailHtml, emptyStateHtml, worksheetHtml, worksheetNoteText, worksheetProgressText, worksheetChipToggle };
+  return { sheetListHtml, sheetListResultsHtml, sheetDetailHtml, emptyStateHtml, worksheetHtml, worksheetNoteText, worksheetProgressText, worksheetChipToggle, worksheetGroups, worksheetGroupFilled, worksheetNormalPlan };
 }

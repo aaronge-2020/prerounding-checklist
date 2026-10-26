@@ -287,7 +287,7 @@
     .ws-open .ws-open-title { display: block; font-size: 15px; font-weight: 700; }
     .ws-open small { display: block; font-weight: 400; color: #d1d5db; font-size: 12.5px; margin-top: 2px; }
     .ws-progress { flex: none; font-size: 12px; color: var(--muted); }
-    #worksheetBody { padding: 2px 12px 32px; max-width: 640px; margin: 0 auto; }
+    #worksheetBody { padding: 2px 12px 96px; max-width: 640px; margin: 0 auto; }
     .ws-privacy {
       font-size: 12.5px;
       color: var(--warn-ink);
@@ -380,6 +380,71 @@
       appearance: none;
     }
     .ws-copy-hint { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; }
+    .ws-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .ws-card { scroll-margin-top: 124px; }
+    .ws-normal {
+      flex: none;
+      min-height: 40px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 12px;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .ws-normal-all {
+      min-height: 48px;
+      font-size: 15px;
+      background: var(--card);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px 16px;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .ws-add-detail {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--accent);
+      background: none;
+      border: 0;
+      padding: 8px 2px;
+      margin-top: 2px;
+      min-height: 40px;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    #wsNav {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 2px 12px 8px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    #wsNav::-webkit-scrollbar { display: none; }
+    .ws-bottombar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--paper);
+      border-top: 1px solid var(--line);
+      padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0));
+    }
+    .ws-bottombar .ws-progress { flex: 1; font-size: 13px; }
+    .ws-bottombar .ws-copy { flex: none; padding: 11px 18px; }
   </style>
 </head>
 <body>
@@ -420,10 +485,14 @@
       <div class="dbar">
         <button class="back" id="wsBackBtn" type="button">← Sheet</button>
         <h2>MSE Worksheet</h2>
-        <span class="ws-progress" id="wsProgress" aria-live="polite"></span>
       </div>
+      <div id="wsNav" aria-label="Jump to section"></div>
     </div>
     <div id="worksheetBody"></div>
+    <div class="ws-bottombar">
+      <span class="ws-progress" id="wsProgress" aria-live="polite"></span>
+      <button type="button" class="ws-copy" id="wsCopyBtn" disabled>Copy note text</button>
+    </div>
   </div>
 
   <div id="status" class="status" role="status">Loading cheat sheets…</div>
@@ -445,7 +514,7 @@
     }
 
     // ---- constants -------------------------------------------------------
-    var DATA_URL = './src/data/cheat-sheets.json?v=20261026-cheatsheets-v5';
+    var DATA_URL = './src/data/cheat-sheets.json?v=20261026-cheatsheets-v6';
     var LAST_SHEET_KEY = 'prerounding.cheatSheets.lastSheetId.v1';
     var MOBILE_CHOICE_KEY = 'prerounding.mobileChoice.v1';
 
@@ -637,7 +706,7 @@
     function wsFieldEntry(itemId, fieldIndex) {
       if (!wsAnswers[itemId]) wsAnswers[itemId] = {};
       if (!wsAnswers[itemId][fieldIndex]) {
-        wsAnswers[itemId][fieldIndex] = { selected: new Set(), text: '', detail: '' };
+        wsAnswers[itemId][fieldIndex] = { selected: new Set(), text: '', detail: '', showDetail: false };
       }
       return wsAnswers[itemId][fieldIndex];
     }
@@ -652,50 +721,145 @@
       return text ? text.charAt(0).toLowerCase() + text.slice(1) : text;
     }
 
-    function wsFieldSegment(item, field, fieldIndex, omitLabel) {
-      var entry = wsReadField(item.id, fieldIndex);
+    function wsUpperFirst(value) {
+      var text = String(value == null ? '' : value);
+      return text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+    }
+
+    function wsOxford(texts) {
+      if (!texts.length) return '';
+      if (texts.length === 1) return texts[0];
+      if (texts.length === 2) return texts[0] + ' and ' + texts[1];
+      return texts.slice(0, -1).join(', ') + ', and ' + texts[texts.length - 1];
+    }
+
+    // Worksheet sections group CONSECUTIVE exam items sharing a system:
+    // the two "Mood and affect" items become one card and one note line.
+    function wsGroups() {
+      var groups = [];
+      ((wsSheet && wsSheet.exam) || []).forEach(function (item) {
+        var system = String(item.system == null ? '' : item.system).trim() || 'General';
+        var last = groups[groups.length - 1];
+        if (last && last.system === system) last.items.push(item);
+        else groups.push({ system: system, items: [item] });
+      });
+      return groups;
+    }
+
+    // One filled field's prose segment, or null when untouched. Mirrors
+    // the desktop presentation module: phrases map wins, render "label"
+    // keeps a short prefix, "oriented"/"hallucinations" have own shapes.
+    function wsFieldSegment(field, entry) {
       if (!entry) return null;
       var selected = (field.options || []).filter(function (o) { return entry.selected.has(o); });
       var detail = entry.detail.trim();
       if (!selected.length && !detail) return null;
-      var core = selected.map(wsLowerFirst).join(', ');
+      if (field.quoteDetail && !selected.length) return '"' + detail + '"';
+      var core = '';
+      if (selected.length) {
+        if (field.render === 'oriented') {
+          core = 'Oriented to ' + wsOxford(selected.map(wsLowerFirst));
+        } else if (field.render === 'hallucinations') {
+          core = wsOxford(selected.map(wsLowerFirst)) + ' hallucinations';
+        } else {
+          var phrases = field.phrases || {};
+          var applied = selected.some(function (o) {
+            return Object.prototype.hasOwnProperty.call(phrases, o);
+          });
+          var texts = selected.map(function (o) {
+            return wsLowerFirst(Object.prototype.hasOwnProperty.call(phrases, o) ? phrases[o] : o);
+          });
+          core = (!applied && field.render === 'label')
+            ? String(field.label == null ? '' : field.label).toLowerCase() + ' ' + texts.join(', ')
+            : texts.join(', ');
+        }
+      } else if (field.render === 'label') {
+        core = String(field.label == null ? '' : field.label).toLowerCase();
+      }
       if (detail) {
         var wrapped = field.quoteDetail ? '("' + detail + '")' : '(' + detail + ')';
         core = core ? core + ' ' + wrapped : wrapped;
       }
-      if (omitLabel) return core;
-      return String(field.label == null ? '' : field.label).toLowerCase() + ': ' + core;
+      return core;
     }
 
-    function wsItemLine(item) {
-      var fields = item.fields || [];
-      var omitLabel = fields.length === 1;
+    function wsGroupLine(group) {
       var segments = [];
-      fields.forEach(function (field, index) {
-        var segment = wsFieldSegment(item, field, index, omitLabel);
-        if (segment) segments.push(segment);
+      group.items.forEach(function (item) {
+        (item.fields || []).forEach(function (field, fieldIndex) {
+          var segment = wsFieldSegment(field, wsReadField(item.id, fieldIndex));
+          if (segment) segments.push(segment);
+        });
       });
       if (!segments.length) return null;
-      var domain = String(item.system == null ? '' : item.system).trim() || 'General';
-      return domain + ': ' + segments.join('; ');
+      var styled = segments.map(function (segment, index) {
+        if (segment.charAt(0) === '"') return segment;
+        return index === 0 ? wsUpperFirst(segment) : wsLowerFirst(segment);
+      });
+      return group.system + ': ' + styled.join('; ') + '.';
+    }
+
+    function wsGroupFilled(group) {
+      return wsGroupLine(group) !== null;
     }
 
     function wsProgressText() {
       if (!wsSheet) return '';
-      var total = (wsSheet.exam || []).length;
+      var groups = wsGroups();
       var filled = 0;
-      (wsSheet.exam || []).forEach(function (item) { if (wsItemLine(item)) filled += 1; });
-      return filled + ' of ' + total + ' sections filled';
+      groups.forEach(function (group) { if (wsGroupFilled(group)) filled += 1; });
+      return filled + ' of ' + groups.length + ' sections filled';
     }
 
     function worksheetNoteText() {
       if (!wsSheet) return '';
       var lines = [];
-      (wsSheet.exam || []).forEach(function (item) {
-        var line = wsItemLine(item);
+      wsGroups().forEach(function (group) {
+        var line = wsGroupLine(group);
         if (line) lines.push(line);
       });
       return lines.length ? 'Mental Status Examination\n' + lines.join('\n') : '';
+    }
+
+    // "Mark normal": replace selections with each field's normal preset
+    // (one group, or all groups when groupIndex is null); details stay.
+    function wsApplyNormal(groupIndex) {
+      wsGroups().forEach(function (group, index) {
+        if (groupIndex !== null && index !== groupIndex) return;
+        group.items.forEach(function (item) {
+          (item.fields || []).forEach(function (field, fieldIndex) {
+            wsFieldEntry(item.id, fieldIndex).selected = new Set(field.normal || []);
+          });
+        });
+      });
+      renderWorksheet(true);
+    }
+
+    var WS_NAV_SHORT = { 'Cooperation and attitude': 'Cooperation', 'Insight and judgment': 'Insight' };
+
+    function renderWsNav() {
+      var nav = $('wsNav');
+      if (!nav) return;
+      nav.innerHTML = wsGroups().map(function (group, index) {
+        var filled = wsGroupFilled(group);
+        var label = WS_NAV_SHORT[group.system] || group.system;
+        return '<button type="button" class="strip-chip" data-ws-nav="' + index + '"' +
+          (filled ? ' aria-current="true"' : '') + '>' +
+          '<span data-ws-nav-check>' + (filled ? '✓ ' : '') + '</span>' + esc(label) + '</button>';
+      }).join('');
+    }
+
+    function refreshWsNavStates() {
+      var nav = $('wsNav');
+      if (!nav) return;
+      var groups = wsGroups();
+      nav.querySelectorAll('[data-ws-nav]').forEach(function (chip) {
+        var filled = wsGroupFilled(groups[Number(chip.getAttribute('data-ws-nav'))]);
+        if (filled) chip.setAttribute('aria-current', 'true');
+        else chip.removeAttribute('aria-current');
+        var check = chip.querySelector('[data-ws-nav-check]');
+        if (check) check.textContent = filled ? '✓ ' : '';
+      });
     }
 
     function renderWorksheet(keepScroll) {
@@ -703,29 +867,42 @@
       var y = keepScroll ? window.scrollY : 0;
       var html = '<p class="ws-privacy">Answers stay on this page and are not saved. ' +
         'Copy your note text before you close the page.</p>';
-      (wsSheet.exam || []).forEach(function (item) {
-        html += '<div class="ws-card">';
-        html += '<p class="ws-domain">' + esc(item.system) + '</p>';
-        if (item.maneuver) html += '<p class="ws-maneuver">' + esc(item.maneuver) + '</p>';
-        if (item.how) html += '<p class="ws-maneuver">' + esc(item.how) + '</p>';
-        (item.fields || []).forEach(function (field, fieldIndex) {
-          var entry = wsReadField(item.id, fieldIndex) || { selected: new Set(), text: '', detail: '' };
-          html += '<div class="ws-field">';
-          html += '<p class="ws-field-label">' + esc(field.label) + '</p>';
-          html += '<div class="ws-chiprow" role="group" aria-label="' + esc(field.label) + '">';
-          (field.options || []).forEach(function (option) {
-            var on = entry.selected.has(option);
-            html += '<button type="button" class="ws-chip" data-ws-chip="' + esc(item.id) +
-              '" data-field="' + fieldIndex + '" data-value="' + esc(option) +
-              '" aria-pressed="' + (on ? 'true' : 'false') + '">' +
-              (on ? '✓ ' : '') + esc(option) + '</button>';
+      wsGroups().forEach(function (group, groupIndex) {
+        html += '<div class="ws-card" id="wsCard' + groupIndex + '">';
+        html += '<div class="ws-card-head"><p class="ws-domain">' +
+          '<span data-ws-group-check="' + groupIndex + '">' + (wsGroupFilled(group) ? '✓ ' : '') + '</span>' +
+          esc(group.system) + '</p>' +
+          '<button type="button" class="ws-normal" data-ws-normal="' + groupIndex + '">Mark normal</button></div>';
+        group.items.forEach(function (item) {
+          if (item.maneuver) html += '<p class="ws-maneuver">' + esc(item.maneuver) + '</p>';
+          if (item.how) html += '<p class="ws-maneuver">' + esc(item.how) + '</p>';
+          (item.fields || []).forEach(function (field, fieldIndex) {
+            var entry = wsReadField(item.id, fieldIndex) || { selected: new Set(), text: '', detail: '', showDetail: false };
+            html += '<div class="ws-field">';
+            html += '<p class="ws-field-label">' + esc(field.label) + '</p>';
+            html += '<div class="ws-chiprow" role="group" aria-label="' + esc(field.label) + '">';
+            (field.options || []).forEach(function (option) {
+              var on = entry.selected.has(option);
+              html += '<button type="button" class="ws-chip" data-ws-chip="' + esc(item.id) +
+                '" data-field="' + fieldIndex + '" data-value="' + esc(option) +
+                '" aria-pressed="' + (on ? 'true' : 'false') + '">' +
+                (on ? '✓ ' : '') + esc(option) + '</button>';
+            });
+            html += '</div>';
+            // Detail input only once the field is in use; otherwise a
+            // quiet Add detail button reveals it.
+            var showDetail = entry.selected.size > 0 || entry.detail.trim() !== '' || entry.showDetail;
+            if (showDetail) {
+              html += '<input type="text" class="ws-detail" data-ws-detail="' + esc(item.id) +
+                '" data-field="' + fieldIndex + '" placeholder="' +
+                esc(field.detailHint || 'Add detail (optional)') +
+                '" aria-label="Detail for ' + esc(field.label) + '" value="' + esc(entry.detail) + '">';
+            } else {
+              html += '<button type="button" class="ws-add-detail" data-ws-add-detail="' + esc(item.id) +
+                '" data-field="' + fieldIndex + '">Add detail</button>';
+            }
+            html += '</div>';
           });
-          html += '</div>';
-          html += '<input type="text" class="ws-detail" data-ws-detail="' + esc(item.id) +
-            '" data-field="' + fieldIndex + '" placeholder="' +
-            esc(field.detailHint || 'Add detail (optional)') +
-            '" aria-label="Detail for ' + esc(field.label) + '" value="' + esc(entry.detail) + '">';
-          html += '</div>';
         });
         html += '</div>';
       });
@@ -734,26 +911,34 @@
       html += '<textarea class="ws-output" id="wsOutput" readonly rows="4" ' +
         'placeholder="Your note text builds here as you tap answers."></textarea>';
       html += '<div class="ws-actions">' +
-        '<button type="button" class="ws-copy" id="wsCopyBtn">Copy note text</button>' +
+        '<button type="button" class="ws-normal-all" id="wsNormalAllBtn">Mark all normal</button>' +
         '<button type="button" class="ws-clear" id="wsClearBtn">Clear</button></div>';
       html += '<p class="ws-copy-hint" id="wsCopyHint" hidden></p>';
       html += '</div>';
       $('worksheetBody').innerHTML = html;
+      renderWsNav();
       updateWsOutput();
       window.scrollTo(0, y);
     }
 
-    // Refresh only the output, progress, and Copy state: no re-render, so a
-    // detail field being typed in keeps focus and caret.
+    // Refresh only the output, progress, Copy state, card check marks, and
+    // nav states: no re-render, so a detail field being typed in keeps
+    // focus and caret.
     function updateWsOutput() {
-      var out = $('wsOutput');
-      if (!out) return;
       var text = worksheetNoteText();
-      out.value = text;
-      out.rows = Math.max(4, text ? text.split('\n').length + 1 : 4);
+      var out = $('wsOutput');
+      if (out) {
+        out.value = text;
+        out.rows = Math.max(4, text ? text.split('\n').length + 1 : 4);
+      }
       $('wsProgress').textContent = wsProgressText();
       var copyBtn = $('wsCopyBtn');
       if (copyBtn) copyBtn.disabled = !text;
+      var groups = wsGroups();
+      document.querySelectorAll('[data-ws-group-check]').forEach(function (span) {
+        span.textContent = wsGroupFilled(groups[Number(span.getAttribute('data-ws-group-check'))]) ? '✓ ' : '';
+      });
+      refreshWsNavStates();
     }
 
     function openWorksheet() {
@@ -837,28 +1022,56 @@
         }
         return;
       }
-      if (t.closest && t.closest('#wsCopyBtn')) {
-        var btn = t.closest('#wsCopyBtn');
-        var text = worksheetNoteText();
-        var hint = $('wsCopyHint');
-        var fallback = function () {
-          var out = $('wsOutput');
-          if (out) { out.focus(); out.select(); }
-          if (hint) {
-            hint.textContent = 'The note text above is selected. Copy it with a long-press (or Ctrl+C).';
-            hint.hidden = false;
-          }
-        };
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(function () {
-            if (hint) hint.hidden = true;
-            var original = btn.textContent;
-            btn.textContent = 'Copied';
-            setTimeout(function () { btn.textContent = original; }, 2000);
-          }, fallback);
-        } else {
-          fallback();
+      var addDetailBtn = t.closest ? t.closest('[data-ws-add-detail]') : null;
+      if (addDetailBtn) {
+        var aItemId = addDetailBtn.getAttribute('data-ws-add-detail');
+        var aFieldIndex = Number(addDetailBtn.getAttribute('data-field'));
+        wsFieldEntry(aItemId, aFieldIndex).showDetail = true;
+        renderWorksheet(true);
+        var input = document.querySelector('[data-ws-detail="' + aItemId + '"][data-field="' + aFieldIndex + '"]');
+        if (input) input.focus();
+        return;
+      }
+      var normalBtn = t.closest ? t.closest('[data-ws-normal]') : null;
+      if (normalBtn) {
+        wsApplyNormal(Number(normalBtn.getAttribute('data-ws-normal')));
+        return;
+      }
+      if (t.closest && t.closest('#wsNormalAllBtn')) {
+        wsApplyNormal(null);
+        return;
+      }
+    });
+
+    $('wsNav').addEventListener('click', function (e) {
+      var chip = e.target.closest ? e.target.closest('[data-ws-nav]') : null;
+      if (!chip) return;
+      var card = document.getElementById('wsCard' + chip.getAttribute('data-ws-nav'));
+      if (card) card.scrollIntoView({ block: 'start' });
+    });
+    // The Copy button lives in the sticky bottom bar, outside
+    // #worksheetBody, so it carries its own listener.
+    $('wsCopyBtn').addEventListener('click', function () {
+      var btn = this;
+      var text = worksheetNoteText();
+      var hint = $('wsCopyHint');
+      var fallback = function () {
+        var out = $('wsOutput');
+        if (out) { out.focus(); out.select(); }
+        if (hint) {
+          hint.textContent = 'The note text above is selected. Copy it with a long-press (or Ctrl+C).';
+          hint.hidden = false;
         }
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () {
+          if (hint) hint.hidden = true;
+          var original = btn.textContent;
+          btn.textContent = 'Copied';
+          setTimeout(function () { btn.textContent = original; }, 2000);
+        }, fallback);
+      } else {
+        fallback();
       }
     });
     $('worksheetBody').addEventListener('input', function (e) {

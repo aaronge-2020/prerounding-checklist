@@ -17,7 +17,7 @@ import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 // covers the cases render() can actually reach: a present-but-empty payload
 // ({ "sheets": [] }), a malformed payload, or a persisted sheet id that no
 // longer exists.
-import { CHEAT_SHEETS_DATA } from "../../data/cheat-sheets.data.js?v=20261026-cheatsheets-v5";
+import { CHEAT_SHEETS_DATA } from "../../data/cheat-sheets.data.js?v=20261026-cheatsheets-v6";
 import { searchSheets, getSheetById } from "./search.js?v=20260929-cheat-sheets-v1";
 import { createCheatSheetsPresentation } from "./presentation.js?v=20260929-cheat-sheets-v1";
 
@@ -27,7 +27,8 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
   // Fillable worksheet (MSE sheet only): answers live in this Map for the
   // page session only — never persisted, never sent anywhere. Keyed by
   // sheet id, then item id, then field index ->
-  // { selected: Set<string>, text: string, detail: string }, so going
+  // { selected: Set<string>, text: string, detail: string,
+  // showDetail: boolean }, so going
   // back to the reference view and returning keeps the answers.
   state.worksheetOpen = false;
   state.worksheetAnswers = new Map();
@@ -110,7 +111,7 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     }
     let entry = perItem.get(fieldIndex);
     if (!entry) {
-      entry = { selected: new Set(), text: "", detail: "" };
+      entry = { selected: new Set(), text: "", detail: "", showDetail: false };
       perItem.set(fieldIndex, entry);
     }
     return entry;
@@ -241,6 +242,25 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     if (progress) progress.textContent = presentation.worksheetProgressText(sheet, answers);
     const copy = el.querySelector('[data-action="cheat-sheets-worksheet-copy"]');
     if (copy) copy.disabled = !noteText;
+    // Card check marks track the progress count without a re-render.
+    const filled = presentation.worksheetGroupFilled(sheet, answers);
+    el.querySelectorAll("[data-worksheet-group-check]").forEach((span) => {
+      span.textContent = filled[Number(span.dataset.worksheetGroupCheck)] ? "\u2713 " : "";
+    });
+  }
+
+  // Apply "Mark normal" presets (one group, or the whole sheet when
+  // groupIndex is null): selections are replaced with each field's
+  // `normal` preset; detail texts are left untouched.
+  function applyWorksheetNormal(groupIndex) {
+    const sheet = selectedSheet();
+    if (!sheet) return;
+    const answers = answersFor(sheet);
+    for (const step of presentation.worksheetNormalPlan(sheet, groupIndex)) {
+      const entry = answerEntry(answers, step.itemId, step.fieldIndex);
+      entry.selected = new Set(step.selected);
+    }
+    renderWorksheet({ keepScroll: true });
   }
 
   function closeSheetDetail() {
@@ -428,6 +448,27 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
       const value = chip.dataset.value ?? "";
       entry.selected = new Set(presentation.worksheetChipToggle(field, entry.selected, value));
       renderWorksheet({ keepScroll: true });
+      return true;
+    }
+    const addDetail = target.closest?.("[data-worksheet-add-detail]");
+    if (addDetail) {
+      const sheet = selectedSheet();
+      if (!sheet) return false;
+      const itemId = addDetail.dataset.worksheetAddDetail;
+      const fieldIndex = Number(addDetail.dataset.worksheetField);
+      answerEntry(answersFor(sheet), itemId, fieldIndex).showDetail = true;
+      renderWorksheet({ keepScroll: true });
+      const input = container()?.querySelector(`#cs-worksheet-detail-${itemId}-${fieldIndex}`);
+      if (input) input.focus();
+      return true;
+    }
+    const markNormal = target.closest?.('[data-action="cheat-sheets-worksheet-normal"]');
+    if (markNormal) {
+      applyWorksheetNormal(Number(markNormal.dataset.worksheetGroup));
+      return true;
+    }
+    if (target.closest?.('[data-action="cheat-sheets-worksheet-normal-all"]')) {
+      applyWorksheetNormal(null);
       return true;
     }
     if (target.closest?.('[data-action="cheat-sheets-worksheet-back"]')) {

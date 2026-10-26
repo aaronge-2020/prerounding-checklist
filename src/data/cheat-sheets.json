@@ -22825,7 +22825,10 @@
                 "Malodorous",
                 "Meticulous"
               ],
-              "multi": true
+              "multi": true,
+              "normal": [
+                "Well-groomed"
+              ]
             },
             {
               "label": "Clothing",
@@ -22841,7 +22844,14 @@
                 "Tattered"
               ],
               "multi": true,
-              "detailHint": "Type of clothing"
+              "detailHint": "Type of clothing",
+              "normal": [
+                "Appropriate for weather and setting"
+              ],
+              "phrases": {
+                "Appropriate for weather and setting": "Dressed appropriately for the weather and setting",
+                "Insufficient for weather": "Dressed insufficiently for the weather"
+              }
             },
             {
               "label": "Jewelry and makeup",
@@ -22852,7 +22862,16 @@
                 "Excessive",
                 "None"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Appropriate"
+              ],
+              "phrases": {
+                "Appropriate": "Jewelry and makeup appropriate",
+                "Minimal": "Minimal jewelry and makeup",
+                "Excessive": "Excessive jewelry and makeup",
+                "None": "No jewelry or makeup"
+              }
             },
             {
               "label": "Scars, piercings, tattoos",
@@ -22864,7 +22883,13 @@
                 "Piercings",
                 "Tattoos"
               ],
-              "multi": true
+              "multi": true,
+              "normal": [
+                "None noted"
+              ],
+              "phrases": {
+                "None noted": "No scars, piercings, or tattoos noted"
+              }
             },
             {
               "label": "Dentition",
@@ -22876,7 +22901,11 @@
                 "Dentures",
                 "Edentulous"
               ],
-              "multi": true
+              "multi": true,
+              "normal": [
+                "Good"
+              ],
+              "render": "label"
             },
             {
               "label": "Assistive devices",
@@ -22888,7 +22917,8 @@
                 "Walker",
                 "Wheelchair"
               ],
-              "multi": true
+              "multi": true,
+              "normal": []
             },
             {
               "label": "Other signs",
@@ -22898,7 +22928,8 @@
                 "Lacrimation",
                 "Flushing"
               ],
-              "multi": true
+              "multi": true,
+              "normal": []
             }
           ],
           "how": null,
@@ -22930,7 +22961,10 @@
                 "Rigid",
                 "Stooped"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Relaxed"
+              ]
             },
             {
               "label": "Eye contact",
@@ -22943,7 +22977,11 @@
                 "Poor",
                 "Intense"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Good"
+              ],
+              "render": "label"
             },
             {
               "label": "Gait",
@@ -22957,7 +22995,14 @@
                 "Ataxic",
                 "Not observed"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Normal"
+              ],
+              "render": "label",
+              "phrases": {
+                "Not observed": "Gait not observed"
+              }
             },
             {
               "label": "Activity level",
@@ -22969,7 +23014,13 @@
                 "Restless",
                 "Catatonic features"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Normal"
+              ],
+              "phrases": {
+                "Normal": "Normal activity level"
+              }
             },
             {
               "label": "Abnormal movements",
@@ -22984,7 +23035,13 @@
                 "Stereotypies",
                 "Mannerisms"
               ],
-              "multi": true
+              "multi": true,
+              "normal": [
+                "None observed"
+              ],
+              "phrases": {
+                "None observed": "No abnormal movements"
+              }
             }
           ],
           "how": null,
@@ -23020,7 +23077,10 @@
                 "Evasive",
                 "Eager to please"
               ],
-              "multi": true
+              "multi": true,
+              "normal": [
+                "Cooperative"
+              ]
             }
           ],
           "how": null,
@@ -23051,7 +23111,10 @@
                 "Regular",
                 "Slow"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Regular"
+              ]
             },
             {
               "label": "Volume",
@@ -23063,7 +23126,11 @@
                 "Whispered",
                 "Mumbled"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Normal"
+              ],
+              "render": "label"
             },
             {
               "label": "Articulation",
@@ -23075,7 +23142,10 @@
                 "Slurred",
                 "Mumbled"
               ],
-              "multi": true
+              "multi": true,
+              "normal": [
+                "Clear"
+              ]
             },
             {
               "label": "Latency",
@@ -23085,7 +23155,11 @@
                 "Increased (long pauses)",
                 "Decreased"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Normal"
+              ],
+              "render": "label"
             },
             {
               "label": "Quantity",
@@ -23096,7 +23170,11 @@
                 "Verbose",
                 "Mutism"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Normal"
+              ],
+              "render": "label"
             },
             {
               "label": "Prosody",
@@ -23108,7 +23186,11 @@
                 "Animated",
                 "Tremulous"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Normal"
+              ],
+              "render": "label"
             }
           ],
           "how": null,
@@ -23145,7 +23227,10 @@
               ],
               "multi": true,
               "detailHint": "Patient's own words",
-              "quoteDetail": true
+              "quoteDetail": true,
+              "normal": [
+                "Euthymic"
+              ]
             },
             {
               "label": "Affect",
@@ -23163,7 +23248,10 @@
                 "Labile",
                 "Expansive"
               ],
-              "multi": true
+              "multi": true,
+              "normal": [
+                "Bright"
+              ]
             }
           ],
           "how": null,
@@ -23194,7 +23282,10 @@
                 "Anxious",
                 "Indifferent"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Euthymic"
+              ]
             },
             {
               "label": "Range",
@@ -23206,7 +23297,11 @@
                 "Blunted",
                 "Flat"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Full"
+              ],
+              "render": "label"
             },
             {
               "label": "Lability",
@@ -23215,7 +23310,10 @@
                 "Stable",
                 "Labile (rapid shifts)"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Stable"
+              ]
             },
             {
               "label": "Appropriateness to content",
@@ -23224,7 +23322,14 @@
                 "Appropriate",
                 "Inappropriate"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Appropriate"
+              ],
+              "phrases": {
+                "Appropriate": "Appropriate to content",
+                "Inappropriate": "Inappropriate to content"
+              }
             }
           ],
           "how": null,
@@ -23256,7 +23361,10 @@
                 "Loosening of associations",
                 "Flight of ideas"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Goal-directed"
+              ]
             },
             {
               "label": "Thought blocking",
@@ -23265,7 +23373,14 @@
                 "Present",
                 "Absent"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Absent"
+              ],
+              "phrases": {
+                "Present": "Thought blocking present",
+                "Absent": "No thought blocking"
+              }
             }
           ],
           "how": null,
@@ -23293,7 +23408,14 @@
                 "Present"
               ],
               "multi": false,
-              "detailHint": "Passive or active; plan, intent, means"
+              "detailHint": "Passive or active; plan, intent, means",
+              "normal": [
+                "Denies"
+              ],
+              "phrases": {
+                "Denies": "Denies suicidal ideation",
+                "Present": "Suicidal ideation present"
+              }
             },
             {
               "label": "Homicidal or violent ideation",
@@ -23303,7 +23425,14 @@
                 "Present"
               ],
               "multi": false,
-              "detailHint": "Target, plan, intent"
+              "detailHint": "Target, plan, intent",
+              "normal": [
+                "Denies"
+              ],
+              "phrases": {
+                "Denies": "Denies homicidal ideation",
+                "Present": "Homicidal ideation present"
+              }
             },
             {
               "label": "Delusions",
@@ -23313,7 +23442,14 @@
                 "Present"
               ],
               "multi": false,
-              "detailHint": "Content of the belief"
+              "detailHint": "Content of the belief",
+              "normal": [
+                "Absent"
+              ],
+              "phrases": {
+                "Absent": "No delusions",
+                "Present": "Delusions present"
+              }
             },
             {
               "label": "Obsessions",
@@ -23323,7 +23459,14 @@
                 "Present"
               ],
               "multi": false,
-              "detailHint": "Content; any compulsions"
+              "detailHint": "Content; any compulsions",
+              "normal": [
+                "Absent"
+              ],
+              "phrases": {
+                "Absent": "No obsessions",
+                "Present": "Obsessions present"
+              }
             }
           ],
           "how": null,
@@ -23351,7 +23494,14 @@
                 "Present"
               ],
               "multi": false,
-              "detailHint": "What was misinterpreted"
+              "detailHint": "What was misinterpreted",
+              "normal": [
+                "Absent"
+              ],
+              "phrases": {
+                "Absent": "No illusions",
+                "Present": "Illusions present"
+              }
             },
             {
               "label": "Hallucinations",
@@ -23364,7 +23514,9 @@
                 "Gustatory"
               ],
               "multi": true,
-              "detailHint": "Content; command or not"
+              "detailHint": "Content; command or not",
+              "normal": [],
+              "render": "hallucinations"
             },
             {
               "label": "Dissociative symptoms",
@@ -23373,7 +23525,8 @@
                 "Depersonalization",
                 "Derealization"
               ],
-              "multi": true
+              "multi": true,
+              "normal": []
             }
           ],
           "how": null,
@@ -23406,7 +23559,10 @@
                 "Stuporous",
                 "Comatose"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Alert"
+              ]
             },
             {
               "label": "Orientation",
@@ -23418,7 +23574,14 @@
                 "Situation"
               ],
               "multi": true,
-              "detailHint": "Errors or specifics"
+              "detailHint": "Errors or specifics",
+              "normal": [
+                "Person",
+                "Place",
+                "Time",
+                "Situation"
+              ],
+              "render": "oriented"
             },
             {
               "label": "Attention",
@@ -23431,7 +23594,11 @@
                 "Unable to complete"
               ],
               "multi": false,
-              "detailHint": "Serial 7s result; days or months forwards and backwards"
+              "detailHint": "Serial 7s result; days or months forwards and backwards",
+              "normal": [
+                "Intact"
+              ],
+              "render": "label"
             },
             {
               "label": "Immediate memory",
@@ -23441,7 +23608,11 @@
                 "Impaired",
                 "Not tested"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Intact"
+              ],
+              "render": "label"
             },
             {
               "label": "Recent memory",
@@ -23451,7 +23622,11 @@
                 "Impaired",
                 "Not tested"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Intact"
+              ],
+              "render": "label"
             },
             {
               "label": "Remote memory",
@@ -23461,7 +23636,11 @@
                 "Impaired",
                 "Not tested"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Intact"
+              ],
+              "render": "label"
             },
             {
               "label": "Visuospatial ability",
@@ -23472,7 +23651,11 @@
                 "Not tested"
               ],
               "multi": false,
-              "detailHint": "Clock drawing; transparent cube"
+              "detailHint": "Clock drawing; transparent cube",
+              "normal": [
+                "Intact"
+              ],
+              "render": "label"
             },
             {
               "label": "Abstraction",
@@ -23484,7 +23667,11 @@
                 "Not tested"
               ],
               "multi": false,
-              "detailHint": "Similarities; proverb interpretation"
+              "detailHint": "Similarities; proverb interpretation",
+              "normal": [
+                "Intact (abstract)"
+              ],
+              "render": "label"
             }
           ],
           "how": "Can use standardized tools like the MMSE or MoCA.",
@@ -23511,7 +23698,11 @@
                 "Poor",
                 "Absent"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Good"
+              ],
+              "render": "label"
             },
             {
               "label": "Judgment",
@@ -23521,7 +23712,11 @@
                 "Fair",
                 "Poor"
               ],
-              "multi": false
+              "multi": false,
+              "normal": [
+                "Good"
+              ],
+              "render": "label"
             }
           ],
           "how": null,
