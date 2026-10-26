@@ -13958,6 +13958,8 @@ label.cs-worksheet-domain { display: block; font-weight: 600; }
 .cs-worksheet-chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); font-weight: 700; }
 .cs-worksheet-field { margin-top: 12px; }
 .cs-worksheet-field-label { font-weight: 600; font-size: 0.9rem; margin: 0 0 2px; }
+.cs-worksheet-item { margin-top: 12px; }
+.cs-worksheet-prompt { font-weight: 500; font-size: 0.95rem; margin: 0 0 2px; }
 .cs-worksheet-detail { width: 100%; min-height: 44px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--surface); color: var(--text); font: inherit; font-size: 1rem; padding: 10px 12px; margin-top: 8px; }
 .cs-worksheet-note-label { display: block; font-weight: 600; font-size: 0.85rem; margin: 0 0 4px; }
 .cs-worksheet-note { width: 100%; min-height: 44px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--surface); color: var(--text); font: inherit; font-size: 1rem; padding: 10px 12px; resize: vertical; }

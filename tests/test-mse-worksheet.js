@@ -31,7 +31,8 @@ const bundle = JSON.parse(readFileSync(join(root, "src", "data", "cheat-sheets.j
 const mse = bundle.sheets.find((sheet) => sheet.id === "mental-status-examination");
 assert.ok(mse, "MSE sheet exists");
 assert.equal(mse.worksheet, true, "MSE sheet carries the worksheet flag");
-assert.equal(bundle.sheets.filter((sheet) => sheet.worksheet).length, 1, "only the MSE sheet is flagged");
+assert.equal(bundle.sheets.filter((sheet) => sheet.worksheet).length, bundle.sheets.length,
+  "every sheet is flagged (generic worksheet rollout); the MSE sheet keeps the curated fields path");
 assert.equal(mse.exam.length, 11, "MSE sheet still has 11 exam items (grouping is presentational)");
 
 // ---- grouping: 10 groups from 11 items ---------------------------------------
@@ -345,7 +346,7 @@ assert.equal(presentation.worksheetNoteText(mse, stateFor({ "exam-01": { 6: { se
 // ---- entry button gating ---------------------------------------------------------
 assert.match(presentation.sheetDetailHtml(mse), /data-action="cheat-sheets-open-worksheet"/);
 assert.match(presentation.sheetDetailHtml(mse), /Fill in worksheet/);
-const unflagged = bundle.sheets.find((sheet) => sheet.id === "dyspnea");
+const unflagged = { ...bundle.sheets.find((sheet) => sheet.id === "dyspnea"), worksheet: false };
 assert.doesNotMatch(presentation.sheetDetailHtml(unflagged), /cheat-sheets-open-worksheet/);
 
 console.log("All MSE worksheet tests passed.");

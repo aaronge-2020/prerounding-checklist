@@ -17,16 +17,17 @@ import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 // covers the cases render() can actually reach: a present-but-empty payload
 // ({ "sheets": [] }), a malformed payload, or a persisted sheet id that no
 // longer exists.
-import { CHEAT_SHEETS_DATA } from "../../data/cheat-sheets.data.js?v=20261026-cheatsheets-v6";
+import { CHEAT_SHEETS_DATA } from "../../data/cheat-sheets.data.js?v=20261026-cheatsheets-v7";
 import { searchSheets, getSheetById } from "./search.js?v=20260929-cheat-sheets-v1";
 import { createCheatSheetsPresentation } from "./presentation.js?v=20260929-cheat-sheets-v1";
 
 export function createCheatSheetsController({ app, byId, escapeHtml, replaceViewContent }) {
   const presentation = createCheatSheetsPresentation({ escapeHtml });
   const state = { query: "", sheetId: null, listScrollTop: 0, listScrollLeft: 0 };
-  // Fillable worksheet (MSE sheet only): answers live in this Map for the
+  // Fillable worksheet (every sheet): answers live in this Map for the
   // page session only — never persisted, never sent anywhere. Keyed by
-  // sheet id, then item id, then field index ->
+  // sheet id, then item id, then field index (always 0 for generic
+  // items, which carry a single chip row) ->
   // { selected: Set<string>, text: string, detail: string,
   // showDetail: boolean }, so going
   // back to the reference view and returning keeps the answers.
@@ -440,9 +441,19 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     if (chip) {
       const sheet = selectedSheet();
       if (!sheet) return false;
-      const item = (sheet.exam || []).find((entry) => String(entry.id) === chip.dataset.worksheetChip);
+      const item = [...(sheet.history || []), ...(sheet.exam || [])].find(
+        (entry) => String(entry.id) === chip.dataset.worksheetChip
+      );
       const fieldIndex = Number(chip.dataset.worksheetField);
-      const field = item && (item.fields || [])[fieldIndex];
+      // Field-path items resolve their curated field; generic items have
+      // a single chip row at index 0 that always behaves single-select.
+      const field = item
+        ? Array.isArray(item.fields) && item.fields.length
+          ? item.fields[fieldIndex]
+          : fieldIndex === 0
+            ? { multi: false }
+            : null
+        : null;
       if (!field) return false;
       const entry = answerEntry(answersFor(sheet), item.id, fieldIndex);
       const value = chip.dataset.value ?? "";

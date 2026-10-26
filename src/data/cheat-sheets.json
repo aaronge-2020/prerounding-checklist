@@ -5,6 +5,7 @@
     {
       "id": "dyspnea",
       "title": "Shortness of breath / dyspnea",
+      "worksheet": true,
       "aliases": [
         "shortness of breath",
         "breathlessness"
@@ -450,6 +451,7 @@
     {
       "id": "chest-pain",
       "title": "Chest pain",
+      "worksheet": true,
       "aliases": [
         "chest discomfort",
         "angina"
@@ -859,6 +861,7 @@
     {
       "id": "abdominal-pain",
       "title": "Abdominal pain",
+      "worksheet": true,
       "aliases": [
         "acute abdomen",
         "stomach pain"
@@ -1262,6 +1265,7 @@
     {
       "id": "fever-suspected-infection",
       "title": "Fever / suspected infection",
+      "worksheet": true,
       "aliases": [
         "fever",
         "infection"
@@ -1688,6 +1692,7 @@
     {
       "id": "generalized-weakness",
       "title": "Generalized weakness / non-specific decline",
+      "worksheet": true,
       "aliases": [
         "weakness",
         "decline"
@@ -2100,6 +2105,7 @@
     {
       "id": "sepsis-septic-shock",
       "title": "Sepsis / septic shock",
+      "worksheet": true,
       "aliases": [
         "sepsis",
         "septic shock"
@@ -2461,6 +2467,7 @@
     {
       "id": "pneumonia",
       "title": "Pneumonia (community- or hospital-acquired)",
+      "worksheet": true,
       "aliases": [
         "pneumonia",
         "lower respiratory infection"
@@ -2791,6 +2798,7 @@
     {
       "id": "acute-decompensated-heart-failure",
       "title": "Congestive heart failure exacerbation (ADHF)",
+      "worksheet": true,
       "aliases": [
         "heart failure",
         "ADHF",
@@ -3175,6 +3183,7 @@
     {
       "id": "copd-exacerbation",
       "title": "COPD exacerbation",
+      "worksheet": true,
       "aliases": [
         "COPD flare",
         "emphysema exacerbation"
@@ -3513,6 +3522,7 @@
     {
       "id": "urinary-tract-infection",
       "title": "Urinary tract infection",
+      "worksheet": true,
       "aliases": [
         "UTI",
         "pyelonephritis"
@@ -3860,6 +3870,7 @@
     {
       "id": "altered-mental-status-delirium",
       "title": "Altered mental status / delirium",
+      "worksheet": true,
       "aliases": [
         "confusion",
         "delirium"
@@ -4252,6 +4263,7 @@
     {
       "id": "syncope-presyncope",
       "title": "Syncope or presyncope",
+      "worksheet": true,
       "aliases": [
         "fainting",
         "passing out"
@@ -4603,6 +4615,7 @@
     {
       "id": "atrial-fibrillation-rvr",
       "title": "Atrial fibrillation with rapid ventricular rate",
+      "worksheet": true,
       "aliases": [
         "afib with RVR",
         "rapid atrial fibrillation"
@@ -4948,6 +4961,7 @@
     {
       "id": "acute-coronary-syndrome",
       "title": "Acute coronary syndrome / NSTEMI/STEMI",
+      "worksheet": true,
       "aliases": [
         "heart attack",
         "myocardial infarction",
@@ -5301,6 +5315,7 @@
     {
       "id": "stroke-tia",
       "title": "Stroke (CVA) or TIA",
+      "worksheet": true,
       "aliases": [
         "cerebrovascular accident",
         "transient ischemic attack"
@@ -5677,6 +5692,7 @@
     {
       "id": "cellulitis-ssti",
       "title": "Cellulitis / skin and soft tissue infection",
+      "worksheet": true,
       "aliases": [
         "cellulitis",
         "skin infection",
@@ -6011,6 +6027,7 @@
     {
       "id": "dka-hhs",
       "title": "Diabetes mellitus with complications (DKA, HHS)",
+      "worksheet": true,
       "aliases": [
         "diabetic ketoacidosis",
         "hyperosmolar hyperglycemic state"
@@ -6358,6 +6375,7 @@
     {
       "id": "acute-kidney-injury",
       "title": "Acute kidney injury",
+      "worksheet": true,
       "aliases": [
         "AKI",
         "acute renal failure"
@@ -6710,6 +6728,7 @@
     {
       "id": "upper-gastrointestinal-bleeding",
       "title": "Gastrointestinal bleeding (upper)",
+      "worksheet": true,
       "aliases": [
         "upper GI bleed",
         "hematemesis"
@@ -7059,6 +7078,7 @@
     {
       "id": "lower-gastrointestinal-bleeding",
       "title": "Gastrointestinal bleeding (lower)",
+      "worksheet": true,
       "aliases": [
         "lower GI bleed",
         "hematochezia"
@@ -7408,6 +7428,7 @@
     {
       "id": "hyponatremia",
       "title": "Electrolyte abnormality – hyponatremia",
+      "worksheet": true,
       "aliases": [
         "low sodium",
         "SIADH"
@@ -7743,6 +7764,7 @@
     {
       "id": "hyperkalemia",
       "title": "Electrolyte abnormality – hyperkalemia",
+      "worksheet": true,
       "aliases": [
         "high potassium"
       ],
@@ -8080,6 +8102,7 @@
     {
       "id": "falls-fall-related-injury",
       "title": "Falls / fall-related injury",
+      "worksheet": true,
       "aliases": [
         "fall",
         "mechanical fall"
@@ -8425,6 +8448,7 @@
     {
       "id": "dizziness-vertigo",
       "title": "Dizziness / vertigo",
+      "worksheet": true,
       "aliases": [
         "vertigo",
         "lightheadedness"
@@ -8758,6 +8782,7 @@
     {
       "id": "severe-new-headache",
       "title": "Headache (severe or new-onset)",
+      "worksheet": true,
       "aliases": [
         "worst headache of life",
         "thunderclap headache"
@@ -9102,6 +9127,7 @@
     {
       "id": "anemia",
       "title": "Anemia (symptomatic or unexplained)",
+      "worksheet": true,
       "aliases": [
         "low hemoglobin",
         "low hematocrit"
@@ -9450,6 +9476,7 @@
     {
       "id": "alcohol-withdrawal",
       "title": "Alcohol withdrawal",
+      "worksheet": true,
       "aliases": [
         "delirium tremens",
         "DTs"
@@ -9785,6 +9812,7 @@
     {
       "id": "acute-pancreatitis",
       "title": "Acute pancreatitis",
+      "worksheet": true,
       "aliases": [
         "pancreatitis"
       ],
@@ -10113,6 +10141,7 @@
     {
       "id": "venous-thromboembolism",
       "title": "Venous thromboembolism (DVT/PE)",
+      "worksheet": true,
       "aliases": [
         "deep vein thrombosis",
         "pulmonary embolism"
@@ -10459,6 +10488,7 @@
     {
       "id": "asthma-exacerbation",
       "title": "Asthma exacerbation",
+      "worksheet": true,
       "aliases": [
         "asthma attack",
         "reactive airway"
@@ -10783,6 +10813,7 @@
     {
       "id": "clostridioides-difficile-colitis",
       "title": "Clostridium difficile colitis",
+      "worksheet": true,
       "aliases": [
         "C. diff",
         "pseudomembranous colitis"
@@ -11103,6 +11134,7 @@
     {
       "id": "diabetic-foot-infection",
       "title": "Diabetic foot infection",
+      "worksheet": true,
       "aliases": [
         "diabetic foot ulcer",
         "foot infection"
@@ -11436,6 +11468,7 @@
     {
       "id": "hypertensive-urgency-emergency",
       "title": "Hypertensive urgency/emergency",
+      "worksheet": true,
       "aliases": [
         "severe hypertension",
         "hypertensive emergency"
@@ -11769,6 +11802,7 @@
     {
       "id": "uncontrolled-nausea-vomiting",
       "title": "Nausea and vomiting (uncontrolled)",
+      "worksheet": true,
       "aliases": [
         "nausea",
         "vomiting"
@@ -12132,6 +12166,7 @@
     {
       "id": "severe-diarrhea",
       "title": "Diarrhea (severe/dehydrating)",
+      "worksheet": true,
       "aliases": [
         "acute diarrhea",
         "dehydrating diarrhea"
@@ -12480,6 +12515,7 @@
     {
       "id": "failure-to-thrive-functional-decline",
       "title": "Failure to thrive / functional decline (elderly)",
+      "worksheet": true,
       "aliases": [
         "failure to thrive",
         "functional decline"
@@ -12813,6 +12849,7 @@
     {
       "id": "back-pain-red-flags",
       "title": "Back pain (with red flags/neuro deficits)",
+      "worksheet": true,
       "aliases": [
         "back pain",
         "spinal cord compression"
@@ -13158,6 +13195,7 @@
     {
       "id": "cirrhosis-liver-complications",
       "title": "Cirrhosis/liver disease complications",
+      "worksheet": true,
       "aliases": [
         "cirrhosis",
         "hepatic decompensation"
@@ -13492,6 +13530,7 @@
     {
       "id": "adrenal-insufficiency-crisis",
       "title": "Adrenal insufficiency / adrenal crisis",
+      "worksheet": true,
       "aliases": [
         "adrenal crisis",
         "adrenal insufficiency"
@@ -13812,6 +13851,7 @@
     {
       "id": "seizure-new-onset",
       "title": "Seizure / new-onset seizure disorder",
+      "worksheet": true,
       "aliases": [
         "new seizure",
         "convulsion"
@@ -14149,6 +14189,7 @@
     {
       "id": "hyperglycemia-non-dka",
       "title": "Hyperglycemia (non-DKA)",
+      "worksheet": true,
       "aliases": [
         "hyperglycemia",
         "high blood glucose"
@@ -14472,6 +14513,7 @@
     {
       "id": "bowel-obstruction",
       "title": "Bowel obstruction",
+      "worksheet": true,
       "aliases": [
         "small bowel obstruction",
         "SBO",
@@ -14797,6 +14839,7 @@
     {
       "id": "cholecystitis-biliary-colic",
       "title": "Cholecystitis / biliary colic",
+      "worksheet": true,
       "aliases": [
         "cholecystitis",
         "biliary colic",
@@ -15132,6 +15175,7 @@
     {
       "id": "osteoarthritis-joint-pain",
       "title": "Osteoarthritis-related admission/joint pain",
+      "worksheet": true,
       "aliases": [
         "osteoarthritis",
         "joint pain"
@@ -15439,6 +15483,7 @@
     {
       "id": "rheumatoid-arthritis-flare-joint-infection",
       "title": "Rheumatoid arthritis flare/joint infection",
+      "worksheet": true,
       "aliases": [
         "rheumatoid arthritis flare",
         "septic arthritis"
@@ -15759,6 +15804,7 @@
     {
       "id": "psychiatric-crisis-medical-comorbidity",
       "title": "Psychiatric crisis with medical comorbidity",
+      "worksheet": true,
       "aliases": [
         "psychiatric crisis",
         "medical clearance"
@@ -16084,6 +16130,7 @@
     {
       "id": "substance-use-complications",
       "title": "Substance use disorder complications",
+      "worksheet": true,
       "aliases": [
         "substance use",
         "intoxication",
@@ -16410,6 +16457,7 @@
     {
       "id": "social-admission-placement-caregiver-failure",
       "title": "Social admission (placement/caregiver failure)",
+      "worksheet": true,
       "aliases": [
         "placement",
         "caregiver failure",
@@ -16734,6 +16782,7 @@
     {
       "id": "fever-of-unknown-origin",
       "title": "Fever of unknown origin",
+      "worksheet": true,
       "aliases": [
         "FUO",
         "persistent fever",
@@ -17055,6 +17104,7 @@
     {
       "id": "subacute-bacterial-endocarditis",
       "title": "Subacute bacterial endocarditis",
+      "worksheet": true,
       "aliases": [
         "infective endocarditis",
         "SBE"
@@ -17358,6 +17408,7 @@
     {
       "id": "ob-labor-triage",
       "title": "Labor triage & current pregnancy",
+      "worksheet": true,
       "aliases": [
         "labor",
         "triage",
@@ -17549,6 +17600,7 @@
     {
       "id": "ob-menstrual-menopause",
       "title": "Menstrual history & menopause",
+      "worksheet": true,
       "aliases": [
         "periods",
         "menstruation",
@@ -17687,6 +17739,7 @@
     {
       "id": "ob-obstetric-history",
       "title": "Obstetric history (GTPAL)",
+      "worksheet": true,
       "aliases": [
         "GTPAL",
         "gravida para",
@@ -17798,6 +17851,7 @@
     {
       "id": "ob-gyn-history-screening",
       "title": "GYN history, screening & pelvic floor",
+      "worksheet": true,
       "aliases": [
         "gyn",
         "gynecology",
@@ -17926,6 +17980,7 @@
     {
       "id": "ob-sexual-history",
       "title": "Sexual history: 5 Ps + PLUS",
+      "worksheet": true,
       "aliases": [
         "sexual history",
         "5 Ps",
@@ -18031,6 +18086,7 @@
     {
       "id": "ob-safety-close",
       "title": "OB/GYN do-not-miss, safety & close",
+      "worksheet": true,
       "aliases": [
         "IPV",
         "intimate partner violence",
@@ -18153,6 +18209,7 @@
     {
       "id": "ld-preterm-labor",
       "title": "Preterm labor",
+      "worksheet": true,
       "aliases": [
         "preterm labor",
         "PTL",
@@ -18514,6 +18571,7 @@
     {
       "id": "ld-prom",
       "title": "Premature rupture of membranes (PROM / PPROM)",
+      "worksheet": true,
       "aliases": [
         "PROM",
         "PPROM",
@@ -18833,6 +18891,7 @@
     {
       "id": "ld-magnesium-check",
       "title": "Magnesium sulfate check",
+      "worksheet": true,
       "aliases": [
         "magnesium check",
         "MgSO4",
@@ -19138,6 +19197,7 @@
     {
       "id": "ld-term-labor",
       "title": "Term labor triage",
+      "worksheet": true,
       "aliases": [
         "term labor",
         "labor check",
@@ -19872,7 +19932,8 @@
         "howMissing": 10,
         "whyMissing": 24
       },
-      "title": "Vaginal bleeding in pregnancy"
+      "title": "Vaginal bleeding in pregnancy",
+      "worksheet": true
     },
     {
       "aliases": [
@@ -20231,7 +20292,8 @@
         "howMissing": 10,
         "whyMissing": 22
       },
-      "title": "Decreased fetal movement"
+      "title": "Decreased fetal movement",
+      "worksheet": true
     },
     {
       "aliases": [
@@ -20590,11 +20652,13 @@
         "howMissing": 10,
         "whyMissing": 22
       },
-      "title": "Preeclampsia / hypertension in pregnancy"
+      "title": "Preeclampsia / hypertension in pregnancy",
+      "worksheet": true
     },
     {
       "id": "clinic-well-woman",
       "title": "Well-woman visit",
+      "worksheet": true,
       "aliases": [
         "well-woman exam",
         "annual preventive visit",
@@ -21025,6 +21089,7 @@
     {
       "id": "clinic-first-prenatal",
       "title": "First prenatal visit",
+      "worksheet": true,
       "aliases": [
         "first prenatal visit",
         "new OB visit",
@@ -21444,6 +21509,7 @@
     {
       "id": "clinic-aub",
       "title": "Abnormal uterine bleeding",
+      "worksheet": true,
       "aliases": [
         "abnormal uterine bleeding",
         "AUB",
@@ -21803,6 +21869,7 @@
     {
       "id": "clinic-vaginal-discharge",
       "title": "Vaginal discharge",
+      "worksheet": true,
       "aliases": [
         "vaginal discharge",
         "discharge",
@@ -22185,6 +22252,7 @@
     {
       "id": "clinic-pelvic-pain",
       "title": "Pelvic pain",
+      "worksheet": true,
       "aliases": [
         "pelvic pain",
         "lower abdominal pain",
@@ -22536,6 +22604,7 @@
     {
       "id": "clinic-contraception",
       "title": "Contraception counseling",
+      "worksheet": true,
       "aliases": [
         "contraception",
         "birth control",

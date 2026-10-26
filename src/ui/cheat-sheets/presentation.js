@@ -106,16 +106,22 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
   // --- fillable worksheet (session-only; the controller owns the state) ---
   //
   // Narrow exception to the read-only rule, for sheets flagged
-  // `worksheet: true` (the Mental Status Examination sheet). Each exam
-  // item carries per-bullet `fields`: descriptor chips drawn from the
-  // worksheet's own categories (single-select on scales, multi-select for
-  // independent picks) plus an optional free-text detail per field.
-  // State shape: keyed by item id, then field index ->
+  // `worksheet: true` (every sheet). Two paths share the state shape and
+  // the output chrome:
+  // - Field path (the Mental Status Examination sheet): each exam item
+  //   carries per-bullet `fields`: descriptor chips drawn from the
+  //   worksheet's own categories (single-select on scales, multi-select
+  //   for independent picks) plus an optional free-text detail per field.
+  // - Generic path (every other sheet): each history/exam item is one
+  //   single-select chip row built from its own listenFor/findings, plus
+  //   an optional free-text detail per item.
+  // State shape: keyed by item id, then field index (always 0 on the
+  // generic path) ->
   // { selected: Set<string>, text: string, detail: string,
   //   showDetail: boolean } (the state may be a Map or a plain object at
-  // either level). showDetail only controls whether the field's detail
-  // input is revealed; it never reaches the note. This module stays pure:
-  // it only reads that state and returns markup or note text.
+  // either level). showDetail only controls whether the detail input is
+  // revealed; it never reaches the note. This module stays pure: it only
+  // reads that state and returns markup or note text.
 
   function readWorksheetFieldEntry(state, itemId, fieldIndex) {
     if (!state) return null;
@@ -228,6 +234,9 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
   }
 
   function worksheetGroupFilled(sheet, state) {
+    if (!sheetHasFields(sheet)) {
+      return genericWorksheetGroups(sheet).map((group) => genericWorksheetGroupLine(group, state) !== null);
+    }
     return worksheetGroups(sheet).map((group) => worksheetGroupLine(group, state) !== null);
   }
 
@@ -236,17 +245,187 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
   }
 
   function worksheetProgressText(sheet, state) {
-    const total = worksheetGroups(sheet).length;
+    const total = sheetHasFields(sheet)
+      ? worksheetGroups(sheet).length
+      : genericWorksheetGroups(sheet).length;
     return `${worksheetFilledCount(sheet, state)} of ${total} sections filled`;
   }
 
   // The exact text the clinician pastes into their note: a header line,
   // then one line per filled group, in sheet order.
   function worksheetNoteText(sheet, state) {
+    if (!sheetHasFields(sheet)) return genericWorksheetNoteText(sheet, state);
     const lines = worksheetGroups(sheet)
       .map((group) => worksheetGroupLine(group, state))
       .filter(Boolean);
     return lines.length ? `Mental Status Examination\n${lines.join("\n")}` : "";
+  }
+
+  // --- generic worksheet (sheets without curated `fields`) ---------------
+
+  // The field path applies only when an exam item carries curated
+  // `fields` (today: the MSE sheet alone).
+  function sheetHasFields(sheet) {
+    return ((sheet && sheet.exam) || []).some(
+      (item) => item && Array.isArray(item.fields) && item.fields.length > 0
+    );
+  }
+
+  // One normalized entry per item: history items first, then exam items,
+  // each in stored order. The prompt is the question/maneuver; the chips
+  // are the item's own listenFor/findings.
+  function genericWorksheetItems(sheet) {
+    const entries = [];
+    for (const item of (sheet && sheet.history) || []) {
+      if (!item) continue;
+      entries.push({
+        item,
+        kind: "history",
+        prompt: String(item.question ?? ""),
+        options: (item.listenFor || []).map(String),
+        how: ""
+      });
+    }
+    for (const item of (sheet && sheet.exam) || []) {
+      if (!item) continue;
+      entries.push({
+        item,
+        kind: "exam",
+        prompt: String(item.maneuver ?? ""),
+        options: (item.findings || []).map(String),
+        how: String(item.how ?? "")
+      });
+    }
+    return entries;
+  }
+
+  // Cards group by system across the WHOLE item list: a system that
+  // appears in both the history and the exam is one card, ordered by
+  // first appearance, with items in sheet order inside it. The display
+  // title capitalizes the system's first letter ("respiratory" ->
+  // "Respiratory"); already-capitalized systems pass through unchanged.
+  function genericWorksheetGroups(sheet) {
+    const groups = [];
+    const bySystem = new Map();
+    for (const entry of genericWorksheetItems(sheet)) {
+      const system = String(entry.item.system ?? "").trim() || "General";
+      if (!bySystem.has(system)) {
+        const group = { system, title: upperFirst(system), entries: [] };
+        bySystem.set(system, group);
+        groups.push(group);
+      }
+      bySystem.get(system).entries.push(entry);
+    }
+    return groups;
+  }
+
+  // One filled item's prose segment, or null when the item is untouched.
+  // The segment is the selected option text as stored; a detail appends
+  // in parentheses exactly as typed. A detail-only item's segment is the
+  // detail text as typed (raw: line assembly never re-cases typed text).
+  function genericItemSegment(entry, state) {
+    const stateEntry = readWorksheetFieldEntry(state, entry.item.id, 0);
+    if (!stateEntry) return null;
+    const selected = entry.options.filter((option) => stateEntry.selected.has(option));
+    const detail = String(stateEntry.detail ?? "").trim();
+    if (!selected.length && !detail) return null;
+    if (!selected.length) return { text: detail, raw: true };
+    const core = selected.join(", ");
+    return { text: detail ? `${core} (${detail})` : core, raw: false };
+  }
+
+  // One note line per filled group: "System: Segment; Segment." The
+  // first segment keeps its capitalization; later segments lose their
+  // first letter's case, except raw (detail-only) segments.
+  function genericWorksheetGroupLine(group, state) {
+    const segments = [];
+    for (const entry of group.entries) {
+      const segment = genericItemSegment(entry, state);
+      if (segment) segments.push(segment);
+    }
+    if (!segments.length) return null;
+    const styled = segments.map((segment, index) => {
+      if (segment.raw) return segment.text;
+      return index === 0 ? segment.text : lowerFirst(segment.text);
+    });
+    return `${group.title}: ${styled.join("; ")}.`;
+  }
+
+  // The generic note header is the sheet's own title, verbatim.
+  function genericWorksheetNoteText(sheet, state) {
+    if (!sheet) return "";
+    const lines = genericWorksheetGroups(sheet)
+      .map((group) => genericWorksheetGroupLine(group, state))
+      .filter(Boolean);
+    return lines.length ? `${String(sheet.title ?? "")}\n${lines.join("\n")}` : "";
+  }
+
+  // Sensible truncation for the detail input's accessible label.
+  function shortPrompt(prompt) {
+    const text = String(prompt ?? "").replace(/\s+/g, " ").trim();
+    return text.length > 60 ? `${text.slice(0, 57).trimEnd()}\u2026` : text;
+  }
+
+  function renderGenericWorksheetItem(state, entry) {
+    const itemId = escapeHtml(String(entry.item.id));
+    const stateEntry = readWorksheetFieldEntry(state, entry.item.id, 0) || { selected: new Set(), text: "", detail: "", showDetail: false };
+    const chips = entry.options.map((option) => {
+      const value = String(option);
+      const selected = stateEntry.selected.has(value);
+      return `
+        <button type="button" class="cs-worksheet-chip" data-worksheet-chip="${itemId}" data-worksheet-field="0" data-value="${escapeHtml(value)}" aria-pressed="${selected ? "true" : "false"}">${selected ? "\u2713 " : ""}${escapeHtml(value)}</button>`;
+    }).join("");
+    const detailId = `cs-worksheet-detail-${itemId}-0`;
+    // Same progressive disclosure as the field path: the detail input
+    // exists only once the item is in use.
+    const showDetail = stateEntry.selected.size > 0 || String(stateEntry.detail ?? "").trim() !== "" || stateEntry.showDetail;
+    const detailBlock = showDetail
+      ? `<input type="text" class="cs-worksheet-detail" id="${detailId}" data-worksheet-detail="${itemId}" data-worksheet-field="0" placeholder="Add detail (optional)" aria-label="Detail for ${escapeHtml(shortPrompt(entry.prompt))}" value="${escapeHtml(stateEntry.detail)}">`
+      : `<button type="button" class="cs-worksheet-add-detail" data-worksheet-add-detail="${itemId}" data-worksheet-field="0">Add detail</button>`;
+    return `
+      <div class="cs-worksheet-item">
+        <p class="cs-worksheet-prompt">${escapeHtml(entry.prompt)}</p>
+        ${entry.how && entry.how.trim() ? `<p class="cs-worksheet-maneuver">${escapeHtml(entry.how)}</p>` : ""}
+        ${chips ? `<div class="cs-worksheet-chips" role="group" aria-label="${escapeHtml(entry.prompt)}">${chips}
+        </div>` : ""}
+        ${detailBlock}
+      </div>`;
+  }
+
+  function renderGenericWorksheetCard(state, group, groupIndex) {
+    const filled = genericWorksheetGroupLine(group, state) !== null;
+    return `
+      <section class="cs-worksheet-card" data-worksheet-group="${groupIndex}" data-worksheet-system="${escapeHtml(group.title)}">
+        <div class="cs-worksheet-card-head">
+          <h2 class="cs-worksheet-domain"><span data-worksheet-group-check="${groupIndex}">${filled ? "\u2713 " : ""}</span>${escapeHtml(group.title)}</h2>
+        </div>${group.entries.map((entry) => renderGenericWorksheetItem(state, entry)).join("")}
+      </section>`;
+  }
+
+  function genericWorksheetHtml(sheet, state) {
+    const noteText = genericWorksheetNoteText(sheet, state);
+    const rows = Math.max(4, noteText ? noteText.split("\n").length + 1 : 4);
+    return `
+      <div class="cs-worksheet">
+        <header class="cs-worksheet-header">
+          <button type="button" class="cs-back" data-action="cheat-sheets-worksheet-back" aria-label="Back to the sheet">
+            <span class="cs-back-icon">${ICONS.back}</span><span>Sheet</span>
+          </button>
+          <h1 class="cs-title">${escapeHtml(String(sheet.title ?? sheet.id ?? "Worksheet"))}</h1>
+          <p class="cs-worksheet-progress" data-worksheet-progress aria-live="polite">${escapeHtml(worksheetProgressText(sheet, state))}</p>
+        </header>
+        <p class="cs-worksheet-privacy">Answers stay on this page and are not saved. Copy your note text before you close the page.</p>
+        ${genericWorksheetGroups(sheet).map((group, index) => renderGenericWorksheetCard(state, group, index)).join("")}
+        <section class="cs-worksheet-card cs-worksheet-output-card">
+          <label class="cs-worksheet-domain" for="cheat-sheets-worksheet-output">Note text</label>
+          <textarea class="cs-worksheet-output" id="cheat-sheets-worksheet-output" readonly rows="${rows}" placeholder="Your note text builds here as you tap answers.">${escapeHtml(noteText)}</textarea>
+          <div class="cs-worksheet-actions">
+            <button type="button" class="cs-worksheet-copy" data-action="cheat-sheets-worksheet-copy"${noteText ? "" : " disabled"}>Copy note text</button>
+            <button type="button" class="cs-worksheet-clear" data-action="cheat-sheets-worksheet-clear">Clear</button>
+          </div>
+          <p class="cs-worksheet-copy-hint" data-worksheet-copy-hint hidden></p>
+        </section>
+      </div>`;
   }
 
   // Chip toggle rule, shared by the controller and the tests: a
@@ -316,8 +495,7 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
       </section>`;
   }
 
-  function worksheetHtml(sheet, state) {
-    if (!sheet) return emptyStateHtml();
+  function fieldWorksheetHtml(sheet, state) {
     const noteText = worksheetNoteText(sheet, state);
     const rows = Math.max(4, noteText ? noteText.split("\n").length + 1 : 4);
     return `
@@ -446,5 +624,13 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
       </div>`;
   }
 
-  return { sheetListHtml, sheetListResultsHtml, sheetDetailHtml, emptyStateHtml, worksheetHtml, worksheetNoteText, worksheetProgressText, worksheetChipToggle, worksheetGroups, worksheetGroupFilled, worksheetNormalPlan };
+  // The worksheet entry point dispatches on the sheet's shape: curated
+  // `fields` (MSE) keep the field worksheet exactly; every other sheet
+  // gets the generic item worksheet.
+  function worksheetHtml(sheet, state) {
+    if (!sheet) return emptyStateHtml();
+    return sheetHasFields(sheet) ? fieldWorksheetHtml(sheet, state) : genericWorksheetHtml(sheet, state);
+  }
+
+  return { sheetListHtml, sheetListResultsHtml, sheetDetailHtml, emptyStateHtml, worksheetHtml, worksheetNoteText, worksheetProgressText, worksheetChipToggle, worksheetGroups, worksheetGroupFilled, worksheetNormalPlan, sheetHasFields, genericWorksheetItems, genericWorksheetGroups, genericWorksheetNoteText };
 }

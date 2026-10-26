@@ -356,6 +356,8 @@
     .ws-note-label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 4px; }
     .ws-field { margin-top: 12px; }
     .ws-field-label { font-size: 13px; font-weight: 700; margin: 0 0 2px; }
+    .ws-item { margin-top: 12px; }
+    .ws-prompt { font-size: 15px; font-weight: 500; margin: 0 0 2px; }
     .ws-detail {
       width: 100%;
       min-height: 48px;
@@ -512,7 +514,7 @@
     <div class="dstick">
       <div class="dbar">
         <button class="back" id="wsBackBtn" type="button">← Sheet</button>
-        <h2>MSE Worksheet</h2>
+        <h2 id="wsTitle">Worksheet</h2>
       </div>
       <div id="wsNav" aria-label="Jump to section"></div>
     </div>
@@ -542,7 +544,7 @@
     }
 
     // ---- constants -------------------------------------------------------
-    var DATA_URL = './src/data/cheat-sheets.json?v=20261026-cheatsheets-v6';
+    var DATA_URL = './src/data/cheat-sheets.json?v=20261026-cheatsheets-v7';
     var LAST_SHEET_KEY = 'prerounding.cheatSheets.lastSheetId.v1';
     var MOBILE_CHOICE_KEY = 'prerounding.mobileChoice.v1';
 
@@ -725,11 +727,25 @@
     }
 
     // ---- fillable worksheet (answers in page memory only, never stored) ---
-    // Per-bullet fields from the sheet data: descriptor chips (single-select
-    // on scales, multi-select for independent picks) plus an optional detail
-    // per field. State: item id -> field index -> { selected, text, detail }.
+    // Two paths: sheets whose exam items carry per-bullet `fields` (the
+    // MSE sheet) render descriptor chips per field (single-select on
+    // scales, multi-select for independent picks); every other sheet
+    // renders one single-select chip row per item from its own
+    // listenFor/findings. Either way each field/item has an optional
+    // detail. State: sheet id -> item id -> field index (always 0 for
+    // generic items) -> { selected, text, detail, showDetail }, so each
+    // sheet's in-progress answers survive switching sheets.
     var wsSheet = null;
+    var wsAnswersBySheet = {};
     var wsAnswers = {};
+
+    // The curated-fields path applies only when an exam item carries
+    // `fields` (today: the MSE sheet alone).
+    function wsHasFields() {
+      return ((wsSheet && wsSheet.exam) || []).some(function (item) {
+        return item && item.fields && item.fields.length;
+      });
+    }
 
     function wsFieldEntry(itemId, fieldIndex) {
       if (!wsAnswers[itemId]) wsAnswers[itemId] = {};
@@ -764,6 +780,7 @@
     // Worksheet sections group CONSECUTIVE exam items sharing a system:
     // the two "Mood and affect" items become one card and one note line.
     function wsGroups() {
+      if (!wsHasFields()) return wsGenericGroups();
       var groups = [];
       ((wsSheet && wsSheet.exam) || []).forEach(function (item) {
         var system = String(item.system == null ? '' : item.system).trim() || 'General';
@@ -772,6 +789,73 @@
         else groups.push({ system: system, items: [item] });
       });
       return groups;
+    }
+
+    // Generic path: one normalized entry per item, history first, then
+    // exam, each in stored order. The prompt is the question/maneuver;
+    // the chips are the item's own listenFor/findings.
+    function wsGenericItems() {
+      var entries = [];
+      ((wsSheet && wsSheet.history) || []).forEach(function (item) {
+        entries.push({ item: item, kind: 'history', prompt: String(item.question == null ? '' : item.question), options: (item.listenFor || []).map(String), how: '' });
+      });
+      ((wsSheet && wsSheet.exam) || []).forEach(function (item) {
+        entries.push({ item: item, kind: 'exam', prompt: String(item.maneuver == null ? '' : item.maneuver), options: (item.findings || []).map(String), how: String(item.how == null ? '' : item.how) });
+      });
+      return entries;
+    }
+
+    // Generic cards group by system across the WHOLE item list (a system
+    // in both the history and the exam is one card), ordered by first
+    // appearance. The display title capitalizes the system's first
+    // letter ("respiratory" -> "Respiratory").
+    function wsGenericGroups() {
+      var groups = [];
+      wsGenericItems().forEach(function (entry) {
+        var raw = String(entry.item.system == null ? '' : entry.item.system).trim() || 'General';
+        var group = null;
+        groups.forEach(function (candidate) { if (candidate.rawSystem === raw) group = candidate; });
+        if (!group) {
+          group = { system: wsUpperFirst(raw), rawSystem: raw, entries: [] };
+          groups.push(group);
+        }
+        group.entries.push(entry);
+      });
+      return groups;
+    }
+
+    // One filled generic item's prose segment, or null when untouched.
+    // A detail-only item's segment is the detail text as typed (raw:
+    // line assembly never re-cases typed text).
+    function wsGenericItemSegment(entry) {
+      var stateEntry = wsReadField(entry.item.id, 0);
+      if (!stateEntry) return null;
+      var selected = entry.options.filter(function (o) { return stateEntry.selected.has(o); });
+      var detail = stateEntry.detail.trim();
+      if (!selected.length && !detail) return null;
+      if (!selected.length) return { text: detail, raw: true };
+      var core = selected.join(', ');
+      return { text: detail ? core + ' (' + detail + ')' : core, raw: false };
+    }
+
+    function wsGenericGroupLine(group) {
+      var segments = [];
+      group.entries.forEach(function (entry) {
+        var segment = wsGenericItemSegment(entry);
+        if (segment) segments.push(segment);
+      });
+      if (!segments.length) return null;
+      var styled = segments.map(function (segment, index) {
+        if (segment.raw) return segment.text;
+        return index === 0 ? segment.text : wsLowerFirst(segment.text);
+      });
+      return group.system + ': ' + styled.join('; ') + '.';
+    }
+
+    // Sensible truncation for the detail input's accessible label.
+    function wsShortPrompt(prompt) {
+      var text = String(prompt == null ? '' : prompt).replace(/\s+/g, ' ').trim();
+      return text.length > 60 ? text.slice(0, 57).trimEnd() + '…' : text;
     }
 
     // One filled field's prose segment, or null when untouched. Mirrors
@@ -812,6 +896,7 @@
     }
 
     function wsGroupLine(group) {
+      if (!wsHasFields()) return wsGenericGroupLine(group);
       var segments = [];
       group.items.forEach(function (item) {
         (item.fields || []).forEach(function (field, fieldIndex) {
@@ -846,12 +931,57 @@
         var line = wsGroupLine(group);
         if (line) lines.push(line);
       });
-      return lines.length ? 'Mental Status Examination\n' + lines.join('\n') : '';
+      if (!lines.length) return '';
+      // The generic note header is the sheet's own title, verbatim.
+      var header = wsHasFields() ? 'Mental Status Examination' : String(wsSheet.title == null ? '' : wsSheet.title);
+      return header + '\n' + lines.join('\n');
+    }
+
+    // One generic card: the group title (no Mark normal — generic sheets
+    // carry no curated presets), then each item's prompt, optional how
+    // sub-line, single-select chip row, and progressively disclosed
+    // detail input.
+    function wsGenericCardHtml(group, groupIndex) {
+      var html = '<div class="ws-card" id="wsCard' + groupIndex + '">';
+      html += '<div class="ws-card-head"><p class="ws-domain">' +
+        '<span data-ws-group-check="' + groupIndex + '">' + (wsGroupFilled(group) ? '✓ ' : '') + '</span>' +
+        esc(group.system) + '</p></div>';
+      group.entries.forEach(function (entry) {
+        var stateEntry = wsReadField(entry.item.id, 0) || { selected: new Set(), text: '', detail: '', showDetail: false };
+        html += '<div class="ws-item">';
+        html += '<p class="ws-prompt">' + esc(entry.prompt) + '</p>';
+        if (entry.how && entry.how.trim()) {
+          html += '<p class="ws-maneuver">' + esc(entry.how) + '</p>';
+        }
+        html += '<div class="ws-chiprow" role="group" aria-label="' + esc(entry.prompt) + '">';
+        entry.options.forEach(function (option) {
+          var on = stateEntry.selected.has(option);
+          html += '<button type="button" class="ws-chip" data-ws-chip="' + esc(entry.item.id) +
+            '" data-field="0" data-value="' + esc(option) +
+            '" aria-pressed="' + (on ? 'true' : 'false') + '">' +
+            (on ? '✓ ' : '') + esc(option) + '</button>';
+        });
+        html += '</div>';
+        var showDetail = stateEntry.selected.size > 0 || stateEntry.detail.trim() !== '' || stateEntry.showDetail;
+        if (showDetail) {
+          html += '<input type="text" class="ws-detail" data-ws-detail="' + esc(entry.item.id) +
+            '" data-field="0" placeholder="Add detail (optional)"' +
+            ' aria-label="Detail for ' + esc(wsShortPrompt(entry.prompt)) + '" value="' + esc(stateEntry.detail) + '">';
+        } else {
+          html += '<button type="button" class="ws-add-detail" data-ws-add-detail="' + esc(entry.item.id) +
+            '" data-field="0">Add detail</button>';
+        }
+        html += '</div>';
+      });
+      html += '</div>';
+      return html;
     }
 
     // "Mark normal": replace selections with each field's normal preset
     // (one group, or all groups when groupIndex is null); details stay.
+    // Field path only: generic sheets render no Mark normal buttons.
     function wsApplyNormal(groupIndex) {
+      if (!wsHasFields()) return;
       wsGroups().forEach(function (group, index) {
         if (groupIndex !== null && index !== groupIndex) return;
         group.items.forEach(function (item) {
@@ -896,6 +1026,7 @@
       var html = '<p class="ws-privacy">Answers stay on this page and are not saved. ' +
         'Copy your note text before you close the page.</p>';
       wsGroups().forEach(function (group, groupIndex) {
+        if (!wsHasFields()) { html += wsGenericCardHtml(group, groupIndex); return; }
         html += '<div class="ws-card" id="wsCard' + groupIndex + '">';
         html += '<div class="ws-card-head"><p class="ws-domain">' +
           '<span data-ws-group-check="' + groupIndex + '">' + (wsGroupFilled(group) ? '✓ ' : '') + '</span>' +
@@ -939,7 +1070,7 @@
       html += '<textarea class="ws-output" id="wsOutput" readonly rows="4" ' +
         'placeholder="Your note text builds here as you tap answers."></textarea>';
       html += '<div class="ws-actions">' +
-        '<button type="button" class="ws-normal-all" id="wsNormalAllBtn">Mark all normal</button>' +
+        (wsHasFields() ? '<button type="button" class="ws-normal-all" id="wsNormalAllBtn">Mark all normal</button>' : '') +
         '<button type="button" class="ws-clear" id="wsClearBtn">Clear</button></div>';
       html += '<p class="ws-copy-hint" id="wsCopyHint" hidden></p>';
       html += '</div>';
@@ -973,6 +1104,9 @@
       var sheet = findSheet(currentId);
       if (!sheet || !sheet.worksheet) return;
       wsSheet = sheet;
+      // Each sheet keeps its own in-progress answers for the session.
+      wsAnswers = wsAnswersBySheet[sheet.id] || (wsAnswersBySheet[sheet.id] = {});
+      $('wsTitle').textContent = wsHasFields() ? 'MSE Worksheet' : (sheet.title || 'Worksheet');
       $('listView').classList.add('hidden');
       $('detailView').classList.add('hidden');
       $('worksheetView').classList.remove('hidden');
@@ -1025,14 +1159,24 @@
         var itemId = chipBtn.getAttribute('data-ws-chip');
         var fieldIndex = Number(chipBtn.getAttribute('data-field'));
         var item = null;
-        (wsSheet.exam || []).forEach(function (candidate) {
+        ((wsSheet.history || []).concat(wsSheet.exam || [])).forEach(function (candidate) {
           if (String(candidate.id) === itemId) item = candidate;
         });
-        var field = item && (item.fields || [])[fieldIndex];
-        if (!field) return;
+        if (!item) return;
+        // Curated-field items toggle by their field's multi flag; generic
+        // items have a single chip row at index 0, always single-select.
+        var multi;
+        if (item.fields && item.fields.length) {
+          var field = item.fields[fieldIndex];
+          if (!field) return;
+          multi = field.multi !== false;
+        } else {
+          if (fieldIndex !== 0) return;
+          multi = false;
+        }
         var entry = wsFieldEntry(itemId, fieldIndex);
         var value = chipBtn.getAttribute('data-value');
-        if (field.multi === false) {
+        if (!multi) {
           var wasPicked = entry.selected.has(value) && entry.selected.size === 1;
           entry.selected = new Set(wasPicked ? [] : [value]);
         } else if (entry.selected.has(value)) {
@@ -1045,7 +1189,9 @@
       }
       if (t.closest && t.closest('#wsClearBtn')) {
         if (window.confirm('Clear all answers?')) {
+          // Clear only the current sheet's answers.
           wsAnswers = {};
+          if (wsSheet) wsAnswersBySheet[wsSheet.id] = wsAnswers;
           renderWorksheet(true);
         }
         return;
