@@ -22812,6 +22812,95 @@
             "Assistive devices",
             "Other: diaphoresis, lacrimation, flushing"
           ],
+          "fields": [
+            {
+              "label": "Grooming and hygiene",
+              "kind": "chips",
+              "options": [
+                "Well-groomed",
+                "Neat",
+                "Disheveled",
+                "Unkempt",
+                "Poor hygiene",
+                "Malodorous",
+                "Meticulous"
+              ],
+              "multi": true
+            },
+            {
+              "label": "Clothing",
+              "kind": "chips",
+              "options": [
+                "Appropriate for weather and setting",
+                "Casual",
+                "Neat",
+                "Mismatched",
+                "Excessive layers",
+                "Insufficient for weather",
+                "Bizarre",
+                "Tattered"
+              ],
+              "multi": true,
+              "detailHint": "Type of clothing"
+            },
+            {
+              "label": "Jewelry and makeup",
+              "kind": "chips",
+              "options": [
+                "Appropriate",
+                "Minimal",
+                "Excessive",
+                "None"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Scars, piercings, tattoos",
+              "kind": "chips",
+              "options": [
+                "None noted",
+                "Scars",
+                "Self-harm scars",
+                "Piercings",
+                "Tattoos"
+              ],
+              "multi": true
+            },
+            {
+              "label": "Dentition",
+              "kind": "chips",
+              "options": [
+                "Good",
+                "Poor",
+                "Missing teeth",
+                "Dentures",
+                "Edentulous"
+              ],
+              "multi": true
+            },
+            {
+              "label": "Assistive devices",
+              "kind": "chips",
+              "options": [
+                "Glasses",
+                "Hearing aids",
+                "Cane",
+                "Walker",
+                "Wheelchair"
+              ],
+              "multi": true
+            },
+            {
+              "label": "Other signs",
+              "kind": "chips",
+              "options": [
+                "Diaphoresis",
+                "Lacrimation",
+                "Flushing"
+              ],
+              "multi": true
+            }
+          ],
           "how": null,
           "why": null,
           "whySource": null,
@@ -22828,6 +22917,75 @@
             "Gait",
             "Activity level: psychomotor slowing or agitation",
             "Abnormal movements, such as tremors, tics, or dystonias"
+          ],
+          "fields": [
+            {
+              "label": "Posture",
+              "kind": "chips",
+              "options": [
+                "Relaxed",
+                "Erect",
+                "Tense",
+                "Slumped",
+                "Rigid",
+                "Stooped"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Eye contact",
+              "kind": "chips",
+              "options": [
+                "Good",
+                "Appropriate",
+                "Fleeting",
+                "Avoidant",
+                "Poor",
+                "Intense"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Gait",
+              "kind": "chips",
+              "options": [
+                "Normal",
+                "Steady",
+                "Slow",
+                "Shuffling",
+                "Unsteady",
+                "Ataxic",
+                "Not observed"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Activity level",
+              "kind": "chips",
+              "options": [
+                "Normal",
+                "Psychomotor slowing",
+                "Psychomotor agitation",
+                "Restless",
+                "Catatonic features"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Abnormal movements",
+              "kind": "chips",
+              "options": [
+                "None observed",
+                "Tremors",
+                "Tics",
+                "Dystonias",
+                "Akathisia",
+                "Tardive dyskinesia",
+                "Stereotypies",
+                "Mannerisms"
+              ],
+              "multi": true
+            }
           ],
           "how": null,
           "why": null,
@@ -22847,6 +23005,24 @@
             "Suspicious",
             "Eager to please"
           ],
+          "fields": [
+            {
+              "label": "Attitude toward the examiner",
+              "kind": "chips",
+              "options": [
+                "Cooperative",
+                "Friendly",
+                "Open",
+                "Guarded",
+                "Suspicious",
+                "Hostile",
+                "Uncooperative",
+                "Evasive",
+                "Eager to please"
+              ],
+              "multi": true
+            }
+          ],
           "how": null,
           "why": null,
           "whySource": null,
@@ -22865,6 +23041,76 @@
             "Quantity: mutism, paucity",
             "Prosody: intonation, rhythm"
           ],
+          "fields": [
+            {
+              "label": "Rate",
+              "kind": "chips",
+              "options": [
+                "Pressured",
+                "Rapid",
+                "Regular",
+                "Slow"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Volume",
+              "kind": "chips",
+              "options": [
+                "Loud",
+                "Normal",
+                "Soft",
+                "Whispered",
+                "Mumbled"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Articulation",
+              "kind": "chips",
+              "options": [
+                "Clear",
+                "Dysarthria",
+                "Stuttering",
+                "Slurred",
+                "Mumbled"
+              ],
+              "multi": true
+            },
+            {
+              "label": "Latency",
+              "kind": "chips",
+              "options": [
+                "Normal",
+                "Increased (long pauses)",
+                "Decreased"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Quantity",
+              "kind": "chips",
+              "options": [
+                "Normal",
+                "Paucity",
+                "Verbose",
+                "Mutism"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Prosody",
+              "kind": "chips",
+              "options": [
+                "Normal",
+                "Monotone",
+                "Flat",
+                "Animated",
+                "Tremulous"
+              ],
+              "multi": false
+            }
+          ],
           "how": null,
           "why": null,
           "whySource": null,
@@ -22878,6 +23124,47 @@
           "findings": [
             "Mood, in the patient's own words",
             "Affect, the observed physical expression of the immediate feeling state"
+          ],
+          "fields": [
+            {
+              "label": "Mood",
+              "kind": "chips",
+              "options": [
+                "Euthymic",
+                "Depressed",
+                "Sad",
+                "Anxious",
+                "Irritable",
+                "Angry",
+                "Euphoric",
+                "Elated",
+                "Hopeless",
+                "Guilty",
+                "Fearful",
+                "Empty"
+              ],
+              "multi": true,
+              "detailHint": "Patient's own words",
+              "quoteDetail": true
+            },
+            {
+              "label": "Affect",
+              "kind": "chips",
+              "options": [
+                "Bright",
+                "Animated",
+                "Tearful",
+                "Sad",
+                "Anxious",
+                "Irritable",
+                "Constricted",
+                "Blunted",
+                "Flat",
+                "Labile",
+                "Expansive"
+              ],
+              "multi": true
+            }
           ],
           "how": null,
           "why": null,
@@ -22894,6 +23181,51 @@
             "Range: intense/expansive > full > constricted > blunted > flat",
             "Lability: rapidity of affect change",
             "Appropriateness to content"
+          ],
+          "fields": [
+            {
+              "label": "Type",
+              "kind": "chips",
+              "options": [
+                "Euthymic",
+                "Elevated/euphoric",
+                "Dysphoric",
+                "Irritable",
+                "Anxious",
+                "Indifferent"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Range",
+              "kind": "chips",
+              "options": [
+                "Intense/expansive",
+                "Full",
+                "Constricted",
+                "Blunted",
+                "Flat"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Lability",
+              "kind": "chips",
+              "options": [
+                "Stable",
+                "Labile (rapid shifts)"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Appropriateness to content",
+              "kind": "chips",
+              "options": [
+                "Appropriate",
+                "Inappropriate"
+              ],
+              "multi": false
+            }
           ],
           "how": null,
           "why": null,
@@ -22913,6 +23245,29 @@
             "Flight of ideas",
             "Thought blocking: abrupt cessation of one's train of thought"
           ],
+          "fields": [
+            {
+              "label": "Spectrum",
+              "kind": "chips",
+              "options": [
+                "Goal-directed",
+                "Circumstantial",
+                "Tangential",
+                "Loosening of associations",
+                "Flight of ideas"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Thought blocking",
+              "kind": "chips",
+              "options": [
+                "Present",
+                "Absent"
+              ],
+              "multi": false
+            }
+          ],
           "how": null,
           "why": null,
           "whySource": null,
@@ -22929,6 +23284,48 @@
             "Delusions: fixed, false beliefs that are outside of cultural or societal norms",
             "Obsessions"
           ],
+          "fields": [
+            {
+              "label": "Suicidal or self-harm ideation",
+              "kind": "chips",
+              "options": [
+                "Denies",
+                "Present"
+              ],
+              "multi": false,
+              "detailHint": "Passive or active; plan, intent, means"
+            },
+            {
+              "label": "Homicidal or violent ideation",
+              "kind": "chips",
+              "options": [
+                "Denies",
+                "Present"
+              ],
+              "multi": false,
+              "detailHint": "Target, plan, intent"
+            },
+            {
+              "label": "Delusions",
+              "kind": "chips",
+              "options": [
+                "Absent",
+                "Present"
+              ],
+              "multi": false,
+              "detailHint": "Content of the belief"
+            },
+            {
+              "label": "Obsessions",
+              "kind": "chips",
+              "options": [
+                "Absent",
+                "Present"
+              ],
+              "multi": false,
+              "detailHint": "Content; any compulsions"
+            }
+          ],
           "how": null,
           "why": null,
           "whySource": null,
@@ -22944,6 +23341,40 @@
             "Hallucinations: visual, auditory, tactile, olfactory, gustatory",
             "Depersonalization (feeling detached from one's own body)",
             "Derealization (feeling detached from one's surroundings)"
+          ],
+          "fields": [
+            {
+              "label": "Illusions",
+              "kind": "chips",
+              "options": [
+                "Absent",
+                "Present"
+              ],
+              "multi": false,
+              "detailHint": "What was misinterpreted"
+            },
+            {
+              "label": "Hallucinations",
+              "kind": "chips",
+              "options": [
+                "Auditory",
+                "Visual",
+                "Tactile",
+                "Olfactory",
+                "Gustatory"
+              ],
+              "multi": true,
+              "detailHint": "Content; command or not"
+            },
+            {
+              "label": "Dissociative symptoms",
+              "kind": "chips",
+              "options": [
+                "Depersonalization",
+                "Derealization"
+              ],
+              "multi": true
+            }
           ],
           "how": null,
           "why": null,
@@ -22963,6 +23394,99 @@
             "Visuospatial ability: clock drawing, transparent cube",
             "Abstraction: similarity between objects, proverb understanding"
           ],
+          "fields": [
+            {
+              "label": "General consciousness",
+              "kind": "chips",
+              "options": [
+                "Alert",
+                "Lethargic",
+                "Somnolent",
+                "Obtunded",
+                "Stuporous",
+                "Comatose"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Orientation",
+              "kind": "chips",
+              "options": [
+                "Person",
+                "Place",
+                "Time",
+                "Situation"
+              ],
+              "multi": true,
+              "detailHint": "Errors or specifics"
+            },
+            {
+              "label": "Attention",
+              "kind": "chips",
+              "options": [
+                "Intact",
+                "Inattentive",
+                "Distractible",
+                "Impaired",
+                "Unable to complete"
+              ],
+              "multi": false,
+              "detailHint": "Serial 7s result; days or months forwards and backwards"
+            },
+            {
+              "label": "Immediate memory",
+              "kind": "chips",
+              "options": [
+                "Intact",
+                "Impaired",
+                "Not tested"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Recent memory",
+              "kind": "chips",
+              "options": [
+                "Intact",
+                "Impaired",
+                "Not tested"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Remote memory",
+              "kind": "chips",
+              "options": [
+                "Intact",
+                "Impaired",
+                "Not tested"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Visuospatial ability",
+              "kind": "chips",
+              "options": [
+                "Intact",
+                "Impaired",
+                "Not tested"
+              ],
+              "multi": false,
+              "detailHint": "Clock drawing; transparent cube"
+            },
+            {
+              "label": "Abstraction",
+              "kind": "chips",
+              "options": [
+                "Intact (abstract)",
+                "Concrete",
+                "Impaired",
+                "Not tested"
+              ],
+              "multi": false,
+              "detailHint": "Similarities; proverb interpretation"
+            }
+          ],
           "how": "Can use standardized tools like the MMSE or MoCA.",
           "why": null,
           "whySource": null,
@@ -22976,6 +23500,29 @@
           "findings": [
             "Insight: understanding of illness, treatment, or behavior",
             "Judgment: decision-making ability, and the actions taken based on insight"
+          ],
+          "fields": [
+            {
+              "label": "Insight",
+              "kind": "chips",
+              "options": [
+                "Good",
+                "Fair",
+                "Poor",
+                "Absent"
+              ],
+              "multi": false
+            },
+            {
+              "label": "Judgment",
+              "kind": "chips",
+              "options": [
+                "Good",
+                "Fair",
+                "Poor"
+              ],
+              "multi": false
+            }
           ],
           "how": null,
           "why": null,

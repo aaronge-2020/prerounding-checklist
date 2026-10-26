@@ -326,8 +326,11 @@
       font-weight: 700;
     }
     .ws-note-label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 4px; }
-    .ws-note {
+    .ws-field { margin-top: 12px; }
+    .ws-field-label { font-size: 13px; font-weight: 700; margin: 0 0 2px; }
+    .ws-detail {
       width: 100%;
+      min-height: 48px;
       font-size: 16px;
       font-family: inherit;
       padding: 10px 12px;
@@ -335,6 +338,7 @@
       border-radius: 10px;
       background: var(--card);
       color: var(--ink);
+      margin-top: 8px;
     }
     .ws-output {
       width: 100%;
@@ -441,7 +445,7 @@
     }
 
     // ---- constants -------------------------------------------------------
-    var DATA_URL = './src/data/cheat-sheets.json?v=20261026-cheatsheets-v4';
+    var DATA_URL = './src/data/cheat-sheets.json?v=20261026-cheatsheets-v5';
     var LAST_SHEET_KEY = 'prerounding.cheatSheets.lastSheetId.v1';
     var MOBILE_CHOICE_KEY = 'prerounding.mobileChoice.v1';
 
@@ -624,25 +628,63 @@
     }
 
     // ---- fillable worksheet (answers in page memory only, never stored) ---
+    // Per-bullet fields from the sheet data: descriptor chips (single-select
+    // on scales, multi-select for independent picks) plus an optional detail
+    // per field. State: item id -> field index -> { selected, text, detail }.
     var wsSheet = null;
     var wsAnswers = {};
 
-    function wsEntry(itemId) {
-      if (!wsAnswers[itemId]) wsAnswers[itemId] = { selected: new Set(), note: '' };
-      return wsAnswers[itemId];
+    function wsFieldEntry(itemId, fieldIndex) {
+      if (!wsAnswers[itemId]) wsAnswers[itemId] = {};
+      if (!wsAnswers[itemId][fieldIndex]) {
+        wsAnswers[itemId][fieldIndex] = { selected: new Set(), text: '', detail: '' };
+      }
+      return wsAnswers[itemId][fieldIndex];
     }
 
-    function wsSectionFilled(item) {
-      var entry = wsAnswers[item.id];
-      if (!entry) return false;
-      return entry.selected.size > 0 || entry.note.trim() !== '';
+    function wsReadField(itemId, fieldIndex) {
+      var perItem = wsAnswers[itemId];
+      return perItem ? perItem[fieldIndex] || null : null;
+    }
+
+    function wsLowerFirst(value) {
+      var text = String(value == null ? '' : value);
+      return text ? text.charAt(0).toLowerCase() + text.slice(1) : text;
+    }
+
+    function wsFieldSegment(item, field, fieldIndex, omitLabel) {
+      var entry = wsReadField(item.id, fieldIndex);
+      if (!entry) return null;
+      var selected = (field.options || []).filter(function (o) { return entry.selected.has(o); });
+      var detail = entry.detail.trim();
+      if (!selected.length && !detail) return null;
+      var core = selected.map(wsLowerFirst).join(', ');
+      if (detail) {
+        var wrapped = field.quoteDetail ? '("' + detail + '")' : '(' + detail + ')';
+        core = core ? core + ' ' + wrapped : wrapped;
+      }
+      if (omitLabel) return core;
+      return String(field.label == null ? '' : field.label).toLowerCase() + ': ' + core;
+    }
+
+    function wsItemLine(item) {
+      var fields = item.fields || [];
+      var omitLabel = fields.length === 1;
+      var segments = [];
+      fields.forEach(function (field, index) {
+        var segment = wsFieldSegment(item, field, index, omitLabel);
+        if (segment) segments.push(segment);
+      });
+      if (!segments.length) return null;
+      var domain = String(item.system == null ? '' : item.system).trim() || 'General';
+      return domain + ': ' + segments.join('; ');
     }
 
     function wsProgressText() {
       if (!wsSheet) return '';
       var total = (wsSheet.exam || []).length;
       var filled = 0;
-      (wsSheet.exam || []).forEach(function (item) { if (wsSectionFilled(item)) filled += 1; });
+      (wsSheet.exam || []).forEach(function (item) { if (wsItemLine(item)) filled += 1; });
       return filled + ' of ' + total + ' sections filled';
     }
 
@@ -650,18 +692,8 @@
       if (!wsSheet) return '';
       var lines = [];
       (wsSheet.exam || []).forEach(function (item) {
-        var entry = wsAnswers[item.id];
-        if (!entry) return;
-        var selections = (item.findings || []).filter(function (f) { return entry.selected.has(f); });
-        var detail = entry.note.trim();
-        if (!selections.length && !detail) return;
-        if (detail && detail.charAt(detail.length - 1) !== '.') detail += '.';
-        var domain = String(item.system == null ? '' : item.system).trim() || 'General';
-        if (selections.length) {
-          lines.push(domain + ': ' + selections.join('; ') + (detail ? '. ' + detail : ''));
-        } else {
-          lines.push(domain + ': ' + detail);
-        }
+        var line = wsItemLine(item);
+        if (line) lines.push(line);
       });
       return lines.length ? 'Mental Status Examination\n' + lines.join('\n') : '';
     }
@@ -672,21 +704,29 @@
       var html = '<p class="ws-privacy">Answers stay on this page and are not saved. ' +
         'Copy your note text before you close the page.</p>';
       (wsSheet.exam || []).forEach(function (item) {
-        var entry = wsAnswers[item.id] || { selected: new Set(), note: '' };
         html += '<div class="ws-card">';
         html += '<p class="ws-domain">' + esc(item.system) + '</p>';
         if (item.maneuver) html += '<p class="ws-maneuver">' + esc(item.maneuver) + '</p>';
-        html += '<div class="ws-chiprow" role="group" aria-label="' + esc(item.system) + ' answers">';
-        (item.findings || []).forEach(function (finding) {
-          var on = entry.selected.has(finding);
-          html += '<button type="button" class="ws-chip" data-ws-chip="' + esc(item.id) +
-            '" data-value="' + esc(finding) + '" aria-pressed="' + (on ? 'true' : 'false') + '">' +
-            (on ? '✓ ' : '') + esc(finding) + '</button>';
+        if (item.how) html += '<p class="ws-maneuver">' + esc(item.how) + '</p>';
+        (item.fields || []).forEach(function (field, fieldIndex) {
+          var entry = wsReadField(item.id, fieldIndex) || { selected: new Set(), text: '', detail: '' };
+          html += '<div class="ws-field">';
+          html += '<p class="ws-field-label">' + esc(field.label) + '</p>';
+          html += '<div class="ws-chiprow" role="group" aria-label="' + esc(field.label) + '">';
+          (field.options || []).forEach(function (option) {
+            var on = entry.selected.has(option);
+            html += '<button type="button" class="ws-chip" data-ws-chip="' + esc(item.id) +
+              '" data-field="' + fieldIndex + '" data-value="' + esc(option) +
+              '" aria-pressed="' + (on ? 'true' : 'false') + '">' +
+              (on ? '✓ ' : '') + esc(option) + '</button>';
+          });
+          html += '</div>';
+          html += '<input type="text" class="ws-detail" data-ws-detail="' + esc(item.id) +
+            '" data-field="' + fieldIndex + '" placeholder="' +
+            esc(field.detailHint || 'Add detail (optional)') +
+            '" aria-label="Detail for ' + esc(field.label) + '" value="' + esc(entry.detail) + '">';
+          html += '</div>';
         });
-        html += '</div>';
-        html += '<label class="ws-note-label" for="ws-note-' + esc(item.id) + '">Detail (optional)</label>';
-        html += '<textarea class="ws-note" id="ws-note-' + esc(item.id) + '" data-ws-note="' + esc(item.id) +
-          '" rows="2" placeholder="Add specifics in your own words">' + esc(entry.note) + '</textarea>';
         html += '</div>';
       });
       html += '<div class="ws-card">';
@@ -769,10 +809,24 @@
       var t = e.target;
       var chipBtn = t.closest ? t.closest('[data-ws-chip]') : null;
       if (chipBtn) {
-        var entry = wsEntry(chipBtn.getAttribute('data-ws-chip'));
+        var itemId = chipBtn.getAttribute('data-ws-chip');
+        var fieldIndex = Number(chipBtn.getAttribute('data-field'));
+        var item = null;
+        (wsSheet.exam || []).forEach(function (candidate) {
+          if (String(candidate.id) === itemId) item = candidate;
+        });
+        var field = item && (item.fields || [])[fieldIndex];
+        if (!field) return;
+        var entry = wsFieldEntry(itemId, fieldIndex);
         var value = chipBtn.getAttribute('data-value');
-        if (entry.selected.has(value)) entry.selected.delete(value);
-        else entry.selected.add(value);
+        if (field.multi === false) {
+          var wasPicked = entry.selected.has(value) && entry.selected.size === 1;
+          entry.selected = new Set(wasPicked ? [] : [value]);
+        } else if (entry.selected.has(value)) {
+          entry.selected.delete(value);
+        } else {
+          entry.selected.add(value);
+        }
         renderWorksheet(true);
         return;
       }
@@ -808,9 +862,9 @@
       }
     });
     $('worksheetBody').addEventListener('input', function (e) {
-      var field = e.target.closest ? e.target.closest('[data-ws-note]') : null;
+      var field = e.target.closest ? e.target.closest('[data-ws-detail]') : null;
       if (!field) return;
-      wsEntry(field.getAttribute('data-ws-note')).note = field.value;
+      wsFieldEntry(field.getAttribute('data-ws-detail'), Number(field.getAttribute('data-field'))).detail = field.value;
       updateWsOutput();
     });
     $('fullSiteLink').addEventListener('click', function () {

@@ -17,7 +17,7 @@ import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 // covers the cases render() can actually reach: a present-but-empty payload
 // ({ "sheets": [] }), a malformed payload, or a persisted sheet id that no
 // longer exists.
-import { CHEAT_SHEETS_DATA } from "../../data/cheat-sheets.data.js?v=20261026-cheatsheets-v4";
+import { CHEAT_SHEETS_DATA } from "../../data/cheat-sheets.data.js?v=20261026-cheatsheets-v5";
 import { searchSheets, getSheetById } from "./search.js?v=20260929-cheat-sheets-v1";
 import { createCheatSheetsPresentation } from "./presentation.js?v=20260929-cheat-sheets-v1";
 
@@ -26,8 +26,9 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
   const state = { query: "", sheetId: null, listScrollTop: 0, listScrollLeft: 0 };
   // Fillable worksheet (MSE sheet only): answers live in this Map for the
   // page session only — never persisted, never sent anywhere. Keyed by
-  // sheet id, then item id -> { selected: Set<string>, note: string }, so
-  // going back to the reference view and returning keeps the answers.
+  // sheet id, then item id, then field index ->
+  // { selected: Set<string>, text: string, detail: string }, so going
+  // back to the reference view and returning keeps the answers.
   state.worksheetOpen = false;
   state.worksheetAnswers = new Map();
 
@@ -101,11 +102,16 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     return answers;
   }
 
-  function answerEntry(answers, itemId) {
-    let entry = answers.get(itemId);
+  function answerEntry(answers, itemId, fieldIndex) {
+    let perItem = answers.get(itemId);
+    if (!perItem) {
+      perItem = new Map();
+      answers.set(itemId, perItem);
+    }
+    let entry = perItem.get(fieldIndex);
     if (!entry) {
-      entry = { selected: new Set(), note: "" };
-      answers.set(itemId, entry);
+      entry = { selected: new Set(), text: "", detail: "" };
+      perItem.set(fieldIndex, entry);
     }
     return entry;
   }
@@ -328,11 +334,15 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
 
   function input(target) {
     if (!target || app.view !== "cheatSheets") return false;
-    if (target.matches?.("[data-worksheet-note]")) {
+    if (target.matches?.("[data-worksheet-detail]")) {
       const sheet = selectedSheet();
       if (!sheet) return false;
-      const entry = answerEntry(answersFor(sheet), target.dataset.worksheetNote);
-      entry.note = target.value ?? "";
+      const entry = answerEntry(
+        answersFor(sheet),
+        target.dataset.worksheetDetail,
+        Number(target.dataset.worksheetField)
+      );
+      entry.detail = target.value ?? "";
       refreshWorksheetOutput();
       return true;
     }
@@ -410,10 +420,13 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     if (chip) {
       const sheet = selectedSheet();
       if (!sheet) return false;
-      const entry = answerEntry(answersFor(sheet), chip.dataset.worksheetChip);
+      const item = (sheet.exam || []).find((entry) => String(entry.id) === chip.dataset.worksheetChip);
+      const fieldIndex = Number(chip.dataset.worksheetField);
+      const field = item && (item.fields || [])[fieldIndex];
+      if (!field) return false;
+      const entry = answerEntry(answersFor(sheet), item.id, fieldIndex);
       const value = chip.dataset.value ?? "";
-      if (entry.selected.has(value)) entry.selected.delete(value);
-      else entry.selected.add(value);
+      entry.selected = new Set(presentation.worksheetChipToggle(field, entry.selected, value));
       renderWorksheet({ keepScroll: true });
       return true;
     }

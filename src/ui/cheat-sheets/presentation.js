@@ -106,33 +106,64 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
   // --- fillable worksheet (session-only; the controller owns the state) ---
   //
   // Narrow exception to the read-only rule, for sheets flagged
-  // `worksheet: true` (the Mental Status Examination sheet): answer chips
-  // per exam item plus an optional free-text detail per item, rendered from
-  // the item's coded findings. State shape: a Map or plain object keyed by
-  // item id -> { selected: Set<string>, note: string }. This module stays
-  // pure: it only reads that state and returns markup or note text.
+  // `worksheet: true` (the Mental Status Examination sheet). Each exam
+  // item carries per-bullet `fields`: descriptor chips drawn from the
+  // worksheet's own categories (single-select on scales, multi-select for
+  // independent picks) plus an optional free-text detail per field.
+  // State shape: keyed by item id, then field index ->
+  // { selected: Set<string>, text: string, detail: string } (the state may
+  // be a Map or a plain object at either level). This module stays pure:
+  // it only reads that state and returns markup or note text.
 
-  function readWorksheetEntry(state, itemId) {
+  function readWorksheetFieldEntry(state, itemId, fieldIndex) {
     if (!state) return null;
-    const entry = typeof state.get === "function" ? state.get(itemId) : state[itemId];
+    const perItem = typeof state.get === "function" ? state.get(itemId) : state[itemId];
+    if (!perItem) return null;
+    const entry = typeof perItem.get === "function" ? perItem.get(fieldIndex) : perItem[fieldIndex];
     if (!entry) return null;
     const selected = entry.selected instanceof Set ? entry.selected : new Set(entry.selected || []);
-    return { selected, note: String(entry.note ?? "") };
+    return { selected, text: String(entry.text ?? ""), detail: String(entry.detail ?? "") };
   }
 
-  function worksheetSection(sheet, state, item) {
-    const entry = readWorksheetEntry(state, item.id);
+  function lowerFirst(value) {
+    const text = String(value ?? "");
+    return text ? text.charAt(0).toLowerCase() + text.slice(1) : text;
+  }
+
+  // One filled field's note segment, or null when the field is untouched.
+  // Values keep data order and lose only their first letter's case; the
+  // detail is reproduced exactly as typed, in parentheses (double-quoted
+  // inside the parentheses for quoteDetail fields such as Mood).
+  function worksheetFieldSegment(item, field, entry, omitLabel) {
     if (!entry) return null;
-    const detail = entry.note.trim();
-    const selections = (item.findings || []).filter((finding) => entry.selected.has(finding));
-    if (!selections.length && !detail) return null;
-    return { item, selections, detail };
+    const selected = (field.options || []).filter((option) => entry.selected.has(option));
+    const detail = String(entry.detail ?? "").trim();
+    if (!selected.length && !detail) return null;
+    let core = selected.map(lowerFirst).join(", ");
+    if (detail) {
+      const wrapped = field.quoteDetail ? `("${detail}")` : `(${detail})`;
+      core = core ? `${core} ${wrapped}` : wrapped;
+    }
+    if (omitLabel) return core;
+    return `${String(field.label ?? "").toLowerCase()}: ${core}`;
+  }
+
+  function worksheetItemLine(sheet, state, item) {
+    const fields = item.fields || [];
+    // A domain with exactly one field names the field by the domain alone.
+    const omitLabel = fields.length === 1;
+    const segments = fields
+      .map((field, index) => worksheetFieldSegment(item, field, readWorksheetFieldEntry(state, item.id, index), omitLabel))
+      .filter(Boolean);
+    if (!segments.length) return null;
+    const domain = String(item.system ?? "").trim() || "General";
+    return `${domain}: ${segments.join("; ")}`;
   }
 
   function worksheetFilledCount(sheet, state) {
     let filled = 0;
     for (const item of (sheet && sheet.exam) || []) {
-      if (worksheetSection(sheet, state, item)) filled += 1;
+      if (worksheetItemLine(sheet, state, item)) filled += 1;
     }
     return filled;
   }
@@ -142,44 +173,55 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
     return `${worksheetFilledCount(sheet, state)} of ${total} sections filled`;
   }
 
-  // The exact text the clinician pastes into their note. One line per
-  // filled section, in sheet order; selections in findings data order;
-  // a detail follows the selections after ". " (or stands alone), trimmed,
-  // with a single trailing period.
+  // The exact text the clinician pastes into their note: a header line,
+  // then one line per filled domain, in sheet order.
   function worksheetNoteText(sheet, state) {
     const lines = [];
     for (const item of (sheet && sheet.exam) || []) {
-      const section = worksheetSection(sheet, state, item);
-      if (!section) continue;
-      const domain = String(item.system ?? "").trim() || "General";
-      let detail = section.detail;
-      if (detail && !detail.endsWith(".")) detail += ".";
-      if (section.selections.length) {
-        lines.push(`${domain}: ${section.selections.join("; ")}${detail ? `. ${detail}` : ""}`);
-      } else {
-        lines.push(`${domain}: ${detail}`);
-      }
+      const line = worksheetItemLine(sheet, state, item);
+      if (line) lines.push(line);
     }
     return lines.length ? `Mental Status Examination\n${lines.join("\n")}` : "";
   }
 
-  function renderWorksheetSection(sheet, state, item) {
-    const entry = readWorksheetEntry(state, item.id) || { selected: new Set(), note: "" };
+  // Chip toggle rule, shared by the controller and the tests: a
+  // single-select field replaces its pick (tapping the picked chip clears
+  // it); a multi-select field toggles the value in or out.
+  function worksheetChipToggle(field, selected, value) {
+    const current = selected instanceof Set ? [...selected] : [...(selected || [])];
+    if (field && field.multi === false) {
+      return current.length === 1 && current[0] === value ? [] : [value];
+    }
+    return current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
+  }
+
+  function renderWorksheetField(state, item, field, fieldIndex) {
+    const entry = readWorksheetFieldEntry(state, item.id, fieldIndex) || { selected: new Set(), text: "", detail: "" };
     const itemId = escapeHtml(String(item.id));
-    const chips = (item.findings || []).map((finding) => {
-      const value = String(finding);
+    const chips = (field.options || []).map((option) => {
+      const value = String(option);
       const selected = entry.selected.has(value);
       return `
-        <button type="button" class="cs-worksheet-chip" data-worksheet-chip="${itemId}" data-value="${escapeHtml(value)}" aria-pressed="${selected ? "true" : "false"}">${selected ? "\u2713 " : ""}${escapeHtml(value)}</button>`;
+        <button type="button" class="cs-worksheet-chip" data-worksheet-chip="${itemId}" data-worksheet-field="${fieldIndex}" data-value="${escapeHtml(value)}" aria-pressed="${selected ? "true" : "false"}">${selected ? "\u2713 " : ""}${escapeHtml(value)}</button>`;
     }).join("");
+    const detailId = `cs-worksheet-detail-${itemId}-${fieldIndex}`;
     return `
-      <section class="cs-worksheet-card" data-worksheet-section="${itemId}">
+      <div class="cs-worksheet-field">
+        <p class="cs-worksheet-field-label">${escapeHtml(String(field.label ?? ""))}</p>
+        ${chips ? `<div class="cs-worksheet-chips" role="group" aria-label="${escapeHtml(String(field.label ?? ""))}">${chips}
+        </div>` : ""}
+        <input type="text" class="cs-worksheet-detail" id="${detailId}" data-worksheet-detail="${itemId}" data-worksheet-field="${fieldIndex}" placeholder="${escapeHtml(String(field.detailHint || "Add detail (optional)"))}" aria-label="Detail for ${escapeHtml(String(field.label ?? ""))}" value="${escapeHtml(entry.detail)}">
+      </div>`;
+  }
+
+  function renderWorksheetSection(sheet, state, item) {
+    const fields = (item.fields || []).map((field, index) => renderWorksheetField(state, item, field, index)).join("");
+    return `
+      <section class="cs-worksheet-card" data-worksheet-section="${escapeHtml(String(item.id))}">
         <h2 class="cs-worksheet-domain">${escapeHtml(String(item.system ?? "").trim() || "General")}</h2>
         ${item.maneuver ? `<p class="cs-worksheet-maneuver">${escapeHtml(String(item.maneuver))}</p>` : ""}
-        ${chips ? `<div class="cs-worksheet-chips" role="group" aria-label="${escapeHtml(String(item.system ?? ""))} answers">${chips}
-        </div>` : ""}
-        <label class="cs-worksheet-note-label" for="cs-worksheet-note-${itemId}">Detail (optional)</label>
-        <textarea class="cs-worksheet-note" id="cs-worksheet-note-${itemId}" data-worksheet-note="${itemId}" rows="2" placeholder="Add specifics in your own words">${escapeHtml(entry.note)}</textarea>
+        ${item.how ? `<p class="cs-worksheet-maneuver">${escapeHtml(String(item.how))}</p>` : ""}
+        ${fields}
       </section>`;
   }
 
@@ -312,5 +354,5 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
       </div>`;
   }
 
-  return { sheetListHtml, sheetListResultsHtml, sheetDetailHtml, emptyStateHtml, worksheetHtml, worksheetNoteText, worksheetProgressText };
+  return { sheetListHtml, sheetListResultsHtml, sheetDetailHtml, emptyStateHtml, worksheetHtml, worksheetNoteText, worksheetProgressText, worksheetChipToggle };
 }
