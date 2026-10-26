@@ -63,7 +63,7 @@ Purpose: a compact, current map for future work on this local-first app.
   - `review.js` holds originals and review choices only in memory for the current active tab.
   - `sections.js` provides helper functions to split, update, and manage note sections.
 - `src/daily-updates/days.js`: hospital-day CRUD and trajectory source assembly.
-- `src/data/cheat-sheets.json`: the 88 read-only bedside reference sheets (history questions + exam maneuvers), bundled with the static site.
+- `src/data/cheat-sheets.json`: the 89 read-only bedside reference sheets (history questions + exam maneuvers), bundled with the static site.
 - `src/prompts/`: task registry, dynamic variables, templates, and task-specific guideline enforcement.
   - `custom-templates.js`: Custom prompt templates and prompt builders.
   - `natural-language.js`: Helper for parsing natural language and dates.

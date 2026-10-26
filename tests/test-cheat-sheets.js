@@ -1,5 +1,8 @@
 // Plain node tests for src/ui/cheat-sheets/search.js.
 // Run: node tests/test-cheat-sheets.js   (exits non-zero on failure)
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { searchSheets, getSheetById, scoreSheet } from "../src/ui/cheat-sheets/search.js";
 
 const fixture = [
@@ -80,6 +83,15 @@ check("scoreSheet ranks title prefix above alias prefix",
 
 // No match returns an empty list (never throws, never returns everything).
 check("no match returns empty", ids(searchSheets(fixture, "zzz-nope")), []);
+
+// Real bundle: the serotonin sheet must be findable by its best-known
+// bedside label. Search matches the whole query string against
+// title/aliases/id/system only, so "hunter criteria" lands only because
+// it is an alias on serotonin-nms-anticholinergic (added 2026-10-26).
+const bundle = JSON.parse(readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), "..", "src", "data", "cheat-sheets.json"), "utf8"));
+check("real data: hunter criteria finds the serotonin sheet",
+  ids(searchSheets(bundle.sheets, "hunter criteria"))[0], "serotonin-nms-anticholinergic");
 
 // getSheetById.
 check("getSheetById found", getSheetById(fixture, "abdominal-pain")?.title, "Abdominal Pain");

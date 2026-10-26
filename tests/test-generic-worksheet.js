@@ -25,8 +25,8 @@ const bundle = JSON.parse(readFileSync(join(root, "src", "data", "cheat-sheets.j
 const sheets = bundle.sheets;
 
 // ---- every sheet is flagged ---------------------------------------------------
-assert.equal(sheets.length, 88, "88 sheets in the bundle");
-assert.ok(sheets.every((sheet) => sheet.worksheet === true), "all 88 sheets carry worksheet: true");
+assert.equal(sheets.length, 89, "89 sheets in the bundle");
+assert.ok(sheets.every((sheet) => sheet.worksheet === true), "all 89 sheets carry worksheet: true");
 
 // ---- generic item census --------------------------------------------------------
 // Generic items = every history item plus every exam item without curated
@@ -46,7 +46,7 @@ for (const sheet of sheets) {
       `${sheet.id}/${item.id} offers 1-8 findings options`);
   }
 }
-assert.equal(genericItems, 1803, "1,803 generic items across the bundle");
+assert.equal(genericItems, 1818, "1,818 generic items across the bundle");
 
 // ---- dispatch -------------------------------------------------------------------
 const mse = sheets.find((sheet) => sheet.id === "mental-status-examination");
@@ -134,6 +134,25 @@ for (const [id, itemCount] of psychReferenceSheets) {
     `all ${itemCount} ${id} items are grouped`
   );
 }
+
+// ---- Maryland emergency petition sheet appended 2026-10-26 takes the generic path --
+const maryland = sheets.find((sheet) => sheet.id === "maryland-emergency-petition");
+assert.ok(maryland, "Maryland emergency petition sheet is present");
+assert.equal(presentation.sheetHasFields(maryland), false, "maryland-emergency-petition takes the generic path");
+const marylandGroups = presentation.genericWorksheetGroups(maryland);
+assert.equal(
+  marylandGroups.reduce((n, group) => n + group.entries.length, 0), 15,
+  "all 15 maryland-emergency-petition items are grouped"
+);
+assert.deepEqual(
+  marylandGroups.map((group) => group.title),
+  ["Criteria", "Petitioner", "Petition contents", "Routes",
+   "Custody and examination", "After the examination",
+   "Application and certificates", "Admission criteria", "Notice of rights",
+   "Hearing", "Patient rights", "Immunity", "Unverified elements",
+   "After the hearing"],
+  "Maryland groups follow first appearance"
+);
 
 // ---- grouping on the dyspnea sheet ----------------------------------------------
 const groups = presentation.genericWorksheetGroups(dyspnea);

@@ -26945,7 +26945,8 @@
         "anticholinergic toxicity",
         "anticholinergic toxidrome",
         "hyperthermia differential",
-        "clonus"
+        "clonus",
+        "hunter criteria"
       ],
       "history": [
         {
@@ -28265,6 +28266,261 @@
       "reviewNeeded": {
         "whyMissing": 10,
         "howMissing": 7
+      }
+    },
+    {
+      "id": "maryland-emergency-petition",
+      "title": "Maryland emergency petition and involuntary admission",
+      "worksheet": true,
+      "aliases": [
+        "emergency petition",
+        "involuntary admission",
+        "emergency evaluation",
+        "cc-dc-013",
+        "health-general 10-622",
+        "civil commitment maryland",
+        "emergency evaluee"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "criteria",
+          "question": "Does the person have a mental disorder, as Maryland law defines it for this petition?",
+          "listenFor": [
+            "For an examining health professional petitioner: at least one mental disorder described in the current DSM",
+            "For a lay petitioner: behavioral or other symptoms that indicate a clear disturbance in mental functioning",
+            "Intellectual disability alone: does not meet the statutory definition of mental disorder",
+            "No mental disorder evidence: petition criteria not met"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Maryland Code, Health-General section 10-620 defines mental disorder differently depending on who petitions: for the listed examining health professionals it means at least one mental disorder described in the current DSM, and for a lay petitioner it means behavioral or other symptoms indicating a clear disturbance in mental functioning. The definition expressly does not include intellectual disability. Knowing which definition applies to you, as the petitioner, is the first accuracy check on the form.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "criteria",
+          "question": "What specific behavior, statements, or other information show the person presents a danger to the life or safety of themselves or others?",
+          "listenFor": [
+            "Specific recent behavior or statements documented in the petition",
+            "Danger asserted in general terms without specific supporting facts: strengthen before filing",
+            "No danger evidence: the second statutory element is missing"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Section 10-622 allows a petition only if the petitioner has reason to believe the individual both has a mental disorder and presents a danger to the life or safety of the individual or of others. Both elements are required, and the petition must contain a description of the behavior, statements, or other information that supports them, plus any other facts supporting the need for emergency evaluation. Write observed facts (what was said, what was done, when), not conclusions; the facts are what a reviewing court or the receiving facility acts on.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "petitioner",
+          "question": "Who is filing the petition, and in which statutory category?",
+          "listenFor": [
+            "Examining professional who has examined the individual: physician, psychologist, clinical social worker, licensed clinical professional counselor, clinical nurse specialist in psychiatric and mental health nursing, psychiatric nurse practitioner, licensed clinical marriage and family therapist, or health officer or designee",
+            "Peace officer who personally observed the individual or the individual's behavior",
+            "Any other interested person (lay petitioner): the court review route applies",
+            "Physician assistant: NOT on the current section 10-622 petitioner list in the MDH compilation (2026 bills propose adding physician assistants; a bill is not current law)"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Section 10-622 lists who may petition, and the route differs by category: professionals and peace officers can act on their examination or observation or on other pertinent information obtained, while a lay petitioner goes through court review first (see the lay route item). One live caution: bills in the 2026 session (SB 326 and HB 377) propose adding physician assistants to the petitioner and certifier lists, but the current statute text compiled by the Maryland Department of Health does not include them, so this sheet teaches the current list only.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-04",
+          "system": "petition contents",
+          "question": "Does the petition contain every required element?",
+          "listenFor": [
+            "Petitioner name, address, and home and work telephone numbers; petition signed and verified",
+            "Evaluee name and description; if available, evaluee address and the name and address of a spouse, child, parent, other relative, or another interested individual",
+            "License number, for a professional petitioner",
+            "Description of the behavior, statements, or other information supporting mental disorder and danger, and any other facts supporting the need for emergency evaluation",
+            "The form's notices are understood: the petitioner may be required to appear before a court, and the statements are made under penalties of perjury"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "This checklist is section 10-622's contents list, and the official court form CC-DC-013 (Petition for Emergency Evaluation) is built to capture the same elements, including the professional petitioner's specialty and license number, the petitioner's relationship to or interest in the evaluee, and any prior petitions and hospitalizations. An incomplete petition wastes the one resource the process cannot refund, which is time during a crisis. Fill the form, then check it against this list.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-05",
+          "system": "routes",
+          "question": "Which route does this petition take to the emergency facility?",
+          "listenFor": [
+            "Professional petitioner: petition given to a peace officer, who must explain the serious nature of the petition and its meaning and content to the evaluee",
+            "Lay petitioner: petition presented to the court for immediate review; the court endorses it only if it finds probable cause to believe the evaluee has shown symptoms of a mental disorder and presents a danger to the life or safety of self or others",
+            "Lay petition without a probable cause finding: the court indicates that on the petition and no further action may be taken under it"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Section 10-623 sets the lay route: present the petition to the court (district or circuit court) for immediate review, and endorsement requires a probable cause finding on both elements. The professional route skips court review because the examination is built into the petition itself, but it adds the peace officer step and the officer's duty to explain the petition to the evaluee. Clinicians are usually professional petitioners; families are usually lay petitioners, which is why families need the court step explained to them early.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "custody and examination",
+          "maneuver": "After the petition, apply the custody and examination clock (section 10-624).",
+          "findings": [
+            "Transport: a peace officer takes the emergency evaluee to the nearest emergency facility when the petition was endorsed by a court within the last 5 days, or is signed and submitted by a listed professional, health officer or designee, or peace officer",
+            "Examination: a physician examines the evaluee within 6 hours after arrival, to determine whether the evaluee meets the requirements for involuntary admission; if a physician asks an officer to stay because the evaluee is violent, the examination is as prompt as possible",
+            "Release rule: promptly after the examination the evaluee is released unless they ask for voluntary admission or meet the requirements for involuntary admission",
+            "Outer limit: an emergency evaluee may not be kept at an emergency facility for more than 30 hours"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "These elements are the current text of section 10-624, verified against the Maryland General Assembly's official statute text on 2026-10-26. The clock to act on at the bedside: examination within 6 hours of arrival, release promptly after the examination unless the evaluee asks for voluntary admission or meets involuntary admission requirements, and a hard 30-hour ceiling on emergency facility detention. The statute also allows the petition to be an electronic record transmitted electronically, and has the officer notify the facility in advance to the extent practicable.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "after the examination",
+          "maneuver": "If the evaluee meets involuntary admission requirements and will not agree to voluntary admission, apply section 10-625.",
+          "findings": [
+            "The examining physician takes the steps needed for involuntary admission to an appropriate facility, which may be a general hospital with a licensed inpatient psychiatric unit",
+            "If the examining physician cannot get the evaluee admitted, the physician notifies the Department, and within 6 hours after notification the Department provides for admission to an appropriate facility",
+            "Within 30 hours after the emergency facility completes an application for involuntary admission, the facility notifies the Mental Health Division in the Office of the Public Defender by email or facsimile, including the emergency petition, application, and certification",
+            "None of the notice steps applies to a patient who agrees to voluntary admission"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Section 10-625 is the bridge from emergency evaluation to involuntary admission, and it assigns the work: the examining physician drives admission, the Department is the backstop with its own 6-hour duty once notified, and the facility owes the Public Defender's Mental Health Division a complete packet (petition, application, certification) within 30 hours. That notification is what connects the patient to the hearing machinery and to counsel, so treat the paperwork deadline as part of the patient's rights, not as clerical overflow.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "application and certificates",
+          "maneuver": "Assemble the involuntary admission application and certificates (sections 10-615 and 10-616).",
+          "findings": [
+            "Application: in writing, dated, on the required form, stating the applicant's relationship to the individual, signed by the applicant; any person with a legitimate interest in the individual's welfare may apply (section 10-614, per the Behavioral Health Administration application form)",
+            "Certificate combinations, one of: 1 physician and 1 psychologist; 2 physicians; 1 physician and 1 psychiatric nurse practitioner; 1 physician and 1 licensed certified social worker-clinical; or 1 physician and 1 licensed clinical professional counselor",
+            "Each certificate: based on the signer's personal examination, in the form the Secretary adopts, including a diagnosis of a mental disorder, an opinion that the individual needs inpatient care or treatment, and an opinion that admission is needed for the protection of the individual or another",
+            "Certificate limits: unusable if the examination was done more than 1 week before the certificate is signed or more than 30 days before the facility receives the application; unusable if the signer has a financial interest in the proprietary facility or is related by blood or marriage to the individual or the applicant"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The certificate rules are where applications fail on technique: wrong combination of signers, an examination too old, or a signer with a disqualifying interest. Check the calendar before the signatures, not after: the examination-to-signature window is one week and the examination-to-receipt window is 30 days. Note also that the certifier list in section 10-615 is narrower than the petitioner list in section 10-622; being able to petition does not mean being able to certify.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "admission criteria",
+          "maneuver": "Test the case against the five involuntary admission criteria (section 10-617).",
+          "findings": [
+            "1. The individual has a mental disorder",
+            "2. The individual needs inpatient care or treatment",
+            "3. The individual presents a danger to the life or safety of the individual or others",
+            "4. The individual is unable or unwilling to be admitted voluntarily",
+            "5. There is no available, less restrictive form of intervention consistent with the welfare and safety of the individual",
+            "Additional restrictions apply if the individual is 65 or older",
+            "All five present: a facility may admit; any one missing: it may not"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "These five criteria are the substantive law of involuntary admission in Maryland, and they reappear almost verbatim as the hearing elements in section 10-632, so a case built to this list is a case built for its hearing. The fifth criterion does real work: if a less restrictive option exists and is actually available (a crisis bed, a willing family with a workable safety plan, voluntary treatment the patient will accept), inpatient involuntary admission is not authorized, and the chart should show the alternatives were considered. The five criteria and the geriatric evaluation team condition for a State facility admission at 65 or older are the current text of section 10-617(a) and (b), verified against the Maryland General Assembly's official statute text on 2026-10-26.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "notice of rights",
+          "maneuver": "Deliver the statutory notice after initial confinement (section 10-631).",
+          "findings": [
+            "Within 12 hours after initial confinement, the standard form is read and given to the individual",
+            "The form states: notice of the admission; the right to consult a lawyer of the individual's choosing; the availability of legal aid bureaus, lawyer referral services, and other referral agencies; the right to call or write a lawyer or referral agency, or have someone do so; and in substance the provisions under which the individual is admitted, section 10-631 itself, and the patient rights provisions of Subtitle 7",
+            "If the individual does not understand the notice, it also goes to the parent, guardian, or next of kin, to the applicant, and to any other person with a significant interest",
+            "Within 24 hours after admission, notice of the admission goes to the Mental Health Division in the Office of the Public Defender"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The 12-hour and 24-hour figures and every element in this item are the current text of section 10-631, verified against the Maryland General Assembly's official statute text on 2026-10-26. The bedside behavior: the patient gets the rights form early, read in English or, if the patient does not understand English, in the language or manner best calculated to inform them, and the Public Defender notification is what makes the right to counsel real rather than theoretical. The facility must also keep the form and a certification of compliance in the patient's record.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "hearing",
+          "maneuver": "Prepare for the involuntary admission hearing (section 10-632).",
+          "findings": [
+            "A hearing is held to decide whether the individual is admitted as an involuntary patient or released",
+            "Timing: within 10 days of the date of initial confinement; may be postponed for good cause for no more than 7 days, with the reasons on the record, and a decision made within that period",
+            "The Secretary adopts hearing procedure regulations and designates an impartial hearing officer",
+            "Standard: the hearing officer orders release unless the record shows by clear and convincing evidence, at the time of the hearing, that every element exists: mental disorder; need for inpatient care or treatment; danger to the life or safety of self or others; unable or unwilling to be voluntarily admitted; no available less restrictive intervention consistent with welfare and safety; and, for an individual 65 or older going to a State facility, geriatric evaluation team review finding no less restrictive care appropriate"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Two features of the hearing change how you write notes from day one. The standard is clear and convincing evidence, higher than the probable cause that started the emergency process, and the elements are judged at the time of the hearing, so today's note must speak to today's criteria, and a patient who has improved by the hearing date may no longer meet them. Document each element separately, including the less restrictive alternatives considered, because the hearing officer works element by element through the same list as section 10-617 plus the geriatric condition.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "patient rights",
+          "maneuver": "Apply the Subtitle 7 patient rights basics (section 10-701 and the MDH rights form).",
+          "findings": [
+            "Appropriate humane treatment and services, restricting personal liberty only to the extent necessary and consistent with treatment needs and legal requirements; treatment under an individualized plan",
+            "Freedom from restraint or seclusion except in an emergency where behavior places the individual or others at serious threat of violence or injury, ordered by a physician in writing or directed by a registered nurse with a physician's order obtained within 2 hours; no prone restraint, and no restraint that pressures the back, obstructs the airway, blocks the view of the face, or restricts communicating distress",
+            "Freedom from mental abuse; protection from harm or abuse; treatment consistent with a mental health advance directive, subject to section 10-708",
+            "Right to an advocate of the individual's choice in treatment planning and discharge planning (subject to the limits in section 10-701(e))",
+            "Rights must be communicated on admission in appropriate language and terms, posted by the facility, and backed by an impartial, timely complaint procedure",
+            "From the MDH rights form: an administrative hearing within 10 days of initial confinement for a patient admitted on certificates (postponable for good cause by no more than 7 days); the right to apply for a writ of habeas corpus (section 10-804); the right to petition the court for judicial release (section 10-805)"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Rights are part of the treatment plan, not a poster. The restraint rules are the ones a student is most likely to see applied or violated in real time: emergency only, serious threat of violence or injury, a written physician order (or a nurse-directed start with the order within 2 hours), and absolute bars on prone restraint and on positions that obstruct the airway or hide the face. The advocate right and the advance directive right both require the team to ask, because patients rarely invoke them unprompted.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-08",
+          "system": "immunity",
+          "maneuver": "Note the statutory immunity for acting under the emergency petition part (section 10-629).",
+          "findings": [
+            "Immunity from liability (under Courts and Judicial Proceedings section 5-624) covers: a petitioner acting under Part IV of Subtitle 6; a peace officer acting as custodian of an emergency evaluee; an emergency facility acting under Part IV; and an agent or employee of an emergency facility acting in compliance with Part IV",
+            "Immunity is tied to acting under the statute: following the petition, custody, and examination steps is what keeps the actor inside it"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Immunity is the answer to the fear that stops petitions from being filed: a clinician who petitions in compliance with Part IV is protected. It is not a general shield; it attaches to the statutory roles (petitioner, custodian officer, facility, facility staff) acting under the Part, which is one more reason to follow the contents, route, and clock items in this sheet exactly.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-09",
+          "system": "unverified elements",
+          "maneuver": "Know what this sheet does NOT cover, because it could not be verified from official Maryland material.",
+          "findings": [
+            "UNVERIFIED: rules for involuntary medication and clinical review panels were not sourced from official Maryland material for this sheet and are not stated here",
+            "UNVERIFIED: Maryland-specific ECT consent rules (see the ECT sheet) were not sourced and are not stated"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "This item exists so the gaps are visible at the bedside rather than discovered later. The drafting rule for this sheet was that every legal element comes from official Maryland material actually opened (the Maryland Code as compiled by the Department of Health, the Maryland Courts form, and Maryland General Assembly publications). The elements once flagged for re-verification (sections 10-617, 10-624, 10-631) have since been verified against the official statute text, and section 10-633 has been verified and added as its own item. The two gaps above remain: treat them as unknown, not as covered elsewhere in this sheet.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-10",
+          "system": "after the hearing",
+          "maneuver": "Apply section 10-633 once the hearing officer has decided.",
+          "findings": [
+            "The hearing officer's determination on an involuntary admission is a final decision of the Department",
+            "Because it is a final decision, it is subject to judicial review as a final decision under the Administrative Procedure Act"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Section 10-633 is one sentence long in the current Code, verified against the Maryland General Assembly's official statute text on 2026-10-26: a hearing officer's determination is a final decision of the Department for the purpose of judicial review under the Administrative Procedure Act. In practice that makes the hearing the end of the administrative road: a further challenge goes to court through judicial review, separate from the patient's habeas corpus (section 10-804) and judicial release (section 10-805) routes in the rights item. An earlier draft of this sheet, following a 2013 synopsis, described this section as release and retention mechanics after the hearing; the current text says nothing of the kind, and the sheet teaches only what the section says.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 15,
+        "howMissing": 10
       }
     }
   ]

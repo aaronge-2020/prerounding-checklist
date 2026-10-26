@@ -43,7 +43,11 @@ const bundle = JSON.parse(readFileSync(join(root, "src", "data", "cheat-sheets.j
 // worksheet set for the same clerkship. Sheets 83-88 (serotonin syndrome
 // vs NMS vs anticholinergic toxicity, catatonia, lithium, antipsychotics,
 // antidepressant traps, ECT) were appended 2026-10-26 as the psychiatry
-// reference set for the same clerkship. itemsHash = sha256 over each
+// reference set for the same clerkship. Sheet 89 (Maryland emergency
+// petition and involuntary admission) was appended 2026-10-26 as the
+// final psychiatry reference sheet for the same clerkship, re-verified
+// against the official Maryland General Assembly statute text the same
+// day. itemsHash = sha256 over each
 // source item's kind|id|system|text|choices joined by \x00.
 const FROZEN = [
     {
@@ -1078,7 +1082,8 @@ const FROZEN = [
         "anticholinergic toxicity",
         "anticholinergic toxidrome",
         "hyperthermia differential",
-        "clonus"
+        "clonus",
+        "hunter criteria"
       ],
       "history": 5,
       "exam": 9,
@@ -1169,6 +1174,22 @@ const FROZEN = [
       "history": 3,
       "exam": 7,
       "itemsHash": "659f55c30098990ea6ce596abab909ffa398ec28783cee17341defef35821336"
+    },
+    {
+      "id": "maryland-emergency-petition",
+      "title": "Maryland emergency petition and involuntary admission",
+      "aliases": [
+        "emergency petition",
+        "involuntary admission",
+        "emergency evaluation",
+        "cc-dc-013",
+        "health-general 10-622",
+        "civil commitment maryland",
+        "emergency evaluee"
+      ],
+      "history": 5,
+      "exam": 10,
+      "itemsHash": "08d5a6f138222e569b584f8703af679c1ab9b0ddefcfd1c04036c1f72656ff8e"
     }
   ];
 
