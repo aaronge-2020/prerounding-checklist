@@ -31,6 +31,19 @@
     }
     button { font-family: inherit; }
     .hidden { display: none !important; }
+    /* Visible keyboard focus for every interactive element (M3: focus
+       state must be perceivable, not color alone elsewhere either). */
+    button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition: none !important;
+        animation: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
 
     /* ---- list view ---- */
     .topbar {
@@ -48,6 +61,7 @@
     }
     #q {
       width: 100%;
+      min-height: 48px;
       font-size: 17px; /* >=16px prevents iOS focus zoom */
       padding: 10px 12px;
       border: 1px solid var(--line);
@@ -58,11 +72,12 @@
       appearance: none;
     }
     #q:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
-    .count { font-size: 11.5px; color: var(--muted); margin: 4px 2px 0; }
+    .count { font-size: 12.5px; color: var(--muted); margin: 4px 2px 0; }
 
     .scribe-row {
       display: flex;
       align-items: center;
+      min-height: 48px;
       gap: 8px;
       margin: 10px 12px 2px;
       padding: 11px 12px;
@@ -79,7 +94,8 @@
     #list { padding: 6px 12px 24px; max-width: 640px; margin: 0 auto; }
     .srow {
       display: flex;
-      align-items: baseline;
+      align-items: center;
+      min-height: 56px;
       gap: 8px;
       width: 100%;
       text-align: left;
@@ -88,13 +104,14 @@
       border-radius: 10px;
       padding: 9px 12px;
       margin: 5px 0;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
       color: var(--ink);
       cursor: pointer;
       -webkit-appearance: none;
       appearance: none;
     }
+    .srow:active { background: #eef3fb; }
     .srow .t {
       flex: 1;
       min-width: 0;
@@ -142,7 +159,8 @@
       border: 1px solid var(--line);
       border-radius: 9px;
       padding: 8px 12px;
-      min-height: 40px;
+      min-height: 48px;
+      min-width: 48px;
       cursor: pointer;
       -webkit-appearance: none;
       appearance: none;
@@ -159,6 +177,9 @@
     }
     .jump { display: flex; gap: 4px; flex: none; }
     .jump a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 48px;
       font-size: 13px;
       font-weight: 700;
       color: var(--accent);
@@ -179,6 +200,7 @@
     #sheetStrip::-webkit-scrollbar { display: none; }
     .strip-chip {
       flex: none;
+      min-height: 48px;
       max-width: 170px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -199,6 +221,8 @@
       border-color: var(--ink);
       color: #fff;
     }
+    .strip-chip:active { background: #eef3fb; }
+    .strip-chip[aria-current="true"]:active { background: #374151; }
 
     #detailBody { padding: 2px 12px 32px; max-width: 640px; margin: 0 auto; }
     .review-note {
@@ -218,11 +242,14 @@
       letter-spacing: 0.06em;
       color: var(--muted);
       margin: 14px 0 4px;
-      scroll-margin-top: 118px;
+      scroll-margin-top: 128px; /* clears the detail sticky stack: 48px back row + 48px sheet strip + paddings */
     }
     h3.sec .n { font-size: 11px; text-transform: none; letter-spacing: 0; }
     .qrow {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 48px;
       width: 100%;
       text-align: left;
       background: var(--card);
@@ -304,7 +331,7 @@
       margin: 8px 0;
     }
     .ws-domain { font-size: 15px; font-weight: 700; margin: 0 0 2px; }
-    .ws-maneuver { font-size: 12.5px; color: var(--muted); margin: 0 0 8px; }
+    .ws-maneuver { font-size: 13.5px; color: var(--muted); margin: 0 0 8px; }
     .ws-chiprow { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 10px; }
     .ws-chip {
       min-height: 48px;
@@ -325,6 +352,7 @@
       border-color: var(--accent);
       font-weight: 700;
     }
+    .ws-chip:active { background: #d9e6fa; }
     .ws-note-label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 4px; }
     .ws-field { margin-top: 12px; }
     .ws-field-label { font-size: 13px; font-weight: 700; margin: 0 0 2px; }
@@ -381,10 +409,10 @@
     }
     .ws-copy-hint { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; }
     .ws-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-    .ws-card { scroll-margin-top: 124px; }
+    .ws-card { scroll-margin-top: 128px; } /* sticky stack: 48px back row + 48px nav strip + paddings/borders = ~121px */
     .ws-normal {
       flex: none;
-      min-height: 40px;
+      min-height: 48px;
       font-size: 13px;
       font-weight: 600;
       color: var(--ink);
@@ -416,7 +444,7 @@
       border: 0;
       padding: 8px 2px;
       margin-top: 2px;
-      min-height: 40px;
+      min-height: 48px;
       cursor: pointer;
       -webkit-appearance: none;
       appearance: none;
