@@ -103,6 +103,113 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
       </section>`;
   }
 
+  // --- fillable worksheet (session-only; the controller owns the state) ---
+  //
+  // Narrow exception to the read-only rule, for sheets flagged
+  // `worksheet: true` (the Mental Status Examination sheet): answer chips
+  // per exam item plus an optional free-text detail per item, rendered from
+  // the item's coded findings. State shape: a Map or plain object keyed by
+  // item id -> { selected: Set<string>, note: string }. This module stays
+  // pure: it only reads that state and returns markup or note text.
+
+  function readWorksheetEntry(state, itemId) {
+    if (!state) return null;
+    const entry = typeof state.get === "function" ? state.get(itemId) : state[itemId];
+    if (!entry) return null;
+    const selected = entry.selected instanceof Set ? entry.selected : new Set(entry.selected || []);
+    return { selected, note: String(entry.note ?? "") };
+  }
+
+  function worksheetSection(sheet, state, item) {
+    const entry = readWorksheetEntry(state, item.id);
+    if (!entry) return null;
+    const detail = entry.note.trim();
+    const selections = (item.findings || []).filter((finding) => entry.selected.has(finding));
+    if (!selections.length && !detail) return null;
+    return { item, selections, detail };
+  }
+
+  function worksheetFilledCount(sheet, state) {
+    let filled = 0;
+    for (const item of (sheet && sheet.exam) || []) {
+      if (worksheetSection(sheet, state, item)) filled += 1;
+    }
+    return filled;
+  }
+
+  function worksheetProgressText(sheet, state) {
+    const total = ((sheet && sheet.exam) || []).length;
+    return `${worksheetFilledCount(sheet, state)} of ${total} sections filled`;
+  }
+
+  // The exact text the clinician pastes into their note. One line per
+  // filled section, in sheet order; selections in findings data order;
+  // a detail follows the selections after ". " (or stands alone), trimmed,
+  // with a single trailing period.
+  function worksheetNoteText(sheet, state) {
+    const lines = [];
+    for (const item of (sheet && sheet.exam) || []) {
+      const section = worksheetSection(sheet, state, item);
+      if (!section) continue;
+      const domain = String(item.system ?? "").trim() || "General";
+      let detail = section.detail;
+      if (detail && !detail.endsWith(".")) detail += ".";
+      if (section.selections.length) {
+        lines.push(`${domain}: ${section.selections.join("; ")}${detail ? `. ${detail}` : ""}`);
+      } else {
+        lines.push(`${domain}: ${detail}`);
+      }
+    }
+    return lines.length ? `Mental Status Examination\n${lines.join("\n")}` : "";
+  }
+
+  function renderWorksheetSection(sheet, state, item) {
+    const entry = readWorksheetEntry(state, item.id) || { selected: new Set(), note: "" };
+    const itemId = escapeHtml(String(item.id));
+    const chips = (item.findings || []).map((finding) => {
+      const value = String(finding);
+      const selected = entry.selected.has(value);
+      return `
+        <button type="button" class="cs-worksheet-chip" data-worksheet-chip="${itemId}" data-value="${escapeHtml(value)}" aria-pressed="${selected ? "true" : "false"}">${selected ? "\u2713 " : ""}${escapeHtml(value)}</button>`;
+    }).join("");
+    return `
+      <section class="cs-worksheet-card" data-worksheet-section="${itemId}">
+        <h2 class="cs-worksheet-domain">${escapeHtml(String(item.system ?? "").trim() || "General")}</h2>
+        ${item.maneuver ? `<p class="cs-worksheet-maneuver">${escapeHtml(String(item.maneuver))}</p>` : ""}
+        ${chips ? `<div class="cs-worksheet-chips" role="group" aria-label="${escapeHtml(String(item.system ?? ""))} answers">${chips}
+        </div>` : ""}
+        <label class="cs-worksheet-note-label" for="cs-worksheet-note-${itemId}">Detail (optional)</label>
+        <textarea class="cs-worksheet-note" id="cs-worksheet-note-${itemId}" data-worksheet-note="${itemId}" rows="2" placeholder="Add specifics in your own words">${escapeHtml(entry.note)}</textarea>
+      </section>`;
+  }
+
+  function worksheetHtml(sheet, state) {
+    if (!sheet) return emptyStateHtml();
+    const noteText = worksheetNoteText(sheet, state);
+    const rows = Math.max(4, noteText ? noteText.split("\n").length + 1 : 4);
+    return `
+      <div class="cs-worksheet">
+        <header class="cs-worksheet-header">
+          <button type="button" class="cs-back" data-action="cheat-sheets-worksheet-back" aria-label="Back to the sheet">
+            <span class="cs-back-icon">${ICONS.back}</span><span>Sheet</span>
+          </button>
+          <h1 class="cs-title">MSE Worksheet</h1>
+          <p class="cs-worksheet-progress" data-worksheet-progress aria-live="polite">${escapeHtml(worksheetProgressText(sheet, state))}</p>
+        </header>
+        <p class="cs-worksheet-privacy">Answers stay on this page and are not saved. Copy your note text before you close the page.</p>
+        ${((sheet.exam) || []).map((item) => renderWorksheetSection(sheet, state, item)).join("")}
+        <section class="cs-worksheet-card cs-worksheet-output-card">
+          <label class="cs-worksheet-domain" for="cheat-sheets-worksheet-output">Note text</label>
+          <textarea class="cs-worksheet-output" id="cheat-sheets-worksheet-output" readonly rows="${rows}" placeholder="Your note text builds here as you tap answers.">${escapeHtml(noteText)}</textarea>
+          <div class="cs-worksheet-actions">
+            <button type="button" class="cs-worksheet-copy" data-action="cheat-sheets-worksheet-copy"${noteText ? "" : " disabled"}>Copy note text</button>
+            <button type="button" class="cs-worksheet-clear" data-action="cheat-sheets-worksheet-clear">Clear</button>
+          </div>
+          <p class="cs-worksheet-copy-hint" data-worksheet-copy-hint hidden></p>
+        </section>
+      </div>`;
+  }
+
   // --- detail ---
 
   function renderReviewBanner(sheet) {
@@ -132,6 +239,11 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
           <h1 class="cs-title">${escapeHtml(String(sheet.title ?? sheet.id ?? "Cheat sheet"))}</h1>
           ${aliases.length ? `<p class="cs-aliases">Also: ${aliases.map((alias) => escapeHtml(String(alias))).join(", ")}</p>` : ""}
         </header>
+        ${sheet.worksheet ? `
+        <button type="button" class="cs-worksheet-open" data-action="cheat-sheets-open-worksheet">
+          <span class="cs-worksheet-open-title">Fill in worksheet</span>
+          <span class="cs-worksheet-open-sub">Tap answers, then copy into your note.</span>
+        </button>` : ""}
         ${renderReviewBanner(sheet)}
         ${renderHistorySection(sheet.history)}
         ${renderExamSection(sheet.exam)}
@@ -200,5 +312,5 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
       </div>`;
   }
 
-  return { sheetListHtml, sheetListResultsHtml, sheetDetailHtml, emptyStateHtml };
+  return { sheetListHtml, sheetListResultsHtml, sheetDetailHtml, emptyStateHtml, worksheetHtml, worksheetNoteText, worksheetProgressText };
 }

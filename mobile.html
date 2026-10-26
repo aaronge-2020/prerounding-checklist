@@ -268,6 +268,114 @@
       color: var(--muted);
     }
     footer a { color: var(--accent); font-weight: 600; }
+
+    /* ---- fillable worksheet (MSE sheet, answers in page memory only) ---- */
+    .ws-open {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: #111827;
+      color: #fff;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px;
+      margin: 10px 0 2px;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .ws-open .ws-open-title { display: block; font-size: 15px; font-weight: 700; }
+    .ws-open small { display: block; font-weight: 400; color: #d1d5db; font-size: 12.5px; margin-top: 2px; }
+    .ws-progress { flex: none; font-size: 12px; color: var(--muted); }
+    #worksheetBody { padding: 2px 12px 32px; max-width: 640px; margin: 0 auto; }
+    .ws-privacy {
+      font-size: 12.5px;
+      color: var(--warn-ink);
+      background: var(--warn-bg);
+      border-radius: 8px;
+      padding: 7px 10px;
+      margin: 8px 0 0;
+    }
+    .ws-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin: 8px 0;
+    }
+    .ws-domain { font-size: 15px; font-weight: 700; margin: 0 0 2px; }
+    .ws-maneuver { font-size: 12.5px; color: var(--muted); margin: 0 0 8px; }
+    .ws-chiprow { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 10px; }
+    .ws-chip {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      font-size: 14px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .ws-chip[aria-pressed="true"] {
+      background: #e8effc;
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+    .ws-note-label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 4px; }
+    .ws-note {
+      width: 100%;
+      font-size: 16px;
+      font-family: inherit;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--card);
+      color: var(--ink);
+    }
+    .ws-output {
+      width: 100%;
+      font-size: 15px;
+      font-family: inherit;
+      line-height: 1.4;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    .ws-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .ws-copy {
+      flex: 1;
+      min-height: 48px;
+      font-size: 15px;
+      font-weight: 700;
+      background: #111827;
+      color: #fff;
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 12px;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .ws-copy:disabled { opacity: 0.45; cursor: default; }
+    .ws-clear {
+      min-height: 48px;
+      font-size: 15px;
+      background: var(--card);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px 16px;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .ws-copy-hint { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; }
   </style>
 </head>
 <body>
@@ -303,6 +411,17 @@
     <div id="detailBody"></div>
   </div>
 
+  <div id="worksheetView" class="hidden">
+    <div class="dstick">
+      <div class="dbar">
+        <button class="back" id="wsBackBtn" type="button">← Sheet</button>
+        <h2>MSE Worksheet</h2>
+        <span class="ws-progress" id="wsProgress" aria-live="polite"></span>
+      </div>
+    </div>
+    <div id="worksheetBody"></div>
+  </div>
+
   <div id="status" class="status" role="status">Loading cheat sheets…</div>
 
   <script>
@@ -322,7 +441,7 @@
     }
 
     // ---- constants -------------------------------------------------------
-    var DATA_URL = './src/data/cheat-sheets.json?v=20261026-cheatsheets-v3';
+    var DATA_URL = './src/data/cheat-sheets.json?v=20261026-cheatsheets-v4';
     var LAST_SHEET_KEY = 'prerounding.cheatSheets.lastSheetId.v1';
     var MOBILE_CHOICE_KEY = 'prerounding.mobileChoice.v1';
 
@@ -470,6 +589,11 @@
       if (sheet.reviewNeeded) {
         html += '<p class="review-note">Some items on this sheet are marked for clinician review before relying on them.</p>';
       }
+      if (sheet.worksheet) {
+        html += '<button type="button" class="ws-open" id="wsOpenBtn">' +
+          '<span class="ws-open-title">Fill in worksheet</span>' +
+          '<small>Tap answers, then copy into your note.</small></button>';
+      }
       if (history.length) {
         html += '<h3 class="sec" id="sec-history">History <span class="n">' +
           history.length + ' questions</span></h3>';
@@ -484,6 +608,7 @@
         html += '<div class="status">This sheet has no items yet.</div>';
       }
       $('detailBody').innerHTML = html;
+      $('worksheetView').classList.add('hidden');
       $('listView').classList.add('hidden');
       $('detailView').classList.remove('hidden');
       window.scrollTo(0, 0);
@@ -492,9 +617,119 @@
     function showList() {
       currentId = null;
       writeLastSheetId(null);
+      $('worksheetView').classList.add('hidden');
       $('detailView').classList.add('hidden');
       $('listView').classList.remove('hidden');
       renderList($('q').value);
+    }
+
+    // ---- fillable worksheet (answers in page memory only, never stored) ---
+    var wsSheet = null;
+    var wsAnswers = {};
+
+    function wsEntry(itemId) {
+      if (!wsAnswers[itemId]) wsAnswers[itemId] = { selected: new Set(), note: '' };
+      return wsAnswers[itemId];
+    }
+
+    function wsSectionFilled(item) {
+      var entry = wsAnswers[item.id];
+      if (!entry) return false;
+      return entry.selected.size > 0 || entry.note.trim() !== '';
+    }
+
+    function wsProgressText() {
+      if (!wsSheet) return '';
+      var total = (wsSheet.exam || []).length;
+      var filled = 0;
+      (wsSheet.exam || []).forEach(function (item) { if (wsSectionFilled(item)) filled += 1; });
+      return filled + ' of ' + total + ' sections filled';
+    }
+
+    function worksheetNoteText() {
+      if (!wsSheet) return '';
+      var lines = [];
+      (wsSheet.exam || []).forEach(function (item) {
+        var entry = wsAnswers[item.id];
+        if (!entry) return;
+        var selections = (item.findings || []).filter(function (f) { return entry.selected.has(f); });
+        var detail = entry.note.trim();
+        if (!selections.length && !detail) return;
+        if (detail && detail.charAt(detail.length - 1) !== '.') detail += '.';
+        var domain = String(item.system == null ? '' : item.system).trim() || 'General';
+        if (selections.length) {
+          lines.push(domain + ': ' + selections.join('; ') + (detail ? '. ' + detail : ''));
+        } else {
+          lines.push(domain + ': ' + detail);
+        }
+      });
+      return lines.length ? 'Mental Status Examination\n' + lines.join('\n') : '';
+    }
+
+    function renderWorksheet(keepScroll) {
+      if (!wsSheet) return;
+      var y = keepScroll ? window.scrollY : 0;
+      var html = '<p class="ws-privacy">Answers stay on this page and are not saved. ' +
+        'Copy your note text before you close the page.</p>';
+      (wsSheet.exam || []).forEach(function (item) {
+        var entry = wsAnswers[item.id] || { selected: new Set(), note: '' };
+        html += '<div class="ws-card">';
+        html += '<p class="ws-domain">' + esc(item.system) + '</p>';
+        if (item.maneuver) html += '<p class="ws-maneuver">' + esc(item.maneuver) + '</p>';
+        html += '<div class="ws-chiprow" role="group" aria-label="' + esc(item.system) + ' answers">';
+        (item.findings || []).forEach(function (finding) {
+          var on = entry.selected.has(finding);
+          html += '<button type="button" class="ws-chip" data-ws-chip="' + esc(item.id) +
+            '" data-value="' + esc(finding) + '" aria-pressed="' + (on ? 'true' : 'false') + '">' +
+            (on ? '✓ ' : '') + esc(finding) + '</button>';
+        });
+        html += '</div>';
+        html += '<label class="ws-note-label" for="ws-note-' + esc(item.id) + '">Detail (optional)</label>';
+        html += '<textarea class="ws-note" id="ws-note-' + esc(item.id) + '" data-ws-note="' + esc(item.id) +
+          '" rows="2" placeholder="Add specifics in your own words">' + esc(entry.note) + '</textarea>';
+        html += '</div>';
+      });
+      html += '<div class="ws-card">';
+      html += '<label class="ws-domain ws-note-label" for="wsOutput">Note text</label>';
+      html += '<textarea class="ws-output" id="wsOutput" readonly rows="4" ' +
+        'placeholder="Your note text builds here as you tap answers."></textarea>';
+      html += '<div class="ws-actions">' +
+        '<button type="button" class="ws-copy" id="wsCopyBtn">Copy note text</button>' +
+        '<button type="button" class="ws-clear" id="wsClearBtn">Clear</button></div>';
+      html += '<p class="ws-copy-hint" id="wsCopyHint" hidden></p>';
+      html += '</div>';
+      $('worksheetBody').innerHTML = html;
+      updateWsOutput();
+      window.scrollTo(0, y);
+    }
+
+    // Refresh only the output, progress, and Copy state: no re-render, so a
+    // detail field being typed in keeps focus and caret.
+    function updateWsOutput() {
+      var out = $('wsOutput');
+      if (!out) return;
+      var text = worksheetNoteText();
+      out.value = text;
+      out.rows = Math.max(4, text ? text.split('\n').length + 1 : 4);
+      $('wsProgress').textContent = wsProgressText();
+      var copyBtn = $('wsCopyBtn');
+      if (copyBtn) copyBtn.disabled = !text;
+    }
+
+    function openWorksheet() {
+      var sheet = findSheet(currentId);
+      if (!sheet || !sheet.worksheet) return;
+      wsSheet = sheet;
+      $('listView').classList.add('hidden');
+      $('detailView').classList.add('hidden');
+      $('worksheetView').classList.remove('hidden');
+      renderWorksheet(false);
+    }
+
+    function closeWorksheet() {
+      $('worksheetView').classList.add('hidden');
+      $('detailView').classList.remove('hidden');
+      window.scrollTo(0, 0);
     }
 
     function openSheet(id) {
@@ -525,6 +760,59 @@
       if (chip) openSheet(chip.getAttribute('data-sheet-id'));
     });
     $('backBtn').addEventListener('click', showList);
+    $('detailBody').addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('#wsOpenBtn') : null;
+      if (btn) openWorksheet();
+    });
+    $('wsBackBtn').addEventListener('click', closeWorksheet);
+    $('worksheetBody').addEventListener('click', function (e) {
+      var t = e.target;
+      var chipBtn = t.closest ? t.closest('[data-ws-chip]') : null;
+      if (chipBtn) {
+        var entry = wsEntry(chipBtn.getAttribute('data-ws-chip'));
+        var value = chipBtn.getAttribute('data-value');
+        if (entry.selected.has(value)) entry.selected.delete(value);
+        else entry.selected.add(value);
+        renderWorksheet(true);
+        return;
+      }
+      if (t.closest && t.closest('#wsClearBtn')) {
+        if (window.confirm('Clear all answers?')) {
+          wsAnswers = {};
+          renderWorksheet(true);
+        }
+        return;
+      }
+      if (t.closest && t.closest('#wsCopyBtn')) {
+        var btn = t.closest('#wsCopyBtn');
+        var text = worksheetNoteText();
+        var hint = $('wsCopyHint');
+        var fallback = function () {
+          var out = $('wsOutput');
+          if (out) { out.focus(); out.select(); }
+          if (hint) {
+            hint.textContent = 'The note text above is selected. Copy it with a long-press (or Ctrl+C).';
+            hint.hidden = false;
+          }
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () {
+            if (hint) hint.hidden = true;
+            var original = btn.textContent;
+            btn.textContent = 'Copied';
+            setTimeout(function () { btn.textContent = original; }, 2000);
+          }, fallback);
+        } else {
+          fallback();
+        }
+      }
+    });
+    $('worksheetBody').addEventListener('input', function (e) {
+      var field = e.target.closest ? e.target.closest('[data-ws-note]') : null;
+      if (!field) return;
+      wsEntry(field.getAttribute('data-ws-note')).note = field.value;
+      updateWsOutput();
+    });
     $('fullSiteLink').addEventListener('click', function () {
       try { window.localStorage.setItem(MOBILE_CHOICE_KEY, 'full'); } catch (e) {}
       // href carries ?full=1 as a backup; the link navigates normally.

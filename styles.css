@@ -13941,6 +13941,30 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
   .cs-list, .cs-detail { padding-left: 20px; padding-right: 20px; }
 }
 
+/* Cheat Sheets — fillable worksheet (MSE sheet only, session-only answers) */
+.cs-worksheet-open { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 52px; text-align: left; background: var(--text); color: var(--surface); border: 1px solid var(--text); border-radius: 12px; padding: 10px 14px; cursor: pointer; }
+.cs-worksheet-open-title { font-weight: 700; font-size: 1rem; }
+.cs-worksheet-open-sub { font-size: 0.82rem; opacity: 0.85; }
+.cs-worksheet { display: flex; flex-direction: column; gap: 12px; max-width: 720px; margin: 0 auto; padding: 12px 12px 40px; }
+.cs-worksheet-header { display: flex; flex-direction: column; gap: 2px; }
+.cs-worksheet-progress { color: var(--muted); font-size: 0.85rem; margin: 0 2px; }
+.cs-worksheet-privacy { background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 8px 10px; font-size: 0.87rem; margin: 0; }
+.cs-worksheet-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+.cs-worksheet-domain { margin: 0 0 4px; font-size: 1rem; }
+label.cs-worksheet-domain { display: block; font-weight: 600; }
+.cs-worksheet-maneuver { color: var(--muted); font-size: 0.82rem; margin: 0 0 8px; }
+.cs-worksheet-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 10px; }
+.cs-worksheet-chip { min-height: 44px; display: inline-flex; align-items: center; background: var(--surface-tint); border: 1px solid var(--line-strong); border-radius: 999px; padding: 8px 14px; font-size: 0.9rem; color: var(--text); cursor: pointer; }
+.cs-worksheet-chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); font-weight: 700; }
+.cs-worksheet-note-label { display: block; font-weight: 600; font-size: 0.85rem; margin: 0 0 4px; }
+.cs-worksheet-note { width: 100%; min-height: 44px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--surface); color: var(--text); font: inherit; font-size: 1rem; padding: 10px 12px; resize: vertical; }
+.cs-worksheet-output { width: 100%; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--surface-subtle); color: var(--text); font: inherit; font-size: 0.92rem; line-height: 1.45; padding: 10px 12px; resize: vertical; }
+.cs-worksheet-actions { display: flex; gap: 8px; margin-top: 10px; }
+.cs-worksheet-copy { min-height: 44px; background: var(--accent); color: #fff; border: 1px solid var(--accent); border-radius: 10px; padding: 10px 18px; font-weight: 700; font-size: 0.95rem; cursor: pointer; }
+.cs-worksheet-copy:disabled { opacity: 0.45; cursor: default; }
+.cs-worksheet-clear { min-height: 44px; background: none; border: 1px solid var(--line-strong); border-radius: 10px; padding: 10px 16px; font-size: 0.95rem; color: var(--text); cursor: pointer; }
+.cs-worksheet-copy-hint { font-size: 0.85rem; color: var(--muted-strong); margin: 8px 0 0; }
+
 /* Sample Notes — synthetic fixture library for end to end testing (2026-10-01) */
 .sample-notes-panel { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
 .sample-notes-banner p { margin: 4px 0 0; font-size: 0.87rem; }

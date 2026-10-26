@@ -22790,6 +22790,7 @@
     {
       "id": "mental-status-examination",
       "title": "Mental Status Examination (MSE)",
+      "worksheet": true,
       "aliases": [
         "mental status exam",
         "MSE",

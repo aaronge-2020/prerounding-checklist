@@ -17,13 +17,19 @@ import { safeHtml } from "../../lib/safe-html.js?v=20261012-safety";
 // covers the cases render() can actually reach: a present-but-empty payload
 // ({ "sheets": [] }), a malformed payload, or a persisted sheet id that no
 // longer exists.
-import { CHEAT_SHEETS_DATA } from "../../data/cheat-sheets.data.js?v=20261026-cheatsheets-v3";
+import { CHEAT_SHEETS_DATA } from "../../data/cheat-sheets.data.js?v=20261026-cheatsheets-v4";
 import { searchSheets, getSheetById } from "./search.js?v=20260929-cheat-sheets-v1";
 import { createCheatSheetsPresentation } from "./presentation.js?v=20260929-cheat-sheets-v1";
 
 export function createCheatSheetsController({ app, byId, escapeHtml, replaceViewContent }) {
   const presentation = createCheatSheetsPresentation({ escapeHtml });
   const state = { query: "", sheetId: null, listScrollTop: 0, listScrollLeft: 0 };
+  // Fillable worksheet (MSE sheet only): answers live in this Map for the
+  // page session only — never persisted, never sent anywhere. Keyed by
+  // sheet id, then item id -> { selected: Set<string>, note: string }, so
+  // going back to the reference view and returning keeps the answers.
+  state.worksheetOpen = false;
+  state.worksheetAnswers = new Map();
 
   const LAST_SHEET_KEY = "prerounding.cheatSheets.lastSheetId.v1";
   // In-memory fallback for environments without localStorage (tests, SSR).
@@ -83,6 +89,25 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
   function selectedSheet() {
     if (!state.sheetId) return null;
     return getSheetById(getSheets(), state.sheetId);
+  }
+
+  function answersFor(sheet) {
+    if (!sheet) return new Map();
+    let answers = state.worksheetAnswers.get(sheet.id);
+    if (!answers) {
+      answers = new Map();
+      state.worksheetAnswers.set(sheet.id, answers);
+    }
+    return answers;
+  }
+
+  function answerEntry(answers, itemId) {
+    let entry = answers.get(itemId);
+    if (!entry) {
+      entry = { selected: new Set(), note: "" };
+      answers.set(itemId, entry);
+    }
+    return entry;
   }
 
   function container() {
@@ -169,6 +194,49 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     }
   }
 
+  // Worksheet rendering swaps the detail section's content in place (the
+  // list stays intact underneath, exactly like sheet navigation). Chip
+  // toggles re-render with the scroll position restored; opening the
+  // worksheet starts at the top.
+  function renderWorksheet({ keepScroll = false } = {}) {
+    const el = container();
+    const sheet = selectedSheet();
+    if (!el || !sheet) return;
+    const { list, detail } = ensureSections(el);
+    const owner = scrollOwner();
+    const top = keepScroll && owner ? owner.scrollTop : 0;
+    const left = keepScroll && owner ? owner.scrollLeft : 0;
+    const template = document.createElement("template");
+    template.innerHTML = safeHtml(presentation.worksheetHtml(sheet, answersFor(sheet)));
+    detail.replaceChildren(...template.content.childNodes);
+    list.hidden = true;
+    detail.hidden = false;
+    if (owner) {
+      owner.scrollTop = top;
+      owner.scrollLeft = left;
+    }
+  }
+
+  // Note inputs update state without a re-render (focus and caret must
+  // survive): only the output textarea, the progress text, and the Copy
+  // button's disabled state are refreshed.
+  function refreshWorksheetOutput() {
+    const el = container();
+    const sheet = selectedSheet();
+    if (!el || !sheet) return;
+    const answers = answersFor(sheet);
+    const noteText = presentation.worksheetNoteText(sheet, answers);
+    const output = el.querySelector("#cheat-sheets-worksheet-output");
+    if (output) {
+      output.value = noteText;
+      output.rows = Math.max(4, noteText ? noteText.split("\n").length + 1 : 4);
+    }
+    const progress = el.querySelector("[data-worksheet-progress]");
+    if (progress) progress.textContent = presentation.worksheetProgressText(sheet, answers);
+    const copy = el.querySelector('[data-action="cheat-sheets-worksheet-copy"]');
+    if (copy) copy.disabled = !noteText;
+  }
+
   function closeSheetDetail() {
     const el = container();
     if (!el) return;
@@ -209,7 +277,11 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
       // through openSheetDetail(), which starts the detail at the top.
       if (detail.hidden || !detail.hasChildNodes()) {
         const template = document.createElement("template");
-        template.innerHTML = safeHtml(presentation.sheetDetailHtml(sheet));
+        template.innerHTML = safeHtml(
+          state.worksheetOpen && sheet.worksheet
+            ? presentation.worksheetHtml(sheet, answersFor(sheet))
+            : presentation.sheetDetailHtml(sheet)
+        );
         detail.replaceChildren(...template.content.childNodes);
       }
       list.hidden = true;
@@ -256,10 +328,59 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
 
   function input(target) {
     if (!target || app.view !== "cheatSheets") return false;
+    if (target.matches?.("[data-worksheet-note]")) {
+      const sheet = selectedSheet();
+      if (!sheet) return false;
+      const entry = answerEntry(answersFor(sheet), target.dataset.worksheetNote);
+      entry.note = target.value ?? "";
+      refreshWorksheetOutput();
+      return true;
+    }
     if (!target.matches?.("[data-cheat-sheets-search]")) return false;
     state.query = target.value ?? "";
     patchResults();
     return true;
+  }
+
+  // Copy the visible note text. On success the button shows "Copied" for
+  // two seconds; if the clipboard is unavailable or blocked, the textarea
+  // text is selected and a plain instruction appears instead.
+  function copyWorksheetText(button) {
+    const el = container();
+    const sheet = selectedSheet();
+    if (!el || !sheet) return;
+    const noteText = presentation.worksheetNoteText(sheet, answersFor(sheet));
+    const output = el.querySelector("#cheat-sheets-worksheet-output");
+    const hint = el.querySelector("[data-worksheet-copy-hint]");
+    const showFallback = () => {
+      if (output) {
+        output.focus();
+        output.select();
+      }
+      if (hint) {
+        hint.textContent = "The note text above is selected. Copy it with Ctrl+C (or long-press on a phone).";
+        hint.hidden = false;
+      }
+    };
+    if (typeof navigator === "undefined" || !navigator.clipboard?.writeText) {
+      showFallback();
+      return;
+    }
+    navigator.clipboard.writeText(noteText).then(
+      () => {
+        if (hint) hint.hidden = true;
+        if (button) {
+          const original = button.textContent;
+          button.textContent = "Copied";
+          setTimeout(() => {
+            button.textContent = original;
+          }, 2000);
+        }
+      },
+      () => {
+        showFallback();
+      }
+    );
   }
 
   function click(target) {
@@ -268,6 +389,7 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
     if (openButton) {
       const id = openButton.dataset?.cheatSheetsOpen || null;
       state.sheetId = id;
+      state.worksheetOpen = false;
       writeLastSheetId(state.sheetId);
       const sheet = id ? getSheetById(getSheets(), id) : null;
       // Explicit navigation: the detail starts at the top; the list position
@@ -276,8 +398,68 @@ export function createCheatSheetsController({ app, byId, escapeHtml, replaceView
       else render();
       return true;
     }
+    if (target.closest?.('[data-action="cheat-sheets-open-worksheet"]')) {
+      const sheet = selectedSheet();
+      if (!sheet || !sheet.worksheet) return false;
+      answersFor(sheet);
+      state.worksheetOpen = true;
+      renderWorksheet();
+      return true;
+    }
+    const chip = target.closest?.("[data-worksheet-chip]");
+    if (chip) {
+      const sheet = selectedSheet();
+      if (!sheet) return false;
+      const entry = answerEntry(answersFor(sheet), chip.dataset.worksheetChip);
+      const value = chip.dataset.value ?? "";
+      if (entry.selected.has(value)) entry.selected.delete(value);
+      else entry.selected.add(value);
+      renderWorksheet({ keepScroll: true });
+      return true;
+    }
+    if (target.closest?.('[data-action="cheat-sheets-worksheet-back"]')) {
+      // Return to the sheet detail without touching the remembered list
+      // scroll position (openSheetDetail would overwrite it).
+      const sheet = selectedSheet();
+      const el = container();
+      state.worksheetOpen = false;
+      if (!sheet || !el) {
+        render();
+        return true;
+      }
+      const { list, detail } = ensureSections(el);
+      blurFocused();
+      const template = document.createElement("template");
+      template.innerHTML = safeHtml(presentation.sheetDetailHtml(sheet));
+      detail.replaceChildren(...template.content.childNodes);
+      list.hidden = true;
+      detail.hidden = false;
+      const owner = scrollOwner();
+      if (owner) {
+        owner.scrollTop = 0;
+        owner.scrollLeft = 0;
+      }
+      return true;
+    }
+    if (target.closest?.('[data-action="cheat-sheets-worksheet-copy"]')) {
+      copyWorksheetText(target.closest('[data-action="cheat-sheets-worksheet-copy"]'));
+      return true;
+    }
+    if (target.closest?.('[data-action="cheat-sheets-worksheet-clear"]')) {
+      const sheet = selectedSheet();
+      if (!sheet) return false;
+      const confirmed =
+        typeof window === "undefined" || typeof window.confirm !== "function"
+          ? true
+          : window.confirm("Clear all answers?");
+      if (!confirmed) return true;
+      state.worksheetAnswers.set(sheet.id, new Map());
+      renderWorksheet({ keepScroll: true });
+      return true;
+    }
     if (target.closest?.('[data-action="cheat-sheets-back"]')) {
       state.sheetId = null;
+      state.worksheetOpen = false;
       writeLastSheetId(null);
       // Explicit navigation back: restore the list's own position instead of
       // inheriting wherever the reader left the detail.
