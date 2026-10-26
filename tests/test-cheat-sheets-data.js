@@ -35,7 +35,10 @@ const bundle = JSON.parse(readFileSync(join(root, "src", "data", "cheat-sheets.j
 // Mental Status Examination Worksheet (reviewed 4/21/2026) Aaron photographed
 // at PSYH 530 orientation. Sheets 71-74 (decision-making capacity,
 // substance use history, CIWA-Ar, COWS) were appended 2026-10-26 for the
-// same clerkship. itemsHash = sha256 over each
+// same clerkship. Sheets 75-79 (alcohol withdrawal management, MOUD,
+// toxidromes and urine drug testing, AUD medications, motivational
+// interviewing and screening) were appended 2026-10-26 as the addiction
+// reference set for the same clerkship. itemsHash = sha256 over each
 // source item's kind|id|system|text|choices joined by \x00.
 const FROZEN = [
     {
@@ -928,6 +931,90 @@ const FROZEN = [
       "history": 0,
       "exam": 12,
       "itemsHash": "328e719ab8beea42cd1bdf18222d9762ec3499fed9272708bc91d0dba6c7c2e6"
+    },
+    {
+      "id": "alcohol-withdrawal-management",
+      "title": "Alcohol withdrawal management",
+      "aliases": [
+        "alcohol withdrawal",
+        "ciwa",
+        "delirium tremens",
+        "dts",
+        "detox",
+        "wernicke"
+      ],
+      "history": 5,
+      "exam": 6,
+      "itemsHash": "e4fd97616bcad5c818baea41d9d6824d298b5887aaa703c21fbdab4ea3e05978"
+    },
+    {
+      "id": "moud",
+      "title": "Medications for opioid use disorder (MOUD)",
+      "aliases": [
+        "moud",
+        "mat",
+        "buprenorphine",
+        "suboxone",
+        "methadone",
+        "naltrexone",
+        "vivitrol",
+        "opioid use disorder treatment"
+      ],
+      "history": 4,
+      "exam": 7,
+      "itemsHash": "4a0101775823a0be6b26f561ff626f35d3f2bdf3c440fd3133812e7b07371010"
+    },
+    {
+      "id": "toxidromes-urine-drug-testing",
+      "title": "Intoxication, withdrawal, and urine drug testing",
+      "aliases": [
+        "toxidrome",
+        "overdose",
+        "intoxication",
+        "urine drug screen",
+        "uds",
+        "drug test",
+        "pcp",
+        "fentanyl test"
+      ],
+      "history": 3,
+      "exam": 12,
+      "itemsHash": "6ee05484396f62e6abfeefd7b9ba461e40eb793f5bd22a5c39b7474f8d285a2a"
+    },
+    {
+      "id": "aud-medications",
+      "title": "Medications for alcohol use disorder",
+      "aliases": [
+        "aud medications",
+        "maud",
+        "naltrexone alcohol",
+        "acamprosate",
+        "campral",
+        "disulfiram",
+        "antabuse",
+        "alcohol relapse prevention"
+      ],
+      "history": 5,
+      "exam": 4,
+      "itemsHash": "2f8b4283be56d6d28ce7e2eb8088956762343184ceb95d5446ec8069bfb56d88"
+    },
+    {
+      "id": "motivational-interviewing-screening",
+      "title": "Motivational interviewing and screening (SBIRT)",
+      "aliases": [
+        "motivational interviewing",
+        "mi",
+        "sbirt",
+        "audit-c",
+        "audit c",
+        "screening",
+        "brief intervention",
+        "oars",
+        "stages of change"
+      ],
+      "history": 9,
+      "exam": 3,
+      "itemsHash": "241244cf81d3812f8b9a5fc2c4f3df8e49cc8b2750edd38c8b3ac8a634e84841"
     }
   ];
 

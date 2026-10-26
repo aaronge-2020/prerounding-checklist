@@ -25,8 +25,8 @@ const bundle = JSON.parse(readFileSync(join(root, "src", "data", "cheat-sheets.j
 const sheets = bundle.sheets;
 
 // ---- every sheet is flagged ---------------------------------------------------
-assert.equal(sheets.length, 74, "74 sheets in the bundle");
-assert.ok(sheets.every((sheet) => sheet.worksheet === true), "all 74 sheets carry worksheet: true");
+assert.equal(sheets.length, 79, "79 sheets in the bundle");
+assert.ok(sheets.every((sheet) => sheet.worksheet === true), "all 79 sheets carry worksheet: true");
 
 // ---- generic item census --------------------------------------------------------
 // Generic items = every history item plus every exam item without curated
@@ -46,7 +46,7 @@ for (const sheet of sheets) {
       `${sheet.id}/${item.id} offers 1-8 findings options`);
   }
 }
-assert.equal(genericItems, 1619, "1,619 generic items across the bundle");
+assert.equal(genericItems, 1677, "1,677 generic items across the bundle");
 
 // ---- dispatch -------------------------------------------------------------------
 const mse = sheets.find((sheet) => sheet.id === "mental-status-examination");
@@ -63,6 +63,32 @@ for (const sheet of [capacity, substanceUse, ciwa, cows]) {
   assert.ok(sheet, "PSYH 530 sheet is present");
   assert.equal(presentation.sheetHasFields(sheet), false, `${sheet.id} takes the generic path`);
 }
+
+// ---- addiction reference sheets appended 2026-10-26 take the generic path --------
+const addictionSheets = [
+  ["alcohol-withdrawal-management", 11],
+  ["moud", 11],
+  ["toxidromes-urine-drug-testing", 15],
+  ["aud-medications", 9],
+  ["motivational-interviewing-screening", 12]
+];
+for (const [id, itemCount] of addictionSheets) {
+  const sheet = sheets.find((candidate) => candidate.id === id);
+  assert.ok(sheet, `addiction reference sheet ${id} is present`);
+  assert.equal(presentation.sheetHasFields(sheet), false, `${id} takes the generic path`);
+  const sheetGroups = presentation.genericWorksheetGroups(sheet);
+  assert.equal(
+    sheetGroups.reduce((n, group) => n + group.entries.length, 0), itemCount,
+    `all ${itemCount} ${id} items are grouped`
+  );
+}
+const miGroups = presentation.genericWorksheetGroups(
+  sheets.find((sheet) => sheet.id === "motivational-interviewing-screening"));
+assert.deepEqual(
+  miGroups.map((group) => group.title),
+  ["Screening", "Oars skills", "Brief intervention", "Stages of change"],
+  "MI/screening groups follow first appearance"
+);
 
 // ---- grouping on the dyspnea sheet ----------------------------------------------
 const groups = presentation.genericWorksheetGroups(dyspnea);

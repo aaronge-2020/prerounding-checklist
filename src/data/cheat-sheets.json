@@ -25138,6 +25138,981 @@
         "whyMissing": 12,
         "howMissing": 0
       }
+    },
+    {
+      "id": "alcohol-withdrawal-management",
+      "title": "Alcohol withdrawal management",
+      "worksheet": true,
+      "aliases": [
+        "alcohol withdrawal",
+        "ciwa",
+        "delirium tremens",
+        "dts",
+        "detox",
+        "wernicke"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "drinking history",
+          "question": "When was your last drink, and how much have you been drinking on a typical day?",
+          "listenFor": [
+            "Last drink within the past 12 hours",
+            "Last drink 12 to 48 hours ago",
+            "Last drink more than 48 hours ago",
+            "Still drinking daily, has not stopped yet"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Withdrawal runs on a clock that starts at the last drink. Early symptoms (tremor, sweating, nausea, anxiety, racing pulse) begin 6 to 24 hours after the last drink. Withdrawal seizures cluster at 6 to 48 hours, and delirium tremens usually arrives at 48 to 96 hours. Knowing the last drink tells you which window the patient is in now and which dangers are still ahead, and a patient who stopped 3 days ago and feels fine is in a different position from one who stopped this morning. Amount and duration matter too: heavier, longer drinking means a deeper physical dependence and a higher chance of a severe course.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "risk assessment",
+          "question": "Have you ever had a seizure, delirium tremens, or hallucinations when you stopped drinking before, or needed hospital detox?",
+          "listenFor": [
+            "Never had seizures, delirium, or hallucinations in withdrawal",
+            "Prior withdrawal seizure",
+            "Prior delirium tremens or ICU detox",
+            "Multiple prior detoxes, each one worse (kindling)"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "A past complicated withdrawal is the single strongest predictor of the next one. Withdrawal also shows kindling: each episode tends to be worse than the one before, because repeated cycles of excess excitation leave the brain easier to excite. A patient with a prior withdrawal seizure or delirium tremens should not be managed with watchful waiting; per the ASAM guideline they are high risk for severe or complicated withdrawal and should get early, assertive benzodiazepine treatment (front-loading) and a monitored setting.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "risk assessment",
+          "question": "In the last few months, have you had blackouts, used benzodiazepines or other sedatives or drugs, or been intoxicated in the last month?",
+          "listenFor": [
+            "None of these",
+            "Blackouts or intoxication in the past 30 days",
+            "Benzodiazepine, barbiturate, or other drug use in the past 90 days",
+            "Several of these together"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "These questions come from the Prediction of Alcohol Withdrawal Severity Scale (PAWSS), a 10-item checklist for medically ill inpatients that also asks about prior withdrawal, prior detox, a positive blood alcohol level, and signs of autonomic overactivity (fast pulse, sweating, nausea). A PAWSS score of 4 or more flagged severe withdrawal with about 93% sensitivity and over 99% specificity in its validation study, though it has not been independently validated since. Concurrent sedative use matters separately: a brain tolerant to benzodiazepines as well as alcohol often needs much larger doses to settle.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-04",
+          "system": "medical history",
+          "question": "Do you have liver disease, a seizure disorder from any other cause, lung disease, or other major medical problems?",
+          "listenFor": [
+            "No major medical problems",
+            "Known liver disease or cirrhosis",
+            "Seizure disorder, head injury, or other brain disease",
+            "Serious heart, lung, or kidney disease, or active infection"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Comorbidity changes both the risk and the drug choice. Liver disease is the big one: the long-acting benzodiazepines (chlordiazepoxide, diazepam) are broken down by oxidation in the liver and have active breakdown products that pile up when the liver fails, while lorazepam and oxazepam are cleared by conjugation (glucuronidation), a pathway that keeps working longer in liver disease, and have no active metabolites. Older patients and patients with lung disease are also more sensitive to sedation and respiratory depression, which argues for the shorter, cleaner agents.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-05",
+          "system": "current symptoms",
+          "question": "Since you stopped or cut down, have you had shaking, sweating, nausea, vomiting, anxiety, or trouble sleeping?",
+          "listenFor": [
+            "No symptoms yet",
+            "Mild tremor, sweating, nausea, poor sleep",
+            "Vomiting, marked tremor, racing pulse, severe anxiety",
+            "Seeing or hearing things, confusion, or a seizure already"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "The symptom pattern places the patient on the severity ladder. Tremor, sweating, nausea, insomnia, and a fast pulse are autonomic overactivity, the engine of early withdrawal. Hallucinations with a clear mind (the patient knows the images are not real and is otherwise oriented) are withdrawal hallucinosis, typically 12 to 48 hours in. Hallucinations plus confusion and disorientation are delirium, a different and far more dangerous problem. A seizure that has already happened reclassifies the whole episode as complicated withdrawal no matter how well the patient looks now.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "monitoring",
+          "maneuver": "Score withdrawal severity with the CIWA-Ar and grade it.",
+          "findings": [
+            "CIWA-Ar under 10: mild",
+            "CIWA-Ar 10 to 18: moderate",
+            "CIWA-Ar 19 or higher: severe",
+            "Seizure, hallucinations, or confusion at any score: complicated"
+          ],
+          "how": "Score the 10 CIWA-Ar items (nausea, tremor, sweats, anxiety, agitation, tactile, auditory and visual disturbances, headache, orientation), each 0 to 7 except orientation 0 to 4, and add them. Reassess on a schedule, often every 1 to 4 hours while symptoms are active. Per the ASAM guideline, CIWA-Ar was built to monitor withdrawal that is already being treated, not to make the diagnosis, and it needs a patient who can answer questions; it cannot be scored reliably in a delirious or intubated patient.",
+          "why": null,
+          "whySource": null,
+          "meaning": "The score drives dosing in symptom-triggered protocols and tracks whether treatment is winning. ASAM 2020 grades withdrawal as mild under 10, moderate 10 to 18, and severe at 19 or higher, and calls withdrawal complicated when there is a seizure, delirium, or hallucinations regardless of score. Note that many hospital protocols use different cutoffs (often 8 to 15 as moderate and over 15 as severe), so follow local protocol numbers when they differ. A rising score despite treatment is itself an escalation signal.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "benzodiazepines",
+          "maneuver": "Choose a dosing strategy: symptom-triggered, fixed schedule, or front-loading.",
+          "findings": [
+            "Mild symptoms, low risk, staff can score reliably: symptom-triggered dosing",
+            "Cannot report symptoms, unreliable scoring, or needs guaranteed coverage: fixed schedule with extra as-needed doses",
+            "High CIWA-Ar score or high risk of severe withdrawal: front-load a long-acting benzodiazepine early"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Benzodiazepines are first-line treatment because they reduce withdrawal seizures and delirium, the two complications that kill. In symptom-triggered dosing, medication is given only when the CIWA-Ar crosses a threshold (for example 8 to 10), in an amount tied to the score; trials show this shortens treatment and lowers the total dose compared with fixed schedules. Fixed schedules give set doses at set times with a taper, plus extra doses if needed, and fit patients who cannot be scored. Front-loading gives repeated moderate to high doses of a long-acting agent early to get control fast in severe or high-risk withdrawal; the long half-life then provides a built-in taper.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "benzodiazepines",
+          "maneuver": "Pick the benzodiazepine based on the liver, age, and route available.",
+          "findings": [
+            "Healthy liver: chlordiazepoxide or diazepam (long-acting, smooth self-taper)",
+            "Liver disease, older age, or significant lung disease: lorazepam or oxazepam",
+            "Vomiting, severe agitation, or no oral access: lorazepam IV or IM"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "No benzodiazepine has proven more effective than the others overall; the choice is about drug handling. Chlordiazepoxide and diazepam last a long time and taper themselves, which smooths symptoms and guards against seizures, but both depend on liver oxidation and have active metabolites that accumulate in liver disease and in older patients. Lorazepam and oxazepam are cleared by conjugation, have no active metabolites, and are the safer default when the liver is sick; lorazepam also has reliable absorption by vein or muscle, unlike chlordiazepoxide and diazepam given IM. Phenobarbital is an accepted alternative or add-on in severe withdrawal in monitored settings per ASAM, especially when benzodiazepines are not controlling symptoms.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "vitamins and supportive care",
+          "maneuver": "Give thiamine before any glucose, and look hard for Wernicke encephalopathy.",
+          "findings": [
+            "No Wernicke signs: prophylactic thiamine given before dextrose",
+            "Confusion, unsteady gait, or abnormal eye movements: treat as Wernicke now",
+            "Dextrose already running and thiamine not given: give thiamine immediately"
+          ],
+          "how": "For prevention in a patient who can absorb oral medication, 100 mg thiamine daily is the common protocol dose; use the IV route when the patient is vomiting, malnourished, or high risk. For suspected Wernicke encephalopathy, most reviews and the European Federation of Neurological Societies guideline use 500 mg IV three times daily for at least 2 to 3 days, then reassess; doses in the literature vary widely and the old FDA label regimen (100 mg IV then 50 to 100 mg IM daily) is widely considered too low. Also replace potassium, magnesium, and phosphate, give folate and a multivitamin, and rehydrate.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Glucose consumes thiamine. In a thiamine-starved brain, a dose of dextrose without thiamine can tip the patient into Wernicke encephalopathy, so the order is always thiamine first, glucose second. The classic Wernicke triad is confusion, gait ataxia, and eye findings (nystagmus or ophthalmoplegia), but most patients do not show all three, and waiting for the full triad misses cases; any one feature in a heavy drinker is enough to treat. Untreated Wernicke can progress to Korsakoff syndrome, a permanent amnesia, while thiamine is cheap and low-risk, so the threshold to treat should be very low.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "escalation",
+          "maneuver": "Recognize withdrawal that is outrunning treatment and escalate the level of care.",
+          "findings": [
+            "Symptoms persist despite large benzodiazepine doses: resistant withdrawal",
+            "Delirium, fever, or unstable pulse and blood pressure: ICU-level care",
+            "Withdrawal seizure: benzodiazepine now, then load and monitor closely"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "ASAM uses the term resistant alcohol withdrawal for severe symptoms that persist despite high-dose benzodiazepines; there is no agreed dose that defines it, though studies have used cutoffs such as 200 mg of diazepam within 4 hours. Resistant withdrawal, delirium tremens, and autonomic instability (fever, wild swings in pulse and blood pressure) need a higher level of care, continuous monitoring, and usually added agents such as phenobarbital or, in intubated patients, propofol, managed with critical care. Also look for the problems that travel with withdrawal and worsen it: infection, gastrointestinal bleeding, pancreatitis, and low potassium, magnesium, and phosphate. Deaths in withdrawal usually come from delirium, hyperthermia, arrhythmia, or a missed second diagnosis, not from tremor.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "monitoring",
+          "maneuver": "Set the monitoring plan and the treatment goal for the next 24 hours.",
+          "findings": [
+            "Mild and low risk: monitor for up to 36 hours for worsening",
+            "Moderate to severe: scheduled CIWA-Ar checks with vital signs until clearly improving",
+            "Improving and past the seizure window: taper, start relapse-prevention medication, arrange follow-up"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Withdrawal care is a trajectory, not a single dose. ASAM suggests monitoring even low-risk patients with mild withdrawal for up to 36 hours because symptoms can climb. The danger windows are front-loaded: seizures mostly in the first 48 hours, delirium tremens at 48 to 96 hours, occasionally later. Once a patient is clearly improving and past the seizure window, the job changes from rescue to relapse prevention: offer a medication for alcohol use disorder (naltrexone, acamprosate, or disulfiram) and a concrete follow-up plan before discharge, because detox alone without follow-on treatment rarely changes the course of the disease.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 11,
+        "howMissing": 4
+      }
+    },
+    {
+      "id": "moud",
+      "title": "Medications for opioid use disorder (MOUD)",
+      "worksheet": true,
+      "aliases": [
+        "moud",
+        "mat",
+        "buprenorphine",
+        "suboxone",
+        "methadone",
+        "naltrexone",
+        "vivitrol",
+        "opioid use disorder treatment"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "assessment",
+          "question": "What opioids have you been using, how much each day, and when did you last use?",
+          "listenFor": [
+            "Short-acting opioids (heroin, oxycodone, hydrocodone), last use within the past day",
+            "Fentanyl, daily use",
+            "Methadone or buprenorphine, prescribed or not",
+            "Last use more than 72 hours ago"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "The drug, the dose, and the clock decide when induction is safe. Buprenorphine can only be started once enough of the full agonist has left the receptors, and long-acting drugs leave slowly: methadone lingers for days, and fentanyl, although it feels short-acting, is stored in fat and leaches back out, so people who use fentanyl can precipitate withdrawal even after a day or more of abstinence. A clear last-use history also tells you how much tolerance you are treating, which separates a patient who will settle on standard doses from one who needs a methadone program.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "assessment",
+          "question": "Have you ever taken buprenorphine, methadone, or naltrexone before? What happened?",
+          "listenFor": [
+            "Never tried any medication for opioid use disorder",
+            "Did well on one of them before",
+            "Sudden severe withdrawal right after a first dose (precipitated withdrawal)",
+            "Stopped because of side effects, cost, or clinic rules"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Past response is the best guide to the next prescription. A patient who did well on methadone years ago will often do well again, and a patient who had precipitated withdrawal after buprenorphine needs a different induction plan (more objective withdrawal first, a low-dose induction, or methadone instead), not just reassurance. Ask exactly what happened: feeling much worse within an hour or two of the first buprenorphine dose is precipitated withdrawal; feeling no effect, or disliking daily clinic visits, is a different problem with a different fix.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "assessment",
+          "question": "Are you pregnant, or is there a chance you could be pregnant?",
+          "listenFor": [
+            "Pregnant",
+            "Not pregnant, reliable contraception",
+            "Unsure: needs a pregnancy test before choosing a medication"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Pregnancy changes the counseling, not the commitment to treat. Methadone and buprenorphine are the standard of care in pregnancy, and medically supervised withdrawal is generally avoided because relapse rates are high and relapse exposes the fetus to cycles of intoxication and withdrawal plus all the risks of the drug supply. Naltrexone has limited safety data in pregnancy, so starting it is a specialist decision rather than a default. Test when the answer is unsure, because the result changes which conversations you need to have today.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-04",
+          "system": "safety",
+          "question": "If you used and overdosed, would anyone be there? Do you have naloxone at home?",
+          "listenFor": [
+            "Uses alone, no naloxone",
+            "Someone nearby, but no naloxone in the home",
+            "Naloxone in the home and a household member knows how to use it"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Most fatal overdoses happen when the person is alone with no one to give naloxone or call for help. Asking this question identifies the patients who most need a naloxone kit in hand, a household member taught to use it, and counseling about not using alone. Tolerance also falls fast during abstinence, detox, incarceration, and the first weeks on an antagonist, so a dose that was routine a month ago can kill now; that warning belongs in every discharge conversation.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "buprenorphine",
+          "maneuver": "Score the Clinical Opiate Withdrawal Scale (COWS) before the first buprenorphine dose, and look for objective signs.",
+          "findings": [
+            "COWS under 5: no real withdrawal yet, wait",
+            "COWS 5 to 12: mild withdrawal",
+            "COWS 13 to 24: moderate withdrawal, the usual induction window",
+            "COWS 25 or higher: moderately severe to severe withdrawal"
+          ],
+          "how": "COWS rates 11 items: resting pulse, sweating, restlessness, pupil size, bone and joint aches, runny nose or tearing, GI upset, tremor, yawning, anxiety or irritability, and gooseflesh. Bands: 5 to 12 mild, 13 to 24 moderate, 25 to 36 moderately severe, over 36 severe. Trust the objective items (pupil size, gooseflesh, GI upset, tremor) over the reported ones when deciding to dose.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Buprenorphine grips the mu opioid receptor more tightly than heroin, fentanyl, or oxycodone but activates it only partly. If it is given while a full agonist still occupies the receptors, it knocks the stronger drug off and replaces a full signal with a partial one, and the patient crashes into sudden, severe withdrawal within an hour or two: precipitated withdrawal. Waiting for objective withdrawal means most receptors are already empty, so the partial signal is a relief instead of a loss. Protocols set the floor differently (some say a COWS of 8, many say 12 to 13), and with fentanyl, precipitation can still occur at higher scores, which is why visible signs matter more than any single number.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "buprenorphine",
+          "maneuver": "Give the first buprenorphine dose and reassess before deciding the day 1 total.",
+          "findings": [
+            "Withdrawal clearly better 1 to 2 hours after the dose: continue titrating",
+            "Withdrawal much worse soon after the dose: precipitated withdrawal",
+            "Still in moderate withdrawal and tolerating doses: add more buprenorphine"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Standard induction starts with 2 to 4 mg under the tongue once objective withdrawal is present, reassesses in 1 to 2 hours, and adds doses as needed; day 1 totals commonly reach 16 mg, with most patients stabilizing at 12 to 16 mg daily (SAMHSA TIP 63 practice). If precipitated withdrawal happens, the counterintuitive but correct move is more buprenorphine, which fills the remaining receptors with the partial agonist and usually settles symptoms over hours, plus symptom medications such as clonidine for autonomic symptoms. For patients who cannot tolerate waiting for withdrawal, especially with fentanyl or methadone, low-dose induction overlaps tiny, slowly rising buprenorphine doses with the full agonist over about a week; published schedules vary, so use a local protocol. The naloxone in combination products is there to deter injection and is barely absorbed under the tongue; it does not cause the withdrawal, the buprenorphine does.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "methadone",
+          "maneuver": "Decide whether methadone fits this patient better than buprenorphine.",
+          "findings": [
+            "Very high tolerance, or buprenorphine has failed or precipitated repeatedly: methadone through an opioid treatment program",
+            "Needs the structure of daily observed dosing and an intensive program",
+            "Long QT, many interacting medicines, or erratic attendance: methadone risk is higher, weigh carefully"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Methadone is a full mu agonist with no ceiling, so it can match any level of tolerance, which is why it retains patients with the heaviest use; the price is that respiratory depression never plateaus, and because the drug accumulates over the first several days, the most dangerous days are often days 3 to 5, when the patient looks settled but the level is still climbing. It also prolongs the QT interval and interacts with many medicines. For opioid use disorder it may only be dispensed by a certified opioid treatment program (OTP); a hospital can give it to a patient admitted for something else, but cannot hand out a prescription for addiction treatment. Under SAMHSA's 2024 rule, the first dose may now be up to 50 mg (raised from 30 mg), and take-home doses are far more flexible than the old schedule: up to 7 unsupervised doses in the first 14 days, up to 14 in days 15 to 30, and up to 28 after day 31, based on practitioner judgment.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "naltrexone",
+          "maneuver": "Check that the patient is fully opioid-free before any naltrexone, and pick oral versus monthly injection.",
+          "findings": [
+            "Opioid-free 7 to 10 days, motivated, wants an antagonist: candidate",
+            "Used opioids within the past week, or coming off methadone or buprenorphine within 2 weeks: do not start",
+            "Daily pills unrealistic: monthly extended-release injection instead"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Naltrexone is a pure opioid antagonist: it treats nothing today and blocks opioids for as long as it is on board. Given too early it precipitates withdrawal just as surely as buprenorphine given too early, so the label requires at least 7 to 10 days opioid-free, and up to 2 weeks for patients coming off methadone or buprenorphine; a urine screen and, when in doubt, a naloxone challenge come first. Oral naltrexone is 50 mg daily and fails mainly through missed doses. Extended-release naltrexone is 380 mg injected monthly and suits patients who have completed detox and can plan around it, a group where it has its strongest track record. Warn every patient that tolerance is gone: trying to override the blockade, or using again after the injection wears off, carries a real overdose risk.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "pregnancy",
+          "maneuver": "Adjust the medication plan for pregnancy.",
+          "findings": [
+            "Pregnant: methadone or buprenorphine is the standard of care",
+            "Medically supervised withdrawal in pregnancy: not recommended as the plan",
+            "Naltrexone in pregnancy: limited data, specialist decision, not a default start"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Untreated opioid use disorder in pregnancy means repeated cycles of intoxication and withdrawal for the fetus, plus the infection, trauma, and overdose risks of the drug supply; agonist treatment steadies all of that, which is why ACOG and ASAM endorse methadone or buprenorphine rather than detox. Buprenorphine without naloxone was the traditional product in pregnancy, though the combination product is now widely used and accepted. Expect neonatal opioid withdrawal syndrome in a substantial share of exposed newborns; it is anticipated, monitored for, and treatable, and it is not by itself a reason to avoid agonist therapy or to report a mother who is engaged in treatment.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "rules",
+          "maneuver": "Confirm what you may prescribe, dispense, or only administer, in 2026 rules.",
+          "findings": [
+            "Buprenorphine: any DEA registration with Schedule III authority, no waiver, no patient cap",
+            "Methadone for opioid use disorder: only through a certified opioid treatment program",
+            "Hospital or ED, patient in withdrawal, no program bed yet: you may administer opioids for up to 72 hours while arranging treatment"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The X-waiver is gone. Section 1262 of the Consolidated Appropriations Act, 2023 (the MAT Act) removed the federal waiver and patient caps for buprenorphine, so any clinician whose DEA registration includes Schedule III authority can prescribe it where state law allows; the remaining federal training item is the MATE Act's one-time 8-hour substance use disorder training attestation tied to DEA registration or renewal. Methadone is the exception: for addiction treatment it still runs only through certified OTPs. The bridge rule is 21 CFR 1306.07(b): a practitioner who is not an OTP may administer, but not prescribe, opioids to relieve acute withdrawal symptoms for up to 3 days, one day at a time, while arranging referral. That rule is what lets an ED or hospital team keep a patient comfortable and engaged instead of losing them to withdrawal-driven departure.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "safety",
+          "maneuver": "Close every MOUD start with naloxone, a tolerance warning, and a near-term follow-up.",
+          "findings": [
+            "Naloxone kit in hand and a household member shown how to use it",
+            "Follow-up appointment within days, with a named clinic or prescriber",
+            "Patient can state that their tolerance is lower now than it was"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Starting medication is a beginning, not a discharge summary. Co-prescribing naloxone with MOUD is recommended practice, and the kit only helps if someone besides the patient knows where it is and how to use it, since the patient cannot reverse their own overdose. The highest-risk moments are transitions: the first weeks of treatment, any gap in doses, release from jail or hospital, and the weeks after an antagonist injection wears off. A follow-up measured in days, with a warm handoff to a named prescriber or program, is what turns an induction into treatment.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 11,
+        "howMissing": 6
+      }
+    },
+    {
+      "id": "toxidromes-urine-drug-testing",
+      "title": "Intoxication, withdrawal, and urine drug testing",
+      "worksheet": true,
+      "aliases": [
+        "toxidrome",
+        "overdose",
+        "intoxication",
+        "urine drug screen",
+        "uds",
+        "drug test",
+        "pcp",
+        "fentanyl test"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "history",
+          "question": "What did you take, how much, how did you take it, and when?",
+          "listenFor": [
+            "Single known substance, recent use",
+            "Several substances, or pills or powder from the street",
+            "Unknown substance, found down or brought in by others"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "The history sets the differential, but in street-drug presentations it is often incomplete or wrong: fentanyl is sold as heroin and pressed into counterfeit pills, and xylazine and other adulterants ride along. Treat the reported history as a starting hypothesis and let the exam pattern (the toxidrome) confirm or replace it. Route and timing matter for what comes next: smoked and injected drugs peak in minutes, swallowed pills may not peak for hours, and a patient who looks well 30 minutes after swallowing a handful of tablets has not yet declared themselves.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "history",
+          "question": "What medicines do you take regularly, including over-the-counter medicines, supplements, and anything borrowed from someone else?",
+          "listenFor": [
+            "No regular medicines",
+            "Prescribed opioids, benzodiazepines, or stimulants",
+            "Bupropion, tramadol, diphenhydramine, dextromethorphan, or other false-positive sources",
+            "Serotonin-active medicines: antidepressants, linezolid, triptans, St John's wort"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "The medication list explains half of all confusing drug screens and many confusing exams. Bupropion, pseudoephedrine, labetalol, and trazodone can trip the amphetamine assay; dextromethorphan, diphenhydramine, tramadol, and venlafaxine can trip the PCP assay; poppy seeds, rifampin, and fluoroquinolone antibiotics can trip the opiate assay. Prescribed benzodiazepines such as lorazepam and clonazepam commonly fail to appear on the benzodiazepine assay, which is built to detect other family members. Serotonin-active combinations set up serotonin toxicity, which mimics stimulant intoxication but is treated differently (benzodiazepines, cooling, and cyproheptadine rather than more sedation alone).",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "history",
+          "question": "When did you last use each substance, and how often have you been using?",
+          "listenFor": [
+            "Within the past day",
+            "Two to four days ago",
+            "More than a week ago, or daily heavy use for months"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Last-use timing is what makes a urine result interpretable. Most stimulants, cocaine, and short-acting opioids clear urine in 1 to 4 days, so a negative screen on day 5 does not contradict a truthful history of use last week, and a positive THC screen can reflect use from weeks ago in a daily user rather than use today. Frequency matters as much as timing: fat-soluble drugs (THC, fentanyl, PCP, long-acting benzodiazepines) accumulate with daily use and stay detectable far longer than after a single exposure. Always pair the result with the question, 'when did you last use,' before concluding anything.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "opioids",
+          "maneuver": "Look for the opioid intoxication pattern.",
+          "findings": [
+            "Slow or shallow breathing, pinpoint pupils, decreased consciousness: opioid triad",
+            "Pinpoint pupils and sedation but breathing adequate: opioid effect, monitor",
+            "Track marks, skin abscesses, or a naloxone response that confirms the pattern"
+          ],
+          "how": "Check the respiratory rate and depth first, then pupils, bowel sounds (quiet in opioid effect), and level of consciousness. A trial of naloxone that restores breathing is both treatment and strong diagnostic evidence.",
+          "why": null,
+          "whySource": null,
+          "meaning": "The opioid toxidrome is respiratory depression, miosis (pinpoint pupils), and depressed consciousness, with quiet bowel sounds and cool skin. What kills is the breathing, so the pattern matters more than the pupil size, which can be normal with some opioids or when other drugs are mixed in. Fentanyl can also cause chest wall rigidity when given or taken rapidly in large amounts. Because naloxone wears off in 30 to 90 minutes while most opioids last longer, a patient who wakes up after naloxone can slide back into respiratory depression and needs observation, not immediate discharge.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "opioids",
+          "maneuver": "Look for opioid withdrawal, the mirror image of intoxication.",
+          "findings": [
+            "Dilated pupils, tearing, runny nose, yawning, gooseflesh",
+            "Nausea, vomiting, diarrhea, loud bowel sounds, muscle aches",
+            "Anxious and uncomfortable but alert, with normal or mildly fast vital signs"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Opioid withdrawal flips every sign: pupils dilate, secretions pour (tearing, rhinorrhea, sweating), the gut speeds up (cramping, vomiting, diarrhea, hyperactive bowel sounds), and piloerection gives 'cold turkey' its name. In a healthy adult it is miserable rather than dangerous, unlike alcohol or benzodiazepine withdrawal, which can kill. The real dangers are dehydration in frail patients, suicide risk in despairing ones, and patients leaving against medical advice before other treatment finishes; untreated withdrawal is a leading, fixable cause of those departures. Score it with COWS and treat it early (see the MOUD sheet).",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "stimulants",
+          "maneuver": "Look for the sympathomimetic (stimulant) pattern: cocaine, amphetamines, methamphetamine.",
+          "findings": [
+            "Fast pulse and high blood pressure, fever, dilated pupils, sweating",
+            "Agitation, paranoia, or psychosis with tremor",
+            "Chest pain, seizures, or severe hyperthermia: complications in progress"
+          ],
+          "how": "Feel the skin. In stimulant intoxication the skin is wet with sweat; in anticholinergic poisoning, which shares the fast pulse, fever, and dilated pupils, the skin is dry. That one touch separates the two.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Stimulants flood the body with catecholamines: everything speeds up, pupils dilate, bowel sounds stay active, and the skin sweats. The complications are what hurt people: hyperthermia, seizures, dangerously high blood pressure, heart attack from coronary spasm or demand, and muscle breakdown (rhabdomyolysis) from sustained agitation. Benzodiazepines are the first-line treatment because they turn down the central drive behind all of it; cooling matters when temperature climbs. Antipsychotics alone do not treat the physiology and can add risk in a hot, seizing patient.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "sedatives and alcohol",
+          "maneuver": "Separate anticholinergic poisoning from stimulant intoxication.",
+          "findings": [
+            "Hot, dry, flushed skin with no sweat in the armpit",
+            "Dilated pupils, delirium with mumbling and picking at invisible objects",
+            "Full bladder (urinary retention) and quiet bowel sounds"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The classic description is 'hot as a hare, blind as a bat, dry as a bone, red as a beet, mad as a hatter, full as a flask.' Common culprits are diphenhydramine, tricyclic antidepressants, cyclobenzaprine, scopolamine, and jimsonweed. The dry skin and quiet gut separate it from stimulant intoxication at the bedside. The delirium is a picking, mumbling, fragmented delirium rather than the organized paranoia of stimulants. Treatment is supportive care and benzodiazepines for agitation; physostigmine is a specialist (toxicology) decision, and tricyclic involvement changes the picture because of sodium channel blockade and wide-QRS arrhythmias, treated with sodium bicarbonate.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "sedatives and alcohol",
+          "maneuver": "Place alcohol and sedative-hypnotics on the intoxication-to-withdrawal line.",
+          "findings": [
+            "Intoxication: slurred speech, unsteady gait, disinhibition or sedation, fairly normal vital signs with pure benzodiazepines",
+            "Early withdrawal: tremor, sweating, fast pulse, anxiety, nausea",
+            "Severe withdrawal: hallucinations, seizures, delirium with unstable vital signs"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Alcohol, benzodiazepines, and barbiturates all enhance GABA inhibition, so their intoxication looks like progressive sedation with slurred speech and ataxia, and pure benzodiazepine overdose famously disturbs vital signs less than almost any other sedative class. Their withdrawal is the dangerous mirror image: the brain, adapted to constant inhibition, rebounds into overexcitation with tremor, autonomic surge, seizures, and delirium, and this is the withdrawal that kills (unlike opioid withdrawal). Flumazenil is almost never the answer in a dependent patient because it can trigger untreatable seizures; support the airway and let time and metabolism work. Timelines and treatment are on the alcohol withdrawal sheet.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "other substances",
+          "maneuver": "Look for PCP (phencyclidine) findings.",
+          "findings": [
+            "Nystagmus, including vertical nystagmus, with normal or small pupils",
+            "Dissociation: blank stare, unresponsiveness alternating with sudden agitation",
+            "Reduced pain response with injuries the patient seems not to feel"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "PCP is a dissociative anesthetic, so its signature is a patient who seems detached from their body: staring, not reacting normally to pain, then abruptly agitated or violent, with nystagmus that can be vertical as well as horizontal, plus high blood pressure and fast pulse. The analgesia is a trap: patients injure themselves and keep going, and staff get hurt during uncontrolled struggles. Management is a quiet, low-stimulation room, benzodiazepines for agitation, and checking for muscle breakdown and overheating after prolonged struggling. Ketamine, a chemical relative, produces a shorter version of the same picture.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "other substances",
+          "maneuver": "Assess cannabis and synthetic cannabinoid ('K2', 'Spice') presentations.",
+          "findings": [
+            "Cannabis: red (injected) conjunctivae, fast pulse, dry mouth, increased appetite, mild euphoria or anxiety",
+            "Synthetic cannabinoids: agitation, psychosis, vomiting, sometimes seizures or kidney injury",
+            "Toxic-looking patient who 'only smoked weed': suspect synthetics or another drug entirely"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Plant cannabis is a full toxidrome of its own but rarely a medical emergency in adults: conjunctival injection, tachycardia, dry mouth, and altered time perception. Synthetic cannabinoids are different drugs, not stronger marijuana: they are full agonists at the same receptor, are sprayed onto plant material in uneven doses, and present with agitation, psychosis, seizures, and occasionally acute kidney injury. They are not detected by the standard THC immunoassay, so a negative screen does not argue against them. Treatment is supportive, with benzodiazepines for agitation.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-08",
+          "system": "other substances",
+          "maneuver": "Ask about and look for inhalant use, especially in adolescents.",
+          "findings": [
+            "Rash or sores around the mouth and nose ('glue sniffer's rash'), paint or chemical smell on clothing",
+            "Brief euphoria with slurred speech, unsteady gait, and confusion, clearing within minutes to hours",
+            "Palpitations or sudden collapse during use"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Inhalants (glue, paint, solvents, nitrous oxide, aerosol propellants, 'whippets', 'poppers') produce a fast, short intoxication that looks like alcohol intoxication and is easy to miss because it clears quickly and standard drug screens do not detect most of them. The feared event is 'sudden sniffing death': solvents sensitize the heart to adrenaline, so a startle or a run can trigger a fatal arrhythmia, which is why a frightened, freshly intoxicated patient should be kept calm. Chronic use injures the brain (leukoencephalopathy with toluene), the kidneys, and, with nitrous oxide, the spinal cord through vitamin B12 inactivation.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-09",
+          "system": "urine drug testing",
+          "maneuver": "Check what your standard panel cannot see before trusting a negative result.",
+          "findings": [
+            "Negative opiate screen in a patient who looks opioid-toxic: fentanyl and other synthetics are not on the opiate assay",
+            "Negative THC screen with a synthetic-cannabinoid picture: synthetics are not detected",
+            "Negative benzodiazepine screen in a patient taking prescribed lorazepam or clonazepam: expected assay gap"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The standard 'opiate' immunoassay was built to detect morphine-like structures. It reliably catches morphine, codeine, and heroin (as morphine), catches oxycodone, hydrocodone, and hydromorphone inconsistently, and misses fentanyl, methadone, buprenorphine, and tramadol entirely unless separate assays are ordered. The benzodiazepine assay is built around the breakdown products of diazepam (nordiazepam, oxazepam, temazepam), so lorazepam and clonazepam, two of the most prescribed agents, cross-react poorly and are commonly missed. Synthetic cannabinoids, synthetic cathinones ('bath salts'), LSD, and inhalants are not on routine panels at all. A negative screen narrows the possibilities; it never proves the patient took nothing.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-10",
+          "system": "urine drug testing",
+          "maneuver": "Interrogate a positive result for false positives before acting on it.",
+          "findings": [
+            "Amphetamine positive: check for bupropion, pseudoephedrine, labetalol, trazodone, phentermine, selegiline",
+            "PCP positive: check for dextromethorphan, diphenhydramine, tramadol, venlafaxine",
+            "Opiate positive: check for poppy seeds, rifampin, fluoroquinolone antibiotics"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Immunoassays trade accuracy for speed: antibodies cross-react with look-alike molecules, so every screening positive is officially 'presumptive.' The lists in the findings are the common, published cross-reactants for each assay, not exotic trivia; selegiline is a special case because it truly metabolizes to methamphetamine and amphetamine, so its positive is analytically real but clinically innocent. THC positives can also come from dronabinol (prescribed THC) and, on older assays, efavirenz and some anti-inflammatory and acid-suppressing drugs. No job, custody, or treatment decision should rest on an unconfirmed screen when a confirmatory test (gas or liquid chromatography with mass spectrometry) exists.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-11",
+          "system": "urine drug testing",
+          "maneuver": "Match the result to the detection window for that drug.",
+          "findings": [
+            "Short windows (about 1 to 4 days): amphetamines, cocaine metabolite, morphine and codeine, urine ethanol 12 to 24 hours",
+            "Medium windows: benzodiazepines about 3 to 7 days at usual doses, methadone 2 to 4 days, PCP about a week after single use",
+            "Long windows: THC weeks in daily users, phenobarbital 10 to 20 days, chronic fentanyl or PCP up to about 30 days"
+          ],
+          "how": "Use the StatPearls drug testing table as the reference: amphetamine or methamphetamine 2 to 4 days; cocaine 1 to 3 days; cannabinoids 1 to 3 days after casual use, 5 to 10 days with daily use, 4 to 6 weeks with chronic use; ethanol 12 to 24 hours (ethyl glucuronide testing stretches alcohol detection to a few days); opioids such as codeine and morphine 1 to 3 days; methadone 2 to 4 days; benzodiazepines 3 to 7 days at therapeutic doses and up to 30 days with chronic dosing; PCP 2 to 7 days after acute use and up to 30 days chronically; fentanyl 3 to 5 days after acute use and up to 30 days chronically, when a fentanyl-specific test is used.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Windows explain most 'impossible' results. A daily cannabis user can test positive a month after stopping, so a positive THC is weak evidence of recent use; a weekend cocaine user can test negative by Wednesday, so a negative is weak evidence of abstinence. Fat-soluble drugs with chronic use (THC, fentanyl, PCP, diazepam-family benzodiazepines) are the long tail. Dilute urine from heavy hydration can also push a true positive below the cutoff, which is one reason a negative screen in a patient prescribed the drug does not by itself prove diversion; ask when the last dose was taken and check the specimen creatinine.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-12",
+          "system": "urine drug testing",
+          "maneuver": "Confirm unexpected results and have the conversation before drawing conclusions.",
+          "findings": [
+            "Unexpected positive or negative: send confirmatory chromatography-mass spectrometry testing",
+            "Result and story disagree: review prescribed medicines, metabolites, and timing first",
+            "Discrepancy remains: non-confrontational discussion with the patient"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The standard sequence for an unexpected result is: confirm with a definitive method, check whether a prescribed drug's metabolites explain the finding (codeine becomes morphine; hydrocodone can yield hydromorphone; heroin yields morphine via 6-monoacetylmorphine), reconsider false positives and assay gaps, and only then talk with the patient, openly and without accusation. Drug testing works best as a clinical tool inside a treatment relationship, not as surveillance: results should change care (more support, different medication, safety planning) rather than simply trigger punishment or discharge, which predictably drives patients away from treatment.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 15,
+        "howMissing": 9
+      }
+    },
+    {
+      "id": "aud-medications",
+      "title": "Medications for alcohol use disorder",
+      "worksheet": true,
+      "aliases": [
+        "aud medications",
+        "maud",
+        "naltrexone alcohol",
+        "acamprosate",
+        "campral",
+        "disulfiram",
+        "antabuse",
+        "alcohol relapse prevention"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "goals and fit",
+          "question": "Is your goal to stop drinking completely, or to cut down?",
+          "listenFor": [
+            "Complete abstinence",
+            "Cut down heavy drinking, not ready for abstinence",
+            "Unsure, wants to talk through options"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "The goal selects the drug. Naltrexone blunts alcohol's reward and is proven mainly at reducing heavy drinking, so it fits a patient who is cutting down as well as one who is abstinent. Acamprosate is labeled for maintaining abstinence in patients who are already abstinent when they start. Disulfiram only makes sense with a firm abstinence goal, because its entire effect is a punishing reaction if alcohol is consumed. Matching the medication to the stated goal is also a motivational interviewing move: the patient hears their own goal reflected in the plan.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "goals and fit",
+          "question": "Are you still drinking now, or have you stopped, and for how long?",
+          "listenFor": [
+            "Still drinking",
+            "Abstinent for a few days, withdrawal settled",
+            "Abstinent for weeks or longer"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Timing separates the three drugs. Naltrexone can be started while the patient is still drinking. Acamprosate works on the unsettled glutamate system of early abstinence and is started once the patient has stopped and withdrawal has resolved, typically a few days in. Disulfiram must never be started in an intoxicated patient and requires at least 12 hours of abstinence, because any alcohol on board, or consumed in the first days, can trigger the disulfiram-alcohol reaction. None of these three treats acute withdrawal itself; that is benzodiazepine territory (see the alcohol withdrawal sheet).",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "goals and fit",
+          "question": "Do you have liver disease or kidney disease, and do you know how well they are working?",
+          "listenFor": [
+            "No known liver or kidney disease",
+            "Liver disease, hepatitis, or cirrhosis",
+            "Kidney disease or reduced kidney function"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Liver and kidney function are the fork in the road for this drug class. Naltrexone is metabolized by the liver and is contraindicated in acute hepatitis or liver failure, so significant liver disease pushes toward acamprosate. Acamprosate is not metabolized at all and leaves unchanged through the kidneys, which makes it the liver-friendly choice but a kidney-limited one: the dose drops when creatinine clearance is 30 to 50 mL/min and the drug is contraindicated at 30 or below. Disulfiram can itself injure the liver and needs baseline and follow-up liver tests. Get liver enzymes before naltrexone or disulfiram and a creatinine before acamprosate.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-04",
+          "system": "goals and fit",
+          "question": "Do you use opioids of any kind, or take opioid pain medicine, methadone, or buprenorphine?",
+          "listenFor": [
+            "No opioid use",
+            "Uses opioids or is on methadone or buprenorphine",
+            "May need opioid pain treatment soon, for example planned surgery"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Naltrexone blocks the mu opioid receptor, so it will precipitate withdrawal in anyone with opioids in their system and will block opioid pain relief for as long as it is active, a full month with the injection. Before starting it for alcohol use disorder, confirm the patient is opioid-free (7 to 10 days is the usual standard borrowed from the opioid use disorder label), and plan around anticipated surgery or likely pain needs. For a patient with both alcohol and opioid use disorders, the opioid disorder usually dictates the plan, and buprenorphine or methadone plus alcohol-focused counseling may serve better than naltrexone alone.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-05",
+          "system": "goals and fit",
+          "question": "How do you do with taking pills every day? Is there anyone who could watch you take a daily pill, or would a monthly shot fit better?",
+          "listenFor": [
+            "Takes daily medicines reliably",
+            "Struggles with daily pills, or three-times-daily dosing is unrealistic",
+            "Has a partner, family member, or program that can supervise a daily dose"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Adherence pattern is a legitimate prescribing criterion here. Acamprosate asks for two tablets three times a day, a real burden that sinks it for many patients. Oral naltrexone is once daily, and its extended-release form is one injection a month, which removes daily adherence from the equation. Disulfiram is the special case: it works best, and some would say only, when someone observes the dose, because the patient who plans to drink simply stops taking it days ahead. Ask, do not guess; patients usually know exactly which schedule they can keep.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "naltrexone",
+          "maneuver": "Start naltrexone: confirm opioid-free status, check the liver, choose oral or monthly injection.",
+          "findings": [
+            "Opioid-free, liver tests acceptable: start oral naltrexone 50 mg daily",
+            "Adherence unlikely or patient prefers it: extended-release naltrexone 380 mg IM monthly",
+            "Acute hepatitis, liver failure, or opioids on board: do not start"
+          ],
+          "how": "Baseline liver enzymes before starting; no routine level monitoring is required in a healthy liver, but recheck if symptoms suggest liver injury (nausea, dark urine, jaundice, right upper quadrant pain). Counsel that the injection's blockade lasts about a month and cannot be removed once given.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Naltrexone is a mu opioid receptor antagonist that takes the reward out of drinking, reducing heavy drinking days and craving; it is first-line in the APA guideline. The standard oral dose is 50 mg daily (some prescribers use up to 100 mg, and many start with a few days at 25 mg to limit nausea, the most common side effect, along with headache and dizziness). The monthly 380 mg injection solves adherence and is the same molecule. Two safety points dominate: it precipitates withdrawal in anyone with opioids on board, and it carries a hepatotoxicity warning from much higher historical doses, so it is contraindicated in acute hepatitis or liver failure and used cautiously in other liver disease. Patients should carry word that they are on an opioid blocker in case of emergency pain treatment.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "acamprosate",
+          "maneuver": "Start acamprosate: confirm abstinence, check kidney function, set the dose.",
+          "findings": [
+            "Abstinent, creatinine clearance over 50: 666 mg three times daily",
+            "Creatinine clearance 30 to 50 mL/min: reduce to 333 mg three times daily",
+            "Creatinine clearance 30 mL/min or less: contraindicated, do not start"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Acamprosate calms the overactive glutamate system that drives the restlessness, insomnia, and unease of early abstinence; its mechanism is described as modulating glutamate and GABA balance, and it is approved for maintaining abstinence in patients who are already abstinent when they start, ideally begun as soon as withdrawal settles. The dose is two 333 mg tablets three times daily. Because it is excreted unchanged by the kidneys and never touches the liver, it is the go-to drug when liver disease rules out naltrexone, and the kidney numbers are the whole safety story (see findings). The main side effect is diarrhea. It has no interaction with alcohol and no abuse potential, and it does nothing for a patient who is still drinking heavily, which is the counseling point patients most often miss.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "disulfiram",
+          "maneuver": "Start disulfiram only in a selected, informed, abstinent patient, ideally with supervised dosing.",
+          "findings": [
+            "Abstinent at least 12 hours, fully informed, motivated, supervision available: start 250 mg daily",
+            "Drinking within the past 12 hours, intoxicated, or has not consented with understanding: do not start",
+            "Severe heart disease, psychosis, or significant liver disease: avoid"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Disulfiram blocks aldehyde dehydrogenase, so drinking on it floods the body with acetaldehyde: flushing, pounding headache, nausea and vomiting, chest discomfort, fast pulse, and falling blood pressure, starting within minutes and lasting 30 minutes to hours; severe reactions can be dangerous, especially with heart disease. The usual dose is 250 mg daily (range 125 to 500 mg). Counseling is the treatment: the patient must know the reaction can be triggered by hidden alcohol in mouthwash, sauces, hand sanitizer, and cough syrup, and can still occur for up to 14 days after the last dose. Never give it without the patient's knowledge, never to an intoxicated patient, and avoid it in severe myocardial disease, psychosis, and pregnancy unless a specialist directs otherwise. It also inhibits several drug-metabolizing enzymes and interacts with warfarin, phenytoin, isoniazid, and metronidazole. Its evidence is strongest in supervised administration, which is why the history question about who can watch the dose matters.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "off-label options",
+          "maneuver": "Consider OFF-LABEL options only when the approved three do not fit, and say 'off-label' out loud.",
+          "findings": [
+            "OFF-LABEL gabapentin: may fit when anxiety, insomnia, or mild withdrawal symptoms drive relapse",
+            "OFF-LABEL topiramate: reduces heavy drinking in trials; cognitive slowing is common",
+            "OFF-LABEL baclofen: evidence is mixed and the APA makes no recommendation for it"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Everything in this item is off-label for alcohol use disorder and should be presented to the patient that way. Gabapentin (commonly 900 to 1800 mg per day in divided doses, adjusted for kidney function) is an APA second-line suggestion and is attractive when anxiety, insomnia, or protracted withdrawal symptoms are prominent, but it is sedating, is misused by some patients, and needs a taper after sustained use. Topiramate (titrated slowly toward 200 to 300 mg per day) is also APA second-line; word-finding difficulty, tingling, appetite loss, and kidney stones limit it. Baclofen is used in some liver clinics because it is mostly renally cleared, but trial results conflict and the APA guideline makes no recommendation for or against it. None of these replaces the approved three as a default; they are what you reach for when liver, kidney, adherence, or comorbidity closes the standard doors.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 9,
+        "howMissing": 3
+      }
+    },
+    {
+      "id": "motivational-interviewing-screening",
+      "title": "Motivational interviewing and screening (SBIRT)",
+      "worksheet": true,
+      "aliases": [
+        "motivational interviewing",
+        "mi",
+        "sbirt",
+        "audit-c",
+        "audit c",
+        "screening",
+        "brief intervention",
+        "oars",
+        "stages of change"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "screening",
+          "question": "AUDIT-C question 1 (ask verbatim): \"How often did you have a drink containing alcohol in the past year?\"",
+          "listenFor": [
+            "Never (0 points)",
+            "Monthly or less (1 point)",
+            "Two to four times a month (2 points)",
+            "Two to three times a week (3 points)",
+            "Four or more times a week (4 points)"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "The AUDIT-C is the 3-question consumption screen taken from the WHO's AUDIT; it takes about a minute and performs about as well as the full 10-question version for detecting unhealthy alcohol use. Ask the questions as written and score the answers as given; paraphrasing ('you don't drink much, right?') destroys the calibration. If this answer is 'Never,' questions 2 and 3 score zero and the screen is negative. Score the total after question 3 (see the scoring item in the exam section).",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "screening",
+          "question": "AUDIT-C question 2 (ask verbatim): \"How many drinks did you have on a typical day when you were drinking in the past year?\"",
+          "listenFor": [
+            "1 or 2, or none (0 points)",
+            "3 or 4 (1 point)",
+            "5 or 6 (2 points)",
+            "7 to 9 (3 points)",
+            "10 or more (4 points)"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "This question measures quantity per occasion, which is where much of the harm lives. Patients often undercount because their pours are bigger than a standard drink (14 grams of alcohol: 12 ounces of regular beer, 5 ounces of wine, 1.5 ounces of distilled spirits). If the answer sounds low for the clinical picture, calibrate once, neutrally: 'When you say a drink, how big is the glass?' A patient drinking four doubles a day is drinking eight standard drinks, which moves this answer from 1 point to 3.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "screening",
+          "question": "AUDIT-C question 3 (ask verbatim): \"How often did you have six or more drinks on one occasion in the past year?\"",
+          "listenFor": [
+            "Never (0 points)",
+            "Less than monthly (1 point)",
+            "Monthly (2 points)",
+            "Weekly (3 points)",
+            "Daily or almost daily (4 points)"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "This is the binge-frequency question, and it carries much of the screen's sensitivity for risky drinking in people whose daily totals look modest, such as the patient who drinks little all week and then has eight drinks on Friday. Add the three answers for the total score: out of 12, a score of 4 or more in men or 3 or more in women is a positive screen for unhealthy alcohol use, and the higher the score, the more likely an alcohol use disorder and alcohol-related harm. A positive screen is not a diagnosis; it is the trigger for the brief intervention and, when indicated, a fuller assessment.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-04",
+          "system": "screening",
+          "question": "Single alcohol screening question (ask verbatim): \"How many times in the past year have you had 5 or more drinks in a day?\" (For women: 4 or more drinks in a day.)",
+          "listenFor": [
+            "Never: negative screen",
+            "One or more times: positive screen",
+            "Many times, or cannot count: positive screen, assess further"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "When there is time for exactly one question, this is the one the NIAAA recommends; it was validated by Smith and colleagues with sensitivity and specificity around 0.86 each for excessive drinking. Any answer of one or more times is positive (one secondary review says 'more than once,' but the original study and NIAAA guidance use one or more). A positive answer is an opening, not a verdict: follow with the AUDIT-C or a drinking history, and use the answer itself as feedback in the brief intervention.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-05",
+          "system": "screening",
+          "question": "Single drug screening question (ask verbatim): \"How many times in the past year have you used an illegal drug or used a prescription medication for nonmedical reasons?\"",
+          "listenFor": [
+            "Never: negative screen",
+            "One or more times: positive screen",
+            "Names a specific drug or pattern: positive screen, assess that drug in detail"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Smith and colleagues validated this question in primary care (Archives of Internal Medicine, 2010): an answer of at least one time was 100% sensitive and about 74% specific for a current drug use disorder in that sample, performing about as well as the 10-question DAST. It asks about behavior without naming drugs, which lowers defensiveness; follow a positive answer with 'What have you been using?' and drug-specific histories. Note it does not ask about alcohol or cannabis legality nuances; in jurisdictions where cannabis is legal, patients may not count it, so ask about cannabis separately when it matters.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-06",
+          "system": "oars skills",
+          "question": "Open the conversation with permission (example script): \"Would it be all right if we spent a couple of minutes talking about your drinking?\"",
+          "listenFor": [
+            "Agrees readily",
+            "Agrees with hesitation or conditions ('I guess, but I'm not quitting')",
+            "Declines or becomes guarded"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Asking permission is the first motivational interviewing move and it changes the whole exchange: a patient who has agreed to talk has implicitly accepted the topic, and a patient who declines has told you something important about readiness that arguing would only harden. Even a guarded yes ('I'm not quitting') is workable; it names the patient's fear, usually that you will lecture or force change, and lets you defuse it: 'That's completely your call. I'm just interested in how drinking fits into your life right now.' If the patient declines outright, respect it, leave the door open, and document; pressure converts ambivalence into resistance.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-07",
+          "system": "oars skills",
+          "question": "Use open questions and reflective listening (example): \"What concerns you most about your drinking?\" Then reflect what you hear: \"You're worried it's starting to affect your job.\"",
+          "listenFor": [
+            "Change talk: 'I know I need to cut down,' 'My kids have noticed,' 'I can't afford this'",
+            "Sustain talk: 'It's the only way I relax,' 'Everyone at work drinks like this'",
+            "A mix of both (ambivalence), which is the normal state, not a problem"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "OARS stands for Open questions, Affirmations, Reflective listening, and Summaries. Open questions invite the patient's own reasons for change, which persuade far better than yours. A reflection restates the meaning of what the patient said, slightly underlined; it is a statement, not a question, and it drops at the end rather than rising. Your job is to selectively reflect change talk (desire, ability, reasons, need, commitment) so the patient hears themselves argue for change, and to roll with sustain talk instead of wrestling it. A useful ratio to aim for is at least as many reflections as questions.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-08",
+          "system": "oars skills",
+          "question": "Affirm strengths and summarize (examples): \"You kept every appointment through detox, that took real effort.\" Then: \"Let me make sure I have this right. On one hand... and on the other hand... What do you make of all that?\"",
+          "listenFor": [
+            "Patient corrects or sharpens the summary",
+            "Patient voices their own next step ('I suppose I could try...')",
+            "Patient disengages or changes the subject"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Affirmations name genuine strengths and efforts; they are not compliments about appearance and they are not praise for agreeing with you. Summaries collect the conversation into a bouquet: the patient's own change talk, gathered and handed back, ending with an open invitation ('What do you make of all that?' or 'Where does this leave you?'). The summary is often the moment a patient first states a commitment out loud, because hearing their reasons side by side is more persuasive than any single one was. If the patient corrects your summary, take the correction; accuracy builds the trust the whole method runs on.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-09",
+          "system": "oars skills",
+          "question": "Use the readiness rulers (example script): \"On a scale of 0 to 10, how important is it to you to cut down?\" Then: \"Why a 4 and not a 1?\" Then: \"What would it take to get to a 6?\"",
+          "listenFor": [
+            "Importance and confidence both high (7 or more): ready to plan",
+            "Importance high, confidence low: focus on ability and small steps",
+            "Importance low: focus on values and discrepancy, do not push planning"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "The follow-up questions are the technique. 'Why a 4 and not a 1?' makes the patient voice their own reasons for change; 'Why not a 7?' would make them defend the status quo, which is the trap. 'What would it take to get to a 6?' converts the gap into concrete, patient-designed steps. Ask the same pair for confidence ('How confident are you that you could do it?'), because importance and confidence fail independently and are fixed differently: importance grows from values and consequences, confidence grows from past successes and smaller first steps.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "brief intervention",
+          "maneuver": "Score the AUDIT-C and state what the score does and does not mean.",
+          "findings": [
+            "Total 0 to 3 (men) or 0 to 2 (women): negative screen, reinforce and move on",
+            "Total 4 or more (men) or 3 or more (women): positive screen, brief intervention indicated",
+            "High scores (upper half of the 0 to 12 range): likely alcohol use disorder, full assessment and treatment discussion"
+          ],
+          "how": "Add the three AUDIT-C answers (each 0 to 4) for a total of 0 to 12. Positive is 4 or more in men, 3 or more in women. The VA's guidance: the higher the score, the more likely the drinking is affecting health and safety. A score of 0 should reflect a true non-drinker; if it contradicts the clinical picture, ask the single-question screen and a direct drinking history.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Scoring is trivial; interpretation is the skill. A positive AUDIT-C means unhealthy alcohol use is likely, not that the patient has an alcohol use disorder; the diagnosis comes from the DSM-5 criteria conversation that follows. Scores also calibrate intensity: a 4 in a young man may need feedback and a follow-up, while a 10 with morning drinking describes physiological dependence, withdrawal risk, and a patient who needs treatment, possibly including medication, not just advice. Never let a screening total substitute for asking about withdrawal history before recommending abrupt abstinence.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "stages of change",
+          "maneuver": "Stage the patient's readiness to change (Prochaska and DiClemente).",
+          "findings": [
+            "Precontemplation: does not see a problem, or feels hopeless about change",
+            "Contemplation: sees pros and cons, ambivalent, no plan yet",
+            "Preparation or action: has a plan, a date, or has already started changing",
+            "Maintenance: sustaining change for months; relapse prevention is the task"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Matching the intervention to the stage is what separates motivational interviewing from generic advice. In precontemplation, raise awareness gently with personalized feedback and leave the door open; action plans offered here bounce off. In contemplation, work the ambivalence: decisional balance, values, and the rulers. In preparation, switch to concrete planning, menus of options, and follow-up intervals. In maintenance, normalize that return to use is a common part of the cycle rather than a failure, and plan for high-risk situations. Mis-staging is the commonest MI error: most 'noncompliant' patients are contemplators who were handed an action plan.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "brief intervention",
+          "maneuver": "Deliver the brief intervention and decide on referral (the BI and RT of SBIRT).",
+          "findings": [
+            "Give feedback with permission: 'Your score was 8 out of 12. Can I tell you what that usually means?'",
+            "Offer a menu, not an order: cut down, stop for a defined period, medication options, counseling, mutual-help groups",
+            "Referral to treatment: positive screen plus dependence signs, failed brief interventions, or patient request"
+          ],
+          "how": "Use elicit-provide-elicit for any information or advice: ask what the patient already knows or wants to know, provide the information neutrally with permission, then elicit their reaction ('What do you make of that?'). Close with a summary, one agreed next step, and a specific follow-up date. The classic brief intervention elements are FRAMES: Feedback, Responsibility (it is the patient's choice), Advice (clear, with permission), Menu of options, Empathy, and Self-efficacy support.",
+          "why": null,
+          "whySource": null,
+          "meaning": "SBIRT is Screening, Brief Intervention, and Referral to Treatment, and the evidence is strongest for the screening and brief intervention steps in alcohol use. A brief intervention is not a compressed lecture; done in MI style it takes 5 to 15 minutes and leaves the patient, not the clinician, having made the argument for change. Referral should be a warm handoff (a named program, a number called together, an appointment made) rather than a pamphlet, because most paper referrals never connect. Arrange follow-up either way: drinking outcomes are checked, not assumed, and a return visit is where medication for alcohol use disorder often gets started.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 12,
+        "howMissing": 1
+      }
     }
   ]
 }
