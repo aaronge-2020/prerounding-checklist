@@ -25,33 +25,44 @@ const bundle = JSON.parse(readFileSync(join(root, "src", "data", "cheat-sheets.j
 const sheets = bundle.sheets;
 
 // ---- every sheet is flagged ---------------------------------------------------
-assert.equal(sheets.length, 70, "70 sheets in the bundle");
-assert.ok(sheets.every((sheet) => sheet.worksheet === true), "all 70 sheets carry worksheet: true");
+assert.equal(sheets.length, 74, "74 sheets in the bundle");
+assert.ok(sheets.every((sheet) => sheet.worksheet === true), "all 74 sheets carry worksheet: true");
 
 // ---- generic item census --------------------------------------------------------
 // Generic items = every history item plus every exam item without curated
-// `fields`. Each must offer 1-5 answer options.
+// `fields`. Each must offer at least 1 answer option; most offer at most 5,
+// while CIWA-Ar scale items carry up to 8 graded anchors.
 let genericItems = 0;
 for (const sheet of sheets) {
   for (const item of sheet.history) {
     genericItems += 1;
-    assert.ok(Array.isArray(item.listenFor) && item.listenFor.length >= 1 && item.listenFor.length <= 5,
-      `${sheet.id}/${item.id} offers 1-5 listenFor options`);
+    assert.ok(Array.isArray(item.listenFor) && item.listenFor.length >= 1 && item.listenFor.length <= 8,
+      `${sheet.id}/${item.id} offers 1-8 listenFor options`);
   }
   for (const item of sheet.exam) {
     if (Array.isArray(item.fields) && item.fields.length) continue;
     genericItems += 1;
-    assert.ok(Array.isArray(item.findings) && item.findings.length >= 1 && item.findings.length <= 5,
-      `${sheet.id}/${item.id} offers 1-5 findings options`);
+    assert.ok(Array.isArray(item.findings) && item.findings.length >= 1 && item.findings.length <= 8,
+      `${sheet.id}/${item.id} offers 1-8 findings options`);
   }
 }
-assert.equal(genericItems, 1537, "1,537 generic items across the bundle");
+assert.equal(genericItems, 1619, "1,619 generic items across the bundle");
 
 // ---- dispatch -------------------------------------------------------------------
 const mse = sheets.find((sheet) => sheet.id === "mental-status-examination");
 const dyspnea = sheets.find((sheet) => sheet.id === "dyspnea");
 assert.equal(presentation.sheetHasFields(mse), true, "MSE sheet takes the curated-fields path");
 assert.equal(presentation.sheetHasFields(dyspnea), false, "dyspnea takes the generic path");
+
+// ---- PSYH 530 sheets appended 2026-10-26 take the generic path -------------------
+const capacity = sheets.find((sheet) => sheet.id === "decision-making-capacity");
+const substanceUse = sheets.find((sheet) => sheet.id === "substance-use-history");
+const ciwa = sheets.find((sheet) => sheet.id === "ciwa-ar");
+const cows = sheets.find((sheet) => sheet.id === "cows");
+for (const sheet of [capacity, substanceUse, ciwa, cows]) {
+  assert.ok(sheet, "PSYH 530 sheet is present");
+  assert.equal(presentation.sheetHasFields(sheet), false, `${sheet.id} takes the generic path`);
+}
 
 // ---- grouping on the dyspnea sheet ----------------------------------------------
 const groups = presentation.genericWorksheetGroups(dyspnea);
@@ -109,6 +120,45 @@ assert.deepEqual(
   [true, true, false, false, false, false, false, false, false, false],
   "group-filled flags follow group order"
 );
+
+// ---- grouping on the PSYH 530 scale and history sheets ------------------------------
+const ciwaGroups = presentation.genericWorksheetGroups(ciwa);
+assert.deepEqual(ciwaGroups.map((group) => group.title), ["Alcohol withdrawal"],
+  "CIWA-Ar items form a single Alcohol withdrawal group");
+assert.equal(ciwaGroups[0].entries.length, 11, "CIWA-Ar renders its 10 scale items plus the total/bands item");
+const cowsGroups = presentation.genericWorksheetGroups(cows);
+assert.deepEqual(cowsGroups.map((group) => group.title), ["Opioid withdrawal"],
+  "COWS items form a single Opioid withdrawal group");
+assert.equal(cowsGroups[0].entries.length, 12, "COWS renders its 11 scale items plus the total/bands item");
+const substanceGroups = presentation.genericWorksheetGroups(substanceUse);
+assert.deepEqual(
+  substanceGroups.map((group) => group.title),
+  ["Alcohol", "Opioids", "Stimulants", "Cannabis", "Tobacco", "Sedatives",
+   "Consequences", "Treatment history", "Readiness"],
+  "substance use history groups follow first appearance"
+);
+assert.equal(substanceGroups.reduce((n, group) => n + group.entries.length, 0), 41,
+  "all 41 substance use history items are grouped");
+
+// ---- byte-exact note: capacity worked example, tier 1 (blood draw refusal) ------------
+// Selections and expected text from scratch/mse-worksheet/capacity-sheet-draft.md,
+// section 3, Case A: the same four abilities pass at tier 1.
+const capacityState = stateFor({
+  "history-01": { selected: ["States one clear choice and stays with it"] },
+  "exam-02": { selected: ["Low stakes: the outcome is similar whichever way the patient chooses"] },
+  "exam-04": { selected: ["Tier 1 applies: awareness and assent (Drane standard 1)"] },
+  "exam-09": { selected: ["Meets the required showing: the patient has capacity for this decision and the choice governs"] }
+});
+const capacityNote = [
+  "Decision-Making Capacity and Informed Consent (Sliding Scale)",
+  "Expressing a choice: States one clear choice and stays with it.",
+  "Sliding scale: Low stakes: the outcome is similar whichever way the patient chooses; tier 1 applies: awareness and assent (Drane standard 1).",
+  "Documentation: Meets the required showing: the patient has capacity for this decision and the choice governs."
+].join("\n");
+assert.equal(presentation.worksheetNoteText(capacity, capacityState), capacityNote,
+  "the capacity worksheet reproduces the draft's tier-1 worked-example note byte-exact");
+assert.equal(presentation.genericWorksheetNoteText(capacity, capacityState), capacityNote);
+assert.equal(presentation.worksheetProgressText(capacity, capacityState), "3 of 7 sections filled");
 
 // ---- empty sheet -> empty note -------------------------------------------------------
 assert.equal(presentation.worksheetNoteText(dyspnea, new Map()), "", "an untouched sheet builds no note");

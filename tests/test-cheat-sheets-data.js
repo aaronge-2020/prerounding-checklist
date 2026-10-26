@@ -33,7 +33,9 @@ const bundle = JSON.parse(readFileSync(join(root, "src", "data", "cheat-sheets.j
 // (56 sheets / 725 history + 514 exam items). A 70th sheet, the Mental Status
 // Examination checklist, was appended 2026-10-26, transcribed from the
 // Mental Status Examination Worksheet (reviewed 4/21/2026) Aaron photographed
-// at PSYH 530 orientation. itemsHash = sha256 over each
+// at PSYH 530 orientation. Sheets 71-74 (decision-making capacity,
+// substance use history, CIWA-Ar, COWS) were appended 2026-10-26 for the
+// same clerkship. itemsHash = sha256 over each
 // source item's kind|id|system|text|choices joined by \x00.
 const FROZEN = [
     {
@@ -875,6 +877,58 @@ const FROZEN = [
       "exam": 11,
       "itemsHash": "9ff25a023d157345b9f1dd85eebcbfdc1d81ee4f9840f695d8ad53899adc02c1"
     },
+    {
+      "id": "decision-making-capacity",
+      "title": "Decision-Making Capacity and Informed Consent (Sliding Scale)",
+      "aliases": [
+        "capacity",
+        "competence",
+        "informed consent",
+        "decision-making capacity",
+        "consent capacity",
+        "sliding scale"
+      ],
+      "history": 8,
+      "exam": 10,
+      "itemsHash": "1713e6654dfa194d1fb1e9d0e0105903722dc09e9547da29a5111af08fdf0edc"
+    },
+    {
+      "id": "substance-use-history",
+      "title": "Substance use history",
+      "aliases": [
+        "substance use",
+        "drug history",
+        "addiction history",
+        "sud history"
+      ],
+      "history": 41,
+      "exam": 0,
+      "itemsHash": "de7d8011781424f90e660060cd9c4ee27602b73afc5579c4e46e20cfae7be546"
+    },
+    {
+      "id": "ciwa-ar",
+      "title": "CIWA-Ar (alcohol withdrawal)",
+      "aliases": [
+        "ciwa",
+        "alcohol withdrawal scale",
+        "alcohol withdrawal assessment"
+      ],
+      "history": 0,
+      "exam": 11,
+      "itemsHash": "6d7f67cac66485c03c77bfbdae9596608e52b33c793aab04d226e35b20c26ba5"
+    },
+    {
+      "id": "cows",
+      "title": "COWS (opioid withdrawal)",
+      "aliases": [
+        "cows",
+        "clinical opiate withdrawal scale",
+        "opioid withdrawal scale"
+      ],
+      "history": 0,
+      "exam": 12,
+      "itemsHash": "328e719ab8beea42cd1bdf18222d9762ec3499fed9272708bc91d0dba6c7c2e6"
+    }
   ];
 
 assert.strictEqual(bundle.version, 1, "bundle version must be 1");

@@ -23799,6 +23799,1345 @@
         "whyMissing": 11,
         "howMissing": 10
       }
+    },
+    {
+      "id": "decision-making-capacity",
+      "title": "Decision-Making Capacity and Informed Consent (Sliding Scale)",
+      "worksheet": true,
+      "aliases": [
+        "capacity",
+        "competence",
+        "informed consent",
+        "decision-making capacity",
+        "consent capacity",
+        "sliding scale"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "Expressing a choice",
+          "question": "Now that we have talked through the options, which treatment have you decided on?",
+          "listenFor": [
+            "States one clear choice and stays with it",
+            "States a choice but changes it when the question is repeated",
+            "Gives different choices to different people",
+            "Cannot state any choice"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Expressing a choice is the floor of the four abilities, and it is the only ability a tier 1 (awareness and assent) decision requires beyond simple awareness. A choice that flips between tellings is not yet a decision anyone can act on, and a patient who cannot state a choice at all needs a surrogate for that decision no matter how well they chat. Ask it plainly and write down the answer in the patient's words.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "Expressing a choice",
+          "question": "Is this your own decision, or is someone else making it for you?",
+          "listenFor": [
+            "Own decision, made freely",
+            "Own decision, but clearly influenced by family or staff pressure",
+            "Decision dictated by another person",
+            "Going along only out of fear of displeasing the team"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "A capable patient's choice still fails as consent if it is not voluntary. Pressure usually comes from family, not staff, and the fix is often a private conversation rather than a capacity fight. If the words are the patient's but the will is someone else's, the consent is not valid even when every other ability is intact.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "Understanding",
+          "question": "Can you tell me in your own words what your medical problem is, and what this treatment is meant to do?",
+          "listenFor": [
+            "Accurately restates the diagnosis and the purpose of the treatment",
+            "Restates the basics with minor gaps",
+            "Restates only fragments after re-explanation",
+            "Cannot restate the diagnosis or what the treatment does"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Understanding is teach-back, not nodding. Patients who cannot repeat the facts back were usually never taught them in usable form, so re-teach in plain language, with an interpreter if needed, and test again before scoring this as a failure. This is the ability that mild cognitive impairment erodes first, and it is the core of Drane's tier 2 and of Appelbaum's framework.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-04",
+          "system": "Understanding",
+          "question": "What are the main risks and benefits of this treatment? What other choices do you have, including not having the treatment at all?",
+          "listenFor": [
+            "Names the major risks, benefits, and alternatives, including no treatment",
+            "Names benefits but few risks or alternatives",
+            "Names a risk or benefit only after prompting",
+            "Cannot name any risk, benefit, or alternative"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "A patient who can describe the treatment but not its alternatives has not been given a decision yet. The no-treatment option is the one most often skipped in disclosure and the one refusals turn on, because refusing means choosing it. If the patient cannot name it, the disclosure was incomplete and the assessment is not fair until it is repeated.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-05",
+          "system": "Appreciation",
+          "question": "Do you believe you actually have this condition, and that treatment could help you?",
+          "listenFor": [
+            "Acknowledges the condition and that treatment could help",
+            "Acknowledges the condition but doubts treatment will help",
+            "Acknowledges symptoms but blames an unrelated cause",
+            "Denies being ill at all despite the evidence"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Appreciation is where understanding stops being a quiz about facts and becomes about this patient's own life. A patient can recite a diagnosis perfectly and still fail here, because the facts never land as true for them; this is the classic failure in psychosis and in anosognosia after brain injury. Doubting that a treatment will work is not by itself a failure; denying the condition exists, on the basis of a fixed false belief, is.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-06",
+          "system": "Appreciation",
+          "question": "What do you think will happen to you if you have this treatment, and what will happen if you do not?",
+          "listenFor": [
+            "Realistically applies both outcomes to himself or herself",
+            "Accepts the outcomes in general but doubts they apply to him or her",
+            "Acknowledges the outcome of treatment but not of refusing it",
+            "Believes nothing bad can happen whatever is decided"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "This is the question that separates a risky preference from an incapacity. A patient who says the untreated outcome is death, believes it, and chooses it anyway for reasons of their own is exercising capacity at the highest tier. A patient who agrees the risk is real for other people but impossible for them has not appreciated the decision, and that gap is what tier 3 exists to catch.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-07",
+          "system": "Reasoning",
+          "question": "Why did you pick this option over the others?",
+          "listenFor": [
+            "Compares the options and gives reasons tied to the facts discussed",
+            "Gives a reason, but it rests on a factual misunderstanding",
+            "Reasons jump between unrelated ideas and the conclusion does not follow",
+            "Choice follows directly from a fixed false belief rather than the facts"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Reasoning is judged on the process, never on whether the conclusion matches the team's recommendation. A conclusion the team hates, reached by weighing real facts against the patient's own values, passes. A conclusion the team loves, reached by echoing the last person who spoke, does not. A factual misunderstanding is fixable by teaching; reasoning that runs on a delusion is not.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-08",
+          "system": "Reasoning",
+          "question": "Walk me through how you got from what we discussed to this decision.",
+          "listenFor": [
+            "Logical sequence from the facts to the conclusion",
+            "Mostly logical, with minor gaps",
+            "Illogical leaps; the conclusion does not follow from the facts given",
+            "No process to describe; the decision is impulsive or copies the last suggestion"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Asking for the path, not just the reason, exposes failures the first reasoning question can miss: thought disorder, severe concrete thinking, and decisions made by suggestion in patients eager to please. Minor gaps are normal in frightened, sick people and do not fail anyone. What fails a patient at a high tier is a path that does not connect the facts to the choice at all.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "Sliding scale",
+          "maneuver": "Name the one specific decision being assessed, in a single sentence, before asking anything else.",
+          "findings": [
+            "One specific decision identified, for this treatment at this time",
+            "Several decisions bundled together; they need separate assessments",
+            "Decision never pinned down; the assessment drifted into a global judgment of the patient"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Capacity attaches to a decision, not to a person. A global verdict (this patient has no capacity) is almost always wrong, because the same patient may decide simple things well and complex ones badly. Every later step, the disclosure, the four abilities, the threshold, only makes sense against one named decision.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "Sliding scale",
+          "maneuver": "Rate what is at stake: how likely and how bad is the harm if this choice goes wrong, weighed against the benefit the choice could bring.",
+          "findings": [
+            "Low stakes: the outcome is similar whichever way the patient chooses",
+            "Moderate stakes: real harm is possible but unlikely, or likely but limited",
+            "High stakes: death or serious, lasting harm is likely if the choice goes wrong"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "This rating is the input to the sliding scale, and Buchanan and Brock are explicit that it is the expected harm of acting on the patient's choice that moves the standard. Rate the decision in front of you, not the disease in general: the same operation is low stakes for a patient with good alternatives and high stakes for one with none.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "Sliding scale",
+          "maneuver": "Note whether the patient is accepting or refusing the recommended course, and let that set which end of the scale you are on.",
+          "findings": [
+            "Accepting a recommended treatment with a favorable balance: lowest showing required",
+            "Choosing between options of similar balance, or the balance is genuinely uncertain: middle showing",
+            "Refusing a recommended treatment with a favorable balance, or accepting a dangerous one: highest showing required"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "This is the asymmetry Buchanan and Brock draw out of the risk-related standard: consenting and refusing the same treatment are different decisions with different stakes, so they carry different bars. It is also the step that protects against the commonest error, probing capacity only when the patient disagrees. A patient who cheerfully accepts a dangerous, futile procedure deserves the same scrutiny as one who refuses a safe one.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "Sliding scale",
+          "maneuver": "State the tier out loud, and in the note, before judging the four abilities.",
+          "findings": [
+            "Tier 1 applies: awareness and assent (Drane standard 1)",
+            "Tier 2 applies: understanding, with a choice based on weighing risks and benefits (Drane standard 2)",
+            "Tier 3 applies: appreciation and rational reasoning about the consequences for the patient's own life (Drane standard 3)"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Fixing the bar before the test is what keeps the sliding scale honest. If the threshold is chosen after hearing the answers, it silently becomes an outcome test: high when the patient refuses, low when the patient agrees. Writing the tier down first also tells the next clinician exactly what showing was required, which is what a reviewing court or consultant will look for.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "Informed consent",
+          "maneuver": "Disclose before you judge: the diagnosis, what the treatment is and what it is for, its material risks and benefits, the reasonable alternatives, and the option of no treatment.",
+          "findings": [
+            "All elements disclosed in plain language, with teach-back",
+            "Disclosed, but in jargon, too fast, or without an interpreter the patient needed",
+            "Risks or alternatives not yet disclosed; the patient cannot fairly be assessed yet"
+          ],
+          "how": "Cover all five elements, then ask the patient to teach them back. Disclosure is an element of valid consent in its own right (StatPearls lists disclosure, capacity, and voluntariness as the three elements), and a failed teach-back after good disclosure means something different from a failed teach-back after a rushed one.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Capacity testing on undisclosed information measures the disclosure, not the patient. Most apparent understanding failures in hospital practice are teaching failures: wrong language, wrong hour, wrong person in the room. Redo the disclosure properly before concluding anything, and document that you did.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "Informed consent",
+          "maneuver": "Check whether a recognized exception applies before skipping or overriding consent: true emergency, the patient's own waiver, or therapeutic privilege.",
+          "findings": [
+            "No exception applies: the decision of a patient with capacity governs",
+            "True emergency: treatment needed now to prevent death or serious harm, patient cannot consent, no surrogate reachable",
+            "Waiver: the patient has chosen not to be informed and has delegated the decision",
+            "Therapeutic privilege claimed: disclosure itself would cause this patient serious harm"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Each exception is narrower than its reputation. The emergency exception covers the emergency only. A waiver must be the patient's own voluntary act. Therapeutic privilege is about harm from the information itself, never about the fear that an informed patient will refuse; modern sources treat it as rare, and invoking it without documenting the specific expected harm is indefensible. Lack of capacity is not on this list on purpose: it routes the decision to a surrogate, it does not erase consent.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "Documentation",
+          "maneuver": "Optimize before concluding: treat pain, hypoxia, infection, and delirium; review sedating medications; pick the patient's best time of day; provide glasses, hearing aids, and an interpreter; offer a trusted person's presence.",
+          "findings": [
+            "Reversible barriers treated or excluded; assessment done at the patient's best",
+            "Barriers partly addressed; the showing may improve, so reassess before a final conclusion",
+            "Assessment done while a reversible barrier was active; the conclusion is not yet reliable"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "A capacity verdict reached on a delirious, sedated, or pain-wracked patient at 3 a.m. is a verdict about the barrier, not the patient. Because capacity fluctuates, the ethical move is to remove what can be removed and test again. Documenting the barriers you addressed is also what separates a defensible assessment from a one-line opinion.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-08",
+          "system": "Documentation",
+          "maneuver": "Plan the reassessment: capacity is decision-specific and can change, so state when and why this conclusion should be revisited.",
+          "findings": [
+            "Showing stable across repeat checks; no early reassessment needed",
+            "Showing fluctuates with symptoms, time of day, or treatment; reassess at the time of the decision",
+            "Showing improved after the underlying cause was treated; the earlier conclusion is superseded"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Yesterday's incapacity is not today's. A patient who lacked capacity during delirium may regain it as the infection clears, and their own decisions then govern again, including decisions that undo what a surrogate chose. Building the reassessment trigger into the note (if the fever resolves, if the morning dose wears off) keeps the team from treating a temporary state as a permanent label.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-09",
+          "system": "Documentation",
+          "maneuver": "Conclude against the preset tier and write the note: the decision, the disclosure given, the patient's performance on each of the four abilities in the patient's own words, the tier applied, and the conclusion.",
+          "findings": [
+            "Meets the required showing: the patient has capacity for this decision and the choice governs",
+            "Borderline: abilities are partial; add support, involve psychiatry or ethics, and reassess rather than forcing a binary call now",
+            "Does not meet the required showing for this decision: the patient lacks capacity for this decision; move to the surrogate process"
+          ],
+          "how": "Quote the patient verbatim at least once per ability that decided the outcome. Appelbaum's documentation standard is a description of the disclosure, the consequences of the choice, the patient's mental status, performance on the four abilities, and the conclusion; a conclusion with no quoted words cannot be checked by anyone who reads it later.",
+          "why": null,
+          "whySource": null,
+          "meaning": "The conclusion must name the decision (capacity for this decision), never the person. A borderline result is a real result: at a low tier, partial abilities may still clear the bar; at tier 3 they do not, and the honest chart entry is what was shown, what tier was required, and what happens next. Forcing a binary call on a borderline showing, in either direction, is how both autonomy violations and preventable harms happen.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-10",
+          "system": "Documentation",
+          "maneuver": "If the patient lacks capacity for this decision, identify who decides and by what standard.",
+          "findings": [
+            "An advance directive or appointed agent names the decision-maker",
+            "No agent: use the applicable surrogate process, asking first what the patient would have wanted (substituted judgment), then best interests",
+            "No surrogate available and the decision cannot wait: emergency treatment only, while guardianship or court routes are started for anything beyond it"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The surrogate's first job is to speak in the patient's voice, using the patient's known wishes and values; best interests is the fallback when those are unknown, not the default. Who counts as a surrogate, and in what order, is set by law and institutional policy and varies by jurisdiction, so this sheet deliberately names no state's list; check the local rule before relying on a family member's say-so for a major decision.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 18,
+        "howMissing": 8
+      }
+    },
+    {
+      "id": "substance-use-history",
+      "title": "Substance use history",
+      "worksheet": true,
+      "aliases": [
+        "substance use",
+        "drug history",
+        "addiction history",
+        "sud history"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "Alcohol",
+          "question": "When did you have your first drink, and how has your drinking changed since then?",
+          "listenFor": [
+            "Denies any alcohol use",
+            "First drink in late adolescence or adulthood, use never escalated",
+            "First drink in early adolescence, gradual escalation over years",
+            "Rapid escalation to heavy use within the first year of drinking"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Age of first use and the speed of escalation are prognostic. Drinking that starts before the mid-teens and escalates fast is associated with a more severe, more relapsing course, and it changes how hard you push for structured treatment rather than brief advice. Record the actual age of first use in the detail field.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "Alcohol",
+          "question": "In the past three months, how much and how often have you been drinking? Walk me through a typical day.",
+          "listenFor": [
+            "No drinking in the past three months",
+            "Drinks less than weekly, within low-risk limits",
+            "Weekly heavy drinking days (binge pattern, sober days between)",
+            "Daily drinking, moderate amount",
+            "Daily heavy drinking, including morning drinking"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Pattern matters as much as volume. Daily drinking with morning relief drinking signals physical dependence and withdrawal risk; a binge pattern with sober days carries different risks (injury, arrhythmia, pancreatitis) and a lower immediate withdrawal risk. Put the actual amount in the detail field in standard drinks per day, and note the largest amount in a single day.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "Alcohol",
+          "question": "How do you take alcohol in (beer, wine, spirits), and have you ever drunk non-beverage alcohol such as mouthwash or hand sanitizer?",
+          "listenFor": [
+            "Beer or wine only",
+            "Spirits, or mixed beverage types",
+            "Has drunk non-beverage alcohol (mouthwash, sanitizer, rubbing alcohol) when drinks were unavailable"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Route for alcohol is beverage type plus this one escalation question. Drinking non-beverage alcohol is a severity marker: it means withdrawal avoidance outweighed taste, cost, and safety, and it adds methanol and isopropanol exposure to the medical picture. Ask it without surprise or judgment in your voice, or it will not be answered honestly.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-04",
+          "system": "Alcohol",
+          "question": "When was your last drink, and what is the longest you have gone without drinking since your use became heavy?",
+          "listenFor": [
+            "Last drink more than a year ago",
+            "Last drink weeks to months ago",
+            "Last drink within the past week",
+            "Drank today or yesterday, no sustained period without drinking since use became heavy"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Last drink sets the withdrawal clock: symptoms start 6 to 12 hours after the last drink or a sharp reduction, seizures cluster at 24 to 48 hours, and delirium tremens at 48 to 96 hours. Longest abstinence is the optimistic counterpart, proof the patient has done it before, and the circumstances of that period (treatment, incarceration, pregnancy, willpower) tell you what to rebuild.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-05",
+          "system": "Alcohol",
+          "question": "What happens when you stop or cut down? Have you ever had shakes, seizures, hallucinations, or delirium tremens (the DTs)?",
+          "listenFor": [
+            "No withdrawal symptoms on stopping",
+            "Mild withdrawal: shakes, sweating, anxiety, nausea, insomnia",
+            "Moderate withdrawal: vomiting, racing heart, hallucinations while still oriented",
+            "Severe withdrawal history: withdrawal seizure, delirium tremens, or ICU care for withdrawal"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Past withdrawal severity is the best predictor of this episode's withdrawal severity, and it drives the level-of-care decision more than today's CIWA-Ar score does. A prior withdrawal seizure or DTs moves the patient toward medically managed inpatient withdrawal management even if they currently look comfortable. Each episode of untreated withdrawal also makes the next one worse (kindling), which is a concrete reason to treat this episode fully.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-06",
+          "system": "Opioids",
+          "question": "When did you first use opioids, and how did you get from that first use to what you are using now?",
+          "listenFor": [
+            "Denies any opioid use",
+            "Started with prescribed pain medication, dose escalated over time",
+            "Started with heroin or illicit fentanyl",
+            "Started with pills obtained from friends, family, or dealers, later switched to heroin or fentanyl for cost"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "The pathway matters for trust and for treatment. A patient whose use began with a legitimate prescription often carries shame and a pain problem that still needs a plan; a patient who switched from pills to fentanyl for cost has usually crossed into higher overdose risk. Record the current drug by name in the detail field, and assume street opioids contain fentanyl unless the patient has evidence otherwise.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-07",
+          "system": "Opioids",
+          "question": "In the past three months, how much and how often have you used? What does a day look like?",
+          "listenFor": [
+            "No opioid use in the past three months",
+            "Intermittent use, less than weekly",
+            "Daily use, stable amount",
+            "Daily use, escalating amount, using mainly to avoid feeling sick"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Using to avoid withdrawal rather than to get high marks the shift from impulsive to compulsive use and usually means opioid use disorder is at least moderate. Put the amount in the detail field in the units the patient uses (bags, pills, dollars per day) and convert cautiously; street fentanyl potency varies so widely that dose comparisons are rough. Frequency also sets expectations for how fast withdrawal will start.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-08",
+          "system": "Opioids",
+          "question": "How do you use (swallow, snort, smoke, inject)? If you inject, do you share or reuse equipment?",
+          "listenFor": [
+            "Swallows pills only",
+            "Snorts or smokes",
+            "Injects, uses own sterile equipment, does not share",
+            "Injects with reused or shared equipment"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Route changes the medical workup. Injection use, especially with sharing, mandates screening for HIV, hepatitis C, endocarditis, and skin and soft-tissue infection, and a look at the injection sites during the exam. A move from snorting to injecting is an escalation point worth naming in the assessment, and every injecting patient should leave with naloxone and a fentanyl test strip conversation.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-09",
+          "system": "Opioids",
+          "question": "When did you last use, and what is the longest you have gone without opioids?",
+          "listenFor": [
+            "Last use more than a year ago",
+            "Last use weeks to months ago",
+            "Last use within the past 24 hours",
+            "Used today; no sustained abstinence since use became daily"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Last use, plus which opioid, sets the withdrawal timeline: heroin and short-acting pills declare themselves within 8 to 12 hours, methadone may take 36 hours or more, and fentanyl is erratic because it stores in fat and leaches back out. It also sets buprenorphine timing, which is scored with the COWS worksheet. Longest abstinence and what supported it belong in the treatment plan.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-10",
+          "system": "Opioids",
+          "question": "What does opioid withdrawal feel like for you, and have you ever overdosed or needed naloxone (Narcan)?",
+          "listenFor": [
+            "No significant withdrawal symptoms",
+            "Withdrawal: aches, sweating, GI upset, insomnia, craving, never overdosed",
+            "Withdrawal plus one prior overdose reversed with naloxone or by bystanders",
+            "Multiple prior overdoses, or an overdose requiring intubation or ICU care"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Overdose history is the strongest single predictor of a future fatal overdose, and a prior reversal is an opening to prescribe naloxone and teach whoever the patient uses with. Ask who gave the naloxone and whether the patient now carries it. Note also that tolerance drops fast during abstinence, so the weeks after detox, incarceration, or this admission are the highest-risk window.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-11",
+          "system": "Stimulants",
+          "question": "When did you first use stimulants (cocaine, methamphetamine, or prescription stimulants not as prescribed), and which ones?",
+          "listenFor": [
+            "Denies any stimulant use",
+            "Cocaine only (powder or crack)",
+            "Methamphetamine",
+            "Prescription stimulants used non-medically, or several stimulant types"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Name the actual drug in the detail field; cocaine, methamphetamine, and diverted prescription stimulants share a syndrome but differ in duration, and methamphetamine's long half-life drives the prolonged agitation and psychosis seen on this service. Record when use started and whether stimulant use is tied to staying awake for work or to sex, both of which shape the plan.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-12",
+          "system": "Stimulants",
+          "question": "In the past three months, how often have you used, and do you use in runs or binges?",
+          "listenFor": [
+            "No stimulant use in the past three months",
+            "Occasional use, single episodes",
+            "Regular use, weekly or more",
+            "Binge runs lasting days with little or no sleep"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "The binge pattern is the stimulant signature: redosing for one to three days, then crashing. Days awake is a number worth recording in the detail field, because sleep deprivation alone produces paranoia and hallucinations that usually clear with sleep, which separates them from a primary psychotic disorder in the differential.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-13",
+          "system": "Stimulants",
+          "question": "How do you use (snort, smoke, inject, swallow)?",
+          "listenFor": [
+            "Swallows or snorts",
+            "Smokes (including crack or crystal methamphetamine)",
+            "Injects"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Smoked and injected stimulants reach the brain in seconds and carry the highest addiction liability and the same bloodborne infection risks as opioid injection. Ask injecting patients the equipment-sharing questions from the opioid battery rather than assuming the answers carry over.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-14",
+          "system": "Stimulants",
+          "question": "When did you last use, and what is the longest you have gone without?",
+          "listenFor": [
+            "Last use more than a year ago",
+            "Last use weeks to months ago",
+            "Last use within the past few days",
+            "Used today or yesterday, still coming down"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Last use tells you whether today's agitation or paranoia is intoxication, the crash, or something else. A patient still coming down mainly needs sleep, food, and a quiet room; documenting the timeline prevents that presentation from being misread as new mania or schizophrenia.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-15",
+          "system": "Stimulants",
+          "question": "What happens when you come down or stop? Have you ever become paranoid, heard or seen things, had chest pain, or had a seizure while using or coming down?",
+          "listenFor": [
+            "No significant crash symptoms",
+            "Crash: prolonged sleep, low mood, increased appetite, strong craving",
+            "Paranoia or hallucinations during use or the crash, cleared with sleep",
+            "Severe complications: chest pain or MI, seizure, or psychosis that persisted after sleep"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "There is no dangerous autonomic withdrawal from stimulants; the crash is hypersomnia, dysphoria, and craving, and suicide risk rises in it, so ask about mood directly. Psychosis that persists well beyond sleep and last use changes the diagnosis conversation. Chest pain on stimulants is an MI workup, not a withdrawal symptom.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-16",
+          "system": "Cannabis",
+          "question": "When did you start using cannabis, and what form do you use (flower, edibles, vapes or concentrates, synthetic products such as K2 or Spice)?",
+          "listenFor": [
+            "Denies any cannabis use",
+            "Flower only, started in adolescence or later",
+            "High-potency products (vaped concentrates, dabs, edibles) as the main form",
+            "Synthetic cannabinoids (K2, Spice)"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Form is the clinically important detail now. High-potency concentrates and daily use are the patterns linked to psychosis risk and to cannabinoid hyperemesis, and synthetic cannabinoids are a different drug class in effect, with agitation, psychosis, and kidney injury that flower does not cause. Record the form and potency in the detail field.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-17",
+          "system": "Cannabis",
+          "question": "In the past three months, how often have you used, and how much in a typical day?",
+          "listenFor": [
+            "No cannabis use in the past three months",
+            "Less than weekly",
+            "Weekly to several times a week",
+            "Daily or near-daily use, including use to sleep or to get through the day"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Daily use, morning use, and use to sleep or eat are the markers of cannabis use disorder rather than recreational use. Amount is hard to compare across products, so record the patient's own units (joints, grams, carts per week) in the detail field and track change in those units.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-18",
+          "system": "Cannabis",
+          "question": "How do you use (smoke, vape, edibles)?",
+          "listenFor": [
+            "Edibles only",
+            "Smokes flower",
+            "Vapes concentrates or uses dabs",
+            "Multiple routes"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Route sets onset and duration, which matters when a patient's presentation includes panic or prolonged intoxication after edibles, whose effects arrive late and last far longer than smoked cannabis. Vaped concentrates deliver the highest doses and are the route most associated with heavy daily use.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-19",
+          "system": "Cannabis",
+          "question": "When did you last use, and what is the longest you have gone without?",
+          "listenFor": [
+            "Last use more than a year ago",
+            "Last use weeks to months ago",
+            "Last use within the past week",
+            "Used today; daily use with no sustained break"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Last use also explains the drug screen: THC from daily use stays positive for weeks, so a positive result does not date the use. Longest abstinence and what interrupted it (a job drug test, pregnancy, a psychotic episode) are useful levers for the treatment conversation.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-20",
+          "system": "Cannabis",
+          "question": "What happens when you stop? Have you had repeated vomiting episodes that hot showers relieve?",
+          "listenFor": [
+            "No symptoms on stopping",
+            "Withdrawal: irritability, anger, poor sleep and vivid dreams, decreased appetite, restlessness",
+            "Cannabinoid hyperemesis pattern: cyclic vomiting relieved by hot bathing"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Cannabis withdrawal is real, peaks at two to six days, and is a common unrecognized reason daily users resume. The hyperemesis pattern is asked about explicitly because patients rarely connect vomiting to cannabis, and the hot-shower detail is close to diagnostic; the only effective treatment is stopping, which the patient needs to hear plainly.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-21",
+          "system": "Tobacco",
+          "question": "Do you smoke cigarettes or use other tobacco or nicotine (vape, smokeless)? When did you start?",
+          "listenFor": [
+            "Denies any tobacco or nicotine use",
+            "Former smoker, quit more than a year ago",
+            "Current use of vaping products or smokeless tobacco only",
+            "Current cigarette smoker"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Tobacco is easy to skip on an addiction service and expensive to skip: nicotine withdrawal on a locked unit without replacement makes patients irritable and gets charted as agitation. Record the product and start age in the detail field, and note that people with substance use disorders die more often from tobacco than from their presenting drug.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-22",
+          "system": "Tobacco",
+          "question": "How much do you smoke in a day, and how soon after waking is your first cigarette?",
+          "listenFor": [
+            "Less than half a pack a day, first cigarette more than an hour after waking",
+            "About a pack a day, first cigarette within 30 minutes of waking",
+            "More than a pack a day, first cigarette within 5 minutes of waking, wakes at night to smoke"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Time to the first cigarette is the single best bedside gauge of nicotine dependence and is one of the two Heaviness of Smoking Index items. Within five minutes means heavy dependence: start adequate nicotine replacement on admission rather than waiting for the patient to ask, and expect withdrawal to color every other interview that day.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-23",
+          "system": "Tobacco",
+          "question": "How do you use tobacco or nicotine (cigarettes, cigars, vape, smokeless, pouches)?",
+          "listenFor": [
+            "Cigarettes",
+            "Vaping or nicotine pouches",
+            "Smokeless tobacco or cigars",
+            "Multiple products"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Route determines replacement: patches replace a steady nicotine level, gum or lozenges cover breakthrough craving, and a patient whose main use is vaping may need both. Smokeless use also means checking the mouth during the exam.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-24",
+          "system": "Tobacco",
+          "question": "When did you last smoke or use nicotine, and what is the longest quit you have had?",
+          "listenFor": [
+            "Last use more than a year ago",
+            "Last use weeks to months ago",
+            "Smoked today, within the past few hours",
+            "Smoked within the last hour; no quit longer than a few days"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Nicotine withdrawal starts within hours, so 'smoked within the last hour' versus 'smoked this morning' changes how much of today's irritability and poor concentration is withdrawal. Prior quits, especially ones supported by medication, predict what will work this time and are worth recording with what ended them.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-25",
+          "system": "Tobacco",
+          "question": "What happens when you cannot smoke? Have you ever quit with medication or counseling, and what happened?",
+          "listenFor": [
+            "Minimal symptoms",
+            "Irritability, anxiety, restlessness, poor concentration, increased appetite",
+            "Prior quit attempts ended by withdrawal symptoms or cravings within days"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Most quit attempts fail on withdrawal and craving in the first week, which is treatable. A history of quitting attempts that collapsed in days is an argument for combination nicotine replacement or varenicline this admission, not for more willpower.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-26",
+          "system": "Sedatives",
+          "question": "Do you take sedatives such as benzodiazepines (Xanax, Klonopin, Valium, Ativan) or sleep medicines beyond how they were prescribed, or get them from another source? When did that start?",
+          "listenFor": [
+            "Denies any sedative misuse; takes prescribed sedatives exactly as directed",
+            "Takes a prescribed benzodiazepine in larger amounts or more often than prescribed",
+            "Buys benzodiazepines or other sedatives illicitly",
+            "Uses sedatives specifically to come down from stimulants or to manage alcohol or opioid withdrawal"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Ask about prescribed and illicit use in one breath, because patients do not count dose escalation of their own prescription as misuse. The reason for use sorts the problem: sedatives used to self-manage alcohol withdrawal or stimulant crashes mean the sedative problem will outlast detox unless the underlying cycle is treated.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-27",
+          "system": "Sedatives",
+          "question": "In the past three months, how much and how often have you taken? What is the most you have taken in a day?",
+          "listenFor": [
+            "No sedative misuse in the past three months",
+            "Occasional misuse, less than weekly",
+            "Daily use at or near prescribed-equivalent doses",
+            "Daily high-dose use, escalating, with periods of amnesia or blackouts"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Record the drug and daily amount in the detail field, converting to a rough diazepam equivalent if you can, because benzodiazepine withdrawal planning is dose-based. Blackouts and amnesia signal high doses and are also when injuries and unwanted sexual exposure happen, which the patient may need help disclosing.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-28",
+          "system": "Sedatives",
+          "question": "How do you take them (by mouth, snorted, injected)?",
+          "listenFor": [
+            "By mouth only",
+            "Snorts",
+            "Injects, or combines with opioids or alcohol to boost effect"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Non-oral routes and deliberate co-use with opioids or alcohol are severity and overdose markers: benzodiazepines plus opioids is one of the most common combinations in fatal overdose, because each removes the other's safety margin. A patient in this group needs naloxone and explicit counseling even if opioids are not their primary drug.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-29",
+          "system": "Sedatives",
+          "question": "When did you last take a sedative, and what is the longest you have gone without?",
+          "listenFor": [
+            "Last misuse more than a year ago",
+            "Last use weeks to months ago",
+            "Last use within the past 24 hours",
+            "Used today; cannot recall a sustained period without"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Timing depends on the agent: withdrawal from short-acting agents such as alprazolam can start within a day, while clonazepam and diazepam withdrawal may not declare itself for several days, so a comfortable day one does not clear the patient. Last use plus agent plus dose is the minimum needed to plan a taper versus inpatient management.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-30",
+          "system": "Sedatives",
+          "question": "What happens when you stop suddenly? Have you ever had a seizure, severe anxiety and tremor, hallucinations, or needed hospital care when you ran out?",
+          "listenFor": [
+            "No withdrawal symptoms on stopping",
+            "Rebound anxiety and insomnia worse than baseline",
+            "Withdrawal: tremor, sweating, racing heart, perceptual symptoms",
+            "Severe withdrawal history: seizure, delirium, or hospital or ICU care for sedative withdrawal"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Benzodiazepine withdrawal, like alcohol withdrawal, can kill, and abrupt cessation after long high-dose use is the setup for seizures. A prior withdrawal seizure means this patient gets a planned taper or substitution protocol, never an abrupt stop, including during this admission for an unrelated problem. Rebound anxiety in the first days should not be mistaken for the underlying anxiety disorder returning.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-31",
+          "system": "Consequences",
+          "question": "Has your use caused health problems (overdoses, infections, liver or heart problems, blackouts, injuries, hospital visits)?",
+          "listenFor": [
+            "No medical consequences the patient is aware of",
+            "Minor consequences: blackouts, falls, missed doses of other medicines",
+            "Serious consequences: overdose, endocarditis, hepatitis C or HIV, liver disease, withdrawal complications",
+            "Life-threatening or disabling consequences, or currently in hospital because of use"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "This is ASAM dimension 2 territory: the biomedical list decides today's workup and how much medical risk the withdrawal plan carries. Patients under-report, so ask about specific events (falls, infections, hospital visits) rather than 'health problems' in the abstract, and reconcile with the chart afterward.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-32",
+          "system": "Consequences",
+          "question": "Has your use interfered with work, school, family roles, or responsibilities at home?",
+          "listenFor": [
+            "No role interference reported",
+            "Occasional missed obligations or impaired performance",
+            "Lost a job, failed classes, or lost housing or custody because of use",
+            "Currently unable to work or care for dependents because of use"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Failed role obligations are a DSM-5 criterion and one of the NIDA-Modified ASSIST harm questions, and they are often the consequence the patient cares most about, which makes them the natural starting point for the readiness conversation. Concrete losses (a job, custody, housing) also define what recovery needs to protect first.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-33",
+          "system": "Consequences",
+          "question": "Has your use caused legal or money problems (arrests, DUI, probation, debt, spending money meant for other things)?",
+          "listenFor": [
+            "No legal or financial consequences",
+            "Financial strain or debt from use",
+            "Legal consequences: DUI, possession charges, probation or parole",
+            "Current court mandate, pending charges, or use threatening parole or custody status"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Legal status changes the frame of treatment: a court-mandated patient may engage for external reasons that still predict retention, and parole or custody deadlines can set the treatment timeline. Ask matter-of-factly; patients expect the question on an addiction service and read evasion as either naivety or judgment.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-34",
+          "system": "Consequences",
+          "question": "Has anyone close to you (family, friends, a doctor) expressed concern about your use or asked you to cut down?",
+          "listenFor": [
+            "No one has expressed concern",
+            "Family or friends have expressed concern",
+            "A clinician has advised cutting down or quitting",
+            "Concern from others is a major source of conflict, or the patient disputes that any problem exists"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "This is one of the ASSIST harm questions, and the gap between others' concern and the patient's own view is a working measure of where the patient is in recognizing the problem. It also identifies the people in the recovery environment (ASAM dimension 6): the concerned spouse is both a historian and a potential ally in the plan.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-35",
+          "system": "Consequences",
+          "question": "Where do you live and who do you live with? Do the people around you use, and is your housing stable?",
+          "listenFor": [
+            "Stable housing, household members do not use",
+            "Stable housing, but household members or close contacts use",
+            "Unstable housing (couch surfing, shelter, transitional housing)",
+            "Homeless, or living environment centers on active use"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Recovery environment is ASAM dimension 6 and it predicts relapse as strongly as the drug history does. The best detox fails if the patient returns to a house where everyone uses and there is nowhere else to sleep. This answer often decides between outpatient follow-up and a residential referral more than any other single item.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-36",
+          "system": "Treatment history",
+          "question": "What treatment have you had before (detox, residential, intensive outpatient, counseling, mutual-help groups such as AA or NA)? What helped and what did not?",
+          "listenFor": [
+            "No prior treatment",
+            "Detox only, no continuing treatment afterward",
+            "One or more episodes of structured treatment (residential, IOP, outpatient)",
+            "Multiple treatment episodes including long-term recovery periods"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Detox without continuing care is the most common failed pattern in this history, and naming it sets up the plan for this admission: the withdrawal management is the beginning, not the treatment. Ask what specifically helped, because patients return to what worked, and a prior two-year recovery is the strongest evidence about what to rebuild.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-37",
+          "system": "Treatment history",
+          "question": "Have you ever taken medication for addiction (naltrexone, acamprosate, disulfiram, buprenorphine, methadone, nicotine replacement, varenicline)? What happened on it?",
+          "listenFor": [
+            "Never offered or never tried medication treatment",
+            "Tried medication, stopped early because of side effects, access, or cost",
+            "Tried medication with a good response, later stopped and relapsed",
+            "Currently on medication treatment, or previously maintained long-term on it"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "A good prior response is the best guide to this admission's pharmacotherapy, and a stop for access or cost reasons is a systems problem the team can actually fix. Patients who 'failed' buprenorphine often mean the dose was too low or induction was precipitated and miserable; the detail of what happened matters more than the label.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-38",
+          "system": "Treatment history",
+          "question": "Have you tried to cut down or stop on your own? What happened, and what was going on when you used again?",
+          "listenFor": [
+            "Never tried to cut down",
+            "Tried, relapsed quickly because of withdrawal symptoms or craving",
+            "Tried, sustained a period of abstinence, relapsed around a specific trigger",
+            "Multiple attempts; can name a consistent relapse pattern"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Failed cut-down attempts are an ASSIST harm question and an ASAM dimension 5 (relapse potential) probe at the same time. The trigger the patient names (pain, insomnia, a place, a person, payday) is the relapse-prevention agenda. Relapse after withdrawal-driven failure argues for medication; relapse after a trigger argues for skills and environment change; most patients need both.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-39",
+          "system": "Readiness",
+          "question": "Where are you with your use right now: not thinking about changing, thinking about it, preparing, or already changing?",
+          "listenFor": [
+            "Not interested in changing (precontemplation)",
+            "Ambivalent, weighing change (contemplation)",
+            "Preparing to change, has a plan or a date (preparation)",
+            "Actively changing or maintaining a change already made (action or maintenance)"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Readiness is ASAM dimension 4 and it sets the interview's job. A precontemplative patient needs information, a relationship, and an open door, not a discharge plan they will not follow; arguing at this stage mainly documents your frustration. Record the stage per substance if it differs, because patients are often ready to stop one drug and not another.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-40",
+          "system": "Readiness",
+          "question": "On a scale of 0 to 10, how important is it to you to change, and how confident are you that you could?",
+          "listenFor": [
+            "Importance and confidence both low (0 to 3)",
+            "Importance high, confidence low",
+            "Importance low, confidence high",
+            "Importance and confidence both high (7 to 10)"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "The two rulers separate motivation from self-efficacy, and the treatment differs: high importance with low confidence needs past successes, small steps, and medication support, while low importance needs exploration of what the patient does want. Follow up with 'why that number and not a lower one' to importance, and 'what would move confidence up one point' to confidence, and put the actual numbers in the detail field.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-41",
+          "system": "Readiness",
+          "question": "What is your goal: complete abstinence, cutting down, using more safely, or are you not sure?",
+          "listenFor": [
+            "Goal is complete abstinence from all substances",
+            "Goal is abstinence from the primary substance only",
+            "Goal is reduction or safer use, not abstinence",
+            "Undecided, or goal is set by someone else (court, family, employer)"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Document the patient's goal in the patient's terms, even when it is not the goal you would choose. A reduction goal stated honestly is more workable than an abstinence goal stated to end the interview, and a mismatch between the patient's goal and the program's requirements should surface now rather than at discharge. Revisit the goal after withdrawal is treated, because goals stated while withdrawing are often narrower than goals stated comfortable.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [],
+      "reviewNeeded": {
+        "whyMissing": 41,
+        "howMissing": 0
+      }
+    },
+    {
+      "id": "ciwa-ar",
+      "title": "CIWA-Ar (alcohol withdrawal)",
+      "worksheet": true,
+      "aliases": [
+        "ciwa",
+        "alcohol withdrawal scale",
+        "alcohol withdrawal assessment"
+      ],
+      "history": [],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "Alcohol withdrawal",
+          "maneuver": "Score nausea and vomiting.",
+          "findings": [
+            "0 - No nausea and no vomiting",
+            "1 - Mild nausea with no vomiting",
+            "4 - Intermittent nausea with dry heaves",
+            "7 - Constant nausea, frequent dry heaves, and vomiting"
+          ],
+          "how": "Ask: \"Do you feel sick to your stomach? Have you vomited?\" Observation.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Nausea and vomiting are usually the first symptoms to appear as alcohol levels fall, starting 6 to 12 hours after the last drink. The original scale anchors this item only at 0, 1, 4, and 7; scores of 2, 3, 5, and 6 are assigned by judging severity between anchors. Vomiting also blocks the oral route for benzodiazepines, so a high score here is one reason protocols switch to IV dosing.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "Alcohol withdrawal",
+          "maneuver": "Score tremor.",
+          "findings": [
+            "0 - No tremor",
+            "1 - Not visible, but can be felt at fingertips",
+            "4 - Moderate, with patient's hands extended",
+            "7 - Severe, even with arms not extended"
+          ],
+          "how": "Arms extended and fingers spread apart. Observation.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Tremor is the most visible early sign of withdrawal and tracks autonomic overdrive as GABA inhibition falls away and glutamate rebounds. A tremor that is present at rest, without the arms extended, marks severe withdrawal. Score what you see at the moment of assessment, and remember that a recent benzodiazepine dose can mask it, so trend this score against the dosing chart rather than reading it alone.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "Alcohol withdrawal",
+          "maneuver": "Score paroxysmal sweats.",
+          "findings": [
+            "0 - No sweat visible",
+            "1 - Barely perceptible sweating, palms moist",
+            "4 - Beads of sweat obvious on forehead",
+            "7 - Drenching sweats"
+          ],
+          "how": "Observation.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Sweating comes in bursts (paroxysms) as the autonomic nervous system surges, which is why the item is scored on what is visible during the assessment rather than on the patient's report. Drenching sweats with a rising total score warn that withdrawal is escalating toward delirium tremens. Score only sweating that the room temperature and fever do not explain; if the patient is septic or febrile for another reason, say so in the note.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "Alcohol withdrawal",
+          "maneuver": "Score anxiety.",
+          "findings": [
+            "0 - No anxiety, at ease",
+            "1 - Mildly anxious",
+            "4 - Moderately anxious, or guarded, so anxiety is inferred",
+            "7 - Equivalent to acute panic states, as seen in severe delirium or acute schizophrenic psychoses"
+          ],
+          "how": "Ask: \"Do you feel nervous?\" Observation.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Anxiety in withdrawal is driven by the same excitatory rebound as the tremor, and it usually rises and falls with the total score. The 4 anchor covers the guarded patient who denies anxiety but shows it, which is common in patients minimizing their drinking. A 7 is not ordinary nervousness; it is the terror of delirium. New severe anxiety out of proportion to the rest of the score should also prompt a search for hypoglycemia, thyrotoxicosis, or sepsis.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "Alcohol withdrawal",
+          "maneuver": "Score agitation.",
+          "findings": [
+            "0 - Normal activity",
+            "1 - Somewhat more than normal activity",
+            "4 - Moderately fidgety and restless",
+            "7 - Paces back and forth during most of the interview, or constantly thrashes about"
+          ],
+          "how": "Observation.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Agitation is the item that most directly drives safety decisions. A patient pacing or thrashing needs medication now, a sitter, and a room check for lines and tubes that can be pulled. Rising agitation despite adequate benzodiazepine dosing is a delirium tremens warning and a reason to escalate care rather than simply repeat the same dose.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "Alcohol withdrawal",
+          "maneuver": "Score tactile disturbances.",
+          "findings": [
+            "0 - None",
+            "1 - Very mild itching, pins and needles, burning, or numbness",
+            "2 - Mild itching, pins and needles, burning, or numbness",
+            "3 - Moderate itching, pins and needles, burning, or numbness",
+            "4 - Moderately severe hallucinations",
+            "5 - Severe hallucinations",
+            "6 - Extremely severe hallucinations",
+            "7 - Continuous hallucinations"
+          ],
+          "how": "Ask: \"Have you had any itching, pins and needles sensations, burning, numbness, or do you feel bugs crawling on or under your skin?\" Observation.",
+          "why": null,
+          "whySource": null,
+          "meaning": "This item grades a progression from simple paresthesias to formication (the feeling of bugs crawling on or under the skin) to frank tactile hallucinations. Scores of 4 and above mean hallucinations are present, which moves the patient out of uncomplicated withdrawal and toward alcoholic hallucinosis or delirium tremens. Always ask the question as written; patients rarely volunteer these symptoms.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "Alcohol withdrawal",
+          "maneuver": "Score auditory disturbances.",
+          "findings": [
+            "0 - Not present",
+            "1 - Very mild harshness or ability to frighten",
+            "2 - Mild harshness or ability to frighten",
+            "3 - Moderate harshness or ability to frighten",
+            "4 - Moderately severe hallucinations",
+            "5 - Severe hallucinations",
+            "6 - Extremely severe hallucinations",
+            "7 - Continuous hallucinations"
+          ],
+          "how": "Ask: \"Are you more aware of sounds around you? Are they harsh? Do they frighten you? Do you hear anything disturbing? Do you hear things you know are not there?\" Observation.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Early auditory disturbance in withdrawal is hyperacusis: ordinary sounds feel harsh and startling. Only the upper half of the scale is hallucination. Auditory hallucinations with a clear sensorium and normal orientation suggest alcoholic hallucinosis, while the same hallucinations with disorientation point to delirium tremens, which is why this item is always read together with the orientation item.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-08",
+          "system": "Alcohol withdrawal",
+          "maneuver": "Score visual disturbances.",
+          "findings": [
+            "0 - Not present",
+            "1 - Very mild sensitivity to light",
+            "2 - Mild sensitivity to light",
+            "3 - Moderate sensitivity to light",
+            "4 - Moderately severe hallucinations",
+            "5 - Severe hallucinations",
+            "6 - Extremely severe hallucinations",
+            "7 - Continuous hallucinations"
+          ],
+          "how": "Ask: \"Does the light appear to be too bright? Is its color different? Does it hurt your eyes? Are you seeing anything that is disturbing to you? Are you seeing things you know are not there?\" Observation.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Photophobia is the early form of this item; visual hallucinations in withdrawal are typically animals, insects, or figures in the periphery. New visual hallucinations in a withdrawing patient are delirium tremens until proven otherwise, especially with fever, tachycardia, and disorientation. Score what the patient reports even if the room looks normal to you, and document the content in the detail field.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-09",
+          "system": "Alcohol withdrawal",
+          "maneuver": "Score headache, fullness in head.",
+          "findings": [
+            "0 - Not present",
+            "1 - Very mild",
+            "2 - Mild",
+            "3 - Moderate",
+            "4 - Moderately severe",
+            "5 - Severe",
+            "6 - Very severe",
+            "7 - Extremely severe"
+          ],
+          "how": "Ask: \"Does your head feel different? Do you feel pressure?\" Do not rate for dizziness or lightheadedness. Otherwise, rate severity.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Headache is the only CIWA-Ar item scored purely on the patient's rating of severity, with no observational anchors. It is also the least specific item: dehydration, caffeine withdrawal, and a hangover all score here. A sudden worst-ever headache or a headache with focal findings is not withdrawal and needs its own workup rather than points on this scale.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-10",
+          "system": "Alcohol withdrawal",
+          "maneuver": "Score orientation and clouding of sensorium.",
+          "findings": [
+            "0 - Oriented and can perform serial additions",
+            "1 - Cannot perform serial additions or is uncertain about the date",
+            "2 - Disoriented for date by no more than 2 calendar days",
+            "3 - Disoriented for date by more than 2 calendar days",
+            "4 - Disoriented for place and/or person"
+          ],
+          "how": "Ask: \"What day is this? Where are you? Who am I?\" Serial additions (the original scale's serial-addition task; many protocols use serial 7s or counting forward by threes).",
+          "why": null,
+          "whySource": null,
+          "meaning": "This is the only item scored 0 to 4, and it carries the most prognostic weight per point. Disorientation is what separates delirium tremens from uncomplicated withdrawal: hallucinations with full orientation are alcoholic hallucinosis, while hallucinations with disorientation and autonomic instability are delirium tremens, which still carries real mortality untreated. Any score above 0 in a patient whose other items are improving should trigger a search for another cause of delirium, including infection, hypoglycemia, and Wernicke encephalopathy.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-11",
+          "system": "Alcohol withdrawal",
+          "maneuver": "Add the 10 item scores and place the total in a band (maximum 67).",
+          "findings": [
+            "Less than 8 - Minimal to mild withdrawal: supportive care and repeat scoring, usually no scheduled benzodiazepine",
+            "8 to 15 - Moderate withdrawal (marked autonomic arousal): symptom-triggered benzodiazepine per protocol",
+            "15 or more - Severe withdrawal: aggressive symptom-triggered dosing, close monitoring, consider a higher level of care"
+          ],
+          "how": "Sum exam-01 through exam-10 and re-score on the schedule your unit's protocol sets (commonly every 4 hours, and 1 hour after a dose in moderate to severe withdrawal).",
+          "why": null,
+          "whySource": null,
+          "meaning": "These bands follow the ASAM Patient Placement Criteria guideline text. A second widely used labeling (UpToDate pocket card) calls less than 10 very mild, 10 to 15 mild, 16 to 20 modest, and greater than 20 severe, so the same total can carry a different label in different documents; the number, not the label, is what the next clinician acts on, so always chart the number. Scores above 15 predict a higher risk of seizures and delirium tremens. Two cautions: a score can be low in a patient who cannot report symptoms (intubated, aphasic, severely demented), where the scale under-reads and objective scales are preferred; and thiamine, fluids, and potassium, magnesium, and phosphate repletion are part of withdrawal care at every band, not an afterthought at the severe end.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 11,
+        "howMissing": 0
+      }
+    },
+    {
+      "id": "cows",
+      "title": "COWS (opioid withdrawal)",
+      "worksheet": true,
+      "aliases": [
+        "cows",
+        "clinical opiate withdrawal scale",
+        "opioid withdrawal scale"
+      ],
+      "history": [],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "Opioid withdrawal",
+          "maneuver": "Score resting pulse rate.",
+          "findings": [
+            "0 - Pulse rate 80 or below",
+            "1 - Pulse rate 81 to 100",
+            "2 - Pulse rate 101 to 120",
+            "4 - Pulse rate greater than 120"
+          ],
+          "how": "Measured after the patient has been sitting or lying for one minute. Record the actual beats per minute in the detail field.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Pulse is the scale's anchor vital sign. Loss of opioid effect releases sympathetic tone, so the resting heart rate climbs as withdrawal deepens. Only score elevation that withdrawal explains: pain, fever, anxiety, recent exertion, and stimulant use all raise the pulse and, by the scale's own instruction, do not count.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "Opioid withdrawal",
+          "maneuver": "Score sweating.",
+          "findings": [
+            "0 - No report of chills or flushing",
+            "1 - Subjective report of chills or flushing",
+            "2 - Flushed or observable moistness on face",
+            "3 - Beads of sweat on brow or face",
+            "4 - Sweat streaming off face"
+          ],
+          "how": "Over the past half hour, not accounted for by room temperature or patient activity.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Patients often describe this as feeling hot and cold at the same time. The item is graded from report (1) to directly observable sweating (2 and above), and that observed end is part of what makes the COWS useful before buprenorphine induction, where objective signs carry more weight than symptoms the patient may be amplifying or minimizing.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "Opioid withdrawal",
+          "maneuver": "Score restlessness.",
+          "findings": [
+            "0 - Able to sit still",
+            "1 - Reports difficulty sitting still, but is able to do so",
+            "3 - Frequent shifting or extraneous movements of legs or arms",
+            "5 - Unable to sit still for more than a few seconds"
+          ],
+          "how": "Observation during the assessment.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Restlessness is scored from watching the patient through the whole interview, not from a single glance. A patient who scores 5 here cannot hold still long enough for a reliable conversation about treatment, which is itself clinically useful information. Distinguish it from akathisia and from anxiety-driven fidgeting in a patient who is not withdrawing.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "Opioid withdrawal",
+          "maneuver": "Score pupil size.",
+          "findings": [
+            "0 - Pupils pinned or normal size for room light",
+            "1 - Pupils possibly larger than normal for room light",
+            "2 - Pupils moderately dilated",
+            "5 - Pupils so dilated that only the rim of the iris is visible"
+          ],
+          "how": "Judge pupil size against the room light, and check before shining a bright light for the pupillary reflex.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Pupil size is the most objective item on the scale. Opioids constrict pupils; withdrawal dilates them, and dilation cannot be produced voluntarily, which is why induction protocols lean on it. The jump from 2 to 5 is in the original scale: a 5 means the iris is almost entirely gone. Recent use of other drugs (stimulants dilate, and a just-used opioid dose constricts) can override the withdrawal signal, so read this item with the use timeline.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "Opioid withdrawal",
+          "maneuver": "Score bone or joint aches.",
+          "findings": [
+            "0 - Not present",
+            "1 - Mild diffuse discomfort",
+            "2 - Patient reports severe diffuse aching of joints or muscles",
+            "4 - Patient is rubbing joints or muscles and is unable to sit still because of discomfort"
+          ],
+          "how": "If the patient was having pain previously, only the additional component attributed to opiate withdrawal is scored.",
+          "why": null,
+          "whySource": null,
+          "meaning": "The deep, diffuse ache is the symptom behind the phrase kicking the habit and much of the misery patients describe. The scoring caveat matters on a real service: many patients have chronic pain that predates withdrawal, and scoring all of it as withdrawal inflates the total. Score only the increment the withdrawal added.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "Opioid withdrawal",
+          "maneuver": "Score runny nose or tearing.",
+          "findings": [
+            "0 - Not present",
+            "1 - Nasal stuffiness or unusually moist eyes",
+            "2 - Nose running or tearing",
+            "4 - Nose constantly running or tears streaming down cheeks"
+          ],
+          "how": "Not accounted for by cold symptoms or allergies.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Rhinorrhea and lacrimation are parasympathetic rebound signs and part of why opioid withdrawal looks like a bad flu. They are also observable, which again helps when a score will gate a medication decision. Ask about allergies and a concurrent cold before scoring, per the scale's instruction.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "Opioid withdrawal",
+          "maneuver": "Score GI upset.",
+          "findings": [
+            "0 - No GI symptoms",
+            "1 - Stomach cramps",
+            "2 - Nausea or loose stool",
+            "3 - Vomiting or diarrhea",
+            "5 - Multiple episodes of diarrhea or vomiting"
+          ],
+          "how": "Over the last half hour.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Opioids slow the gut; withdrawal speeds it up, and cramps typically arrive before vomiting and diarrhea. A score of 5 means the patient is losing fluid and may need volume and electrolyte replacement alongside withdrawal treatment. Chart the actual episodes in the detail field, because the count is what the next team member needs.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-08",
+          "system": "Opioid withdrawal",
+          "maneuver": "Score tremor.",
+          "findings": [
+            "0 - No tremor",
+            "1 - Tremor can be felt, but not observed",
+            "2 - Slight tremor observable",
+            "4 - Gross tremor or muscle twitching"
+          ],
+          "how": "Observation of outstretched hands.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Tremor here is scored the same way as on the alcohol scale: feel first, then look. Muscle twitching at 4 is a late, gross sign. In a patient withdrawing from both opioids and alcohol or benzodiazepines, tremor belongs to both syndromes and the sedative withdrawal is the dangerous one; a high tremor score is a reason to run the CIWA-Ar as well, not instead.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-09",
+          "system": "Opioid withdrawal",
+          "maneuver": "Score yawning.",
+          "findings": [
+            "0 - No yawning",
+            "1 - Yawning once or twice during assessment",
+            "2 - Yawning three or more times during assessment",
+            "4 - Yawning several times per minute"
+          ],
+          "how": "Observation during the assessment.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Yawning is an early and oddly specific withdrawal sign that often appears before the autonomic symptoms peak. It costs nothing to count: keep a rough tally during the interview so this item is scored from observation rather than estimated afterward.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-10",
+          "system": "Opioid withdrawal",
+          "maneuver": "Score anxiety or irritability.",
+          "findings": [
+            "0 - None",
+            "1 - Patient reports increasing irritability or anxiousness",
+            "2 - Patient obviously irritable or anxious",
+            "4 - Patient is so irritable or anxious that participation in the assessment is difficult"
+          ],
+          "how": "Observation and patient report during the assessment.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Irritability is frequently the symptom that brings the interaction to a head, and a 4 tells the team the interview itself is failing, which is data, not a character judgment. Score the behavior you see; a patient who is anxious because of bad news, pain, or nicotine withdrawal is showing something real, but by the scale's instruction only the opioid-withdrawal component counts.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-11",
+          "system": "Opioid withdrawal",
+          "maneuver": "Score gooseflesh skin.",
+          "findings": [
+            "0 - Skin is smooth",
+            "3 - Piloerection of skin can be felt or hairs standing up on arms",
+            "5 - Prominent piloerection"
+          ],
+          "how": "Feel the skin of the arms; look for hairs standing up. The original scale has no 1, 2, or 4 level for this item.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Gooseflesh is the source of the phrase cold turkey: the skin of a withdrawing patient resembles a plucked turkey. Like pupil size, piloerection is involuntary and hard to fake, so a 3 or 5 here is strong objective evidence that withdrawal is genuinely underway, exactly the evidence wanted before a first dose of buprenorphine.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-12",
+          "system": "Opioid withdrawal",
+          "maneuver": "Add the 11 item scores and place the total in a band, then apply the induction rule below.",
+          "findings": [
+            "5 to 12 - Mild withdrawal",
+            "13 to 24 - Moderate withdrawal",
+            "25 to 36 - Moderately severe withdrawal",
+            "Greater than 36 - Severe withdrawal"
+          ],
+          "how": "Sum exam-01 through exam-11. The published form prints no band below 5; a total of 4 or less is below the mild band. Repeat the COWS serially during induction, as the published form's timed columns anticipate (before the first dose, then at set intervals after it).",
+          "why": null,
+          "whySource": null,
+          "meaning": "Why the total gates buprenorphine: buprenorphine binds the mu-opioid receptor very tightly but activates it only partially. Given to a patient whose receptors are still occupied by a full agonist such as heroin, fentanyl, or methadone, it pushes the full agonist off and replaces strong activation with partial activation, which the body experiences as sudden, severe withdrawal, called precipitated withdrawal. Waiting until the COWS shows withdrawal already underway means most receptors have emptied on their own, so the same dose relieves symptoms instead. SAMHSA TIP 63 frames the threshold as mild to moderate withdrawal; published protocols operationalize it anywhere from a COWS above 8 to 12 or more before the first dose, with longer waits after long-acting opioids such as methadone. For methadone-maintained patients this worksheet is only part of the picture, because methadone withdrawal itself is scored with the same scale but induction timing is far more conservative. Score honestly: an inflated COWS to justify an early dose produces exactly the precipitated withdrawal the gate exists to prevent.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 12,
+        "howMissing": 0
+      }
     }
   ]
 }
