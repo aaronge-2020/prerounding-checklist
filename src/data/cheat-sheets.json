@@ -26113,6 +26113,825 @@
         "whyMissing": 12,
         "howMissing": 1
       }
+    },
+    {
+      "id": "suicide-risk-assessment",
+      "title": "Suicide Risk Assessment (SAFE-T)",
+      "worksheet": true,
+      "aliases": [
+        "suicide risk",
+        "SAFE-T",
+        "suicidal ideation",
+        "risk assessment",
+        "C-SSRS",
+        "safety planning",
+        "suicide assessment"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "Ideation",
+          "question": "In the past month, have you wished you were dead, or wished you could go to sleep and not wake up?",
+          "listenFor": [
+            "Denies any wish to be dead in the past month",
+            "Endorses a passive wish to be dead in the past month",
+            "Describes the wish to be dead as constant or near-daily"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Ask this plainly and first. Asking about suicide does not put the idea into anyone's head: the studies that checked found no increase in suicidal thinking after screening questions, and some found thinking eased. A passive wish to be dead is common in depression and is not the same as intent, but it opens the door to the rest of the inquiry, and the patient usually answers honestly once the question is asked without flinching.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "Ideation",
+          "question": "In the past month, have you had thoughts of killing yourself?",
+          "listenFor": [
+            "Denies thoughts of killing self in the past month",
+            "Endorses thoughts of killing self in the past month",
+            "Endorses thoughts of killing self on most days in the past month"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "This separates active ideation from the passive wish above it. If the answer to both ideation questions is no, most of the structured inquiry can stop and you move to past behavior. If yes, keep going down the sequence rather than jumping to reassurance: frequency, method, and intent each change what you do next.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "Intent and plan",
+          "question": "Have you thought about how you might kill yourself?",
+          "listenFor": [
+            "No method considered",
+            "Has considered a method without working out specific details",
+            "Has a specific method in mind"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "A method in mind moves the picture from thoughts toward planning, and in the Columbia screener's usual reading a yes here already lifts the assessment out of the lowest band. Ask which method, because the answer decides the means questions that follow and what means-restriction counseling has to cover.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-04",
+          "system": "Intent and plan",
+          "question": "Have you had these thoughts and had some intention of acting on them?",
+          "listenFor": [
+            "Denies any intention of acting on the thoughts",
+            "Ambivalent about acting on the thoughts",
+            "Endorses an intention to act on the thoughts"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Intent is the hinge of the interview. The useful contrast is the patient's own: 'I have the thoughts, but I definitely will not do anything about them' is a different answer from silence or a shrug. Ambivalence is the commonest true answer and is workable; it is also unstable, which is why it belongs in the note in the patient's terms rather than as a yes or no.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-05",
+          "system": "Intent and plan",
+          "question": "Have you started to work out, or worked out, the details of how you would kill yourself, and do you intend to carry out this plan?",
+          "listenFor": [
+            "No plan worked out",
+            "Plan partly formed; denies intent to carry it out",
+            "Detailed plan, with intent to carry it out"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "A worked-out plan with intent is the highest-ideation picture the inquiry can produce, and it settles the disposition question in most settings: this patient is not leaving without an emergency evaluation and a safety intervention now. Record the plan's specifics in the detail line, because the team after you needs them for observation and means decisions.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-06",
+          "system": "Means",
+          "question": "Do you have access to what you have thought about using, such as a firearm, a stock of medications, or another lethal means?",
+          "listenFor": [
+            "No access to the means considered",
+            "Access is limited, or the means are secured by someone else",
+            "Immediate access to the planned means"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Intent with access is the combination that kills. Ask about the home, not the abstraction: is there a gun in the house, whose is it, where are the medications kept. The answer drives the means counseling later in this sheet, and time and distance from means is one of the few interventions that works even when nothing else has changed yet.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-07",
+          "system": "Past behavior",
+          "question": "Have you ever done anything, started to do anything, or prepared to do anything to end your life?",
+          "listenFor": [
+            "No lifetime suicidal behavior or preparation",
+            "Remote preparatory behavior, or an interrupted or aborted attempt",
+            "Preparatory behavior or an attempt within the past 3 months",
+            "An attempt within the past month"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Past behavior is the strongest single historical marker in this interview, and preparation counts: collecting pills, obtaining a weapon, writing a note, or starting and stopping all belong here, not just completed attempts. Timing matters as much as the act; behavior inside the past 3 months is read alongside today's ideation, while remote behavior sets the background risk the formulation has to respect.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-08",
+          "system": "Ambivalence",
+          "question": "What has kept you from acting on these thoughts so far?",
+          "listenFor": [
+            "Names clear reasons for living and says they hold them back",
+            "Names reasons for living but feels they are weakening",
+            "Cannot name any reason for living"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Most suicidal patients are of two minds, and the side that wants to live is the side treatment works with. The specific reasons named here (a child, a parent, a belief, a pet) become the raw material of the safety plan, so write them down in the patient's words. A patient who cannot name anything is telling you something as important as any yes above.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "Risk factors",
+          "maneuver": "Survey today's symptom picture for the states that travel with near-term risk: hopelessness, agitation, severe anxiety, insomnia, and intoxication or withdrawal.",
+          "findings": [
+            "None of these prominent today",
+            "One present, but mild",
+            "Several present, or any one of them severe"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Risk factors on a checklist are mostly static, but these are the ones that move. Agitation and severe insomnia in particular show up again and again in the days before attempts, and both are treatable tonight. Rate what you can see and what the patient reports today, not the worst week of their life.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "Risk factors",
+          "maneuver": "Identify recent precipitants and changes: a loss or humiliation, a relationship rupture, legal or money trouble, a recent discharge, or a recent change in treatment.",
+          "findings": [
+            "No recent precipitant identified",
+            "One recent precipitant; the patient is coping with it",
+            "A recent precipitant with visible destabilization"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "SAFE-T puts risk-factor identification first because the precipitant is often the part of the picture that can still change: a court date can be learned about, a discharge can be slowed down, a family fight can be mediated. The period just after discharge from a psychiatric admission is itself a high-risk window, which is why it is named here.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "Protective factors",
+          "maneuver": "Test the strength of the protective factors, not just their presence: reasons for living, responsibility to family or pets, people who would notice and act, engagement with treatment, beliefs that argue against suicide, and problem-solving skills.",
+          "findings": [
+            "Protective factors strong, and the patient can actually use them",
+            "Protective factors present but thin, passive, or fraying",
+            "Protective factors absent, or rejected by the patient"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "A listed support who has not been called in a year protects no one. The question is whether the factor still works under load: would the sister answer at 3 a.m., does the patient still believe the belief. SAFE-T weighs protective factors as a real step of the assessment, equal to the risk factors, because dispositions are built on them.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "Formulation and disposition",
+          "maneuver": "Write the risk formulation: one or two sentences naming what is pushing this patient toward suicide, what is holding them back, and what could change quickly, then state the level the formulation supports.",
+          "findings": [
+            "Risk formulated as low, with named drivers and buffers",
+            "Risk formulated as moderate, with named drivers and buffers",
+            "Risk formulated as high, with named drivers and buffers"
+          ],
+          "how": "As a rough guide from the screener: ideation alone sits low, a method considered lifts it to moderate, and intent, a worked-out plan, or recent behavior reads high. The formulation can move the level when the whole picture argues for it; the note must then say why.",
+          "why": null,
+          "whySource": null,
+          "meaning": "A level by itself ('moderate risk') communicates almost nothing and ages badly in a chart. The formulation is the assessment: drivers, buffers, and the near-term triggers that would change the answer. Two clinicians can disagree about the level and still hand over safely if the formulation is written; the reverse is not true.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "Formulation and disposition",
+          "maneuver": "Match the disposition to the formulation and document it: the setting, the observation level, who was told, the safety plan, and the follow-up arrangement.",
+          "findings": [
+            "Discharge with a written safety plan, means counseling done, and close follow-up booked",
+            "Observation or voluntary admission arranged",
+            "Emergency evaluation for involuntary admission under way"
+          ],
+          "how": "Write the follow-up as a date, a time, and a name. 'Follow up soon' is not a plan anyone can be held to.",
+          "why": null,
+          "whySource": null,
+          "meaning": "SAFE-T's last step is documentation with a follow-up plan, and it is the step that protects both the patient and the clinician. Whatever the disposition, the note should let the next reader reconstruct what was asked, what was found, what was decided, and when the patient will be seen again.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "Formulation and disposition",
+          "maneuver": "Counsel on reducing access to lethal means, with the patient and, with permission, with family: firearm storage or removal, and medication quantities and lock-up.",
+          "findings": [
+            "Means counseling completed and the steps confirmed",
+            "Means counseling done; steps only partly confirmed",
+            "Means counseling not possible today; the reason is documented"
+          ],
+          "how": "Ask directly what is in the home. 'Is there a gun in the house, and where is it kept?' gets an answer that hints do not.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Means restriction buys time during the hours when intent peaks, and crises are usually short. The counseling is a clinical conversation, not an accusation: most families cooperate once they understand the point is to get through the dangerous stretch, not to surrender anything forever.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 14,
+        "howMissing": 3
+      }
+    },
+    {
+      "id": "case-formulation",
+      "title": "Case Formulation (4 Ps × Biopsychosocial)",
+      "worksheet": true,
+      "aliases": [
+        "formulation",
+        "4 Ps",
+        "four Ps",
+        "biopsychosocial formulation",
+        "case conceptualization",
+        "formulation grid"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "Problem summary",
+          "question": "In your own words, what is the main problem you would like help with right now?",
+          "listenFor": [
+            "Names a clear main problem in their own words",
+            "Names several problems and cannot rank them",
+            "Disagrees that there is a problem; the concern comes from others"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "A formulation starts by agreeing on what is being formulated. The patient's own framing belongs at the top of the note, because it is sometimes a different problem from the one on the referral, and the gap between the two is itself clinical information.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "Predisposing",
+          "question": "Before all of this, how would you describe yourself growing up: your temperament, and what life at home was like?",
+          "listenFor": [
+            "Describes an even temperament and a stable early life",
+            "Describes early shyness, sensitivity, or a difficult temperament",
+            "Describes a disrupted or frightening early home life"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Predisposing factors are gathered, not inferred in the corridor afterward. The patient's own account of temperament and early home life seeds three cells at once (biological temperament, psychological attachment, social adversity), and the exam items below test those first impressions against the records and the family's account.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "Precipitating",
+          "question": "What was happening in your life around the time this episode began?",
+          "listenFor": [
+            "Names a clear trigger close in time to the onset",
+            "Names a slow build of strain rather than one event",
+            "Cannot identify anything that changed"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Precipitants are found by timing, not by guessing. Anchor to the weeks before onset and ask what changed: work, relationships, health, substances, sleep. 'Nothing changed' is also an answer, and it pushes the formulation toward illness course and biology rather than reaction to events.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "Problem summary",
+          "maneuver": "State the problem being formulated in one line: the syndrome, its course so far, and its main effect on the patient's functioning.",
+          "findings": [
+            "Single episode, first presentation",
+            "Recurrent episodes, with full recovery between them",
+            "Recurrent episodes, with incomplete recovery between them",
+            "Chronic course without clear episodes"
+          ],
+          "how": "One line, no jargon: problem, course, impact. If the line needs the word 'and' twice, it is two problems; pick the one that brought the patient in.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Every cell below hangs off this line. Course is part of the problem statement because the same symptoms mean different things in a first episode, a relapsing illness, and a chronic one, and the formulation (and the treatment it implies) changes with each.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "Predisposing",
+          "maneuver": "Biological: list what set this patient up in the body: family psychiatric history, temperament, in-utero or birth insults, head injury, neurodevelopmental history, medical illness.",
+          "findings": [
+            "Family history of the same or a related illness",
+            "Early temperament or neurodevelopmental vulnerability",
+            "Acquired biological burden: head injury, chronic medical illness, or early substance exposure",
+            "No biological predisposing factor identified"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Predisposing means the ground was prepared long before this episode. Family history is the item most often left unasked; a first-degree relative with the same illness changes both the differential and how confidently you can call an episode reactive.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "Predisposing",
+          "maneuver": "Psychological: list the long-standing patterns: attachment style, cognitive style, self-image, affect regulation, and the defenses the patient reaches for.",
+          "findings": [
+            "Rigid or self-critical cognitive style",
+            "Insecure attachment; relationships organized around fear of abandonment or rejection",
+            "Poor affect regulation; feelings arrive at full volume",
+            "No clear psychological predisposing pattern yet"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "This is the cell students leave blank, and it is usually the one that explains why the precipitant hit this patient so hard. You are looking for the pattern that repeats across the patient's relationships and setbacks, not a personality verdict.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "Predisposing",
+          "maneuver": "Social: list the early and enduring context: childhood adversity, poverty, family disruption, migration or discrimination, and access to care growing up.",
+          "findings": [
+            "Childhood adversity: loss, neglect, abuse, or an unstable home",
+            "Chronic disadvantage: poverty, poor schooling, or poor access to care",
+            "Marginalization or migration stress carried since early life",
+            "No social predisposing factor identified"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Social predisposition is not background color. Early adversity shapes stress reactivity, attachment, and whether the patient expects help to be available at all, which quietly decides how they will use the treatment you are about to offer.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "Precipitating",
+          "maneuver": "Biological: name what changed in the body near onset: new medical illness or injury, rising substance use, medication change or non-adherence, pregnancy or hormonal change, sleep loss.",
+          "findings": [
+            "New or worsening medical illness or injury",
+            "Increased alcohol or drug use before onset",
+            "Medication stopped, reduced, or changed before onset",
+            "Marked sleep deprivation before onset"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Biological precipitants are the ones most easily missed and most easily fixed. Non-adherence and escalating substance use sit here rather than in the character column: treat them as events in the illness timeline, and the plan writes itself.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "Precipitating",
+          "maneuver": "Psychological: name the event's meaning for this patient: which core belief it confirmed, which loss it reopened, which transition it forced.",
+          "findings": [
+            "A loss or rejection that confirms a long-held belief about the self",
+            "Grief: a bereavement the patient has not been able to mourn",
+            "A role transition the patient experiences as failure or exile",
+            "An event that repeats an early experience ('history repeating itself')"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Two patients lose the same job; one is sad for a month and the other is hospitalized. The difference is usually in this cell. Naming the meaning connects the precipitant back to the predisposing patterns, which is what turns a list into a formulation.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "Precipitating",
+          "maneuver": "Social: name the external event nearest the onset: job loss, relationship rupture, bereavement, housing or money crisis, loss of a service or support.",
+          "findings": [
+            "Job loss or a work or school crisis",
+            "Relationship rupture or bereavement",
+            "Housing, money, or legal crisis",
+            "Loss of a key support or service"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Date it. A precipitant earns its place by coming before the symptoms, and students routinely promote consequences of the illness (the job lost because of the depression) into causes. Getting the order right changes what the team tries to repair.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-08",
+          "system": "Perpetuating",
+          "maneuver": "Biological: list what keeps the illness going in the body: untreated or undertreated illness, ongoing substance use, chronic pain or medical burden, persistent poor sleep.",
+          "findings": [
+            "Illness undertreated: subtherapeutic dose, short trial, or no follow-up",
+            "Ongoing substance use maintaining symptoms",
+            "Chronic pain or medical illness feeding the episode",
+            "Persistently disordered sleep maintaining symptoms"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Perpetuating factors are the treatment targets, and this cell often contains an apology the system owes the patient: a dose never raised, a refill never sent, a follow-up never booked. Fix what is in this cell before concluding the illness is treatment-resistant.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-09",
+          "system": "Perpetuating",
+          "maneuver": "Psychological: list the loops the patient is caught in: avoidance, rumination, self-destructive coping, help-seeking that turns into help-rejecting, chronic dysregulation.",
+          "findings": [
+            "Avoidance and withdrawal shrinking the patient's life",
+            "Rumination and self-criticism rehearsing the illness daily",
+            "Self-destructive coping: self-harm, binges, or lashing out that then confirms the problem",
+            "Help-seeking/help-rejecting cycle exhausting every support in turn"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Name the loop, not the trait. 'Avoids every social invitation, so loneliness deepens, so the belief that nobody cares hardens' can be treated; 'is avoidant' cannot. This cell is where psychotherapy targets come from.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-10",
+          "system": "Perpetuating",
+          "maneuver": "Social: list the ongoing context that maintains the problem: chronic relationship discord, isolation, unsafe environment, finances, stigma, or services that do not fit.",
+          "findings": [
+            "Chronic relationship discord at home",
+            "Isolation: no regular human contact outside services",
+            "Money, housing, or work strain that never lets up",
+            "Stigma or a poor fit with services keeping the patient away"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "A perfect medication plan fails in an impossible living situation. This cell tells the team what social work, family meetings, and benefits advice are actually for in this case, and it keeps the formulation honest about what clinic visits can and cannot change.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-11",
+          "system": "Protective",
+          "maneuver": "Biological: list the body's assets: general good health, no substance use, an easy temperament or strong intellect, and any past good response to treatment.",
+          "findings": [
+            "Medically healthy, no substance use",
+            "Past good response to a treatment that can be used again",
+            "Strong premorbid functioning to rebuild toward",
+            "Few biological protective factors"
+          ],
+          "how": "Ask the patient directly: 'When things have been this bad before, what helped you get through it?' The answer stocks this column with the patient's own evidence instead of compliments.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Past response is the most practical item in this cell: a drug or therapy that worked before is the first candidate now. Premorbid functioning also sets a realistic ceiling for recovery goals, which protects the patient from both despair and inflated promises.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-12",
+          "system": "Protective",
+          "maneuver": "Psychological: list the patient's own equipment: insight, psychological-mindedness, ability to reflect and mentalize, adaptive coping, and a self-image that is not wholly negative.",
+          "findings": [
+            "Good insight; can describe the problem as a problem",
+            "Reflective and psychologically minded; likely to use therapy",
+            "Adaptive coping that is still available under stress",
+            "Limited insight or coping at present"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "This cell predicts who can use which treatment. A reflective patient with good insight can start psychotherapy now; a patient without those assets may need stabilization and structure first. It is a planning judgment, not a compliment.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-13",
+          "system": "Protective",
+          "maneuver": "Social: list the world on the patient's side: supportive family or friends, community or faith ties, stable housing or income support, and an engaged outpatient team.",
+          "findings": [
+            "A named person who is actively supportive",
+            "Community, faith, or cultural ties the patient values",
+            "Housing and income stable enough to build on",
+            "An outpatient team already engaged and trusted"
+          ],
+          "how": "Name names. 'Supportive family' that no one can identify will not be there at discharge; a sister with a phone number will.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Protective social factors are the delivery system for every other part of the plan: rides to appointments, a place to sleep, someone who notices relapse early. The discharge plan should route through the strongest item in this cell.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-14",
+          "system": "Treatment implications",
+          "maneuver": "Say what the formulation points to first: which perpetuating factors can change soonest, which precipitant needs protection against return, and which protective factors the plan is built on.",
+          "findings": [
+            "Start with the perpetuating factors that can change fastest",
+            "Treat the precipitant and guard against its return",
+            "Build the plan on the named protective factors",
+            "Stabilize safety and biology first; formulation work continues after"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "A formulation that does not change a decision was decoration. This item forces the translation: each cell above should be able to point at something in the plan, and anything in the plan that no cell explains deserves a second look.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-15",
+          "system": "Treatment implications",
+          "maneuver": "Close the formulation as a hypothesis: state what new information would change it, and when it will be revisited.",
+          "findings": [
+            "Formulation to be revised if the history from family or records differs",
+            "Formulation to be revised by treatment response over the next weeks",
+            "Formulation held loosely; key facts still missing and listed"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Formulations harden in charts. Writing down what would change your mind keeps the next clinician (and you) honest, and it models the right stance for the team: this is our best current explanation, not a verdict on who the patient is.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 18,
+        "howMissing": 12
+      }
+    },
+    {
+      "id": "aims",
+      "title": "Abnormal Involuntary Movement Scale (AIMS)",
+      "worksheet": true,
+      "aliases": [
+        "AIMS",
+        "tardive dyskinesia",
+        "TD screening",
+        "movement scale",
+        "abnormal involuntary movement scale",
+        "dyskinesia exam"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "Examination procedure",
+          "question": "How are your teeth and dentures at the moment, and do they bother you?",
+          "listenFor": [
+            "Teeth and dentures comfortable",
+            "Reports sore teeth or ill-fitting dentures",
+            "Edentulous and not wearing dentures"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Ask this before rating anything, and ask the patient to take out anything in the mouth, such as gum or candy. Mouth movements in a patient with painful teeth, loose dentures, or no dentures at all can look exactly like dyskinesia; the form asks about dental status (items 11 and 12) for the same reason. A movement explained by the mouth should not be scored as one caused by a drug.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "Examination procedure",
+          "question": "Have you noticed any movements in your mouth, face, hands, or feet?",
+          "listenFor": [
+            "Notices no movements",
+            "Notices movements; they neither bother nor interfere",
+            "Notices movements; they bother or interfere with activities"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "This is the form's own opening question, and it feeds item 10 (awareness) at the end. Many patients with clear dyskinesia notice nothing, which is itself a finding: unawareness is common in tardive dyskinesia and is one reason scheduled examination, not patient report, has to carry the monitoring.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "Facial and oral movements",
+          "maneuver": "1. Muscles of facial expression: movements of the forehead, eyebrows, periorbital area, and cheeks; include frowning, blinking, and grimacing of the upper face.",
+          "findings": [
+            "0 - None",
+            "1 - Minimal",
+            "2 - Mild",
+            "3 - Moderate",
+            "4 - Severe"
+          ],
+          "how": "Use a hard, firm chair without arms. Observe the patient unobtrusively at rest first if you can (for example in the waiting room), and complete the whole examination procedure before rating anything: rate the highest severity observed, and rate movements that appear only on activation one point less than movements seen spontaneously.",
+          "why": null,
+          "whySource": null,
+          "meaning": "The anchor words are the same for items 1 to 9: 0 none, 1 minimal (which may be extreme normal), 2 mild, 3 moderate, 4 severe. A 1 is deliberately a 'cannot be sure' score; it documents that you looked and could not call it abnormal, which is worth more at the next visit than a blank.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "Facial and oral movements",
+          "maneuver": "2. Lips and perioral area: puckering, pouting, smacking.",
+          "findings": [
+            "0 - None",
+            "1 - Minimal",
+            "2 - Mild",
+            "3 - Moderate",
+            "4 - Severe"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Lip smacking and puckering are the movements families notice first and patients notice last. Watch while the patient is talking and while they are not; speech can mask perioral movements, and silence during the rest of the examination is when they show.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "Facial and oral movements",
+          "maneuver": "3. Jaw: biting, clenching, chewing, mouth opening, lateral movement.",
+          "findings": [
+            "0 - None",
+            "1 - Minimal",
+            "2 - Mild",
+            "3 - Moderate",
+            "4 - Severe"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Chewing movements in an edentulous patient are the classic false positive, which is why the dental questions come first. If the jaw moves only when dentures are out and stops when they are in, write that down in the detail line rather than letting the number speak alone.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "Facial and oral movements",
+          "maneuver": "4. Tongue: rate only increase in movement both in and out of the mouth, NOT inability to sustain movement.",
+          "findings": [
+            "0 - None",
+            "1 - Minimal",
+            "2 - Mild",
+            "3 - Moderate",
+            "4 - Severe"
+          ],
+          "how": "Ask the patient to open the mouth and observe the tongue at rest inside it; do this twice. Then ask the patient to protrude the tongue and observe again; do this twice.",
+          "why": null,
+          "whySource": null,
+          "meaning": "The tongue is often the earliest and the most specific site. The form's warning matters: a tongue that cannot stay protruded (motor impersistence, as in Huntington disease) is a different sign from a tongue that will not stay still, and only the second is scored here.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "Extremity movements",
+          "maneuver": "5. Upper extremities (arms, wrists, hands, fingers): include choreic movements (rapid, objectively purposeless, irregular, spontaneous) and athetoid movements (slow, irregular, complex, serpentine). Do NOT include tremor (repetitive, regular, rhythmic).",
+          "findings": [
+            "0 - None",
+            "1 - Minimal",
+            "2 - Mild",
+            "3 - Moderate",
+            "4 - Severe"
+          ],
+          "how": "Activation: ask the patient to tap the thumb with each finger as rapidly as possible for 10 to 15 seconds, right hand then left, while you watch the face and legs. Movements that appear only under activation are rated one point less than spontaneous movements.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Tremor is excluded on purpose: a regular, rhythmic tremor points to drug-induced parkinsonism or essential tremor, a different problem with a different treatment, and scoring it here inflates the dyskinesia total and can send the plan the wrong way.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "Extremity movements",
+          "maneuver": "6. Lower extremities (legs, knees, ankles, toes): lateral knee movement, foot tapping, heel dropping, foot squirming, inversion and eversion of the foot.",
+          "findings": [
+            "0 - None",
+            "1 - Minimal",
+            "2 - Mild",
+            "3 - Moderate",
+            "4 - Severe"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Seat the patient with hands on knees, legs slightly apart, and feet flat on the floor, and look at the whole body in that position before moving on. Foot and toe movements are easy to miss under a desk or a blanket, and restlessness here must be separated from akathisia, which is a subjective urge to move rather than an involuntary movement.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "Trunk movements",
+          "maneuver": "7. Neck, shoulders, hips: rocking, twisting, squirming, pelvic gyrations.",
+          "findings": [
+            "0 - None",
+            "1 - Minimal",
+            "2 - Mild",
+            "3 - Moderate",
+            "4 - Severe"
+          ],
+          "how": "Ask the patient to stand (observe in profile, hips included), then to extend both arms out in front with palms down, then to walk a few paces, turn, and walk back; do the walk twice. Trunk, legs, mouth, hands, and gait are all observed again in this part of the procedure.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Trunk involvement is what turns dyskinesia from a cosmetic issue into a safety one: rocking and pelvic movements disturb balance, transfers, and walking. It is also the item most often skipped because it requires the patient to stand; the standing sequence is part of the examination, not an optional extra.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-08",
+          "system": "Global judgments",
+          "maneuver": "8. Severity of abnormal movements overall.",
+          "findings": [
+            "0 - None",
+            "1 - Minimal",
+            "2 - Mild",
+            "3 - Moderate",
+            "4 - Severe"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "On the current published form's scoring block, this severity score is the highest individual score among items 1 to 7, so copy that number here. Older versions of the form left item 8 as the rater's overall impression; if your service uses that reading, rate the overall impression instead, and know the two conventions exist before comparing scores across charts.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-09",
+          "system": "Global judgments",
+          "maneuver": "9. Incapacitation due to abnormal movements.",
+          "findings": [
+            "0 - None",
+            "1 - Minimal",
+            "2 - Mild",
+            "3 - Moderate",
+            "4 - Severe"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Severity and incapacitation are scored separately because they often disagree: dramatic movements may interfere with nothing, while modest tongue and jaw movements can make eating, speaking, and dentures miserable. This item is where function enters the record, and function is what treatment decisions should follow.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-10",
+          "system": "Global judgments",
+          "maneuver": "10. Patient's awareness of abnormal movements. Rate only the patient's report.",
+          "findings": [
+            "0 - No awareness",
+            "1 - Aware, no distress",
+            "2 - Aware, mild distress",
+            "3 - Aware, moderate distress",
+            "4 - Aware, severe distress"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "This is the only item scored from what the patient says rather than what you see, and the form says so. Distress here is a treatment indication in its own right: a patient who is aware and suffering has a claim on intervention that a score alone would understate.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-11",
+          "system": "Dental status",
+          "maneuver": "11. Current problems with teeth and/or dentures?",
+          "findings": [
+            "Yes",
+            "No"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "A yes here does not erase the movement scores, but it changes their weight and it gives the team a cheap first fix: dental review before anyone concludes the movements are drug-induced and untouchable.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-12",
+          "system": "Dental status",
+          "maneuver": "12. Does the patient usually wear dentures?",
+          "findings": [
+            "Yes",
+            "No"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Record whether the examination was done with dentures in or out, in the detail line. Orofacial scores in the same patient can differ between the two states, and a change at the next visit may be a denture change rather than a disease change.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-13",
+          "system": "Interpretation and monitoring",
+          "maneuver": "Total the movement score: add items 1 to 7 (range 0 to 28) and compare it with the last AIMS on record.",
+          "findings": [
+            "Total 0: no movements rated today",
+            "Movements present, below the research severity pattern",
+            "Severity pattern met: one area moderate or worse, or two areas mild or worse"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The total is a tracking number, not a diagnosis: its job is to make change visible across visits and raters. A rising total, or any single area newly at 2 or above, deserves a sentence in the note even when no threshold is crossed.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-14",
+          "system": "Interpretation and monitoring",
+          "maneuver": "Before calling movements tardive dyskinesia, check the context the research criteria require: at least 3 months of cumulative dopamine-blocker exposure, and no other condition that better explains the movements.",
+          "findings": [
+            "Exposure and exclusions support probable tardive dyskinesia; document and discuss the plan",
+            "Exposure under 3 months, or another cause possible; movements documented, cause not settled",
+            "Movements predate dopamine-blocker treatment or match another cause; not attributed to tardive dyskinesia"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "These are the Schooler-Kane research criteria, the standard operational definition: exposure, severity pattern, and exclusion of other causes such as Huntington disease, Wilson disease, stroke, or spontaneous dyskinesia of the elderly. The AIMS alone cannot diagnose TD; it quantifies the movements so the criteria can be applied honestly.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-15",
+          "system": "Interpretation and monitoring",
+          "maneuver": "Set the next structured reassessment: a clinical check for movements at every visit, and the AIMS repeated on the guideline schedule, sooner if movements are new or worse.",
+          "findings": [
+            "Next AIMS in 12 months (standard risk)",
+            "Next AIMS in 6 months (high risk for tardive dyskinesia)",
+            "Earlier reassessment booked: movements new or worse today"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The APA schizophrenia guideline (2020) sets the floor: structured assessment at least every 12 months, every 6 months when risk is high (older age, prior acute movement reactions, mood disorder, longer or first-generation exposure among the drivers), and at any visit when movements appear or worsen. Older schedules in circulation differ, including shorter intervals by drug generation; this sheet follows the 2020 schedule. Clozapine does not take a patient off this schedule.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 17,
+        "howMissing": 11
+      }
     }
   ]
 }

@@ -38,7 +38,9 @@ const bundle = JSON.parse(readFileSync(join(root, "src", "data", "cheat-sheets.j
 // same clerkship. Sheets 75-79 (alcohol withdrawal management, MOUD,
 // toxidromes and urine drug testing, AUD medications, motivational
 // interviewing and screening) were appended 2026-10-26 as the addiction
-// reference set for the same clerkship. itemsHash = sha256 over each
+// reference set for the same clerkship. Sheets 80-82 (suicide risk
+// assessment, case formulation, AIMS) were appended 2026-10-26 as the
+// worksheet set for the same clerkship. itemsHash = sha256 over each
 // source item's kind|id|system|text|choices joined by \x00.
 const FROZEN = [
     {
@@ -1015,6 +1017,52 @@ const FROZEN = [
       "history": 9,
       "exam": 3,
       "itemsHash": "241244cf81d3812f8b9a5fc2c4f3df8e49cc8b2750edd38c8b3ac8a634e84841"
+    },
+    {
+      "id": "suicide-risk-assessment",
+      "title": "Suicide Risk Assessment (SAFE-T)",
+      "aliases": [
+        "suicide risk",
+        "SAFE-T",
+        "suicidal ideation",
+        "risk assessment",
+        "C-SSRS",
+        "safety planning",
+        "suicide assessment"
+      ],
+      "history": 8,
+      "exam": 6,
+      "itemsHash": "9cc06516a0becce98eebd073b9d49655bdc4d6ea8b7e503ad5e1fe5a49daa063"
+    },
+    {
+      "id": "case-formulation",
+      "title": "Case Formulation (4 Ps × Biopsychosocial)",
+      "aliases": [
+        "formulation",
+        "4 Ps",
+        "four Ps",
+        "biopsychosocial formulation",
+        "case conceptualization",
+        "formulation grid"
+      ],
+      "history": 3,
+      "exam": 15,
+      "itemsHash": "1a22fa1893cf32e6fa80f40215b406ffcd65642d482fdb8b64ec3a6f9a8bd46e"
+    },
+    {
+      "id": "aims",
+      "title": "Abnormal Involuntary Movement Scale (AIMS)",
+      "aliases": [
+        "AIMS",
+        "tardive dyskinesia",
+        "TD screening",
+        "movement scale",
+        "abnormal involuntary movement scale",
+        "dyskinesia exam"
+      ],
+      "history": 2,
+      "exam": 15,
+      "itemsHash": "f59291050c0da22c68264b23eb5b31a02ba41275384fb161a1ef3e853eb7486e"
     }
   ];
 

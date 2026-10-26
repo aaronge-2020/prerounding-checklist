@@ -8,7 +8,7 @@ The app does not create accounts, synchronize data, host patient records, infer 
 
 - **Vault / Roster**: create or unlock the local vault; admit, select, archive, export, and restore patients.
 - **Hospital Stay**: maintain the admission packet and labeled day-by-day updates in one place. Primary note, Vital signs, and Laboratory results are distinct required-review reminders; medications and consult notes are optional, and missing items never block the clinician from continuing. Standard-format Epic or CPRS vitals, labs, and medication exports receive clean local tables, source-derived abnormal flags, and compact AI-ready text before de-identification and encrypted save. Narrative notes stay opaque even when they quote results.
-- **Cheat Sheets**: a read-only, phone-first bedside reference. Search 79 chief-complaint sheets for history questions and exam maneuvers, including how to perform them and why they matter. Fully offline; no patient data involved. Every sheet also opens a fillable worksheet: cards grouped by system, each item's own answer options as single-select chips plus an optional detail, with answers that stay in page memory only and copy out as a prose-style note. The Mental Status Examination sheet's worksheet is curated further, with one labeled field per worksheet bullet, descriptor chips with Mark normal presets, and an optional detail per field.
+- **Cheat Sheets**: a read-only, phone-first bedside reference. Search 82 chief-complaint sheets for history questions and exam maneuvers, including how to perform them and why they matter. Fully offline; no patient data involved. Every sheet also opens a fillable worksheet: cards grouped by system, each item's own answer options as single-select chips plus an optional detail, with answers that stay in page memory only and copy out as a prose-style note. The Mental Status Examination sheet's worksheet is curated further, with one labeled field per worksheet bullet, descriptor chips with Mark normal presets, and an optional detail per field.
 - **Prompts**: edit prompt text directly and insert labeled smart variables with `@`, including a named guideline-set variable (Settings) for general or OB/Gyn H&Ps and SOAP notes, progress notes, discharge instructions, or your own prompt.
 - **Quick De-ID**: process one-off text without saving it to a patient.
 - **Settings**: select a medical-service focus, presentation detail, and attending preferences for OpenEvidence prompts; optionally save an OpenAI API key inside the encrypted local vault for per-problem plans and ChatGPT chat.
@@ -31,7 +31,7 @@ Drafting uses one chart representation at a time, preserving imported sections a
 - `src/app/state/`: encrypted local vault persistence and state normalization.
 - `src/patient-context/`: admission sections and browser-worker de-identification.
 - `src/daily-updates/`: hospital-day records and trajectory assembly.
-- `src/data/cheat-sheets.json`: the read-only bedside reference dataset (79 chief-complaint sheets).
+- `src/data/cheat-sheets.json`: the read-only bedside reference dataset (82 chief-complaint sheets).
 - `src/ui/cheat-sheets/`: local search, read-only history/exam cards, and view wiring for the reference.
 - `src/prompts/`: pure OpenEvidence prompt and template functions.
 - `src/vault/deid/`: structured redaction rules and local model configuration.

@@ -25,8 +25,8 @@ const bundle = JSON.parse(readFileSync(join(root, "src", "data", "cheat-sheets.j
 const sheets = bundle.sheets;
 
 // ---- every sheet is flagged ---------------------------------------------------
-assert.equal(sheets.length, 79, "79 sheets in the bundle");
-assert.ok(sheets.every((sheet) => sheet.worksheet === true), "all 79 sheets carry worksheet: true");
+assert.equal(sheets.length, 82, "82 sheets in the bundle");
+assert.ok(sheets.every((sheet) => sheet.worksheet === true), "all 82 sheets carry worksheet: true");
 
 // ---- generic item census --------------------------------------------------------
 // Generic items = every history item plus every exam item without curated
@@ -46,7 +46,7 @@ for (const sheet of sheets) {
       `${sheet.id}/${item.id} offers 1-8 findings options`);
   }
 }
-assert.equal(genericItems, 1677, "1,677 generic items across the bundle");
+assert.equal(genericItems, 1726, "1,726 generic items across the bundle");
 
 // ---- dispatch -------------------------------------------------------------------
 const mse = sheets.find((sheet) => sheet.id === "mental-status-examination");
@@ -88,6 +88,31 @@ assert.deepEqual(
   miGroups.map((group) => group.title),
   ["Screening", "Oars skills", "Brief intervention", "Stages of change"],
   "MI/screening groups follow first appearance"
+);
+
+// ---- PSYH 530 worksheet sheets appended 2026-10-26 take the generic path -------
+const psychWorksheetSheets = [
+  ["suicide-risk-assessment", 14],
+  ["case-formulation", 18],
+  ["aims", 17]
+];
+for (const [id, itemCount] of psychWorksheetSheets) {
+  const sheet = sheets.find((candidate) => candidate.id === id);
+  assert.ok(sheet, `psych worksheet sheet ${id} is present`);
+  assert.equal(presentation.sheetHasFields(sheet), false, `${id} takes the generic path`);
+  const sheetGroups = presentation.genericWorksheetGroups(sheet);
+  assert.equal(
+    sheetGroups.reduce((n, group) => n + group.entries.length, 0), itemCount,
+    `all ${itemCount} ${id} items are grouped`
+  );
+}
+const formulationGroups = presentation.genericWorksheetGroups(
+  sheets.find((sheet) => sheet.id === "case-formulation"));
+assert.deepEqual(
+  formulationGroups.map((group) => group.title),
+  ["Problem summary", "Predisposing", "Precipitating", "Perpetuating",
+   "Protective", "Treatment implications"],
+  "formulation groups land in canonical order"
 );
 
 // ---- grouping on the dyspnea sheet ----------------------------------------------
