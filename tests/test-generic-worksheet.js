@@ -25,8 +25,8 @@ const bundle = JSON.parse(readFileSync(join(root, "src", "data", "cheat-sheets.j
 const sheets = bundle.sheets;
 
 // ---- every sheet is flagged ---------------------------------------------------
-assert.equal(sheets.length, 82, "82 sheets in the bundle");
-assert.ok(sheets.every((sheet) => sheet.worksheet === true), "all 82 sheets carry worksheet: true");
+assert.equal(sheets.length, 88, "88 sheets in the bundle");
+assert.ok(sheets.every((sheet) => sheet.worksheet === true), "all 88 sheets carry worksheet: true");
 
 // ---- generic item census --------------------------------------------------------
 // Generic items = every history item plus every exam item without curated
@@ -46,7 +46,7 @@ for (const sheet of sheets) {
       `${sheet.id}/${item.id} offers 1-8 findings options`);
   }
 }
-assert.equal(genericItems, 1726, "1,726 generic items across the bundle");
+assert.equal(genericItems, 1803, "1,803 generic items across the bundle");
 
 // ---- dispatch -------------------------------------------------------------------
 const mse = sheets.find((sheet) => sheet.id === "mental-status-examination");
@@ -114,6 +114,26 @@ assert.deepEqual(
    "Protective", "Treatment implications"],
   "formulation groups land in canonical order"
 );
+
+// ---- psychiatry reference sheets appended 2026-10-26 take the generic path -----
+const psychReferenceSheets = [
+  ["serotonin-nms-anticholinergic", 14],
+  ["catatonia", 13],
+  ["lithium", 12],
+  ["antipsychotics", 14],
+  ["antidepressant-traps", 14],
+  ["ect", 10]
+];
+for (const [id, itemCount] of psychReferenceSheets) {
+  const sheet = sheets.find((candidate) => candidate.id === id);
+  assert.ok(sheet, `psychiatry reference sheet ${id} is present`);
+  assert.equal(presentation.sheetHasFields(sheet), false, `${id} takes the generic path`);
+  const sheetGroups = presentation.genericWorksheetGroups(sheet);
+  assert.equal(
+    sheetGroups.reduce((n, group) => n + group.entries.length, 0), itemCount,
+    `all ${itemCount} ${id} items are grouped`
+  );
+}
 
 // ---- grouping on the dyspnea sheet ----------------------------------------------
 const groups = presentation.genericWorksheetGroups(dyspnea);

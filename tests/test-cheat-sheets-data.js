@@ -40,7 +40,10 @@ const bundle = JSON.parse(readFileSync(join(root, "src", "data", "cheat-sheets.j
 // interviewing and screening) were appended 2026-10-26 as the addiction
 // reference set for the same clerkship. Sheets 80-82 (suicide risk
 // assessment, case formulation, AIMS) were appended 2026-10-26 as the
-// worksheet set for the same clerkship. itemsHash = sha256 over each
+// worksheet set for the same clerkship. Sheets 83-88 (serotonin syndrome
+// vs NMS vs anticholinergic toxicity, catatonia, lithium, antipsychotics,
+// antidepressant traps, ECT) were appended 2026-10-26 as the psychiatry
+// reference set for the same clerkship. itemsHash = sha256 over each
 // source item's kind|id|system|text|choices joined by \x00.
 const FROZEN = [
     {
@@ -1063,6 +1066,109 @@ const FROZEN = [
       "history": 2,
       "exam": 15,
       "itemsHash": "f59291050c0da22c68264b23eb5b31a02ba41275384fb161a1ef3e853eb7486e"
+    },
+    {
+      "id": "serotonin-nms-anticholinergic",
+      "title": "Serotonin syndrome vs neuroleptic malignant syndrome vs anticholinergic toxicity",
+      "aliases": [
+        "serotonin syndrome",
+        "serotonin toxicity",
+        "neuroleptic malignant syndrome",
+        "nms",
+        "anticholinergic toxicity",
+        "anticholinergic toxidrome",
+        "hyperthermia differential",
+        "clonus"
+      ],
+      "history": 5,
+      "exam": 9,
+      "itemsHash": "4537089f5efe47b2ead75a53ffddb131b17934d3d762109a0d49354e3c3bb841"
+    },
+    {
+      "id": "catatonia",
+      "title": "Catatonia",
+      "aliases": [
+        "catatonia",
+        "bush-francis",
+        "bfcrs",
+        "lorazepam challenge",
+        "malignant catatonia",
+        "waxy flexibility",
+        "mutism",
+        "negativism"
+      ],
+      "history": 5,
+      "exam": 8,
+      "itemsHash": "9a55a7fdf5aa283ae4a63fcab8741c7dc332a30538a57b3456be53f6791995c7"
+    },
+    {
+      "id": "lithium",
+      "title": "Lithium",
+      "aliases": [
+        "lithium",
+        "lithium level",
+        "lithium toxicity",
+        "bipolar maintenance",
+        "ebstein"
+      ],
+      "history": 5,
+      "exam": 7,
+      "itemsHash": "dfdb6606814c22507dc64346abd416af1c26c34883158d58b885e115459fc924"
+    },
+    {
+      "id": "antipsychotics",
+      "title": "Antipsychotics",
+      "aliases": [
+        "antipsychotics",
+        "haloperidol",
+        "clozapine",
+        "risperidone",
+        "olanzapine",
+        "quetiapine",
+        "aripiprazole",
+        "long-acting injectable",
+        "lai",
+        "eps",
+        "qtc",
+        "prolactin"
+      ],
+      "history": 6,
+      "exam": 8,
+      "itemsHash": "a0cc5e7518aefe39bee4ea3b8bce976262af4e5bf68cc92a540433b9ef01de17"
+    },
+    {
+      "id": "antidepressant-traps",
+      "title": "Antidepressant traps",
+      "aliases": [
+        "antidepressant side effects",
+        "discontinuation syndrome",
+        "withdrawal",
+        "siadh",
+        "hyponatremia",
+        "black box warning",
+        "bupropion seizure",
+        "trazodone priapism",
+        "mirtazapine",
+        "venlafaxine blood pressure"
+      ],
+      "history": 5,
+      "exam": 9,
+      "itemsHash": "446992b03c05de31de386c7527bf4560408af51f2c76d7bdd281c3ce4f54d989"
+    },
+    {
+      "id": "ect",
+      "title": "Electroconvulsive therapy (ECT)",
+      "aliases": [
+        "ect",
+        "electroconvulsive therapy",
+        "shock therapy",
+        "electrode placement",
+        "methohexital",
+        "succinylcholine"
+      ],
+      "history": 3,
+      "exam": 7,
+      "itemsHash": "659f55c30098990ea6ce596abab909ffa398ec28783cee17341defef35821336"
     }
   ];
 

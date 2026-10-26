@@ -26932,6 +26932,1340 @@
         "whyMissing": 17,
         "howMissing": 11
       }
+    },
+    {
+      "id": "serotonin-nms-anticholinergic",
+      "title": "Serotonin syndrome vs neuroleptic malignant syndrome vs anticholinergic toxicity",
+      "worksheet": true,
+      "aliases": [
+        "serotonin syndrome",
+        "serotonin toxicity",
+        "neuroleptic malignant syndrome",
+        "nms",
+        "anticholinergic toxicity",
+        "anticholinergic toxidrome",
+        "hyperthermia differential",
+        "clonus"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "exposure",
+          "question": "What medicines were recently started, stopped, or increased, including antidepressants, pain medicines, antibiotics, cough medicines, and supplements?",
+          "listenFor": [
+            "A serotonergic drug started or increased, alone or combined with a second serotonergic drug",
+            "A dopamine blocking drug (antipsychotic) started or increased, or a dopamine agonist (Parkinson treatment) stopped",
+            "An anticholinergic drug started or increased, or several anticholinergic drugs combined",
+            "No recent medicine change identified"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "The exposure history is the first discriminator, because each syndrome has a characteristic trigger. Serotonin toxicity follows a serotonergic agent, and the Hunter criteria only apply in a patient who has taken one. Neuroleptic malignant syndrome follows dopamine antagonist exposure or dopamine agonist withdrawal; the international consensus criteria count exposure within the prior 72 hours. Anticholinergic toxicity follows anticholinergic drugs, and the total anticholinergic burden matters more than any single drug. Get exact names, doses, and dates, including over the counter and herbal products, because patients rarely volunteer them.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "onset",
+          "question": "How quickly did this come on after the medicine change, and how has it evolved?",
+          "listenFor": [
+            "Abrupt onset, building over hours after a dose change",
+            "Gradual onset over days of ongoing dopamine blocker exposure",
+            "Onset soon after an anticholinergic dose, with fluctuating delirium",
+            "Onset unclear or unrelated to any medicine change"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Tempo separates the three before the examination does. Serotonin toxicity typically evolves fast after a serotonergic change. Neuroleptic malignant syndrome typically builds over days of exposure. Anticholinergic delirium tracks the dosing of the offending drug. An onset that fits none of these patterns should push you back toward infection, withdrawal, seizure, and other medical causes, and the NMS consensus criteria require a negative workup for infectious, toxic, metabolic, and neurologic causes before the diagnosis is secure.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "mental status",
+          "question": "How would you describe the patient's mental state: agitated, confused, quiet, or unresponsive?",
+          "listenFor": [
+            "Agitated and restless, with pressured or confused speech",
+            "Stuporous, mute, or progressing toward coma",
+            "Agitated delirium with mumbling and picking at the bedclothes",
+            "Alert and oriented despite other symptoms"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "The flavor of the mental status change is a strong discriminator. Agitation with hyperactivity fits serotonin toxicity and anticholinergic toxicity. Stupor, mutism, and coma fit neuroleptic malignant syndrome, where the consensus criteria describe reduced or fluctuating consciousness. Anticholinergic delirium classically includes picking movements and mumbling speech. Mental status alteration is also one of the scored elements in the NMS consensus criteria, so describe it in documentable terms rather than writing only the word delirium.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-04",
+          "system": "review of systems",
+          "question": "Has the patient had diarrhea, heavy sweating, shaking, or stiffness?",
+          "listenFor": [
+            "Diarrhea and heavy sweating",
+            "Heavy sweating with severe stiffness and drooling",
+            "No sweating, dry mouth, constipation, and trouble urinating",
+            "None of these reported"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "These reported symptoms preview the examination discriminators. Serotonin toxicity tends to produce diarrhea and hyperactive bowel activity along with diaphoresis. Neuroleptic malignant syndrome produces diaphoresis with lead-pipe rigidity and can include drooling (sialorrhea in the comparison literature). Anticholinergic toxicity produces the opposite surface: dry mouth, no sweating, sluggish bowels, and urinary retention. A patient or nurse report of a completely dry patient with no bowel movements and a full bladder should move anticholinergic toxicity up the list before you touch the patient.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-05",
+          "system": "history",
+          "question": "Has this patient ever had a reaction like this before, or been told they had serotonin syndrome or neuroleptic malignant syndrome?",
+          "listenFor": [
+            "Prior episode labeled serotonin syndrome",
+            "Prior episode labeled neuroleptic malignant syndrome",
+            "Prior prolonged delirium after anesthesia, eye drops, or bladder or allergy medicines",
+            "No prior similar episode"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "A prior labeled episode changes today's risk and today's drug choices. A patient with prior neuroleptic malignant syndrome needs a cautious plan before any dopamine blocker is restarted, and a patient with prior serotonin toxicity needs the serotonergic combination reviewed before it is repeated. Prior anticholinergic delirium after common medicines (bladder drugs, sleep aids, antihistamines) identifies a patient with little reserve, often an older adult, in whom even modest anticholinergic additions can reproduce the picture.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "pupils and skin",
+          "maneuver": "Check pupil size, skin moisture, and skin color.",
+          "findings": [
+            "Dilated pupils, skin wet with sweat",
+            "Dilated pupils, skin hot, dry, and flushed",
+            "Pupil size unremarkable, skin pale and sweaty",
+            "Pupils small or normal, skin dry and warm"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Pupils and skin separate anticholinergic toxicity from the other two better than fever does. Mydriasis occurs in both serotonin toxicity and anticholinergic toxicity, so pupils alone cannot separate them; the skin can. Hot, dry, flushed skin with dilated pupils is anticholinergic until proven otherwise. Wet skin with dilated pupils points toward serotonin toxicity. The comparison literature describes pallor (not flushing) with diaphoresis in neuroleptic malignant syndrome. Document moisture explicitly: dry versus sweaty is a fork in this differential.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "bowel sounds",
+          "maneuver": "Listen to bowel sounds and ask about the last bowel movement and last void.",
+          "findings": [
+            "Bowel sounds hyperactive, recent diarrhea",
+            "Bowel sounds decreased or absent, no recent bowel movement, bladder full or catheterized for retention",
+            "Bowel sounds normal or decreased, patient voiding",
+            "Bowel sounds normal, voiding normally"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Bowel sounds are one of the cleanest bedside discriminators in this three-way comparison. Hyperactive bowel sounds support serotonin toxicity. Decreased or absent bowel sounds with urinary retention support anticholinergic toxicity, where the gut and bladder are pharmacologically paralyzed. In neuroleptic malignant syndrome bowel sounds are normal or decreased, so a quiet abdomen does not separate NMS from anticholinergic toxicity on its own; combine it with reflexes, rigidity type, and skin moisture.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "reflexes and clonus",
+          "maneuver": "Test deep tendon reflexes and check for spontaneous, inducible, and ocular clonus.",
+          "findings": [
+            "Hyperreflexia with spontaneous or inducible clonus, worst in the legs",
+            "Ocular clonus present (slow spontaneous horizontal eye movements)",
+            "Reflexes reduced (bradyreflexia), no clonus",
+            "Reflexes normal, no clonus"
+          ],
+          "how": "Test the legs carefully: serotonin toxicity signs are usually most prominent in the lower extremities. Check ankle clonus with a brisk dorsiflexion, watch for spontaneous clonus at rest, and hold the eyes open to look for slow horizontal ocular clonus.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Clonus and hyperreflexia are the signature of serotonin toxicity and are the core of the Hunter criteria. Their presence, in a patient who took a serotonergic agent, is the strongest single discriminator in this sheet. Reduced reflexes (bradyreflexia) point the other way, toward neuroleptic malignant syndrome, where rigidity overwhelms the reflex arc. Anticholinergic toxicity does not produce clonus or hyperreflexia, so either finding argues against a pure anticholinergic picture.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "rigidity",
+          "maneuver": "Assess muscle tone in the arms and legs and describe the type of rigidity.",
+          "findings": [
+            "Lead-pipe rigidity in all limbs, with tremor",
+            "Increased tone mainly in the legs, with clonus when the foot is dorsiflexed",
+            "No rigidity; patient is restless and picking at the air or bedclothes",
+            "Tone normal throughout"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The type of rigidity matters more than its presence. Lead-pipe rigidity, uniform resistance through the whole range of movement, is the classic motor finding of neuroleptic malignant syndrome and is a scored element in the consensus criteria. In serotonin toxicity the increased tone is usually greatest in the legs and is accompanied by clonus, and severe hypertonia is one limb of a Hunter criterion when combined with fever and clonus. Anticholinergic toxicity produces no rigidity; the patient is restless rather than stiff.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "temperature",
+          "maneuver": "Measure core temperature and note the trend, not just a single value.",
+          "findings": [
+            "Temperature above 38.0 degrees C, rising despite antipyretics",
+            "Temperature 38.0 to 39.0 degrees C",
+            "Temperature normal or mildly elevated",
+            "Temperature very high, above 41 degrees C"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Fever appears in all three syndromes, so its height and company matter more than its presence. The NMS consensus criteria require hyperthermia above 38.0 degrees C on at least two occasions, measured orally, and the comparison literature describes NMS temperatures that can exceed 41 degrees C. Anticholinergic fever is usually more modest; one widely used comparison table places it at or below about 39 degrees C, because the problem is failed sweating rather than muscle heat production. Antipyretics do not fix fever in any of these three, because the heat comes from muscle activity or failed heat loss, not from a raised set point; cooling and stopping muscle activity do.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "criteria",
+          "maneuver": "Apply the Hunter Serotonin Toxicity Criteria exactly as published.",
+          "findings": [
+            "At least one Hunter criterion met in a patient who took a serotonergic agent",
+            "No Hunter criterion met",
+            "Cannot assess (patient sedated, paralyzed, or examination incomplete)"
+          ],
+          "how": "In a patient who has taken a serotonergic agent, serotonin toxicity is present if any one of the following is found (Dunkley et al. 2003): spontaneous clonus; inducible clonus plus agitation or diaphoresis; ocular clonus plus agitation or diaphoresis; tremor plus hyperreflexia; or hypertonia plus temperature above 38 degrees C plus ocular clonus or inducible clonus. Reported sensitivity 84 percent and specificity 97 percent against a medical toxicologist diagnosis.",
+          "why": null,
+          "whySource": null,
+          "meaning": "The Hunter criteria are a decision rule, not a symptom checklist: one qualifying finding in an exposed patient makes the diagnosis, and the findings are examination signs (clonus in its three forms, tremor with hyperreflexia, hypertonia with fever and clonus), not reported symptoms like headache or nausea. This is why the reflex and clonus examination carries the diagnosis. If no criterion is met, serotonin toxicity is unlikely and the other two syndromes, plus medical mimics, move up.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "criteria",
+          "maneuver": "Apply the international consensus criteria for neuroleptic malignant syndrome (Gurrera et al. 2011).",
+          "findings": [
+            "All consensus elements present, including a negative workup for other causes",
+            "Most elements present but workup incomplete",
+            "Key elements absent (no rigidity, no hyperthermia, reflexes brisk with clonus)"
+          ],
+          "how": "The consensus elements are: dopamine antagonist exposure or dopamine agonist withdrawal within 72 hours; hyperthermia above 38.0 degrees C on at least two occasions measured orally; rigidity; mental status alteration (reduced or fluctuating consciousness); creatine kinase at least 4 times the upper limit of normal; sympathetic lability, defined as at least two of blood pressure elevation at least 25 percent above baseline, blood pressure fluctuation (at least 20 mmHg diastolic or 25 mmHg systolic change within 24 hours), diaphoresis, or urinary incontinence; hypermetabolism, defined as heart rate increase at least 25 percent above baseline together with respiratory rate increase at least 50 percent above baseline; and a negative workup for infectious, toxic, metabolic, and neurologic causes. The panel also assigned priority scores to each element (exposure 20, hyperthermia 18, rigidity 17, mental status alteration 13, creatine kinase elevation 10, sympathetic lability 10, hypermetabolism 5, negative workup 7, totaling 100).",
+          "why": null,
+          "whySource": null,
+          "meaning": "These criteria force the two steps clinicians skip: quantifying the creatine kinase and finishing the exclusion workup. A CK at least 4 times the upper limit of normal is an element in its own right, and the negative workup element means NMS remains a diagnosis of exclusion even when the motor picture is classic; sepsis, serotonin toxicity, malignant hyperthermia, and withdrawal states must be looked for. The priority scores weight the elements but the sources reviewed for this sheet do not state a total score cutoff that by itself makes the diagnosis, so this sheet does not teach one.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-08",
+          "system": "treatment",
+          "maneuver": "Start the shared first steps for serotonin toxicity and neuroleptic malignant syndrome.",
+          "findings": [
+            "Offending agent stopped, IV fluids running, benzodiazepine given, external cooling started",
+            "Offending agent stopped; benzodiazepine and cooling still pending",
+            "Physical restraints in use to control agitation (a problem to fix, not a plan)"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The first steps are the same for serotonin toxicity and neuroleptic malignant syndrome and should not wait for the differential to settle: stop the offending agent, give IV fluids, give a benzodiazepine for agitation and muscle activity, and cool externally. Avoid physical restraints, which worsen isometric muscle contraction, heat production, and rhabdomyolysis. Antipyretics are ineffective because the fever is generated by muscle, not by a raised hypothalamic set point. Hyperthermia and respiratory failure are ICU problems; escalate early rather than after the temperature peaks.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-09",
+          "system": "treatment",
+          "maneuver": "Choose syndrome-specific drug treatment, and avoid the drugs that cross over badly.",
+          "findings": [
+            "Serotonin toxicity: cyproheptadine used as an adjunct, with benzodiazepines as the mainstay",
+            "Neuroleptic malignant syndrome: dantrolene used; bromocriptine considered only once serotonin toxicity is confidently excluded",
+            "Anticholinergic toxicity: benzodiazepine for agitation, toxicology consulted about physostigmine",
+            "Bromocriptine or dantrolene given for presumed serotonin toxicity (a trap to recognize and stop)"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The drug traps in this differential are crossover drugs. Bromocriptine, a dopamine agonist used for neuroleptic malignant syndrome, is itself serotonergic and can worsen serotonin toxicity, and dantrolene has not been shown effective in serotonin toxicity, so neither belongs in a serotonin toxicity plan; if the diagnosis is still uncertain between the two, bromocriptine is dangerous and should wait. Cyproheptadine is the usual serotonin antagonist adjunct, but it has no randomized trial support and never replaces benzodiazepines, cooling, and stopping the drug. For anticholinergic toxicity, benzodiazepines treat agitation and seizures; physostigmine can reverse significant central anticholinergic toxicity but remains controversial, must not be given when the picture might instead be a tricyclic overdose or another non-anticholinergic condition, and must not be given with a QRS of 100 msec or wider, so it is a toxicology-consult decision, not a reflex.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 14,
+        "howMissing": 6
+      }
+    },
+    {
+      "id": "catatonia",
+      "title": "Catatonia",
+      "worksheet": true,
+      "aliases": [
+        "catatonia",
+        "bush-francis",
+        "bfcrs",
+        "lorazepam challenge",
+        "malignant catatonia",
+        "waxy flexibility",
+        "mutism",
+        "negativism"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "presentation",
+          "question": "What changes in movement, speech, and responsiveness have the family or nursing staff noticed, and over what time?",
+          "listenFor": [
+            "Stopped talking and moving, staring for long periods",
+            "Episodes of purposeless excitement alternating with immobility",
+            "Repeating words or movements, resisting instructions or movement",
+            "Eating and drinking stopped or nearly stopped"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Catatonia is a motor syndrome, and the history is mostly a description of movement and speech over time. Ask witnesses what the patient actually does: not eating, not speaking, holding postures, resisting care, repeating phrases. The time course matters because catatonia can fluctuate within a day, and a single quiet interview can miss an excited phase that the night staff saw. Record who reported each sign; several Bush-Francis items are rated on observation and report, not only on your own examination.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "exposure",
+          "question": "What antipsychotics or other dopamine blocking drugs has the patient received recently, and did the picture change afterward?",
+          "listenFor": [
+            "Antipsychotic started or increased shortly before the motor picture worsened",
+            "Antipsychotic given during this episode with no improvement or with worsening",
+            "No dopamine blocking drug exposure",
+            "Dopamine blocking drug stopped and the picture improved"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Dopamine blockade can worsen catatonia and can tip it toward neuroleptic malignant syndrome, so the medication timeline is a safety question, not a formality. A patient who became more rigid, more mute, or febrile after an antipsychotic dose needs the drug held and the catatonia treated first. This is the single most consequential history item on this sheet: the reflex treatment for an agitated or psychotic patient is an antipsychotic, and in catatonia that reflex can harm.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "medical review",
+          "question": "What medical problems, infections, seizures, or recent brain injuries could be driving this, and what workup has been done?",
+          "listenFor": [
+            "Known medical or neurologic cause under evaluation (for example encephalitis, seizure disorder, metabolic derangement)",
+            "Workup so far negative; treated as a primary psychiatric presentation",
+            "Workup incomplete or not started"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Catatonia is a final common pathway, not a diagnosis of cause: mood disorders, psychotic disorders, infections, autoimmune encephalitis, seizures, and metabolic problems can all produce it, and treating the motor syndrome does not finish the job. The examination and the lorazepam challenge buy time and confirm the syndrome; the workup for the driver proceeds in parallel. Ask what has already been ruled out so the team does not repeat a finished workup or skip an unfinished one.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-04",
+          "system": "prior episodes",
+          "question": "Has the patient had an episode like this before, and what did it respond to?",
+          "listenFor": [
+            "Prior episode that responded to lorazepam",
+            "Prior episode that responded to ECT after medicines failed",
+            "Prior episode labeled catatonia without a recorded response",
+            "No prior episode"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Past response is the best predictor of what will work this time. A patient whose prior catatonia melted with lorazepam should get a prompt challenge rather than a slow workup-first sequence, and a patient who previously needed electroconvulsive therapy should have that conversation started early, because ECT scheduling takes time. Document the prior response in the note; it is the fact the next team will look for.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-05",
+          "system": "severity",
+          "question": "Is the patient eating, drinking, moving enough to avoid complications, and passing urine?",
+          "listenFor": [
+            "Not eating or drinking; dehydration or weight loss a concern",
+            "Immobile most of the day; skin, clot, and aspiration risk rising",
+            "Still eating, drinking, and moving with prompting",
+            "Febrile or autonomically unstable (see the malignant catatonia item)"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Catatonia injures patients through stillness and starvation, not only through the underlying illness. The Bush-Francis training material lists the complications of persistent catatonia: thromboembolism, pressure injuries, contractures, aspiration pneumonia, malnutrition, and dehydration. Ask about intake, mobility, and duration every day, because these answers set the urgency of treatment and the need for clot prophylaxis, skin care, and nutrition support while the syndrome is being treated.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "screening",
+          "maneuver": "Observe the patient for at least 5 minutes and score the Bush-Francis Catatonia Rating Scale screening items.",
+          "findings": [
+            "2 or more of the first 14 screening items clearly present: screening positive",
+            "Only 1 screening item present: screening negative, keep watching",
+            "Delirious patient: 4 or more screening items needed before calling it catatonia",
+            "Signs uncertain: score as absent and re-examine later"
+          ],
+          "how": "The 14 screening items, in scale order, are: excitement, immobility or stupor, mutism, staring, posturing or catalepsy, grimacing, echopraxia or echolalia, stereotypy, mannerisms, verbigeration, rigidity, negativism, waxy flexibility, and withdrawal. Score over an observation period of at least 5 minutes. Rate only items that are clearly present; if a sign is uncertain, score it absent. Screening is positive at 2 or more of the first 14 items. In a delirious patient, require 4 or more screening items before counting it as catatonia, because delirium alone produces several overlapping signs.",
+          "why": null,
+          "whySource": null,
+          "meaning": "The Bush-Francis scale turns a vague impression (the patient seems shut down) into a countable examination, and the count is what makes the lorazepam challenge interpretable: you cannot claim a 50 percent improvement without a baseline score. The clearly-present rule protects against inflating the score with guesses, and the higher bar in delirium protects against labeling every delirious patient catatonic. Re-score at each visit; the trend is the treatment response.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "screening signs",
+          "maneuver": "Elicit the interactive screening signs: negativism, waxy flexibility, posturing or catalepsy, and withdrawal.",
+          "findings": [
+            "Negativism: resists instructions or passive movement with counter-pressure, no clear motive",
+            "Waxy flexibility: slight, even resistance to repositioning, then holds the new posture",
+            "Posturing or catalepsy: holds a spontaneous or placed posture for minutes",
+            "Withdrawal: minimal response to stimuli, poor eye contact, refuses food placed in reach",
+            "None of these elicited"
+          ],
+          "how": "Move the patient's arm slowly and watch what happens: negativism pushes back or does the opposite of what is asked, waxy flexibility yields like bending a wax candle and then keeps the new position, and catalepsy keeps an examiner-placed posture long after support is removed. Then test instruction-following with a simple request that runs against the posture.",
+          "why": null,
+          "whySource": null,
+          "meaning": "These four signs cannot be gathered from the doorway; they require touching and instructing the patient, which is why catatonia is underdiagnosed on busy services. Waxy flexibility and catalepsy in particular are close to pathognomonic in context: few other conditions make a patient hold an examiner-placed posture. Withdrawal on the scale means minimal interaction with the environment, and it overlaps with the refusal to eat that drives the medical complications.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "screening signs",
+          "maneuver": "Look for the expressive screening signs: excitement, grimacing, stereotypy, mannerisms, and verbigeration.",
+          "findings": [
+            "Excitement: excessive, purposeless motor activity not explained by external stimuli",
+            "Stereotypy: repetitive, abnormally frequent, non-goal-directed movements",
+            "Mannerisms: odd, purposeful movements performed in a peculiar way",
+            "Verbigeration: repetition of phrases or sentences, like a scratched record",
+            "Grimacing: fixed odd facial expressions held for periods of time",
+            "None observed in the observation window"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Excited catatonia is the presentation most often misread as mania or agitated psychosis, and the distinction matters because the treatments diverge: an antipsychotic can worsen catatonia. Stereotypy, mannerisms, and verbigeration are the quieter expressive signs that separate catatonic excitement from ordinary agitation; ordinary agitation does not repeat the same phrase in a loop or perform normal acts in a fixed peculiar style. Observe before interacting, because several of these signs stop when the patient notices an audience.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "screening signs",
+          "maneuver": "Check for echopraxia or echolalia, mutism, and staring.",
+          "findings": [
+            "Echopraxia or echolalia: mimics the examiner's movements or speech",
+            "Mutism: verbally unresponsive, no or minimal speech, not explained by aphasia or intubation",
+            "Staring: fixed gaze, decreased blinking, poor visual tracking of people",
+            "None present"
+          ],
+          "how": "During the interview, make a small distinctive movement (scratch your head, tap the table) and watch for automatic copying, and note whether your questions are echoed back instead of answered. Count blink rate and whether the gaze follows you or stays fixed.",
+          "why": null,
+          "whySource": null,
+          "meaning": "Echopraxia and echolalia show that the machinery of response is intact but disconnected from intent, which is the essence of the syndrome. Mutism on the scale requires that the silence not be explained by a language or airway problem. Staring with reduced blinking is one of the easiest signs to confirm from nursing observation, and it is often the first sign families report.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "challenge test",
+          "maneuver": "Perform a lorazepam challenge and re-score the Bush-Francis items afterward.",
+          "findings": [
+            "At least 50 percent reduction in Bush-Francis signs after lorazepam: positive challenge, supports catatonia",
+            "Partial reduction, less than 50 percent: equivocal, does not exclude catatonia",
+            "No reduction: negative challenge, catatonia still not excluded",
+            "Challenge not done (access, sedation risk, or team decision)"
+          ],
+          "how": "Published descriptions commonly use 1 to 2 mg of lorazepam IV, then re-examine and re-score. A positive challenge is at least a 50 percent reduction in Bush-Francis signs. Reported reassessment times vary by source (see the disagreements section): about 5 minutes in some reviews, typically within 15 minutes in others, and 40 minutes in one NHS protocol. Score before the dose and again after, using the same items.",
+          "why": null,
+          "whySource": null,
+          "meaning": "The challenge is both a test and the first treatment: a clear response confirms the syndrome and starts the therapy that most patients continue, scheduled lorazepam. Reported remission rates with lorazepam are commonly in the 70 to 80 percent range. A negative or partial challenge does not exclude catatonia; chronic cases and some medical catatonias respond less, and those patients move toward electroconvulsive therapy rather than toward abandoning the diagnosis.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "severity",
+          "maneuver": "Screen for malignant catatonia at every examination.",
+          "findings": [
+            "Motor signs plus fever, autonomic instability, and delirium: malignant catatonia, escalate now",
+            "Motor signs with fever alone or autonomic instability alone: high risk, monitor closely and escalate treatment",
+            "Motor signs only, afebrile, autonomically stable: not malignant at this time"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Any motor subtype of catatonia can be complicated by autonomic activation, and that combination, malignant catatonia, can be fatal. Fever plus a racing or labile pulse and blood pressure plus delirium on top of the motor syndrome is a medical emergency: it needs urgent escalation of catatonia treatment, medical monitoring, and early involvement of the teams who can give electroconvulsive therapy, because malignant catatonia is one of the presentations where ECT moves from second line to urgent. Do not let a malignant picture be managed as routine catatonia with a slow lorazepam titration.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "what not to do",
+          "maneuver": "Hold or minimize antipsychotics until the catatonia is treated, and document the plan.",
+          "findings": [
+            "Antipsychotic held, with the reason documented (catatonia treatment takes priority)",
+            "Antipsychotic continued at the lowest feasible exposure with close monitoring, reason documented",
+            "Antipsychotic started or increased during untreated catatonia (a risk to recognize and correct)"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Dopamine blockade works against catatonia treatment: antipsychotics can deepen the motor syndrome and can precipitate neuroleptic malignant syndrome in a catatonic patient. The underlying psychosis or mania still needs a plan, but the sequence is catatonia first, usually with lorazepam or ECT, and antipsychotic decisions after the motor syndrome breaks. If an antipsychotic truly cannot be stopped, say so explicitly in the note, use the lowest exposure, and monitor temperature, rigidity, and creatine kinase.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-08",
+          "system": "treatment escalation",
+          "maneuver": "Set the escalation path: scheduled lorazepam, then ECT if benzodiazepines fail or the picture is severe.",
+          "findings": [
+            "Responding to lorazepam: scheduled dosing continued, score trended",
+            "Not responding to adequate lorazepam: ECT consultation placed",
+            "Severe or malignant picture: ECT treated as urgent, not as a last resort after weeks",
+            "Escalation not yet addressed"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Electroconvulsive therapy is the second-line treatment when benzodiazepines fail, and it is also used in severe and malignant catatonia, where waiting out a long drug titration costs the patient nutrition, skin, and clot risk every day. ECT is highly effective in catatonia, including in many patients whose lorazepam response was incomplete. Placing the consultation early is not a commitment to treat; it starts the consent and scheduling work while the drug trial continues. See the ECT sheet for what the treatment involves.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 13,
+        "howMissing": 4
+      }
+    },
+    {
+      "id": "lithium",
+      "title": "Lithium",
+      "worksheet": true,
+      "aliases": [
+        "lithium",
+        "lithium level",
+        "lithium toxicity",
+        "bipolar maintenance",
+        "ebstein"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "indication and level",
+          "question": "What is the lithium for, what dose, and when was the last level drawn relative to the last dose?",
+          "listenFor": [
+            "Acute mania treatment",
+            "Long-term maintenance for bipolar disorder",
+            "Level drawn 8 to 12 hours after the previous dose (interpretable timing)",
+            "Level drawn at an unknown or wrong time (interpret with caution)"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "A lithium level means nothing without its indication and its timing. The label directs that samples be drawn 8 to 12 hours after the previous dose; a level drawn two hours after a dose will look alarming and mean little, and a level drawn at 24 hours will look reassuring and mean little. The indication sets the target: acute mania aims higher than maintenance (see the ranges item). Record dose, formulation, timing of the last dose, and timing of the draw in the same sentence of the note.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "interacting medicines",
+          "question": "What new medicines have been started since the last level, especially water pills, pain relievers, and blood pressure medicines?",
+          "listenFor": [
+            "Thiazide or loop diuretic started or dose increased",
+            "Regular NSAID use started (ibuprofen, naproxen, others)",
+            "ACE inhibitor or angiotensin receptor blocker started or dose increased",
+            "No new interacting medicine"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "These three groups are the classic level raisers, and all three appear in the lithium label's interaction table. Diuretics reduce lithium clearance by causing sodium loss, NSAIDs decrease renal blood flow and clearance, and renin-angiotensin antagonists (lisinopril, enalapril, captopril, valsartan, and their relatives) raise steady-state levels. The label's stated response is more frequent level monitoring and dose reduction, not waiting for symptoms. Ask about over the counter NSAIDs by name; patients do not count ibuprofen as a medicine.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "volume and illness",
+          "question": "Has the patient had vomiting, diarrhea, fever, poor intake, heavy sweating, or a new low-salt diet?",
+          "listenFor": [
+            "Active vomiting, diarrhea, or febrile illness",
+            "Poor oral intake or dehydration from any cause",
+            "Recent heavy exertion, heat exposure, or a new low-salt diet",
+            "Eating, drinking, and well"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Lithium follows sodium and water. Volume depletion from any cause (gastroenteritis, fever, poor intake, heat, a crash low-salt diet) makes the kidney reclaim more lithium and can push a stable level into the toxic range within days, and impaired renal function and electrolyte shifts add to the risk. This history is the early warning system: a lithium patient with two days of diarrhea needs a level and a hydration plan now, not at the next routine check.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-04",
+          "system": "toxicity symptoms",
+          "question": "Has the patient noticed a coarser tremor, unsteadiness, slurred speech, confusion, marked drowsiness, ringing in the ears, or blurred vision?",
+          "listenFor": [
+            "Fine tremor only, unchanged from baseline",
+            "Coarse tremor, unsteadiness, slurred speech, or unusual drowsiness",
+            "Confusion, marked weakness, or reduced urine output",
+            "No symptoms"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Lithium toxicity announces itself in the nervous system and gut before it shows in a level, and the label's progression runs from fine tremor, lightheadedness, incoordination, and weakness, through giddiness, apathy, drowsiness, hyperreflexia, twitching, ataxia, blurred vision, tinnitus, and slurred speech, to clonus, confusion, seizure, coma, and death at the severe end. Gastrointestinal symptoms (nausea, vomiting, diarrhea, bloating) and renal symptoms (a concentrating defect up to nephrogenic diabetes insipidus and renal failure) belong in the same review. New symptoms in a lithium patient are a level-and-examination problem today, not a reassurance problem.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-05",
+          "system": "pregnancy",
+          "question": "Is the patient pregnant, planning pregnancy, or of childbearing potential without contraception?",
+          "listenFor": [
+            "Pregnant, lithium continued after specialist discussion",
+            "Planning pregnancy: preconception discussion needed",
+            "Not pregnant, contraception in place",
+            "Pregnancy status unknown: test before decisions"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Pregnancy on lithium is a shared decision, not an automatic stop. The best current evidence (Patorno et al., NEJM) found a small, dose-related increase in cardiac malformations, far below the risk once feared from early Ebstein anomaly reports, and untreated bipolar illness in pregnancy carries its own serious risks. The conversation belongs with psychiatry and obstetrics, ideally before conception. See the pregnancy item in the exam section for the numbers to quote accurately.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "therapeutic ranges",
+          "maneuver": "Interpret the level against the label ranges for the indication.",
+          "findings": [
+            "Acute mania: label dosing normally produces 1.0 to 1.5 mEq/L",
+            "Long-term maintenance: label desirable range 0.6 to 1.2 mEq/L",
+            "Level at or above 1.5 mEq/L: the label's warning text calls this the toxic range",
+            "Level in range but the patient has toxicity symptoms: treat the patient, not the number"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The FDA label does not state one clean range, and this sheet does not pretend it does. Its dosing text says acute mania treatment normally produces levels of 1.0 to 1.5 mEq/L and that the long-term desirable range is 0.6 to 1.2 mEq/L, while its warning text describes the therapeutic range as 0.8 to 1.2 mEq/L and toxic concentrations as 1.5 mEq/L and above. Two safety facts sit on top of the ranges: toxicity can occur at levels close to therapeutic ones, and sensitive patients can show toxicity below 1.0 mEq/L. A symptomatic patient with a level of 1.1 is a toxicity problem; an asymptomatic patient at 1.3 on day 3 of mania treatment may be exactly on target. Units: mEq/L and mmol/L are numerically the same for lithium.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "toxicity bands",
+          "maneuver": "Grade suspected toxicity by level and by examination together.",
+          "findings": [
+            "Mild, roughly 1.5 to 2.5 mmol/L: weakness, light-headedness, fine tremor, nystagmus",
+            "Moderate, above 2.5 to 3.5 mmol/L: muscle twitching, fasciculations, tinnitus, drowsiness, hyperreflexia, slurred speech, apathy",
+            "Severe, above 3.5 mmol/L: parkinsonism, psychosis, memory deficits; at the extreme, seizure, coma, death",
+            "Symptoms worse than the level suggests: suspect chronic toxicity, where brain levels lag blood levels"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "These bands come from a review of chronic lithium toxicity and describe a gradient, not three diseases. The label's own progression (in the history item above) tells the same story in words. Two cautions matter at the bedside. First, in chronic toxicity the blood level can look modest while the patient is very ill, because lithium has equilibrated into the brain; grade the patient, not only the number. Second, severe toxicity is a medical emergency with renal and cardiac involvement (QT prolongation and ST and T wave changes are in the label's toxicity list), and it needs urgent medical management, fluids, and stopping the drug, not a psychiatry-only plan.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "interactions",
+          "maneuver": "Act on level-raising and level-lowering interactions when any interacting drug changes.",
+          "findings": [
+            "Thiazide or loop diuretic changed: recheck the level sooner and expect to lower the lithium dose",
+            "NSAID started or stopped: recheck the level; prefer non-NSAID pain relief when possible",
+            "ACE inhibitor or ARB changed: recheck the level sooner",
+            "Acetazolamide, urea, xanthine preparations, or alkalinizing agents changed: levels may fall, watch for loss of effect"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The label's interaction table names the raisers: diuretics including hydrochlorothiazide, chlorothiazide, and furosemide; NSAIDs including indomethacin, ibuprofen, and naproxen; and renin-angiotensin antagonists including lisinopril, enalapril, captopril, and valsartan. Its stated management is more frequent level monitoring and lithium dose reduction. The lowering group matters in the other direction: stopping a chronic NSAID or diuretic can drop a level that was balanced against it, and losing lithium effect means relapse risk. Any change in either direction earns an earlier level. One secondary source quantifies the thiazide effect at roughly a 25 to 40 percent rise; the label itself does not give a percentage, so treat that figure as an estimate, not a rule.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "monitoring",
+          "maneuver": "Set the monitoring schedule for levels, kidneys, thyroid, and calcium.",
+          "findings": [
+            "After starting or a dose change: level in about 3 to 5 days (review guidance) or at one week (NHS/NICE-based guideline), then weekly until stable",
+            "Stable, first year: level every 3 months",
+            "Stable, after the first year: level every 6 months for lower-risk patients, every 3 months for higher-risk patients",
+            "Kidneys (electrolytes, urea, creatinine or eGFR), thyroid (TSH), and calcium: every 3 to 6 months for renal indices and every 6 to 12 months for calcium, TSH, and weight, depending on the guideline used"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The schedules in the sources differ in detail, and the disagreements section records both rather than splitting the difference. The shared skeleton is: check a level a few days after any start or dose change, check weekly until stable, then every 3 months in the first year, then every 3 to 6 months, with renal function, thyroid function, and calcium on a 6 to 12 month cycle and weight tracked. Higher-risk patients (older age, interacting drugs, renal or thyroid or calcium problems, poor control, poor adherence, last level 0.8 mmol/L or above) stay on the 3-month cycle in the NHS/NICE-based scheme. The older FDA label text is less frequent (twice weekly in the acute phase until stable, at least every two months in uncomplicated maintenance), which is one more reason the treating team's local guideline governs.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "baseline labs",
+          "maneuver": "Confirm the baseline workup before or soon after starting lithium.",
+          "findings": [
+            "Kidney: urea and electrolytes with creatinine and eGFR",
+            "Calcium (lithium can raise parathyroid hormone and calcium over time)",
+            "Thyroid function tests",
+            "Weight or BMI, and a full blood count",
+            "ECG if cardiac disease or cardiac risk factors are present",
+            "Pregnancy test where pregnancy is possible"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The baseline set follows the organs lithium injures slowly: kidneys (a concentrating defect, nephrogenic diabetes insipidus, and declining function), thyroid (hypothyroidism), and parathyroid glands (hypercalcemia), plus weight, because lithium causes weight gain that patients feel and that affects adherence. An ECG is for patients with cardiac disease or risk factors, not a blanket requirement. The baseline values are what make later changes interpretable; a creatinine that has crept up over three years only shows against its starting point.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "pregnancy",
+          "maneuver": "Counsel on pregnancy risk using the current evidence framing (Patorno et al., NEJM).",
+          "findings": [
+            "Cardiac malformations: small dose-related increase; adjusted risk ratios 1.11 at 600 mg per day or less, 1.60 at 601 to 900 mg per day, 3.22 above 900 mg per day",
+            "Right ventricular outflow tract obstruction defects: 0.60 per 100 live births exposed vs 0.18 per 100 unexposed; adjusted risk ratio 2.66 (95 percent CI 1.00 to 7.06)",
+            "Ebstein anomaly specifically: rare in absolute terms (about 7 per 100,000 births unexposed), and none of the exposed outflow tract defects in the study was coded specifically as Ebstein anomaly",
+            "Plan made jointly with psychiatry and obstetrics; lithium not stopped abruptly on a positive test"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Quote the framing precisely: the historical fear was a very large Ebstein anomaly risk; the large modern cohort found instead a small increase in cardiac malformations overall that rises with dose, with wide confidence intervals, and Ebstein anomaly itself remained rare. That supports a real conversation, not a reflexive stop: dose matters, the lowest effective dose matters, and the risks of untreated bipolar disorder in pregnancy (relapse, suicide, poor prenatal care) belong on the same page. Whether folate prevents lithium-associated defects specifically is not established by the sources reviewed; general preconception folate advice still applies, but do not promise it neutralizes this risk.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "sick day rules",
+          "maneuver": "Give the patient explicit sick day rules and document them.",
+          "findings": [
+            "Vomiting, diarrhea, fever, or inability to drink normally: contact the team the same day, expect an early level and kidney check",
+            "New water pill, pain reliever, or blood pressure medicine from any prescriber: the lithium team needs to know",
+            "Signs the patient can name back: coarser tremor, unsteadiness, slurred speech, confusion, marked sleepiness",
+            "Rules not yet discussed"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Most lithium toxicity is not caused by the lithium dose; it is caused by a stable dose meeting a new diuretic, a week of ibuprofen, or three days of gastroenteritis. Sick day rules convert that knowledge into behavior: the patient who calls on day one of diarrhea gets fluids and a level, while the patient who waits presents with moderate toxicity. Keep the rules concrete and few, and ask the patient to repeat them back.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 12,
+        "howMissing": 7
+      }
+    },
+    {
+      "id": "antipsychotics",
+      "title": "Antipsychotics",
+      "worksheet": true,
+      "aliases": [
+        "antipsychotics",
+        "haloperidol",
+        "clozapine",
+        "risperidone",
+        "olanzapine",
+        "quetiapine",
+        "aripiprazole",
+        "long-acting injectable",
+        "lai",
+        "eps",
+        "qtc",
+        "prolactin"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "response and side effects",
+          "question": "Which antipsychotics has the patient taken before, at what doses, and what helped or went wrong?",
+          "listenFor": [
+            "Good response to a named drug: restart candidate",
+            "Stopped for stiffness, restlessness, or other movement effects",
+            "Stopped for weight gain, sedation, or sexual side effects",
+            "Two or more adequate trials failed (treatment resistance: think clozapine)"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Antipsychotic choice is mostly applied history. The drug that worked before usually works again, and the side effect that stopped a drug before predicts the next adherence failure. Document dose and duration: a failed trial means an adequate dose for an adequate time, and two adequate failures are the doorway to clozapine, the one drug with proven superiority in treatment-resistant schizophrenia. A drug stopped after three days for sedation is not a failed trial, and counting it as one delays clozapine for the patients who need it.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "movement risk",
+          "question": "Has the patient had stiffness, tremor, restlessness, or abnormal movements on these medicines, or a prior episode of neuroleptic malignant syndrome or catatonia?",
+          "listenFor": [
+            "Prior extrapyramidal symptoms on a high-potency drug",
+            "Akathisia (inner restlessness) previously mistaken for worsening agitation",
+            "Prior neuroleptic malignant syndrome or catatonia",
+            "No prior movement effects"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Extrapyramidal risk is the main tax on the high-potency first-generation drugs, and it is dose related. Akathisia deserves its own question because it is the side effect most often misread as the illness: a patient pacing and begging for discharge two days after a haloperidol increase may be akathisic, and the fix is less drug or a switch, not more drug. Prior neuroleptic malignant syndrome or catatonia changes every later prescribing decision (see the catatonia and serotonin vs NMS sheets).",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "metabolic risk",
+          "question": "What is the patient's weight trajectory, diabetes and lipid status, and family metabolic history?",
+          "listenFor": [
+            "Already has diabetes, dyslipidemia, or obesity: avoid the high-metabolic drugs where possible",
+            "Rapid weight gain on a prior antipsychotic",
+            "No metabolic problems and no prior weight gain",
+            "Metabolic status unknown: baseline weight, glucose, and lipids needed"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Metabolic harm is the main tax on several second-generation drugs, and it is the side effect patients feel least at first and pay for longest. The Merck comparison table rates clozapine and olanzapine at the top of the metabolic scale, which is exactly why baseline and follow-up weight, glucose, and lipids are recommended for the second-generation class. A patient who gained heavily on olanzapine should not be rotated to clozapine for convenience; the metabolic bill compounds.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-04",
+          "system": "cardiac risk",
+          "question": "Any fainting, known long QT, low potassium or magnesium, or other QT-prolonging medicines on the list?",
+          "listenFor": [
+            "Syncope or known QT prolongation: QTc-heavy drugs need caution and an ECG",
+            "Several QT-prolonging medicines combined",
+            "Diuretic use or poor intake: potassium and magnesium at risk",
+            "No cardiac flags"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "QTc prolongation is a class-spread risk with clear leaders: the comparison table rates quetiapine and ziprasidone highest among the drugs listed here, and haloperidol carries a specific caution for the intravenous route. The risk multiplies with electrolyte problems and with stacking QT drugs, which is common on medical floors (antibiotics, antiemetics, methadone). Ask, check the ECG and electrolytes, and count the total QT burden rather than judging one drug at a time.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-05",
+          "system": "prolactin and sedation",
+          "question": "Any breast discharge, missed periods, sexual problems, or heavy sedation on prior medicines?",
+          "listenFor": [
+            "Galactorrhea, amenorrhea, or sexual dysfunction on risperidone, paliperidone, or a first-generation drug",
+            "Heavy sedation or orthostatic dizziness on a low-potency drug or quetiapine",
+            "Neither reported"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Prolactin elevation and sedation sit at opposite ends of the potency trade (see the potency item). Prolactin effects are underreported unless asked about directly, and they matter beyond comfort: chronic elevation affects bone and sexual health and is a common silent reason patients stop treatment. Sedation and orthostasis dominate the low-potency and quetiapine profiles and drive falls in older patients.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-06",
+          "system": "adherence pattern",
+          "question": "How have pills actually gone: daily adherence, gaps, or stopping when feeling better?",
+          "listenFor": [
+            "Repeated relapse after stopping oral medication: long-acting injectable candidate",
+            "Adherent to oral medication and prefers it",
+            "Adherence unclear: ask about gaps directly and non-judgmentally"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "The adherence history decides the formulation question. Relapse that follows stopping pills is the strongest argument for a long-acting injectable, and it reframes the conversation: the injection is not a punishment for nonadherence, it is the removal of a daily decision that keeps going wrong. Ask about gaps directly; most patients will describe them honestly when the question carries no blame.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "potency logic",
+          "maneuver": "Place the chosen first-generation drug on the high-potency vs low-potency trade before prescribing.",
+          "findings": [
+            "High-potency (haloperidol, fluphenazine): more extrapyramidal symptoms and prolactin, less sedation, orthostasis, and anticholinergic effect",
+            "Low-potency (chlorpromazine, thioridazine): less extrapyramidal effect, more sedation, metabolic effect, anticholinergic effect, orthostasis, and QTc effect",
+            "Mid-potency (perphenazine): between the two on both axes"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Potency in the first-generation drugs means dopamine receptor affinity, and the trade is mechanical: tight binding (high potency) buys a clean autonomic profile at the price of movement effects and prolactin, while loose binding (low potency) spares movement at the price of sedation, dry mouth, constipation, orthostatic falls, metabolic effect, and QTc effect. The Merck ratings used in the next two items follow this pattern almost exactly. When a patient fails one end of the trade, the fix is often the other end, not a dose change.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "first-generation profiles",
+          "maneuver": "Compare the named first-generation drugs on the standard adverse effect ratings (Merck Manual table).",
+          "findings": [
+            "Haloperidol: EPS severe, prolactin severe, sedation mild, metabolic mild, anticholinergic questionable, orthostasis not observed, QTc moderate (rated for IV use)",
+            "Fluphenazine: EPS severe, prolactin severe, sedation mild, QTc questionable; long-acting decanoate form exists",
+            "Chlorpromazine: EPS mild, sedation severe, metabolic severe, anticholinergic severe, orthostasis severe, QTc severe, prolactin moderate",
+            "Thioridazine: sedation, metabolic, anticholinergic, orthostasis, and QTc effects all severe; dose capped at 800 mg per day because higher doses cause pigmentary retinopathy",
+            "Perphenazine: EPS moderate, prolactin moderate, otherwise mild"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Merck rates each effect from not observed through questionable, mild, moderate, severe, and very severe; the findings above convert those symbols to words without changing their order. Read across a row before prescribing: haloperidol is the drug you pick when sedation and orthostasis are the dangers (delirium in a frail patient) and avoid when movement effects are the danger; chlorpromazine is the reverse. Thioridazine's ceiling is a hard fact worth remembering because the reason (pigmentary retinopathy) is unique to it.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "second-generation profiles",
+          "maneuver": "Compare the named second-generation drugs on the same ratings.",
+          "findings": [
+            "Risperidone: EPS severe (more likely above 6 mg per day), prolactin severe and dose related, metabolic moderate-to-severe, sedation moderate, QTc moderate",
+            "Paliperidone: EPS severe, prolactin severe, metabolic moderate-to-severe, orthostasis moderate, QTc moderate",
+            "Olanzapine: metabolic very severe, sedation severe, EPS mild, prolactin questionable, QTc moderate",
+            "Quetiapine: sedation severe, metabolic severe, QTc severe, anticholinergic moderate, orthostasis moderate, EPS and prolactin questionable",
+            "Ziprasidone: QTc severe, metabolic and prolactin minimal, EPS and sedation mild; shortest half-life of the group, twice daily with food",
+            "Aripiprazole: metabolic not observed, prolactin not observed, EPS mild, sedation mild, QTc questionable; a dopamine D2 partial agonist",
+            "Lurasidone: EPS moderate, metabolic and prolactin minimal; once daily with food"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The second-generation drugs are not one profile; they spread across the same axes as the older drugs. Risperidone and paliperidone behave almost like high-potency drugs for movement and prolactin. Olanzapine and clozapine carry the heaviest metabolic load. Quetiapine's dominant effects are sedation and QTc. Aripiprazole, lurasidone, and ziprasidone are the low-metabolic options, each with its own catch (food requirements and twice-daily dosing for ziprasidone, food for lurasidone, akathisia for aripiprazole in clinical practice). Two class facts apply to all of them: metabolic monitoring is recommended, and the class carries a warning of increased mortality in older patients with dementia.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "clozapine candidacy",
+          "maneuver": "Decide whether this patient is a clozapine candidate and state the indication precisely.",
+          "findings": [
+            "Severely ill schizophrenia with symptoms persisting despite other antipsychotics (treatment resistance): candidate",
+            "Schizophrenia or schizoaffective disorder with recurrent suicidal behavior: an FDA-listed use",
+            "First episode or only one adequate trial so far: not yet a clozapine candidate",
+            "Candidate identified but never started: document why, this is a common quality gap"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Clozapine is the only antipsychotic proven effective in patients unresponsive to other antipsychotics, and the FDA's listed uses are severely ill schizophrenia that remains symptomatic on other schizophrenia medicines, and reducing recurrent suicidal behavior risk in schizophrenia or schizoaffective disorder. Its adverse effect profile from the comparison table explains the hesitation (sedation severe, metabolic very severe, anticholinergic severe, orthostasis severe, EPS and prolactin minimal), but underuse is the bigger documented problem: eligible patients often wait years. Naming candidacy in the note, even when another team will start it, moves the patient toward the one drug that changes prognosis in resistant illness.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "clozapine blood monitoring",
+          "maneuver": "Apply the clozapine label's ANC monitoring schedule and interruption rules.",
+          "findings": [
+            "Baseline: ANC at least 1500 per microliter (at least 1000 with documented benign ethnic neutropenia) before starting",
+            "Schedule, general population: weekly for the first 6 months, every 2 weeks from 6 to 12 months, monthly after 12 months, while ANC stays at or above 1500",
+            "Mild neutropenia, ANC 1000 to 1499: continue treatment, monitor three times weekly until at or above 1500",
+            "Moderate neutropenia, ANC 500 to 999: interrupt for suspected clozapine-induced neutropenia, hematology consult, resume once ANC reaches 1000, with daily then three-times-weekly counts until back to 1500, then weekly for 4 weeks",
+            "Severe neutropenia, ANC below 500: interrupt; do not rechallenge unless the prescriber decides benefits outweigh risks",
+            "Fever 38.5 degrees C or higher: interrupt as a precaution and get an ANC"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Severe neutropenia (ANC below 500 per microliter) is clozapine's defining hazard: the risk is greatest in the first 18 weeks and is not dose dependent, which is why the schedule is front-loaded and why any low count gets confirmed with a repeat count within 24 hours. The benign ethnic neutropenia (BEN) pathway has its own thresholds (baseline at least 1000, and BEN neutropenia of 500 to 999 is managed by continuing with three-times-weekly monitoring), so the chart must say which pathway the patient is on. The monitoring continues even though the federal REMS program is gone; see the REMS item.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "clozapine other risks",
+          "maneuver": "Counsel and monitor for clozapine's non-blood risks: seizures, myocarditis, and orthostasis.",
+          "findings": [
+            "Seizures: cumulative incidence at one year approximately 5 percent in the label (61 of 1743 patients in premarketing testing, crude rate 3.5 percent); risk is dose related, so start at 12.5 mg, titrate slowly, use divided dosing",
+            "Myocarditis and pericarditis: most often within the first 2 months, can be fatal; chest pain, dyspnea, or flu-like illness early in treatment means stop and get a cardiac evaluation; generally do not rechallenge after clozapine myocarditis or cardiomyopathy (cardiomyopathy usually appears after 8 weeks)",
+            "Orthostasis, bradycardia, and syncope: risk highest during initial titration and can occur at the 12.5 mg starting dose; re-titrate after interruptions rather than resuming the old dose"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "These three risks share a theme: they concentrate at the start and at restarts. The seizure figure is worth quoting correctly, because the label gives both a crude premarketing rate (3.5 percent) and an estimated cumulative one-year incidence (about 5 percent), and it ties risk to dose and titration speed. Myocarditis is the risk teams miss because its early symptoms (fever, chest discomfort, breathlessness, fatigue) look like infection or like the illness itself; the label's instruction is to discontinue and evaluate on suspicion, not to watch and wait. After any significant interruption, restarting at the previous dose can cause dangerous orthostasis and is a known cause of collapse.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "clozapine REMS status",
+          "maneuver": "State the current regulatory status of clozapine monitoring correctly (checked against FDA, 2025 to 2026).",
+          "findings": [
+            "The Clozapine REMS program was eliminated effective June 13, 2025 (FDA communication dated August 27, 2025): prescribers, pharmacies, and patients no longer enroll in or report ANC results to a REMS program to dispense clozapine",
+            "ANC monitoring per the prescribing information continues: FDA states the labeling, including a Medication Guide, is sufficient, and prescribers should keep monitoring ANC as the label directs",
+            "Some copies of the label still contain the old REMS section: the label text and the FDA action disagree (see disagreements)"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "This changed recently and is easy to get wrong in both directions. Saying clozapine still requires REMS enrollment is outdated: FDA removed the program in June 2025 and said so in an official communication in August 2025. Saying clozapine no longer requires blood monitoring is also wrong: FDA's position is that the prescribing information's ANC schedule stands on its own without the program wrapped around it. For Aaron's clerkship purposes: order and document the counts on the label schedule, and do not tell a pharmacy or a patient that a REMS registration step is still required.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-08",
+          "system": "long-acting injectables",
+          "maneuver": "Offer a long-acting injectable when the adherence history supports it, and set expectations.",
+          "findings": [
+            "Adherence-driven relapse on oral medication: LAI offered as the default discussion",
+            "Product chosen with the patient: some LAIs require an initial period of oral supplementation and some do not; intervals range from every 2 weeks to monthly and, for paliperidone products, every 3 or 6 months",
+            "Patient declines injection: oral plan documented with the relapse plan stated"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The key benefit of long-acting injectables is adherence: a missed dose becomes visible immediately instead of silently over weeks, and the relapse cycle driven by stopping pills is interrupted. Practical points from the review literature: the oral supplementation requirement differs by product, so check the specific label before the first injection; longer intervals (including 3-month and 6-month paliperidone products) reduce visit burden; and an LAI changes the delivery, not the drug, so EPS and metabolic monitoring continue unchanged. First-generation options exist too (haloperidol decanoate, fluphenazine decanoate), with the same movement-effect profiles as their oral forms.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 14,
+        "howMissing": 8
+      }
+    },
+    {
+      "id": "antidepressant-traps",
+      "title": "Antidepressant traps",
+      "worksheet": true,
+      "aliases": [
+        "antidepressant side effects",
+        "discontinuation syndrome",
+        "withdrawal",
+        "siadh",
+        "hyponatremia",
+        "black box warning",
+        "bupropion seizure",
+        "trazodone priapism",
+        "mirtazapine",
+        "venlafaxine blood pressure"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "stops and switches",
+          "question": "Which antidepressant was stopped or switched recently, how fast, and what dose and duration was it at?",
+          "listenFor": [
+            "Short half-life drug (paroxetine, venlafaxine) stopped abruptly after months at a high dose: highest discontinuation risk",
+            "Fluoxetine stopped: lowest discontinuation risk, but interactions linger for weeks",
+            "Slow taper in progress, no symptoms so far",
+            "Missed doses regularly, with symptoms the patient has not connected to the gaps"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Discontinuation risk is predictable from three facts: the drug's half-life, the abruptness of the stop, and the dose and duration before it. The patient who feels electric shocks and dizziness three days after paroxetine ran out is not relapsing; relapse does not arrive in three days with brain zaps. Ask about missed doses too, because intermittent adherence to a short half-life drug produces a repeating mini-discontinuation that patients often report as the medicine not working or as anxiety.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "age and activation",
+          "question": "How old is the patient, and what happened in the first weeks on the drug: more energy, agitation, worse anxiety, or any new suicidal thinking?",
+          "listenFor": [
+            "Child, adolescent, or young adult: boxed warning population, monitor closely at start and at dose changes",
+            "Adult over 24: trials showed no increase in suicidal thinking or behavior in this band",
+            "Age 65 or older: trials showed a reduction in risk with antidepressant use",
+            "New agitation or activation early in treatment at any age: review promptly"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "The boxed warning is about age bands and about thinking and behavior in short-term trials, and it is stated precisely in the exam item below. Taking this history well means asking about the first weeks specifically, because activation, worsening, and emergent suicidal thinking cluster early and at dose changes, and because families often notice changes the patient does not report. The label instructs monitoring patients of all ages for worsening and emergence of suicidal thoughts and behaviors, with families and caregivers advised to watch and communicate with the prescriber.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "bleeding risk",
+          "question": "Is the patient taking aspirin, an NSAID, another antiplatelet drug, warfarin, or another anticoagulant?",
+          "listenFor": [
+            "SSRI or SNRI plus daily NSAID or aspirin: bleeding risk compounded",
+            "On warfarin: coagulation indices need monitoring when the antidepressant starts, changes dose, or stops",
+            "Recent easy bruising, nosebleeds, gum bleeding, or black stools",
+            "No interacting medicine and no bleeding symptoms"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Serotonin reuptake inhibitors impair platelet aggregation (see the bleeding item), so the combination with NSAIDs, aspirin, antiplatelet drugs, and anticoagulants is where the harm happens: label text lists events from ecchymosis, hematoma, epistaxis, and petechiae up to life-threatening hemorrhage. Ask about over the counter NSAIDs explicitly; the patient taking ibuprofen daily for back pain rarely volunteers it as a medicine.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-04",
+          "system": "sodium risk",
+          "question": "Is the patient older, on a diuretic, or recently confused, unsteady, or fallen since starting the antidepressant?",
+          "listenFor": [
+            "Older adult on a thiazide or other diuretic who started an SSRI in the last few weeks: highest SIADH risk profile",
+            "New confusion, unsteadiness, or a fall since the start: check a sodium",
+            "Young, no diuretic, asymptomatic: lower risk"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Age and diuretics are the two most important risk factors for antidepressant-associated hyponatremia, and it usually appears within the first few weeks of treatment. The presentation is vague (confusion, unsteadiness, falls in an older adult), so it is missed unless the question is asked and a sodium is checked. A new fall in an older adult two weeks after an SSRI start is a sodium until proven otherwise.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-05",
+          "system": "before bupropion",
+          "question": "Before bupropion: any seizure disorder, current or past anorexia nervosa or bulimia, or abrupt stopping of alcohol, benzodiazepines, barbiturates, or seizure medicines?",
+          "listenFor": [
+            "Any of these present: bupropion is contraindicated, choose another drug",
+            "None present, but other seizure threshold factors exist (head injury, CNS tumor or infection, interacting drugs, metabolic problems)",
+            "None present: proceed within dose limits"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "This is a label contraindication screen, not a preference question. Bupropion is contraindicated in seizure disorder, in current or prior anorexia nervosa or bulimia, and during abrupt discontinuation of alcohol, benzodiazepines, barbiturates, or antiepileptic drugs. The eating disorder question must be asked directly and historically (a bulimia diagnosis years ago still counts), because patients do not connect it to an antidepressant choice.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "discontinuation syndrome",
+          "maneuver": "Recognize and rank discontinuation syndrome by agent before tapering or switching.",
+          "findings": [
+            "Symptom set (FINISH): Flu-like symptoms, Insomnia, Nausea, Imbalance, Sensory disturbances (brain zaps), Hyperarousal",
+            "Highest risk: venlafaxine and desvenlafaxine (SNRIs); paroxetine and fluvoxamine (shortest SSRI half-lives)",
+            "Moderate risk: citalopram, escitalopram, sertraline; duloxetine rated high in the CCJM review",
+            "Lowest risk: fluoxetine, whose active metabolite half-life is approximately 7 days gives it a built-in taper"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The risk ranking is a half-life ranking: the faster the drug leaves, the harder the nervous system notices. Risk also rises with higher dose, longer treatment, abrupt stops, and a personal history of symptoms after missed doses. Management at the bedside is recognition first: symptoms starting within days of a stop or switch, in the FINISH pattern, are discontinuation until proven otherwise, and the usual fix is to reinstate the drug and taper more slowly rather than to treat a phantom relapse. One caution on the rankings: the two reviews used for this sheet do not agree on every drug (mirtazapine, for example, is listed high risk in one table and as limited data in the other), so treat the extremes (venlafaxine and paroxetine high, fluoxetine low) as solid and the middle as approximate.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "boxed warning",
+          "maneuver": "State the youth suicidality boxed warning precisely when counseling or documenting.",
+          "findings": [
+            "Label wording: antidepressants increased the risk of suicidal thoughts and behavior in children, adolescents, and young adults in short-term trials",
+            "Label wording: the trials did not show an increase in subjects over age 24, and showed a reduction in risk in subjects aged 65 and older",
+            "Pooled pediatric analyses: 24 short-term trials of 9 antidepressant drugs in over 4400 patients; suicidal thinking or behavior in about 4 percent on drug vs 2 percent on placebo",
+            "No completed suicides occurred in the pediatric trials",
+            "Label instruction: monitor patients of all ages for worsening and for emergence of suicidal thoughts and behaviors"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Precision matters because this warning is often quoted in two wrong forms: that antidepressants are proven to cause completed suicide in the young (the trials recorded no completed suicides, and the signal was in thoughts and behavior), and that the warning applies only to teenagers (young adults are included, and the monitoring instruction covers all ages). The warning also is not a reason to withhold treatment: depression itself carries suicide risk, and the label frames the decision as balancing the risk against clinical need. Document the discussion, the monitoring plan, and the family's role in watching for change.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "hyponatremia and SIADH",
+          "maneuver": "Check sodium when an at-risk patient on a serotonergic antidepressant becomes confused, unsteady, or falls.",
+          "findings": [
+            "Timing: usually within the first few weeks of starting",
+            "Drug pattern: causality shown most often with SSRIs; fluoxetine, paroxetine, and sertraline are the more common offenders in the review literature",
+            "Severity: label-level reports include serum sodium below 110 mmol/L",
+            "Course: sodium normalizes within about 2 weeks of stopping the drug"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The mechanism is the syndrome of inappropriate antidiuretic hormone secretion: the drug drives water retention, and the sodium falls by dilution. Older age and diuretics are the dominant risk factors, which is why the classic case is an older adult on a thiazide a few weeks into a new SSRI. The practical rules: check a sodium in any at-risk patient with new confusion or a fall, expect recovery within about two weeks of withdrawal once the drug is stopped, and record the reaction clearly so the next prescriber does not restart the same class blindly. Mirtazapine's label also carries a hyponatremia warning, so switching classes does not erase the risk.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "bleeding",
+          "maneuver": "Manage the bleeding interaction between serotonin reuptake inhibitors and NSAIDs, aspirin, and anticoagulants.",
+          "findings": [
+            "Mechanism: platelets take up serotonin through the same transporter the drugs block; depleted platelet serotonin impairs aggregation",
+            "Label warning (trazodone label, section 5.5, stating the class point): drugs that interfere with serotonin reuptake increase bleeding risk; aspirin, NSAIDs, other antiplatelet drugs, warfarin, and other anticoagulants may add to it",
+            "Event range: ecchymosis, hematoma, epistaxis, and petechiae up to life-threatening hemorrhage",
+            "On warfarin: monitor coagulation indices when initiating, titrating, or discontinuing the serotonergic drug"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "This interaction is pharmacology, not bad luck: the platelet depends on transporter-mediated serotonin uptake for part of its aggregation signal, and every serotonin reuptake inhibitor takes that away. The bedside moves are to count the total bleeding stack (antidepressant plus NSAID plus aspirin plus anticoagulant), to prefer non-NSAID pain control where possible, to consider gastrointestinal protection in high-risk patients per medical guidance, and to flag the combination at every handoff. The warfarin instruction is the one with a concrete action attached: coagulation indices drift when the antidepressant starts, changes, or stops, not only at the start.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "SNRI blood pressure",
+          "maneuver": "Monitor blood pressure on venlafaxine and other SNRIs before and during treatment.",
+          "findings": [
+            "Venlafaxine ER label: dose-related increases in systolic and diastolic blood pressure, including cases of sustained hypertension",
+            "Label definition of sustained hypertension: supine diastolic blood pressure of 90 mm Hg or higher and at least 10 mm Hg above baseline on 3 consecutive visits",
+            "Label instruction: measure blood pressure before starting and regularly during treatment; control pre-existing hypertension first",
+            "Sustained increase: consider dose reduction or discontinuation"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The blood pressure effect is noradrenergic and dose related, which is why it belongs to the SNRI items rather than the SSRI ones and why it grows at higher venlafaxine doses. The label's own definition of sustained hypertension (diastolic at least 90 and at least 10 above baseline on three consecutive visits) is the threshold to document against, because a single high reading in an anxious patient is not the signal. Build the baseline measurement into the start: without a pre-treatment pressure, the later rise has nothing to be compared with.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "bupropion seizure risk",
+          "maneuver": "Apply the bupropion label's seizure rules on dose and formulation.",
+          "findings": [
+            "Immediate-release: seizure incidence approximately 0.4 percent (4 per 1000) at doses up to 450 mg per day, rising almost 10-fold between 450 and 600 mg per day; do not exceed 450 mg per day",
+            "Sustained-release: maximum 400 mg per day; incidence approximately 0.1 percent up to 300 mg per day and 0.4 percent at 400 mg per day",
+            "Titrate gradually; the dose and the titration rate both matter",
+            "If a seizure occurs: discontinue bupropion and do not restart it"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Bupropion's seizure risk is the steepest dose-toxicity slope among the common antidepressants, which is why its label gives numbers instead of adjectives and why formulation matters: the immediate-release ceiling is 450 mg per day and the sustained-release ceiling is 400 mg per day, and quoting one for the other is an error. The contraindication screen (seizure disorder, eating disorders, abrupt sedative or alcohol discontinuation) is in the history section because it must happen before the first prescription, and the do-not-restart rule after a seizure is absolute in the label.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "mirtazapine effects",
+          "maneuver": "Counsel on mirtazapine's label-listed effects: appetite, weight, sleepiness, and lipids.",
+          "findings": [
+            "Increased appetite and weight gain: a listed warning; sometimes the reason the drug is chosen, sometimes the reason it is stopped",
+            "Somnolence that may impair judgment, thinking, and motor skills: warn about driving and falls, especially in older patients",
+            "Elevated cholesterol and triglycerides: part of the label's warnings, check lipids in follow-up",
+            "Hyponatremia is also a mirtazapine label warning (see the SIADH item)"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Mirtazapine is often chosen for the patient who cannot sleep and is losing weight, and its label explains both the benefit and the bill: appetite and weight go up, sleepiness is prominent enough to carry an impairment warning, and cholesterol and triglycerides can rise. The traps are assuming the sedation is free (falls in older patients, next-day impairment) and forgetting the metabolic follow-up because the drug is not an antipsychotic. Weight, lipids, and the sodium caution all belong in the monitoring plan.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-08",
+          "system": "trazodone priapism",
+          "maneuver": "Give the trazodone priapism warning with the current label's action threshold.",
+          "findings": [
+            "Label: cases of priapism reported, defined there as painful erections lasting greater than 6 hours; untreated, it can cause irreversible erectile tissue damage",
+            "Action threshold in the current label: a man with an erection lasting greater than 4 hours, painful or not, should stop the drug immediately and seek emergency care",
+            "Higher-risk patients per the label: sickle cell anemia, multiple myeloma, leukemia, and anatomical deformation of the penis"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "This warning fails in practice because it is never given: patients do not connect an erection problem to an antidepressant or sleep dose, and embarrassment delays care past the point of tissue damage. Give it plainly at the start, in one sentence, with the 4-hour action threshold. Note the label-version trap recorded in the disagreements section: older label text uses 6 hours as the descriptive figure, and the current label's instruction to act is 4 hours; counsel to 4.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-09",
+          "system": "serotonin syndrome cross-reference",
+          "maneuver": "Screen every antidepressant start, switch, and combination for serotonin syndrome risk and hand off to the comparison sheet.",
+          "findings": [
+            "Combinations that raise risk: two or more serotonergic drugs, or a serotonergic drug added during a switch without a washout",
+            "Examination anchors: clonus and hyperreflexia (see the serotonin vs NMS sheet for the Hunter criteria)",
+            "Action: stop the serotonergic drugs and treat as in the comparison sheet"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Serotonin syndrome is covered in full on the serotonin syndrome vs neuroleptic malignant syndrome vs anticholinergic toxicity sheet, including the Hunter criteria stated exactly as published. It is cross-referenced here because antidepressant prescribing is where the exposure is created: the risk lives in combinations and in switches, especially adding a second serotonergic drug before the first has cleared. Fluoxetine's long-lived metabolite means its contribution persists for weeks after the last dose, which is the switch-related trap teams most often miss.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 14,
+        "howMissing": 9
+      }
+    },
+    {
+      "id": "ect",
+      "title": "Electroconvulsive therapy (ECT)",
+      "worksheet": true,
+      "aliases": [
+        "ect",
+        "electroconvulsive therapy",
+        "shock therapy",
+        "electrode placement",
+        "methohexital",
+        "succinylcholine"
+      ],
+      "history": [
+        {
+          "id": "history-01",
+          "system": "indication",
+          "question": "What is the indication for ECT in this patient, and is this a first-line or a later-line use?",
+          "listenFor": [
+            "Severe depression with psychotic features, high suicide risk, refusal of food or fluids, or catatonia: ECT is first-line territory",
+            "Severe major depression that has not responded to psychotherapy and medication: second-line use",
+            "Bipolar depression or mixed state, schizophrenia or schizoaffective disorder, neuroleptic malignant syndrome, status epilepticus, or severe postpartum depression or psychosis: other listed indications",
+            "Prior positive response to ECT, or an informed patient preference for ECT: both count in favor"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "Most guidelines recommend ECT as a first-line treatment for severe depressive episodes with psychotic features, catatonia, high suicide risk, and refusal of food or fluids, and as a second-line treatment for severe major depression unresponsive to psychotherapy and medication. Prior positive response and patient preference are important considerations in their own right, not tiebreakers. Knowing which box the patient is in is the answer to the commonest question asked at an ECT session: why this patient, why now.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-02",
+          "system": "risk review",
+          "question": "What cardiac, pulmonary, and neurologic risks does this patient carry into the treatment?",
+          "listenFor": [
+            "Uncontrolled hypertension, coronary artery disease, heart failure, aortic stenosis, atrial fibrillation, or an implanted cardiac device",
+            "Obstructive lung disease or asthma",
+            "Increased intracranial pressure with or without a mass lesion, or a recent stroke or myocardial infarction",
+            "Pheochromocytoma",
+            "No major flags: routine risk profile"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "ECT briefly stresses the heart and raises intracranial pressure during the seizure, so the pre-treatment review is a hunt for the conditions that tolerate that stress poorly. The list above is the higher-risk set named across the sources; what it triggers is evaluation, anesthesia planning, and sometimes cardiology or neurology input, not automatic cancellation. See the contraindication item for the framing dispute between the sources, because it changes how these findings are described.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "history-03",
+          "system": "consent and capacity",
+          "question": "Who consented to this course of ECT, and on what basis?",
+          "listenFor": [
+            "Patient consented after an ECT-specific informed consent discussion",
+            "Patient lacks capacity for this decision: consent obtained by the route state law provides (surrogate or a court-appointed guardian authorized for ECT)",
+            "Consent status unclear: resolve before the patient is brought to the suite"
+          ],
+          "why": null,
+          "whySource": null,
+          "meaning": "ECT requires its own informed consent; being on a psychiatry unit, or having consented to medication, does not cover it. Two points from the ethics literature are worth stating exactly: psychosis or irrational thought patterns do not by themselves negate capacity to consent, so a psychotic patient may still consent personally; and when capacity is lacking, the route is set by state law and ranges from surrogate consent to a court-appointed guardian specifically authorized to consent for ECT. This sheet does not state Maryland's specific ECT consent rules, which were not sourced for it; check local policy before quoting any.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "exam": [
+        {
+          "id": "exam-01",
+          "system": "preparation",
+          "maneuver": "Run the pre-procedure checklist you will see in the PACU.",
+          "findings": [
+            "Nothing to eat or drink for at least 8 hours before the treatment",
+            "Baseline vital signs recorded; pulse oximetry and ECG monitoring in place",
+            "IV access established; the team confirms the treatment plan (placement and stimulus) before induction"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Aaron attends an ECT session on November 4, 2026 in the UMMC PACU; this sequence is what will happen in front of him. ECT is delivered like a short surgical anesthetic, because it is one: fasting, monitors, IV access, and a team that has agreed on electrode placement and stimulus dose before the patient is asleep. If asked what happens first, the answer is this checklist, not the stimulus.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-02",
+          "system": "anesthesia",
+          "maneuver": "Describe the anesthesia and muscle relaxation sequence.",
+          "findings": [
+            "A short-acting anesthetic, typically methohexital, is given IV and the patient falls asleep",
+            "A short-acting neuromuscular blocker, typically succinylcholine, follows; the patient is ventilated with 100 percent oxygen by mask throughout",
+            "A bite block is inserted once the patient is asleep and paralyzed",
+            "The visible convulsion is small because of the muscle relaxant; the seizure is real in the brain and is followed on EEG"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The muscle relaxant is why modern ECT does not look like its film portrayal: the electrical stimulus causes a full generalized seizure in the brain, while the body, paralyzed by succinylcholine, shows at most brief movements. Ventilation with 100 percent oxygen by mask continues from induction until the patient breathes independently again. The bite block protects the teeth and tongue during the brief period of jaw contraction at the stimulus.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-03",
+          "system": "stimulus and seizure",
+          "maneuver": "Describe the stimulus, the placements, and the seizure that counts as adequate.",
+          "findings": [
+            "A brief electrical stimulus is delivered across scalp electrodes",
+            "Placements: right unilateral, bitemporal, or bifrontal; placement and dose together drive efficacy and side effects",
+            "Generalized seizure typically 25 to 90 seconds, monitored continuously by EEG",
+            "The whole procedure takes about 20 minutes"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Expect to be asked where the electrodes go and what the team is watching. The answer: one of three placements (right unilateral, bitemporal, bifrontal), a brief stimulus, and then all eyes on the EEG trace and the clock, because the treatment is the seizure, typically 25 to 90 seconds of generalized activity. Right unilateral placement, especially with ultrabrief pulse, is chosen when memory protection is the priority; bitemporal is chosen when speed and maximal efficacy are the priority. The anesthetic and relaxant wear off in minutes, and ventilatory support continues until the patient emerges.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-04",
+          "system": "course",
+          "maneuver": "State the usual course length and frequency.",
+          "findings": [
+            "Usually 6 to 12 treatments, given two or three times per week (Cochrane review wording)",
+            "A British Journal of Psychiatry review gives 8 to 12 treatments at the same frequency: sources vary slightly on the lower end",
+            "Response is reassessed during the course; the number is not fixed at consent"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "ECT is a course, not a single procedure, and quoting the course correctly matters for consent: the patient is agreeing to a series of treatments over two to four weeks, with reassessment along the way and the option to stop. The small disagreement between reviews (starting at 6 vs 8 treatments) is recorded in the findings rather than averaged; either way, a patient who has had two treatments and no change has not yet had a failed course.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-05",
+          "system": "immediate effects",
+          "maneuver": "Describe the expected first hour and first day after a treatment.",
+          "findings": [
+            "Postictal confusion is typical and usually lasts less than 45 minutes",
+            "Headache, muscle aches, and nausea the same day are common and are treated symptomatically",
+            "Transient bradycardia and tachycardia occur from vagal and then sympathetic discharge during the treatment"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "Recovery looks like waking from a brief anesthetic plus a brief postictal state: groggy and confused for under an hour in the typical case, then a headache or aching muscles that respond to ordinary symptom treatment. The heart rate swings (slow, then fast) are expected physiology from the autonomic discharge of the seizure and are part of why cardiac monitoring and the pre-treatment cardiac review exist. A patient who is still frankly confused well beyond the usual window, or who has a prolonged seizure, is off-script and gets evaluated, not just observed.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-06",
+          "system": "memory effects",
+          "maneuver": "Counsel on memory effects and their usual course.",
+          "findings": [
+            "Anterograde amnesia (trouble forming new memories) is common during the treatment period and resolves soon after the course ends",
+            "Retrograde amnesia can affect autobiographical memories; it is generally transient over several weeks to months",
+            "Some patients report persistent spotty gaps, especially for events shortly before ECT started",
+            "Effects increase with the number of treatments and are more prominent with bilateral placement; right unilateral ultrabrief pulse (below 0.3 ms) has minimal memory disturbance"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "This is the counseling item patients and families actually judge the treatment by, so give the honest version: most memory trouble is during the course and clears after it, autobiographical gaps usually fill in over weeks to months, and a minority of patients keep spotty gaps around the treatment period. Technique is the lever the team controls: fewer treatments, unilateral placement, and ultrabrief pulse all reduce the burden, which is why placement is a shared decision and not a technicality.",
+          "meaningSource": "ai-draft"
+        },
+        {
+          "id": "exam-07",
+          "system": "contraindications",
+          "maneuver": "Frame contraindications the way the sources do, and name the dispute.",
+          "findings": [
+            "American Psychiatric Association consensus statement (2001): ECT has no absolute contraindications",
+            "Higher-risk conditions named across sources: uncontrolled hypertension, coronary disease, heart failure, aortic stenosis, implanted cardiac devices, atrial fibrillation, obstructive lung disease, asthma, raised intracranial pressure with or without mass lesions, recent stroke or myocardial infarction, pheochromocytoma, unstable cardiac or cerebrovascular disease",
+            "A later review treats pheochromocytoma and raised intracranial pressure with mass effect as absolute contraindications, against the APA framing"
+          ],
+          "how": null,
+          "why": null,
+          "whySource": null,
+          "meaning": "The teachable answer is the APA one: no absolute contraindications, with a list of conditions that raise risk and demand evaluation and planning. The dispute is recorded because a newer review breaks with it for two conditions (pheochromocytoma and raised intracranial pressure with mass effect). At the bedside the practical behavior is the same in both framings: find the high-risk conditions in the pre-treatment review, involve anesthesia and the relevant consultants, and document the reasoning. What neither framing supports is a blanket statement that cardiac disease or old age rules ECT out; ECT is often chosen precisely for medically frail patients who cannot tolerate medication trials.",
+          "meaningSource": "ai-draft"
+        }
+      ],
+      "reviewNeeded": {
+        "whyMissing": 10,
+        "howMissing": 7
+      }
     }
   ]
 }
