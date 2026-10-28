@@ -39,6 +39,12 @@ check("mobile escapes sheet content", mobile.includes("function esc("), true);
 check("mobile offers a full-site escape", mobile.includes('href="./index.html?full=1"'), true);
 check("mobile persists the full-site choice", mobile.includes("prerounding.mobileChoice.v1"), true);
 check("mobile search input avoids iOS focus zoom", /#q\s*{[^}]*font-size:\s*1[67]px/.test(mobile), true);
+check("mobile MSE worksheet has the Ask the patient phase heading",
+  mobile.includes("Ask the patient") && mobile.includes("Ask or test these while you are with the patient."), true);
+check("mobile MSE worksheet has the Fill out after the interview phase heading",
+  mobile.includes("Fill out after the interview") && mobile.includes("These come from what you observed during the interview."), true);
+check("mobile MSE worksheet splits fields by phase",
+  mobile.includes("wsFieldPhase") && mobile.includes("field.phase === 'after'"), true);
 check("mobile respects the iPhone safe area", mobile.includes("safe-area-inset"), true);
 
 // ---- redesigned compact UI contract ---------------------------------------

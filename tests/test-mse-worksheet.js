@@ -59,6 +59,8 @@ for (const item of mse.exam) {
     totalFields += 1;
     totalOptions += field.options.length;
     assert.equal(field.kind, "chips", `${item.id}/${field.label} is a chips field`);
+    assert.ok(field.phase === "ask" || field.phase === "after",
+      `${item.id}/${field.label} carries an ask/after phase`);
     assert.ok(Array.isArray(field.options) && field.options.length > 0, `${item.id}/${field.label} has options`);
     assert.equal(typeof field.multi, "boolean", `${item.id}/${field.label} declares multi`);
     // Every field carries a normal preset drawn from its own options.
@@ -87,6 +89,15 @@ assert.equal(fieldByLabel("exam-08", "Obsessions").phrases.Absent, "No obsession
 assert.equal(fieldByLabel("exam-01", "Clothing").phrases["Appropriate for weather and setting"],
   "Dressed appropriately for the weather and setting");
 assert.equal(fieldByLabel("exam-05", "Mood").quoteDetail, true, "Mood detail is quote-wrapped");
+// Phase classification spot checks: Mood is asked, Affect is observed;
+// Cognition's General consciousness is observed, its tested fields are asked.
+assert.equal(fieldByLabel("exam-05", "Mood").phase, "ask");
+assert.equal(fieldByLabel("exam-05", "Affect").phase, "after");
+assert.equal(fieldByLabel("exam-06", "Type").phase, "after");
+assert.equal(fieldByLabel("exam-10", "General consciousness").phase, "after");
+assert.equal(fieldByLabel("exam-10", "Orientation").phase, "ask");
+assert.equal(fieldByLabel("exam-01", "Grooming and hygiene").phase, "after");
+assert.equal(fieldByLabel("exam-08", "Suicidal or self-harm ideation").phase, "ask");
 
 // Build nested Map state from { itemId: { fieldIndex: { selected, detail } } }.
 function stateFor(spec) {
@@ -310,16 +321,17 @@ assert.deepEqual(presentation.worksheetChipToggle(groomingField, ["Neat", "Dishe
 
 // ---- worksheet markup ---------------------------------------------------------------
 const emptyHtml = presentation.worksheetHtml(mse, new Map());
-assert.equal((emptyHtml.match(/<section class="cs-worksheet-card" data-worksheet-group=/g) || []).length, 10, "one card per group");
-assert.equal((emptyHtml.match(/data-worksheet-system="Mood and affect"/g) || []).length, 1,
-  "exactly one Mood and affect card");
+assert.equal((emptyHtml.match(/<section class="cs-worksheet-card" data-worksheet-group=/g) || []).length, 12,
+  "one card per group per phase it has fields in: the 10 groups split into 12 cards (Mood and affect and Cognition appear in both sections)");
+assert.equal((emptyHtml.match(/data-worksheet-system="Mood and affect"/g) || []).length, 2,
+  "Mood and affect appears once in each phase section because its fields split");
 assert.equal((emptyHtml.match(/data-worksheet-chip=/g) || []).length, totalOptions, "one chip per option across all fields");
 assert.equal((emptyHtml.match(/data-worksheet-detail=/g) || []).length, 0,
   "no detail inputs are rendered while every field is untouched");
 assert.equal((emptyHtml.match(/data-worksheet-add-detail=/g) || []).length, totalFields,
   "every untouched field offers an Add detail button instead");
-assert.equal((emptyHtml.match(/data-action="cheat-sheets-worksheet-normal"/g) || []).length, 10,
-  "one Mark normal button per card");
+assert.equal((emptyHtml.match(/data-action="cheat-sheets-worksheet-normal"/g) || []).length, 12,
+  "one Mark normal button per card (12 phase cards)");
 assert.match(emptyHtml, /data-action="cheat-sheets-worksheet-normal-all"/, "Mark all normal sits with the actions");
 assert.match(emptyHtml, /data-action="cheat-sheets-worksheet-copy" disabled/, "Copy disabled when the note is empty");
 assert.match(emptyHtml, /data-worksheet-progress[^>]*>0 of 10 sections filled</);
@@ -342,6 +354,41 @@ const shownHtml = presentation.worksheetHtml(mse, stateFor({ "exam-01": { 6: { s
 assert.match(shownHtml, /data-worksheet-detail="exam-01" data-worksheet-field="6"/);
 assert.equal(presentation.worksheetNoteText(mse, stateFor({ "exam-01": { 6: { selected: [], showDetail: true } } })), "",
   "showDetail alone does not fill a field");
+
+// ---- phase sections: Ask the patient vs Fill out after the interview -------------
+const askStart = emptyHtml.indexOf('data-worksheet-phase="ask"');
+const afterStart = emptyHtml.indexOf('data-worksheet-phase="after"');
+assert.ok(askStart >= 0, "an Ask the patient phase section exists");
+assert.ok(afterStart > askStart, "the Fill out after section follows the Ask section");
+assert.match(emptyHtml, /<h2 class="cs-worksheet-phase-title">Ask the patient<\/h2>/);
+assert.match(emptyHtml, /<h2 class="cs-worksheet-phase-title">Fill out after the interview<\/h2>/);
+const askSection = emptyHtml.slice(askStart, afterStart);
+const afterSection = emptyHtml.slice(afterStart);
+const fieldLabel = (label) => `<p class="cs-worksheet-field-label">${label}</p>`;
+assert.ok(askSection.includes(fieldLabel("Mood")), "Mood renders under Ask the patient");
+assert.ok(askSection.includes(fieldLabel("Suicidal or self-harm ideation")),
+  "Suicidal or self-harm ideation renders under Ask the patient");
+assert.ok(askSection.includes(fieldLabel("Orientation")), "Orientation renders under Ask the patient");
+assert.ok(!askSection.includes(fieldLabel("Grooming and hygiene")),
+  "Grooming and hygiene does not render under Ask the patient");
+assert.ok(afterSection.includes(fieldLabel("Grooming and hygiene")),
+  "Grooming and hygiene renders under Fill out after the interview");
+assert.ok(afterSection.includes(fieldLabel("Affect")), "Affect renders under Fill out after the interview");
+assert.ok(afterSection.includes(fieldLabel("General consciousness")),
+  "General consciousness renders under Fill out after the interview");
+assert.ok(!afterSection.includes(fieldLabel("Mood")), "Mood does not render under Fill out after the interview");
+assert.equal((emptyHtml.match(/data-worksheet-group="4"/g) || []).length >= 2, true,
+  "split groups keep their original group index on the Mark normal buttons in both sections");
+// Display order is Ask first, but the copied note keeps the standard MSE
+// order (Appearance before Thought content) exactly as before.
+assert.equal(
+  presentation.worksheetNoteText(mse, stateFor({
+    "exam-01": { 0: { selected: ["Well-groomed"] } },
+    "exam-08": { 0: { selected: ["Denies"] } }
+  })),
+  "Mental Status Examination\nAppearance: Well-groomed.\nThought content: Denies suicidal ideation.",
+  "note text order is unchanged by the phase display split"
+);
 
 // ---- entry button gating ---------------------------------------------------------
 assert.match(presentation.sheetDetailHtml(mse), /data-action="cheat-sheets-open-worksheet"/);

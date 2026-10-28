@@ -13950,6 +13950,10 @@ div.ap-inline-change { display: block; margin: 0.3rem 0; }
 .cs-worksheet-progress { color: var(--muted); font-size: 0.85rem; margin: 0 2px; }
 .cs-worksheet-privacy { background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 8px 10px; font-size: 0.87rem; margin: 0; }
 .cs-worksheet-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+.cs-worksheet-phase { display: flex; flex-direction: column; gap: 12px; }
+.cs-worksheet-phase-head { margin: 6px 2px 0; padding-top: 10px; border-top: 2px solid var(--line-strong); }
+.cs-worksheet-phase-title { margin: 0 0 2px; font-size: 1.15rem; }
+.cs-worksheet-phase-sub { color: var(--muted); font-size: 0.87rem; margin: 0; }
 .cs-worksheet-domain { margin: 0 0 4px; font-size: 1rem; }
 label.cs-worksheet-domain { display: block; font-weight: 600; }
 .cs-worksheet-maneuver { color: var(--muted); font-size: 0.82rem; margin: 0 0 8px; }

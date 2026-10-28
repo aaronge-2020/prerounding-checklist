@@ -480,18 +480,62 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
       </div>`;
   }
 
-  function renderWorksheetCard(sheet, state, group, groupIndex) {
+  // The field worksheet is split by each field's `phase`: "ask" fields
+  // must be asked or tested while the student is with the patient, and
+  // "after" fields are filled out afterwards from observation. A field
+  // with no phase counts as "ask" so it is never hidden. The split is
+  // presentational only: fields keep their original item id and field
+  // index, groups keep their original index (so per-card Mark normal and
+  // the note builder, which still use worksheetGroups, are unchanged),
+  // and a group whose fields split appears as one card in each section.
+  const WORKSHEET_PHASES = [
+    { id: "ask", title: "Ask the patient", sub: "Ask or test these while you are with the patient." },
+    { id: "after", title: "Fill out after the interview", sub: "These come from what you observed during the interview." }
+  ];
+
+  function worksheetFieldPhase(field) {
+    return field && field.phase === "after" ? "after" : "ask";
+  }
+
+  // One card for one phase of one group, or "" when the group has no
+  // fields in that phase. An item's maneuver/how text is shown only on
+  // the first card (in section order) that carries any of its fields, so
+  // a split item never repeats its long maneuver text in both sections.
+  function renderWorksheetPhaseCard(state, group, groupIndex, phase, shownItemIds) {
+    const itemsHtml = group.items.map((item) => {
+      const phaseFields = (item.fields || [])
+        .map((field, index) => ({ field, index }))
+        .filter(({ field }) => worksheetFieldPhase(field) === phase);
+      if (!phaseFields.length) return "";
+      const showManeuver = !shownItemIds.has(item.id);
+      if (showManeuver) shownItemIds.add(item.id);
+      return `
+        ${showManeuver && item.maneuver ? `<p class="cs-worksheet-maneuver">${escapeHtml(String(item.maneuver))}</p>` : ""}
+        ${showManeuver && item.how ? `<p class="cs-worksheet-maneuver">${escapeHtml(String(item.how))}</p>` : ""}
+        ${phaseFields.map(({ field, index }) => renderWorksheetField(state, item, field, index)).join("")}`;
+    }).join("");
+    if (!itemsHtml.trim()) return "";
     const filled = worksheetGroupLine(group, state) !== null;
-    const itemsHtml = group.items.map((item) => `
-        ${item.maneuver ? `<p class="cs-worksheet-maneuver">${escapeHtml(String(item.maneuver))}</p>` : ""}
-        ${item.how ? `<p class="cs-worksheet-maneuver">${escapeHtml(String(item.how))}</p>` : ""}
-        ${(item.fields || []).map((field, index) => renderWorksheetField(state, item, field, index)).join("")}`).join("");
     return `
       <section class="cs-worksheet-card" data-worksheet-group="${groupIndex}" data-worksheet-system="${escapeHtml(group.system)}">
         <div class="cs-worksheet-card-head">
           <h2 class="cs-worksheet-domain"><span data-worksheet-group-check="${groupIndex}">${filled ? "\u2713 " : ""}</span>${escapeHtml(group.system)}</h2>
           <button type="button" class="cs-worksheet-normal" data-action="cheat-sheets-worksheet-normal" data-worksheet-group="${groupIndex}">Mark normal</button>
         </div>${itemsHtml}
+      </section>`;
+  }
+
+  function renderWorksheetPhaseSection(sheet, state, groups, phase, shownItemIds) {
+    const cards = groups
+      .map((group, index) => renderWorksheetPhaseCard(state, group, index, phase.id, shownItemIds))
+      .join("");
+    if (!cards.trim()) return "";
+    return `
+      <section class="cs-worksheet-phase" data-worksheet-phase="${phase.id}">
+        <div class="cs-worksheet-phase-head">
+          <h2 class="cs-worksheet-phase-title">${escapeHtml(phase.title)}</h2>
+          <p class="cs-worksheet-phase-sub">${escapeHtml(phase.sub)}</p>
+        </div>${cards}
       </section>`;
   }
 
@@ -508,7 +552,7 @@ export function createCheatSheetsPresentation({ escapeHtml }) {
           <p class="cs-worksheet-progress" data-worksheet-progress aria-live="polite">${escapeHtml(worksheetProgressText(sheet, state))}</p>
         </header>
         <p class="cs-worksheet-privacy">Answers stay on this page and are not saved. Copy your note text before you close the page.</p>
-        ${worksheetGroups(sheet).map((group, index) => renderWorksheetCard(sheet, state, group, index)).join("")}
+        ${(() => { const groups = worksheetGroups(sheet); const shownItemIds = new Set(); return WORKSHEET_PHASES.map((phase) => renderWorksheetPhaseSection(sheet, state, groups, phase, shownItemIds)).join(""); })()}
         <section class="cs-worksheet-card cs-worksheet-output-card">
           <label class="cs-worksheet-domain" for="cheat-sheets-worksheet-output">Note text</label>
           <textarea class="cs-worksheet-output" id="cheat-sheets-worksheet-output" readonly rows="${rows}" placeholder="Your note text builds here as you tap answers.">${escapeHtml(noteText)}</textarea>

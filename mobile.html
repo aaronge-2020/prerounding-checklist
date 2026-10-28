@@ -410,6 +410,10 @@
       appearance: none;
     }
     .ws-copy-hint { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; }
+    .ws-phase { margin: 14px 0 0; }
+    .ws-phase-head { margin: 10px 2px 2px; }
+    .ws-phase-title { font-size: 17px; font-weight: 700; margin: 0; }
+    .ws-phase-sub { font-size: 13px; color: var(--muted); margin: 2px 0 0; }
     .ws-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
     .ws-card { scroll-margin-top: 128px; } /* sticky stack: 48px back row + 48px nav strip + paddings/borders = ~121px */
     .ws-normal {
@@ -544,7 +548,7 @@
     }
 
     // ---- constants -------------------------------------------------------
-    var DATA_URL = './src/data/cheat-sheets.json?v=20261026-cheatsheets-v12';
+    var DATA_URL = './src/data/cheat-sheets.json?v=20261028-cheatsheets-v13';
     var LAST_SHEET_KEY = 'prerounding.cheatSheets.lastSheetId.v1';
     var MOBILE_CHOICE_KEY = 'prerounding.mobileChoice.v1';
 
@@ -1020,51 +1024,112 @@
       });
     }
 
+    // Field path only: the worksheet splits by each field's `phase`.
+    // "ask" fields are asked or tested while with the patient; "after"
+    // fields are filled out afterwards from observation. A field with
+    // no phase counts as "ask" so it is never hidden. The split is
+    // presentational only: fields keep their original item id and field
+    // index, and each card's Mark normal keeps the original group index.
+    var WS_PHASES = [
+      { id: 'ask', title: 'Ask the patient', sub: 'Ask or test these while you are with the patient.' },
+      { id: 'after', title: 'Fill out after the interview', sub: 'These come from what you observed during the interview.' }
+    ];
+
+    function wsFieldPhase(field) {
+      return field && field.phase === 'after' ? 'after' : 'ask';
+    }
+
+    function wsFieldHtml(item, field, fieldIndex) {
+      var entry = wsReadField(item.id, fieldIndex) || { selected: new Set(), text: '', detail: '', showDetail: false };
+      var html = '<div class="ws-field">';
+      html += '<p class="ws-field-label">' + esc(field.label) + '</p>';
+      html += '<div class="ws-chiprow" role="group" aria-label="' + esc(field.label) + '">';
+      (field.options || []).forEach(function (option) {
+        var on = entry.selected.has(option);
+        html += '<button type="button" class="ws-chip" data-ws-chip="' + esc(item.id) +
+          '" data-field="' + fieldIndex + '" data-value="' + esc(option) +
+          '" aria-pressed="' + (on ? 'true' : 'false') + '">' +
+          (on ? '✓ ' : '') + esc(option) + '</button>';
+      });
+      html += '</div>';
+      // Detail input only once the field is in use; otherwise a
+      // quiet Add detail button reveals it.
+      var showDetail = entry.selected.size > 0 || entry.detail.trim() !== '' || entry.showDetail;
+      if (showDetail) {
+        html += '<input type="text" class="ws-detail" data-ws-detail="' + esc(item.id) +
+          '" data-field="' + fieldIndex + '" placeholder="' +
+          esc(field.detailHint || 'Add detail (optional)') +
+          '" aria-label="Detail for ' + esc(field.label) + '" value="' + esc(entry.detail) + '">';
+      } else {
+        html += '<button type="button" class="ws-add-detail" data-ws-add-detail="' + esc(item.id) +
+          '" data-field="' + fieldIndex + '">Add detail</button>';
+      }
+      html += '</div>';
+      return html;
+    }
+
+    // One card for one phase of one group, or '' when the group has no
+    // fields in that phase. An item's maneuver/how text shows only on
+    // the first card (in section order) carrying any of its fields, so
+    // a split item never repeats it. The wsCard id goes on the first
+    // card rendered for a group, so the nav strip lands there.
+    function wsPhaseCardHtml(group, groupIndex, phase, shownItems, shownGroups) {
+      var itemsHtml = '';
+      group.items.forEach(function (item) {
+        var phaseFields = [];
+        (item.fields || []).forEach(function (field, fieldIndex) {
+          if (wsFieldPhase(field) === phase) phaseFields.push({ field: field, fieldIndex: fieldIndex });
+        });
+        if (!phaseFields.length) return;
+        var showText = !shownItems[item.id];
+        if (showText) shownItems[item.id] = true;
+        if (showText && item.maneuver) itemsHtml += '<p class="ws-maneuver">' + esc(item.maneuver) + '</p>';
+        if (showText && item.how) itemsHtml += '<p class="ws-maneuver">' + esc(item.how) + '</p>';
+        phaseFields.forEach(function (phaseField) {
+          itemsHtml += wsFieldHtml(item, phaseField.field, phaseField.fieldIndex);
+        });
+      });
+      if (!itemsHtml) return '';
+      var firstForGroup = !shownGroups[groupIndex];
+      if (firstForGroup) shownGroups[groupIndex] = true;
+      var html = '<div class="ws-card"' + (firstForGroup ? ' id="wsCard' + groupIndex + '"' : '') + '>';
+      html += '<div class="ws-card-head"><p class="ws-domain">' +
+        '<span data-ws-group-check="' + groupIndex + '">' + (wsGroupFilled(group) ? '✓ ' : '') + '</span>' +
+        esc(group.system) + '</p>' +
+        '<button type="button" class="ws-normal" data-ws-normal="' + groupIndex + '">Mark normal</button></div>';
+      html += itemsHtml;
+      html += '</div>';
+      return html;
+    }
+
+    function wsPhaseSectionHtml(groups, phase, shownItems, shownGroups) {
+      var cards = '';
+      groups.forEach(function (group, groupIndex) {
+        cards += wsPhaseCardHtml(group, groupIndex, phase.id, shownItems, shownGroups);
+      });
+      if (!cards) return '';
+      return '<section class="ws-phase" data-ws-phase="' + phase.id + '">' +
+        '<div class="ws-phase-head"><h2 class="ws-phase-title">' + esc(phase.title) + '</h2>' +
+        '<p class="ws-phase-sub">' + esc(phase.sub) + '</p></div>' + cards + '</section>';
+    }
+
     function renderWorksheet(keepScroll) {
       if (!wsSheet) return;
       var y = keepScroll ? window.scrollY : 0;
       var html = '<p class="ws-privacy">Answers stay on this page and are not saved. ' +
         'Copy your note text before you close the page.</p>';
-      wsGroups().forEach(function (group, groupIndex) {
-        if (!wsHasFields()) { html += wsGenericCardHtml(group, groupIndex); return; }
-        html += '<div class="ws-card" id="wsCard' + groupIndex + '">';
-        html += '<div class="ws-card-head"><p class="ws-domain">' +
-          '<span data-ws-group-check="' + groupIndex + '">' + (wsGroupFilled(group) ? '✓ ' : '') + '</span>' +
-          esc(group.system) + '</p>' +
-          '<button type="button" class="ws-normal" data-ws-normal="' + groupIndex + '">Mark normal</button></div>';
-        group.items.forEach(function (item) {
-          if (item.maneuver) html += '<p class="ws-maneuver">' + esc(item.maneuver) + '</p>';
-          if (item.how) html += '<p class="ws-maneuver">' + esc(item.how) + '</p>';
-          (item.fields || []).forEach(function (field, fieldIndex) {
-            var entry = wsReadField(item.id, fieldIndex) || { selected: new Set(), text: '', detail: '', showDetail: false };
-            html += '<div class="ws-field">';
-            html += '<p class="ws-field-label">' + esc(field.label) + '</p>';
-            html += '<div class="ws-chiprow" role="group" aria-label="' + esc(field.label) + '">';
-            (field.options || []).forEach(function (option) {
-              var on = entry.selected.has(option);
-              html += '<button type="button" class="ws-chip" data-ws-chip="' + esc(item.id) +
-                '" data-field="' + fieldIndex + '" data-value="' + esc(option) +
-                '" aria-pressed="' + (on ? 'true' : 'false') + '">' +
-                (on ? '✓ ' : '') + esc(option) + '</button>';
-            });
-            html += '</div>';
-            // Detail input only once the field is in use; otherwise a
-            // quiet Add detail button reveals it.
-            var showDetail = entry.selected.size > 0 || entry.detail.trim() !== '' || entry.showDetail;
-            if (showDetail) {
-              html += '<input type="text" class="ws-detail" data-ws-detail="' + esc(item.id) +
-                '" data-field="' + fieldIndex + '" placeholder="' +
-                esc(field.detailHint || 'Add detail (optional)') +
-                '" aria-label="Detail for ' + esc(field.label) + '" value="' + esc(entry.detail) + '">';
-            } else {
-              html += '<button type="button" class="ws-add-detail" data-ws-add-detail="' + esc(item.id) +
-                '" data-field="' + fieldIndex + '">Add detail</button>';
-            }
-            html += '</div>';
-          });
+      var groups = wsGroups();
+      if (!wsHasFields()) {
+        groups.forEach(function (group, groupIndex) {
+          html += wsGenericCardHtml(group, groupIndex);
         });
-        html += '</div>';
-      });
+      } else {
+        var shownItems = {};
+        var shownGroups = {};
+        WS_PHASES.forEach(function (phase) {
+          html += wsPhaseSectionHtml(groups, phase, shownItems, shownGroups);
+        });
+      }
       html += '<div class="ws-card">';
       html += '<label class="ws-domain ws-note-label" for="wsOutput">Note text</label>';
       html += '<textarea class="ws-output" id="wsOutput" readonly rows="4" ' +

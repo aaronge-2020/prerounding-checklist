@@ -22884,6 +22884,7 @@
           "fields": [
             {
               "label": "Grooming and hygiene",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Well-groomed",
@@ -22901,6 +22902,7 @@
             },
             {
               "label": "Clothing",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Appropriate for weather and setting",
@@ -22924,6 +22926,7 @@
             },
             {
               "label": "Jewelry and makeup",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Appropriate",
@@ -22944,6 +22947,7 @@
             },
             {
               "label": "Scars, piercings, tattoos",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "None noted",
@@ -22962,6 +22966,7 @@
             },
             {
               "label": "Dentition",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Good",
@@ -22978,6 +22983,7 @@
             },
             {
               "label": "Assistive devices",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Glasses",
@@ -22991,6 +22997,7 @@
             },
             {
               "label": "Other signs",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Diaphoresis",
@@ -23021,6 +23028,7 @@
           "fields": [
             {
               "label": "Posture",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Relaxed",
@@ -23037,6 +23045,7 @@
             },
             {
               "label": "Eye contact",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Good",
@@ -23054,6 +23063,7 @@
             },
             {
               "label": "Gait",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Normal",
@@ -23075,6 +23085,7 @@
             },
             {
               "label": "Activity level",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Normal",
@@ -23093,6 +23104,7 @@
             },
             {
               "label": "Abnormal movements",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "None observed",
@@ -23134,6 +23146,7 @@
           "fields": [
             {
               "label": "Attitude toward the examiner",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Cooperative",
@@ -23173,6 +23186,7 @@
           "fields": [
             {
               "label": "Rate",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Pressured",
@@ -23187,6 +23201,7 @@
             },
             {
               "label": "Volume",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Loud",
@@ -23203,6 +23218,7 @@
             },
             {
               "label": "Articulation",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Clear",
@@ -23218,6 +23234,7 @@
             },
             {
               "label": "Latency",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Normal",
@@ -23232,6 +23249,7 @@
             },
             {
               "label": "Quantity",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Normal",
@@ -23247,6 +23265,7 @@
             },
             {
               "label": "Prosody",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Normal",
@@ -23279,6 +23298,7 @@
           "fields": [
             {
               "label": "Mood",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Euthymic",
@@ -23303,6 +23323,7 @@
             },
             {
               "label": "Affect",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Bright",
@@ -23342,6 +23363,7 @@
           "fields": [
             {
               "label": "Type",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Euthymic",
@@ -23358,6 +23380,7 @@
             },
             {
               "label": "Range",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Intense/expansive",
@@ -23374,6 +23397,7 @@
             },
             {
               "label": "Lability",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Stable",
@@ -23386,6 +23410,7 @@
             },
             {
               "label": "Appropriateness to content",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Appropriate",
@@ -23422,6 +23447,7 @@
           "fields": [
             {
               "label": "Spectrum",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Goal-directed",
@@ -23437,6 +23463,7 @@
             },
             {
               "label": "Thought blocking",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Present",
@@ -23471,6 +23498,7 @@
           "fields": [
             {
               "label": "Suicidal or self-harm ideation",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Denies",
@@ -23488,6 +23516,7 @@
             },
             {
               "label": "Homicidal or violent ideation",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Denies",
@@ -23505,6 +23534,7 @@
             },
             {
               "label": "Delusions",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Absent",
@@ -23522,6 +23552,7 @@
             },
             {
               "label": "Obsessions",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Absent",
@@ -23557,6 +23588,7 @@
           "fields": [
             {
               "label": "Illusions",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Absent",
@@ -23574,6 +23606,7 @@
             },
             {
               "label": "Hallucinations",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Auditory",
@@ -23589,6 +23622,7 @@
             },
             {
               "label": "Dissociative symptoms",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Depersonalization",
@@ -23619,6 +23653,7 @@
           "fields": [
             {
               "label": "General consciousness",
+              "phase": "after",
               "kind": "chips",
               "options": [
                 "Alert",
@@ -23635,6 +23670,7 @@
             },
             {
               "label": "Orientation",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Person",
@@ -23654,6 +23690,7 @@
             },
             {
               "label": "Attention",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Intact",
@@ -23671,6 +23708,7 @@
             },
             {
               "label": "Immediate memory",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Intact",
@@ -23685,6 +23723,7 @@
             },
             {
               "label": "Recent memory",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Intact",
@@ -23699,6 +23738,7 @@
             },
             {
               "label": "Remote memory",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Intact",
@@ -23713,6 +23753,7 @@
             },
             {
               "label": "Visuospatial ability",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Intact",
@@ -23728,6 +23769,7 @@
             },
             {
               "label": "Abstraction",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Intact (abstract)",
@@ -23760,6 +23802,7 @@
           "fields": [
             {
               "label": "Insight",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Good",
@@ -23775,6 +23818,7 @@
             },
             {
               "label": "Judgment",
+              "phase": "ask",
               "kind": "chips",
               "options": [
                 "Good",
